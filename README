@@ -1,0 +1,18 @@
+ABOUT TILED
+
+Tiled is a general purpose tile map editor originally developed in Java. At the
+moment the Java version is still being updated and in use for a wide variety of
+projects.
+
+ABOUT THE QT PORT
+
+In order to provide a faster and more native (operating system-wize) user
+experience, this project attempts to rebuild Tiled in C++ on top of Qt. Qt
+offers many opportunities to improve the performance and usability of the user
+interface, and a more extensive feature set than the standard Java libraries.
+
+In starting from scratch, we'll also try to do some things better than they are
+done in the original Tiled. For example we will try to not only use
+input/output plugins, but anything from brushes to object types and maybe even
+map views may be possible to provide via a plugin. Plugins may also be able to
+provide parts of the user interface.

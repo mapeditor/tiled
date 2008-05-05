@@ -1,0 +1,8 @@
+2008-05-05  Bjørn Lindeijer  <bjorn@lindeijer.nl>
+
+	* ChangeLog, AUTHORS, COPYING, TODO, README, tiled.pro, src/src.pro,
+	src/main.cpp, src/mapreaderinterface.h, src/src.pro,
+	src/mainwindow.ui, src/mapwriterinterface.h, src/xmlmapreader.h,
+	src/mainwindow.cpp, src/mainwindow.h, src/xmlmapreader.cpp: Initial
+	start of a Qt port of Tiled.
+
