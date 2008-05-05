@@ -1,0 +1,6 @@
+syntax: glob
+bin/tiled
+Makefile
+*.o
+moc_*.cpp
+ui_*.h
