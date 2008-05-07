@@ -1,6 +1,7 @@
 syntax: glob
 bin/tiled
-Makefile
+Makefile*
 *.o
 moc_*.cpp
 ui_*.h
+*.pro.user

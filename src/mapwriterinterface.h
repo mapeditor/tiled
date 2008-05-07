@@ -36,4 +36,4 @@ public:
 
 } // namespace Tiled
 
-#endif
+#endif // MAPWRITERINTERFACE_H

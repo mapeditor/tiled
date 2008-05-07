@@ -21,9 +21,29 @@
 
 #include "xmlmapreader.h"
 
+#include "map.h"
+
+#include <QXmlDefaultHandler>
+#include <QXmlInputSource>
+#include <QXmlSimpleReader>
+#include <QDebug>
+
+using namespace Tiled;
 using namespace Tiled::Internal;
 
-void XmlMapReader::read(const QString &fileName)
+Map* XmlMapReader::read(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    QFile file(fileName);
+    QXmlSimpleReader xmlReader;
+    QXmlInputSource *source = new QXmlInputSource(&file);
+
+    QXmlDefaultHandler *handler = new QXmlDefaultHandler;
+    xmlReader.setContentHandler(handler);
+    xmlReader.setErrorHandler(handler);
+
+    if (!xmlReader.parse(source))
+        qDebug() << "Parsing failed.";
+
+    delete source;
+    return 0;
 }

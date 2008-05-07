@@ -21,18 +21,24 @@
 
 #include "mapreaderinterface.h"
 
+#ifndef XMLMAPREADER_H
+#define XMLMAPREADER_H
+
 namespace Tiled {
 namespace Internal {
 
+/**
+ * A reader for Tiled's .tmx map format.
+ */
 class XmlMapReader : public MapReaderInterface
 {
 public:
-    XmlMapReader();
+    Map* read(const QString &fileName);
 
-    void read(const QString &fileName);
-
-    QString name() { return "XML map reader"; }
+    QString name() const { return "XML map reader (*.tmx)"; }
 };
 
 } // namespace Internal
 } // namespace Tiled
+
+#endif // XMLMAPREADER_H

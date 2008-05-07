@@ -19,38 +19,15 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAPREADERINTERFACE_H
-#define MAPREADERINTERFACE_H
+#include "map.h"
 
-#include <QString>
+using namespace Tiled;
 
-namespace Tiled {
-
-class Map;
-
-/**
- * An interface to be implemented by map readers. A map reader implements
- * support for loading a certain map format.
- *
- * At the moment, Tiled only provides a reader for its own .tmx map format
- * through the XmlMapReader.
- */
-class MapReaderInterface
+Map::Map(int width, int height, int tileWidth, int tileHeight):
+    mWidth(width),
+    mHeight(height),
+    mTileWidth(tileWidth),
+    mTileHeight(tileHeight),
+    mMaxTileHeight(tileHeight)
 {
-public:
-    virtual ~MapReaderInterface() {}
-
-    /**
-     * Reads the map and returns a new Map instance, or 0 if reading failed.
-     */
-    virtual Map* read(const QString &fileName) = 0;
-
-    /**
-     * Returns the name of this map reader.
-     */
-    virtual QString name() const = 0;
-};
-
-} // namespace Tiled
-
-#endif // MAPREADERINTERFACE_H
+}

@@ -19,13 +19,14 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "mainwindow.h"
+
+#include "map.h"
+#include "xmlmapreader.h"
+
 #include <QFileDialog>
 #include <QTextStream>
 #include <QDebug>
-
-#include "mainwindow.h"
-#include "mapreaderinterface.h"
-#include "mapwriterinterface.h"
 
 using namespace Tiled::Internal;
 
@@ -45,12 +46,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this);
+    const QString fileName = QFileDialog::getOpenFileName(this);
     qDebug() << fileName;
+
+    // Use the XML map reader to read the map (assuming it's a .tmx file)
+    XmlMapReader mapReader;
+    Map *map = mapReader.read(fileName);
+
+    // Dispose of the map since we can't do anything with it yet
+    delete map;
 }
 
 void MainWindow::saveFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this);
+    const QString fileName = QFileDialog::getSaveFileName(this);
     qDebug() << fileName;
 }
