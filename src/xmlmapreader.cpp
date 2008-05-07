@@ -31,19 +31,99 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+namespace Tiled {
+namespace Internal {
+
+class ContentHandler : public QXmlDefaultHandler
+{
+    public:
+        ContentHandler():
+            mMap(0)
+        {}
+
+        // QXmlContentHandler
+        bool characters(const QString &ch);
+        bool endDocument();
+        bool endElement(const QString &namespaceURI,
+                        const QString &localName,
+                        const QString &qName);
+        QString errorString() const;
+        bool startDocument();
+        bool startElement(const QString &namespaceURI,
+                          const QString &localName,
+                          const QString &qName,
+                          const QXmlAttributes &atts);
+
+        Map *map() const { return mMap; }
+
+    private:
+        Map *mMap;
+};
+
+}
+}
+
 Map* XmlMapReader::read(const QString &fileName)
 {
     QFile file(fileName);
     QXmlSimpleReader xmlReader;
     QXmlInputSource *source = new QXmlInputSource(&file);
 
-    QXmlDefaultHandler *handler = new QXmlDefaultHandler;
-    xmlReader.setContentHandler(handler);
-    xmlReader.setErrorHandler(handler);
+    ContentHandler *contentHandler = new ContentHandler;
+    QXmlDefaultHandler *errorHandler = new QXmlDefaultHandler;
+    xmlReader.setContentHandler(contentHandler);
+    xmlReader.setErrorHandler(errorHandler);
 
     if (!xmlReader.parse(source))
         qDebug() << "Parsing failed.";
 
     delete source;
     return 0;
+}
+
+
+bool ContentHandler::startDocument()
+{
+    return true;
+}
+
+bool ContentHandler::startElement(const QString &namespaceURI,
+                                  const QString &localName,
+                                  const QString &qName,
+                                  const QXmlAttributes &atts)
+{
+    Q_UNUSED(namespaceURI);
+    Q_UNUSED(qName);
+    Q_UNUSED(atts);
+
+    if (localName == QLatin1String("map") && !mMap)
+        qDebug() << "Create map";
+
+    return true;
+}
+
+bool ContentHandler::characters(const QString &ch)
+{
+    Q_UNUSED(ch);
+    return true;
+}
+
+bool ContentHandler::endElement(const QString &namespaceURI,
+                                const QString &localName,
+                                const QString &qName)
+{
+    Q_UNUSED(namespaceURI);
+    Q_UNUSED(localName);
+    Q_UNUSED(qName);
+    return true;
+}
+
+bool ContentHandler::endDocument()
+{
+    return true;
+}
+
+QString ContentHandler::errorString() const
+{
+    return QString();
 }
