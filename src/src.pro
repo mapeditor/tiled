@@ -8,12 +8,16 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     xmlmapreader.cpp \
     map.cpp \
-    tileset.cpp
+    tileset.cpp \
+    resizehelper.cpp \
+    resizedialog.cpp
 HEADERS += mainwindow.h \
     mapreaderinterface.h \
     mapwriterinterface.h \
     xmlmapreader.h \
     map.h \
     tileset.h \
-    mapviewinterface.h
-FORMS += mainwindow.ui
+    resizedialog.h \
+    resizehelper.h
+FORMS += mainwindow.ui \
+    resizedialog.ui

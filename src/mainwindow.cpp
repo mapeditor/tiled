@@ -23,6 +23,7 @@
 
 #include "map.h"
 #include "xmlmapreader.h"
+#include "resizedialog.h"
 
 #include <QFileDialog>
 #include <QTextStream>
@@ -33,11 +34,12 @@ using namespace Tiled::Internal;
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
 {
-    ui.setupUi(this);
-    connect(ui.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
-    connect(ui.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
-    connect(ui.actionQuit, SIGNAL(triggered()), SLOT(close()));
-    connect(ui.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+    mUi.setupUi(this);
+    connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
+    connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
+    connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
+    connect(mUi.actionResize, SIGNAL(triggered()), SLOT(resizeMap()));
+    connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
 MainWindow::~MainWindow()
@@ -61,4 +63,12 @@ void MainWindow::saveFile()
 {
     const QString fileName = QFileDialog::getSaveFileName(this);
     qDebug() << fileName;
+}
+
+void MainWindow::resizeMap()
+{
+    ResizeDialog resizeDialog(this);
+    resizeDialog.setOldSize(QSize(100, 100));
+    resizeDialog.exec();
+    // TODO: Actually implement map resizing
 }

@@ -19,33 +19,37 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef RESIZEDIALOG_H
+#define RESIZEDIALOG_H
 
-#include <QtGui/QMainWindow>
-#include "ui_mainwindow.h"
+#include <QDialog>
+
+namespace Ui {
+class ResizeDialog;
+}
 
 namespace Tiled {
 namespace Internal {
 
-class MainWindow : public QMainWindow
+class ResizeDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-    ~MainWindow();
+    ResizeDialog(QWidget *parent = 0);
 
-public slots:
-    void openFile();
-    void saveFile();
-    void resizeMap();
+    ~ResizeDialog();
+
+    void setOldSize(const QSize &size);
+
+private slots:
+    void updateOffsetBounds(const QRect &bounds);
 
 private:
-    Ui::MainWindowClass mUi;
+    Ui::ResizeDialog *mUi;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAINWINDOW_H
+#endif // RESIZEDIALOG_H

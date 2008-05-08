@@ -1,0 +1,282 @@
+<ui version="4.0" >
+ <class>ResizeDialog</class>
+ <widget class="QWidget" name="ResizeDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>242</width>
+    <height>402</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Resize</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Size</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Width:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>widthSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QSpinBox" name="widthSpinBox" >
+        <property name="minimum" >
+         <number>1</number>
+        </property>
+        <property name="maximum" >
+         <number>999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>Height:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>heightSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QSpinBox" name="heightSpinBox" >
+        <property name="minimum" >
+         <number>1</number>
+        </property>
+        <property name="maximum" >
+         <number>999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Offset</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>X:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>offsetXSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QSpinBox" name="offsetXSpinBox" >
+        <property name="minimum" >
+         <number>-999</number>
+        </property>
+        <property name="maximum" >
+         <number>999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>Y:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>offsetYSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QSpinBox" name="offsetYSpinBox" >
+        <property name="minimum" >
+         <number>-999</number>
+        </property>
+        <property name="maximum" >
+         <number>999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="Tiled::Internal::ResizeHelper" native="1" name="resizeHelper" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Tiled::Internal::ResizeHelper</class>
+   <extends>QWidget</extends>
+   <header>resizehelper.h</header>
+   <container>1</container>
+   <slots>
+    <slot>setOffsetX(int)</slot>
+    <slot>setOffsetY(int)</slot>
+    <slot>setNewWidth(int)</slot>
+    <slot>setNewHeight(int)</slot>
+    <signal>offsetXChanged(int)</signal>
+    <signal>offsetYChanged(int)</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>widthSpinBox</tabstop>
+  <tabstop>heightSpinBox</tabstop>
+  <tabstop>offsetXSpinBox</tabstop>
+  <tabstop>offsetYSpinBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ResizeDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>203</x>
+     <y>366</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>203</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>offsetXSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>resizeHelper</receiver>
+   <slot>setOffsetX(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>215</x>
+     <y>168</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>96</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>offsetYSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>resizeHelper</receiver>
+   <slot>setOffsetY(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>140</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>116</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>heightSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>resizeHelper</receiver>
+   <slot>setNewHeight(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>129</x>
+     <y>88</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>67</x>
+     <y>251</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>widthSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>resizeHelper</receiver>
+   <slot>setNewWidth(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>130</x>
+     <y>52</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>46</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resizeHelper</sender>
+   <signal>offsetYChanged(int)</signal>
+   <receiver>offsetYSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>219</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>213</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resizeHelper</sender>
+   <signal>offsetXChanged(int)</signal>
+   <receiver>offsetXSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>181</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>181</x>
+     <y>164</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -19,33 +19,37 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "resizedialog.h"
+#include "ui_resizedialog.h"
 
-#include <QtGui/QMainWindow>
-#include "ui_mainwindow.h"
+using namespace Tiled::Internal;
 
-namespace Tiled {
-namespace Internal {
-
-class MainWindow : public QMainWindow
+ResizeDialog::ResizeDialog(QWidget *parent)
+    : QDialog(parent)
 {
-    Q_OBJECT
+    mUi = new Ui::ResizeDialog;
+    mUi->setupUi(this);
 
-public:
-    MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-    ~MainWindow();
+    connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
+                               SLOT(updateOffsetBounds(QRect)));
+}
 
-public slots:
-    void openFile();
-    void saveFile();
-    void resizeMap();
+ResizeDialog::~ResizeDialog()
+{
+    delete mUi;
+}
 
-private:
-    Ui::MainWindowClass mUi;
-};
+void ResizeDialog::setOldSize(const QSize &size)
+{
+    mUi->resizeHelper->setOldSize(size);
 
-} // namespace Internal
-} // namespace Tiled
+    // Reset the spin boxes to the old size
+    mUi->widthSpinBox->setValue(size.width());
+    mUi->heightSpinBox->setValue(size.height());
+}
 
-#endif // MAINWINDOW_H
+void ResizeDialog::updateOffsetBounds(const QRect &bounds)
+{
+    mUi->offsetXSpinBox->setRange(bounds.left(), bounds.right());
+    mUi->offsetYSpinBox->setRange(bounds.top(), bounds.bottom());
+}

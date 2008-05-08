@@ -76,7 +76,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -168,9 +168,6 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionResize" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>&amp;Resize</string>
    </property>
