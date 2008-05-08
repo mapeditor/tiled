@@ -21,3 +21,4 @@ HEADERS += mainwindow.h \
     resizehelper.h
 FORMS += mainwindow.ui \
     resizedialog.ui
+RESOURCES += tiled.qrc
