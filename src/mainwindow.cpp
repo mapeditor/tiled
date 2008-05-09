@@ -49,14 +49,16 @@ MainWindow::~MainWindow()
 void MainWindow::openFile()
 {
     const QString fileName = QFileDialog::getOpenFileName(this);
-    qDebug() << fileName;
 
     // Use the XML map reader to read the map (assuming it's a .tmx file)
-    XmlMapReader mapReader;
-    Map *map = mapReader.read(fileName);
+    if (!fileName.isEmpty()) {
+        qDebug() << "Loading map:" << fileName;
+        XmlMapReader mapReader;
+        Map *map = mapReader.read(fileName);
 
-    // Dispose of the map since we can't do anything with it yet
-    delete map;
+        // Dispose of the map since we can't do anything with it yet
+        delete map;
+    }
 }
 
 void MainWindow::saveFile()

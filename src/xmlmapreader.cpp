@@ -60,12 +60,15 @@ class ContentHandler : public QXmlDefaultHandler
         Map *mMap;
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled
 
 Map* XmlMapReader::read(const QString &fileName)
 {
     QFile file(fileName);
+    if (!file.exists())
+        return 0;
+
     QXmlSimpleReader xmlReader;
     QXmlInputSource *source = new QXmlInputSource(&file);
 
@@ -94,10 +97,24 @@ bool ContentHandler::startElement(const QString &namespaceURI,
 {
     Q_UNUSED(namespaceURI);
     Q_UNUSED(qName);
-    Q_UNUSED(atts);
 
-    if (localName == QLatin1String("map") && !mMap)
-        qDebug() << "Create map";
+    if (localName == QLatin1String("map") && !mMap) {
+        const int mapWidth = atts.value(QLatin1String("width")).toInt();
+        const int mapHeight = atts.value(QLatin1String("height")).toInt();
+        const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
+        const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+        //const QString orientation = atts.value(QLatin1String("orientation"));
+
+        mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
+        qDebug() << "Map:" << mapWidth << mapHeight << tileWidth << tileHeight;
+    } else if (localName == QLatin1String("tileset")) {
+        //const int firstGid = atts.value(QLatin1String("firstgid")).toInt();
+        //const QString name = atts.value(QLatin1String("name"));
+    } else if (localName == QLatin1String("layer")) {
+        //const int width = atts.value(QLatin1String("width")).toInt();
+        //const int height = atts.value(QLatin1String("height")).toInt();
+        //const QString name = atts.value(QLatin1String("name"));
+    }
 
     return true;
 }
