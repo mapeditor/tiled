@@ -19,34 +19,17 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "layer.h"
 
-#include <QtGui/QMainWindow>
-#include "ui_mainwindow.h"
+using namespace Tiled;
 
-namespace Tiled {
-namespace Internal {
-
-class MainWindow : public QMainWindow
+Layer::Layer(const QString &name, int x, int y, int width, int height,
+             Map *map):
+    mName(name),
+    mX(x),
+    mY(y),
+    mWidth(width),
+    mHeight(height),
+    mMap(map)
 {
-    Q_OBJECT
-
-public:
-    MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-    ~MainWindow();
-
-private slots:
-    void openFile();
-    void saveFile();
-    void resizeMap();
-    void aboutTiled();
-
-private:
-    Ui::MainWindowClass mUi;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-#endif // MAINWINDOW_H
+}

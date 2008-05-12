@@ -22,6 +22,8 @@
 #ifndef TILESET_H
 #define TILESET_H
 
+#include <QString>
+
 /**
  * A tileset, representing a set of tiles.
  */
@@ -31,13 +33,25 @@ class Tileset
         /**
          * Constructor.
          */
-        Tileset(int tileWidth, int tileHeight):
+        Tileset(const QString &name, int tileWidth, int tileHeight):
+            mName(name),
             mTileWidth(tileWidth),
             mTileHeight(tileHeight)
         {
         }
 
+        /**
+         * Returns the name of this tileset.
+         */
+        const QString &name() const { return mName; }
+
+        /**
+         * Sets the name of this tileset.
+         */
+        void setName(const QString &name) { mName = name; }
+
     private:
+        QString mName;
         int mTileWidth;
         int mTileHeight;
 };
