@@ -25,7 +25,6 @@
 #include "map.h"
 #include "mapscene.h"
 #include "resizedialog.h"
-#include "tilelayeritem.h"
 #include "xmlmapreader.h"
 
 #include <QFileDialog>
@@ -47,15 +46,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-
-    // TODO: Remove this hardcoded stuff
-    MapScene *scene = new MapScene(this);
-    Map *map = new Map(50, 50, 16, 16);
-    scene->setMap(map);
-    Layer *layer = new Layer(QLatin1String("Test layer"), 5, 5, 20, 20);
-    map->addLayer(layer);
-    scene->addItem(new TileLayerItem(layer));
-    mUi.graphicsView->setScene(scene);
+    mScene = new MapScene(this);
+    mUi.graphicsView->setScene(mScene);
     mUi.graphicsView->centerOn(0, 0);
 }
 
@@ -72,9 +64,10 @@ void MainWindow::openFile()
         qDebug() << "Loading map:" << fileName;
         XmlMapReader mapReader;
         Map *map = mapReader.read(fileName);
-
-        // Dispose of the map since we can't do anything with it yet
-        delete map;
+        Map *previousMap = mScene->map();
+        mScene->setMap(map);
+        mUi.graphicsView->centerOn(0, 0);
+        delete previousMap;
     }
 }
 

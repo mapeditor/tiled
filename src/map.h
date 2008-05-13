@@ -22,9 +22,12 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <QList>
+
 namespace Tiled {
 
 class Layer;
+class Tileset;
 
 /**
  * A tile map.
@@ -62,6 +65,11 @@ class Map {
         int tileHeight() const { return mTileHeight; }
 
         /**
+         * Returns the list of layers of this map.
+         */
+        QList<Layer*> layers() const { return mLayers; }
+
+        /**
          * Adds a layer to this map.
          */
         void addLayer(Layer *layer);
@@ -71,12 +79,21 @@ class Map {
          */
         void insertLayer(int index, Layer *layer);
 
+        /**
+         * Adds a tileset to this map.
+         *
+         * @param tileset the tileset to add
+         * @param firstGid the map-global ID of the first tile in the tileset
+         */
+        void addTileset(Tileset *tileset, int firstGid);
+
     private:
         int mWidth;
         int mHeight;
         int mTileWidth;
         int mTileHeight;
         int mMaxTileHeight;
+        QList<Layer*> mLayers;
 };
 
 } // namespace Tiled

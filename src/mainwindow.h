@@ -28,6 +28,8 @@
 namespace Tiled {
 namespace Internal {
 
+class MapScene;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -44,6 +46,7 @@ private slots:
 
 private:
     Ui::MainWindowClass mUi;
+    MapScene *mScene;
 };
 
 } // namespace Internal

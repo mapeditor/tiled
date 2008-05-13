@@ -21,7 +21,9 @@
 
 #include "xmlmapreader.h"
 
+#include "layer.h"
 #include "map.h"
+#include "tileset.h"
 
 #include <QXmlDefaultHandler>
 #include <QXmlInputSource>
@@ -81,7 +83,7 @@ Map* XmlMapReader::read(const QString &fileName)
         qDebug() << "Parsing failed.";
 
     delete source;
-    return 0;
+    return contentHandler->map();
 }
 
 
@@ -98,22 +100,41 @@ bool ContentHandler::startElement(const QString &namespaceURI,
     Q_UNUSED(namespaceURI);
     Q_UNUSED(qName);
 
-    if (localName == QLatin1String("map") && !mMap) {
+    if (localName == QLatin1String("map") && !mMap)
+    {
         const int mapWidth = atts.value(QLatin1String("width")).toInt();
         const int mapHeight = atts.value(QLatin1String("height")).toInt();
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+        // TODO: Add support for map orientation (at least support isometric)
         //const QString orientation = atts.value(QLatin1String("orientation"));
 
         mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
         qDebug() << "Map:" << mapWidth << mapHeight << tileWidth << tileHeight;
-    } else if (localName == QLatin1String("tileset")) {
-        //const int firstGid = atts.value(QLatin1String("firstgid")).toInt();
-        //const QString name = atts.value(QLatin1String("name"));
-    } else if (localName == QLatin1String("layer")) {
-        //const int width = atts.value(QLatin1String("width")).toInt();
-        //const int height = atts.value(QLatin1String("height")).toInt();
-        //const QString name = atts.value(QLatin1String("name"));
+    }
+    else if (localName == QLatin1String("tileset"))
+    {
+        const QString name = atts.value(QLatin1String("name"));
+        const int firstGid = atts.value(QLatin1String("firstgid")).toInt();
+        const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
+        const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+
+        Tileset *tileset = new Tileset(name, tileWidth, tileHeight);
+        mMap->addTileset(tileset, firstGid);
+        qDebug() << "Tileset:" << name << firstGid << tileWidth << tileHeight;
+    }
+    else if (localName == QLatin1String("layer"))
+    {
+        const QString name = atts.value(QLatin1String("name"));
+        const int x = atts.value(QLatin1String("x")).toInt(); // optional
+        const int y = atts.value(QLatin1String("y")).toInt(); // optional
+        const int width = atts.value(QLatin1String("width")).toInt();
+        const int height = atts.value(QLatin1String("height")).toInt();
+
+        // TODO: Only add the layer when its properties and tiles are loaded
+        Layer *layer = new Layer(name, x, y, width, height);
+        mMap->addLayer(layer);
+        qDebug() << "Layer:" << name << x << y << width << height;
     }
 
     return true;

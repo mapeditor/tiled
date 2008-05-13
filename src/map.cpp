@@ -22,6 +22,7 @@
 #include "map.h"
 
 #include "layer.h"
+#include "tileset.h"
 
 using namespace Tiled;
 
@@ -36,12 +37,19 @@ Map::Map(int width, int height, int tileWidth, int tileHeight):
 
 void Map::addLayer(Layer *layer)
 {
-    // TODO: Implement actually adding the layer
     layer->setMap(this);
+    mLayers.append(layer);
 }
 
 void Map::insertLayer(int index, Layer *layer)
 {
-    // TODO: Implement actually adding the layer
     layer->setMap(this);
+    mLayers.insert(index, layer);
+}
+
+void Map::addTileset(Tileset *tileset, int firstGid)
+{
+    Q_UNUSED(tileset);
+    Q_UNUSED(firstGid);
+    // TODO: Implement actually adding the tileset
 }

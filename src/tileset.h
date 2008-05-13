@@ -24,6 +24,8 @@
 
 #include <QString>
 
+namespace Tiled {
+
 /**
  * A tileset, representing a set of tiles.
  */
@@ -55,5 +57,7 @@ class Tileset
         int mTileWidth;
         int mTileHeight;
 };
+
+} // namespace Tiled
 
 #endif // TILESET_H

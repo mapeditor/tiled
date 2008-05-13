@@ -22,6 +22,7 @@
 #include "mapscene.h"
 
 #include "map.h"
+#include "tilelayeritem.h"
 
 #include <QPainter>
 
@@ -42,13 +43,21 @@ void MapScene::setMap(Map *map)
         setSceneRect(0, 0,
                      mMap->width() * map->tileWidth() + 1,
                      mMap->height() * map->tileHeight() + 1);
+
+        foreach (Layer *layer, mMap->layers()) {
+            addItem(new TileLayerItem(layer));
+        }
     } else {
+        clear();
         setSceneRect(QRectF());
     }
 }
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
+    if (!mMap)
+        return;
+
     const int tileWidth = mMap->tileWidth();
     const int tileHeight = mMap->tileHeight();
 
