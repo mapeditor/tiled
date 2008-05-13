@@ -16,3 +16,21 @@ done in the original Tiled. For example we will try to not only use
 input/output plugins, but anything from brushes to object types and maybe even
 map views may be possible to provide via a plugin. Plugins may also be able to
 provide parts of the user interface.
+
+COMPILING
+
+If you have Qt (>= 4.3) development libraries installed, you can compile by
+running:
+
+ $ qmake
+ $ make
+
+To do a shadow build, you can run qmake from a different directory and refer
+it to tiled.pro, for example:
+
+ $ mkdir build
+ $ cd build
+ $ qmake ../tiled.pro
+ $ make
+
+There is currently no install target, just run bin/tiled.

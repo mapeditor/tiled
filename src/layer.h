@@ -19,66 +19,80 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAP_H
-#define MAP_H
+#ifndef LAYER_H
+#define LAYER_H
+
+#include <QString>
 
 namespace Tiled {
 
-class Layer;
+class Map;
 
 /**
- * A tile map.
+ * A map layer.
  */
-class Map {
+class Layer {
     public:
         /**
-         * Constructor, taking map and tile size as parameters.
+         * Constructor.
          */
-        Map(int width, int height, int tileWidth, int tileHeight);
+        Layer(const QString &name, int x, int y, int width, int height,
+              Map *map = 0);
 
         /**
          * Destructor.
          */
-        ~Map() {}
+        ~Layer() {}
 
         /**
-         * Returns the width of this map.
+         * Returns the name of this layer.
+         */
+        const QString &name() const { return mName; }
+
+        /**
+         * Sets the name of this layer.
+         */
+        void setName(const QString &name) { mName = name; }
+
+        /**
+         * Returns the map this layer is part of.
+         */
+        Map *map() const { return mMap; }
+
+        /**
+         * Sets the map this layer is part of.
+         */
+        void setMap(Map *map) { mMap = map; }
+
+        /**
+         * Returns the x position of this layer (in tiles).
+         */
+        int x() const { return mX; }
+
+        /**
+         * Returns the y position of this layer (in tiles).
+         */
+        int y() const { return mY; }
+
+        /**
+         * Returns the width of this layer.
          */
         int width() const { return mWidth; }
 
         /**
-         * Returns the height of this map.
+         * Returns the height of this layer.
          */
         int height() const { return mHeight; }
 
-        /**
-         * Returns the tile width of this map.
-         */
-        int tileWidth() const { return mTileWidth; }
-
-        /**
-         * Returns the tile height used by this map.
-         */
-        int tileHeight() const { return mTileHeight; }
-
-        /**
-         * Adds a layer to this map.
-         */
-        void addLayer(Layer *layer);
-
-        /**
-         * Adds a layer to this map, inserting it at the given index.
-         */
-        void insertLayer(int index, Layer *layer);
-
     private:
+        QString mName;
+        int mX;
+        int mY;
         int mWidth;
         int mHeight;
-        int mTileWidth;
-        int mTileHeight;
-        int mMaxTileHeight;
+        Map *mMap;
 };
 
 } // namespace Tiled
 
-#endif // MAP_H
+#endif // LAYER_H

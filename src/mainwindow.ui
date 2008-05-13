@@ -13,6 +13,14 @@
    <string>Tiled</string>
   </property>
   <widget class="QWidget" name="centralWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>84</y>
+     <width>553</width>
+     <height>261</height>
+    </rect>
+   </property>
    <layout class="QVBoxLayout" >
     <item>
      <widget class="QSplitter" name="splitter" >
@@ -28,6 +36,9 @@
          <horstretch>1</horstretch>
          <verstretch>1</verstretch>
         </sizepolicy>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
       </widget>
       <widget class="QWidget" name="layoutWidget" >
@@ -76,7 +87,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>29</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -115,6 +126,14 @@ p, li { white-space: pre-wrap; }
    <addaction name="menuHelp" />
   </widget>
   <widget class="QToolBar" name="mainToolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>25</y>
+     <width>553</width>
+     <height>59</height>
+    </rect>
+   </property>
    <property name="toolButtonStyle" >
     <enum>Qt::ToolButtonTextUnderIcon</enum>
    </property>
@@ -127,10 +146,20 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionOpen" />
    <addaction name="actionSave" />
   </widget>
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QStatusBar" name="statusBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>345</y>
+     <width>553</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
   <action name="actionOpen" >
    <property name="icon" >
-    <iconset resource="tiled.qrc" >:/file/images/document-open.png</iconset>
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/file/images/document-open.png</normaloff>:/file/images/document-open.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open...</string>
@@ -138,7 +167,8 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSave" >
    <property name="icon" >
-    <iconset resource="tiled.qrc" >:/file/images/document-save.png</iconset>
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/file/images/document-save.png</normaloff>:/file/images/document-save.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save...</string>

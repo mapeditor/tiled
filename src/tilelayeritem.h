@@ -19,34 +19,41 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef TILELAYERITEM_H
+#define TILELAYERITEM_H
 
-#include <QtGui/QMainWindow>
-#include "ui_mainwindow.h"
+#include <QGraphicsItem>
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
-class MainWindow : public QMainWindow
+/**
+ * A graphics item displaying a tile layer in a QGraphicsView.
+ */
+class TileLayerItem : public QGraphicsItem
 {
-    Q_OBJECT
+    public:
+        /**
+         * Constructor.
+         *
+         * @param layer the layer to be displayed
+         */
+        TileLayerItem(Layer *layer);
 
-public:
-    MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-    ~MainWindow();
+        // QGraphicsView
+        QRectF boundingRect() const;
+        void paint(QPainter *painter,
+                   const QStyleOptionGraphicsItem *option,
+                   QWidget *widget = 0);
 
-private slots:
-    void openFile();
-    void saveFile();
-    void resizeMap();
-    void aboutTiled();
-
-private:
-    Ui::MainWindowClass mUi;
+    private:
+        Layer *mLayer;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAINWINDOW_H
+#endif // TILELAYERITEM_H

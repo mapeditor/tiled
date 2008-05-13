@@ -21,6 +21,8 @@
 
 #include "map.h"
 
+#include "layer.h"
+
 using namespace Tiled;
 
 Map::Map(int width, int height, int tileWidth, int tileHeight):
@@ -30,4 +32,16 @@ Map::Map(int width, int height, int tileWidth, int tileHeight):
     mTileHeight(tileHeight),
     mMaxTileHeight(tileHeight)
 {
+}
+
+void Map::addLayer(Layer *layer)
+{
+    // TODO: Implement actually adding the layer
+    layer->setMap(this);
+}
+
+void Map::insertLayer(int index, Layer *layer)
+{
+    // TODO: Implement actually adding the layer
+    layer->setMap(this);
 }

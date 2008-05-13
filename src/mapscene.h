@@ -19,34 +19,49 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MAPSCENE_H
+#define MAPSCENE_H
 
-#include <QtGui/QMainWindow>
-#include "ui_mainwindow.h"
+#include <QGraphicsScene>
 
 namespace Tiled {
+
+class Map;
+
 namespace Internal {
 
-class MainWindow : public QMainWindow
+/**
+ * A graphics scene that displays the contents of a map.
+ */
+class MapScene : public QGraphicsScene
 {
-    Q_OBJECT
+    public:
+        /**
+         * Constructor.
+         */
+        MapScene(QObject *parent);
 
-public:
-    MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-    ~MainWindow();
+        /**
+         * Returns the map this scene is displaying.
+         */
+        Map *map() const { return mMap; }
 
-private slots:
-    void openFile();
-    void saveFile();
-    void resizeMap();
-    void aboutTiled();
+        /**
+         * Sets the map this scene displays.
+         */
+        void setMap(Map *map);
 
-private:
-    Ui::MainWindowClass mUi;
+    protected:
+        /**
+         * QGraphicsScene::drawForeground override that draws the tile grid.
+         */
+        void drawForeground(QPainter *painter, const QRectF &rect);
+
+    private:
+        Map *mMap;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAINWINDOW_H
+#endif // MAPSCENE_H

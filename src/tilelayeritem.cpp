@@ -19,34 +19,38 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "tilelayeritem.h"
 
-#include <QtGui/QMainWindow>
-#include "ui_mainwindow.h"
+#include "layer.h"
+#include "map.h"
 
-namespace Tiled {
-namespace Internal {
+#include <QPainter>
 
-class MainWindow : public QMainWindow
+using namespace Tiled::Internal;
+
+TileLayerItem::TileLayerItem(Layer *layer):
+    mLayer(layer)
 {
-    Q_OBJECT
+}
 
-public:
-    MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
-    ~MainWindow();
+QRectF TileLayerItem::boundingRect() const
+{
+    const Map* const map = mLayer->map();
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
 
-private slots:
-    void openFile();
-    void saveFile();
-    void resizeMap();
-    void aboutTiled();
+    return QRectF(mLayer->x() * tileWidth,
+                  mLayer->y() * tileHeight,
+                  mLayer->width() * tileWidth,
+                  mLayer->height() * tileHeight);
+}
 
-private:
-    Ui::MainWindowClass mUi;
-};
+void TileLayerItem::paint(QPainter *painter,
+                          const QStyleOptionGraphicsItem *option,
+                          QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
 
-} // namespace Internal
-} // namespace Tiled
-
-#endif // MAINWINDOW_H
+    painter->fillRect(boundingRect(), Qt::blue);
+}
