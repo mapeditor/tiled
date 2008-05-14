@@ -48,6 +48,11 @@ void ResizeDialog::setOldSize(const QSize &size)
     mUi->heightSpinBox->setValue(size.height());
 }
 
+const QSize& ResizeDialog::newSize() const
+{
+    return mUi->resizeHelper->newSize();
+}
+
 void ResizeDialog::updateOffsetBounds(const QRect &bounds)
 {
     mUi->offsetXSpinBox->setRange(bounds.left(), bounds.right());

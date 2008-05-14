@@ -1,6 +1,6 @@
 <ui version="4.0" >
  <class>ResizeDialog</class>
- <widget class="QWidget" name="ResizeDialog" >
+ <widget class="QDialog" name="ResizeDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -12,13 +12,13 @@
   <property name="windowTitle" >
    <string>Resize</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
       <string>Size</string>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QGridLayout" name="_6" >
       <item row="0" column="0" >
        <widget class="QLabel" name="label_3" >
         <property name="text" >
@@ -67,7 +67,7 @@
      <property name="title" >
       <string>Offset</string>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QGridLayout" name="_4" >
       <item row="0" column="0" >
        <widget class="QLabel" name="label_2" >
         <property name="text" >
@@ -125,7 +125,7 @@
      <property name="frameShadow" >
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout" name="_5" >
       <item>
        <widget class="Tiled::Internal::ResizeHelper" native="1" name="resizeHelper" />
       </item>
@@ -134,6 +134,9 @@
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
      <property name="standardButtons" >
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
@@ -168,17 +171,33 @@
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>rejected()</signal>
+   <signal>accepted()</signal>
    <receiver>ResizeDialog</receiver>
-   <slot>close()</slot>
+   <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>203</x>
-     <y>366</y>
+     <x>227</x>
+     <y>376</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>203</x>
-     <y>258</y>
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ResizeDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>232</x>
+     <y>382</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>241</x>
+     <y>274</y>
     </hint>
    </hints>
   </connection>
@@ -189,12 +208,12 @@
    <slot>setOffsetX(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>215</x>
-     <y>168</y>
+     <x>172</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>96</x>
-     <y>251</y>
+     <x>120</x>
+     <y>285</y>
     </hint>
    </hints>
   </connection>
@@ -205,28 +224,12 @@
    <slot>setOffsetY(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>140</x>
-     <y>203</y>
+     <x>172</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>116</x>
-     <y>256</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>heightSpinBox</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>resizeHelper</receiver>
-   <slot>setNewHeight(int)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>129</x>
-     <y>88</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>67</x>
-     <y>251</y>
+     <x>120</x>
+     <y>285</y>
     </hint>
    </hints>
   </connection>
@@ -237,28 +240,28 @@
    <slot>setNewWidth(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>130</x>
-     <y>52</y>
+     <x>172</x>
+     <y>51</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>46</x>
-     <y>256</y>
+     <x>120</x>
+     <y>285</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>resizeHelper</sender>
-   <signal>offsetYChanged(int)</signal>
-   <receiver>offsetYSpinBox</receiver>
-   <slot>setValue(int)</slot>
+   <sender>heightSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>resizeHelper</receiver>
+   <slot>setNewHeight(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>219</x>
-     <y>256</y>
+     <x>172</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>213</x>
-     <y>190</y>
+     <x>120</x>
+     <y>285</y>
     </hint>
    </hints>
   </connection>
@@ -269,12 +272,28 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>181</x>
-     <y>251</y>
+     <x>120</x>
+     <y>285</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>181</x>
-     <y>164</y>
+     <x>172</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resizeHelper</sender>
+   <signal>offsetYChanged(int)</signal>
+   <receiver>offsetYSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>120</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>172</x>
+     <y>185</y>
     </hint>
    </hints>
   </connection>

@@ -50,9 +50,19 @@ class Map {
         int width() const { return mWidth; }
 
         /**
+         * Sets the width of this map.
+         */
+        void setWidth(int width) { mWidth = width; }
+
+        /**
          * Returns the height of this map.
          */
         int height() const { return mHeight; }
+
+        /**
+         * Sets the height of this map.
+         */
+        void setHeight(int height) { mHeight = height; }
 
         /**
          * Returns the tile width of this map.

@@ -41,6 +41,8 @@ public:
     ~ResizeDialog();
 
     void setOldSize(const QSize &size);
+    
+    const QSize& newSize() const;
 
 private slots:
     void updateOffsetBounds(const QRect &bounds);

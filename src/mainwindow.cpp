@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mScene = new MapScene(this);
     mUi.graphicsView->setScene(mScene);
     mUi.graphicsView->centerOn(0, 0);
+    mUi.actionResize->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -67,6 +68,7 @@ void MainWindow::openFile()
         Map *previousMap = mScene->map();
         mScene->setMap(map);
         mUi.graphicsView->centerOn(0, 0);
+        mUi.actionResize->setEnabled(true);
         delete previousMap;
     }
 }
@@ -80,8 +82,14 @@ void MainWindow::saveFile()
 void MainWindow::resizeMap()
 {
     ResizeDialog resizeDialog(this);
-    resizeDialog.setOldSize(QSize(100, 100));
-    resizeDialog.exec();
+    resizeDialog.setOldSize(QSize(mScene->map()->width(),
+                                  mScene->map()->height()));
+    
+    if(resizeDialog.exec())
+    {
+        mScene->map()->setWidth(resizeDialog.newSize().width());
+        mScene->map()->setHeight(resizeDialog.newSize().height());
+    }
     // TODO: Actually implement map resizing
 }
 
