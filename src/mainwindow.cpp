@@ -68,7 +68,7 @@ void MainWindow::openFile()
         Map *previousMap = mScene->map();
         mScene->setMap(map);
         mUi.graphicsView->centerOn(0, 0);
-        mUi.actionResize->setEnabled(true);
+        mUi.actionResize->setEnabled(map != 0);
         delete previousMap;
     }
 }
@@ -84,9 +84,8 @@ void MainWindow::resizeMap()
     ResizeDialog resizeDialog(this);
     resizeDialog.setOldSize(QSize(mScene->map()->width(),
                                   mScene->map()->height()));
-    
-    if(resizeDialog.exec())
-    {
+
+    if (resizeDialog.exec()) {
         mScene->map()->setWidth(resizeDialog.newSize().width());
         mScene->map()->setHeight(resizeDialog.newSize().height());
     }
