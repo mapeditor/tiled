@@ -134,6 +134,9 @@ p, li { white-space: pre-wrap; }
      <height>59</height>
     </rect>
    </property>
+   <property name="windowTitle" >
+    <string>Main toolbar</string>
+   </property>
    <property name="toolButtonStyle" >
     <enum>Qt::ToolButtonTextUnderIcon</enum>
    </property>

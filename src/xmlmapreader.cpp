@@ -23,6 +23,7 @@
 
 #include "layer.h"
 #include "map.h"
+#include "properties.h"
 #include "tileset.h"
 
 #include <QXmlDefaultHandler>
@@ -40,7 +41,9 @@ class ContentHandler : public QXmlDefaultHandler
 {
     public:
         ContentHandler():
-            mMap(0)
+            mMap(0),
+            mLayer(0),
+            mMapPropertiesRead(false)
         {}
 
         // QXmlContentHandler
@@ -60,6 +63,9 @@ class ContentHandler : public QXmlDefaultHandler
 
     private:
         Map *mMap;
+        Layer *mLayer;
+        Properties *mProperties;
+        bool mMapPropertiesRead;
 };
 
 } // namespace Internal
@@ -131,10 +137,33 @@ bool ContentHandler::startElement(const QString &namespaceURI,
         const int width = atts.value(QLatin1String("width")).toInt();
         const int height = atts.value(QLatin1String("height")).toInt();
 
-        // TODO: Only add the layer when its properties and tiles are loaded
-        Layer *layer = new Layer(name, x, y, width, height);
-        mMap->addLayer(layer);
+        mLayer = new Layer(name, x, y, width, height);
         qDebug() << "Layer:" << name << x << y << width << height;
+    }
+    else if (localName == QLatin1String("properties"))
+    {
+        mProperties = new Properties;
+
+        if (mLayer) {
+            qDebug() << "Reading layer properties... (not yet implemented)";
+        } else if (!mMapPropertiesRead && mMap) {
+            qDebug() << "Reading map properties... (not yet implemented)";
+            mMapPropertiesRead = true;
+        }
+    }
+    else if (localName == QLatin1String("property"))
+    {
+        if (!mProperties)
+            return false;
+
+        // TODO: Add support for properties that have their value as contents
+        const QString name = atts.value(QLatin1String("name"));
+        const QString value = atts.value(QLatin1String("value"));
+        mProperties->setProperty(name, value);
+        qDebug() << "Property:" << name << "=" << value;
+    }
+    else {
+        qDebug() << "Unhandled element (fixme):" << qName;
     }
 
     return true;
@@ -153,6 +182,19 @@ bool ContentHandler::endElement(const QString &namespaceURI,
     Q_UNUSED(namespaceURI);
     Q_UNUSED(localName);
     Q_UNUSED(qName);
+
+    if (localName == QLatin1String("layer"))
+    {
+        mMap->addLayer(mLayer);
+        mLayer = 0;
+    }
+    else if (localName == QLatin1String("properties"))
+    {
+        // TODO: Set these properties on the active map or layer
+        delete mProperties;
+        mProperties = 0;
+    }
+
     return true;
 }
 
