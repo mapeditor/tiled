@@ -23,6 +23,7 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
+#include <QSettings>
 #include "ui_mainwindow.h"
 
 namespace Tiled {
@@ -43,10 +44,28 @@ private slots:
     void saveFile();
     void resizeMap();
     void aboutTiled();
+    void openRecentFile();
 
 private:
     Ui::MainWindowClass mUi;
     MapScene *mScene;
+    QSettings mSettings;
+    void openFile(const QString& fileName);
+    void writeSettings();
+    void readSettings();
+
+    /**
+     * Update the recent files menu
+     */
+    void updateRecentFiles();
+
+    /**
+     * Add the given file to the recent files list.
+     */
+    void setRecentFile(const QString& fileName);
+
+    enum { MaxRecentFiles = 4 };
+    QAction *mRecentFiles[MaxRecentFiles];
 };
 
 } // namespace Internal

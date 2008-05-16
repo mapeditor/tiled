@@ -16,9 +16,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>84</y>
+     <y>77</y>
      <width>553</width>
-     <height>261</height>
+     <height>266</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
@@ -87,7 +87,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -96,6 +96,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionOpen" />
     <addaction name="actionSave" />
+    <addaction name="actionRecent_Files" />
     <addaction name="separator" />
     <addaction name="actionQuit" />
    </widget>
@@ -129,9 +130,9 @@ p, li { white-space: pre-wrap; }
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>25</y>
+     <y>24</y>
      <width>553</width>
-     <height>59</height>
+     <height>53</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -153,9 +154,9 @@ p, li { white-space: pre-wrap; }
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>345</y>
+     <y>343</y>
      <width>553</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
@@ -212,6 +213,10 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionResize" >
+   <property name="icon" >
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/file/images/document-resize.png</normaloff>:/file/images/document-resize.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Resize</string>
    </property>
@@ -220,8 +225,21 @@ p, li { white-space: pre-wrap; }
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/file/images/document-properties.png</normaloff>:/file/images/document-properties.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Properties</string>
+   </property>
+  </action>
+  <action name="actionRecent_Files" >
+   <property name="icon" >
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/file/images/document-open-recent.png</normaloff>:/file/images/document-open-recent.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Recent Files</string>
    </property>
   </action>
  </widget>

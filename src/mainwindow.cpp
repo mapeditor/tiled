@@ -34,7 +34,8 @@
 using namespace Tiled::Internal;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
-    : QMainWindow(parent, flags)
+    : QMainWindow(parent, flags),
+      mSettings("Tiled Authors", "Tiled")
 {
     mUi.setupUi(this);
     mUi.splitter->setCollapsible(0, false);
@@ -46,20 +47,32 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
+
+    QMenu* menu = new QMenu(this);
+    for (int i = 0; i < MaxRecentFiles; ++i) 
+    {
+         mRecentFiles[i] = new QAction(this);
+         menu->addAction(mRecentFiles[i]);
+         mRecentFiles[i]->setVisible(false);
+         connect(mRecentFiles[i], SIGNAL(triggered()),
+                 this, SLOT(openRecentFile()));
+    }
+    mUi.actionRecent_Files->setMenu(menu);
+
     mScene = new MapScene(this);
     mUi.graphicsView->setScene(mScene);
     mUi.graphicsView->centerOn(0, 0);
     mUi.actionResize->setEnabled(false);
+    readSettings();
 }
 
 MainWindow::~MainWindow()
 {
+    writeSettings();
 }
 
-void MainWindow::openFile()
+void MainWindow::openFile(const QString& fileName)
 {
-    const QString fileName = QFileDialog::getOpenFileName(this);
-
     // Use the XML map reader to read the map (assuming it's a .tmx file)
     if (!fileName.isEmpty()) {
         qDebug() << "Loading map:" << fileName;
@@ -70,7 +83,28 @@ void MainWindow::openFile()
         mUi.graphicsView->centerOn(0, 0);
         mUi.actionResize->setEnabled(map != 0);
         delete previousMap;
+        setRecentFile(fileName);
     }
+}
+
+void MainWindow::openFile()
+{
+    QStringList recentFiles = mSettings.value("recentFiles", 
+                                              QStringList()).toStringList();
+    QString fileName;
+
+    if(!recentFiles.isEmpty())
+    {
+        fileName =
+        QFileDialog::getOpenFileName(this, tr("Open Map"), recentFiles.first());
+    }
+    else
+    {
+        fileName =
+        QFileDialog::getOpenFileName(this, tr("Open Map"));
+    }
+
+    openFile(fileName);
 }
 
 void MainWindow::saveFile()
@@ -90,6 +124,62 @@ void MainWindow::resizeMap()
         mScene->map()->setHeight(resizeDialog.newSize().height());
     }
     // TODO: Actually implement map resizing
+}
+
+void MainWindow::readSettings()
+{
+    mSettings.beginGroup("mainwindow");
+    resize(mSettings.value("size", QSize(553, 367)).toSize());
+    mSettings.endGroup();
+    updateRecentFiles();
+}
+
+void MainWindow::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if(action)
+    {
+        MainWindow::openFile(action->data().toString());
+    }
+}
+
+void MainWindow::setRecentFile(const QString &fileName)
+{
+    QStringList files = mSettings.value("recentFiles").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+    {
+        files.removeLast();
+    }
+
+    mSettings.setValue("recentFiles", files);
+    updateRecentFiles();
+}
+
+void MainWindow::updateRecentFiles()
+{
+    QStringList recentFiles = mSettings.value("recentFiles").toStringList();
+
+    int numRecentFiles = qMin(recentFiles.size(), (int)MaxRecentFiles);
+
+    for (int i = 0; i < numRecentFiles; ++i) 
+    {
+        mRecentFiles[i]->setText(QFileInfo(recentFiles[i]).fileName());
+        mRecentFiles[i]->setData(recentFiles[i]);
+        mRecentFiles[i]->setVisible(true);
+    }
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+    {
+        mRecentFiles[j]->setVisible(false);
+    }
+}
+
+void MainWindow::writeSettings()
+{
+    mSettings.beginGroup("mainwindow");
+    mSettings.setValue("size", size());
+    mSettings.endGroup();
 }
 
 void MainWindow::aboutTiled()

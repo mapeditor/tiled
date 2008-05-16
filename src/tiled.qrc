@@ -2,5 +2,8 @@
     <qresource prefix="/file" >
         <file>images/document-open.png</file>
         <file>images/document-save.png</file>
+        <file>images/document-resize.png</file>
+        <file>images/document-properties.png</file>
+        <file>images/document-open-recent.png</file>
     </qresource>
 </RCC>
