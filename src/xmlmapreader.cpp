@@ -37,6 +37,9 @@ using namespace Tiled::Internal;
 namespace Tiled {
 namespace Internal {
 
+/**
+ * SAX API based reader for TMX maps.
+ */
 class ContentHandler : public QXmlDefaultHandler
 {
     public:
@@ -62,10 +65,14 @@ class ContentHandler : public QXmlDefaultHandler
         Map *map() const { return mMap; }
 
     private:
+        void unexpectedElement(const QString &element,
+                               const QString &expectedParent);
+
         Map *mMap;
         Layer *mLayer;
         Properties *mProperties;
         bool mMapPropertiesRead;
+        QString mError;
 };
 
 } // namespace Internal
@@ -106,7 +113,16 @@ bool ContentHandler::startElement(const QString &namespaceURI,
     Q_UNUSED(namespaceURI);
     Q_UNUSED(qName);
 
-    if (localName == QLatin1String("map") && !mMap)
+    if (!mMap && (localName == QLatin1String("tileset") ||
+                  localName == QLatin1String("layer") ||
+                  localName == QLatin1String("properties") ||
+                  localName == QLatin1String("objectgroup")))
+    {
+        unexpectedElement(localName, QLatin1String("map"));
+        return false;
+    }
+
+    if (!mMap && localName == QLatin1String("map"))
     {
         const int mapWidth = atts.value(QLatin1String("width")).toInt();
         const int mapHeight = atts.value(QLatin1String("height")).toInt();
@@ -140,30 +156,28 @@ bool ContentHandler::startElement(const QString &namespaceURI,
         mLayer = new Layer(name, x, y, width, height);
         qDebug() << "Layer:" << name << x << y << width << height;
     }
+    else if (localName == QLatin1String("objectgroup"))
+    {
+        // TODO: Add support for object groups
+    }
     else if (localName == QLatin1String("properties"))
     {
         mProperties = new Properties;
-
-        if (mLayer) {
-            qDebug() << "Reading layer properties... (not yet implemented)";
-        } else if (!mMapPropertiesRead && mMap) {
-            qDebug() << "Reading map properties... (not yet implemented)";
-            mMapPropertiesRead = true;
-        }
     }
     else if (localName == QLatin1String("property"))
     {
-        if (!mProperties)
+        if (!mProperties) {
+            unexpectedElement(localName, QLatin1String("properties"));
             return false;
+        }
 
         // TODO: Add support for properties that have their value as contents
         const QString name = atts.value(QLatin1String("name"));
         const QString value = atts.value(QLatin1String("value"));
         mProperties->setProperty(name, value);
-        qDebug() << "Property:" << name << "=" << value;
     }
     else {
-        qDebug() << "Unhandled element (fixme):" << qName;
+        qDebug() << "Unhandled element (fixme):" << localName;
     }
 
     return true;
@@ -190,6 +204,15 @@ bool ContentHandler::endElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("properties"))
     {
+        if (mLayer) {
+            // The properties we just read are for the current layer
+            qDebug() << "Setting layer properties... (not yet implemented)";
+        } else if (!mMapPropertiesRead && mMap) {
+            // The properties we just read are for the map
+            qDebug() << "Setting map properties... (not yet implemented)";
+            mMapPropertiesRead = true;
+        }
+
         // TODO: Set these properties on the active map or layer
         delete mProperties;
         mProperties = 0;
@@ -205,5 +228,12 @@ bool ContentHandler::endDocument()
 
 QString ContentHandler::errorString() const
 {
-    return QString();
+    return mError;
+}
+
+void ContentHandler::unexpectedElement(const QString &element,
+                                       const QString &expectedParent)
+{
+    mError = QObject::tr("\"%1\" element outside of \"%2\" element.")
+             .arg(element, expectedParent);
 }
