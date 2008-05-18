@@ -27,6 +27,7 @@
 #include "resizedialog.h"
 #include "xmlmapreader.h"
 
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QDebug>
@@ -37,7 +38,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
 {
     mUi.setupUi(this);
-    mUi.splitter->setCollapsible(0, false);
+
+    addDockWidget(Qt::RightDockWidgetArea,
+                  new QDockWidget(tr("Layers"), this));
 
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
@@ -61,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
          connect(mRecentFiles[i], SIGNAL(triggered()),
                  this, SLOT(openRecentFile()));
     }
-    mUi.actionRecent_Files->setMenu(menu);
+    mUi.actionRecentFiles->setMenu(menu);
 
     mScene = new MapScene(this);
     mUi.graphicsView->setScene(mScene);
@@ -169,6 +172,7 @@ void MainWindow::updateRecentFiles()
     {
         mRecentFiles[j]->setVisible(false);
     }
+    mUi.actionRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
 void MainWindow::writeSettings()

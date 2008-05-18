@@ -16,67 +16,26 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>77</y>
+     <y>84</y>
      <width>553</width>
-     <height>266</height>
+     <height>261</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" >
+   <layout class="QVBoxLayout" name="verticalLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
     <item>
-     <widget class="QSplitter" name="splitter" >
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
+     <widget class="QGraphicsView" name="graphicsView" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+        <horstretch>1</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
       </property>
-      <property name="opaqueResize" >
-       <bool>true</bool>
+      <property name="alignment" >
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
-      <widget class="QGraphicsView" name="graphicsView" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
-         <horstretch>1</horstretch>
-         <verstretch>1</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="alignment" >
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-      </widget>
-      <widget class="QWidget" name="layoutWidget" >
-       <layout class="QVBoxLayout" >
-        <item>
-         <widget class="QLabel" name="label" >
-          <property name="enabled" >
-           <bool>true</bool>
-          </property>
-          <property name="text" >
-           <string comment="Layers of the map" >&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style="font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Layers:&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
-          </property>
-          <property name="buddy" >
-           <cstring>tableView</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableView" name="tableView" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize" >
-           <size>
-            <width>152</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -87,7 +46,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -96,7 +55,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="actionOpen" />
     <addaction name="actionSave" />
-    <addaction name="actionRecent_Files" />
+    <addaction name="actionRecentFiles" />
     <addaction name="separator" />
     <addaction name="actionQuit" />
    </widget>
@@ -130,9 +89,9 @@ p, li { white-space: pre-wrap; }
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>24</y>
+     <y>25</y>
      <width>553</width>
-     <height>53</height>
+     <height>59</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -154,9 +113,9 @@ p, li { white-space: pre-wrap; }
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>343</y>
+     <y>345</y>
      <width>553</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -233,7 +192,7 @@ p, li { white-space: pre-wrap; }
     <string>&amp;Properties</string>
    </property>
   </action>
-  <action name="actionRecent_Files" >
+  <action name="actionRecentFiles" >
    <property name="icon" >
     <iconset resource="tiled.qrc" >
      <normaloff>:/file/images/document-open-recent.png</normaloff>:/file/images/document-open-recent.png</iconset>

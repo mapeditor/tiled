@@ -19,7 +19,7 @@ provide parts of the user interface.
 
 COMPILING
 
-If you have Qt (>= 4.3) development libraries installed, you can compile by
+If you have Qt (>= 4.4) development libraries installed, you can compile by
 running:
 
  $ qmake
