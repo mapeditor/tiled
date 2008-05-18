@@ -28,6 +28,10 @@ using namespace Tiled::Internal;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    a.setOrganizationName("mapeditor.org");
+    a.setApplicationName("Tiled");
+
     MainWindow w;
     w.show();
     return a.exec();
