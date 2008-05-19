@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    a.setOrganizationName("mapeditor.org");
-    a.setApplicationName("Tiled");
+    a.setOrganizationName(QLatin1String("mapeditor.org"));
+    a.setApplicationName(QLatin1String("Tiled"));
 
     MainWindow w;
     w.show();

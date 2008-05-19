@@ -50,16 +50,17 @@ private:
     void openFile(const QString& fileName);
     void writeSettings();
     void readSettings();
-
-    /**
-     * Update the recent files menu.
-     */
-    void updateRecentFiles();
+    QStringList recentFiles() const;
 
     /**
      * Add the given file to the recent files list.
      */
     void setRecentFile(const QString &fileName);
+
+    /**
+     * Update the recent files menu.
+     */
+    void updateRecentFiles();
 
     Ui::MainWindowClass mUi;
     MapScene *mScene;

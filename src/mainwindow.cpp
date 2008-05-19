@@ -102,11 +102,10 @@ void MainWindow::openFile(const QString &fileName)
 
 void MainWindow::openFile()
 {
-    QStringList recentFiles = mSettings.value("recentFiles",
-                                              QStringList()).toStringList();
+    QStringList files = recentFiles();
     QString start;
-    if (!recentFiles.isEmpty())
-        start = recentFiles.first();
+    if (!files.isEmpty())
+        start = files.first();
 
     openFile(QFileDialog::getOpenFileName(this, tr("Open Map"), start));
 }
@@ -132,8 +131,8 @@ void MainWindow::resizeMap()
 
 void MainWindow::readSettings()
 {
-    mSettings.beginGroup("mainwindow");
-    resize(mSettings.value("size", QSize(553, 367)).toSize());
+    mSettings.beginGroup(QLatin1String("mainwindow"));
+    resize(mSettings.value(QLatin1String("size"), QSize(553, 367)).toSize());
     mSettings.endGroup();
     updateRecentFiles();
 }
@@ -145,27 +144,32 @@ void MainWindow::openRecentFile()
         openFile(action->data().toString());
 }
 
+QStringList MainWindow::recentFiles() const
+{
+    return mSettings.value(QLatin1String("recentFiles")).toStringList();
+}
+
 void MainWindow::setRecentFile(const QString &fileName)
 {
-    QStringList files = mSettings.value("recentFiles").toStringList();
+    QStringList files = recentFiles();
     files.removeAll(fileName);
     files.prepend(fileName);
     while (files.size() > MaxRecentFiles)
         files.removeLast();
 
-    mSettings.setValue("recentFiles", files);
+    mSettings.setValue(QLatin1String("recentFiles"), files);
     updateRecentFiles();
 }
 
 void MainWindow::updateRecentFiles()
 {
-    QStringList recentFiles = mSettings.value("recentFiles").toStringList();
-    const int numRecentFiles = qMin(recentFiles.size(), (int) MaxRecentFiles);
+    QStringList files = recentFiles();
+    const int numRecentFiles = qMin(files.size(), (int) MaxRecentFiles);
 
     for (int i = 0; i < numRecentFiles; ++i)
     {
-        mRecentFiles[i]->setText(QFileInfo(recentFiles[i]).fileName());
-        mRecentFiles[i]->setData(recentFiles[i]);
+        mRecentFiles[i]->setText(QFileInfo(files[i]).fileName());
+        mRecentFiles[i]->setData(files[i]);
         mRecentFiles[i]->setVisible(true);
     }
     for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
@@ -177,8 +181,8 @@ void MainWindow::updateRecentFiles()
 
 void MainWindow::writeSettings()
 {
-    mSettings.beginGroup("mainwindow");
-    mSettings.setValue("size", size());
+    mSettings.beginGroup(QLatin1String("mainwindow"));
+    mSettings.setValue(QLatin1String("size"), size());
     mSettings.endGroup();
 }
 
