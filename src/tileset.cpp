@@ -21,3 +21,35 @@
 
 #include "tileset.h"
 
+#include <QDebug>
+
+using namespace Tiled;
+
+QImage Tileset::getTileImage(int id) const
+{
+    return mTiles.at(id);
+}
+
+bool Tileset::loadFromImage(const QString &fileName)
+{
+    Q_ASSERT(mTileWidth > 0 && mTileHeight > 0);
+    mTiles.clear();
+
+    QImage img = QImage(fileName);
+    if (img.isNull())
+        return false;
+
+    const int imgWidth = img.width();
+    const int imgHeight = img.height();
+
+    qDebug() << "Loaded image" << fileName << imgWidth << imgHeight;
+
+    for (int y = 0; y + mTileHeight <= imgHeight; y += mTileHeight) {
+        for (int x = 0; x + mTileWidth <= imgWidth; x += mTileWidth) {
+            mTiles.append(img.copy(x, y, mTileWidth, mTileHeight));
+        }
+    }
+
+    mSource = fileName;
+    return true;
+}

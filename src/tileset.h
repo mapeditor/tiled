@@ -22,6 +22,8 @@
 #ifndef TILESET_H
 #define TILESET_H
 
+#include <QImage>
+#include <QList>
 #include <QString>
 
 namespace Tiled {
@@ -52,10 +54,35 @@ class Tileset
          */
         void setName(const QString &name) { mName = name; }
 
+        /**
+         * Returns the image for the given tile ID.
+         */
+        QImage getTileImage(int id) const;
+
+        /**
+         * Returns the number of tiles in this tileset.
+         */
+        int getTileCount() const { return mTiles.size(); }
+
+        /**
+         * Load this tileset from the given tileset image. This will cause any
+         * existing tiles in this tileset to be thrown out.
+         *
+         * The tile width and height of this tileset must be higher than 0.
+         *
+         * @param fileName the file name of the image, which will be remembered
+         *                 as the source of this tileset.
+         * @return <code>true</code> if loading was succesful, otherwise
+         *         returns <code>false</code>
+         */
+        bool loadFromImage(const QString &fileName);
+
     private:
         QString mName;
+        QString mSource;
         int mTileWidth;
         int mTileHeight;
+        QList<QImage> mTiles;
 };
 
 } // namespace Tiled

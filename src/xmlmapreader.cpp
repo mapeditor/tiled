@@ -26,6 +26,8 @@
 #include "properties.h"
 #include "tileset.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QXmlDefaultHandler>
 #include <QXmlInputSource>
 #include <QXmlSimpleReader>
@@ -43,10 +45,11 @@ namespace Internal {
 class ContentHandler : public QXmlDefaultHandler
 {
     public:
-        ContentHandler():
+        ContentHandler(const QString &mapPath):
+            mMapPath(mapPath),
             mMap(0),
-            mLayer(0),
-            mMapPropertiesRead(false)
+            mMapPropertiesRead(false),
+            mLayer(0)
         {}
 
         // QXmlContentHandler
@@ -68,12 +71,19 @@ class ContentHandler : public QXmlDefaultHandler
         void unexpectedElement(const QString &element,
                                const QString &expectedParent);
 
+        QString mMapPath;
         Map *mMap;
+        bool mMapPropertiesRead;
+
         Layer *mLayer;
+        QString mEncoding;
+        QString mCompression;
+
         Tileset *mTileset;
         int mTilesetFirstGid;
+        QImage mTilesetImage;
+
         Properties *mProperties;
-        bool mMapPropertiesRead;
         QString mError;
 };
 
@@ -88,8 +98,9 @@ Map* XmlMapReader::read(const QString &fileName)
 
     QXmlSimpleReader xmlReader;
     QXmlInputSource *source = new QXmlInputSource(&file);
+    const QString mapPath = QFileInfo(file).path();
 
-    ContentHandler *contentHandler = new ContentHandler;
+    ContentHandler *contentHandler = new ContentHandler(mapPath);
     QXmlDefaultHandler *errorHandler = new QXmlDefaultHandler;
     xmlReader.setContentHandler(contentHandler);
     xmlReader.setErrorHandler(errorHandler);
@@ -143,6 +154,12 @@ bool ContentHandler::startElement(const QString &namespaceURI,
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
 
+        if (tileWidth <= 0 || tileHeight <= 0 || firstGid <= 0) {
+            mError = QObject::tr(
+                    "Invalid tileset parameters for tileset %1").arg(name);
+            return false;
+        }
+
         mTileset = new Tileset(name, tileWidth, tileHeight);
         qDebug() << "Tileset:" << name << firstGid << tileWidth << tileHeight;
     }
@@ -153,10 +170,12 @@ bool ContentHandler::startElement(const QString &namespaceURI,
             return false;
         }
 
-        // TODO: Add support for loading tileset images
-        //const QString source = atts.value(QLatin1String("source"));
+        const QString source = atts.value(QLatin1String("source"));
         // TODO: Add support for transparent color
         //const QString trans = atts.value(QLatin1String("trans"));
+
+        const QString fullPath = mMapPath + QDir::separator() + source;
+        mTileset->loadFromImage(fullPath);
     }
     else if (localName == QLatin1String("layer"))
     {
@@ -168,6 +187,11 @@ bool ContentHandler::startElement(const QString &namespaceURI,
 
         mLayer = new Layer(name, x, y, width, height);
         qDebug() << "Layer:" << name << x << y << width << height;
+    }
+    else if (localName == QLatin1String("data"))
+    {
+        mEncoding = atts.value(QLatin1String("encoding"));
+        mCompression = atts.value(QLatin1String("compression"));
     }
     else if (localName == QLatin1String("objectgroup"))
     {
@@ -199,6 +223,23 @@ bool ContentHandler::startElement(const QString &namespaceURI,
 bool ContentHandler::characters(const QString &ch)
 {
     Q_UNUSED(ch);
+
+    if (mEncoding == QLatin1String("base64")) {
+        QByteArray tileData = QByteArray::fromBase64(ch.toLatin1());
+
+        if (mCompression == QLatin1String("zlib")) {
+            tileData = qUncompress(tileData);
+        } else if (!mCompression.isEmpty()) {
+            mError = QObject::tr("Compression method %1 not supported")
+                .arg(mCompression);
+            return false;
+        }
+
+        qDebug() << tileData.length();
+
+        // TODO: Load the tile data
+    }
+
     return true;
 }
 
@@ -214,6 +255,11 @@ bool ContentHandler::endElement(const QString &namespaceURI,
     {
         mMap->addLayer(mLayer);
         mLayer = 0;
+    }
+    if (localName == QLatin1String("data"))
+    {
+        mEncoding.clear();
+        mCompression.clear();
     }
     else if (localName == QLatin1String("tileset"))
     {
