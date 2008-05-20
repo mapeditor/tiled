@@ -63,12 +63,20 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
          connect(mRecentFiles[i], SIGNAL(triggered()),
                  this, SLOT(openRecentFile()));
     }
+    menu->addSeparator();
+    QAction* clear = new QAction(QIcon(QLatin1String(":images/clear.png")),
+                                 QLatin1String("Clear Recent Files"),
+                                 this);
+    menu->addAction(clear);
+    connect(clear, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
     mUi.actionRecentFiles->setMenu(menu);
 
     mScene = new MapScene(this);
     mUi.graphicsView->setScene(mScene);
     mUi.graphicsView->centerOn(0, 0);
-    mUi.actionResize->setEnabled(false);
+
+    mUi.actionResize->setEnabled(mScene->map() != 0);
+    mUi.actionSave->setEnabled(mScene->map() != 0);
     readSettings();
 }
 
@@ -88,6 +96,7 @@ void MainWindow::openFile(const QString &fileName)
         mScene->setMap(map);
         mUi.graphicsView->centerOn(0, 0);
         mUi.actionResize->setEnabled(map != 0);
+        mUi.actionSave->setEnabled(map != 0);
         delete previousMap;
 
         if (map) {
@@ -157,6 +166,12 @@ void MainWindow::setRecentFile(const QString &fileName)
         files.removeLast();
 
     mSettings.setValue(QLatin1String("recentFiles"), files);
+    updateRecentFiles();
+}
+
+void MainWindow::clearRecentFiles()
+{
+    mSettings.setValue(QLatin1String("recentFiles"), QStringList());
     updateRecentFiles();
 }
 

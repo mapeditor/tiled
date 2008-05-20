@@ -96,8 +96,8 @@
   <widget class="QStatusBar" name="statusBar" />
   <action name="actionOpen" >
    <property name="icon" >
-    <iconset>
-     <normaloff>:/file/images/document-open.png</normaloff>:/file/images/document-open.png</iconset>
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/images/document-open.png</normaloff>:/images/document-open.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open...</string>
@@ -105,8 +105,8 @@
   </action>
   <action name="actionSave" >
    <property name="icon" >
-    <iconset>
-     <normaloff>:/file/images/document-save.png</normaloff>:/file/images/document-save.png</iconset>
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save...</string>
@@ -148,8 +148,8 @@
   </action>
   <action name="actionResize" >
    <property name="icon" >
-    <iconset>
-     <normaloff>:/file/images/document-resize.png</normaloff>:/file/images/document-resize.png</iconset>
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/images/document-resize.png</normaloff>:/images/document-resize.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Resize</string>
@@ -160,8 +160,8 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset>
-     <normaloff>:/file/images/document-properties.png</normaloff>:/file/images/document-properties.png</iconset>
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/images/document-properties.png</normaloff>:/images/document-properties.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Properties</string>
@@ -169,8 +169,8 @@
   </action>
   <action name="actionRecentFiles" >
    <property name="icon" >
-    <iconset>
-     <normaloff>:/file/images/document-open-recent.png</normaloff>:/file/images/document-open-recent.png</iconset>
+    <iconset resource="tiled.qrc" >
+     <normaloff>:/images/document-open-recent.png</normaloff>:/images/document-open-recent.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Recent Files</string>

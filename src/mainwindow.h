@@ -45,6 +45,7 @@ private slots:
     void resizeMap();
     void aboutTiled();
     void openRecentFile();
+    void clearRecentFiles();
 
 private:
     void openFile(const QString& fileName);
