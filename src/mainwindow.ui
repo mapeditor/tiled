@@ -13,14 +13,6 @@
    <string>Tiled</string>
   </property>
   <widget class="QWidget" name="centralWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>84</y>
-     <width>553</width>
-     <height>261</height>
-    </rect>
-   </property>
    <layout class="QVBoxLayout" name="verticalLayout" >
     <property name="margin" >
      <number>0</number>
@@ -46,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -86,14 +78,6 @@
    <addaction name="menuHelp" />
   </widget>
   <widget class="QToolBar" name="mainToolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>25</y>
-     <width>553</width>
-     <height>59</height>
-    </rect>
-   </property>
    <property name="windowTitle" >
     <string>Main toolbar</string>
    </property>
@@ -109,19 +93,10 @@
    <addaction name="actionOpen" />
    <addaction name="actionSave" />
   </widget>
-  <widget class="QStatusBar" name="statusBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>345</y>
-     <width>553</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusBar" />
   <action name="actionOpen" >
    <property name="icon" >
-    <iconset resource="tiled.qrc" >
+    <iconset>
      <normaloff>:/file/images/document-open.png</normaloff>:/file/images/document-open.png</iconset>
    </property>
    <property name="text" >
@@ -130,7 +105,7 @@
   </action>
   <action name="actionSave" >
    <property name="icon" >
-    <iconset resource="tiled.qrc" >
+    <iconset>
      <normaloff>:/file/images/document-save.png</normaloff>:/file/images/document-save.png</iconset>
    </property>
    <property name="text" >
@@ -173,7 +148,7 @@
   </action>
   <action name="actionResize" >
    <property name="icon" >
-    <iconset resource="tiled.qrc" >
+    <iconset>
      <normaloff>:/file/images/document-resize.png</normaloff>:/file/images/document-resize.png</iconset>
    </property>
    <property name="text" >
@@ -185,7 +160,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="tiled.qrc" >
+    <iconset>
      <normaloff>:/file/images/document-properties.png</normaloff>:/file/images/document-properties.png</iconset>
    </property>
    <property name="text" >
@@ -194,7 +169,7 @@
   </action>
   <action name="actionRecentFiles" >
    <property name="icon" >
-    <iconset resource="tiled.qrc" >
+    <iconset>
      <normaloff>:/file/images/document-open-recent.png</normaloff>:/file/images/document-open-recent.png</iconset>
    </property>
    <property name="text" >

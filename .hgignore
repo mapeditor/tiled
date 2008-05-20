@@ -2,6 +2,7 @@ syntax: glob
 bin/tiled
 Makefile*
 *.o
+*.qm
 moc_*.cpp
 ui_*.h
 *.pro.user

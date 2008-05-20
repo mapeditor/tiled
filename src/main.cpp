@@ -21,6 +21,8 @@
 
 #include "mainwindow.h"
 
+#include <QtCore/QLocale>
+#include <QtCore/QTranslator>
 #include <QtGui/QApplication>
 
 using namespace Tiled::Internal;
@@ -28,6 +30,10 @@ using namespace Tiled::Internal;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QTranslator translator;
+    translator.load(QLatin1String("tiled_") + QLocale::system().name());
+    a.installTranslator(&translator);
 
     a.setOrganizationName(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));

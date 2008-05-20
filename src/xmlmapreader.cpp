@@ -70,6 +70,8 @@ class ContentHandler : public QXmlDefaultHandler
 
         Map *mMap;
         Layer *mLayer;
+        Tileset *mTileset;
+        int mTilesetFirstGid;
         Properties *mProperties;
         bool mMapPropertiesRead;
         QString mError;
@@ -141,9 +143,20 @@ bool ContentHandler::startElement(const QString &namespaceURI,
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
 
-        Tileset *tileset = new Tileset(name, tileWidth, tileHeight);
-        mMap->addTileset(tileset, firstGid);
+        mTileset = new Tileset(name, tileWidth, tileHeight);
         qDebug() << "Tileset:" << name << firstGid << tileWidth << tileHeight;
+    }
+    else if (localName == QLatin1String("image"))
+    {
+        if (!mTileset) {
+            unexpectedElement(localName, QLatin1String("tileset"));
+            return false;
+        }
+
+        // TODO: Add support for loading tileset images
+        //const QString source = atts.value(QLatin1String("source"));
+        // TODO: Add support for transparent color
+        //const QString trans = atts.value(QLatin1String("trans"));
     }
     else if (localName == QLatin1String("layer"))
     {
@@ -201,6 +214,11 @@ bool ContentHandler::endElement(const QString &namespaceURI,
     {
         mMap->addLayer(mLayer);
         mLayer = 0;
+    }
+    else if (localName == QLatin1String("tileset"))
+    {
+        mMap->addTileset(mTileset, mTilesetFirstGid);
+        mTileset = 0;
     }
     else if (localName == QLatin1String("properties"))
     {
