@@ -36,12 +36,12 @@ Layer::Layer(const QString &name, int x, int y, int width, int height,
 {
 }
 
-const QImage& Layer::tileAt(int x, int y) const
+const QPixmap& Layer::tileAt(int x, int y) const
 {
     return mTiles.at(x + y * mWidth);
 }
 
-void Layer::setTile(int x, int y, const QImage &img)
+void Layer::setTile(int x, int y, const QPixmap &img)
 {
     if (img.height() > mMaxTileHeight)
         mMaxTileHeight = img.height();

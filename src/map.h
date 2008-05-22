@@ -24,7 +24,7 @@
 
 #include <QList>
 #include <QMap>
-#include <QImage>
+#include <QPixmap>
 
 namespace Tiled {
 
@@ -104,7 +104,7 @@ class Map {
          *
          * @param gid the global tile ID, must be at least 0
          */
-        QImage tileForGid(int gid) const;
+        QPixmap tileForGid(int gid) const;
 
     private:
         int mWidth;

@@ -81,7 +81,6 @@ class ContentHandler : public QXmlDefaultHandler
 
         Tileset *mTileset;
         int mTilesetFirstGid;
-        QImage mTilesetImage;
 
         Properties *mProperties;
         QString mError;
@@ -247,7 +246,7 @@ bool ContentHandler::characters(const QString &ch)
                 data[i + 2] << 16 |
                 data[i + 3] << 24;
 
-            QImage tile = mMap->tileForGid(gid);
+            QPixmap tile = mMap->tileForGid(gid);
             mLayer->setTile(x, y, tile);
 
             x++;

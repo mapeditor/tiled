@@ -22,7 +22,7 @@
 #ifndef TILESET_H
 #define TILESET_H
 
-#include <QImage>
+#include <QPixmap>
 #include <QList>
 #include <QString>
 
@@ -57,7 +57,7 @@ class Tileset
         /**
          * Returns the image for the given tile ID.
          */
-        QImage tileImageAt(int id) const;
+        QPixmap tileImageAt(int id) const;
 
         /**
          * Returns the number of tiles in this tileset.
@@ -82,7 +82,7 @@ class Tileset
         QString mSource;
         int mTileWidth;
         int mTileHeight;
-        QList<QImage> mTiles;
+        QList<QPixmap> mTiles;
 };
 
 } // namespace Tiled

@@ -52,7 +52,7 @@ void Map::addTileset(Tileset *tileset, int firstGid)
     mTilesets.insert(firstGid, tileset);
 }
 
-QImage Map::tileForGid(int gid) const
+QPixmap Map::tileForGid(int gid) const
 {
     Q_ASSERT(gid >= 0);
 
@@ -69,5 +69,5 @@ QImage Map::tileForGid(int gid) const
     if (tileset && tileId < tileset->tileCount())
         return tileset->tileImageAt(tileId);
 
-    return QImage();
+    return QPixmap();
 }

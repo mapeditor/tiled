@@ -70,8 +70,8 @@ void TileLayerItem::paint(QPainter *painter,
 
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
-            const QImage& tile = mLayer->tileAt(x, y);
-            painter->drawImage((mLayer->x() + x) * tileWidth,
+            const QPixmap& tile = mLayer->tileAt(x, y);
+            painter->drawPixmap((mLayer->x() + x) * tileWidth,
                                (mLayer->y() + y) * tileHeight, tile);
         }
     }

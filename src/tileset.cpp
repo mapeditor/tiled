@@ -25,7 +25,7 @@
 
 using namespace Tiled;
 
-QImage Tileset::tileImageAt(int id) const
+QPixmap Tileset::tileImageAt(int id) const
 {
     return mTiles.at(id);
 }
@@ -35,7 +35,7 @@ bool Tileset::loadFromImage(const QString &fileName)
     Q_ASSERT(mTileWidth > 0 && mTileHeight > 0);
     mTiles.clear();
 
-    QImage img = QImage(fileName);
+    QPixmap img = QPixmap(fileName);
     if (img.isNull())
         return false;
 
