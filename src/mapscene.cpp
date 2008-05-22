@@ -44,8 +44,11 @@ void MapScene::setMap(Map *map)
                      mMap->width() * map->tileWidth() + 1,
                      mMap->height() * map->tileHeight() + 1);
 
+        int z = 0;
         foreach (Layer *layer, mMap->layers()) {
-            addItem(new TileLayerItem(layer));
+            TileLayerItem *item = new TileLayerItem(layer);
+            item->setZValue(z++);
+            addItem(item);
         }
     } else {
         clear();

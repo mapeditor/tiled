@@ -79,7 +79,7 @@ class Map {
         /**
          * Returns the list of layers of this map.
          */
-        QList<Layer*> layers() const { return mLayers; }
+        const QList<Layer*>& layers() const { return mLayers; }
 
         /**
          * Adds a layer to this map.
