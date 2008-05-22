@@ -25,7 +25,7 @@
 
 using namespace Tiled;
 
-QImage Tileset::getTileImage(int id) const
+QImage Tileset::tileImageAt(int id) const
 {
     return mTiles.at(id);
 }

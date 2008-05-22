@@ -87,6 +87,12 @@ class Layer {
         int height() const { return mHeight; }
 
         /**
+         * Returns the maximum tile height of this layer. Used by the layer
+         * rendering code to determine the area that needs to be redrawn.
+         */
+        int maxTileHeight() const { return mMaxTileHeight; }
+
+        /**
          * Returns the tile at the given coordinates. The coordinates have to
          * be within this layer.
          */
@@ -103,6 +109,7 @@ class Layer {
         int mY;
         int mWidth;
         int mHeight;
+        int mMaxTileHeight;
         Map *mMap;
         QVector<QImage> mTiles;
 };

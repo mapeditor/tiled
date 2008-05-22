@@ -30,6 +30,7 @@ Layer::Layer(const QString &name, int x, int y, int width, int height,
     mY(y),
     mWidth(width),
     mHeight(height),
+    mMaxTileHeight(0),
     mMap(map),
     mTiles(width * height)
 {
@@ -42,5 +43,8 @@ const QImage& Layer::tileAt(int x, int y) const
 
 void Layer::setTile(int x, int y, const QImage &img)
 {
+    if (img.height() > mMaxTileHeight)
+        mMaxTileHeight = img.height();
+
     mTiles[x + y * mWidth] = img;
 }

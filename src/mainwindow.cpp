@@ -54,6 +54,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
+    // TODO: Implement saving
+    mUi.actionSave->setVisible(false);
+
     QMenu* menu = new QMenu(this);
     for (int i = 0; i < MaxRecentFiles; ++i)
     {

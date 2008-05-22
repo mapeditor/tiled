@@ -67,7 +67,7 @@ QImage Map::tileForGid(int gid) const
     const Tileset *tileset = mTilesets.value(highestFirstGid);
 
     if (tileset && tileId < tileset->tileCount())
-        return tileset->getTileImage(tileId);
+        return tileset->tileImageAt(tileId);
 
     return QImage();
 }

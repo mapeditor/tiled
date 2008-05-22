@@ -25,6 +25,8 @@
 #include "map.h"
 
 #include <QPainter>
+#include <QStyleOptionGraphicsItem>
+#include <QDebug>
 
 using namespace Tiled::Internal;
 
@@ -49,18 +51,25 @@ void TileLayerItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
                           QWidget *widget)
 {
-    Q_UNUSED(option);
     Q_UNUSED(widget);
 
     const Map* const map = mLayer->map();
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 
+    const QRectF rect =
+            option->exposedRect.adjusted(0, 0, mLayer->maxTileHeight(), 0);
+    const int startX = (int) (rect.x() / tileWidth);
+    const int startY = (int) (rect.y() / tileHeight);
+    const int endX = qMin((int) rect.right() / tileWidth + 1, mLayer->width());
+    const int endY = qMin((int) rect.bottom() / tileHeight + 1,
+                          mLayer->height());
+
+    // TODO: Display a border around the layer when selected
     //painter->fillRect(boundingRect(), Qt::blue);
 
-    // TODO: Only paint option->exposedRect (huge optimization)
-    for (int y = 0; y < mLayer->height(); ++y) {
-        for (int x = 0; x < mLayer->width(); ++x) {
+    for (int y = startY; y < endY; ++y) {
+        for (int x = startX; x < endX; ++x) {
             const QImage& tile = mLayer->tileAt(x, y);
             painter->drawImage((mLayer->x() + x) * tileWidth,
                                (mLayer->y() + y) * tileHeight, tile);

@@ -57,7 +57,7 @@ class Tileset
         /**
          * Returns the image for the given tile ID.
          */
-        QImage getTileImage(int id) const;
+        QImage tileImageAt(int id) const;
 
         /**
          * Returns the number of tiles in this tileset.
