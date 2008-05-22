@@ -52,5 +52,18 @@ void TileLayerItem::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->fillRect(boundingRect(), Qt::blue);
+    const Map* const map = mLayer->map();
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
+
+    //painter->fillRect(boundingRect(), Qt::blue);
+
+    // TODO: Only paint option->exposedRect (huge optimization)
+    for (int y = 0; y < mLayer->height(); ++y) {
+        for (int x = 0; x < mLayer->width(); ++x) {
+            const QImage& tile = mLayer->tileAt(x, y);
+            painter->drawImage((mLayer->x() + x) * tileWidth,
+                               (mLayer->y() + y) * tileHeight, tile);
+        }
+    }
 }

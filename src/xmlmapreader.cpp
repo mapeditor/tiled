@@ -150,18 +150,19 @@ bool ContentHandler::startElement(const QString &namespaceURI,
     else if (localName == QLatin1String("tileset"))
     {
         const QString name = atts.value(QLatin1String("name"));
-        const int firstGid = atts.value(QLatin1String("firstgid")).toInt();
+        mTilesetFirstGid = atts.value(QLatin1String("firstgid")).toInt();
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
 
-        if (tileWidth <= 0 || tileHeight <= 0 || firstGid <= 0) {
+        if (tileWidth <= 0 || tileHeight <= 0 || mTilesetFirstGid <= 0) {
             mError = QObject::tr(
                     "Invalid tileset parameters for tileset %1").arg(name);
             return false;
         }
 
         mTileset = new Tileset(name, tileWidth, tileHeight);
-        qDebug() << "Tileset:" << name << firstGid << tileWidth << tileHeight;
+        qDebug() << "Tileset:" << name << mTilesetFirstGid
+            << tileWidth << tileHeight;
     }
     else if (localName == QLatin1String("image"))
     {
@@ -235,9 +236,23 @@ bool ContentHandler::characters(const QString &ch)
             return false;
         }
 
-        qDebug() << tileData.length();
+        qDebug() << "Loading" << tileData.length() << "bytes of tile data...";
+        const char *data = tileData.data();
+        int x = 0;
+        int y = 0;
 
-        // TODO: Load the tile data
+        for (int i = 0; i < tileData.length() - 3; i += 4) {
+            const int gid = data[i] |
+                data[i + 1] << 8 |
+                data[i + 2] << 16 |
+                data[i + 3] << 24;
+
+            QImage tile = mMap->tileForGid(gid);
+            mLayer->setTile(x, y, tile);
+
+            x++;
+            if (x == mLayer->width()) { x = 0; y++; }
+        }
     }
 
     return true;

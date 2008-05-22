@@ -30,6 +30,17 @@ Layer::Layer(const QString &name, int x, int y, int width, int height,
     mY(y),
     mWidth(width),
     mHeight(height),
-    mMap(map)
+    mMap(map),
+    mTiles(width * height)
 {
+}
+
+const QImage& Layer::tileAt(int x, int y) const
+{
+    return mTiles.at(x + y * mWidth);
+}
+
+void Layer::setTile(int x, int y, const QImage &img)
+{
+    mTiles[x + y * mWidth] = img;
 }

@@ -23,6 +23,8 @@
 #define MAP_H
 
 #include <QList>
+#include <QMap>
+#include <QImage>
 
 namespace Tiled {
 
@@ -97,6 +99,13 @@ class Map {
          */
         void addTileset(Tileset *tileset, int firstGid);
 
+        /**
+         * Returns the tile for the given global tile ID.
+         *
+         * @param gid the global tile ID, must be at least 0
+         */
+        QImage tileForGid(int gid) const;
+
     private:
         int mWidth;
         int mHeight;
@@ -104,6 +113,7 @@ class Map {
         int mTileHeight;
         int mMaxTileHeight;
         QList<Layer*> mLayers;
+        QMap<int, Tileset*> mTilesets;
 };
 
 } // namespace Tiled

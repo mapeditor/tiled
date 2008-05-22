@@ -49,7 +49,25 @@ void Map::insertLayer(int index, Layer *layer)
 
 void Map::addTileset(Tileset *tileset, int firstGid)
 {
-    Q_UNUSED(tileset);
-    Q_UNUSED(firstGid);
-    // TODO: Implement actually adding the tileset
+    mTilesets.insert(firstGid, tileset);
+}
+
+QImage Map::tileForGid(int gid) const
+{
+    Q_ASSERT(gid >= 0);
+
+    // Find the tileset containing this tile
+    int highestFirstGid = 0;
+    foreach (int firstGid, mTilesets.keys()) {
+        if (firstGid <= gid)
+            highestFirstGid = firstGid;
+    }
+
+    const int tileId = gid - highestFirstGid;
+    const Tileset *tileset = mTilesets.value(highestFirstGid);
+
+    if (tileset && tileId < tileset->tileCount())
+        return tileset->getTileImage(tileId);
+
+    return QImage();
 }

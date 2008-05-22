@@ -22,7 +22,9 @@
 #ifndef LAYER_H
 #define LAYER_H
 
+#include <QImage>
 #include <QString>
+#include <QVector>
 
 namespace Tiled {
 
@@ -84,6 +86,17 @@ class Layer {
          */
         int height() const { return mHeight; }
 
+        /**
+         * Returns the tile at the given coordinates. The coordinates have to
+         * be within this layer.
+         */
+        const QImage& tileAt(int x, int y) const;
+
+        /**
+         * Sets the tile for the given coordinates.
+         */
+        void setTile(int x, int y, const QImage &img);
+
     private:
         QString mName;
         int mX;
@@ -91,6 +104,7 @@ class Layer {
         int mWidth;
         int mHeight;
         Map *mMap;
+        QVector<QImage> mTiles;
 };
 
 } // namespace Tiled

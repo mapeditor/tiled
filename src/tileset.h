@@ -62,7 +62,7 @@ class Tileset
         /**
          * Returns the number of tiles in this tileset.
          */
-        int getTileCount() const { return mTiles.size(); }
+        int tileCount() const { return mTiles.size(); }
 
         /**
          * Load this tileset from the given tileset image. This will cause any
