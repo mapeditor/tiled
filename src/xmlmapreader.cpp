@@ -236,7 +236,8 @@ bool ContentHandler::characters(const QString &ch)
         }
 
         qDebug() << "Loading" << tileData.length() << "bytes of tile data...";
-        const char *data = tileData.data();
+        const unsigned char *data =
+            reinterpret_cast<const unsigned char*>(tileData.data());
         int x = 0;
         int y = 0;
 
