@@ -58,7 +58,7 @@ void TileLayerItem::paint(QPainter *painter,
     const int tileHeight = map->tileHeight();
 
     const QRectF rect =
-            option->exposedRect.adjusted(0, 0, mLayer->maxTileHeight(), 0);
+            option->exposedRect.adjusted(0, 0, 0, mLayer->maxTileHeight());
     const int startX = (int) (rect.x() / tileWidth);
     const int startY = (int) (rect.y() / tileHeight);
     const int endX = qMin((int) rect.right() / tileWidth + 1, mLayer->width());
@@ -72,7 +72,9 @@ void TileLayerItem::paint(QPainter *painter,
         for (int x = startX; x < endX; ++x) {
             const QPixmap& tile = mLayer->tileAt(x, y);
             painter->drawPixmap((mLayer->x() + x) * tileWidth,
-                               (mLayer->y() + y) * tileHeight, tile);
+                                (mLayer->y() + y + 1) * tileHeight
+                                    - tile.height(),
+                                tile);
         }
     }
 }
