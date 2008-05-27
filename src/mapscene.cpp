@@ -36,6 +36,9 @@ MapScene::MapScene(QObject *parent):
 
 void MapScene::setMap(Map *map)
 {
+    // Clear any existing items
+    clear();
+
     mMap = map;
 
     if (mMap) {
@@ -51,7 +54,6 @@ void MapScene::setMap(Map *map)
             addItem(item);
         }
     } else {
-        clear();
         setSceneRect(QRectF());
     }
 }
