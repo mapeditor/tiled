@@ -7,3 +7,4 @@ moc_*.cpp
 ui_*.h
 *.pro.user
 qrc_*
+docs/html

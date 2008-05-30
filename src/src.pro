@@ -5,7 +5,8 @@ DEFINES += QT_NO_CAST_FROM_ASCII QT_NO_CAST_TO_ASCII
 QT += core \
     gui \
     xml
-SOURCES += main.cpp \
+SOURCES += decompress.cpp \
+    main.cpp \
     mainwindow.cpp \
     xmlmapreader.cpp \
     map.cpp \
@@ -15,7 +16,8 @@ SOURCES += main.cpp \
     tilelayeritem.cpp \
     resizehelper.cpp \
     resizedialog.cpp
-HEADERS += mainwindow.h \
+HEADERS += decompress.h \
+    mainwindow.h \
     mapreaderinterface.h \
     mapwriterinterface.h \
     xmlmapreader.h \

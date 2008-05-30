@@ -21,6 +21,7 @@
 
 #include "xmlmapreader.h"
 
+#include "decompress.h"
 #include "layer.h"
 #include "map.h"
 #include "properties.h"
@@ -226,22 +227,35 @@ bool ContentHandler::characters(const QString &ch)
 
     if (mEncoding == QLatin1String("base64")) {
         QByteArray tileData = QByteArray::fromBase64(ch.toLatin1());
+        const int size = (mLayer->width() * mLayer->height()) * 4;
 
         if (mCompression == QLatin1String("zlib")) {
+            // Prepend the expected uncompressed size
+            tileData.prepend((char) (size));
+            tileData.prepend((char) (size >> 8));
+            tileData.prepend((char) (size >> 16));
+            tileData.prepend((char) (size >> 24));
             tileData = qUncompress(tileData);
+        } else if (mCompression == QLatin1String("gzip")) {
+            tileData = decompress(tileData, size);
         } else if (!mCompression.isEmpty()) {
             mError = QObject::tr("Compression method %1 not supported")
                 .arg(mCompression);
             return false;
         }
 
-        qDebug() << "Loading" << tileData.length() << "bytes of tile data...";
+        if (size != tileData.length()) {
+            mError = QObject::tr("Corrupt layer data for layer %1")
+                .arg(mLayer->name());
+            return false;
+        }
+
         const unsigned char *data =
             reinterpret_cast<const unsigned char*>(tileData.data());
         int x = 0;
         int y = 0;
 
-        for (int i = 0; i < tileData.length() - 3; i += 4) {
+        for (int i = 0; i < size - 3; i += 4) {
             const int gid = data[i] |
                 data[i + 1] << 8 |
                 data[i + 2] << 16 |
