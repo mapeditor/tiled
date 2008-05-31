@@ -29,6 +29,7 @@
 
 #include <QDockWidget>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QTextStream>
 #include <QDebug>
 
@@ -91,10 +92,17 @@ MainWindow::~MainWindow()
 void MainWindow::openFile(const QString &fileName)
 {
     // Use the XML map reader to read the map (assuming it's a .tmx file)
+    // TODO: Add support for input/output plugins
     if (!fileName.isEmpty()) {
         qDebug() << "Loading map:" << fileName;
         XmlMapReader mapReader;
         Map *map = mapReader.read(fileName);
+        if (!map) {
+            QMessageBox::critical(this, tr("Error while reading map"),
+                                  mapReader.errorString());
+            return;
+        }
+
         Map *previousMap = mScene->map();
         mScene->setMap(map);
         mUi.graphicsView->centerOn(0, 0);
@@ -102,12 +110,8 @@ void MainWindow::openFile(const QString &fileName)
         mUi.actionSave->setEnabled(map != 0);
         delete previousMap;
 
-        if (map) {
-            setWindowFilePath(fileName);
-            setRecentFile(fileName);
-        } else {
-            setWindowFilePath(QString());
-        }
+        setWindowFilePath(fileName);
+        setRecentFile(fileName);
     }
 }
 
@@ -205,5 +209,13 @@ void MainWindow::writeSettings()
 
 void MainWindow::aboutTiled()
 {
-    // TODO: Implement about dialog
+    // TODO: Implement a nicer about dialog
+    QMessageBox::about(this, tr("Tiled (Qt)"),
+                       tr("Tiled (Qt) Map Editor\nVersion 0.1\n\n"
+                          "Copyright 2008 Tiled (Qt) developers"
+                          " (see AUTHORS file)\n\n"
+                          "You may modify and redistribute this program under"
+                          "\nthe terms of the GPL (version 2 or later). A copy"
+                          "\nof the GPL is contained in the 'COPYING' file\n"
+                          "distributed with Tiled (Qt)."));
 }

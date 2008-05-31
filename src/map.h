@@ -44,7 +44,7 @@ class Map {
         /**
          * Destructor.
          */
-        ~Map() {}
+        ~Map();
 
         /**
          * Returns the width of this map.

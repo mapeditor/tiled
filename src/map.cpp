@@ -35,6 +35,11 @@ Map::Map(int width, int height, int tileWidth, int tileHeight):
 {
 }
 
+Map::~Map()
+{
+    qDeleteAll(mLayers);
+}
+
 void Map::addLayer(Layer *layer)
 {
     layer->setMap(this);

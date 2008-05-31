@@ -53,21 +53,21 @@
    </widget>
    <widget class="QMenu" name="menuEdit" >
     <property name="title" >
-     <string>Edit</string>
+     <string>&amp;Edit</string>
     </property>
     <addaction name="actionCopy" />
     <addaction name="actionPaste" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
-     <string>Help</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionAbout" />
     <addaction name="actionAboutQt" />
    </widget>
    <widget class="QMenu" name="menuMap" >
     <property name="title" >
-     <string>Map</string>
+     <string>&amp;Map</string>
     </property>
     <addaction name="actionResize" />
     <addaction name="actionProperties" />
@@ -80,9 +80,6 @@
   <widget class="QToolBar" name="mainToolBar" >
    <property name="windowTitle" >
     <string>Main toolbar</string>
-   </property>
-   <property name="toolButtonStyle" >
-    <enum>Qt::ToolButtonTextUnderIcon</enum>
    </property>
    <attribute name="toolBarArea" >
     <enum>TopToolBarArea</enum>
@@ -134,9 +131,6 @@
    </property>
   </action>
   <action name="actionAbout" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>&amp;About Tiled</string>
    </property>

@@ -67,7 +67,7 @@ private:
     MapScene *mScene;
     QSettings mSettings;
 
-    enum { MaxRecentFiles = 4 };
+    enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];
 };
 

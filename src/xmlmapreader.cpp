@@ -43,15 +43,18 @@ namespace Internal {
 /**
  * SAX API based reader for TMX maps.
  */
-class ContentHandler : public QXmlDefaultHandler
+class TmxHandler : public QXmlDefaultHandler
 {
     public:
-        ContentHandler(const QString &mapPath):
+        TmxHandler(const QString &mapPath):
             mMapPath(mapPath),
             mMap(0),
             mMapPropertiesRead(false),
-            mLayer(0)
+            mLayer(0),
+            mTileset(0)
         {}
+
+        ~TmxHandler();
 
         // QXmlContentHandler
         bool characters(const QString &ch);
@@ -66,7 +69,14 @@ class ContentHandler : public QXmlDefaultHandler
                           const QString &qName,
                           const QXmlAttributes &atts);
 
-        Map *map() const { return mMap; }
+        // QXmlErrorHandler
+        bool fatalError(const QXmlParseException &exception);
+
+        /**
+         * Returns the loaded map. Can be used only once, since this will cause
+         * the content handler to release ownership of the map.
+         */
+        Map *takeMap();
 
     private:
         void unexpectedElement(const QString &element,
@@ -96,32 +106,40 @@ Map* XmlMapReader::read(const QString &fileName)
     if (!file.exists())
         return 0;
 
-    QXmlSimpleReader xmlReader;
-    QXmlInputSource *source = new QXmlInputSource(&file);
     const QString mapPath = QFileInfo(file).path();
+    QXmlInputSource source(&file);
+    TmxHandler tmxHandler(mapPath);
 
-    ContentHandler *contentHandler = new ContentHandler(mapPath);
-    QXmlDefaultHandler *errorHandler = new QXmlDefaultHandler;
-    xmlReader.setContentHandler(contentHandler);
-    xmlReader.setErrorHandler(errorHandler);
+    QXmlSimpleReader xmlReader;
+    xmlReader.setContentHandler(&tmxHandler);
+    xmlReader.setErrorHandler(&tmxHandler);
 
-    if (!xmlReader.parse(source))
-        qDebug() << "Parsing failed.";
-
-    delete source;
-    return contentHandler->map();
+    Map *map = 0;
+    if (!xmlReader.parse(&source)) {
+        mError = tmxHandler.errorString();
+    } else {
+        map = tmxHandler.takeMap();
+    }
+    return map;
 }
 
 
-bool ContentHandler::startDocument()
+TmxHandler::~TmxHandler()
+{
+    delete mLayer;
+    delete mTileset;
+    delete mMap;
+}
+
+bool TmxHandler::startDocument()
 {
     return true;
 }
 
-bool ContentHandler::startElement(const QString &namespaceURI,
-                                  const QString &localName,
-                                  const QString &qName,
-                                  const QXmlAttributes &atts)
+bool TmxHandler::startElement(const QString &namespaceURI,
+                              const QString &localName,
+                              const QString &qName,
+                              const QXmlAttributes &atts)
 {
     Q_UNUSED(namespaceURI);
     Q_UNUSED(qName);
@@ -156,7 +174,7 @@ bool ContentHandler::startElement(const QString &namespaceURI,
 
         if (tileWidth <= 0 || tileHeight <= 0 || mTilesetFirstGid <= 0) {
             mError = QObject::tr(
-                    "Invalid tileset parameters for tileset %1").arg(name);
+                    "Invalid tileset parameters for tileset '%1'").arg(name);
             return false;
         }
 
@@ -176,7 +194,11 @@ bool ContentHandler::startElement(const QString &namespaceURI,
         //const QString trans = atts.value(QLatin1String("trans"));
 
         const QString fullPath = mMapPath + QDir::separator() + source;
-        mTileset->loadFromImage(fullPath);
+        if (!mTileset->loadFromImage(fullPath)) {
+            mError = QObject::tr("Error loading tileset image:\n'%1'")
+                .arg(fullPath);
+            return false;
+        }
     }
     else if (localName == QLatin1String("layer"))
     {
@@ -221,7 +243,7 @@ bool ContentHandler::startElement(const QString &namespaceURI,
     return true;
 }
 
-bool ContentHandler::characters(const QString &ch)
+bool TmxHandler::characters(const QString &ch)
 {
     Q_UNUSED(ch);
 
@@ -239,13 +261,13 @@ bool ContentHandler::characters(const QString &ch)
         } else if (mCompression == QLatin1String("gzip")) {
             tileData = decompress(tileData, size);
         } else if (!mCompression.isEmpty()) {
-            mError = QObject::tr("Compression method %1 not supported")
+            mError = QObject::tr("Compression method '%1' not supported")
                 .arg(mCompression);
             return false;
         }
 
         if (size != tileData.length()) {
-            mError = QObject::tr("Corrupt layer data for layer %1")
+            mError = QObject::tr("Corrupt layer data for layer '%1'")
                 .arg(mLayer->name());
             return false;
         }
@@ -272,9 +294,9 @@ bool ContentHandler::characters(const QString &ch)
     return true;
 }
 
-bool ContentHandler::endElement(const QString &namespaceURI,
-                                const QString &localName,
-                                const QString &qName)
+bool TmxHandler::endElement(const QString &namespaceURI,
+                            const QString &localName,
+                            const QString &qName)
 {
     Q_UNUSED(namespaceURI);
     Q_UNUSED(localName);
@@ -314,18 +336,35 @@ bool ContentHandler::endElement(const QString &namespaceURI,
     return true;
 }
 
-bool ContentHandler::endDocument()
+bool TmxHandler::endDocument()
 {
     return true;
 }
 
-QString ContentHandler::errorString() const
+bool TmxHandler::fatalError(const QXmlParseException &exception)
+{
+    mError = QObject::tr("%3\n\nLine %1, column %2")
+        .arg(exception.lineNumber())
+        .arg(exception.columnNumber())
+        .arg(exception.message());
+
+    return false;
+}
+
+QString TmxHandler::errorString() const
 {
     return mError;
 }
 
-void ContentHandler::unexpectedElement(const QString &element,
-                                       const QString &expectedParent)
+Map* TmxHandler::takeMap()
+{
+    Map *map = mMap;
+    mMap = 0;
+    return map;
+}
+
+void TmxHandler::unexpectedElement(const QString &element,
+                                   const QString &expectedParent)
 {
     mError = QObject::tr("\"%1\" element outside of \"%2\" element.")
              .arg(element, expectedParent);

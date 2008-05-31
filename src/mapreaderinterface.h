@@ -22,7 +22,7 @@
 #ifndef MAPREADERINTERFACE_H
 #define MAPREADERINTERFACE_H
 
-#include <QString>
+class QString;
 
 namespace Tiled {
 
@@ -49,6 +49,12 @@ public:
      * Returns the name of this map reader.
      */
     virtual QString name() const = 0;
+
+    /**
+     * Returns the error to be shown to the user if an error occured while
+     * trying to read a map.
+     */
+    virtual QString errorString() const = 0;
 };
 
 } // namespace Tiled

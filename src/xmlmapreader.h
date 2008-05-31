@@ -25,6 +25,7 @@
 #define XMLMAPREADER_H
 
 #include <QObject>
+#include <QString>
 
 namespace Tiled {
 namespace Internal {
@@ -38,6 +39,11 @@ public:
     Map* read(const QString &fileName);
 
     QString name() const { return QObject::tr("XML map reader (*.tmx)"); }
+
+    QString errorString() const { return mError; }
+
+private:
+    QString mError;
 };
 
 } // namespace Internal
