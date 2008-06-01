@@ -5,6 +5,7 @@ DEFINES += QT_NO_CAST_FROM_ASCII QT_NO_CAST_TO_ASCII
 QT += core \
     gui \
     xml
+CONFIG += debug
 SOURCES += decompress.cpp \
     main.cpp \
     mainwindow.cpp \

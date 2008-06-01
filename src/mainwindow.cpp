@@ -87,6 +87,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 MainWindow::~MainWindow()
 {
     writeSettings();
+
+    Map *map = mScene->map();
+    mScene->setMap(0);
+    delete map;
 }
 
 void MainWindow::openFile(const QString &fileName)

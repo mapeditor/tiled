@@ -108,5 +108,8 @@ QByteArray Tiled::Internal::decompress(const QByteArray &data, int expectedSize)
 
     const int outLength = bufferSize - strm.avail_out;
     inflateEnd(&strm);
-    return QByteArray(out, outLength);
+
+    QByteArray outByteArray(out, outLength);
+    free(out);
+    return outByteArray;
 }
