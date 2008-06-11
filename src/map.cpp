@@ -63,16 +63,16 @@ void Map::addTileset(Tileset *tileset, int firstGid)
 QPixmap Map::tileForGid(int gid) const
 {
     Q_ASSERT(gid >= 0);
+    Q_ASSERT(mTilesets.size() > 0);
+
+    if (gid == 0)
+        return QPixmap();
 
     // Find the tileset containing this tile
-    int highestFirstGid = 0;
-    foreach (int firstGid, mTilesets.keys()) {
-        if (firstGid <= gid)
-            highestFirstGid = firstGid;
-    }
-
-    const int tileId = gid - highestFirstGid;
-    const Tileset *tileset = mTilesets.value(highestFirstGid);
+    QMap<int, Tileset*>::const_iterator i = mTilesets.upperBound(gid);
+    --i; // Navigate one tileset back since upper bound finds the next
+    const int tileId = gid - i.key();
+    const Tileset *tileset = i.value();
 
     if (tileset && tileId < tileset->tileCount())
         return tileset->tileImageAt(tileId);
