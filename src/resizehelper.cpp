@@ -30,6 +30,7 @@ using namespace Tiled::Internal;
 ResizeHelper::ResizeHelper(QWidget *parent)
     : QWidget(parent)
 {
+    setMinimumSize(20, 20);
     setOldSize(QSize(1, 1));
 }
 

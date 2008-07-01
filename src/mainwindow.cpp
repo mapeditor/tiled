@@ -40,8 +40,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 {
     mUi.setupUi(this);
 
-    addDockWidget(Qt::RightDockWidgetArea,
-                  new QDockWidget(tr("Layers"), this));
+    QDockWidget *layerDock = new QDockWidget(tr("Layers"), this);
+    layerDock->setObjectName(QLatin1String("layerDock"));
+    addDockWidget(Qt::RightDockWidgetArea, layerDock);
 
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
@@ -148,14 +149,6 @@ void MainWindow::resizeMap()
     // TODO: Actually implement map resizing
 }
 
-void MainWindow::readSettings()
-{
-    mSettings.beginGroup(QLatin1String("mainwindow"));
-    resize(mSettings.value(QLatin1String("size"), QSize(553, 367)).toSize());
-    mSettings.endGroup();
-    updateRecentFiles();
-}
-
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -208,7 +201,18 @@ void MainWindow::writeSettings()
 {
     mSettings.beginGroup(QLatin1String("mainwindow"));
     mSettings.setValue(QLatin1String("size"), size());
+    mSettings.setValue(QLatin1String("state"), saveState());
     mSettings.endGroup();
+}
+
+void MainWindow::readSettings()
+{
+    mSettings.beginGroup(QLatin1String("mainwindow"));
+    resize(mSettings.value(QLatin1String("size"), QSize(553, 367)).toSize());
+    restoreState(mSettings.value(QLatin1String("state"),
+                                 QByteArray()).toByteArray());
+    mSettings.endGroup();
+    updateRecentFiles();
 }
 
 void MainWindow::aboutTiled()
