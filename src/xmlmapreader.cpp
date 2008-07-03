@@ -24,7 +24,6 @@
 #include "decompress.h"
 #include "layer.h"
 #include "map.h"
-#include "properties.h"
 #include "tileset.h"
 
 #include <QDir>
@@ -49,9 +48,9 @@ class TmxHandler : public QXmlDefaultHandler
         TmxHandler(const QString &mapPath):
             mMapPath(mapPath),
             mMap(0),
-            mMapPropertiesRead(false),
             mLayer(0),
-            mTileset(0)
+            mTileset(0),
+            mProperties(0)
         {}
 
         ~TmxHandler();
@@ -84,7 +83,6 @@ class TmxHandler : public QXmlDefaultHandler
 
         QString mMapPath;
         Map *mMap;
-        bool mMapPropertiesRead;
 
         Layer *mLayer;
         QString mEncoding;
@@ -93,7 +91,7 @@ class TmxHandler : public QXmlDefaultHandler
         Tileset *mTileset;
         int mTilesetFirstGid;
 
-        Properties *mProperties;
+        QMap<QString, QString> *mProperties;
         QString mError;
 };
 
@@ -163,6 +161,7 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         //const QString orientation = atts.value(QLatin1String("orientation"));
 
         mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
+        mProperties = mMap->properties();
         qDebug() << "Map:" << mapWidth << mapHeight << tileWidth << tileHeight;
     }
     else if (localName == QLatin1String("tileset"))
@@ -222,19 +221,20 @@ bool TmxHandler::startElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("properties"))
     {
-        mProperties = new Properties;
+        if (mProperties)
+            mProperties->clear();
     }
     else if (localName == QLatin1String("property"))
     {
         if (!mProperties) {
-            unexpectedElement(localName, QLatin1String("properties"));
-            return false;
+            // Ignore property since there is nothing to associate it with
+            return true;
         }
 
         // TODO: Add support for properties that have their value as contents
         const QString name = atts.value(QLatin1String("name"));
         const QString value = atts.value(QLatin1String("value"));
-        mProperties->setProperty(name, value);
+        mProperties->insert(name, value);
     }
     else {
         qDebug() << "Unhandled element (fixme):" << localName;
@@ -319,17 +319,6 @@ bool TmxHandler::endElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("properties"))
     {
-        if (mLayer) {
-            // The properties we just read are for the current layer
-            qDebug() << "Setting layer properties... (not yet implemented)";
-        } else if (!mMapPropertiesRead && mMap) {
-            // The properties we just read are for the map
-            qDebug() << "Setting map properties... (not yet implemented)";
-            mMapPropertiesRead = true;
-        }
-
-        // TODO: Set these properties on the active map or layer
-        delete mProperties;
         mProperties = 0;
     }
 

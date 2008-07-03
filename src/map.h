@@ -25,6 +25,7 @@
 #include <QList>
 #include <QMap>
 #include <QPixmap>
+#include <QString>
 
 namespace Tiled {
 
@@ -92,6 +93,11 @@ class Map {
         void insertLayer(int index, Layer *layer);
 
         /**
+         * Returns a pointer to the properties of this map.
+         */
+        QMap<QString, QString>* properties() { return &mProperties; }
+
+        /**
          * Adds a tileset to this map.
          *
          * @param tileset the tileset to add
@@ -114,6 +120,7 @@ class Map {
         int mMaxTileHeight;
         QList<Layer*> mLayers;
         QMap<int, Tileset*> mTilesets;
+        QMap<QString, QString> mProperties;
 };
 
 } // namespace Tiled
