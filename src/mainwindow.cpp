@@ -80,6 +80,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.graphicsView->setScene(mScene);
     mUi.graphicsView->centerOn(0, 0);
 
+    mUi.actionShowGrid->setChecked(mScene->isGridVisible());
+    connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
+            mScene, SLOT(setGridVisible(bool)));
+
     mUi.actionResize->setEnabled(mScene->map() != 0);
     mUi.actionSave->setEnabled(mScene->map() != 0);
     readSettings();
@@ -202,6 +206,8 @@ void MainWindow::writeSettings()
     mSettings.beginGroup(QLatin1String("mainwindow"));
     mSettings.setValue(QLatin1String("size"), size());
     mSettings.setValue(QLatin1String("state"), saveState());
+    mSettings.setValue(QLatin1String("gridVisible"),
+                       mUi.actionShowGrid->isChecked());
     mSettings.endGroup();
 }
 
@@ -211,6 +217,8 @@ void MainWindow::readSettings()
     resize(mSettings.value(QLatin1String("size"), QSize(553, 367)).toSize());
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
+    mUi.actionShowGrid->setChecked(
+            mSettings.value(QLatin1String("gridVisible"), true).toBool());
     mSettings.endGroup();
     updateRecentFiles();
 }

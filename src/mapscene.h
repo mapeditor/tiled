@@ -35,6 +35,8 @@ namespace Internal {
  */
 class MapScene : public QGraphicsScene
 {
+    Q_OBJECT
+
     public:
         /**
          * Constructor.
@@ -51,6 +53,17 @@ class MapScene : public QGraphicsScene
          */
         void setMap(Map *map);
 
+        /**
+         * Returns whether the tile grid is visible.
+         */
+        bool isGridVisible() const { return mGridVisible; }
+
+    public slots:
+        /**
+         * Sets whether the tile grid is visible.
+         */
+        void setGridVisible(bool visible);
+
     protected:
         /**
          * QGraphicsScene::drawForeground override that draws the tile grid.
@@ -59,6 +72,7 @@ class MapScene : public QGraphicsScene
 
     private:
         Map *mMap;
+        bool mGridVisible;
 };
 
 } // namespace Internal

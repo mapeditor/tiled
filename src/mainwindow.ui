@@ -72,8 +72,15 @@
     <addaction name="actionResize" />
     <addaction name="actionProperties" />
    </widget>
+   <widget class="QMenu" name="menuView" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionShowGrid" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuEdit" />
+   <addaction name="menuView" />
    <addaction name="menuMap" />
    <addaction name="menuHelp" />
   </widget>
@@ -90,7 +97,8 @@
    <addaction name="actionOpen" />
    <addaction name="actionSave" />
   </widget>
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QStatusBar" name="statusBar" >
+  </widget>
   <action name="actionOpen" >
    <property name="icon" >
     <iconset resource="tiled.qrc" >
@@ -168,6 +176,17 @@
    </property>
    <property name="text" >
     <string>&amp;Recent Files</string>
+   </property>
+  </action>
+  <action name="actionShowGrid" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Show &amp;grid</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>

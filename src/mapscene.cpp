@@ -30,7 +30,8 @@ using namespace Tiled::Internal;
 
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
-    mMap(0)
+    mMap(0),
+    mGridVisible(true)
 {
 }
 
@@ -58,9 +59,18 @@ void MapScene::setMap(Map *map)
     }
 }
 
+void MapScene::setGridVisible(bool visible)
+{
+    if (mGridVisible == visible)
+        return;
+
+    mGridVisible = visible;
+    update();
+}
+
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (!mMap)
+    if (!mMap || !mGridVisible)
         return;
 
     const int tileWidth = mMap->tileWidth();
