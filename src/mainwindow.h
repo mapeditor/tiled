@@ -30,6 +30,7 @@ namespace Tiled {
 namespace Internal {
 
 class MapScene;
+class LayerDock;
 
 class MainWindow : public QMainWindow
 {
@@ -65,6 +66,7 @@ private:
 
     Ui::MainWindowClass mUi;
     MapScene *mScene;
+    LayerDock *mLayerDock;
     QSettings mSettings;
 
     enum { MaxRecentFiles = 8 };

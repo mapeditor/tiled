@@ -22,12 +22,12 @@
 #include "mainwindow.h"
 
 #include "layer.h"
+#include "layerdock.h"
 #include "map.h"
 #include "mapscene.h"
 #include "resizedialog.h"
 #include "xmlmapreader.h"
 
-#include <QDockWidget>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
@@ -40,9 +40,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 {
     mUi.setupUi(this);
 
-    QDockWidget *layerDock = new QDockWidget(tr("Layers"), this);
-    layerDock->setObjectName(QLatin1String("layerDock"));
-    addDockWidget(Qt::RightDockWidgetArea, layerDock);
+    mLayerDock = new LayerDock(this);
+    addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
 
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
@@ -114,6 +113,7 @@ void MainWindow::openFile(const QString &fileName)
 
         Map *previousMap = mScene->map();
         mScene->setMap(map);
+        mLayerDock->setMap(map);
         mUi.graphicsView->centerOn(0, 0);
         mUi.actionResize->setEnabled(map != 0);
         mUi.actionSave->setEnabled(map != 0);
@@ -214,7 +214,7 @@ void MainWindow::writeSettings()
 void MainWindow::readSettings()
 {
     mSettings.beginGroup(QLatin1String("mainwindow"));
-    resize(mSettings.value(QLatin1String("size"), QSize(553, 367)).toSize());
+    resize(mSettings.value(QLatin1String("size"), QSize(600, 500)).toSize());
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
     mUi.actionShowGrid->setChecked(

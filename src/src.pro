@@ -13,6 +13,8 @@ SOURCES += decompress.cpp \
     map.cpp \
     mapscene.cpp \
     layer.cpp \
+    layerdock.cpp \
+    layertablemodel.cpp \
     tileset.cpp \
     tilelayeritem.cpp \
     resizehelper.cpp \
@@ -25,6 +27,8 @@ HEADERS += decompress.h \
     map.h \
     mapscene.h \
     layer.h \
+    layerdock.h \
+    layertablemodel.h \
     tileset.h \
     tilelayeritem.h \
     resizedialog.h \
