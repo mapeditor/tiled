@@ -70,10 +70,11 @@ void Map::addTileset(Tileset *tileset, int firstGid)
 QPixmap Map::tileForGid(int gid) const
 {
     Q_ASSERT(gid >= 0);
-    Q_ASSERT(mTilesets.size() > 0);
 
     if (gid == 0)
         return QPixmap();
+
+    Q_ASSERT(mTilesets.size() > 0);
 
     // Find the tileset containing this tile
     QMap<int, Tileset*>::const_iterator i = mTilesets.upperBound(gid);
