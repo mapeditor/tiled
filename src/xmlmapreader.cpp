@@ -92,7 +92,7 @@ class TmxHandler : public QXmlDefaultHandler
         Layer *mLayer;
         QString mEncoding;
         QString mCompression;
-        
+
         ObjectGroup *mObjectGroup;
         MapObject *mObject;
 
@@ -230,7 +230,7 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const int y = atts.value(QLatin1String("y")).toInt(); // optional
         const int width = atts.value(QLatin1String("width")).toInt();
         const int height = atts.value(QLatin1String("height")).toInt();
-        
+
         mObjectGroup = new ObjectGroup(name, x, y, width, height);
         qDebug() << "Object Group:" << name << x << y << width << height;
     }
@@ -247,12 +247,12 @@ bool TmxHandler::startElement(const QString &namespaceURI,
     else if (localName == QLatin1String("object"))
     {
         const QString name = atts.value(QLatin1String("name"));
-        const int x = atts.value(QLatin1String("x")).toInt(); // optional
-        const int y = atts.value(QLatin1String("y")).toInt(); // optional
+        const int x = atts.value(QLatin1String("x")).toInt();
+        const int y = atts.value(QLatin1String("y")).toInt();
         const int width = atts.value(QLatin1String("width")).toInt();
         const int height = atts.value(QLatin1String("height")).toInt();
         const QString type = atts.value(QLatin1String("type"));
-        
+
         mObject = new MapObject(name, type, x, y, width, height);
         qDebug() << "Object:" << name << type << x << y << width << height;
     }
@@ -310,7 +310,7 @@ bool TmxHandler::characters(const QString &ch)
             if (x == mLayer->width()) { x = 0; y++; }
         }
     }
-    else if(mProperty)
+    else if (mProperty)
     {
         mProperty->second = ch;
     }
@@ -343,17 +343,16 @@ bool TmxHandler::endElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("properties"))
     {
-        if(mObject)
-        {
-            foreach (QString key, mProperties->keys()) {
-                mObject->setProperty(key, mProperties->value(key));
-            }
+        if (mObject) {
+            QMap<QString, QString>::const_iterator i = mProperties->begin();
+            for (; i != mProperties->end(); ++i)
+                mObject->setProperty(i.key(), i.value());
         }
         else
         {
             mMap->properties()->unite(*mProperties);
         }
-                
+
         delete mProperties;
         mProperties = 0;
     }

@@ -24,7 +24,8 @@
 
 using namespace Tiled;
 
-ObjectGroup::ObjectGroup(const QString &name, int x, int y, int width, int height):
+ObjectGroup::ObjectGroup(const QString &name,
+                         int x, int y, int width, int height):
     mName(name),
     mX(x),
     mY(y),
@@ -38,7 +39,7 @@ ObjectGroup::~ObjectGroup()
     qDeleteAll(mObjects);
 }
 
-void ObjectGroup::addObject(MapObject* object)
+void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
 }

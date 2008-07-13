@@ -43,17 +43,17 @@ class ObjectGroup {
          * Destructor.
          */
         ~ObjectGroup();
-        
+
         /**
          * Returns a pointer to the list of objects in this object group.
          */
         const QList<MapObject*>& objects() const { return mObjects; }
-        
+
         /**
-         * Adds a map object to this object group.
+         * Adds an object to this object group.
          */
         void addObject(MapObject *object);
-        
+
     private:
         QString mName;
         int mX;

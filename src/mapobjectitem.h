@@ -45,7 +45,7 @@ class MapObjectItem : public QGraphicsItem
 
         // QGraphicsView
         QRectF boundingRect() const;
-        
+
         void paint(QPainter *painter,
                    const QStyleOptionGraphicsItem *option,
                    QWidget *widget = 0);

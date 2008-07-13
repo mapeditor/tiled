@@ -96,10 +96,12 @@ class Map {
         /**
          * Returns the list of ObjectGroups of this map.
          */
-        const QList<ObjectGroup*>& objectGroups() const { return mObjectGroups; }
+        const QList<ObjectGroup*>& objectGroups() const {
+            return mObjectGroups;
+        }
 
         /**
-         * Adds a ObjectGroup to this map.
+         * Adds an ObjectGroup to this map.
          */
         void addObjectGroup(ObjectGroup *group);
 

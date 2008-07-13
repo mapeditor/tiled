@@ -18,12 +18,12 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
- 
-#include "mapobject.h" 
+
+#include "mapobject.h"
 
 using namespace Tiled;
 
-MapObject::MapObject(const QString &name, const QString &type, 
+MapObject::MapObject(const QString &name, const QString &type,
                      int x, int y, int width, int height):
     mName(name),
     mX(x),

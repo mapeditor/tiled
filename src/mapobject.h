@@ -25,7 +25,6 @@
 #include <QMap>
 #include <QString>
 
-
 namespace Tiled {
 
 /**
@@ -36,73 +35,74 @@ class MapObject {
         /**
          * Constructor.
          */
-        MapObject(const QString &name, const QString &type, 
+        MapObject(const QString &name, const QString &type,
                   int x, int y, int width, int height);
 
         /**
          * Destructor.
          */
         ~MapObject() {}
-        
+
         /**
          * Returns the name of this object.
          */
-        const QString &name() { return mName; }
+        const QString &name() const { return mName; }
+
         /**
          * Returns the x position of this object.
          */
-        int x() { return mX; }
-        
+        int x() const { return mX; }
+
         /**
          * Sets the x position of this object.
          */
         void setX(int x) { mX = x; }
-        
+
         /**
          * Returns the y position of this object.
          */
-        int y() { return mY; }
-        
+        int y() const { return mY; }
+
         /**
          * Sets the x position of this object.
          */
         void setY(int y) { mY = y; }
-        
+
         /**
          * Returns the width of this object.
          */
-        int width() { return mWidth; }
-        
+        int width() const { return mWidth; }
+
         /**
          * Sets the width of this object.
          */
         void setWidth(int width) { mWidth = width; }
-        
+
         /**
          * Returns the height of this object.
          */
-        int height() { return mHeight; }
-        
+        int height() const { return mHeight; }
+
         /**
          * Sets the height of this object.
          */
         void setHeight(int height) { mHeight = height; }
-        
+
         /**
          * Returns the type of object this is.
          */
-        const QString &type() { return mType; }
+        const QString &type() const { return mType; }
 
         /**
          * Set the property with the given name, and value.
          */
         void setProperty(const QString &name, const QString &value);
-        
+
         /**
          * Returns a pointer to the properties of this object.
          */
         QMap<QString, QString>* properties() { return &mProperties; }
-        
+
     private:
         QString mName;
         int mX;

@@ -40,7 +40,7 @@ Map::~Map()
 {
     qDeleteAll(mLayers);
     qDeleteAll(mObjectGroups);
-    
+
     // TODO: Think about a tileset manager instead of ownership by the map
     qDeleteAll(mTilesets);
 }

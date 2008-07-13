@@ -53,28 +53,31 @@ void MapObjectItem::paint(QPainter *painter,
 
     Qt::GlobalColor color;
     QString type = mObject->type();
-    if(type == QLatin1String("WARP"))
+    if (type == QLatin1String("WARP"))
         color = Qt::cyan;
-    else if(type == QLatin1String("NPC"))
+    else if (type == QLatin1String("NPC"))
         color = Qt::yellow;
-    else if(type == QLatin1String("SPAWN"))
+    else if (type == QLatin1String("SPAWN"))
         color = Qt::magenta;
-    else if(type == QLatin1String("PARTICLE_EFFECT"))
+    else if (type == QLatin1String("PARTICLE_EFFECT"))
         color = Qt::green;
     else
         color = Qt::black;
-        
-    QPen *pen = new QPen();
-    pen->setWidth(3);
-    pen->setBrush(color);
-    painter->setPen(*pen);
-    if(!mObject->width() && !mObject->height())
+
+    QPen pen(color);
+    pen.setWidth(3);
+    painter->setPen(pen);
+    if (!mObject->width() && !mObject->height())
     {
-        painter->drawEllipse(QRect(mObject->x() - 10, mObject->y() - 10, 20, 20));
+        painter->drawEllipse(QRect(mObject->x() - 10,
+                                   mObject->y() - 10, 20, 20));
     }
     else
     {
-        painter->drawRoundedRect(QRect(mObject->x(), mObject->y(), mObject->width(), mObject->height()),
+        painter->drawRoundedRect(QRect(mObject->x(),
+                                       mObject->y(),
+                                       mObject->width(),
+                                       mObject->height()),
                                  20.0, 15.0);
     }
 }
