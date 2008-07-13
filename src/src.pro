@@ -11,10 +11,13 @@ SOURCES += decompress.cpp \
     mainwindow.cpp \
     xmlmapreader.cpp \
     map.cpp \
+    mapobject.cpp \
+    mapobjectitem.cpp \
     mapscene.cpp \
     layer.cpp \
     layerdock.cpp \
     layertablemodel.cpp \
+    objectgroup.cpp \
     tileset.cpp \
     tilelayeritem.cpp \
     resizehelper.cpp \
@@ -25,10 +28,13 @@ HEADERS += decompress.h \
     mapwriterinterface.h \
     xmlmapreader.h \
     map.h \
+    mapobject.h \
+    mapobjectitem.h \
     mapscene.h \
     layer.h \
     layerdock.h \
     layertablemodel.h \
+    objectgroup.h \
     tileset.h \
     tilelayeritem.h \
     resizedialog.h \

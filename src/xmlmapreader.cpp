@@ -25,6 +25,8 @@
 #include "layer.h"
 #include "map.h"
 #include "tileset.h"
+#include "objectgroup.h"
+#include "mapobject.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -49,8 +51,11 @@ class TmxHandler : public QXmlDefaultHandler
             mMapPath(mapPath),
             mMap(0),
             mLayer(0),
+            mObjectGroup(0),
+            mObject(0),
             mTileset(0),
-            mProperties(0)
+            mProperties(0),
+            mProperty(0)
         {}
 
         ~TmxHandler();
@@ -87,11 +92,15 @@ class TmxHandler : public QXmlDefaultHandler
         Layer *mLayer;
         QString mEncoding;
         QString mCompression;
+        
+        ObjectGroup *mObjectGroup;
+        MapObject *mObject;
 
         Tileset *mTileset;
         int mTilesetFirstGid;
 
         QMap<QString, QString> *mProperties;
+        QPair<QString, QString> *mProperty;
         QString mError;
 };
 
@@ -161,7 +170,6 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         //const QString orientation = atts.value(QLatin1String("orientation"));
 
         mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
-        mProperties = mMap->properties();
         qDebug() << "Map:" << mapWidth << mapHeight << tileWidth << tileHeight;
     }
     else if (localName == QLatin1String("tileset"))
@@ -217,24 +225,36 @@ bool TmxHandler::startElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("objectgroup"))
     {
-        // TODO: Add support for object groups
+        const QString name = atts.value(QLatin1String("name"));
+        const int x = atts.value(QLatin1String("x")).toInt(); // optional
+        const int y = atts.value(QLatin1String("y")).toInt(); // optional
+        const int width = atts.value(QLatin1String("width")).toInt();
+        const int height = atts.value(QLatin1String("height")).toInt();
+        
+        mObjectGroup = new ObjectGroup(name, x, y, width, height);
+        qDebug() << "Object Group:" << name << x << y << width << height;
     }
     else if (localName == QLatin1String("properties"))
     {
-        if (mProperties)
-            mProperties->clear();
+        mProperties = new QMap<QString, QString>();
     }
     else if (localName == QLatin1String("property"))
     {
-        if (!mProperties) {
-            // Ignore property since there is nothing to associate it with
-            return true;
-        }
-
-        // TODO: Add support for properties that have their value as contents
         const QString name = atts.value(QLatin1String("name"));
         const QString value = atts.value(QLatin1String("value"));
-        mProperties->insert(name, value);
+        mProperty = new QPair<QString, QString>(name, value);
+    }
+    else if (localName == QLatin1String("object"))
+    {
+        const QString name = atts.value(QLatin1String("name"));
+        const int x = atts.value(QLatin1String("x")).toInt(); // optional
+        const int y = atts.value(QLatin1String("y")).toInt(); // optional
+        const int width = atts.value(QLatin1String("width")).toInt();
+        const int height = atts.value(QLatin1String("height")).toInt();
+        const QString type = atts.value(QLatin1String("type"));
+        
+        mObject = new MapObject(name, type, x, y, width, height);
+        qDebug() << "Object:" << name << type << x << y << width << height;
     }
     else {
         qDebug() << "Unhandled element (fixme):" << localName;
@@ -290,6 +310,10 @@ bool TmxHandler::characters(const QString &ch)
             if (x == mLayer->width()) { x = 0; y++; }
         }
     }
+    else if(mProperty)
+    {
+        mProperty->second = ch;
+    }
 
     return true;
 }
@@ -307,7 +331,7 @@ bool TmxHandler::endElement(const QString &namespaceURI,
         mMap->addLayer(mLayer);
         mLayer = 0;
     }
-    if (localName == QLatin1String("data"))
+    else if (localName == QLatin1String("data"))
     {
         mEncoding.clear();
         mCompression.clear();
@@ -319,7 +343,35 @@ bool TmxHandler::endElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("properties"))
     {
+        if(mObject)
+        {
+            foreach (QString key, mProperties->keys()) {
+                mObject->setProperty(key, mProperties->value(key));
+            }
+        }
+        else
+        {
+            mMap->properties()->unite(*mProperties);
+        }
+                
+        delete mProperties;
         mProperties = 0;
+    }
+    else if (localName == QLatin1String("objectgroup"))
+    {
+        mMap->addObjectGroup(mObjectGroup);
+        mObjectGroup = 0;
+    }
+    else if (localName == QLatin1String("object"))
+    {
+        mObjectGroup->addObject(mObject);
+        mObject = 0;
+    }
+    else if (localName == QLatin1String("property"))
+    {
+        mProperties->insert(mProperty->first, mProperty->second);
+        delete mProperty;
+        mProperty = 0;
     }
 
     return true;

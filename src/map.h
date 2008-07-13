@@ -31,6 +31,7 @@ namespace Tiled {
 
 class Layer;
 class Tileset;
+class ObjectGroup;
 
 /**
  * A tile map.
@@ -93,6 +94,16 @@ class Map {
         void insertLayer(int index, Layer *layer);
 
         /**
+         * Returns the list of ObjectGroups of this map.
+         */
+        const QList<ObjectGroup*>& objectGroups() const { return mObjectGroups; }
+
+        /**
+         * Adds a ObjectGroup to this map.
+         */
+        void addObjectGroup(ObjectGroup *group);
+
+        /**
          * Returns a pointer to the properties of this map.
          */
         QMap<QString, QString>* properties() { return &mProperties; }
@@ -119,6 +130,7 @@ class Map {
         int mTileHeight;
         int mMaxTileHeight;
         QList<Layer*> mLayers;
+        QList<ObjectGroup*> mObjectGroups;
         QMap<int, Tileset*> mTilesets;
         QMap<QString, QString> mProperties;
 };

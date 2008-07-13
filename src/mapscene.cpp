@@ -22,6 +22,10 @@
 #include "mapscene.h"
 
 #include "map.h"
+#include "layer.h"
+#include "objectgroup.h"
+#include "mapobject.h"
+#include "mapobjectitem.h"
 #include "tilelayeritem.h"
 
 #include <QPainter>
@@ -52,7 +56,16 @@ void MapScene::setMap(Map *map)
         foreach (Layer *layer, mMap->layers()) {
             TileLayerItem *item = new TileLayerItem(layer);
             item->setZValue(z++);
+            mLayers.insert(layer->name(), item);
             addItem(item);
+        }
+        foreach (ObjectGroup * objectgroup, mMap->objectGroups()) {
+            foreach (MapObject * object, objectgroup->objects()) {
+                MapObjectItem *item = new MapObjectItem(object);
+                item->setZValue(z + 1);
+                mObjects.insert(object->name(), item);
+                addItem(item);
+            }
         }
     } else {
         setSceneRect(QRectF());
