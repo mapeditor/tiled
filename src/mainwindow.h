@@ -44,12 +44,14 @@ private slots:
     void openFile();
     void saveFile();
     void resizeMap();
+    void editMapProperties();
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();
 
 private:
-    void openFile(const QString& fileName);
+    void openFile(const QString &fileName);
+    void updateActions();
     void writeSettings();
     void readSettings();
     QStringList recentFiles() const;

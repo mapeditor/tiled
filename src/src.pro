@@ -1,7 +1,8 @@
 TEMPLATE = app
 TARGET = tiled
 DESTDIR = ../bin
-DEFINES += QT_NO_CAST_FROM_ASCII QT_NO_CAST_TO_ASCII
+DEFINES += QT_NO_CAST_FROM_ASCII \
+    QT_NO_CAST_TO_ASCII
 QT += core \
     gui \
     xml
@@ -21,7 +22,9 @@ SOURCES += decompress.cpp \
     tileset.cpp \
     tilelayeritem.cpp \
     resizehelper.cpp \
-    resizedialog.cpp
+    resizedialog.cpp \
+    propertiesmodel.cpp \
+    propertiesdialog.cpp
 HEADERS += decompress.h \
     mainwindow.h \
     mapreaderinterface.h \
@@ -38,8 +41,11 @@ HEADERS += decompress.h \
     tileset.h \
     tilelayeritem.h \
     resizedialog.h \
-    resizehelper.h
+    resizehelper.h \
+    propertiesmodel.h \
+    propertiesdialog.h
 FORMS += mainwindow.ui \
-    resizedialog.ui
+    resizedialog.ui \
+    propertiesdialog.ui
 RESOURCES += tiled.qrc
-TRANSLATIONS=translations/tiled_nl.ts
+TRANSLATIONS = translations/tiled_nl.ts

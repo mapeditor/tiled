@@ -25,6 +25,7 @@
 #include "layerdock.h"
 #include "map.h"
 #include "mapscene.h"
+#include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "xmlmapreader.h"
 
@@ -51,7 +52,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
-    connect(mUi.actionResize, SIGNAL(triggered()), SLOT(resizeMap()));
+    connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
+    connect(mUi.actionMapProperties, SIGNAL(triggered()),
+            SLOT(editMapProperties()));
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -83,8 +86,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
             mScene, SLOT(setGridVisible(bool)));
 
-    mUi.actionResize->setEnabled(mScene->map() != 0);
-    mUi.actionSave->setEnabled(mScene->map() != 0);
+    updateActions();
     readSettings();
 }
 
@@ -115,8 +117,7 @@ void MainWindow::openFile(const QString &fileName)
         mScene->setMap(map);
         mLayerDock->setMap(map);
         mUi.graphicsView->centerOn(0, 0);
-        mUi.actionResize->setEnabled(map != 0);
-        mUi.actionSave->setEnabled(map != 0);
+        updateActions();
         delete previousMap;
 
         setWindowFilePath(fileName);
@@ -151,6 +152,14 @@ void MainWindow::resizeMap()
         mScene->map()->setHeight(resizeDialog.newSize().height());
     }
     // TODO: Actually implement map resizing
+}
+
+void MainWindow::editMapProperties()
+{
+    // TODO: Implement editing, currently this only shows the properties
+    PropertiesDialog propertiesDialog(this);
+    propertiesDialog.setProperties(*mScene->map()->properties());
+    propertiesDialog.exec();
 }
 
 void MainWindow::openRecentFile()
@@ -199,6 +208,15 @@ void MainWindow::updateRecentFiles()
         mRecentFiles[j]->setVisible(false);
     }
     mUi.actionRecentFiles->setEnabled(numRecentFiles > 0);
+}
+
+void MainWindow::updateActions()
+{
+    const bool map = mScene->map() != 0;
+
+    mUi.actionSave->setEnabled(map);
+    mUi.actionResizeMap->setEnabled(map);
+    mUi.actionMapProperties->setEnabled(map);
 }
 
 void MainWindow::writeSettings()
