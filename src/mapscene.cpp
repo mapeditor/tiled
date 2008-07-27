@@ -22,7 +22,7 @@
 #include "mapscene.h"
 
 #include "map.h"
-#include "layer.h"
+#include "tilelayer.h"
 #include "objectgroup.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
@@ -54,17 +54,18 @@ void MapScene::setMap(Map *map)
 
         int z = 0;
         foreach (Layer *layer, mMap->layers()) {
-            TileLayerItem *item = new TileLayerItem(layer);
-            item->setZValue(z++);
-            mLayers.insert(layer->name(), item);
-            addItem(item);
-        }
-        foreach (ObjectGroup * objectgroup, mMap->objectGroups()) {
-            foreach (MapObject * object, objectgroup->objects()) {
-                MapObjectItem *item = new MapObjectItem(object);
-                item->setZValue(z + 1);
-                mObjects.insert(object->name(), item);
+            if (dynamic_cast<TileLayer*>(layer) != 0) {
+                TileLayerItem *item =
+                    new TileLayerItem(static_cast<TileLayer*>(layer));
+                item->setZValue(z++);
                 addItem(item);
+            } else if (dynamic_cast<ObjectGroup*>(layer) != 0) {
+                ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
+                foreach (MapObject *object, objectGroup->objects()) {
+                    MapObjectItem *item = new MapObjectItem(object);
+                    item->setZValue(z++);
+                    addItem(item);
+                }
             }
         }
     } else {

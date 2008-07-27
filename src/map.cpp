@@ -23,7 +23,6 @@
 
 #include "layer.h"
 #include "tileset.h"
-#include "objectgroup.h"
 
 using namespace Tiled;
 
@@ -39,7 +38,6 @@ Map::Map(int width, int height, int tileWidth, int tileHeight):
 Map::~Map()
 {
     qDeleteAll(mLayers);
-    qDeleteAll(mObjectGroups);
 
     // TODO: Think about a tileset manager instead of ownership by the map
     qDeleteAll(mTilesets);
@@ -55,11 +53,6 @@ void Map::insertLayer(int index, Layer *layer)
 {
     layer->setMap(this);
     mLayers.insert(index, layer);
-}
-
-void Map::addObjectGroup(ObjectGroup *group)
-{
-    mObjectGroups.append(group);
 }
 
 void Map::addTileset(Tileset *tileset, int firstGid)

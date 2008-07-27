@@ -19,41 +19,27 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#include "tilelayer.h"
 
-#include <QGraphicsItem>
+using namespace Tiled;
 
-namespace Tiled {
-
-class TileLayer;
-
-namespace Internal {
-
-/**
- * A graphics item displaying a tile layer in a QGraphicsView.
- */
-class TileLayerItem : public QGraphicsItem
+TileLayer::TileLayer(const QString &name, int x, int y, int width, int height,
+                     Map *map):
+    Layer(name, x, y, width, height, map),
+    mMaxTileHeight(0),
+    mTiles(width * height)
 {
-    public:
-        /**
-         * Constructor.
-         *
-         * @param layer the tile layer to be displayed
-         */
-        TileLayerItem(TileLayer *layer);
+}
 
-        // QGraphicsView
-        QRectF boundingRect() const;
-        void paint(QPainter *painter,
-                   const QStyleOptionGraphicsItem *option,
-                   QWidget *widget = 0);
+const QPixmap& TileLayer::tileAt(int x, int y) const
+{
+    return mTiles.at(x + y * mWidth);
+}
 
-    private:
-        TileLayer *mLayer;
-};
+void TileLayer::setTile(int x, int y, const QPixmap &img)
+{
+    if (img.height() > mMaxTileHeight)
+        mMaxTileHeight = img.height();
 
-} // namespace Internal
-} // namespace Tiled
-
-#endif // TILELAYERITEM_H
+    mTiles[x + y * mWidth] = img;
+}

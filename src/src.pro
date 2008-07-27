@@ -20,6 +20,7 @@ SOURCES += decompress.cpp \
     layertablemodel.cpp \
     objectgroup.cpp \
     tileset.cpp \
+    tilelayer.cpp \
     tilelayeritem.cpp \
     resizehelper.cpp \
     resizedialog.cpp \
@@ -39,6 +40,7 @@ HEADERS += decompress.h \
     layertablemodel.h \
     objectgroup.h \
     tileset.h \
+    tilelayer.h \
     tilelayeritem.h \
     resizedialog.h \
     resizehelper.h \

@@ -25,7 +25,6 @@
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QDebug>
 #include <QRect>
 #include <QPen>
 

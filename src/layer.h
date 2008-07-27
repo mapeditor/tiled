@@ -44,7 +44,7 @@ class Layer {
         /**
          * Destructor.
          */
-        ~Layer() {}
+        virtual ~Layer() {}
 
         /**
          * Returns the name of this layer.
@@ -86,32 +86,13 @@ class Layer {
          */
         int height() const { return mHeight; }
 
-        /**
-         * Returns the maximum tile height of this layer. Used by the layer
-         * rendering code to determine the area that needs to be redrawn.
-         */
-        int maxTileHeight() const { return mMaxTileHeight; }
-
-        /**
-         * Returns the tile at the given coordinates. The coordinates have to
-         * be within this layer.
-         */
-        const QPixmap& tileAt(int x, int y) const;
-
-        /**
-         * Sets the tile for the given coordinates.
-         */
-        void setTile(int x, int y, const QPixmap &img);
-
-    private:
+    protected:
         QString mName;
         int mX;
         int mY;
         int mWidth;
         int mHeight;
-        int mMaxTileHeight;
         Map *mMap;
-        QVector<QPixmap> mTiles;
 };
 
 } // namespace Tiled

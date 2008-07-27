@@ -22,6 +22,8 @@
 #ifndef OBJECTGROUP_H
 #define OBJECTGROUP_H
 
+#include "layer.h"
+
 #include <QList>
 #include <QString>
 
@@ -32,12 +34,13 @@ class MapObject;
 /**
  * A group of objects on a map.
  */
-class ObjectGroup {
+class ObjectGroup : public Layer {
     public:
         /**
          * Constructor.
          */
-        ObjectGroup(const QString &name, int x, int y, int width, int height);
+        ObjectGroup(const QString &name, int x, int y, int width, int height,
+                    Map *map = 0);
 
         /**
          * Destructor.
@@ -55,11 +58,6 @@ class ObjectGroup {
         void addObject(MapObject *object);
 
     private:
-        QString mName;
-        int mX;
-        int mY;
-        int mWidth;
-        int mHeight;
         QList<MapObject*> mObjects;
 };
 

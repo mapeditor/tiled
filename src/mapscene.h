@@ -23,7 +23,6 @@
 #define MAPSCENE_H
 
 #include <QGraphicsScene>
-#include <QMap>
 #include <QString>
 
 namespace Tiled {
@@ -62,7 +61,7 @@ class MapScene : public QGraphicsScene
          * Returns whether the tile grid is visible.
          */
         bool isGridVisible() const { return mGridVisible; }
-        
+
         /**
          * Returns the TileLayerItem for the layer with the given name.
          */
@@ -83,8 +82,6 @@ class MapScene : public QGraphicsScene
     private:
         Map *mMap;
         bool mGridVisible;
-        QMap<QString, TileLayerItem*> mLayers;
-        QMap<QString, MapObjectItem*> mObjects;
 };
 
 } // namespace Internal

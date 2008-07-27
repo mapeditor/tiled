@@ -21,7 +21,7 @@
 
 #include "tilelayeritem.h"
 
-#include "layer.h"
+#include "tilelayer.h"
 #include "map.h"
 
 #include <QPainter>
@@ -30,7 +30,7 @@
 
 using namespace Tiled::Internal;
 
-TileLayerItem::TileLayerItem(Layer *layer):
+TileLayerItem::TileLayerItem(TileLayer *layer):
     mLayer(layer)
 {
 }

@@ -19,41 +19,50 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#ifndef TILELAYER_H
+#define TILELAYER_H
 
-#include <QGraphicsItem>
+#include "layer.h"
+
+#include <QPixmap>
+#include <QString>
+#include <QVector>
 
 namespace Tiled {
 
-class TileLayer;
-
-namespace Internal {
-
 /**
- * A graphics item displaying a tile layer in a QGraphicsView.
+ * A tile layer.
  */
-class TileLayerItem : public QGraphicsItem
-{
+class TileLayer : public Layer {
     public:
         /**
          * Constructor.
-         *
-         * @param layer the tile layer to be displayed
          */
-        TileLayerItem(TileLayer *layer);
+        TileLayer(const QString &name, int x, int y, int width, int height,
+                  Map *map = 0);
 
-        // QGraphicsView
-        QRectF boundingRect() const;
-        void paint(QPainter *painter,
-                   const QStyleOptionGraphicsItem *option,
-                   QWidget *widget = 0);
+        /**
+         * Returns the maximum tile height of this layer. Used by the layer
+         * rendering code to determine the area that needs to be redrawn.
+         */
+        int maxTileHeight() const { return mMaxTileHeight; }
+
+        /**
+         * Returns the tile at the given coordinates. The coordinates have to
+         * be within this layer.
+         */
+        const QPixmap& tileAt(int x, int y) const;
+
+        /**
+         * Sets the tile for the given coordinates.
+         */
+        void setTile(int x, int y, const QPixmap &img);
 
     private:
-        TileLayer *mLayer;
+        int mMaxTileHeight;
+        QVector<QPixmap> mTiles;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
-#endif // TILELAYERITEM_H
+#endif // TILELAYER_H

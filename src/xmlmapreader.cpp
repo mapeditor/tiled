@@ -22,8 +22,8 @@
 #include "xmlmapreader.h"
 
 #include "decompress.h"
-#include "layer.h"
 #include "map.h"
+#include "tilelayer.h"
 #include "tileset.h"
 #include "objectgroup.h"
 #include "mapobject.h"
@@ -50,7 +50,7 @@ class TmxHandler : public QXmlDefaultHandler
         TmxHandler(const QString &mapPath):
             mMapPath(mapPath),
             mMap(0),
-            mLayer(0),
+            mTileLayer(0),
             mObjectGroup(0),
             mObject(0),
             mTileset(0),
@@ -89,7 +89,7 @@ class TmxHandler : public QXmlDefaultHandler
         QString mMapPath;
         Map *mMap;
 
-        Layer *mLayer;
+        TileLayer *mTileLayer;
         QString mEncoding;
         QString mCompression;
 
@@ -133,7 +133,7 @@ Map* XmlMapReader::read(const QString &fileName)
 
 TmxHandler::~TmxHandler()
 {
-    delete mLayer;
+    delete mTileLayer;
     delete mTileset;
     delete mMap;
 }
@@ -215,7 +215,7 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const int width = atts.value(QLatin1String("width")).toInt();
         const int height = atts.value(QLatin1String("height")).toInt();
 
-        mLayer = new Layer(name, x, y, width, height);
+        mTileLayer = new TileLayer(name, x, y, width, height);
         qDebug() << "Layer:" << name << x << y << width << height;
     }
     else if (localName == QLatin1String("data"))
@@ -269,7 +269,7 @@ bool TmxHandler::characters(const QString &ch)
 
     if (mEncoding == QLatin1String("base64")) {
         QByteArray tileData = QByteArray::fromBase64(ch.toLatin1());
-        const int size = (mLayer->width() * mLayer->height()) * 4;
+        const int size = (mTileLayer->width() * mTileLayer->height()) * 4;
 
         if (mCompression == QLatin1String("zlib")) {
             // Prepend the expected uncompressed size
@@ -288,7 +288,7 @@ bool TmxHandler::characters(const QString &ch)
 
         if (size != tileData.length()) {
             mError = QObject::tr("Corrupt layer data for layer '%1'")
-                .arg(mLayer->name());
+                .arg(mTileLayer->name());
             return false;
         }
 
@@ -304,10 +304,10 @@ bool TmxHandler::characters(const QString &ch)
                 data[i + 3] << 24;
 
             QPixmap tile = mMap->tileForGid(gid);
-            mLayer->setTile(x, y, tile);
+            mTileLayer->setTile(x, y, tile);
 
             x++;
-            if (x == mLayer->width()) { x = 0; y++; }
+            if (x == mTileLayer->width()) { x = 0; y++; }
         }
     }
     else if (mProperty)
@@ -328,8 +328,8 @@ bool TmxHandler::endElement(const QString &namespaceURI,
 
     if (localName == QLatin1String("layer"))
     {
-        mMap->addLayer(mLayer);
-        mLayer = 0;
+        mMap->addLayer(mTileLayer);
+        mTileLayer = 0;
     }
     else if (localName == QLatin1String("data"))
     {
@@ -358,7 +358,7 @@ bool TmxHandler::endElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("objectgroup"))
     {
-        mMap->addObjectGroup(mObjectGroup);
+        mMap->addLayer(mObjectGroup);
         mObjectGroup = 0;
     }
     else if (localName == QLatin1String("object"))
