@@ -37,10 +37,12 @@ class Tileset
         /**
          * Constructor.
          */
-        Tileset(const QString &name, int tileWidth, int tileHeight):
+        Tileset(const QString &name, int tileWidth, int tileHeight,
+                int spacing = 0):
             mName(name),
             mTileWidth(tileWidth),
-            mTileHeight(tileHeight)
+            mTileHeight(tileHeight),
+            mSpacing(spacing)
         {
         }
 
@@ -82,6 +84,7 @@ class Tileset
         QString mSource;
         int mTileWidth;
         int mTileHeight;
+        int mSpacing;
         QList<QPixmap> mTiles;
 };
 

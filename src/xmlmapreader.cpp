@@ -178,6 +178,7 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         mTilesetFirstGid = atts.value(QLatin1String("firstgid")).toInt();
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
+        const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
 
         if (tileWidth <= 0 || tileHeight <= 0 || mTilesetFirstGid <= 0) {
             mError = QObject::tr(
@@ -185,7 +186,7 @@ bool TmxHandler::startElement(const QString &namespaceURI,
             return false;
         }
 
-        mTileset = new Tileset(name, tileWidth, tileHeight);
+        mTileset = new Tileset(name, tileWidth, tileHeight, tileSpacing);
         qDebug() << "Tileset:" << name << mTilesetFirstGid
             << tileWidth << tileHeight;
     }

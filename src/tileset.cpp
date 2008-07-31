@@ -44,11 +44,9 @@ bool Tileset::loadFromImage(const QString &fileName)
 
     qDebug() << "Loaded image" << fileName << imgWidth << imgHeight;
 
-    for (int y = 0; y + mTileHeight <= imgHeight; y += mTileHeight) {
-        for (int x = 0; x + mTileWidth <= imgWidth; x += mTileWidth) {
+    for (int y = 0; y + mTileHeight <= imgHeight; y += mTileHeight + mSpacing)
+        for (int x = 0; x + mTileWidth <= imgWidth; x += mTileWidth + mSpacing)
             mTiles.append(img.copy(x, y, mTileWidth, mTileHeight));
-        }
-    }
 
     mSource = fileName;
     return true;
