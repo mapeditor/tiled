@@ -33,14 +33,26 @@ using namespace Tiled::Internal;
 MapObjectItem::MapObjectItem(MapObject *object):
     mObject(object)
 {
+    QString toolTip = mObject->name();
+    if (!mObject->type().isEmpty())
+        toolTip += QLatin1String(" (") + mObject->type() + QLatin1String(")");
+    setToolTip(toolTip);
 }
 
 QRectF MapObjectItem::boundingRect() const
 {
-    return QRectF(mObject->x(),
-                  mObject->y(),
-                  mObject->width(),
-                  mObject->height());
+    // The -1 and +3 are to account for the pen width and shadow
+    if (!mObject->width() && !mObject->height()) {
+        return QRectF(mObject->x() - 10 - 1,
+                      mObject->y() - 10 - 1,
+                      20 + 3,
+                      20 + 3);
+    } else {
+        return QRectF(mObject->x() - 1,
+                      mObject->y() - 1,
+                      mObject->width() + 3,
+                      mObject->height() + 3);
+    }
 }
 
 void MapObjectItem::paint(QPainter *painter,
@@ -51,7 +63,7 @@ void MapObjectItem::paint(QPainter *painter,
     Q_UNUSED(option);
 
     Qt::GlobalColor color;
-    QString type = mObject->type();
+    const QString &type = mObject->type();
     if (type == QLatin1String("WARP"))
         color = Qt::cyan;
     else if (type == QLatin1String("NPC"))
@@ -61,22 +73,41 @@ void MapObjectItem::paint(QPainter *painter,
     else if (type == QLatin1String("PARTICLE_EFFECT"))
         color = Qt::green;
     else
-        color = Qt::black;
+        color = Qt::gray;
 
-    QPen pen(color);
+    QPen pen(Qt::black);
     pen.setWidth(3);
+
+    QColor brushColor = color;
+    brushColor.setAlpha(50);
+    QBrush brush(brushColor);
+
     painter->setPen(pen);
+    painter->setRenderHint(QPainter::Antialiasing);
     if (!mObject->width() && !mObject->height())
     {
+        painter->drawEllipse(QRect(mObject->x() - 10 + 1,
+                                   mObject->y() - 10 + 1, 20, 20));
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->setBrush(brush);
         painter->drawEllipse(QRect(mObject->x() - 10,
                                    mObject->y() - 10, 20, 20));
     }
     else
     {
+        painter->drawRoundedRect(QRect(mObject->x() + 1,
+                                       mObject->y() + 1,
+                                       mObject->width(),
+                                       mObject->height()),
+                                 10.0, 10.0);
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->setBrush(brush);
         painter->drawRoundedRect(QRect(mObject->x(),
                                        mObject->y(),
                                        mObject->width(),
                                        mObject->height()),
-                                 20.0, 15.0);
+                                 10.0, 10.0);
     }
 }
