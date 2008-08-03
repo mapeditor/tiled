@@ -21,15 +21,75 @@
 
 #include "mainwindow.h"
 
-#include <QtCore/QLocale>
-#include <QtCore/QTranslator>
-#include <QtGui/QApplication>
+#include <QApplication>
+#include <QDebug>
+#include <QLocale>
+#include <QTranslator>
 
 using namespace Tiled::Internal;
+
+namespace {
+
+struct CommandLineOptions {
+    CommandLineOptions()
+        : showHelp(false)
+        , showVersion(false)
+    {}
+
+    bool showHelp;
+    bool showVersion;
+    QString fileToOpen;
+};
+
+void showHelp()
+{
+    qWarning() <<
+            "Usage: tiled [option] [file]\n\n"
+            "Options:\n"
+            "  -h --help    : Display this help\n"
+            "  -v --version : Display the version";
+}
+
+void showVersion()
+{
+    qWarning() << "Tiled (Qt) Map Editor 0.1";
+}
+
+void parseCommandLineArguments(CommandLineOptions &options)
+{
+    QStringList arguments = QCoreApplication::arguments();
+
+    for (int i = 1; i < arguments.size(); ++i) {
+        const QString &arg = arguments.at(i);
+        if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
+            options.showHelp = true;
+        } else if (arg == QLatin1String("--version")
+                || arg == QLatin1String("-v")) {
+            options.showVersion = true;
+        } else if (arg.at(0) == QLatin1Char('-')) {
+            qWarning() << "Unknown option" << arg;
+            options.showHelp = true;
+        } else if (options.fileToOpen.isEmpty()) {
+            options.fileToOpen = arg;
+        }
+    }
+}
+
+} // anonymous namespace
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    CommandLineOptions options;
+    parseCommandLineArguments(options);
+
+    if (options.showVersion)
+        showVersion();
+    if (options.showHelp)
+        showHelp();
+    if (options.showVersion || options.showHelp)
+        return 0;
 
     QTranslator translator;
     translator.load(QLatin1String("tiled_") + QLocale::system().name());
@@ -40,5 +100,9 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
+
+    if (!options.fileToOpen.isEmpty())
+        w.openFile(options.fileToOpen);
+
     return a.exec();
 }

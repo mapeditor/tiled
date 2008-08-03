@@ -40,6 +40,12 @@ public:
     MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
     ~MainWindow();
 
+    /**
+     * Opens the given file. When opened succesfully, the file is added to the
+     * list of recent files.
+     */
+    void openFile(const QString &fileName);
+
 private slots:
     void openFile();
     void saveFile();
@@ -50,7 +56,6 @@ private slots:
     void clearRecentFiles();
 
 private:
-    void openFile(const QString &fileName);
     void updateActions();
     void writeSettings();
     void readSettings();
