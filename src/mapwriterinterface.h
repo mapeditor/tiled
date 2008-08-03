@@ -1,8 +1,8 @@
 /*
- * Tiled Map Editor (Qt port)
- * Copyright 2008 Tiled (Qt port) developers (see AUTHORS file)
+ * Tiled Map Editor (Qt)
+ * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
  *
- * This file is part of Tiled (Qt port).
+ * This file is part of Tiled (Qt).
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
