@@ -43,6 +43,7 @@ struct CommandLineOptions {
 
 void showHelp()
 {
+    // TODO: Make translatable
     qWarning() <<
             "Usage: tiled [option] [file]\n\n"
             "Options:\n"

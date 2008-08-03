@@ -353,9 +353,11 @@ bool TmxHandler::endElement(const QString &namespaceURI,
             QMap<QString, QString>::const_iterator i = mProperties->begin();
             for (; i != mProperties->end(); ++i)
                 mObject->setProperty(i.key(), i.value());
-        }
-        else
-        {
+        } else if (mTileLayer) {
+            mTileLayer->properties()->unite(*mProperties);
+        } else if (mObjectGroup) {
+            mObjectGroup->properties()->unite(*mProperties);
+        } else {
             mMap->properties()->unite(*mProperties);
         }
 

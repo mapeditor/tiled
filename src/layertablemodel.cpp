@@ -44,10 +44,9 @@ int LayerTableModel::columnCount(const QModelIndex &parent) const
 QVariant LayerTableModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole) {
-        const QList<Layer*> &layers = mMap->layers();
-        const int row = layers.size() - index.row() - 1;
-        if (row >= 0)
-            return layers.at(row)->name();
+        const int layerIndex = toLayerIndex(index);
+        if (layerIndex >= 0)
+            return mMap->layers().at(layerIndex)->name();
     }
     return QVariant();
 }
@@ -61,6 +60,15 @@ QVariant LayerTableModel::headerData(int section, Qt::Orientation orientation,
         return tr("Name");
     }
     return QVariant();
+}
+
+int LayerTableModel::toLayerIndex(const QModelIndex &index) const
+{
+    if (index.isValid()) {
+        return mMap->layers().size() - index.row() - 1;
+    } else {
+        return -1;
+    }
 }
 
 void LayerTableModel::setMap(Map *map)

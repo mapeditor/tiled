@@ -33,7 +33,8 @@ namespace Internal {
 /**
  * A model wrapping the layers of a map. Used to display the layers in a view.
  */
-class LayerTableModel : public QAbstractTableModel {
+class LayerTableModel : public QAbstractTableModel
+{
     public:
         /**
          * Constructor.
@@ -62,6 +63,11 @@ class LayerTableModel : public QAbstractTableModel {
          */
         QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
+
+        /**
+         * Returns the layer index associated with a given model index.
+         */
+        int toLayerIndex(const QModelIndex &index) const;
 
         /**
          * Returns the map associated with this model.

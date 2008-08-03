@@ -22,6 +22,7 @@
 #ifndef LAYER_H
 #define LAYER_H
 
+#include <QMap>
 #include <QPixmap>
 #include <QString>
 #include <QVector>
@@ -107,6 +108,11 @@ class Layer {
          */
         int height() const { return mHeight; }
 
+        /**
+         * Returns a pointer to the properties of this layer.
+         */
+        QMap<QString, QString>* properties() { return &mProperties; }
+
     protected:
         QString mName;
         int mX;
@@ -116,6 +122,7 @@ class Layer {
         float mOpacity;
         bool mVisible;
         Map *mMap;
+        QMap<QString, QString> mProperties;
 };
 
 } // namespace Tiled
