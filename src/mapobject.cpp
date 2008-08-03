@@ -30,7 +30,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mY(y),
     mWidth(width),
     mHeight(height),
-    mType(type)
+    mType(type),
+    mObjectGroup(0)
 {
 }
 

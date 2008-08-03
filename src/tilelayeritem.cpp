@@ -53,6 +53,9 @@ void TileLayerItem::paint(QPainter *painter,
 {
     Q_UNUSED(widget);
 
+    if (!mLayer->visible() || mLayer->opacity() == 0.0f)
+        return;
+
     const Map* const map = mLayer->map();
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
@@ -67,6 +70,8 @@ void TileLayerItem::paint(QPainter *painter,
 
     // TODO: Display a border around the layer when selected
     //painter->fillRect(boundingRect(), Qt::blue);
+
+    painter->setOpacity(mLayer->opacity());
 
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {

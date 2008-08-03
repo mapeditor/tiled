@@ -27,6 +27,8 @@
 
 namespace Tiled {
 
+class ObjectGroup;
+
 /**
  * An object on a map.
  */
@@ -103,6 +105,18 @@ class MapObject {
          */
         QMap<QString, QString>* properties() { return &mProperties; }
 
+        /**
+         * Returns the object group this object belongs to.
+         */
+        ObjectGroup *objectGroup() const { return mObjectGroup; }
+
+        /**
+         * Sets the object group this object belongs to. Should only be called
+         * from the ObjectGroup class.
+         */
+        void setObjectGroup(ObjectGroup *objectGroup)
+        { mObjectGroup = objectGroup; }
+
     private:
         QString mName;
         int mX;
@@ -111,6 +125,7 @@ class MapObject {
         int mHeight;
         QString mType;
         QMap<QString, QString> mProperties;
+        ObjectGroup *mObjectGroup;
 };
 
 } // namespace Tiled

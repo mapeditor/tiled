@@ -37,6 +37,7 @@ MapScene::MapScene(QObject *parent):
     mMap(0),
     mGridVisible(true)
 {
+    setBackgroundBrush(Qt::darkGray);
 }
 
 void MapScene::setMap(Map *map)

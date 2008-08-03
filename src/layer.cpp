@@ -30,6 +30,8 @@ Layer::Layer(const QString &name, int x, int y, int width, int height,
     mY(y),
     mWidth(width),
     mHeight(height),
+    mOpacity(1.0f),
+    mVisible(true),
     mMap(map)
 {
 }

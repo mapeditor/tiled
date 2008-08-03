@@ -22,6 +22,7 @@
 #include "mapobjectitem.h"
 
 #include "mapobject.h"
+#include "objectgroup.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -61,6 +62,13 @@ void MapObjectItem::paint(QPainter *painter,
 {
     Q_UNUSED(widget);
     Q_UNUSED(option);
+
+    const ObjectGroup *objectGroup = mObject->objectGroup();
+    if (objectGroup) {
+        if (!objectGroup->visible() || objectGroup->opacity() == 0.0f)
+            return;
+        painter->setOpacity(objectGroup->opacity());
+    }
 
     Qt::GlobalColor color;
     const QString &type = mObject->type();

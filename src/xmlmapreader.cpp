@@ -85,6 +85,7 @@ class TmxHandler : public QXmlDefaultHandler
     private:
         void unexpectedElement(const QString &element,
                                const QString &expectedParent);
+        void readLayerAttributes(const QXmlAttributes &atts, Layer *layer);
 
         QString mMapPath;
         Map *mMap;
@@ -217,6 +218,8 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const int height = atts.value(QLatin1String("height")).toInt();
 
         mTileLayer = new TileLayer(name, x, y, width, height);
+        readLayerAttributes(atts, mTileLayer);
+
         qDebug() << "Layer:" << name << x << y << width << height;
     }
     else if (localName == QLatin1String("data"))
@@ -233,6 +236,8 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const int height = atts.value(QLatin1String("height")).toInt();
 
         mObjectGroup = new ObjectGroup(name, x, y, width, height);
+        readLayerAttributes(atts, mObjectGroup);
+
         qDebug() << "Object Group:" << name << x << y << width << height;
     }
     else if (localName == QLatin1String("properties"))
@@ -409,4 +414,17 @@ void TmxHandler::unexpectedElement(const QString &element,
 {
     mError = QObject::tr("\"%1\" element outside of \"%2\" element.")
              .arg(element, expectedParent);
+}
+
+void TmxHandler::readLayerAttributes(const QXmlAttributes &atts,
+                                     Layer *layer)
+{
+    bool ok;
+    const float opacity = atts.value(QLatin1String("opacity")).toFloat(&ok);
+    if (ok)
+        layer->setOpacity(opacity);
+
+    const int visible = atts.value(QLatin1String("visible")).toInt(&ok);
+    if (ok)
+        layer->setVisible(visible);
 }

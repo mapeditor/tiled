@@ -39,4 +39,5 @@ ObjectGroup::~ObjectGroup()
 void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
+    object->setObjectGroup(this);
 }

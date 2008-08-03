@@ -57,12 +57,33 @@ class Layer {
         void setName(const QString &name) { mName = name; }
 
         /**
+         * Returns the opacity of this layer.
+         */
+        float opacity() const { return mOpacity; }
+
+        /**
+         * Sets the opacity of this layer.
+         */
+        void setOpacity(float opacity) { mOpacity = opacity; }
+
+        /**
+         * Returns the visibility of this layer.
+         */
+        bool visible() const { return mVisible; }
+
+        /**
+         * Sets the visibility of this layer.
+         */
+        void setVisible(bool visible) { mVisible = visible; }
+
+        /**
          * Returns the map this layer is part of.
          */
         Map *map() const { return mMap; }
 
         /**
-         * Sets the map this layer is part of.
+         * Sets the map this layer is part of. Should only be called from the
+         * Map class.
          */
         void setMap(Map *map) { mMap = map; }
 
@@ -92,6 +113,8 @@ class Layer {
         int mY;
         int mWidth;
         int mHeight;
+        float mOpacity;
+        bool mVisible;
         Map *mMap;
 };
 
