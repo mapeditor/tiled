@@ -21,6 +21,7 @@
 
 #include "tilelayeritem.h"
 
+#include "tile.h"
 #include "tilelayer.h"
 #include "map.h"
 
@@ -75,11 +76,15 @@ void TileLayerItem::paint(QPainter *painter,
 
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
-            const QPixmap& tile = mLayer->tileAt(x, y);
+            Tile *tile = mLayer->tileAt(x, y);
+            if (!tile)
+                continue;
+
+            const QPixmap& img = tile->image();
             painter->drawPixmap((mLayer->x() + x) * tileWidth,
                                 (mLayer->y() + y + 1) * tileHeight
-                                    - tile.height(),
-                                tile);
+                                    - img.height(),
+                                img);
         }
     }
 }

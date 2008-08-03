@@ -45,7 +45,8 @@ HEADERS += decompress.h \
     resizedialog.h \
     resizehelper.h \
     propertiesmodel.h \
-    propertiesdialog.h
+    propertiesdialog.h \
+    tile.h
 FORMS += mainwindow.ui \
     resizedialog.ui \
     propertiesdialog.ui

@@ -24,11 +24,12 @@
 
 #include "layer.h"
 
-#include <QPixmap>
 #include <QString>
 #include <QVector>
 
 namespace Tiled {
+
+class Tile;
 
 /**
  * A tile layer.
@@ -51,16 +52,16 @@ class TileLayer : public Layer {
          * Returns the tile at the given coordinates. The coordinates have to
          * be within this layer.
          */
-        const QPixmap& tileAt(int x, int y) const;
+        Tile* tileAt(int x, int y) const;
 
         /**
          * Sets the tile for the given coordinates.
          */
-        void setTile(int x, int y, const QPixmap &img);
+        void setTile(int x, int y, Tile *tile);
 
     private:
         int mMaxTileHeight;
-        QVector<QPixmap> mTiles;
+        QVector<Tile*> mTiles;
 };
 
 } // namespace Tiled

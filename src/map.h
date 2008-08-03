@@ -24,12 +24,12 @@
 
 #include <QList>
 #include <QMap>
-#include <QPixmap>
 #include <QString>
 
 namespace Tiled {
 
 class Layer;
+class Tile;
 class Tileset;
 class ObjectGroup;
 
@@ -111,7 +111,7 @@ class Map {
          *
          * @param gid the global tile ID, must be at least 0
          */
-        QPixmap tileForGid(int gid) const;
+        Tile* tileForGid(int gid) const;
 
     private:
         int mWidth;

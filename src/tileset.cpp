@@ -20,14 +20,20 @@
  */
 
 #include "tileset.h"
+#include "tile.h"
 
 #include <QDebug>
 
 using namespace Tiled;
 
-QPixmap Tileset::tileImageAt(int id) const
+Tileset::~Tileset()
 {
-    return mTiles.at(id);
+    qDeleteAll(mTiles);
+}
+
+Tile* Tileset::tileAt(int id) const
+{
+    return (id < mTiles.size()) ? mTiles.at(id) : 0;
 }
 
 bool Tileset::loadFromImage(const QString &fileName)
@@ -46,7 +52,7 @@ bool Tileset::loadFromImage(const QString &fileName)
 
     for (int y = 0; y + mTileHeight <= imgHeight; y += mTileHeight + mSpacing)
         for (int x = 0; x + mTileWidth <= imgWidth; x += mTileWidth + mSpacing)
-            mTiles.append(img.copy(x, y, mTileWidth, mTileHeight));
+            mTiles.append(new Tile(img.copy(x, y, mTileWidth, mTileHeight)));
 
     mSource = fileName;
     return true;

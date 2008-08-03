@@ -19,28 +19,47 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "tilelayer.h"
-#include "tile.h"
+#ifndef TILE_H
+#define TILE_H
 
-using namespace Tiled;
+#include <QMap>
+#include <QPixmap>
+#include <QString>
 
-TileLayer::TileLayer(const QString &name, int x, int y, int width, int height,
-                     Map *map):
-    Layer(name, x, y, width, height, map),
-    mMaxTileHeight(0),
-    mTiles(width * height)
+namespace Tiled {
+
+class Tile
 {
-}
+public:
+    Tile(const QPixmap &image):
+        mImage(image)
+    {}
 
-Tile* TileLayer::tileAt(int x, int y) const
-{
-    return mTiles.at(x + y * mWidth);
-}
+    /**
+     * Returns the image of this tile.
+     */
+    const QPixmap &image() const { return mImage; }
 
-void TileLayer::setTile(int x, int y, Tile *tile)
-{
-    if (tile && tile->height() > mMaxTileHeight)
-        mMaxTileHeight = tile->height();
+    /**
+     * Returns the width of this tile.
+     */
+    int width() const { return mImage.width(); }
 
-    mTiles[x + y * mWidth] = tile;
-}
+    /**
+     * Returns the height of this tile.
+     */
+    int height() const { return mImage.height(); }
+
+    /**
+     * Returns a pointer to the properties of this tile.
+     */
+    QMap<QString, QString>* properties() { return &mProperties; }
+
+private:
+    QPixmap mImage;
+    QMap<QString, QString> mProperties;
+};
+
+} // namespace Tiled
+
+#endif // TILE_H

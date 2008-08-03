@@ -23,6 +23,7 @@
 
 #include "decompress.h"
 #include "map.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "objectgroup.h"
@@ -54,6 +55,7 @@ class TmxHandler : public QXmlDefaultHandler
             mObjectGroup(0),
             mObject(0),
             mTileset(0),
+            mTileId(-1),
             mProperties(0),
             mProperty(0)
         {}
@@ -99,6 +101,7 @@ class TmxHandler : public QXmlDefaultHandler
 
         Tileset *mTileset;
         int mTilesetFirstGid;
+        int mTileId;
 
         QMap<QString, QString> *mProperties;
         QPair<QString, QString> *mProperty;
@@ -190,6 +193,16 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         mTileset = new Tileset(name, tileWidth, tileHeight, tileSpacing);
         qDebug() << "Tileset:" << name << mTilesetFirstGid
             << tileWidth << tileHeight;
+    }
+    else if (localName == QLatin1String("tile"))
+    {
+        // TODO: Add support for non-binary encoded maps (<tile gid=""/>)
+        if (!mTileset) {
+            unexpectedElement(localName, QLatin1String("tileset"));
+            return false;
+        }
+
+        mTileId = atts.value(QLatin1String("id")).toInt();
     }
     else if (localName == QLatin1String("image"))
     {
@@ -309,7 +322,7 @@ bool TmxHandler::characters(const QString &ch)
                 data[i + 2] << 16 |
                 data[i + 3] << 24;
 
-            QPixmap tile = mMap->tileForGid(gid);
+            Tile *tile = mMap->tileForGid(gid);
             mTileLayer->setTile(x, y, tile);
 
             x++;
@@ -347,6 +360,10 @@ bool TmxHandler::endElement(const QString &namespaceURI,
         mMap->addTileset(mTileset, mTilesetFirstGid);
         mTileset = 0;
     }
+    else if (localName == QLatin1String("tile"))
+    {
+        mTileId = -1;
+    }
     else if (localName == QLatin1String("properties"))
     {
         if (mObject) {
@@ -357,6 +374,16 @@ bool TmxHandler::endElement(const QString &namespaceURI,
             mTileLayer->properties()->unite(*mProperties);
         } else if (mObjectGroup) {
             mObjectGroup->properties()->unite(*mProperties);
+        } else if (mTileId >= 0) {
+            Tile *tile = mTileset->tileAt(mTileId);
+            if (tile) {
+                tile->properties()->unite(*mProperties);
+            } else {
+                mError = QObject::tr("Unable to assign properties to tile %1 "
+                                     "of tileset '%2'")
+                        .arg(mTileId).arg(mTileset->name());
+                return false;
+            }
         } else {
             mMap->properties()->unite(*mProperties);
         }

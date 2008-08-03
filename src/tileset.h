@@ -22,11 +22,12 @@
 #ifndef TILESET_H
 #define TILESET_H
 
-#include <QPixmap>
 #include <QList>
 #include <QString>
 
 namespace Tiled {
+
+class Tile;
 
 /**
  * A tileset, representing a set of tiles.
@@ -47,6 +48,11 @@ class Tileset
         }
 
         /**
+         * Destructor.
+         */
+        ~Tileset();
+
+        /**
          * Returns the name of this tileset.
          */
         const QString &name() const { return mName; }
@@ -57,9 +63,9 @@ class Tileset
         void setName(const QString &name) { mName = name; }
 
         /**
-         * Returns the image for the given tile ID.
+         * Returns the tile for the given tile ID.
          */
-        QPixmap tileImageAt(int id) const;
+        Tile* tileAt(int id) const;
 
         /**
          * Returns the number of tiles in this tileset.
@@ -85,7 +91,7 @@ class Tileset
         int mTileWidth;
         int mTileHeight;
         int mSpacing;
-        QList<QPixmap> mTiles;
+        QList<Tile*> mTiles;
 };
 
 } // namespace Tiled
