@@ -211,14 +211,16 @@ bool TmxHandler::startElement(const QString &namespaceURI,
             return false;
         }
 
-        const QString source = atts.value(QLatin1String("source"));
+        QString source = atts.value(QLatin1String("source"));
         // TODO: Add support for transparent color
         //const QString trans = atts.value(QLatin1String("trans"));
 
-        const QString fullPath = mMapPath + QDir::separator() + source;
-        if (!mTileset->loadFromImage(fullPath)) {
+        if (QDir::isRelativePath(source))
+            source = mMapPath + QDir::separator() + source;
+
+        if (!mTileset->loadFromImage(source)) {
             mError = QObject::tr("Error loading tileset image:\n'%1'")
-                .arg(fullPath);
+                .arg(source);
             return false;
         }
     }
