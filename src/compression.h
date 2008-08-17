@@ -19,8 +19,8 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef DECOMPRESS_H
-#define DECOMPRESS_H
+#ifndef COMPRESSION_H
+#define COMPRESSION_H
 
 class QByteArray;
 
@@ -40,6 +40,17 @@ namespace Internal {
  * @return the uncompressed data, or a null QByteArray if decompressing failed
  */
 QByteArray decompress(const QByteArray &data, int expectedSize = 1024);
+
+/**
+ * Compresses the give data in either gzip or zlib format. Returns a null
+ * QByteArray if compression failed.
+ *
+ * Needed because qCompress does not support gzip compression.
+ *
+ * @param data the uncompressed data
+ * @return the compressed data, or a null QByteArray if compression failed
+ */
+QByteArray compress(const QByteArray &data);
 
 } // namespace Internal
 } // namespace Tiled

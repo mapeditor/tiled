@@ -21,7 +21,7 @@
 
 #include "xmlmapreader.h"
 
-#include "decompress.h"
+#include "compression.h"
 #include "map.h"
 #include "tile.h"
 #include "tilelayer.h"

@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "decompress.h"
+#include "compression.h"
 
 #include <zlib.h>
 #include <QByteArray>
@@ -112,4 +112,11 @@ QByteArray Tiled::Internal::decompress(const QByteArray &data, int expectedSize)
     QByteArray outByteArray(out, outLength);
     free(out);
     return outByteArray;
+}
+
+QByteArray Tiled::Internal::compress(const QByteArray &data)
+{
+    Q_UNUSED(data);
+    // TODO: Implement gzip/zlib compression
+    return QByteArray();
 }
