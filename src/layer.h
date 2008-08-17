@@ -109,9 +109,15 @@ class Layer {
         int height() const { return mHeight; }
 
         /**
-         * Returns a pointer to the properties of this layer.
+         * Returns a pointer to the properties of this layer. This allows
+         * modification of the properties.
          */
         QMap<QString, QString>* properties() { return &mProperties; }
+
+        /**
+         * Returns a copy of the properties of this layer.
+         */
+        QMap<QString, QString> properties() const { return mProperties; }
 
     protected:
         QString mName;

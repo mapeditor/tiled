@@ -22,6 +22,7 @@
 #include "map.h"
 
 #include "layer.h"
+#include "tile.h"
 #include "tileset.h"
 
 using namespace Tiled;
@@ -60,6 +61,11 @@ void Map::addTileset(Tileset *tileset, int firstGid)
     mTilesets.insert(firstGid, tileset);
 }
 
+QMap<int, Tileset*> Map::tilesets() const
+{
+    return mTilesets;
+}
+
 Tile* Map::tileForGid(int gid) const
 {
     Q_ASSERT(gid >= 0);
@@ -67,6 +73,8 @@ Tile* Map::tileForGid(int gid) const
     if (gid == 0)
         return 0;
 
+    // TODO: This assertion can fail on trying to load an invalid map file
+    //       should result in a readable error messages instead of a crash
     Q_ASSERT(mTilesets.size() > 0);
 
     // Find the tileset containing this tile
@@ -76,4 +84,20 @@ Tile* Map::tileForGid(int gid) const
     const Tileset *tileset = i.value();
 
     return (tileset) ? tileset->tileAt(tileId) : 0;
+}
+
+int Map::gidForTile(const Tile *tile) const
+{
+    if (!tile)
+        return 0;
+
+    const Tileset *tileset = tile->tileset();
+
+    // Find the first GID for the tileset
+    QMap<int, Tileset*>::const_iterator i = mTilesets.begin();
+    QMap<int, Tileset*>::const_iterator i_end = mTilesets.end();
+    while (i != i_end && i.value() != tileset)
+        ++i;
+
+    return (i != i_end) ? i.key() + tile->id() : 0;
 }

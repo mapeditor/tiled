@@ -60,6 +60,7 @@ private:
     void writeSettings();
     void readSettings();
     QStringList recentFiles() const;
+    QString fileDialogStartLocation() const;
 
     /**
      * Add the given file to the recent files list.

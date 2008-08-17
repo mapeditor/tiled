@@ -28,6 +28,7 @@
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "xmlmapreader.h"
+#include "xmlmapwriter.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -57,9 +58,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             SLOT(editMapProperties()));
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
-    // TODO: Implement saving
-    mUi.actionSave->setVisible(false);
 
     QMenu* menu = new QMenu(this);
     for (int i = 0; i < MaxRecentFiles; ++i)
@@ -108,7 +106,7 @@ void MainWindow::openFile(const QString &fileName)
         XmlMapReader mapReader;
         Map *map = mapReader.read(fileName);
         if (!map) {
-            QMessageBox::critical(this, tr("Error while reading map"),
+            QMessageBox::critical(this, tr("Error while opening map"),
                                   mapReader.errorString());
             return;
         }
@@ -127,18 +125,27 @@ void MainWindow::openFile(const QString &fileName)
 
 void MainWindow::openFile()
 {
-    QStringList files = recentFiles();
-    QString start;
-    if (!files.isEmpty())
-        start = files.first();
-
+    const QString start = fileDialogStartLocation();
     openFile(QFileDialog::getOpenFileName(this, tr("Open Map"), start));
 }
 
 void MainWindow::saveFile()
 {
-    const QString fileName = QFileDialog::getSaveFileName(this);
-    qDebug() << fileName;
+    const QString start = fileDialogStartLocation();
+    const QString fileName =
+            QFileDialog::getSaveFileName(this, QString(), start);
+    if (!fileName.isEmpty()) {
+        XmlMapWriter mapWriter;
+        if (!mapWriter.write(mScene->map(), fileName)) {
+            QMessageBox::critical(this, tr("Error while saving map"),
+                                  mapWriter.errorString());
+            return;
+        }
+
+        setWindowFilePath(fileName);
+        setRecentFile(fileName);
+        // TODO: Once we can modify the map, remember the new saved state
+    }
 }
 
 void MainWindow::resizeMap()
@@ -148,8 +155,10 @@ void MainWindow::resizeMap()
                                   mScene->map()->height()));
 
     if (resizeDialog.exec()) {
-        mScene->map()->setWidth(resizeDialog.newSize().width());
-        mScene->map()->setHeight(resizeDialog.newSize().height());
+        const QSize newSize = resizeDialog.newSize();
+        Map *map = mScene->map();
+        map->setWidth(newSize.width());
+        map->setHeight(newSize.height());
     }
     // TODO: Actually implement map resizing
 }
@@ -172,6 +181,12 @@ void MainWindow::openRecentFile()
 QStringList MainWindow::recentFiles() const
 {
     return mSettings.value(QLatin1String("recentFiles")).toStringList();
+}
+
+QString MainWindow::fileDialogStartLocation() const
+{
+    QStringList files = recentFiles();
+    return (!files.isEmpty()) ? files.first() : QString();
 }
 
 void MainWindow::setRecentFile(const QString &fileName)

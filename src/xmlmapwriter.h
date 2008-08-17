@@ -19,40 +19,34 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAPWRITERINTERFACE_H
-#define MAPWRITERINTERFACE_H
+#include "mapwriterinterface.h"
 
-class QString;
+#ifndef XMLMAPWRITER_H
+#define XMLMAPWRITER_H
+
+#include <QObject>
+#include <QString>
 
 namespace Tiled {
+namespace Internal {
 
-class Map;
-
-class MapWriterInterface
+/**
+ * A writer for Tiled's .tmx map format.
+ */
+class XmlMapWriter : public MapWriterInterface
 {
 public:
-    virtual ~MapWriterInterface() {}
+    bool write(const Map *map, const QString &fileName);
 
-    /**
-     * Writes the given map to the given file name.
-     *
-     * @return <code>true</code> on success, <code>false</code> when an error
-     *         occurred. The error can be retrieved by errorString().
-     */
-    virtual bool write(const Map *map, const QString &fileName) = 0;
+    QString name() const { return QObject::tr("XML map writer (*.tmx)"); }
 
-    /**
-     * Returns the name of this map writer.
-     */
-    virtual QString name() const = 0;
+    QString errorString() const { return mError; }
 
-    /**
-     * Returns the error to be shown to the user if an error occured while
-     * trying to write a map.
-     */
-    virtual QString errorString() const = 0;
+private:
+    QString mError;
 };
 
+} // namespace Internal
 } // namespace Tiled
 
 #endif // MAPWRITERINTERFACE_H

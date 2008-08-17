@@ -39,11 +39,11 @@ class Tileset
          * Constructor.
          */
         Tileset(const QString &name, int tileWidth, int tileHeight,
-                int spacing = 0):
+                int tileSpacing = 0):
             mName(name),
             mTileWidth(tileWidth),
             mTileHeight(tileHeight),
-            mSpacing(spacing)
+            mTileSpacing(tileSpacing)
         {
         }
 
@@ -61,6 +61,21 @@ class Tileset
          * Sets the name of this tileset.
          */
         void setName(const QString &name) { mName = name; }
+
+        /**
+         * Returns the width of the tiles in this tileset.
+         */
+        int tileWidth() const { return mTileWidth; }
+
+        /**
+         * Returns the height of the tiles in this tileset.
+         */
+        int tileHeight() const { return mTileHeight; }
+
+        /**
+         * Returns the spacing between the tiles in the tileset image.
+         */
+        int tileSpacing() const { return mTileSpacing; }
 
         /**
          * Returns the tile for the given tile ID.
@@ -85,12 +100,18 @@ class Tileset
          */
         bool loadFromImage(const QString &fileName);
 
+        /**
+         * Returns the file name of the image that is the source of this
+         * tileset.
+         */
+        QString source() const { return mSource; }
+
     private:
         QString mName;
         QString mSource;
         int mTileWidth;
         int mTileHeight;
-        int mSpacing;
+        int mTileSpacing;
         QList<Tile*> mTiles;
 };
 

@@ -28,12 +28,26 @@
 
 namespace Tiled {
 
+class Tileset;
+
 class Tile
 {
 public:
-    Tile(const QPixmap &image):
+    Tile(const QPixmap &image, int id, Tileset *tileset):
+        mId(id),
+        mTileset(tileset),
         mImage(image)
     {}
+
+    /**
+     * Returns ID of this tile within its tileset.
+     */
+    int id() const { return mId; }
+
+    /**
+     * Returns the tileset that this tile is part of.
+     */
+    Tileset *tileset() const { return mTileset; }
 
     /**
      * Returns the image of this tile.
@@ -51,11 +65,19 @@ public:
     int height() const { return mImage.height(); }
 
     /**
-     * Returns a pointer to the properties of this tile.
+     * Returns a pointer to the properties of this tile. This allows
+     * modification of the properties.
      */
     QMap<QString, QString>* properties() { return &mProperties; }
 
+    /**
+     * Returns a copy of the properties of this map.
+     */
+    QMap<QString, QString> properties() const { return mProperties; }
+
 private:
+    int mId;
+    Tileset *mTileset;
     QPixmap mImage;
     QMap<QString, QString> mProperties;
 };

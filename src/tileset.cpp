@@ -45,14 +45,16 @@ bool Tileset::loadFromImage(const QString &fileName)
     if (img.isNull())
         return false;
 
-    const int imgWidth = img.width();
-    const int imgHeight = img.height();
+    qDebug() << "Loaded image" << fileName << img.width() << img.height();
 
-    qDebug() << "Loaded image" << fileName << imgWidth << imgHeight;
+    const int stopWidth = img.width() - mTileWidth;
+    const int stopHeight = img.height() - mTileHeight;
 
-    for (int y = 0; y + mTileHeight <= imgHeight; y += mTileHeight + mSpacing)
-        for (int x = 0; x + mTileWidth <= imgWidth; x += mTileWidth + mSpacing)
-            mTiles.append(new Tile(img.copy(x, y, mTileWidth, mTileHeight)));
+    for (int y = 0; y <= stopHeight; y += mTileHeight + mTileSpacing)
+        for (int x = 0; x <= stopWidth; x += mTileWidth + mTileSpacing)
+            mTiles.append(new Tile(img.copy(x, y, mTileWidth, mTileHeight),
+                                   mTiles.size(),
+                                   this));
 
     mSource = fileName;
     return true;

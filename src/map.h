@@ -94,9 +94,15 @@ class Map {
         void insertLayer(int index, Layer *layer);
 
         /**
-         * Returns a pointer to the properties of this map.
+         * Returns a pointer to the properties of this map. This allows
+         * modification of the properties.
          */
         QMap<QString, QString>* properties() { return &mProperties; }
+
+        /**
+         * Returns a copy of the properties of this map.
+         */
+        QMap<QString, QString> properties() const { return mProperties; }
 
         /**
          * Adds a tileset to this map.
@@ -106,12 +112,34 @@ class Map {
          */
         void addTileset(Tileset *tileset, int firstGid);
 
+        // TODO: Do the gid/tile mapping somewhere else
+        //       It shouldn't be necessary for either the Map, Tile or Tileset
+        //       classes to deal with global tile IDs, since they are an
+        //       implementation detail related to how the map is saved and
+        //       loaded.
+
+        /**
+         * Returns the tilesets that the tiles on this map are using, mapped
+         * by their first global ID.
+         */
+        QMap<int, Tileset*> tilesets() const;
+
         /**
          * Returns the tile for the given global tile ID.
          *
          * @param gid the global tile ID, must be at least 0
+         * @return the tile associated with the given global tile ID, or 0 if
+         *         not found
          */
         Tile* tileForGid(int gid) const;
+
+        /**
+         * Returns the global tile ID for the given tile.
+         *
+         * @param tile the tile to return the global ID for
+         * @return the appropriate global tile ID, or 0 if not found
+         */
+        int gidForTile(const Tile *tile) const;
 
     private:
         int mWidth;

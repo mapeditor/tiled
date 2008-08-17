@@ -7,7 +7,7 @@ QT += core \
     gui \
     xml
 CONFIG += debug
-SOURCES += decompress.cpp \
+SOURCES += compression.cpp \
     main.cpp \
     mainwindow.cpp \
     xmlmapreader.cpp \
@@ -25,8 +25,9 @@ SOURCES += decompress.cpp \
     resizehelper.cpp \
     resizedialog.cpp \
     propertiesmodel.cpp \
-    propertiesdialog.cpp
-HEADERS += decompress.h \
+    propertiesdialog.cpp \
+    xmlmapwriter.cpp
+HEADERS += compression.h \
     mainwindow.h \
     mapreaderinterface.h \
     mapwriterinterface.h \
@@ -46,7 +47,8 @@ HEADERS += decompress.h \
     resizehelper.h \
     propertiesmodel.h \
     propertiesdialog.h \
-    tile.h
+    tile.h \
+    xmlmapwriter.h
 FORMS += mainwindow.ui \
     resizedialog.ui \
     propertiesdialog.ui

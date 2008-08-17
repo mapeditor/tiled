@@ -101,9 +101,15 @@ class MapObject {
         void setProperty(const QString &name, const QString &value);
 
         /**
-         * Returns a pointer to the properties of this object.
+         * Returns a pointer to the properties of this object. This allows
+         * modification of the properties.
          */
         QMap<QString, QString>* properties() { return &mProperties; }
+
+        /**
+         * Returns a copy of the properties of this object.
+         */
+        QMap<QString, QString> properties() const { return mProperties; }
 
         /**
          * Returns the object group this object belongs to.
