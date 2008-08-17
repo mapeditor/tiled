@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
+    connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
     connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi.actionMapProperties, SIGNAL(triggered()),
@@ -118,8 +119,7 @@ void MainWindow::openFile(const QString &fileName)
         updateActions();
         delete previousMap;
 
-        setWindowFilePath(fileName);
-        setRecentFile(fileName);
+        setCurrentFileName(fileName);
     }
 }
 
@@ -129,23 +129,35 @@ void MainWindow::openFile()
     openFile(QFileDialog::getOpenFileName(this, tr("Open Map"), start));
 }
 
+bool MainWindow::saveFile(const QString &fileName)
+{
+    XmlMapWriter mapWriter;
+    if (!mapWriter.write(mScene->map(), fileName)) {
+        QMessageBox::critical(this, tr("Error while saving map"),
+                              mapWriter.errorString());
+        return false;
+    }
+
+    setCurrentFileName(fileName);
+    // TODO: Once we can modify the map, remember the new saved state
+    return true;
+}
+
 void MainWindow::saveFile()
+{
+    if (!mCurrentFileName.isEmpty())
+        saveFile(mCurrentFileName);
+    else
+        saveFileAs();
+}
+
+void MainWindow::saveFileAs()
 {
     const QString start = fileDialogStartLocation();
     const QString fileName =
             QFileDialog::getSaveFileName(this, QString(), start);
-    if (!fileName.isEmpty()) {
-        XmlMapWriter mapWriter;
-        if (!mapWriter.write(mScene->map(), fileName)) {
-            QMessageBox::critical(this, tr("Error while saving map"),
-                                  mapWriter.errorString());
-            return;
-        }
-
-        setWindowFilePath(fileName);
-        setRecentFile(fileName);
-        // TODO: Once we can modify the map, remember the new saved state
-    }
+    if (!fileName.isEmpty())
+        saveFile(fileName);
 }
 
 void MainWindow::resizeMap()
@@ -230,6 +242,7 @@ void MainWindow::updateActions()
     const bool map = mScene->map() != 0;
 
     mUi.actionSave->setEnabled(map);
+    mUi.actionSaveAs->setEnabled(map);
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
 }
@@ -254,6 +267,13 @@ void MainWindow::readSettings()
             mSettings.value(QLatin1String("gridVisible"), true).toBool());
     mSettings.endGroup();
     updateRecentFiles();
+}
+
+void MainWindow::setCurrentFileName(const QString &fileName)
+{
+    mCurrentFileName = fileName;
+    setWindowFilePath(mCurrentFileName);
+    setRecentFile(mCurrentFileName);
 }
 
 void MainWindow::aboutTiled()

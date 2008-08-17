@@ -46,9 +46,17 @@ public:
      */
     void openFile(const QString &fileName);
 
+    /**
+     * Save the current map to the given file name. When saved succesfully, the
+     * file is added to the list of recent files.
+     * @return <code>true</code> on success, <code>false</code> on failure
+     */
+    bool saveFile(const QString &fileName);
+
 private slots:
     void openFile();
     void saveFile();
+    void saveFileAs();
     void resizeMap();
     void editMapProperties();
     void aboutTiled();
@@ -59,6 +67,7 @@ private:
     void updateActions();
     void writeSettings();
     void readSettings();
+    void setCurrentFileName(const QString &fileName);
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
 
@@ -76,6 +85,7 @@ private:
     MapScene *mScene;
     LayerDock *mLayerDock;
     QSettings mSettings;
+    QString mCurrentFileName;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];

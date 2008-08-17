@@ -55,4 +55,4 @@ QByteArray compress(const QByteArray &data);
 } // namespace Internal
 } // namespace Tiled
 
-#endif // DECOMPRESS_H
+#endif // COMPRESSION_H
