@@ -22,9 +22,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QSettings>
 #include "ui_mainwindow.h"
+
+class QUndoStack;
 
 namespace Tiled {
 namespace Internal {
@@ -59,6 +61,7 @@ private slots:
     void saveFileAs();
     void resizeMap();
     void editMapProperties();
+    void updateModified();
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();
@@ -86,6 +89,7 @@ private:
     LayerDock *mLayerDock;
     QSettings mSettings;
     QString mCurrentFileName;
+    QUndoStack *mUndoStack;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];

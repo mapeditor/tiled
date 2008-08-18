@@ -19,42 +19,38 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef LAYERDOCK_H
-#define LAYERDOCK_H
+#ifndef CHANGEPROPERTIES_H
+#define CHANGEPROPERTIES_H
 
-#include <QDockWidget>
-
-class QUndoStack;
+#include <QMap>
+#include <QString>
+#include <QUndoCommand>
 
 namespace Tiled {
-
-class Map;
-
 namespace Internal {
 
-class LayerTableModel;
-
-/**
- * The dock widget that displays the map layers.
- */
-class LayerDock : public QDockWidget
+class ChangeProperties : public QUndoCommand
 {
-    public:
-        /**
-         * Constructor.
-         */
-        LayerDock(QUndoStack *undoStack, QWidget *parent = 0);
+public:
+    /**
+     * Constructs a new 'Change Properties' command.
+     *
+     * @param properties    the properties instance that should be changed
+     * @param newProperties the new properties that should be applied
+     */
+    ChangeProperties(QMap<QString, QString> *properties,
+                     const QMap<QString, QString> &newProperties);
+    void undo();
+    void redo();
 
-        /**
-         * Sets the map for which the layers should be displayed.
-         */
-        void setMap(Map *map);
+private:
+    void swapProperties();
 
-    private:
-        LayerTableModel *mLayerTableModel;
+    QMap<QString, QString> *mProperties;
+    QMap<QString, QString> mNewProperties;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // LAYERDOCK_H
+#endif // CHANGEPROPERTIES_H

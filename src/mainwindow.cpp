@@ -33,6 +33,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QUndoStack>
+#include <QUndoView>
 #include <QDebug>
 
 using namespace Tiled::Internal;
@@ -42,14 +44,36 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 {
     mUi.setupUi(this);
 
-    mLayerDock = new LayerDock(this);
+    mUndoStack = new QUndoStack(this);
+    QAction *undoAction = mUndoStack->createUndoAction(this, tr("Undo"));
+    QAction *redoAction = mUndoStack->createRedoAction(this, tr("Redo"));
+    connect(mUndoStack, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
+
+    // TODO: Find a way to avoid having to pass around the QUndoStack everwhere
+    mLayerDock = new LayerDock(mUndoStack, this);
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+
+    // Mainly for debugging, but might also be useful on the long run
+    QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
+    undoViewDock->setObjectName(QLatin1String("undoViewDock"));
+    undoViewDock->setWidget(new QUndoView(mUndoStack, undoViewDock));
+    addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
     mUi.actionCopy->setShortcut(QKeySequence::Copy);
     mUi.actionPaste->setShortcut(QKeySequence::Paste);
+    undoAction->setShortcut(QKeySequence::Undo);
+    redoAction->setShortcut(QKeySequence::Redo);
 
+    mUi.menuEdit->addAction(undoAction);
+    mUi.menuEdit->addAction(redoAction);
+
+    // TODO: Add support for copy and paste
+    mUi.actionCopy->setVisible(false);
+    mUi.actionPaste->setVisible(false);
+
+    // TODO: Confirm exit when there are unsaved changes
     connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
@@ -100,6 +124,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::openFile(const QString &fileName)
 {
+    // TODO: Make sure to confirm opening of a file when there are changes
+
     // Use the XML map reader to read the map (assuming it's a .tmx file)
     // TODO: Add support for input/output plugins
     if (!fileName.isEmpty()) {
@@ -116,10 +142,11 @@ void MainWindow::openFile(const QString &fileName)
         mScene->setMap(map);
         mLayerDock->setMap(map);
         mUi.graphicsView->centerOn(0, 0);
-        updateActions();
         delete previousMap;
 
+        mUndoStack->clear();
         setCurrentFileName(fileName);
+        updateActions();
     }
 }
 
@@ -138,8 +165,8 @@ bool MainWindow::saveFile(const QString &fileName)
         return false;
     }
 
+    mUndoStack->setClean();
     setCurrentFileName(fileName);
-    // TODO: Once we can modify the map, remember the new saved state
     return true;
 }
 
@@ -177,10 +204,15 @@ void MainWindow::resizeMap()
 
 void MainWindow::editMapProperties()
 {
-    // TODO: Implement editing, currently this only shows the properties
-    PropertiesDialog propertiesDialog(this);
-    propertiesDialog.setProperties(*mScene->map()->properties());
+    PropertiesDialog propertiesDialog(mUndoStack, this);
+    propertiesDialog.setProperties(mScene->map()->properties());
     propertiesDialog.exec();
+}
+
+void MainWindow::updateModified()
+{
+    setWindowModified(!mUndoStack->isClean());
+    updateActions();
 }
 
 void MainWindow::openRecentFile()
@@ -241,7 +273,7 @@ void MainWindow::updateActions()
 {
     const bool map = mScene->map() != 0;
 
-    mUi.actionSave->setEnabled(map);
+    mUi.actionSave->setEnabled(map && !mUndoStack->isClean());
     mUi.actionSaveAs->setEnabled(map);
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
@@ -273,6 +305,7 @@ void MainWindow::setCurrentFileName(const QString &fileName)
 {
     mCurrentFileName = fileName;
     setWindowFilePath(mCurrentFileName);
+    setWindowTitle(tr("%1[*] - Tiled").arg(QFileInfo(fileName).fileName()));
     setRecentFile(mCurrentFileName);
 }
 

@@ -40,7 +40,7 @@ int PropertiesModel::columnCount(const QModelIndex &parent) const
 
 QVariant PropertiesModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole) {
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
         const QString &key = mKeys.at(index.row());
         switch (index.column()) {
             case 0: return key;
@@ -50,21 +50,54 @@ QVariant PropertiesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+Qt::ItemFlags PropertiesModel::flags(const QModelIndex &index) const
+{
+    return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+}
+
+bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
+                              int role)
+{
+    if (role == Qt::EditRole) {
+        const QString &key = mKeys.at(index.row());
+        if (index.column() == 0) { // Edit name
+            const QString propertyValue = mProperties.value(key);
+            mProperties.remove(key);
+            mProperties.insert(value.toString(), propertyValue);
+            // Have to request keys and reset because of possible reordering
+            mKeys = mProperties.keys();
+            reset();
+        }
+        else if (index.column() == 1) { // Edit value
+            mProperties.insert(key, value.toString());
+            emit dataChanged(index, index);
+        }
+    }
+    return false;
+}
+
 QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const
 {
-    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
-        switch (section) {
-            case 0: return tr("Name");
-            case 1: return tr("Value");
-        }
+    static QString sectionHeaders[] = {
+        tr("Name"),
+        tr("Value")
+    };
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal
+            && section < 2) {
+        return sectionHeaders[section];
     }
     return QVariant();
 }
 
-void PropertiesModel::setProperties(QMap<QString, QString> properties)
+void PropertiesModel::setProperties(const QMap<QString, QString> &properties)
 {
     mProperties = properties;
     mKeys = mProperties.keys();
     reset();
+}
+
+const QMap<QString, QString> &PropertiesModel::properties() const
+{
+    return mProperties;
 }

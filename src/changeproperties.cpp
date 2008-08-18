@@ -19,40 +19,33 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "propertiesdialog.h"
-#include "ui_propertiesdialog.h"
-
 #include "changeproperties.h"
-#include "propertiesmodel.h"
 
-#include <QUndoStack>
+#include <QObject>
 
 using namespace Tiled::Internal;
 
-PropertiesDialog::PropertiesDialog(QUndoStack *undoStack, QWidget *parent):
-    QDialog(parent),
-    mUndoStack(undoStack),
-    mProperties(0)
+ChangeProperties::ChangeProperties(QMap<QString, QString> *properties,
+                                   const QMap<QString, QString> &newProperties)
+    : mProperties(properties)
+    , mNewProperties(newProperties)
 {
-    mUi = new Ui::PropertiesDialog;
-    mUi->setupUi(this);
-
-    mModel = new PropertiesModel(this);
-    mUi->propertiesView->setModel(mModel);
+    setText(QObject::tr("Change Properties"));
 }
 
-void PropertiesDialog::setProperties(QMap<QString, QString> *properties)
+void ChangeProperties::redo()
 {
-    mProperties = properties;
-    mModel->setProperties(*properties);
+    swapProperties();
 }
 
-void PropertiesDialog::accept()
+void ChangeProperties::undo()
 {
-    const QMap<QString, QString> &properties = mModel->properties();
-    if (mProperties && *mProperties != properties) {
-        mUndoStack->push(new ChangeProperties(mProperties,
-                                              properties));
-    }
-    QDialog::accept();
+    swapProperties();
+}
+
+void ChangeProperties::swapProperties()
+{
+    const QMap<QString, QString> oldProperties = *mProperties;
+    *mProperties = mNewProperties;
+    mNewProperties = oldProperties;
 }

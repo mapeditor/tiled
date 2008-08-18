@@ -28,6 +28,7 @@
 #include <QContextMenuEvent>
 #include <QMenu>
 #include <QTreeView>
+#include <QUndoStack>
 
 using namespace Tiled::Internal;
 
@@ -41,7 +42,8 @@ namespace Internal {
 class LayerView : public QTreeView
 {
     public:
-        LayerView(LayerTableModel *model, QWidget *parent = 0);
+        LayerView(LayerTableModel *model, QUndoStack *undoStack,
+                  QWidget *parent = 0);
 
         QSize sizeHint() const
         {
@@ -49,18 +51,22 @@ class LayerView : public QTreeView
         }
 
         void contextMenuEvent(QContextMenuEvent *event);
+
+    private:
+        QUndoStack *mUndoStack;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-LayerDock::LayerDock(QWidget *parent):
+
+LayerDock::LayerDock(QUndoStack *undoStack, QWidget *parent):
     QDockWidget(tr("Layers"), parent),
     mLayerTableModel(new LayerTableModel(this))
 {
     setObjectName(QLatin1String("layerDock"));
 
-    QTreeView *layerView = new LayerView(mLayerTableModel, this);
+    QTreeView *layerView = new LayerView(mLayerTableModel, undoStack, this);
     setWidget(layerView);
 }
 
@@ -70,8 +76,10 @@ void LayerDock::setMap(Map *map)
 }
 
 
-LayerView::LayerView(LayerTableModel *model, QWidget *parent):
-    QTreeView(parent)
+LayerView::LayerView(LayerTableModel *model, QUndoStack *undoStack,
+                     QWidget *parent):
+    QTreeView(parent),
+    mUndoStack(undoStack)
 {
     setRootIsDecorated(false);
     setHeaderHidden(true);
@@ -94,9 +102,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     if (menu.exec(event->globalPos()) == layerProperties) {
         Layer *layer = m->map()->layers().at(layerIndex);
 
-        // TODO: Implement editing, currently this only shows the properties
-        PropertiesDialog propertiesDialog(this);
-        propertiesDialog.setProperties(*layer->properties());
+        PropertiesDialog propertiesDialog(mUndoStack, this);
+        propertiesDialog.setProperties(layer->properties());
         propertiesDialog.exec();
     }
 }

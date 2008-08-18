@@ -26,6 +26,8 @@
 #include <QMap>
 #include <QString>
 
+class QUndoStack;
+
 namespace Ui {
 class PropertiesDialog;
 }
@@ -41,16 +43,24 @@ class PropertiesDialog : public QDialog
         /**
          * Constructor.
          */
-        PropertiesDialog(QWidget *parent = 0);
+        PropertiesDialog(QUndoStack *undoStack, QWidget *parent = 0);
 
         /**
-         * Sets the properties displayed by this dialog.
+         * Sets the properties edited by this dialog.
          */
-        void setProperties(QMap<QString, QString> properties);
+        void setProperties(QMap<QString, QString> *properties);
+
+        /**
+         * Applies the edited properties. It does this by constructing a
+         * ChangeProperties command and adding it to the undo stack.
+         */
+        void accept();
 
     private:
         Ui::PropertiesDialog *mUi;
         PropertiesModel *mModel;
+        QUndoStack *mUndoStack;
+        QMap<QString, QString> *mProperties;
 };
 
 } // namespace Internal

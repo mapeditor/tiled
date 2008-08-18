@@ -56,15 +56,33 @@ class PropertiesModel : public QAbstractTableModel
                       int role = Qt::DisplayRole) const;
 
         /**
+         * Returns the item flags for the given <i>index</i>. In addition to
+         * enabled and selectable, items are editable.
+         */
+        Qt::ItemFlags flags(const QModelIndex &index) const;
+
+        /**
+         * Sets the value of the data at the given <i>index</i>. This model
+         * supports the Qt::EditRole for both columns.
+         */
+        bool setData(const QModelIndex &index, const QVariant &value,
+                     int role = Qt::EditRole);
+
+        /**
          * Returns the headers for the table.
          */
         QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
 
         /**
-         * Sets the properties returned by this model.
+         * Sets the properties displayed by this model.
          */
-        void setProperties(QMap<QString, QString> properties);
+        void setProperties(const QMap<QString, QString> &properties);
+
+        /**
+         * Returns the, possibly edited, properties.
+         */
+        const QMap<QString, QString> &properties() const;
 
     private:
         QMap<QString, QString> mProperties;
