@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUndoStack = new QUndoStack(this);
     QAction *undoAction = mUndoStack->createUndoAction(this, tr("Undo"));
     QAction *redoAction = mUndoStack->createRedoAction(this, tr("Redo"));
+    redoAction->setIcon(QIcon(QLatin1String(":images/edit-redo.png")));
+    undoAction->setIcon(QIcon(QLatin1String(":images/edit-undo.png")));
     connect(mUndoStack, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
 
     // TODO: Find a way to avoid having to pass around the QUndoStack everwhere
@@ -68,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mUi.menuEdit->addAction(undoAction);
     mUi.menuEdit->addAction(redoAction);
+    mUi.mainToolBar->addAction(undoAction);
+    mUi.mainToolBar->addAction(redoAction);
 
     // TODO: Add support for copy and paste
     mUi.actionCopy->setVisible(false);

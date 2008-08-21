@@ -6,5 +6,7 @@
         <file>images/document-properties.png</file>
         <file>images/document-open-recent.png</file>
         <file>images/clear.png</file>
+        <file>images/edit-redo.png</file>
+        <file>images/edit-undo.png</file>
     </qresource>
 </RCC>
