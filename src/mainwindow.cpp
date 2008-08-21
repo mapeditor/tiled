@@ -30,8 +30,10 @@
 #include "xmlmapreader.h"
 #include "xmlmapwriter.h"
 
+#include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSessionManager>
 #include <QTextStream>
 #include <QUndoStack>
 #include <QUndoView>
@@ -73,7 +75,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionCopy->setVisible(false);
     mUi.actionPaste->setVisible(false);
 
-    // TODO: Confirm exit when there are unsaved changes
     connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
@@ -122,9 +123,27 @@ MainWindow::~MainWindow()
     delete map;
 }
 
+void MainWindow::commitData(QSessionManager &manager)
+{
+    // Play nice with session management and cancel shutdown process when user
+    // requests this
+    if (manager.allowsInteraction())
+        if (!confirmSave())
+            manager.cancel();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (confirmSave())
+        event->accept();
+    else
+        event->ignore();
+}
+
 void MainWindow::openFile(const QString &fileName)
 {
-    // TODO: Make sure to confirm opening of a file when there are changes
+    if (!confirmSave())
+        return;
 
     // Use the XML map reader to read the map (assuming it's a .tmx file)
     // TODO: Add support for input/output plugins
@@ -170,21 +189,41 @@ bool MainWindow::saveFile(const QString &fileName)
     return true;
 }
 
-void MainWindow::saveFile()
+bool MainWindow::saveFile()
 {
     if (!mCurrentFileName.isEmpty())
-        saveFile(mCurrentFileName);
+        return saveFile(mCurrentFileName);
     else
-        saveFileAs();
+        return saveFileAs();
 }
 
-void MainWindow::saveFileAs()
+bool MainWindow::saveFileAs()
 {
     const QString start = fileDialogStartLocation();
     const QString fileName =
             QFileDialog::getSaveFileName(this, QString(), start);
     if (!fileName.isEmpty())
-        saveFile(fileName);
+        return saveFile(fileName);
+    return false;
+}
+
+bool MainWindow::confirmSave()
+{
+    if (mUndoStack->isClean())
+        return true;
+
+    int ret = QMessageBox::warning(
+            this, tr("Unsaved Changes"),
+            tr("There are unsaved changes. Do you want to save now?"),
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+
+    switch (ret) {
+    case QMessageBox::Save:    return saveFile();
+    case QMessageBox::Discard: return true;
+    case QMessageBox::Cancel:
+    default:
+        return false;
+    }
 }
 
 void MainWindow::resizeMap()

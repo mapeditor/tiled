@@ -42,6 +42,8 @@ public:
     MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
     ~MainWindow();
 
+    void commitData(QSessionManager &manager);
+
     /**
      * Opens the given file. When opened succesfully, the file is added to the
      * list of recent files.
@@ -55,10 +57,13 @@ public:
      */
     bool saveFile(const QString &fileName);
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private slots:
     void openFile();
-    void saveFile();
-    void saveFileAs();
+    bool saveFile();
+    bool saveFileAs();
     void resizeMap();
     void editMapProperties();
     void updateModified();
@@ -67,6 +72,14 @@ private slots:
     void clearRecentFiles();
 
 private:
+    /**
+      * Asks the user whether the map should be saved when necessary.
+      *
+      * @return <code>true</code> when any unsaved data is either discarded or
+      *         saved, <code>false</code> when the user cancelled or saving
+      *         failed.
+      */
+    bool confirmSave();
     void updateActions();
     void writeSettings();
     void readSettings();
