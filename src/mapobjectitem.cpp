@@ -96,11 +96,15 @@ void MapObjectItem::paint(QPainter *painter,
     {
         painter->drawEllipse(QRect(mObject->x() - 10 + 1,
                                    mObject->y() - 10 + 1, 20, 20));
+	painter->drawText(QPoint(mObject->x() - 15 + 1, mObject->y() - 15 + 1),
+                          mObject->name());
         pen.setColor(color);
         painter->setPen(pen);
         painter->setBrush(brush);
         painter->drawEllipse(QRect(mObject->x() - 10,
                                    mObject->y() - 10, 20, 20));
+	painter->drawText(QPoint(mObject->x() - 15, mObject->y() - 15),
+                          mObject->name());
     }
     else
     {
@@ -109,6 +113,8 @@ void MapObjectItem::paint(QPainter *painter,
                                        mObject->width(),
                                        mObject->height()),
                                  10.0, 10.0);
+	painter->drawText(QPoint(mObject->x() - 5 + 1, mObject->y() - 5 + 1),
+                          mObject->name());
         pen.setColor(color);
         painter->setPen(pen);
         painter->setBrush(brush);
@@ -117,5 +123,7 @@ void MapObjectItem::paint(QPainter *painter,
                                        mObject->width(),
                                        mObject->height()),
                                  10.0, 10.0);
+	painter->drawText(QPoint(mObject->x() - 5, mObject->y() - 5),
+                          mObject->name());
     }
 }
