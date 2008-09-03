@@ -146,31 +146,29 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::openFile(const QString &fileName)
 {
-    if (!confirmSave())
+    if (fileName.isEmpty() || !confirmSave())
         return;
 
     // Use the XML map reader to read the map (assuming it's a .tmx file)
     // TODO: Add support for input/output plugins
-    if (!fileName.isEmpty()) {
-        qDebug() << "Loading map:" << fileName;
-        XmlMapReader mapReader;
-        Map *map = mapReader.read(fileName);
-        if (!map) {
-            QMessageBox::critical(this, tr("Error while opening map"),
-                                  mapReader.errorString());
-            return;
-        }
-
-        Map *previousMap = mScene->map();
-        mScene->setMap(map);
-        mLayerDock->setMap(map);
-        mUi.graphicsView->centerOn(0, 0);
-        delete previousMap;
-
-        mUndoStack->clear();
-        setCurrentFileName(fileName);
-        updateActions();
+    qDebug() << "Loading map:" << fileName;
+    XmlMapReader mapReader;
+    Map *map = mapReader.read(fileName);
+    if (!map) {
+        QMessageBox::critical(this, tr("Error while opening map"),
+                              mapReader.errorString());
+        return;
     }
+
+    Map *previousMap = mScene->map();
+    mScene->setMap(map);
+    mLayerDock->setMap(map);
+    mUi.graphicsView->centerOn(0, 0);
+    delete previousMap;
+
+    mUndoStack->clear();
+    setCurrentFileName(fileName);
+    updateActions();
 }
 
 void MainWindow::openFile()
