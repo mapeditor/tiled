@@ -56,6 +56,13 @@ void Map::insertLayer(int index, Layer *layer)
     mLayers.insert(index, layer);
 }
 
+Layer *Map::takeLayerAt(int index)
+{
+    Layer *layer = mLayers.takeAt(index);
+    layer->setMap(0);
+    return layer;
+}
+
 void Map::addTileset(Tileset *tileset, int firstGid)
 {
     mTilesets.insert(firstGid, tileset);

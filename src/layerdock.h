@@ -24,6 +24,8 @@
 
 #include <QDockWidget>
 
+class QModelIndex;
+class QTreeView;
 class QUndoStack;
 
 namespace Tiled {
@@ -39,19 +41,46 @@ class LayerTableModel;
  */
 class LayerDock : public QDockWidget
 {
-    public:
-        /**
-         * Constructor.
-         */
-        LayerDock(QUndoStack *undoStack, QWidget *parent = 0);
+    Q_OBJECT
 
-        /**
-         * Sets the map for which the layers should be displayed.
-         */
-        void setMap(Map *map);
+public:
+    /**
+     * Constructor.
+     */
+    LayerDock(QUndoStack *undoStack, QWidget *parent = 0);
 
-    private:
-        LayerTableModel *mLayerTableModel;
+    /**
+     * Sets the map for which the layers should be displayed.
+     */
+    void setMap(Map *map);
+
+    /**
+     * Sets the current layer to the given index.
+     */
+    void setCurrentLayer(int index);
+
+    /**
+     * Returns the index of the currently selected layer.
+     */
+    int currentLayer() const;
+
+    /**
+     * Returns the layer model.
+     */
+    LayerTableModel *layerModel() const { return mLayerTableModel; }
+
+signals:
+    /**
+     * Emitted when the current layer changes.
+     */
+    void currentLayerChanged(int index);
+
+private slots:
+    void currentRowChanged(const QModelIndex &index);
+
+private:
+    LayerTableModel *mLayerTableModel;
+    QTreeView *mLayerView;
 };
 
 } // namespace Internal

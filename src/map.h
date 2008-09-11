@@ -34,9 +34,11 @@ class Tileset;
 class ObjectGroup;
 
 /**
- * A tile map.
+ * A tile map. Consists of a stack of layers, each can be either a TileLayer
+ * or an ObjectGroup.
  */
-class Map {
+class Map
+{
     public:
         /**
          * Constructor, taking map and tile size as parameters.
@@ -81,7 +83,7 @@ class Map {
         /**
          * Returns the list of layers of this map.
          */
-        const QList<Layer*>& layers() const { return mLayers; }
+        const QList<Layer*> &layers() const { return mLayers; }
 
         /**
          * Adds a layer to this map.
@@ -92,6 +94,12 @@ class Map {
          * Adds a layer to this map, inserting it at the given index.
          */
         void insertLayer(int index, Layer *layer);
+
+        /**
+         * Removes the layer at the given index from this map and returns it.
+         * The caller becomes responsible for the lifetime of this layer.
+         */
+        Layer *takeLayerAt(int index);
 
         /**
          * Returns a pointer to the properties of this map. This allows

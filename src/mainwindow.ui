@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -81,10 +81,18 @@
     </property>
     <addaction name="actionShowGrid"/>
    </widget>
+   <widget class="QMenu" name="menuLayer">
+    <property name="title">
+     <string>&amp;Layer</string>
+    </property>
+    <addaction name="actionMoveLayerUp"/>
+    <addaction name="actionMoveLayerDown"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuMap"/>
+   <addaction name="menuLayer"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -103,7 +111,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
-    <iconset>
+    <iconset resource="tiled.qrc">
      <normaloff>:/images/document-open.png</normaloff>:/images/document-open.png</iconset>
    </property>
    <property name="text">
@@ -112,7 +120,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset>
+    <iconset resource="tiled.qrc">
      <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
    </property>
    <property name="text">
@@ -152,7 +160,7 @@
   </action>
   <action name="actionResizeMap">
    <property name="icon">
-    <iconset>
+    <iconset resource="tiled.qrc">
      <normaloff>:/images/document-resize.png</normaloff>:/images/document-resize.png</iconset>
    </property>
    <property name="text">
@@ -164,7 +172,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="tiled.qrc">
      <normaloff>:/images/document-properties.png</normaloff>:/images/document-properties.png</iconset>
    </property>
    <property name="text">
@@ -173,7 +181,7 @@
   </action>
   <action name="actionRecentFiles">
    <property name="icon">
-    <iconset>
+    <iconset resource="tiled.qrc">
      <normaloff>:/images/document-open-recent.png</normaloff>:/images/document-open-recent.png</iconset>
    </property>
    <property name="text">
@@ -194,6 +202,22 @@
   <action name="actionSaveAs">
    <property name="text">
     <string>Save &amp;As...</string>
+   </property>
+  </action>
+  <action name="actionMoveLayerUp">
+   <property name="text">
+    <string>Move Layer Up</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Up</string>
+   </property>
+  </action>
+  <action name="actionMoveLayerDown">
+   <property name="text">
+    <string>Move Layer Down</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Down</string>
    </property>
   </action>
  </widget>

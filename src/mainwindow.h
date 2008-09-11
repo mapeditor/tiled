@@ -67,9 +67,13 @@ private slots:
     void resizeMap();
     void editMapProperties();
     void updateModified();
+    void updateActions();
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();
+
+    void moveLayerUp();
+    void moveLayerDown();
 
 private:
     /**
@@ -80,7 +84,6 @@ private:
       *         failed.
       */
     bool confirmSave();
-    void updateActions();
     void writeSettings();
     void readSettings();
     void setCurrentFileName(const QString &fileName);

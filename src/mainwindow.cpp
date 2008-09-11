@@ -21,8 +21,10 @@
 
 #include "mainwindow.h"
 
+#include "movelayer.h"
 #include "layer.h"
 #include "layerdock.h"
+#include "layertablemodel.h"
 #include "map.h"
 #include "mapscene.h"
 #include "propertiesdialog.h"
@@ -57,6 +59,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mLayerDock = new LayerDock(mUndoStack, this);
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
 
+    connect(mLayerDock, SIGNAL(currentLayerChanged(int)),
+            SLOT(updateActions()));
+
     // Mainly for debugging, but might also be useful on the long run
     QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
     undoViewDock->setObjectName(QLatin1String("undoViewDock"));
@@ -86,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi.actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
+    connect(mUi.actionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
+    connect(mUi.actionMoveLayerDown, SIGNAL(triggered()),
+            SLOT(moveLayerDown()));
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -113,6 +121,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionShowGrid->setChecked(mScene->isGridVisible());
     connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
             mScene, SLOT(setGridVisible(bool)));
+
+    // TODO: Below a temporary solution until the scene properly updates itself
+    LayerTableModel *layerModel = mLayerDock->layerModel();
+    connect(layerModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
+            mScene, SLOT(refreshScene()));
+    connect(layerModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
+            mScene, SLOT(refreshScene()));
 
     updateActions();
     readSettings();
@@ -312,12 +327,39 @@ void MainWindow::updateRecentFiles()
 
 void MainWindow::updateActions()
 {
-    const bool map = mScene->map() != 0;
+    Map *map = mScene->map();
 
     mUi.actionSave->setEnabled(map && !mUndoStack->isClean());
     mUi.actionSaveAs->setEnabled(map);
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
+
+    const int currentLayer = mLayerDock->currentLayer();
+    const int layerCount = (map) ? map->layers().size() : 0;
+    mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
+                                      currentLayer < layerCount - 1);
+    mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);
+}
+
+void MainWindow::moveLayerUp()
+{
+    // TODO: This method shouldn't be in this class (see also moveLayerDown)
+    const int index = mLayerDock->currentLayer();
+    Map *map = mScene->map();
+    if (index < 0 || !map || index >= map->layers().size() - 1)
+        return;
+
+    mUndoStack->push(new MoveLayer(mLayerDock, index, MoveLayer::Up));
+}
+
+void MainWindow::moveLayerDown()
+{
+    const int index = mLayerDock->currentLayer();
+    Map *map = mScene->map();
+    if (index < 1 || !map)
+        return;
+
+    mUndoStack->push(new MoveLayer(mLayerDock, index, MoveLayer::Down));
 }
 
 void MainWindow::writeSettings()

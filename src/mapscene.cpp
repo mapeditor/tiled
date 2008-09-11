@@ -42,16 +42,20 @@ MapScene::MapScene(QObject *parent):
 
 void MapScene::setMap(Map *map)
 {
+    mMap = map;
+    refreshScene();
+}
+
+void MapScene::refreshScene()
+{
     // Clear any existing items
     clear();
-
-    mMap = map;
 
     if (mMap) {
         // The +1 is to allow space for the right and bottom grid lines
         setSceneRect(0, 0,
-                     mMap->width() * map->tileWidth() + 1,
-                     mMap->height() * map->tileHeight() + 1);
+                     mMap->width() * mMap->tileWidth() + 1,
+                     mMap->height() * mMap->tileHeight() + 1);
 
         int z = 0;
         foreach (Layer *layer, mMap->layers()) {

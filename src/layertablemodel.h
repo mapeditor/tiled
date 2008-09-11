@@ -26,15 +26,20 @@
 
 namespace Tiled {
 
+class Layer;
 class Map;
 
 namespace Internal {
 
 /**
  * A model wrapping the layers of a map. Used to display the layers in a view.
+ * The model also allows modification of the layer stack while keeping the
+ * layer views up to date.
  */
 class LayerTableModel : public QAbstractTableModel
 {
+    Q_OBJECT
+
     public:
         /**
          * Constructor.
@@ -78,6 +83,18 @@ class LayerTableModel : public QAbstractTableModel
          * Sets the map associated with this model.
          */
         void setMap(Map *map);
+
+        /**
+         * Adds a layer to this model's map, inserting it at the given index.
+         */
+        void insertLayer(int index, Layer *layer);
+
+        /**
+         * Removes the layer at the given index from this model's map and
+         * returns it. The caller becomes responsible for the lifetime of this
+         * layer.
+         */
+        Layer *takeLayerAt(int index);
 
     private:
         Map *mMap;

@@ -23,6 +23,7 @@
 #include "map.h"
 #include "layer.h"
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 LayerTableModel::LayerTableModel(QObject *parent):
@@ -73,8 +74,23 @@ int LayerTableModel::toLayerIndex(const QModelIndex &index) const
 
 void LayerTableModel::setMap(Map *map)
 {
-    if (mMap != map) {
-        mMap = map;
-        reset();
-    }
+    if (mMap == map)
+        return;
+    mMap = map;
+    reset();
+}
+
+void LayerTableModel::insertLayer(int index, Layer *layer)
+{
+    beginInsertRows(QModelIndex(), index, index);
+    mMap->insertLayer(index, layer);
+    endInsertRows();
+}
+
+Layer *LayerTableModel::takeLayerAt(int index)
+{
+    beginRemoveRows(QModelIndex(), index, index);
+    Layer *layer = mMap->takeLayerAt(index);
+    endRemoveRows();
+    return layer;
 }

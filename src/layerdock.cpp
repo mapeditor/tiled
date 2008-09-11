@@ -66,13 +66,47 @@ LayerDock::LayerDock(QUndoStack *undoStack, QWidget *parent):
 {
     setObjectName(QLatin1String("layerDock"));
 
-    QTreeView *layerView = new LayerView(mLayerTableModel, undoStack, this);
-    setWidget(layerView);
+    mLayerView = new LayerView(mLayerTableModel, undoStack, this);
+
+    QItemSelectionModel *selectionModel = mLayerView->selectionModel();
+    connect(selectionModel, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+            this, SLOT(currentRowChanged(QModelIndex)));
+
+    setWidget(mLayerView);
 }
 
 void LayerDock::setMap(Map *map)
 {
     mLayerTableModel->setMap(map);
+}
+
+void LayerDock::setCurrentLayer(int index)
+{
+    const int rowCount = mLayerTableModel->rowCount();
+    const int row = rowCount - index - 1;
+    mLayerView->setCurrentIndex(mLayerTableModel->index(row, 0));
+
+    // Always emit currentLayerChanged here, because due to bug in Qt we don't
+    // get currentRowChanged signals in all cases (signals are missing when
+    // rows get added or removed, for example).
+    emit currentLayerChanged(index);
+}
+
+int LayerDock::currentLayer() const
+{
+    const QModelIndex currentIndex = mLayerView->currentIndex();
+    if (currentIndex.isValid()) {
+        const int rowCount = mLayerTableModel->rowCount();
+        return rowCount - currentIndex.row() - 1;
+    } else {
+        return -1;
+    }
+}
+
+void LayerDock::currentRowChanged(const QModelIndex &index)
+{
+    const int rowCount = mLayerTableModel->rowCount();
+    emit currentLayerChanged(rowCount - index.row() - 1);
 }
 
 

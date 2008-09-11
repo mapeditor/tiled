@@ -79,6 +79,15 @@ class MapScene : public QGraphicsScene
          */
         void drawForeground(QPainter *painter, const QRectF &rect);
 
+    public slots:
+        /**
+         * Refreshes the map scene.
+         *
+         * TODO: Only temporarily public until there is a nicer way for the
+         *       scene to be notified about changes to the map.
+         */
+        void refreshScene();
+
     private:
         Map *mMap;
         bool mGridVisible;

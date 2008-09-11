@@ -27,7 +27,8 @@ SOURCES += compression.cpp \
     propertiesmodel.cpp \
     propertiesdialog.cpp \
     xmlmapwriter.cpp \
-    changeproperties.cpp
+    changeproperties.cpp \
+    movelayer.cpp
 HEADERS += compression.h \
     mainwindow.h \
     mapreaderinterface.h \
@@ -50,7 +51,8 @@ HEADERS += compression.h \
     propertiesdialog.h \
     tile.h \
     xmlmapwriter.h \
-    changeproperties.h
+    changeproperties.h \
+    movelayer.h
 FORMS += mainwindow.ui \
     resizedialog.ui \
     propertiesdialog.ui
