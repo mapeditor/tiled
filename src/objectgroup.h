@@ -34,31 +34,32 @@ class MapObject;
 /**
  * A group of objects on a map.
  */
-class ObjectGroup : public Layer {
-    public:
-        /**
-         * Constructor.
-         */
-        ObjectGroup(const QString &name, int x, int y, int width, int height,
-                    Map *map = 0);
+class ObjectGroup : public Layer
+{
+public:
+    /**
+     * Constructor.
+     */
+    ObjectGroup(const QString &name, int x, int y, int width, int height,
+                Map *map = 0);
 
-        /**
-         * Destructor.
-         */
-        ~ObjectGroup();
+    /**
+     * Destructor.
+     */
+    ~ObjectGroup();
 
-        /**
-         * Returns a pointer to the list of objects in this object group.
-         */
-        const QList<MapObject*>& objects() const { return mObjects; }
+    /**
+     * Returns a pointer to the list of objects in this object group.
+     */
+    const QList<MapObject*>& objects() const { return mObjects; }
 
-        /**
-         * Adds an object to this object group.
-         */
-        void addObject(MapObject *object);
+    /**
+     * Adds an object to this object group.
+     */
+    void addObject(MapObject *object);
 
-    private:
-        QList<MapObject*> mObjects;
+private:
+    QList<MapObject*> mObjects;
 };
 
 } // namespace Tiled

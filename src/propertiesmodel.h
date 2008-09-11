@@ -32,61 +32,61 @@ namespace Internal {
 
 class PropertiesModel : public QAbstractTableModel
 {
-    public:
-        /**
-         * Constructor.
-         */
-        PropertiesModel(QObject *parent = 0);
+public:
+    /**
+     * Constructor.
+     */
+    PropertiesModel(QObject *parent = 0);
 
-        /**
-         * Returns the number of rows.
-         */
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    /**
+     * Returns the number of rows.
+     */
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-        /**
-         * Returns the number of columns.
-         */
-        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    /**
+     * Returns the number of columns.
+     */
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-        /**
-         * Returns the data stored under the given <i>role</i> for the item
-         * referred to by the <i>index</i>.
-         */
-        QVariant data(const QModelIndex &index,
-                      int role = Qt::DisplayRole) const;
+    /**
+     * Returns the data stored under the given <i>role</i> for the item
+     * referred to by the <i>index</i>.
+     */
+    QVariant data(const QModelIndex &index,
+                  int role = Qt::DisplayRole) const;
 
-        /**
-         * Returns the item flags for the given <i>index</i>. In addition to
-         * enabled and selectable, items are editable.
-         */
-        Qt::ItemFlags flags(const QModelIndex &index) const;
+    /**
+     * Returns the item flags for the given <i>index</i>. In addition to
+     * enabled and selectable, items are editable.
+     */
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
-        /**
-         * Sets the value of the data at the given <i>index</i>. This model
-         * supports the Qt::EditRole for both columns.
-         */
-        bool setData(const QModelIndex &index, const QVariant &value,
-                     int role = Qt::EditRole);
+    /**
+     * Sets the value of the data at the given <i>index</i>. This model
+     * supports the Qt::EditRole for both columns.
+     */
+    bool setData(const QModelIndex &index, const QVariant &value,
+                 int role = Qt::EditRole);
 
-        /**
-         * Returns the headers for the table.
-         */
-        QVariant headerData(int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole) const;
+    /**
+     * Returns the headers for the table.
+     */
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const;
 
-        /**
-         * Sets the properties displayed by this model.
-         */
-        void setProperties(const QMap<QString, QString> &properties);
+    /**
+     * Sets the properties displayed by this model.
+     */
+    void setProperties(const QMap<QString, QString> &properties);
 
-        /**
-         * Returns the, possibly edited, properties.
-         */
-        const QMap<QString, QString> &properties() const;
+    /**
+     * Returns the, possibly edited, properties.
+     */
+    const QMap<QString, QString> &properties() const;
 
-    private:
-        QMap<QString, QString> mProperties;
-        QList<QString> mKeys;
+private:
+    QMap<QString, QString> mProperties;
+    QList<QString> mKeys;
 };
 
 } // namespace Internal

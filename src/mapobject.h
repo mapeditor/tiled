@@ -32,106 +32,107 @@ class ObjectGroup;
 /**
  * An object on a map.
  */
-class MapObject {
-    public:
-        /**
-         * Constructor.
-         */
-        MapObject(const QString &name, const QString &type,
-                  int x, int y, int width, int height);
+class MapObject
+{
+public:
+    /**
+     * Constructor.
+     */
+    MapObject(const QString &name, const QString &type,
+              int x, int y, int width, int height);
 
-        /**
-         * Destructor.
-         */
-        ~MapObject() {}
+    /**
+     * Destructor.
+     */
+    ~MapObject() {}
 
-        /**
-         * Returns the name of this object.
-         */
-        const QString &name() const { return mName; }
+    /**
+     * Returns the name of this object.
+     */
+    const QString &name() const { return mName; }
 
-        /**
-         * Returns the x position of this object.
-         */
-        int x() const { return mX; }
+    /**
+     * Returns the x position of this object.
+     */
+    int x() const { return mX; }
 
-        /**
-         * Sets the x position of this object.
-         */
-        void setX(int x) { mX = x; }
+    /**
+     * Sets the x position of this object.
+     */
+    void setX(int x) { mX = x; }
 
-        /**
-         * Returns the y position of this object.
-         */
-        int y() const { return mY; }
+    /**
+     * Returns the y position of this object.
+     */
+    int y() const { return mY; }
 
-        /**
-         * Sets the x position of this object.
-         */
-        void setY(int y) { mY = y; }
+    /**
+     * Sets the x position of this object.
+     */
+    void setY(int y) { mY = y; }
 
-        /**
-         * Returns the width of this object.
-         */
-        int width() const { return mWidth; }
+    /**
+     * Returns the width of this object.
+     */
+    int width() const { return mWidth; }
 
-        /**
-         * Sets the width of this object.
-         */
-        void setWidth(int width) { mWidth = width; }
+    /**
+     * Sets the width of this object.
+     */
+    void setWidth(int width) { mWidth = width; }
 
-        /**
-         * Returns the height of this object.
-         */
-        int height() const { return mHeight; }
+    /**
+     * Returns the height of this object.
+     */
+    int height() const { return mHeight; }
 
-        /**
-         * Sets the height of this object.
-         */
-        void setHeight(int height) { mHeight = height; }
+    /**
+     * Sets the height of this object.
+     */
+    void setHeight(int height) { mHeight = height; }
 
-        /**
-         * Returns the type of object this is.
-         */
-        const QString &type() const { return mType; }
+    /**
+     * Returns the type of object this is.
+     */
+    const QString &type() const { return mType; }
 
-        /**
-         * Set the property with the given name, and value.
-         */
-        void setProperty(const QString &name, const QString &value);
+    /**
+     * Set the property with the given name, and value.
+     */
+    void setProperty(const QString &name, const QString &value);
 
-        /**
-         * Returns a pointer to the properties of this object. This allows
-         * modification of the properties.
-         */
-        QMap<QString, QString>* properties() { return &mProperties; }
+    /**
+     * Returns a pointer to the properties of this object. This allows
+     * modification of the properties.
+     */
+    QMap<QString, QString>* properties() { return &mProperties; }
 
-        /**
-         * Returns a copy of the properties of this object.
-         */
-        QMap<QString, QString> properties() const { return mProperties; }
+    /**
+     * Returns a copy of the properties of this object.
+     */
+    QMap<QString, QString> properties() const { return mProperties; }
 
-        /**
-         * Returns the object group this object belongs to.
-         */
-        ObjectGroup *objectGroup() const { return mObjectGroup; }
+    /**
+     * Returns the object group this object belongs to.
+     */
+    ObjectGroup *objectGroup() const { return mObjectGroup; }
 
-        /**
-         * Sets the object group this object belongs to. Should only be called
-         * from the ObjectGroup class.
-         */
-        void setObjectGroup(ObjectGroup *objectGroup)
-        { mObjectGroup = objectGroup; }
+    /**
+     * Sets the object group this object belongs to. Should only be called
+     * from the ObjectGroup class.
+     */
+    void setObjectGroup(ObjectGroup *objectGroup)
+    { mObjectGroup = objectGroup; }
 
-    private:
-        QString mName;
-        int mX;
-        int mY;
-        int mWidth;
-        int mHeight;
-        QString mType;
-        QMap<QString, QString> mProperties;
-        ObjectGroup *mObjectGroup;
+private:
+    QString mName;
+    int mX;
+    int mY;
+    int mWidth;
+    int mHeight;
+    QString mType;
+    QMap<QString, QString> mProperties;
+    ObjectGroup *mObjectGroup;
 };
 
 } // namespace Tiled

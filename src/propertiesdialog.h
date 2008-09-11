@@ -39,28 +39,28 @@ class PropertiesModel;
 
 class PropertiesDialog : public QDialog
 {
-    public:
-        /**
-         * Constructor.
-         */
-        PropertiesDialog(QUndoStack *undoStack, QWidget *parent = 0);
+public:
+    /**
+     * Constructor.
+     */
+    PropertiesDialog(QUndoStack *undoStack, QWidget *parent = 0);
 
-        /**
-         * Sets the properties edited by this dialog.
-         */
-        void setProperties(QMap<QString, QString> *properties);
+    /**
+     * Sets the properties edited by this dialog.
+     */
+    void setProperties(QMap<QString, QString> *properties);
 
-        /**
-         * Applies the edited properties. It does this by constructing a
-         * ChangeProperties command and adding it to the undo stack.
-         */
-        void accept();
+    /**
+     * Applies the edited properties. It does this by constructing a
+     * ChangeProperties command and adding it to the undo stack.
+     */
+    void accept();
 
-    private:
-        Ui::PropertiesDialog *mUi;
-        PropertiesModel *mModel;
-        QUndoStack *mUndoStack;
-        QMap<QString, QString> *mProperties;
+private:
+    Ui::PropertiesDialog *mUi;
+    PropertiesModel *mModel;
+    QUndoStack *mUndoStack;
+    QMap<QString, QString> *mProperties;
 };
 
 } // namespace Internal

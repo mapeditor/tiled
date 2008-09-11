@@ -41,56 +41,56 @@ class MapScene : public QGraphicsScene
 {
     Q_OBJECT
 
-    public:
-        /**
-         * Constructor.
-         */
-        MapScene(QObject *parent);
+public:
+    /**
+     * Constructor.
+     */
+    MapScene(QObject *parent);
 
-        /**
-         * Returns the map this scene is displaying.
-         */
-        Map *map() const { return mMap; }
+    /**
+     * Returns the map this scene is displaying.
+     */
+    Map *map() const { return mMap; }
 
-        /**
-         * Sets the map this scene displays.
-         */
-        void setMap(Map *map);
+    /**
+     * Sets the map this scene displays.
+     */
+    void setMap(Map *map);
 
-        /**
-         * Returns whether the tile grid is visible.
-         */
-        bool isGridVisible() const { return mGridVisible; }
+    /**
+     * Returns whether the tile grid is visible.
+     */
+    bool isGridVisible() const { return mGridVisible; }
 
-        /**
-         * Returns the TileLayerItem for the layer with the given name.
-         */
-        TileLayerItem *layer(const QString& layer);
+    /**
+     * Returns the TileLayerItem for the layer with the given name.
+     */
+    TileLayerItem *layer(const QString& layer);
 
-    public slots:
-        /**
-         * Sets whether the tile grid is visible.
-         */
-        void setGridVisible(bool visible);
+public slots:
+    /**
+     * Sets whether the tile grid is visible.
+     */
+    void setGridVisible(bool visible);
 
-    protected:
-        /**
-         * QGraphicsScene::drawForeground override that draws the tile grid.
-         */
-        void drawForeground(QPainter *painter, const QRectF &rect);
+protected:
+    /**
+     * QGraphicsScene::drawForeground override that draws the tile grid.
+     */
+    void drawForeground(QPainter *painter, const QRectF &rect);
 
-    public slots:
-        /**
-         * Refreshes the map scene.
-         *
-         * TODO: Only temporarily public until there is a nicer way for the
-         *       scene to be notified about changes to the map.
-         */
-        void refreshScene();
+public slots:
+    /**
+     * Refreshes the map scene.
+     *
+     * TODO: Only temporarily public until there is a nicer way for the
+     *       scene to be notified about changes to the map.
+     */
+    void refreshScene();
 
-    private:
-        Map *mMap;
-        bool mGridVisible;
+private:
+    Map *mMap;
+    bool mGridVisible;
 };
 
 } // namespace Internal

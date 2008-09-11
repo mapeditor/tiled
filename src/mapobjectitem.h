@@ -35,23 +35,23 @@ namespace Internal {
  */
 class MapObjectItem : public QGraphicsItem
 {
-    public:
-        /**
-         * Constructor.
-         *
-         * @param object the object to be displayed
-         */
-        MapObjectItem(MapObject *object);
+public:
+    /**
+     * Constructor.
+     *
+     * @param object the object to be displayed
+     */
+    MapObjectItem(MapObject *object);
 
-        // QGraphicsView
-        QRectF boundingRect() const;
+    // QGraphicsView
+    QRectF boundingRect() const;
 
-        void paint(QPainter *painter,
-                   const QStyleOptionGraphicsItem *option,
-                   QWidget *widget = 0);
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
 
-    private:
-        MapObject *mObject;
+private:
+    MapObject *mObject;
 };
 
 } // namespace Internal

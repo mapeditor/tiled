@@ -34,34 +34,35 @@ class Tile;
 /**
  * A tile layer.
  */
-class TileLayer : public Layer {
-    public:
-        /**
-         * Constructor.
-         */
-        TileLayer(const QString &name, int x, int y, int width, int height,
-                  Map *map = 0);
+class TileLayer : public Layer
+{
+public:
+    /**
+     * Constructor.
+     */
+    TileLayer(const QString &name, int x, int y, int width, int height,
+              Map *map = 0);
 
-        /**
-         * Returns the maximum tile height of this layer. Used by the layer
-         * rendering code to determine the area that needs to be redrawn.
-         */
-        int maxTileHeight() const { return mMaxTileHeight; }
+    /**
+     * Returns the maximum tile height of this layer. Used by the layer
+     * rendering code to determine the area that needs to be redrawn.
+     */
+    int maxTileHeight() const { return mMaxTileHeight; }
 
-        /**
-         * Returns the tile at the given coordinates. The coordinates have to
-         * be within this layer.
-         */
-        Tile* tileAt(int x, int y) const;
+    /**
+     * Returns the tile at the given coordinates. The coordinates have to
+     * be within this layer.
+     */
+    Tile* tileAt(int x, int y) const;
 
-        /**
-         * Sets the tile for the given coordinates.
-         */
-        void setTile(int x, int y, Tile *tile);
+    /**
+     * Sets the tile for the given coordinates.
+     */
+    void setTile(int x, int y, Tile *tile);
 
-    private:
-        int mMaxTileHeight;
-        QVector<Tile*> mTiles;
+private:
+    int mMaxTileHeight;
+    QVector<Tile*> mTiles;
 };
 
 } // namespace Tiled

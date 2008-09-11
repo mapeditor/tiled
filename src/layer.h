@@ -34,101 +34,102 @@ class Map;
 /**
  * A map layer.
  */
-class Layer {
-    public:
-        /**
-         * Constructor.
-         */
-        Layer(const QString &name, int x, int y, int width, int height,
-              Map *map = 0);
+class Layer
+{
+public:
+    /**
+     * Constructor.
+     */
+    Layer(const QString &name, int x, int y, int width, int height,
+          Map *map = 0);
 
-        /**
-         * Destructor.
-         */
-        virtual ~Layer() {}
+    /**
+     * Destructor.
+     */
+    virtual ~Layer() {}
 
-        /**
-         * Returns the name of this layer.
-         */
-        const QString &name() const { return mName; }
+    /**
+     * Returns the name of this layer.
+     */
+    const QString &name() const { return mName; }
 
-        /**
-         * Sets the name of this layer.
-         */
-        void setName(const QString &name) { mName = name; }
+    /**
+     * Sets the name of this layer.
+     */
+    void setName(const QString &name) { mName = name; }
 
-        /**
-         * Returns the opacity of this layer.
-         */
-        float opacity() const { return mOpacity; }
+    /**
+     * Returns the opacity of this layer.
+     */
+    float opacity() const { return mOpacity; }
 
-        /**
-         * Sets the opacity of this layer.
-         */
-        void setOpacity(float opacity) { mOpacity = opacity; }
+    /**
+     * Sets the opacity of this layer.
+     */
+    void setOpacity(float opacity) { mOpacity = opacity; }
 
-        /**
-         * Returns the visibility of this layer.
-         */
-        bool visible() const { return mVisible; }
+    /**
+     * Returns the visibility of this layer.
+     */
+    bool visible() const { return mVisible; }
 
-        /**
-         * Sets the visibility of this layer.
-         */
-        void setVisible(bool visible) { mVisible = visible; }
+    /**
+     * Sets the visibility of this layer.
+     */
+    void setVisible(bool visible) { mVisible = visible; }
 
-        /**
-         * Returns the map this layer is part of.
-         */
-        Map *map() const { return mMap; }
+    /**
+     * Returns the map this layer is part of.
+     */
+    Map *map() const { return mMap; }
 
-        /**
-         * Sets the map this layer is part of. Should only be called from the
-         * Map class.
-         */
-        void setMap(Map *map) { mMap = map; }
+    /**
+     * Sets the map this layer is part of. Should only be called from the
+     * Map class.
+     */
+    void setMap(Map *map) { mMap = map; }
 
-        /**
-         * Returns the x position of this layer (in tiles).
-         */
-        int x() const { return mX; }
+    /**
+     * Returns the x position of this layer (in tiles).
+     */
+    int x() const { return mX; }
 
-        /**
-         * Returns the y position of this layer (in tiles).
-         */
-        int y() const { return mY; }
+    /**
+     * Returns the y position of this layer (in tiles).
+     */
+    int y() const { return mY; }
 
-        /**
-         * Returns the width of this layer.
-         */
-        int width() const { return mWidth; }
+    /**
+     * Returns the width of this layer.
+     */
+    int width() const { return mWidth; }
 
-        /**
-         * Returns the height of this layer.
-         */
-        int height() const { return mHeight; }
+    /**
+     * Returns the height of this layer.
+     */
+    int height() const { return mHeight; }
 
-        /**
-         * Returns a pointer to the properties of this layer. This allows
-         * modification of the properties.
-         */
-        QMap<QString, QString>* properties() { return &mProperties; }
+    /**
+     * Returns a pointer to the properties of this layer. This allows
+     * modification of the properties.
+     */
+    QMap<QString, QString>* properties() { return &mProperties; }
 
-        /**
-         * Returns a copy of the properties of this layer.
-         */
-        QMap<QString, QString> properties() const { return mProperties; }
+    /**
+     * Returns a copy of the properties of this layer.
+     */
+    QMap<QString, QString> properties() const { return mProperties; }
 
-    protected:
-        QString mName;
-        int mX;
-        int mY;
-        int mWidth;
-        int mHeight;
-        float mOpacity;
-        bool mVisible;
-        Map *mMap;
-        QMap<QString, QString> mProperties;
+protected:
+    QString mName;
+    int mX;
+    int mY;
+    int mWidth;
+    int mHeight;
+    float mOpacity;
+    bool mVisible;
+    Map *mMap;
+    QMap<QString, QString> mProperties;
 };
 
 } // namespace Tiled

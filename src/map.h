@@ -39,125 +39,125 @@ class ObjectGroup;
  */
 class Map
 {
-    public:
-        /**
-         * Constructor, taking map and tile size as parameters.
-         */
-        Map(int width, int height, int tileWidth, int tileHeight);
+public:
+    /**
+     * Constructor, taking map and tile size as parameters.
+     */
+    Map(int width, int height, int tileWidth, int tileHeight);
 
-        /**
-         * Destructor.
-         */
-        ~Map();
+    /**
+     * Destructor.
+     */
+    ~Map();
 
-        /**
-         * Returns the width of this map.
-         */
-        int width() const { return mWidth; }
+    /**
+     * Returns the width of this map.
+     */
+    int width() const { return mWidth; }
 
-        /**
-         * Sets the width of this map.
-         */
-        void setWidth(int width) { mWidth = width; }
+    /**
+     * Sets the width of this map.
+     */
+    void setWidth(int width) { mWidth = width; }
 
-        /**
-         * Returns the height of this map.
-         */
-        int height() const { return mHeight; }
+    /**
+     * Returns the height of this map.
+     */
+    int height() const { return mHeight; }
 
-        /**
-         * Sets the height of this map.
-         */
-        void setHeight(int height) { mHeight = height; }
+    /**
+     * Sets the height of this map.
+     */
+    void setHeight(int height) { mHeight = height; }
 
-        /**
-         * Returns the tile width of this map.
-         */
-        int tileWidth() const { return mTileWidth; }
+    /**
+     * Returns the tile width of this map.
+     */
+    int tileWidth() const { return mTileWidth; }
 
-        /**
-         * Returns the tile height used by this map.
-         */
-        int tileHeight() const { return mTileHeight; }
+    /**
+     * Returns the tile height used by this map.
+     */
+    int tileHeight() const { return mTileHeight; }
 
-        /**
-         * Returns the list of layers of this map.
-         */
-        const QList<Layer*> &layers() const { return mLayers; }
+    /**
+     * Returns the list of layers of this map.
+     */
+    const QList<Layer*> &layers() const { return mLayers; }
 
-        /**
-         * Adds a layer to this map.
-         */
-        void addLayer(Layer *layer);
+    /**
+     * Adds a layer to this map.
+     */
+    void addLayer(Layer *layer);
 
-        /**
-         * Adds a layer to this map, inserting it at the given index.
-         */
-        void insertLayer(int index, Layer *layer);
+    /**
+     * Adds a layer to this map, inserting it at the given index.
+     */
+    void insertLayer(int index, Layer *layer);
 
-        /**
-         * Removes the layer at the given index from this map and returns it.
-         * The caller becomes responsible for the lifetime of this layer.
-         */
-        Layer *takeLayerAt(int index);
+    /**
+     * Removes the layer at the given index from this map and returns it.
+     * The caller becomes responsible for the lifetime of this layer.
+     */
+    Layer *takeLayerAt(int index);
 
-        /**
-         * Returns a pointer to the properties of this map. This allows
-         * modification of the properties.
-         */
-        QMap<QString, QString>* properties() { return &mProperties; }
+    /**
+     * Returns a pointer to the properties of this map. This allows
+     * modification of the properties.
+     */
+    QMap<QString, QString>* properties() { return &mProperties; }
 
-        /**
-         * Returns a copy of the properties of this map.
-         */
-        QMap<QString, QString> properties() const { return mProperties; }
+    /**
+     * Returns a copy of the properties of this map.
+     */
+    QMap<QString, QString> properties() const { return mProperties; }
 
-        /**
-         * Adds a tileset to this map.
-         *
-         * @param tileset the tileset to add
-         * @param firstGid the map-global ID of the first tile in the tileset
-         */
-        void addTileset(Tileset *tileset, int firstGid);
+    /**
+     * Adds a tileset to this map.
+     *
+     * @param tileset the tileset to add
+     * @param firstGid the map-global ID of the first tile in the tileset
+     */
+    void addTileset(Tileset *tileset, int firstGid);
 
-        // TODO: Do the gid/tile mapping somewhere else
-        //       It shouldn't be necessary for either the Map, Tile or Tileset
-        //       classes to deal with global tile IDs, since they are an
-        //       implementation detail related to how the map is saved and
-        //       loaded.
+    // TODO: Do the gid/tile mapping somewhere else
+    //       It shouldn't be necessary for either the Map, Tile or Tileset
+    //       classes to deal with global tile IDs, since they are an
+    //       implementation detail related to how the map is saved and
+    //       loaded.
 
-        /**
-         * Returns the tilesets that the tiles on this map are using, mapped
-         * by their first global ID.
-         */
-        QMap<int, Tileset*> tilesets() const;
+    /**
+     * Returns the tilesets that the tiles on this map are using, mapped
+     * by their first global ID.
+     */
+    QMap<int, Tileset*> tilesets() const;
 
-        /**
-         * Returns the tile for the given global tile ID.
-         *
-         * @param gid the global tile ID, must be at least 0
-         * @return the tile associated with the given global tile ID, or 0 if
-         *         not found
-         */
-        Tile* tileForGid(int gid) const;
+    /**
+     * Returns the tile for the given global tile ID.
+     *
+     * @param gid the global tile ID, must be at least 0
+     * @return the tile associated with the given global tile ID, or 0 if
+     *         not found
+     */
+    Tile* tileForGid(int gid) const;
 
-        /**
-         * Returns the global tile ID for the given tile.
-         *
-         * @param tile the tile to return the global ID for
-         * @return the appropriate global tile ID, or 0 if not found
-         */
-        int gidForTile(const Tile *tile) const;
+    /**
+     * Returns the global tile ID for the given tile.
+     *
+     * @param tile the tile to return the global ID for
+     * @return the appropriate global tile ID, or 0 if not found
+     */
+    int gidForTile(const Tile *tile) const;
 
-    private:
-        int mWidth;
-        int mHeight;
-        int mTileWidth;
-        int mTileHeight;
-        int mMaxTileHeight;
-        QList<Layer*> mLayers;
-        QMap<int, Tileset*> mTilesets;
-        QMap<QString, QString> mProperties;
+private:
+    int mWidth;
+    int mHeight;
+    int mTileWidth;
+    int mTileHeight;
+    int mMaxTileHeight;
+    QList<Layer*> mLayers;
+    QMap<int, Tileset*> mTilesets;
+    QMap<QString, QString> mProperties;
 };
 
 } // namespace Tiled

@@ -40,64 +40,64 @@ class LayerTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 
-    public:
-        /**
-         * Constructor.
-         */
-        LayerTableModel(QObject *parent = 0);
+public:
+    /**
+     * Constructor.
+     */
+    LayerTableModel(QObject *parent = 0);
 
-        /**
-         * Returns the number of rows.
-         */
-        int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    /**
+     * Returns the number of rows.
+     */
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-        /**
-         * Returns the number of columns.
-         */
-        int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    /**
+     * Returns the number of columns.
+     */
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-        /**
-         * Returns the data stored under the given <i>role</i> for the item
-         * referred to by the <i>index</i>.
-         */
-        QVariant data(const QModelIndex &index,
-                      int role = Qt::DisplayRole) const;
+    /**
+     * Returns the data stored under the given <i>role</i> for the item
+     * referred to by the <i>index</i>.
+     */
+    QVariant data(const QModelIndex &index,
+                  int role = Qt::DisplayRole) const;
 
-        /**
-         * Returns the headers for the table.
-         */
-        QVariant headerData(int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole) const;
+    /**
+     * Returns the headers for the table.
+     */
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const;
 
-        /**
-         * Returns the layer index associated with a given model index.
-         */
-        int toLayerIndex(const QModelIndex &index) const;
+    /**
+     * Returns the layer index associated with a given model index.
+     */
+    int toLayerIndex(const QModelIndex &index) const;
 
-        /**
-         * Returns the map associated with this model.
-         */
-        Map *map() const { return mMap; }
+    /**
+     * Returns the map associated with this model.
+     */
+    Map *map() const { return mMap; }
 
-        /**
-         * Sets the map associated with this model.
-         */
-        void setMap(Map *map);
+    /**
+     * Sets the map associated with this model.
+     */
+    void setMap(Map *map);
 
-        /**
-         * Adds a layer to this model's map, inserting it at the given index.
-         */
-        void insertLayer(int index, Layer *layer);
+    /**
+     * Adds a layer to this model's map, inserting it at the given index.
+     */
+    void insertLayer(int index, Layer *layer);
 
-        /**
-         * Removes the layer at the given index from this model's map and
-         * returns it. The caller becomes responsible for the lifetime of this
-         * layer.
-         */
-        Layer *takeLayerAt(int index);
+    /**
+     * Removes the layer at the given index from this model's map and
+     * returns it. The caller becomes responsible for the lifetime of this
+     * layer.
+     */
+    Layer *takeLayerAt(int index);
 
-    private:
-        Map *mMap;
+private:
+    Map *mMap;
 };
 
 } // namespace Internal

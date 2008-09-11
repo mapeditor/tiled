@@ -35,22 +35,22 @@ namespace Internal {
  */
 class TileLayerItem : public QGraphicsItem
 {
-    public:
-        /**
-         * Constructor.
-         *
-         * @param layer the tile layer to be displayed
-         */
-        TileLayerItem(TileLayer *layer);
+public:
+    /**
+     * Constructor.
+     *
+     * @param layer the tile layer to be displayed
+     */
+    TileLayerItem(TileLayer *layer);
 
-        // QGraphicsView
-        QRectF boundingRect() const;
-        void paint(QPainter *painter,
-                   const QStyleOptionGraphicsItem *option,
-                   QWidget *widget = 0);
+    // QGraphicsView
+    QRectF boundingRect() const;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
 
-    private:
-        TileLayer *mLayer;
+private:
+    TileLayer *mLayer;
 };
 
 } // namespace Internal
