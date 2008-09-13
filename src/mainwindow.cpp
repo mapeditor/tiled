@@ -24,8 +24,8 @@
 #include "movelayer.h"
 #include "layer.h"
 #include "layerdock.h"
-#include "layertablemodel.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "mapscene.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
@@ -45,6 +45,7 @@ using namespace Tiled::Internal;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
+    , mMapDocument(0)
 {
     mUi.setupUi(this);
 
@@ -58,9 +59,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     // TODO: Find a way to avoid having to pass around the QUndoStack everwhere
     mLayerDock = new LayerDock(mUndoStack, this);
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-
-    connect(mLayerDock, SIGNAL(currentLayerChanged(int)),
-            SLOT(updateActions()));
 
     // Mainly for debugging, but might also be useful on the long run
     QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
@@ -122,13 +120,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
             mScene, SLOT(setGridVisible(bool)));
 
-    // TODO: Below a temporary solution until the scene properly updates itself
-    LayerTableModel *layerModel = mLayerDock->layerModel();
-    connect(layerModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
-            mScene, SLOT(refreshScene()));
-    connect(layerModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-            mScene, SLOT(refreshScene()));
-
     updateActions();
     readSettings();
 }
@@ -137,9 +128,7 @@ MainWindow::~MainWindow()
 {
     writeSettings();
 
-    Map *map = mScene->map();
-    mScene->setMap(0);
-    delete map;
+    setMapDocument(0);
 }
 
 void MainWindow::commitData(QSessionManager &manager)
@@ -175,11 +164,8 @@ void MainWindow::openFile(const QString &fileName)
         return;
     }
 
-    Map *previousMap = mScene->map();
-    mScene->setMap(map);
-    mLayerDock->setMap(map);
+    setMapDocument(new MapDocument(map));
     mUi.graphicsView->centerOn(0, 0);
-    delete previousMap;
 
     mUndoStack->clear();
     setCurrentFileName(fileName);
@@ -194,8 +180,10 @@ void MainWindow::openFile()
 
 bool MainWindow::saveFile(const QString &fileName)
 {
+    if (!mMapDocument)
+        return false;
     XmlMapWriter mapWriter;
-    if (!mapWriter.write(mScene->map(), fileName)) {
+    if (!mapWriter.write(mMapDocument->map(), fileName)) {
         QMessageBox::critical(this, tr("Error while saving map"),
                               mapWriter.errorString());
         return false;
@@ -245,13 +233,17 @@ bool MainWindow::confirmSave()
 
 void MainWindow::resizeMap()
 {
+    if (!mMapDocument)
+        return;
+
+    Map *map = mMapDocument->map();
+
     ResizeDialog resizeDialog(this);
-    resizeDialog.setOldSize(QSize(mScene->map()->width(),
-                                  mScene->map()->height()));
+    resizeDialog.setOldSize(QSize(map->width(),
+                                  map->height()));
 
     if (resizeDialog.exec()) {
         const QSize newSize = resizeDialog.newSize();
-        Map *map = mScene->map();
         map->setWidth(newSize.width());
         map->setHeight(newSize.height());
     }
@@ -260,8 +252,10 @@ void MainWindow::resizeMap()
 
 void MainWindow::editMapProperties()
 {
+    if (!mMapDocument)
+        return;
     PropertiesDialog propertiesDialog(mUndoStack, this);
-    propertiesDialog.setProperties(mScene->map()->properties());
+    propertiesDialog.setProperties(mMapDocument->map()->properties());
     propertiesDialog.exec();
 }
 
@@ -327,14 +321,19 @@ void MainWindow::updateRecentFiles()
 
 void MainWindow::updateActions()
 {
-    Map *map = mScene->map();
+    Map *map = 0;
+    int currentLayer = -1;
+
+    if (mMapDocument) {
+        map = mMapDocument->map();
+        currentLayer = mMapDocument->currentLayer();
+    }
 
     mUi.actionSave->setEnabled(map && !mUndoStack->isClean());
     mUi.actionSaveAs->setEnabled(map);
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
 
-    const int currentLayer = mLayerDock->currentLayer();
     const int layerCount = (map) ? map->layers().size() : 0;
     mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
                                       currentLayer < layerCount - 1);
@@ -344,22 +343,25 @@ void MainWindow::updateActions()
 void MainWindow::moveLayerUp()
 {
     // TODO: This method shouldn't be in this class (see also moveLayerDown)
-    const int index = mLayerDock->currentLayer();
-    Map *map = mScene->map();
-    if (index < 0 || !map || index >= map->layers().size() - 1)
+    if (!mMapDocument)
+        return;
+    const int index = mMapDocument->currentLayer();
+    Map *map = mMapDocument->map();
+    if (index < 0 || index >= map->layers().size() - 1)
         return;
 
-    mUndoStack->push(new MoveLayer(mLayerDock, index, MoveLayer::Up));
+    mUndoStack->push(new MoveLayer(mMapDocument, index, MoveLayer::Up));
 }
 
 void MainWindow::moveLayerDown()
 {
-    const int index = mLayerDock->currentLayer();
-    Map *map = mScene->map();
-    if (index < 1 || !map)
+    if (!mMapDocument)
+        return;
+    const int index = mMapDocument->currentLayer();
+    if (index < 1)
         return;
 
-    mUndoStack->push(new MoveLayer(mLayerDock, index, MoveLayer::Down));
+    mUndoStack->push(new MoveLayer(mMapDocument, index, MoveLayer::Down));
 }
 
 void MainWindow::writeSettings()
@@ -390,6 +392,21 @@ void MainWindow::setCurrentFileName(const QString &fileName)
     setWindowFilePath(mCurrentFileName);
     setWindowTitle(tr("%1[*] - Tiled").arg(QFileInfo(fileName).fileName()));
     setRecentFile(mCurrentFileName);
+}
+
+void MainWindow::setMapDocument(MapDocument *mapDocument)
+{
+    mScene->setMapDocument(mapDocument);
+    mLayerDock->setMapDocument(mapDocument);
+
+    // TODO: Add support for multiple map documents
+    delete mMapDocument;
+    mMapDocument = mapDocument;
+
+    if (mMapDocument) {
+        connect(mapDocument, SIGNAL(currentLayerChanged(int)),
+                SLOT(updateActions()));
+    }
 }
 
 void MainWindow::aboutTiled()

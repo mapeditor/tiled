@@ -19,48 +19,37 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef LAYERDOCK_H
-#define LAYERDOCK_H
+#include "mapdocument.h"
 
-#include <QDockWidget>
+#include "layertablemodel.h"
+#include "map.h"
 
-class QModelIndex;
-class QTreeView;
-class QUndoStack;
+using namespace Tiled;
+using namespace Tiled::Internal;
 
-namespace Tiled {
-namespace Internal {
-
-class MapDocument;
-
-/**
- * The dock widget that displays the map layers.
- */
-class LayerDock : public QDockWidget
+MapDocument::MapDocument(Map *map):
+    mMap(map),
+    mLayerModel(new LayerTableModel(this))
 {
-    Q_OBJECT
+    mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;
+    mLayerModel->setMap(mMap);
+}
 
-public:
-    /**
-     * Constructor.
-     */
-    LayerDock(QUndoStack *undoStack, QWidget *parent = 0);
+MapDocument::~MapDocument()
+{
+    delete mMap;
+}
 
-    /**
-     * Sets the map for which the layers should be displayed.
-     */
-    void setMapDocument(MapDocument *mapDocument);
+void MapDocument::setCurrentLayer(int index)
+{
+    if (index == mCurrentLayer)
+        return;
 
-private slots:
-    void currentRowChanged(const QModelIndex &index);
-    void currentLayerChanged(int index);
+    mCurrentLayer = index;
+    emit currentLayerChanged(mCurrentLayer);
+}
 
-private:
-    MapDocument *mMapDocument;
-    QTreeView *mLayerView;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-#endif // LAYERDOCK_H
+int MapDocument::currentLayer() const
+{
+    return mCurrentLayer;
+}

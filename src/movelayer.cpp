@@ -20,16 +20,17 @@
  */
 
 #include "movelayer.h"
+
 #include "layer.h"
-#include "layerdock.h"
 #include "layertablemodel.h"
+#include "mapdocument.h"
 
 #include <QObject>
 
 using namespace Tiled::Internal;
 
-MoveLayer::MoveLayer(LayerDock *layerDock, int index, Direction direction):
-    mLayerDock(layerDock),
+MoveLayer::MoveLayer(MapDocument *mapDocument, int index, Direction direction):
+    mMapDocument(mapDocument),
     mIndex(index),
     mDirection(direction)
 {
@@ -49,11 +50,11 @@ void MoveLayer::undo()
 
 void MoveLayer::moveLayer()
 {
-    const int currentIndex = mLayerDock->currentLayer();
+    const int currentIndex = mMapDocument->currentLayer();
     const bool selectedBefore = (mIndex == currentIndex);
     const int prevIndex = mIndex;
 
-    LayerTableModel *layerModel = mLayerDock->layerModel();
+    LayerTableModel *layerModel = mMapDocument->layerModel();
     Layer *layer = layerModel->takeLayerAt(mIndex);
 
     // Change the direction and index to swap undo/redo
@@ -65,6 +66,6 @@ void MoveLayer::moveLayer()
     layerModel->insertLayer(mIndex, layer);
 
     // Set the layer that is now supposed to be selected
-    mLayerDock->setCurrentLayer(selectedBefore ? mIndex :
-                                (selectedAfter ? prevIndex : currentIndex));
+    mMapDocument->setCurrentLayer(selectedBefore ? mIndex :
+                                  (selectedAfter ? prevIndex : currentIndex));
 }

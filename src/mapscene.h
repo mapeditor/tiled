@@ -27,12 +27,11 @@
 
 namespace Tiled {
 
-class Map;
-
 namespace Internal {
 
-class TileLayerItem;
+class MapDocument;
 class MapObjectItem;
+class TileLayerItem;
 
 /**
  * A graphics scene that displays the contents of a map.
@@ -48,14 +47,14 @@ public:
     MapScene(QObject *parent);
 
     /**
-     * Returns the map this scene is displaying.
+     * Returns the map document this scene is displaying.
      */
-    Map *map() const { return mMap; }
+    MapDocument *mapDocument() const { return mMapDocument; }
 
     /**
      * Sets the map this scene displays.
      */
-    void setMap(Map *map);
+    void setMapDocument(MapDocument *map);
 
     /**
      * Returns whether the tile grid is visible.
@@ -89,7 +88,7 @@ public slots:
     void refreshScene();
 
 private:
-    Map *mMap;
+    MapDocument *mMapDocument;
     bool mGridVisible;
 };
 

@@ -12,6 +12,7 @@ SOURCES += compression.cpp \
     mainwindow.cpp \
     xmlmapreader.cpp \
     map.cpp \
+    mapdocument.cpp \
     mapobject.cpp \
     mapobjectitem.cpp \
     mapscene.cpp \
@@ -35,6 +36,7 @@ HEADERS += compression.h \
     mapwriterinterface.h \
     xmlmapreader.h \
     map.h \
+    mapdocument.h \
     mapobject.h \
     mapobjectitem.h \
     mapscene.h \

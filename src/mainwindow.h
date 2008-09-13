@@ -31,6 +31,7 @@ class QUndoStack;
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
 class MapScene;
 class LayerDock;
 
@@ -87,6 +88,7 @@ private:
     void writeSettings();
     void readSettings();
     void setCurrentFileName(const QString &fileName);
+    void setMapDocument(MapDocument *mapDocument);
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
 
@@ -101,6 +103,7 @@ private:
     void updateRecentFiles();
 
     Ui::MainWindowClass mUi;
+    MapDocument *mMapDocument;
     MapScene *mScene;
     LayerDock *mLayerDock;
     QSettings mSettings;

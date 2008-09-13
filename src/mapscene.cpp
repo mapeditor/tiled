@@ -21,11 +21,13 @@
 
 #include "mapscene.h"
 
+#include "layertablemodel.h"
 #include "map.h"
-#include "tilelayer.h"
-#include "objectgroup.h"
+#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
+#include "objectgroup.h"
+#include "tilelayer.h"
 #include "tilelayeritem.h"
 
 #include <QPainter>
@@ -34,16 +36,28 @@ using namespace Tiled::Internal;
 
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
-    mMap(0),
+    mMapDocument(0),
     mGridVisible(true)
 {
     setBackgroundBrush(Qt::darkGray);
 }
 
-void MapScene::setMap(Map *map)
+void MapScene::setMapDocument(MapDocument *mapDocument)
 {
-    mMap = map;
+    if (mMapDocument)
+        mMapDocument->layerModel()->disconnect(this);
+
+    mMapDocument = mapDocument;
     refreshScene();
+
+    // TODO: This should really be more optimal (adding/removing as necessary)
+    if (mMapDocument) {
+        LayerTableModel *layerModel = mMapDocument->layerModel();
+        connect(layerModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
+                this, SLOT(refreshScene()));
+        connect(layerModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
+                this, SLOT(refreshScene()));
+    }
 }
 
 void MapScene::refreshScene()
@@ -51,30 +65,33 @@ void MapScene::refreshScene()
     // Clear any existing items
     clear();
 
-    if (mMap) {
-        // The +1 is to allow space for the right and bottom grid lines
-        setSceneRect(0, 0,
-                     mMap->width() * mMap->tileWidth() + 1,
-                     mMap->height() * mMap->tileHeight() + 1);
+    if (!mMapDocument) {
+        setSceneRect(QRectF());
+        return;
+    }
 
-        int z = 0;
-        foreach (Layer *layer, mMap->layers()) {
-            if (dynamic_cast<TileLayer*>(layer) != 0) {
-                TileLayerItem *item =
-                    new TileLayerItem(static_cast<TileLayer*>(layer));
+    const Map *map = mMapDocument->map();
+
+    // The +1 is to allow space for the right and bottom grid lines
+    setSceneRect(0, 0,
+            map->width() * map->tileWidth() + 1,
+            map->height() * map->tileHeight() + 1);
+
+    int z = 0;
+    foreach (Layer *layer, map->layers()) {
+        if (dynamic_cast<TileLayer*>(layer) != 0) {
+            TileLayerItem *item =
+                new TileLayerItem(static_cast<TileLayer*>(layer));
+            item->setZValue(z++);
+            addItem(item);
+        } else if (dynamic_cast<ObjectGroup*>(layer) != 0) {
+            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
+            foreach (MapObject *object, objectGroup->objects()) {
+                MapObjectItem *item = new MapObjectItem(object);
                 item->setZValue(z++);
                 addItem(item);
-            } else if (dynamic_cast<ObjectGroup*>(layer) != 0) {
-                ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
-                foreach (MapObject *object, objectGroup->objects()) {
-                    MapObjectItem *item = new MapObjectItem(object);
-                    item->setZValue(z++);
-                    addItem(item);
-                }
             }
         }
-    } else {
-        setSceneRect(QRectF());
     }
 }
 
@@ -89,17 +106,19 @@ void MapScene::setGridVisible(bool visible)
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (!mMap || !mGridVisible)
+    if (!mMapDocument || !mGridVisible)
         return;
 
-    const int tileWidth = mMap->tileWidth();
-    const int tileHeight = mMap->tileHeight();
+    Map *map = mMapDocument->map();
+
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
 
     const int startX = (int) (rect.x() / tileWidth) * tileWidth;
     const int startY = (int) (rect.y() / tileHeight) * tileHeight;
-    const int endX = qMin((int) rect.right(), mMap->width() * tileWidth + 1);
+    const int endX = qMin((int) rect.right(), map->width() * tileWidth + 1);
     const int endY = qMin((int) rect.bottom(),
-                          mMap->height() * tileHeight + 1);
+                          map->height() * tileHeight + 1);
 
     painter->setPen(Qt::black);
     painter->setOpacity(0.5f);

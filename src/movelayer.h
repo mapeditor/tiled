@@ -30,7 +30,7 @@ class Map;
 
 namespace Internal {
 
-class LayerDock;
+class MapDocument;
 
 /**
  * A command that moves a map layer up or down in the layer stack.
@@ -43,11 +43,11 @@ public:
     /**
      * Constructor.
      *
-     * @param layerDock the layer dock widget, for updating the selection
-     * @param index     the index of the layer to move
-     * @param direction the direction in which to move the layer
+     * @param mapDocument the map document that's being changed
+     * @param index       the index of the layer to move
+     * @param direction   the direction in which to move the layer
      */
-    MoveLayer(LayerDock *layerDock, int index, Direction direction);
+    MoveLayer(MapDocument *mapDocument, int index, Direction direction);
 
     void undo();
     void redo();
@@ -55,8 +55,7 @@ public:
 private:
     void moveLayer();
 
-    LayerDock *mLayerDock;
-    Map *mMap;
+    MapDocument *mMapDocument;
     int mIndex;
     Direction mDirection;
 };

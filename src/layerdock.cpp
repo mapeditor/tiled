@@ -20,9 +20,11 @@
  */
 
 #include "layerdock.h"
+
 #include "layer.h"
 #include "layertablemodel.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "propertiesdialog.h"
 
 #include <QContextMenuEvent>
@@ -42,8 +44,7 @@ namespace Internal {
 class LayerView : public QTreeView
 {
     public:
-        LayerView(LayerTableModel *model, QUndoStack *undoStack,
-                  QWidget *parent = 0);
+        LayerView(QUndoStack *undoStack, QWidget *parent = 0);
 
         QSize sizeHint() const
         {
@@ -62,56 +63,59 @@ class LayerView : public QTreeView
 
 LayerDock::LayerDock(QUndoStack *undoStack, QWidget *parent):
     QDockWidget(tr("Layers"), parent),
-    mLayerTableModel(new LayerTableModel(this))
+    mMapDocument(0)
 {
     setObjectName(QLatin1String("layerDock"));
 
-    mLayerView = new LayerView(mLayerTableModel, undoStack, this);
-
-    QItemSelectionModel *selectionModel = mLayerView->selectionModel();
-    connect(selectionModel, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            this, SLOT(currentRowChanged(QModelIndex)));
-
+    mLayerView = new LayerView(undoStack, this);
     setWidget(mLayerView);
 }
 
-void LayerDock::setMap(Map *map)
+void LayerDock::setMapDocument(MapDocument *mapDocument)
 {
-    mLayerTableModel->setMap(map);
-}
+    if (mMapDocument) {
+        mMapDocument->disconnect(this);
+        mLayerView->selectionModel()->disconnect(this);
+    }
 
-void LayerDock::setCurrentLayer(int index)
-{
-    const int rowCount = mLayerTableModel->rowCount();
-    const int row = rowCount - index - 1;
-    mLayerView->setCurrentIndex(mLayerTableModel->index(row, 0));
+    mMapDocument = mapDocument;
 
-    // Always emit currentLayerChanged here, because due to bug in Qt we don't
-    // get currentRowChanged signals in all cases (signals are missing when
-    // rows get added or removed, for example).
-    emit currentLayerChanged(index);
-}
+    if (mMapDocument) {
+        mLayerView->setModel(mapDocument->layerModel());
 
-int LayerDock::currentLayer() const
-{
-    const QModelIndex currentIndex = mLayerView->currentIndex();
-    if (currentIndex.isValid()) {
-        const int rowCount = mLayerTableModel->rowCount();
-        return rowCount - currentIndex.row() - 1;
+        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                this, SLOT(currentLayerChanged(int)));
+
+        QItemSelectionModel *s = mLayerView->selectionModel();
+        connect(s, SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+                this, SLOT(currentRowChanged(QModelIndex)));
+
+        currentLayerChanged(mMapDocument->currentLayer());
     } else {
-        return -1;
+        mLayerView->setModel(0);
     }
 }
 
 void LayerDock::currentRowChanged(const QModelIndex &index)
 {
-    const int rowCount = mLayerTableModel->rowCount();
-    emit currentLayerChanged(rowCount - index.row() - 1);
+    const int layer = mMapDocument->layerModel()->toLayerIndex(index);
+    mMapDocument->setCurrentLayer(layer);
+}
+
+void LayerDock::currentLayerChanged(int index)
+{
+    if (index > -1) {
+        const LayerTableModel *layerModel = mMapDocument->layerModel();
+        const int layerCount = layerModel->rowCount();
+        const int row = layerCount - index - 1;
+        mLayerView->setCurrentIndex(layerModel->index(row, 0));
+    } else {
+        mLayerView->setCurrentIndex(QModelIndex());
+    }
 }
 
 
-LayerView::LayerView(LayerTableModel *model, QUndoStack *undoStack,
-                     QWidget *parent):
+LayerView::LayerView(QUndoStack *undoStack, QWidget *parent):
     QTreeView(parent),
     mUndoStack(undoStack)
 {
@@ -119,13 +123,14 @@ LayerView::LayerView(LayerTableModel *model, QUndoStack *undoStack,
     setHeaderHidden(true);
     setItemsExpandable(false);
     setUniformRowHeights(true);
-    setModel(model);
 }
 
 void LayerView::contextMenuEvent(QContextMenuEvent *event)
 {
     const QModelIndex index = indexAt(event->pos());
     const LayerTableModel *m = static_cast<LayerTableModel*>(model());
+    if (!m)
+        return;
     const int layerIndex = m->toLayerIndex(index);
     if (layerIndex < 0)
         return;
