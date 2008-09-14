@@ -23,13 +23,17 @@
 
 #include "layertablemodel.h"
 #include "map.h"
+#include "movelayer.h"
+
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapDocument::MapDocument(Map *map):
     mMap(map),
-    mLayerModel(new LayerTableModel(this))
+    mLayerModel(new LayerTableModel(this)),
+    mUndoStack(new QUndoStack(this))
 {
     mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;
     mLayerModel->setMap(mMap);
@@ -52,4 +56,20 @@ void MapDocument::setCurrentLayer(int index)
 int MapDocument::currentLayer() const
 {
     return mCurrentLayer;
+}
+
+void MapDocument::moveLayerUp(int index)
+{
+    if (index < 0 || index >= mMap->layers().size() - 1)
+        return;
+
+    mUndoStack->push(new MoveLayer(this, index, MoveLayer::Up));
+}
+
+void MapDocument::moveLayerDown(int index)
+{
+    if (index < 1)
+        return;
+
+    mUndoStack->push(new MoveLayer(this, index, MoveLayer::Down));
 }

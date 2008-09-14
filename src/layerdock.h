@@ -23,6 +23,7 @@
 #define LAYERDOCK_H
 
 #include <QDockWidget>
+#include <QTreeView>
 
 class QModelIndex;
 class QTreeView;
@@ -31,6 +32,7 @@ class QUndoStack;
 namespace Tiled {
 namespace Internal {
 
+class LayerView;
 class MapDocument;
 
 /**
@@ -38,18 +40,35 @@ class MapDocument;
  */
 class LayerDock : public QDockWidget
 {
-    Q_OBJECT
-
 public:
     /**
      * Constructor.
      */
-    LayerDock(QUndoStack *undoStack, QWidget *parent = 0);
+    LayerDock(QWidget *parent = 0);
 
     /**
      * Sets the map for which the layers should be displayed.
      */
     void setMapDocument(MapDocument *mapDocument);
+
+private:
+    LayerView *mLayerView;
+};
+
+/**
+ * This view makes sure the size hint makes sense and implements the context
+ * menu.
+ */
+class LayerView : public QTreeView
+{
+    Q_OBJECT
+
+public:
+    LayerView(QWidget *parent = 0);
+
+    QSize sizeHint() const;
+    void setMapDocument(MapDocument *mapDocument);
+    void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
     void currentRowChanged(const QModelIndex &index);
@@ -57,7 +76,6 @@ private slots:
 
 private:
     MapDocument *mMapDocument;
-    QTreeView *mLayerView;
 };
 
 } // namespace Internal

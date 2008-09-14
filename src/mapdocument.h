@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+class QUndoStack;
+
 namespace Tiled {
 
 class Map;
@@ -38,9 +40,7 @@ class LayerTableModel;
  * order to allow the GUI to update accordingly.
  *
  * At the moment the map document provides the layer model and keeps track of
- * the currently selected layer.
- *
- * TODO: Move the QUndoStack to the map document
+ * the currently selected layer. It also owns the QUndoStack.
  */
 class MapDocument : public QObject
 {
@@ -75,10 +75,28 @@ public:
     int currentLayer() const;
 
     /**
+     * Moves the given layer up. Does nothing when no valid layer index is
+     * given.
+     */
+    void moveLayerUp(int index);
+
+    /**
+     * Moves the given layer down. Does nothing when no valid layer index is
+     * given.
+     */
+    void moveLayerDown(int index);
+
+    /**
      * Returns the layer model. Can be used to modify the layer stack of the
      * map, and to display the layer stack in a view.
      */
     LayerTableModel *layerModel() const { return mLayerModel; }
+
+    /**
+     * Returns the undo stack of this map document. Should be used to push any
+     * commands on that modify the map.
+     */
+    QUndoStack *undoStack() const { return mUndoStack; }
 
 signals:
     /**
@@ -90,6 +108,7 @@ private:
     Map *mMap;
     LayerTableModel *mLayerModel;
     int mCurrentLayer;
+    QUndoStack *mUndoStack;
 };
 
 } // namespace Internal

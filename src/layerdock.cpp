@@ -29,95 +29,29 @@
 
 #include <QContextMenuEvent>
 #include <QMenu>
-#include <QTreeView>
 #include <QUndoStack>
 
 using namespace Tiled::Internal;
 
-namespace Tiled {
-namespace Internal {
 
-/**
- * This view makes sure the size hint makes sense and implements the context
- * menu.
- */
-class LayerView : public QTreeView
-{
-    public:
-        LayerView(QUndoStack *undoStack, QWidget *parent = 0);
-
-        QSize sizeHint() const
-        {
-            return QSize(130, 100);
-        }
-
-        void contextMenuEvent(QContextMenuEvent *event);
-
-    private:
-        QUndoStack *mUndoStack;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-
-LayerDock::LayerDock(QUndoStack *undoStack, QWidget *parent):
-    QDockWidget(tr("Layers"), parent),
-    mMapDocument(0)
+LayerDock::LayerDock(QWidget *parent):
+    QDockWidget(tr("Layers"), parent)
 {
     setObjectName(QLatin1String("layerDock"));
 
-    mLayerView = new LayerView(undoStack, this);
+    mLayerView = new LayerView(this);
     setWidget(mLayerView);
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMapDocument) {
-        mMapDocument->disconnect(this);
-        mLayerView->selectionModel()->disconnect(this);
-    }
-
-    mMapDocument = mapDocument;
-
-    if (mMapDocument) {
-        mLayerView->setModel(mapDocument->layerModel());
-
-        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
-                this, SLOT(currentLayerChanged(int)));
-
-        QItemSelectionModel *s = mLayerView->selectionModel();
-        connect(s, SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
-                this, SLOT(currentRowChanged(QModelIndex)));
-
-        currentLayerChanged(mMapDocument->currentLayer());
-    } else {
-        mLayerView->setModel(0);
-    }
-}
-
-void LayerDock::currentRowChanged(const QModelIndex &index)
-{
-    const int layer = mMapDocument->layerModel()->toLayerIndex(index);
-    mMapDocument->setCurrentLayer(layer);
-}
-
-void LayerDock::currentLayerChanged(int index)
-{
-    if (index > -1) {
-        const LayerTableModel *layerModel = mMapDocument->layerModel();
-        const int layerCount = layerModel->rowCount();
-        const int row = layerCount - index - 1;
-        mLayerView->setCurrentIndex(layerModel->index(row, 0));
-    } else {
-        mLayerView->setCurrentIndex(QModelIndex());
-    }
+    mLayerView->setMapDocument(mapDocument);
 }
 
 
-LayerView::LayerView(QUndoStack *undoStack, QWidget *parent):
+LayerView::LayerView(QWidget *parent):
     QTreeView(parent),
-    mUndoStack(undoStack)
+    mMapDocument(0)
 {
     setRootIsDecorated(false);
     setHeaderHidden(true);
@@ -125,12 +59,62 @@ LayerView::LayerView(QUndoStack *undoStack, QWidget *parent):
     setUniformRowHeights(true);
 }
 
+QSize LayerView::sizeHint() const
+{
+    return QSize(130, 100);
+}
+
+void LayerView::setMapDocument(MapDocument *mapDocument)
+{
+    if (mMapDocument) {
+        mMapDocument->disconnect(this);
+        QItemSelectionModel *s = selectionModel();
+        disconnect(s, SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+                   this, SLOT(currentRowChanged(QModelIndex)));
+    }
+
+    mMapDocument = mapDocument;
+
+    if (mMapDocument) {
+        setModel(mMapDocument->layerModel());
+
+        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                this, SLOT(currentLayerChanged(int)));
+
+        QItemSelectionModel *s = selectionModel();
+        connect(s, SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+                this, SLOT(currentRowChanged(QModelIndex)));
+
+        currentLayerChanged(mMapDocument->currentLayer());
+    } else {
+        setModel(0);
+    }
+}
+
+void LayerView::currentRowChanged(const QModelIndex &index)
+{
+    const int layer = mMapDocument->layerModel()->toLayerIndex(index);
+    mMapDocument->setCurrentLayer(layer);
+}
+
+void LayerView::currentLayerChanged(int index)
+{
+    if (index > -1) {
+        const LayerTableModel *layerModel = mMapDocument->layerModel();
+        const int layerCount = layerModel->rowCount();
+        const int row = layerCount - index - 1;
+        setCurrentIndex(layerModel->index(row, 0));
+    } else {
+        setCurrentIndex(QModelIndex());
+    }
+}
+
 void LayerView::contextMenuEvent(QContextMenuEvent *event)
 {
-    const QModelIndex index = indexAt(event->pos());
-    const LayerTableModel *m = static_cast<LayerTableModel*>(model());
-    if (!m)
+    if (!mMapDocument)
         return;
+    const QModelIndex index = indexAt(event->pos());
+    const LayerTableModel *m = mMapDocument->layerModel();
     const int layerIndex = m->toLayerIndex(index);
     if (layerIndex < 0)
         return;
@@ -141,7 +125,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     if (menu.exec(event->globalPos()) == layerProperties) {
         Layer *layer = m->map()->layers().at(layerIndex);
 
-        PropertiesDialog propertiesDialog(mUndoStack, this);
+        PropertiesDialog propertiesDialog(mMapDocument->undoStack(), this);
         propertiesDialog.setProperties(layer->properties());
         propertiesDialog.exec();
     }

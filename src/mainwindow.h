@@ -26,7 +26,7 @@
 #include <QSettings>
 #include "ui_mainwindow.h"
 
-class QUndoStack;
+class QUndoGroup;
 
 namespace Tiled {
 namespace Internal {
@@ -108,7 +108,7 @@ private:
     LayerDock *mLayerDock;
     QSettings mSettings;
     QString mCurrentFileName;
-    QUndoStack *mUndoStack;
+    QUndoGroup *mUndoGroup;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];

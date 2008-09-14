@@ -21,7 +21,6 @@
 
 #include "mainwindow.h"
 
-#include "movelayer.h"
 #include "layer.h"
 #include "layerdock.h"
 #include "map.h"
@@ -37,6 +36,7 @@
 #include <QMessageBox>
 #include <QSessionManager>
 #include <QTextStream>
+#include <QUndoGroup>
 #include <QUndoStack>
 #include <QUndoView>
 #include <QDebug>
@@ -49,21 +49,20 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 {
     mUi.setupUi(this);
 
-    mUndoStack = new QUndoStack(this);
-    QAction *undoAction = mUndoStack->createUndoAction(this, tr("Undo"));
-    QAction *redoAction = mUndoStack->createRedoAction(this, tr("Redo"));
+    mUndoGroup = new QUndoGroup(this);
+    QAction *undoAction = mUndoGroup->createUndoAction(this, tr("Undo"));
+    QAction *redoAction = mUndoGroup->createRedoAction(this, tr("Redo"));
     redoAction->setIcon(QIcon(QLatin1String(":images/edit-redo.png")));
     undoAction->setIcon(QIcon(QLatin1String(":images/edit-undo.png")));
-    connect(mUndoStack, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
+    connect(mUndoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
 
-    // TODO: Find a way to avoid having to pass around the QUndoStack everwhere
-    mLayerDock = new LayerDock(mUndoStack, this);
+    mLayerDock = new LayerDock(this);
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
 
     // Mainly for debugging, but might also be useful on the long run
     QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
     undoViewDock->setObjectName(QLatin1String("undoViewDock"));
-    undoViewDock->setWidget(new QUndoView(mUndoStack, undoViewDock));
+    undoViewDock->setWidget(new QUndoView(mUndoGroup, undoViewDock));
     addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
     mUi.actionOpen->setShortcut(QKeySequence::Open);
@@ -167,7 +166,6 @@ void MainWindow::openFile(const QString &fileName)
     setMapDocument(new MapDocument(map));
     mUi.graphicsView->centerOn(0, 0);
 
-    mUndoStack->clear();
     setCurrentFileName(fileName);
     updateActions();
 }
@@ -189,7 +187,7 @@ bool MainWindow::saveFile(const QString &fileName)
         return false;
     }
 
-    mUndoStack->setClean();
+    mMapDocument->undoStack()->setClean();
     setCurrentFileName(fileName);
     return true;
 }
@@ -214,7 +212,7 @@ bool MainWindow::saveFileAs()
 
 bool MainWindow::confirmSave()
 {
-    if (mUndoStack->isClean())
+    if (!mMapDocument || mMapDocument->undoStack()->isClean())
         return true;
 
     int ret = QMessageBox::warning(
@@ -254,14 +252,14 @@ void MainWindow::editMapProperties()
 {
     if (!mMapDocument)
         return;
-    PropertiesDialog propertiesDialog(mUndoStack, this);
+    PropertiesDialog propertiesDialog(mMapDocument->undoStack(), this);
     propertiesDialog.setProperties(mMapDocument->map()->properties());
     propertiesDialog.exec();
 }
 
 void MainWindow::updateModified()
 {
-    setWindowModified(!mUndoStack->isClean());
+    setWindowModified(!mUndoGroup->isClean());
     updateActions();
 }
 
@@ -329,7 +327,7 @@ void MainWindow::updateActions()
         currentLayer = mMapDocument->currentLayer();
     }
 
-    mUi.actionSave->setEnabled(map && !mUndoStack->isClean());
+    mUi.actionSave->setEnabled(map && !mUndoGroup->isClean());
     mUi.actionSaveAs->setEnabled(map);
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
@@ -342,26 +340,14 @@ void MainWindow::updateActions()
 
 void MainWindow::moveLayerUp()
 {
-    // TODO: This method shouldn't be in this class (see also moveLayerDown)
-    if (!mMapDocument)
-        return;
-    const int index = mMapDocument->currentLayer();
-    Map *map = mMapDocument->map();
-    if (index < 0 || index >= map->layers().size() - 1)
-        return;
-
-    mUndoStack->push(new MoveLayer(mMapDocument, index, MoveLayer::Up));
+    if (mMapDocument)
+        mMapDocument->moveLayerUp(mMapDocument->currentLayer());
 }
 
 void MainWindow::moveLayerDown()
 {
-    if (!mMapDocument)
-        return;
-    const int index = mMapDocument->currentLayer();
-    if (index < 1)
-        return;
-
-    mUndoStack->push(new MoveLayer(mMapDocument, index, MoveLayer::Down));
+    if (mMapDocument)
+        mMapDocument->moveLayerDown(mMapDocument->currentLayer());
 }
 
 void MainWindow::writeSettings()
@@ -396,6 +382,9 @@ void MainWindow::setCurrentFileName(const QString &fileName)
 
 void MainWindow::setMapDocument(MapDocument *mapDocument)
 {
+    if (mMapDocument)
+        mUndoGroup->removeStack(mMapDocument->undoStack());
+
     mScene->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
 
@@ -406,6 +395,10 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mapDocument, SIGNAL(currentLayerChanged(int)),
                 SLOT(updateActions()));
+
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        mUndoGroup->addStack(undoStack);
+        mUndoGroup->setActiveStack(undoStack);
     }
 }
 
