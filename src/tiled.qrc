@@ -2,11 +2,18 @@
     <qresource>
         <file>images/document-open.png</file>
         <file>images/document-save.png</file>
+        <file>images/document-save-as.png</file>
         <file>images/document-resize.png</file>
         <file>images/document-properties.png</file>
         <file>images/document-open-recent.png</file>
         <file>images/clear.png</file>
+        <file>images/drive-harddisk.png</file>
+        <file>images/edit-copy.png</file>
+        <file>images/edit-paste.png</file>
         <file>images/edit-redo.png</file>
         <file>images/edit-undo.png</file>
+        <file>images/go-down.png</file>
+        <file>images/go-up.png</file>
+        <file>images/help-about.png</file>
     </qresource>
 </RCC>
