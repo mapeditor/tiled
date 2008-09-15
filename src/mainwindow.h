@@ -34,6 +34,7 @@ namespace Internal {
 class MapDocument;
 class MapScene;
 class LayerDock;
+class TilesetDock;
 
 class MainWindow : public QMainWindow
 {
@@ -106,6 +107,7 @@ private:
     MapDocument *mMapDocument;
     MapScene *mScene;
     LayerDock *mLayerDock;
+    TilesetDock *mTilesetDock;
     QSettings mSettings;
     QString mCurrentFileName;
     QUndoGroup *mUndoGroup;

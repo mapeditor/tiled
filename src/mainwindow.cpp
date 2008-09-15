@@ -28,6 +28,7 @@
 #include "mapscene.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "tilesetdock.h"
 #include "xmlmapreader.h"
 #include "xmlmapwriter.h"
 
@@ -46,6 +47,8 @@ using namespace Tiled::Internal;
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
     , mMapDocument(0)
+    , mLayerDock(new LayerDock(this))
+    , mTilesetDock(new TilesetDock(this))
 {
     mUi.setupUi(this);
 
@@ -56,8 +59,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     undoAction->setIcon(QIcon(QLatin1String(":images/edit-undo.png")));
     connect(mUndoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
 
-    mLayerDock = new LayerDock(this);
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+    addDockWidget(Qt::BottomDockWidgetArea, mTilesetDock);
 
     // Mainly for debugging, but might also be useful on the long run
     QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
@@ -387,6 +390,7 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
 
     mScene->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
+    mTilesetDock->setMapDocument(mapDocument);
 
     // TODO: Add support for multiple map documents
     delete mMapDocument;
