@@ -133,6 +133,10 @@
    </property>
   </action>
   <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/edit-copy.png</normaloff>:/images/edit-copy.png</iconset>
+   </property>
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -141,6 +145,10 @@
    </property>
   </action>
   <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/edit-paste.png</normaloff>:/images/edit-paste.png</iconset>
+   </property>
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -149,6 +157,10 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/help-about.png</normaloff>:/images/help-about.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;About Tiled</string>
    </property>
@@ -200,11 +212,19 @@
    </property>
   </action>
   <action name="actionSaveAs">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/document-save-as.png</normaloff>:/images/document-save-as.png</iconset>
+   </property>
    <property name="text">
     <string>Save &amp;As...</string>
    </property>
   </action>
   <action name="actionMoveLayerUp">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/go-up.png</normaloff>:/images/go-up.png</iconset>
+   </property>
    <property name="text">
     <string>Move Layer Up</string>
    </property>
@@ -213,6 +233,10 @@
    </property>
   </action>
   <action name="actionMoveLayerDown">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/go-down.png</normaloff>:/images/go-down.png</iconset>
+   </property>
    <property name="text">
     <string>Move Layer Down</string>
    </property>
