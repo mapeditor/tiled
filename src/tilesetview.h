@@ -19,38 +19,29 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TILESETDOCK_H
-#define TILESETDOCK_H
+#ifndef TILESETVIEW_H
+#define TILESETVIEW_H
 
-#include <QDockWidget>
+#include <QListView>
 
 namespace Tiled {
 namespace Internal {
 
-class TilesetView;
 class MapDocument;
 
-/**
- * The dock widget that displays the tilesets.
- */
-class TilesetDock : public QDockWidget
+class TilesetView : public QListView
 {
 public:
-    /**
-     * Constructor.
-     */
-    TilesetDock(QWidget *parent = 0);
+    TilesetView(QWidget *parent = 0);
 
-    /**
-     * Sets the map for which the tilesets should be displayed.
-     */
+    QSize sizeHint() const;
     void setMapDocument(MapDocument *mapDocument);
 
 private:
-    TilesetView *mTilesetView;
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // TILESETDOCK_H
+#endif // TILESETVIEW_H

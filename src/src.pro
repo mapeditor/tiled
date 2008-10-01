@@ -22,6 +22,7 @@ SOURCES += compression.cpp \
     objectgroup.cpp \
     tileset.cpp \
     tilesetdock.cpp \
+    tilesetview.cpp \
     tilelayer.cpp \
     tilelayeritem.cpp \
     resizehelper.cpp \
@@ -47,6 +48,7 @@ HEADERS += compression.h \
     objectgroup.h \
     tileset.h \
     tilesetdock.h \
+    tilesetview.h \
     tilelayer.h \
     tilelayeritem.h \
     resizedialog.h \

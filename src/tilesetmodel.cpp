@@ -19,23 +19,44 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "tilesetdock.h"
+#include "tilesetmodel.h"
 
-#include "tilesetview.h"
+#include "map.h"
+#include "tileset.h"
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
-
-TilesetDock::TilesetDock(QWidget *parent):
-    QDockWidget(tr("Tilesets"), parent)
+TilesetModel::TilesetModel(QObject *parent):
+    QAbstractTableModel(parent),
+    mTileset(0)
 {
-    setObjectName(QLatin1String("TilesetDock"));
-
-    mTilesetView = new TilesetView(this);
-    setWidget(mTilesetView);
 }
 
-void TilesetDock::setMapDocument(MapDocument *mapDocument)
+int TilesetModel::rowCount(const QModelIndex &parent) const
 {
-    mTilesetView->setMapDocument(mapDocument);
+    return parent.isValid() ? 0 : (mMap ? mMap->layers().size() : 0);
+}
+
+int TilesetModel::columnCount(const QModelIndex &parent) const
+{
+    return parent.isValid() ? 0 : 1;
+}
+
+QVariant TilesetModel::data(const QModelIndex &index, int role) const
+{
+    if (role == Qt::DisplayRole) {
+        const int layerIndex = toLayerIndex(index);
+        if (layerIndex >= 0)
+            return mMap->layers().at(layerIndex)->name();
+    }
+    return QVariant();
+}
+
+void TilesetModel::setTileset(Tileset *tileset)
+{
+    if (mTileset == tileset)
+        return;
+    mTileset = tileset;
+    reset();
 }
