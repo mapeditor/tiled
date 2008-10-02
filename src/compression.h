@@ -27,6 +27,11 @@ class QByteArray;
 namespace Tiled {
 namespace Internal {
 
+enum CompressionMethod {
+    Gzip,
+    Zlib
+};
+
 /**
  * Decompresses either zlib or gzip compressed memory. Returns a null
  * QByteArray if decompressing failed.
@@ -50,7 +55,7 @@ QByteArray decompress(const QByteArray &data, int expectedSize = 1024);
  * @param data the uncompressed data
  * @return the compressed data, or a null QByteArray if compression failed
  */
-QByteArray compress(const QByteArray &data);
+QByteArray compress(const QByteArray &data, CompressionMethod method = Gzip);
 
 } // namespace Internal
 } // namespace Tiled
