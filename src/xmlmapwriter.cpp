@@ -131,6 +131,8 @@ void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer)
     writeProperties(w, tileLayer->properties());
 
     QByteArray tileData;
+    tileData.reserve(tileLayer->height() * tileLayer->width() * 4);
+
     for (int y = 0; y < tileLayer->height(); ++y) {
         for (int x = 0; x < tileLayer->width(); ++x) {
             const Tile *tile = tileLayer->tileAt(x, y);
@@ -152,10 +154,12 @@ void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer)
     //         gid,gid,gid,gid,...
     //        </data>
 
-    // TODO: Add support for gzip and maybe also zlib compression
+    // TODO: Add support for choosing zlib compression
+    tileData = compress(tileData, Gzip);
 
     w.writeStartElement(QLatin1String("data"));
     w.writeAttribute(QLatin1String("encoding"), QLatin1String("base64"));
+    w.writeAttribute(QLatin1String("compression"), QLatin1String("gzip"));
     w.writeCharacters(QLatin1String("\n"));
     w.writeCharacters(QString::fromLatin1(tileData.toBase64()));
     w.writeCharacters(QLatin1String("\n"));

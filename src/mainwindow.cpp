@@ -65,7 +65,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     // Mainly for debugging, but might also be useful on the long run
     QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
     undoViewDock->setObjectName(QLatin1String("undoViewDock"));
-    undoViewDock->setWidget(new QUndoView(mUndoGroup, undoViewDock));
+    QUndoView *undoView = new QUndoView(mUndoGroup, undoViewDock);
+    undoView->setCleanIcon(QIcon(QLatin1String(":images/drive-harddisk.png")));
+    undoViewDock->setWidget(undoView);
     addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
     mUi.actionOpen->setShortcut(QKeySequence::Open);
