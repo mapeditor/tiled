@@ -23,36 +23,60 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "tileset.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
+
+#include <QStackedWidget>
+#include <QTabBar>
+#include <QVBoxLayout>
 
 using namespace Tiled::Internal;
 
 TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(tr("Tilesets"), parent),
-    mMapDocument(0)
+    mMapDocument(0),
+    mTabBar(new QTabBar),
+    mViewStack(new QStackedWidget)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
-    mTilesetView = new TilesetView(this);
-    mTilesetModel = new TilesetModel(this);
-    mTilesetView->setModel(mTilesetModel);
-    setWidget(mTilesetView);
+    QWidget *w = new QWidget(this);
+    QLayout *l = new QVBoxLayout(w);
+    l->setSpacing(0);
+    l->setMargin(0);
+    l->addWidget(mTabBar);
+    l->addWidget(mViewStack);
+
+    connect(mTabBar, SIGNAL(currentChanged(int)),
+            mViewStack, SLOT(setCurrentIndex(int)));
+
+    setWidget(w);
 }
 
 void TilesetDock::setMapDocument(MapDocument *mapDocument)
 {
+    if (mMapDocument == mapDocument)
+        return;
+
+    // Clear previous content
+    while (mTabBar->count())
+        mTabBar->removeTab(0);
+    while (mViewStack->currentWidget())
+        delete mViewStack->currentWidget();
+
     mMapDocument = mapDocument;
 
     if (mapDocument) {
-        // TODO: Display more than just the first tileset :)
         Map *map = mapDocument->map();
-        QList<Tileset*> tilesets = map->tilesets().values();
-        if (!tilesets.isEmpty())
-            mTilesetModel->setTileset(tilesets.first());
-        else
-            mTilesetModel->setTileset(0);
-    } else {
-        mTilesetModel->setTileset(0);
+        const QList<Tileset*> tilesets = map->tilesets().values();
+
+        foreach (Tileset *tileset, tilesets) {
+            TilesetView *view = new TilesetView;
+            view->setModel(new TilesetModel(tileset, view));
+
+            mTabBar->addTab(tileset->name());
+            mViewStack->addWidget(view);
+        }
     }
 }

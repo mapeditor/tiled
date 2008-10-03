@@ -24,11 +24,12 @@
 
 #include <QDockWidget>
 
+class QStackedWidget;
+class QTabBar;
+
 namespace Tiled {
 namespace Internal {
 
-class TilesetModel;
-class TilesetView;
 class MapDocument;
 
 /**
@@ -48,9 +49,9 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
 private:
-    TilesetModel *mTilesetModel;
-    TilesetView *mTilesetView;
     MapDocument *mMapDocument;
+    QTabBar *mTabBar;
+    QStackedWidget *mViewStack;
 };
 
 } // namespace Internal

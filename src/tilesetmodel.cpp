@@ -28,9 +28,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TilesetModel::TilesetModel(QObject *parent):
+TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
     QAbstractListModel(parent),
-    mTileset(0)
+    mTileset(tileset)
 {
 }
 

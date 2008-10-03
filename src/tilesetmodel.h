@@ -38,8 +38,10 @@ class TilesetModel : public QAbstractListModel
 public:
     /**
      * Constructor.
+     *
+     * @param tileset the initial tileset to display
      */
-    TilesetModel(QObject *parent = 0);
+    TilesetModel(Tileset *tileset, QObject *parent = 0);
 
     /**
      * Returns the number of rows. This is equal to the number of tiles.
