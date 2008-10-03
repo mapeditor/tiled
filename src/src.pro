@@ -22,6 +22,7 @@ SOURCES += compression.cpp \
     objectgroup.cpp \
     tileset.cpp \
     tilesetdock.cpp \
+    tilesetmodel.cpp \
     tilesetview.cpp \
     tilelayer.cpp \
     tilelayeritem.cpp \
@@ -48,6 +49,7 @@ HEADERS += compression.h \
     objectgroup.h \
     tileset.h \
     tilesetdock.h \
+    tilesetmodel.h \
     tilesetview.h \
     tilelayer.h \
     tilelayeritem.h \

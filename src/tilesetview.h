@@ -35,10 +35,6 @@ public:
     TilesetView(QWidget *parent = 0);
 
     QSize sizeHint() const;
-    void setMapDocument(MapDocument *mapDocument);
-
-private:
-    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

@@ -21,21 +21,38 @@
 
 #include "tilesetdock.h"
 
+#include "map.h"
+#include "mapdocument.h"
+#include "tilesetmodel.h"
 #include "tilesetview.h"
 
 using namespace Tiled::Internal;
 
-
 TilesetDock::TilesetDock(QWidget *parent):
-    QDockWidget(tr("Tilesets"), parent)
+    QDockWidget(tr("Tilesets"), parent),
+    mMapDocument(0)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
     mTilesetView = new TilesetView(this);
+    mTilesetModel = new TilesetModel(this);
+    mTilesetView->setModel(mTilesetModel);
     setWidget(mTilesetView);
 }
 
 void TilesetDock::setMapDocument(MapDocument *mapDocument)
 {
-    mTilesetView->setMapDocument(mapDocument);
+    mMapDocument = mapDocument;
+
+    if (mapDocument) {
+        // TODO: Display more than just the first tileset :)
+        Map *map = mapDocument->map();
+        QList<Tileset*> tilesets = map->tilesets().values();
+        if (!tilesets.isEmpty())
+            mTilesetModel->setTileset(tilesets.first());
+        else
+            mTilesetModel->setTileset(0);
+    } else {
+        mTilesetModel->setTileset(0);
+    }
 }

@@ -22,20 +22,21 @@
 #include "tilesetmodel.h"
 
 #include "map.h"
+#include "tile.h"
 #include "tileset.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 TilesetModel::TilesetModel(QObject *parent):
-    QAbstractTableModel(parent),
+    QAbstractListModel(parent),
     mTileset(0)
 {
 }
 
 int TilesetModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : (mMap ? mMap->layers().size() : 0);
+    return parent.isValid() ? 0 : (mTileset ? mTileset->tileCount() : 0);
 }
 
 int TilesetModel::columnCount(const QModelIndex &parent) const
@@ -45,10 +46,8 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole) {
-        const int layerIndex = toLayerIndex(index);
-        if (layerIndex >= 0)
-            return mMap->layers().at(layerIndex)->name();
+    if (role == Qt::DecorationRole) {
+        return mTileset->tileAt(index.row())->image();
     }
     return QVariant();
 }

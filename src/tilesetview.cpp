@@ -24,18 +24,17 @@
 using namespace Tiled::Internal;
 
 TilesetView::TilesetView(QWidget *parent):
-    QListView(parent),
-    mMapDocument(0)
+    QListView(parent)
 {
+    // TODO: Write a new tileset view. Adapting a QListView to display the
+    //       tiles doesn't seem very suitable.
     setWrapping(true);
     setFlow(LeftToRight);
+    setResizeMode(QListView::Adjust);
+    setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
 
 QSize TilesetView::sizeHint() const
 {
     return QSize(130, 100);
-}
-
-void TilesetView::setMapDocument(MapDocument *mapDocument)
-{
 }
