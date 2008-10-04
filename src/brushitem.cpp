@@ -19,41 +19,28 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#include "brushitem.h"
 
-#include <QGraphicsItem>
+#include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
-namespace Tiled {
+using namespace Tiled::Internal;
 
-class TileLayer;
-
-namespace Internal {
-
-/**
- * A graphics item displaying a tile layer in a QGraphicsView.
- */
-class TileLayerItem : public QGraphicsItem
+BrushItem::BrushItem()
 {
-public:
-    /**
-     * Constructor.
-     *
-     * @param layer the tile layer to be displayed
-     */
-    TileLayerItem(TileLayer *layer);
+}
 
-    // QGraphicsItem
-    QRectF boundingRect() const;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+QRectF BrushItem::boundingRect() const
+{
+    return QRectF(0, 0, 32, 32);
+}
 
-private:
-    TileLayer *mLayer;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-#endif // TILELAYERITEM_H
+void BrushItem::paint(QPainter *painter,
+                      const QStyleOptionGraphicsItem *option,
+                      QWidget *widget)
+{
+    Q_UNUSED(widget);
+    QColor red(Qt::red);
+    red.setAlpha(64);
+    painter->fillRect(option->exposedRect, red);
+}

@@ -7,15 +7,16 @@ QT += core \
     gui \
     xml
 CONFIG += debug
-SOURCES += compression.cpp \
+SOURCES += brushitem.cpp \
+    compression.cpp \
     main.cpp \
     mainwindow.cpp \
-    xmlmapreader.cpp \
     map.cpp \
     mapdocument.cpp \
     mapobject.cpp \
     mapobjectitem.cpp \
     mapscene.cpp \
+    mapview.cpp \
     layer.cpp \
     layerdock.cpp \
     layertablemodel.cpp \
@@ -30,19 +31,21 @@ SOURCES += compression.cpp \
     resizedialog.cpp \
     propertiesmodel.cpp \
     propertiesdialog.cpp \
+    xmlmapreader.cpp \
     xmlmapwriter.cpp \
     changeproperties.cpp \
     movelayer.cpp
-HEADERS += compression.h \
+HEADERS += brushitem.h \
+    compression.h \
     mainwindow.h \
     mapreaderinterface.h \
     mapwriterinterface.h \
-    xmlmapreader.h \
     map.h \
     mapdocument.h \
     mapobject.h \
     mapobjectitem.h \
     mapscene.h \
+    mapview.h \
     layer.h \
     layerdock.h \
     layertablemodel.h \
@@ -58,6 +61,7 @@ HEADERS += compression.h \
     propertiesmodel.h \
     propertiesdialog.h \
     tile.h \
+    xmlmapreader.h \
     xmlmapwriter.h \
     changeproperties.h \
     movelayer.h

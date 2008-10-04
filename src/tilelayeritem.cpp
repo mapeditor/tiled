@@ -27,7 +27,6 @@
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QDebug>
 
 using namespace Tiled::Internal;
 

@@ -117,8 +117,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionRecentFiles->setMenu(menu);
 
     mScene = new MapScene(this);
-    mUi.graphicsView->setScene(mScene);
-    mUi.graphicsView->centerOn(0, 0);
+    mUi.mapView->setScene(mScene);
+    mUi.mapView->centerOn(0, 0);
 
     mUi.actionShowGrid->setChecked(mScene->isGridVisible());
     connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
@@ -169,7 +169,7 @@ void MainWindow::openFile(const QString &fileName)
     }
 
     setMapDocument(new MapDocument(map));
-    mUi.graphicsView->centerOn(0, 0);
+    mUi.mapView->centerOn(0, 0);
 
     setCurrentFileName(fileName);
     updateActions();

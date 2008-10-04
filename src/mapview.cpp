@@ -19,41 +19,33 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#include "mapview.h"
 
-#include <QGraphicsItem>
+#include "mapscene.h"
 
-namespace Tiled {
+using namespace Tiled::Internal;
 
-class TileLayer;
-
-namespace Internal {
-
-/**
- * A graphics item displaying a tile layer in a QGraphicsView.
- */
-class TileLayerItem : public QGraphicsItem
+MapView::MapView(QWidget *parent):
+    QGraphicsView(parent)
 {
-public:
-    /**
-     * Constructor.
-     *
-     * @param layer the tile layer to be displayed
-     */
-    TileLayerItem(TileLayer *layer);
+}
 
-    // QGraphicsItem
-    QRectF boundingRect() const;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+/* TODO: Find a better way to show/hide the brush when necessary
+ *
+ * These events apply to the MapView, which includes the scrollbars. But when
+ * the mouse is over the scrollbars, the brush should be hidden. It would be
+ * nice when these events would also be sent to the QGraphicsScene, but they
+ * don't seem to exist there.
+ */
 
-private:
-    TileLayer *mLayer;
-};
+void MapView::enterEvent(QEvent *event)
+{
+    if (MapScene *mapScene = dynamic_cast<MapScene*>(scene()))
+        mapScene->setBrushVisible(true);
+}
 
-} // namespace Internal
-} // namespace Tiled
-
-#endif // TILELAYERITEM_H
+void MapView::leaveEvent(QEvent *event)
+{
+    if (MapScene *mapScene = dynamic_cast<MapScene*>(scene()))
+        mapScene->setBrushVisible(false);
+}

@@ -21,6 +21,7 @@
 
 #include "mapscene.h"
 
+#include "brushitem.h"
 #include "layertablemodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -30,6 +31,7 @@
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
 using namespace Tiled::Internal;
@@ -37,9 +39,15 @@ using namespace Tiled::Internal;
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(0),
-    mGridVisible(true)
+    mBrush(new BrushItem),
+    mGridVisible(true),
+    mBrushVisible(true)
 {
     setBackgroundBrush(Qt::darkGray);
+
+    mBrush->setZValue(10000);
+    mBrush->setVisible(false);
+    addItem(mBrush);
 }
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
@@ -58,10 +66,15 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
         connect(layerModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
                 this, SLOT(refreshScene()));
     }
+
+    mBrush->setVisible(mMapDocument && mBrushVisible);
 }
 
 void MapScene::refreshScene()
 {
+    // Make sure the brush isn't part of the scene
+    removeItem(mBrush);
+
     // Clear any existing items
     clear();
 
@@ -79,20 +92,20 @@ void MapScene::refreshScene()
 
     int z = 0;
     foreach (Layer *layer, map->layers()) {
-        if (dynamic_cast<TileLayer*>(layer) != 0) {
-            TileLayerItem *item =
-                new TileLayerItem(static_cast<TileLayer*>(layer));
+        if (TileLayer *tl = dynamic_cast<TileLayer*>(layer)) {
+            TileLayerItem *item = new TileLayerItem(tl);
             item->setZValue(z++);
             addItem(item);
-        } else if (dynamic_cast<ObjectGroup*>(layer) != 0) {
-            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
-            foreach (MapObject *object, objectGroup->objects()) {
+        } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
+            foreach (MapObject *object, og->objects()) {
                 MapObjectItem *item = new MapObjectItem(object);
                 item->setZValue(z++);
                 addItem(item);
             }
         }
     }
+
+    addItem(mBrush);
 }
 
 void MapScene::setGridVisible(bool visible)
@@ -102,6 +115,15 @@ void MapScene::setGridVisible(bool visible)
 
     mGridVisible = visible;
     update();
+}
+
+void MapScene::setBrushVisible(bool visible)
+{
+    if (mBrushVisible == visible)
+        return;
+
+    mBrushVisible = visible;
+    mBrush->setVisible(mMapDocument && mBrushVisible);
 }
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
@@ -130,4 +152,23 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
     for (int y = startY; y < endY; y += tileHeight) {
         painter->drawLine((int) rect.left(), y, endX - 1, y);
     }
+}
+
+void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    if (!mMapDocument)
+        return;
+
+    QGraphicsScene::mouseMoveEvent(mouseEvent);
+    if (mouseEvent->isAccepted())
+        return;
+
+    const Map *map = mMapDocument->map();
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
+
+    const QPointF pos = mouseEvent->scenePos();
+    const int tileX = ((int) pos.x()) / tileWidth;
+    const int tileY = ((int) pos.y()) / tileHeight;
+    mBrush->setPos(tileX * tileWidth, tileY * tileHeight);
 }

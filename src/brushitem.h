@@ -19,41 +19,34 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#ifndef BRUSHITEM_H
+#define BRUSHITEM_H
 
 #include <QGraphicsItem>
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
 /**
- * A graphics item displaying a tile layer in a QGraphicsView.
+ * This brush item is used to represent a brush in a map scene before it is
+ * used.
  */
-class TileLayerItem : public QGraphicsItem
+class BrushItem : public QGraphicsItem
 {
 public:
     /**
      * Constructor.
-     *
-     * @param layer the tile layer to be displayed
      */
-    TileLayerItem(TileLayer *layer);
+    BrushItem();
 
     // QGraphicsItem
     QRectF boundingRect() const;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
-
-private:
-    TileLayer *mLayer;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // TILELAYERITEM_H
+#endif // BRUSHITEM_H

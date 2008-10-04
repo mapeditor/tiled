@@ -19,7 +19,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QGraphicsView" name="graphicsView">
+     <widget class="Tiled::Internal::MapView" name="mapView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>1</horstretch>
@@ -246,8 +246,15 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Tiled::Internal::MapView</class>
+   <extends>QGraphicsView</extends>
+   <header>mapview.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
-  <tabstop>graphicsView</tabstop>
+  <tabstop>mapView</tabstop>
  </tabstops>
  <resources>
   <include location="tiled.qrc"/>

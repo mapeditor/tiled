@@ -19,41 +19,36 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TILELAYERITEM_H
-#define TILELAYERITEM_H
+#ifndef MAPVIEW_H
+#define MAPVIEW_H
 
-#include <QGraphicsItem>
+#include <QGraphicsView>
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
+class MapDocument;
+
 /**
- * A graphics item displaying a tile layer in a QGraphicsView.
+ * The map view shows the map scene. Currently this QGraphicsView subclass is
+ * necessary to be able to catch mouse enter and leave events.
+ *
+ * @see MapScene
  */
-class TileLayerItem : public QGraphicsItem
+class MapView : public QGraphicsView
 {
 public:
     /**
      * Constructor.
-     *
-     * @param layer the tile layer to be displayed
      */
-    TileLayerItem(TileLayer *layer);
+    MapView(QWidget *parent = 0);
 
-    // QGraphicsItem
-    QRectF boundingRect() const;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
-
-private:
-    TileLayer *mLayer;
+protected:
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // TILELAYERITEM_H
+#endif // MAPVIEW_H

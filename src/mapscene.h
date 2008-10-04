@@ -23,18 +23,18 @@
 #define MAPSCENE_H
 
 #include <QGraphicsScene>
-#include <QString>
+
+class QString;
 
 namespace Tiled {
-
 namespace Internal {
 
+class BrushItem;
 class MapDocument;
-class MapObjectItem;
 class TileLayerItem;
 
 /**
- * A graphics scene that displays the contents of a map.
+ * A graphics scene that represents the contents of a map.
  */
 class MapScene : public QGraphicsScene
 {
@@ -62,6 +62,16 @@ public:
     bool isGridVisible() const { return mGridVisible; }
 
     /**
+     * Sets whether the brush is visible.
+     */
+    void setBrushVisible(bool visible);
+
+    /**
+     * Returns whether the brush is visible.
+     */
+    bool isBrushVisible() const { return mBrushVisible; }
+
+    /**
      * Returns the TileLayerItem for the layer with the given name.
      */
     TileLayerItem *layer(const QString& layer);
@@ -78,18 +88,22 @@ protected:
      */
     void drawForeground(QPainter *painter, const QRectF &rect);
 
-public slots:
+    /**
+     * Override that handles hover events.
+     */
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+
+private slots:
     /**
      * Refreshes the map scene.
-     *
-     * TODO: Only temporarily public until there is a nicer way for the
-     *       scene to be notified about changes to the map.
      */
     void refreshScene();
 
 private:
     MapDocument *mMapDocument;
+    BrushItem *mBrush;
     bool mGridVisible;
+    bool mBrushVisible;
 };
 
 } // namespace Internal
