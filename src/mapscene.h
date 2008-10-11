@@ -89,6 +89,11 @@ protected:
     void drawForeground(QPainter *painter, const QRectF &rect);
 
     /**
+     * Override for handling enter and leave events.
+     */
+    bool event(QEvent *event);
+
+    /**
      * Override that handles hover events.
      */
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);

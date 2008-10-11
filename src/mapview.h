@@ -27,11 +27,10 @@
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
-
 /**
- * The map view shows the map scene. Currently this QGraphicsView subclass is
- * necessary to be able to catch mouse enter and leave events.
+ * The map view shows the map scene. This subclass was created for a workaround
+ * that wasn't necessary and is just still lingering around until it finds some
+ * use or is removed.
  *
  * @see MapScene
  */
@@ -42,10 +41,6 @@ public:
      * Constructor.
      */
     MapView(QWidget *parent = 0);
-
-protected:
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
 };
 
 } // namespace Internal

@@ -154,6 +154,23 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
     }
 }
 
+bool MapScene::event(QEvent *event)
+{
+    // Show and hide the brush cursor as the mouse enters and leaves the scene
+    switch (event->type()) {
+    case QEvent::Enter:
+        setBrushVisible(true);
+        break;
+    case QEvent::Leave:
+        setBrushVisible(false);
+        break;
+    default:
+        break;
+    }
+
+    return QGraphicsScene::event(event);
+}
+
 void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (!mMapDocument)
