@@ -27,6 +27,7 @@ SOURCES += brushitem.cpp \
     tilesetview.cpp \
     tilelayer.cpp \
     tilelayeritem.cpp \
+    tsxtilesetreader.cpp \
     resizehelper.cpp \
     resizedialog.cpp \
     propertiesmodel.cpp \
@@ -56,6 +57,7 @@ HEADERS += brushitem.h \
     tilesetview.h \
     tilelayer.h \
     tilelayeritem.h \
+    tsxtilesetreader.h \
     resizedialog.h \
     resizehelper.h \
     propertiesmodel.h \

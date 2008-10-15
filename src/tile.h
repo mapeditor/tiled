@@ -71,7 +71,7 @@ public:
     QMap<QString, QString>* properties() { return &mProperties; }
 
     /**
-     * Returns a copy of the properties of this map.
+     * Returns a copy of the properties of this tile.
      */
     QMap<QString, QString> properties() const { return mProperties; }
 

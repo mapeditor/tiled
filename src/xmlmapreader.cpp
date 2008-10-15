@@ -26,6 +26,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "tsxtilesetreader.h"
 #include "objectgroup.h"
 #include "mapobject.h"
 
@@ -88,6 +89,7 @@ class TmxHandler : public QXmlDefaultHandler
         void unexpectedElement(const QString &element,
                                const QString &expectedParent);
         void readLayerAttributes(const QXmlAttributes &atts, Layer *layer);
+        QString makeAbsolute(const QString &path);
 
         QString mMapPath;
         Map *mMap;
@@ -114,8 +116,10 @@ class TmxHandler : public QXmlDefaultHandler
 Map* XmlMapReader::read(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.exists())
+    if (!file.exists()) {
+        mError = QObject::tr("File not found: %1").arg(fileName);
         return 0;
+    }
 
     const QString mapPath = QFileInfo(file).path();
     QXmlInputSource source(&file);
@@ -179,20 +183,34 @@ bool TmxHandler::startElement(const QString &namespaceURI,
     else if (localName == QLatin1String("tileset"))
     {
         const QString name = atts.value(QLatin1String("name"));
+        const QString source = atts.value(QLatin1String("source"));
         mTilesetFirstGid = atts.value(QLatin1String("firstgid")).toInt();
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
 
-        if (tileWidth <= 0 || tileHeight <= 0 || mTilesetFirstGid <= 0) {
-            mError = QObject::tr(
-                    "Invalid tileset parameters for tileset '%1'").arg(name);
-            return false;
+        if (!source.isEmpty()) {
+            TsxTilesetReader reader;
+            mTileset = reader.readTileset(makeAbsolute(source));
+
+            if (!mTileset) {
+                mError = QObject::tr("Error while loading tileset '%1': %2")
+                    .arg(source, reader.errorString());
+                return false;
+            }
+        }
+        else {
+            if (tileWidth <= 0 || tileHeight <= 0 || mTilesetFirstGid <= 0) {
+                mError = QObject::tr("Invalid tileset parameters for tileset"
+                        " '%1'").arg(name);
+                return false;
+            }
+
+            mTileset = new Tileset(name, tileWidth, tileHeight, tileSpacing);
         }
 
-        mTileset = new Tileset(name, tileWidth, tileHeight, tileSpacing);
-        qDebug() << "Tileset:" << name << mTilesetFirstGid
-            << tileWidth << tileHeight;
+        qDebug() << "Tileset:" << mTileset->name() << mTilesetFirstGid
+            << mTileset->tileWidth() << mTileset->tileHeight();
     }
     else if (localName == QLatin1String("tile"))
     {
@@ -215,8 +233,7 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         // TODO: Add support for transparent color
         //const QString trans = atts.value(QLatin1String("trans"));
 
-        if (QDir::isRelativePath(source))
-            source = mMapPath + QDir::separator() + source;
+        source = makeAbsolute(source);
 
         if (!mTileset->loadFromImage(source)) {
             mError = QObject::tr("Error loading tileset image:\n'%1'")
@@ -458,4 +475,12 @@ void TmxHandler::readLayerAttributes(const QXmlAttributes &atts,
     const int visible = atts.value(QLatin1String("visible")).toInt(&ok);
     if (ok)
         layer->setVisible(visible);
+}
+
+QString TmxHandler::makeAbsolute(const QString &path)
+{
+    if (QDir::isRelativePath(path))
+        return mMapPath + QDir::separator() + path;
+    else
+        return path;
 }

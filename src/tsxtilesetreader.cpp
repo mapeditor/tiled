@@ -1,0 +1,268 @@
+/*
+ * Tiled Map Editor (Qt)
+ * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ *
+ * This file is part of Tiled (Qt).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include "tsxtilesetreader.h"
+
+#include "tile.h"
+#include "tileset.h"
+
+#include <QDir>
+#include <QFile>
+#include <QMap>
+#include <QXmlStreamReader>
+#include <QDebug>
+
+using namespace Tiled;
+using namespace Tiled::Internal;
+
+namespace {
+
+QDir tilesetDir;     // The directory from which the tileset is being loaded
+
+/**
+ * A stream based tileset reader for the TSX format.
+ */
+class TsxReader : public QXmlStreamReader
+{
+public:
+    TsxReader();
+
+    Tileset *read(QIODevice *device);
+
+private:
+    void readUnknownElement();
+    void readTileset();
+    void readProperties();
+    void readProperty();
+    void readTile();
+    void readTilesetImage();
+
+    QMap<QString, QString> mProperties;
+    Tileset *mTileset;
+};
+
+} // anonymous namespace
+
+TsxReader::TsxReader():
+    mTileset(0)
+{
+}
+
+Tileset *TsxReader::read(QIODevice *device)
+{
+    setDevice(device);
+
+    mTileset = 0;
+
+    while (!atEnd()) {
+        readNext();
+        if (isStartElement()) {
+            if (name() == "tileset")
+                readTileset();
+            else
+                raiseError(QObject::tr("Not a tileset file."));
+        }
+    }
+
+    return mTileset;
+}
+
+void TsxReader::readUnknownElement()
+{
+    Q_ASSERT(isStartElement());
+
+    qDebug() << "Unknown element in tileset:" << name().toString();
+
+    while (!atEnd()) {
+        readNext();
+        if (isEndElement())
+            break;
+        else if (isStartElement())
+            readUnknownElement();
+    }
+}
+
+void TsxReader::readTileset()
+{
+    Q_ASSERT(isStartElement() && name() == "tileset");
+
+    const QXmlStreamAttributes attr = attributes();
+    QString tilesetName = attr.value(QLatin1String("name")).toString();
+    const int tileWidth =
+        attr.value(QLatin1String("tilewidth")).toString().toInt();
+    const int tileHeight =
+        attr.value(QLatin1String("tileheight")).toString().toInt();
+    const int tileSpacing =
+        attr.value(QLatin1String("spacing")).toString().toInt();
+
+    mTileset = new Tileset(tilesetName, tileWidth, tileHeight, tileSpacing);
+
+    while (!atEnd()) {
+        readNext();
+
+        if (isEndElement())
+            break;
+
+        if (isStartElement()) {
+            if (name() == "tile")
+                readTile();
+            else if (name() == "image")
+                readTilesetImage();
+            else
+                readUnknownElement();
+        }
+    }
+}
+
+void TsxReader::readProperties()
+{
+    Q_ASSERT(isStartElement() && name() == "properties");
+
+    mProperties.clear();
+
+    while (!atEnd()) {
+        readNext();
+
+        if (isEndElement()) {
+            break;
+        } else if (isStartElement()) {
+            if (name() == "property")
+                readProperty();
+            else
+                readUnknownElement();
+        }
+    }
+}
+
+void TsxReader::readProperty()
+{
+    Q_ASSERT(isStartElement() && name() == "property");
+
+    const QXmlStreamAttributes attr = attributes();
+    QString propertyName = attr.value(QLatin1String("name")).toString();
+    QString propertyValue = attr.value(QLatin1String("value")).toString();
+
+    while (!atEnd()) {
+        readNext();
+
+        if (isEndElement())
+            break;
+        else if (isCharacters() && !isWhitespace() && propertyValue.isEmpty())
+            propertyValue = text().toString();
+        else if (isStartElement())
+            readUnknownElement();
+    }
+
+    mProperties.insert(propertyName, propertyValue);
+}
+
+void TsxReader::readTile()
+{
+    Q_ASSERT(isStartElement() && name() == "tile");
+
+    const QXmlStreamAttributes attr = attributes();
+    const int id = attr.value(QLatin1String("id")).toString().toInt();
+
+    if (id < 0 || id >= mTileset->tileCount()) {
+        raiseError(QObject::tr("Invalid tile ID: %1").arg(id));
+        return;
+    }
+
+    Tile *tile = mTileset->tileAt(id);
+
+    // TODO: Add support for individual tiles (then it needs to be added here)
+
+    while (!atEnd()) {
+        readNext();
+
+        if (isEndElement()) {
+            break;
+        } else if (isStartElement()) {
+            if (name() == "properties") {
+                readProperties();
+                tile->properties()->unite(mProperties);
+            } else {
+                readUnknownElement();
+            }
+        }
+    }
+}
+
+void TsxReader::readTilesetImage()
+{
+    Q_ASSERT(isStartElement() && name() == "image");
+
+    const QXmlStreamAttributes attr = attributes();
+    QString source = attr.value(QLatin1String("source")).toString();
+    // TODO: Add support for 'trans' attribute
+
+    if (QDir::isRelativePath(source))
+        source = tilesetDir.absolutePath() + QDir::separator() + source;
+
+    mTileset->loadFromImage(source);
+
+    while (!atEnd()) {
+        readNext();
+
+        if (isEndElement())
+            break;
+        else if (isStartElement())
+            readUnknownElement();
+    }
+}
+
+TsxTilesetReader::TsxTilesetReader()
+{
+}
+
+Tileset *TsxTilesetReader::readTileset(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.exists()) {
+        mError = QObject::tr("File not found: %1.").arg(fileName);
+        return 0;
+    }
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        mError = QObject::tr("Cannot read file %1:\n%2.")
+            .arg(fileName)
+            .arg(file.errorString());
+        return 0;
+    }
+
+
+    tilesetDir = QFileInfo(file).dir();
+
+    TsxReader reader;
+    Tileset *tileset = reader.read(&file);
+
+    if (reader.hasError()) {
+        //const int lineNumber = reader.lineNumber();
+        //const int columnNumber = reader.columnNumber();
+        mError = reader.errorString();
+    }
+
+    return tileset;
+}
+
+QString TsxTilesetReader::errorString() const
+{
+    return mError;
+}

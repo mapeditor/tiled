@@ -104,7 +104,7 @@ public:
      * Returns the file name of the image that is the source of this
      * tileset.
      */
-    QString source() const { return mSource; }
+    const QString &source() const { return mSource; }
 
 private:
     QString mName;
