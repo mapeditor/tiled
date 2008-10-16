@@ -51,7 +51,7 @@ HIDE_FRIEND_COMPOUNDS  = NO
 HIDE_IN_BODY_DOCS      = NO
 INTERNAL_DOCS          = NO
 CASE_SENSE_NAMES       = YES
-HIDE_SCOPE_NAMES       = NO
+HIDE_SCOPE_NAMES       = YES
 SHOW_INCLUDE_FILES     = YES
 INLINE_INFO            = YES
 SORT_MEMBER_DOCS       = YES
@@ -237,3 +237,15 @@ DOT_CLEANUP            = YES
 # Configuration::additions related to the search engine   
 #---------------------------------------------------------------------------
 SEARCHENGINE           = NO
+
+#---------------------------------------------------------------------------
+# Configuration related to Qt compressed help
+#---------------------------------------------------------------------------
+# .qhp output
+GENERATE_QHP = yes
+QHP_NAMESPACE = "org.mapeditor.tiled"
+QHP_VIRTUAL_FOLDER = "tiled-0.1"
+
+# .qch output
+QCH_FILE = "../tiled-0.1.qch"
+QHG_LOCATION = "qhelpgenerator"
