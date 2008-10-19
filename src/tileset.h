@@ -63,6 +63,17 @@ public:
     void setName(const QString &name) { mName = name; }
 
     /**
+     * Returns the file name of this tileset. When the tileset isn't an
+     * external tileset, the file name is empty.
+     */
+    const QString &fileName() const { return mFileName; }
+
+    /**
+     * Sets the filename of this tileset.
+     */
+    void setFileName(const QString &fileName) { mFileName = fileName; }
+
+    /**
      * Returns the width of the tiles in this tileset.
      */
     int tileWidth() const { return mTileWidth; }
@@ -94,21 +105,23 @@ public:
      * The tile width and height of this tileset must be higher than 0.
      *
      * @param fileName the file name of the image, which will be remembered
-     *                 as the source of this tileset.
+     *                 as the image source of this tileset.
      * @return <code>true</code> if loading was succesful, otherwise
      *         returns <code>false</code>
      */
     bool loadFromImage(const QString &fileName);
 
     /**
-     * Returns the file name of the image that is the source of this
-     * tileset.
+     * Returns the file name of the external image that contains the tiles in
+     * this tileset. Is an empty string when this tileset doesn't have a
+     * tileset image.
      */
-    const QString &source() const { return mSource; }
+    const QString &imageSource() const { return mImageSource; }
 
 private:
     QString mName;
-    QString mSource;
+    QString mFileName;
+    QString mImageSource;
     int mTileWidth;
     int mTileHeight;
     int mTileSpacing;

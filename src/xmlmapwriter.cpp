@@ -69,11 +69,19 @@ void writeProperties(QXmlStreamWriter &w,
 void writeTileset(QXmlStreamWriter &w, const Tileset *tileset, int firstGid)
 {
     w.writeStartElement(QLatin1String("tileset"));
-    w.writeAttribute(QLatin1String("name"), tileset->name());
     w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
 
-    // TODO: Add support for external tilesets
+    const QString &fileName = tileset->fileName();
+    if (!fileName.isEmpty()) {
+        w.writeAttribute(QLatin1String("source"),
+                         mapDir.relativeFilePath(fileName));
 
+        // Tileset is external, so no need to write any of the stuff below
+        w.writeEndElement();
+        return;
+    }
+
+    w.writeAttribute(QLatin1String("name"), tileset->name());
     w.writeAttribute(QLatin1String("tilewidth"),
                      QString::number(tileset->tileWidth()));
     w.writeAttribute(QLatin1String("tileheight"),
@@ -84,11 +92,11 @@ void writeTileset(QXmlStreamWriter &w, const Tileset *tileset, int firstGid)
                          QString::number(tileSpacing));
 
     // Write the image element
-    QString source = tileset->source();
-    if (!source.isEmpty()) {
+    const QString &imageSource = tileset->imageSource();
+    if (!imageSource.isEmpty()) {
         w.writeStartElement(QLatin1String("image"));
         w.writeAttribute(QLatin1String("source"),
-                         mapDir.relativeFilePath(tileset->source()));
+                         mapDir.relativeFilePath(imageSource));
         // TODO: Add support for writing the 'trans' attribute when used
         w.writeEndElement();
     }

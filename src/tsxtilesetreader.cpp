@@ -247,7 +247,6 @@ Tileset *TsxTilesetReader::readTileset(const QString &fileName)
         return 0;
     }
 
-
     tilesetDir = QFileInfo(file).dir();
 
     TsxReader reader;
@@ -258,6 +257,9 @@ Tileset *TsxTilesetReader::readTileset(const QString &fileName)
         //const int columnNumber = reader.columnNumber();
         mError = reader.errorString();
     }
+
+    if (tileset)
+        tileset->setFileName(fileName);
 
     return tileset;
 }

@@ -39,7 +39,6 @@ Tile* Tileset::tileAt(int id) const
 bool Tileset::loadFromImage(const QString &fileName)
 {
     Q_ASSERT(mTileWidth > 0 && mTileHeight > 0);
-    mTiles.clear();
 
     QPixmap img = QPixmap(fileName);
     if (img.isNull())
@@ -50,12 +49,14 @@ bool Tileset::loadFromImage(const QString &fileName)
     const int stopWidth = img.width() - mTileWidth;
     const int stopHeight = img.height() - mTileHeight;
 
+    mTiles.clear();
+
     for (int y = 0; y <= stopHeight; y += mTileHeight + mTileSpacing)
         for (int x = 0; x <= stopWidth; x += mTileWidth + mTileSpacing)
             mTiles.append(new Tile(img.copy(x, y, mTileWidth, mTileHeight),
                                    mTiles.size(),
                                    this));
 
-    mSource = fileName;
+    mImageSource = fileName;
     return true;
 }

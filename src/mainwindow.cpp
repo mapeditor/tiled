@@ -178,7 +178,8 @@ void MainWindow::openFile(const QString &fileName)
 void MainWindow::openFile()
 {
     const QString start = fileDialogStartLocation();
-    openFile(QFileDialog::getOpenFileName(this, tr("Open Map"), start));
+    openFile(QFileDialog::getOpenFileName(this, tr("Open Map"), start,
+                                          tr("Tiled map files (*.tmx)")));
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -209,7 +210,8 @@ bool MainWindow::saveFileAs()
 {
     const QString start = fileDialogStartLocation();
     const QString fileName =
-            QFileDialog::getSaveFileName(this, QString(), start);
+            QFileDialog::getSaveFileName(this, QString(), start,
+                                         tr("Tiled map files (*.tmx)"));
     if (!fileName.isEmpty())
         return saveFile(fileName);
     return false;
