@@ -26,6 +26,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "tilesetmanager.h"
 #include "tsxtilesetreader.h"
 #include "objectgroup.h"
 #include "mapobject.h"
@@ -190,13 +191,25 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
 
         if (!source.isEmpty()) {
-            TsxTilesetReader reader;
-            mTileset = reader.readTileset(makeAbsolute(source));
+            const QString absoluteSource = makeAbsolute(source);
+            const QString canonicalSource =
+                QFileInfo(absoluteSource).canonicalFilePath();
 
+            // Check if this tileset is already loaded
+            TilesetManager *manager = TilesetManager::instance();
+            mTileset = manager->findTileset(canonicalSource);
+
+            // If not, try to load it
             if (!mTileset) {
-                mError = QObject::tr("Error while loading tileset '%1': %2")
-                    .arg(source, reader.errorString());
-                return false;
+                TsxTilesetReader reader;
+                mTileset = reader.readTileset(canonicalSource);
+
+                if (!mTileset) {
+                    mError = QObject::tr(
+                            "Error while loading tileset '%1': %2")
+                        .arg(absoluteSource, reader.errorString());
+                    return false;
+                }
             }
         }
         else {

@@ -23,6 +23,7 @@ SOURCES += brushitem.cpp \
     objectgroup.cpp \
     tileset.cpp \
     tilesetdock.cpp \
+    tilesetmanager.cpp \
     tilesetmodel.cpp \
     tilesetview.cpp \
     tilelayer.cpp \
@@ -53,6 +54,7 @@ HEADERS += brushitem.h \
     objectgroup.h \
     tileset.h \
     tilesetdock.h \
+    tilesetmanager.h \
     tilesetmodel.h \
     tilesetview.h \
     tilelayer.h \

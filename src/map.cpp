@@ -39,9 +39,6 @@ Map::Map(int width, int height, int tileWidth, int tileHeight):
 Map::~Map()
 {
     qDeleteAll(mLayers);
-
-    // TODO: Think about a tileset manager instead of ownership by the map
-    qDeleteAll(mTilesets);
 }
 
 void Map::addLayer(Layer *layer)

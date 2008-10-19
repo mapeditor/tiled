@@ -29,6 +29,7 @@
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "tilesetdock.h"
+#include "tilesetmanager.h"
 #include "xmlmapreader.h"
 #include "xmlmapwriter.h"
 
@@ -133,6 +134,7 @@ MainWindow::~MainWindow()
     writeSettings();
 
     setMapDocument(0);
+    TilesetManager::deleteInstance();
 }
 
 void MainWindow::commitData(QSessionManager &manager)

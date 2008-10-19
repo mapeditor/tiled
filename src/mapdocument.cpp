@@ -24,6 +24,7 @@
 #include "layertablemodel.h"
 #include "map.h"
 #include "movelayer.h"
+#include "tilesetmanager.h"
 
 #include <QUndoStack>
 
@@ -37,10 +38,20 @@ MapDocument::MapDocument(Map *map):
 {
     mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;
     mLayerModel->setMap(mMap);
+
+    // Register tileset references
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    foreach (Tileset *tileset, mMap->tilesets().values())
+        tilesetManager->addReference(tileset);
 }
 
 MapDocument::~MapDocument()
 {
+    // Unregister tileset references
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    foreach (Tileset *tileset, mMap->tilesets().values())
+        tilesetManager->removeReference(tileset);
+
     delete mMap;
 }
 
