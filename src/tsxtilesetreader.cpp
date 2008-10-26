@@ -72,8 +72,7 @@ Tileset *TsxReader::read(QIODevice *device)
 
     mTileset = 0;
 
-    while (!atEnd()) {
-        readNext();
+    while (readNext() != Invalid) {
         if (isStartElement()) {
             if (name() == "tileset")
                 readTileset();
@@ -115,9 +114,7 @@ void TsxReader::readTileset()
 
     mTileset = new Tileset(tilesetName, tileWidth, tileHeight, tileSpacing);
 
-    while (!atEnd()) {
-        readNext();
-
+    while (readNext() != Invalid) {
         if (isEndElement())
             break;
 
@@ -138,9 +135,7 @@ void TsxReader::readProperties()
 
     mProperties.clear();
 
-    while (!atEnd()) {
-        readNext();
-
+    while (readNext() != Invalid) {
         if (isEndElement()) {
             break;
         } else if (isStartElement()) {
@@ -160,9 +155,7 @@ void TsxReader::readProperty()
     QString propertyName = attr.value(QLatin1String("name")).toString();
     QString propertyValue = attr.value(QLatin1String("value")).toString();
 
-    while (!atEnd()) {
-        readNext();
-
+    while (readNext() != Invalid) {
         if (isEndElement())
             break;
         else if (isCharacters() && !isWhitespace() && propertyValue.isEmpty())
@@ -190,9 +183,7 @@ void TsxReader::readTile()
 
     // TODO: Add support for individual tiles (then it needs to be added here)
 
-    while (!atEnd()) {
-        readNext();
-
+    while (readNext() != Invalid) {
         if (isEndElement()) {
             break;
         } else if (isStartElement()) {
@@ -219,9 +210,7 @@ void TsxReader::readTilesetImage()
 
     mTileset->loadFromImage(source);
 
-    while (!atEnd()) {
-        readNext();
-
+    while (readNext() != Invalid) {
         if (isEndElement())
             break;
         else if (isStartElement())

@@ -94,6 +94,8 @@ void MapScene::refreshScene()
     foreach (Layer *layer, map->layers()) {
         if (TileLayer *tl = dynamic_cast<TileLayer*>(layer)) {
             TileLayerItem *item = new TileLayerItem(tl);
+            item->setPos(tl->x() * map->tileWidth(),
+                         tl->y() * map->tileHeight());
             item->setZValue(z++);
             addItem(item);
         } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {

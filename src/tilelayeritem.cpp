@@ -41,8 +41,8 @@ QRectF TileLayerItem::boundingRect() const
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 
-    return QRectF(mLayer->x() * tileWidth,
-                  mLayer->y() * tileHeight,
+    return QRectF(0.0,
+                  0.0,
                   mLayer->width() * tileWidth,
                   mLayer->height() * tileHeight);
 }
@@ -80,9 +80,8 @@ void TileLayerItem::paint(QPainter *painter,
                 continue;
 
             const QPixmap& img = tile->image();
-            painter->drawPixmap((mLayer->x() + x) * tileWidth,
-                                (mLayer->y() + y + 1) * tileHeight
-                                    - img.height(),
+            painter->drawPixmap(x * tileWidth,
+                                (y + 1) * tileHeight - img.height(),
                                 img);
         }
     }
