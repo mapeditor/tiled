@@ -43,7 +43,7 @@ public:
      */
     MapObjectItem(MapObject *object);
 
-    // QGraphicsView
+    // QGraphicsItem
     QRectF boundingRect() const;
 
     void paint(QPainter *painter,

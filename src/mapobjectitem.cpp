@@ -45,13 +45,9 @@ QRectF MapObjectItem::boundingRect() const
 {
     // The -1 and +3 are to account for the pen width and shadow
     if (!mObject->width() && !mObject->height()) {
-        return QRectF(mObject->x() - 15 - 1,
-                      mObject->y() - 25 - 1,
-                      25 + 3,
-                      35 + 3);
+        return QRectF(-15 - 1, -25 - 1, 25 + 3, 35 + 3);
     } else {
-        return QRectF(mObject->x() - 1,
-                      mObject->y() - 15 - 1,
+        return QRectF(-1, -15 - 1,
                       mObject->width() + 3,
                       mObject->height() + 3 + 15);
     }
@@ -97,38 +93,30 @@ void MapObjectItem::paint(QPainter *painter,
     {
         QFontMetrics fm = painter->fontMetrics();
         QString name = fm.elidedText(mObject->name(), Qt::ElideRight, 30);
-        painter->drawEllipse(QRect(mObject->x() - 10 + 1,
-                                   mObject->y() - 10 + 1, 20, 20));
-        painter->drawText(QPoint(mObject->x() - 15 + 1, mObject->y() - 15 + 1),
-                          name);
+        painter->drawEllipse(QRect(- 10 + 1, - 10 + 1, 20, 20));
+        painter->drawText(QPoint(-15 + 1, -15 + 1), name);
         pen.setColor(color);
         painter->setPen(pen);
         painter->setBrush(brush);
-        painter->drawEllipse(QRect(mObject->x() - 10,
-                                   mObject->y() - 10, 20, 20));
-        painter->drawText(QPoint(mObject->x() - 15, mObject->y() - 15),
-                          name);
+        painter->drawEllipse(QRect(-10, -10, 20, 20));
+        painter->drawText(QPoint(-15, -15), name);
     }
     else
     {
         QFontMetrics fm = painter->fontMetrics();
         QString name = fm.elidedText(mObject->name(), Qt::ElideRight, mObject->width() + 5);
-        painter->drawRoundedRect(QRect(mObject->x() + 1,
-                                       mObject->y() + 1,
+        painter->drawRoundedRect(QRect(1, 1,
                                        mObject->width(),
                                        mObject->height()),
                                  10.0, 10.0);
-        painter->drawText(QPoint(mObject->x() + 1, mObject->y() - 5 + 1),
-                          name);
+        painter->drawText(QPoint(1, -5 + 1), name);
         pen.setColor(color);
         painter->setPen(pen);
         painter->setBrush(brush);
-        painter->drawRoundedRect(QRect(mObject->x(),
-                                       mObject->y(),
+        painter->drawRoundedRect(QRect(0, 0,
                                        mObject->width(),
                                        mObject->height()),
                                  10.0, 10.0);
-        painter->drawText(QPoint(mObject->x(), mObject->y() - 5),
-                          name);
+        painter->drawText(QPoint(0, -5), name);
     }
 }

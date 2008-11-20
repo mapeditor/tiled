@@ -34,6 +34,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapScene::MapScene(QObject *parent):
@@ -101,6 +102,7 @@ void MapScene::refreshScene()
         } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
             foreach (MapObject *object, og->objects()) {
                 MapObjectItem *item = new MapObjectItem(object);
+                item->setPos(object->x(), object->y());
                 item->setZValue(z++);
                 addItem(item);
             }
