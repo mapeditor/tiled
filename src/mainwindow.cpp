@@ -36,6 +36,7 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QScrollBar>
 #include <QSessionManager>
 #include <QTextStream>
 #include <QUndoGroup>
@@ -154,10 +155,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
 }
 
-void MainWindow::openFile(const QString &fileName)
+bool MainWindow::openFile(const QString &fileName)
 {
     if (fileName.isEmpty() || !confirmSave())
-        return;
+        return false;
 
     // Use the XML map reader to read the map (assuming it's a .tmx file)
     // TODO: Add support for input/output plugins
@@ -167,7 +168,7 @@ void MainWindow::openFile(const QString &fileName)
     if (!map) {
         QMessageBox::critical(this, tr("Error while opening map"),
                               mapReader.errorString());
-        return;
+        return false;
     }
 
     setMapDocument(new MapDocument(map));
@@ -175,6 +176,22 @@ void MainWindow::openFile(const QString &fileName)
 
     setCurrentFileName(fileName);
     updateActions();
+    return true;
+}
+
+void MainWindow::openLastFile()
+{
+    const QStringList files = recentFiles();
+
+    if (!files.isEmpty() && openFile(files.first())) {
+        // Restore camera to the previous position
+        mSettings.beginGroup(QLatin1String("mainwindow"));
+        const int hor = mSettings.value(QLatin1String("scrollX")).toInt();
+        const int ver = mSettings.value(QLatin1String("scrollY")).toInt();
+        mUi.mapView->horizontalScrollBar()->setSliderPosition(hor);
+        mUi.mapView->verticalScrollBar()->setSliderPosition(ver);
+        mSettings.endGroup();
+    }
 }
 
 void MainWindow::openFile()
@@ -366,6 +383,10 @@ void MainWindow::writeSettings()
     mSettings.setValue(QLatin1String("state"), saveState());
     mSettings.setValue(QLatin1String("gridVisible"),
                        mUi.actionShowGrid->isChecked());
+    mSettings.setValue(QLatin1String("scrollX"),
+                       mUi.mapView->horizontalScrollBar()->sliderPosition());
+    mSettings.setValue(QLatin1String("scrollY"),
+                       mUi.mapView->verticalScrollBar()->sliderPosition());
     mSettings.endGroup();
 }
 

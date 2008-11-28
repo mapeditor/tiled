@@ -49,8 +49,16 @@ public:
     /**
      * Opens the given file. When opened succesfully, the file is added to the
      * list of recent files.
+     *
+     * @return whether the file was succesfully opened
      */
-    void openFile(const QString &fileName);
+    bool openFile(const QString &fileName);
+
+    /**
+     * Attempt to open the previously opened file.
+     * TODO: Opening last file should be optional
+     */
+    void openLastFile();
 
     /**
      * Save the current map to the given file name. When saved succesfully, the
