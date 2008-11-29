@@ -24,6 +24,7 @@
 #include "layertablemodel.h"
 #include "map.h"
 #include "movelayer.h"
+#include "tileselectionmodel.h"
 #include "tilesetmanager.h"
 
 #include <QUndoStack>
@@ -34,6 +35,7 @@ using namespace Tiled::Internal;
 MapDocument::MapDocument(Map *map):
     mMap(map),
     mLayerModel(new LayerTableModel(this)),
+    mSelectionModel(new TileSelectionModel),
     mUndoStack(new QUndoStack(this))
 {
     mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;

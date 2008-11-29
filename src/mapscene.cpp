@@ -30,6 +30,7 @@
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
+#include "tileselectionitem.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -108,6 +109,10 @@ void MapScene::refreshScene()
             }
         }
     }
+
+    TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
+    selectionItem->setZValue(10000 - 1);
+    addItem(selectionItem);
 
     addItem(mBrush);
 }

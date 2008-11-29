@@ -33,6 +33,7 @@ class Map;
 namespace Internal {
 
 class LayerTableModel;
+class TileSelectionModel;
 
 /**
  * Represents an editable map. The purpose of this class is to make sure that
@@ -93,6 +94,11 @@ public:
     LayerTableModel *layerModel() const { return mLayerModel; }
 
     /**
+     * Returns the selection model.
+     */
+    TileSelectionModel *selectionModel() const { return mSelectionModel; }
+
+    /**
      * Returns the undo stack of this map document. Should be used to push any
      * commands on that modify the map.
      */
@@ -107,6 +113,7 @@ signals:
 private:
     Map *mMap;
     LayerTableModel *mLayerModel;
+    TileSelectionModel *mSelectionModel;
     int mCurrentLayer;
     QUndoStack *mUndoStack;
 };

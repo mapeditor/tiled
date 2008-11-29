@@ -9,6 +9,9 @@ QT += core \
 CONFIG += debug
 SOURCES += brushitem.cpp \
     compression.cpp \
+    layer.cpp \
+    layerdock.cpp \
+    layertablemodel.cpp \
     main.cpp \
     mainwindow.cpp \
     map.cpp \
@@ -17,10 +20,13 @@ SOURCES += brushitem.cpp \
     mapobjectitem.cpp \
     mapscene.cpp \
     mapview.cpp \
-    layer.cpp \
-    layerdock.cpp \
-    layertablemodel.cpp \
     objectgroup.cpp \
+    propertiesdialog.cpp \
+    propertiesmodel.cpp \
+    resizehelper.cpp \
+    resizedialog.cpp \
+    tileselectionitem.cpp \
+    tileselectionmodel.cpp \
     tileset.cpp \
     tilesetdock.cpp \
     tilesetmanager.cpp \
@@ -29,16 +35,15 @@ SOURCES += brushitem.cpp \
     tilelayer.cpp \
     tilelayeritem.cpp \
     tsxtilesetreader.cpp \
-    resizehelper.cpp \
-    resizedialog.cpp \
-    propertiesmodel.cpp \
-    propertiesdialog.cpp \
     xmlmapreader.cpp \
     xmlmapwriter.cpp \
     changeproperties.cpp \
     movelayer.cpp
 HEADERS += brushitem.h \
     compression.h \
+    layer.h \
+    layerdock.h \
+    layertablemodel.h \
     mainwindow.h \
     mapreaderinterface.h \
     mapwriterinterface.h \
@@ -48,10 +53,14 @@ HEADERS += brushitem.h \
     mapobjectitem.h \
     mapscene.h \
     mapview.h \
-    layer.h \
-    layerdock.h \
-    layertablemodel.h \
     objectgroup.h \
+    propertiesdialog.h \
+    propertiesmodel.h \
+    resizedialog.h \
+    resizehelper.h \
+    tile.h \
+    tileselectionitem.h \
+    tileselectionmodel.h \
     tileset.h \
     tilesetdock.h \
     tilesetmanager.h \
@@ -60,11 +69,6 @@ HEADERS += brushitem.h \
     tilelayer.h \
     tilelayeritem.h \
     tsxtilesetreader.h \
-    resizedialog.h \
-    resizehelper.h \
-    propertiesmodel.h \
-    propertiesdialog.h \
-    tile.h \
     xmlmapreader.h \
     xmlmapwriter.h \
     changeproperties.h \
