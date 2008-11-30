@@ -22,6 +22,7 @@
 #ifndef TILESELECTIONITEM_H
 #define TILESELECTIONITEM_H
 
+#include <QObject>
 #include <QGraphicsItem>
 
 namespace Tiled {
@@ -32,8 +33,11 @@ class MapDocument;
 /**
  * A graphics item displaying a tile selection.
  */
-class TileSelectionItem : public QGraphicsItem
+class TileSelectionItem : public QObject,
+                          public QGraphicsItem
 {
+    Q_OBJECT
+
 public:
     /**
      * Constructs an item around the given selection model.
@@ -47,8 +51,15 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
 
+private slots:
+    void selectionChanged(const QRegion &newSelection,
+                          const QRegion &oldSelection);
+
 private:
+    void updateBoundingRect();
+
     MapDocument *mMapDocument;
+    QRectF mBoundingRect;
 };
 
 } // namespace Internal

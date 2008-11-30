@@ -28,6 +28,7 @@
 #include "mapscene.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "tileselectionmodel.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
 #include "xmlmapreader.h"
@@ -76,11 +77,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionSave->setShortcut(QKeySequence::Save);
     mUi.actionCopy->setShortcut(QKeySequence::Copy);
     mUi.actionPaste->setShortcut(QKeySequence::Paste);
+    mUi.actionSelectAll->setShortcut(QKeySequence::SelectAll);
     undoAction->setShortcut(QKeySequence::Undo);
     redoAction->setShortcut(QKeySequence::Redo);
 
-    mUi.menuEdit->addAction(undoAction);
-    mUi.menuEdit->addAction(redoAction);
+    mUi.menuEdit->insertAction(mUi.actionCopy, undoAction);
+    mUi.menuEdit->insertAction(mUi.actionCopy, redoAction);
     mUi.mainToolBar->addAction(undoAction);
     mUi.mainToolBar->addAction(redoAction);
 
@@ -92,6 +94,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
+    connect(mUi.actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
+    connect(mUi.actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
     connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi.actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
@@ -347,14 +351,18 @@ void MainWindow::updateActions()
 {
     Map *map = 0;
     int currentLayer = -1;
+    QRegion selection;
 
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayer = mMapDocument->currentLayer();
+        selection = mMapDocument->selectionModel()->selection();
     }
 
     mUi.actionSave->setEnabled(map && !mUndoGroup->isClean());
     mUi.actionSaveAs->setEnabled(map);
+    mUi.actionSelectAll->setEnabled(map);
+    mUi.actionSelectNone->setEnabled(map && !selection.isEmpty());
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
 
@@ -362,6 +370,18 @@ void MainWindow::updateActions()
     mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
                                       currentLayer < layerCount - 1);
     mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);
+}
+
+void MainWindow::selectAll()
+{
+    if (mMapDocument)
+        mMapDocument->selectionModel()->selectAll();
+}
+
+void MainWindow::selectNone()
+{
+    if (mMapDocument)
+        mMapDocument->selectionModel()->selectNone();
 }
 
 void MainWindow::moveLayerUp()
@@ -425,6 +445,9 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
 
     if (mMapDocument) {
         connect(mapDocument, SIGNAL(currentLayerChanged(int)),
+                SLOT(updateActions()));
+        connect(mapDocument->selectionModel(),
+                SIGNAL(selectionChanged(QRegion,QRegion)),
                 SLOT(updateActions()));
 
         QUndoStack *undoStack = mMapDocument->undoStack();

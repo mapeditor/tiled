@@ -82,6 +82,8 @@ private slots:
     void openRecentFile();
     void clearRecentFiles();
 
+    void selectAll();
+    void selectNone();
     void moveLayerUp();
     void moveLayerDown();
 

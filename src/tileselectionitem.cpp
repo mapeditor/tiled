@@ -30,22 +30,34 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+/**
+ * A helper function to scale a rectangle from tile to pixel coordinates.
+ */
+static QRect toPixelCoordinates(const QRect &r, MapDocument *mapDocument)
+{
+    const Map *map = mapDocument->map();
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
+    return QRect(r.x() * tileWidth,
+                 r.y() * tileHeight,
+                 r.width() * tileWidth,
+                 r.height() * tileHeight);
+}
+
+
 TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
     : mMapDocument(mapDocument)
 {
+    TileSelectionModel *selectionModel = mMapDocument->selectionModel();
+    connect(selectionModel, SIGNAL(selectionChanged(QRegion,QRegion)),
+            this, SLOT(selectionChanged(QRegion,QRegion)));
+
+    updateBoundingRect();
 }
 
 QRectF TileSelectionItem::boundingRect() const
 {
-    const QRect b = mMapDocument->selectionModel()->selection().boundingRect();
-    const Map *map = mMapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    return QRectF(b.x() * tileWidth,
-                  b.y() * tileHeight,
-                  b.width() * tileWidth,
-                  b.height() * tileHeight);
+    return mBoundingRect;
 }
 
 void TileSelectionItem::paint(QPainter *painter,
@@ -58,16 +70,25 @@ void TileSelectionItem::paint(QPainter *painter,
     Q_UNUSED(widget);
 
     const QRegion selection = mMapDocument->selectionModel()->selection();
-    const Map *map = mMapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-    const QColor color(255, 0, 0, 128);
+    const QColor color(0, 0, 255, 128);
 
-    foreach (const QRect &r, selection.rects()) {
-        painter->fillRect(QRect(r.x() * tileWidth,
-                                r.y() * tileHeight,
-                                r.width() * tileWidth,
-                                r.height() * tileHeight),
-                          color);
-    }
+    foreach (const QRect &r, selection.rects())
+        painter->fillRect(toPixelCoordinates(r, mMapDocument), color);
+}
+
+void TileSelectionItem::selectionChanged(const QRegion &newSelection,
+                                         const QRegion &oldSelection)
+{
+    prepareGeometryChange();
+    updateBoundingRect();
+
+    // Make sure changes within the bounding rect are updated
+    const QRect changedArea = newSelection.xored(oldSelection).boundingRect();
+    update(toPixelCoordinates(changedArea, mMapDocument));
+}
+
+void TileSelectionItem::updateBoundingRect()
+{
+    const QRect b = mMapDocument->selectionModel()->selection().boundingRect();
+    mBoundingRect = toPixelCoordinates(b, mMapDocument);
 }

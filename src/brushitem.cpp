@@ -32,6 +32,7 @@ BrushItem::BrushItem()
 
 QRectF BrushItem::boundingRect() const
 {
+    // TODO: Brush size should adapt to tile size of the map
     return QRectF(0, 0, 32, 32);
 }
 

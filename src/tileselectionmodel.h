@@ -28,6 +28,8 @@
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
+
 /**
  * A selection model for tiles. This basically means it is grid based.
  */
@@ -39,20 +41,29 @@ public:
     /**
      * Constructs an empty tile selection model.
      */
-    TileSelectionModel();
+    TileSelectionModel(MapDocument *mapDocument);
 
-    QRegion selection() const { return mSelection; }
+    const QRegion &selection() const { return mSelection; }
 
-    void setSelection(const QRegion &selection) { mSelection = selection; }
+    void setSelection(const QRegion &selection);
 
-    void addRect(const QRect &rect) { mSelection += rect; }
+    void selectAll();
+    void selectNone();
+    void addRect(const QRect &rect);
+    void substractRect(const QRect &rect);
+    void xorRect(const QRect &rect);
 
-    void substractRect(const QRect &rect) { mSelection -= rect; }
-
-    void xorRect(const QRect &rect) { mSelection ^= rect; }
+signals:
+    /**
+     * Emitted when the selected region changes. Sends the currently selected
+     * region and the previously selected region.
+     */
+    void selectionChanged(const QRegion &newSelection,
+                          const QRegion &oldSelection);
 
 private:
     QRegion mSelection;
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

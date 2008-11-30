@@ -21,8 +21,48 @@
 
 #include "tileselectionmodel.h"
 
+#include "map.h"
+#include "mapdocument.h"
+
+using namespace Tiled;
 using namespace Tiled::Internal;
 
-TileSelectionModel::TileSelectionModel()
+TileSelectionModel::TileSelectionModel(MapDocument *mapDocument)
+    : mMapDocument(mapDocument)
 {
+}
+
+void TileSelectionModel::setSelection(const QRegion &selection)
+{
+    if (selection != mSelection) {
+        const QRegion oldSelection = mSelection;
+        mSelection = selection;
+        emit selectionChanged(mSelection, oldSelection);
+    }
+}
+
+void TileSelectionModel::selectAll()
+{
+    const Map *map = mMapDocument->map();
+    setSelection(QRect(0, 0, map->width(), map->height()));
+}
+
+void TileSelectionModel::selectNone()
+{
+    setSelection(QRegion());
+}
+
+void TileSelectionModel::addRect(const QRect &rect)
+{
+    setSelection(mSelection + rect);
+}
+
+void TileSelectionModel::substractRect(const QRect &rect)
+{
+    setSelection(mSelection - rect);
+}
+
+void TileSelectionModel::xorRect(const QRect &rect)
+{
+    setSelection(mSelection ^ rect);
 }
