@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -20,20 +20,80 @@
  */
 
 #include "brushitem.h"
+#include "map.h"
+#include "mapdocument.h"
+#include "painttile.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QUndoStack>
 
 using namespace Tiled::Internal;
 
-BrushItem::BrushItem()
+BrushItem::BrushItem():
+    mTileX(0),
+    mTileY(0),
+    mMapDocument(0),
+    mPainting(false)
 {
+}
+
+void BrushItem::setMapDocument(MapDocument *mapDocument)
+{
+    // A different map may have a different tile size
+    prepareGeometryChange();
+    mMapDocument = mapDocument;
+}
+
+void BrushItem::setTilePos(int x, int y)
+{
+    if (mTileX == x && mTileY == y)
+        return;
+
+    mTileX = x;
+    mTileY = y;
+
+    if (!mMapDocument)
+        return;
+
+    const Map *map = mMapDocument->map();
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
+
+    // Update the pixel position
+    setPos(x * tileWidth, y * tileHeight);
+
+    if (mPainting)
+        doPaint();
+}
+
+void BrushItem::beginPaint()
+{
+    mPainting = true;
+    doPaint();
+}
+
+void BrushItem::endPaint()
+{
+    mPainting = false;
+}
+
+void BrushItem::doPaint()
+{
+    // TODO: Use tile selected by user, since now it's just an eraser
+    PaintTile *paintTile = new PaintTile(mMapDocument,
+                                         mMapDocument->currentLayer(),
+                                         mTileX, mTileY, 0);
+    mMapDocument->undoStack()->push(paintTile);
 }
 
 QRectF BrushItem::boundingRect() const
 {
-    // TODO: Brush size should adapt to tile size of the map
-    return QRectF(0, 0, 32, 32);
+    if (!mMapDocument)
+        return QRectF();
+
+    const Map *map = mMapDocument->map();
+    return QRectF(0, 0, map->tileWidth(), map->tileHeight());
 }
 
 void BrushItem::paint(QPainter *painter,

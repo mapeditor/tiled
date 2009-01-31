@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -27,9 +27,14 @@
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
+
 /**
  * This brush item is used to represent a brush in a map scene before it is
  * used.
+ *
+ * It currently also implements a simple tile brush.
+ * TODO: Separate Brush out of BrushItem
  */
 class BrushItem : public QGraphicsItem
 {
@@ -39,11 +44,41 @@ public:
      */
     BrushItem();
 
+    /**
+     * Sets the map document this brush is operating on.
+     */
+    void setMapDocument(MapDocument *mapDocument);
+
+    /**
+     * Updates the position in tiles. Paints while painting is active.
+     */
+    void setTilePos(int x, int y);
+
+    /**
+     * Start painting.
+     */
+    void beginPaint();
+
+    /**
+     * Stop painting.
+     */
+    void endPaint();
+
     // QGraphicsItem
     QRectF boundingRect() const;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
+
+private:
+    /**
+     * Performs the actual painting.
+     */
+    void doPaint();
+
+    int mTileX, mTileY;
+    MapDocument *mMapDocument;
+    bool mPainting;
 };
 
 } // namespace Internal

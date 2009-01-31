@@ -21,6 +21,7 @@ SOURCES += brushitem.cpp \
     mapscene.cpp \
     mapview.cpp \
     objectgroup.cpp \
+    painttile.cpp \
     propertiesdialog.cpp \
     propertiesmodel.cpp \
     resizehelper.cpp \
@@ -54,6 +55,7 @@ HEADERS += brushitem.h \
     mapscene.h \
     mapview.h \
     objectgroup.h \
+    painttile.h \
     propertiesdialog.h \
     propertiesmodel.h \
     resizedialog.h \

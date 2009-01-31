@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -43,7 +43,8 @@ MapScene::MapScene(QObject *parent):
     mMapDocument(0),
     mBrush(new BrushItem),
     mGridVisible(true),
-    mBrushVisible(true)
+    mBrushVisible(false),
+    mPainting(false)
 {
     setBackgroundBrush(Qt::darkGray);
 
@@ -69,7 +70,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(refreshScene()));
     }
 
-    mBrush->setVisible(mMapDocument && mBrushVisible);
+    mBrush->setMapDocument(mapDocument);
+    updateBrushVisibility();
 }
 
 void MapScene::refreshScene()
@@ -132,7 +134,20 @@ void MapScene::setBrushVisible(bool visible)
         return;
 
     mBrushVisible = visible;
-    mBrush->setVisible(mMapDocument && mBrushVisible);
+    updateBrushVisibility();
+}
+
+void MapScene::updateBrushVisibility()
+{
+    // Show the tile brush only when a tile layer is selected
+    bool showBrush = false;
+    if (mBrushVisible && mMapDocument) {
+        const int currentLayer = mMapDocument->currentLayer();
+        Layer *layer = mMapDocument->map()->layers().at(currentLayer);
+        if (dynamic_cast<TileLayer*>(layer))
+            showBrush = true;
+    }
+    mBrush->setVisible(showBrush);
 }
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
@@ -196,5 +211,23 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     const QPointF pos = mouseEvent->scenePos();
     const int tileX = ((int) pos.x()) / tileWidth;
     const int tileY = ((int) pos.y()) / tileHeight;
-    mBrush->setPos(tileX * tileWidth, tileY * tileHeight);
+    mBrush->setTilePos(tileX, tileY);
+}
+
+void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    Q_UNUSED(mouseEvent);
+    if (mBrush->isVisible()) {
+        mBrush->beginPaint();
+        mPainting = true;
+    }
+}
+
+void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    Q_UNUSED(mouseEvent);
+    if (mPainting) {
+        mBrush->endPaint();
+        mPainting = false;
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -74,7 +74,7 @@ public:
     /**
      * Returns the TileLayerItem for the layer with the given name.
      */
-    TileLayerItem *layer(const QString& layer);
+    TileLayerItem *layer(const QString &layer);
 
 public slots:
     /**
@@ -93,10 +93,9 @@ protected:
      */
     bool event(QEvent *event);
 
-    /**
-     * Override that handles hover events.
-     */
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
 private slots:
     /**
@@ -105,10 +104,13 @@ private slots:
     void refreshScene();
 
 private:
+    void updateBrushVisibility();
+
     MapDocument *mMapDocument;
     BrushItem *mBrush;
     bool mGridVisible;
     bool mBrushVisible;
+    bool mPainting;
 };
 
 } // namespace Internal
