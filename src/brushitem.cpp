@@ -20,9 +20,12 @@
  */
 
 #include "brushitem.h"
+
 #include "map.h"
 #include "mapdocument.h"
 #include "painttile.h"
+#include "tilelayer.h"
+#include "tilepainter.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -80,9 +83,17 @@ void BrushItem::endPaint()
 
 void BrushItem::doPaint()
 {
+    // This method shouldn't be called when current layer is not a tile layer
+    const int currentLayerIndex = mMapDocument->currentLayer();
+    Layer *currentLayer = mMapDocument->map()->layers().at(currentLayerIndex);
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
+    Q_ASSERT(tileLayer);
+
+    if (TilePainter(mMapDocument, tileLayer).tileAt(mTileX, mTileY) == 0)
+        return;
+
     // TODO: Use tile selected by user, since now it's just an eraser
-    PaintTile *paintTile = new PaintTile(mMapDocument,
-                                         mMapDocument->currentLayer(),
+    PaintTile *paintTile = new PaintTile(mMapDocument, tileLayer,
                                          mTileX, mTileY, 0);
     mMapDocument->undoStack()->push(paintTile);
 }

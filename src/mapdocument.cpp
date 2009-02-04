@@ -27,6 +27,7 @@
 #include "tileselectionmodel.h"
 #include "tilesetmanager.h"
 
+#include <QRect>
 #include <QUndoStack>
 
 using namespace Tiled;
@@ -85,4 +86,19 @@ void MapDocument::moveLayerDown(int index)
         return;
 
     mUndoStack->push(new MoveLayer(this, index, MoveLayer::Down));
+}
+
+void MapDocument::emitRegionChanged(const QRegion &region)
+{
+    emit regionChanged(region);
+}
+
+QRect MapDocument::toPixelCoordinates(const QRect &r) const
+{
+    const int tileWidth = mMap->tileWidth();
+    const int tileHeight = mMap->tileHeight();
+    return QRect(r.x() * tileWidth,
+                 r.y() * tileHeight,
+                 r.width() * tileWidth,
+                 r.height() * tileHeight);
 }

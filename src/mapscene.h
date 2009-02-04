@@ -103,6 +103,11 @@ private slots:
      */
     void refreshScene();
 
+    /**
+     * Repaints the specified region. The region is in tile coordinates.
+     */
+    void repaintRegion(const QRegion &region);
+
 private:
     void updateBrushVisibility();
 

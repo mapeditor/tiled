@@ -30,21 +30,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-/**
- * A helper function to scale a rectangle from tile to pixel coordinates.
- */
-static QRect toPixelCoordinates(const QRect &r, MapDocument *mapDocument)
-{
-    const Map *map = mapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-    return QRect(r.x() * tileWidth,
-                 r.y() * tileHeight,
-                 r.width() * tileWidth,
-                 r.height() * tileHeight);
-}
-
-
 TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
     : mMapDocument(mapDocument)
 {
@@ -73,7 +58,7 @@ void TileSelectionItem::paint(QPainter *painter,
     const QColor color(0, 0, 255, 128);
 
     foreach (const QRect &r, selection.rects())
-        painter->fillRect(toPixelCoordinates(r, mMapDocument), color);
+        painter->fillRect(mMapDocument->toPixelCoordinates(r), color);
 }
 
 void TileSelectionItem::selectionChanged(const QRegion &newSelection,
@@ -84,11 +69,11 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
 
     // Make sure changes within the bounding rect are updated
     const QRect changedArea = newSelection.xored(oldSelection).boundingRect();
-    update(toPixelCoordinates(changedArea, mMapDocument));
+    update(mMapDocument->toPixelCoordinates(changedArea));
 }
 
 void TileSelectionItem::updateBoundingRect()
 {
     const QRect b = mMapDocument->selectionModel()->selection().boundingRect();
-    mBoundingRect = toPixelCoordinates(b, mMapDocument);
+    mBoundingRect = mMapDocument->toPixelCoordinates(b);
 }

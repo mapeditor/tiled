@@ -19,10 +19,8 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef PAINTTILE_H
-#define PAINTTILE_H
-
-#include <QUndoCommand>
+#ifndef TILEPAINTER_H
+#define TILEPAINTER_H
 
 namespace Tiled {
 
@@ -34,36 +32,42 @@ namespace Internal {
 class MapDocument;
 
 /**
- * A command that paints a single tile at a certain position.
+ * The tile painter is meant for painting tiles on a tile layer. It makes sure
+ * that each paint operation sends out the proper events, so that views can
+ * redraw the changed parts. It also does bounds checking.
  */
-class PaintTile : public QUndoCommand
+class TilePainter
 {
 public:
     /**
-     * Constructor.
+     * Constructs a tile painter.
      *
-     * @param mapDocument the map document that's being edited
-     * @param layer       the layer of the tile to edit
-     * @param x           the x position of the tile to edit
-     * @param y           the y position of the tile to edit
-     * @param tile        the new tile for this position
+     * @param mapDocument the map document to send change notifications to
+     * @param tileLayer   the tile layer to edit
      */
-    PaintTile(MapDocument *mapDocument, TileLayer *layer,
-              int x, int y, Tile *tile);
+    TilePainter(MapDocument *mapDocument, TileLayer *tileLayer);
 
-    void undo();
-    void redo();
+    /**
+     * Returns the tile at the given coordinates. The coordinates are relative
+     * to the map origin. Returns 0 if the coordinates lay outside of the
+     * layer.
+     */
+    Tile *tileAt(int x, int y);
+
+    /**
+     * Sets the tile for the given coordinates. The coordinates are relative to
+     * the map origin.
+     */
+    void setTile(int x, int y, Tile *tile);
+
+    // TODO: Add more operations (fill, copy)
 
 private:
-    void swapTile();
-
     MapDocument *mMapDocument;
-    TileLayer *mLayer;
-    int mX, mY;
-    Tile *mTile;
+    TileLayer *mTileLayer;
 };
 
-} // namespace Internal
 } // namespace Tiled
+} // namespace Internal
 
-#endif // PAINTTILE_H
+#endif // TILEPAINTER_H

@@ -39,7 +39,8 @@ SOURCES += brushitem.cpp \
     xmlmapreader.cpp \
     xmlmapwriter.cpp \
     changeproperties.cpp \
-    movelayer.cpp
+    movelayer.cpp \
+    tilepainter.cpp
 HEADERS += brushitem.h \
     compression.h \
     layer.h \
@@ -74,7 +75,8 @@ HEADERS += brushitem.h \
     xmlmapreader.h \
     xmlmapwriter.h \
     changeproperties.h \
-    movelayer.h
+    movelayer.h \
+    tilepainter.h
 FORMS += mainwindow.ui \
     resizedialog.ui \
     propertiesdialog.ui

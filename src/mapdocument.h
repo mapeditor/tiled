@@ -24,6 +24,8 @@
 
 #include <QObject>
 
+class QRect;
+class QRegion;
 class QUndoStack;
 
 namespace Tiled {
@@ -104,11 +106,28 @@ public:
      */
     QUndoStack *undoStack() const { return mUndoStack; }
 
+    /**
+     * Emits the region changed signal for the specified region. The region
+     * should be in tile coordinates. This method is used by the TilePainter.
+     */
+    void emitRegionChanged(const QRegion &region);
+
+    /**
+     * Converts the given rectangle from tile to pixel coordinates.
+     */
+    QRect toPixelCoordinates(const QRect &r) const;
+
 signals:
     /**
      * Emitted when the current layer changes.
      */
     void currentLayerChanged(int index);
+
+    /**
+     * Emitted when a certain region of the map changes. The region is given in
+     * tile coordinates.
+     */
+    void regionChanged(const QRegion &region);
 
 private:
     Map *mMap;

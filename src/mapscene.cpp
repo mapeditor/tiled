@@ -55,18 +55,23 @@ MapScene::MapScene(QObject *parent):
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMapDocument)
+    if (mMapDocument) {
+        mMapDocument->disconnect(this);
         mMapDocument->layerModel()->disconnect(this);
+    }
 
     mMapDocument = mapDocument;
     refreshScene();
 
     // TODO: This should really be more optimal (adding/removing as necessary)
     if (mMapDocument) {
+        connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
+                this, SLOT(repaintRegion(QRegion)));
+
         LayerTableModel *layerModel = mMapDocument->layerModel();
-        connect(layerModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
+        connect(layerModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
                 this, SLOT(refreshScene()));
-        connect(layerModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
+        connect(layerModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
                 this, SLOT(refreshScene()));
     }
 
@@ -117,6 +122,13 @@ void MapScene::refreshScene()
     addItem(selectionItem);
 
     addItem(mBrush);
+}
+
+void MapScene::repaintRegion(const QRegion &region)
+{
+    // TODO: Adjust region to deal with high tiles
+    foreach (const QRect &r, region.rects())
+        update(mMapDocument->toPixelCoordinates(r));
 }
 
 void MapScene::setGridVisible(bool visible)

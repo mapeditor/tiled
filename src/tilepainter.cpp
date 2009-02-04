@@ -19,45 +19,47 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "painttile.h"
+#include "tilepainter.h"
 
-#include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
-#include "tilepainter.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-PaintTile::PaintTile(MapDocument *mapDocument,
-                     TileLayer *layer,
-                     int x,
-                     int y,
-                     Tile *tile):
-    mMapDocument(mapDocument),
-    mLayer(layer),
-    mX(x),
-    mY(y),
-    mTile(tile)
+static inline bool outOfBounds(int x, int y, TileLayer *tileLayer)
 {
-    setText(QObject::tr("Paint Tile"));
+    return (x < 0 ||
+            y < 0 ||
+            x >= tileLayer->width() ||
+            y >= tileLayer->height());
 }
 
-void PaintTile::undo()
+TilePainter::TilePainter(MapDocument *mapDocument, TileLayer *tileLayer)
+    : mMapDocument(mapDocument)
+    , mTileLayer(tileLayer)
 {
-    swapTile();
 }
 
-void PaintTile::redo()
+Tile *TilePainter::tileAt(int x, int y)
 {
-    swapTile();
+    const int layerX = x - mTileLayer->x();
+    const int layerY = y - mTileLayer->y();
+
+    if (outOfBounds(layerX, layerY, mTileLayer))
+        return 0;
+
+    return mTileLayer->tileAt(layerX, layerY);
 }
 
-void PaintTile::swapTile()
+void TilePainter::setTile(int x, int y, Tile *tile)
 {
-    TilePainter p(mMapDocument, mLayer);
+    const int layerX = x - mTileLayer->x();
+    const int layerY = y - mTileLayer->y();
 
-    Tile *prevTile = p.tileAt(mX, mY);
-    p.setTile(mX, mY, mTile);
-    mTile = prevTile;
+    if (outOfBounds(layerX, layerY, mTileLayer))
+        return;
+
+    mTileLayer->setTile(layerX, layerY, tile);
+    mMapDocument->emitRegionChanged(QRegion(x, y, 1, 1));
 }
