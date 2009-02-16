@@ -26,4 +26,5 @@ using namespace Tiled::Internal;
 MapView::MapView(QWidget *parent):
     QGraphicsView(parent)
 {
+    viewport()->setAttribute(Qt::WA_StaticContents);
 }
