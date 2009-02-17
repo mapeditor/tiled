@@ -36,7 +36,7 @@ using namespace Tiled::Internal;
 MapDocument::MapDocument(Map *map):
     mMap(map),
     mLayerModel(new LayerTableModel(this)),
-    mSelectionModel(new TileSelectionModel(this)),
+    mSelectionModel(new TileSelectionModel(this, this)),
     mUndoStack(new QUndoStack(this))
 {
     mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;

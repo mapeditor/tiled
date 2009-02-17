@@ -63,11 +63,12 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
     refreshScene();
 
-    // TODO: This should really be more optimal (adding/removing as necessary)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
                 this, SLOT(repaintRegion(QRegion)));
 
+        // TODO: This should really be more optimal (adding/removing as
+        // necessary)
         LayerTableModel *layerModel = mMapDocument->layerModel();
         connect(layerModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
                 this, SLOT(refreshScene()));
@@ -81,11 +82,10 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 
 void MapScene::refreshScene()
 {
-    // Make sure the brush isn't part of the scene
+    // Clear any existing items, but don't delete the brush
     removeItem(mBrush);
-
-    // Clear any existing items
     clear();
+    addItem(mBrush);
 
     if (!mMapDocument) {
         setSceneRect(QRectF());
@@ -120,8 +120,6 @@ void MapScene::refreshScene()
     TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
     selectionItem->setZValue(10000 - 1);
     addItem(selectionItem);
-
-    addItem(mBrush);
 }
 
 void MapScene::repaintRegion(const QRegion &region)

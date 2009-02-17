@@ -41,7 +41,7 @@ public:
     /**
      * Constructs an empty tile selection model.
      */
-    TileSelectionModel(MapDocument *mapDocument);
+    TileSelectionModel(MapDocument *mapDocument, QObject *parent = 0);
 
     const QRegion &selection() const { return mSelection; }
 

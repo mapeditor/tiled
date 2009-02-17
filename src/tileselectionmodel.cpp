@@ -27,8 +27,10 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TileSelectionModel::TileSelectionModel(MapDocument *mapDocument)
-    : mMapDocument(mapDocument)
+TileSelectionModel::TileSelectionModel(MapDocument *mapDocument,
+                                       QObject *parent)
+    : QObject(parent)
+    , mMapDocument(mapDocument)
 {
 }
 
