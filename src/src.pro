@@ -7,7 +7,8 @@ QT += core \
     gui \
     xml
 CONFIG += debug
-SOURCES += brushitem.cpp \
+SOURCES += aboutdialog.cpp \
+    brushitem.cpp \
     compression.cpp \
     layer.cpp \
     layerdock.cpp \
@@ -41,7 +42,8 @@ SOURCES += brushitem.cpp \
     changeproperties.cpp \
     movelayer.cpp \
     tilepainter.cpp
-HEADERS += brushitem.h \
+HEADERS += aboutdialog.h \
+    brushitem.h \
     compression.h \
     layer.h \
     layerdock.h \
@@ -77,7 +79,8 @@ HEADERS += brushitem.h \
     changeproperties.h \
     movelayer.h \
     tilepainter.h
-FORMS += mainwindow.ui \
+FORMS += aboutdialog.ui \
+    mainwindow.ui \
     resizedialog.ui \
     propertiesdialog.ui
 RESOURCES += tiled.qrc

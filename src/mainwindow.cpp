@@ -21,6 +21,7 @@
 
 #include "mainwindow.h"
 
+#include "aboutdialog.h"
 #include "layer.h"
 #include "layerdock.h"
 #include "map.h"
@@ -458,13 +459,6 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
 
 void MainWindow::aboutTiled()
 {
-    // TODO: Implement a nicer about dialog
-    QMessageBox::about(this, tr("Tiled (Qt)"),
-                       tr("Tiled (Qt) Map Editor\nVersion 0.1\n\n"
-                          "Copyright 2008 Tiled (Qt) developers"
-                          " (see AUTHORS file)\n\n"
-                          "You may modify and redistribute this program under"
-                          "\nthe terms of the GPL (version 2 or later). A copy"
-                          "\nof the GPL is contained in the 'COPYING' file\n"
-                          "distributed with Tiled (Qt)."));
+	AboutDialog* aboutDialog = new AboutDialog(this);
+    aboutDialog->show();
 }

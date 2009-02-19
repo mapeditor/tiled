@@ -1,5 +1,6 @@
 <RCC>
     <qresource>
+        <file>images/about-tiled-logo.png</file>
         <file>images/document-open.png</file>
         <file>images/document-save.png</file>
         <file>images/document-save-as.png</file>
