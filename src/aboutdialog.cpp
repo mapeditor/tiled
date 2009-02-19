@@ -25,5 +25,5 @@ using namespace Tiled::Internal;
 
 AboutDialog::AboutDialog(QWidget* parent): QDialog(parent)
 {
-	setupUi(this);
+    setupUi(this);
 }
