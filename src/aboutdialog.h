@@ -31,7 +31,7 @@ namespace Internal {
 class AboutDialog : public QDialog, private Ui::AboutDialog
 {
     Q_OBJECT
-    
+
 public:
     AboutDialog(QWidget* parent = 0);
 };

@@ -459,6 +459,6 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
 
 void MainWindow::aboutTiled()
 {
-    AboutDialog* aboutDialog = new AboutDialog(this);
-    aboutDialog->show();
+    AboutDialog aboutDialog(this);
+    aboutDialog.exec();
 }
