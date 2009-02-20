@@ -33,10 +33,10 @@ class AboutDialog : public QDialog, private Ui::AboutDialog
     Q_OBJECT
 
 public:
-    AboutDialog(QWidget* parent = 0);
+    AboutDialog(QWidget *parent = 0);
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif
+#endif // ABOUTDIALOG_H
