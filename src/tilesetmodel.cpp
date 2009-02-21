@@ -52,6 +52,14 @@ QVariant TilesetModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+Tile *TilesetModel::tileAt(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return 0;
+
+    return mTileset->tileAt(index.row());
+}
+
 void TilesetModel::setTileset(Tileset *tileset)
 {
     if (mTileset == tileset)

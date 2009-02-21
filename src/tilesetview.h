@@ -27,8 +27,6 @@
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
-
 class TilesetView : public QListView
 {
 public:

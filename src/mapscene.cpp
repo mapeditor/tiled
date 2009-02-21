@@ -129,6 +129,11 @@ void MapScene::repaintRegion(const QRegion &region)
         update(mMapDocument->toPixelCoordinates(r));
 }
 
+void MapScene::currentTileChanged(Tile *tile)
+{
+    mBrush->setTile(tile);
+}
+
 void MapScene::setGridVisible(bool visible)
 {
     if (mGridVisible == visible)

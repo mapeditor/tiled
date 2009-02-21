@@ -25,6 +25,9 @@
 #include <QGraphicsItem>
 
 namespace Tiled {
+
+class Tile;
+
 namespace Internal {
 
 class MapDocument;
@@ -48,6 +51,11 @@ public:
      * Sets the map document this brush is operating on.
      */
     void setMapDocument(MapDocument *mapDocument);
+
+    /**
+     * Sets the tile that is drawn when painting.
+     */
+    void setTile(Tile *tile);
 
     /**
      * Updates the position in tiles. Paints while painting is active.
@@ -78,6 +86,7 @@ private:
 
     int mTileX, mTileY;
     MapDocument *mMapDocument;
+    Tile *mTile;
     bool mPainting;
 };
 

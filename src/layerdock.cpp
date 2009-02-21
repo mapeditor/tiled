@@ -69,7 +69,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         mMapDocument->disconnect(this);
         QItemSelectionModel *s = selectionModel();
-        disconnect(s, SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+        disconnect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                    this, SLOT(currentRowChanged(QModelIndex)));
     }
 
@@ -82,7 +82,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(currentLayerChanged(int)));
 
         QItemSelectionModel *s = selectionModel();
-        connect(s, SIGNAL(currentRowChanged(QModelIndex, QModelIndex)),
+        connect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this, SLOT(currentRowChanged(QModelIndex)));
 
         currentLayerChanged(mMapDocument->currentLayer());

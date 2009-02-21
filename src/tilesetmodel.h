@@ -26,6 +26,7 @@
 
 namespace Tiled {
 
+class Tile;
 class Tileset;
 
 namespace Internal {
@@ -59,6 +60,11 @@ public:
      */
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const;
+
+    /**
+     * Returns the tile at the given index.
+     */
+    Tile *tileAt(const QModelIndex &index) const;
 
     /**
      * Returns the tileset associated with this model.

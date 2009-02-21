@@ -106,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    QMenu* menu = new QMenu(this);
+    QMenu *menu = new QMenu(this);
     for (int i = 0; i < MaxRecentFiles; ++i)
     {
          mRecentFiles[i] = new QAction(this);
@@ -116,7 +116,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
                  this, SLOT(openRecentFile()));
     }
     menu->addSeparator();
-    QAction* clear = new QAction(QIcon(QLatin1String(":images/clear.png")),
+    QAction *clear = new QAction(QIcon(QLatin1String(":images/clear.png")),
                                  QLatin1String("Clear Recent Files"),
                                  this);
     menu->addAction(clear);
@@ -130,6 +130,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionShowGrid->setChecked(mScene->isGridVisible());
     connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
             mScene, SLOT(setGridVisible(bool)));
+
+    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
+            mScene, SLOT(currentTileChanged(Tile*)));
 
     updateActions();
     readSettings();

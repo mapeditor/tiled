@@ -37,6 +37,7 @@ BrushItem::BrushItem():
     mTileX(0),
     mTileY(0),
     mMapDocument(0),
+    mTile(0),
     mPainting(false)
 {
 }
@@ -46,6 +47,11 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
     // A different map may have a different tile size
     prepareGeometryChange();
     mMapDocument = mapDocument;
+}
+
+void BrushItem::setTile(Tile *tile)
+{
+    mTile = tile;
 }
 
 void BrushItem::setTilePos(int x, int y)
@@ -89,12 +95,11 @@ void BrushItem::doPaint()
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     Q_ASSERT(tileLayer);
 
-    if (TilePainter(mMapDocument, tileLayer).tileAt(mTileX, mTileY) == 0)
+    if (TilePainter(mMapDocument, tileLayer).tileAt(mTileX, mTileY) == mTile)
         return;
 
-    // TODO: Use tile selected by user, since now it's just an eraser
     PaintTile *paintTile = new PaintTile(mMapDocument, tileLayer,
-                                         mTileX, mTileY, 0);
+                                         mTileX, mTileY, mTile);
     mMapDocument->undoStack()->push(paintTile);
 }
 

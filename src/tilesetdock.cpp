@@ -37,7 +37,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(tr("Tilesets"), parent),
     mMapDocument(0),
     mTabBar(new QTabBar),
-    mViewStack(new QStackedWidget)
+    mViewStack(new QStackedWidget),
+    mCurrentTile(0)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
@@ -59,6 +60,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+    setCurrentTile(0);
+
     // Clear previous content
     while (mTabBar->count())
         mTabBar->removeTab(0);
@@ -75,8 +78,29 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
             TilesetView *view = new TilesetView;
             view->setModel(new TilesetModel(tileset, view));
 
+            connect(view->selectionModel(),
+                    SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+                    SLOT(currentChanged(QModelIndex)));
+
             mTabBar->addTab(tileset->name());
             mViewStack->addWidget(view);
         }
     }
+}
+
+void TilesetDock::currentChanged(const QModelIndex &index)
+{
+    QItemSelectionModel *s = static_cast<QItemSelectionModel*>(sender());
+    const TilesetModel *model = static_cast<const TilesetModel*>(s->model());
+
+    setCurrentTile(model->tileAt(index));
+}
+
+void TilesetDock::setCurrentTile(Tile *tile)
+{
+    if (mCurrentTile == tile)
+        return;
+
+    mCurrentTile = tile;
+    emit currentTileChanged(mCurrentTile);
 }

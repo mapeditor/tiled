@@ -24,19 +24,26 @@
 
 #include <QDockWidget>
 
+class QModelIndex;
 class QStackedWidget;
 class QTabBar;
 
 namespace Tiled {
+
+class Tile;
+
 namespace Internal {
 
 class MapDocument;
 
 /**
- * The dock widget that displays the tilesets.
+ * The dock widget that displays the tilesets. Also keeps track of the
+ * currently selected tile.
  */
 class TilesetDock : public QDockWidget
 {
+    Q_OBJECT
+
 public:
     /**
      * Constructor.
@@ -48,10 +55,22 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
+signals:
+    /**
+     * Emitted when the currently selected tile changed.
+     */
+    void currentTileChanged(Tile *tile);
+
+private slots:
+    void currentChanged(const QModelIndex &index);
+
 private:
+    void setCurrentTile(Tile *tile);
+
     MapDocument *mMapDocument;
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
+    Tile *mCurrentTile;
 };
 
 } // namespace Internal

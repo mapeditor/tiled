@@ -27,6 +27,9 @@
 class QString;
 
 namespace Tiled {
+
+class Tile;
+
 namespace Internal {
 
 class BrushItem;
@@ -107,6 +110,12 @@ private slots:
      * Repaints the specified region. The region is in tile coordinates.
      */
     void repaintRegion(const QRegion &region);
+
+    /**
+     * Notifies the scene that the current tile has changed. The scene passes
+     * this on to the tile brush.
+     */
+    void currentTileChanged(Tile *tile);
 
 private:
     void updateBrushVisibility();
