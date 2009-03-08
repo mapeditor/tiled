@@ -67,18 +67,26 @@ void MapObjectItem::paint(QPainter *painter,
         painter->setOpacity(objectGroup->opacity());
     }
 
-    Qt::GlobalColor color;
+    static const struct {
+        const char *type;
+        Qt::GlobalColor color;
+    } types[] = {
+        { "warp", Qt::cyan },
+        { "npc", Qt::yellow },
+        { "spawn", Qt::magenta },
+        { "particle_effect", Qt::green },
+        { 0, Qt::black }
+    };
+
+    Qt::GlobalColor color = Qt::gray;
     const QString &type = mObject->type();
-    if (type == QLatin1String("WARP"))
-        color = Qt::cyan;
-    else if (type == QLatin1String("NPC"))
-        color = Qt::yellow;
-    else if (type == QLatin1String("SPAWN"))
-        color = Qt::magenta;
-    else if (type == QLatin1String("PARTICLE_EFFECT"))
-        color = Qt::green;
-    else
-        color = Qt::gray;
+
+    for (int i = 0; types[i].type; ++i) {
+        if (!type.compare(QLatin1String(types[i].type), Qt::CaseInsensitive)) {
+            color = types[i].color;
+            break;
+        }
+    }
 
     QPen pen(Qt::black);
     pen.setWidth(3);
@@ -104,7 +112,8 @@ void MapObjectItem::paint(QPainter *painter,
     else
     {
         QFontMetrics fm = painter->fontMetrics();
-        QString name = fm.elidedText(mObject->name(), Qt::ElideRight, mObject->width() + 5);
+        QString name = fm.elidedText(mObject->name(), Qt::ElideRight,
+                                     mObject->width() + 5);
         painter->drawRoundedRect(QRect(1, 1,
                                        mObject->width(),
                                        mObject->height()),
