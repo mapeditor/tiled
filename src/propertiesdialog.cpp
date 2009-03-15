@@ -41,6 +41,11 @@ PropertiesDialog::PropertiesDialog(QUndoStack *undoStack, QWidget *parent):
     mUi->propertiesView->setModel(mModel);
 }
 
+PropertiesDialog::~PropertiesDialog()
+{
+    delete mUi;
+}
+
 void PropertiesDialog::setProperties(QMap<QString, QString> *properties)
 {
     mProperties = properties;

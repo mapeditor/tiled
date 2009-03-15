@@ -41,7 +41,8 @@ SOURCES += aboutdialog.cpp \
     xmlmapwriter.cpp \
     changeproperties.cpp \
     movelayer.cpp \
-    tilepainter.cpp
+    tilepainter.cpp \
+    newmapdialog.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -78,10 +79,12 @@ HEADERS += aboutdialog.h \
     xmlmapwriter.h \
     changeproperties.h \
     movelayer.h \
-    tilepainter.h
+    tilepainter.h \
+    newmapdialog.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
-    propertiesdialog.ui
+    propertiesdialog.ui \
+    newmapdialog.ui
 RESOURCES += tiled.qrc
 TRANSLATIONS = translations/tiled_nl.ts

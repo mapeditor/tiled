@@ -39,13 +39,14 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionRecentFiles"/>
     <addaction name="separator"/>
@@ -255,6 +256,11 @@
   <action name="actionSelectNone">
    <property name="text">
     <string>Select &amp;None</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New...</string>
    </property>
   </action>
  </widget>

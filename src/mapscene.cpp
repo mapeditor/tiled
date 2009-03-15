@@ -158,9 +158,11 @@ void MapScene::updateBrushVisibility()
     bool showBrush = false;
     if (mBrushVisible && mMapDocument) {
         const int currentLayer = mMapDocument->currentLayer();
-        Layer *layer = mMapDocument->map()->layers().at(currentLayer);
-        if (dynamic_cast<TileLayer*>(layer))
-            showBrush = true;
+        if (currentLayer >= 0) {
+            Layer *layer = mMapDocument->map()->layers().at(currentLayer);
+            if (dynamic_cast<TileLayer*>(layer))
+                showBrush = true;
+        }
     }
     mBrush->setVisible(showBrush);
 }

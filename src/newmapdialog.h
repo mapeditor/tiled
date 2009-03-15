@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,61 +19,44 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef PROPERTIESDIALOG_H
-#define PROPERTIESDIALOG_H
+#ifndef NEWMAPDIALOG_H
+#define NEWMAPDIALOG_H
 
 #include <QDialog>
-#include <QMap>
-#include <QString>
-
-class QUndoStack;
 
 namespace Ui {
-class PropertiesDialog;
+class NewMapDialog;
 }
 
 namespace Tiled {
 namespace Internal {
 
-class PropertiesModel;
-
-class PropertiesDialog : public QDialog
+class NewMapDialog : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY(PropertiesDialog)
+    Q_DISABLE_COPY(NewMapDialog)
 
 public:
     /**
      * Constructor.
-     *
-     * @param undoStack The undo stack to push changes onto.
      */
-    PropertiesDialog(QUndoStack *undoStack, QWidget *parent = 0);
+    NewMapDialog(QWidget *parent = 0);
 
     /**
      * Destructor.
      */
-    ~PropertiesDialog();
+    ~NewMapDialog();
 
-    /**
-     * Sets the properties edited by this dialog.
-     */
-    void setProperties(QMap<QString, QString> *properties);
-
-    /**
-     * Applies the edited properties. It does this by constructing a
-     * ChangeProperties command and adding it to the undo stack.
-     */
-    void accept();
+    int mapWidth() const;
+    int mapHeight() const;
+    int tileWidth() const;
+    int tileHeight() const;
 
 private:
-    Ui::PropertiesDialog *mUi;
-    PropertiesModel *mModel;
-    QUndoStack *mUndoStack;
-    QMap<QString, QString> *mProperties;
+    Ui::NewMapDialog *mUi;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // PROPERTIESDIALOG_H
+#endif // NEWMAPDIALOG_H

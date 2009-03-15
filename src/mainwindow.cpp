@@ -27,8 +27,10 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
+#include "newmapdialog.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
@@ -46,6 +48,7 @@
 #include <QUndoView>
 #include <QDebug>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
@@ -91,6 +94,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionCopy->setVisible(false);
     mUi.actionPaste->setVisible(false);
 
+    connect(mUi.actionNew, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
@@ -161,6 +165,34 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->accept();
     else
         event->ignore();
+}
+
+void MainWindow::newMap()
+{
+    if (!confirmSave())
+        return;
+
+    NewMapDialog newMap(this);
+    if (newMap.exec() != QDialog::Accepted)
+        return;
+
+    int mapWidth = newMap.mapWidth();
+    int mapHeight = newMap.mapHeight();
+    int tileWidth = newMap.tileWidth();
+    int tileHeight = newMap.tileHeight();
+
+    Map *map = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
+
+    // Add one filling tile layer to new maps
+    map->addLayer(new TileLayer(tr("Layer 1"),
+                                0, 0, mapWidth, mapHeight,
+                                map));
+
+    setMapDocument(new MapDocument(map));
+    mUi.mapView->centerOn(0, 0);
+
+    setCurrentFileName(QString());
+    updateActions();
 }
 
 bool MainWindow::openFile(const QString &fileName)
@@ -317,6 +349,9 @@ QString MainWindow::fileDialogStartLocation() const
 
 void MainWindow::setRecentFile(const QString &fileName)
 {
+    if (fileName.isEmpty())
+        return;
+
     QStringList files = recentFiles();
     files.removeAll(fileName);
     files.prepend(fileName);

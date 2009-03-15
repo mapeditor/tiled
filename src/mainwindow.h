@@ -71,6 +71,7 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
+    void newMap();
     void openFile();
     bool saveFile();
     bool saveFileAs();
