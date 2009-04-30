@@ -51,7 +51,7 @@ public:
     /**
      * Returns a pointer to the list of objects in this object group.
      */
-    const QList<MapObject*>& objects() const { return mObjects; }
+    const QList<MapObject*> &objects() const { return mObjects; }
 
     /**
      * Adds an object to this object group.

@@ -31,7 +31,7 @@ Tileset::~Tileset()
     qDeleteAll(mTiles);
 }
 
-Tile* Tileset::tileAt(int id) const
+Tile *Tileset::tileAt(int id) const
 {
     return (id < mTiles.size()) ? mTiles.at(id) : 0;
 }

@@ -43,16 +43,16 @@ class ResizeHelper : public QWidget
 public:
     ResizeHelper(QWidget *parent = 0);
 
-    const QSize& oldSize() const
+    const QSize &oldSize() const
     { return mOldSize; }
 
-    const QSize& newSize() const
+    const QSize &newSize() const
     { return mNewSize; }
 
-    const QPoint& offset() const
+    const QPoint &offset() const
     { return mOffset; }
 
-    const QRect& offsetBounds() const
+    const QRect &offsetBounds() const
     { return mOffsetBounds; }
 
 signals:

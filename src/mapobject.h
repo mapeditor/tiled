@@ -105,7 +105,7 @@ public:
      * Returns a pointer to the properties of this object. This allows
      * modification of the properties.
      */
-    QMap<QString, QString>* properties() { return &mProperties; }
+    QMap<QString, QString> *properties() { return &mProperties; }
 
     /**
      * Returns a copy of the properties of this object.

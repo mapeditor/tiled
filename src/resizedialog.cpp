@@ -48,7 +48,7 @@ void ResizeDialog::setOldSize(const QSize &size)
     mUi->heightSpinBox->setValue(size.height());
 }
 
-const QSize& ResizeDialog::newSize() const
+const QSize &ResizeDialog::newSize() const
 {
     return mUi->resizeHelper->newSize();
 }

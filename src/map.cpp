@@ -70,7 +70,7 @@ QMap<int, Tileset*> Map::tilesets() const
     return mTilesets;
 }
 
-Tile* Map::tileForGid(int gid) const
+Tile *Map::tileForGid(int gid) const
 {
     Q_ASSERT(gid >= 0);
 

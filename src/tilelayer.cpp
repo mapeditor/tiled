@@ -32,7 +32,7 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height,
 {
 }
 
-Tile* TileLayer::tileAt(int x, int y) const
+Tile *TileLayer::tileAt(int x, int y) const
 {
     return mTiles.at(x + y * mWidth);
 }

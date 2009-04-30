@@ -37,7 +37,7 @@ TileLayerItem::TileLayerItem(TileLayer *layer):
 
 QRectF TileLayerItem::boundingRect() const
 {
-    const Map* const map = mLayer->map();
+    const Map *map = mLayer->map();
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 
@@ -56,7 +56,7 @@ void TileLayerItem::paint(QPainter *painter,
     if (!mLayer->visible() || mLayer->opacity() == 0.0f)
         return;
 
-    const Map* const map = mLayer->map();
+    const Map *map = mLayer->map();
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 
@@ -79,7 +79,7 @@ void TileLayerItem::paint(QPainter *painter,
             if (!tile)
                 continue;
 
-            const QPixmap& img = tile->image();
+            const QPixmap &img = tile->image();
             painter->drawPixmap(x * tileWidth,
                                 (y + 1) * tileHeight - img.height(),
                                 img);

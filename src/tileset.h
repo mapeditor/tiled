@@ -91,7 +91,7 @@ public:
     /**
      * Returns the tile for the given tile ID.
      */
-    Tile* tileAt(int id) const;
+    Tile *tileAt(int id) const;
 
     /**
      * Returns the number of tiles in this tileset.

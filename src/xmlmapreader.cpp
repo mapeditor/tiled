@@ -114,7 +114,7 @@ class TmxHandler : public QXmlDefaultHandler
 } // namespace Internal
 } // namespace Tiled
 
-Map* XmlMapReader::read(const QString &fileName)
+Map *XmlMapReader::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.exists()) {
@@ -463,7 +463,7 @@ QString TmxHandler::errorString() const
     return mError;
 }
 
-Map* TmxHandler::takeMap()
+Map *TmxHandler::takeMap()
 {
     Map *map = mMap;
     mMap = 0;

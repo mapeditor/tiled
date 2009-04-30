@@ -53,7 +53,7 @@ public:
      * Returns the tile at the given coordinates. The coordinates have to
      * be within this layer.
      */
-    Tile* tileAt(int x, int y) const;
+    Tile *tileAt(int x, int y) const;
 
     /**
      * Sets the tile for the given coordinates.

@@ -36,7 +36,7 @@ namespace Internal {
 class XmlMapReader : public MapReaderInterface
 {
 public:
-    Map* read(const QString &fileName);
+    Map *read(const QString &fileName);
 
     QString name() const { return QObject::tr("XML map reader (*.tmx)"); }
 

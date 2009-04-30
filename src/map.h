@@ -105,7 +105,7 @@ public:
      * Returns a pointer to the properties of this map. This allows
      * modification of the properties.
      */
-    QMap<QString, QString>* properties() { return &mProperties; }
+    QMap<QString, QString> *properties() { return &mProperties; }
 
     /**
      * Returns a copy of the properties of this map.
@@ -139,7 +139,7 @@ public:
      * @return the tile associated with the given global tile ID, or 0 if
      *         not found
      */
-    Tile* tileForGid(int gid) const;
+    Tile *tileForGid(int gid) const;
 
     /**
      * Returns the global tile ID for the given tile.

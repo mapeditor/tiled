@@ -43,7 +43,7 @@ public:
     /**
      * Reads the map and returns a new Map instance, or 0 if reading failed.
      */
-    virtual Map* read(const QString &fileName) = 0;
+    virtual Map *read(const QString &fileName) = 0;
 
     /**
      * Returns the name of this map reader.
