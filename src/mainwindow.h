@@ -75,6 +75,7 @@ private slots:
     void openFile();
     bool saveFile();
     bool saveFileAs();
+    void newTileset();
     void resizeMap();
     void editMapProperties();
     void updateModified();

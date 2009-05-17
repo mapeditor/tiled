@@ -28,6 +28,7 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "newmapdialog.h"
+#include "newtilesetdialog.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "tilelayer.h"
@@ -101,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
     connect(mUi.actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mUi.actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
+    connect(mUi.actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi.actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
@@ -293,6 +295,15 @@ bool MainWindow::confirmSave()
     default:
         return false;
     }
+}
+
+void MainWindow::newTileset()
+{
+    NewTilesetDialog newTileset(this);
+    if (newTileset.exec() != QDialog::Accepted)
+        return;
+
+    // TODO: Create and add new tileset
 }
 
 void MainWindow::resizeMap()

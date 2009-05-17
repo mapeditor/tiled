@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -76,6 +76,8 @@
     <property name="title">
      <string>&amp;Map</string>
     </property>
+    <addaction name="actionNewTileset"/>
+    <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
     <addaction name="actionMapProperties"/>
    </widget>
@@ -261,6 +263,11 @@
   <action name="actionNew">
    <property name="text">
     <string>New...</string>
+   </property>
+  </action>
+  <action name="actionNewTileset">
+   <property name="text">
+    <string>New &amp;Tileset...</string>
    </property>
   </action>
  </widget>
