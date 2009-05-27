@@ -364,12 +364,15 @@ QString MainWindow::fileDialogStartLocation() const
 
 void MainWindow::setRecentFile(const QString &fileName)
 {
-    if (fileName.isEmpty())
+    // Remember the file by its canonical file path
+    const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+
+    if (canonicalFilePath.isEmpty())
         return;
 
     QStringList files = recentFiles();
-    files.removeAll(fileName);
-    files.prepend(fileName);
+    files.removeAll(canonicalFilePath);
+    files.prepend(canonicalFilePath);
     while (files.size() > MaxRecentFiles)
         files.removeLast();
 
