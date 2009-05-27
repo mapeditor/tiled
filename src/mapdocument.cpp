@@ -91,6 +91,8 @@ void MapDocument::moveLayerDown(int index)
 void MapDocument::addTileset(Tileset *tileset)
 {
     mMap->addTileset(tileset, 0);
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->addReference(tileset);
     emit tilesetAdded(tileset);
 }
 
