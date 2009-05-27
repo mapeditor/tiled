@@ -141,14 +141,6 @@ public:
      */
     Tile *tileForGid(int gid) const;
 
-    /**
-     * Returns the global tile ID for the given tile.
-     *
-     * @param tile the tile to return the global ID for
-     * @return the appropriate global tile ID, or 0 if not found
-     */
-    int gidForTile(const Tile *tile) const;
-
 private:
     int mWidth;
     int mHeight;

@@ -39,6 +39,7 @@ using namespace Tiled::Internal;
 namespace {
 
 QDir mapDir;     // The directory in which the map is being saved
+QMap<int, const Tileset*> firstGidToTileset;
 
 void writeProperties(QXmlStreamWriter &w,
                      const QMap<QString, QString> &properties)
@@ -130,10 +131,31 @@ void writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer)
         w.writeAttribute(QLatin1String("y"), QString::number(y));
 }
 
+/**
+ * Returns the global tile ID for the given tile. Only valid after the
+ * firstGidToTileset map has been initialized.
+ *
+ * @param tile the tile to return the global ID for
+ * @return the appropriate global tile ID, or 0 if not found
+ */
+int gidForTile(const Tile *tile)
+{
+    if (!tile)
+        return 0;
+
+    const Tileset *tileset = tile->tileset();
+
+    // Find the first GID for the tileset
+    QMap<int, const Tileset*>::const_iterator i = firstGidToTileset.begin();
+    QMap<int, const Tileset*>::const_iterator i_end = firstGidToTileset.end();
+    while (i != i_end && i.value() != tileset)
+        ++i;
+
+    return (i != i_end) ? i.key() + tile->id() : 0;
+}
+
 void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer)
 {
-    const Map *map = tileLayer->map();
-
     w.writeStartElement(QLatin1String("layer"));
     writeLayerAttributes(w, tileLayer);
     writeProperties(w, tileLayer->properties());
@@ -144,7 +166,7 @@ void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer)
     for (int y = 0; y < tileLayer->height(); ++y) {
         for (int x = 0; x < tileLayer->width(); ++x) {
             const Tile *tile = tileLayer->tileAt(x, y);
-            const int gid = map->gidForTile(tile);
+            const int gid = gidForTile(tile);
             tileData.append((char) (gid));
             tileData.append((char) (gid >> 8));
             tileData.append((char) (gid >> 16));
@@ -224,11 +246,17 @@ void writeMap(QXmlStreamWriter &w, const Map *map)
 
     writeProperties(w, map->properties());
 
-    QMap<int, Tileset*> tilesets = map->tilesets();
+    firstGidToTileset.clear();
+    int firstGid = 1;
+    const QMap<int, Tileset*> tilesets = map->tilesets();
     QMap<int, Tileset*>::const_iterator i = tilesets.begin();
     QMap<int, Tileset*>::const_iterator i_end = tilesets.end();
-    for (; i != i_end; ++i)
-        writeTileset(w, i.value(), i.key());
+    for (; i != i_end; ++i) {
+        const Tileset *tileset = i.value();
+        writeTileset(w, tileset, firstGid);
+        firstGidToTileset.insert(firstGid, tileset);
+        firstGid += tileset->tileCount();
+    }
 
     foreach (const Layer *layer, map->layers()) {
         if (dynamic_cast<const TileLayer*>(layer) != 0)
