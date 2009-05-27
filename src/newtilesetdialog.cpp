@@ -22,6 +22,9 @@
 #include "newtilesetdialog.h"
 #include "ui_newtilesetdialog.h"
 
+#include "tileset.h"
+
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
@@ -34,6 +37,24 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
 NewTilesetDialog::~NewTilesetDialog()
 {
     delete mUi;
+}
+
+Tileset *NewTilesetDialog::createTileset() const
+{
+    const QString name = mUi->name->text();
+    const QString image = mUi->image->text();
+    const int tileWidth = mUi->tileWidth->value();
+    const int tileHeight = mUi->tileHeight->value();
+    const int spacing = mUi->spacing->value();
+    // TODO: Add support for margin
+    //const int margin = mUi->margin->value();
+
+    Tileset *tileset = new Tileset(name,
+                                   tileWidth,
+                                   tileHeight,
+                                   spacing);
+    tileset->loadFromImage(image);
+    return tileset;
 }
 
 void NewTilesetDialog::changeEvent(QEvent *e)

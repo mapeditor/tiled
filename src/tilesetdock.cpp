@@ -72,20 +72,25 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
     if (mapDocument) {
         Map *map = mapDocument->map();
-        const QList<Tileset*> tilesets = map->tilesets().values();
+        foreach (Tileset *tileset, map->tilesets().values())
+            addTilesetView(tileset);
 
-        foreach (Tileset *tileset, tilesets) {
-            TilesetView *view = new TilesetView;
-            view->setModel(new TilesetModel(tileset, view));
-
-            connect(view->selectionModel(),
-                    SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                    SLOT(currentChanged(QModelIndex)));
-
-            mTabBar->addTab(tileset->name());
-            mViewStack->addWidget(view);
-        }
+        connect(mMapDocument, SIGNAL(tilesetAdded(Tileset*)),
+                SLOT(addTilesetView(Tileset*)));
     }
+}
+
+void TilesetDock::addTilesetView(Tileset *tileset)
+{
+    TilesetView *view = new TilesetView;
+    view->setModel(new TilesetModel(tileset, view));
+
+    connect(view->selectionModel(),
+            SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            SLOT(currentChanged(QModelIndex)));
+
+    mTabBar->addTab(tileset->name());
+    mViewStack->addWidget(view);
 }
 
 void TilesetDock::currentChanged(const QModelIndex &index)

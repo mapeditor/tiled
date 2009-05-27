@@ -88,6 +88,12 @@ void MapDocument::moveLayerDown(int index)
     mUndoStack->push(new MoveLayer(this, index, MoveLayer::Down));
 }
 
+void MapDocument::addTileset(Tileset *tileset)
+{
+    mMap->addTileset(tileset, 0);
+    emit tilesetAdded(tileset);
+}
+
 void MapDocument::emitRegionChanged(const QRegion &region)
 {
     emit regionChanged(region);

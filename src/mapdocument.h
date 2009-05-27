@@ -31,6 +31,7 @@ class QUndoStack;
 namespace Tiled {
 
 class Map;
+class Tileset;
 
 namespace Internal {
 
@@ -90,6 +91,11 @@ public:
     void moveLayerDown(int index);
 
     /**
+     * Adds a tileset to this map. Emits the appropriate signal.
+     */
+    void addTileset(Tileset *tileset);
+
+    /**
      * Returns the layer model. Can be used to modify the layer stack of the
      * map, and to display the layer stack in a view.
      */
@@ -128,6 +134,11 @@ signals:
      * tile coordinates.
      */
     void regionChanged(const QRegion &region);
+
+    /**
+     * Emitted when a tileset is added to this map.
+     */
+    void tilesetAdded(Tileset *tileset);
 
 private:
     Map *mMap;

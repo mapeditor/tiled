@@ -29,6 +29,9 @@ class NewTilesetDialog;
 }
 
 namespace Tiled {
+
+class Tileset;
+
 namespace Internal {
 
 class NewTilesetDialog : public QDialog
@@ -40,7 +43,7 @@ public:
     explicit NewTilesetDialog(QWidget *parent = 0);
     virtual ~NewTilesetDialog();
 
-    // TODO: Add methods to get/set stuff
+    Tileset *createTileset() const;
 
 protected:
     virtual void changeEvent(QEvent *e);

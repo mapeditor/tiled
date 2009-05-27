@@ -299,11 +299,15 @@ bool MainWindow::confirmSave()
 
 void MainWindow::newTileset()
 {
+    if (!mMapDocument)
+        return;
+
     NewTilesetDialog newTileset(this);
     if (newTileset.exec() != QDialog::Accepted)
         return;
 
-    // TODO: Create and add new tileset
+    Tileset *tileset = newTileset.createTileset();
+    mMapDocument->addTileset(tileset);
 }
 
 void MainWindow::resizeMap()

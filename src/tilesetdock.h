@@ -31,6 +31,7 @@ class QTabBar;
 namespace Tiled {
 
 class Tile;
+class Tileset;
 
 namespace Internal {
 
@@ -62,6 +63,7 @@ signals:
     void currentTileChanged(Tile *tile);
 
 private slots:
+    void addTilesetView(Tileset *tileset);
     void currentChanged(const QModelIndex &index);
 
 private:
