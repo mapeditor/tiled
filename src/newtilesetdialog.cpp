@@ -24,14 +24,22 @@
 
 #include "tileset.h"
 
+#include <QFileDialog>
+#include <QImageReader>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
+NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     QDialog(parent),
-    mUi(new Ui::NewTilesetDialog)
+    mPath(path),
+    mUi(new Ui::NewTilesetDialog),
+    mNameWasEdited(false)
 {
     mUi->setupUi(this);
+
+    connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
+    connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
 }
 
 NewTilesetDialog::~NewTilesetDialog()
@@ -55,6 +63,38 @@ Tileset *NewTilesetDialog::createTileset() const
                                    spacing);
     tileset->loadFromImage(image);
     return tileset;
+}
+
+void NewTilesetDialog::browse()
+{
+    // Build a filter with all supported image formats
+    QString filter(tr("Image files"));
+    filter += QLatin1String(" (");
+    QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    bool first = true;
+    foreach (const QByteArray &format, formats) {
+        if (!first)
+            filter += QLatin1Char(' ');
+        first = false;
+        filter += QLatin1String("*.");
+        filter += QString::fromLatin1(format.toLower());
+    }
+    filter += QLatin1Char(')');
+
+    QString f = QFileDialog::getOpenFileName(this, tr("Tileset Image"), mPath,
+                                             filter);
+    if (!f.isEmpty()) {
+        mUi->image->setText(f);
+        mPath = f;
+
+        if (!mNameWasEdited)
+            mUi->name->setText(QFileInfo(f).baseName());
+    }
+}
+
+void NewTilesetDialog::nameEdited(const QString &name)
+{
+    mNameWasEdited = !name.isEmpty();
 }
 
 void NewTilesetDialog::changeEvent(QEvent *e)

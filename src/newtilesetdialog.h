@@ -40,7 +40,7 @@ class NewTilesetDialog : public QDialog
     Q_DISABLE_COPY(NewTilesetDialog)
 
 public:
-    explicit NewTilesetDialog(QWidget *parent = 0);
+    explicit NewTilesetDialog(const QString &path, QWidget *parent = 0);
     virtual ~NewTilesetDialog();
 
     Tileset *createTileset() const;
@@ -48,8 +48,14 @@ public:
 protected:
     virtual void changeEvent(QEvent *e);
 
+private slots:
+    void browse();
+    void nameEdited(const QString &name);
+
 private:
+    QString mPath;
     Ui::NewTilesetDialog *mUi;
+    bool mNameWasEdited;
 };
 
 } // namespace Internal

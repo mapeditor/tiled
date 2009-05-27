@@ -302,7 +302,7 @@ void MainWindow::newTileset()
     if (!mMapDocument)
         return;
 
-    NewTilesetDialog newTileset(this);
+    NewTilesetDialog newTileset(fileDialogStartLocation(), this);
     if (newTileset.exec() != QDialog::Accepted)
         return;
 
@@ -359,7 +359,7 @@ QStringList MainWindow::recentFiles() const
 QString MainWindow::fileDialogStartLocation() const
 {
     QStringList files = recentFiles();
-    return (!files.isEmpty()) ? files.first() : QString();
+    return (!files.isEmpty()) ? QFileInfo(files.first()).path() : QString();
 }
 
 void MainWindow::setRecentFile(const QString &fileName)
