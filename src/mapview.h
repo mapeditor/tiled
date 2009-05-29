@@ -28,9 +28,8 @@ namespace Tiled {
 namespace Internal {
 
 /**
- * The map view shows the map scene. This subclass was created for a workaround
- * that wasn't necessary and is just still lingering around until it finds some
- * use or is removed.
+ * The map view shows the map scene. This class sets some MapScene specific
+ * properties on the viewport.
  *
  * @see MapScene
  */

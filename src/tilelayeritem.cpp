@@ -33,6 +33,9 @@ using namespace Tiled::Internal;
 TileLayerItem::TileLayerItem(TileLayer *layer):
     mLayer(layer)
 {
+#if QT_VERSION >= 0x040600
+    setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
+#endif
 }
 
 QRectF TileLayerItem::boundingRect() const

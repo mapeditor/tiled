@@ -26,5 +26,13 @@ using namespace Tiled::Internal;
 MapView::MapView(QWidget *parent):
     QGraphicsView(parent)
 {
-    viewport()->setAttribute(Qt::WA_StaticContents);
+    QWidget *v = viewport();
+
+    /* Since Qt 4.5, setting this attribute yields significant repaint
+     * reduction when the view is being resized. */
+    v->setAttribute(Qt::WA_StaticContents);
+
+    /* Since Qt 4.6, mouse tracking is disabled when no graphics item uses
+     * hover events. We need to set it since our scene wants the events. */
+    v->setMouseTracking(true);
 }
