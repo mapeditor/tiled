@@ -47,6 +47,16 @@ NewTilesetDialog::~NewTilesetDialog()
     delete mUi;
 }
 
+void NewTilesetDialog::setTileWidth(int width)
+{
+    mUi->tileWidth->setValue(width);
+}
+
+void NewTilesetDialog::setTileHeight(int height)
+{
+    mUi->tileHeight->setValue(height);
+}
+
 Tileset *NewTilesetDialog::createTileset()
 {
     if (exec() != QDialog::Accepted)

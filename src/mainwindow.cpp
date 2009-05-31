@@ -303,7 +303,12 @@ void MainWindow::newTileset()
     if (!mMapDocument)
         return;
 
+    Map *map = mMapDocument->map();
+
     NewTilesetDialog newTileset(fileDialogStartLocation(), this);
+    newTileset.setTileWidth(map->tileWidth());
+    newTileset.setTileHeight(map->tileHeight());
+
     if (Tileset *tileset = newTileset.createTileset())
         mMapDocument->addTileset(tileset);
 }

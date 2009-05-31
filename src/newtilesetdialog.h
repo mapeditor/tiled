@@ -46,6 +46,9 @@ public:
     explicit NewTilesetDialog(const QString &path, QWidget *parent = 0);
     virtual ~NewTilesetDialog();
 
+    void setTileWidth(int width);
+    void setTileHeight(int height);
+
     /**
      * Shows the dialog and returns the created tileset. Returns 0 if the
      * dialog was cancelled.
