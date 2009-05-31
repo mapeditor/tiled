@@ -47,8 +47,11 @@ NewTilesetDialog::~NewTilesetDialog()
     delete mUi;
 }
 
-Tileset *NewTilesetDialog::createTileset() const
+Tileset *NewTilesetDialog::createTileset()
 {
+    if (exec() != QDialog::Accepted)
+        return 0;
+
     const QString name = mUi->name->text();
     const QString image = mUi->image->text();
     const int tileWidth = mUi->tileWidth->value();
@@ -95,16 +98,4 @@ void NewTilesetDialog::browse()
 void NewTilesetDialog::nameEdited(const QString &name)
 {
     mNameWasEdited = !name.isEmpty();
-}
-
-void NewTilesetDialog::changeEvent(QEvent *e)
-{
-    QDialog::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        mUi->retranslateUi(this);
-        break;
-    default:
-        break;
-    }
 }

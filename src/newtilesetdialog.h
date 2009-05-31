@@ -34,6 +34,9 @@ class Tileset;
 
 namespace Internal {
 
+/**
+ * A dialog for the creation of a new tileset.
+ */
 class NewTilesetDialog : public QDialog
 {
     Q_OBJECT
@@ -43,10 +46,11 @@ public:
     explicit NewTilesetDialog(const QString &path, QWidget *parent = 0);
     virtual ~NewTilesetDialog();
 
-    Tileset *createTileset() const;
-
-protected:
-    virtual void changeEvent(QEvent *e);
+    /**
+     * Shows the dialog and returns the created tileset. Returns 0 if the
+     * dialog was cancelled.
+     */
+    Tileset *createTileset();
 
 private slots:
     void browse();

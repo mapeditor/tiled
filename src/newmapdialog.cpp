@@ -22,6 +22,10 @@
 #include "newmapdialog.h"
 #include "ui_newmapdialog.h"
 
+#include "map.h"
+#include "mapdocument.h"
+#include "tilelayer.h"
+
 using namespace Tiled::Internal;
 
 NewMapDialog::NewMapDialog(QWidget *parent) :
@@ -36,22 +40,22 @@ NewMapDialog::~NewMapDialog()
     delete mUi;
 }
 
-int NewMapDialog::mapWidth() const
+MapDocument *NewMapDialog::createMap()
 {
-    return mUi->mapWidth->value();
-}
+    if (exec() != QDialog::Accepted)
+        return 0;
 
-int NewMapDialog::mapHeight() const
-{
-    return mUi->mapHeight->value();
-}
+    const int mapWidth = mUi->mapWidth->value();
+    const int mapHeight = mUi->mapHeight->value();
+    const int tileWidth = mUi->tileWidth->value();
+    const int tileHeight = mUi->tileHeight->value();
 
-int NewMapDialog::tileWidth() const
-{
-    return mUi->tileWidth->value();
-}
+    Map *map = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
 
-int NewMapDialog::tileHeight() const
-{
-    return mUi->tileHeight->value();
+    // Add one filling tile layer to new maps
+    map->addLayer(new TileLayer(tr("Layer 1"),
+                                0, 0, mapWidth, mapHeight,
+                                map));
+
+    return new MapDocument(map);
 }

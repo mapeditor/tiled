@@ -31,26 +31,25 @@ class NewMapDialog;
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
+
+/**
+ * A dialog for the creation of a new map.
+ */
 class NewMapDialog : public QDialog
 {
     Q_OBJECT
     Q_DISABLE_COPY(NewMapDialog)
 
 public:
-    /**
-     * Constructor.
-     */
-    NewMapDialog(QWidget *parent = 0);
+    explicit NewMapDialog(QWidget *parent = 0);
+    virtual ~NewMapDialog();
 
     /**
-     * Destructor.
+     * Shows the dialog and returns the created map. Returns 0 if the dialog
+     * was cancelled.
      */
-    ~NewMapDialog();
-
-    int mapWidth() const;
-    int mapHeight() const;
-    int tileWidth() const;
-    int tileHeight() const;
+    MapDocument *createMap();
 
 private:
     Ui::NewMapDialog *mUi;

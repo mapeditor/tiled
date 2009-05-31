@@ -69,6 +69,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void changeEvent(QEvent *event);
 
 private slots:
     void newMap();

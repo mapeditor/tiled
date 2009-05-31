@@ -31,7 +31,6 @@
 #include "newtilesetdialog.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
-#include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
@@ -169,28 +168,30 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
 }
 
+void MainWindow::changeEvent(QEvent *event)
+{
+    QMainWindow::changeEvent(event);
+    switch (event->type()) {
+    case QEvent::LanguageChange:
+        mUi.retranslateUi(this);
+        break;
+    default:
+        break;
+    }
+}
+
 void MainWindow::newMap()
 {
     if (!confirmSave())
         return;
 
-    NewMapDialog newMap(this);
-    if (newMap.exec() != QDialog::Accepted)
+    NewMapDialog newMapDialog(this);
+    MapDocument *mapDocument = newMapDialog.createMap();
+
+    if (!mapDocument)
         return;
 
-    int mapWidth = newMap.mapWidth();
-    int mapHeight = newMap.mapHeight();
-    int tileWidth = newMap.tileWidth();
-    int tileHeight = newMap.tileHeight();
-
-    Map *map = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
-
-    // Add one filling tile layer to new maps
-    map->addLayer(new TileLayer(tr("Layer 1"),
-                                0, 0, mapWidth, mapHeight,
-                                map));
-
-    setMapDocument(new MapDocument(map));
+    setMapDocument(mapDocument);
     mUi.mapView->centerOn(0, 0);
 
     setCurrentFileName(QString());
@@ -303,11 +304,8 @@ void MainWindow::newTileset()
         return;
 
     NewTilesetDialog newTileset(fileDialogStartLocation(), this);
-    if (newTileset.exec() != QDialog::Accepted)
-        return;
-
-    Tileset *tileset = newTileset.createTileset();
-    mMapDocument->addTileset(tileset);
+    if (Tileset *tileset = newTileset.createTileset())
+        mMapDocument->addTileset(tileset);
 }
 
 void MainWindow::resizeMap()
