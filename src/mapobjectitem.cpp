@@ -21,7 +21,9 @@
 
 #include "mapobjectitem.h"
 
+#include "map.h"
 #include "mapobject.h"
+#include "mapscene.h"
 #include "objectgroup.h"
 
 #include <QPainter>
@@ -30,6 +32,7 @@
 #include <QPen>
 #include <QFontMetrics>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapObjectItem::MapObjectItem(MapObject *object):
@@ -39,6 +42,7 @@ MapObjectItem::MapObjectItem(MapObject *object):
     if (!mObject->type().isEmpty())
         toolTip += QLatin1String(" (") + mObject->type() + QLatin1String(")");
     setToolTip(toolTip);
+    setFlags(QGraphicsItem::ItemIsMovable);
 }
 
 QRectF MapObjectItem::boundingRect() const
@@ -128,4 +132,30 @@ void MapObjectItem::paint(QPainter *painter,
                                  10.0, 10.0);
         painter->drawText(QPoint(0, -5), name);
     }
+}
+
+QVariant MapObjectItem::itemChange(GraphicsItemChange change,
+                                   const QVariant &value)
+{
+    if (change == ItemPositionChange && scene()
+        && static_cast<MapScene*>(scene())->isGridVisible())
+    {
+        // Snap the position to the grid
+        const ObjectGroup *og = mObject->objectGroup();
+        const Map *map = og->map();
+        const int w = map->tileWidth();
+        const int h = map->tileHeight();
+        QPointF newPos = value.toPointF();
+        newPos.setX((int) ((newPos.x() + w / 2) / w) * w);
+        newPos.setY((int) ((newPos.y() + h / 2) / h) * h);
+        return newPos;
+    }
+    else if (change == ItemPositionHasChanged) {
+        // Update the position of the map object
+        QPointF newPos = value.toPointF();
+        mObject->setX((int) newPos.x());
+        mObject->setY((int) newPos.y());
+    }
+
+    return QGraphicsItem::itemChange(change, value);
 }

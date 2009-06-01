@@ -233,7 +233,10 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    Q_UNUSED(mouseEvent);
+    QGraphicsScene::mousePressEvent(mouseEvent);
+    if (mouseEvent->isAccepted())
+        return;
+
     if (mBrush->isVisible()) {
         mBrush->beginPaint();
         mPainting = true;
@@ -242,7 +245,10 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    Q_UNUSED(mouseEvent);
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
+    if (mouseEvent->isAccepted())
+        return;
+
     if (mPainting) {
         mBrush->endPaint();
         mPainting = false;

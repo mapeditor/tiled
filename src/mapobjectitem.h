@@ -50,6 +50,9 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
 
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
 private:
     MapObject *mObject;
 };
