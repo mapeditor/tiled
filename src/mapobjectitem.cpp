@@ -25,6 +25,7 @@
 #include "mapobject.h"
 #include "mapscene.h"
 #include "objectgroup.h"
+#include "objectgroupitem.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -35,14 +36,15 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MapObjectItem::MapObjectItem(MapObject *object):
+MapObjectItem::MapObjectItem(MapObject *object, ObjectGroupItem *parent):
+    QGraphicsItem(parent),
     mObject(object)
 {
     QString toolTip = mObject->name();
     if (!mObject->type().isEmpty())
         toolTip += QLatin1String(" (") + mObject->type() + QLatin1String(")");
     setToolTip(toolTip);
-    setFlags(QGraphicsItem::ItemIsMovable);
+    setPos(mObject->x(), mObject->y());
 }
 
 QRectF MapObjectItem::boundingRect() const

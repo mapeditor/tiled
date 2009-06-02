@@ -28,6 +28,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "objectgroup.h"
+#include "objectgroupitem.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
@@ -41,6 +42,7 @@ using namespace Tiled::Internal;
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(0),
+    mSelectedObjectGroupItem(0),
     mBrush(new BrushItem),
     mGridVisible(true),
     mBrushVisible(false),
@@ -66,6 +68,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
                 this, SLOT(repaintRegion(QRegion)));
+        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                this, SLOT(currentLayerChanged(int)));
 
         // TODO: This should really be more optimal (adding/removing as
         // necessary)
@@ -94,27 +98,32 @@ void MapScene::refreshScene()
 
     const Map *map = mMapDocument->map();
 
+    mLayerItems.resize(map->layers().size());
+
     // The +1 is to allow space for the right and bottom grid lines
     setSceneRect(0, 0,
             map->width() * map->tileWidth() + 1,
             map->height() * map->tileHeight() + 1);
 
     int z = 0;
+    int layerIndex = 0;
     foreach (Layer *layer, map->layers()) {
+        QGraphicsItem *layerItem = 0;
         if (TileLayer *tl = dynamic_cast<TileLayer*>(layer)) {
             TileLayerItem *item = new TileLayerItem(tl);
-            item->setPos(tl->x() * map->tileWidth(),
-                         tl->y() * map->tileHeight());
             item->setZValue(z++);
             addItem(item);
+            layerItem = item;
         } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
-            foreach (MapObject *object, og->objects()) {
-                MapObjectItem *item = new MapObjectItem(object);
-                item->setPos(object->x(), object->y());
-                item->setZValue(z++);
-                addItem(item);
-            }
+            ObjectGroupItem *ogItem = new ObjectGroupItem(og);
+            ogItem->setZValue(z++);
+            foreach (MapObject *object, og->objects())
+                new MapObjectItem(object, ogItem);
+            addItem(ogItem);
+            layerItem = ogItem;
         }
+        mLayerItems[layerIndex] = layerItem;
+        ++layerIndex;
     }
 
     TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
@@ -132,6 +141,36 @@ void MapScene::repaintRegion(const QRegion &region)
 void MapScene::currentTileChanged(Tile *tile)
 {
     mBrush->setTile(tile);
+}
+
+void MapScene::currentLayerChanged(int index)
+{
+    updateBrushVisibility();
+
+    ObjectGroupItem *ogItem = 0;
+
+    if (index != -1) {
+        Layer *layer = mMapDocument->map()->layers().at(index);
+        if (dynamic_cast<ObjectGroup*>(layer))
+            ogItem = static_cast<ObjectGroupItem*>(mLayerItems.at(index));
+    }
+
+    if (mSelectedObjectGroupItem == ogItem)
+        return;
+
+    if (mSelectedObjectGroupItem) {
+        // This object group is no longer selected
+        foreach (QGraphicsItem *item, mSelectedObjectGroupItem->children())
+            item->setFlag(QGraphicsItem::ItemIsMovable, false);
+    }
+
+    if (ogItem) {
+        // This is the newly selected object group
+        foreach (QGraphicsItem *item, ogItem->children())
+            item->setFlag(QGraphicsItem::ItemIsMovable, true);
+    }
+
+    mSelectedObjectGroupItem = ogItem;
 }
 
 void MapScene::setGridVisible(bool visible)

@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,48 +19,42 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAPOBJECTITEM_H
-#define MAPOBJECTITEM_H
+#ifndef OBJECTGROUPITEM_H
+#define OBJECTGROUPITEM_H
 
 #include <QGraphicsItem>
 
 namespace Tiled {
 
-class MapObject;
+class ObjectGroup;
 
 namespace Internal {
 
-class ObjectGroupItem;
-
 /**
- * A graphics item displaying a map object.
+ * A graphics item representing an object group in a QGraphicsView. It only
+ * serves to group together the objects belonging to the same object group.
+ *
+ * @see MapObjectItem
  */
-class MapObjectItem : public QGraphicsItem
+class ObjectGroupItem : public QGraphicsItem
 {
 public:
-    /**
-     * Constructor.
-     *
-     * @param object the object to be displayed
-     * @param parent the item of the object group this object belongs to
-     */
-    MapObjectItem(MapObject *object, ObjectGroupItem *parent);
+    ObjectGroupItem(ObjectGroup *objectGroup);
+
+    ObjectGroup *objectGroup() const
+    { return mObjectGroup; }
 
     // QGraphicsItem
     QRectF boundingRect() const;
-
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
 
-protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
 private:
-    MapObject *mObject;
+    ObjectGroup *mObjectGroup;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAPOBJECTITEM_H
+#endif // OBJECTGROUPITEM_H

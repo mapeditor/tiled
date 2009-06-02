@@ -34,6 +34,7 @@ namespace Internal {
 
 class BrushItem;
 class MapDocument;
+class ObjectGroupItem;
 class TileLayerItem;
 
 /**
@@ -117,14 +118,23 @@ private slots:
      */
     void currentTileChanged(Tile *tile);
 
+    /**
+     * Adapts the scene to the newly selected layer. If an object group is
+     * selected, it makes sure the objects in the group are movable. It also
+     * hides and shows the brush as appropriate.
+     */
+    void currentLayerChanged(int index);
+
 private:
     void updateBrushVisibility();
 
     MapDocument *mMapDocument;
+    ObjectGroupItem *mSelectedObjectGroupItem;
     BrushItem *mBrush;
     bool mGridVisible;
     bool mBrushVisible;
     bool mPainting;
+    QVector<QGraphicsItem*> mLayerItems;
 };
 
 } // namespace Internal

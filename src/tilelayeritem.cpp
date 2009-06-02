@@ -28,6 +28,7 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 TileLayerItem::TileLayerItem(TileLayer *layer):
@@ -36,6 +37,10 @@ TileLayerItem::TileLayerItem(TileLayer *layer):
 #if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 #endif
+
+    const Map *map = layer->map();
+    setPos(layer->x() * map->tileWidth(),
+           layer->y() * map->tileHeight());
 }
 
 QRectF TileLayerItem::boundingRect() const
