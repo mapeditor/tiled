@@ -58,6 +58,8 @@ class TmxHandler : public QXmlDefaultHandler
             mObject(0),
             mTileset(0),
             mTileId(-1),
+            mTileX(-1),
+            mTileY(-1),
             mProperties(0),
             mProperty(0)
         {}
@@ -105,6 +107,9 @@ class TmxHandler : public QXmlDefaultHandler
         Tileset *mTileset;
         int mTilesetFirstGid;
         int mTileId;
+
+        int mTileX;
+        int mTileY;
 
         QMap<QString, QString> *mProperties;
         QPair<QString, QString> *mProperty;
@@ -229,13 +234,25 @@ bool TmxHandler::startElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("tile"))
     {
-        // TODO: Add support for non-binary encoded maps (<tile gid=""/>)
-        if (!mTileset) {
-            unexpectedElement(localName, QLatin1String("tileset"));
+        if (!mTileset && !mTileLayer) {
+            unexpectedElement(localName, QLatin1String("tileset|data"));
             return false;
         }
 
-        mTileId = atts.value(QLatin1String("id")).toInt();
+        if (mTileLayer) {
+            mTileId = atts.value(QLatin1String("gid")).toInt();
+            mTileLayer->setTile(mTileX, mTileY, mMap->tileForGid(mTileId));
+
+            mTileX++;
+            if (mTileX >= mTileLayer->width()) {
+                mTileX = 0;
+                mTileY++;
+            }
+
+            if (mTileY >= mTileLayer->height()) {
+                // TODO
+            }
+        }
     }
     else if (localName == QLatin1String("image"))
     {
@@ -266,6 +283,8 @@ bool TmxHandler::startElement(const QString &namespaceURI,
 
         mTileLayer = new TileLayer(name, x, y, width, height);
         readLayerAttributes(atts, mTileLayer);
+        mTileX = 0;
+        mTileY = 0;
 
         qDebug() << "Layer:" << name << x << y << width << height;
     }
@@ -383,6 +402,8 @@ bool TmxHandler::endElement(const QString &namespaceURI,
     {
         mMap->addLayer(mTileLayer);
         mTileLayer = 0;
+        mTileX = -1;
+        mTileY = -1;
     }
     else if (localName == QLatin1String("data"))
     {
