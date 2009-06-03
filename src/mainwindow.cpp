@@ -158,6 +158,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             mScene, SLOT(currentTileChanged(Tile*)));
 
+    mUi.menuView->addSeparator();
+    mUi.menuView->addAction(mTilesetDock->toggleViewAction());
+    mUi.menuView->addAction(mLayerDock->toggleViewAction());
+    mUi.menuView->addAction(undoViewDock->toggleViewAction());
+
     updateActions();
     readSettings();
 }
