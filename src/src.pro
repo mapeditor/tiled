@@ -44,7 +44,8 @@ SOURCES += aboutdialog.cpp \
     tilepainter.cpp \
     newmapdialog.cpp \
     newtilesetdialog.cpp \
-    objectgroupitem.cpp
+    objectgroupitem.cpp \
+    movemapobject.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -84,7 +85,8 @@ HEADERS += aboutdialog.h \
     tilepainter.h \
     newmapdialog.h \
     newtilesetdialog.h \
-    objectgroupitem.h
+    objectgroupitem.h \
+    movemapobject.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

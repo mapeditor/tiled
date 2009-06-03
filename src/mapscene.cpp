@@ -27,6 +27,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
+#include "movemapobject.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "tilelayer.h"
@@ -35,6 +36,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -43,6 +45,7 @@ MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(0),
     mSelectedObjectGroupItem(0),
+    mMovingItem(0),
     mBrush(new BrushItem),
     mGridVisible(true),
     mBrushVisible(false),
@@ -272,6 +275,13 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    // Remember the old position if a map object item may be dragged
+    if (mSelectedObjectGroupItem && mouseEvent->button() == Qt::LeftButton) {
+        QGraphicsItem *item = itemAt(mouseEvent->scenePos());
+        if (mMovingItem = dynamic_cast<MapObjectItem*>(item))
+            mOldPos = mMovingItem->pos();
+    }
+
     QGraphicsScene::mousePressEvent(mouseEvent);
     if (mouseEvent->isAccepted())
         return;
@@ -284,6 +294,15 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    // If the position of the map object item changed, create an undo command
+    if (mMovingItem && mouseEvent->button() == Qt::LeftButton) {
+        if (mOldPos != mMovingItem->pos()) {
+            QUndoCommand *command = new MoveMapObject(mMovingItem, mOldPos);
+            mMapDocument->undoStack()->push(command);
+        }
+        mMovingItem = 0;
+    }
+
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
     if (mouseEvent->isAccepted())
         return;

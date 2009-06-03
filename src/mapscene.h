@@ -34,6 +34,7 @@ namespace Internal {
 
 class BrushItem;
 class MapDocument;
+class MapObjectItem;
 class ObjectGroupItem;
 class TileLayerItem;
 
@@ -129,7 +130,11 @@ private:
     void updateBrushVisibility();
 
     MapDocument *mMapDocument;
+
     ObjectGroupItem *mSelectedObjectGroupItem;
+    MapObjectItem *mMovingItem;
+    QPointF mOldPos;
+
     BrushItem *mBrush;
     bool mGridVisible;
     bool mBrushVisible;
