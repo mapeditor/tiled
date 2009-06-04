@@ -89,6 +89,9 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 
 void MapScene::refreshScene()
 {
+    mSelectedObjectGroupItem = 0;
+    mMovingItem = 0;
+
     // Clear any existing items, but don't delete the brush
     removeItem(mBrush);
     clear();
@@ -163,13 +166,13 @@ void MapScene::currentLayerChanged(int index)
 
     if (mSelectedObjectGroupItem) {
         // This object group is no longer selected
-        foreach (QGraphicsItem *item, mSelectedObjectGroupItem->children())
+        foreach (QGraphicsItem *item, mSelectedObjectGroupItem->childItems())
             item->setFlag(QGraphicsItem::ItemIsMovable, false);
     }
 
     if (ogItem) {
         // This is the newly selected object group
-        foreach (QGraphicsItem *item, ogItem->children())
+        foreach (QGraphicsItem *item, ogItem->childItems())
             item->setFlag(QGraphicsItem::ItemIsMovable, true);
     }
 
@@ -278,7 +281,7 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     // Remember the old position if a map object item may be dragged
     if (mSelectedObjectGroupItem && mouseEvent->button() == Qt::LeftButton) {
         QGraphicsItem *item = itemAt(mouseEvent->scenePos());
-        if (mMovingItem = dynamic_cast<MapObjectItem*>(item))
+        if ((mMovingItem = dynamic_cast<MapObjectItem*>(item)))
             mOldPos = mMovingItem->pos();
     }
 
