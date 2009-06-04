@@ -101,6 +101,11 @@ void MapDocument::emitRegionChanged(const QRegion &region)
     emit regionChanged(region);
 }
 
+void MapDocument::emitObjectsChanged(const QList<MapObject*> &objects)
+{
+    emit objectsChanged(objects);
+}
+
 QRect MapDocument::toPixelCoordinates(const QRect &r) const
 {
     const int tileWidth = mMap->tileWidth();

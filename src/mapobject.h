@@ -23,6 +23,7 @@
 #define MAPOBJECT_H
 
 #include <QMap>
+#include <QPoint>
 #include <QString>
 
 namespace Tiled {
@@ -52,24 +53,34 @@ public:
     const QString &name() const { return mName; }
 
     /**
+     * Returns the position of this object.
+     */
+    const QPoint &position() const { return mPos; }
+
+    /**
+     * Sets the position of this object.
+     */
+    void setPosition(const QPoint &pos) { mPos = pos; }
+
+    /**
      * Returns the x position of this object.
      */
-    int x() const { return mX; }
+    int x() const { return mPos.x(); }
 
     /**
      * Sets the x position of this object.
      */
-    void setX(int x) { mX = x; }
+    void setX(int x) { mPos.setX(x); }
 
     /**
      * Returns the y position of this object.
      */
-    int y() const { return mY; }
+    int y() const { return mPos.y(); }
 
     /**
      * Sets the x position of this object.
      */
-    void setY(int y) { mY = y; }
+    void setY(int y) { mPos.setY(y); }
 
     /**
      * Returns the width of this object.
@@ -126,8 +137,7 @@ public:
 
 private:
     QString mName;
-    int mX;
-    int mY;
+    QPoint mPos;
     int mWidth;
     int mHeight;
     QString mType;

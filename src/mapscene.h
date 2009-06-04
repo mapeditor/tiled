@@ -23,15 +23,18 @@
 #define MAPSCENE_H
 
 #include <QGraphicsScene>
+#include <QMap>
 
 namespace Tiled {
 
+class MapObject;
 class Tile;
 
 namespace Internal {
 
 class BrushItem;
 class MapDocument;
+class MapObjectItem;
 class ObjectGroupItem;
 class TileLayerItem;
 
@@ -123,6 +126,11 @@ private slots:
      */
     void currentLayerChanged(int index);
 
+    /**
+     * Updates the map object items related to the given objects.
+     */
+    void objectsChanged(const QList<MapObject*> &objects);
+
 private:
     void updateBrushVisibility();
 
@@ -133,6 +141,7 @@ private:
     bool mBrushVisible;
     bool mPainting;
     QVector<QGraphicsItem*> mLayerItems;
+    QMap<MapObject*, MapObjectItem*> mObjectItems;
 };
 
 } // namespace Internal

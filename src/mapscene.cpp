@@ -33,6 +33,7 @@
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
 
+#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
@@ -70,6 +71,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(repaintRegion(QRegion)));
         connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
                 this, SLOT(currentLayerChanged(int)));
+        connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
+                this, SLOT(objectsChanged(QList<MapObject*>)));
 
         // TODO: This should really be more optimal (adding/removing as
         // necessary)
@@ -87,6 +90,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 void MapScene::refreshScene()
 {
     mSelectedObjectGroupItem = 0;
+    mLayerItems.clear();
+    mObjectItems.clear();
 
     // Clear any existing items, but don't delete the brush
     removeItem(mBrush);
@@ -119,8 +124,10 @@ void MapScene::refreshScene()
         } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
             ObjectGroupItem *ogItem = new ObjectGroupItem(og);
             ogItem->setZValue(z++);
-            foreach (MapObject *object, og->objects())
-                new MapObjectItem(object, ogItem);
+            foreach (MapObject *object, og->objects()) {
+                MapObjectItem *item = new MapObjectItem(object, ogItem);
+                mObjectItems.insert(object, item);
+            }
             addItem(ogItem);
             layerItem = ogItem;
         }
@@ -173,6 +180,16 @@ void MapScene::currentLayerChanged(int index)
     }
 
     mSelectedObjectGroupItem = ogItem;
+}
+
+void MapScene::objectsChanged(const QList<MapObject*> &objects)
+{
+    foreach (MapObject *o, objects) {
+        if (MapObjectItem *item = mObjectItems.value(o))
+            item->syncWithMapObject();
+        else
+            qWarning() << "Warning: couldn't find item for object!";
+    }
 }
 
 void MapScene::setGridVisible(bool visible)

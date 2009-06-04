@@ -46,6 +46,11 @@ public:
      */
     MapObjectItem(MapObject *object, ObjectGroupItem *parent);
 
+    /**
+     * Should be called when the map object this item refers to was changed.
+     */
+    void syncWithMapObject();
+
     // QGraphicsItem
     QRectF boundingRect() const;
 
@@ -61,7 +66,7 @@ protected:
 
 private:
     MapObject *mObject;
-    QPointF mOldPos;
+    QPoint mOldPos;
 };
 
 } // namespace Internal

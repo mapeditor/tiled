@@ -21,25 +21,31 @@
 
 #include "movemapobject.h"
 
-#include "mapobjectitem.h"
+#include "mapdocument.h"
+#include "mapobject.h"
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
-MoveMapObject::MoveMapObject(MapObjectItem *mapObjectItem,
-                             const QPointF &oldPos)
-    : mMapObjectItem(mapObjectItem)
+MoveMapObject::MoveMapObject(MapDocument *mapDocument,
+                             MapObject *mapObject,
+                             const QPoint &oldPos)
+    : mMapDocument(mapDocument)
+    , mMapObject(mapObject)
     , mOldPos(oldPos)
-    , mNewPos(mapObjectItem->pos())
+    , mNewPos(mapObject->position())
 {
     setText(QObject::tr("Move Object"));
 }
 
 void MoveMapObject::undo()
 {
-    mMapObjectItem->setPos(mOldPos);
+    mMapObject->setPosition(mOldPos);
+    mMapDocument->emitObjectChanged(mMapObject);
 }
 
 void MoveMapObject::redo()
 {
-    mMapObjectItem->setPos(mNewPos);
+    mMapObject->setPosition(mNewPos);
+    mMapDocument->emitObjectChanged(mMapObject);
 }

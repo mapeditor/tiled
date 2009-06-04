@@ -44,11 +44,16 @@ MapObjectItem::MapObjectItem(MapObject *object, ObjectGroupItem *parent):
     QGraphicsItem(parent),
     mObject(object)
 {
+    syncWithMapObject();
+}
+
+void MapObjectItem::syncWithMapObject()
+{
     QString toolTip = mObject->name();
     if (!mObject->type().isEmpty())
         toolTip += QLatin1String(" (") + mObject->type() + QLatin1String(")");
     setToolTip(toolTip);
-    setPos(mObject->x(), mObject->y());
+    setPos(mObject->position());
 }
 
 QRectF MapObjectItem::boundingRect() const
@@ -144,7 +149,7 @@ void MapObjectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     // Remember the old position since we may get moved
     if (event->button() == Qt::LeftButton)
-        mOldPos = pos();
+        mOldPos = mObject->position();
 
     QGraphicsItem::mousePressEvent(event);
 }
@@ -154,10 +159,11 @@ void MapObjectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseReleaseEvent(event);
 
     // If we got moved, create an undo command
-    if (event->button() == Qt::LeftButton && mOldPos != pos()) {
-        QUndoCommand *command = new MoveMapObject(this, mOldPos);
+    if (event->button() == Qt::LeftButton && mOldPos != mObject->position()) {
         MapScene *mapScene = static_cast<MapScene*>(scene());
-        mapScene->mapDocument()->undoStack()->push(command);
+        MapDocument *mapDocument = mapScene->mapDocument();
+        QUndoCommand *cmd = new MoveMapObject(mapDocument, mObject, mOldPos);
+        mapDocument->undoStack()->push(cmd);
     }
 }
 
@@ -172,16 +178,14 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
         const Map *map = og->map();
         const int w = map->tileWidth();
         const int h = map->tileHeight();
-        QPointF newPos = value.toPointF();
-        newPos.setX((int) ((newPos.x() + w / 2) / w) * w);
-        newPos.setY((int) ((newPos.y() + h / 2) / h) * h);
+        QPoint newPos = value.toPoint();
+        newPos.setX(((newPos.x() + w / 2) / w) * w);
+        newPos.setY(((newPos.y() + h / 2) / h) * h);
         return newPos;
     }
     else if (change == ItemPositionHasChanged) {
         // Update the position of the map object
-        QPointF newPos = value.toPointF();
-        mObject->setX((int) newPos.x());
-        mObject->setY((int) newPos.y());
+        mObject->setPosition(value.toPoint());
     }
 
     return QGraphicsItem::itemChange(change, value);

@@ -26,8 +26,7 @@ using namespace Tiled;
 MapObject::MapObject(const QString &name, const QString &type,
                      int x, int y, int width, int height):
     mName(name),
-    mX(x),
-    mY(y),
+    mPos(x, y),
     mWidth(width),
     mHeight(height),
     mType(type),

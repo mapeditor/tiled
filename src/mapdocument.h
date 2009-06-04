@@ -31,6 +31,7 @@ class QUndoStack;
 namespace Tiled {
 
 class Map;
+class MapObject;
 class Tileset;
 
 namespace Internal {
@@ -119,6 +120,15 @@ public:
     void emitRegionChanged(const QRegion &region);
 
     /**
+     * Emits the objects changed signal with the specified list of objects.
+     * This will cause the view to update the related items.
+     */
+    void emitObjectsChanged(const QList<MapObject*> &objects);
+
+    inline void emitObjectChanged(MapObject *object)
+    { emitObjectsChanged(QList<MapObject*>() << object); }
+
+    /**
      * Converts the given rectangle from tile to pixel coordinates.
      */
     QRect toPixelCoordinates(const QRect &r) const;
@@ -139,6 +149,8 @@ signals:
      * Emitted when a tileset is added to this map.
      */
     void tilesetAdded(Tileset *tileset);
+
+    void objectsChanged(const QList<MapObject*> &objects);
 
 private:
     Map *mMap;

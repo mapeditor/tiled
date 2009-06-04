@@ -23,26 +23,31 @@
 #define MOVEMAPOBJECT_H
 
 #include <QUndoCommand>
-#include <QPointF>
+#include <QPoint>
 
 namespace Tiled {
+
+class MapObject;
+
 namespace Internal {
 
-class MapObjectItem;
+class MapDocument;
 
 class MoveMapObject : public QUndoCommand
 {
 public:
-    MoveMapObject(MapObjectItem *mapObjectItem,
-                  const QPointF &oldPos);
+    MoveMapObject(MapDocument *mapDocument,
+                  MapObject *mapObject,
+                  const QPoint &oldPos);
 
     void undo();
     void redo();
 
 private:
-    MapObjectItem *mMapObjectItem;
-    QPointF mOldPos;
-    QPointF mNewPos;
+    MapDocument *mMapDocument;
+    MapObject *mMapObject;
+    QPoint mOldPos;
+    QPoint mNewPos;
 };
 
 } // namespace Internal
