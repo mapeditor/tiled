@@ -54,10 +54,14 @@ public:
                QWidget *widget = 0);
 
 protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
     MapObject *mObject;
+    QPointF mOldPos;
 };
 
 } // namespace Internal

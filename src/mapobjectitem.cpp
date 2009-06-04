@@ -22,16 +22,20 @@
 #include "mapobjectitem.h"
 
 #include "map.h"
+#include "mapdocument.h"
 #include "mapobject.h"
 #include "mapscene.h"
+#include "movemapobject.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
-#include <QRect>
-#include <QPen>
 #include <QFontMetrics>
+#include <QGraphicsSceneMouseEvent>
+#include <QPainter>
+#include <QPen>
+#include <QRect>
+#include <QStyleOptionGraphicsItem>
+#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -133,6 +137,27 @@ void MapObjectItem::paint(QPainter *painter,
                                        mObject->height()),
                                  10.0, 10.0);
         painter->drawText(QPoint(0, -5), name);
+    }
+}
+
+void MapObjectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    // Remember the old position since we may get moved
+    if (event->button() == Qt::LeftButton)
+        mOldPos = pos();
+
+    QGraphicsItem::mousePressEvent(event);
+}
+
+void MapObjectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsItem::mouseReleaseEvent(event);
+
+    // If we got moved, create an undo command
+    if (event->button() == Qt::LeftButton && mOldPos != pos()) {
+        QUndoCommand *command = new MoveMapObject(this, mOldPos);
+        MapScene *mapScene = static_cast<MapScene*>(scene());
+        mapScene->mapDocument()->undoStack()->push(command);
     }
 }
 
