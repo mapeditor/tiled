@@ -241,16 +241,21 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
     const int endY = qMin((int) rect.bottom(),
                           map->height() * tileHeight + 1);
 
-    painter->setPen(Qt::black);
-    painter->setOpacity(0.5f);
+    QColor gridColor(Qt::black);
+    gridColor.setAlpha(128);
 
-    for (int x = startX; x < endX; x += tileWidth) {
+    QPen gridPen(gridColor);
+    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+
+    gridPen.setDashOffset(rect.top());
+    painter->setPen(gridPen);
+    for (int x = startX; x < endX; x += tileWidth)
         painter->drawLine(x, (int) rect.top(), x, endY - 1);
-    }
 
-    for (int y = startY; y < endY; y += tileHeight) {
+    gridPen.setDashOffset(rect.left());
+    painter->setPen(gridPen);
+    for (int y = startY; y < endY; y += tileHeight)
         painter->drawLine((int) rect.left(), y, endX - 1, y);
-    }
 }
 
 bool MapScene::event(QEvent *event)
