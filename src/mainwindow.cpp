@@ -77,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     undoViewDock->setWidget(undoView);
     addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
+    mUi.actionNew->setShortcut(QKeySequence::New);
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
     mUi.actionCopy->setShortcut(QKeySequence::Copy);
