@@ -1,21 +1,40 @@
 <RCC>
-    <qresource>
+    <qresource prefix="/" >
         <file>images/about-tiled-logo.png</file>
-        <file>images/document-new.png</file>
-        <file>images/document-open.png</file>
-        <file>images/document-open-recent.png</file>
-        <file>images/document-properties.png</file>
-        <file>images/document-resize.png</file>
-        <file>images/document-save.png</file>
-        <file>images/document-save-as.png</file>
-        <file>images/clear.png</file>
-        <file>images/drive-harddisk.png</file>
-        <file>images/edit-copy.png</file>
-        <file>images/edit-paste.png</file>
-        <file>images/edit-redo.png</file>
-        <file>images/edit-undo.png</file>
-        <file>images/go-down.png</file>
-        <file>images/go-up.png</file>
-        <file>images/help-about.png</file>
+        <file>images/16x16/application-exit.png</file>
+        <file>images/16x16/document-new.png</file>
+        <file>images/16x16/document-open.png</file>
+        <file>images/16x16/document-open-recent.png</file>
+        <file>images/16x16/document-page-setup.png</file>
+        <file>images/16x16/document-properties.png</file>
+        <file>images/16x16/document-save.png</file>
+        <file>images/16x16/document-save-as.png</file>
+        <file>images/16x16/drive-harddisk.png</file>
+        <file>images/16x16/edit-clear.png</file>
+        <file>images/16x16/edit-copy.png</file>
+        <file>images/16x16/edit-cut.png</file>
+        <file>images/16x16/edit-paste.png</file>
+        <file>images/16x16/edit-redo.png</file>
+        <file>images/16x16/edit-undo.png</file>
+        <file>images/16x16/go-down.png</file>
+        <file>images/16x16/go-up.png</file>
+        <file>images/16x16/help-about.png</file>
+        <file>images/24x24/document-new.png</file>
+        <file>images/24x24/document-open.png</file>
+        <file>images/24x24/document-open-recent.png</file>
+        <file>images/24x24/document-page-setup.png</file>
+        <file>images/24x24/document-properties.png</file>
+        <file>images/24x24/document-save.png</file>
+        <file>images/24x24/document-save-as.png</file>
+        <file>images/24x24/drive-harddisk.png</file>
+        <file>images/24x24/edit-clear.png</file>
+        <file>images/24x24/edit-cut.png</file>
+        <file>images/24x24/edit-copy.png</file>
+        <file>images/24x24/edit-paste.png</file>
+        <file>images/24x24/edit-redo.png</file>
+        <file>images/24x24/edit-undo.png</file>
+        <file>images/24x24/go-down.png</file>
+        <file>images/24x24/go-up.png</file>
+        <file>images/24x24/help-about.png</file>
     </qresource>
 </RCC>

@@ -120,7 +120,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/document-open.png</normaloff>:/images/document-open.png</iconset>
+     <normaloff>:/images/16x16/document-open.png</normaloff>:/images/16x16/document-open.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open...</string>
@@ -129,13 +129,17 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/document-save.png</normaloff>:/images/document-save.png</iconset>
+     <normaloff>:/images/16x16/document-save.png</normaloff>:/images/16x16/document-save.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
   </action>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/application-exit.png</normaloff>:/images/16x16/application-exit.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Quit</string>
    </property>
@@ -146,7 +150,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/edit-copy.png</normaloff>:/images/edit-copy.png</iconset>
+     <normaloff>:/images/16x16/edit-copy.png</normaloff>:/images/16x16/edit-copy.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -158,7 +162,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/edit-paste.png</normaloff>:/images/edit-paste.png</iconset>
+     <normaloff>:/images/16x16/edit-paste.png</normaloff>:/images/16x16/edit-paste.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -167,7 +171,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/help-about.png</normaloff>:/images/help-about.png</iconset>
+     <normaloff>:/images/16x16/help-about.png</normaloff>:/images/16x16/help-about.png</iconset>
    </property>
    <property name="text">
     <string>&amp;About Tiled</string>
@@ -181,7 +185,7 @@
   <action name="actionResizeMap">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/document-resize.png</normaloff>:/images/document-resize.png</iconset>
+     <normaloff>:/images/16x16/document-page-setup.png</normaloff>:/images/16x16/document-page-setup.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Resize</string>
@@ -193,7 +197,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/document-properties.png</normaloff>:/images/document-properties.png</iconset>
+     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Properties</string>
@@ -202,7 +206,7 @@
   <action name="actionRecentFiles">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/document-open-recent.png</normaloff>:/images/document-open-recent.png</iconset>
+     <normaloff>:/images/16x16/document-open-recent.png</normaloff>:/images/16x16/document-open-recent.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Recent Files</string>
@@ -222,7 +226,7 @@
   <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/document-save-as.png</normaloff>:/images/document-save-as.png</iconset>
+     <normaloff>:/images/16x16/document-save-as.png</normaloff>:/images/16x16/document-save-as.png</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -231,7 +235,7 @@
   <action name="actionMoveLayerUp">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/go-up.png</normaloff>:/images/go-up.png</iconset>
+     <normaloff>:/images/16x16/go-up.png</normaloff>:/images/16x16/go-up.png</iconset>
    </property>
    <property name="text">
     <string>Move Layer Up</string>
@@ -243,7 +247,7 @@
   <action name="actionMoveLayerDown">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/go-down.png</normaloff>:/images/go-down.png</iconset>
+     <normaloff>:/images/16x16/go-down.png</normaloff>:/images/16x16/go-down.png</iconset>
    </property>
    <property name="text">
     <string>Move Layer Down</string>
@@ -265,7 +269,7 @@
   <action name="actionNew">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/document-new.png</normaloff>:/images/document-new.png</iconset>
+     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
    </property>
    <property name="text">
     <string>New...</string>

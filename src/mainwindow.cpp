@@ -59,11 +59,27 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 {
     mUi.setupUi(this);
 
+    QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
+    QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
+
+    // Add larger icon versions for actions used in the tool bar
+    QIcon newIcon = mUi.actionNew->icon();
+    QIcon openIcon = mUi.actionOpen->icon();
+    QIcon saveIcon = mUi.actionSave->icon();
+    newIcon.addFile(QLatin1String(":images/24x24/document-new.png"));
+    openIcon.addFile(QLatin1String(":images/24x24/document-open.png"));
+    saveIcon.addFile(QLatin1String(":images/24x24/document-save.png"));
+    redoIcon.addFile(QLatin1String(":images/24x24/edit-redo.png"));
+    undoIcon.addFile(QLatin1String(":images/24x24/edit-undo.png"));
+    mUi.actionNew->setIcon(newIcon);
+    mUi.actionOpen->setIcon(openIcon);
+    mUi.actionSave->setIcon(saveIcon);
+
     mUndoGroup = new QUndoGroup(this);
     QAction *undoAction = mUndoGroup->createUndoAction(this, tr("Undo"));
     QAction *redoAction = mUndoGroup->createRedoAction(this, tr("Redo"));
-    redoAction->setIcon(QIcon(QLatin1String(":images/edit-redo.png")));
-    undoAction->setIcon(QIcon(QLatin1String(":images/edit-undo.png")));
+    redoAction->setIcon(redoIcon);
+    undoAction->setIcon(undoIcon);
     connect(mUndoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
@@ -73,7 +89,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
     undoViewDock->setObjectName(QLatin1String("undoViewDock"));
     QUndoView *undoView = new QUndoView(mUndoGroup, undoViewDock);
-    undoView->setCleanIcon(QIcon(QLatin1String(":images/drive-harddisk.png")));
+    QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
+    undoView->setCleanIcon(cleanIcon);
     undoViewDock->setWidget(undoView);
     addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
@@ -122,7 +139,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
                  this, SLOT(openRecentFile()));
     }
     menu->addSeparator();
-    QAction *clear = new QAction(QIcon(QLatin1String(":images/clear.png")),
+    QIcon clearIcon(QLatin1String(":images/16x16/edit-clear.png"));
+    QAction *clear = new QAction(clearIcon,
                                  QLatin1String("Clear Recent Files"),
                                  this);
     menu->addAction(clear);
