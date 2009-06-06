@@ -30,6 +30,7 @@ class MapObject;
 
 namespace Internal {
 
+class MapDocument;
 class ObjectGroupItem;
 
 /**
@@ -59,12 +60,15 @@ public:
                QWidget *widget = 0);
 
 protected:
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+    MapDocument *mapDocument() const;
+
     MapObject *mObject;
     QPoint mOldPos;
 };

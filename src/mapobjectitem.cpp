@@ -28,9 +28,11 @@
 #include "movemapobject.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "propertiesdialog.h"
 
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
+#include <QMenu>
 #include <QPainter>
 #include <QPen>
 #include <QRect>
@@ -145,6 +147,24 @@ void MapObjectItem::paint(QPainter *painter,
     }
 }
 
+void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    // This checks whether we're an object in a currently selected group
+    if (!(flags() & QGraphicsItem::ItemIsMovable))
+        return;
+
+    event->accept();
+    QMenu menu;
+    QAction *propertiesAction = menu.addAction(QObject::tr("Properties..."));
+
+    if (menu.exec(event->screenPos()) == propertiesAction) {
+        PropertiesDialog propertiesDialog(mapDocument()->undoStack(),
+                                          event->widget());
+        propertiesDialog.setProperties(mObject->properties());
+        propertiesDialog.exec();
+    }
+}
+
 void MapObjectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     // Remember the old position since we may get moved
@@ -160,10 +180,9 @@ void MapObjectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     // If we got moved, create an undo command
     if (event->button() == Qt::LeftButton && mOldPos != mObject->position()) {
-        MapScene *mapScene = static_cast<MapScene*>(scene());
-        MapDocument *mapDocument = mapScene->mapDocument();
-        QUndoCommand *cmd = new MoveMapObject(mapDocument, mObject, mOldPos);
-        mapDocument->undoStack()->push(cmd);
+        MapDocument *document = mapDocument();
+        QUndoCommand *cmd = new MoveMapObject(document, mObject, mOldPos);
+        document->undoStack()->push(cmd);
     }
 }
 
@@ -189,4 +208,10 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
     }
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+MapDocument *MapObjectItem::mapDocument() const
+{
+    MapScene *mapScene = static_cast<MapScene*>(scene());
+    return mapScene->mapDocument();
 }
