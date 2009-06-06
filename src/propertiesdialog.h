@@ -46,9 +46,12 @@ public:
     /**
      * Constructor.
      *
-     * @param undoStack The undo stack to push changes onto.
+     * @param kind      the kind of properties (Map, Layer, Object, etc.)
+     * @param undoStack the undo stack to push changes onto.
      */
-    PropertiesDialog(QUndoStack *undoStack, QWidget *parent = 0);
+    PropertiesDialog(const QString &kind,
+                     QUndoStack *undoStack,
+                     QWidget *parent = 0);
 
     /**
      * Destructor.
@@ -71,6 +74,7 @@ private:
     PropertiesModel *mModel;
     QUndoStack *mUndoStack;
     QMap<QString, QString> *mProperties;
+    QString mKind;
 };
 
 } // namespace Internal

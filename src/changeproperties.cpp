@@ -25,12 +25,13 @@
 
 using namespace Tiled::Internal;
 
-ChangeProperties::ChangeProperties(QMap<QString, QString> *properties,
+ChangeProperties::ChangeProperties(const QString &kind,
+                                   QMap<QString, QString> *properties,
                                    const QMap<QString, QString> &newProperties)
     : mProperties(properties)
     , mNewProperties(newProperties)
 {
-    setText(QObject::tr("Change Properties"));
+    setText(QObject::tr("Change %1 Properties").arg(kind));
 }
 
 void ChangeProperties::redo()

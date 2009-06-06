@@ -158,7 +158,8 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QAction *propertiesAction = menu.addAction(QObject::tr("Properties..."));
 
     if (menu.exec(event->screenPos()) == propertiesAction) {
-        PropertiesDialog propertiesDialog(mapDocument()->undoStack(),
+        PropertiesDialog propertiesDialog(QObject::tr("Object"),
+                                          mapDocument()->undoStack(),
                                           event->widget());
         propertiesDialog.setProperties(mObject->properties());
         propertiesDialog.exec();

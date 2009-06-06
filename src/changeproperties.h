@@ -35,10 +35,12 @@ public:
     /**
      * Constructs a new 'Change Properties' command.
      *
+     * @param kind          the kind of properties (Map, Layer, Object, etc.)
      * @param properties    the properties instance that should be changed
      * @param newProperties the new properties that should be applied
      */
-    ChangeProperties(QMap<QString, QString> *properties,
+    ChangeProperties(const QString &kind,
+                     QMap<QString, QString> *properties,
                      const QMap<QString, QString> &newProperties);
     void undo();
     void redo();

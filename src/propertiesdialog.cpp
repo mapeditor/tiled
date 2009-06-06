@@ -29,16 +29,21 @@
 
 using namespace Tiled::Internal;
 
-PropertiesDialog::PropertiesDialog(QUndoStack *undoStack, QWidget *parent):
+PropertiesDialog::PropertiesDialog(const QString &kind,
+                                   QUndoStack *undoStack,
+                                   QWidget *parent):
     QDialog(parent),
     mUndoStack(undoStack),
-    mProperties(0)
+    mProperties(0),
+    mKind(kind)
 {
     mUi = new Ui::PropertiesDialog;
     mUi->setupUi(this);
 
     mModel = new PropertiesModel(this);
     mUi->propertiesView->setModel(mModel);
+
+    setWindowTitle(tr("%1 Properties").arg(mKind));
 }
 
 PropertiesDialog::~PropertiesDialog()
@@ -56,7 +61,8 @@ void PropertiesDialog::accept()
 {
     const QMap<QString, QString> &properties = mModel->properties();
     if (mProperties && *mProperties != properties) {
-        mUndoStack->push(new ChangeProperties(mProperties,
+        mUndoStack->push(new ChangeProperties(mKind,
+                                              mProperties,
                                               properties));
     }
     QDialog::accept();

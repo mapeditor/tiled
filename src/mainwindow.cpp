@@ -336,7 +336,9 @@ void MainWindow::editMapProperties()
 {
     if (!mMapDocument)
         return;
-    PropertiesDialog propertiesDialog(mMapDocument->undoStack(), this);
+    PropertiesDialog propertiesDialog(tr("Map"),
+                                      mMapDocument->undoStack(),
+                                      this);
     propertiesDialog.setProperties(mMapDocument->map()->properties());
     propertiesDialog.exec();
 }
