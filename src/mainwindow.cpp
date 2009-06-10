@@ -480,7 +480,7 @@ void MainWindow::moveLayerDown()
 void MainWindow::writeSettings()
 {
     mSettings.beginGroup(QLatin1String("mainwindow"));
-    mSettings.setValue(QLatin1String("size"), size());
+    mSettings.setValue(QLatin1String("geometry"), saveGeometry());
     mSettings.setValue(QLatin1String("state"), saveState());
     mSettings.setValue(QLatin1String("gridVisible"),
                        mUi.actionShowGrid->isChecked());
@@ -494,7 +494,11 @@ void MainWindow::writeSettings()
 void MainWindow::readSettings()
 {
     mSettings.beginGroup(QLatin1String("mainwindow"));
-    resize(mSettings.value(QLatin1String("size"), QSize(600, 500)).toSize());
+    QByteArray geom = mSettings.value(QLatin1String("geometry")).toByteArray();
+    if (!geom.isEmpty())
+        restoreGeometry(geom);
+    else
+        resize(800, 600);
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
     mUi.actionShowGrid->setChecked(
