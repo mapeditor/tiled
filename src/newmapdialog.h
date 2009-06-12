@@ -39,11 +39,10 @@ class MapDocument;
 class NewMapDialog : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY(NewMapDialog)
 
 public:
-    explicit NewMapDialog(QWidget *parent = 0);
-    virtual ~NewMapDialog();
+    NewMapDialog(QWidget *parent = 0);
+    ~NewMapDialog();
 
     /**
      * Shows the dialog and returns the created map. Returns 0 if the dialog

@@ -40,11 +40,10 @@ namespace Internal {
 class NewTilesetDialog : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY(NewTilesetDialog)
 
 public:
-    explicit NewTilesetDialog(const QString &path, QWidget *parent = 0);
-    virtual ~NewTilesetDialog();
+    NewTilesetDialog(const QString &path, QWidget *parent = 0);
+    ~NewTilesetDialog();
 
     void setTileWidth(int width);
     void setTileHeight(int height);

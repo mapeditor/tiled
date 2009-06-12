@@ -40,7 +40,6 @@ class PropertiesModel;
 class PropertiesDialog : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY(PropertiesDialog)
 
 public:
     /**
