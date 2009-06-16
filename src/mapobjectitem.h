@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -32,6 +32,7 @@ namespace Internal {
 
 class MapDocument;
 class ObjectGroupItem;
+class ResizeHandle;
 
 /**
  * A graphics item displaying a map object.
@@ -47,10 +48,22 @@ public:
      */
     MapObjectItem(MapObject *object, ObjectGroupItem *parent);
 
+    MapObject *mapObject() const
+    { return mObject; }
+
     /**
      * Should be called when the map object this item refers to was changed.
      */
     void syncWithMapObject();
+
+    bool isEditable() const
+    { return mIsEditable; }
+
+    /**
+     * Sets whether this map object is editable. Editable map objects can be
+     * moved and resized, and their properties can be edited.
+     */
+    void setEditable(bool editable);
 
     // QGraphicsItem
     QRectF boundingRect() const;
@@ -67,10 +80,17 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+    void setSize(int width, int height);
     MapDocument *mapDocument() const;
+    Qt::GlobalColor colorForType() const;
 
     MapObject *mObject;
+    ResizeHandle *mResizeHandle;
     QPoint mOldPos;
+    QSize mSize;    // Copy of size for adapting to geometry change correctly
+    bool mIsEditable;
+
+    friend class ResizeHandle;
 };
 
 } // namespace Internal

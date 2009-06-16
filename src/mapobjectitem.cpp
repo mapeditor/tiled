@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -29,6 +29,7 @@
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "propertiesdialog.h"
+#include "resizemapobject.h"
 
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
@@ -42,11 +43,127 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static QPoint snapToGrid(const QPoint &p, int gridWidth, int gridHeight)
+{
+    return QPoint(((p.x() + gridWidth / 2) / gridWidth) * gridWidth,
+                  ((p.y() + gridHeight / 2) / gridHeight) * gridHeight);
+}
+
+namespace Tiled {
+namespace Internal {
+
+/**
+ * A resize handle that allows resizing of a map object.
+ */
+class ResizeHandle : public QGraphicsItem
+{
+public:
+    ResizeHandle(MapObjectItem *mapObjectItem);
+
+    QRectF boundingRect() const;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+private:
+    MapObjectItem *mMapObjectItem;
+    QSize mOldSize;
+};
+
+
+ResizeHandle::ResizeHandle(MapObjectItem *mapObjectItem)
+    : QGraphicsItem(mapObjectItem)
+    , mMapObjectItem(mapObjectItem)
+{
+    setCursor(Qt::SizeFDiagCursor);
+    setFlag(QGraphicsItem::ItemIsMovable);
+}
+
+QRectF ResizeHandle::boundingRect() const
+{
+    return QRectF(-5, -5, 10 + 1, 10 + 1);
+}
+
+void ResizeHandle::paint(QPainter *painter,
+                         const QStyleOptionGraphicsItem *option,
+                         QWidget *widget)
+{
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+
+    painter->setBrush(mMapObjectItem->colorForType());
+    painter->setPen(Qt::black);
+    painter->drawRect(QRectF(-5, -5, 10, 10));
+}
+
+void ResizeHandle::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    // Remember the old size since we may resize the object
+    if (event->button() == Qt::LeftButton)
+        mOldSize = mMapObjectItem->mapObject()->size();
+
+    QGraphicsItem::mousePressEvent(event);
+}
+
+void ResizeHandle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsItem::mouseReleaseEvent(event);
+
+    // If we resized the object, create an undo command
+    MapObject *obj = mMapObjectItem->mapObject();
+    if (event->button() == Qt::LeftButton && mOldSize != obj->size()) {
+        MapDocument *document = mMapObjectItem->mapDocument();
+        QUndoCommand *cmd = new ResizeMapObject(document, obj, mOldSize);
+        document->undoStack()->push(cmd);
+    }
+}
+
+QVariant ResizeHandle::itemChange(GraphicsItemChange change,
+                                  const QVariant &value)
+{
+    MapObject *obj = mMapObjectItem->mapObject();
+
+    if (change == ItemPositionChange) {
+        QPoint newPos = value.toPoint();
+        newPos.setX(qMax(newPos.x(), 0));
+        newPos.setY(qMax(newPos.y(), 0));
+        if (scene() && static_cast<MapScene*>(scene())->isGridVisible()) {
+            const ObjectGroup *og = obj->objectGroup();
+            const Map *map = og->map();
+            const int w = map->tileWidth();
+            const int h = map->tileHeight();
+            newPos = snapToGrid(newPos, w, h);
+        }
+        return newPos;
+    }
+    else if (change == ItemPositionHasChanged) {
+        // Update the size of the map object
+        QPoint newPos = value.toPoint();
+        mMapObjectItem->setSize(newPos.x(), newPos.y());
+    }
+
+    return QGraphicsItem::itemChange(change, value);
+}
+
+} // namespace Internal
+} // namespace Tiled
+
+
 MapObjectItem::MapObjectItem(MapObject *object, ObjectGroupItem *parent):
     QGraphicsItem(parent),
-    mObject(object)
+    mObject(object),
+    mResizeHandle(new ResizeHandle(this)),
+    mIsEditable(false)
 {
     syncWithMapObject();
+    mResizeHandle->setVisible(false);
+    setCursor(Qt::ArrowCursor);
 }
 
 void MapObjectItem::syncWithMapObject()
@@ -56,17 +173,35 @@ void MapObjectItem::syncWithMapObject()
         toolTip += QLatin1String(" (") + mObject->type() + QLatin1String(")");
     setToolTip(toolTip);
     setPos(mObject->position());
+
+    if (mSize != mObject->size()) {
+        // Notify the graphics scene about the geometry change in advance
+        prepareGeometryChange();
+        mSize = mObject->size();
+        mResizeHandle->setPos(mSize.width(), mSize.height());
+    }
+}
+
+void MapObjectItem::setEditable(bool editable)
+{
+    if (editable == mIsEditable)
+        return;
+
+    mIsEditable = editable;
+
+    setFlag(QGraphicsItem::ItemIsMovable, mIsEditable);
+    mResizeHandle->setVisible(mIsEditable);
 }
 
 QRectF MapObjectItem::boundingRect() const
 {
     // The -1 and +3 are to account for the pen width and shadow
-    if (!mObject->width() && !mObject->height()) {
+    if (mSize.isNull()) {
         return QRectF(-15 - 1, -25 - 1, 25 + 3, 35 + 3);
     } else {
         return QRectF(-1, -15 - 1,
-                      mObject->width() + 3,
-                      mObject->height() + 3 + 15);
+                      mSize.width() + 3,
+                      mSize.height() + 3 + 15);
     }
 }
 
@@ -84,42 +219,29 @@ void MapObjectItem::paint(QPainter *painter,
         painter->setOpacity(objectGroup->opacity());
     }
 
-    static const struct {
-        const char *type;
-        Qt::GlobalColor color;
-    } types[] = {
-        { "warp", Qt::cyan },
-        { "npc", Qt::yellow },
-        { "spawn", Qt::magenta },
-        { "particle_effect", Qt::green },
-        { 0, Qt::black }
-    };
-
-    Qt::GlobalColor color = Qt::gray;
-    const QString &type = mObject->type();
-
-    for (int i = 0; types[i].type; ++i) {
-        if (!type.compare(QLatin1String(types[i].type), Qt::CaseInsensitive)) {
-            color = types[i].color;
-            break;
-        }
-    }
-
-    QPen pen(Qt::black);
-    pen.setWidth(3);
-
+    QColor color = colorForType();
     QColor brushColor = color;
     brushColor.setAlpha(50);
     QBrush brush(brushColor);
 
+    QPen pen(Qt::black);
+    pen.setWidth(3);
+
+    // Make sure the line aligns nicely on the pixels
+    if (pen.width() % 2)
+        painter->translate(0.5, 0.5);
+
     painter->setPen(pen);
     painter->setRenderHint(QPainter::Antialiasing);
-    if (!mObject->width() && !mObject->height())
+    if (mSize.isNull())
     {
         QFontMetrics fm = painter->fontMetrics();
         QString name = fm.elidedText(mObject->name(), Qt::ElideRight, 30);
+
+        // Draw the shadow
         painter->drawEllipse(QRect(- 10 + 1, - 10 + 1, 20, 20));
         painter->drawText(QPoint(-15 + 1, -15 + 1), name);
+
         pen.setColor(color);
         painter->setPen(pen);
         painter->setBrush(brush);
@@ -130,27 +252,23 @@ void MapObjectItem::paint(QPainter *painter,
     {
         QFontMetrics fm = painter->fontMetrics();
         QString name = fm.elidedText(mObject->name(), Qt::ElideRight,
-                                     mObject->width() + 5);
-        painter->drawRoundedRect(QRect(1, 1,
-                                       mObject->width(),
-                                       mObject->height()),
-                                 10.0, 10.0);
+                                     mSize.width() + 3);
+
+        // Draw the shadow
+        painter->drawRoundedRect(QRect(QPoint(1, 1), mSize), 10.0, 10.0);
         painter->drawText(QPoint(1, -5 + 1), name);
+
         pen.setColor(color);
         painter->setPen(pen);
         painter->setBrush(brush);
-        painter->drawRoundedRect(QRect(0, 0,
-                                       mObject->width(),
-                                       mObject->height()),
-                                 10.0, 10.0);
+        painter->drawRoundedRect(QRect(QPoint(0, 0), mSize), 10.0, 10.0);
         painter->drawText(QPoint(0, -5), name);
     }
 }
 
 void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    // This checks whether we're an object in a currently selected group
-    if (!(flags() & QGraphicsItem::ItemIsMovable))
+    if (!mIsEditable)
         return;
 
     event->accept();
@@ -198,10 +316,7 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
         const Map *map = og->map();
         const int w = map->tileWidth();
         const int h = map->tileHeight();
-        QPoint newPos = value.toPoint();
-        newPos.setX(((newPos.x() + w / 2) / w) * w);
-        newPos.setY(((newPos.y() + h / 2) / h) * h);
-        return newPos;
+        return snapToGrid(value.toPoint(), w, h);
     }
     else if (change == ItemPositionHasChanged) {
         // Update the position of the map object
@@ -211,8 +326,42 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
     return QGraphicsItem::itemChange(change, value);
 }
 
+void MapObjectItem::setSize(int width, int height)
+{
+    prepareGeometryChange();
+    mSize.setWidth(width);
+    mSize.setHeight(height);
+    mObject->setSize(mSize);
+}
+
 MapDocument *MapObjectItem::mapDocument() const
 {
     MapScene *mapScene = static_cast<MapScene*>(scene());
     return mapScene->mapDocument();
+}
+
+Qt::GlobalColor MapObjectItem::colorForType() const
+{
+    static const struct {
+        const char *type;
+        Qt::GlobalColor color;
+    } types[] = {
+        { "warp", Qt::cyan },
+        { "npc", Qt::yellow },
+        { "spawn", Qt::magenta },
+        { "particle_effect", Qt::green },
+        { 0, Qt::black }
+    };
+
+    Qt::GlobalColor color = Qt::gray;
+    const QString &type = mObject->type();
+
+    for (int i = 0; types[i].type; ++i) {
+        if (!type.compare(QLatin1String(types[i].type), Qt::CaseInsensitive)) {
+            color = types[i].color;
+            break;
+        }
+    }
+
+    return color;
 }

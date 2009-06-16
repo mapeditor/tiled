@@ -24,6 +24,7 @@
 
 #include <QMap>
 #include <QPoint>
+#include <QSize>
 #include <QString>
 
 namespace Tiled {
@@ -31,7 +32,12 @@ namespace Tiled {
 class ObjectGroup;
 
 /**
- * An object on a map.
+ * An object on a map. Objects are positioned and scaled by pixels instead of
+ * by tiles. They are suitable for adding any kind of annotation to your maps,
+ * as well as free placement of images.
+ *
+ * Common usages of objects include defining portals, monsters spawn areas,
+ * ambient effects, scripted areas, etc.
  */
 class MapObject
 {
@@ -83,24 +89,37 @@ public:
     void setY(int y) { mPos.setY(y); }
 
     /**
+     * Returns the size of this object.
+     */
+    const QSize &size() const { return mSize; }
+
+    /**
+     * Sets the size of this object.
+     */
+    void setSize(const QSize &size) { mSize = size; }
+
+    void setSize(int width, int height)
+    { setSize(QSize(width, height)); }
+
+    /**
      * Returns the width of this object.
      */
-    int width() const { return mWidth; }
+    int width() const { return mSize.width(); }
 
     /**
      * Sets the width of this object.
      */
-    void setWidth(int width) { mWidth = width; }
+    void setWidth(int width) { mSize.setWidth(width); }
 
     /**
      * Returns the height of this object.
      */
-    int height() const { return mHeight; }
+    int height() const { return mSize.height(); }
 
     /**
      * Sets the height of this object.
      */
-    void setHeight(int height) { mHeight = height; }
+    void setHeight(int height) { mSize.setHeight(height); }
 
     /**
      * Returns the type of object this is.
@@ -138,8 +157,7 @@ public:
 private:
     QString mName;
     QPoint mPos;
-    int mWidth;
-    int mHeight;
+    QSize mSize;
     QString mType;
     QMap<QString, QString> mProperties;
     ObjectGroup *mObjectGroup;

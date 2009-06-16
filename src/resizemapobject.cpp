@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,21 +19,33 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "resizemapobject.h"
+
+#include "mapdocument.h"
 #include "mapobject.h"
 
 using namespace Tiled;
+using namespace Tiled::Internal;
 
-MapObject::MapObject(const QString &name, const QString &type,
-                     int x, int y, int width, int height):
-    mName(name),
-    mPos(x, y),
-    mSize(width, height),
-    mType(type),
-    mObjectGroup(0)
+ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
+                                 MapObject *mapObject,
+                                 const QSize &oldSize)
+    : mMapDocument(mapDocument)
+    , mMapObject(mapObject)
+    , mOldSize(oldSize)
+    , mNewSize(mapObject->size())
 {
+    setText(QObject::tr("Resize Object"));
 }
 
-void MapObject::setProperty(const QString &name, const QString &value)
+void ResizeMapObject::undo()
 {
-    mProperties.insert(name, value);
+    mMapObject->setSize(mOldSize);
+    mMapDocument->emitObjectChanged(mMapObject);
+}
+
+void ResizeMapObject::redo()
+{
+    mMapObject->setSize(mNewSize);
+    mMapDocument->emitObjectChanged(mMapObject);
 }

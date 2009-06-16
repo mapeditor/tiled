@@ -170,13 +170,13 @@ void MapScene::currentLayerChanged(int index)
     if (mSelectedObjectGroupItem) {
         // This object group is no longer selected
         foreach (QGraphicsItem *item, mSelectedObjectGroupItem->childItems())
-            item->setFlag(QGraphicsItem::ItemIsMovable, false);
+            static_cast<MapObjectItem*>(item)->setEditable(false);
     }
 
     if (ogItem) {
         // This is the newly selected object group
         foreach (QGraphicsItem *item, ogItem->childItems())
-            item->setFlag(QGraphicsItem::ItemIsMovable, true);
+            static_cast<MapObjectItem*>(item)->setEditable(true);
     }
 
     mSelectedObjectGroupItem = ogItem;

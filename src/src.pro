@@ -45,7 +45,8 @@ SOURCES += aboutdialog.cpp \
     newmapdialog.cpp \
     newtilesetdialog.cpp \
     objectgroupitem.cpp \
-    movemapobject.cpp
+    movemapobject.cpp \
+    resizemapobject.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -86,7 +87,8 @@ HEADERS += aboutdialog.h \
     newmapdialog.h \
     newtilesetdialog.h \
     objectgroupitem.h \
-    movemapobject.h
+    movemapobject.h \
+    resizemapobject.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
