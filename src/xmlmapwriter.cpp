@@ -190,9 +190,9 @@ void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer)
     w.writeStartElement(QLatin1String("data"));
     w.writeAttribute(QLatin1String("encoding"), QLatin1String("base64"));
     w.writeAttribute(QLatin1String("compression"), QLatin1String("gzip"));
-    w.writeCharacters(QLatin1String("\n"));
+    w.writeCharacters(QLatin1String("\n   "));
     w.writeCharacters(QString::fromLatin1(tileData.toBase64()));
-    w.writeCharacters(QLatin1String("\n"));
+    w.writeCharacters(QLatin1String("\n  "));
     w.writeEndElement();
 
     w.writeEndElement();
