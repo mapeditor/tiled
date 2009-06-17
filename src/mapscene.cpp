@@ -71,6 +71,10 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(repaintRegion(QRegion)));
         connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
                 this, SLOT(currentLayerChanged(int)));
+        connect(mMapDocument, SIGNAL(objectsAdded(QList<MapObject*>)),
+                this, SLOT(objectsAdded(QList<MapObject*>)));
+        connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
+                this, SLOT(objectsRemoved(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
 
@@ -182,6 +186,55 @@ void MapScene::currentLayerChanged(int index)
     mSelectedObjectGroupItem = ogItem;
 }
 
+/**
+ * Inserts map object items for the given objects.
+ */
+void MapScene::objectsAdded(const QList<MapObject*> &objects)
+{
+    foreach (MapObject *object, objects) {
+        ObjectGroup *og = object->objectGroup();
+        ObjectGroupItem *ogItem = 0;
+
+        // Find the object group item for the map object's object group
+        foreach (QGraphicsItem *item, mLayerItems) {
+            if (ObjectGroupItem *ogi = dynamic_cast<ObjectGroupItem*>(item)) {
+                if (ogi->objectGroup() == og) {
+                    ogItem = ogi;
+                    break;
+                }
+            }
+        }
+
+        if (ogItem) {
+            MapObjectItem *item = new MapObjectItem(object, ogItem);
+            mObjectItems.insert(object, item);
+            if (ogItem == mSelectedObjectGroupItem)
+                item->setEditable(true);
+        } else {
+            qWarning() << "Warning: couldn't find matching object group item!";
+        }
+    }
+}
+
+/**
+ * Removes the map object items related to the given objects.
+ */
+void MapScene::objectsRemoved(const QList<MapObject*> &objects)
+{
+    foreach (MapObject *o, objects) {
+        ObjectItems::iterator i = mObjectItems.find(o);
+        if (i != mObjectItems.end()) {
+            delete i.value();
+            mObjectItems.erase(i);
+        } else {
+            qWarning() << "Warning: couldn't find item for object!";
+        }
+    }
+}
+
+/**
+ * Updates the map object items related to the given objects.
+ */
 void MapScene::objectsChanged(const QList<MapObject*> &objects)
 {
     foreach (MapObject *o, objects) {

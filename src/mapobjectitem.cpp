@@ -30,6 +30,7 @@
 #include "objectgroupitem.h"
 #include "propertiesdialog.h"
 #include "resizemapobject.h"
+#include "removemapobject.h"
 
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
@@ -273,9 +274,16 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
     event->accept();
     QMenu menu;
+    QAction *removeAction = menu.addAction(QObject::tr("Remove"));
     QAction *propertiesAction = menu.addAction(QObject::tr("Properties..."));
 
-    if (menu.exec(event->screenPos()) == propertiesAction) {
+    QAction *selectedAction = menu.exec(event->screenPos());
+
+    if (selectedAction == removeAction) {
+        MapDocument *doc = mapDocument();
+        doc->undoStack()->push(new RemoveMapObject(doc, mObject));
+    }
+    else if (selectedAction == propertiesAction) {
         PropertiesDialog propertiesDialog(QObject::tr("Object"),
                                           mapDocument()->undoStack(),
                                           event->widget());

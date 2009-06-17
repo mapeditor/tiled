@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,31 +19,39 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "objectgroup.h"
-#include "mapobject.h"
+#ifndef REMOVEMAPOBJECT_H
+#define REMOVEMAPOBJECT_H
 
-using namespace Tiled;
+#include <QUndoCommand>
 
-ObjectGroup::ObjectGroup(const QString &name,
-                         int x, int y, int width, int height,
-                         Map *map):
-    Layer(name, x, y, width, height, map)
+namespace Tiled {
+
+class MapObject;
+class ObjectGroup;
+
+namespace Internal {
+
+class MapDocument;
+
+class RemoveMapObject : public QUndoCommand
 {
-}
+public:
+    RemoveMapObject(MapDocument *mapDocument,
+                    MapObject *mapObject);
 
-ObjectGroup::~ObjectGroup()
-{
-    qDeleteAll(mObjects);
-}
+    ~RemoveMapObject();
 
-void ObjectGroup::addObject(MapObject *object)
-{
-    mObjects.append(object);
-    object->setObjectGroup(this);
-}
+    void undo();
+    void redo();
 
-void ObjectGroup::removeObject(MapObject *object)
-{
-    mObjects.removeOne(object);
-    object->setObjectGroup(0);
-}
+private:
+    MapDocument *mMapDocument;
+    MapObject *mMapObject;
+    ObjectGroup *mObjectGroup;
+    bool mOwnsObject;
+};
+
+} // namespace Internal
+} // namespace Tiled
+
+#endif // REMOVEMAPOBJECT_H

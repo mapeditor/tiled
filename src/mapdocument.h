@@ -119,11 +119,15 @@ public:
      */
     void emitRegionChanged(const QRegion &region);
 
-    /**
-     * Emits the objects changed signal with the specified list of objects.
-     * This will cause the view to update the related items.
-     */
+    void emitObjectsAdded(const QList<MapObject*> &objects);
+    void emitObjectsRemoved(const QList<MapObject*> &objects);
     void emitObjectsChanged(const QList<MapObject*> &objects);
+
+    inline void emitObjectAdded(MapObject *object)
+    { emitObjectsAdded(QList<MapObject*>() << object); }
+
+    inline void emitObjectRemoved(MapObject *object)
+    { emitObjectsRemoved(QList<MapObject*>() << object); }
 
     inline void emitObjectChanged(MapObject *object)
     { emitObjectsChanged(QList<MapObject*>() << object); }
@@ -150,6 +154,8 @@ signals:
      */
     void tilesetAdded(Tileset *tileset);
 
+    void objectsAdded(const QList<MapObject*> &objects);
+    void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
 
 private:

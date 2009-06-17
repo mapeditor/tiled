@@ -126,9 +126,8 @@ private slots:
      */
     void currentLayerChanged(int index);
 
-    /**
-     * Updates the map object items related to the given objects.
-     */
+    void objectsAdded(const QList<MapObject*> &objects);
+    void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
 
 private:
@@ -141,7 +140,9 @@ private:
     bool mBrushVisible;
     bool mPainting;
     QVector<QGraphicsItem*> mLayerItems;
-    QMap<MapObject*, MapObjectItem*> mObjectItems;
+
+    typedef QMap<MapObject*, MapObjectItem*> ObjectItems;
+    ObjectItems mObjectItems;
 };
 
 } // namespace Internal

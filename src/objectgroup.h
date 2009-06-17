@@ -58,6 +58,12 @@ public:
      */
     void addObject(MapObject *object);
 
+    /**
+     * Removes an object from this object group. Ownership of the object is
+     * transferred to the caller.
+     */
+    void removeObject(MapObject *object);
+
 private:
     QList<MapObject*> mObjects;
 };

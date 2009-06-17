@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,31 +19,41 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "objectgroup.h"
+#include "removemapobject.h"
+
+#include "mapdocument.h"
 #include "mapobject.h"
+#include "objectgroup.h"
 
 using namespace Tiled;
+using namespace Tiled::Internal;
 
-ObjectGroup::ObjectGroup(const QString &name,
-                         int x, int y, int width, int height,
-                         Map *map):
-    Layer(name, x, y, width, height, map)
+RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
+                                 MapObject *mapObject)
+    : mMapDocument(mapDocument)
+    , mMapObject(mapObject)
+    , mObjectGroup(mapObject->objectGroup())
+    , mOwnsObject(false)
 {
+    setText(QObject::tr("Remove Object"));
 }
 
-ObjectGroup::~ObjectGroup()
+RemoveMapObject::~RemoveMapObject()
 {
-    qDeleteAll(mObjects);
+    if (mOwnsObject)
+        delete mMapObject;
 }
 
-void ObjectGroup::addObject(MapObject *object)
+void RemoveMapObject::undo()
 {
-    mObjects.append(object);
-    object->setObjectGroup(this);
+    mObjectGroup->addObject(mMapObject);
+    mMapDocument->emitObjectAdded(mMapObject);
+    mOwnsObject = false;
 }
 
-void ObjectGroup::removeObject(MapObject *object)
+void RemoveMapObject::redo()
 {
-    mObjects.removeOne(object);
-    object->setObjectGroup(0);
+    mObjectGroup->removeObject(mMapObject);
+    mMapDocument->emitObjectRemoved(mMapObject);
+    mOwnsObject = true;
 }

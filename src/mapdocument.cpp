@@ -101,6 +101,28 @@ void MapDocument::emitRegionChanged(const QRegion &region)
     emit regionChanged(region);
 }
 
+/**
+ * Emits the objects added signal with the specified list of objects.
+ * This will cause the scene to insert the related items.
+ */
+void MapDocument::emitObjectsAdded(const QList<MapObject*> &objects)
+{
+    emit objectsAdded(objects);
+}
+
+/**
+ * Emits the objects removed signal with the specified list of objects.
+ * This will cause the scene to remove the related items.
+ */
+void MapDocument::emitObjectsRemoved(const QList<MapObject*> &objects)
+{
+    emit objectsRemoved(objects);
+}
+
+/**
+ * Emits the objects changed signal with the specified list of objects.
+ * This will cause the scene to update the related items.
+ */
 void MapDocument::emitObjectsChanged(const QList<MapObject*> &objects)
 {
     emit objectsChanged(objects);
