@@ -25,7 +25,6 @@
 #include "layer.h"
 
 #include <QList>
-#include <QString>
 
 namespace Tiled {
 
@@ -59,10 +58,19 @@ public:
     void addObject(MapObject *object);
 
     /**
+     * Inserts an object at the specified index. This is only used for undoing
+     * the removal of an object at the moment, to make sure not to change the
+     * saved order of the objects.
+     */
+    void insertObject(int index, MapObject *object);
+
+    /**
      * Removes an object from this object group. Ownership of the object is
      * transferred to the caller.
+     *
+     * @return the index at which the specified object was removed
      */
-    void removeObject(MapObject *object);
+    int removeObject(MapObject *object);
 
 private:
     QList<MapObject*> mObjects;

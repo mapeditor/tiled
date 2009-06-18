@@ -42,8 +42,18 @@ void ObjectGroup::addObject(MapObject *object)
     object->setObjectGroup(this);
 }
 
-void ObjectGroup::removeObject(MapObject *object)
+void ObjectGroup::insertObject(int index, MapObject *object)
 {
-    mObjects.removeOne(object);
+    mObjects.insert(index, object);
+    object->setObjectGroup(this);
+}
+
+int ObjectGroup::removeObject(MapObject *object)
+{
+    const int index = mObjects.indexOf(object);
+    Q_ASSERT(index != -1);
+
+    mObjects.removeAt(index);
     object->setObjectGroup(0);
+    return index;
 }

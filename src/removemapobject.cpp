@@ -33,6 +33,7 @@ RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mObjectGroup(mapObject->objectGroup())
+    , mIndex(-1)
     , mOwnsObject(false)
 {
     setText(QObject::tr("Remove Object"));
@@ -46,14 +47,14 @@ RemoveMapObject::~RemoveMapObject()
 
 void RemoveMapObject::undo()
 {
-    mObjectGroup->addObject(mMapObject);
+    mObjectGroup->insertObject(mIndex, mMapObject);
     mMapDocument->emitObjectAdded(mMapObject);
     mOwnsObject = false;
 }
 
 void RemoveMapObject::redo()
 {
-    mObjectGroup->removeObject(mMapObject);
+    mIndex = mObjectGroup->removeObject(mMapObject);
     mMapDocument->emitObjectRemoved(mMapObject);
     mOwnsObject = true;
 }

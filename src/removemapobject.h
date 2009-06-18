@@ -48,6 +48,7 @@ private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
     ObjectGroup *mObjectGroup;
+    int mIndex;
     bool mOwnsObject;
 };
 
