@@ -20,6 +20,8 @@
  */
 
 #include "tilelayer.h"
+
+#include "map.h"
 #include "tile.h"
 
 using namespace Tiled;
@@ -39,8 +41,11 @@ Tile *TileLayer::tileAt(int x, int y) const
 
 void TileLayer::setTile(int x, int y, Tile *tile)
 {
-    if (tile && tile->height() > mMaxTileHeight)
+    if (tile && tile->height() > mMaxTileHeight) {
         mMaxTileHeight = tile->height();
+        if (mMap)
+            mMap->adjustMaxTileHeight(mMaxTileHeight);
+    }
 
     mTiles[x + y * mWidth] = tile;
 }

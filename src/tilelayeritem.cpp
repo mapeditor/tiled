@@ -67,9 +67,9 @@ void TileLayerItem::paint(QPainter *painter,
     const Map *map = mLayer->map();
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
+    const int extraHeight = mLayer->maxTileHeight() - tileHeight;
 
-    const QRectF rect =
-            option->exposedRect.adjusted(0, 0, 0, mLayer->maxTileHeight());
+    const QRectF rect = option->exposedRect.adjusted(0, 0, 0, extraHeight);
     const int startX = (int) (rect.x() / tileWidth);
     const int startY = (int) (rect.y() / tileHeight);
     const int endX = qMin((int) rect.right() / tileWidth + 1, mLayer->width());

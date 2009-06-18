@@ -23,6 +23,7 @@
 
 #include "layer.h"
 #include "tile.h"
+#include "tilelayer.h"
 #include "tileset.h"
 
 using namespace Tiled;
@@ -41,16 +42,30 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
+void Map::adjustMaxTileHeight(int height)
+{
+    if (height > mMaxTileHeight)
+        mMaxTileHeight = height;
+}
+
 void Map::addLayer(Layer *layer)
 {
-    layer->setMap(this);
+    adoptLayer(layer);
     mLayers.append(layer);
 }
 
 void Map::insertLayer(int index, Layer *layer)
 {
-    layer->setMap(this);
+    adoptLayer(layer);
     mLayers.insert(index, layer);
+}
+
+void Map::adoptLayer(Layer *layer)
+{
+    layer->setMap(this);
+
+    if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+        adjustMaxTileHeight(tileLayer->maxTileHeight());
 }
 
 Layer *Map::takeLayerAt(int index)

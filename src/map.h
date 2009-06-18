@@ -81,6 +81,19 @@ public:
     int tileHeight() const { return mTileHeight; }
 
     /**
+     * Returns the maximum tile height used by tile layers of this map.
+     * @see TileLayer::maxTileHeight()
+     */
+    int maxTileHeight() const { return mMaxTileHeight; }
+
+    /**
+     * Adjusts the maximum tile height to be at least as much as the given
+     * height. Called from tile layers when their maximum tile height
+     * increases.
+     */
+    void adjustMaxTileHeight(int height);
+
+    /**
      * Returns the list of layers of this map.
      */
     const QList<Layer*> &layers() const { return mLayers; }
@@ -142,6 +155,8 @@ public:
     Tile *tileForGid(int gid) const;
 
 private:
+    void adoptLayer(Layer *layer);
+
     int mWidth;
     int mHeight;
     int mTileWidth;

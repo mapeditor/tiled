@@ -33,7 +33,6 @@
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
 
-#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
@@ -146,9 +145,11 @@ void MapScene::refreshScene()
 
 void MapScene::repaintRegion(const QRegion &region)
 {
-    // TODO: Adjust region to deal with high tiles
+    Map *map = mMapDocument->map();
+    const int extra = map->maxTileHeight() - map->tileHeight();
+
     foreach (const QRect &r, region.rects())
-        update(mMapDocument->toPixelCoordinates(r));
+        update(mMapDocument->toPixelCoordinates(r).adjusted(0, -extra, 0, 0));
 }
 
 void MapScene::currentTileChanged(Tile *tile)
@@ -205,14 +206,12 @@ void MapScene::objectsAdded(const QList<MapObject*> &objects)
             }
         }
 
-        if (ogItem) {
-            MapObjectItem *item = new MapObjectItem(object, ogItem);
-            mObjectItems.insert(object, item);
-            if (ogItem == mSelectedObjectGroupItem)
-                item->setEditable(true);
-        } else {
-            qWarning() << "Warning: couldn't find matching object group item!";
-        }
+        Q_ASSERT(ogItem);
+
+        MapObjectItem *item = new MapObjectItem(object, ogItem);
+        mObjectItems.insert(object, item);
+        if (ogItem == mSelectedObjectGroupItem)
+            item->setEditable(true);
     }
 }
 
@@ -223,12 +222,10 @@ void MapScene::objectsRemoved(const QList<MapObject*> &objects)
 {
     foreach (MapObject *o, objects) {
         ObjectItems::iterator i = mObjectItems.find(o);
-        if (i != mObjectItems.end()) {
-            delete i.value();
-            mObjectItems.erase(i);
-        } else {
-            qWarning() << "Warning: couldn't find item for object!";
-        }
+        Q_ASSERT(i != mObjectItems.end());
+
+        delete i.value();
+        mObjectItems.erase(i);
     }
 }
 
@@ -238,10 +235,10 @@ void MapScene::objectsRemoved(const QList<MapObject*> &objects)
 void MapScene::objectsChanged(const QList<MapObject*> &objects)
 {
     foreach (MapObject *o, objects) {
-        if (MapObjectItem *item = mObjectItems.value(o))
-            item->syncWithMapObject();
-        else
-            qWarning() << "Warning: couldn't find item for object!";
+        MapObjectItem *item = mObjectItems.value(o);
+        Q_ASSERT(item);
+
+        item->syncWithMapObject();
     }
 }
 
