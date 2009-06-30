@@ -215,7 +215,7 @@ void MapObjectItem::paint(QPainter *painter,
 
     const ObjectGroup *objectGroup = mObject->objectGroup();
     if (objectGroup) {
-        if (!objectGroup->visible() || objectGroup->opacity() == 0.0f)
+        if (!objectGroup->isVisible() || objectGroup->opacity() == 0.0f)
             return;
         painter->setOpacity(objectGroup->opacity());
     }

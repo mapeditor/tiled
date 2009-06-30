@@ -84,6 +84,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(refreshScene()));
         connect(layerModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
                 this, SLOT(refreshScene()));
+        connect(layerModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+                this, SLOT(layerChanged(QModelIndex)));
     }
 
     mBrush->setMapDocument(mapDocument);
@@ -134,6 +136,7 @@ void MapScene::refreshScene()
             addItem(ogItem);
             layerItem = ogItem;
         }
+        layerItem->setVisible(layer->isVisible());
         mLayerItems[layerIndex] = layerItem;
         ++layerIndex;
     }
@@ -185,6 +188,19 @@ void MapScene::currentLayerChanged(int index)
     }
 
     mSelectedObjectGroupItem = ogItem;
+}
+
+/**
+ * A layer has changed. At the moment, this can only mean its visibility has
+ * changed.
+ */
+void MapScene::layerChanged(const QModelIndex &index)
+{
+    const LayerTableModel *layerModel = mMapDocument->layerModel();
+    const int layerIndex = layerModel->toLayerIndex(index);
+    const Layer *layer = mMapDocument->map()->layers().at(layerIndex);
+
+    mLayerItems.at(layerIndex)->setVisible(layer->isVisible());
 }
 
 /**

@@ -61,7 +61,7 @@ void TileLayerItem::paint(QPainter *painter,
 {
     Q_UNUSED(widget);
 
-    if (!mLayer->visible() || mLayer->opacity() == 0.0f)
+    if (!mLayer->isVisible() || mLayer->opacity() == 0.0f)
         return;
 
     const Map *map = mLayer->map();

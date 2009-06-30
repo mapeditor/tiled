@@ -71,7 +71,7 @@ public:
     /**
      * Returns the visibility of this layer.
      */
-    bool visible() const { return mVisible; }
+    bool isVisible() const { return mVisible; }
 
     /**
      * Sets the visibility of this layer.

@@ -129,6 +129,8 @@ void writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer)
         w.writeAttribute(QLatin1String("x"), QString::number(x));
     if (y != 0)
         w.writeAttribute(QLatin1String("y"), QString::number(y));
+    if (!layer->isVisible())
+        w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
 }
 
 /**

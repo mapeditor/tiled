@@ -25,6 +25,8 @@
 #include <QGraphicsScene>
 #include <QMap>
 
+class QModelIndex;
+
 namespace Tiled {
 
 class MapObject;
@@ -125,6 +127,8 @@ private slots:
      * hides and shows the brush as appropriate.
      */
     void currentLayerChanged(int index);
+
+    void layerChanged(const QModelIndex &index);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);

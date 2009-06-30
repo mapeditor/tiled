@@ -64,6 +64,16 @@ public:
                   int role = Qt::DisplayRole) const;
 
     /**
+     * Allows for changing the visibility of a layer.
+     */
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
+
+    /**
+     * Makes sure the items are checkable.
+     */
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
+    /**
      * Returns the headers for the table.
      */
     QVariant headerData(int section, Qt::Orientation orientation,
