@@ -160,15 +160,16 @@ void MapScene::currentTileChanged(Tile *tile)
     mBrush->setTile(tile);
 }
 
-void MapScene::currentLayerChanged(int index)
+void MapScene::updateInteractionMode()
 {
     updateBrushVisibility();
 
     ObjectGroupItem *ogItem = 0;
 
+    const int index = mMapDocument->currentLayer();
     if (index != -1) {
         Layer *layer = mMapDocument->map()->layers().at(index);
-        if (dynamic_cast<ObjectGroup*>(layer))
+        if (layer->isVisible() && dynamic_cast<ObjectGroup*>(layer))
             ogItem = static_cast<ObjectGroupItem*>(mLayerItems.at(index));
     }
 
@@ -190,6 +191,11 @@ void MapScene::currentLayerChanged(int index)
     mSelectedObjectGroupItem = ogItem;
 }
 
+void MapScene::currentLayerChanged(int index)
+{
+    updateInteractionMode();
+}
+
 /**
  * A layer has changed. At the moment, this can only mean its visibility has
  * changed.
@@ -201,6 +207,7 @@ void MapScene::layerChanged(const QModelIndex &index)
     const Layer *layer = mMapDocument->map()->layers().at(layerIndex);
 
     mLayerItems.at(layerIndex)->setVisible(layer->isVisible());
+    updateInteractionMode();
 }
 
 /**
@@ -284,7 +291,7 @@ void MapScene::updateBrushVisibility()
         const int currentLayer = mMapDocument->currentLayer();
         if (currentLayer >= 0) {
             Layer *layer = mMapDocument->map()->layers().at(currentLayer);
-            if (dynamic_cast<TileLayer*>(layer))
+            if (layer->isVisible() && dynamic_cast<TileLayer*>(layer))
                 showBrush = true;
         }
     }

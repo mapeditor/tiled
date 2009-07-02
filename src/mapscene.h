@@ -135,6 +135,7 @@ private slots:
     void objectsChanged(const QList<MapObject*> &objects);
 
 private:
+    void updateInteractionMode();
     void updateBrushVisibility();
 
     MapDocument *mMapDocument;
