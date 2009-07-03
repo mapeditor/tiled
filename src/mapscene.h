@@ -126,7 +126,7 @@ private slots:
      * selected, it makes sure the objects in the group are movable. It also
      * hides and shows the brush as appropriate.
      */
-    void currentLayerChanged(int index);
+    void currentLayerChanged();
 
     void layerChanged(const QModelIndex &index);
 

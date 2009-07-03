@@ -69,7 +69,7 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
                 this, SLOT(repaintRegion(QRegion)));
         connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
-                this, SLOT(currentLayerChanged(int)));
+                this, SLOT(currentLayerChanged()));
         connect(mMapDocument, SIGNAL(objectsAdded(QList<MapObject*>)),
                 this, SLOT(objectsAdded(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
@@ -190,7 +190,7 @@ void MapScene::updateInteractionMode()
     mSelectedObjectGroupItem = ogItem;
 }
 
-void MapScene::currentLayerChanged(int index)
+void MapScene::currentLayerChanged()
 {
     updateInteractionMode();
 }
