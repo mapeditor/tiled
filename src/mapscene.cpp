@@ -112,10 +112,9 @@ void MapScene::refreshScene()
 
     mLayerItems.resize(map->layers().size());
 
-    // The +1 is to allow space for the right and bottom grid lines
     setSceneRect(0, 0,
-            map->width() * map->tileWidth() + 1,
-            map->height() * map->tileHeight() + 1);
+            map->width() * map->tileWidth(),
+            map->height() * map->tileHeight());
 
     int z = 0;
     int layerIndex = 0;
