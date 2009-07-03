@@ -67,13 +67,11 @@ Tileset *NewTilesetDialog::createTileset()
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
     const int spacing = mUi->spacing->value();
-    // TODO: Add support for margin
-    //const int margin = mUi->margin->value();
+    const int margin = mUi->margin->value();
 
     Tileset *tileset = new Tileset(name,
-                                   tileWidth,
-                                   tileHeight,
-                                   spacing);
+                                   tileWidth, tileHeight,
+                                   spacing, margin);
     tileset->loadFromImage(image);
     return tileset;
 }

@@ -91,9 +91,6 @@
       </item>
       <item row="0" column="4">
        <widget class="QSpinBox" name="margin">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <property name="minimum">
          <number>0</number>
         </property>

@@ -37,13 +37,20 @@ class Tileset
 public:
     /**
      * Constructor.
+     *
+     * @param name        the name of the tileset
+     * @param tileWidth   the width of the tiles in the tileset
+     * @param tileHeight  the height of the tiles in the tileset
+     * @param tileSpacing the spacing between the tiles in the tileset image
+     * @param margin      the margin around the tiles in the tileset image
      */
     Tileset(const QString &name, int tileWidth, int tileHeight,
-            int tileSpacing = 0):
+            int tileSpacing = 0, int margin = 0):
         mName(name),
         mTileWidth(tileWidth),
         mTileHeight(tileHeight),
-        mTileSpacing(tileSpacing)
+        mTileSpacing(tileSpacing),
+        mMargin(margin)
     {
     }
 
@@ -89,6 +96,11 @@ public:
     int tileSpacing() const { return mTileSpacing; }
 
     /**
+     * Returns the margin around the tiles in the tileset image.
+     */
+    int margin() const { return mMargin; }
+
+    /**
      * Returns the tile for the given tile ID.
      */
     Tile *tileAt(int id) const;
@@ -125,6 +137,7 @@ private:
     int mTileWidth;
     int mTileHeight;
     int mTileSpacing;
+    int mMargin;
     QList<Tile*> mTiles;
 };
 

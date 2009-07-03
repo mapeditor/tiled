@@ -111,8 +111,11 @@ void TsxReader::readTileset()
         attr.value(QLatin1String("tileheight")).toString().toInt();
     const int tileSpacing =
         attr.value(QLatin1String("spacing")).toString().toInt();
+    const int margin =
+        attr.value(QLatin1String("margin")).toString().toInt();
 
-    mTileset = new Tileset(tilesetName, tileWidth, tileHeight, tileSpacing);
+    mTileset = new Tileset(tilesetName, tileWidth, tileHeight,
+                           tileSpacing, margin);
 
     while (readNext() != Invalid) {
         if (isEndElement())

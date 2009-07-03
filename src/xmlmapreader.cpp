@@ -189,6 +189,7 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
+        const int margin = atts.value(QLatin1String("margin")).toInt();
 
         if (!source.isEmpty()) {
             const QString absoluteSource = makeAbsolute(source);
@@ -219,7 +220,8 @@ bool TmxHandler::startElement(const QString &namespaceURI,
                 return false;
             }
 
-            mTileset = new Tileset(name, tileWidth, tileHeight, tileSpacing);
+            mTileset = new Tileset(name, tileWidth, tileHeight,
+                                   tileSpacing, margin);
         }
 
         qDebug() << "Tileset:" << mTileset->name() << mTilesetFirstGid

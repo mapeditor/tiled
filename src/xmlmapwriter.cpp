@@ -88,9 +88,12 @@ void writeTileset(QXmlStreamWriter &w, const Tileset *tileset, int firstGid)
     w.writeAttribute(QLatin1String("tileheight"),
                      QString::number(tileset->tileHeight()));
     const int tileSpacing = tileset->tileSpacing();
+    const int margin = tileset->margin();
     if (tileSpacing != 0)
         w.writeAttribute(QLatin1String("spacing"),
                          QString::number(tileSpacing));
+    if (margin != 0)
+        w.writeAttribute(QLatin1String("margin"), QString::number(margin));
 
     // Write the image element
     const QString &imageSource = tileset->imageSource();

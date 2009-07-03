@@ -51,8 +51,8 @@ bool Tileset::loadFromImage(const QString &fileName)
 
     mTiles.clear();
 
-    for (int y = 0; y <= stopHeight; y += mTileHeight + mTileSpacing)
-        for (int x = 0; x <= stopWidth; x += mTileWidth + mTileSpacing)
+    for (int y = mMargin; y <= stopHeight; y += mTileHeight + mTileSpacing)
+        for (int x = mMargin; x <= stopWidth; x += mTileWidth + mTileSpacing)
             mTiles.append(new Tile(img.copy(x, y, mTileWidth, mTileHeight),
                                    mTiles.size(),
                                    this));
