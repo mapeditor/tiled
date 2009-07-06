@@ -29,6 +29,7 @@ class QModelIndex;
 
 namespace Tiled {
 
+class Layer;
 class MapObject;
 class Tile;
 
@@ -121,20 +122,19 @@ private slots:
      */
     void currentTileChanged(Tile *tile);
 
-    /**
-     * Adapts the scene to the newly selected layer. If an object group is
-     * selected, it makes sure the objects in the group are movable. It also
-     * hides and shows the brush as appropriate.
-     */
     void currentLayerChanged();
 
-    void layerChanged(const QModelIndex &index);
+    void layerAdded(int index);
+    void layerRemoved(int index);
+    void layerChanged(int index);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
 
 private:
+    QGraphicsItem *createLayerItem(Layer *layer);
+
     void updateInteractionMode();
     void updateBrushVisibility();
 

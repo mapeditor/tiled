@@ -71,6 +71,7 @@ bool LayerTableModel::setData(const QModelIndex &index, const QVariant &value,
     Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
     layer->setVisible(c == Qt::Checked);
     emit dataChanged(index, index);
+    emit layerChanged(layerIndex);
     return true;
 }
 
@@ -115,6 +116,7 @@ void LayerTableModel::insertLayer(int index, Layer *layer)
     beginInsertRows(QModelIndex(), index, index);
     mMap->insertLayer(index, layer);
     endInsertRows();
+    emit layerAdded(index);
 }
 
 Layer *LayerTableModel::takeLayerAt(int index)
@@ -122,5 +124,6 @@ Layer *LayerTableModel::takeLayerAt(int index)
     beginRemoveRows(QModelIndex(), index, index);
     Layer *layer = mMap->takeLayerAt(index);
     endRemoveRows();
+    emit layerRemoved(index);
     return layer;
 }

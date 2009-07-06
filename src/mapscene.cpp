@@ -22,7 +22,6 @@
 #include "mapscene.h"
 
 #include "brushitem.h"
-#include "layertablemodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -57,10 +56,8 @@ MapScene::MapScene(QObject *parent):
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMapDocument) {
+    if (mMapDocument)
         mMapDocument->disconnect(this);
-        mMapDocument->layerModel()->disconnect(this);
-    }
 
     mMapDocument = mapDocument;
     refreshScene();
@@ -68,6 +65,12 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
                 this, SLOT(repaintRegion(QRegion)));
+        connect(mMapDocument, SIGNAL(layerAdded(int)),
+                this, SLOT(layerAdded(int)));
+        connect(mMapDocument, SIGNAL(layerRemoved(int)),
+                this, SLOT(layerRemoved(int)));
+        connect(mMapDocument, SIGNAL(layerChanged(int)),
+                this, SLOT(layerChanged(int)));
         connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
                 this, SLOT(currentLayerChanged()));
         connect(mMapDocument, SIGNAL(objectsAdded(QList<MapObject*>)),
@@ -76,16 +79,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(objectsRemoved(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
-
-        // TODO: This should really be more optimal (adding/removing as
-        // necessary)
-        LayerTableModel *layerModel = mMapDocument->layerModel();
-        connect(layerModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                this, SLOT(refreshScene()));
-        connect(layerModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-                this, SLOT(refreshScene()));
-        connect(layerModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-                this, SLOT(layerChanged(QModelIndex)));
     }
 
     mBrush->setMapDocument(mapDocument);
@@ -116,26 +109,11 @@ void MapScene::refreshScene()
             map->width() * map->tileWidth(),
             map->height() * map->tileHeight());
 
-    int z = 0;
     int layerIndex = 0;
     foreach (Layer *layer, map->layers()) {
-        QGraphicsItem *layerItem = 0;
-        if (TileLayer *tl = dynamic_cast<TileLayer*>(layer)) {
-            TileLayerItem *item = new TileLayerItem(tl);
-            item->setZValue(z++);
-            addItem(item);
-            layerItem = item;
-        } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
-            ObjectGroupItem *ogItem = new ObjectGroupItem(og);
-            ogItem->setZValue(z++);
-            foreach (MapObject *object, og->objects()) {
-                MapObjectItem *item = new MapObjectItem(object, ogItem);
-                mObjectItems.insert(object, item);
-            }
-            addItem(ogItem);
-            layerItem = ogItem;
-        }
-        layerItem->setVisible(layer->isVisible());
+        QGraphicsItem *layerItem = createLayerItem(layer);
+        layerItem->setZValue(layerIndex);
+        addItem(layerItem);
         mLayerItems[layerIndex] = layerItem;
         ++layerIndex;
     }
@@ -143,6 +121,27 @@ void MapScene::refreshScene()
     TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
     selectionItem->setZValue(10000 - 1);
     addItem(selectionItem);
+}
+
+QGraphicsItem *MapScene::createLayerItem(Layer *layer)
+{
+    QGraphicsItem *layerItem = 0;
+
+    if (TileLayer *tl = dynamic_cast<TileLayer*>(layer)) {
+        layerItem = new TileLayerItem(tl);
+    } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
+        ObjectGroupItem *ogItem = new ObjectGroupItem(og);
+        foreach (MapObject *object, og->objects()) {
+            MapObjectItem *item = new MapObjectItem(object, ogItem);
+            mObjectItems.insert(object, item);
+        }
+        layerItem = ogItem;
+    }
+
+    Q_ASSERT(layerItem);
+
+    layerItem->setVisible(layer->isVisible());
+    return layerItem;
 }
 
 void MapScene::repaintRegion(const QRegion &region)
@@ -159,6 +158,11 @@ void MapScene::currentTileChanged(Tile *tile)
     mBrush->setTile(tile);
 }
 
+/**
+ * Adapts the scene to the currently selected layer. If an object group is
+ * selected, it makes sure the objects in the group are movable. It also
+ * hides and shows the brush as appropriate.
+ */
 void MapScene::updateInteractionMode()
 {
     updateBrushVisibility();
@@ -195,17 +199,36 @@ void MapScene::currentLayerChanged()
     updateInteractionMode();
 }
 
+void MapScene::layerAdded(int index)
+{
+    Layer *layer = mMapDocument->map()->layers().at(index);
+    QGraphicsItem *layerItem = createLayerItem(layer);
+    addItem(layerItem);
+    mLayerItems.insert(index, layerItem);
+
+    int z = 0;
+    foreach (QGraphicsItem *item, mLayerItems)
+        item->setZValue(z++);
+}
+
+void MapScene::layerRemoved(int index)
+{
+    QGraphicsItem *layerItem = mLayerItems.at(index);
+    if (layerItem == mSelectedObjectGroupItem)
+        mSelectedObjectGroupItem = 0;
+
+    delete layerItem;
+    mLayerItems.remove(index);
+}
+
 /**
  * A layer has changed. At the moment, this can only mean its visibility has
  * changed.
  */
-void MapScene::layerChanged(const QModelIndex &index)
+void MapScene::layerChanged(int index)
 {
-    const LayerTableModel *layerModel = mMapDocument->layerModel();
-    const int layerIndex = layerModel->toLayerIndex(index);
-    const Layer *layer = mMapDocument->map()->layers().at(layerIndex);
-
-    mLayerItems.at(layerIndex)->setVisible(layer->isVisible());
+    const Layer *layer = mMapDocument->map()->layers().at(index);
+    mLayerItems.at(index)->setVisible(layer->isVisible());
     updateInteractionMode();
 }
 

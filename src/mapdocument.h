@@ -138,6 +138,10 @@ public:
     QRect toPixelCoordinates(const QRect &r) const;
 
 signals:
+    void layerAdded(int index);
+    void layerRemoved(int index);
+    void layerChanged(int index);
+
     /**
      * Emitted when the current layer changes.
      */

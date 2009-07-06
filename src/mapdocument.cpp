@@ -42,6 +42,11 @@ MapDocument::MapDocument(Map *map):
     mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;
     mLayerModel->setMap(mMap);
 
+    // Forward signals emitted from the layer model
+    connect(mLayerModel, SIGNAL(layerAdded(int)), SIGNAL(layerAdded(int)));
+    connect(mLayerModel, SIGNAL(layerRemoved(int)), SIGNAL(layerRemoved(int)));
+    connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
+
     // Register tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
     foreach (Tileset *tileset, mMap->tilesets().values())

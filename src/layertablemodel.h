@@ -106,6 +106,11 @@ public:
      */
     Layer *takeLayerAt(int index);
 
+signals:
+    void layerAdded(int index);
+    void layerRemoved(int index);
+    void layerChanged(int index);
+
 private:
     Map *mMap;
 };
