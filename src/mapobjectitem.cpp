@@ -84,6 +84,9 @@ ResizeHandle::ResizeHandle(MapObjectItem *mapObjectItem)
 {
     setCursor(Qt::SizeFDiagCursor);
     setFlag(QGraphicsItem::ItemIsMovable);
+#if QT_VERSION >= 0x040600
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+#endif
 }
 
 QRectF ResizeHandle::boundingRect() const
@@ -165,6 +168,9 @@ MapObjectItem::MapObjectItem(MapObject *object, ObjectGroupItem *parent):
     syncWithMapObject();
     mResizeHandle->setVisible(false);
     setCursor(Qt::ArrowCursor);
+#if QT_VERSION >= 0x040600
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+#endif
 }
 
 void MapObjectItem::syncWithMapObject()
