@@ -87,8 +87,7 @@ QVariant LayerTableModel::headerData(int section, Qt::Orientation orientation,
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
-        case 0: return tr("Visible");
-        case 1: return tr("Name");
+        case 0: return tr("Layer");
         }
     }
     return QVariant();
