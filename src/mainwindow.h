@@ -89,6 +89,7 @@ private slots:
     void selectNone();
     void moveLayerUp();
     void moveLayerDown();
+    void deleteLayer();
 
 private:
     /**

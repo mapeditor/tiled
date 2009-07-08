@@ -93,6 +93,8 @@
     </property>
     <addaction name="actionMoveLayerUp"/>
     <addaction name="actionMoveLayerDown"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeleteLayer"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -238,7 +240,7 @@
      <normaloff>:/images/16x16/go-up.png</normaloff>:/images/16x16/go-up.png</iconset>
    </property>
    <property name="text">
-    <string>Move Layer Up</string>
+    <string>Move Layer &amp;Up</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Up</string>
@@ -250,7 +252,7 @@
      <normaloff>:/images/16x16/go-down.png</normaloff>:/images/16x16/go-down.png</iconset>
    </property>
    <property name="text">
-    <string>Move Layer Down</string>
+    <string>Move Layer Dow&amp;n</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Down</string>
@@ -278,6 +280,11 @@
   <action name="actionNewTileset">
    <property name="text">
     <string>New &amp;Tileset...</string>
+   </property>
+  </action>
+  <action name="actionDeleteLayer">
+   <property name="text">
+    <string>&amp;Delete Layer</string>
    </property>
   </action>
  </widget>

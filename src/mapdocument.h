@@ -44,8 +44,9 @@ class TileSelectionModel;
  * any editing operations will cause the appropriate signals to be emitted, in
  * order to allow the GUI to update accordingly.
  *
- * At the moment the map document provides the layer model and keeps track of
- * the currently selected layer. It also owns the QUndoStack.
+ * At the moment the map document provides the layer model, keeps track of the
+ * the currently selected layer and provides an API for adding and removing
+ * map objects. It also owns the QUndoStack.
  */
 class MapDocument : public QObject
 {
@@ -79,17 +80,9 @@ public:
      */
     int currentLayer() const;
 
-    /**
-     * Moves the given layer up. Does nothing when no valid layer index is
-     * given.
-     */
     void moveLayerUp(int index);
-
-    /**
-     * Moves the given layer down. Does nothing when no valid layer index is
-     * given.
-     */
     void moveLayerDown(int index);
+    void deleteLayer(int index);
 
     /**
      * Adds a tileset to this map. Emits the appropriate signal.

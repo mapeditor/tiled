@@ -21,6 +21,7 @@
 
 #include "mapdocument.h"
 
+#include "deletelayer.h"
 #include "layertablemodel.h"
 #include "map.h"
 #include "movelayer.h"
@@ -86,6 +87,10 @@ int MapDocument::currentLayer() const
     return mCurrentLayer;
 }
 
+/**
+ * Moves the given layer up. Does nothing when no valid layer index is
+ * given.
+ */
 void MapDocument::moveLayerUp(int index)
 {
     if (index < 0 || index >= mMap->layers().size() - 1)
@@ -94,12 +99,27 @@ void MapDocument::moveLayerUp(int index)
     mUndoStack->push(new MoveLayer(this, index, MoveLayer::Up));
 }
 
+/**
+ * Moves the given layer down. Does nothing when no valid layer index is
+ * given.
+ */
 void MapDocument::moveLayerDown(int index)
 {
-    if (index < 1)
+    if (index < 1 || index >= mMap->layers().size())
         return;
 
     mUndoStack->push(new MoveLayer(this, index, MoveLayer::Down));
+}
+
+/**
+ * Deletes the given layer.
+ */
+void MapDocument::deleteLayer(int index)
+{
+    if (index < 0 || index >= mMap->layers().size())
+        return;
+
+    mUndoStack->push(new DeleteLayer(this, index));
 }
 
 void MapDocument::addTileset(Tileset *tileset)

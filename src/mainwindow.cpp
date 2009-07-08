@@ -126,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
     connect(mUi.actionMoveLayerDown, SIGNAL(triggered()),
             SLOT(moveLayerDown()));
+    connect(mUi.actionDeleteLayer, SIGNAL(triggered()), SLOT(deleteLayer()));
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -449,6 +450,7 @@ void MainWindow::updateActions()
     mUi.actionSaveAs->setEnabled(map);
     mUi.actionSelectAll->setEnabled(map);
     mUi.actionSelectNone->setEnabled(map && !selection.isEmpty());
+    mUi.actionNewTileset->setEnabled(map);
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
 
@@ -456,6 +458,7 @@ void MainWindow::updateActions()
     mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
                                       currentLayer < layerCount - 1);
     mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);
+    mUi.actionDeleteLayer->setEnabled(currentLayer >= 0);
 }
 
 void MainWindow::selectAll()
@@ -480,6 +483,12 @@ void MainWindow::moveLayerDown()
 {
     if (mMapDocument)
         mMapDocument->moveLayerDown(mMapDocument->currentLayer());
+}
+
+void MainWindow::deleteLayer()
+{
+    if (mMapDocument)
+        mMapDocument->deleteLayer(mMapDocument->currentLayer());
 }
 
 void MainWindow::writeSettings()
