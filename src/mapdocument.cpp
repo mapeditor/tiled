@@ -43,8 +43,8 @@ MapDocument::MapDocument(Map *map):
     mLayerModel->setMap(mMap);
 
     // Forward signals emitted from the layer model
-    connect(mLayerModel, SIGNAL(layerAdded(int)), SIGNAL(layerAdded(int)));
-    connect(mLayerModel, SIGNAL(layerRemoved(int)), SIGNAL(layerRemoved(int)));
+    connect(mLayerModel, SIGNAL(layerAdded(int)), SLOT(onLayerAdded(int)));
+    connect(mLayerModel, SIGNAL(layerRemoved(int)), SLOT(onLayerRemoved(int)));
     connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
 
     // Register tileset references
@@ -65,10 +65,19 @@ MapDocument::~MapDocument()
 
 void MapDocument::setCurrentLayer(int index)
 {
-    if (index == mCurrentLayer)
-        return;
-
+    Q_ASSERT(index >= -1 && index < mMap->layers().size());
     mCurrentLayer = index;
+
+    /* This function always sends the following signal, even if the index
+     * didn't actually change. This is because the selected index in the layer
+     * table view might be out of date anyway, and would otherwise not be
+     * properly updated.
+     *
+     * This problem happens due to the selection model not sending signals
+     * about changes to its current index when it is due to insertion/removal
+     * of other items. The selected item doesn't change in that case, but our
+     * layer index does.
+     */
     emit currentLayerChanged(mCurrentLayer);
 }
 
@@ -141,4 +150,22 @@ QRect MapDocument::toPixelCoordinates(const QRect &r) const
                  r.y() * tileHeight,
                  r.width() * tileWidth,
                  r.height() * tileHeight);
+}
+
+void MapDocument::onLayerAdded(int index)
+{
+    emit layerAdded(index);
+
+    // Select the first layer that gets added to the map
+    if (mMap->layers().size() == 1)
+        setCurrentLayer(0);
+}
+
+void MapDocument::onLayerRemoved(int index)
+{
+    // Bring the current layer index to safety
+    if (mCurrentLayer == mMap->layers().size())
+        setCurrentLayer(mCurrentLayer - 1);
+
+    emit layerRemoved(index);
 }

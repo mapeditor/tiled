@@ -85,6 +85,11 @@ public:
     int toLayerIndex(const QModelIndex &index) const;
 
     /**
+     * Returns the row associated with the given layer index.
+     */
+    int layerIndexToRow(int layerIndex) const;
+
+    /**
      * Returns the map associated with this model.
      */
     Map *map() const { return mMap; }

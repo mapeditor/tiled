@@ -103,6 +103,11 @@ int LayerTableModel::toLayerIndex(const QModelIndex &index) const
     }
 }
 
+int LayerTableModel::layerIndexToRow(int layerIndex) const
+{
+    return mMap->layers().size() - layerIndex - 1;
+}
+
 void LayerTableModel::setMap(Map *map)
 {
     if (mMap == map)
@@ -113,7 +118,8 @@ void LayerTableModel::setMap(Map *map)
 
 void LayerTableModel::insertLayer(int index, Layer *layer)
 {
-    beginInsertRows(QModelIndex(), index, index);
+    const int row = layerIndexToRow(index) + 1;
+    beginInsertRows(QModelIndex(), row, row);
     mMap->insertLayer(index, layer);
     endInsertRows();
     emit layerAdded(index);
@@ -121,7 +127,8 @@ void LayerTableModel::insertLayer(int index, Layer *layer)
 
 Layer *LayerTableModel::takeLayerAt(int index)
 {
-    beginRemoveRows(QModelIndex(), index, index);
+    const int row = layerIndexToRow(index);
+    beginRemoveRows(QModelIndex(), row, row);
     Layer *layer = mMap->takeLayerAt(index);
     endRemoveRows();
     emit layerRemoved(index);

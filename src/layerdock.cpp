@@ -101,8 +101,7 @@ void LayerView::currentLayerChanged(int index)
 {
     if (index > -1) {
         const LayerTableModel *layerModel = mMapDocument->layerModel();
-        const int layerCount = layerModel->rowCount();
-        const int row = layerCount - index - 1;
+        const int row = layerModel->layerIndexToRow(index);
         setCurrentIndex(layerModel->index(row, 0));
     } else {
         setCurrentIndex(QModelIndex());

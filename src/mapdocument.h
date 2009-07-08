@@ -162,6 +162,10 @@ signals:
     void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
 
+private slots:
+    void onLayerAdded(int index);
+    void onLayerRemoved(int index);
+
 private:
     Map *mMap;
     LayerTableModel *mLayerModel;
