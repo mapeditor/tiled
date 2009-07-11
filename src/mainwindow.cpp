@@ -91,6 +91,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QUndoView *undoView = new QUndoView(mUndoGroup, undoViewDock);
     QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
     undoView->setCleanIcon(cleanIcon);
+    undoView->setUniformItemSizes(true);
     undoViewDock->setWidget(undoView);
     addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
