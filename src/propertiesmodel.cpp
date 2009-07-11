@@ -30,7 +30,7 @@ PropertiesModel::PropertiesModel(QObject *parent):
 
 int PropertiesModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mKeys.size();
+    return parent.isValid() ? 0 : (mKeys.size() + 1);
 }
 
 int PropertiesModel::columnCount(const QModelIndex &parent) const
@@ -41,10 +41,14 @@ int PropertiesModel::columnCount(const QModelIndex &parent) const
 QVariant PropertiesModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
-        const QString &key = mKeys.at(index.row());
-        switch (index.column()) {
-            case 0: return key;
-            case 1: return mProperties.value(key);
+        if (index.row() < mKeys.size()) {
+            const QString &key = mKeys.at(index.row());
+            switch (index.column()) {
+                case 0: return key;
+                case 1: return mProperties.value(key);
+            }
+        } else if (index.column() == 0) {
+            return tr("<new property>");
         }
     }
     return QVariant();
@@ -52,27 +56,43 @@ QVariant PropertiesModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags PropertiesModel::flags(const QModelIndex &index) const
 {
-    return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+    Qt::ItemFlags f = QAbstractTableModel::flags(index);
+    if (index.row() < mKeys.size() || index.column() == 0)
+        f |= Qt::ItemIsEditable;
+    return f;
 }
 
 bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
                               int role)
 {
-    if (role == Qt::EditRole) {
-        const QString &key = mKeys.at(index.row());
-        if (index.column() == 0) { // Edit name
+    if (role != Qt::EditRole)
+        return false;
+
+    if (index.column() == 0) { // Edit name
+        QString text = value.toString();
+        if (index.row() == mKeys.size()) {
+            // Add a new property
+            if (text == tr("<new property>"))
+                return false;
+            mProperties.insert(text, QString());
+        } else {
+            const QString &key = mKeys.at(index.row());
             const QString propertyValue = mProperties.value(key);
             mProperties.remove(key);
-            mProperties.insert(value.toString(), propertyValue);
-            // Have to request keys and reset because of possible reordering
-            mKeys = mProperties.keys();
-            reset();
+            mProperties.insert(text, propertyValue);
         }
-        else if (index.column() == 1) { // Edit value
-            mProperties.insert(key, value.toString());
-            emit dataChanged(index, index);
-        }
+        // Have to request keys and reset because of possible reordering
+        mKeys = mProperties.keys();
+        reset();
+        return true;
     }
+    else if (index.column() == 1) { // Edit value
+        const QString &key = mKeys.at(index.row());
+        mProperties.insert(key, value.toString());
+        emit dataChanged(index, index);
+        return true;
+    }
+
     return false;
 }
 
