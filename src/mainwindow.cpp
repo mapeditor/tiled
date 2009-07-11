@@ -98,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionNew->setShortcut(QKeySequence::New);
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
+    mUi.actionClose->setShortcut(QKeySequence::Close);
     mUi.actionCopy->setShortcut(QKeySequence::Copy);
     mUi.actionPaste->setShortcut(QKeySequence::Paste);
     mUi.actionSelectAll->setShortcut(QKeySequence::SelectAll);
@@ -117,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
+    connect(mUi.actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
     connect(mUi.actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mUi.actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
@@ -324,6 +326,15 @@ bool MainWindow::confirmSave()
     }
 }
 
+void MainWindow::closeFile()
+{
+    if (confirmSave()) {
+        setMapDocument(0);
+        setCurrentFileName(QString());
+        updateActions();
+    }
+}
+
 void MainWindow::newTileset()
 {
     if (!mMapDocument)
@@ -449,6 +460,7 @@ void MainWindow::updateActions()
 
     mUi.actionSave->setEnabled(map && !mUndoGroup->isClean());
     mUi.actionSaveAs->setEnabled(map);
+    mUi.actionClose->setEnabled(map);
     mUi.actionSelectAll->setEnabled(map);
     mUi.actionSelectNone->setEnabled(map && !selection.isEmpty());
     mUi.actionNewTileset->setEnabled(map);

@@ -53,6 +53,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
+    <addaction name="actionClose"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -285,6 +286,15 @@
   <action name="actionDeleteLayer">
    <property name="text">
     <string>&amp;Delete Layer</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/window-close.png</normaloff>:/images/16x16/window-close.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Close</string>
    </property>
   </action>
  </widget>
