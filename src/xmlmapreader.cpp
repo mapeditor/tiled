@@ -240,18 +240,23 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         }
 
         if (mTileLayer) {
-            mTileId = atts.value(QLatin1String("gid")).toInt();
-            mTileLayer->setTile(mTileX, mTileY, mMap->tileForGid(mTileId));
+            if (mTileY >= mTileLayer->height()) {
+                mError = QObject::tr("Too many <tile> elements.");
+                return false;
+            }
+
+            const int gid = atts.value(QLatin1String("gid")).toInt();
+            mTileLayer->setTile(mTileX, mTileY, mMap->tileForGid(gid));
 
             mTileX++;
             if (mTileX >= mTileLayer->width()) {
                 mTileX = 0;
                 mTileY++;
             }
-
-            if (mTileY >= mTileLayer->height()) {
-                // TODO
-            }
+        } else {
+            // We're in a <tileset> element. Store the tile id, so that
+            // properties can be associated with it later.
+            mTileId = atts.value(QLatin1String("id")).toInt();
         }
     }
     else if (localName == QLatin1String("image"))
