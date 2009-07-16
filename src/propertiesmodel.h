@@ -69,6 +69,11 @@ public:
                  int role = Qt::EditRole);
 
     /**
+     * Deletes the list of properties associated with the given indices.
+     */
+    void deleteProperties(const QModelIndexList &indices);
+
+    /**
      * Returns the headers for the table.
      */
     QVariant headerData(int section, Qt::Orientation orientation,

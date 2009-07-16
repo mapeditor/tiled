@@ -96,6 +96,22 @@ bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
     return false;
 }
 
+void PropertiesModel::deleteProperties(const QModelIndexList &indices)
+{
+    QList<QString> keys;
+    foreach (const QModelIndex &index, indices) {
+        if (index.row() < mKeys.size())
+            keys.append(mKeys.at(index.row()));
+    }
+    foreach (const QString &key, keys) {
+        const int row = mKeys.indexOf(key);
+        beginRemoveRows(QModelIndex(), row, row);
+        mProperties.remove(key);
+        mKeys = mProperties.keys();
+        endRemoveRows();
+    }
+}
+
 QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const
 {

@@ -68,6 +68,9 @@ public:
      */
     void accept();
 
+private slots:
+    void deleteSelectedProperties();
+
 private:
     Ui::PropertiesDialog *mUi;
     PropertiesModel *mModel;

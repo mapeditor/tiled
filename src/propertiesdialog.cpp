@@ -25,6 +25,7 @@
 #include "changeproperties.h"
 #include "propertiesmodel.h"
 
+#include <QShortcut>
 #include <QUndoStack>
 
 using namespace Tiled::Internal;
@@ -42,6 +43,16 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
 
     mModel = new PropertiesModel(this);
     mUi->propertiesView->setModel(mModel);
+
+    QHeaderView *header = mUi->propertiesView->header();
+    header->setResizeMode(QHeaderView::ResizeToContents);
+
+    // Delete selected properties when the delete key is pressed
+    QShortcut *deleteShortcut = new QShortcut(QKeySequence(Qt::Key_Delete),
+                                              mUi->propertiesView);
+    deleteShortcut->setContext(Qt::WidgetShortcut);
+    connect(deleteShortcut, SIGNAL(activated()),
+            this, SLOT(deleteSelectedProperties()));
 
     setWindowTitle(tr("%1 Properties").arg(mKind));
 }
@@ -66,4 +77,16 @@ void PropertiesDialog::accept()
                                               properties));
     }
     QDialog::accept();
+}
+
+void PropertiesDialog::deleteSelectedProperties()
+{
+    QItemSelectionModel *selection = mUi->propertiesView->selectionModel();
+    const QModelIndexList indices = selection->selectedRows();
+    if (!indices.isEmpty()) {
+        mModel->deleteProperties(indices);
+        selection->select(mUi->propertiesView->currentIndex(),
+                          QItemSelectionModel::ClearAndSelect |
+                          QItemSelectionModel::Rows);
+    }
 }
