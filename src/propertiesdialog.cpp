@@ -44,9 +44,6 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
     mModel = new PropertiesModel(this);
     mUi->propertiesView->setModel(mModel);
 
-    QHeaderView *header = mUi->propertiesView->header();
-    header->setResizeMode(QHeaderView::ResizeToContents);
-
     // Delete selected properties when the delete key is pressed
     QShortcut *deleteShortcut = new QShortcut(QKeySequence(Qt::Key_Delete),
                                               mUi->propertiesView);

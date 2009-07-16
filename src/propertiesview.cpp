@@ -1,0 +1,59 @@
+/*
+ * Tiled Map Editor (Qt)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
+ *
+ * This file is part of Tiled (Qt).
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include "propertiesview.h"
+
+#include <QHeaderView>
+#include <QKeyEvent>
+
+using namespace Tiled::Internal;
+
+PropertiesView::PropertiesView(QWidget *parent):
+    QTreeView(parent)
+{
+    header()->setResizeMode(QHeaderView::ResizeToContents);
+}
+
+void PropertiesView::keyPressEvent(QKeyEvent *event)
+{
+    QTreeView::keyPressEvent(event);
+    if (event->isAccepted())
+        return;
+
+    const QModelIndex index = currentIndex();
+
+    // Allow left and right keys to change the current index, even in row
+    // selection mode
+    switch (event->key()) {
+    case Qt::Key_Left:
+        if (index.column() > 0 && model()->columnCount(index.parent()) > 1) {
+            setCurrentIndex(model()->index(index.row(), index.column() - 1));
+            event->accept();
+        }
+        break;
+    case Qt::Key_Right:
+        if (index.column() < model()->columnCount(index.parent()) - 1) {
+            setCurrentIndex(model()->index(index.row(), index.column() + 1));
+            event->accept();
+        }
+        break;
+    }
+}

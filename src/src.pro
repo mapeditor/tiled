@@ -48,7 +48,8 @@ SOURCES += aboutdialog.cpp \
     movemapobject.cpp \
     resizemapobject.cpp \
     removemapobject.cpp \
-    deletelayer.cpp
+    deletelayer.cpp \
+    propertiesview.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -92,7 +93,8 @@ HEADERS += aboutdialog.h \
     movemapobject.h \
     resizemapobject.h \
     removemapobject.h \
-    deletelayer.h
+    deletelayer.h \
+    propertiesview.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
