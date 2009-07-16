@@ -333,8 +333,7 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
     const int startX = (int) (rect.x() / tileWidth) * tileWidth;
     const int startY = (int) (rect.y() / tileHeight) * tileHeight;
     const int endX = qMin((int) rect.right(), map->width() * tileWidth + 1);
-    const int endY = qMin((int) rect.bottom(),
-                          map->height() * tileHeight + 1);
+    const int endY = qMin((int) rect.bottom(), map->height() * tileHeight + 1);
 
     QColor gridColor(Qt::black);
     gridColor.setAlpha(128);
@@ -342,15 +341,19 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
     QPen gridPen(gridColor);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
 
-    gridPen.setDashOffset(rect.top());
-    painter->setPen(gridPen);
-    for (int x = startX; x < endX; x += tileWidth)
-        painter->drawLine(x, (int) rect.top(), x, endY - 1);
+    if ((int) rect.top() < endY) {
+        gridPen.setDashOffset(rect.top());
+        painter->setPen(gridPen);
+        for (int x = startX; x < endX; x += tileWidth)
+            painter->drawLine(x, (int) rect.top(), x, endY - 1);
+    }
 
-    gridPen.setDashOffset(rect.left());
-    painter->setPen(gridPen);
-    for (int y = startY; y < endY; y += tileHeight)
-        painter->drawLine((int) rect.left(), y, endX - 1, y);
+    if ((int) rect.left() < endX) {
+        gridPen.setDashOffset(rect.left());
+        painter->setPen(gridPen);
+        for (int y = startY; y < endY; y += tileHeight)
+            painter->drawLine((int) rect.left(), y, endX - 1, y);
+    }
 }
 
 bool MapScene::event(QEvent *event)
