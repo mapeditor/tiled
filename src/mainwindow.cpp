@@ -98,7 +98,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi.actionNew->setShortcut(QKeySequence::New);
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
+#if QT_VERSION >= 0x040500
+    mUi.actionSaveAs->setShortcut(QKeySequence::SaveAs);
+#endif
     mUi.actionClose->setShortcut(QKeySequence::Close);
+#if QT_VERSION >= 0x040600
+    mUi.actionQuit->setShortcut(QKeySequence::Quit);
+#endif
     mUi.actionCopy->setShortcut(QKeySequence::Copy);
     mUi.actionPaste->setShortcut(QKeySequence::Paste);
     mUi.actionSelectAll->setShortcut(QKeySequence::SelectAll);
