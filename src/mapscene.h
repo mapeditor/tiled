@@ -69,21 +69,6 @@ public:
      */
     bool isGridVisible() const { return mGridVisible; }
 
-    /**
-     * Sets whether the brush is visible.
-     */
-    void setBrushVisible(bool visible);
-
-    /**
-     * Returns whether the brush is visible.
-     */
-    bool isBrushVisible() const { return mBrushVisible; }
-
-    /**
-     * Returns the TileLayerItem for the layer with the given name.
-     */
-    TileLayerItem *layer(const QString &layer);
-
 public slots:
     /**
      * Sets whether the tile grid is visible.
@@ -136,6 +121,7 @@ private:
     QGraphicsItem *createLayerItem(Layer *layer);
 
     void updateInteractionMode();
+    void setBrushVisible(bool visible);
     void updateBrushVisibility();
 
     MapDocument *mMapDocument;
