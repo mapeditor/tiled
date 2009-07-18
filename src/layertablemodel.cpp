@@ -37,7 +37,7 @@ LayerTableModel::LayerTableModel(QObject *parent):
 
 int LayerTableModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : (mMap ? mMap->layers().size() : 0);
+    return parent.isValid() ? 0 : (mMap ? mMap->layerCount() : 0);
 }
 
 int LayerTableModel::columnCount(const QModelIndex &parent) const
@@ -51,7 +51,7 @@ QVariant LayerTableModel::data(const QModelIndex &index, int role) const
     if (layerIndex < 0)
         return QVariant();
 
-    const Layer *layer = mMap->layers().at(layerIndex);
+    const Layer *layer = mMap->layerAt(layerIndex);
 
     switch (role) {
     case Qt::DisplayRole:
@@ -71,7 +71,7 @@ bool LayerTableModel::setData(const QModelIndex &index, const QVariant &value,
     if (layerIndex < 0)
         return false;
 
-    Layer *layer = mMap->layers().at(layerIndex);
+    Layer *layer = mMap->layerAt(layerIndex);
 
     if (role == Qt::CheckStateRole) {
         Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
@@ -114,7 +114,7 @@ QVariant LayerTableModel::headerData(int section, Qt::Orientation orientation,
 int LayerTableModel::toLayerIndex(const QModelIndex &index) const
 {
     if (index.isValid()) {
-        return mMap->layers().size() - index.row() - 1;
+        return mMap->layerCount() - index.row() - 1;
     } else {
         return -1;
     }
@@ -122,7 +122,7 @@ int LayerTableModel::toLayerIndex(const QModelIndex &index) const
 
 int LayerTableModel::layerIndexToRow(int layerIndex) const
 {
-    return mMap->layers().size() - layerIndex - 1;
+    return mMap->layerCount() - layerIndex - 1;
 }
 
 void LayerTableModel::setMapDocument(MapDocument *mapDocument)
@@ -157,7 +157,7 @@ Layer *LayerTableModel::takeLayerAt(int index)
 void LayerTableModel::renameLayer(int layerIndex, const QString &name)
 {
     const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
-    Layer *layer = mMap->layers().at(layerIndex);
+    Layer *layer = mMap->layerAt(layerIndex);
     layer->setName(name);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layerIndex);

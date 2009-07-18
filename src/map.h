@@ -94,7 +94,20 @@ public:
     void adjustMaxTileHeight(int height);
 
     /**
-     * Returns the list of layers of this map.
+     * Returns the number of layers of this map.
+     */
+    int layerCount() const
+    { return mLayers.size(); }
+
+    /**
+     * Returns the layer at the specified index.
+     */
+    Layer *layerAt(int index) const
+    { return mLayers.at(index); }
+
+    /**
+     * Returns the list of layers of this map. This is useful when you want to
+     * use foreach.
      */
     const QList<Layer*> &layers() const { return mLayers; }
 

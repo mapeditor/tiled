@@ -122,7 +122,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     QAction *layerProperties = menu.addAction(tr("Properties..."));
 
     if (menu.exec(event->globalPos()) == layerProperties) {
-        Layer *layer = mMapDocument->map()->layers().at(layerIndex);
+        Layer *layer = mMapDocument->map()->layerAt(layerIndex);
 
         PropertiesDialog propertiesDialog(tr("Layer"),
                                           mMapDocument->undoStack(),

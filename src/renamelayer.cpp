@@ -51,7 +51,7 @@ void RenameLayer::redo()
 
 void RenameLayer::swapName()
 {
-    const Layer *layer = mMapDocument->map()->layers().at(mLayerIndex);
+    const Layer *layer = mMapDocument->map()->layerAt(mLayerIndex);
     const QString previousName = layer->name();
     mMapDocument->layerModel()->renameLayer(mLayerIndex, mName);
     mName = previousName;

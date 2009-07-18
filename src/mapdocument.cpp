@@ -40,7 +40,7 @@ MapDocument::MapDocument(Map *map):
     mSelectionModel(new TileSelectionModel(this, this)),
     mUndoStack(new QUndoStack(this))
 {
-    mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;
+    mCurrentLayer = (map->layerCount() == 0) ? -1 : 0;
     mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
@@ -66,7 +66,7 @@ MapDocument::~MapDocument()
 
 void MapDocument::setCurrentLayer(int index)
 {
-    Q_ASSERT(index >= -1 && index < mMap->layers().size());
+    Q_ASSERT(index >= -1 && index < mMap->layerCount());
     mCurrentLayer = index;
 
     /* This function always sends the following signal, even if the index
@@ -93,7 +93,7 @@ int MapDocument::currentLayer() const
  */
 void MapDocument::moveLayerUp(int index)
 {
-    if (index < 0 || index >= mMap->layers().size() - 1)
+    if (index < 0 || index >= mMap->layerCount() - 1)
         return;
 
     mUndoStack->push(new MoveLayer(this, index, MoveLayer::Up));
@@ -105,7 +105,7 @@ void MapDocument::moveLayerUp(int index)
  */
 void MapDocument::moveLayerDown(int index)
 {
-    if (index < 1 || index >= mMap->layers().size())
+    if (index < 1 || index >= mMap->layerCount())
         return;
 
     mUndoStack->push(new MoveLayer(this, index, MoveLayer::Down));
@@ -116,7 +116,7 @@ void MapDocument::moveLayerDown(int index)
  */
 void MapDocument::deleteLayer(int index)
 {
-    if (index < 0 || index >= mMap->layers().size())
+    if (index < 0 || index >= mMap->layerCount())
         return;
 
     mUndoStack->push(new DeleteLayer(this, index));
@@ -177,14 +177,14 @@ void MapDocument::onLayerAdded(int index)
     emit layerAdded(index);
 
     // Select the first layer that gets added to the map
-    if (mMap->layers().size() == 1)
+    if (mMap->layerCount() == 1)
         setCurrentLayer(0);
 }
 
 void MapDocument::onLayerRemoved(int index)
 {
     // Bring the current layer index to safety
-    if (mCurrentLayer == mMap->layers().size())
+    if (mCurrentLayer == mMap->layerCount())
         setCurrentLayer(mCurrentLayer - 1);
 
     emit layerRemoved(index);

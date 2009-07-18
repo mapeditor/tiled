@@ -103,7 +103,7 @@ void MapScene::refreshScene()
 
     const Map *map = mMapDocument->map();
 
-    mLayerItems.resize(map->layers().size());
+    mLayerItems.resize(map->layerCount());
 
     setSceneRect(0, 0,
             map->width() * map->tileWidth(),
@@ -171,7 +171,7 @@ void MapScene::updateInteractionMode()
 
     const int index = mMapDocument->currentLayer();
     if (index != -1) {
-        Layer *layer = mMapDocument->map()->layers().at(index);
+        Layer *layer = mMapDocument->map()->layerAt(index);
         if (layer->isVisible() && dynamic_cast<ObjectGroup*>(layer))
             ogItem = static_cast<ObjectGroupItem*>(mLayerItems.at(index));
     }
@@ -201,7 +201,7 @@ void MapScene::currentLayerChanged()
 
 void MapScene::layerAdded(int index)
 {
-    Layer *layer = mMapDocument->map()->layers().at(index);
+    Layer *layer = mMapDocument->map()->layerAt(index);
     QGraphicsItem *layerItem = createLayerItem(layer);
     addItem(layerItem);
     mLayerItems.insert(index, layerItem);
@@ -226,7 +226,7 @@ void MapScene::layerRemoved(int index)
  */
 void MapScene::layerChanged(int index)
 {
-    const Layer *layer = mMapDocument->map()->layers().at(index);
+    const Layer *layer = mMapDocument->map()->layerAt(index);
     QGraphicsItem *layerItem = mLayerItems.at(index);
 
     if (layer->isVisible() != layerItem->isVisible()) {
@@ -315,7 +315,7 @@ void MapScene::updateBrushVisibility()
     if (mBrushVisible && mMapDocument) {
         const int currentLayer = mMapDocument->currentLayer();
         if (currentLayer >= 0) {
-            Layer *layer = mMapDocument->map()->layers().at(currentLayer);
+            Layer *layer = mMapDocument->map()->layerAt(currentLayer);
             if (layer->isVisible() && dynamic_cast<TileLayer*>(layer))
                 showBrush = true;
         }

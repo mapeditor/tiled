@@ -473,7 +473,7 @@ void MainWindow::updateActions()
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
 
-    const int layerCount = (map) ? map->layers().size() : 0;
+    const int layerCount = map ? map->layerCount() : 0;
     mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
                                       currentLayer < layerCount - 1);
     mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);

@@ -91,7 +91,7 @@ void BrushItem::doPaint()
 {
     // This method shouldn't be called when current layer is not a tile layer
     const int currentLayerIndex = mMapDocument->currentLayer();
-    Layer *currentLayer = mMapDocument->map()->layers().at(currentLayerIndex);
+    Layer *currentLayer = mMapDocument->map()->layerAt(currentLayerIndex);
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     Q_ASSERT(tileLayer);
 
