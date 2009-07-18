@@ -22,7 +22,7 @@
 #include "movelayer.h"
 
 #include "layer.h"
-#include "layertablemodel.h"
+#include "layermodel.h"
 #include "mapdocument.h"
 
 #include <QObject>
@@ -54,7 +54,7 @@ void MoveLayer::moveLayer()
     const bool selectedBefore = (mIndex == currentIndex);
     const int prevIndex = mIndex;
 
-    LayerTableModel *layerModel = mMapDocument->layerModel();
+    LayerModel *layerModel = mMapDocument->layerModel();
     Layer *layer = layerModel->takeLayerAt(mIndex);
 
     // Change the direction and index to swap undo/redo

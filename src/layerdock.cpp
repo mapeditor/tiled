@@ -22,7 +22,7 @@
 #include "layerdock.h"
 
 #include "layer.h"
-#include "layertablemodel.h"
+#include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "propertiesdialog.h"
@@ -100,7 +100,7 @@ void LayerView::currentRowChanged(const QModelIndex &index)
 void LayerView::currentLayerChanged(int index)
 {
     if (index > -1) {
-        const LayerTableModel *layerModel = mMapDocument->layerModel();
+        const LayerModel *layerModel = mMapDocument->layerModel();
         const int row = layerModel->layerIndexToRow(index);
         setCurrentIndex(layerModel->index(row, 0));
     } else {
@@ -113,7 +113,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     if (!mMapDocument)
         return;
     const QModelIndex index = indexAt(event->pos());
-    const LayerTableModel *m = mMapDocument->layerModel();
+    const LayerModel *m = mMapDocument->layerModel();
     const int layerIndex = m->toLayerIndex(index);
     if (layerIndex < 0)
         return;

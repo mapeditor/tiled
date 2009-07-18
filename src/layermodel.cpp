@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "layertablemodel.h"
+#include "layermodel.h"
 
 #include "map.h"
 #include "mapdocument.h"
@@ -29,23 +29,18 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-LayerTableModel::LayerTableModel(QObject *parent):
-    QAbstractTableModel(parent),
+LayerModel::LayerModel(QObject *parent):
+    QAbstractListModel(parent),
     mMap(0)
 {
 }
 
-int LayerTableModel::rowCount(const QModelIndex &parent) const
+int LayerModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : (mMap ? mMap->layerCount() : 0);
 }
 
-int LayerTableModel::columnCount(const QModelIndex &parent) const
-{
-    return parent.isValid() ? 0 : 1;
-}
-
-QVariant LayerTableModel::data(const QModelIndex &index, int role) const
+QVariant LayerModel::data(const QModelIndex &index, int role) const
 {
     const int layerIndex = toLayerIndex(index);
     if (layerIndex < 0)
@@ -64,7 +59,7 @@ QVariant LayerTableModel::data(const QModelIndex &index, int role) const
     }
 }
 
-bool LayerTableModel::setData(const QModelIndex &index, const QVariant &value,
+bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
                               int role)
 {
     const int layerIndex = toLayerIndex(index);
@@ -92,15 +87,15 @@ bool LayerTableModel::setData(const QModelIndex &index, const QVariant &value,
     return false;
 }
 
-Qt::ItemFlags LayerTableModel::flags(const QModelIndex &index) const
+Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags rc = QAbstractTableModel::flags(index);
+    Qt::ItemFlags rc = QAbstractListModel::flags(index);
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     return rc;
 }
 
-QVariant LayerTableModel::headerData(int section, Qt::Orientation orientation,
+QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
@@ -111,7 +106,7 @@ QVariant LayerTableModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-int LayerTableModel::toLayerIndex(const QModelIndex &index) const
+int LayerModel::toLayerIndex(const QModelIndex &index) const
 {
     if (index.isValid()) {
         return mMap->layerCount() - index.row() - 1;
@@ -120,12 +115,12 @@ int LayerTableModel::toLayerIndex(const QModelIndex &index) const
     }
 }
 
-int LayerTableModel::layerIndexToRow(int layerIndex) const
+int LayerModel::layerIndexToRow(int layerIndex) const
 {
     return mMap->layerCount() - layerIndex - 1;
 }
 
-void LayerTableModel::setMapDocument(MapDocument *mapDocument)
+void LayerModel::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
         return;
@@ -135,7 +130,7 @@ void LayerTableModel::setMapDocument(MapDocument *mapDocument)
     reset();
 }
 
-void LayerTableModel::insertLayer(int index, Layer *layer)
+void LayerModel::insertLayer(int index, Layer *layer)
 {
     const int row = layerIndexToRow(index) + 1;
     beginInsertRows(QModelIndex(), row, row);
@@ -144,7 +139,7 @@ void LayerTableModel::insertLayer(int index, Layer *layer)
     emit layerAdded(index);
 }
 
-Layer *LayerTableModel::takeLayerAt(int index)
+Layer *LayerModel::takeLayerAt(int index)
 {
     const int row = layerIndexToRow(index);
     beginRemoveRows(QModelIndex(), row, row);
@@ -154,7 +149,7 @@ Layer *LayerTableModel::takeLayerAt(int index)
     return layer;
 }
 
-void LayerTableModel::renameLayer(int layerIndex, const QString &name)
+void LayerModel::renameLayer(int layerIndex, const QString &name)
 {
     const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
     Layer *layer = mMap->layerAt(layerIndex);

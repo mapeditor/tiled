@@ -22,7 +22,7 @@
 #include "renamelayer.h"
 
 #include "layer.h"
-#include "layertablemodel.h"
+#include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 

@@ -36,7 +36,7 @@ class Tileset;
 
 namespace Internal {
 
-class LayerTableModel;
+class LayerModel;
 class TileSelectionModel;
 
 /**
@@ -93,7 +93,7 @@ public:
      * Returns the layer model. Can be used to modify the layer stack of the
      * map, and to display the layer stack in a view.
      */
-    LayerTableModel *layerModel() const { return mLayerModel; }
+    LayerModel *layerModel() const { return mLayerModel; }
 
     /**
      * Returns the selection model.
@@ -161,7 +161,7 @@ private slots:
 
 private:
     Map *mMap;
-    LayerTableModel *mLayerModel;
+    LayerModel *mLayerModel;
     TileSelectionModel *mSelectionModel;
     int mCurrentLayer;
     QUndoStack *mUndoStack;

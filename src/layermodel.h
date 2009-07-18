@@ -19,10 +19,10 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef LAYERTABLEMODEL_H
-#define LAYERTABLEMODEL_H
+#ifndef LAYERMODEL_H
+#define LAYERMODEL_H
 
-#include <QAbstractTableModel>
+#include <QAbstractListModel>
 
 namespace Tiled {
 
@@ -38,7 +38,7 @@ class MapDocument;
  * The model also allows modification of the layer stack while keeping the
  * layer views up to date.
  */
-class LayerTableModel : public QAbstractTableModel
+class LayerModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -46,17 +46,12 @@ public:
     /**
      * Constructor.
      */
-    LayerTableModel(QObject *parent = 0);
+    LayerModel(QObject *parent = 0);
 
     /**
      * Returns the number of rows.
      */
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
-
-    /**
-     * Returns the number of columns.
-     */
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
     /**
      * Returns the data stored under the given <i>role</i> for the item
@@ -133,4 +128,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // LAYERTABLEMODEL_H
+#endif // LAYERMODEL_H

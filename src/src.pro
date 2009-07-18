@@ -12,7 +12,7 @@ SOURCES += aboutdialog.cpp \
     compression.cpp \
     layer.cpp \
     layerdock.cpp \
-    layertablemodel.cpp \
+    layermodel.cpp \
     main.cpp \
     mainwindow.cpp \
     map.cpp \
@@ -56,7 +56,7 @@ HEADERS += aboutdialog.h \
     compression.h \
     layer.h \
     layerdock.h \
-    layertablemodel.h \
+    layermodel.h \
     mainwindow.h \
     mapreaderinterface.h \
     mapwriterinterface.h \

@@ -22,7 +22,7 @@
 #include "deletelayer.h"
 
 #include "layer.h"
-#include "layertablemodel.h"
+#include "layermodel.h"
 #include "mapdocument.h"
 
 namespace Tiled {

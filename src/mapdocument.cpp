@@ -22,7 +22,7 @@
 #include "mapdocument.h"
 
 #include "deletelayer.h"
-#include "layertablemodel.h"
+#include "layermodel.h"
 #include "map.h"
 #include "movelayer.h"
 #include "tileselectionmodel.h"
@@ -36,7 +36,7 @@ using namespace Tiled::Internal;
 
 MapDocument::MapDocument(Map *map):
     mMap(map),
-    mLayerModel(new LayerTableModel(this)),
+    mLayerModel(new LayerModel(this)),
     mSelectionModel(new TileSelectionModel(this, this)),
     mUndoStack(new QUndoStack(this))
 {
