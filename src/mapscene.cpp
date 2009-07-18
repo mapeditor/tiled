@@ -222,14 +222,17 @@ void MapScene::layerRemoved(int index)
 }
 
 /**
- * A layer has changed. At the moment, this can only mean its visibility has
- * changed.
+ * A layer has changed. This can mean that the layer visibility has changed.
  */
 void MapScene::layerChanged(int index)
 {
     const Layer *layer = mMapDocument->map()->layers().at(index);
-    mLayerItems.at(index)->setVisible(layer->isVisible());
-    updateInteractionMode();
+    QGraphicsItem *layerItem = mLayerItems.at(index);
+
+    if (layer->isVisible() != layerItem->isVisible()) {
+        layerItem->setVisible(layer->isVisible());
+        updateInteractionMode();
+    }
 }
 
 /**

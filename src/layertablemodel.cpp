@@ -20,8 +20,11 @@
  */
 
 #include "layertablemodel.h"
+
 #include "map.h"
+#include "mapdocument.h"
 #include "layer.h"
+#include "renamelayer.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -52,6 +55,7 @@ QVariant LayerTableModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DisplayRole:
+    case Qt::EditRole:
         return layer->name();
     case Qt::CheckStateRole:
         return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
@@ -64,22 +68,35 @@ bool LayerTableModel::setData(const QModelIndex &index, const QVariant &value,
                               int role)
 {
     const int layerIndex = toLayerIndex(index);
-    if (role != Qt::CheckStateRole || layerIndex < 0)
+    if (layerIndex < 0)
         return false;
 
     Layer *layer = mMap->layers().at(layerIndex);
-    Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
-    layer->setVisible(c == Qt::Checked);
-    emit dataChanged(index, index);
-    emit layerChanged(layerIndex);
-    return true;
+
+    if (role == Qt::CheckStateRole) {
+        Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
+        layer->setVisible(c == Qt::Checked);
+        emit dataChanged(index, index);
+        emit layerChanged(layerIndex);
+        return true;
+    } else  if (role == Qt::EditRole) {
+        const QString newName = value.toString();
+        if (layer->name() != newName) {
+            RenameLayer *rename = new RenameLayer(mMapDocument, layerIndex,
+                                                  value.toString());
+            mMapDocument->undoStack()->push(rename);
+        }
+        return true;
+    }
+
+    return false;
 }
 
 Qt::ItemFlags LayerTableModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractTableModel::flags(index);
     if (index.column() == 0)
-        rc |= Qt::ItemIsUserCheckable;
+        rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     return rc;
 }
 
@@ -108,11 +125,13 @@ int LayerTableModel::layerIndexToRow(int layerIndex) const
     return mMap->layers().size() - layerIndex - 1;
 }
 
-void LayerTableModel::setMap(Map *map)
+void LayerTableModel::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMap == map)
+    if (mMapDocument == mapDocument)
         return;
-    mMap = map;
+
+    mMapDocument = mapDocument;
+    mMap = mMapDocument->map();
     reset();
 }
 
@@ -133,4 +152,13 @@ Layer *LayerTableModel::takeLayerAt(int index)
     endRemoveRows();
     emit layerRemoved(index);
     return layer;
+}
+
+void LayerTableModel::renameLayer(int layerIndex, const QString &name)
+{
+    const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
+    Layer *layer = mMap->layers().at(layerIndex);
+    layer->setName(name);
+    emit dataChanged(modelIndex, modelIndex);
+    emit layerChanged(layerIndex);
 }

@@ -31,6 +31,8 @@ class Map;
 
 namespace Internal {
 
+class MapDocument;
+
 /**
  * A model wrapping the layers of a map. Used to display the layers in a view.
  * The model also allows modification of the layer stack while keeping the
@@ -81,23 +83,25 @@ public:
 
     /**
      * Returns the layer index associated with a given model index.
+     * \sa layerIndexToRow
      */
     int toLayerIndex(const QModelIndex &index) const;
 
     /**
      * Returns the row associated with the given layer index.
+     * \sa toLayerIndex
      */
     int layerIndexToRow(int layerIndex) const;
 
     /**
-     * Returns the map associated with this model.
+     * Returns the map document associated with this model.
      */
-    Map *map() const { return mMap; }
+    MapDocument *mapDocument() const { return mMapDocument; }
 
     /**
-     * Sets the map associated with this model.
+     * Sets the map document associated with this model.
      */
-    void setMap(Map *map);
+    void setMapDocument(MapDocument *mapDocument);
 
     /**
      * Adds a layer to this model's map, inserting it at the given index.
@@ -111,12 +115,18 @@ public:
      */
     Layer *takeLayerAt(int index);
 
+    /**
+     * Renames the layer at the given index.
+     */
+    void renameLayer(int index, const QString &name);
+
 signals:
     void layerAdded(int index);
     void layerRemoved(int index);
     void layerChanged(int index);
 
 private:
+    MapDocument *mMapDocument;
     Map *mMap;
 };
 

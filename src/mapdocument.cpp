@@ -41,7 +41,7 @@ MapDocument::MapDocument(Map *map):
     mUndoStack(new QUndoStack(this))
 {
     mCurrentLayer = (map->layers().isEmpty()) ? -1 : 0;
-    mLayerModel->setMap(mMap);
+    mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
     connect(mLayerModel, SIGNAL(layerAdded(int)), SLOT(onLayerAdded(int)));
