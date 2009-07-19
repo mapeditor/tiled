@@ -80,9 +80,14 @@ public:
      */
     int currentLayer() const;
 
+    enum LayerType {
+        TileLayerType,
+        ObjectLayerType
+    };
+    void addLayer(LayerType layerType, const QString &name);
     void moveLayerUp(int index);
     void moveLayerDown(int index);
-    void deleteLayer(int index);
+    void removeLayer(int index);
 
     /**
      * Adds a tileset to this map. Emits the appropriate signal.

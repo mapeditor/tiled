@@ -92,10 +92,13 @@
     <property name="title">
      <string>&amp;Layer</string>
     </property>
+    <addaction name="actionAddTileLayer"/>
+    <addaction name="actionAddObjectLayer"/>
+    <addaction name="separator"/>
     <addaction name="actionMoveLayerUp"/>
     <addaction name="actionMoveLayerDown"/>
     <addaction name="separator"/>
-    <addaction name="actionDeleteLayer"/>
+    <addaction name="actionRemoveLayer"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -283,9 +286,9 @@
     <string>New &amp;Tileset...</string>
    </property>
   </action>
-  <action name="actionDeleteLayer">
+  <action name="actionRemoveLayer">
    <property name="text">
-    <string>&amp;Delete Layer</string>
+    <string>&amp;Remove Layer</string>
    </property>
   </action>
   <action name="actionClose">
@@ -295,6 +298,16 @@
    </property>
    <property name="text">
     <string>&amp;Close</string>
+   </property>
+  </action>
+  <action name="actionAddTileLayer">
+   <property name="text">
+    <string>Add Tile Layer...</string>
+   </property>
+  </action>
+  <action name="actionAddObjectLayer">
+   <property name="text">
+    <string>Add Object Layer...</string>
    </property>
   </action>
  </widget>

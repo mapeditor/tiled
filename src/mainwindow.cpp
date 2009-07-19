@@ -24,6 +24,7 @@
 #include "aboutdialog.h"
 #include "layer.h"
 #include "layerdock.h"
+#include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -31,6 +32,7 @@
 #include "newtilesetdialog.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
@@ -39,6 +41,7 @@
 
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSessionManager>
@@ -132,10 +135,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi.actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
+    connect(mUi.actionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
+    connect(mUi.actionAddObjectLayer, SIGNAL(triggered()),
+            SLOT(addObjectLayer()));
     connect(mUi.actionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
     connect(mUi.actionMoveLayerDown, SIGNAL(triggered()),
             SLOT(moveLayerDown()));
-    connect(mUi.actionDeleteLayer, SIGNAL(triggered()), SLOT(deleteLayer()));
+    connect(mUi.actionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -477,7 +483,7 @@ void MainWindow::updateActions()
     mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
                                       currentLayer < layerCount - 1);
     mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);
-    mUi.actionDeleteLayer->setEnabled(currentLayer >= 0);
+    mUi.actionRemoveLayer->setEnabled(currentLayer >= 0);
 }
 
 void MainWindow::selectAll()
@@ -492,6 +498,40 @@ void MainWindow::selectNone()
         mMapDocument->selectionModel()->selectNone();
 }
 
+/**
+ * Helper function for adding a layer after having the user choose its name.
+ */
+void MainWindow::addLayer(MapDocument::LayerType type)
+{
+    if (!mMapDocument)
+        return;
+
+    QString title;
+    switch (type) {
+    case MapDocument::TileLayerType:
+        title = tr("Add Tile Layer"); break;
+    case MapDocument::ObjectLayerType:
+        title = tr("Add Object Layer"); break;
+    }
+
+    bool ok;
+    QString text = QInputDialog::getText(this, title,
+                                         tr("Layer name:"), QLineEdit::Normal,
+                                         tr("New Layer"), &ok);
+    if (ok)
+        mMapDocument->addLayer(type, text);
+}
+
+void MainWindow::addTileLayer()
+{
+    addLayer(MapDocument::TileLayerType);
+}
+
+void MainWindow::addObjectLayer()
+{
+    addLayer(MapDocument::ObjectLayerType);
+}
+
 void MainWindow::moveLayerUp()
 {
     if (mMapDocument)
@@ -504,10 +544,10 @@ void MainWindow::moveLayerDown()
         mMapDocument->moveLayerDown(mMapDocument->currentLayer());
 }
 
-void MainWindow::deleteLayer()
+void MainWindow::removeLayer()
 {
     if (mMapDocument)
-        mMapDocument->deleteLayer(mMapDocument->currentLayer());
+        mMapDocument->removeLayer(mMapDocument->currentLayer());
 }
 
 void MainWindow::writeSettings()

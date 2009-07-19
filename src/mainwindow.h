@@ -22,6 +22,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "mapdocument.h"
+
 #include <QMainWindow>
 #include <QSettings>
 #include "ui_mainwindow.h"
@@ -31,11 +33,16 @@ class QUndoGroup;
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
 class MapScene;
 class LayerDock;
 class TilesetDock;
 
+/**
+ * The main editor window.
+ *
+ * Represents the main user interface, including the menu bar. It keeps track
+ * of the current file and is also the entry point of all menu actions.
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -60,13 +67,6 @@ public:
      */
     void openLastFile();
 
-    /**
-     * Save the current map to the given file name. When saved succesfully, the
-     * file is added to the list of recent files.
-     * @return <code>true</code> on success, <code>false</code> on failure
-     */
-    bool saveFile(const QString &fileName);
-
 protected:
     void closeEvent(QCloseEvent *event);
     void changeEvent(QEvent *event);
@@ -88,9 +88,11 @@ private slots:
 
     void selectAll();
     void selectNone();
+    void addTileLayer();
+    void addObjectLayer();
     void moveLayerUp();
     void moveLayerDown();
-    void deleteLayer();
+    void removeLayer();
 
 private:
     /**
@@ -101,6 +103,14 @@ private:
       *         failed.
       */
     bool confirmSave();
+
+    /**
+     * Save the current map to the given file name. When saved succesfully, the
+     * file is added to the list of recent files.
+     * @return <code>true</code> on success, <code>false</code> on failure
+     */
+    bool saveFile(const QString &fileName);
+
     void writeSettings();
     void readSettings();
     void setCurrentFileName(const QString &fileName);
@@ -117,6 +127,8 @@ private:
      * Update the recent files menu.
      */
     void updateRecentFiles();
+
+    void addLayer(MapDocument::LayerType type);
 
     Ui::MainWindowClass mUi;
     MapDocument *mMapDocument;

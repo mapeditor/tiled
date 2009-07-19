@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "deletelayer.h"
+#include "addremovelayer.h"
 
 #include "layer.h"
 #include "layermodel.h"
@@ -28,20 +28,21 @@
 namespace Tiled {
 namespace Internal {
 
-DeleteLayer::DeleteLayer(MapDocument *mapDocument, int index)
+AddRemoveLayer::AddRemoveLayer(MapDocument *mapDocument,
+                               int index,
+                               Layer *layer)
     : mMapDocument(mapDocument)
-    , mLayer(0)
+    , mLayer(layer)
     , mIndex(index)
 {
-    setText(QObject::tr("Delete Layer"));
 }
 
-DeleteLayer::~DeleteLayer()
+AddRemoveLayer::~AddRemoveLayer()
 {
     delete mLayer;
 }
 
-void DeleteLayer::undo()
+void AddRemoveLayer::addLayer()
 {
     const int currentLayer = mMapDocument->currentLayer();
 
@@ -53,7 +54,7 @@ void DeleteLayer::undo()
         mMapDocument->setCurrentLayer(currentLayer + 1);
 }
 
-void DeleteLayer::redo()
+void AddRemoveLayer::removeLayer()
 {
     const int currentLayer = mMapDocument->currentLayer();
 

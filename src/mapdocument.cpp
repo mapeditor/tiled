@@ -21,10 +21,12 @@
 
 #include "mapdocument.h"
 
-#include "deletelayer.h"
+#include "addremovelayer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "movelayer.h"
+#include "objectgroup.h"
+#include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetmanager.h"
 
@@ -88,6 +90,26 @@ int MapDocument::currentLayer() const
 }
 
 /**
+ * Adds a layer of the given type to the top of the layer stack.
+ */
+void MapDocument::addLayer(LayerType layerType, const QString &name)
+{
+    Layer *layer;
+    switch (layerType) {
+    case TileLayerType:
+        layer = new TileLayer(name, 0, 0, mMap->width(), mMap->height());
+        break;
+    case ObjectLayerType:
+        layer = new ObjectGroup(name, 0, 0, mMap->width(), mMap->height());
+        break;
+    }
+
+    const int index = mMap->layerCount();
+    mUndoStack->push(new AddLayer(this, index, layer));
+    setCurrentLayer(index);
+}
+
+/**
  * Moves the given layer up. Does nothing when no valid layer index is
  * given.
  */
@@ -112,14 +134,14 @@ void MapDocument::moveLayerDown(int index)
 }
 
 /**
- * Deletes the given layer.
+ * Removes the given layer.
  */
-void MapDocument::deleteLayer(int index)
+void MapDocument::removeLayer(int index)
 {
     if (index < 0 || index >= mMap->layerCount())
         return;
 
-    mUndoStack->push(new DeleteLayer(this, index));
+    mUndoStack->push(new RemoveLayer(this, index));
 }
 
 void MapDocument::addTileset(Tileset *tileset)
