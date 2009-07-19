@@ -22,7 +22,7 @@
 #ifndef TILESETVIEW_H
 #define TILESETVIEW_H
 
-#include <QListView>
+#include <QTableView>
 
 namespace Tiled {
 namespace Internal {
@@ -30,7 +30,7 @@ namespace Internal {
 /**
  * The tileset view. May only be used with the TilesetModel.
  */
-class TilesetView : public QListView
+class TilesetView : public QTableView
 {
 public:
     TilesetView(QWidget *parent = 0);

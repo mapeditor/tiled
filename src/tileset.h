@@ -31,6 +31,9 @@ class Tile;
 
 /**
  * A tileset, representing a set of tiles.
+ *
+ * This class currently only supports loading tiles from a tileset image, using
+ * loadFromImage(). There is no way to add or remove arbitrary tiles.
  */
 class Tileset
 {
@@ -50,7 +53,8 @@ public:
         mTileWidth(tileWidth),
         mTileHeight(tileHeight),
         mTileSpacing(tileSpacing),
-        mMargin(margin)
+        mMargin(margin),
+        mColumnCount(0)
     {
     }
 
@@ -111,6 +115,11 @@ public:
     int tileCount() const { return mTiles.size(); }
 
     /**
+     * Returns the number of tile columns in the tileset image.
+     */
+    int columnCount() const { return mColumnCount; }
+
+    /**
      * Load this tileset from the given tileset image. This will cause any
      * existing tiles in this tileset to be thrown out.
      *
@@ -138,6 +147,7 @@ private:
     int mTileHeight;
     int mTileSpacing;
     int mMargin;
+    int mColumnCount;
     QList<Tile*> mTiles;
 };
 

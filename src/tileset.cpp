@@ -57,6 +57,8 @@ bool Tileset::loadFromImage(const QString &fileName)
                                    mTiles.size(),
                                    this));
 
+    mColumnCount = (img.width() - mMargin * 2 + mTileSpacing)
+                   / (mTileWidth + mTileSpacing);
     mImageSource = fileName;
     return true;
 }

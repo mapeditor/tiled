@@ -25,6 +25,7 @@
 #include "tilesetmodel.h"
 
 #include <QAbstractItemDelegate>
+#include <QHeaderView>
 #include <QPainter>
 
 using namespace Tiled;
@@ -81,14 +82,23 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 } // anonymous namespace
 
 TilesetView::TilesetView(QWidget *parent):
-    QListView(parent)
+    QTableView(parent)
 {
-    setWrapping(true);
-    setFlow(LeftToRight);
-    setResizeMode(QListView::Adjust);
+    setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this));
-    setUniformItemSizes(true);
+    setShowGrid(false);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+
+    QHeaderView *header = horizontalHeader();
+    header->hide();
+    header->setResizeMode(QHeaderView::ResizeToContents);
+    header->setMinimumSectionSize(1);
+
+    header = verticalHeader();
+    header->hide();
+    header->setResizeMode(QHeaderView::ResizeToContents);
+    header->setMinimumSectionSize(1);
 }
 
 QSize TilesetView::sizeHint() const

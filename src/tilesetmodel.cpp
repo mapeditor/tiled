@@ -36,18 +36,33 @@ TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
 
 int TilesetModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : (mTileset ? mTileset->tileCount() : 0);
+    if (parent.isValid())
+        return 0;
+
+    const int tiles = mTileset->tileCount();
+    const int columns = mTileset->columnCount();
+
+    int rows = 1;
+    if (columns > 0) {
+        rows = tiles / columns;
+        if (tiles % columns > 0)
+            ++rows;
+    }
+
+    return rows;
 }
 
 int TilesetModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 1;
+    return parent.isValid() ? 0 : mTileset->columnCount();
 }
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole)
-        return mTileset->tileAt(index.row())->image();
+    if (role == Qt::DisplayRole) {
+        if (Tile *tile = tileAt(index))
+            return tile->image();
+    }
 
     return QVariant();
 }
@@ -57,7 +72,8 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    return mTileset->tileAt(index.row());
+    const int i = index.column() + index.row() * mTileset->columnCount();
+    return mTileset->tileAt(i);
 }
 
 void TilesetModel::setTileset(Tileset *tileset)
