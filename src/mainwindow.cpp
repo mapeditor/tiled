@@ -138,6 +138,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
     connect(mUi.actionAddObjectLayer, SIGNAL(triggered()),
             SLOT(addObjectLayer()));
+    connect(mUi.actionDuplicateLayer, SIGNAL(triggered()),
+            SLOT(duplicateLayer()));
     connect(mUi.actionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
     connect(mUi.actionMoveLayerDown, SIGNAL(triggered()),
             SLOT(moveLayerDown()));
@@ -482,6 +484,7 @@ void MainWindow::updateActions()
     mUi.actionAddObjectLayer->setEnabled(map);
 
     const int layerCount = map ? map->layerCount() : 0;
+    mUi.actionDuplicateLayer->setEnabled(currentLayer >= 0);
     mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
                                       currentLayer < layerCount - 1);
     mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);
@@ -532,6 +535,12 @@ void MainWindow::addTileLayer()
 void MainWindow::addObjectLayer()
 {
     addLayer(MapDocument::ObjectLayerType);
+}
+
+void MainWindow::duplicateLayer()
+{
+    if (mMapDocument)
+        mMapDocument->duplicateLayer();
 }
 
 void MainWindow::moveLayerUp()

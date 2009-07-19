@@ -71,6 +71,11 @@ public:
      */
     int removeObject(MapObject *object);
 
+    Layer *clone() const;
+
+protected:
+    ObjectGroup *initializeClone(ObjectGroup *clone) const;
+
 private:
     QList<MapObject*> mObjects;
 };

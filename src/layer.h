@@ -119,7 +119,15 @@ public:
      */
     QMap<QString, QString> properties() const { return mProperties; }
 
+    /**
+     * Returns a duplicate of this layer. The caller is responsible for the
+     * ownership of this newly created layer.
+     */
+    virtual Layer *clone() const = 0;
+
 protected:
+    Layer *initializeClone(Layer *clone) const;
+
     QString mName;
     int mX;
     int mY;

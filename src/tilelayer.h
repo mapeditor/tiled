@@ -59,6 +59,11 @@ public:
      */
     void setTile(int x, int y, Tile *tile);
 
+    virtual Layer *clone() const;
+
+protected:
+    TileLayer *initializeClone(TileLayer *clone) const;
+
 private:
     int mMaxTileHeight;
     QVector<Tile*> mTiles;

@@ -94,6 +94,7 @@
     </property>
     <addaction name="actionAddTileLayer"/>
     <addaction name="actionAddObjectLayer"/>
+    <addaction name="actionDuplicateLayer"/>
     <addaction name="separator"/>
     <addaction name="actionMoveLayerUp"/>
     <addaction name="actionMoveLayerDown"/>
@@ -308,6 +309,11 @@
   <action name="actionAddObjectLayer">
    <property name="text">
     <string>Add Object Layer...</string>
+   </property>
+  </action>
+  <action name="actionDuplicateLayer">
+   <property name="text">
+    <string>Duplicate Layer</string>
    </property>
   </action>
  </widget>

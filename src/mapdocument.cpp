@@ -110,6 +110,24 @@ void MapDocument::addLayer(LayerType layerType, const QString &name)
 }
 
 /**
+ * Duplicates the currently selected layer.
+ */
+void MapDocument::duplicateLayer()
+{
+    if (mCurrentLayer == -1)
+        return;
+
+    Layer *duplicate = mMap->layerAt(mCurrentLayer)->clone();
+    duplicate->setName(tr("Copy of %1").arg(duplicate->name()));
+
+    const int index = mCurrentLayer + 1;
+    QUndoCommand *cmd = new AddLayer(this, index, duplicate);
+    cmd->setText(tr("Duplicate Layer"));
+    mUndoStack->push(cmd);
+    setCurrentLayer(index);
+}
+
+/**
  * Moves the given layer up. Does nothing when no valid layer index is
  * given.
  */

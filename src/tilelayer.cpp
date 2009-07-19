@@ -48,3 +48,21 @@ void TileLayer::setTile(int x, int y, Tile *tile)
 
     mTiles[x + y * mWidth] = tile;
 }
+
+/**
+ * Returns a duplicate of this TileLayer.
+ *
+ * \sa Layer::clone()
+ */
+Layer *TileLayer::clone() const
+{
+    return initializeClone(new TileLayer(mName, mX, mY, mWidth, mHeight));
+}
+
+TileLayer *TileLayer::initializeClone(TileLayer *clone) const
+{
+    Layer::initializeClone(clone);
+    clone->mTiles = mTiles;
+    clone->mMaxTileHeight = mMaxTileHeight;
+    return clone;
+}

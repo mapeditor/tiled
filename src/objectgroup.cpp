@@ -56,3 +56,21 @@ int ObjectGroup::removeObject(MapObject *object)
     object->setObjectGroup(0);
     return index;
 }
+
+/**
+ * Returns a duplicate of this ObjectGroup.
+ *
+ * \sa Layer::clone()
+ */
+Layer *ObjectGroup::clone() const
+{
+    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight));
+}
+
+ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
+{
+    Layer::initializeClone(clone);
+    foreach (MapObject *object, mObjects)
+        clone->addObject(object->clone());
+    return clone;
+}

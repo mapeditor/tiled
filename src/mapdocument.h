@@ -85,6 +85,7 @@ public:
         ObjectLayerType
     };
     void addLayer(LayerType layerType, const QString &name);
+    void duplicateLayer();
     void moveLayerUp(int index);
     void moveLayerDown(int index);
     void removeLayer(int index);

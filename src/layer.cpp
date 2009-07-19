@@ -34,3 +34,21 @@ Layer::Layer(const QString &name, int x, int y, int width, int height):
     mMap(0)
 {
 }
+
+/**
+ * A helper function for initializing the members of the given instance to
+ * those of this layer. Used by subclasses when cloning.
+ *
+ * Layer name, position and size are not cloned, since they are assumed to have
+ * already been passed to the constructor. Also, map ownership is not cloned.
+ *
+ * \return the initialized clone (the same instance that was passed in)
+ * \sa clone()
+ */
+Layer *Layer::initializeClone(Layer *clone) const
+{
+    clone->mOpacity = mOpacity;
+    clone->mVisible = mVisible;
+    clone->mProperties = mProperties;
+    return clone;
+}

@@ -154,6 +154,12 @@ public:
     void setObjectGroup(ObjectGroup *objectGroup)
     { mObjectGroup = objectGroup; }
 
+    /**
+     * Returns a duplicate of this object. The caller is responsible for the
+     * ownership of this newly created object.
+     */
+    MapObject *clone() const;
+
 private:
     QString mName;
     QPoint mPos;

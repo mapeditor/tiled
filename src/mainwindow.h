@@ -90,6 +90,7 @@ private slots:
     void selectNone();
     void addTileLayer();
     void addObjectLayer();
+    void duplicateLayer();
     void moveLayerUp();
     void moveLayerDown();
     void removeLayer();
