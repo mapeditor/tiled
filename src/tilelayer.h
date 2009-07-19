@@ -40,8 +40,7 @@ public:
     /**
      * Constructor.
      */
-    TileLayer(const QString &name, int x, int y, int width, int height,
-              Map *map = 0);
+    TileLayer(const QString &name, int x, int y, int width, int height);
 
     /**
      * Returns the maximum tile height of this layer. Used by the layer

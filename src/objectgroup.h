@@ -39,8 +39,7 @@ public:
     /**
      * Constructor.
      */
-    ObjectGroup(const QString &name, int x, int y, int width, int height,
-                Map *map = 0);
+    ObjectGroup(const QString &name, int x, int y, int width, int height);
 
     /**
      * Destructor.

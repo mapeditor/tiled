@@ -23,8 +23,7 @@
 
 using namespace Tiled;
 
-Layer::Layer(const QString &name, int x, int y, int width, int height,
-             Map *map):
+Layer::Layer(const QString &name, int x, int y, int width, int height):
     mName(name),
     mX(x),
     mY(y),
@@ -32,6 +31,6 @@ Layer::Layer(const QString &name, int x, int y, int width, int height,
     mHeight(height),
     mOpacity(1.0f),
     mVisible(true),
-    mMap(map)
+    mMap(0)
 {
 }

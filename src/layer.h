@@ -40,8 +40,7 @@ public:
     /**
      * Constructor.
      */
-    Layer(const QString &name, int x, int y, int width, int height,
-          Map *map = 0);
+    Layer(const QString &name, int x, int y, int width, int height);
 
     /**
      * Destructor.

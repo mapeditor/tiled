@@ -26,9 +26,8 @@
 
 using namespace Tiled;
 
-TileLayer::TileLayer(const QString &name, int x, int y, int width, int height,
-                     Map *map):
-    Layer(name, x, y, width, height, map),
+TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
+    Layer(name, x, y, width, height),
     mMaxTileHeight(0),
     mTiles(width * height)
 {

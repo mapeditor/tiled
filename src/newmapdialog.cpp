@@ -53,9 +53,7 @@ MapDocument *NewMapDialog::createMap()
     Map *map = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
 
     // Add one filling tile layer to new maps
-    map->addLayer(new TileLayer(tr("Layer 1"),
-                                0, 0, mapWidth, mapHeight,
-                                map));
+    map->addLayer(new TileLayer(tr("Layer 1"), 0, 0, mapWidth, mapHeight));
 
     return new MapDocument(map);
 }
