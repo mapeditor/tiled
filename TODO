@@ -16,11 +16,11 @@ MILESTONE 2 - Basic editing features
 * Add support for saving the .tmx format
 * Add undo/redo support
 * Add basic tile brush
+* Add layer stack editing (add, remove, reordering)
 
 <--- we are about here --->
 
 * Add resizing of the map or of a map layer
-* Add layer stack editing (add, remove, reordering)
 
 MILESTONE 3 - Object editing
 

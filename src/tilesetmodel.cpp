@@ -46,9 +46,9 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DecorationRole) {
+    if (role == Qt::DisplayRole)
         return mTileset->tileAt(index.row())->image();
-    }
+
     return QVariant();
 }
 

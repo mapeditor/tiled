@@ -21,17 +21,74 @@
 
 #include "tilesetview.h"
 
+#include "tileset.h"
+#include "tilesetmodel.h"
+
+#include <QAbstractItemDelegate>
+#include <QPainter>
+
+using namespace Tiled;
 using namespace Tiled::Internal;
+
+namespace {
+
+/**
+ * The delegate for drawing tile items in the tileset view.
+ */
+class TileDelegate : public QAbstractItemDelegate
+{
+public:
+    TileDelegate(QObject *parent = 0)
+        : QAbstractItemDelegate(parent)
+    { }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const;
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const;
+};
+
+void TileDelegate::paint(QPainter *painter,
+                         const QStyleOptionViewItem &option,
+                         const QModelIndex &index) const
+{
+    // Draw the tile image
+    const QVariant display = index.model()->data(index, Qt::DisplayRole);
+    const QPixmap tileImage = display.value<QPixmap>();
+    painter->drawPixmap(option.rect.x(), option.rect.y(), tileImage);
+
+    // Overlay with highlight color when selected
+    if (option.state & QStyle::State_Selected) {
+        qreal opacity = painter->opacity();
+        painter->setOpacity(0.5);
+        painter->fillRect(option.rect.adjusted(0, 0, -1, -1),
+                          option.palette.highlight());
+        painter->setOpacity(opacity);
+    }
+}
+
+QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
+                             const QModelIndex &index) const
+{
+    const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
+    const Tileset *tileset = m->tileset();
+
+    return QSize(tileset->tileWidth() + 1,
+                 tileset->tileHeight() + 1);
+}
+
+} // anonymous namespace
 
 TilesetView::TilesetView(QWidget *parent):
     QListView(parent)
 {
-    // TODO: Write a new tileset view. Adapting a QListView to display the
-    //       tiles doesn't seem very suitable.
     setWrapping(true);
     setFlow(LeftToRight);
     setResizeMode(QListView::Adjust);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    setItemDelegate(new TileDelegate(this));
+    setUniformItemSizes(true);
 }
 
 QSize TilesetView::sizeHint() const

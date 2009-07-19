@@ -478,6 +478,8 @@ void MainWindow::updateActions()
     mUi.actionNewTileset->setEnabled(map);
     mUi.actionResizeMap->setEnabled(map);
     mUi.actionMapProperties->setEnabled(map);
+    mUi.actionAddTileLayer->setEnabled(map);
+    mUi.actionAddObjectLayer->setEnabled(map);
 
     const int layerCount = map ? map->layerCount() : 0;
     mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&

@@ -27,6 +27,9 @@
 namespace Tiled {
 namespace Internal {
 
+/**
+ * The tileset view. May only be used with the TilesetModel.
+ */
 class TilesetView : public QListView
 {
 public:
