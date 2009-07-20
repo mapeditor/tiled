@@ -24,8 +24,10 @@
 
 #include <QObject>
 
+class QPoint;
 class QRect;
 class QRegion;
+class QSize;
 class QUndoStack;
 
 namespace Tiled {
@@ -80,6 +82,12 @@ public:
      */
     int currentLayer() const;
 
+    /**
+     * Resize this map to the given \a size, while at the same time shifting
+     * the contents by \a offset.
+     */
+    void resizeMap(const QSize &size, const QPoint &offset);
+
     enum LayerType {
         TileLayerType,
         ObjectLayerType
@@ -112,6 +120,8 @@ public:
      */
     QUndoStack *undoStack() const { return mUndoStack; }
 
+    void emitMapChanged();
+
     /**
      * Emits the region changed signal for the specified region. The region
      * should be in tile coordinates. This method is used by the TilePainter.
@@ -137,6 +147,11 @@ public:
     QRect toPixelCoordinates(const QRect &r) const;
 
 signals:
+    /**
+     * Emitted when the map size or its tile size changes.
+     */
+    void mapChanged();
+
     void layerAdded(int index);
     void layerRemoved(int index);
     void layerChanged(int index);

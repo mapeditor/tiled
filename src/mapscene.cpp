@@ -63,6 +63,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     refreshScene();
 
     if (mMapDocument) {
+        connect(mMapDocument, SIGNAL(mapChanged()),
+                this, SLOT(mapChanged()));
         connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
                 this, SLOT(repaintRegion(QRegion)));
         connect(mMapDocument, SIGNAL(layerAdded(int)),
@@ -197,6 +199,17 @@ void MapScene::updateInteractionMode()
 void MapScene::currentLayerChanged()
 {
     updateInteractionMode();
+}
+
+/**
+ * Adapts the scene rect to the new map size.
+ */
+void MapScene::mapChanged()
+{
+    const Map *map = mMapDocument->map();
+    setSceneRect(0, 0,
+                 map->width() * map->tileWidth(),
+                 map->height() * map->tileHeight());
 }
 
 void MapScene::layerAdded(int index)

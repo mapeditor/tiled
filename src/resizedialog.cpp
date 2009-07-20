@@ -53,6 +53,11 @@ const QSize &ResizeDialog::newSize() const
     return mUi->resizeHelper->newSize();
 }
 
+const QPoint &ResizeDialog::offset() const
+{
+    return mUi->resizeHelper->offset();
+}
+
 void ResizeDialog::updateOffsetBounds(const QRect &bounds)
 {
     mUi->offsetXSpinBox->setRange(bounds.left(), bounds.right());

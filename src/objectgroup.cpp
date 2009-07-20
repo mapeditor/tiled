@@ -20,6 +20,8 @@
  */
 
 #include "objectgroup.h"
+
+#include "map.h"
 #include "mapobject.h"
 
 using namespace Tiled;
@@ -55,6 +57,18 @@ int ObjectGroup::removeObject(MapObject *object)
     mObjects.removeAt(index);
     object->setObjectGroup(0);
     return index;
+}
+
+void ObjectGroup::resize(const QSize &size, const QPoint &offset)
+{
+    Layer::resize(size, offset);
+
+    foreach (MapObject *object, mObjects) {
+        QPoint pos = object->position();
+        pos.rx() += offset.x() * mMap->tileWidth();
+        pos.ry() += offset.y() * mMap->tileHeight();
+        object->setPosition(pos);
+    }
 }
 
 /**

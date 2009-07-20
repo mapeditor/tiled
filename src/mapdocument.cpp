@@ -26,6 +26,8 @@
 #include "map.h"
 #include "movelayer.h"
 #include "objectgroup.h"
+#include "resizelayer.h"
+#include "resizemap.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetmanager.h"
@@ -87,6 +89,19 @@ void MapDocument::setCurrentLayer(int index)
 int MapDocument::currentLayer() const
 {
     return mCurrentLayer;
+}
+
+void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
+{
+    // Resize the map and each layer
+    mUndoStack->beginMacro(tr("Resize Map"));
+    for (int i = 0; i < mMap->layerCount(); ++i)
+        mUndoStack->push(new ResizeLayer(this, i, size, offset));
+    mUndoStack->push(new ResizeMap(this, size));
+    mUndoStack->endMacro();
+
+    // TODO: Handle layers that don't match the map size correctly
+    // TODO: Objects that fall outside of the map should be deleted
 }
 
 /**
@@ -168,6 +183,15 @@ void MapDocument::addTileset(Tileset *tileset)
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
     emit tilesetAdded(tileset);
+}
+
+/**
+ * Emits the map changed signal. This signal should be emitted after changing
+ * the map size or its tile size.
+ */
+void MapDocument::emitMapChanged()
+{
+    emit mapChanged();
 }
 
 void MapDocument::emitRegionChanged(const QRegion &region)

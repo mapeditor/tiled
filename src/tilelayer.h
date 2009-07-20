@@ -59,6 +59,14 @@ public:
      */
     void setTile(int x, int y, Tile *tile);
 
+    /**
+     * Resizes this tile layer to \a size, while shifting all tiles by
+     * \a offset.
+     *
+     * \sa Layer::resize()
+     */
+    virtual void resize(const QSize &size, const QPoint &offset);
+
     virtual Layer *clone() const;
 
 protected:

@@ -35,12 +35,21 @@ Layer::Layer(const QString &name, int x, int y, int width, int height):
 {
 }
 
+void Layer::resize(const QSize &size, const QPoint & /* offset */)
+{
+    mWidth = size.width();
+    mHeight = size.height();
+}
+
 /**
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.
  *
  * Layer name, position and size are not cloned, since they are assumed to have
- * already been passed to the constructor. Also, map ownership is not cloned.
+ * already been passed to the constructor.
+ *
+ * \warning This function also copies the map owner, but the clone is not added
+ *          to this map.
  *
  * \return the initialized clone (the same instance that was passed in)
  * \sa clone()
@@ -49,6 +58,7 @@ Layer *Layer::initializeClone(Layer *clone) const
 {
     clone->mOpacity = mOpacity;
     clone->mVisible = mVisible;
+    clone->mMap = mMap;
     clone->mProperties = mProperties;
     return clone;
 }

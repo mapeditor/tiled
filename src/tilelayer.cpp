@@ -49,6 +49,27 @@ void TileLayer::setTile(int x, int y, Tile *tile)
     mTiles[x + y * mWidth] = tile;
 }
 
+void TileLayer::resize(const QSize &size, const QPoint &offset)
+{
+    QVector<Tile*> newTiles(size.width() * size.height());
+
+    // Copy over the preserved part
+    const int startX = qMax(0, -offset.x());
+    const int startY = qMax(0, -offset.y());
+    const int endX = qMin(mWidth, size.width() - offset.x());
+    const int endY = qMin(mHeight, size.height() - offset.y());
+
+    for (int x = startX; x < endX; ++x) {
+        for (int y = startY; y < endY; ++y) {
+            const int index = x + offset.x() + (y + offset.y()) * size.width();
+            newTiles[index] = tileAt(x, y);
+        }
+    }
+
+    mTiles = newTiles;
+    Layer::resize(size, offset);
+}
+
 /**
  * Returns a duplicate of this TileLayer.
  *

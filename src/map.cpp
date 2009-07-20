@@ -102,5 +102,5 @@ Tile *Map::tileForGid(int gid) const
     const int tileId = gid - i.key();
     const Tileset *tileset = i.value();
 
-    return (tileset) ? tileset->tileAt(tileId) : 0;
+    return tileset ? tileset->tileAt(tileId) : 0;
 }

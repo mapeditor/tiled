@@ -109,6 +109,8 @@ private slots:
 
     void currentLayerChanged();
 
+    void mapChanged();
+
     void layerAdded(int index);
     void layerRemoved(int index);
     void layerChanged(int index);

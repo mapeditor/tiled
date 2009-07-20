@@ -109,6 +109,15 @@ public:
     int height() const { return mHeight; }
 
     /**
+     * Resizes this layer to \a size, while shifting its contents by \a offset.
+     * Note that the position of the layer remains unaffected.
+     *
+     * \warning This function should only be used while the layer has a map
+     *          set, see ObjectGroup::resize().
+     */
+    virtual void resize(const QSize &size, const QPoint &offset);
+
+    /**
      * Returns a pointer to the properties of this layer. This allows
      * modification of the properties.
      */

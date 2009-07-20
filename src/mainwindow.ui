@@ -195,7 +195,7 @@
      <normaloff>:/images/16x16/document-page-setup.png</normaloff>:/images/16x16/document-page-setup.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Resize</string>
+    <string>&amp;Resize Map...</string>
    </property>
   </action>
   <action name="actionMapProperties">
@@ -207,7 +207,7 @@
      <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Properties</string>
+    <string>Map &amp;Properties...</string>
    </property>
   </action>
   <action name="actionRecentFiles">

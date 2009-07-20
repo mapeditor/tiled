@@ -71,6 +71,17 @@ public:
      */
     int removeObject(MapObject *object);
 
+    /**
+     * Resizes this object group to \a size, while shifting all objects by
+     * \a offset tiles.
+     *
+     * \warning This function needs a map set, in order to convert the given
+     *          offset from tile to pixel coordinates.
+     *
+     * \sa Layer::resize()
+     */
+    virtual void resize(const QSize &size, const QPoint &offset);
+
     Layer *clone() const;
 
 protected:

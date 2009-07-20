@@ -372,15 +372,14 @@ void MainWindow::resizeMap()
     Map *map = mMapDocument->map();
 
     ResizeDialog resizeDialog(this);
-    resizeDialog.setOldSize(QSize(map->width(),
-                                  map->height()));
+    resizeDialog.setOldSize(map->size());
 
     if (resizeDialog.exec()) {
-        const QSize newSize = resizeDialog.newSize();
-        map->setWidth(newSize.width());
-        map->setHeight(newSize.height());
+        const QSize &newSize = resizeDialog.newSize();
+        const QPoint &offset = resizeDialog.offset();
+        if (newSize != map->size() || !offset.isNull())
+            mMapDocument->resizeMap(newSize, offset);
     }
-    // TODO: Actually implement map resizing
 }
 
 void MainWindow::editMapProperties()

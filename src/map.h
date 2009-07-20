@@ -24,6 +24,7 @@
 
 #include <QList>
 #include <QMap>
+#include <QSize>
 #include <QString>
 
 namespace Tiled {
@@ -69,6 +70,11 @@ public:
      * Sets the height of this map.
      */
     void setHeight(int height) { mHeight = height; }
+
+    /**
+     * Returns the size of this map. Provided for convenience.
+     */
+    QSize size() const { return QSize(mWidth, mHeight); }
 
     /**
      * Returns the tile width of this map.
@@ -139,7 +145,8 @@ public:
     QMap<QString, QString> properties() const { return mProperties; }
 
     /**
-     * Adds a tileset to this map.
+     * Adds a tileset to this map. The map does not take ownership over its
+     * tilesets.
      *
      * @param tileset the tileset to add
      * @param firstGid the map-global ID of the first tile in the tileset

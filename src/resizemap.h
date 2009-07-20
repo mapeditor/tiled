@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,40 +19,37 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef RESIZEDIALOG_H
-#define RESIZEDIALOG_H
+#ifndef RESIZEMAP_H
+#define RESIZEMAP_H
 
-#include <QDialog>
-
-namespace Ui {
-class ResizeDialog;
-}
+#include <QSize>
+#include <QUndoCommand>
 
 namespace Tiled {
 namespace Internal {
 
-class ResizeDialog : public QDialog
+class MapDocument;
+
+/**
+ * Undo command that resizes a map. This command does not touch any of the
+ * map layers. See ResizeLayer if you want that.
+ */
+class ResizeMap : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
-    ResizeDialog(QWidget *parent = 0);
+    ResizeMap(MapDocument *mapDocument, const QSize &size);
 
-    ~ResizeDialog();
-
-    void setOldSize(const QSize &size);
-
-    const QSize &newSize() const;
-    const QPoint &offset() const;
-
-private slots:
-    void updateOffsetBounds(const QRect &bounds);
+    void undo();
+    void redo();
 
 private:
-    Ui::ResizeDialog *mUi;
+    void swapSize();
+
+    MapDocument *mMapDocument;
+    QSize mSize;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // RESIZEDIALOG_H
+#endif // RESIZEMAP_H

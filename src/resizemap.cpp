@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,40 +19,41 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef RESIZEDIALOG_H
-#define RESIZEDIALOG_H
+#include "resizemap.h"
 
-#include <QDialog>
-
-namespace Ui {
-class ResizeDialog;
-}
+#include "map.h"
+#include "mapdocument.h"
 
 namespace Tiled {
 namespace Internal {
 
-class ResizeDialog : public QDialog
+ResizeMap::ResizeMap(MapDocument *mapDocument, const QSize &size)
+    : QUndoCommand(QObject::tr("Resize Map"))
+    , mMapDocument(mapDocument)
+    , mSize(size)
 {
-    Q_OBJECT
+}
 
-public:
-    ResizeDialog(QWidget *parent = 0);
+void ResizeMap::undo()
+{
+    swapSize();
+}
 
-    ~ResizeDialog();
+void ResizeMap::redo()
+{
+    swapSize();
+}
 
-    void setOldSize(const QSize &size);
+void ResizeMap::swapSize()
+{
+    Map *map = mMapDocument->map();
+    QSize oldSize(map->width(), map->height());
+    map->setWidth(mSize.width());
+    map->setHeight(mSize.height());
+    mSize = oldSize;
 
-    const QSize &newSize() const;
-    const QPoint &offset() const;
-
-private slots:
-    void updateOffsetBounds(const QRect &bounds);
-
-private:
-    Ui::ResizeDialog *mUi;
-};
+    mMapDocument->emitMapChanged();
+}
 
 } // namespace Internal
 } // namespace Tiled
-
-#endif // RESIZEDIALOG_H
