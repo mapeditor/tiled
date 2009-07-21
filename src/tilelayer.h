@@ -49,6 +49,12 @@ public:
     int maxTileHeight() const { return mMaxTileHeight; }
 
     /**
+     * Returns whether (x, y) is inside this map layer.
+     */
+    bool contains(int x, int y) const
+    { return x >= 0 && y >= 0 && x < mWidth && y < mHeight; }
+
+    /**
      * Returns the tile at the given coordinates. The coordinates have to
      * be within this layer.
      */

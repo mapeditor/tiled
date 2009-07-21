@@ -31,6 +31,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QUndoStack>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 BrushItem::BrushItem():
@@ -95,7 +96,9 @@ void BrushItem::doPaint()
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     Q_ASSERT(tileLayer);
 
-    if (TilePainter(mMapDocument, tileLayer).tileAt(mTileX, mTileY) == mTile)
+    if (TilePainter(mMapDocument, tileLayer).tileAt(mTileX, mTileY) == mTile
+        || !tileLayer->contains(mTileX - tileLayer->x(),
+                                mTileY - tileLayer->y()))
         return;
 
     PaintTile *paintTile = new PaintTile(mMapDocument, tileLayer,

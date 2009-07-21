@@ -27,14 +27,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-static inline bool outOfBounds(int x, int y, TileLayer *tileLayer)
-{
-    return (x < 0 ||
-            y < 0 ||
-            x >= tileLayer->width() ||
-            y >= tileLayer->height());
-}
-
 TilePainter::TilePainter(MapDocument *mapDocument, TileLayer *tileLayer)
     : mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
@@ -46,7 +38,7 @@ Tile *TilePainter::tileAt(int x, int y)
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (outOfBounds(layerX, layerY, mTileLayer))
+    if (!mTileLayer->contains(layerX, layerY))
         return 0;
 
     return mTileLayer->tileAt(layerX, layerY);
@@ -57,7 +49,7 @@ void TilePainter::setTile(int x, int y, Tile *tile)
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
-    if (outOfBounds(layerX, layerY, mTileLayer))
+    if (!mTileLayer->contains(layerX, layerY))
         return;
 
     mTileLayer->setTile(layerX, layerY, tile);
