@@ -104,3 +104,14 @@ Tile *Map::tileForGid(int gid) const
 
     return tileset ? tileset->tileAt(tileId) : 0;
 }
+
+Map *Map::clone() const
+{
+    Map *o = new Map(mWidth, mHeight, mTileWidth, mTileHeight);
+    o->mMaxTileHeight = mMaxTileHeight;
+    foreach (Layer *layer, mLayers)
+        o->addLayer(layer->clone());
+    o->mTilesets = mTilesets;
+    o->mProperties = mProperties;
+    return o;
+}

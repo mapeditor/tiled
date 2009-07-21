@@ -174,6 +174,8 @@ public:
      */
     Tile *tileForGid(int gid) const;
 
+    Map *clone() const;
+
 private:
     void adoptLayer(Layer *layer);
 
