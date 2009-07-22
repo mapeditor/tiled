@@ -74,7 +74,7 @@ protected:
 
 private:
     MapObjectItem *mMapObjectItem;
-    QSize mOldSize;
+    QSizeF mOldSize;
 };
 
 
@@ -149,7 +149,7 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
     else if (change == ItemPositionHasChanged) {
         // Update the size of the map object
         QPoint newPos = value.toPoint();
-        mMapObjectItem->setSize(newPos.x(), newPos.y());
+        mMapObjectItem->setSize(QSize(newPos.x(), newPos.y()));
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -179,12 +179,18 @@ void MapObjectItem::syncWithMapObject()
     if (!mObject->type().isEmpty())
         toolTip += QLatin1String(" (") + mObject->type() + QLatin1String(")");
     setToolTip(toolTip);
-    setPos(mObject->position());
 
-    if (mSize != mObject->size()) {
+    const ObjectGroup *objectGroup = mObject->objectGroup();
+    const Map *map = objectGroup->map();
+    const QSize pixelSize = map->toPixelCoordinates(mObject->size());
+    const QPoint pixelPosition = map->toPixelCoordinates(mObject->position());
+
+    setPos(pixelPosition);
+
+    if (mSize != pixelSize) {
         // Notify the graphics scene about the geometry change in advance
         prepareGeometryChange();
-        mSize = mObject->size();
+        mSize = pixelSize;
         mResizeHandle->setPos(mSize.width(), mSize.height());
     }
 }
@@ -334,18 +340,22 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
     }
     else if (change == ItemPositionHasChanged) {
         // Update the position of the map object
-        mObject->setPosition(value.toPoint());
+        const ObjectGroup *og = mObject->objectGroup();
+        const Map *map = og->map();
+        mObject->setPosition(map->toTileCoordinates(value.toPoint()));
     }
 
     return QGraphicsItem::itemChange(change, value);
 }
 
-void MapObjectItem::setSize(int width, int height)
+void MapObjectItem::setSize(const QSize &size)
 {
+    const ObjectGroup *objectGroup = mObject->objectGroup();
+    const Map *map = objectGroup->map();
+
     prepareGeometryChange();
-    mSize.setWidth(width);
-    mSize.setHeight(height);
-    mObject->setSize(mSize);
+    mSize = size;
+    mObject->setSize(map->toTileCoordinates(size));
 }
 
 MapDocument *MapObjectItem::mapDocument() const

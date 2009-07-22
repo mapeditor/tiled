@@ -27,6 +27,9 @@
 #include <QSize>
 #include <QString>
 
+class QPoint;
+class QPointF;
+
 namespace Tiled {
 
 class Layer;
@@ -98,6 +101,11 @@ public:
      * increases.
      */
     void adjustMaxTileHeight(int height);
+
+    QPoint toPixelCoordinates(const QPointF &p) const;
+    QSize toPixelCoordinates(const QSizeF &p) const;
+    QPointF toTileCoordinates(const QPoint &p) const;
+    QSizeF toTileCoordinates(const QSize &p) const;
 
     /**
      * Returns the number of layers of this map.

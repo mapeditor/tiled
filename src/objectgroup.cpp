@@ -64,9 +64,9 @@ void ObjectGroup::resize(const QSize &size, const QPoint &offset)
     Layer::resize(size, offset);
 
     foreach (MapObject *object, mObjects) {
-        QPoint pos = object->position();
-        pos.rx() += offset.x() * mMap->tileWidth();
-        pos.ry() += offset.y() * mMap->tileHeight();
+        QPointF pos = object->position();
+        pos.rx() += offset.x();
+        pos.ry() += offset.y();
         object->setPosition(pos);
     }
 }

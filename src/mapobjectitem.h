@@ -80,14 +80,15 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
-    void setSize(int width, int height);
+    void setSize(const QSize &size);
     MapDocument *mapDocument() const;
     Qt::GlobalColor colorForType() const;
 
     MapObject *mObject;
     ResizeHandle *mResizeHandle;
-    QPoint mOldPos;
-    QSize mSize;    // Copy of size for adapting to geometry change correctly
+    QPointF mOldPos;
+    /** Copy of size (in pixels) for adapting to geometry change correctly. */
+    QSize mSize;
     bool mIsEditable;
 
     friend class ResizeHandle;

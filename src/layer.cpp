@@ -46,10 +46,8 @@ void Layer::resize(const QSize &size, const QPoint & /* offset */)
  * those of this layer. Used by subclasses when cloning.
  *
  * Layer name, position and size are not cloned, since they are assumed to have
- * already been passed to the constructor.
- *
- * \warning This function also copies the map owner, but the clone is not added
- *          to this map.
+ * already been passed to the constructor. Also, map ownership is not cloned,
+ * since the clone is not added to the map.
  *
  * \return the initialized clone (the same instance that was passed in)
  * \sa clone()

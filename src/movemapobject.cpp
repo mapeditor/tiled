@@ -29,7 +29,7 @@ using namespace Tiled::Internal;
 
 MoveMapObject::MoveMapObject(MapDocument *mapDocument,
                              MapObject *mapObject,
-                             const QPoint &oldPos)
+                             const QPointF &oldPos)
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mOldPos(oldPos)

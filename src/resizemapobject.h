@@ -23,7 +23,7 @@
 #define RESIZEMAPOBJECT_H
 
 #include <QUndoCommand>
-#include <QSize>
+#include <QSizeF>
 
 namespace Tiled {
 
@@ -38,7 +38,7 @@ class ResizeMapObject : public QUndoCommand
 public:
     ResizeMapObject(MapDocument *mapDocument,
                     MapObject *mapObject,
-                    const QSize &oldSize);
+                    const QSizeF &oldSize);
 
     void undo();
     void redo();
@@ -46,8 +46,8 @@ public:
 private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
-    QSize mOldSize;
-    QSize mNewSize;
+    QSizeF mOldSize;
+    QSizeF mNewSize;
 };
 
 } // namespace Internal

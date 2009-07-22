@@ -23,8 +23,8 @@
 #define MAPOBJECT_H
 
 #include <QMap>
-#include <QPoint>
-#include <QSize>
+#include <QPointF>
+#include <QSizeF>
 #include <QString>
 
 namespace Tiled {
@@ -32,9 +32,10 @@ namespace Tiled {
 class ObjectGroup;
 
 /**
- * An object on a map. Objects are positioned and scaled by pixels instead of
- * by tiles. They are suitable for adding any kind of annotation to your maps,
- * as well as free placement of images.
+ * An object on a map. Objects are positioned and scaled using floating point
+ * values, ensuring they are not limited to the tile grid. They are suitable
+ * for adding any kind of annotation to your maps, as well as free placement of
+ * images.
  *
  * Common usages of objects include defining portals, monsters spawn areas,
  * ambient effects, scripted areas, etc.
@@ -46,7 +47,8 @@ public:
      * Constructor.
      */
     MapObject(const QString &name, const QString &type,
-              int x, int y, int width, int height);
+              qreal x, qreal y,
+              qreal width, qreal height);
 
     /**
      * Destructor.
@@ -61,65 +63,65 @@ public:
     /**
      * Returns the position of this object.
      */
-    const QPoint &position() const { return mPos; }
+    const QPointF &position() const { return mPos; }
 
     /**
      * Sets the position of this object.
      */
-    void setPosition(const QPoint &pos) { mPos = pos; }
+    void setPosition(const QPointF &pos) { mPos = pos; }
 
     /**
      * Returns the x position of this object.
      */
-    int x() const { return mPos.x(); }
+    qreal x() const { return mPos.x(); }
 
     /**
      * Sets the x position of this object.
      */
-    void setX(int x) { mPos.setX(x); }
+    void setX(qreal x) { mPos.setX(x); }
 
     /**
      * Returns the y position of this object.
      */
-    int y() const { return mPos.y(); }
+    qreal y() const { return mPos.y(); }
 
     /**
      * Sets the x position of this object.
      */
-    void setY(int y) { mPos.setY(y); }
+    void setY(qreal y) { mPos.setY(y); }
 
     /**
      * Returns the size of this object.
      */
-    const QSize &size() const { return mSize; }
+    const QSizeF &size() const { return mSize; }
 
     /**
      * Sets the size of this object.
      */
-    void setSize(const QSize &size) { mSize = size; }
+    void setSize(const QSizeF &size) { mSize = size; }
 
-    void setSize(int width, int height)
+    void setSize(qreal width, qreal height)
     { setSize(QSize(width, height)); }
 
     /**
      * Returns the width of this object.
      */
-    int width() const { return mSize.width(); }
+    qreal width() const { return mSize.width(); }
 
     /**
      * Sets the width of this object.
      */
-    void setWidth(int width) { mSize.setWidth(width); }
+    void setWidth(qreal width) { mSize.setWidth(width); }
 
     /**
      * Returns the height of this object.
      */
-    int height() const { return mSize.height(); }
+    qreal height() const { return mSize.height(); }
 
     /**
      * Sets the height of this object.
      */
-    void setHeight(int height) { mSize.setHeight(height); }
+    void setHeight(qreal height) { mSize.setHeight(height); }
 
     /**
      * Returns the type of object this is.
@@ -162,8 +164,8 @@ public:
 
 private:
     QString mName;
-    QPoint mPos;
-    QSize mSize;
+    QPointF mPos;
+    QSizeF mSize;
     QString mType;
     QMap<QString, QString> mProperties;
     ObjectGroup *mObjectGroup;

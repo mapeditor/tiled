@@ -330,7 +330,13 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const int height = atts.value(QLatin1String("height")).toInt();
         const QString type = atts.value(QLatin1String("type"));
 
-        mObject = new MapObject(name, type, x, y, width, height);
+        // Convert pixel coordinates to tile coordinates
+        const qreal xF = (qreal) x / mMap->tileWidth();
+        const qreal yF = (qreal) y / mMap->tileHeight();
+        const qreal widthF = (qreal) width / mMap->tileWidth();
+        const qreal heightF = (qreal) height / mMap->tileHeight();
+
+        mObject = new MapObject(name, type, xF, yF, widthF, heightF);
         qDebug() << "Object:" << name << type << x << y << width << height;
     }
     else {

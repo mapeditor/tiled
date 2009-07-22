@@ -29,7 +29,7 @@ using namespace Tiled::Internal;
 
 ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
-                                 const QSize &oldSize)
+                                 const QSizeF &oldSize)
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mOldSize(oldSize)

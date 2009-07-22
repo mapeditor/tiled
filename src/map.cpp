@@ -48,6 +48,42 @@ void Map::adjustMaxTileHeight(int height)
         mMaxTileHeight = height;
 }
 
+/**
+ * Converts the given point from tile to pixel coordinates.
+ */
+QPoint Map::toPixelCoordinates(const QPointF &p) const
+{
+    return QPoint(p.x() * mTileWidth,
+                  p.y() * mTileHeight);
+}
+
+/**
+ * Converts the given size from tile to pixel coordinates.
+ */
+QSize Map::toPixelCoordinates(const QSizeF &p) const
+{
+    return QSize(p.width() * mTileWidth,
+                 p.height() * mTileHeight);
+}
+
+/**
+ * Converts the given point from pixel to tile coordinates.
+ */
+QPointF Map::toTileCoordinates(const QPoint &p) const
+{
+    return QPointF((qreal) p.x() / mTileWidth,
+                   (qreal) p.y() / mTileHeight);
+}
+
+/**
+ * Converts the given size from pixel to tile coordinates.
+ */
+QSizeF Map::toTileCoordinates(const QSize &p) const
+{
+    return QSizeF((qreal) p.width() / mTileWidth,
+                  (qreal) p.height() / mTileHeight);
+}
+
 void Map::addLayer(Layer *layer)
 {
     adoptLayer(layer);

@@ -23,7 +23,7 @@
 #define MOVEMAPOBJECT_H
 
 #include <QUndoCommand>
-#include <QPoint>
+#include <QPointF>
 
 namespace Tiled {
 
@@ -38,7 +38,7 @@ class MoveMapObject : public QUndoCommand
 public:
     MoveMapObject(MapDocument *mapDocument,
                   MapObject *mapObject,
-                  const QPoint &oldPos);
+                  const QPointF &oldPos);
 
     void undo();
     void redo();
@@ -46,8 +46,8 @@ public:
 private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
-    QPoint mOldPos;
-    QPoint mNewPos;
+    QPointF mOldPos;
+    QPointF mNewPos;
 };
 
 } // namespace Internal

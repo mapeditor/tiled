@@ -210,15 +210,22 @@ void writeObject(QXmlStreamWriter &w, const MapObject *mapObject)
     const QString &type = mapObject->type();
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
-    w.writeAttribute(QLatin1String("x"), QString::number(mapObject->x()));
-    w.writeAttribute(QLatin1String("y"), QString::number(mapObject->y()));
 
-    const int width = mapObject->width();
-    const int height = mapObject->height();
-    if (width != 0)
-        w.writeAttribute(QLatin1String("width"), QString::number(width));
-    if (height != 0)
-        w.writeAttribute(QLatin1String("height"), QString::number(height));
+    // Convert from tile to pixel coordinates
+    const ObjectGroup *objectGroup = mapObject->objectGroup();
+    const Map *map = objectGroup->map();
+    const QPoint pos = map->toPixelCoordinates(mapObject->position());
+    const QSize size = map->toPixelCoordinates(mapObject->size());
+
+    w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
+    w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
+
+    if (size.width() != 0)
+        w.writeAttribute(QLatin1String("width"),
+                         QString::number(size.width()));
+    if (size.height() != 0)
+        w.writeAttribute(QLatin1String("height"),
+                         QString::number(size.height()));
     writeProperties(w, mapObject->properties());
     w.writeEndElement();
 }
