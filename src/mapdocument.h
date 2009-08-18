@@ -146,6 +146,11 @@ public:
      */
     QRect toPixelCoordinates(const QRect &r) const;
 
+    /**
+     * Snaps the given point to the tile grid of this map document.
+     */
+    QPoint snapToTileGrid(const QPoint &p) const;
+
 signals:
     /**
      * Emitted when the map size or its tile size changes.

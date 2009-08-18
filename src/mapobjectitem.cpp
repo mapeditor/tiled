@@ -21,6 +21,7 @@
 
 #include "mapobjectitem.h"
 
+#include "addremovemapobject.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -30,7 +31,6 @@
 #include "objectgroupitem.h"
 #include "propertiesdialog.h"
 #include "resizemapobject.h"
-#include "removemapobject.h"
 
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
@@ -43,12 +43,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-static QPoint snapToGrid(const QPoint &p, int gridWidth, int gridHeight)
-{
-    return QPoint(((p.x() + gridWidth / 2) / gridWidth) * gridWidth,
-                  ((p.y() + gridHeight / 2) / gridHeight) * gridHeight);
-}
 
 namespace Tiled {
 namespace Internal {
@@ -131,25 +125,20 @@ void ResizeHandle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 QVariant ResizeHandle::itemChange(GraphicsItemChange change,
                                   const QVariant &value)
 {
-    MapObject *obj = mMapObjectItem->mapObject();
-
     if (change == ItemPositionChange) {
         QPoint newPos = value.toPoint();
         newPos.setX(qMax(newPos.x(), 0));
         newPos.setY(qMax(newPos.y(), 0));
         if (scene() && static_cast<MapScene*>(scene())->isGridVisible()) {
-            const ObjectGroup *og = obj->objectGroup();
-            const Map *map = og->map();
-            const int w = map->tileWidth();
-            const int h = map->tileHeight();
-            newPos = snapToGrid(newPos, w, h);
+            MapDocument *document = mMapObjectItem->mapDocument();
+            newPos = document->snapToTileGrid(newPos);
         }
         return newPos;
     }
     else if (change == ItemPositionHasChanged) {
         // Update the size of the map object
         QPoint newPos = value.toPoint();
-        mMapObjectItem->setSize(QSize(newPos.x(), newPos.y()));
+        mMapObjectItem->resize(QSize(newPos.x(), newPos.y()));
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -332,11 +321,7 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
         && static_cast<MapScene*>(scene())->isGridVisible())
     {
         // Snap the position to the grid
-        const ObjectGroup *og = mObject->objectGroup();
-        const Map *map = og->map();
-        const int w = map->tileWidth();
-        const int h = map->tileHeight();
-        return snapToGrid(value.toPoint(), w, h);
+        return mapDocument()->snapToTileGrid(value.toPoint());
     }
     else if (change == ItemPositionHasChanged) {
         // Update the position of the map object
@@ -348,7 +333,7 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
     return QGraphicsItem::itemChange(change, value);
 }
 
-void MapObjectItem::setSize(const QSize &size)
+void MapObjectItem::resize(const QSize &size)
 {
     const ObjectGroup *objectGroup = mObject->objectGroup();
     const Map *map = objectGroup->map();
@@ -356,6 +341,7 @@ void MapObjectItem::setSize(const QSize &size)
     prepareGeometryChange();
     mSize = size;
     mObject->setSize(map->toTileCoordinates(size));
+    mResizeHandle->setPos(mSize.width(), mSize.height());
 }
 
 MapDocument *MapObjectItem::mapDocument() const

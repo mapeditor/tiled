@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "removemapobject.h"
+#include "addremovemapobject.h"
 
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -28,33 +28,49 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
-                                 MapObject *mapObject)
+AddRemoveMapObject::AddRemoveMapObject(MapDocument *mapDocument,
+                                       ObjectGroup *objectGroup,
+                                       MapObject *mapObject,
+                                       bool ownObject)
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mObjectGroup(mapObject->objectGroup())
+    , mObjectGroup(objectGroup)
     , mIndex(-1)
-    , mOwnsObject(false)
+    , mOwnsObject(ownObject)
 {
-    setText(QObject::tr("Remove Object"));
 }
 
-RemoveMapObject::~RemoveMapObject()
+AddRemoveMapObject::~AddRemoveMapObject()
 {
     if (mOwnsObject)
         delete mMapObject;
 }
 
-void RemoveMapObject::undo()
+void AddRemoveMapObject::addObject()
 {
-    mObjectGroup->insertObject(mIndex, mMapObject);
+    if (mIndex == -1)
+        mObjectGroup->addObject(mMapObject);
+    else
+        mObjectGroup->insertObject(mIndex, mMapObject);
+
     mMapDocument->emitObjectAdded(mMapObject);
     mOwnsObject = false;
 }
 
-void RemoveMapObject::redo()
+void AddRemoveMapObject::removeObject()
 {
     mIndex = mObjectGroup->removeObject(mMapObject);
     mMapDocument->emitObjectRemoved(mMapObject);
     mOwnsObject = true;
+}
+
+
+RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
+                                 MapObject *mapObject)
+    : AddRemoveMapObject(mapDocument,
+                         mapObject->objectGroup(),
+                         mapObject,
+                         false)
+{
+    setText(QObject::tr("Remove Object"));
 }

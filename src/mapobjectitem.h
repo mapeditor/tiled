@@ -46,7 +46,7 @@ public:
      * @param object the object to be displayed
      * @param parent the item of the object group this object belongs to
      */
-    MapObjectItem(MapObject *object, ObjectGroupItem *parent);
+    MapObjectItem(MapObject *object, ObjectGroupItem *parent = 0);
 
     MapObject *mapObject() const
     { return mObject; }
@@ -72,6 +72,12 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
 
+    /**
+     * Resizes this map object item and the associated map object. The
+     * \a size is given in pixels.
+     */
+    void resize(const QSize &size);
+
 protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -80,7 +86,6 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
-    void setSize(const QSize &size);
     MapDocument *mapDocument() const;
     Qt::GlobalColor colorForType() const;
 

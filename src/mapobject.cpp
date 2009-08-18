@@ -23,6 +23,12 @@
 
 using namespace Tiled;
 
+MapObject::MapObject():
+    mObjectGroup(0),
+    mSize(0, 0)
+{
+}
+
 MapObject::MapObject(const QString &name, const QString &type,
                      qreal x, qreal y,
                      qreal width, qreal height):

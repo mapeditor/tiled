@@ -126,8 +126,14 @@ private:
     void setBrushVisible(bool visible);
     void updateBrushVisibility();
 
+    void startNewMapObject(const QPointF &pos);
+    MapObject *clearNewMapObjectItem();
+    void cancelNewMapObject();
+    void finishNewMapObject();
+
     MapDocument *mMapDocument;
     ObjectGroupItem *mSelectedObjectGroupItem;
+    MapObjectItem *mNewMapObjectItem;
     BrushItem *mBrush;
     bool mGridVisible;
     bool mBrushVisible;

@@ -44,6 +44,11 @@ class MapObject
 {
 public:
     /**
+     * Default constructor.
+     */
+    MapObject();
+
+    /**
      * Constructor.
      */
     MapObject(const QString &name, const QString &type,

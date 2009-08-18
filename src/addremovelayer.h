@@ -42,6 +42,7 @@ public:
 
     ~AddRemoveLayer();
 
+protected:
     void addLayer();
     void removeLayer();
 
