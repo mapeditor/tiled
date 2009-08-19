@@ -24,8 +24,8 @@
 using namespace Tiled;
 
 MapObject::MapObject():
-    mObjectGroup(0),
-    mSize(0, 0)
+    mSize(0, 0),
+    mObjectGroup(0)
 {
 }
 

@@ -60,7 +60,7 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
 }
 
 bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
-                              int role)
+                         int role)
 {
     const int layerIndex = toLayerIndex(index);
     if (layerIndex < 0)

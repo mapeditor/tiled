@@ -406,7 +406,6 @@ bool TmxHandler::endElement(const QString &namespaceURI,
                             const QString &qName)
 {
     Q_UNUSED(namespaceURI);
-    Q_UNUSED(localName);
     Q_UNUSED(qName);
 
     if (localName == QLatin1String("layer"))
