@@ -48,7 +48,8 @@ public:
     Tileset *read(QIODevice *device);
 
 private:
-    void readUnknownElement();
+    bool readNextStartElement();
+    void skipCurrentElement();
     void readTileset();
     void readProperties();
     void readProperty();
@@ -72,31 +73,29 @@ Tileset *TsxReader::read(QIODevice *device)
 
     mTileset = 0;
 
-    while (readNext() != Invalid) {
-        if (isStartElement()) {
-            if (name() == "tileset")
-                readTileset();
-            else
-                raiseError(QObject::tr("Not a tileset file."));
-        }
-    }
+    if (readNextStartElement() && name() == "tileset")
+        readTileset();
+    else
+        raiseError(QObject::tr("Not a tileset file."));
 
     return mTileset;
 }
 
-void TsxReader::readUnknownElement()
+void TsxReader::skipCurrentElement()
 {
-    Q_ASSERT(isStartElement());
+    while (readNextStartElement())
+        skipCurrentElement();
+}
 
-    qDebug() << "Unknown element in tileset:" << name().toString();
-
-    while (!atEnd()) {
-        readNext();
+bool TsxReader::readNextStartElement()
+{
+    while (readNext() != Invalid) {
         if (isEndElement())
-            break;
+            return false;
         else if (isStartElement())
-            readUnknownElement();
+            return true;
     }
+    return false;
 }
 
 void TsxReader::readTileset()
@@ -117,18 +116,13 @@ void TsxReader::readTileset()
     mTileset = new Tileset(tilesetName, tileWidth, tileHeight,
                            tileSpacing, margin);
 
-    while (readNext() != Invalid) {
-        if (isEndElement())
-            break;
-
-        if (isStartElement()) {
-            if (name() == "tile")
-                readTile();
-            else if (name() == "image")
-                readTilesetImage();
-            else
-                readUnknownElement();
-        }
+    while (readNextStartElement()) {
+        if (name() == "tile")
+            readTile();
+        else if (name() == "image")
+            readTilesetImage();
+        else
+            skipCurrentElement();
     }
 }
 
@@ -138,15 +132,11 @@ void TsxReader::readProperties()
 
     mProperties.clear();
 
-    while (readNext() != Invalid) {
-        if (isEndElement()) {
-            break;
-        } else if (isStartElement()) {
-            if (name() == "property")
-                readProperty();
-            else
-                readUnknownElement();
-        }
+    while (readNextStartElement()) {
+        if (name() == "property")
+            readProperty();
+        else
+            skipCurrentElement();
     }
 }
 
@@ -164,7 +154,7 @@ void TsxReader::readProperty()
         else if (isCharacters() && !isWhitespace() && propertyValue.isEmpty())
             propertyValue = text().toString();
         else if (isStartElement())
-            readUnknownElement();
+            skipCurrentElement();
     }
 
     mProperties.insert(propertyName, propertyValue);
@@ -186,16 +176,12 @@ void TsxReader::readTile()
 
     // TODO: Add support for individual tiles (then it needs to be added here)
 
-    while (readNext() != Invalid) {
-        if (isEndElement()) {
-            break;
-        } else if (isStartElement()) {
-            if (name() == "properties") {
-                readProperties();
-                tile->properties()->unite(mProperties);
-            } else {
-                readUnknownElement();
-            }
+    while (readNextStartElement()) {
+        if (name() == "properties") {
+            readProperties();
+            tile->properties()->unite(mProperties);
+        } else {
+            skipCurrentElement();
         }
     }
 }
@@ -213,12 +199,7 @@ void TsxReader::readTilesetImage()
 
     mTileset->loadFromImage(source);
 
-    while (readNext() != Invalid) {
-        if (isEndElement())
-            break;
-        else if (isStartElement())
-            readUnknownElement();
-    }
+    skipCurrentElement();
 }
 
 TsxTilesetReader::TsxTilesetReader()
