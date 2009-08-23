@@ -31,17 +31,19 @@
 using namespace Tiled::Internal;
 
 PropertiesDialog::PropertiesDialog(const QString &kind,
+                                   QMap<QString, QString> *properties,
                                    QUndoStack *undoStack,
                                    QWidget *parent):
     QDialog(parent),
     mUndoStack(undoStack),
-    mProperties(0),
+    mProperties(properties),
     mKind(kind)
 {
     mUi = new Ui::PropertiesDialog;
     mUi->setupUi(this);
 
     mModel = new PropertiesModel(this);
+    mModel->setProperties(*mProperties);
     mUi->propertiesView->setModel(mModel);
 
     // Delete selected properties when the delete key is pressed
@@ -57,12 +59,6 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
 PropertiesDialog::~PropertiesDialog()
 {
     delete mUi;
-}
-
-void PropertiesDialog::setProperties(QMap<QString, QString> *properties)
-{
-    mProperties = properties;
-    mModel->setProperties(*properties);
 }
 
 void PropertiesDialog::accept()

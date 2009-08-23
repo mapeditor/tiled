@@ -52,7 +52,9 @@ SOURCES += aboutdialog.cpp \
     propertiesview.cpp \
     renamelayer.cpp \
     resizelayer.cpp \
-    resizemap.cpp
+    resizemap.cpp \
+    objectpropertiesdialog.cpp \
+    changemapobject.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -100,7 +102,9 @@ HEADERS += aboutdialog.h \
     propertiesview.h \
     renamelayer.h \
     resizelayer.h \
-    resizemap.h
+    resizemap.h \
+    objectpropertiesdialog.h \
+    changemapobject.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

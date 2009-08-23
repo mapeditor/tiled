@@ -29,7 +29,7 @@
 #include "movemapobject.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
-#include "propertiesdialog.h"
+#include "objectpropertiesdialog.h"
 #include "resizemapobject.h"
 
 #include <QFontMetrics>
@@ -164,9 +164,17 @@ MapObjectItem::MapObjectItem(MapObject *object, ObjectGroupItem *parent):
 
 void MapObjectItem::syncWithMapObject()
 {
-    QString toolTip = mObject->name();
-    if (!mObject->type().isEmpty())
-        toolTip += QLatin1String(" (") + mObject->type() + QLatin1String(")");
+    // Update the whole object when the name or type has changed
+    if (mObject->name() != mName || mObject->type() != mType) {
+        mName = mObject->name();
+        mType = mObject->type();
+        update();
+        mResizeHandle->update();
+    }
+
+    QString toolTip = mName;
+    if (!mType.isEmpty())
+        toolTip += QLatin1String(" (") + mType + QLatin1String(")");
     setToolTip(toolTip);
 
     const ObjectGroup *objectGroup = mObject->objectGroup();
@@ -238,7 +246,7 @@ void MapObjectItem::paint(QPainter *painter,
     if (mSize.isNull())
     {
         QFontMetrics fm = painter->fontMetrics();
-        QString name = fm.elidedText(mObject->name(), Qt::ElideRight, 30);
+        QString name = fm.elidedText(mName, Qt::ElideRight, 30);
 
         // Draw the shadow
         painter->drawEllipse(QRect(- 10 + 1, - 10 + 1, 20, 20));
@@ -253,7 +261,7 @@ void MapObjectItem::paint(QPainter *painter,
     else
     {
         QFontMetrics fm = painter->fontMetrics();
-        QString name = fm.elidedText(mObject->name(), Qt::ElideRight,
+        QString name = fm.elidedText(mName, Qt::ElideRight,
                                      mSize.width() + 3);
 
         // Draw the shadow
@@ -285,10 +293,8 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         doc->undoStack()->push(new RemoveMapObject(doc, mObject));
     }
     else if (selectedAction == propertiesAction) {
-        PropertiesDialog propertiesDialog(QObject::tr("Object"),
-                                          mapDocument()->undoStack(),
-                                          event->widget());
-        propertiesDialog.setProperties(mObject->properties());
+        ObjectPropertiesDialog propertiesDialog(mapDocument(), mObject,
+                                                event->widget());
         propertiesDialog.exec();
     }
 }
@@ -364,7 +370,7 @@ Qt::GlobalColor MapObjectItem::colorForType() const
     };
 
     Qt::GlobalColor color = Qt::gray;
-    const QString &type = mObject->type();
+    const QString &type = mType;
 
     for (int i = 0; types[i].type; ++i) {
         if (!type.compare(QLatin1String(types[i].type), Qt::CaseInsensitive)) {

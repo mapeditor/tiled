@@ -94,6 +94,8 @@ private:
     QPointF mOldPos;
     /** Copy of size (in pixels) for adapting to geometry change correctly. */
     QSize mSize;
+    QString mName; // Copies of name and type, so we know when they change
+    QString mType;
     bool mIsEditable;
 
     friend class ResizeHandle;

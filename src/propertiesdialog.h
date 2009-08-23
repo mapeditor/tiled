@@ -45,10 +45,12 @@ public:
     /**
      * Constructor.
      *
-     * @param kind      the kind of properties (Map, Layer, Object, etc.)
-     * @param undoStack the undo stack to push changes onto.
+     * @param kind       the kind of properties (Map, Layer, Object, etc.)
+     * @param properties the properties edited by this dialog.
+     * @param undoStack  the undo stack to push changes onto.
      */
     PropertiesDialog(const QString &kind,
+                     QMap<QString, QString> *properties,
                      QUndoStack *undoStack,
                      QWidget *parent = 0);
 
@@ -56,11 +58,6 @@ public:
      * Destructor.
      */
     ~PropertiesDialog();
-
-    /**
-     * Sets the properties edited by this dialog.
-     */
-    void setProperties(QMap<QString, QString> *properties);
 
     /**
      * Applies the edited properties. It does this by constructing a

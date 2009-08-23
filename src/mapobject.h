@@ -61,9 +61,15 @@ public:
     ~MapObject() {}
 
     /**
-     * Returns the name of this object.
+     * Returns the name of this object. The name is usually just used for
+     * identification of the object in the editor.
      */
     const QString &name() const { return mName; }
+
+    /**
+     * Sets the name of this object.
+     */
+    void setName(const QString &name) { mName = name; }
 
     /**
      * Returns the position of this object.
@@ -129,9 +135,15 @@ public:
     void setHeight(qreal height) { mSize.setHeight(height); }
 
     /**
-     * Returns the type of object this is.
+     * Returns the type of this object. The type usually says something about
+     * how the object is meant to be interpreted by the engine.
      */
     const QString &type() const { return mType; }
+
+    /**
+     * Sets the type of this object.
+     */
+    void setType(const QString &type) { mType = type; }
 
     /**
      * Set the property with the given name, and value.

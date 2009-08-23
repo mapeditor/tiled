@@ -125,9 +125,9 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         Layer *layer = mMapDocument->map()->layerAt(layerIndex);
 
         PropertiesDialog propertiesDialog(tr("Layer"),
+                                          layer->properties(),
                                           mMapDocument->undoStack(),
                                           this);
-        propertiesDialog.setProperties(layer->properties());
         propertiesDialog.exec();
     }
 }
