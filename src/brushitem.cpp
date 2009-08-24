@@ -48,6 +48,10 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
 {
     // A different map may have a different tile size
     prepareGeometryChange();
+
+    // The selected tile may no longer be valid
+    setTile(0);
+
     mMapDocument = mapDocument;
 }
 
