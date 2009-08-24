@@ -95,11 +95,12 @@
     <addaction name="actionAddTileLayer"/>
     <addaction name="actionAddObjectLayer"/>
     <addaction name="actionDuplicateLayer"/>
+    <addaction name="actionRemoveLayer"/>
     <addaction name="separator"/>
     <addaction name="actionMoveLayerUp"/>
     <addaction name="actionMoveLayerDown"/>
     <addaction name="separator"/>
-    <addaction name="actionRemoveLayer"/>
+    <addaction name="actionLayerProperties"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -199,9 +200,6 @@
    </property>
   </action>
   <action name="actionMapProperties">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
      <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
@@ -283,11 +281,19 @@
    </property>
   </action>
   <action name="actionNewTileset">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
+   </property>
    <property name="text">
     <string>New &amp;Tileset...</string>
    </property>
   </action>
   <action name="actionRemoveLayer">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/edit-delete.png</normaloff>:/images/16x16/edit-delete.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Remove Layer</string>
    </property>
@@ -303,17 +309,33 @@
   </action>
   <action name="actionAddTileLayer">
    <property name="text">
-    <string>Add Tile Layer...</string>
+    <string>Add &amp;Tile Layer...</string>
    </property>
   </action>
   <action name="actionAddObjectLayer">
    <property name="text">
-    <string>Add Object Layer...</string>
+    <string>Add &amp;Object Layer...</string>
    </property>
   </action>
   <action name="actionDuplicateLayer">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/stock-duplicate-16.png</normaloff>:/images/16x16/stock-duplicate-16.png</iconset>
+   </property>
    <property name="text">
-    <string>Duplicate Layer</string>
+    <string>&amp;Duplicate Layer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="actionLayerProperties">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Layer &amp;Properties...</string>
    </property>
   </action>
  </widget>

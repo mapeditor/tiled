@@ -78,7 +78,8 @@ public:
     void setCurrentLayer(int index);
 
     /**
-     * Returns the index of the currently selected layer.
+     * Returns the index of the currently selected layer. Returns -1 if no
+     * layer is currently selected.
      */
     int currentLayer() const;
 

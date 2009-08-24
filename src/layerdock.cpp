@@ -119,7 +119,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         return;
 
     QMenu menu;
-    QAction *layerProperties = menu.addAction(tr("Properties..."));
+    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QAction *layerProperties = menu.addAction(propIcon, tr("Properties..."));
 
     if (menu.exec(event->globalPos()) == layerProperties) {
         Layer *layer = mMapDocument->map()->layerAt(layerIndex);

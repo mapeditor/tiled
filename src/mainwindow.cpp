@@ -144,6 +144,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionMoveLayerDown, SIGNAL(triggered()),
             SLOT(moveLayerDown()));
     connect(mUi.actionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
+    connect(mUi.actionLayerProperties, SIGNAL(triggered()),
+            SLOT(editLayerProperties()));
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -488,6 +490,7 @@ void MainWindow::updateActions()
                                       currentLayer < layerCount - 1);
     mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);
     mUi.actionRemoveLayer->setEnabled(currentLayer >= 0);
+    mUi.actionLayerProperties->setEnabled(currentLayer >= 0);
 }
 
 void MainWindow::selectAll()
@@ -558,6 +561,23 @@ void MainWindow::removeLayer()
 {
     if (mMapDocument)
         mMapDocument->removeLayer(mMapDocument->currentLayer());
+}
+
+void MainWindow::editLayerProperties()
+{
+    if (!mMapDocument)
+        return;
+
+    const int layerIndex = mMapDocument->currentLayer();
+    if (layerIndex == -1)
+        return;
+
+    Layer *layer = mMapDocument->map()->layerAt(layerIndex);
+    PropertiesDialog propertiesDialog(tr("Layer"),
+                                      layer->properties(),
+                                      mMapDocument->undoStack(),
+                                      this);
+    propertiesDialog.exec();
 }
 
 void MainWindow::writeSettings()

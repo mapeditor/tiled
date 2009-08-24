@@ -13,6 +13,7 @@
         <file>images/16x16/edit-clear.png</file>
         <file>images/16x16/edit-copy.png</file>
         <file>images/16x16/edit-cut.png</file>
+        <file>images/16x16/edit-delete.png</file>
         <file>images/16x16/edit-paste.png</file>
         <file>images/16x16/edit-redo.png</file>
         <file>images/16x16/edit-undo.png</file>
@@ -20,6 +21,7 @@
         <file>images/16x16/go-up.png</file>
         <file>images/16x16/help-about.png</file>
         <file>images/16x16/window-close.png</file>
+        <file>images/16x16/stock-duplicate-16.png</file>
         <file>images/24x24/document-new.png</file>
         <file>images/24x24/document-open.png</file>
         <file>images/24x24/document-open-recent.png</file>

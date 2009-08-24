@@ -283,8 +283,11 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
     event->accept();
     QMenu menu;
-    QAction *removeAction = menu.addAction(QObject::tr("Remove"));
-    QAction *propertiesAction = menu.addAction(QObject::tr("Properties..."));
+    QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
+    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QAction *removeAction = menu.addAction(delIcon, QObject::tr("Remove"));
+    QAction *propertiesAction = menu.addAction(propIcon,
+                                               QObject::tr("Properties..."));
 
     QAction *selectedAction = menu.exec(event->screenPos());
 

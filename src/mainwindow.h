@@ -94,6 +94,7 @@ private slots:
     void moveLayerUp();
     void moveLayerDown();
     void removeLayer();
+    void editLayerProperties();
 
 private:
     /**
