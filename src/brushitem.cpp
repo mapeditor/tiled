@@ -24,8 +24,8 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "painttile.h"
+#include "tile.h"
 #include "tilelayer.h"
-#include "tilepainter.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -39,6 +39,7 @@ BrushItem::BrushItem():
     mTileY(0),
     mMapDocument(0),
     mTile(0),
+    mExtend(0),
     mPainting(false)
 {
 }
@@ -52,7 +53,13 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
 
 void BrushItem::setTile(Tile *tile)
 {
+    if (mTile == tile)
+        return;
+
+    prepareGeometryChange();
     mTile = tile;
+    updateExtend();
+    update();
 }
 
 void BrushItem::setTilePos(int x, int y)
@@ -96,14 +103,22 @@ void BrushItem::doPaint()
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     Q_ASSERT(tileLayer);
 
-    if (TilePainter(mMapDocument, tileLayer).tileAt(mTileX, mTileY) == mTile
-        || !tileLayer->contains(mTileX - tileLayer->x(),
-                                mTileY - tileLayer->y()))
+    const int layerX = mTileX - tileLayer->x();
+    const int layerY = mTileY - tileLayer->y();
+
+    if (!tileLayer->contains(layerX, layerY)
+        || tileLayer->tileAt(layerX, layerY) == mTile)
         return;
 
     PaintTile *paintTile = new PaintTile(mMapDocument, tileLayer,
                                          mTileX, mTileY, mTile);
     mMapDocument->undoStack()->push(paintTile);
+}
+
+void BrushItem::updateExtend()
+{
+    const Map *map = mMapDocument->map();
+    mExtend = mTile ? (mTile->height() - map->tileHeight()) : 0;
 }
 
 QRectF BrushItem::boundingRect() const
@@ -112,7 +127,7 @@ QRectF BrushItem::boundingRect() const
         return QRectF();
 
     const Map *map = mMapDocument->map();
-    return QRectF(0, 0, map->tileWidth(), map->tileHeight());
+    return QRectF(0, -mExtend, map->tileWidth(), map->tileHeight() + mExtend);
 }
 
 void BrushItem::paint(QPainter *painter,
@@ -120,7 +135,21 @@ void BrushItem::paint(QPainter *painter,
                       QWidget *widget)
 {
     Q_UNUSED(widget);
+
+    if (mTile) {
+        const QPixmap img = mTile->image();
+        const int tileHeight = mMapDocument->map()->tileHeight();
+        const qreal opacity = painter->opacity();
+        painter->setOpacity(0.75);
+        painter->drawPixmap(0, tileHeight - img.height(), img);
+        painter->setOpacity(opacity);
+    }
+
+    QRectF redraw = option->exposedRect;
+    if (redraw.top() < 0)
+        redraw.setTop(0);
+
     QColor red(Qt::red);
     red.setAlpha(64);
-    painter->fillRect(option->exposedRect, red);
+    painter->fillRect(redraw, red);
 }

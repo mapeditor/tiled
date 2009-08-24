@@ -84,9 +84,12 @@ private:
      */
     void doPaint();
 
+    void updateExtend();
+
     int mTileX, mTileY;
     MapDocument *mMapDocument;
     Tile *mTile;
+    int mExtend;
     bool mPainting;
 };
 
