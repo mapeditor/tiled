@@ -54,7 +54,8 @@ SOURCES += aboutdialog.cpp \
     resizelayer.cpp \
     resizemap.cpp \
     objectpropertiesdialog.cpp \
-    changemapobject.cpp
+    changemapobject.cpp \
+    maprenderer.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -104,7 +105,8 @@ HEADERS += aboutdialog.h \
     resizelayer.h \
     resizemap.h \
     objectpropertiesdialog.h \
-    changemapobject.h
+    changemapobject.h \
+    maprenderer.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

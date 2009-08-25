@@ -132,7 +132,7 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
     QGraphicsItem *layerItem = 0;
 
     if (TileLayer *tl = dynamic_cast<TileLayer*>(layer)) {
-        layerItem = new TileLayerItem(tl);
+        layerItem = new TileLayerItem(tl, mMapDocument->renderer());
     } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
         foreach (MapObject *object, og->objects()) {

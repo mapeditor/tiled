@@ -24,6 +24,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "map.h"
+#include "maprenderer.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -31,66 +32,33 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TileLayerItem::TileLayerItem(TileLayer *layer):
-    mLayer(layer)
+TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer)
+    : mLayer(layer)
+    , mRenderer(renderer)
 {
 #if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 #endif
 
-    const Map *map = layer->map();
-    setPos(layer->x() * map->tileWidth(),
-           layer->y() * map->tileHeight());
+    const QRect boundingRect = mRenderer->layerBoundingRect(mLayer);
+    setPos(boundingRect.topLeft());
+    mBoundingRect = QRectF(QPointF(0.0, 0.0), boundingRect.size());
 }
 
 QRectF TileLayerItem::boundingRect() const
 {
-    const Map *map = mLayer->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    return QRectF(0.0,
-                  0.0,
-                  mLayer->width() * tileWidth,
-                  mLayer->height() * tileHeight);
+    return mBoundingRect;
 }
 
 void TileLayerItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
-                          QWidget *widget)
+                          QWidget * /* widget */)
 {
-    Q_UNUSED(widget);
-
     if (!mLayer->isVisible() || mLayer->opacity() == 0.0f)
         return;
-
-    const Map *map = mLayer->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-    const int extraHeight = mLayer->maxTileHeight() - tileHeight;
-
-    const QRectF rect = option->exposedRect.adjusted(0, 0, 0, extraHeight);
-    const int startX = (int) (rect.x() / tileWidth);
-    const int startY = (int) (rect.y() / tileHeight);
-    const int endX = qMin((int) rect.right() / tileWidth + 1, mLayer->width());
-    const int endY = qMin((int) rect.bottom() / tileHeight + 1,
-                          mLayer->height());
 
     // TODO: Display a border around the layer when selected
     //painter->fillRect(boundingRect(), Qt::blue);
 
-    painter->setOpacity(mLayer->opacity());
-
-    for (int y = startY; y < endY; ++y) {
-        for (int x = startX; x < endX; ++x) {
-            Tile *tile = mLayer->tileAt(x, y);
-            if (!tile)
-                continue;
-
-            const QPixmap &img = tile->image();
-            painter->drawPixmap(x * tileWidth,
-                                (y + 1) * tileHeight - img.height(),
-                                img);
-        }
-    }
+    mRenderer->drawTileLayer(painter, mLayer, option->exposedRect.toRect());
 }

@@ -24,6 +24,7 @@
 #include "addremovelayer.h"
 #include "layermodel.h"
 #include "map.h"
+#include "maprenderer.h"
 #include "movelayer.h"
 #include "objectgroup.h"
 #include "resizelayer.h"
@@ -42,6 +43,7 @@ MapDocument::MapDocument(Map *map):
     mMap(map),
     mLayerModel(new LayerModel(this)),
     mSelectionModel(new TileSelectionModel(this, this)),
+    mRenderer(new MapRenderer(mMap)),
     mUndoStack(new QUndoStack(this))
 {
     mCurrentLayer = (map->layerCount() == 0) ? -1 : 0;
@@ -65,6 +67,7 @@ MapDocument::~MapDocument()
     foreach (Tileset *tileset, mMap->tilesets().values())
         tilesetManager->removeReference(tileset);
 
+    delete mRenderer;
     delete mMap;
 }
 

@@ -30,6 +30,8 @@ class TileLayer;
 
 namespace Internal {
 
+class MapRenderer;
+
 /**
  * A graphics item displaying a tile layer in a QGraphicsView.
  */
@@ -39,9 +41,10 @@ public:
     /**
      * Constructor.
      *
-     * @param layer the tile layer to be displayed
+     * @param layer    the tile layer to be displayed
+     * @param renderer the map renderer to use to render the layer
      */
-    TileLayerItem(TileLayer *layer);
+    TileLayerItem(TileLayer *layer, MapRenderer *renderer);
 
     // QGraphicsItem
     QRectF boundingRect() const;
@@ -51,6 +54,8 @@ public:
 
 private:
     TileLayer *mLayer;
+    MapRenderer *mRenderer;
+    QRectF mBoundingRect;
 };
 
 } // namespace Internal

@@ -39,6 +39,7 @@ class Tileset;
 namespace Internal {
 
 class LayerModel;
+class MapRenderer;
 class TileSelectionModel;
 
 /**
@@ -116,6 +117,11 @@ public:
     TileSelectionModel *selectionModel() const { return mSelectionModel; }
 
     /**
+     * Returns the map renderer.
+     */
+    MapRenderer *renderer() const { return mRenderer; }
+
+    /**
      * Returns the undo stack of this map document. Should be used to push any
      * commands on that modify the map.
      */
@@ -190,6 +196,7 @@ private:
     Map *mMap;
     LayerModel *mLayerModel;
     TileSelectionModel *mSelectionModel;
+    MapRenderer *mRenderer;
     int mCurrentLayer;
     QUndoStack *mUndoStack;
 };
