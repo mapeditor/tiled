@@ -46,8 +46,7 @@ MapScene::MapScene(QObject *parent):
     mNewMapObjectItem(0),
     mBrush(new BrushItem),
     mGridVisible(true),
-    mBrushVisible(false),
-    mPainting(false)
+    mBrushVisible(false)
 {
     setBackgroundBrush(Qt::darkGray);
 
@@ -159,7 +158,9 @@ void MapScene::repaintRegion(const QRegion &region)
 
 void MapScene::currentTileChanged(Tile *tile)
 {
-    mBrush->setTile(tile);
+    TileLayer *stamp = new TileLayer(QString(), 0, 0, 1, 1);
+    stamp->setTile(0, 0, tile);
+    mBrush->setStamp(stamp);
 }
 
 /**
@@ -443,8 +444,10 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 
     if (mBrush->isVisible()) {
-        mBrush->beginPaint();
-        mPainting = true;
+        if (mouseEvent->button() == Qt::LeftButton)
+            mBrush->beginPaint();
+        else if (mouseEvent->button() == Qt::RightButton)
+            mBrush->beginCapture();
         mouseEvent->accept();
     } else if (mouseEvent->button() == Qt::LeftButton
                && mSelectedObjectGroupItem
@@ -460,13 +463,18 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->isAccepted())
         return;
 
-    if (mPainting) {
-        mBrush->endPaint();
-        mPainting = false;
+    if (mBrush->isPainting() || mBrush->isCapturing()) {
+        if (mouseEvent->button() == Qt::LeftButton)
+            mBrush->endPaint();
+        else if (mouseEvent->button() == Qt::RightButton)
+            mBrush->endCapture();
+        mouseEvent->accept();
     }
 
-    if (mouseEvent->button() == Qt::LeftButton && mNewMapObjectItem)
+    if (mouseEvent->button() == Qt::LeftButton && mNewMapObjectItem) {
         finishNewMapObject();
+        mouseEvent->accept();
+    }
 }
 
 void MapScene::startNewMapObject(const QPointF &pos)

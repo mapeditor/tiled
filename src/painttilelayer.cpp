@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "painttile.h"
+#include "painttilelayer.h"
 
 #include "map.h"
 #include "mapdocument.h"
@@ -29,35 +29,36 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-PaintTile::PaintTile(MapDocument *mapDocument,
-                     TileLayer *layer,
-                     int x,
-                     int y,
-                     Tile *tile):
+PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
+                               TileLayer *target,
+                               int x,
+                               int y,
+                               const TileLayer *source):
     mMapDocument(mapDocument),
-    mLayer(layer),
+    mTarget(target),
+    mSource(static_cast<TileLayer*>(source->clone())),
     mX(x),
-    mY(y),
-    mTile(tile)
+    mY(y)
 {
-    setText(QObject::tr("Paint Tile"));
+    mErased = mTarget->copy(mX - mTarget->x(),
+                            mY - mTarget->y(),
+                            mSource->width(), mSource->height());
+    setText(QObject::tr("Paint"));
 }
 
-void PaintTile::undo()
+PaintTileLayer::~PaintTileLayer()
 {
-    swapTile();
+    delete mSource;
 }
 
-void PaintTile::redo()
+void PaintTileLayer::undo()
 {
-    swapTile();
+    TilePainter painter(mMapDocument, mTarget);
+    painter.setTiles(mX, mY, mErased);
 }
 
-void PaintTile::swapTile()
+void PaintTileLayer::redo()
 {
-    TilePainter p(mMapDocument, mLayer);
-
-    Tile *prevTile = p.tileAt(mX, mY);
-    p.setTile(mX, mY, mTile);
-    mTile = prevTile;
+    TilePainter painter(mMapDocument, mTarget);
+    painter.drawTiles(mX, mY, mSource);
 }

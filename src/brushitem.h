@@ -26,7 +26,7 @@
 
 namespace Tiled {
 
-class Tile;
+class TileLayer;
 
 namespace Internal {
 
@@ -47,15 +47,18 @@ public:
      */
     BrushItem();
 
+    ~BrushItem();
+
     /**
      * Sets the map document this brush is operating on.
      */
     void setMapDocument(MapDocument *mapDocument);
 
     /**
-     * Sets the tile that is drawn when painting.
+     * Sets the stamp that is drawn when painting. The BrushItem takes
+     * ownership over the stamp layer.
      */
-    void setTile(Tile *tile);
+    void setStamp(TileLayer *stamp);
 
     /**
      * Updates the position in tiles. Paints while painting is active.
@@ -72,6 +75,12 @@ public:
      */
     void endPaint();
 
+    bool isPainting() const { return mPainting; }
+
+    void beginCapture();
+    void endCapture();
+    bool isCapturing() const { return mCapturing; }
+
     // QGraphicsItem
     QRectF boundingRect() const;
     void paint(QPainter *painter,
@@ -85,12 +94,18 @@ private:
     void doPaint();
 
     void updateExtend();
+    void updatePosition();
+
+    TileLayer *currentTileLayer();
 
     int mTileX, mTileY;
+    int mStampX, mStampY;
     MapDocument *mMapDocument;
-    Tile *mTile;
+    TileLayer *mStamp;
     int mExtend;
     bool mPainting;
+    bool mCapturing;
+    QPoint mCaptureStart;
 };
 
 } // namespace Internal

@@ -19,14 +19,13 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef PAINTTILE_H
-#define PAINTTILE_H
+#ifndef PAINTTILELAYER_H
+#define PAINTTILELAYER_H
 
 #include <QUndoCommand>
 
 namespace Tiled {
 
-class Tile;
 class TileLayer;
 
 namespace Internal {
@@ -34,36 +33,39 @@ namespace Internal {
 class MapDocument;
 
 /**
- * A command that paints a single tile at a certain position.
+ * A command that paints one tile layer on top of another tile layer.
  */
-class PaintTile : public QUndoCommand
+class PaintTileLayer : public QUndoCommand
 {
 public:
     /**
      * Constructor.
      *
      * @param mapDocument the map document that's being edited
-     * @param layer       the layer of the tile to edit
-     * @param x           the x position of the tile to edit
-     * @param y           the y position of the tile to edit
-     * @param tile        the new tile for this position
+     * @param target      the target layer to paint on
+     * @param x           the x position of the paint location
+     * @param y           the y position of the paint location
+     * @param source      the source layer to paint on the target layer
      */
-    PaintTile(MapDocument *mapDocument, TileLayer *layer,
-              int x, int y, Tile *tile);
+    PaintTileLayer(MapDocument *mapDocument,
+                   TileLayer *target,
+                   int x, int y,
+                   const TileLayer *source);
+
+    ~PaintTileLayer();
 
     void undo();
     void redo();
 
 private:
-    void swapTile();
-
     MapDocument *mMapDocument;
-    TileLayer *mLayer;
+    TileLayer *mTarget;
+    TileLayer *mSource;
+    TileLayer *mErased;
     int mX, mY;
-    Tile *mTile;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // PAINTTILE_H
+#endif // PAINTTILELAYER_H

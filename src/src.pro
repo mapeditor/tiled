@@ -22,7 +22,7 @@ SOURCES += aboutdialog.cpp \
     mapscene.cpp \
     mapview.cpp \
     objectgroup.cpp \
-    painttile.cpp \
+    painttilelayer.cpp \
     propertiesdialog.cpp \
     propertiesmodel.cpp \
     resizehelper.cpp \
@@ -72,7 +72,7 @@ HEADERS += aboutdialog.h \
     mapscene.h \
     mapview.h \
     objectgroup.h \
-    painttile.h \
+    painttilelayer.h \
     propertiesdialog.h \
     propertiesmodel.h \
     resizedialog.h \

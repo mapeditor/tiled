@@ -24,6 +24,7 @@
 
 #include <QMap>
 #include <QPixmap>
+#include <QRect>
 #include <QString>
 #include <QVector>
 
@@ -107,6 +108,11 @@ public:
      * Returns the height of this layer.
      */
     int height() const { return mHeight; }
+
+    /**
+     * Returns the bounds of this layer.
+     */
+    QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
 
     /**
      * Resizes this layer to \a size, while shifting its contents by \a offset.

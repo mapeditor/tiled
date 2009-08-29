@@ -23,7 +23,8 @@
 
 #include "map.h"
 #include "mapdocument.h"
-#include "painttile.h"
+#include "maprenderer.h"
+#include "painttilelayer.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -37,11 +38,19 @@ using namespace Tiled::Internal;
 BrushItem::BrushItem():
     mTileX(0),
     mTileY(0),
+    mStampX(0),
+    mStampY(0),
     mMapDocument(0),
-    mTile(0),
+    mStamp(0),
     mExtend(0),
-    mPainting(false)
+    mPainting(false),
+    mCapturing(false)
 {
+}
+
+BrushItem::~BrushItem()
+{
+    delete mStamp;
 }
 
 void BrushItem::setMapDocument(MapDocument *mapDocument)
@@ -49,20 +58,23 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
     // A different map may have a different tile size
     prepareGeometryChange();
 
-    // The selected tile may no longer be valid
-    setTile(0);
+    // The tiles in the stamp may no longer be valid
+    setStamp(0);
 
     mMapDocument = mapDocument;
 }
 
-void BrushItem::setTile(Tile *tile)
+void BrushItem::setStamp(TileLayer *stamp)
 {
-    if (mTile == tile)
+    if (mStamp == stamp)
         return;
 
     prepareGeometryChange();
-    mTile = tile;
+    delete mStamp;
+    mStamp = stamp;
+
     updateExtend();
+    updatePosition();
     update();
 }
 
@@ -71,18 +83,13 @@ void BrushItem::setTilePos(int x, int y)
     if (mTileX == x && mTileY == y)
         return;
 
+    if (mCapturing)
+        prepareGeometryChange();
+
     mTileX = x;
     mTileY = y;
 
-    if (!mMapDocument)
-        return;
-
-    const Map *map = mMapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    // Update the pixel position
-    setPos(x * tileWidth, y * tileHeight);
+    updatePosition();
 
     if (mPainting)
         doPaint();
@@ -90,6 +97,9 @@ void BrushItem::setTilePos(int x, int y)
 
 void BrushItem::beginPaint()
 {
+    if (mPainting || mCapturing)
+        return;
+
     mPainting = true;
     doPaint();
 }
@@ -99,30 +109,96 @@ void BrushItem::endPaint()
     mPainting = false;
 }
 
-void BrushItem::doPaint()
+void BrushItem::beginCapture()
 {
-    // This method shouldn't be called when current layer is not a tile layer
-    const int currentLayerIndex = mMapDocument->currentLayer();
-    Layer *currentLayer = mMapDocument->map()->layerAt(currentLayerIndex);
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    Q_ASSERT(tileLayer);
-
-    const int layerX = mTileX - tileLayer->x();
-    const int layerY = mTileY - tileLayer->y();
-
-    if (!tileLayer->contains(layerX, layerY)
-        || tileLayer->tileAt(layerX, layerY) == mTile)
+    if (mPainting || mCapturing)
         return;
 
-    PaintTile *paintTile = new PaintTile(mMapDocument, tileLayer,
-                                         mTileX, mTileY, mTile);
-    mMapDocument->undoStack()->push(paintTile);
+    prepareGeometryChange();
+    mCaptureStart = QPoint(mTileX, mTileY);
+    mCapturing = true;
+    updatePosition();
+    updateExtend();
+    update();
+}
+
+void BrushItem::endCapture()
+{
+    if (!mCapturing)
+        return;
+
+    prepareGeometryChange();
+    mCapturing = false;
+
+    QRect captured = QRect(mCaptureStart, QPoint(mTileX, mTileY));
+    TileLayer *tileLayer = currentTileLayer();
+    Q_ASSERT(tileLayer);
+
+    // Intersect with the layer and translate to layer coordinates
+    captured.intersect(QRect(tileLayer->x(), tileLayer->y(),
+                             tileLayer->width(), tileLayer->height()));
+    captured.translate(-tileLayer->x(), -tileLayer->y());
+
+    if (captured.isValid())
+        setStamp(tileLayer->copy(captured));
+    else {
+        updatePosition();
+        updateExtend();
+        update();
+    }
+}
+
+void BrushItem::doPaint()
+{
+    if (!mStamp)
+        return;
+
+    // This method shouldn't be called when current layer is not a tile layer
+    TileLayer *tileLayer = currentTileLayer();
+    Q_ASSERT(tileLayer);
+
+    if (!tileLayer->bounds().intersects(QRect(mStampX, mStampY,
+                                              mStamp->width(),
+                                              mStamp->height())))
+        return;
+
+    PaintTileLayer *paint = new PaintTileLayer(mMapDocument, tileLayer,
+                                               mStampX, mStampY, mStamp);
+    mMapDocument->undoStack()->push(paint);
 }
 
 void BrushItem::updateExtend()
 {
+    if (mStamp && mMapDocument && !mCapturing) {
+        const Map *map = mMapDocument->map();
+        mExtend = qMax(0, mStamp->maxTileHeight() - map->tileHeight());
+    } else {
+        mExtend = 0;
+    }
+}
+
+/**
+ * Updates the pixel position.
+ */
+void BrushItem::updatePosition()
+{
+    if (!mMapDocument)
+        return;
+
     const Map *map = mMapDocument->map();
-    mExtend = mTile ? (mTile->height() - map->tileHeight()) : 0;
+    const int tileWidth = map->tileWidth();
+    const int tileHeight = map->tileHeight();
+
+    if (mCapturing) {
+        setPos(mCaptureStart.x() * tileWidth,
+               mCaptureStart.y() * tileHeight);
+    } else if (mStamp) {
+        mStampX = mTileX - mStamp->width() / 2;
+        mStampY = mTileY - mStamp->height() / 2;
+        setPos(mStampX * tileWidth, mStampY * tileHeight);
+    } else {
+        setPos(mTileX * tileWidth, mTileY * tileHeight);
+    }
 }
 
 QRectF BrushItem::boundingRect() const
@@ -130,8 +206,21 @@ QRectF BrushItem::boundingRect() const
     if (!mMapDocument)
         return QRectF();
 
+    int w = 1;
+    int h = 1;
+
+    if (mCapturing) {
+        w = qMax(0, mTileX - mCaptureStart.x() + 1);
+        h = qMax(0, mTileY - mCaptureStart.y() + 1);
+    } else if (mStamp) {
+        w = mStamp->width();
+        h = mStamp->height();
+    }
+
     const Map *map = mMapDocument->map();
-    return QRectF(0, -mExtend, map->tileWidth(), map->tileHeight() + mExtend);
+    return QRectF(0, -mExtend,
+                  map->tileWidth() * w,
+                  map->tileHeight() * h + mExtend);
 }
 
 void BrushItem::paint(QPainter *painter,
@@ -140,12 +229,17 @@ void BrushItem::paint(QPainter *painter,
 {
     Q_UNUSED(widget);
 
-    if (mTile) {
-        const QPixmap img = mTile->image();
-        const int tileHeight = mMapDocument->map()->tileHeight();
+    if (mCapturing) {
+        QColor blue(Qt::blue);
+        blue.setAlpha(64);
+        painter->fillRect(option->exposedRect, blue);
+        return;
+    }
+
+    if (mStamp) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
-        painter->drawPixmap(0, tileHeight - img.height(), img);
+        mMapDocument->renderer()->drawTileLayer(painter, mStamp);
         painter->setOpacity(opacity);
     }
 
@@ -156,4 +250,14 @@ void BrushItem::paint(QPainter *painter,
     QColor red(Qt::red);
     red.setAlpha(64);
     painter->fillRect(redraw, red);
+}
+
+/**
+ * Returns the current tile layer, or 0 if no tile layer is current selected.
+ */
+TileLayer *BrushItem::currentTileLayer()
+{
+    const int currentLayerIndex = mMapDocument->currentLayer();
+    Layer *currentLayer = mMapDocument->map()->layerAt(currentLayerIndex);
+    return dynamic_cast<TileLayer*>(currentLayer);
 }

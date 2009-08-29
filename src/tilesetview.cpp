@@ -61,7 +61,7 @@ void TileDelegate::paint(QPainter *painter,
 
     // Overlay with highlight color when selected
     if (option.state & QStyle::State_Selected) {
-        qreal opacity = painter->opacity();
+        const qreal opacity = painter->opacity();
         painter->setOpacity(0.5);
         painter->fillRect(option.rect.adjusted(0, 0, -1, -1),
                           option.palette.highlight());

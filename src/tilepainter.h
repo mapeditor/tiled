@@ -22,6 +22,8 @@
 #ifndef TILEPAINTER_H
 #define TILEPAINTER_H
 
+#include <QRect>
+
 namespace Tiled {
 
 class Tile;
@@ -60,9 +62,25 @@ public:
      */
     void setTile(int x, int y, Tile *tile);
 
+    /**
+     * Sets the tiles at the given coordinates to the tiles in the given tile
+     * layer. The coordinates \a x and \a y are relative to the map origin.
+     */
+    void setTiles(int x, int y, TileLayer *tile);
+
+    /**
+     * Draws the tiles in the given tile layer at the given coordinates. The
+     * coordinates \a x and \a y are relative to the map origin.
+     *
+     * Empty tiles are skipped.
+     */
+    void drawTiles(int x, int y, TileLayer *tiles);
+
     // TODO: Add more operations (fill, copy)
 
 private:
+    QRect intersectionWithLayer(int x, int y, int width, int height) const;
+
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
 };

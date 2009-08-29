@@ -54,6 +54,9 @@ public:
     bool contains(int x, int y) const
     { return x >= 0 && y >= 0 && x < mWidth && y < mHeight; }
 
+    bool contains(const QPoint &point) const
+    { return contains(point.x(), point.y()); }
+
     /**
      * Returns the tile at the given coordinates. The coordinates have to
      * be within this layer.
@@ -64,6 +67,17 @@ public:
      * Sets the tile for the given coordinates.
      */
     void setTile(int x, int y, Tile *tile);
+
+    /**
+     * Returns a copy of the area specified by the given \a rectangle. The
+     * caller is responsible for the returned tile layer.
+     *
+     * Returns 0 if the rectangle falls outside of this layer.
+     */
+    TileLayer *copy(const QRect &rectangle) const;
+
+    TileLayer *copy(int x, int y, int width, int height) const
+    { return copy(QRect(x, y, width, height)); }
 
     /**
      * Resizes this tile layer to \a size, while shifting all tiles by

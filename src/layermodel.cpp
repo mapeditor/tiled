@@ -96,7 +96,7 @@ Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 }
 
 QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
-                                     int role) const
+                                int role) const
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
