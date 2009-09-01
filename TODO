@@ -17,23 +17,23 @@ MILESTONE 2 - Basic editing features
 * Add undo/redo support
 * Add basic tile brush
 * Add layer stack editing (add, remove, reordering)
-
-<--- we are about here --->
-
-* Add resizing of the map or of a map layer
+* Add resizing of the map
 
 MILESTONE 3 - Object editing
 
 * Add object layer editing (add, remove, move)
-* Add support for different object types
 
 MILESTONE 4 - Advanced editing features
 
 * Add stamp brush
-* Add intelligent terrain brush
+
+<--- we are about here --->
 
 SOMEWHERE
 
 * Add tileset management (add, remove, edit, usage statistics, etc...)
 * Add layer visibility toggle and opacity setting
 * Handle all TODO entries in the source code
+* Add intelligent terrain brush
+* Add resizing of individual map layers
+* Add support for different object types
