@@ -53,8 +53,8 @@ void Map::adjustMaxTileHeight(int height)
  */
 QPoint Map::toPixelCoordinates(const QPointF &p) const
 {
-    return QPoint(p.x() * mTileWidth,
-                  p.y() * mTileHeight);
+    return QPoint(qRound(p.x() * mTileWidth),
+                  qRound(p.y() * mTileHeight));
 }
 
 /**
@@ -62,8 +62,8 @@ QPoint Map::toPixelCoordinates(const QPointF &p) const
  */
 QSize Map::toPixelCoordinates(const QSizeF &p) const
 {
-    return QSize(p.width() * mTileWidth,
-                 p.height() * mTileHeight);
+    return QSize(qRound(p.width() * mTileWidth),
+                 qRound(p.height() * mTileHeight));
 }
 
 /**

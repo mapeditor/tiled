@@ -112,7 +112,7 @@ public:
     void setSize(const QSizeF &size) { mSize = size; }
 
     void setSize(qreal width, qreal height)
-    { setSize(QSize(width, height)); }
+    { setSize(QSizeF(width, height)); }
 
     /**
      * Returns the width of this object.
