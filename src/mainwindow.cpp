@@ -175,8 +175,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
             mScene, SLOT(setGridVisible(bool)));
 
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            mScene, SLOT(currentTileChanged(Tile*)));
+    connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
+            mScene, SLOT(currentTilesChanged(const TileLayer*)));
 
     mUi.menuView->addSeparator();
     mUi.menuView->addAction(mTilesetDock->toggleViewAction());

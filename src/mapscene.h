@@ -31,7 +31,7 @@ namespace Tiled {
 
 class Layer;
 class MapObject;
-class Tile;
+class TileLayer;
 
 namespace Internal {
 
@@ -102,10 +102,10 @@ private slots:
     void repaintRegion(const QRegion &region);
 
     /**
-     * Notifies the scene that the current tile has changed. The scene passes
-     * this on to the tile brush.
+     * Notifies the scene that the current tile selection has changed. The
+     * scene passes this on to the tile brush.
      */
-    void currentTileChanged(Tile *tile);
+    void currentTilesChanged(const TileLayer *tiles);
 
     void currentLayerChanged();
 

@@ -24,13 +24,12 @@
 
 #include <QDockWidget>
 
-class QModelIndex;
 class QStackedWidget;
 class QTabBar;
 
 namespace Tiled {
 
-class Tile;
+class TileLayer;
 class Tileset;
 
 namespace Internal {
@@ -51,6 +50,8 @@ public:
      */
     TilesetDock(QWidget *parent = 0);
 
+    ~TilesetDock();
+
     /**
      * Sets the map for which the tilesets should be displayed.
      */
@@ -60,19 +61,19 @@ signals:
     /**
      * Emitted when the currently selected tile changed.
      */
-    void currentTileChanged(Tile *tile);
+    void currentTilesChanged(const TileLayer *tiles);
 
 private slots:
     void addTilesetView(Tileset *tileset);
-    void currentChanged(const QModelIndex &index);
+    void selectionChanged();
 
 private:
-    void setCurrentTile(Tile *tile);
+    void setCurrentTiles(TileLayer *tiles);
 
     MapDocument *mMapDocument;
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
-    Tile *mCurrentTile;
+    TileLayer *mCurrentTiles;
 };
 
 } // namespace Internal

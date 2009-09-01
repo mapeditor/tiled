@@ -23,6 +23,7 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
@@ -31,6 +32,7 @@
 #include <QTabBar>
 #include <QVBoxLayout>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 TilesetDock::TilesetDock(QWidget *parent):
@@ -38,7 +40,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mMapDocument(0),
     mTabBar(new QTabBar),
     mViewStack(new QStackedWidget),
-    mCurrentTile(0)
+    mCurrentTiles(0)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
@@ -55,12 +57,17 @@ TilesetDock::TilesetDock(QWidget *parent):
     setWidget(w);
 }
 
+TilesetDock::~TilesetDock()
+{
+    delete mCurrentTiles;
+}
+
 void TilesetDock::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
         return;
 
-    setCurrentTile(0);
+    setCurrentTiles(0);
 
     // Clear previous content
     while (mTabBar->count())
@@ -86,26 +93,59 @@ void TilesetDock::addTilesetView(Tileset *tileset)
     view->setModel(new TilesetModel(tileset, view));
 
     connect(view->selectionModel(),
-            SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            SLOT(currentChanged(QModelIndex)));
+            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            SLOT(selectionChanged()));
 
     mTabBar->addTab(tileset->name());
     mViewStack->addWidget(view);
 }
 
-void TilesetDock::currentChanged(const QModelIndex &index)
+void TilesetDock::selectionChanged()
 {
-    QItemSelectionModel *s = static_cast<QItemSelectionModel*>(sender());
-    const TilesetModel *model = static_cast<const TilesetModel*>(s->model());
+    const QItemSelectionModel *s = static_cast<QItemSelectionModel*>(sender());
+    const QModelIndexList indexes = s->selection().indexes();
 
-    setCurrentTile(model->tileAt(index));
-}
-
-void TilesetDock::setCurrentTile(Tile *tile)
-{
-    if (mCurrentTile == tile)
+    if (indexes.isEmpty())
         return;
 
-    mCurrentTile = tile;
-    emit currentTileChanged(mCurrentTile);
+    const QModelIndex &first = indexes.first();
+    int minX = first.column();
+    int maxX = first.column();
+    int minY = first.row();
+    int maxY = first.row();
+
+    foreach (const QModelIndex &index, indexes) {
+        if (minX > index.column()) minX = index.column();
+        if (maxX < index.column()) maxX = index.column();
+        if (minY > index.row()) minY = index.row();
+        if (maxY < index.row()) maxY = index.row();
+    }
+
+    // Create a tile layer from the current selection
+    // Precondition: the selection is contiguous
+    Q_ASSERT((maxX - minX + 1) * (maxY - minY + 1) == indexes.size());
+
+    TileLayer *tileLayer = new TileLayer(QString(), 0, 0,
+                                         maxX - minX + 1,
+                                         maxY - minY + 1);
+
+    const TilesetModel *model = static_cast<const TilesetModel*>(s->model());
+    foreach (const QModelIndex &index, indexes) {
+        tileLayer->setTile(index.column() - minX,
+                           index.row() - minY,
+                           model->tileAt(index));
+    }
+
+    setCurrentTiles(tileLayer);
+}
+
+void TilesetDock::setCurrentTiles(TileLayer *tiles)
+{
+    if (mCurrentTiles == tiles)
+        return;
+
+    delete mCurrentTiles;
+    mCurrentTiles = tiles;
+
+    emit currentTilesChanged(mCurrentTiles);
 }

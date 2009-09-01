@@ -156,11 +156,10 @@ void MapScene::repaintRegion(const QRegion &region)
         update(mMapDocument->toPixelCoordinates(r).adjusted(0, -extra, 0, 0));
 }
 
-void MapScene::currentTileChanged(Tile *tile)
+void MapScene::currentTilesChanged(const TileLayer *tiles)
 {
-    TileLayer *stamp = new TileLayer(QString(), 0, 0, 1, 1);
-    stamp->setTile(0, 0, tile);
-    mBrush->setStamp(stamp);
+    if (tiles)
+        mBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
 }
 
 /**

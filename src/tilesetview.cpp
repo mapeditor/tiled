@@ -88,7 +88,7 @@ TilesetView::TilesetView(QWidget *parent):
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this));
     setShowGrid(false);
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionMode(QAbstractItemView::ContiguousSelection);
 
     QHeaderView *header = horizontalHeader();
     header->hide();
