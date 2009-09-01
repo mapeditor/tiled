@@ -49,7 +49,6 @@
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QUndoView>
-#include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -249,7 +248,6 @@ bool MainWindow::openFile(const QString &fileName)
 
     // Use the XML map reader to read the map (assuming it's a .tmx file)
     // TODO: Add support for input/output plugins
-    qDebug() << "Loading map:" << fileName;
     XmlMapReader mapReader;
     Map *map = mapReader.read(fileName);
     if (!map) {

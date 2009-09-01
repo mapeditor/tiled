@@ -28,7 +28,6 @@
 #include <QFile>
 #include <QMap>
 #include <QXmlStreamReader>
-#include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;

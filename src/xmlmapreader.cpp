@@ -184,7 +184,6 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         //const QString orientation = atts.value(QLatin1String("orientation"));
 
         mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
-        qDebug() << "Map:" << mapWidth << mapHeight << tileWidth << tileHeight;
     }
     else if (localName == QLatin1String("tileset"))
     {
@@ -228,9 +227,6 @@ bool TmxHandler::startElement(const QString &namespaceURI,
             mTileset = new Tileset(name, tileWidth, tileHeight,
                                    tileSpacing, margin);
         }
-
-        qDebug() << "Tileset:" << mTileset->name() << mTilesetFirstGid
-            << mTileset->tileWidth() << mTileset->tileHeight();
     }
     else if (localName == QLatin1String("tile"))
     {
@@ -290,8 +286,6 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         readLayerAttributes(atts, mTileLayer);
         mTileX = 0;
         mTileY = 0;
-
-        qDebug() << "Layer:" << name << x << y << width << height;
     }
     else if (localName == QLatin1String("data"))
     {
@@ -308,8 +302,6 @@ bool TmxHandler::startElement(const QString &namespaceURI,
 
         mObjectGroup = new ObjectGroup(name, x, y, width, height);
         readLayerAttributes(atts, mObjectGroup);
-
-        qDebug() << "Object Group:" << name << x << y << width << height;
     }
     else if (localName == QLatin1String("properties"))
     {
@@ -337,7 +329,6 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         const qreal heightF = (qreal) height / mMap->tileHeight();
 
         mObject = new MapObject(name, type, xF, yF, widthF, heightF);
-        qDebug() << "Object:" << name << type << x << y << width << height;
     }
     else {
         qDebug() << "Unhandled element (fixme):" << localName;

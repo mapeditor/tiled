@@ -22,8 +22,6 @@
 #include "tilesetmanager.h"
 #include "tileset.h"
 
-#include <QDebug>
-
 using namespace Tiled;
 using namespace Tiled::Internal;
 

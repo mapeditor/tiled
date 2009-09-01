@@ -22,8 +22,6 @@
 #include "tileset.h"
 #include "tile.h"
 
-#include <QDebug>
-
 using namespace Tiled;
 
 Tileset::~Tileset()
@@ -43,8 +41,6 @@ bool Tileset::loadFromImage(const QString &fileName)
     QPixmap img = QPixmap(fileName);
     if (img.isNull())
         return false;
-
-    qDebug() << "Loaded image" << fileName << img.width() << img.height();
 
     const int stopWidth = img.width() - mTileWidth;
     const int stopHeight = img.height() - mTileHeight;
