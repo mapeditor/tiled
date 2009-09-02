@@ -115,3 +115,9 @@ FORMS += aboutdialog.ui \
     newtilesetdialog.ui
 RESOURCES += tiled.qrc
 TRANSLATIONS = translations/tiled_nl.ts
+
+mac {
+    TARGET = Tiled
+    LIBS += -lz
+}
+
