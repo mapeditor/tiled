@@ -62,6 +62,13 @@ public:
                   int role = Qt::DisplayRole) const;
 
     /**
+     * Returns a small size hint, to prevent the headers from affecting the
+     * minimum width and height of the sections.
+     */
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const;
+
+    /**
      * Returns the tile at the given index.
      */
     Tile *tileAt(const QModelIndex &index) const;

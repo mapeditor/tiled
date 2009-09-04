@@ -67,6 +67,15 @@ QVariant TilesetModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+QVariant TilesetModel::headerData(int /* section */,
+                                  Qt::Orientation /* orientation */,
+                                  int role) const
+{
+    if (role == Qt::SizeHintRole)
+        return QSize(1, 1);
+    return QVariant();
+}
+
 Tile *TilesetModel::tileAt(const QModelIndex &index) const
 {
     if (!index.isValid())
