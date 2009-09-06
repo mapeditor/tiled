@@ -154,33 +154,17 @@ public:
 
     /**
      * Adds a tileset to this map. The map does not take ownership over its
-     * tilesets.
+     * tilesets, this is merely for keeping track of which tilesets are used by
+     * the map, and their saving order.
      *
      * @param tileset the tileset to add
-     * @param firstGid the map-global ID of the first tile in the tileset
      */
-    void addTileset(Tileset *tileset, int firstGid);
-
-    // TODO: Do the gid/tile mapping somewhere else
-    //       It shouldn't be necessary for either the Map, Tile or Tileset
-    //       classes to deal with global tile IDs, since they are an
-    //       implementation detail related to how the map is saved and
-    //       loaded.
+    void addTileset(Tileset *tileset);
 
     /**
-     * Returns the tilesets that the tiles on this map are using, mapped
-     * by their first global ID.
+     * Returns the tilesets that the tiles on this map are using.
      */
-    QMap<int, Tileset*> tilesets() const;
-
-    /**
-     * Returns the tile for the given global tile ID.
-     *
-     * @param gid the global tile ID, must be at least 0
-     * @return the tile associated with the given global tile ID, or 0 if
-     *         not found
-     */
-    Tile *tileForGid(int gid) const;
+    QList<Tileset*> tilesets() const;
 
     Map *clone() const;
 
@@ -193,7 +177,7 @@ private:
     int mTileHeight;
     int mMaxTileHeight;
     QList<Layer*> mLayers;
-    QMap<int, Tileset*> mTilesets;
+    QList<Tileset*> mTilesets;
     QMap<QString, QString> mProperties;
 };
 

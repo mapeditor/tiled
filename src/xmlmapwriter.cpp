@@ -260,11 +260,7 @@ void writeMap(QXmlStreamWriter &w, const Map *map)
 
     firstGidToTileset.clear();
     int firstGid = 1;
-    const QMap<int, Tileset*> tilesets = map->tilesets();
-    QMap<int, Tileset*>::const_iterator i = tilesets.begin();
-    QMap<int, Tileset*>::const_iterator i_end = tilesets.end();
-    for (; i != i_end; ++i) {
-        const Tileset *tileset = i.value();
+    foreach (const Tileset *tileset, map->tilesets()) {
         writeTileset(w, tileset, firstGid);
         firstGidToTileset.insert(firstGid, tileset);
         firstGid += tileset->tileCount();

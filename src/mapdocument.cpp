@@ -56,7 +56,7 @@ MapDocument::MapDocument(Map *map):
 
     // Register tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, mMap->tilesets().values())
+    foreach (Tileset *tileset, mMap->tilesets())
         tilesetManager->addReference(tileset);
 }
 
@@ -64,7 +64,7 @@ MapDocument::~MapDocument()
 {
     // Unregister tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, mMap->tilesets().values())
+    foreach (Tileset *tileset, mMap->tilesets())
         tilesetManager->removeReference(tileset);
 
     delete mRenderer;
@@ -182,7 +182,7 @@ void MapDocument::removeLayer(int index)
 
 void MapDocument::addTileset(Tileset *tileset)
 {
-    mMap->addTileset(tileset, 0);
+    mMap->addTileset(tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
     emit tilesetAdded(tileset);

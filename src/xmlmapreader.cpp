@@ -89,6 +89,17 @@ class TmxHandler : public QXmlDefaultHandler
         Map *takeMap();
 
     private:
+        /**
+         * Returns the tile for the given global tile ID. When an error
+         * occurs, \a ok is set to false and mError is set.
+         *
+         * @param gid the global tile ID, must be at least 0
+         * @param ok  returns whether the conversion went ok
+         * @return the tile associated with the given global tile ID, or 0 if
+         *         not found
+         */
+        Tile *tileForGid(int gid, bool &ok);
+
         void unexpectedElement(const QString &element,
                                const QString &expectedParent);
         void readLayerAttributes(const QXmlAttributes &atts, Layer *layer);
@@ -113,6 +124,7 @@ class TmxHandler : public QXmlDefaultHandler
 
         QMap<QString, QString> *mProperties;
         QPair<QString, QString> *mProperty;
+        QMap<int, Tileset*> mGidsToTileset;
         QString mError;
 };
 
@@ -242,7 +254,12 @@ bool TmxHandler::startElement(const QString &namespaceURI,
             }
 
             const int gid = atts.value(QLatin1String("gid")).toInt();
-            mTileLayer->setTile(mTileX, mTileY, mMap->tileForGid(gid));
+            bool ok;
+            Tile *tile = tileForGid(gid, ok);
+            if (ok)
+                mTileLayer->setTile(mTileX, mTileY, tile);
+            else
+                return false;
 
             mTileX++;
             if (mTileX >= mTileLayer->width()) {
@@ -339,8 +356,6 @@ bool TmxHandler::startElement(const QString &namespaceURI,
 
 bool TmxHandler::characters(const QString &ch)
 {
-    Q_UNUSED(ch);
-
     if (mEncoding == QLatin1String("base64")) {
         QByteArray tileData = QByteArray::fromBase64(ch.toLatin1());
         const int size = (mTileLayer->width() * mTileLayer->height()) * 4;
@@ -377,8 +392,12 @@ bool TmxHandler::characters(const QString &ch)
                 data[i + 2] << 16 |
                 data[i + 3] << 24;
 
-            Tile *tile = mMap->tileForGid(gid);
-            mTileLayer->setTile(x, y, tile);
+            bool ok;
+            Tile *tile = tileForGid(gid, ok);
+            if (ok)
+                mTileLayer->setTile(x, y, tile);
+            else
+                return false;
 
             x++;
             if (x == mTileLayer->width()) { x = 0; y++; }
@@ -413,7 +432,8 @@ bool TmxHandler::endElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("tileset"))
     {
-        mMap->addTileset(mTileset, mTilesetFirstGid);
+        mGidsToTileset.insert(mTilesetFirstGid, mTileset);
+        mMap->addTileset(mTileset);
         mTileset = 0;
     }
     else if (localName == QLatin1String("tile"))
@@ -492,6 +512,33 @@ Map *TmxHandler::takeMap()
     Map *map = mMap;
     mMap = 0;
     return map;
+}
+
+Tile *TmxHandler::tileForGid(int gid, bool &ok)
+{
+    Tile *result = 0;
+
+    if (gid < 0) {
+        mError = QObject::tr("Invalid global tile id (less than 0): %1")
+                 .arg(gid);
+        ok = false;
+    } else if (gid == 0) {
+        ok = true;
+    } else if (mGidsToTileset.isEmpty()) {
+        mError = QObject::tr("Tile used but no tilesets specified");
+        ok = false;
+    } else {
+        // Find the tileset containing this tile
+        QMap<int, Tileset*>::const_iterator i = mGidsToTileset.upperBound(gid);
+        --i; // Navigate one tileset back since upper bound finds the next
+        const int tileId = gid - i.key();
+        const Tileset *tileset = i.value();
+
+        result = tileset ? tileset->tileAt(tileId) : 0;
+        ok = true;
+    }
+
+    return result;
 }
 
 void TmxHandler::unexpectedElement(const QString &element,

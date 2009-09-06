@@ -79,7 +79,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
     if (mapDocument) {
         Map *map = mapDocument->map();
-        foreach (Tileset *tileset, map->tilesets().values())
+        foreach (Tileset *tileset, map->tilesets())
             addTilesetView(tileset);
 
         connect(mMapDocument, SIGNAL(tilesetAdded(Tileset*)),

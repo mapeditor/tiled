@@ -111,34 +111,14 @@ Layer *Map::takeLayerAt(int index)
     return layer;
 }
 
-void Map::addTileset(Tileset *tileset, int firstGid)
+void Map::addTileset(Tileset *tileset)
 {
-    mTilesets.insert(firstGid, tileset);
+    mTilesets.append(tileset);
 }
 
-QMap<int, Tileset*> Map::tilesets() const
+QList<Tileset*> Map::tilesets() const
 {
     return mTilesets;
-}
-
-Tile *Map::tileForGid(int gid) const
-{
-    Q_ASSERT(gid >= 0);
-
-    if (gid == 0)
-        return 0;
-
-    // TODO: This assertion can fail on trying to load an invalid map file
-    //       should result in a readable error messages instead of a crash
-    Q_ASSERT(mTilesets.size() > 0);
-
-    // Find the tileset containing this tile
-    QMap<int, Tileset*>::const_iterator i = mTilesets.upperBound(gid);
-    --i; // Navigate one tileset back since upper bound finds the next
-    const int tileId = gid - i.key();
-    const Tileset *tileset = i.value();
-
-    return tileset ? tileset->tileAt(tileId) : 0;
 }
 
 Map *Map::clone() const
