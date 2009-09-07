@@ -29,17 +29,33 @@ namespace Internal {
 
 /**
  * The map view shows the map scene. This class sets some MapScene specific
- * properties on the viewport.
+ * properties on the viewport and implements zooming.
  *
  * @see MapScene
  */
 class MapView : public QGraphicsView
 {
+    Q_OBJECT
+
 public:
     /**
      * Constructor.
      */
     MapView(QWidget *parent = 0);
+
+    void setScale(qreal scale);
+    qreal scale() const { return mScale; }
+
+signals:
+    void scaleChanged(qreal scale);
+
+public slots:
+    void zoomIn();
+    void zoomOut();
+    void resetZoom();
+
+private:
+    qreal mScale;
 };
 
 } // namespace Internal

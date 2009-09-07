@@ -24,8 +24,11 @@
 using namespace Tiled::Internal;
 
 MapView::MapView(QWidget *parent):
-    QGraphicsView(parent)
+    QGraphicsView(parent),
+    mScale(1)
 {
+    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+
     QWidget *v = viewport();
 
     /* Since Qt 4.5, setting this attribute yields significant repaint
@@ -35,4 +38,54 @@ MapView::MapView(QWidget *parent):
     /* Since Qt 4.6, mouse tracking is disabled when no graphics item uses
      * hover events. We need to set it since our scene wants the events. */
     v->setMouseTracking(true);
+}
+
+void MapView::setScale(qreal scale)
+{
+    if (scale == mScale)
+        return;
+
+    mScale = scale;
+    setTransform(QTransform::fromScale(mScale, mScale));
+    setRenderHint(QPainter::SmoothPixmapTransform, mScale < qreal(1));
+    emit scaleChanged(mScale);
+}
+
+static const int zoomFactorCount = 10;
+static const qreal zoomFactors[zoomFactorCount] = {
+    0.0625,
+    0.125,
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.5,
+    2.0,
+    3.0,
+    4.0
+};
+
+void MapView::zoomIn()
+{
+    for (int i = 0; i < zoomFactorCount; ++i) {
+        if (zoomFactors[i] > mScale) {
+            setScale(zoomFactors[i]);
+            break;
+        }
+    }
+}
+
+void MapView::zoomOut()
+{
+    for (int i = zoomFactorCount - 1; i >= 0; --i) {
+        if (zoomFactors[i] < mScale) {
+            setScale(zoomFactors[i]);
+            break;
+        }
+    }
+}
+
+void MapView::resetZoom()
+{
+    setScale(1);
 }

@@ -28,6 +28,7 @@
 #include <QSettings>
 #include "ui_mainwindow.h"
 
+class QLabel;
 class QUndoGroup;
 
 namespace Tiled {
@@ -82,6 +83,7 @@ private slots:
     void editMapProperties();
     void updateModified();
     void updateActions();
+    void updateZoomLabel(qreal scale);
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();
@@ -137,6 +139,7 @@ private:
     MapScene *mScene;
     LayerDock *mLayerDock;
     TilesetDock *mTilesetDock;
+    QLabel *mZoomLabel;
     QSettings mSettings;
     QString mCurrentFileName;
     QUndoGroup *mUndoGroup;

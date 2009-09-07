@@ -22,6 +22,9 @@
         <file>images/16x16/help-about.png</file>
         <file>images/16x16/window-close.png</file>
         <file>images/16x16/stock-duplicate-16.png</file>
+        <file>images/16x16/zoom-in.png</file>
+        <file>images/16x16/zoom-original.png</file>
+        <file>images/16x16/zoom-out.png</file>
         <file>images/24x24/document-new.png</file>
         <file>images/24x24/document-open.png</file>
         <file>images/24x24/document-open-recent.png</file>
@@ -39,5 +42,8 @@
         <file>images/24x24/go-down.png</file>
         <file>images/24x24/go-up.png</file>
         <file>images/24x24/help-about.png</file>
+        <file>images/24x24/zoom-in.png</file>
+        <file>images/24x24/zoom-original.png</file>
+        <file>images/24x24/zoom-out.png</file>
     </qresource>
 </RCC>

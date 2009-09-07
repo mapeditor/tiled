@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mMapDocument(0)
     , mLayerDock(new LayerDock(this))
     , mTilesetDock(new TilesetDock(this))
+    , mZoomLabel(new QLabel)
 {
     mUi.setupUi(this);
 
@@ -97,6 +98,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     undoViewDock->setWidget(undoView);
     addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
+    updateZoomLabel(mUi.mapView->scale());
+    connect(mUi.mapView, SIGNAL(scaleChanged(qreal)),
+            this, SLOT(updateZoomLabel(qreal)));
+
+    statusBar()->addPermanentWidget(mZoomLabel);
+
     mUi.actionNew->setShortcut(QKeySequence::New);
     mUi.actionOpen->setShortcut(QKeySequence::Open);
     mUi.actionSave->setShortcut(QKeySequence::Save);
@@ -128,12 +135,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi.actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
+
     connect(mUi.actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mUi.actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
+
+    connect(mUi.actionZoomIn, SIGNAL(triggered()),
+            mUi.mapView, SLOT(zoomIn()));
+    connect(mUi.actionZoomOut, SIGNAL(triggered()),
+            mUi.mapView, SLOT(zoomOut()));
+    connect(mUi.actionZoomNormal, SIGNAL(triggered()),
+            mUi.mapView, SLOT(resetZoom()));
+
     connect(mUi.actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi.actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
+
     connect(mUi.actionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
     connect(mUi.actionAddObjectLayer, SIGNAL(triggered()),
             SLOT(addObjectLayer()));
@@ -145,6 +162,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi.actionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
     connect(mUi.actionLayerProperties, SIGNAL(triggered()),
             SLOT(editLayerProperties()));
+
     connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
@@ -271,6 +289,10 @@ void MainWindow::openLastFile()
     if (!files.isEmpty() && openFile(files.first())) {
         // Restore camera to the previous position
         mSettings.beginGroup(QLatin1String("mainwindow"));
+        qreal scale = mSettings.value(QLatin1String("mapScale")).toDouble();
+        if (scale > 0)
+            mUi.mapView->setScale(scale);
+
         const int hor = mSettings.value(QLatin1String("scrollX")).toInt();
         const int ver = mSettings.value(QLatin1String("scrollY")).toInt();
         mUi.mapView->horizontalScrollBar()->setSliderPosition(hor);
@@ -491,6 +513,11 @@ void MainWindow::updateActions()
     mUi.actionLayerProperties->setEnabled(currentLayer >= 0);
 }
 
+void MainWindow::updateZoomLabel(qreal scale)
+{
+    mZoomLabel->setText(tr("%1%").arg(scale * 100));
+}
+
 void MainWindow::selectAll()
 {
     if (mMapDocument)
@@ -585,6 +612,7 @@ void MainWindow::writeSettings()
     mSettings.setValue(QLatin1String("state"), saveState());
     mSettings.setValue(QLatin1String("gridVisible"),
                        mUi.actionShowGrid->isChecked());
+    mSettings.setValue(QLatin1String("mapScale"), mUi.mapView->scale());
     mSettings.setValue(QLatin1String("scrollX"),
                        mUi.mapView->horizontalScrollBar()->sliderPosition());
     mSettings.setValue(QLatin1String("scrollY"),
