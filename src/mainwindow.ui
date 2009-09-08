@@ -367,6 +367,9 @@
    </property>
   </action>
   <action name="actionZoomNormal">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
      <normaloff>:/images/16x16/zoom-original.png</normaloff>:/images/16x16/zoom-original.png</iconset>

@@ -46,6 +46,9 @@ public:
     void setScale(qreal scale);
     qreal scale() const { return mScale; }
 
+    bool canZoomIn() const;
+    bool canZoomOut() const;
+
 signals:
     void scaleChanged(qreal scale);
 
@@ -53,6 +56,9 @@ public slots:
     void zoomIn();
     void zoomOut();
     void resetZoom();
+
+protected:
+    void wheelEvent(QWheelEvent *event);
 
 private:
     qreal mScale;

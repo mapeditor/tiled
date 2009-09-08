@@ -515,6 +515,10 @@ void MainWindow::updateActions()
 
 void MainWindow::updateZoomLabel(qreal scale)
 {
+    mUi.actionZoomIn->setEnabled(mUi.mapView->canZoomIn());
+    mUi.actionZoomOut->setEnabled(mUi.mapView->canZoomOut());
+    mUi.actionZoomNormal->setEnabled(scale != 1);
+
     mZoomLabel->setText(tr("%1%").arg(scale * 100));
 }
 

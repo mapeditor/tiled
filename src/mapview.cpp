@@ -21,6 +21,8 @@
 
 #include "mapview.h"
 
+#include <QWheelEvent>
+
 using namespace Tiled::Internal;
 
 MapView::MapView(QWidget *parent):
@@ -65,6 +67,16 @@ static const qreal zoomFactors[zoomFactorCount] = {
     4.0
 };
 
+bool MapView::canZoomIn() const
+{
+    return mScale < zoomFactors[zoomFactorCount - 1];
+}
+
+bool MapView::canZoomOut() const
+{
+    return mScale > zoomFactors[0];
+}
+
 void MapView::zoomIn()
 {
     for (int i = 0; i < zoomFactorCount; ++i) {
@@ -88,4 +100,24 @@ void MapView::zoomOut()
 void MapView::resetZoom()
 {
     setScale(1);
+}
+
+/**
+ * Override to support zooming in and out using the mouse wheel.
+ */
+void MapView::wheelEvent(QWheelEvent *event)
+{
+    if (event->modifiers() & Qt::ControlModifier
+        && event->orientation() == Qt::Vertical)
+    {
+        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        if (event->delta() > 0)
+            zoomIn();
+        else
+            zoomOut();
+        setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+        return;
+    }
+
+    QGraphicsView::wheelEvent(event);
 }
