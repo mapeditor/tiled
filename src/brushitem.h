@@ -97,6 +97,7 @@ private:
     void updatePosition();
 
     TileLayer *currentTileLayer();
+    QRect capturedArea() const;
 
     int mTileX, mTileY;
     int mStampX, mStampY;

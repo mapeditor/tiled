@@ -130,18 +130,18 @@ void BrushItem::endCapture()
     prepareGeometryChange();
     mCapturing = false;
 
-    QRect captured = QRect(mCaptureStart, QPoint(mTileX, mTileY));
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
     // Intersect with the layer and translate to layer coordinates
+    QRect captured = capturedArea();
     captured.intersect(QRect(tileLayer->x(), tileLayer->y(),
                              tileLayer->width(), tileLayer->height()));
-    captured.translate(-tileLayer->x(), -tileLayer->y());
 
-    if (captured.isValid())
+    if (captured.isValid()) {
+        captured.translate(-tileLayer->x(), -tileLayer->y());
         setStamp(tileLayer->copy(captured));
-    else {
+    } else {
         updatePosition();
         updateExtend();
         update();
@@ -190,8 +190,8 @@ void BrushItem::updatePosition()
     const int tileHeight = map->tileHeight();
 
     if (mCapturing) {
-        setPos(mCaptureStart.x() * tileWidth,
-               mCaptureStart.y() * tileHeight);
+        setPos(qMin(mTileX, mCaptureStart.x()) * tileWidth,
+               qMin(mTileY, mCaptureStart.y()) * tileHeight);
     } else if (mStamp) {
         mStampX = mTileX - mStamp->width() / 2;
         mStampY = mTileY - mStamp->height() / 2;
@@ -210,8 +210,9 @@ QRectF BrushItem::boundingRect() const
     int h = 1;
 
     if (mCapturing) {
-        w = qMax(0, mTileX - mCaptureStart.x() + 1);
-        h = qMax(0, mTileY - mCaptureStart.y() + 1);
+        const QRect area = capturedArea();
+        w = area.width();
+        h = area.height();
     } else if (mStamp) {
         w = mStamp->width();
         h = mStamp->height();
@@ -260,4 +261,14 @@ TileLayer *BrushItem::currentTileLayer()
     const int currentLayerIndex = mMapDocument->currentLayer();
     Layer *currentLayer = mMapDocument->map()->layerAt(currentLayerIndex);
     return dynamic_cast<TileLayer*>(currentLayer);
+}
+
+QRect BrushItem::capturedArea() const
+{
+    QRect captured = QRect(mCaptureStart, QPoint(mTileX, mTileY)).normalized();
+    if (captured.width() == 0)
+        captured.adjust(-1, 0, 1, 0);
+    if (captured.height() == 0)
+        captured.adjust(0, -1, 0, 1);
+    return captured;
 }
