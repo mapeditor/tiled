@@ -332,6 +332,11 @@ bool TmxHandler::startElement(const QString &namespaceURI,
     }
     else if (localName == QLatin1String("object"))
     {
+        if (!mObjectGroup) {
+            unexpectedElement(localName, QLatin1String("objectgroup"));
+            return false;
+        }
+
         const QString name = atts.value(QLatin1String("name"));
         const int x = atts.value(QLatin1String("x")).toInt();
         const int y = atts.value(QLatin1String("y")).toInt();
