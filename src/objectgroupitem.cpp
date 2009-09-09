@@ -30,6 +30,11 @@ using namespace Tiled::Internal;
 ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
     mObjectGroup(objectGroup)
 {
+#if QT_VERSION >= 0x040600
+    // Since we don't do any painting, we can spare us the call to paint()
+    setFlag(QGraphicsItem::ItemHasNoContents);
+#endif
+
     const Map *map = objectGroup->map();
     setPos(objectGroup->x() * map->tileWidth(),
            objectGroup->y() * map->tileHeight());
