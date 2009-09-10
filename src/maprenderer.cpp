@@ -25,6 +25,8 @@
 #include "tile.h"
 #include "tilelayer.h"
 
+#include <cmath>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -45,7 +47,7 @@ QRect MapRenderer::layerBoundingRect(Layer *layer) const
 }
 
 void MapRenderer::drawTileLayer(QPainter *painter, TileLayer *layer,
-                                const QRect &exposed)
+                                const QRectF &exposed)
 {
     const int tileWidth = mMap->tileWidth();
     const int tileHeight = mMap->tileHeight();
@@ -57,12 +59,12 @@ void MapRenderer::drawTileLayer(QPainter *painter, TileLayer *layer,
 
     if (!exposed.isNull()) {
         const int extraHeight = layer->maxTileHeight() - tileHeight;
-        const QRect rect = exposed.adjusted(0, 0, 0, extraHeight);
+        const QRectF rect = exposed.adjusted(0, 0, 0, extraHeight);
 
-        startX = rect.x() / tileWidth;
-        startY = rect.y() / tileHeight;
-        endX = qMin(rect.right() / tileWidth + 1, endX);
-        endY = qMin(rect.bottom() / tileHeight + 1, endY);
+        startX = (int) std::floor(rect.x()) / tileWidth;
+        startY = (int) std::floor(rect.y()) / tileHeight;
+        endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
+        endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
     }
 
     const qreal opacity = painter->opacity();

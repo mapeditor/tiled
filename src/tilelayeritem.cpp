@@ -52,7 +52,7 @@ QRectF TileLayerItem::boundingRect() const
 
 void TileLayerItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
-                          QWidget * /* widget */)
+                          QWidget *)
 {
     if (!mLayer->isVisible() || mLayer->opacity() == 0.0f)
         return;
@@ -60,5 +60,5 @@ void TileLayerItem::paint(QPainter *painter,
     // TODO: Display a border around the layer when selected
     //painter->fillRect(boundingRect(), Qt::blue);
 
-    mRenderer->drawTileLayer(painter, mLayer, option->exposedRect.toRect());
+    mRenderer->drawTileLayer(painter, mLayer, option->exposedRect);
 }

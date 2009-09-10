@@ -57,7 +57,7 @@ public:
      * only tiles that can be visible in this area will be drawn.
      */
     void drawTileLayer(QPainter *painter, TileLayer *layer,
-                       const QRect &exposed = QRect());
+                       const QRectF &exposed = QRectF());
 
 private:
     Map *mMap;
