@@ -61,8 +61,8 @@ void MapRenderer::drawTileLayer(QPainter *painter, TileLayer *layer,
         const int extraHeight = layer->maxTileHeight() - tileHeight;
         const QRectF rect = exposed.adjusted(0, 0, 0, extraHeight);
 
-        startX = (int) std::floor(rect.x()) / tileWidth;
-        startY = (int) std::floor(rect.y()) / tileHeight;
+        startX = (int) rect.x() / tileWidth;
+        startY = (int) rect.y() / tileHeight;
         endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
         endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
     }

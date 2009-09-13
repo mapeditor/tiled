@@ -36,6 +36,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
+#include <cmath>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -354,8 +356,10 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 
     const int startX = (int) (rect.x() / tileWidth) * tileWidth;
     const int startY = (int) (rect.y() / tileHeight) * tileHeight;
-    const int endX = qMin((int) rect.right(), map->width() * tileWidth + 1);
-    const int endY = qMin((int) rect.bottom(), map->height() * tileHeight + 1);
+    const int endX = qMin((int) std::ceil(rect.right()),
+                          map->width() * tileWidth + 1);
+    const int endY = qMin((int) std::ceil(rect.bottom()),
+                          map->height() * tileHeight + 1);
 
     QColor gridColor(Qt::black);
     gridColor.setAlpha(128);
