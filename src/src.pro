@@ -56,7 +56,8 @@ SOURCES += aboutdialog.cpp \
     objectpropertiesdialog.cpp \
     changemapobject.cpp \
     maprenderer.cpp \
-    stampbrush.cpp
+    stampbrush.cpp \
+    toolmanager.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -109,7 +110,8 @@ HEADERS += aboutdialog.h \
     changemapobject.h \
     maprenderer.h \
     abstracttool.h \
-    stampbrush.h
+    stampbrush.h \
+    toolmanager.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

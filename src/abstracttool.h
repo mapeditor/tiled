@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QIcon>
+#include <QMetaType>
 #include <QString>
 
 class QEvent;
@@ -51,8 +52,9 @@ public:
     /**
      * Constructs an abstract tool with the given \a name and \a icon.
      */
-    AbstractTool(const QString &name, const QIcon &icon)
-        : mName(name)
+    AbstractTool(const QString &name, const QIcon &icon, QObject *parent = 0)
+        : QObject(parent)
+        , mName(name)
         , mIcon(icon)
     {}
 
@@ -86,5 +88,7 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Internal::AbstractTool*)
 
 #endif // ABSTRACTTOOL_H

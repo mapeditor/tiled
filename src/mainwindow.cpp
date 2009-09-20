@@ -32,10 +32,12 @@
 #include "newtilesetdialog.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "stampbrush.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
+#include "toolmanager.h"
 #include "xmlmapreader.h"
 #include "xmlmapwriter.h"
 
@@ -193,7 +195,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             mScene, SLOT(setGridVisible(bool)));
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
-            mScene, SLOT(currentTilesChanged(const TileLayer*)));
+            this, SLOT(setStampBrush(const TileLayer*)));
+
+    mStampBrush = new StampBrush(this);
+
+    ToolManager *toolManager = ToolManager::instance();
+    toolManager->registerTool(mStampBrush);
+
+    addToolBar(toolManager->toolBar());
 
     mUi.menuView->addSeparator();
     mUi.menuView->addAction(mTilesetDock->toggleViewAction());
@@ -209,6 +218,8 @@ MainWindow::~MainWindow()
     writeSettings();
 
     setMapDocument(0);
+
+    ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
 }
 
@@ -607,6 +618,16 @@ void MainWindow::editLayerProperties()
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();
+}
+
+/**
+ * Sets the stamp brush in response to a change in the selection in the tileset
+ * view.
+ */
+void MainWindow::setStampBrush(const TileLayer *tiles)
+{
+    if (tiles)
+        mStampBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
 }
 
 void MainWindow::writeSettings()

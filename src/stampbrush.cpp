@@ -33,8 +33,10 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-StampBrush::StampBrush()
-    : AbstractTool(tr("Stamp Brush"), QIcon())
+StampBrush::StampBrush(QObject *parent)
+    : AbstractTool(tr("Stamp Brush"),
+                   QIcon(QLatin1String(":images/22x22/stock-tool-clone.png")),
+                   parent)
     , mMapScene(0)
     , mMapDocument(0)
     , mBrushItem(new BrushItem)

@@ -31,7 +31,6 @@ namespace Tiled {
 
 class Layer;
 class MapObject;
-class TileLayer;
 
 namespace Internal {
 
@@ -39,8 +38,6 @@ class AbstractTool;
 class MapDocument;
 class MapObjectItem;
 class ObjectGroupItem;
-class StampBrush;
-class TileLayerItem;
 
 /**
  * A graphics scene that represents the contents of a map.
@@ -72,6 +69,11 @@ public:
 
 public slots:
     /**
+     * Sets the currently active tool.
+     */
+    void setActiveTool(AbstractTool *tool);
+
+    /**
      * Sets whether the tile grid is visible.
      */
     void setGridVisible(bool visible);
@@ -102,12 +104,6 @@ private slots:
      */
     void repaintRegion(const QRegion &region);
 
-    /**
-     * Notifies the scene that the current tile selection has changed. The
-     * scene passes this on to the tile brush.
-     */
-    void currentTilesChanged(const TileLayer *tiles);
-
     void currentLayerChanged();
 
     void mapChanged();
@@ -135,7 +131,6 @@ private:
     ObjectGroupItem *mSelectedObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
     AbstractTool *mActiveTool;
-    StampBrush *mTool;
     bool mGridVisible;
     QVector<QGraphicsItem*> mLayerItems;
 

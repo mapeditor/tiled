@@ -32,10 +32,14 @@ class QLabel;
 class QUndoGroup;
 
 namespace Tiled {
+
+class TileLayer;
+
 namespace Internal {
 
 class MapScene;
 class LayerDock;
+class StampBrush;
 class TilesetDock;
 
 /**
@@ -98,6 +102,8 @@ private slots:
     void removeLayer();
     void editLayerProperties();
 
+    void setStampBrush(const TileLayer *tiles);
+
 private:
     /**
       * Asks the user whether the map should be saved when necessary.
@@ -143,6 +149,8 @@ private:
     QSettings mSettings;
     QString mCurrentFileName;
     QUndoGroup *mUndoGroup;
+
+    StampBrush *mStampBrush;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];

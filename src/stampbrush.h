@@ -43,7 +43,7 @@ class StampBrush : public AbstractTool
     Q_OBJECT
 
 public:
-    StampBrush();
+    StampBrush(QObject *parent = 0);
     ~StampBrush();
 
     void enable(MapScene *scene);

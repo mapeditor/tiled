@@ -21,6 +21,7 @@
 
 #include "mapscene.h"
 
+#include "abstracttool.h"
 #include "addremovemapobject.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -28,10 +29,10 @@
 #include "mapobjectitem.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
-#include "stampbrush.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
+#include "toolmanager.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -47,16 +48,23 @@ MapScene::MapScene(QObject *parent):
     mSelectedObjectGroupItem(0),
     mNewMapObjectItem(0),
     mActiveTool(0),
-    mTool(new StampBrush),
     mGridVisible(true)
 {
     setBackgroundBrush(Qt::darkGray);
+
+    ToolManager *toolManager = ToolManager::instance();
+    connect(toolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
+            this, SLOT(setActiveTool(AbstractTool*)));
 }
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMapDocument)
+    if (mMapDocument) {
         mMapDocument->disconnect(this);
+
+        if (mActiveTool)
+            mActiveTool->disable();
+    }
 
     mMapDocument = mapDocument;
     refreshScene();
@@ -80,7 +88,24 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(objectsRemoved(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
+
+        if (mActiveTool)
+            mActiveTool->enable(this);
     }
+}
+
+void MapScene::setActiveTool(AbstractTool *tool)
+{
+    if (mActiveTool == tool)
+        return;
+
+    if (mMapDocument && mActiveTool)
+        mActiveTool->disable();
+
+    mActiveTool = tool;
+
+    if (mMapDocument && mActiveTool)
+        mActiveTool->enable(this);
 }
 
 void MapScene::refreshScene()
@@ -88,11 +113,6 @@ void MapScene::refreshScene()
     mSelectedObjectGroupItem = 0;
     mLayerItems.clear();
     mObjectItems.clear();
-
-    if (mActiveTool) {
-        mActiveTool->disable();
-        mActiveTool = 0;
-    }
 
     clear();
 
@@ -121,11 +141,6 @@ void MapScene::refreshScene()
     TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
     selectionItem->setZValue(10000 - 1);
     addItem(selectionItem);
-
-    if (mTool) {
-        mTool->enable(this);
-        mActiveTool = mTool;
-    }
 }
 
 QGraphicsItem *MapScene::createLayerItem(Layer *layer)
@@ -156,13 +171,6 @@ void MapScene::repaintRegion(const QRegion &region)
 
     foreach (const QRect &r, region.rects())
         update(mMapDocument->toPixelCoordinates(r).adjusted(0, -extra, 0, 0));
-}
-
-void MapScene::currentTilesChanged(const TileLayer *tiles)
-{
-    // TODO: This is a hack to pass on the stamp
-    if (tiles)
-        mTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
 }
 
 /**
