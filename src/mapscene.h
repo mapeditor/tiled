@@ -35,10 +35,11 @@ class TileLayer;
 
 namespace Internal {
 
-class BrushItem;
+class AbstractTool;
 class MapDocument;
 class MapObjectItem;
 class ObjectGroupItem;
+class StampBrush;
 class TileLayerItem;
 
 /**
@@ -124,7 +125,6 @@ private:
 
     void updateInteractionMode();
     void setBrushVisible(bool visible);
-    void updateBrushVisibility();
 
     void startNewMapObject(const QPointF &pos);
     MapObject *clearNewMapObjectItem();
@@ -134,10 +134,9 @@ private:
     MapDocument *mMapDocument;
     ObjectGroupItem *mSelectedObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
-    BrushItem *mBrush;
+    AbstractTool *mActiveTool;
+    StampBrush *mTool;
     bool mGridVisible;
-    bool mBrushVisible;
-    bool mPainting;
     QVector<QGraphicsItem*> mLayerItems;
 
     typedef QMap<MapObject*, MapObjectItem*> ObjectItems;

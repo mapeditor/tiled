@@ -22,13 +22,13 @@
 #include "mapscene.h"
 
 #include "addremovemapobject.h"
-#include "brushitem.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "stampbrush.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
@@ -46,15 +46,11 @@ MapScene::MapScene(QObject *parent):
     mMapDocument(0),
     mSelectedObjectGroupItem(0),
     mNewMapObjectItem(0),
-    mBrush(new BrushItem),
-    mGridVisible(true),
-    mBrushVisible(false)
+    mActiveTool(0),
+    mTool(new StampBrush),
+    mGridVisible(true)
 {
     setBackgroundBrush(Qt::darkGray);
-
-    mBrush->setZValue(10000);
-    mBrush->setVisible(false);
-    addItem(mBrush);
 }
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
@@ -85,9 +81,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
     }
-
-    mBrush->setMapDocument(mapDocument);
-    updateBrushVisibility();
 }
 
 void MapScene::refreshScene()
@@ -96,10 +89,12 @@ void MapScene::refreshScene()
     mLayerItems.clear();
     mObjectItems.clear();
 
-    // Clear any existing items, but don't delete the brush
-    removeItem(mBrush);
+    if (mActiveTool) {
+        mActiveTool->disable();
+        mActiveTool = 0;
+    }
+
     clear();
-    addItem(mBrush);
 
     if (!mMapDocument) {
         setSceneRect(QRectF());
@@ -126,6 +121,11 @@ void MapScene::refreshScene()
     TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
     selectionItem->setZValue(10000 - 1);
     addItem(selectionItem);
+
+    if (mTool) {
+        mTool->enable(this);
+        mActiveTool = mTool;
+    }
 }
 
 QGraphicsItem *MapScene::createLayerItem(Layer *layer)
@@ -160,19 +160,17 @@ void MapScene::repaintRegion(const QRegion &region)
 
 void MapScene::currentTilesChanged(const TileLayer *tiles)
 {
+    // TODO: This is a hack to pass on the stamp
     if (tiles)
-        mBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
+        mTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
 }
 
 /**
  * Adapts the scene to the currently selected layer. If an object group is
- * selected, it makes sure the objects in the group are movable. It also
- * hides and shows the brush as appropriate.
+ * selected, it makes sure the objects in the group are movable.
  */
 void MapScene::updateInteractionMode()
 {
-    updateBrushVisibility();
-
     ObjectGroupItem *ogItem = 0;
 
     const int index = mMapDocument->currentLayer();
@@ -320,30 +318,6 @@ void MapScene::setGridVisible(bool visible)
     update();
 }
 
-void MapScene::setBrushVisible(bool visible)
-{
-    if (mBrushVisible == visible)
-        return;
-
-    mBrushVisible = visible;
-    updateBrushVisibility();
-}
-
-void MapScene::updateBrushVisibility()
-{
-    // Show the tile brush only when a tile layer is selected
-    bool showBrush = false;
-    if (mBrushVisible && mMapDocument) {
-        const int currentLayer = mMapDocument->currentLayer();
-        if (currentLayer >= 0) {
-            Layer *layer = mMapDocument->map()->layerAt(currentLayer);
-            if (layer->isVisible() && dynamic_cast<TileLayer*>(layer))
-                showBrush = true;
-        }
-    }
-    mBrush->setVisible(showBrush);
-}
-
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
     if (!mMapDocument || !mGridVisible)
@@ -387,10 +361,12 @@ bool MapScene::event(QEvent *event)
     // Show and hide the brush cursor as the mouse enters and leaves the scene
     switch (event->type()) {
     case QEvent::Enter:
-        setBrushVisible(true);
+        if (mActiveTool)
+            mActiveTool->enterEvent(event);
         break;
     case QEvent::Leave:
-        setBrushVisible(false);
+        if (mActiveTool)
+            mActiveTool->leaveEvent(event);
         break;
     default:
         break;
@@ -408,15 +384,6 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->isAccepted())
         return;
 
-    const Map *map = mMapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    const QPointF pos = mouseEvent->scenePos();
-    const int tileX = ((int) pos.x()) / tileWidth;
-    const int tileY = ((int) pos.y()) / tileHeight;
-    mBrush->setTilePos(tileX, tileY);
-
     if (mNewMapObjectItem) {
         // Update the size of the new map object
         const QPoint pixelPos = mouseEvent->scenePos().toPoint();
@@ -428,6 +395,9 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             newSize = mMapDocument->snapToTileGrid(newSize);
 
         mNewMapObjectItem->resize(QSize(newSize.x(), newSize.y()));
+        mouseEvent->accept();
+    } else if (mActiveTool) {
+        mActiveTool->mouseMoveEvent(mouseEvent);
     }
 }
 
@@ -446,17 +416,14 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->isAccepted())
         return;
 
-    if (mBrush->isVisible()) {
-        if (mouseEvent->button() == Qt::LeftButton)
-            mBrush->beginPaint();
-        else if (mouseEvent->button() == Qt::RightButton)
-            mBrush->beginCapture();
-        mouseEvent->accept();
-    } else if (mouseEvent->button() == Qt::LeftButton
-               && mSelectedObjectGroupItem
-               && !mNewMapObjectItem) {
+    if (mouseEvent->button() == Qt::LeftButton
+        && mSelectedObjectGroupItem
+        && !mNewMapObjectItem)
+    {
         startNewMapObject(mouseEvent->scenePos());
         mouseEvent->accept();
+    } else if (mActiveTool) {
+        mActiveTool->mousePressEvent(mouseEvent);
     }
 }
 
@@ -466,17 +433,11 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->isAccepted())
         return;
 
-    if (mBrush->isPainting() || mBrush->isCapturing()) {
-        if (mouseEvent->button() == Qt::LeftButton)
-            mBrush->endPaint();
-        else if (mouseEvent->button() == Qt::RightButton)
-            mBrush->endCapture();
-        mouseEvent->accept();
-    }
-
     if (mouseEvent->button() == Qt::LeftButton && mNewMapObjectItem) {
         finishNewMapObject();
         mouseEvent->accept();
+    } else if (mActiveTool) {
+        mActiveTool->mouseReleaseEvent(mouseEvent);
     }
 }
 

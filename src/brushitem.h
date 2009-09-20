@@ -35,9 +35,6 @@ class MapDocument;
 /**
  * This brush item is used to represent a brush in a map scene before it is
  * used.
- *
- * It currently also implements a simple tile brush.
- * TODO: Separate Brush out of BrushItem
  */
 class BrushItem : public QGraphicsItem
 {
@@ -47,39 +44,31 @@ public:
      */
     BrushItem();
 
-    ~BrushItem();
-
     /**
      * Sets the map document this brush is operating on.
      */
     void setMapDocument(MapDocument *mapDocument);
 
     /**
-     * Sets the stamp that is drawn when painting. The BrushItem takes
-     * ownership over the stamp layer.
+     * Sets a tile layer representing this brush. When no tile layer is set,
+     * the brush only draws the selection color.
+     *
+     * The BrushItem does not take ownership over the tile layer.
      */
-    void setStamp(TileLayer *stamp);
+    void setTileLayer(TileLayer *tileLayer);
 
     /**
-     * Updates the position in tiles. Paints while painting is active.
+     * Updates the position in tiles.
      */
     void setTilePos(int x, int y);
 
-    /**
-     * Start painting.
-     */
-    void beginPaint();
+    void setTilePos(const QPoint &point)
+    { setTilePos(point.x(), point.y()); }
 
     /**
-     * Stop painting.
+     * Updates the size in tiles.
      */
-    void endPaint();
-
-    bool isPainting() const { return mPainting; }
-
-    void beginCapture();
-    void endCapture();
-    bool isCapturing() const { return mCapturing; }
+    void setTileSize(int width, int height);
 
     // QGraphicsItem
     QRectF boundingRect() const;
@@ -88,25 +77,14 @@ public:
                QWidget *widget = 0);
 
 private:
-    /**
-     * Performs the actual painting.
-     */
-    void doPaint();
+    void updateBoundingRect();
 
-    void updateExtend();
-    void updatePosition();
-
-    TileLayer *currentTileLayer();
-    QRect capturedArea() const;
-
-    int mTileX, mTileY;
-    int mStampX, mStampY;
     MapDocument *mMapDocument;
-    TileLayer *mStamp;
+    TileLayer *mTileLayer;
+    int mWidth;
+    int mHeight;
     int mExtend;
-    bool mPainting;
-    bool mCapturing;
-    QPoint mCaptureStart;
+    QRectF mBoundingRect;
 };
 
 } // namespace Internal

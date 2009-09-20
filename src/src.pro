@@ -55,7 +55,8 @@ SOURCES += aboutdialog.cpp \
     resizemap.cpp \
     objectpropertiesdialog.cpp \
     changemapobject.cpp \
-    maprenderer.cpp
+    maprenderer.cpp \
+    stampbrush.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -106,7 +107,9 @@ HEADERS += aboutdialog.h \
     resizemap.h \
     objectpropertiesdialog.h \
     changemapobject.h \
-    maprenderer.h
+    maprenderer.h \
+    abstracttool.h \
+    stampbrush.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
@@ -115,12 +118,8 @@ FORMS += aboutdialog.ui \
     newtilesetdialog.ui
 RESOURCES += tiled.qrc
 TRANSLATIONS = translations/tiled_nl.ts
-
 mac {
     TARGET = Tiled
     LIBS += -lz
 }
-
-win32 {
-    INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
-}
+win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
