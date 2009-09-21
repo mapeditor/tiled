@@ -61,7 +61,15 @@ StampBrush::~StampBrush()
 void StampBrush::enable(MapScene *scene)
 {
     mMapScene = scene;
-    mMapDocument = mMapScene->mapDocument();
+
+    if (mMapDocument != mMapScene->mapDocument()) {
+        // Reset the brush, since it probably became invalid
+        setStamp(0);
+        mBrushItem->setMapDocument(0);
+        mBrushItem->setTileSize(1, 1);
+
+        mMapDocument = mMapScene->mapDocument();
+    }
 
     connect(mMapDocument, SIGNAL(layerChanged(int)),
             this, SLOT(updateBrushVisibility()));
@@ -78,12 +86,7 @@ void StampBrush::disable()
     // Remove the brush from the scene
     mMapScene->removeItem(mBrushItem);
 
-    // Reset the brush
-    setStamp(0);
-    mBrushItem->setTileSize(1, 1);
-    mBrushItem->setMapDocument(0);
-
-    // Make sure we no longer refer to the scene and the map document
+    // Make sure we no longer refer to the scene
     mMapScene = 0;
 }
 
