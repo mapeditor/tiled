@@ -22,6 +22,7 @@
 #include "mainwindow.h"
 
 #include "aboutdialog.h"
+#include "eraser.h"
 #include "layer.h"
 #include "layerdock.h"
 #include "layermodel.h"
@@ -201,6 +202,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
+    toolManager->registerTool(new Eraser(this));
 
     addToolBar(toolManager->toolBar());
 
