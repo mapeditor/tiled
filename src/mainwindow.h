@@ -25,11 +25,15 @@
 #include "mapdocument.h"
 
 #include <QMainWindow>
+#include <QSessionManager>
 #include <QSettings>
-#include "ui_mainwindow.h"
 
 class QLabel;
 class QUndoGroup;
+
+namespace Ui {
+class MainWindow;
+}
 
 namespace Tiled {
 
@@ -140,7 +144,7 @@ private:
 
     void addLayer(MapDocument::LayerType type);
 
-    Ui::MainWindowClass mUi;
+    Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapScene *mScene;
     LayerDock *mLayerDock;

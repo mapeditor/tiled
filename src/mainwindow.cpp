@@ -20,6 +20,7 @@
  */
 
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
 #include "eraser.h"
@@ -58,28 +59,29 @@ using namespace Tiled::Internal;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
+    , mUi(new Ui::MainWindow)
     , mMapDocument(0)
     , mLayerDock(new LayerDock(this))
     , mTilesetDock(new TilesetDock(this))
     , mZoomLabel(new QLabel)
 {
-    mUi.setupUi(this);
+    mUi->setupUi(this);
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
 
     // Add larger icon versions for actions used in the tool bar
-    QIcon newIcon = mUi.actionNew->icon();
-    QIcon openIcon = mUi.actionOpen->icon();
-    QIcon saveIcon = mUi.actionSave->icon();
+    QIcon newIcon = mUi->actionNew->icon();
+    QIcon openIcon = mUi->actionOpen->icon();
+    QIcon saveIcon = mUi->actionSave->icon();
     newIcon.addFile(QLatin1String(":images/24x24/document-new.png"));
     openIcon.addFile(QLatin1String(":images/24x24/document-open.png"));
     saveIcon.addFile(QLatin1String(":images/24x24/document-save.png"));
     redoIcon.addFile(QLatin1String(":images/24x24/edit-redo.png"));
     undoIcon.addFile(QLatin1String(":images/24x24/edit-undo.png"));
-    mUi.actionNew->setIcon(newIcon);
-    mUi.actionOpen->setIcon(openIcon);
-    mUi.actionSave->setIcon(saveIcon);
+    mUi->actionNew->setIcon(newIcon);
+    mUi->actionOpen->setIcon(openIcon);
+    mUi->actionSave->setIcon(saveIcon);
 
     mUndoGroup = new QUndoGroup(this);
     QAction *undoAction = mUndoGroup->createUndoAction(this, tr("Undo"));
@@ -101,73 +103,73 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     undoViewDock->setWidget(undoView);
     addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
 
-    updateZoomLabel(mUi.mapView->scale());
-    connect(mUi.mapView, SIGNAL(scaleChanged(qreal)),
+    updateZoomLabel(mUi->mapView->scale());
+    connect(mUi->mapView, SIGNAL(scaleChanged(qreal)),
             this, SLOT(updateZoomLabel(qreal)));
 
     statusBar()->addPermanentWidget(mZoomLabel);
 
-    mUi.actionNew->setShortcut(QKeySequence::New);
-    mUi.actionOpen->setShortcut(QKeySequence::Open);
-    mUi.actionSave->setShortcut(QKeySequence::Save);
+    mUi->actionNew->setShortcut(QKeySequence::New);
+    mUi->actionOpen->setShortcut(QKeySequence::Open);
+    mUi->actionSave->setShortcut(QKeySequence::Save);
 #if QT_VERSION >= 0x040500
-    mUi.actionSaveAs->setShortcut(QKeySequence::SaveAs);
+    mUi->actionSaveAs->setShortcut(QKeySequence::SaveAs);
 #endif
-    mUi.actionClose->setShortcut(QKeySequence::Close);
+    mUi->actionClose->setShortcut(QKeySequence::Close);
 #if QT_VERSION >= 0x040600
-    mUi.actionQuit->setShortcut(QKeySequence::Quit);
+    mUi->actionQuit->setShortcut(QKeySequence::Quit);
 #endif
-    mUi.actionCopy->setShortcut(QKeySequence::Copy);
-    mUi.actionPaste->setShortcut(QKeySequence::Paste);
-    mUi.actionSelectAll->setShortcut(QKeySequence::SelectAll);
+    mUi->actionCopy->setShortcut(QKeySequence::Copy);
+    mUi->actionPaste->setShortcut(QKeySequence::Paste);
+    mUi->actionSelectAll->setShortcut(QKeySequence::SelectAll);
     undoAction->setShortcut(QKeySequence::Undo);
     redoAction->setShortcut(QKeySequence::Redo);
 
-    mUi.menuEdit->insertAction(mUi.actionCopy, undoAction);
-    mUi.menuEdit->insertAction(mUi.actionCopy, redoAction);
-    mUi.mainToolBar->addAction(undoAction);
-    mUi.mainToolBar->addAction(redoAction);
+    mUi->menuEdit->insertAction(mUi->actionCopy, undoAction);
+    mUi->menuEdit->insertAction(mUi->actionCopy, redoAction);
+    mUi->mainToolBar->addAction(undoAction);
+    mUi->mainToolBar->addAction(redoAction);
 
     // TODO: Add support for copy and paste
-    mUi.actionCopy->setVisible(false);
-    mUi.actionPaste->setVisible(false);
+    mUi->actionCopy->setVisible(false);
+    mUi->actionPaste->setVisible(false);
 
-    connect(mUi.actionNew, SIGNAL(triggered()), SLOT(newMap()));
-    connect(mUi.actionOpen, SIGNAL(triggered()), SLOT(openFile()));
-    connect(mUi.actionSave, SIGNAL(triggered()), SLOT(saveFile()));
-    connect(mUi.actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
-    connect(mUi.actionClose, SIGNAL(triggered()), SLOT(closeFile()));
-    connect(mUi.actionQuit, SIGNAL(triggered()), SLOT(close()));
+    connect(mUi->actionNew, SIGNAL(triggered()), SLOT(newMap()));
+    connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
+    connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
+    connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
+    connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
+    connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
-    connect(mUi.actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
-    connect(mUi.actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
+    connect(mUi->actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
+    connect(mUi->actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
 
-    connect(mUi.actionZoomIn, SIGNAL(triggered()),
-            mUi.mapView, SLOT(zoomIn()));
-    connect(mUi.actionZoomOut, SIGNAL(triggered()),
-            mUi.mapView, SLOT(zoomOut()));
-    connect(mUi.actionZoomNormal, SIGNAL(triggered()),
-            mUi.mapView, SLOT(resetZoom()));
+    connect(mUi->actionZoomIn, SIGNAL(triggered()),
+            mUi->mapView, SLOT(zoomIn()));
+    connect(mUi->actionZoomOut, SIGNAL(triggered()),
+            mUi->mapView, SLOT(zoomOut()));
+    connect(mUi->actionZoomNormal, SIGNAL(triggered()),
+            mUi->mapView, SLOT(resetZoom()));
 
-    connect(mUi.actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
-    connect(mUi.actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
-    connect(mUi.actionMapProperties, SIGNAL(triggered()),
+    connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
+    connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
+    connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
 
-    connect(mUi.actionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
-    connect(mUi.actionAddObjectLayer, SIGNAL(triggered()),
+    connect(mUi->actionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
+    connect(mUi->actionAddObjectLayer, SIGNAL(triggered()),
             SLOT(addObjectLayer()));
-    connect(mUi.actionDuplicateLayer, SIGNAL(triggered()),
+    connect(mUi->actionDuplicateLayer, SIGNAL(triggered()),
             SLOT(duplicateLayer()));
-    connect(mUi.actionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
-    connect(mUi.actionMoveLayerDown, SIGNAL(triggered()),
+    connect(mUi->actionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
+    connect(mUi->actionMoveLayerDown, SIGNAL(triggered()),
             SLOT(moveLayerDown()));
-    connect(mUi.actionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
-    connect(mUi.actionLayerProperties, SIGNAL(triggered()),
+    connect(mUi->actionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
+    connect(mUi->actionLayerProperties, SIGNAL(triggered()),
             SLOT(editLayerProperties()));
 
-    connect(mUi.actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
-    connect(mUi.actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+    connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
+    connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     QMenu *menu = new QMenu(this);
     for (int i = 0; i < MaxRecentFiles; ++i)
@@ -185,14 +187,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
                                  this);
     menu->addAction(clear);
     connect(clear, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
-    mUi.actionRecentFiles->setMenu(menu);
+    mUi->actionRecentFiles->setMenu(menu);
 
     mScene = new MapScene(this);
-    mUi.mapView->setScene(mScene);
-    mUi.mapView->centerOn(0, 0);
+    mUi->mapView->setScene(mScene);
+    mUi->mapView->centerOn(0, 0);
 
-    mUi.actionShowGrid->setChecked(mScene->isGridVisible());
-    connect(mUi.actionShowGrid, SIGNAL(toggled(bool)),
+    mUi->actionShowGrid->setChecked(mScene->isGridVisible());
+    connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
             mScene, SLOT(setGridVisible(bool)));
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
@@ -206,10 +208,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     addToolBar(toolManager->toolBar());
 
-    mUi.menuView->addSeparator();
-    mUi.menuView->addAction(mTilesetDock->toggleViewAction());
-    mUi.menuView->addAction(mLayerDock->toggleViewAction());
-    mUi.menuView->addAction(undoViewDock->toggleViewAction());
+    mUi->menuView->addSeparator();
+    mUi->menuView->addAction(mTilesetDock->toggleViewAction());
+    mUi->menuView->addAction(mLayerDock->toggleViewAction());
+    mUi->menuView->addAction(undoViewDock->toggleViewAction());
 
     updateActions();
     readSettings();
@@ -247,7 +249,7 @@ void MainWindow::changeEvent(QEvent *event)
     QMainWindow::changeEvent(event);
     switch (event->type()) {
     case QEvent::LanguageChange:
-        mUi.retranslateUi(this);
+        mUi->retranslateUi(this);
         break;
     default:
         break;
@@ -266,7 +268,7 @@ void MainWindow::newMap()
         return;
 
     setMapDocument(mapDocument);
-    mUi.mapView->centerOn(0, 0);
+    mUi->mapView->centerOn(0, 0);
 
     setCurrentFileName(QString());
     updateActions();
@@ -288,7 +290,7 @@ bool MainWindow::openFile(const QString &fileName)
     }
 
     setMapDocument(new MapDocument(map));
-    mUi.mapView->centerOn(0, 0);
+    mUi->mapView->centerOn(0, 0);
 
     setCurrentFileName(fileName);
     updateActions();
@@ -304,12 +306,12 @@ void MainWindow::openLastFile()
         mSettings.beginGroup(QLatin1String("mainwindow"));
         qreal scale = mSettings.value(QLatin1String("mapScale")).toDouble();
         if (scale > 0)
-            mUi.mapView->setScale(scale);
+            mUi->mapView->setScale(scale);
 
         const int hor = mSettings.value(QLatin1String("scrollX")).toInt();
         const int ver = mSettings.value(QLatin1String("scrollY")).toInt();
-        mUi.mapView->horizontalScrollBar()->setSliderPosition(hor);
-        mUi.mapView->verticalScrollBar()->setSliderPosition(ver);
+        mUi->mapView->horizontalScrollBar()->setSliderPosition(hor);
+        mUi->mapView->verticalScrollBar()->setSliderPosition(ver);
         mSettings.endGroup();
     }
 }
@@ -491,7 +493,7 @@ void MainWindow::updateRecentFiles()
     {
         mRecentFiles[j]->setVisible(false);
     }
-    mUi.actionRecentFiles->setEnabled(numRecentFiles > 0);
+    mUi->actionRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
 void MainWindow::updateActions()
@@ -506,31 +508,31 @@ void MainWindow::updateActions()
         selection = mMapDocument->selectionModel()->selection();
     }
 
-    mUi.actionSave->setEnabled(map && !mUndoGroup->isClean());
-    mUi.actionSaveAs->setEnabled(map);
-    mUi.actionClose->setEnabled(map);
-    mUi.actionSelectAll->setEnabled(map);
-    mUi.actionSelectNone->setEnabled(map && !selection.isEmpty());
-    mUi.actionNewTileset->setEnabled(map);
-    mUi.actionResizeMap->setEnabled(map);
-    mUi.actionMapProperties->setEnabled(map);
-    mUi.actionAddTileLayer->setEnabled(map);
-    mUi.actionAddObjectLayer->setEnabled(map);
+    mUi->actionSave->setEnabled(map && !mUndoGroup->isClean());
+    mUi->actionSaveAs->setEnabled(map);
+    mUi->actionClose->setEnabled(map);
+    mUi->actionSelectAll->setEnabled(map);
+    mUi->actionSelectNone->setEnabled(map && !selection.isEmpty());
+    mUi->actionNewTileset->setEnabled(map);
+    mUi->actionResizeMap->setEnabled(map);
+    mUi->actionMapProperties->setEnabled(map);
+    mUi->actionAddTileLayer->setEnabled(map);
+    mUi->actionAddObjectLayer->setEnabled(map);
 
     const int layerCount = map ? map->layerCount() : 0;
-    mUi.actionDuplicateLayer->setEnabled(currentLayer >= 0);
-    mUi.actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
-                                      currentLayer < layerCount - 1);
-    mUi.actionMoveLayerDown->setEnabled(currentLayer > 0);
-    mUi.actionRemoveLayer->setEnabled(currentLayer >= 0);
-    mUi.actionLayerProperties->setEnabled(currentLayer >= 0);
+    mUi->actionDuplicateLayer->setEnabled(currentLayer >= 0);
+    mUi->actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
+                                       currentLayer < layerCount - 1);
+    mUi->actionMoveLayerDown->setEnabled(currentLayer > 0);
+    mUi->actionRemoveLayer->setEnabled(currentLayer >= 0);
+    mUi->actionLayerProperties->setEnabled(currentLayer >= 0);
 }
 
 void MainWindow::updateZoomLabel(qreal scale)
 {
-    mUi.actionZoomIn->setEnabled(mUi.mapView->canZoomIn());
-    mUi.actionZoomOut->setEnabled(mUi.mapView->canZoomOut());
-    mUi.actionZoomNormal->setEnabled(scale != 1);
+    mUi->actionZoomIn->setEnabled(mUi->mapView->canZoomIn());
+    mUi->actionZoomOut->setEnabled(mUi->mapView->canZoomOut());
+    mUi->actionZoomNormal->setEnabled(scale != 1);
 
     mZoomLabel->setText(tr("%1%").arg(scale * 100));
 }
@@ -638,12 +640,12 @@ void MainWindow::writeSettings()
     mSettings.setValue(QLatin1String("geometry"), saveGeometry());
     mSettings.setValue(QLatin1String("state"), saveState());
     mSettings.setValue(QLatin1String("gridVisible"),
-                       mUi.actionShowGrid->isChecked());
-    mSettings.setValue(QLatin1String("mapScale"), mUi.mapView->scale());
+                       mUi->actionShowGrid->isChecked());
+    mSettings.setValue(QLatin1String("mapScale"), mUi->mapView->scale());
     mSettings.setValue(QLatin1String("scrollX"),
-                       mUi.mapView->horizontalScrollBar()->sliderPosition());
+                       mUi->mapView->horizontalScrollBar()->sliderPosition());
     mSettings.setValue(QLatin1String("scrollY"),
-                       mUi.mapView->verticalScrollBar()->sliderPosition());
+                       mUi->mapView->verticalScrollBar()->sliderPosition());
     mSettings.endGroup();
 }
 
@@ -657,7 +659,7 @@ void MainWindow::readSettings()
         resize(800, 600);
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
-    mUi.actionShowGrid->setChecked(
+    mUi->actionShowGrid->setChecked(
             mSettings.value(QLatin1String("gridVisible"), true).toBool());
     mSettings.endGroup();
     updateRecentFiles();
