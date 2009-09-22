@@ -53,7 +53,8 @@ void showHelp()
 
 void showVersion()
 {
-    qWarning() << "Tiled (Qt) Map Editor 0.1";
+    qWarning() << "Tiled (Qt) Map Editor"
+            << qPrintable(QApplication::applicationVersion());
 }
 
 void parseCommandLineArguments(CommandLineOptions &options)
@@ -99,6 +100,14 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    a.setOrganizationName(QLatin1String("mapeditor.org"));
+    a.setApplicationName(QLatin1String("Tiled"));
+    a.setApplicationVersion(QLatin1String("0.2.0"));
+
+    QTranslator translator;
+    translator.load(QLatin1String("tiled_") + QLocale::system().name());
+    a.installTranslator(&translator);
+
     CommandLineOptions options;
     parseCommandLineArguments(options);
 
@@ -108,13 +117,6 @@ int main(int argc, char *argv[])
         showHelp();
     if (options.showVersion || options.showHelp)
         return 0;
-
-    QTranslator translator;
-    translator.load(QLatin1String("tiled_") + QLocale::system().name());
-    a.installTranslator(&translator);
-
-    a.setOrganizationName(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("Tiled"));
 
     MainWindow w;
     w.show();
