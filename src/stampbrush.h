@@ -56,6 +56,12 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
     /**
+     * Sets the map document on which this brush operates. The correct map
+     * document needs to be set before calling setStamp().
+     */
+    void setMapDocument(MapDocument *mapDocument);
+
+    /**
      * Sets the stamp that is drawn when painting. The StampBrush takes
      * ownership over the stamp layer.
      */

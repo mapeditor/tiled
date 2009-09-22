@@ -61,22 +61,13 @@ StampBrush::~StampBrush()
 void StampBrush::enable(MapScene *scene)
 {
     mMapScene = scene;
-
-    if (mMapDocument != mMapScene->mapDocument()) {
-        // Reset the brush, since it probably became invalid
-        setStamp(0);
-        mBrushItem->setMapDocument(0);
-        mBrushItem->setTileSize(1, 1);
-
-        mMapDocument = mMapScene->mapDocument();
-    }
+    setMapDocument(scene->mapDocument());
 
     connect(mMapDocument, SIGNAL(layerChanged(int)),
             this, SLOT(updateBrushVisibility()));
     connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
             this, SLOT(updateBrushVisibility()));
 
-    mBrushItem->setMapDocument(mMapDocument);
     mMapScene->addItem(mBrushItem);
     updateBrushVisibility();
 }
@@ -144,6 +135,19 @@ void StampBrush::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         endCapture();
         mouseEvent->accept();
     }
+}
+
+void StampBrush::setMapDocument(MapDocument *mapDocument)
+{
+    if (mMapDocument == mapDocument)
+        return;
+
+    mMapDocument = mapDocument;
+    mBrushItem->setMapDocument(mMapDocument);
+
+    // Reset the brush, since it probably became invalid
+    mBrushItem->setTileSize(1, 1);
+    setStamp(0);
 }
 
 void StampBrush::setStamp(TileLayer *stamp)

@@ -681,6 +681,7 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
     mScene->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
+    mStampBrush->setMapDocument(mapDocument);
 
     // TODO: Add support for multiple map documents
     delete mMapDocument;

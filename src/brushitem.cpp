@@ -48,10 +48,10 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+    mMapDocument = mapDocument;
+
     // The tiles in the stamp may no longer be valid
     setTileLayer(0);
-
-    mMapDocument = mapDocument;
     updateBoundingRect();
 }
 
