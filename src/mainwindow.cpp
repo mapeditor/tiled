@@ -58,6 +58,19 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+#if QT_VERSION >= 0x040600
+/**
+ * Looks up the icon with the specified \a name from the system theme and set
+ * it on the \a action when found.
+ */
+static void setThemeIcon(QAction *action, const char *name)
+{
+    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
+    if (!themeIcon.isNull())
+        action->setIcon(themeIcon);
+}
+#endif
+
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
     , mUi(new Ui::MainWindow)
@@ -190,6 +203,34 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     menu->addAction(clear);
     connect(clear, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
     mUi->actionRecentFiles->setMenu(menu);
+
+    // Qt 4.6 supports requesting icons from the system theme, at least on
+    // desktops where there is a system theme (ie. Linux).
+#if QT_VERSION >= 0x040600
+    setThemeIcon(mUi->actionNew, "document-new");
+    setThemeIcon(mUi->actionOpen, "document-open");
+    setThemeIcon(mUi->actionRecentFiles, "document-open-recent");
+    setThemeIcon(clear, "edit-clear");
+    setThemeIcon(mUi->actionSave, "document-save");
+    setThemeIcon(mUi->actionSaveAs, "document-save-as");
+    setThemeIcon(mUi->actionClose, "window-close");
+    setThemeIcon(mUi->actionQuit, "application-exit");
+    setThemeIcon(mUi->actionCopy, "edit-copy");
+    setThemeIcon(mUi->actionPaste, "edit-paste");
+    setThemeIcon(redoAction, "edit-redo");
+    setThemeIcon(undoAction, "edit-undo");
+    setThemeIcon(mUi->actionZoomIn, "zoom-in");
+    setThemeIcon(mUi->actionZoomOut, "zoom-out");
+    setThemeIcon(mUi->actionZoomNormal, "zoom-original");
+    setThemeIcon(mUi->actionNewTileset, "document-new");
+    setThemeIcon(mUi->actionResizeMap, "document-page-setup");
+    setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mUi->actionRemoveLayer, "edit-delete");
+    setThemeIcon(mUi->actionMoveLayerUp, "go-up");
+    setThemeIcon(mUi->actionMoveLayerDown, "go-down");
+    setThemeIcon(mUi->actionLayerProperties, "document-properties");
+    setThemeIcon(mUi->actionAbout, "help-about");
+#endif
 
     mScene = new MapScene(this);
     mUi->mapView->setScene(mScene);
