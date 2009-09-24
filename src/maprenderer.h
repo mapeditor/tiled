@@ -46,9 +46,14 @@ public:
     MapRenderer(Map *map);
 
     /**
+     * Returns the size in pixels of the map associated with this renderer.
+     */
+    QSize mapSize() const;
+
+    /**
      * Returns the bounding rectangle of the given \a layer in pixels.
      */
-    QRect layerBoundingRect(Layer *layer) const;
+    QRect layerBoundingRect(const Layer *layer) const;
 
     /**
      * Draws the given \a layer using the given \a painter.
@@ -56,7 +61,7 @@ public:
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
      */
-    void drawTileLayer(QPainter *painter, TileLayer *layer,
+    void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF());
 
 private:

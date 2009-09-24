@@ -35,7 +35,13 @@ MapRenderer::MapRenderer(Map *map)
 {
 }
 
-QRect MapRenderer::layerBoundingRect(Layer *layer) const
+QSize MapRenderer::mapSize() const
+{
+    return QSize(mMap->width() * mMap->tileWidth(),
+                 mMap->height() * mMap->tileHeight());
+}
+
+QRect MapRenderer::layerBoundingRect(const Layer *layer) const
 {
     const int tileWidth = mMap->tileWidth();
     const int tileHeight = mMap->tileHeight();
@@ -46,7 +52,7 @@ QRect MapRenderer::layerBoundingRect(Layer *layer) const
                  layer->height() * tileHeight);
 }
 
-void MapRenderer::drawTileLayer(QPainter *painter, TileLayer *layer,
+void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer,
                                 const QRectF &exposed)
 {
     const int tileWidth = mMap->tileWidth();

@@ -23,6 +23,7 @@
 #include "ui_newtilesetdialog.h"
 
 #include "tileset.h"
+#include "utils.h"
 
 #include <QFileDialog>
 #include <QImageReader>
@@ -78,20 +79,7 @@ Tileset *NewTilesetDialog::createTileset()
 
 void NewTilesetDialog::browse()
 {
-    // Build a filter with all supported image formats
-    QString filter(tr("Image files"));
-    filter += QLatin1String(" (");
-    QList<QByteArray> formats = QImageReader::supportedImageFormats();
-    bool first = true;
-    foreach (const QByteArray &format, formats) {
-        if (!first)
-            filter += QLatin1Char(' ');
-        first = false;
-        filter += QLatin1String("*.");
-        filter += QString::fromLatin1(format.toLower());
-    }
-    filter += QLatin1Char(')');
-
+    const QString filter = Utils::readableImageFormatsFilter();
     QString f = QFileDialog::getOpenFileName(this, tr("Tileset Image"), mPath,
                                              filter);
     if (!f.isEmpty()) {

@@ -59,7 +59,9 @@ SOURCES += aboutdialog.cpp \
     stampbrush.cpp \
     toolmanager.cpp \
     eraser.cpp \
-    erasetile.cpp
+    erasetile.cpp \
+    saveasimagedialog.cpp \
+    utils.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -115,13 +117,16 @@ HEADERS += aboutdialog.h \
     stampbrush.h \
     toolmanager.h \
     eraser.h \
-    erasetile.h
+    erasetile.h \
+    saveasimagedialog.h \
+    utils.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
     propertiesdialog.ui \
     newmapdialog.ui \
-    newtilesetdialog.ui
+    newtilesetdialog.ui \
+    saveasimagedialog.ui
 RESOURCES += tiled.qrc
 TRANSLATIONS = translations/tiled_nl.ts
 mac {

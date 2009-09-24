@@ -34,6 +34,7 @@
 #include "newtilesetdialog.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "saveasimagedialog.h"
 #include "stampbrush.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
@@ -138,6 +139,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
+    connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
@@ -225,6 +227,8 @@ MainWindow::~MainWindow()
 
     ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
+
+    delete mUi;
 }
 
 void MainWindow::commitData(QSessionManager &manager)
@@ -377,6 +381,17 @@ bool MainWindow::confirmSave()
     }
 }
 
+void MainWindow::saveAsImage()
+{
+    if (!mMapDocument)
+        return;
+
+    SaveAsImageDialog dialog(mMapDocument,
+                             mCurrentFileName,
+                             mUi->mapView->scale(), this);
+    dialog.exec();
+}
+
 void MainWindow::closeFile()
 {
     if (confirmSave()) {
@@ -510,6 +525,7 @@ void MainWindow::updateActions()
 
     mUi->actionSave->setEnabled(map && !mUndoGroup->isClean());
     mUi->actionSaveAs->setEnabled(map);
+    mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionSelectAll->setEnabled(map);
     mUi->actionSelectNone->setEnabled(map && !selection.isEmpty());
