@@ -51,8 +51,6 @@ ToolManager::ToolManager()
 {
     mToolBar->setObjectName(QLatin1String("toolsToolBar"));
     mToolBar->setWindowTitle(QObject::tr("Tools"));
-    mToolBar->setMovable(false);
-    mToolBar->setFloatable(false);
 
     mActionGroup->setExclusive(true);
     connect(mActionGroup, SIGNAL(triggered(QAction*)),
