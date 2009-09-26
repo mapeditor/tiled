@@ -22,6 +22,8 @@
 #include "tileset.h"
 #include "tile.h"
 
+#include <QBitmap>
+
 using namespace Tiled;
 
 Tileset::~Tileset()
@@ -38,22 +40,29 @@ bool Tileset::loadFromImage(const QString &fileName)
 {
     Q_ASSERT(mTileWidth > 0 && mTileHeight > 0);
 
-    QPixmap img = QPixmap(fileName);
-    if (img.isNull())
+    QImage image(fileName);
+    if (image.isNull())
         return false;
 
-    const int stopWidth = img.width() - mTileWidth;
-    const int stopHeight = img.height() - mTileHeight;
+    QPixmap pixmap = QPixmap::fromImage(image);
+
+    if (mTransparentColor.isValid()) {
+        QImage mask = image.createMaskFromColor(mTransparentColor.rgb());
+        pixmap.setMask(QBitmap::fromImage(mask));
+    }
+
+    const int stopWidth = pixmap.width() - mTileWidth;
+    const int stopHeight = pixmap.height() - mTileHeight;
 
     mTiles.clear();
 
     for (int y = mMargin; y <= stopHeight; y += mTileHeight + mTileSpacing)
         for (int x = mMargin; x <= stopWidth; x += mTileWidth + mTileSpacing)
-            mTiles.append(new Tile(img.copy(x, y, mTileWidth, mTileHeight),
+            mTiles.append(new Tile(pixmap.copy(x, y, mTileWidth, mTileHeight),
                                    mTiles.size(),
                                    this));
 
-    mColumnCount = (img.width() - mMargin * 2 + mTileSpacing)
+    mColumnCount = (pixmap.width() - mMargin * 2 + mTileSpacing)
                    / (mTileWidth + mTileSpacing);
     mImageSource = fileName;
     return true;

@@ -280,8 +280,13 @@ bool TmxHandler::startElement(const QString &namespaceURI,
         }
 
         QString source = atts.value(QLatin1String("source"));
-        // TODO: Add support for transparent color
-        //const QString trans = atts.value(QLatin1String("trans"));
+        QString trans = atts.value(QLatin1String("trans"));
+
+        if (!trans.isEmpty()) {
+            if (!trans.startsWith(QLatin1Char('#')))
+                trans.prepend(QLatin1Char('#'));
+            mTileset->setTransparentColor(QColor(trans));
+        }
 
         source = makeAbsolute(source);
 

@@ -39,6 +39,9 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
 {
     mUi->setupUi(this);
 
+    // TODO: Changes to this color should be persistent
+    mUi->colorButton->setColor(Qt::magenta);
+
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
 }
@@ -73,6 +76,10 @@ Tileset *NewTilesetDialog::createTileset()
     Tileset *tileset = new Tileset(name,
                                    tileWidth, tileHeight,
                                    spacing, margin);
+
+    if (mUi->useTransparentColor->isChecked())
+        tileset->setTransparentColor(mUi->colorButton->color());
+
     tileset->loadFromImage(image);
     return tileset;
 }

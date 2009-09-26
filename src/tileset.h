@@ -22,6 +22,7 @@
 #ifndef TILESET_H
 #define TILESET_H
 
+#include <QColor>
 #include <QList>
 #include <QString>
 
@@ -120,6 +121,18 @@ public:
     int columnCount() const { return mColumnCount; }
 
     /**
+     * Returns the transparent color, or an invalid color if no transparent
+     * color is used.
+     */
+    QColor transparentColor() const { return mTransparentColor; }
+
+    /**
+     * Sets the transparent color. Pixels with this color will be masked out
+     * when loadFromImage() is called.
+     */
+    void setTransparentColor(const QColor &c) { mTransparentColor = c; }
+
+    /**
      * Load this tileset from the given tileset image. This will cause any
      * existing tiles in this tileset to be thrown out.
      *
@@ -143,6 +156,7 @@ private:
     QString mName;
     QString mFileName;
     QString mImageSource;
+    QColor mTransparentColor;
     int mTileWidth;
     int mTileHeight;
     int mTileSpacing;

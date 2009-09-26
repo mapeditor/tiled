@@ -191,7 +191,13 @@ void TsxReader::readTilesetImage()
 
     const QXmlStreamAttributes attr = attributes();
     QString source = attr.value(QLatin1String("source")).toString();
-    // TODO: Add support for 'trans' attribute
+    QString trans = attr.value(QLatin1String("trans")).toString();
+
+    if (!trans.isEmpty()) {
+        if (!trans.startsWith(QLatin1Char('#')))
+            trans.prepend(QLatin1Char('#'));
+        mTileset->setTransparentColor(QColor(trans));
+    }
 
     if (QDir::isRelativePath(source))
         source = tilesetDir.absolutePath() + QDir::separator() + source;

@@ -59,7 +59,7 @@ void showVersion()
 
 void parseCommandLineArguments(CommandLineOptions &options)
 {
-    QStringList arguments = QCoreApplication::arguments();
+    const QStringList arguments = QCoreApplication::arguments();
 
     for (int i = 1; i < arguments.size(); ++i) {
         const QString &arg = arguments.at(i);

@@ -101,7 +101,11 @@ void writeTileset(QXmlStreamWriter &w, const Tileset *tileset, int firstGid)
         w.writeStartElement(QLatin1String("image"));
         w.writeAttribute(QLatin1String("source"),
                          mapDir.relativeFilePath(imageSource));
-        // TODO: Add support for writing the 'trans' attribute when used
+
+        const QColor transColor = tileset->transparentColor();
+        if (transColor.isValid())
+            w.writeAttribute(QLatin1String("trans"), transColor.name());
+
         w.writeEndElement();
     }
 

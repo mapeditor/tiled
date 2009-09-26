@@ -61,7 +61,8 @@ SOURCES += aboutdialog.cpp \
     eraser.cpp \
     erasetile.cpp \
     saveasimagedialog.cpp \
-    utils.cpp
+    utils.cpp \
+    colorbutton.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -119,7 +120,8 @@ HEADERS += aboutdialog.h \
     eraser.h \
     erasetile.h \
     saveasimagedialog.h \
-    utils.h
+    utils.h \
+    colorbutton.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
