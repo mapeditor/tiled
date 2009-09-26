@@ -40,11 +40,6 @@ MapObject::MapObject(const QString &name, const QString &type,
 {
 }
 
-void MapObject::setProperty(const QString &name, const QString &value)
-{
-    mProperties.insert(name, value);
-}
-
 MapObject *MapObject::clone() const
 {
     MapObject *o = new MapObject(mName, mType,

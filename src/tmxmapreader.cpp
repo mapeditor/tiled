@@ -27,515 +27,482 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
-#include "tsxtilesetreader.h"
 #include "objectgroup.h"
 #include "mapobject.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QFileInfo>
-#include <QXmlDefaultHandler>
-#include <QXmlInputSource>
-#include <QXmlSimpleReader>
-#include <QDebug>
+#include <QXmlStreamReader>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-namespace Tiled {
-namespace Internal {
+namespace {
 
 /**
- * SAX API based reader for TMX maps.
+ * A stream based reader for the TMX and TSX formats.
  */
-class TmxHandler : public QXmlDefaultHandler
+class TmxReader
 {
-    public:
-        TmxHandler(const QString &mapPath):
-            mMapPath(mapPath),
-            mMap(0),
-            mTileLayer(0),
-            mObjectGroup(0),
-            mObject(0),
-            mTileset(0),
-            mTileId(-1),
-            mTileX(-1),
-            mTileY(-1),
-            mProperties(0),
-            mProperty(0)
-        {}
+public:
+    TmxReader() : mMap(0) {}
 
-        ~TmxHandler();
+    /**
+     * Reads a TMX map. Returns 0 when reading failed. The caller takes
+     * ownership over the newly created map.
+     */
+    Map *readMap(const QString &fileName);
 
-        // QXmlContentHandler
-        bool characters(const QString &ch);
-        bool endDocument();
-        bool endElement(const QString &namespaceURI,
-                        const QString &localName,
-                        const QString &qName);
-        QString errorString() const;
-        bool startDocument();
-        bool startElement(const QString &namespaceURI,
-                          const QString &localName,
-                          const QString &qName,
-                          const QXmlAttributes &atts);
+    /**
+     * Reads a TSX tileset file. Returns 0 when reading failed. The caller
+     * takes ownership over the newly created tileset.
+     */
+    Tileset *readTileset(const QString &fileName);
 
-        // QXmlErrorHandler
-        bool fatalError(const QXmlParseException &exception);
+    QString errorString() const;
 
-        /**
-         * Returns the loaded map. Can be used only once, since this will cause
-         * the content handler to release ownership of the map.
-         */
-        Map *takeMap();
+private:
+    bool openFile(QFile *file);
 
-    private:
-        /**
-         * Returns the tile for the given global tile ID. When an error
-         * occurs, \a ok is set to false and mError is set.
-         *
-         * @param gid the global tile ID, must be at least 0
-         * @param ok  returns whether the conversion went ok
-         * @return the tile associated with the given global tile ID, or 0 if
-         *         not found
-         */
-        Tile *tileForGid(int gid, bool &ok);
+    bool readNextStartElement();
+    void readUnknownElement();
+    void skipCurrentElement();
 
-        void unexpectedElement(const QString &element,
-                               const QString &expectedParent);
-        void readLayerAttributes(const QXmlAttributes &atts, Layer *layer);
-        QString makeAbsolute(const QString &path);
+    Map *readMap();
 
-        QString mMapPath;
-        Map *mMap;
+    Tileset *readTileset();
+    void readTilesetTile(Tileset *tileset);
+    void readTilesetImage(Tileset *tileset);
 
-        TileLayer *mTileLayer;
-        QString mEncoding;
-        QString mCompression;
+    TileLayer *readLayer();
+    void readLayerData(TileLayer *tileLayer);
+    void decodeBinaryLayerData(TileLayer *tileLayer,
+                               const QString &text,
+                               const QStringRef &compression);
 
-        ObjectGroup *mObjectGroup;
-        MapObject *mObject;
+    /**
+     * Returns the tile for the given global tile ID. When an error occurs,
+     * \a ok is set to false and an error is raised.
+     *
+     * @param gid the global tile ID, must be at least 0
+     * @param ok  returns whether the conversion went ok
+     * @return the tile associated with the given global tile ID, or 0 if
+     *         not found
+     */
+    Tile *tileForGid(int gid, bool &ok);
 
-        Tileset *mTileset;
-        int mTilesetFirstGid;
-        int mTileId;
+    ObjectGroup *readObjectGroup();
+    MapObject *readObject();
 
-        int mTileX;
-        int mTileY;
+    void readLayerAttributes(Layer *layer, const QXmlStreamAttributes &atts);
 
-        QMap<QString, QString> *mProperties;
-        QPair<QString, QString> *mProperty;
-        QMap<int, Tileset*> mGidsToTileset;
-        QString mError;
+    QMap<QString, QString> readProperties();
+    void readProperty(QMap<QString, QString> *properties);
+
+    QString makeAbsolute(const QString &path);
+
+    QString mError;
+    QString mPath;
+    Map *mMap;
+    QMap<int, Tileset*> mGidsToTileset;
+
+    QXmlStreamReader xml;
 };
 
-} // namespace Internal
-} // namespace Tiled
+} // anonymous namespace
 
-Map *TmxMapReader::read(const QString &fileName)
+Map *TmxReader::readMap(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.exists()) {
-        mError = QObject::tr("File not found: %1").arg(fileName);
-        return 0;
-    }
-
-    const QString mapPath = QFileInfo(file).path();
-    QXmlInputSource source(&file);
-    TmxHandler tmxHandler(mapPath);
-
-    QXmlSimpleReader xmlReader;
-    xmlReader.setContentHandler(&tmxHandler);
-    xmlReader.setErrorHandler(&tmxHandler);
-
+    mError.clear();
+    mPath = QFileInfo(file).absolutePath();
     Map *map = 0;
-    if (!xmlReader.parse(&source)) {
-        mError = tmxHandler.errorString();
-    } else {
-        map = tmxHandler.takeMap();
+
+    if (openFile(&file)) {
+        xml.setDevice(&file);
+
+        if (readNextStartElement() && xml.name() == "map") {
+            map = readMap();
+        } else {
+            xml.raiseError(QObject::tr("Not a map file."));
+        }
+
+        mGidsToTileset.clear();
     }
+
     return map;
 }
 
-
-TmxHandler::~TmxHandler()
+Tileset *TmxReader::readTileset(const QString &fileName)
 {
-    delete mTileLayer;
-    delete mTileset;
-    delete mMap;
+    QFile file(fileName);
+    mError.clear();
+    mPath = QFileInfo(file).absolutePath();
+    Tileset *tileset = 0;
+
+    if (openFile(&file)) {
+        xml.setDevice(&file);
+
+
+        if (readNextStartElement() && xml.name() == "tileset")
+            tileset = readTileset();
+        else
+            xml.raiseError(QObject::tr("Not a tileset file."));
+
+        if (tileset)
+            tileset->setFileName(fileName);
+    }
+
+    return tileset;
 }
 
-bool TmxHandler::startDocument()
+QString TmxReader::errorString() const
 {
-    return true;
+    if (!mError.isEmpty()) {
+        return mError;
+    } else {
+        return QObject::tr("%3\n\nLine %1, column %2")
+                .arg(xml.lineNumber())
+                .arg(xml.columnNumber())
+                .arg(xml.errorString());
+    }
 }
 
-bool TmxHandler::startElement(const QString &namespaceURI,
-                              const QString &localName,
-                              const QString &qName,
-                              const QXmlAttributes &atts)
+bool TmxReader::openFile(QFile *file)
 {
-    Q_UNUSED(namespaceURI);
-    Q_UNUSED(qName);
-
-    if (!mMap && (localName == QLatin1String("tileset") ||
-                  localName == QLatin1String("layer") ||
-                  localName == QLatin1String("properties") ||
-                  localName == QLatin1String("objectgroup")))
-    {
-        unexpectedElement(localName, QLatin1String("map"));
+    if (!file->exists()) {
+        mError = QObject::tr("File not found: %1").arg(file->fileName());
+        return false;
+    } else if (!file->open(QFile::ReadOnly | QFile::Text)) {
+        mError = QObject::tr("Unable to read file: %1").arg(file->fileName());
         return false;
     }
 
-    if (!mMap && localName == QLatin1String("map"))
-    {
-        const int mapWidth = atts.value(QLatin1String("width")).toInt();
-        const int mapHeight = atts.value(QLatin1String("height")).toInt();
-        const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
-        const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
-        // TODO: Add support for map orientation (at least support isometric)
-        //const QString orientation = atts.value(QLatin1String("orientation"));
-
-        mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
-    }
-    else if (localName == QLatin1String("tileset"))
-    {
-        const QString name = atts.value(QLatin1String("name"));
-        const QString source = atts.value(QLatin1String("source"));
-        mTilesetFirstGid = atts.value(QLatin1String("firstgid")).toInt();
-        const int tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
-        const int tileHeight = atts.value(QLatin1String("tileheight")).toInt();
-        const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
-        const int margin = atts.value(QLatin1String("margin")).toInt();
-
-        if (!source.isEmpty()) {
-            const QString absoluteSource = makeAbsolute(source);
-            const QString canonicalSource =
-                QFileInfo(absoluteSource).canonicalFilePath();
-
-            // Check if this tileset is already loaded
-            TilesetManager *manager = TilesetManager::instance();
-            mTileset = manager->findTileset(canonicalSource);
-
-            // If not, try to load it
-            if (!mTileset) {
-                TsxTilesetReader reader;
-                mTileset = reader.readTileset(canonicalSource);
-
-                if (!mTileset) {
-                    mError = QObject::tr(
-                            "Error while loading tileset '%1': %2")
-                        .arg(absoluteSource, reader.errorString());
-                    return false;
-                }
-            }
-        }
-        else {
-            if (tileWidth <= 0 || tileHeight <= 0 || mTilesetFirstGid <= 0) {
-                mError = QObject::tr("Invalid tileset parameters for tileset"
-                        " '%1'").arg(name);
-                return false;
-            }
-
-            mTileset = new Tileset(name, tileWidth, tileHeight,
-                                   tileSpacing, margin);
-        }
-    }
-    else if (localName == QLatin1String("tile"))
-    {
-        if (!mTileset && !mTileLayer) {
-            unexpectedElement(localName, QLatin1String("tileset|data"));
-            return false;
-        }
-
-        if (mTileLayer) {
-            if (mTileY >= mTileLayer->height()) {
-                mError = QObject::tr("Too many <tile> elements.");
-                return false;
-            }
-
-            const int gid = atts.value(QLatin1String("gid")).toInt();
-            bool ok;
-            Tile *tile = tileForGid(gid, ok);
-            if (ok)
-                mTileLayer->setTile(mTileX, mTileY, tile);
-            else
-                return false;
-
-            mTileX++;
-            if (mTileX >= mTileLayer->width()) {
-                mTileX = 0;
-                mTileY++;
-            }
-        } else {
-            // We're in a <tileset> element. Store the tile id, so that
-            // properties can be associated with it later.
-            mTileId = atts.value(QLatin1String("id")).toInt();
-        }
-    }
-    else if (localName == QLatin1String("image"))
-    {
-        if (!mTileset) {
-            unexpectedElement(localName, QLatin1String("tileset"));
-            return false;
-        }
-
-        QString source = atts.value(QLatin1String("source"));
-        QString trans = atts.value(QLatin1String("trans"));
-
-        if (!trans.isEmpty()) {
-            if (!trans.startsWith(QLatin1Char('#')))
-                trans.prepend(QLatin1Char('#'));
-            mTileset->setTransparentColor(QColor(trans));
-        }
-
-        source = makeAbsolute(source);
-
-        if (!mTileset->loadFromImage(source)) {
-            mError = QObject::tr("Error loading tileset image:\n'%1'")
-                .arg(source);
-            return false;
-        }
-    }
-    else if (localName == QLatin1String("layer"))
-    {
-        const QString name = atts.value(QLatin1String("name"));
-        const int x = atts.value(QLatin1String("x")).toInt(); // optional
-        const int y = atts.value(QLatin1String("y")).toInt(); // optional
-        const int width = atts.value(QLatin1String("width")).toInt();
-        const int height = atts.value(QLatin1String("height")).toInt();
-
-        mTileLayer = new TileLayer(name, x, y, width, height);
-        readLayerAttributes(atts, mTileLayer);
-        mTileX = 0;
-        mTileY = 0;
-    }
-    else if (localName == QLatin1String("data"))
-    {
-        mEncoding = atts.value(QLatin1String("encoding"));
-        mCompression = atts.value(QLatin1String("compression"));
-    }
-    else if (localName == QLatin1String("objectgroup"))
-    {
-        const QString name = atts.value(QLatin1String("name"));
-        const int x = atts.value(QLatin1String("x")).toInt(); // optional
-        const int y = atts.value(QLatin1String("y")).toInt(); // optional
-        const int width = atts.value(QLatin1String("width")).toInt();
-        const int height = atts.value(QLatin1String("height")).toInt();
-
-        mObjectGroup = new ObjectGroup(name, x, y, width, height);
-        readLayerAttributes(atts, mObjectGroup);
-    }
-    else if (localName == QLatin1String("properties"))
-    {
-        mProperties = new QMap<QString, QString>();
-    }
-    else if (localName == QLatin1String("property"))
-    {
-        const QString name = atts.value(QLatin1String("name"));
-        const QString value = atts.value(QLatin1String("value"));
-        mProperty = new QPair<QString, QString>(name, value);
-    }
-    else if (localName == QLatin1String("object"))
-    {
-        if (!mObjectGroup) {
-            unexpectedElement(localName, QLatin1String("objectgroup"));
-            return false;
-        }
-
-        const QString name = atts.value(QLatin1String("name"));
-        const int x = atts.value(QLatin1String("x")).toInt();
-        const int y = atts.value(QLatin1String("y")).toInt();
-        const int width = atts.value(QLatin1String("width")).toInt();
-        const int height = atts.value(QLatin1String("height")).toInt();
-        const QString type = atts.value(QLatin1String("type"));
-
-        // Convert pixel coordinates to tile coordinates
-        const qreal xF = (qreal) x / mMap->tileWidth();
-        const qreal yF = (qreal) y / mMap->tileHeight();
-        const qreal widthF = (qreal) width / mMap->tileWidth();
-        const qreal heightF = (qreal) height / mMap->tileHeight();
-
-        mObject = new MapObject(name, type, xF, yF, widthF, heightF);
-    }
-    else {
-        qDebug() << "Unhandled element (fixme):" << localName;
-    }
-
     return true;
 }
 
-bool TmxHandler::characters(const QString &ch)
+bool TmxReader::readNextStartElement()
 {
-    if (mEncoding == QLatin1String("base64")) {
-        QByteArray tileData = QByteArray::fromBase64(ch.toLatin1());
-        const int size = (mTileLayer->width() * mTileLayer->height()) * 4;
-
-        if (mCompression == QLatin1String("zlib")) {
-            // Prepend the expected uncompressed size
-            tileData.prepend((char) (size));
-            tileData.prepend((char) (size >> 8));
-            tileData.prepend((char) (size >> 16));
-            tileData.prepend((char) (size >> 24));
-            tileData = qUncompress(tileData);
-        } else if (mCompression == QLatin1String("gzip")) {
-            tileData = decompress(tileData, size);
-        } else if (!mCompression.isEmpty()) {
-            mError = QObject::tr("Compression method '%1' not supported")
-                .arg(mCompression);
+    while (xml.readNext() != QXmlStreamReader::Invalid) {
+        if (xml.isEndElement())
             return false;
-        }
-
-        if (size != tileData.length()) {
-            mError = QObject::tr("Corrupt layer data for layer '%1'")
-                .arg(mTileLayer->name());
-            return false;
-        }
-
-        const unsigned char *data =
-            reinterpret_cast<const unsigned char*>(tileData.data());
-        int x = 0;
-        int y = 0;
-
-        for (int i = 0; i < size - 3; i += 4) {
-            const int gid = data[i] |
-                data[i + 1] << 8 |
-                data[i + 2] << 16 |
-                data[i + 3] << 24;
-
-            bool ok;
-            Tile *tile = tileForGid(gid, ok);
-            if (ok)
-                mTileLayer->setTile(x, y, tile);
-            else
-                return false;
-
-            x++;
-            if (x == mTileLayer->width()) { x = 0; y++; }
-        }
+        else if (xml.isStartElement())
+            return true;
     }
-    else if (mProperty)
-    {
-        mProperty->second = ch;
-    }
-
-    return true;
-}
-
-bool TmxHandler::endElement(const QString &namespaceURI,
-                            const QString &localName,
-                            const QString &qName)
-{
-    Q_UNUSED(namespaceURI);
-    Q_UNUSED(qName);
-
-    if (localName == QLatin1String("layer"))
-    {
-        mMap->addLayer(mTileLayer);
-        mTileLayer = 0;
-        mTileX = -1;
-        mTileY = -1;
-    }
-    else if (localName == QLatin1String("data"))
-    {
-        mEncoding.clear();
-        mCompression.clear();
-    }
-    else if (localName == QLatin1String("tileset"))
-    {
-        mGidsToTileset.insert(mTilesetFirstGid, mTileset);
-        mMap->addTileset(mTileset);
-        mTileset = 0;
-    }
-    else if (localName == QLatin1String("tile"))
-    {
-        mTileId = -1;
-    }
-    else if (localName == QLatin1String("properties"))
-    {
-        if (mObject) {
-            QMap<QString, QString>::const_iterator i = mProperties->begin();
-            for (; i != mProperties->end(); ++i)
-                mObject->setProperty(i.key(), i.value());
-        } else if (mTileLayer) {
-            mTileLayer->properties()->unite(*mProperties);
-        } else if (mObjectGroup) {
-            mObjectGroup->properties()->unite(*mProperties);
-        } else if (mTileId >= 0) {
-            Tile *tile = mTileset->tileAt(mTileId);
-            if (tile) {
-                tile->properties()->unite(*mProperties);
-            } else {
-                mError = QObject::tr("Unable to assign properties to tile %1 "
-                                     "of tileset '%2'")
-                        .arg(mTileId).arg(mTileset->name());
-                return false;
-            }
-        } else {
-            mMap->properties()->unite(*mProperties);
-        }
-
-        delete mProperties;
-        mProperties = 0;
-    }
-    else if (localName == QLatin1String("objectgroup"))
-    {
-        mMap->addLayer(mObjectGroup);
-        mObjectGroup = 0;
-    }
-    else if (localName == QLatin1String("object"))
-    {
-        mObjectGroup->addObject(mObject);
-        mObject = 0;
-    }
-    else if (localName == QLatin1String("property"))
-    {
-        mProperties->insert(mProperty->first, mProperty->second);
-        delete mProperty;
-        mProperty = 0;
-    }
-
-    return true;
-}
-
-bool TmxHandler::endDocument()
-{
-    return true;
-}
-
-bool TmxHandler::fatalError(const QXmlParseException &exception)
-{
-    mError = QObject::tr("%3\n\nLine %1, column %2")
-        .arg(exception.lineNumber())
-        .arg(exception.columnNumber())
-        .arg(exception.message());
-
     return false;
 }
 
-QString TmxHandler::errorString() const
+void TmxReader::readUnknownElement()
 {
-    return mError;
+    qDebug() << "Unknown element (fixme):" << xml.name();
+    skipCurrentElement();
 }
 
-Map *TmxHandler::takeMap()
+void TmxReader::skipCurrentElement()
 {
-    Map *map = mMap;
-    mMap = 0;
-    return map;
+    while (readNextStartElement())
+        skipCurrentElement();
 }
 
-Tile *TmxHandler::tileForGid(int gid, bool &ok)
+Map *TmxReader::readMap()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "map");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const int mapWidth =
+            atts.value(QLatin1String("width")).toString().toInt();
+    const int mapHeight =
+            atts.value(QLatin1String("height")).toString().toInt();
+    const int tileWidth =
+            atts.value(QLatin1String("tilewidth")).toString().toInt();
+    const int tileHeight =
+            atts.value(QLatin1String("tileheight")).toString().toInt();
+    // TODO: Add support for map orientation (at least support isometric)
+    //const QString orientation = atts.value(QLatin1String("orientation"));
+
+    mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
+
+    while (readNextStartElement()) {
+        if (xml.name() == "properties")
+            mMap->properties()->unite(readProperties());
+        else if (xml.name() == "tileset")
+            mMap->addTileset(readTileset());
+        else if (xml.name() == "layer")
+            mMap->addLayer(readLayer());
+        else if (xml.name() == "objectgroup")
+            mMap->addLayer(readObjectGroup());
+        else
+            readUnknownElement();
+    }
+
+    // Clean up in case of error
+    if (xml.hasError()) {
+        delete mMap;
+        mMap = 0;
+
+        // The tilesets are not owned by the map
+        qDeleteAll(mGidsToTileset.values());
+    }
+
+    return mMap;
+}
+
+Tileset *TmxReader::readTileset()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "tileset");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const QString source = atts.value(QLatin1String("source")).toString();
+    const int firstGid =
+            atts.value(QLatin1String("firstgid")).toString().toInt();
+
+    Tileset *tileset = 0;
+
+    if (source.isEmpty()) { // Not an external tileset
+        const QString name =
+                atts.value(QLatin1String("name")).toString();
+        const int tileWidth =
+                atts.value(QLatin1String("tilewidth")).toString().toInt();
+        const int tileHeight =
+                atts.value(QLatin1String("tileheight")).toString().toInt();
+        const int tileSpacing =
+                atts.value(QLatin1String("spacing")).toString().toInt();
+        const int margin =
+                atts.value(QLatin1String("margin")).toString().toInt();
+
+        if (tileWidth <= 0 || tileHeight <= 0 || firstGid <= 0) {
+            xml.raiseError(QObject::tr("Invalid tileset parameters for tileset"
+                                       " '%1'").arg(name));
+        } else {
+            tileset = new Tileset(name, tileWidth, tileHeight,
+                                  tileSpacing, margin);
+
+            while (readNextStartElement()) {
+                if (xml.name() == "tile")
+                    readTilesetTile(tileset);
+                else if (xml.name() == "image")
+                    readTilesetImage(tileset);
+                else
+                    readUnknownElement();
+            }
+        }
+    } else { // External tileset
+        const QString absoluteSource = makeAbsolute(source);
+        const QString canonicalSource =
+                QFileInfo(absoluteSource).canonicalFilePath();
+
+        // Check if this tileset is already loaded
+        TilesetManager *manager = TilesetManager::instance();
+        tileset = manager->findTileset(canonicalSource);
+
+        // If not, try to load it
+        if (!tileset) {
+            TmxReader reader;
+            tileset = reader.readTileset(canonicalSource);
+
+            if (!tileset) {
+                xml.raiseError(QObject::tr(
+                        "Error while loading tileset '%1': %2")
+                               .arg(absoluteSource, reader.errorString()));
+            }
+        }
+    }
+
+    if (tileset)
+        mGidsToTileset.insert(firstGid, tileset);
+
+    return tileset;
+}
+
+void TmxReader::readTilesetTile(Tileset *tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "tile");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const int id = atts.value(QLatin1String("id")).toString().toInt();
+
+    if (id < 0 || id >= tileset->tileCount()) {
+        xml.raiseError(QObject::tr("Invalid tile ID: %1").arg(id));
+        return;
+    }
+
+    // TODO: Add support for individual tiles (then it needs to be added here)
+
+    while (readNextStartElement()) {
+        if (xml.name() == "properties") {
+            Tile *tile = tileset->tileAt(id);
+            tile->properties()->unite(readProperties());
+        } else {
+            readUnknownElement();
+        }
+    }
+}
+
+void TmxReader::readTilesetImage(Tileset *tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "image");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    QString source = atts.value(QLatin1String("source")).toString();
+    QString trans = atts.value(QLatin1String("trans")).toString();
+
+    if (!trans.isEmpty()) {
+        if (!trans.startsWith(QLatin1Char('#')))
+            trans.prepend(QLatin1Char('#'));
+        tileset->setTransparentColor(QColor(trans));
+    }
+
+    source = makeAbsolute(source);
+
+    if (!tileset->loadFromImage(source)) {
+        xml.raiseError(QObject::tr("Error loading tileset image:\n'%1'")
+                       .arg(source));
+    }
+
+    skipCurrentElement();
+}
+
+TileLayer *TmxReader::readLayer()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "layer");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const QString name = atts.value(QLatin1String("name")).toString();
+    const int x = atts.value(QLatin1String("x")).toString().toInt();
+    const int y = atts.value(QLatin1String("y")).toString().toInt();
+    const int width = atts.value(QLatin1String("width")).toString().toInt();
+    const int height = atts.value(QLatin1String("height")).toString().toInt();
+    
+    TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
+    readLayerAttributes(tileLayer, atts);
+    
+    while (readNextStartElement()) {
+        if (xml.name() == "properties")
+            tileLayer->properties()->unite(readProperties());
+        else if (xml.name() == "data")
+            readLayerData(tileLayer);
+        else
+            readUnknownElement();
+    }
+
+    return tileLayer;
+}
+
+void TmxReader::readLayerData(TileLayer *tileLayer)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "data");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    QStringRef encoding = atts.value(QLatin1String("encoding"));
+    QStringRef compression = atts.value(QLatin1String("compression"));
+
+    int x = 0;
+    int y = 0;
+
+    while (xml.readNext() != QXmlStreamReader::Invalid) {
+        if (xml.isEndElement())
+            break;
+        else if (xml.isStartElement()) {
+            if (xml.name() == QLatin1String("tile")) {
+                if (y >= tileLayer->height()) {
+                    xml.raiseError(QObject::tr("Too many <tile> elements"));
+                    continue;
+                }
+
+                const QXmlStreamAttributes atts = xml.attributes();
+                int gid = atts.value(QLatin1String("gid")).toString().toInt();
+                bool ok;
+                Tile *tile = tileForGid(gid, ok);
+                if (ok)
+                    tileLayer->setTile(x, y, tile);
+                else
+                    xml.raiseError(QObject::tr("Invalid tile: %1").arg(gid));
+
+                x++;
+                if (x >= tileLayer->width()) {
+                    x = 0;
+                    y++;
+                }
+            } else {
+                readUnknownElement();
+            }
+        } else if (xml.isCharacters() && !xml.isWhitespace()) {
+            if (encoding != QLatin1String("base64")) {
+                xml.raiseError(QObject::tr("Unknown encoding: %1")
+                               .arg(encoding.toString()));
+                continue;
+            }
+
+            decodeBinaryLayerData(tileLayer,
+                                  xml.text().toString(),
+                                  compression);
+        }
+    }
+}
+
+void TmxReader::decodeBinaryLayerData(TileLayer *tileLayer,
+                                      const QString &text,
+                                      const QStringRef &compression)
+{
+    QByteArray tileData = QByteArray::fromBase64(text.toLatin1());
+    const int size = (tileLayer->width() * tileLayer->height()) * 4;
+
+    if (compression == QLatin1String("zlib")
+        || compression == QLatin1String("gzip")) {
+        tileData = decompress(tileData, size);
+    } else if (!compression.isEmpty()) {
+        xml.raiseError(QObject::tr("Compression method '%1' not supported")
+                       .arg(compression.toString()));
+        return;
+    }
+
+    if (size != tileData.length()) {
+        xml.raiseError(QObject::tr("Corrupt layer data for layer '%1'")
+                       .arg(tileLayer->name()));
+        return;
+    }
+
+    const unsigned char *data =
+            reinterpret_cast<const unsigned char*>(tileData.constData());
+    int x = 0;
+    int y = 0;
+
+    for (int i = 0; i < size - 3; i += 4) {
+        const int gid = data[i] |
+                        data[i + 1] << 8 |
+                        data[i + 2] << 16 |
+                        data[i + 3] << 24;
+
+        bool ok;
+        Tile *tile = tileForGid(gid, ok);
+        if (ok)
+            tileLayer->setTile(x, y, tile);
+        else {
+            xml.raiseError(QObject::tr("Invalid tile: %1").arg(gid));
+            return;
+        }
+
+        x++;
+        if (x == tileLayer->width()) {
+            x = 0;
+            y++;
+        }
+    }
+}
+
+Tile *TmxReader::tileForGid(int gid, bool &ok)
 {
     Tile *result = 0;
 
     if (gid < 0) {
-        mError = QObject::tr("Invalid global tile id (less than 0): %1")
-                 .arg(gid);
+        xml.raiseError(QObject::tr("Invalid global tile id (less than 0): %1")
+                       .arg(gid));
         ok = false;
     } else if (gid == 0) {
         ok = true;
     } else if (mGidsToTileset.isEmpty()) {
-        mError = QObject::tr("Tile used but no tilesets specified");
+        xml.raiseError(QObject::tr("Tile used but no tilesets specified"));
         ok = false;
     } else {
         // Find the tileset containing this tile
@@ -551,30 +518,133 @@ Tile *TmxHandler::tileForGid(int gid, bool &ok)
     return result;
 }
 
-void TmxHandler::unexpectedElement(const QString &element,
-                                   const QString &expectedParent)
+ObjectGroup *TmxReader::readObjectGroup()
 {
-    mError = QObject::tr("\"%1\" element outside of \"%2\" element.")
-             .arg(element, expectedParent);
+    Q_ASSERT(xml.isStartElement() && xml.name() == "objectgroup");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const QString name = atts.value(QLatin1String("name")).toString();
+    const int x = atts.value(QLatin1String("x")).toString().toInt();
+    const int y = atts.value(QLatin1String("y")).toString().toInt();
+    const int width = atts.value(QLatin1String("width")).toString().toInt();
+    const int height = atts.value(QLatin1String("height")).toString().toInt();
+
+    ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height);
+    readLayerAttributes(objectGroup, atts);
+
+    while (readNextStartElement()) {
+        if (xml.name() == "object")
+            objectGroup->addObject(readObject());
+        else if (xml.name() == "properties")
+            objectGroup->properties()->unite(readProperties());
+        else
+            readUnknownElement();
+    }
+
+    return objectGroup;
 }
 
-void TmxHandler::readLayerAttributes(const QXmlAttributes &atts,
-                                     Layer *layer)
+MapObject *TmxReader::readObject()
 {
+    Q_ASSERT(xml.isStartElement() && xml.name() == "object");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const QString name = atts.value(QLatin1String("name")).toString();
+    const int x = atts.value(QLatin1String("x")).toString().toInt();
+    const int y = atts.value(QLatin1String("y")).toString().toInt();
+    const int width = atts.value(QLatin1String("width")).toString().toInt();
+    const int height = atts.value(QLatin1String("height")).toString().toInt();
+    const QString type = atts.value(QLatin1String("type")).toString();
+
+    // Convert pixel coordinates to tile coordinates
+    const qreal xF = (qreal) x / mMap->tileWidth();
+    const qreal yF = (qreal) y / mMap->tileHeight();
+    const qreal widthF = (qreal) width / mMap->tileWidth();
+    const qreal heightF = (qreal) height / mMap->tileHeight();
+
+    MapObject *object = new MapObject(name, type, xF, yF, widthF, heightF);
+
+    while (readNextStartElement()) {
+        if (xml.name() == "properties")
+            object->properties()->unite(readProperties());
+        else
+            readUnknownElement();
+    }
+
+    return object;
+}
+
+void TmxReader::readLayerAttributes(Layer *layer,
+                                    const QXmlStreamAttributes &atts)
+{
+    const QStringRef opacityRef = atts.value(QLatin1String("opacity"));
+    const QStringRef visibleRef = atts.value(QLatin1String("visible"));
+
     bool ok;
-    const float opacity = atts.value(QLatin1String("opacity")).toFloat(&ok);
+    const float opacity = opacityRef.toString().toFloat(&ok);
     if (ok)
         layer->setOpacity(opacity);
 
-    const int visible = atts.value(QLatin1String("visible")).toInt(&ok);
+    const int visible = visibleRef.toString().toInt(&ok);
     if (ok)
         layer->setVisible(visible);
 }
 
-QString TmxHandler::makeAbsolute(const QString &path)
+QMap<QString, QString> TmxReader::readProperties()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "properties");
+
+    QMap<QString, QString> properties;
+
+    while (readNextStartElement()) {
+        if (xml.name() == "property")
+            readProperty(&properties);
+        else
+            readUnknownElement();
+    }
+
+    return properties;
+}
+
+void TmxReader::readProperty(QMap<QString, QString> *properties)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "property");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    QString propertyName = atts.value(QLatin1String("name")).toString();
+    QString propertyValue = atts.value(QLatin1String("value")).toString();
+
+    while (xml.readNext() != QXmlStreamReader::Invalid) {
+        if (xml.isEndElement()) {
+            break;
+        } else if (xml.isCharacters() && !xml.isWhitespace()) {
+            if (propertyValue.isEmpty())
+                propertyValue = xml.text().toString();
+        } else if (xml.isStartElement()) {
+            readUnknownElement();
+        }
+    }
+
+    (*properties).insert(propertyName, propertyValue);
+}
+
+QString TmxReader::makeAbsolute(const QString &path)
 {
     if (QDir::isRelativePath(path))
-        return mMapPath + QDir::separator() + path;
+        return mPath + QLatin1Char('/') + path;
     else
         return path;
+}
+
+
+Map *TmxMapReader::read(const QString &fileName)
+{
+    mError.clear();
+
+    TmxReader reader;
+    Map *map = reader.readMap(fileName);
+    if (!map)
+        mError = reader.errorString();
+
+    return map;
 }

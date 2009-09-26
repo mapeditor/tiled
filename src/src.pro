@@ -4,8 +4,7 @@ DESTDIR = ../bin
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 QT += core \
-    gui \
-    xml
+    gui
 CONFIG += debug
 SOURCES += aboutdialog.cpp \
     brushitem.cpp \
@@ -36,7 +35,6 @@ SOURCES += aboutdialog.cpp \
     tilesetview.cpp \
     tilelayer.cpp \
     tilelayeritem.cpp \
-    tsxtilesetreader.cpp \
     tmxmapreader.cpp \
     tmxmapwriter.cpp \
     changeproperties.cpp \
@@ -94,7 +92,6 @@ HEADERS += aboutdialog.h \
     tilesetview.h \
     tilelayer.h \
     tilelayeritem.h \
-    tsxtilesetreader.h \
     tmxmapreader.h \
     tmxmapwriter.h \
     changeproperties.h \

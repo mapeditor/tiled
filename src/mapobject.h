@@ -146,11 +146,6 @@ public:
     void setType(const QString &type) { mType = type; }
 
     /**
-     * Set the property with the given name, and value.
-     */
-    void setProperty(const QString &name, const QString &value);
-
-    /**
      * Returns a pointer to the properties of this object. This allows
      * modification of the properties.
      */
