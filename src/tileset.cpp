@@ -40,29 +40,31 @@ bool Tileset::loadFromImage(const QString &fileName)
 {
     Q_ASSERT(mTileWidth > 0 && mTileHeight > 0);
 
-    QImage image(fileName);
+    const QImage image(fileName);
     if (image.isNull())
         return false;
 
-    QPixmap pixmap = QPixmap::fromImage(image);
-
-    if (mTransparentColor.isValid()) {
-        QImage mask = image.createMaskFromColor(mTransparentColor.rgb());
-        pixmap.setMask(QBitmap::fromImage(mask));
-    }
-
-    const int stopWidth = pixmap.width() - mTileWidth;
-    const int stopHeight = pixmap.height() - mTileHeight;
+    const int stopWidth = image.width() - mTileWidth;
+    const int stopHeight = image.height() - mTileHeight;
 
     mTiles.clear();
 
-    for (int y = mMargin; y <= stopHeight; y += mTileHeight + mTileSpacing)
-        for (int x = mMargin; x <= stopWidth; x += mTileWidth + mTileSpacing)
-            mTiles.append(new Tile(pixmap.copy(x, y, mTileWidth, mTileHeight),
-                                   mTiles.size(),
-                                   this));
+    for (int y = mMargin; y <= stopHeight; y += mTileHeight + mTileSpacing) {
+        for (int x = mMargin; x <= stopWidth; x += mTileWidth + mTileSpacing) {
+            const QImage tileImage = image.copy(x, y, mTileWidth, mTileHeight);
+            QPixmap tilePixmap = QPixmap::fromImage(tileImage);
 
-    mColumnCount = (pixmap.width() - mMargin * 2 + mTileSpacing)
+            if (mTransparentColor.isValid()) {
+                const QImage mask =
+                        tileImage.createMaskFromColor(mTransparentColor.rgb());
+                tilePixmap.setMask(QBitmap::fromImage(mask));
+            }
+
+            mTiles.append(new Tile(tilePixmap, mTiles.size(), this));
+        }
+    }
+
+    mColumnCount = (image.width() - mMargin * 2 + mTileSpacing)
                    / (mTileWidth + mTileSpacing);
     mImageSource = fileName;
     return true;
