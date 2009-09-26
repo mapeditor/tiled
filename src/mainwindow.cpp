@@ -41,8 +41,8 @@
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
-#include "xmlmapreader.h"
-#include "xmlmapwriter.h"
+#include "tmxmapreader.h"
+#include "tmxmapwriter.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -285,7 +285,7 @@ bool MainWindow::openFile(const QString &fileName)
 
     // Use the XML map reader to read the map (assuming it's a .tmx file)
     // TODO: Add support for input/output plugins
-    XmlMapReader mapReader;
+    TmxMapReader mapReader;
     Map *map = mapReader.read(fileName);
     if (!map) {
         QMessageBox::critical(this, tr("Error while opening map"),
@@ -331,7 +331,7 @@ bool MainWindow::saveFile(const QString &fileName)
 {
     if (!mMapDocument)
         return false;
-    XmlMapWriter mapWriter;
+    TmxMapWriter mapWriter;
     if (!mapWriter.write(mMapDocument->map(), fileName)) {
         QMessageBox::critical(this, tr("Error while saving map"),
                               mapWriter.errorString());

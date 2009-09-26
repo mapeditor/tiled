@@ -21,8 +21,8 @@
 
 #include "mapreaderinterface.h"
 
-#ifndef XMLMAPREADER_H
-#define XMLMAPREADER_H
+#ifndef TMXMAPREADER_H
+#define TMXMAPREADER_H
 
 #include <QObject>
 #include <QString>
@@ -33,7 +33,7 @@ namespace Internal {
 /**
  * A reader for Tiled's .tmx map format.
  */
-class XmlMapReader : public MapReaderInterface
+class TmxMapReader : public MapReaderInterface
 {
 public:
     Map *read(const QString &fileName);
@@ -49,4 +49,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // XMLMAPREADER_H
+#endif // TMXMAPREADER_H

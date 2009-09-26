@@ -21,8 +21,8 @@
 
 #include "mapwriterinterface.h"
 
-#ifndef XMLMAPWRITER_H
-#define XMLMAPWRITER_H
+#ifndef TMXMAPWRITER_H
+#define TMXMAPWRITER_H
 
 #include <QObject>
 #include <QString>
@@ -33,7 +33,7 @@ namespace Internal {
 /**
  * A writer for Tiled's .tmx map format.
  */
-class XmlMapWriter : public MapWriterInterface
+class TmxMapWriter : public MapWriterInterface
 {
 public:
     bool write(const Map *map, const QString &fileName);
@@ -49,4 +49,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MAPWRITERINTERFACE_H
+#endif // TMXMAPWRITER_H

@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "xmlmapreader.h"
+#include "tmxmapreader.h"
 
 #include "compression.h"
 #include "map.h"
@@ -131,7 +131,7 @@ class TmxHandler : public QXmlDefaultHandler
 } // namespace Internal
 } // namespace Tiled
 
-Map *XmlMapReader::read(const QString &fileName)
+Map *TmxMapReader::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.exists()) {

@@ -37,8 +37,8 @@ SOURCES += aboutdialog.cpp \
     tilelayer.cpp \
     tilelayeritem.cpp \
     tsxtilesetreader.cpp \
-    xmlmapreader.cpp \
-    xmlmapwriter.cpp \
+    tmxmapreader.cpp \
+    tmxmapwriter.cpp \
     changeproperties.cpp \
     movelayer.cpp \
     tilepainter.cpp \
@@ -95,8 +95,8 @@ HEADERS += aboutdialog.h \
     tilelayer.h \
     tilelayeritem.h \
     tsxtilesetreader.h \
-    xmlmapreader.h \
-    xmlmapwriter.h \
+    tmxmapreader.h \
+    tmxmapwriter.h \
     changeproperties.h \
     movelayer.h \
     tilepainter.h \

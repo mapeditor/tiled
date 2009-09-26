@@ -31,7 +31,7 @@ class Tileset;
 namespace Internal {
 
 /**
- * A reader for the .tsx tileset format. Used by the XmlMapReader.
+ * A reader for the .tsx tileset format. Used by the TmxMapReader.
  *
  * This class is also a test to see whether QXmlStreamReader is more convenient
  * to use than QXmlSimpleReader.

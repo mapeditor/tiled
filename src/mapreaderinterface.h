@@ -33,7 +33,7 @@ class Map;
  * support for loading a certain map format.
  *
  * At the moment, Tiled only provides a reader for its own .tmx map format
- * through the XmlMapReader.
+ * through the TmxMapReader.
  */
 class MapReaderInterface
 {

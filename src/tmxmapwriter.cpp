@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "xmlmapwriter.h"
+#include "tmxmapwriter.h"
 
 #include "compression.h"
 #include "map.h"
@@ -282,7 +282,7 @@ void writeMap(QXmlStreamWriter &w, const Map *map)
 
 } // anonymous namespace
 
-bool XmlMapWriter::write(const Map *map, const QString &fileName)
+bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
