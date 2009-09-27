@@ -2,8 +2,11 @@ bin/tiled
 Makefile*
 *.o
 *.qm
+*.moc
 moc_*.cpp
 ui_*.h
 *.pro.user
 qrc_*
 docs/html
+
+tests/test_tmxmapreader

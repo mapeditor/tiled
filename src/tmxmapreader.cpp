@@ -144,7 +144,6 @@ Tileset *TmxReader::readTileset(const QString &fileName)
     if (openFile(&file)) {
         xml.setDevice(&file);
 
-
         if (readNextStartElement() && xml.name() == "tileset")
             tileset = readTileset();
         else
