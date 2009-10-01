@@ -1,0 +1,10 @@
+0.2.0 (1 October 2009)
+* Added support for zooming the map view
+* Added an eraser tool that allows you to erase tiles
+* Added ability to save a map as an image
+* Added support for masking tileset images based on a certain color
+* Added a slider to change the opacity of the current layer
+* Fixed the minimum row and column size in the tileset view
+* Fixed stamp creation when not dragging topleft to bottomright
+
+0.1.0 (1 September 2009)
