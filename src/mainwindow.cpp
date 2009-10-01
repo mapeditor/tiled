@@ -43,6 +43,7 @@
 #include "toolmanager.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
+#include "undodock.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -104,18 +105,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     undoAction->setIcon(undoIcon);
     connect(mUndoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
 
+    UndoDock *undoDock = new UndoDock(mUndoGroup, this);
+
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::BottomDockWidgetArea, mTilesetDock);
-
-    // Mainly for debugging, but might also be useful on the long run
-    QDockWidget *undoViewDock = new QDockWidget(tr("Undo Stack"), this);
-    undoViewDock->setObjectName(QLatin1String("undoViewDock"));
-    QUndoView *undoView = new QUndoView(mUndoGroup, undoViewDock);
-    QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
-    undoView->setCleanIcon(cleanIcon);
-    undoView->setUniformItemSizes(true);
-    undoViewDock->setWidget(undoView);
-    addDockWidget(Qt::RightDockWidgetArea, undoViewDock);
+    addDockWidget(Qt::RightDockWidgetArea, undoDock);
 
     updateZoomLabel(mUi->mapView->scale());
     connect(mUi->mapView, SIGNAL(scaleChanged(qreal)),
@@ -254,7 +248,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuView->addSeparator();
     mUi->menuView->addAction(mTilesetDock->toggleViewAction());
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
-    mUi->menuView->addAction(undoViewDock->toggleViewAction());
+    mUi->menuView->addAction(undoDock->toggleViewAction());
 
     updateActions();
     readSettings();

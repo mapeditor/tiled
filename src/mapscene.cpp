@@ -245,7 +245,8 @@ void MapScene::layerRemoved(int index)
 }
 
 /**
- * A layer has changed. This can mean that the layer visibility has changed.
+ * A layer has changed. This can mean that the layer visibility or opacity has
+ * changed.
  */
 void MapScene::layerChanged(int index)
 {
@@ -256,6 +257,8 @@ void MapScene::layerChanged(int index)
         layerItem->setVisible(layer->isVisible());
         updateInteractionMode();
     }
+    if (layer->opacity() != layerItem->opacity())
+        layerItem->setOpacity(layer->opacity());
 }
 
 /**

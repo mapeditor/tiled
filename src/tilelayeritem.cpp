@@ -43,6 +43,8 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer)
     const QRect boundingRect = mRenderer->layerBoundingRect(mLayer);
     setPos(boundingRect.topLeft());
     mBoundingRect = QRectF(QPointF(0.0, 0.0), boundingRect.size());
+
+    setOpacity(mLayer->opacity());
 }
 
 QRectF TileLayerItem::boundingRect() const
@@ -54,9 +56,6 @@ void TileLayerItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
                           QWidget *)
 {
-    if (!mLayer->isVisible() || mLayer->opacity() == 0.0f)
-        return;
-
     // TODO: Display a border around the layer when selected
     //painter->fillRect(boundingRect(), Qt::blue);
 

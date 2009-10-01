@@ -25,6 +25,7 @@
 #include <QDockWidget>
 #include <QTreeView>
 
+class QLabel;
 class QModelIndex;
 class QTreeView;
 class QUndoStack;
@@ -40,6 +41,8 @@ class MapDocument;
  */
 class LayerDock : public QDockWidget
 {
+    Q_OBJECT
+
 public:
     /**
      * Constructor.
@@ -51,8 +54,15 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
+private slots:
+    void updateOpacitySlider();
+    void setLayerOpacity(int opacity);
+
 private:
+    QLabel *mOpacityLabel;
+    QSlider *mOpacitySlider;
     LayerView *mLayerView;
+    MapDocument *mMapDocument;
 };
 
 /**
@@ -68,6 +78,8 @@ public:
 
     QSize sizeHint() const;
     void setMapDocument(MapDocument *mapDocument);
+
+protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:

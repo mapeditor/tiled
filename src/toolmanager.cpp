@@ -42,6 +42,7 @@ ToolManager *ToolManager::instance()
 void ToolManager::deleteInstance()
 {
     delete mInstance;
+    mInstance = 0;
 }
 
 ToolManager::ToolManager()

@@ -19,36 +19,27 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "objectgroupitem.h"
+#ifndef UNDODOCK_H
+#define UNDODOCK_H
 
-#include "map.h"
-#include "objectgroup.h"
+#include <QDockWidget>
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+class QUndoGroup;
 
-ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
-    mObjectGroup(objectGroup)
+namespace Tiled {
+namespace Internal {
+
+/**
+ * A dock widget showing the undo stack. Mainly for debugging, but can also be
+ * useful for the user.
+ */
+class UndoDock : public QDockWidget
 {
-#if QT_VERSION >= 0x040600
-    // Since we don't do any painting, we can spare us the call to paint()
-    setFlag(QGraphicsItem::ItemHasNoContents);
-#endif
+public:
+    UndoDock(QUndoGroup *undoGroup, QWidget *parent = 0);
+};
 
-    const Map *map = objectGroup->map();
-    setPos(objectGroup->x() * map->tileWidth(),
-           objectGroup->y() * map->tileHeight());
+} // namespace Internal
+} // namespace Tiled
 
-    setOpacity(objectGroup->opacity());
-}
-
-QRectF ObjectGroupItem::boundingRect() const
-{
-    return QRectF();
-}
-
-void ObjectGroupItem::paint(QPainter *,
-                            const QStyleOptionGraphicsItem *,
-                            QWidget *)
-{
-}
+#endif // UNDODOCK_H

@@ -216,19 +216,9 @@ QRectF MapObjectItem::boundingRect() const
 }
 
 void MapObjectItem::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *option,
-                          QWidget *widget)
+                          const QStyleOptionGraphicsItem *,
+                          QWidget *)
 {
-    Q_UNUSED(widget);
-    Q_UNUSED(option);
-
-    const ObjectGroup *objectGroup = mObject->objectGroup();
-    if (objectGroup) {
-        if (!objectGroup->isVisible() || objectGroup->opacity() == 0.0f)
-            return;
-        painter->setOpacity(objectGroup->opacity());
-    }
-
     QColor color = colorForType();
     QColor brushColor = color;
     brushColor.setAlpha(50);

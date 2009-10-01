@@ -60,7 +60,8 @@ SOURCES += aboutdialog.cpp \
     erasetile.cpp \
     saveasimagedialog.cpp \
     utils.cpp \
-    colorbutton.cpp
+    colorbutton.cpp \
+    undodock.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -118,7 +119,8 @@ HEADERS += aboutdialog.h \
     erasetile.h \
     saveasimagedialog.h \
     utils.h \
-    colorbutton.h
+    colorbutton.h \
+    undodock.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

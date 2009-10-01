@@ -44,6 +44,13 @@ class LayerModel : public QAbstractListModel
 
 public:
     /**
+     * The OpacityRole allows querying and changing the layer opacity.
+     */
+    enum UserRoles {
+        OpacityRole = Qt::UserRole
+    };
+
+    /**
      * Constructor.
      */
     LayerModel(QObject *parent = 0);
@@ -61,7 +68,7 @@ public:
                   int role = Qt::DisplayRole) const;
 
     /**
-     * Allows for changing the visibility of a layer.
+     * Allows for changing the name, visibility and opacity of a layer.
      */
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 

@@ -27,25 +27,99 @@
 #include "mapdocument.h"
 #include "propertiesdialog.h"
 
+#include <QBoxLayout>
 #include <QContextMenuEvent>
+#include <QLabel>
 #include <QMenu>
+#include <QSlider>
 #include <QUndoStack>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
-
 LayerDock::LayerDock(QWidget *parent):
-    QDockWidget(tr("Layers"), parent)
+    QDockWidget(tr("Layers"), parent),
+    mOpacityLabel(new QLabel(tr("Opacity:"))),
+    mOpacitySlider(new QSlider(Qt::Horizontal)),
+    mLayerView(new LayerView),
+    mMapDocument(0)
 {
     setObjectName(QLatin1String("layerDock"));
 
-    mLayerView = new LayerView(this);
-    setWidget(mLayerView);
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setMargin(5);
+
+    QHBoxLayout *opacityLayout = new QHBoxLayout;
+    mOpacitySlider->setRange(0, 100);
+    mOpacitySlider->setEnabled(false);
+    opacityLayout->addWidget(mOpacityLabel);
+    opacityLayout->addWidget(mOpacitySlider);
+    mOpacityLabel->setBuddy(mOpacitySlider);
+
+    layout->addLayout(opacityLayout);
+    layout->addWidget(mLayerView);
+
+    setWidget(widget);
+
+    connect(mOpacitySlider, SIGNAL(valueChanged(int)),
+            this, SLOT(setLayerOpacity(int)));
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
 {
+    if (mMapDocument == mapDocument)
+        return;
+
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
+
+    mMapDocument = mapDocument;
+
+    if (mMapDocument) {
+        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                this, SLOT(updateOpacitySlider()));
+    }
+
     mLayerView->setMapDocument(mapDocument);
+    updateOpacitySlider();
+}
+
+void LayerDock::updateOpacitySlider()
+{
+    const bool enabled = mMapDocument &&
+                         mMapDocument->currentLayer() != -1;
+
+    mOpacitySlider->setEnabled(enabled);
+    mOpacityLabel->setEnabled(enabled);
+
+    if (enabled) {
+        int layerIndex = mMapDocument->currentLayer();
+        qreal opacity = mMapDocument->map()->layerAt(layerIndex)->opacity();
+        mOpacitySlider->setValue(opacity * 100);
+    } else {
+        mOpacitySlider->setValue(100);
+    }
+}
+
+void LayerDock::setLayerOpacity(int opacity)
+{
+    if (!mMapDocument)
+        return;
+
+    const int layerIndex = mMapDocument->currentLayer();
+    if (layerIndex == -1)
+        return;
+
+    const Layer *layer = mMapDocument->map()->layerAt(layerIndex);
+
+    if ((int) (layer->opacity() * 100) != opacity) {
+        LayerModel *layerModel = mMapDocument->layerModel();
+        const int row = layerModel->layerIndexToRow(layerIndex);
+        layerModel->setData(layerModel->index(row),
+                            qreal(opacity) / 100,
+                            LayerModel::OpacityRole);
+    }
 }
 
 

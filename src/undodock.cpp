@@ -19,36 +19,28 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "objectgroupitem.h"
+#include "undodock.h"
 
-#include "map.h"
-#include "objectgroup.h"
+#include <QUndoView>
+#include <QVBoxLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
-    mObjectGroup(objectGroup)
+UndoDock::UndoDock(QUndoGroup *undoGroup, QWidget *parent)
+    : QDockWidget(tr("Undo Stack"), parent)
 {
-#if QT_VERSION >= 0x040600
-    // Since we don't do any painting, we can spare us the call to paint()
-    setFlag(QGraphicsItem::ItemHasNoContents);
-#endif
+    setObjectName(QLatin1String("undoViewDock"));
 
-    const Map *map = objectGroup->map();
-    setPos(objectGroup->x() * map->tileWidth(),
-           objectGroup->y() * map->tileHeight());
+    QUndoView *undoView = new QUndoView(undoGroup, this);
+    QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
+    undoView->setCleanIcon(cleanIcon);
+    undoView->setUniformItemSizes(true);
 
-    setOpacity(objectGroup->opacity());
-}
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setMargin(5);
+    layout->addWidget(undoView);
 
-QRectF ObjectGroupItem::boundingRect() const
-{
-    return QRectF();
-}
-
-void ObjectGroupItem::paint(QPainter *,
-                            const QStyleOptionGraphicsItem *,
-                            QWidget *)
-{
+    setWidget(widget);
 }

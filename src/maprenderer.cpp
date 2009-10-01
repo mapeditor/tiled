@@ -73,9 +73,6 @@ void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer,
         endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
     }
 
-    const qreal opacity = painter->opacity();
-    painter->setOpacity(opacity * layer->opacity());
-
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
             const Tile *tile = layer->tileAt(x, y);
@@ -88,6 +85,4 @@ void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer,
                                 img);
         }
     }
-
-    painter->setOpacity(opacity);
 }

@@ -54,6 +54,8 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
         return layer->name();
     case Qt::CheckStateRole:
         return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
+    case OpacityRole:
+        return layer->opacity();
     default:
         return QVariant();
     }
@@ -74,7 +76,16 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
         emit dataChanged(index, index);
         emit layerChanged(layerIndex);
         return true;
-    } else  if (role == Qt::EditRole) {
+    } else if (role == OpacityRole) {
+        bool ok;
+        const qreal opacity = value.toDouble(&ok);
+        if (ok) {
+            if (layer->opacity() != opacity) {
+                layer->setOpacity(opacity);
+                emit layerChanged(layerIndex);
+            }
+        }
+    } else if (role == Qt::EditRole) {
         const QString newName = value.toString();
         if (layer->name() != newName) {
             RenameLayer *rename = new RenameLayer(mMapDocument, layerIndex,
