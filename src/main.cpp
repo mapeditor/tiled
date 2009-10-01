@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
      * graphics system has performance problems with drawing the tile grid. We
      * still want to allow people to override this with 'native', though.
      */
-#if defined(Q_WS_X11) && QT_VERSION >= 0x040500
+#ifdef Q_WS_X11
     {
         bool graphicsSystemSpecified = false;
         for (int i = 1; i < argc - 1; ++i) {
