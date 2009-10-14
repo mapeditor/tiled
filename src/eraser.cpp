@@ -34,70 +34,20 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 Eraser::Eraser(QObject *parent)
-    : AbstractTool(QObject::tr("Eraser"),
-                   QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")),
-                   parent)
-    , mMapScene(0)
-    , mBrushItem(new BrushItem)
-    , mTileX(0), mTileY(0)
+    : AbstractTileTool(QObject::tr("Eraser"),
+                       QIcon(QLatin1String(
+                               ":images/22x22/stock-tool-eraser.png")),
+                       parent)
     , mErasing(false)
-    , mBrushVisible(false)
 {
-    mBrushItem->setVisible(false);
-    mBrushItem->setZValue(10000);
-    mBrushItem->setTileSize(1, 1);
 }
 
-void Eraser::enable(MapScene *scene)
+void Eraser::tilePositionChanged(const QPoint &tilePos)
 {
-    mMapScene = scene;
+    brushItem()->setTilePos(tilePos);
 
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    connect(mapDocument, SIGNAL(layerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-    connect(mapDocument, SIGNAL(currentLayerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-
-    mBrushItem->setMapDocument(mapDocument);
-    mMapScene->addItem(mBrushItem);
-    updateBrushVisibility();
-}
-
-void Eraser::disable()
-{
-    mMapScene->removeItem(mBrushItem);
-    mBrushItem->setMapDocument(0);
-    mMapScene = 0;
-}
-
-void Eraser::enterEvent(QEvent *)
-{
-    setBrushVisible(true);
-}
-
-void Eraser::leaveEvent(QEvent *)
-{
-    setBrushVisible(false);
-}
-
-void Eraser::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
-    const Map *map = mMapScene->mapDocument()->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    const QPointF pos = mouseEvent->scenePos();
-    const int tileX = ((int) pos.x()) / tileWidth;
-    const int tileY = ((int) pos.y()) / tileHeight;
-
-    if (mTileX != tileX || mTileY != tileY) {
-        mTileX = tileX;
-        mTileY = tileY;
-        mBrushItem->setTilePos(mTileX, mTileY);
-
-        if (mErasing)
-            doErase();
-    }
+    if (mErasing)
+        doErase();
 }
 
 void Eraser::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -119,55 +69,14 @@ void Eraser::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void Eraser::doErase()
 {
-    MapDocument *mapDocument = mMapScene->mapDocument();
+    MapDocument *mapDocument = mapScene()->mapDocument();
     TileLayer *tileLayer = currentTileLayer();
+    const QPoint tilePos = tilePosition();
 
-    if (!tileLayer->bounds().contains(mTileX, mTileY))
+    if (!tileLayer->bounds().contains(tilePos))
         return;
 
     QUndoCommand *erase = new EraseTile(mapDocument, tileLayer,
-                                        mTileX, mTileY);
+                                        tilePos.x(), tilePos.y());
     mapDocument->undoStack()->push(erase);
-}
-
-/* TODO: The methods below are copies of those in StampBrush. They should be in
- *       a baseclass.
- */
-
-void Eraser::setBrushVisible(bool visible)
-{
-    if (mBrushVisible == visible)
-        return;
-
-    mBrushVisible = visible;
-    updateBrushVisibility();
-}
-
-void Eraser::updateBrushVisibility()
-{
-    // Show the tile brush only when a visible tile layer is selected
-    bool showBrush = false;
-    if (mBrushVisible) {
-        if (Layer *layer = currentTileLayer()) {
-            if (layer->isVisible())
-                showBrush = true;
-        }
-    }
-    mBrushItem->setVisible(showBrush);
-}
-
-/**
- * Returns the current tile layer, or 0 if no tile layer is current selected.
- */
-TileLayer *Eraser::currentTileLayer() const
-{
-    if (!mMapScene)
-        return 0;
-
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    const int currentLayerIndex = mapDocument->currentLayer();
-    if (currentLayerIndex < 0)
-        return 0;
-    Layer *currentLayer = mapDocument->map()->layerAt(currentLayerIndex);
-    return dynamic_cast<TileLayer*>(currentLayer);
 }

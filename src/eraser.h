@@ -22,48 +22,30 @@
 #ifndef ERASER_H
 #define ERASER_H
 
-#include "abstracttool.h"
+#include "abstracttiletool.h"
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
-
-class BrushItem;
 
 /**
  * Implements a simple eraser tool.
  */
-class Eraser : public AbstractTool
+class Eraser : public AbstractTileTool
 {
     Q_OBJECT
 
 public:
     Eraser(QObject *parent = 0);
 
-    void enable(MapScene *scene);
-    void disable();
+    void tilePositionChanged(const QPoint &tilePos);
 
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
-private slots:
-    void updateBrushVisibility();
-
 private:
     void doErase();
-    void setBrushVisible(bool visible);
-    TileLayer *currentTileLayer() const;
 
-    MapScene *mMapScene;
-    BrushItem *mBrushItem;
-    int mTileX, mTileY;
     bool mErasing;
-    bool mBrushVisible;
 };
 
 } // namespace Internal

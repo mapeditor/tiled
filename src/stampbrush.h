@@ -22,15 +22,11 @@
 #ifndef STAMPBRUSH_H
 #define STAMPBRUSH_H
 
-#include "abstracttool.h"
+#include "abstracttiletool.h"
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
-class BrushItem;
 class MapDocument;
 
 /**
@@ -38,7 +34,7 @@ class MapDocument;
  * of tiles at the same time. The blocks can be captured from the map by
  * right-click dragging, or selected from the tileset view.
  */
-class StampBrush : public AbstractTool
+class StampBrush : public AbstractTileTool
 {
     Q_OBJECT
 
@@ -47,11 +43,9 @@ public:
     ~StampBrush();
 
     void enable(MapScene *scene);
-    void disable();
 
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void tilePositionChanged(const QPoint &tilePos);
+
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
@@ -67,9 +61,6 @@ public:
      */
     void setStamp(TileLayer *stamp);
 
-private slots:
-    void updateBrushVisibility();
-
 private:
     void beginPaint();
     void endPaint();
@@ -80,24 +71,12 @@ private:
     QRect capturedArea() const;
 
     void updatePosition();
-    void setBrushVisible(bool visible);
 
-    /**
-     * Updates the position in tiles. Paints while painting is active.
-     */
-    void setTilePos(int x, int y);
-
-    TileLayer *currentTileLayer() const;
-
-    MapScene *mMapScene;
     MapDocument *mMapDocument;
-    BrushItem *mBrushItem;
     TileLayer *mStamp;
-    bool mBrushVisible;
     bool mPainting;
     bool mCapturing;
     QPoint mCaptureStart;
-    int mTileX, mTileY;
     int mStampX, mStampY;
 };
 

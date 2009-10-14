@@ -34,72 +34,21 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 SelectionTool::SelectionTool(QObject *parent)
-    : AbstractTool(tr("Rectangular Select"),
-                   QIcon(QLatin1String(
-                           ":images/22x22/stock-tool-rect-select.png")),
-                   parent)
-    , mMapScene(0)
-    , mBrushItem(new BrushItem)
-    , mTileX(0), mTileY(0)
+    : AbstractTileTool(tr("Rectangular Select"),
+                       QIcon(QLatin1String(
+                               ":images/22x22/stock-tool-rect-select.png")),
+                       parent)
     , mSelectionMode(Replace)
     , mSelecting(false)
-    , mBrushVisible(false)
 {
-    mBrushItem->setVisible(false);
-    mBrushItem->setZValue(10000);
-    mBrushItem->setTileSize(1, 1);
 }
 
-void SelectionTool::enable(MapScene *scene)
+void SelectionTool::tilePositionChanged(const QPoint &)
 {
-    mMapScene = scene;
+    updatePosition();
 
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    connect(mapDocument, SIGNAL(layerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-    connect(mapDocument, SIGNAL(currentLayerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-
-    mBrushItem->setMapDocument(mapDocument);
-    mMapScene->addItem(mBrushItem);
-    updateBrushVisibility();
-}
-
-void SelectionTool::disable()
-{
-    mMapScene->removeItem(mBrushItem);
-    mBrushItem->setMapDocument(0);
-    mMapScene = 0;
-}
-
-void SelectionTool::enterEvent(QEvent *)
-{
-    setBrushVisible(true);
-}
-
-void SelectionTool::leaveEvent(QEvent *)
-{
-    setBrushVisible(false);
-}
-
-void SelectionTool::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
-    const Map *map = mMapScene->mapDocument()->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    const QPointF pos = mouseEvent->scenePos();
-    const int tileX = ((int) pos.x()) / tileWidth;
-    const int tileY = ((int) pos.y()) / tileHeight;
-
-    if (mTileX != tileX || mTileY != tileY) {
-        mTileX = tileX;
-        mTileY = tileY;
-        updatePosition();
-
-        if (mSelecting)
-            mBrushItem->setTileSize(selectedArea().size());
-    }
+    if (mSelecting)
+        brushItem()->setTileSize(selectedArea().size());
 }
 
 void SelectionTool::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -119,8 +68,8 @@ void SelectionTool::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
 
         mSelecting = true;
-        mSelectionStart = QPoint(mTileX, mTileY);
-        mBrushItem->setTileSize(1, 1);
+        mSelectionStart = tilePosition();
+        brushItem()->setTileSize(1, 1);
     }
 }
 
@@ -130,7 +79,7 @@ void SelectionTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         mouseEvent->accept();
         mSelecting = false;
 
-        const MapDocument *mapDocument = mMapScene->mapDocument();
+        const MapDocument *mapDocument = mapScene()->mapDocument();
         TileSelectionModel *selectionModel = mapDocument->selectionModel();
         const QRect selection = selectedArea();
 
@@ -149,19 +98,14 @@ void SelectionTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
         }
 
-        mBrushItem->setTileSize(1, 1);
+        brushItem()->setTileSize(1, 1);
         updatePosition();
     }
 }
 
-/* TODO: The methods below are copies of those in StampBrush. They should be in
- *       a baseclass.
- */
-
 QRect SelectionTool::selectedArea() const
 {
-    QRect selected = QRect(mSelectionStart,
-                           QPoint(mTileX, mTileY)).normalized();
+    QRect selected = QRect(mSelectionStart, tilePosition()).normalized();
     if (selected.width() == 0)
         selected.adjust(-1, 0, 1, 0);
     if (selected.height() == 0)
@@ -174,52 +118,15 @@ QRect SelectionTool::selectedArea() const
  */
 void SelectionTool::updatePosition()
 {
+    const QPoint tilePos = tilePosition();
     QPoint newPos;
 
     if (mSelecting) {
-        newPos = QPoint(qMin(mTileX, mSelectionStart.x()),
-                        qMin(mTileY, mSelectionStart.y()));
+        newPos = QPoint(qMin(tilePos.x(), mSelectionStart.x()),
+                        qMin(tilePos.y(), mSelectionStart.y()));
     } else {
-        newPos = QPoint(mTileX, mTileY);
+        newPos = tilePos;
     }
 
-    mBrushItem->setTilePos(newPos);
-}
-
-void SelectionTool::setBrushVisible(bool visible)
-{
-    if (mBrushVisible == visible)
-        return;
-
-    mBrushVisible = visible;
-    updateBrushVisibility();
-}
-
-void SelectionTool::updateBrushVisibility()
-{
-    // Show the tile brush only when a visible tile layer is selected
-    bool showBrush = false;
-    if (mBrushVisible) {
-        if (Layer *layer = currentTileLayer()) {
-            if (layer->isVisible())
-                showBrush = true;
-        }
-    }
-    mBrushItem->setVisible(showBrush);
-}
-
-/**
- * Returns the current tile layer, or 0 if no tile layer is current selected.
- */
-TileLayer *SelectionTool::currentTileLayer() const
-{
-    if (!mMapScene)
-        return 0;
-
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    const int currentLayerIndex = mapDocument->currentLayer();
-    if (currentLayerIndex < 0)
-        return 0;
-    Layer *currentLayer = mapDocument->map()->layerAt(currentLayerIndex);
-    return dynamic_cast<TileLayer*>(currentLayer);
+    brushItem()->setTilePos(newPos);
 }

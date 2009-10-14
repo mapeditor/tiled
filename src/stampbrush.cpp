@@ -34,89 +34,43 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 StampBrush::StampBrush(QObject *parent)
-    : AbstractTool(tr("Stamp Brush"),
-                   QIcon(QLatin1String(":images/22x22/stock-tool-clone.png")),
-                   parent)
-    , mMapScene(0)
+    : AbstractTileTool(tr("Stamp Brush"),
+                       QIcon(QLatin1String(
+                               ":images/22x22/stock-tool-clone.png")),
+                       parent)
     , mMapDocument(0)
-    , mBrushItem(new BrushItem)
     , mStamp(0)
-    , mBrushVisible(false)
     , mPainting(false)
     , mCapturing(false)
-    , mTileX(0), mTileY(0)
     , mStampX(0), mStampY(0)
 {
-    mBrushItem->setVisible(false);
-    mBrushItem->setZValue(10000);
-    mBrushItem->setTileSize(1, 1);
 }
 
 StampBrush::~StampBrush()
 {
-    delete mBrushItem;
     delete mStamp;
 }
 
 void StampBrush::enable(MapScene *scene)
 {
-    mMapScene = scene;
-    setMapDocument(scene->mapDocument());
-
-    connect(mMapDocument, SIGNAL(layerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-    connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-
-    mMapScene->addItem(mBrushItem);
-    updateBrushVisibility();
+    AbstractTileTool::enable(scene);
+    setMapDocument(mapScene()->mapDocument());
 }
 
-void StampBrush::disable()
+void StampBrush::tilePositionChanged(const QPoint &)
 {
-    // Remove the brush from the scene
-    mMapScene->removeItem(mBrushItem);
+    updatePosition();
 
-    // Make sure we no longer refer to the scene
-    mMapScene = 0;
-}
-
-void StampBrush::enterEvent(QEvent *)
-{
-    setBrushVisible(true);
-}
-
-void StampBrush::leaveEvent(QEvent *)
-{
-    setBrushVisible(false);
-}
-
-void StampBrush::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
-    const Map *map = mMapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    const QPointF pos = mouseEvent->scenePos();
-    const int tileX = ((int) pos.x()) / tileWidth;
-    const int tileY = ((int) pos.y()) / tileHeight;
-
-    if (mTileX != tileX || mTileY != tileY) {
-        mTileX = tileX;
-        mTileY = tileY;
-        updatePosition();
-
-        if (mPainting) {
-            doPaint();
-        } else if (mCapturing) {
-            mBrushItem->setTileSize(capturedArea().size());
-        }
+    if (mPainting) {
+        doPaint();
+    } else if (mCapturing) {
+        brushItem()->setTileSize(capturedArea().size());
     }
 }
 
 void StampBrush::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (mBrushItem->isVisible()) {
+    if (brushItem()->isVisible()) {
         if (mouseEvent->button() == Qt::LeftButton)
             beginPaint();
         else if (mouseEvent->button() == Qt::RightButton)
@@ -142,10 +96,10 @@ void StampBrush::setMapDocument(MapDocument *mapDocument)
         return;
 
     mMapDocument = mapDocument;
-    mBrushItem->setMapDocument(mMapDocument);
+    brushItem()->setMapDocument(mMapDocument);
 
     // Reset the brush, since it probably became invalid
-    mBrushItem->setTileSize(1, 1);
+    brushItem()->setTileSize(1, 1);
     setStamp(0);
 }
 
@@ -154,7 +108,7 @@ void StampBrush::setStamp(TileLayer *stamp)
     if (mStamp == stamp)
         return;
 
-    mBrushItem->setTileLayer(stamp);
+    brushItem()->setTileLayer(stamp);
     delete mStamp;
     mStamp = stamp;
 
@@ -180,11 +134,11 @@ void StampBrush::beginCapture()
     if (mPainting || mCapturing)
         return;
 
-    mCaptureStart = QPoint(mTileX, mTileY);
+    mCaptureStart = tilePosition();
     mCapturing = true;
 
     setStamp(0);
-    mBrushItem->setTileSize(1, 1);
+    brushItem()->setTileSize(1, 1);
 }
 
 void StampBrush::endCapture()
@@ -212,7 +166,7 @@ void StampBrush::endCapture()
 
 QRect StampBrush::capturedArea() const
 {
-    QRect captured = QRect(mCaptureStart, QPoint(mTileX, mTileY)).normalized();
+    QRect captured = QRect(mCaptureStart, tilePosition()).normalized();
     if (captured.width() == 0)
         captured.adjust(-1, 0, 1, 0);
     if (captured.height() == 0)
@@ -244,56 +198,19 @@ void StampBrush::doPaint()
  */
 void StampBrush::updatePosition()
 {
+    const QPoint tilePos = tilePosition();
     QPoint newPos;
 
     if (mCapturing) {
-        newPos = QPoint(qMin(mTileX, mCaptureStart.x()),
-                        qMin(mTileY, mCaptureStart.y()));
+        newPos = QPoint(qMin(tilePos.x(), mCaptureStart.x()),
+                        qMin(tilePos.y(), mCaptureStart.y()));
     } else if (mStamp) {
-        mStampX = mTileX - mStamp->width() / 2;
-        mStampY = mTileY - mStamp->height() / 2;
+        mStampX = tilePos.x() - mStamp->width() / 2;
+        mStampY = tilePos.y() - mStamp->height() / 2;
         newPos = QPoint(mStampX, mStampY);
     } else {
-        newPos = QPoint(mTileX, mTileY);
+        newPos = tilePos;
     }
 
-    mBrushItem->setTilePos(newPos);
-}
-
-void StampBrush::setBrushVisible(bool visible)
-{
-    if (mBrushVisible == visible)
-        return;
-
-    mBrushVisible = visible;
-    updateBrushVisibility();
-}
-
-void StampBrush::updateBrushVisibility()
-{
-    // Show the tile brush only when a visible tile layer is selected
-    bool showBrush = false;
-    if (mBrushVisible) {
-        if (Layer *layer = currentTileLayer()) {
-            if (layer->isVisible())
-                showBrush = true;
-        }
-    }
-    mBrushItem->setVisible(showBrush);
-}
-
-/**
- * Returns the current tile layer, or 0 if no tile layer is current selected.
- */
-TileLayer *StampBrush::currentTileLayer() const
-{
-    if (!mMapScene)
-        return 0;
-
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    const int currentLayerIndex = mapDocument->currentLayer();
-    if (currentLayerIndex < 0)
-        return 0;
-    Layer *currentLayer = mapDocument->map()->layerAt(currentLayerIndex);
-    return dynamic_cast<TileLayer*>(currentLayer);
+    brushItem()->setTilePos(newPos);
 }

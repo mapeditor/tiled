@@ -22,34 +22,22 @@
 #ifndef SELECTIONTOOL_H
 #define SELECTIONTOOL_H
 
-#include "abstracttool.h"
+#include "abstracttiletool.h"
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
-class BrushItem;
-
-class SelectionTool : public AbstractTool
+class SelectionTool : public AbstractTileTool
 {
     Q_OBJECT
 
 public:
     SelectionTool(QObject *parent = 0);
 
-    void enable(MapScene *scene);
-    void disable();
+    void tilePositionChanged(const QPoint &tilePos);
 
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
-
-private slots:
-    void updateBrushVisibility();
 
 private:
     enum SelectionMode {
@@ -62,16 +50,9 @@ private:
     QRect selectedArea() const;
     void updatePosition();
 
-    void setBrushVisible(bool visible);
-    TileLayer *currentTileLayer() const;
-
-    MapScene *mMapScene;
-    BrushItem *mBrushItem;
-    int mTileX, mTileY;
     QPoint mSelectionStart;
     SelectionMode mSelectionMode;
     bool mSelecting;
-    bool mBrushVisible;
 };
 
 } // namespace Internal
