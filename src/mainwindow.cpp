@@ -35,6 +35,7 @@
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "saveasimagedialog.h"
+#include "selectiontool.h"
 #include "stampbrush.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
@@ -240,6 +241,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
     toolManager->registerTool(new Eraser(this));
+    toolManager->registerTool(new SelectionTool(this));
 
     addToolBar(toolManager->toolBar());
 

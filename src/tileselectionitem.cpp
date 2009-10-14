@@ -25,7 +25,9 @@
 #include "mapdocument.h"
 #include "tileselectionmodel.h"
 
+#include <QApplication>
 #include <QPainter>
+#include <QPalette>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -55,10 +57,11 @@ void TileSelectionItem::paint(QPainter *painter,
     Q_UNUSED(widget);
 
     const QRegion selection = mMapDocument->selectionModel()->selection();
-    const QColor color(0, 0, 255, 128);
+    QColor highlight = QApplication::palette().highlight().color();
+    highlight.setAlpha(128);
 
     foreach (const QRect &r, selection.rects())
-        painter->fillRect(mMapDocument->toPixelCoordinates(r), color);
+        painter->fillRect(mMapDocument->toPixelCoordinates(r), highlight);
 }
 
 void TileSelectionItem::selectionChanged(const QRegion &newSelection,

@@ -59,9 +59,14 @@ void TileSelectionModel::addRect(const QRect &rect)
     setSelection(mSelection + rect);
 }
 
-void TileSelectionModel::substractRect(const QRect &rect)
+void TileSelectionModel::subtractRect(const QRect &rect)
 {
     setSelection(mSelection - rect);
+}
+
+void TileSelectionModel::intersectRect(const QRect &rect)
+{
+    setSelection(mSelection & rect);
 }
 
 void TileSelectionModel::xorRect(const QRect &rect)

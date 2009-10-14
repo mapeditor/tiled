@@ -50,7 +50,8 @@ public:
     void selectAll();
     void selectNone();
     void addRect(const QRect &rect);
-    void substractRect(const QRect &rect);
+    void subtractRect(const QRect &rect);
+    void intersectRect(const QRect &rect);
     void xorRect(const QRect &rect);
 
 signals:

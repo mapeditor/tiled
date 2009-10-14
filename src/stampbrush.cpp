@@ -109,8 +109,7 @@ void StampBrush::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (mPainting) {
             doPaint();
         } else if (mCapturing) {
-            const QRect captured = capturedArea();
-            mBrushItem->setTileSize(captured.width(), captured.height());
+            mBrushItem->setTileSize(capturedArea().size());
         }
     }
 }
@@ -249,7 +248,7 @@ void StampBrush::updatePosition()
 
     if (mCapturing) {
         newPos = QPoint(qMin(mTileX, mCaptureStart.x()),
-                         qMin(mTileY, mCaptureStart.y()));
+                        qMin(mTileY, mCaptureStart.y()));
     } else if (mStamp) {
         mStampX = mTileX - mStamp->width() / 2;
         mStampY = mTileY - mStamp->height() / 2;

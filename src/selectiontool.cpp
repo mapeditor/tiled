@@ -19,28 +19,30 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "eraser.h"
+#include "selectiontool.h"
 
 #include "brushitem.h"
-#include "erasetile.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "tilelayer.h"
+#include "tileselectionmodel.h"
 
 #include <QGraphicsSceneMouseEvent>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-Eraser::Eraser(QObject *parent)
-    : AbstractTool(QObject::tr("Eraser"),
-                   QIcon(QLatin1String(":images/22x22/stock-tool-eraser.png")),
+SelectionTool::SelectionTool(QObject *parent)
+    : AbstractTool(tr("Rectangular Select"),
+                   QIcon(QLatin1String(
+                           ":images/22x22/stock-tool-rect-select.png")),
                    parent)
     , mMapScene(0)
     , mBrushItem(new BrushItem)
     , mTileX(0), mTileY(0)
-    , mErasing(false)
+    , mSelectionMode(Replace)
+    , mSelecting(false)
     , mBrushVisible(false)
 {
     mBrushItem->setVisible(false);
@@ -48,7 +50,7 @@ Eraser::Eraser(QObject *parent)
     mBrushItem->setTileSize(1, 1);
 }
 
-void Eraser::enable(MapScene *scene)
+void SelectionTool::enable(MapScene *scene)
 {
     mMapScene = scene;
 
@@ -63,24 +65,24 @@ void Eraser::enable(MapScene *scene)
     updateBrushVisibility();
 }
 
-void Eraser::disable()
+void SelectionTool::disable()
 {
     mMapScene->removeItem(mBrushItem);
     mBrushItem->setMapDocument(0);
     mMapScene = 0;
 }
 
-void Eraser::enterEvent(QEvent *)
+void SelectionTool::enterEvent(QEvent *)
 {
     setBrushVisible(true);
 }
 
-void Eraser::leaveEvent(QEvent *)
+void SelectionTool::leaveEvent(QEvent *)
 {
     setBrushVisible(false);
 }
 
-void Eraser::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void SelectionTool::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     const Map *map = mMapScene->mapDocument()->map();
     const int tileWidth = map->tileWidth();
@@ -93,48 +95,98 @@ void Eraser::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mTileX != tileX || mTileY != tileY) {
         mTileX = tileX;
         mTileY = tileY;
-        mBrushItem->setTilePos(mTileX, mTileY);
+        updatePosition();
 
-        if (mErasing)
-            doErase();
+        if (mSelecting)
+            mBrushItem->setTileSize(selectedArea().size());
     }
 }
 
-void Eraser::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void SelectionTool::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton) {
-        mouseEvent->setAccepted(true);
-        mErasing = true;
-        doErase();
+        mouseEvent->accept();
+
+        const Qt::KeyboardModifiers modifiers = mouseEvent->modifiers();
+        if (modifiers == Qt::ControlModifier) {
+            mSelectionMode = Subtract;
+        } else if (modifiers == Qt::ShiftModifier) {
+            mSelectionMode = Add;
+        } else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier)) {
+            mSelectionMode = Intersect;
+        } else {
+            mSelectionMode = Replace;
+        }
+
+        mSelecting = true;
+        mSelectionStart = QPoint(mTileX, mTileY);
+        mBrushItem->setTileSize(1, 1);
     }
 }
 
-void Eraser::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void SelectionTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton) {
-        mouseEvent->setAccepted(true);
-        mErasing = false;
+        mouseEvent->accept();
+        mSelecting = false;
+
+        const MapDocument *mapDocument = mMapScene->mapDocument();
+        TileSelectionModel *selectionModel = mapDocument->selectionModel();
+        const QRect selection = selectedArea();
+
+        switch (mSelectionMode) {
+        case Replace:
+            selectionModel->setSelection(selection);
+            break;
+        case Add:
+            selectionModel->addRect(selection);
+            break;
+        case Subtract:
+            selectionModel->subtractRect(selection);
+            break;
+        case Intersect:
+            selectionModel->intersectRect(selection);
+            break;
+        }
+
+        mBrushItem->setTileSize(1, 1);
+        updatePosition();
     }
-}
-
-void Eraser::doErase()
-{
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    TileLayer *tileLayer = currentTileLayer();
-
-    if (!tileLayer->bounds().contains(mTileX, mTileY))
-        return;
-
-    QUndoCommand *erase = new EraseTile(mapDocument, tileLayer,
-                                        mTileX, mTileY);
-    mapDocument->undoStack()->push(erase);
 }
 
 /* TODO: The methods below are copies of those in StampBrush. They should be in
  *       a baseclass.
  */
 
-void Eraser::setBrushVisible(bool visible)
+QRect SelectionTool::selectedArea() const
+{
+    QRect selected = QRect(mSelectionStart,
+                           QPoint(mTileX, mTileY)).normalized();
+    if (selected.width() == 0)
+        selected.adjust(-1, 0, 1, 0);
+    if (selected.height() == 0)
+        selected.adjust(0, -1, 0, 1);
+    return selected;
+}
+
+/**
+ * Updates the position of the brush item.
+ */
+void SelectionTool::updatePosition()
+{
+    QPoint newPos;
+
+    if (mSelecting) {
+        newPos = QPoint(qMin(mTileX, mSelectionStart.x()),
+                        qMin(mTileY, mSelectionStart.y()));
+    } else {
+        newPos = QPoint(mTileX, mTileY);
+    }
+
+    mBrushItem->setTilePos(newPos);
+}
+
+void SelectionTool::setBrushVisible(bool visible)
 {
     if (mBrushVisible == visible)
         return;
@@ -143,7 +195,7 @@ void Eraser::setBrushVisible(bool visible)
     updateBrushVisibility();
 }
 
-void Eraser::updateBrushVisibility()
+void SelectionTool::updateBrushVisibility()
 {
     // Show the tile brush only when a visible tile layer is selected
     bool showBrush = false;
@@ -159,7 +211,7 @@ void Eraser::updateBrushVisibility()
 /**
  * Returns the current tile layer, or 0 if no tile layer is current selected.
  */
-TileLayer *Eraser::currentTileLayer() const
+TileLayer *SelectionTool::currentTileLayer() const
 {
     if (!mMapScene)
         return 0;

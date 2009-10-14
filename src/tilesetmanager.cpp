@@ -52,7 +52,7 @@ void TilesetManager::deleteInstance()
     mInstance = 0;
 }
 
-Tileset *TilesetManager::findTileset(const QString &fileName)
+Tileset *TilesetManager::findTileset(const QString &fileName) const
 {
     foreach (Tileset *tileset, tilesets())
         if (tileset->fileName() == fileName)
@@ -61,7 +61,7 @@ Tileset *TilesetManager::findTileset(const QString &fileName)
     return 0;
 }
 
-Tileset *TilesetManager::findTileset(const TilesetSpec &spec)
+Tileset *TilesetManager::findTileset(const TilesetSpec &spec) const
 {
     foreach (Tileset *tileset, tilesets()) {
         if (tileset->imageSource() == spec.imageSource

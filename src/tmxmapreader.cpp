@@ -624,7 +624,7 @@ void TmxReader::readProperty(QMap<QString, QString> *properties)
         }
     }
 
-    (*properties).insert(propertyName, propertyValue);
+    properties->insert(propertyName, propertyValue);
 }
 
 QString TmxReader::makeAbsolute(const QString &path)

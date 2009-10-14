@@ -68,13 +68,13 @@ public:
      * Searches for a tileset matching the given file name.
      * @return a tileset matching the given file name, or 0 if none exists
      */
-    Tileset *findTileset(const QString &fileName);
+    Tileset *findTileset(const QString &fileName) const;
 
     /**
      * Searches for a tileset matching the given specification.
      * @return a tileset matching the given specification, or 0 if none exists
      */
-    Tileset *findTileset(const TilesetSpec &spec);
+    Tileset *findTileset(const TilesetSpec &spec) const;
 
     /**
      * Adds a tileset reference. This will make sure the tileset doesn't get

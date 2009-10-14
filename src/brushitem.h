@@ -70,6 +70,9 @@ public:
      */
     void setTileSize(int width, int height);
 
+    void setTileSize(const QSize &size)
+    { setTileSize(size.width(), size.height()); }
+
     // QGraphicsItem
     QRectF boundingRect() const;
     void paint(QPainter *painter,
