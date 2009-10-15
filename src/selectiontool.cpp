@@ -41,6 +41,8 @@ SelectionTool::SelectionTool(QObject *parent)
     , mSelectionMode(Replace)
     , mSelecting(false)
 {
+    setTilePositionMethod(BetweenTiles);
+    brushItem()->setTileSize(0, 0);
 }
 
 void SelectionTool::tilePositionChanged(const QPoint &)
@@ -69,7 +71,7 @@ void SelectionTool::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         mSelecting = true;
         mSelectionStart = tilePosition();
-        brushItem()->setTileSize(1, 1);
+        brushItem()->setTileSize(0, 0);
     }
 }
 
@@ -98,19 +100,20 @@ void SelectionTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
         }
 
-        brushItem()->setTileSize(1, 1);
+        brushItem()->setTileSize(0, 0);
         updatePosition();
     }
 }
 
 QRect SelectionTool::selectedArea() const
 {
-    QRect selected = QRect(mSelectionStart, tilePosition()).normalized();
-    if (selected.width() == 0)
-        selected.adjust(-1, 0, 1, 0);
-    if (selected.height() == 0)
-        selected.adjust(0, -1, 0, 1);
-    return selected;
+    const QPoint tilePos = tilePosition();
+    const QPoint pos(qMin(tilePos.x(), mSelectionStart.x()),
+                     qMin(tilePos.y(), mSelectionStart.y()));
+    const QSize size(qAbs(tilePos.x() - mSelectionStart.x()),
+                     qAbs(tilePos.y() - mSelectionStart.y()));
+
+    return QRect(pos, size);
 }
 
 /**

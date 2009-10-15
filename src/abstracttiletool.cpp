@@ -35,6 +35,7 @@ using namespace Tiled::Internal;
 AbstractTileTool::AbstractTileTool(const QString &name, const QIcon &icon,
                                    QObject *parent)
     : AbstractTool(name, icon, parent)
+    , mTilePositionMethod(OnTiles)
     , mMapScene(0)
     , mBrushItem(new BrushItem)
     , mTileX(0), mTileY(0)
@@ -91,7 +92,10 @@ void AbstractTileTool::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 
-    const QPointF pos = mouseEvent->scenePos();
+    QPointF pos = mouseEvent->scenePos();
+    if (mTilePositionMethod == BetweenTiles)
+        pos += QPointF(tileWidth / 2, tileHeight / 2);
+
     const int tileX = ((int) pos.x()) / tileWidth;
     const int tileY = ((int) pos.y()) / tileHeight;
 

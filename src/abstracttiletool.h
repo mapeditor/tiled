@@ -63,6 +63,17 @@ public:
 
 protected:
     /**
+     * Determines what the tile position means.
+     */
+    enum TilePositionMethod {
+        OnTiles,       /**< Tile position is the tile the mouse is on. */
+        BetweenTiles   /**< Tile position is between the tiles. */
+    };
+
+    void setTilePositionMethod(TilePositionMethod method)
+    { mTilePositionMethod = method; }
+
+    /**
      * Returns the last recorded tile position of the mouse.
      */
     QPoint tilePosition() const { return QPoint(mTileX, mTileY); }
@@ -89,6 +100,7 @@ private slots:
 private:
     void setBrushVisible(bool visible);
 
+    TilePositionMethod mTilePositionMethod;
     MapScene *mMapScene;
     BrushItem *mBrushItem;
     int mTileX, mTileY;
