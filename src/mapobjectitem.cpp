@@ -32,6 +32,7 @@
 #include "objectpropertiesdialog.h"
 #include "resizemapobject.h"
 
+#include <QApplication>
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
@@ -129,7 +130,7 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
         QPoint newPos = value.toPoint();
         newPos.setX(qMax(newPos.x(), 0));
         newPos.setY(qMax(newPos.y(), 0));
-        if (scene() && static_cast<MapScene*>(scene())->isGridVisible()) {
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
             MapDocument *document = mMapObjectItem->mapDocument();
             newPos = document->snapToTileGrid(newPos);
         }
@@ -316,8 +317,8 @@ void MapObjectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 QVariant MapObjectItem::itemChange(GraphicsItemChange change,
                                    const QVariant &value)
 {
-    if (change == ItemPositionChange && scene()
-        && static_cast<MapScene*>(scene())->isGridVisible())
+    if (change == ItemPositionChange
+        && (QApplication::keyboardModifiers() & Qt::ControlModifier))
     {
         // Snap the position to the grid
         return mapDocument()->snapToTileGrid(value.toPoint());
