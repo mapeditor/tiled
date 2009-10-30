@@ -88,6 +88,15 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
     if (mSelectedTool == tool)
         return;
 
+    if (mSelectedTool)
+        mSelectedTool->disconnect(this);
+
     mSelectedTool = tool;
     emit selectedToolChanged(mSelectedTool);
+
+    if (mSelectedTool) {
+        emit statusInfoChanged(mSelectedTool->statusInfo());
+        connect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
+                this, SIGNAL(statusInfoChanged(QString)));
+    }
 }

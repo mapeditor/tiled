@@ -104,6 +104,17 @@ void AbstractTileTool::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         mTileY = tileY;
 
         tilePositionChanged(QPoint(mTileX, mTileY));
+        updateStatusInfo();
+    }
+}
+
+void AbstractTileTool::updateStatusInfo()
+{
+    if (mBrushVisible) {
+        setStatusInfo(QString(QLatin1String("%1, %2"))
+                      .arg(mTileX).arg(mTileY));
+    } else {
+        setStatusInfo(QString());
     }
 }
 
@@ -113,6 +124,7 @@ void AbstractTileTool::setBrushVisible(bool visible)
         return;
 
     mBrushVisible = visible;
+    updateStatusInfo();
     updateBrushVisibility();
 }
 

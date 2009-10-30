@@ -63,6 +63,18 @@ public:
 
 protected:
     /**
+     * Updates the status info with the current tile position. When the mouse
+     * is not in the view, the status info is set to an empty string.
+     *
+     * This behaviour can be overridden in a subclass. This method is
+     * automatically called after each call to tilePositionChanged() and when
+     * the brush visibility changes.
+     */
+    virtual void updateStatusInfo();
+
+    bool isBrushVisible() const { return mBrushVisible; }
+
+    /**
      * Determines what the tile position means.
      */
     enum TilePositionMethod {

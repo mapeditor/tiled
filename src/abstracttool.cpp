@@ -19,46 +19,18 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef SELECTIONTOOL_H
-#define SELECTIONTOOL_H
+#include "abstracttool.h"
 
-#include "abstracttiletool.h"
+using namespace Tiled::Internal;
 
-namespace Tiled {
-namespace Internal {
-
-class SelectionTool : public AbstractTileTool
+/**
+ * Sets the current status information for this tool. This information will be
+ * displayed in the status bar.
+ */
+void AbstractTool::setStatusInfo(const QString &statusInfo)
 {
-    Q_OBJECT
-
-public:
-    SelectionTool(QObject *parent = 0);
-
-    void tilePositionChanged(const QPoint &tilePos);
-
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
-
-protected:
-    void updateStatusInfo();
-
-private:
-    enum SelectionMode {
-        Replace,
-        Add,
-        Subtract,
-        Intersect
-    };
-
-    QRect selectedArea() const;
-    void updatePosition();
-
-    QPoint mSelectionStart;
-    SelectionMode mSelectionMode;
-    bool mSelecting;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-#endif // SELECTIONTOOL_H
+    if (mStatusInfo != statusInfo) {
+        mStatusInfo = statusInfo;
+        emit statusInfoChanged(mStatusInfo);
+    }
+}

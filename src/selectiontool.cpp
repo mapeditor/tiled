@@ -53,6 +53,20 @@ void SelectionTool::tilePositionChanged(const QPoint &)
         brushItem()->setTileSize(selectedArea().size());
 }
 
+void SelectionTool::updateStatusInfo()
+{
+    if (!isBrushVisible() || !mSelecting) {
+        AbstractTileTool::updateStatusInfo();
+        return;
+    }
+
+    const QPoint pos = tilePosition();
+    const QRect area = selectedArea();
+    setStatusInfo(tr("%1, %2 - Rectangle: (%3 x %4)")
+                  .arg(pos.x()).arg(pos.y())
+                  .arg(area.width()).arg(area.height()));
+}
+
 void SelectionTool::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton) {
@@ -102,6 +116,7 @@ void SelectionTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         brushItem()->setTileSize(0, 0);
         updatePosition();
+        updateStatusInfo();
     }
 }
 

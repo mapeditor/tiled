@@ -80,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mLayerDock(new LayerDock(this))
     , mTilesetDock(new TilesetDock(this))
     , mZoomLabel(new QLabel)
+    , mStatusInfoLabel(new QLabel)
 {
     mUi->setupUi(this);
 
@@ -244,6 +245,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(new SelectionTool(this));
 
     addToolBar(toolManager->toolBar());
+
+    statusBar()->addWidget(mStatusInfoLabel);
+    connect(toolManager, SIGNAL(statusInfoChanged(QString)),
+            this, SLOT(updateStatusInfoLabel(QString)));
 
     mUi->menuView->addSeparator();
     mUi->menuView->addAction(mTilesetDock->toggleViewAction());
@@ -683,6 +688,11 @@ void MainWindow::setStampBrush(const TileLayer *tiles)
 {
     if (tiles)
         mStampBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
+}
+
+void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
+{
+    mStatusInfoLabel->setText(statusInfo);
 }
 
 void MainWindow::writeSettings()

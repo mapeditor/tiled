@@ -87,6 +87,7 @@ private slots:
     bool saveFileAs();
     void saveAsImage();
     void closeFile();
+
     void newTileset();
     void resizeMap();
     void editMapProperties();
@@ -108,6 +109,7 @@ private slots:
     void editLayerProperties();
 
     void setStampBrush(const TileLayer *tiles);
+    void updateStatusInfoLabel(const QString &statusInfo);
 
 private:
     /**
@@ -151,6 +153,7 @@ private:
     LayerDock *mLayerDock;
     TilesetDock *mTilesetDock;
     QLabel *mZoomLabel;
+    QLabel *mStatusInfoLabel;
     QSettings mSettings;
     QString mCurrentFileName;
     QUndoGroup *mUndoGroup;

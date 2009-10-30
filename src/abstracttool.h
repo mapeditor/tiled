@@ -63,6 +63,9 @@ public:
     QString name() const { return mName; }
     QIcon icon() const { return mIcon; }
 
+    QString statusInfo() const { return mStatusInfo; }
+    void setStatusInfo(const QString &statusInfo);
+
     /**
      * Enables this tool. If the tool plans to add any items to the scene, it
      * probably wants to do it here.
@@ -81,9 +84,13 @@ public:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) = 0;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) = 0;
 
+signals:
+    void statusInfoChanged(const QString &statusInfo);
+
 private:
     QString mName;
     QIcon mIcon;
+    QString mStatusInfo;
 };
 
 } // namespace Internal

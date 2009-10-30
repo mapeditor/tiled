@@ -63,7 +63,8 @@ SOURCES += aboutdialog.cpp \
     colorbutton.cpp \
     undodock.cpp \
     selectiontool.cpp \
-    abstracttiletool.cpp
+    abstracttiletool.cpp \
+    abstracttool.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \

@@ -60,6 +60,12 @@ public:
 signals:
     void selectedToolChanged(AbstractTool *tool);
 
+    /**
+     * Emitted when the status information of the current tool changed.
+     * @see AbstractTool::setStatusInfo()
+     */
+    void statusInfoChanged(const QString &info);
+
 private slots:
     void actionTriggered(QAction *action);
 
