@@ -24,10 +24,22 @@
 #ifndef TMXMAPWRITER_H
 #define TMXMAPWRITER_H
 
+#include <QDir>
+#include <QMap>
 #include <QObject>
 #include <QString>
 
+class QXmlStreamWriter;
+
 namespace Tiled {
+
+class Layer;
+class MapObject;
+class ObjectGroup;
+class Tile;
+class TileLayer;
+class Tileset;
+
 namespace Internal {
 
 /**
@@ -43,7 +55,20 @@ public:
     QString errorString() const { return mError; }
 
 private:
+    void writeMap(QXmlStreamWriter &w, const Map *map);
+    void writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
+                      int firstGid);
+    void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer);
+    void writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer);
+    int gidForTile(const Tile *tile) const;
+    void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup *objectGroup);
+    void writeObject(QXmlStreamWriter &w, const MapObject *mapObject);
+    void writeProperties(QXmlStreamWriter &w,
+                         const QMap<QString, QString> &properties);
+
     QString mError;
+    QDir mMapDir;     // The directory in which the map is being saved
+    QMap<int, const Tileset*> mFirstGidToTileset;
 };
 
 } // namespace Internal
