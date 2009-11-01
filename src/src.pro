@@ -64,7 +64,8 @@ SOURCES += aboutdialog.cpp \
     undodock.cpp \
     selectiontool.cpp \
     abstracttiletool.cpp \
-    abstracttool.cpp
+    abstracttool.cpp \
+    changeselection.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -125,7 +126,8 @@ HEADERS += aboutdialog.h \
     colorbutton.h \
     undodock.h \
     selectiontool.h \
-    abstracttiletool.h
+    abstracttiletool.h \
+    changeselection.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

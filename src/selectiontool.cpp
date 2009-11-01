@@ -22,6 +22,7 @@
 #include "selectiontool.h"
 
 #include "brushitem.h"
+#include "changeselection.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -95,24 +96,20 @@ void SelectionTool::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         mouseEvent->accept();
         mSelecting = false;
 
-        const MapDocument *mapDocument = mapScene()->mapDocument();
+        MapDocument *mapDocument = mapScene()->mapDocument();
         TileSelectionModel *selectionModel = mapDocument->selectionModel();
-        const QRect selection = selectedArea();
+        QRegion selection = selectionModel->selection();
+        const QRect area = selectedArea();
 
         switch (mSelectionMode) {
-        case Replace:
-            selectionModel->setSelection(selection);
-            break;
-        case Add:
-            selectionModel->addRect(selection);
-            break;
-        case Subtract:
-            selectionModel->subtractRect(selection);
-            break;
-        case Intersect:
-            selectionModel->intersectRect(selection);
-            break;
+        case Replace:   selection = area; break;
+        case Add:       selection += area; break;
+        case Subtract:  selection -= area; break;
+        case Intersect: selection &= area; break;
         }
+
+        QUndoCommand *command = new ChangeSelection(mapDocument, selection);
+        mapDocument->undoStack()->push(command);
 
         brushItem()->setTileSize(0, 0);
         updatePosition();

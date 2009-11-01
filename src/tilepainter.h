@@ -22,7 +22,7 @@
 #ifndef TILEPAINTER_H
 #define TILEPAINTER_H
 
-#include <QRect>
+#include <QRegion>
 
 namespace Tiled {
 
@@ -36,7 +36,10 @@ class MapDocument;
 /**
  * The tile painter is meant for painting tiles on a tile layer. It makes sure
  * that each paint operation sends out the proper events, so that views can
- * redraw the changed parts. It also does bounds checking.
+ * redraw the changed parts.
+ *
+ * This class also does bounds checking and when there is a tile selection, it
+ * will only draw within this selection.
  */
 class TilePainter
 {
@@ -79,7 +82,7 @@ public:
     // TODO: Add more operations (fill, copy)
 
 private:
-    QRect intersectionWithLayer(int x, int y, int width, int height) const;
+    QRegion paintableRegion(int x, int y, int width, int height) const;
 
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;

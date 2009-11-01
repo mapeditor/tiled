@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -19,26 +19,36 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "changeselection.h"
+
+#include "mapdocument.h"
 #include "tileselectionmodel.h"
 
-#include "map.h"
-#include "mapdocument.h"
-
-using namespace Tiled;
 using namespace Tiled::Internal;
 
-TileSelectionModel::TileSelectionModel(MapDocument *mapDocument,
-                                       QObject *parent)
-    : QObject(parent)
+ChangeSelection::ChangeSelection(MapDocument *mapDocument,
+                                 const QRegion &newSelection)
+    : QUndoCommand(QObject::tr("Change Selection"))
     , mMapDocument(mapDocument)
+    , mSelection(newSelection)
 {
 }
 
-void TileSelectionModel::setSelection(const QRegion &selection)
+void ChangeSelection::undo()
 {
-    if (selection != mSelection) {
-        const QRegion oldSelection = mSelection;
-        mSelection = selection;
-        emit selectionChanged(mSelection, oldSelection);
-    }
+    swapSelection();
+}
+
+void ChangeSelection::redo()
+{
+    swapSelection();
+}
+
+void ChangeSelection::swapSelection()
+{
+    TileSelectionModel *selectionModel = mMapDocument->selectionModel();
+
+    const QRegion oldSelection = selectionModel->selection();
+    selectionModel->setSelection(mSelection);
+    mSelection = oldSelection;
 }

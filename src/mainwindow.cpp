@@ -23,6 +23,7 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
+#include "changeselection.h"
 #include "eraser.h"
 #include "layer.h"
 #include "layerdock.h"
@@ -595,14 +596,22 @@ void MainWindow::updateZoomLabel(qreal scale)
 
 void MainWindow::selectAll()
 {
-    if (mMapDocument)
-        mMapDocument->selectionModel()->selectAll();
+    if (!mMapDocument)
+        return;
+
+    Map *map = mMapDocument->map();
+    QRect all(0, 0, map->width(), map->height());
+    QUndoCommand *command = new ChangeSelection(mMapDocument, all);
+    mMapDocument->undoStack()->push(command);
 }
 
 void MainWindow::selectNone()
 {
-    if (mMapDocument)
-        mMapDocument->selectionModel()->selectNone();
+    if (!mMapDocument)
+        return;
+
+    QUndoCommand *command = new ChangeSelection(mMapDocument, QRegion());
+    mMapDocument->undoStack()->push(command);
 }
 
 /**
