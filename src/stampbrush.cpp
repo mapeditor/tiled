@@ -55,6 +55,7 @@ void StampBrush::enable(MapScene *scene)
 {
     AbstractTileTool::enable(scene);
     setMapDocument(mapScene()->mapDocument());
+    brushItem()->setTileLayer(mStamp);
 }
 
 void StampBrush::tilePositionChanged(const QPoint &)
