@@ -37,6 +37,7 @@ StampBrush::StampBrush(QObject *parent)
     : AbstractTileTool(tr("Stamp Brush"),
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-clone.png")),
+                       QKeySequence(tr("B")),
                        parent)
     , mMapDocument(0)
     , mStamp(0)

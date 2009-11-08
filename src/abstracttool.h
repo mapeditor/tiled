@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QIcon>
+#include <QKeySequence>
 #include <QMetaType>
 #include <QString>
 
@@ -52,16 +53,21 @@ public:
     /**
      * Constructs an abstract tool with the given \a name and \a icon.
      */
-    AbstractTool(const QString &name, const QIcon &icon, QObject *parent = 0)
+    AbstractTool(const QString &name,
+                 const QIcon &icon,
+                 const QKeySequence &shortcut,
+                 QObject *parent = 0)
         : QObject(parent)
         , mName(name)
         , mIcon(icon)
+        , mShortcut(shortcut)
     {}
 
     virtual ~AbstractTool() {}
 
     QString name() const { return mName; }
     QIcon icon() const { return mIcon; }
+    QKeySequence shortcut() const { return mShortcut; }
 
     QString statusInfo() const { return mStatusInfo; }
     void setStatusInfo(const QString &statusInfo);
@@ -90,6 +96,7 @@ signals:
 private:
     QString mName;
     QIcon mIcon;
+    QKeySequence mShortcut;
     QString mStatusInfo;
 };
 

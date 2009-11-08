@@ -38,6 +38,7 @@ SelectionTool::SelectionTool(QObject *parent)
     : AbstractTileTool(tr("Rectangular Select"),
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-rect-select.png")),
+                       QKeySequence(tr("R")),
                        parent)
     , mSelectionMode(Replace)
     , mSelecting(false)

@@ -43,7 +43,16 @@ class ToolManager : public QObject
     Q_OBJECT
 
 public:
+    /**
+     * Returns the tool manager instance. Creates the instance when it doesn't
+     * exist yet.
+     */
     static ToolManager *instance();
+
+    /**
+     * Deletes the tool manager instance. Should only be called on application
+     * exit.
+     */
     static void deleteInstance();
 
     /**
