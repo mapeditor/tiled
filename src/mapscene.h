@@ -132,6 +132,8 @@ private:
     MapObjectItem *mNewMapObjectItem;
     AbstractTool *mActiveTool;
     bool mGridVisible;
+    bool mUnderMouse;
+    QPointF mLastMousePos;
     QVector<QGraphicsItem*> mLayerItems;
 
     typedef QMap<MapObject*, MapObjectItem*> ObjectItems;

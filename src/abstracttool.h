@@ -84,11 +84,35 @@ public:
      */
     virtual void disable() = 0;
 
-    virtual void enterEvent(QEvent *event) = 0;
-    virtual void leaveEvent(QEvent *event) = 0;
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) = 0;
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) = 0;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) = 0;
+    /**
+     * Called when the mouse entered the scene. This is usually an appropriate
+     * time to make a hover item visible.
+     */
+    virtual void mouseEntered() = 0;
+
+    /**
+     * Called when the mouse left the scene.
+     */
+    virtual void mouseLeft() = 0;
+
+    /**
+     * Called when the mouse cursor moves in the scene.
+     */
+    virtual void mouseMoved(const QPointF &pos,
+                            Qt::KeyboardModifiers modifiers) = 0;
+
+    /**
+     * Called when a mouse button is pressed on the scene.
+     */
+    virtual void mousePressed(const QPointF &pos,
+                              Qt::MouseButton button,
+                              Qt::KeyboardModifiers modifiers) = 0;
+
+    /**
+     * Called when a mouse button is released on the scene.
+     */
+    virtual void mouseReleased(const QPointF &pos,
+                               Qt::MouseButton button) = 0;
 
 signals:
     void statusInfoChanged(const QString &statusInfo);

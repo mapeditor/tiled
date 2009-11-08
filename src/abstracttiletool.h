@@ -53,9 +53,9 @@ public:
     void enable(MapScene *scene);
     void disable();
 
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseEntered();
+    void mouseLeft();
+    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
 
     /**
      * New virtual method to implement for tile tools. This method is called

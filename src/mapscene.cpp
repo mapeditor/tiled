@@ -48,7 +48,8 @@ MapScene::MapScene(QObject *parent):
     mSelectedObjectGroupItem(0),
     mNewMapObjectItem(0),
     mActiveTool(0),
-    mGridVisible(true)
+    mGridVisible(true),
+    mUnderMouse(false)
 {
     setBackgroundBrush(Qt::darkGray);
 
@@ -99,13 +100,21 @@ void MapScene::setActiveTool(AbstractTool *tool)
     if (mActiveTool == tool)
         return;
 
-    if (mMapDocument && mActiveTool)
+    if (mMapDocument && mActiveTool) {
+        if (mUnderMouse)
+            mActiveTool->mouseLeft();
         mActiveTool->disable();
+    }
 
     mActiveTool = tool;
 
-    if (mMapDocument && mActiveTool)
+    if (mMapDocument && mActiveTool) {
         mActiveTool->enable(this);
+        if (mUnderMouse) {
+            mActiveTool->mouseEntered();
+            mActiveTool->mouseMoved(mLastMousePos, Qt::KeyboardModifiers());
+        }
+    }
 }
 
 void MapScene::refreshScene()
@@ -372,12 +381,14 @@ bool MapScene::event(QEvent *event)
     // Show and hide the brush cursor as the mouse enters and leaves the scene
     switch (event->type()) {
     case QEvent::Enter:
+        mUnderMouse = true;
         if (mActiveTool)
-            mActiveTool->enterEvent(event);
+            mActiveTool->mouseEntered();
         break;
     case QEvent::Leave:
+        mUnderMouse = false;
         if (mActiveTool)
-            mActiveTool->leaveEvent(event);
+            mActiveTool->mouseLeft();
         break;
     default:
         break;
@@ -388,6 +399,8 @@ bool MapScene::event(QEvent *event)
 
 void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    mLastMousePos = mouseEvent->scenePos();
+
     if (!mMapDocument)
         return;
 
@@ -408,7 +421,9 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         mNewMapObjectItem->resize(QSize(newSize.x(), newSize.y()));
         mouseEvent->accept();
     } else if (mActiveTool) {
-        mActiveTool->mouseMoveEvent(mouseEvent);
+        mActiveTool->mouseMoved(mouseEvent->scenePos(),
+                                mouseEvent->modifiers());
+        mouseEvent->accept();
     }
 }
 
@@ -434,7 +449,9 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         startNewMapObject(mouseEvent->scenePos());
         mouseEvent->accept();
     } else if (mActiveTool) {
-        mActiveTool->mousePressEvent(mouseEvent);
+        mActiveTool->mousePressed(mouseEvent->scenePos(), mouseEvent->button(),
+                                  mouseEvent->modifiers());
+        mouseEvent->accept();
     }
 }
 
@@ -448,7 +465,8 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         finishNewMapObject();
         mouseEvent->accept();
     } else if (mActiveTool) {
-        mActiveTool->mouseReleaseEvent(mouseEvent);
+        mActiveTool->mouseReleased(mouseEvent->scenePos(), mouseEvent->button());
+        mouseEvent->accept();
     }
 }
 

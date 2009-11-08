@@ -39,8 +39,9 @@ public:
 
     void tilePositionChanged(const QPoint &tilePos);
 
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mousePressed(const QPointF &pos, Qt::MouseButton button,
+                      Qt::KeyboardModifiers modifiers);
+    void mouseReleased(const QPointF &pos, Qt::MouseButton button);
 
 private:
     void doErase();

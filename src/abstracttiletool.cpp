@@ -78,28 +78,28 @@ void AbstractTileTool::disable()
     mMapScene = 0;
 }
 
-void AbstractTileTool::enterEvent(QEvent *)
+void AbstractTileTool::mouseEntered()
 {
     setBrushVisible(true);
 }
 
-void AbstractTileTool::leaveEvent(QEvent *)
+void AbstractTileTool::mouseLeft()
 {
     setBrushVisible(false);
 }
 
-void AbstractTileTool::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
     const Map *map = mMapScene->mapDocument()->map();
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 
-    QPointF pos = mouseEvent->scenePos();
+    QPointF position = pos;
     if (mTilePositionMethod == BetweenTiles)
-        pos += QPointF(tileWidth / 2, tileHeight / 2);
+        position += QPointF(tileWidth / 2, tileHeight / 2);
 
-    const int tileX = ((int) pos.x()) / tileWidth;
-    const int tileY = ((int) pos.y()) / tileHeight;
+    const int tileX = ((int) position.x()) / tileWidth;
+    const int tileY = ((int) position.y()) / tileHeight;
 
     if (mTileX != tileX || mTileY != tileY) {
         mTileX = tileX;

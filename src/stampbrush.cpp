@@ -70,26 +70,23 @@ void StampBrush::tilePositionChanged(const QPoint &)
     }
 }
 
-void StampBrush::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void StampBrush::mousePressed(const QPointF &, Qt::MouseButton button,
+                              Qt::KeyboardModifiers)
 {
     if (brushItem()->isVisible()) {
-        if (mouseEvent->button() == Qt::LeftButton)
+        if (button == Qt::LeftButton)
             beginPaint();
-        else if (mouseEvent->button() == Qt::RightButton)
+        else if (button == Qt::RightButton)
             beginCapture();
-        mouseEvent->accept();
     }
 }
 
-void StampBrush::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void StampBrush::mouseReleased(const QPointF &, Qt::MouseButton button)
 {
-    if (mPainting && mouseEvent->button() == Qt::LeftButton) {
+    if (mPainting && button == Qt::LeftButton)
         endPaint();
-        mouseEvent->accept();
-    } else if (mCapturing && mouseEvent->button() == Qt::RightButton) {
+    else if (mCapturing && button == Qt::RightButton)
         endCapture();
-        mouseEvent->accept();
-    }
 }
 
 void StampBrush::setMapDocument(MapDocument *mapDocument)
