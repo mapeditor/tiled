@@ -107,15 +107,33 @@ void TilePainter::drawTiles(int x, int y, TileLayer *tiles)
     mMapDocument->emitRegionChanged(region);
 }
 
-QRegion TilePainter::paintableRegion(int x, int y,
-                                     int width, int height) const
+void TilePainter::erase(const QRegion &region)
 {
-    QRegion region =
-            mTileLayer->bounds().intersected(QRect(x, y, width, height));
+    const QRegion paintable = paintableRegion(region);
+    if (paintable.isEmpty())
+        return;
+
+    foreach (const QRect &rect, paintable.rects()) {
+        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
+            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+                mTileLayer->setTile(_x - mTileLayer->x(),
+                                    _y - mTileLayer->y(),
+                                    0);
+            }
+        }
+    }
+
+    mMapDocument->emitRegionChanged(paintable);
+}
+
+QRegion TilePainter::paintableRegion(const QRegion &region) const
+{
+    const QRegion bounds = QRegion(mTileLayer->bounds());
+    QRegion intersection = bounds.intersected(region);
 
     const QRegion selection = mMapDocument->selectionModel()->selection();
     if (!selection.isEmpty())
-        region &= selection;
+        intersection &= selection;
 
-    return region;
+    return intersection;
 }

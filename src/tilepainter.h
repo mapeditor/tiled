@@ -79,10 +79,17 @@ public:
      */
     void drawTiles(int x, int y, TileLayer *tiles);
 
+    /**
+     * Erases the tiles in the given region.
+     */
+    void erase(const QRegion &region);
+
     // TODO: Add more operations (fill, copy)
 
 private:
-    QRegion paintableRegion(int x, int y, int width, int height) const;
+    QRegion paintableRegion(const QRegion &region) const;
+    QRegion paintableRegion(int x, int y, int width, int height) const
+    { return paintableRegion(QRect(x, y, width, height)); }
 
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;

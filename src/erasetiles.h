@@ -19,9 +19,10 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef ERASETILE_H
-#define ERASETILE_H
+#ifndef ERASETILES_H
+#define ERASETILES_H
 
+#include <QRegion>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -33,12 +34,13 @@ namespace Internal {
 
 class MapDocument;
 
-class EraseTile : public QUndoCommand
+class EraseTiles : public QUndoCommand
 {
 public:
-    EraseTile(MapDocument *mapDocument,
-              TileLayer *tileLayer,
-              int x, int y);
+    EraseTiles(MapDocument *mapDocument,
+               TileLayer *tileLayer,
+               const QRegion &region);
+    ~EraseTiles();
 
     void undo();
     void redo();
@@ -46,11 +48,11 @@ public:
 private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
-    Tile *mErasedTile;
-    int mX, mY;
+    TileLayer *mErasedTiles;
+    QRegion mRegion;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // ERASETILE_H
+#endif // ERASETILES_H

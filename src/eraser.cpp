@@ -22,7 +22,7 @@
 #include "eraser.h"
 
 #include "brushitem.h"
-#include "erasetile.h"
+#include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -75,7 +75,9 @@ void Eraser::doErase()
     if (!tileLayer->bounds().contains(tilePos))
         return;
 
-    QUndoCommand *erase = new EraseTile(mapDocument, tileLayer,
-                                        tilePos.x(), tilePos.y());
+    QUndoCommand *erase = new EraseTiles(mapDocument, tileLayer,
+                                         QRegion(tilePos.x(),
+                                                 tilePos.y(),
+                                                 1, 1));
     mapDocument->undoStack()->push(erase);
 }

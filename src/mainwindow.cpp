@@ -25,6 +25,7 @@
 #include "aboutdialog.h"
 #include "changeselection.h"
 #include "eraser.h"
+#include "erasetiles.h"
 #include "layer.h"
 #include "layerdock.h"
 #include "layermodel.h"
@@ -132,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 #if QT_VERSION >= 0x040600
     mUi->actionQuit->setShortcut(QKeySequence::Quit);
 #endif
+    mUi->actionCut->setShortcut(QKeySequence::Cut);
     mUi->actionCopy->setShortcut(QKeySequence::Copy);
     mUi->actionPaste->setShortcut(QKeySequence::Paste);
     mUi->actionSelectAll->setShortcut(QKeySequence::SelectAll);
@@ -140,9 +142,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionZoomIn->setShortcut(QKeySequence::ZoomIn);
     mUi->actionZoomOut->setShortcut(QKeySequence::ZoomOut);
 
-    mUi->menuEdit->insertAction(mUi->actionCopy, undoAction);
-    mUi->menuEdit->insertAction(mUi->actionCopy, redoAction);
-    mUi->menuEdit->insertSeparator(mUi->actionCopy);
+    mUi->menuEdit->insertAction(mUi->actionCut, undoAction);
+    mUi->menuEdit->insertAction(mUi->actionCut, redoAction);
+    mUi->menuEdit->insertSeparator(mUi->actionCut);
     mUi->mainToolBar->addAction(undoAction);
     mUi->mainToolBar->addAction(redoAction);
 
@@ -154,6 +156,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
+    connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
     connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
     connect(mUi->actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
@@ -215,6 +218,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionSaveAs, "document-save-as");
     setThemeIcon(mUi->actionClose, "window-close");
     setThemeIcon(mUi->actionQuit, "application-exit");
+    setThemeIcon(mUi->actionCut, "edit-cut");
     setThemeIcon(mUi->actionCopy, "edit-copy");
     setThemeIcon(mUi->actionPaste, "edit-paste");
     setThemeIcon(redoAction, "edit-redo");
@@ -450,6 +454,34 @@ void MainWindow::closeFile()
     }
 }
 
+void MainWindow::cut()
+{
+    if (!mMapDocument)
+        return;
+
+    int currentLayer = mMapDocument->currentLayer();
+    if (currentLayer == -1)
+        return;
+
+    Map *map = mMapDocument->map();
+    Layer *layer = map->layerAt(currentLayer);
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer);
+    if (!tileLayer)
+        return;
+
+    const QRegion &selection = mMapDocument->selectionModel()->selection();
+    if (selection.isEmpty())
+        return;
+
+    copy();
+
+    QUndoStack *stack = mMapDocument->undoStack();
+    stack->beginMacro(tr("Cut"));
+    stack->push(new EraseTiles(mMapDocument, tileLayer, selection));
+    selectNone();
+    stack->endMacro();
+}
+
 void MainWindow::copy()
 {
     if (!mMapDocument)
@@ -672,6 +704,7 @@ void MainWindow::updateActions()
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionClose->setEnabled(map);
+    mUi->actionCut->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionPaste->setEnabled(tileLayerSelected && mapInClipboard);
     mUi->actionSelectAll->setEnabled(map);

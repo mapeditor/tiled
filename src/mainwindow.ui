@@ -61,6 +61,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
@@ -379,6 +380,18 @@
   <action name="actionSaveAsImage">
    <property name="text">
     <string>Save As Image...</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/edit-cut.png</normaloff>:/images/16x16/edit-cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cu&amp;t</string>
    </property>
   </action>
  </widget>

@@ -19,32 +19,42 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "erasetile.h"
+#include "erasetiles.h"
 
+#include "tilelayer.h"
 #include "tilepainter.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-EraseTile::EraseTile(MapDocument *mapDocument,
-                     TileLayer *tileLayer,
-                     int x, int y)
+EraseTiles::EraseTiles(MapDocument *mapDocument,
+                       TileLayer *tileLayer,
+                       const QRegion &region)
     : mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
-    , mX(x), mY(y)
+    , mRegion(region)
 {
     setText(QObject::tr("Erase"));
+
+    // Store the tiles that are to be erased
+    const QRegion r = mRegion.translated(-mTileLayer->x(), -mTileLayer->y());
+    mErasedTiles = mTileLayer->copy(r);
 }
 
-void EraseTile::undo()
+EraseTiles::~EraseTiles()
 {
-    TilePainter painter(mMapDocument, mTileLayer);
-    painter.setTile(mX, mY, mErasedTile);
+    delete mErasedTiles;
 }
 
-void EraseTile::redo()
+void EraseTiles::undo()
+{
+    const QRect bounds = mRegion.boundingRect();
+    TilePainter painter(mMapDocument, mTileLayer);
+    painter.setTiles(bounds.x(), bounds.y(), mErasedTiles);
+}
+
+void EraseTiles::redo()
 {
     TilePainter painter(mMapDocument, mTileLayer);
-    mErasedTile = painter.tileAt(mX, mY);
-    painter.setTile(mX, mY, 0);
+    painter.erase(mRegion);
 }

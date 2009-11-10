@@ -88,6 +88,7 @@ private slots:
     void saveAsImage();
     void closeFile();
 
+    void cut();
     void copy();
     void paste();
 

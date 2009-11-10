@@ -61,7 +61,7 @@ SOURCES += aboutdialog.cpp \
     stampbrush.cpp \
     toolmanager.cpp \
     eraser.cpp \
-    erasetile.cpp \
+    erasetiles.cpp \
     saveasimagedialog.cpp \
     utils.cpp \
     colorbutton.cpp \
@@ -124,7 +124,7 @@ HEADERS += aboutdialog.h \
     stampbrush.h \
     toolmanager.h \
     eraser.h \
-    erasetile.h \
+    erasetiles.h \
     saveasimagedialog.h \
     utils.h \
     colorbutton.h \
