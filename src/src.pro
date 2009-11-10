@@ -6,6 +6,10 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
 QT += core \
     gui
 CONFIG += debug
+MOC_DIR = .moc
+UI_DIR = .uic
+RCC_DIR = .rcc
+OBJECTS_DIR = .obj
 SOURCES += aboutdialog.cpp \
     brushitem.cpp \
     compression.cpp \
