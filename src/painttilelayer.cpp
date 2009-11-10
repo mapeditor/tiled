@@ -49,6 +49,7 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
 PaintTileLayer::~PaintTileLayer()
 {
     delete mSource;
+    delete mErased;
 }
 
 void PaintTileLayer::undo()

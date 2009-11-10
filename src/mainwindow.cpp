@@ -554,8 +554,6 @@ void MainWindow::paste()
         return;
 
     // Add tilesets that are not yet part of this map
-    // TODO: When not using external tilesets, this will currently introduce
-    // duplicate tilesets
     foreach (Tileset *tileset, map->tilesets())
         if (!mMapDocument->map()->tilesets().contains(tileset))
             mMapDocument->addTileset(tileset);

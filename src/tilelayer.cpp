@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -49,38 +49,24 @@ void TileLayer::setTile(int x, int y, Tile *tile)
     mTiles[x + y * mWidth] = tile;
 }
 
-TileLayer *TileLayer::copy(const QRect &rect) const
-{
-    const QRect area = rect.intersected(QRect(0, 0, width(), height()));
-    if (area.isEmpty())
-        return 0;
-
-    TileLayer *copied = new TileLayer(QString(),
-                                      0, 0,
-                                      area.width(), area.height());
-
-    for (int x = area.left(); x <= area.right(); ++x)
-        for (int y = area.top(); y <= area.bottom(); ++y)
-            copied->setTile(x - area.x(), y - area.y(), tileAt(x, y));
-
-    return copied;
-}
-
 TileLayer *TileLayer::copy(const QRegion &region) const
 {
+    const QRegion area = region.intersected(QRect(0, 0, width(), height()));
     const QRect bounds = region.boundingRect();
-    const QRect area = bounds.intersected(QRect(0, 0, width(), height()));
-    if (area.isEmpty())
-        return 0;
+    const QRect areaBounds = area.boundingRect();
+    const int offsetX = qMax(0, areaBounds.x() - bounds.x());
+    const int offsetY = qMax(0, areaBounds.y() - bounds.y());
 
     TileLayer *copied = new TileLayer(QString(),
                                       0, 0,
-                                      area.width(), area.height());
+                                      bounds.width(), bounds.height());
 
-    for (int x = area.left(); x <= area.right(); ++x)
-        for (int y = area.top(); y <= area.bottom(); ++y)
-            if (region.contains(QPoint(x, y)))
-                copied->setTile(x - area.x(), y - area.y(), tileAt(x, y));
+    foreach (const QRect &rect, area.rects())
+        for (int x = rect.left(); x <= rect.right(); ++x)
+            for (int y = rect.top(); y <= rect.bottom(); ++y)
+                copied->setTile(x - areaBounds.x() + offsetX,
+                                y - areaBounds.y() + offsetY,
+                                tileAt(x, y));
 
     return copied;
 }

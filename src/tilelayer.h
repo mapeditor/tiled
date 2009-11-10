@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008-2009 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -69,27 +69,13 @@ public:
     void setTile(int x, int y, Tile *tile);
 
     /**
-     * Returns a copy of the area specified by the given \a rectangle. The
+     * Returns a copy of the area specified by the given \a region. The
      * caller is responsible for the returned tile layer.
-     *
-     * Returns 0 if the rectangle falls outside of this layer.
      */
-    TileLayer *copy(const QRect &rectangle) const;
+    TileLayer *copy(const QRegion &region) const;
 
     TileLayer *copy(int x, int y, int width, int height) const
     { return copy(QRect(x, y, width, height)); }
-
-    /**
-     * Returns a copy of the area specified by the given \a region. The
-     * caller is responsible for the returned tile layer.
-     *
-     * The size of the returned tile layer depends on the area of the region's
-     * bounding rectangle that falls within this tile layer.
-     *
-     * Returns 0 if the region's bounding rectangle falls outside of this
-     * layer.
-     */
-    TileLayer *copy(const QRegion &region) const;
 
     /**
      * Resizes this tile layer to \a size, while shifting all tiles by
