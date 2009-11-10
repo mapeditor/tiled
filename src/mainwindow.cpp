@@ -133,6 +133,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionSelectAll->setShortcut(QKeySequence::SelectAll);
     undoAction->setShortcut(QKeySequence::Undo);
     redoAction->setShortcut(QKeySequence::Redo);
+    mUi->actionZoomIn->setShortcut(QKeySequence::ZoomIn);
+    mUi->actionZoomOut->setShortcut(QKeySequence::ZoomOut);
 
     mUi->menuEdit->insertAction(mUi->actionCopy, undoAction);
     mUi->menuEdit->insertAction(mUi->actionCopy, redoAction);
