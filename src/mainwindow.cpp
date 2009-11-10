@@ -38,6 +38,7 @@
 #include "saveasimagedialog.h"
 #include "selectiontool.h"
 #include "stampbrush.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetdock.h"
@@ -47,6 +48,7 @@
 #include "tmxmapwriter.h"
 #include "undodock.h"
 
+#include <QClipboard>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -60,6 +62,8 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+static const char * const TMX_MIMETYPE = "text/tmx";
 
 #if QT_VERSION >= 0x040600
 /**
@@ -138,12 +142,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mUi->menuEdit->insertAction(mUi->actionCopy, undoAction);
     mUi->menuEdit->insertAction(mUi->actionCopy, redoAction);
+    mUi->menuEdit->insertSeparator(mUi->actionCopy);
     mUi->mainToolBar->addAction(undoAction);
     mUi->mainToolBar->addAction(redoAction);
-
-    // TODO: Add support for copy and paste
-    mUi->actionCopy->setVisible(false);
-    mUi->actionPaste->setVisible(false);
 
     connect(mUi->actionNew, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
@@ -153,6 +154,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
+    connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
+    connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
     connect(mUi->actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mUi->actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
 
@@ -257,6 +260,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuView->addAction(mTilesetDock->toggleViewAction());
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
     mUi->menuView->addAction(undoDock->toggleViewAction());
+
+    QClipboard *clipboard = QApplication::clipboard();
+    connect(clipboard, SIGNAL(dataChanged()), this, SLOT(updateActions()));
 
     updateActions();
     readSettings();
@@ -444,6 +450,92 @@ void MainWindow::closeFile()
     }
 }
 
+void MainWindow::copy()
+{
+    if (!mMapDocument)
+        return;
+
+    int currentLayer = mMapDocument->currentLayer();
+    if (currentLayer == -1)
+        return;
+
+    Map *map = mMapDocument->map();
+    Layer *layer = map->layerAt(currentLayer);
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer);
+    if (!tileLayer)
+        return;
+
+    const QRegion &selection = mMapDocument->selectionModel()->selection();
+    if (selection.isEmpty())
+        return;
+
+    // Create a temporary map to write to the clipboard
+    TileLayer *copy = tileLayer->copy(selection.translated(-tileLayer->x(),
+                                                           -tileLayer->y()));
+    Map *copyMap = new Map(copy->width(), copy->height(),
+                           map->tileWidth(), map->tileHeight());
+
+    // Resolve the tilesets
+    QSet<Tileset*> tilesets;
+    for (int y = 0; y < copy->height(); ++y) {
+        for (int x = 0; x < copy->width(); ++x) {
+            Tile *tile = copy->tileAt(x, y);
+            if (tile)
+                tilesets.insert(tile->tileset());
+        }
+    }
+    foreach (Tileset *tileset, tilesets)
+        copyMap->addTileset(tileset);
+
+    copyMap->addLayer(copy);
+    TmxMapWriter mapWriter;
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData(QLatin1String(TMX_MIMETYPE),
+                      mapWriter.toString(copyMap).toUtf8());
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setMimeData(mimeData);
+
+    delete copyMap;
+}
+
+void MainWindow::paste()
+{
+    if (!mMapDocument)
+        return;
+
+    const QClipboard *clipboard = QApplication::clipboard();
+    const QMimeData *mimeData = clipboard->mimeData();
+    const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
+    if (data.isEmpty())
+        return;
+
+    QString mapData = QString::fromUtf8(data);
+    TmxMapReader reader;
+    Map *map = reader.fromString(mapData);
+    if (!map || map->layerCount() == 0)
+        return;
+
+    TileLayer *layer = dynamic_cast<TileLayer*>(map->layerAt(0));
+    if (!layer)
+        return;
+
+    // Add tilesets that are not yet part of this map
+    // TODO: When not using external tilesets, this will currently introduce
+    // duplicate tilesets
+    foreach (Tileset *tileset, map->tilesets())
+        if (!mMapDocument->map()->tilesets().contains(tileset))
+            mMapDocument->addTileset(tileset);
+
+    // Reset selection and paste into the stamp brush
+    selectNone();
+    setStampBrush(layer);
+    ToolManager::instance()->selectTool(mStampBrush);
+
+    delete map;
+}
+
 void MainWindow::newTileset()
 {
     if (!mMapDocument)
@@ -558,20 +650,32 @@ void MainWindow::updateActions()
 {
     Map *map = 0;
     int currentLayer = -1;
+    bool tileLayerSelected = false;
     QRegion selection;
 
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayer = mMapDocument->currentLayer();
         selection = mMapDocument->selectionModel()->selection();
+
+        if (currentLayer != -1) {
+            Layer *layer = mMapDocument->map()->layerAt(currentLayer);
+            tileLayerSelected = dynamic_cast<TileLayer*>(layer) != 0;
+        }
     }
+
+    const QClipboard *clipboard = QApplication::clipboard();
+    const QMimeData *data = clipboard->mimeData();
+    const bool mapInClipboard = data->hasFormat(QLatin1String(TMX_MIMETYPE));
 
     mUi->actionSave->setEnabled(map && !mUndoGroup->isClean());
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionClose->setEnabled(map);
+    mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
+    mUi->actionPaste->setEnabled(tileLayerSelected && mapInClipboard);
     mUi->actionSelectAll->setEnabled(map);
-    mUi->actionSelectNone->setEnabled(map && !selection.isEmpty());
+    mUi->actionSelectNone->setEnabled(!selection.isEmpty());
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);

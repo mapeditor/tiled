@@ -80,6 +80,18 @@ public:
     { return copy(QRect(x, y, width, height)); }
 
     /**
+     * Returns a copy of the area specified by the given \a region. The
+     * caller is responsible for the returned tile layer.
+     *
+     * The size of the returned tile layer depends on the area of the region's
+     * bounding rectangle that falls within this tile layer.
+     *
+     * Returns 0 if the region's bounding rectangle falls outside of this
+     * layer.
+     */
+    TileLayer *copy(const QRegion &region) const;
+
+    /**
      * Resizes this tile layer to \a size, while shifting all tiles by
      * \a offset.
      *

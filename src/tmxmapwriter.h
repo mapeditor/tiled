@@ -48,7 +48,18 @@ namespace Internal {
 class TmxMapWriter : public MapWriterInterface
 {
 public:
+    TmxMapWriter();
+
     bool write(const Map *map, const QString &fileName);
+    
+    /**
+     * Converts the given map to a string (in .tmx format). This is for
+     * storing a map in the clipboard. References to other files (like tileset
+     * images) will be saved as absolute paths.
+     *
+     * @see TmxMapReader::fromString
+     */
+    QString toString(const Map *map);
 
     QString name() const { return QObject::tr("XML map writer (*.tmx)"); }
 
@@ -69,6 +80,7 @@ private:
     QString mError;
     QDir mMapDir;     // The directory in which the map is being saved
     QMap<int, const Tileset*> mFirstGidToTileset;
+    bool mUseAbsolutePaths;
 };
 
 } // namespace Internal

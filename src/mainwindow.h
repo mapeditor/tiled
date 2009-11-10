@@ -88,6 +88,9 @@ private slots:
     void saveAsImage();
     void closeFile();
 
+    void copy();
+    void paste();
+
     void newTileset();
     void resizeMap();
     void editMapProperties();

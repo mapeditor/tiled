@@ -82,6 +82,16 @@ void ToolManager::registerTool(AbstractTool *tool)
     }
 }
 
+void ToolManager::selectTool(AbstractTool *tool)
+{
+    foreach (QAction *action, mActionGroup->actions()) {
+        if (action->data().value<AbstractTool*>() == tool) {
+            action->trigger();
+            break;
+        }
+    }
+}
+
 void ToolManager::actionTriggered(QAction *action)
 {
     setSelectedTool(action->data().value<AbstractTool*>());

@@ -35,6 +35,11 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+TmxMapWriter::TmxMapWriter()
+    : mUseAbsolutePaths(false)
+{
+}
+
 bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     QFile file(fileName);
@@ -44,6 +49,7 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
     }
 
     mMapDir = QFileInfo(file).dir();
+    mUseAbsolutePaths = false;
 
     QXmlStreamWriter writer(&file);
     writer.setAutoFormatting(true);
@@ -61,6 +67,20 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
     }
 
     return true;
+}
+
+QString TmxMapWriter::toString(const Map *map)
+{
+    mUseAbsolutePaths = true;
+
+    QString output;
+    QXmlStreamWriter writer(&output);
+
+    writer.writeStartDocument();
+    writeMap(writer, map);
+    writer.writeEndDocument();
+
+    return output;
 }
 
 void TmxMapWriter::writeMap(QXmlStreamWriter &w, const Map *map)
@@ -105,8 +125,10 @@ void TmxMapWriter::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
 
     const QString &fileName = tileset->fileName();
     if (!fileName.isEmpty()) {
-        w.writeAttribute(QLatin1String("source"),
-                         mMapDir.relativeFilePath(fileName));
+        QString source = fileName;
+        if (!mUseAbsolutePaths)
+            source = mMapDir.relativeFilePath(source);
+        w.writeAttribute(QLatin1String("source"), source);
 
         // Tileset is external, so no need to write any of the stuff below
         w.writeEndElement();
@@ -130,8 +152,10 @@ void TmxMapWriter::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     const QString &imageSource = tileset->imageSource();
     if (!imageSource.isEmpty()) {
         w.writeStartElement(QLatin1String("image"));
-        w.writeAttribute(QLatin1String("source"),
-                         mMapDir.relativeFilePath(imageSource));
+        QString source = imageSource;
+        if (!mUseAbsolutePaths)
+            source = mMapDir.relativeFilePath(source);
+        w.writeAttribute(QLatin1String("source"), source);
 
         const QColor transColor = tileset->transparentColor();
         if (transColor.isValid())

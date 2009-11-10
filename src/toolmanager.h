@@ -62,6 +62,12 @@ public:
     void registerTool(AbstractTool *tool);
 
     /**
+     * Selects the given tool. It should be previously added using
+     * registerTool().
+     */
+    void selectTool(AbstractTool *tool);
+
+    /**
      * Returns a tool bar with all tools added to it.
      */
     QToolBar *toolBar() const { return mToolBar; }

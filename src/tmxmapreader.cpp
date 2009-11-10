@@ -30,6 +30,7 @@
 #include "objectgroup.h"
 #include "mapobject.h"
 
+#include <QBuffer>
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
@@ -53,6 +54,8 @@ public:
      * ownership over the newly created map.
      */
     Map *readMap(const QString &fileName);
+
+    Map *readMapFromString(const QString &string);
 
     /**
      * Reads a TSX tileset file. Returns 0 when reading failed. The caller
@@ -131,6 +134,25 @@ Map *TmxReader::readMap(const QString &fileName)
         mGidsToTileset.clear();
     }
 
+    return map;
+}
+
+Map *TmxReader::readMapFromString(const QString &string)
+{
+    QByteArray data = string.toUtf8();
+    QBuffer buffer(&data);
+    buffer.open(QBuffer::ReadOnly);
+
+    xml.setDevice(&buffer);
+
+    Map *map = 0;
+    if (readNextStartElement() && xml.name() == "map") {
+        map = readMap();
+    } else {
+        xml.raiseError(QObject::tr("Not a map file."));
+    }
+
+    mGidsToTileset.clear();
     return map;
 }
 
@@ -285,6 +307,30 @@ Tileset *TmxReader::readTileset()
                 else
                     readUnknownElement();
             }
+
+            // Check if a similar tileset was already loaded
+            if (!tileset->imageSource().isEmpty()) {
+                TilesetSpec spec;
+                spec.imageSource = tileset->imageSource();
+                spec.tileWidth = tileset->tileWidth();
+                spec.tileHeight = tileset->tileHeight();
+                spec.tileSpacing = tileset->tileSpacing();
+                spec.margin = tileset->margin();
+
+                TilesetManager *manager = TilesetManager::instance();
+                if (Tileset *set = manager->findTileset(spec)) {
+                    // Unite the tile properties
+                    const int sharedTileCount =
+                            qMin(tileset->tileCount(), set->tileCount());
+                    for (int i = 0; i < sharedTileCount; ++i) {
+                        const Tile *t = tileset->tileAt(i);
+                        set->tileAt(i)->properties()->unite(t->properties());
+                    }
+
+                    delete tileset;
+                    tileset = set;
+                }
+            }
         }
     } else { // External tileset
         const QString absoluteSource = makeAbsolute(source);
@@ -372,10 +418,10 @@ TileLayer *TmxReader::readLayer()
     const int y = atts.value(QLatin1String("y")).toString().toInt();
     const int width = atts.value(QLatin1String("width")).toString().toInt();
     const int height = atts.value(QLatin1String("height")).toString().toInt();
-    
+
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(tileLayer, atts);
-    
+
     while (readNextStartElement()) {
         if (xml.name() == "properties")
             tileLayer->properties()->unite(readProperties());
@@ -642,6 +688,18 @@ Map *TmxMapReader::read(const QString &fileName)
 
     TmxReader reader;
     Map *map = reader.readMap(fileName);
+    if (!map)
+        mError = reader.errorString();
+
+    return map;
+}
+
+Map *TmxMapReader::fromString(const QString &string)
+{
+    mError.clear();
+
+    TmxReader reader;
+    Map *map = reader.readMapFromString(string);
     if (!map)
         mError = reader.errorString();
 

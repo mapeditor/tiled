@@ -67,7 +67,8 @@ Tileset *TilesetManager::findTileset(const TilesetSpec &spec) const
         if (tileset->imageSource() == spec.imageSource
             && tileset->tileWidth() == spec.tileWidth
             && tileset->tileHeight() == spec.tileHeight
-            && tileset->tileSpacing() == spec.tileSpacing)
+            && tileset->tileSpacing() == spec.tileSpacing
+            && tileset->margin() == spec.margin)
         {
             return tileset;
         }

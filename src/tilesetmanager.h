@@ -42,6 +42,7 @@ struct TilesetSpec
     int tileWidth;
     int tileHeight;
     int tileSpacing;
+    int margin;
 };
 
 /**

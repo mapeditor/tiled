@@ -38,6 +38,14 @@ class TmxMapReader : public MapReaderInterface
 public:
     Map *read(const QString &fileName);
 
+    /**
+     * Reads the map given by \a string. This is for retrieving a map from the
+     * clipboard. Returns 0 on failure.
+     *
+     * @see TmxMapWriter::toString
+     */
+    Map *fromString(const QString &string);
+
     QString name() const { return QObject::tr("XML map reader (*.tmx)"); }
 
     QString errorString() const { return mError; }

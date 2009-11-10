@@ -66,6 +66,25 @@ TileLayer *TileLayer::copy(const QRect &rect) const
     return copied;
 }
 
+TileLayer *TileLayer::copy(const QRegion &region) const
+{
+    const QRect bounds = region.boundingRect();
+    const QRect area = bounds.intersected(QRect(0, 0, width(), height()));
+    if (area.isEmpty())
+        return 0;
+
+    TileLayer *copied = new TileLayer(QString(),
+                                      0, 0,
+                                      area.width(), area.height());
+
+    for (int x = area.left(); x <= area.right(); ++x)
+        for (int y = area.top(); y <= area.bottom(); ++y)
+            if (region.contains(QPoint(x, y)))
+                copied->setTile(x - area.x(), y - area.y(), tileAt(x, y));
+
+    return copied;
+}
+
 void TileLayer::resize(const QSize &size, const QPoint &offset)
 {
     QVector<Tile*> newTiles(size.width() * size.height());
