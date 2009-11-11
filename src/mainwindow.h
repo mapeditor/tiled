@@ -41,8 +41,9 @@ class TileLayer;
 
 namespace Internal {
 
-class MapScene;
+class ClipboardManager;
 class LayerDock;
+class MapScene;
 class StampBrush;
 class TilesetDock;
 
@@ -163,6 +164,8 @@ private:
     QUndoGroup *mUndoGroup;
 
     StampBrush *mStampBrush;
+
+    ClipboardManager *mClipboardManager;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];

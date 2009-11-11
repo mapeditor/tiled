@@ -69,7 +69,8 @@ SOURCES += aboutdialog.cpp \
     selectiontool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
-    changeselection.cpp
+    changeselection.cpp \
+    clipboardmanager.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -131,7 +132,8 @@ HEADERS += aboutdialog.h \
     undodock.h \
     selectiontool.h \
     abstracttiletool.h \
-    changeselection.h
+    changeselection.h \
+    clipboardmanager.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

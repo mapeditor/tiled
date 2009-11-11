@@ -24,6 +24,7 @@
 
 #include "aboutdialog.h"
 #include "changeselection.h"
+#include "clipboardmanager.h"
 #include "eraser.h"
 #include "erasetiles.h"
 #include "layer.h"
@@ -39,7 +40,6 @@
 #include "saveasimagedialog.h"
 #include "selectiontool.h"
 #include "stampbrush.h"
-#include "tile.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetdock.h"
@@ -49,7 +49,6 @@
 #include "tmxmapwriter.h"
 #include "undodock.h"
 
-#include <QClipboard>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -63,8 +62,6 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-static const char * const TMX_MIMETYPE = "text/tmx";
 
 #if QT_VERSION >= 0x040600
 /**
@@ -87,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mTilesetDock(new TilesetDock(this))
     , mZoomLabel(new QLabel)
     , mStatusInfoLabel(new QLabel)
+    , mClipboardManager(new ClipboardManager(this))
 {
     mUi->setupUi(this);
 
@@ -265,8 +263,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
     mUi->menuView->addAction(undoDock->toggleViewAction());
 
-    QClipboard *clipboard = QApplication::clipboard();
-    connect(clipboard, SIGNAL(dataChanged()), this, SLOT(updateActions()));
+    connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
     updateActions();
     readSettings();
@@ -487,49 +484,7 @@ void MainWindow::copy()
     if (!mMapDocument)
         return;
 
-    int currentLayer = mMapDocument->currentLayer();
-    if (currentLayer == -1)
-        return;
-
-    Map *map = mMapDocument->map();
-    Layer *layer = map->layerAt(currentLayer);
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer);
-    if (!tileLayer)
-        return;
-
-    const QRegion &selection = mMapDocument->selectionModel()->selection();
-    if (selection.isEmpty())
-        return;
-
-    // Create a temporary map to write to the clipboard
-    TileLayer *copy = tileLayer->copy(selection.translated(-tileLayer->x(),
-                                                           -tileLayer->y()));
-    Map *copyMap = new Map(copy->width(), copy->height(),
-                           map->tileWidth(), map->tileHeight());
-
-    // Resolve the tilesets
-    QSet<Tileset*> tilesets;
-    for (int y = 0; y < copy->height(); ++y) {
-        for (int x = 0; x < copy->width(); ++x) {
-            Tile *tile = copy->tileAt(x, y);
-            if (tile)
-                tilesets.insert(tile->tileset());
-        }
-    }
-    foreach (Tileset *tileset, tilesets)
-        copyMap->addTileset(tileset);
-
-    copyMap->addLayer(copy);
-    TmxMapWriter mapWriter;
-
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(TMX_MIMETYPE),
-                      mapWriter.toString(copyMap).toUtf8());
-
-    QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setMimeData(mimeData);
-
-    delete copyMap;
+    mClipboardManager->copySelection(mMapDocument);
 }
 
 void MainWindow::paste()
@@ -537,33 +492,29 @@ void MainWindow::paste()
     if (!mMapDocument)
         return;
 
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
-    if (data.isEmpty())
-        return;
+    if (Map *map = mClipboardManager->map()) {
+        // We can currently only handle maps with a single tile layer
+        if (map->layerCount() == 1) {
+            if (TileLayer *layer = dynamic_cast<TileLayer*>(map->layerAt(0))) {
+                // Add tilesets that are not yet part of this map
+                foreach (Tileset *tileset, map->tilesets())
+                    if (!mMapDocument->map()->tilesets().contains(tileset))
+                        mMapDocument->addTileset(tileset);
 
-    QString mapData = QString::fromUtf8(data);
-    TmxMapReader reader;
-    Map *map = reader.fromString(mapData);
-    if (!map || map->layerCount() == 0)
-        return;
+                // Reset selection and paste into the stamp brush
+                selectNone();
+                setStampBrush(layer);
+                ToolManager::instance()->selectTool(mStampBrush);
 
-    TileLayer *layer = dynamic_cast<TileLayer*>(map->layerAt(0));
-    if (!layer)
-        return;
+                delete map;
+                return;
+            }
+        }
 
-    // Add tilesets that are not yet part of this map
-    foreach (Tileset *tileset, map->tilesets())
-        if (!mMapDocument->map()->tilesets().contains(tileset))
-            mMapDocument->addTileset(tileset);
-
-    // Reset selection and paste into the stamp brush
-    selectNone();
-    setStampBrush(layer);
-    ToolManager::instance()->selectTool(mStampBrush);
-
-    delete map;
+        // Need to also clean up the tilesets since they didn't get an owner
+        qDeleteAll(map->tilesets());
+        delete map;
+    }
 }
 
 void MainWindow::newTileset()
@@ -694,9 +645,7 @@ void MainWindow::updateActions()
         }
     }
 
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *data = clipboard->mimeData();
-    const bool mapInClipboard = data->hasFormat(QLatin1String(TMX_MIMETYPE));
+    const bool mapInClipboard = mClipboardManager->hasMap();
 
     mUi->actionSave->setEnabled(map && !mUndoGroup->isClean());
     mUi->actionSaveAs->setEnabled(map);
