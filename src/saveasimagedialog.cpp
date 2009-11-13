@@ -29,6 +29,7 @@
 #include "utils.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QImageWriter>
 
 using namespace Tiled;
@@ -85,6 +86,20 @@ void SaveAsImageDialog::accept()
     if (fileName.isEmpty())
         return;
 
+    if (QFile::exists(fileName)) {
+        const QMessageBox::StandardButton button =
+                QMessageBox::warning(this,
+                                     tr("Save as Image"),
+                                     tr("%1 already exists.\n"
+                                        "Do you want to replace it?")
+                                     .arg(QFileInfo(fileName).fileName()),
+                                     QMessageBox::Yes | QMessageBox::No,
+                                     QMessageBox::No);
+
+        if (button != QMessageBox::Yes)
+            return;
+    }
+
     const bool visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
     const bool useCurrentScale = mUi->currentZoomLevel->isChecked();
 
@@ -119,10 +134,13 @@ void SaveAsImageDialog::accept()
 
 void SaveAsImageDialog::browse()
 {
+    // Don't confirm overwrite here, since we'll confirm when the user presses
+    // the Save button
     const QString filter = Utils::writableImageFormatsFilter();
     QString f = QFileDialog::getSaveFileName(this, tr("Image"),
                                              mUi->fileNameEdit->text(),
-                                             filter);
+                                             filter, 0,
+                                             QFileDialog::DontConfirmOverwrite);
     if (!f.isEmpty()) {
         mUi->fileNameEdit->setText(f);
         mPath = f;
