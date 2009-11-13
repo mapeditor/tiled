@@ -3,6 +3,7 @@
 * Added support for cut, copy and paste
 * Added current cursor position to the status bar
 * Added keyboard shortcuts to switch tools
+* Added scrolling the map view with middle mouse button
 * Snap objects to the grid when Ctrl is pressed
 
 0.2.0 (1 October 2009)

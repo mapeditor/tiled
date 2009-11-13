@@ -29,7 +29,8 @@ namespace Internal {
 
 /**
  * The map view shows the map scene. This class sets some MapScene specific
- * properties on the viewport and implements zooming.
+ * properties on the viewport and implements zooming. It also allows the view
+ * to be scrolled with the middle mouse button.
  *
  * @see MapScene
  */
@@ -60,8 +61,14 @@ public slots:
 protected:
     void wheelEvent(QWheelEvent *event);
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+
 private:
     qreal mScale;
+    QPoint mLastMousePos;
+    bool mHandScrolling;
 };
 
 } // namespace Internal

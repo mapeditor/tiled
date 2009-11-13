@@ -22,12 +22,14 @@
 #include "mapview.h"
 
 #include <QWheelEvent>
+#include <QScrollBar>
 
 using namespace Tiled::Internal;
 
 MapView::MapView(QWidget *parent):
     QGraphicsView(parent),
-    mScale(1)
+    mScale(1),
+    mHandScrolling(false)
 {
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 
@@ -120,4 +122,54 @@ void MapView::wheelEvent(QWheelEvent *event)
     }
 
     QGraphicsView::wheelEvent(event);
+}
+
+/**
+ * Activates hand scrolling when the middle mouse button is pressed.
+ */
+void MapView::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::MidButton) {
+        viewport()->setCursor(Qt::ClosedHandCursor);
+        setInteractive(false);
+        mHandScrolling = true;
+        return;
+    }
+
+    QGraphicsView::mousePressEvent(event);
+}
+
+/**
+ * Deactivates hand scrolling when the middle mouse button is released.
+ */
+void MapView::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::MidButton) {
+        viewport()->setCursor(QCursor());
+        setInteractive(true);
+        mHandScrolling = false;
+        return;
+    }
+
+    QGraphicsView::mouseReleaseEvent(event);
+}
+
+/**
+ * Moves the view with the mouse while hand scrolling.
+ */
+void MapView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (mHandScrolling) {
+        QScrollBar *hBar = horizontalScrollBar();
+        QScrollBar *vBar = verticalScrollBar();
+        const QPoint d = event->pos() - mLastMousePos;
+        hBar->setValue(hBar->value() + (isRightToLeft() ? d.x() : -d.x()));
+        vBar->setValue(vBar->value() - d.y());
+
+        mLastMousePos = event->pos();
+        return;
+    }
+
+    QGraphicsView::mouseMoveEvent(event);
+    mLastMousePos = event->pos();
 }
