@@ -47,7 +47,10 @@ namespace {
 class TmxReader
 {
 public:
-    TmxReader() : mMap(0) {}
+    TmxReader() :
+        mMap(0),
+        mReadingExternalTileset(false)
+    {}
 
     /**
      * Reads a TMX map. Returns 0 when reading failed. The caller takes
@@ -109,6 +112,7 @@ private:
     QString mPath;
     Map *mMap;
     QMap<int, Tileset*> mGidsToTileset;
+    bool mReadingExternalTileset;
 
     QXmlStreamReader xml;
 };
@@ -162,6 +166,7 @@ Tileset *TmxReader::readTileset(const QString &fileName)
     mError.clear();
     mPath = QFileInfo(file).absolutePath();
     Tileset *tileset = 0;
+    mReadingExternalTileset = true;
 
     if (openFile(&file)) {
         xml.setDevice(&file);
@@ -175,6 +180,7 @@ Tileset *TmxReader::readTileset(const QString &fileName)
             tileset->setFileName(fileName);
     }
 
+    mReadingExternalTileset = false;
     return tileset;
 }
 
@@ -292,7 +298,8 @@ Tileset *TmxReader::readTileset()
         const int margin =
                 atts.value(QLatin1String("margin")).toString().toInt();
 
-        if (tileWidth <= 0 || tileHeight <= 0 || firstGid <= 0) {
+        if (tileWidth <= 0 || tileHeight <= 0
+            || (firstGid <= 0 && !mReadingExternalTileset)) {
             xml.raiseError(QObject::tr("Invalid tileset parameters for tileset"
                                        " '%1'").arg(name));
         } else {
@@ -352,9 +359,11 @@ Tileset *TmxReader::readTileset()
                                .arg(absoluteSource, reader.errorString()));
             }
         }
+
+        skipCurrentElement();
     }
 
-    if (tileset)
+    if (tileset && !mReadingExternalTileset)
         mGidsToTileset.insert(firstGid, tileset);
 
     return tileset;
