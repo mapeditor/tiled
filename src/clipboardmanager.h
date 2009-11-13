@@ -72,7 +72,7 @@ signals:
     void hasMapChanged();
 
 private slots:
-    void onClipboardDataChanged();
+    void updateHasMap();
 
 private:
     QClipboard *mClipboard;

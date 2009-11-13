@@ -40,10 +40,13 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ClipboardManager::ClipboardManager(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    mHasMap(false)
 {
     mClipboard = QApplication::clipboard();
-    connect(mClipboard, SIGNAL(dataChanged()), SLOT(onClipboardDataChanged()));
+    connect(mClipboard, SIGNAL(dataChanged()), SLOT(updateHasMap()));
+
+    updateHasMap();
 }
 
 Map *ClipboardManager::map() const
@@ -110,7 +113,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     setMap(&copyMap);
 }
 
-void ClipboardManager::onClipboardDataChanged()
+void ClipboardManager::updateHasMap()
 {
     const QMimeData *data = mClipboard->mimeData();
     const bool mapInClipboard = data->hasFormat(QLatin1String(TMX_MIMETYPE));
