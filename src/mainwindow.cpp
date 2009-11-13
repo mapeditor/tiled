@@ -42,6 +42,7 @@
 #include "stampbrush.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
+#include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
