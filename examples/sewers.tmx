@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="50" height="50" tilewidth="24" tileheight="24">
+ <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
+  <image source="sewer_tileset.png" trans="#ff00ff"/>
+ </tileset>
+ <layer name="Bottom" width="50" height="50">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3X2QrCMBAF0OKbSwWrCC4vdV/+w///JKeQgWFIatJ0SfE+HJDGonfaTJI8y7IlORkLkotrZ3I0SjUux2zfCSX/h/7tX/T9/5jjQl7kalSfb4nk2JAJ2Y78eUzJjMwjcnAtQnHt2sixIgVZR+TgWtjca8a4dvy+viNyaE1ycC2kh+WaZqvdUDmeppYxQp5DV313KG3n2JE9OYw8R2m5rw+638WuHzw/mrzjMWS/81k/ZM6U5ofsdz7rh8yZ0vxw9VtX361yfkzOlOZHSC/Xa4NtDgw1PwAgDvdSre/eGot7aV1PHgPbWTW1/a5vDn1WTW1f4ptDn1Vd+5KUyf1IkdXvS1LmOqti7wEAAAAAAAAAAF37AlFWzCEQJwAA
+  </data>
+ </layer>
+ <layer name="Top" width="50" height="50" opacity="0.49">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3WOwqAMBBAQQu1Uq9i4a8QO+9/JrcwF5BADMzAI92y6bZp/mUvvUAm/vEvtf5jjpa3NdrKrvPZEZ3R/b5Xprlt1EV9pnmlDNEYTaUXAQCgCukOTtV6D6c7OOUeBgAAAAAghwe55M5JECcAAA==
+  </data>
+ </layer>
+</map>
