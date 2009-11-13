@@ -206,13 +206,13 @@ void MapObjectItem::setEditable(bool editable)
 
 QRectF MapObjectItem::boundingRect() const
 {
-    // The -1 and +3 are to account for the pen width and shadow
+    // The -1 and +4 are to account for the pen width and shadow
     if (mSize.isNull()) {
-        return QRectF(-15 - 1, -25 - 1, 25 + 3, 35 + 3);
+        return QRectF(-15 - 1, -25 - 1, 25 + 4, 35 + 4);
     } else {
         return QRectF(-1, -15 - 1,
-                      mSize.width() + 3,
-                      mSize.height() + 3 + 15);
+                      mSize.width() + 4,
+                      mSize.height() + 4 + 15);
     }
 }
 
