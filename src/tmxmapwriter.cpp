@@ -231,12 +231,15 @@ void TmxMapWriter::writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer)
                      QString::number(layer->height()));
     const int x = layer->x();
     const int y = layer->y();
+    const qreal opacity = layer->opacity();
     if (x != 0)
         w.writeAttribute(QLatin1String("x"), QString::number(x));
     if (y != 0)
         w.writeAttribute(QLatin1String("y"), QString::number(y));
     if (!layer->isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
+    if (opacity != qreal(1))
+        w.writeAttribute(QLatin1String("opacity"), QString::number(opacity));
 }
 
 /**
