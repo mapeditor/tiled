@@ -696,6 +696,9 @@ void MainWindow::selectNone()
     if (!mMapDocument)
         return;
 
+    if (mMapDocument->selectionModel()->selection().isEmpty())
+        return;
+
     QUndoCommand *command = new ChangeSelection(mMapDocument, QRegion());
     mMapDocument->undoStack()->push(command);
 }
