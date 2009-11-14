@@ -28,8 +28,7 @@
 #include <QMap>
 #include <QObject>
 #include <QString>
-
-class QXmlStreamWriter;
+#include <QXmlStreamWriter>
 
 namespace Tiled {
 

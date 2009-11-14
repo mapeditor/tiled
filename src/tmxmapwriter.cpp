@@ -30,7 +30,6 @@
 #include "tileset.h"
 
 #include <QFile>
-#include <QXmlStreamWriter>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
