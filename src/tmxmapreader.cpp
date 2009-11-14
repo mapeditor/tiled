@@ -478,6 +478,8 @@ void TmxReader::readLayerData(TileLayer *tileLayer)
                     x = 0;
                     y++;
                 }
+
+                skipCurrentElement();
             } else {
                 readUnknownElement();
             }
