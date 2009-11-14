@@ -143,7 +143,8 @@ FORMS += aboutdialog.ui \
     newtilesetdialog.ui \
     saveasimagedialog.ui
 RESOURCES += tiled.qrc
-TRANSLATIONS = translations/tiled_nl.ts
+TRANSLATIONS = translations/tiled_nl.ts \
+    translations/tiled_pt.ts
 mac {
     TARGET = Tiled
     LIBS += -lz
