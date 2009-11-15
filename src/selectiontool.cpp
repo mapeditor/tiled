@@ -107,8 +107,10 @@ void SelectionTool::mouseReleased(const QPointF &,
         case Intersect: selection &= area; break;
         }
 
-        QUndoCommand *command = new ChangeSelection(mapDocument, selection);
-        mapDocument->undoStack()->push(command);
+        if (selection != selectionModel->selection()) {
+            QUndoCommand *cmd = new ChangeSelection(mapDocument, selection);
+            mapDocument->undoStack()->push(cmd);
+        }
 
         brushItem()->setTileSize(0, 0);
         updatePosition();
