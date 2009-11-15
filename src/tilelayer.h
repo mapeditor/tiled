@@ -61,7 +61,8 @@ public:
      * Returns the tile at the given coordinates. The coordinates have to
      * be within this layer.
      */
-    Tile *tileAt(int x, int y) const;
+    Tile *tileAt(int x, int y) const
+    { return mTiles.at(x + y * mWidth); }
 
     /**
      * Sets the tile for the given coordinates.
@@ -75,7 +76,14 @@ public:
     TileLayer *copy(const QRegion &region) const;
 
     TileLayer *copy(int x, int y, int width, int height) const
-    { return copy(QRect(x, y, width, height)); }
+    { return copy(QRegion(x, y, width, height)); }
+
+    /**
+     * Merges the given \a layer onto this layer at position \a pos. Parts that
+     * fall outside of this layer will be lost and empty tiles in the given
+     * layer will have no effect.
+     */
+    void merge(const QPoint &pos, const TileLayer *layer);
 
     /**
      * Resizes this tile layer to \a size, while shifting all tiles by

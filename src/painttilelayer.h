@@ -22,6 +22,9 @@
 #ifndef PAINTTILELAYER_H
 #define PAINTTILELAYER_H
 
+#include "undocommands.h"
+
+#include <QRegion>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -54,8 +57,17 @@ public:
 
     ~PaintTileLayer();
 
+    /**
+     * Sets whether this undo command can be merged with an existing command.
+     */
+    void setMergeable(bool mergeable)
+    { mMergeable = mergeable; }
+
     void undo();
     void redo();
+
+    int id() const { return Cmd_PaintTileLayer; }
+    bool mergeWith(const QUndoCommand *other);
 
 private:
     MapDocument *mMapDocument;
@@ -63,6 +75,8 @@ private:
     TileLayer *mSource;
     TileLayer *mErased;
     int mX, mY;
+    QRegion mPaintedRegion;
+    bool mMergeable;
 };
 
 } // namespace Internal

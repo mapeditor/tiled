@@ -25,12 +25,10 @@
 /**
  * These undo command IDs are used by Qt to determine whether two undo commands
  * can be merged.
- *
- * At the moment merging of undo commands has only been implemented for the
- * eraser.
  */
 enum UndoCommands {
-    Cmd_EraseTiles
+    Cmd_EraseTiles,
+    Cmd_PaintTileLayer
 };
 
 #endif // UNDOCOMMANDS_H

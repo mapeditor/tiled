@@ -33,11 +33,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
 {
 }
 
-Tile *TileLayer::tileAt(int x, int y) const
-{
-    return mTiles.at(x + y * mWidth);
-}
-
 void TileLayer::setTile(int x, int y, Tile *tile)
 {
     if (tile && tile->height() > mMaxTileHeight) {
@@ -71,6 +66,18 @@ TileLayer *TileLayer::copy(const QRegion &region) const
     return copied;
 }
 
+void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
+{
+    // Determine the overlapping area
+    QRect area = QRect(pos, QSize(layer->width(), layer->height()));
+    area &= QRect(0, 0, width(), height());
+
+    for (int y = area.top(); y <= area.bottom(); ++y)
+        for (int x = area.left(); x <= area.right(); ++x)
+            if (Tile *tile = layer->tileAt(x - area.left(), y - area.top()))
+                setTile(x, y, tile);
+}
+
 void TileLayer::resize(const QSize &size, const QPoint &offset)
 {
     QVector<Tile*> newTiles(size.width() * size.height());
@@ -81,8 +88,8 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     const int endX = qMin(mWidth, size.width() - offset.x());
     const int endY = qMin(mHeight, size.height() - offset.y());
 
-    for (int x = startX; x < endX; ++x) {
-        for (int y = startY; y < endY; ++y) {
+    for (int y = startY; y < endY; ++y) {
+        for (int x = startX; x < endX; ++x) {
             const int index = x + offset.x() + (y + offset.y()) * size.width();
             newTiles[index] = tileAt(x, y);
         }

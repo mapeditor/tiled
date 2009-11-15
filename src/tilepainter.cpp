@@ -61,11 +61,11 @@ void TilePainter::setTile(int x, int y, Tile *tile)
     mMapDocument->emitRegionChanged(QRegion(x, y, 1, 1));
 }
 
-void TilePainter::setTiles(int x, int y, TileLayer *tiles)
+void TilePainter::setTiles(int x, int y, TileLayer *tiles, const QRegion &mask)
 {
-    const QRegion region = paintableRegion(x, y,
-                                           tiles->width(),
-                                           tiles->height());
+    QRegion region = paintableRegion(x, y, tiles->width(), tiles->height());
+    if (!mask.isEmpty())
+        region &= mask;
     if (region.isEmpty())
         return;
 

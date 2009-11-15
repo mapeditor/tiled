@@ -81,13 +81,8 @@ bool EraseTiles::mergeWith(const QUndoCommand *other)
 
         // Copy the newly erased tiles over
         const QRect otherBounds = o->mRegion.boundingRect();
-        const QPoint shift = otherBounds.topLeft() - combinedBounds.topLeft();
-        for (int y = 0; y < o->mErasedTiles->height(); ++y)
-            for (int x = 0; x < o->mErasedTiles->width(); ++x)
-                if (Tile *tile = o->mErasedTiles->tileAt(x, y))
-                    mErasedTiles->setTile(x + shift.x(),
-                                          y + shift.y(),
-                                          tile);
+        const QPoint pos = otherBounds.topLeft() - combinedBounds.topLeft();
+        mErasedTiles->merge(pos, o->mErasedTiles);
 
         mRegion = combinedRegion;
     }

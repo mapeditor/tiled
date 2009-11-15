@@ -64,7 +64,7 @@ void StampBrush::tilePositionChanged(const QPoint &)
     updatePosition();
 
     if (mPainting) {
-        doPaint();
+        doPaint(true);
     } else if (mCapturing) {
         brushItem()->setTileSize(capturedArea().size());
     }
@@ -120,7 +120,7 @@ void StampBrush::beginPaint()
         return;
 
     mPainting = true;
-    doPaint();
+    doPaint(false);
 }
 
 void StampBrush::endPaint()
@@ -173,7 +173,7 @@ QRect StampBrush::capturedArea() const
     return captured;
 }
 
-void StampBrush::doPaint()
+void StampBrush::doPaint(bool mergeable)
 {
     if (!mStamp)
         return;
@@ -189,6 +189,7 @@ void StampBrush::doPaint()
 
     PaintTileLayer *paint = new PaintTileLayer(mMapDocument, tileLayer,
                                                mStampX, mStampY, mStamp);
+    paint->setMergeable(mergeable);
     mMapDocument->undoStack()->push(paint);
 }
 

@@ -68,8 +68,12 @@ public:
     /**
      * Sets the tiles at the given coordinates to the tiles in the given tile
      * layer. The coordinates \a x and \a y are relative to the map origin.
+     *
+     * When a \a mask is given, only tiles that fall within this mask are set.
+     * The mask is applied in map coordinates.
      */
-    void setTiles(int x, int y, TileLayer *tile);
+    void setTiles(int x, int y, TileLayer *tiles,
+                  const QRegion &mask = QRegion());
 
     /**
      * Draws the tiles in the given tile layer at the given coordinates. The

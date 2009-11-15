@@ -65,7 +65,7 @@ public:
 private:
     void beginPaint();
     void endPaint();
-    void doPaint();
+    void doPaint(bool mergeable);
 
     void beginCapture();
     void endCapture();
