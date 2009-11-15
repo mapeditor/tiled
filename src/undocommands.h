@@ -19,37 +19,18 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef ERASER_H
-#define ERASER_H
-
-#include "abstracttiletool.h"
-
-namespace Tiled {
-namespace Internal {
+#ifndef UNDOCOMMANDS_H
+#define UNDOCOMMANDS_H
 
 /**
- * Implements a simple eraser tool.
+ * These undo command IDs are used by Qt to determine whether two undo commands
+ * can be merged.
+ *
+ * At the moment merging of undo commands has only been implemented for the
+ * eraser.
  */
-class Eraser : public AbstractTileTool
-{
-    Q_OBJECT
-
-public:
-    Eraser(QObject *parent = 0);
-
-    void tilePositionChanged(const QPoint &tilePos);
-
-    void mousePressed(const QPointF &pos, Qt::MouseButton button,
-                      Qt::KeyboardModifiers modifiers);
-    void mouseReleased(const QPointF &pos, Qt::MouseButton button);
-
-private:
-    void doErase(bool mergeable);
-
-    bool mErasing;
+enum UndoCommands {
+    Cmd_EraseTiles
 };
 
-} // namespace Internal
-} // namespace Tiled
-
-#endif // ERASER_H
+#endif // UNDOCOMMANDS_H

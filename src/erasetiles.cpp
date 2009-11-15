@@ -33,6 +33,7 @@ EraseTiles::EraseTiles(MapDocument *mapDocument,
     : mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
     , mRegion(region)
+    , mMergeable(false)
 {
     setText(QObject::tr("Erase"));
 
@@ -50,11 +51,46 @@ void EraseTiles::undo()
 {
     const QRect bounds = mRegion.boundingRect();
     TilePainter painter(mMapDocument, mTileLayer);
-    painter.setTiles(bounds.x(), bounds.y(), mErasedTiles);
+    painter.drawTiles(bounds.x(), bounds.y(), mErasedTiles);
 }
 
 void EraseTiles::redo()
 {
     TilePainter painter(mMapDocument, mTileLayer);
     painter.erase(mRegion);
+}
+
+bool EraseTiles::mergeWith(const QUndoCommand *other)
+{
+    const EraseTiles *o = static_cast<const EraseTiles*>(other);
+    if (!(mMapDocument == o->mMapDocument &&
+          mTileLayer == o->mTileLayer &&
+          o->mMergeable))
+        return false;
+
+    const QRegion combinedRegion = mRegion.united(o->mRegion);
+    if (mRegion != combinedRegion) {
+        const QRect bounds = mRegion.boundingRect();
+        const QRect combinedBounds = combinedRegion.boundingRect();
+
+        // Resize the erased tiles layer when necessary
+        if (bounds != combinedBounds) {
+            const QPoint shift = bounds.topLeft() - combinedBounds.topLeft();
+            mErasedTiles->resize(combinedBounds.size(), shift);
+        }
+
+        // Copy the newly erased tiles over
+        const QRect otherBounds = o->mRegion.boundingRect();
+        const QPoint shift = otherBounds.topLeft() - combinedBounds.topLeft();
+        for (int y = 0; y < o->mErasedTiles->height(); ++y)
+            for (int x = 0; x < o->mErasedTiles->width(); ++x)
+                if (Tile *tile = o->mErasedTiles->tileAt(x, y))
+                    mErasedTiles->setTile(x + shift.x(),
+                                          y + shift.y(),
+                                          tile);
+
+        mRegion = combinedRegion;
+    }
+
+    return true;
 }

@@ -22,6 +22,8 @@
 #ifndef ERASETILES_H
 #define ERASETILES_H
 
+#include "undocommands.h"
+
 #include <QRegion>
 #include <QUndoCommand>
 
@@ -42,14 +44,24 @@ public:
                const QRegion &region);
     ~EraseTiles();
 
+    /**
+     * Sets whether this undo command can be merged with an existing command.
+     */
+    void setMergeable(bool mergeable)
+    { mMergeable = mergeable; }
+
     void undo();
     void redo();
+
+    int id() const { return Cmd_EraseTiles; }
+    bool mergeWith(const QUndoCommand *other);
 
 private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
     TileLayer *mErasedTiles;
     QRegion mRegion;
+    bool mMergeable;
 };
 
 } // namespace Internal

@@ -134,7 +134,8 @@ HEADERS += aboutdialog.h \
     selectiontool.h \
     abstracttiletool.h \
     changeselection.h \
-    clipboardmanager.h
+    clipboardmanager.h \
+    undocommands.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

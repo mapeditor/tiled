@@ -48,7 +48,7 @@ void Eraser::tilePositionChanged(const QPoint &tilePos)
     brushItem()->setTilePos(tilePos);
 
     if (mErasing)
-        doErase();
+        doErase(true);
 }
 
 void Eraser::mousePressed(const QPointF &, Qt::MouseButton button,
@@ -56,7 +56,7 @@ void Eraser::mousePressed(const QPointF &, Qt::MouseButton button,
 {
     if (button == Qt::LeftButton) {
         mErasing = true;
-        doErase();
+        doErase(false);
     }
 }
 
@@ -66,7 +66,7 @@ void Eraser::mouseReleased(const QPointF &, Qt::MouseButton button)
         mErasing = false;
 }
 
-void Eraser::doErase()
+void Eraser::doErase(bool mergeable)
 {
     MapDocument *mapDocument = mapScene()->mapDocument();
     TileLayer *tileLayer = currentTileLayer();
@@ -75,9 +75,11 @@ void Eraser::doErase()
     if (!tileLayer->bounds().contains(tilePos))
         return;
 
-    QUndoCommand *erase = new EraseTiles(mapDocument, tileLayer,
-                                         QRegion(tilePos.x(),
-                                                 tilePos.y(),
-                                                 1, 1));
+    EraseTiles *erase = new EraseTiles(mapDocument, tileLayer,
+                                       QRegion(tilePos.x(),
+                                               tilePos.y(),
+                                               1, 1));
+    erase->setMergeable(mergeable);
+
     mapDocument->undoStack()->push(erase);
 }
