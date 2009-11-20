@@ -97,6 +97,7 @@ private:
     QString mName; // Copies of name and type, so we know when they change
     QString mType;
     bool mIsEditable;
+    bool mSyncing;
 
     friend class ResizeHandle;
 };

@@ -126,20 +126,22 @@ void ResizeHandle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 QVariant ResizeHandle::itemChange(GraphicsItemChange change,
                                   const QVariant &value)
 {
-    if (change == ItemPositionChange) {
-        QPoint newPos = value.toPoint();
-        newPos.setX(qMax(newPos.x(), 0));
-        newPos.setY(qMax(newPos.y(), 0));
-        if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-            MapDocument *document = mMapObjectItem->mapDocument();
-            newPos = document->snapToTileGrid(newPos);
+    if (!mMapObjectItem->mSyncing) {
+        if (change == ItemPositionChange) {
+            QPoint newPos = value.toPoint();
+            newPos.setX(qMax(newPos.x(), 0));
+            newPos.setY(qMax(newPos.y(), 0));
+            if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+                MapDocument *document = mMapObjectItem->mapDocument();
+                newPos = document->snapToTileGrid(newPos);
+            }
+            return newPos;
         }
-        return newPos;
-    }
-    else if (change == ItemPositionHasChanged) {
-        // Update the size of the map object
-        QPoint newPos = value.toPoint();
-        mMapObjectItem->resize(QSize(newPos.x(), newPos.y()));
+        else if (change == ItemPositionHasChanged) {
+            // Update the size of the map object
+            QPoint newPos = value.toPoint();
+            mMapObjectItem->resize(QSize(newPos.x(), newPos.y()));
+        }
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -153,7 +155,8 @@ MapObjectItem::MapObjectItem(MapObject *object, ObjectGroupItem *parent):
     QGraphicsItem(parent),
     mObject(object),
     mResizeHandle(new ResizeHandle(this)),
-    mIsEditable(false)
+    mIsEditable(false),
+    mSyncing(false)
 {
     syncWithMapObject();
     mResizeHandle->setVisible(false);
@@ -183,6 +186,7 @@ void MapObjectItem::syncWithMapObject()
     const QSize pixelSize = map->toPixelCoordinates(mObject->size());
     const QPoint pixelPosition = map->toPixelCoordinates(mObject->position());
 
+    mSyncing = true;
     setPos(pixelPosition);
 
     if (mSize != pixelSize) {
@@ -191,6 +195,7 @@ void MapObjectItem::syncWithMapObject()
         mSize = pixelSize;
         mResizeHandle->setPos(mSize.width(), mSize.height());
     }
+    mSyncing = false;
 }
 
 void MapObjectItem::setEditable(bool editable)
@@ -317,17 +322,19 @@ void MapObjectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 QVariant MapObjectItem::itemChange(GraphicsItemChange change,
                                    const QVariant &value)
 {
-    if (change == ItemPositionChange
-        && (QApplication::keyboardModifiers() & Qt::ControlModifier))
-    {
-        // Snap the position to the grid
-        return mapDocument()->snapToTileGrid(value.toPoint());
-    }
-    else if (change == ItemPositionHasChanged) {
-        // Update the position of the map object
-        const ObjectGroup *og = mObject->objectGroup();
-        const Map *map = og->map();
-        mObject->setPosition(map->toTileCoordinates(value.toPoint()));
+    if (!mSyncing) {
+        if (change == ItemPositionChange
+            && (QApplication::keyboardModifiers() & Qt::ControlModifier))
+        {
+            // Snap the position to the grid
+            return mapDocument()->snapToTileGrid(value.toPoint());
+        }
+        else if (change == ItemPositionHasChanged) {
+            // Update the position of the map object
+            const ObjectGroup *og = mObject->objectGroup();
+            const Map *map = og->map();
+            mObject->setPosition(map->toTileCoordinates(value.toPoint()));
+        }
     }
 
     return QGraphicsItem::itemChange(change, value);
