@@ -86,9 +86,21 @@ void TmxMapWriter::writeMap(QXmlStreamWriter &w, const Map *map)
 {
     w.writeStartElement(QLatin1String("map"));
 
+    QString orientation;
+    switch (map->orientation()) {
+    case Map::Orthogonal:
+        orientation = QLatin1String("orthogonal");
+        break;
+    case Map::Isometric:
+        orientation = QLatin1String("isometric");
+        break;
+    case Map::Hexagonal:
+        orientation = QLatin1String("hexagonal");
+        break;
+    }
+
     w.writeAttribute(QLatin1String("version"), QLatin1String("1.0"));
-    w.writeAttribute(QLatin1String("orientation"),
-                     QLatin1String("orthogonal"));
+    w.writeAttribute(QLatin1String("orientation"), orientation);
     w.writeAttribute(QLatin1String("width"), QString::number(map->width()));
     w.writeAttribute(QLatin1String("height"), QString::number(map->height()));
     w.writeAttribute(QLatin1String("tilewidth"),

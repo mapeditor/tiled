@@ -45,14 +45,42 @@ class Map
 {
 public:
     /**
-     * Constructor, taking map and tile size as parameters.
+     * The orientation of the map determines how it should be rendered. An
+     * Orthogonal map is using rectangular tiles that are aligned on a
+     * straight grid. An Isometric map uses diamond shaped tiles that are
+     * aligned on an isometric projected grid. A Hexagonal map uses hexagon
+     * shaped tiles that fit into each other by shifting every other row.
+     *
+     * Only Orthogonal maps are supported by this version of Tiled.
      */
-    Map(int width, int height, int tileWidth, int tileHeight);
+    enum Orientation {
+        Orthogonal,
+        Isometric,
+        Hexagonal
+    };
+
+    /**
+     * Constructor, taking map orientation, size and tile size as parameters.
+     */
+    Map(Orientation orientation,
+        int width, int height,
+        int tileWidth, int tileHeight);
 
     /**
      * Destructor.
      */
     ~Map();
+
+    /**
+     * Returns the orientation of the map.
+     */
+    Orientation orientation() const { return mOrientation; }
+
+    /**
+     * Sets the orientation of the map.
+     */
+    void setOrientation(Orientation orientation)
+    { mOrientation = orientation; }
 
     /**
      * Returns the width of this map.
@@ -171,6 +199,7 @@ public:
 private:
     void adoptLayer(Layer *layer);
 
+    Orientation mOrientation;
     int mWidth;
     int mHeight;
     int mTileWidth;

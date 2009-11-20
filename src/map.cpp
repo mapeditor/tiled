@@ -28,7 +28,9 @@
 
 using namespace Tiled;
 
-Map::Map(int width, int height, int tileWidth, int tileHeight):
+Map::Map(Orientation orientation,
+         int width, int height, int tileWidth, int tileHeight):
+    mOrientation(orientation),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
@@ -123,7 +125,7 @@ QList<Tileset*> Map::tilesets() const
 
 Map *Map::clone() const
 {
-    Map *o = new Map(mWidth, mHeight, mTileWidth, mTileHeight);
+    Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
     o->mMaxTileHeight = mMaxTileHeight;
     foreach (Layer *layer, mLayers)
         o->addLayer(layer->clone());

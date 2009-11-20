@@ -245,10 +245,17 @@ Map *TmxReader::readMap()
             atts.value(QLatin1String("tilewidth")).toString().toInt();
     const int tileHeight =
             atts.value(QLatin1String("tileheight")).toString().toInt();
-    // TODO: Add support for map orientation (at least support isometric)
-    //const QString orientation = atts.value(QLatin1String("orientation"));
 
-    mMap = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
+    // TODO: Add support for other map orientations
+    const QString orientationStr =
+            atts.value(QLatin1String("orientation")).toString();
+    const Map::Orientation orientation = Map::Orthogonal;
+    if (orientationStr != QLatin1String("orthogonal")) {
+        xml.raiseError(QObject::tr("Unsupported map orientation: \"%1\"")
+                       .arg(orientationStr));
+    }
+
+    mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
 
     while (readNextStartElement()) {
         if (xml.name() == "properties")

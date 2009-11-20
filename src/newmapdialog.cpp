@@ -50,7 +50,8 @@ MapDocument *NewMapDialog::createMap()
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
 
-    Map *map = new Map(mapWidth, mapHeight, tileWidth, tileHeight);
+    Map *map = new Map(Map::Orthogonal,
+                       mapWidth, mapHeight, tileWidth, tileHeight);
 
     // Add one filling tile layer to new maps
     map->addLayer(new TileLayer(tr("Layer 1"), 0, 0, mapWidth, mapHeight));
