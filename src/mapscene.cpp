@@ -27,6 +27,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
+#include "maprenderer.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "tilelayer.h"
@@ -130,13 +131,11 @@ void MapScene::refreshScene()
         return;
     }
 
+    const QSize mapSize = mMapDocument->renderer()->mapSize();
+    setSceneRect(0, 0, mapSize.width(), mapSize.height());
+
     const Map *map = mMapDocument->map();
-
     mLayerItems.resize(map->layerCount());
-
-    setSceneRect(0, 0,
-            map->width() * map->tileWidth(),
-            map->height() * map->tileHeight());
 
     int layerIndex = 0;
     foreach (Layer *layer, map->layers()) {
@@ -343,42 +342,11 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
     if (!mMapDocument || !mGridVisible)
         return;
 
-    Map *map = mMapDocument->map();
-
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    const int startX = (int) (rect.x() / tileWidth) * tileWidth;
-    const int startY = (int) (rect.y() / tileHeight) * tileHeight;
-    const int endX = qMin((int) std::ceil(rect.right()),
-                          map->width() * tileWidth + 1);
-    const int endY = qMin((int) std::ceil(rect.bottom()),
-                          map->height() * tileHeight + 1);
-
-    QColor gridColor(Qt::black);
-    gridColor.setAlpha(128);
-
-    QPen gridPen(gridColor);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
-
-    if ((int) rect.top() < endY) {
-        gridPen.setDashOffset(rect.top());
-        painter->setPen(gridPen);
-        for (int x = startX; x < endX; x += tileWidth)
-            painter->drawLine(x, (int) rect.top(), x, endY - 1);
-    }
-
-    if ((int) rect.left() < endX) {
-        gridPen.setDashOffset(rect.left());
-        painter->setPen(gridPen);
-        for (int y = startY; y < endY; y += tileHeight)
-            painter->drawLine((int) rect.left(), y, endX - 1, y);
-    }
+    mMapDocument->renderer()->drawGrid(painter, rect);
 }
 
 bool MapScene::event(QEvent *event)
 {
-    // Show and hide the brush cursor as the mouse enters and leaves the scene
     switch (event->type()) {
     case QEvent::Enter:
         mUnderMouse = true;

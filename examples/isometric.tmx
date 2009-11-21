@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="isometric" width="40" height="40" tilewidth="64" tileheight="32">
+ <tileset name="Isometric Tileset" firstgid="1" tilewidth="64" tileheight="128">
+  <image source="isometric_tileset.png"/>
+ </tileset>
+ <layer name="Layer 0" width="40" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAAO2X0QrFIAxD3f7/o+/LFUpo2r20qWAhbPjgDkl1+q613qurq2P1/KXmOJVvM6oZTvXwAal5snwnM05lQ++mcp7EN7EnPb5JbN4aUfMhF7575fVAJRsbtzxY6v2IeYeMyuyjes2zO9/Mw83W1X/sO18y7uKLvFAz7mKsjAn5KtY07iNs/qjsXJUeog92TMXGckHGqLr+JdG4go2dBZiXjLM6VzzrRXl7/ViZq9dv9pn1QOc/GPfrtbi/Cj6WcZZ1lWx95e72ynJm31ee9zbftPuH51HWf1OkvmP8AJSKFe8AGQAA
+  </data>
+ </layer>
+</map>

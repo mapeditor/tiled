@@ -71,7 +71,8 @@ SOURCES += aboutdialog.cpp \
     abstracttool.cpp \
     changeselection.cpp \
     clipboardmanager.cpp \
-    orthogonalrenderer.cpp
+    orthogonalrenderer.cpp \
+    isometricrenderer.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -136,7 +137,8 @@ HEADERS += aboutdialog.h \
     changeselection.h \
     clipboardmanager.h \
     undocommands.h \
-    orthogonalrenderer.h
+    orthogonalrenderer.h \
+    isometricrenderer.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

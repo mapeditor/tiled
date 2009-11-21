@@ -54,6 +54,7 @@ public:
      * Only Orthogonal maps are supported by this version of Tiled.
      */
     enum Orientation {
+        Unknown,
         Orthogonal,
         Isometric,
         Hexagonal

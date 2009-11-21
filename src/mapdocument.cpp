@@ -22,11 +22,12 @@
 #include "mapdocument.h"
 
 #include "addremovelayer.h"
+#include "isometricrenderer.h"
 #include "layermodel.h"
 #include "map.h"
-#include "orthogonalrenderer.h"
 #include "movelayer.h"
 #include "objectgroup.h"
+#include "orthogonalrenderer.h"
 #include "resizelayer.h"
 #include "resizemap.h"
 #include "tilelayer.h"
@@ -43,9 +44,17 @@ MapDocument::MapDocument(Map *map):
     mMap(map),
     mLayerModel(new LayerModel(this)),
     mSelectionModel(new TileSelectionModel(this, this)),
-    mRenderer(new OrthogonalRenderer(mMap)),
     mUndoStack(new QUndoStack(this))
 {
+    switch (map->orientation()) {
+    case Map::Isometric:
+        mRenderer = new IsometricRenderer(map);
+        break;
+    default:
+        mRenderer = new OrthogonalRenderer(map);
+        break;
+    }
+
     mCurrentLayer = (map->layerCount() == 0) ? -1 : 0;
     mLayerModel->setMapDocument(this);
 

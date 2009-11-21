@@ -19,8 +19,8 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef ORTHOGONALRENDERER_H
-#define ORTHOGONALRENDERER_H
+#ifndef ISOMETRICRENDERER_H
+#define ISOMETRICRENDERER_H
 
 #include "maprenderer.h"
 
@@ -28,13 +28,16 @@ namespace Tiled {
 namespace Internal {
 
 /**
- * The orthogonal map renderer. This is the most basic map renderer,
- * dealing with maps that use rectangular tiles.
+ * An isometric map renderer.
+ *
+ * Isometric maps have diamond shaped tiles. This map renderer renders them in
+ * such a way that the map will also be diamond shaped. The X axis points to
+ * the bottom right while the Y axis points to the bottom left.
  */
-class OrthogonalRenderer : public MapRenderer
+class IsometricRenderer : public MapRenderer
 {
 public:
-    OrthogonalRenderer(Map *map) : MapRenderer(map) {}
+    IsometricRenderer(Map *map) : MapRenderer(map) {}
 
     QSize mapSize() const;
 
@@ -44,9 +47,20 @@ public:
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF());
+
+private:
+    QPoint screenToTileCoords(int x, int y);
+
+    inline QPoint screenToTileCoords(const QPoint &point)
+    { return screenToTileCoords(point.x(), point.y()); }
+
+    QPoint tileToScreenCoords(int x, int y);
+
+    inline QPoint tileToScreenCoords(const QPoint &point)
+    { return tileToScreenCoords(point.x(), point.y()); }
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // ORTHOGONALRENDERER_H
+#endif // ISOMETRICRENDERER_H

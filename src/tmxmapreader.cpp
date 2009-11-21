@@ -232,6 +232,17 @@ void TmxReader::skipCurrentElement()
         skipCurrentElement();
 }
 
+static Map::Orientation orientationFromString(const QStringRef &string)
+{
+    Map::Orientation orientation = Map::Unknown;
+    if (string == QLatin1String("orthogonal")) {
+        orientation = Map::Orthogonal;
+    } else if (string == QLatin1String("isometric")) {
+        orientation = Map::Isometric;
+    }
+    return orientation;
+}
+
 Map *TmxReader::readMap()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "map");
@@ -246,13 +257,14 @@ Map *TmxReader::readMap()
     const int tileHeight =
             atts.value(QLatin1String("tileheight")).toString().toInt();
 
-    // TODO: Add support for other map orientations
-    const QString orientationStr =
-            atts.value(QLatin1String("orientation")).toString();
-    const Map::Orientation orientation = Map::Orthogonal;
-    if (orientationStr != QLatin1String("orthogonal")) {
+    const QStringRef orientationRef =
+            atts.value(QLatin1String("orientation"));
+    const Map::Orientation orientation =
+            orientationFromString(orientationRef);
+
+    if (orientation == Map::Unknown) {
         xml.raiseError(QObject::tr("Unsupported map orientation: \"%1\"")
-                       .arg(orientationStr));
+                       .arg(orientationRef.toString()));
     }
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);

@@ -46,6 +46,39 @@ QRect OrthogonalRenderer::layerBoundingRect(const Layer *layer) const
                  layer->height() * tileHeight);
 }
 
+void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect)
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+
+    const int startX = (int) (rect.x() / tileWidth) * tileWidth;
+    const int startY = (int) (rect.y() / tileHeight) * tileHeight;
+    const int endX = qMin((int) std::ceil(rect.right()),
+                          map()->width() * tileWidth + 1);
+    const int endY = qMin((int) std::ceil(rect.bottom()),
+                          map()->height() * tileHeight + 1);
+
+    QColor gridColor(Qt::black);
+    gridColor.setAlpha(128);
+
+    QPen gridPen(gridColor);
+    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+
+    if ((int) rect.top() < endY) {
+        gridPen.setDashOffset(rect.top());
+        painter->setPen(gridPen);
+        for (int x = startX; x < endX; x += tileWidth)
+            painter->drawLine(x, (int) rect.top(), x, endY - 1);
+    }
+
+    if ((int) rect.left() < endX) {
+        gridPen.setDashOffset(rect.left());
+        painter->setPen(gridPen);
+        for (int y = startY; y < endY; y += tileHeight)
+            painter->drawLine((int) rect.left(), y, endX - 1, y);
+    }
+}
+
 void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
                                        const QRectF &exposed)

@@ -34,8 +34,8 @@ namespace Internal {
 
 /**
  * This interface is used for rendering tile layers and retrieving associated
- * metrics. Currently, only orthogonal maps are supported, by the
- * OrthogonalRenderer.
+ * metrics. The different implementations deal with different map
+ * orientations.
  */
 class MapRenderer
 {
@@ -52,6 +52,12 @@ public:
      * Returns the bounding rectangle of the given \a layer in pixels.
      */
     virtual QRect layerBoundingRect(const Layer *layer) const = 0;
+
+    /**
+     * Draws the tile grid in the specified \a rect using the given
+     * \a painter.
+     */
+    virtual void drawGrid(QPainter *painter, const QRectF &rect) = 0;
 
     /**
      * Draws the given \a layer using the given \a painter.
