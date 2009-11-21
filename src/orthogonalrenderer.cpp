@@ -19,7 +19,7 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "maprenderer.h"
+#include "orthogonalrenderer.h"
 
 #include "map.h"
 #include "tile.h"
@@ -27,24 +27,18 @@
 
 #include <cmath>
 
-using namespace Tiled;
 using namespace Tiled::Internal;
 
-MapRenderer::MapRenderer(Map *map)
-    : mMap(map)
+QSize OrthogonalRenderer::mapSize() const
 {
+    return QSize(map()->width() * map()->tileWidth(),
+                 map()->height() * map()->tileHeight());
 }
 
-QSize MapRenderer::mapSize() const
+QRect OrthogonalRenderer::layerBoundingRect(const Layer *layer) const
 {
-    return QSize(mMap->width() * mMap->tileWidth(),
-                 mMap->height() * mMap->tileHeight());
-}
-
-QRect MapRenderer::layerBoundingRect(const Layer *layer) const
-{
-    const int tileWidth = mMap->tileWidth();
-    const int tileHeight = mMap->tileHeight();
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
 
     return QRect(layer->x() * tileWidth,
                  layer->y() * tileHeight,
@@ -52,11 +46,12 @@ QRect MapRenderer::layerBoundingRect(const Layer *layer) const
                  layer->height() * tileHeight);
 }
 
-void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer,
-                                const QRectF &exposed)
+void OrthogonalRenderer::drawTileLayer(QPainter *painter,
+                                       const TileLayer *layer,
+                                       const QRectF &exposed)
 {
-    const int tileWidth = mMap->tileWidth();
-    const int tileHeight = mMap->tileHeight();
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
 
     int startX = 0;
     int startY = 0;

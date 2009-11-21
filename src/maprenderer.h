@@ -33,27 +33,25 @@ class TileLayer;
 namespace Internal {
 
 /**
- * This class is responsible for rendering tile layers. Currently, only
- * orthogonal maps are supported.
- *
- * TODO: The functionality in this class depends on the orientation of the map.
- *       Hence, this class should really be an interface, implemented by the
- *       different supported orientations.
+ * This interface is used for rendering tile layers and retrieving associated
+ * metrics. Currently, only orthogonal maps are supported, by the
+ * OrthogonalRenderer.
  */
 class MapRenderer
 {
 public:
-    MapRenderer(Map *map);
+    MapRenderer(Map *map) : mMap(map) {}
+    virtual ~MapRenderer() {}
 
     /**
      * Returns the size in pixels of the map associated with this renderer.
      */
-    QSize mapSize() const;
+    virtual QSize mapSize() const = 0;
 
     /**
      * Returns the bounding rectangle of the given \a layer in pixels.
      */
-    QRect layerBoundingRect(const Layer *layer) const;
+    virtual QRect layerBoundingRect(const Layer *layer) const = 0;
 
     /**
      * Draws the given \a layer using the given \a painter.
@@ -61,8 +59,14 @@ public:
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
      */
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF());
+    virtual void drawTileLayer(QPainter *painter, const TileLayer *layer,
+                               const QRectF &exposed = QRectF()) = 0;
+
+protected:
+    /**
+     * Returns the map this renderer is associated with.
+     */
+    const Map *map() const { return mMap; }
 
 private:
     Map *mMap;

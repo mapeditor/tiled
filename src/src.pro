@@ -58,7 +58,6 @@ SOURCES += aboutdialog.cpp \
     resizemap.cpp \
     objectpropertiesdialog.cpp \
     changemapobject.cpp \
-    maprenderer.cpp \
     stampbrush.cpp \
     toolmanager.cpp \
     eraser.cpp \
@@ -71,7 +70,8 @@ SOURCES += aboutdialog.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
     changeselection.cpp \
-    clipboardmanager.cpp
+    clipboardmanager.cpp \
+    orthogonalrenderer.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -135,7 +135,8 @@ HEADERS += aboutdialog.h \
     abstracttiletool.h \
     changeselection.h \
     clipboardmanager.h \
-    undocommands.h
+    undocommands.h \
+    orthogonalrenderer.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
