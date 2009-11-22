@@ -64,6 +64,9 @@ public:
     Tile *tileAt(int x, int y) const
     { return mTiles.at(x + y * mWidth); }
 
+    Tile *tileAt(const QPoint &point) const
+    { return tileAt(point.x(), point.y()); }
+
     /**
      * Sets the tile for the given coordinates.
      */

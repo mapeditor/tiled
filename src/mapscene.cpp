@@ -220,14 +220,17 @@ void MapScene::currentLayerChanged()
 }
 
 /**
- * Adapts the scene rect to the new map size.
+ * Adapts the scene rect and layers to the new map size.
  */
 void MapScene::mapChanged()
 {
-    const Map *map = mMapDocument->map();
-    setSceneRect(0, 0,
-                 map->width() * map->tileWidth(),
-                 map->height() * map->tileHeight());
+    const QSize mapSize = mMapDocument->renderer()->mapSize();
+    setSceneRect(0, 0, mapSize.width(), mapSize.height());
+    
+    foreach (QGraphicsItem *item, mLayerItems) {
+        if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
+            tli->syncWithTileLayer();
+    }
 }
 
 void MapScene::layerAdded(int index)

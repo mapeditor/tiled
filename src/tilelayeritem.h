@@ -46,6 +46,16 @@ public:
      */
     TileLayerItem(TileLayer *layer, MapRenderer *renderer);
 
+    /**
+     * Updates the size and position of this item. Should be called when the
+     * size of either the tile layer or its associated map have changed.
+     *
+     * Calling this function when the size of the map changes is necessary
+     * because in certain map orientations this affects the layer position
+     * (when using the IsometricRenderer for example).
+     */
+    void syncWithTileLayer();
+
     // QGraphicsItem
     QRectF boundingRect() const;
     void paint(QPainter *painter,

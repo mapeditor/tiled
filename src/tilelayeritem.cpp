@@ -40,11 +40,17 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer)
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 #endif
 
+    syncWithTileLayer();
+    setOpacity(mLayer->opacity());
+}
+
+void TileLayerItem::syncWithTileLayer()
+{
     const QRect boundingRect = mRenderer->layerBoundingRect(mLayer);
     setPos(boundingRect.topLeft());
-    mBoundingRect = QRectF(QPointF(0.0, 0.0), boundingRect.size());
 
-    setOpacity(mLayer->opacity());
+    prepareGeometryChange();
+    mBoundingRect = QRectF(QPointF(0.0, 0.0), boundingRect.size());
 }
 
 QRectF TileLayerItem::boundingRect() const
