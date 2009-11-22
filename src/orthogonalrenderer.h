@@ -34,16 +34,23 @@ namespace Internal {
 class OrthogonalRenderer : public MapRenderer
 {
 public:
-    OrthogonalRenderer(Map *map) : MapRenderer(map) {}
+    OrthogonalRenderer(const Map *map) : MapRenderer(map) {}
 
     QSize mapSize() const;
 
-    QRect layerBoundingRect(const Layer *layer) const;
+    QRect boundingRect(const QRect &rect) const;
 
-    void drawGrid(QPainter *painter, const QRectF &rect);
+    void drawGrid(QPainter *painter, const QRectF &rect) const;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF());
+                       const QRectF &exposed = QRectF()) const;
+
+    void drawTileSelection(QPainter *painter,
+                           const QRegion &region,
+                           const QColor &color,
+                           const QRectF &exposed) const;
+
+    QPoint screenToTileCoords(int x, int y) const;
 };
 
 } // namespace Internal

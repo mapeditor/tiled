@@ -45,7 +45,7 @@ Eraser::Eraser(QObject *parent)
 
 void Eraser::tilePositionChanged(const QPoint &tilePos)
 {
-    brushItem()->setTilePos(tilePos);
+    brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
 
     if (mErasing)
         doErase(true);

@@ -38,9 +38,11 @@ using namespace Tiled::Internal;
 
 BrushItem::BrushItem():
     mMapDocument(0),
-    mTileLayer(0),
-    mExtend(0)
+    mTileLayer(0)
 {
+#if QT_VERSION >= 0x040600
+    setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
+#endif
 }
 
 void BrushItem::setMapDocument(MapDocument *mapDocument)
@@ -65,25 +67,12 @@ void BrushItem::setTileLayer(TileLayer *tileLayer)
     update();
 }
 
-void BrushItem::setTilePos(int x, int y)
+void BrushItem::setTileRegion(const QRegion &region)
 {
-    if (!mMapDocument)
+    if (mRegion == region)
         return;
 
-    const Map *map = mMapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    setPos(x * tileWidth, y * tileHeight);
-}
-
-void BrushItem::setTileSize(int width, int height)
-{
-    if (mWidth == width && mHeight == height)
-        return;
-
-    mWidth = width;
-    mHeight = height;
+    mRegion = region;
     updateBoundingRect();
 }
 
@@ -99,19 +88,19 @@ void BrushItem::paint(QPainter *painter,
     QColor highlight = QApplication::palette().highlight().color();
     highlight.setAlpha(64);
 
+    const MapRenderer *renderer = mMapDocument->renderer();
+
     if (mTileLayer) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
-        mMapDocument->renderer()->drawTileLayer(painter, mTileLayer);
+        renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
         painter->setOpacity(opacity);
 
-        QRectF redraw = option->exposedRect;
-        if (redraw.top() < 0)
-            redraw.setTop(0);
-
-        painter->fillRect(redraw, highlight);
+        renderer->drawTileSelection(painter, mTileLayer->bounds(), highlight,
+                                    option->exposedRect);
     } else {
-        painter->fillRect(option->exposedRect, highlight);
+        renderer->drawTileSelection(painter, mRegion, highlight,
+                                    option->exposedRect);
     }
 }
 
@@ -124,21 +113,19 @@ void BrushItem::updateBoundingRect()
         return;
     }
 
-    const Map *map = mMapDocument->map();
-    int w = mWidth;
-    int h = mHeight;
-
-    // Update the amount of pixels tiles extend above the brush
+    QRect bounds = mRegion.boundingRect();
     if (mTileLayer) {
-        w = mTileLayer->width();
-        h = mTileLayer->height();
-
-        mExtend = qMax(0, mTileLayer->maxTileHeight() - map->tileHeight());
-    } else {
-        mExtend = 0;
+        bounds.setSize(QSize(mTileLayer->width(), mTileLayer->height()));
+        mTileLayer->setX(bounds.x());
+        mTileLayer->setY(bounds.y());
     }
 
-    mBoundingRect = QRectF(0, -mExtend,
-                           map->tileWidth() * w,
-                           map->tileHeight() * h + mExtend);
+    mBoundingRect = mMapDocument->renderer()->boundingRect(bounds);
+
+    // Adjust for amount of pixels tiles extend above the brush
+    if (mTileLayer) {
+        const int tileHeight = mMapDocument->map()->tileHeight();
+        const int extra = qMax(0, mTileLayer->maxTileHeight() - tileHeight);
+        mBoundingRect.adjust(0, -extra, 0, 0);
+    }
 }

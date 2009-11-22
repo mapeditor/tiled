@@ -61,12 +61,13 @@ void StampBrush::enable(MapScene *scene)
 
 void StampBrush::tilePositionChanged(const QPoint &)
 {
-    updatePosition();
-
     if (mPainting) {
+        updatePosition();
         doPaint(true);
     } else if (mCapturing) {
-        brushItem()->setTileSize(capturedArea().size());
+        brushItem()->setTileRegion(capturedArea());
+    } else {
+        updatePosition();
     }
 }
 
@@ -98,7 +99,7 @@ void StampBrush::setMapDocument(MapDocument *mapDocument)
     brushItem()->setMapDocument(mMapDocument);
 
     // Reset the brush, since it probably became invalid
-    brushItem()->setTileSize(1, 1);
+    brushItem()->setTileRegion(QRegion());
     setStamp(0);
 }
 
@@ -137,7 +138,6 @@ void StampBrush::beginCapture()
     mCapturing = true;
 
     setStamp(0);
-    brushItem()->setTileSize(1, 1);
 }
 
 void StampBrush::endCapture()
@@ -201,10 +201,7 @@ void StampBrush::updatePosition()
     const QPoint tilePos = tilePosition();
     QPoint newPos;
 
-    if (mCapturing) {
-        newPos = QPoint(qMin(tilePos.x(), mCaptureStart.x()),
-                        qMin(tilePos.y(), mCaptureStart.y()));
-    } else if (mStamp) {
+    if (mStamp) {
         mStampX = tilePos.x() - mStamp->width() / 2;
         mStampY = tilePos.y() - mStamp->height() / 2;
         newPos = QPoint(mStampX, mStampY);
@@ -212,5 +209,5 @@ void StampBrush::updatePosition()
         newPos = tilePos;
     }
 
-    brushItem()->setTilePos(newPos);
+    brushItem()->setTileRegion(QRect(newPos, QSize(1, 1)));
 }

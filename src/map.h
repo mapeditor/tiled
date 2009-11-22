@@ -51,7 +51,8 @@ public:
      * aligned on an isometric projected grid. A Hexagonal map uses hexagon
      * shaped tiles that fit into each other by shifting every other row.
      *
-     * Only Orthogonal maps are supported by this version of Tiled.
+     * Only Orthogonal and Isometric maps are supported by this version of
+     * Tiled.
      */
     enum Orientation {
         Unknown,
@@ -130,6 +131,15 @@ public:
      * increases.
      */
     void adjustMaxTileHeight(int height);
+
+    /**
+     * Convenience method for getting the extra tile height, which is the
+     * number of pixels that tiles may extend above their regular height.
+     *
+     * @see maxTileHeight()
+     */
+    inline int extraTileHeight() const
+    { return mMaxTileHeight - mTileHeight; }
 
     QPoint toPixelCoordinates(const QPointF &p) const;
     QSize toPixelCoordinates(const QSizeF &p) const;

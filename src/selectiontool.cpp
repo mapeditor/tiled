@@ -44,15 +44,12 @@ SelectionTool::SelectionTool(QObject *parent)
     , mSelecting(false)
 {
     setTilePositionMethod(BetweenTiles);
-    brushItem()->setTileSize(0, 0);
 }
 
 void SelectionTool::tilePositionChanged(const QPoint &)
 {
-    updatePosition();
-
     if (mSelecting)
-        brushItem()->setTileSize(selectedArea().size());
+        brushItem()->setTileRegion(selectedArea());
 }
 
 void SelectionTool::updateStatusInfo()
@@ -85,7 +82,7 @@ void SelectionTool::mousePressed(const QPointF &, Qt::MouseButton button,
 
         mSelecting = true;
         mSelectionStart = tilePosition();
-        brushItem()->setTileSize(0, 0);
+        brushItem()->setTileRegion(QRegion());
     }
 }
 
@@ -112,8 +109,7 @@ void SelectionTool::mouseReleased(const QPointF &,
             mapDocument->undoStack()->push(cmd);
         }
 
-        brushItem()->setTileSize(0, 0);
-        updatePosition();
+        brushItem()->setTileRegion(QRegion());
         updateStatusInfo();
     }
 }
@@ -127,22 +123,4 @@ QRect SelectionTool::selectedArea() const
                      qAbs(tilePos.y() - mSelectionStart.y()));
 
     return QRect(pos, size);
-}
-
-/**
- * Updates the position of the brush item.
- */
-void SelectionTool::updatePosition()
-{
-    const QPoint tilePos = tilePosition();
-    QPoint newPos;
-
-    if (mSelecting) {
-        newPos = QPoint(qMin(tilePos.x(), mSelectionStart.x()),
-                        qMin(tilePos.y(), mSelectionStart.y()));
-    } else {
-        newPos = tilePos;
-    }
-
-    brushItem()->setTilePos(newPos);
 }

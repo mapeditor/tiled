@@ -149,12 +149,6 @@ public:
     { emitObjectsChanged(QList<MapObject*>() << object); }
 
     /**
-     * Converts the given rectangle from tile to pixel coordinates.
-     * TODO: Move to MapRenderer (and adapt return type)
-     */
-    QRect toPixelCoordinates(const QRect &r) const;
-
-    /**
      * Snaps the given point to the tile grid of this map document.
      * TODO: Move to MapRenderer
      */

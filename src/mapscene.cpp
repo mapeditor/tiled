@@ -174,11 +174,11 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 
 void MapScene::repaintRegion(const QRegion &region)
 {
-    Map *map = mMapDocument->map();
-    const int extra = map->maxTileHeight() - map->tileHeight();
+    const MapRenderer *renderer = mMapDocument->renderer();
+    const int extra = mMapDocument->map()->extraTileHeight();
 
     foreach (const QRect &r, region.rects())
-        update(mMapDocument->toPixelCoordinates(r).adjusted(0, -extra, 0, 0));
+        update(renderer->boundingRect(r).adjusted(0, -extra, 0, 0));
 }
 
 /**

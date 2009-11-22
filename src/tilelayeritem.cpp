@@ -46,11 +46,8 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer)
 
 void TileLayerItem::syncWithTileLayer()
 {
-    const QRect boundingRect = mRenderer->layerBoundingRect(mLayer);
-    setPos(boundingRect.topLeft());
-
     prepareGeometryChange();
-    mBoundingRect = QRectF(QPointF(0.0, 0.0), boundingRect.size());
+    mBoundingRect = mRenderer->boundingRect(mLayer->bounds());
 }
 
 QRectF TileLayerItem::boundingRect() const
@@ -63,7 +60,5 @@ void TileLayerItem::paint(QPainter *painter,
                           QWidget *)
 {
     // TODO: Display a border around the layer when selected
-    //painter->fillRect(boundingRect(), Qt::blue);
-
     mRenderer->drawTileLayer(painter, mLayer, option->exposedRect);
 }

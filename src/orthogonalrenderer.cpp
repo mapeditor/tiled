@@ -35,18 +35,18 @@ QSize OrthogonalRenderer::mapSize() const
                  map()->height() * map()->tileHeight());
 }
 
-QRect OrthogonalRenderer::layerBoundingRect(const Layer *layer) const
+QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    return QRect(layer->x() * tileWidth,
-                 layer->y() * tileHeight,
-                 layer->width() * tileWidth,
-                 layer->height() * tileHeight);
+    return QRect(rect.x() * tileWidth,
+                 rect.y() * tileHeight,
+                 rect.width() * tileWidth,
+                 rect.height() * tileHeight);
 }
 
-void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect)
+void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -81,10 +81,14 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect)
 
 void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
-                                       const QRectF &exposed)
+                                       const QRectF &exposed) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    const QPointF layerPos(layer->x() * tileWidth,
+                           layer->y() * tileHeight);
+
+    painter->translate(layerPos);
 
     int startX = 0;
     int startY = 0;
@@ -93,7 +97,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     if (!exposed.isNull()) {
         const int extraHeight = layer->maxTileHeight() - tileHeight;
-        const QRectF rect = exposed.adjusted(0, 0, 0, extraHeight);
+        QRectF rect = exposed.adjusted(0, 0, 0, extraHeight);
+        rect.translate(-layerPos);
 
         startX = (int) rect.x() / tileWidth;
         startY = (int) rect.y() / tileHeight;
@@ -113,4 +118,24 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                 img);
         }
     }
+
+    painter->translate(-layerPos);
+}
+
+void OrthogonalRenderer::drawTileSelection(QPainter *painter,
+                                           const QRegion &region,
+                                           const QColor &color,
+                                           const QRectF &exposed) const
+{
+    foreach (const QRect &r, region.rects()) {
+        const QRectF toFill = QRectF(boundingRect(r)).intersected(exposed);
+        if (!toFill.isEmpty())
+            painter->fillRect(toFill, color);
+    }
+}
+
+QPoint OrthogonalRenderer::screenToTileCoords(int x, int y) const
+{
+    return QPoint(x / map()->tileWidth(),
+                  y / map()->tileHeight());
 }

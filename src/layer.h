@@ -95,9 +95,19 @@ public:
     int x() const { return mX; }
 
     /**
+     * Sets the x position of this layer (in tiles).
+     */
+    void setX(int x) { mX = x; }
+
+    /**
      * Returns the y position of this layer (in tiles).
      */
     int y() const { return mY; }
+
+    /**
+     * Sets the y position of this layer (in tiles).
+     */
+    void setY(int y) { mY = y; }
 
     /**
      * Returns the width of this layer.

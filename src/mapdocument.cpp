@@ -238,16 +238,6 @@ void MapDocument::emitObjectsChanged(const QList<MapObject*> &objects)
     emit objectsChanged(objects);
 }
 
-QRect MapDocument::toPixelCoordinates(const QRect &r) const
-{
-    const int tileWidth = mMap->tileWidth();
-    const int tileHeight = mMap->tileHeight();
-    return QRect(r.x() * tileWidth,
-                 r.y() * tileHeight,
-                 r.width() * tileWidth,
-                 r.height() * tileHeight);
-}
-
 QPoint MapDocument::snapToTileGrid(const QPoint &p) const
 {
     const int w = mMap->tileWidth();

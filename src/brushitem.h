@@ -58,20 +58,11 @@ public:
     void setTileLayer(TileLayer *tileLayer);
 
     /**
-     * Updates the position in tiles.
+     * Sets the region of tiles that this brush item occupies. The top left
+     * of the region's bounding rect also determine the position of the tile
+     * layer when one is set.
      */
-    void setTilePos(int x, int y);
-
-    void setTilePos(const QPoint &point)
-    { setTilePos(point.x(), point.y()); }
-
-    /**
-     * Updates the size in tiles.
-     */
-    void setTileSize(int width, int height);
-
-    void setTileSize(const QSize &size)
-    { setTileSize(size.width(), size.height()); }
+    void setTileRegion(const QRegion &region);
 
     // QGraphicsItem
     QRectF boundingRect() const;
@@ -84,9 +75,7 @@ private:
 
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
-    int mWidth;
-    int mHeight;
-    int mExtend;
+    QRegion mRegion;
     QRectF mBoundingRect;
 };
 

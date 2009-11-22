@@ -24,6 +24,7 @@
 #include "brushitem.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "maprenderer.h"
 #include "mapscene.h"
 #include "tilelayer.h"
 
@@ -45,7 +46,6 @@ AbstractTileTool::AbstractTileTool(const QString &name,
 {
     mBrushItem->setVisible(false);
     mBrushItem->setZValue(10000);
-    mBrushItem->setTileSize(1, 1);
 }
 
 AbstractTileTool::~AbstractTileTool()
@@ -90,22 +90,24 @@ void AbstractTileTool::mouseLeft()
 
 void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
-    const Map *map = mMapScene->mapDocument()->map();
+    const MapDocument *mapDocument = mMapScene->mapDocument();
+    const Map *map = mapDocument->map();
     const int tileWidth = map->tileWidth();
     const int tileHeight = map->tileHeight();
 
     QPointF position = pos;
+    // TODO: Move this position difference into the map renderer?
     if (mTilePositionMethod == BetweenTiles)
         position += QPointF(tileWidth / 2, tileHeight / 2);
 
-    const int tileX = ((int) position.x()) / tileWidth;
-    const int tileY = ((int) position.y()) / tileHeight;
+    const MapRenderer *renderer = mapDocument->renderer();
+    const QPoint tilePos = renderer->screenToTileCoords(position.toPoint());
 
-    if (mTileX != tileX || mTileY != tileY) {
-        mTileX = tileX;
-        mTileY = tileY;
+    if (mTileX != tilePos.x() || mTileY != tilePos.y()) {
+        mTileX = tilePos.x();
+        mTileY = tilePos.y();
 
-        tilePositionChanged(QPoint(mTileX, mTileY));
+        tilePositionChanged(tilePos);
         updateStatusInfo();
     }
 }

@@ -37,27 +37,32 @@ namespace Internal {
 class IsometricRenderer : public MapRenderer
 {
 public:
-    IsometricRenderer(Map *map) : MapRenderer(map) {}
+    IsometricRenderer(const Map *map) : MapRenderer(map) {}
 
     QSize mapSize() const;
 
-    QRect layerBoundingRect(const Layer *layer) const;
+    QRect boundingRect(const QRect &rect) const;
 
-    void drawGrid(QPainter *painter, const QRectF &rect);
+    void drawGrid(QPainter *painter, const QRectF &rect) const;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF());
+                       const QRectF &exposed = QRectF()) const;
+
+    void drawTileSelection(QPainter *painter,
+                           const QRegion &region,
+                           const QColor &color,
+                           const QRectF &exposed) const;
+
+    using MapRenderer::screenToTileCoords;
+    QPoint screenToTileCoords(int x, int y) const;
 
 private:
-    QPoint screenToTileCoords(int x, int y);
+    QPoint tileToScreenCoords(int x, int y) const;
 
-    inline QPoint screenToTileCoords(const QPoint &point)
-    { return screenToTileCoords(point.x(), point.y()); }
-
-    QPoint tileToScreenCoords(int x, int y);
-
-    inline QPoint tileToScreenCoords(const QPoint &point)
+    inline QPoint tileToScreenCoords(const QPoint &point) const
     { return tileToScreenCoords(point.x(), point.y()); }
+
+    QPolygon tileRectToPolygon(const QRect &rect) const;
 };
 
 } // namespace Internal

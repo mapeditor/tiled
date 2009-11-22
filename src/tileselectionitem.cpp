@@ -23,11 +23,13 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "maprenderer.h"
 #include "tileselectionmodel.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QPalette>
+#include <QStyleOptionGraphicsItem>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -35,6 +37,10 @@ using namespace Tiled::Internal;
 TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
     : mMapDocument(mapDocument)
 {
+#if QT_VERSION >= 0x040600
+    setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
+#endif
+
     TileSelectionModel *selectionModel = mMapDocument->selectionModel();
     connect(selectionModel, SIGNAL(selectionChanged(QRegion,QRegion)),
             this, SLOT(selectionChanged(QRegion,QRegion)));
@@ -49,19 +55,15 @@ QRectF TileSelectionItem::boundingRect() const
 
 void TileSelectionItem::paint(QPainter *painter,
                               const QStyleOptionGraphicsItem *option,
-                              QWidget *widget)
+                              QWidget *)
 {
-    // TODO: Paint only the areas of the selection model intersecting with the
-    //       to be painted area.
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
     const QRegion selection = mMapDocument->selectionModel()->selection();
     QColor highlight = QApplication::palette().highlight().color();
     highlight.setAlpha(128);
 
-    foreach (const QRect &r, selection.rects())
-        painter->fillRect(mMapDocument->toPixelCoordinates(r), highlight);
+    MapRenderer *renderer = mMapDocument->renderer();
+    renderer->drawTileSelection(painter, selection, highlight,
+                                option->exposedRect);
 }
 
 void TileSelectionItem::selectionChanged(const QRegion &newSelection,
@@ -72,11 +74,11 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
 
     // Make sure changes within the bounding rect are updated
     const QRect changedArea = newSelection.xored(oldSelection).boundingRect();
-    update(mMapDocument->toPixelCoordinates(changedArea));
+    update(mMapDocument->renderer()->boundingRect(changedArea));
 }
 
 void TileSelectionItem::updateBoundingRect()
 {
     const QRect b = mMapDocument->selectionModel()->selection().boundingRect();
-    mBoundingRect = mMapDocument->toPixelCoordinates(b);
+    mBoundingRect = mMapDocument->renderer()->boundingRect(b);
 }

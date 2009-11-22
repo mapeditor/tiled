@@ -52,7 +52,6 @@ private:
     };
 
     QRect selectedArea() const;
-    void updatePosition();
 
     QPoint mSelectionStart;
     SelectionMode mSelectionMode;

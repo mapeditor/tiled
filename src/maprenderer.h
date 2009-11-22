@@ -40,7 +40,7 @@ namespace Internal {
 class MapRenderer
 {
 public:
-    MapRenderer(Map *map) : mMap(map) {}
+    MapRenderer(const Map *map) : mMap(map) {}
     virtual ~MapRenderer() {}
 
     /**
@@ -49,15 +49,19 @@ public:
     virtual QSize mapSize() const = 0;
 
     /**
-     * Returns the bounding rectangle of the given \a layer in pixels.
+     * Returns the bounding rectangle in pixels of the given \a rect given in
+     * tile coordinates.
+     *
+     * This is useful for calculating the bounding rect of a tile layer or of
+     * a region of tiles that was changed.
      */
-    virtual QRect layerBoundingRect(const Layer *layer) const = 0;
+    virtual QRect boundingRect(const QRect &rect) const = 0;
 
     /**
      * Draws the tile grid in the specified \a rect using the given
      * \a painter.
      */
-    virtual void drawGrid(QPainter *painter, const QRectF &rect) = 0;
+    virtual void drawGrid(QPainter *painter, const QRectF &rect) const = 0;
 
     /**
      * Draws the given \a layer using the given \a painter.
@@ -66,7 +70,26 @@ public:
      * only tiles that can be visible in this area will be drawn.
      */
     virtual void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                               const QRectF &exposed = QRectF()) = 0;
+                               const QRectF &exposed = QRectF()) const = 0;
+
+    /**
+     * Draws the tile selection given by \a region in the specified \a color.
+     *
+     * The implementation can be optimized by taking into account the
+     * \a exposed rectangle, to avoid drawing too much.
+     */
+    virtual void drawTileSelection(QPainter *painter,
+                                   const QRegion &region,
+                                   const QColor &color,
+                                   const QRectF &exposed) const = 0;
+
+    /**
+     * Returns the coordinates of the tile beneath the given pixel position.
+     */
+    virtual QPoint screenToTileCoords(int x, int y) const = 0;
+
+    inline QPoint screenToTileCoords(const QPoint &point) const
+    { return screenToTileCoords(point.x(), point.y()); }
 
 protected:
     /**
@@ -75,7 +98,7 @@ protected:
     const Map *map() const { return mMap; }
 
 private:
-    Map *mMap;
+    const Map *mMap;
 };
 
 } // namespace Internal
