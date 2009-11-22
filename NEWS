@@ -1,3 +1,10 @@
+0.3.1 (22 November 2009)
+* Enabled undo command compression for stamp brush and eraser
+* Fixed reading of maps with non-binary-encoded layer data
+* Fixed a compile issue on Mac OS X related to QXmlStreamWriter
+* Fixed a crash when loading a map while holding Ctrl
+* Confirm overwrite on the right moment for 'Save as Image' dialog
+
 0.3.0 (13 November 2009)
 * Added a tile selection tool
 * Added support for cut, copy and paste

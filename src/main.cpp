@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
     a.setOrganizationName(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));
-    a.setApplicationVersion(QLatin1String("0.3.0"));
+    a.setApplicationVersion(QLatin1String("0.3.1"));
 
     QTranslator translator;
     translator.load(QLatin1String("tiled_") + QLocale::system().name());
