@@ -33,11 +33,19 @@ namespace Internal {
 
 class MapDocument;
 
+/**
+ * The dialog for saving a map as an image.
+ */
 class SaveAsImageDialog : public QDialog
 {
     Q_OBJECT
 
 public:
+    /**
+     * Creates a Save As Image dialog. The suggested name for the image will
+     * be based on the given \a fileName. Use \a currentScale to specify the
+     * current zoom level of the map view.
+     */
     SaveAsImageDialog(MapDocument *mapDocument,
                       const QString &fileName,
                       qreal currentScale,
