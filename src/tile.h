@@ -55,6 +55,12 @@ public:
     const QPixmap &image() const { return mImage; }
 
     /**
+     * Sets the image of this tile.
+     */
+    
+    void setImage(const QPixmap &image) { mImage = image; }
+
+    /**
      * Returns the width of this tile.
      */
     int width() const { return mImage.width(); }

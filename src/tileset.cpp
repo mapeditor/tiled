@@ -47,7 +47,8 @@ bool Tileset::loadFromImage(const QString &fileName)
     const int stopWidth = image.width() - mTileWidth;
     const int stopHeight = image.height() - mTileHeight;
 
-    mTiles.clear();
+    int oldTilesetSize = mTiles.size();
+    int tileNum = 0;
 
     for (int y = mMargin; y <= stopHeight; y += mTileHeight + mTileSpacing) {
         for (int x = mMargin; x <= stopWidth; x += mTileWidth + mTileSpacing) {
@@ -60,12 +61,26 @@ bool Tileset::loadFromImage(const QString &fileName)
                 tilePixmap.setMask(QBitmap::fromImage(mask));
             }
 
-            mTiles.append(new Tile(tilePixmap, mTiles.size(), this));
+            if (tileNum < oldTilesetSize) {
+                mTiles.at(tileNum)->setImage(tilePixmap);
+            } else {
+                mTiles.append(new Tile(tilePixmap, tileNum, this));
+            }
+            ++tileNum;
         }
+    }
+
+    // blank out any remaining tiles to avoid confusion
+    while (tileNum < oldTilesetSize) {
+        QPixmap tilePixmap = QPixmap(mTileWidth, mTileHeight);
+        tilePixmap.fill();
+        mTiles.at(tileNum)->setImage(tilePixmap);
+        ++tileNum;
     }
 
     mColumnCount = (image.width() - mMargin * 2 + mTileSpacing)
                    / (mTileWidth + mTileSpacing);
+    setFileName(fileName);
     mImageSource = fileName;
     return true;
 }

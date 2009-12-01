@@ -31,6 +31,7 @@ namespace Tiled {
 
 class Layer;
 class MapObject;
+class Tileset;
 
 namespace Internal {
 
@@ -107,6 +108,7 @@ private slots:
     void currentLayerChanged();
 
     void mapChanged();
+    void tilesetChanged(const Tileset *tileset);
 
     void layerAdded(int index);
     void layerRemoved(int index);

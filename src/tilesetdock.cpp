@@ -27,6 +27,7 @@
 #include "tileset.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
+#include "tilesetmanager.h"
 
 #include <QStackedWidget>
 #include <QTabBar>
@@ -54,6 +55,9 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mTabBar, SIGNAL(currentChanged(int)),
             mViewStack, SLOT(setCurrentIndex(int)));
 
+    connect(TilesetManager::instance(), SIGNAL(tilesetChanged(const Tileset *)),
+            this, SLOT(tilesetChanged(const Tileset *)));
+
     setWidget(w);
 }
 
@@ -77,8 +81,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
-    if (mapDocument) {
-        Map *map = mapDocument->map();
+    if (mMapDocument) {
+        Map *map = mMapDocument->map();
         foreach (Tileset *tileset, map->tilesets())
             addTilesetView(tileset);
 
@@ -137,6 +141,18 @@ void TilesetDock::selectionChanged()
     }
 
     setCurrentTiles(tileLayer);
+}
+
+void TilesetDock::tilesetChanged(const Tileset *tileset)
+{
+    // update the GUI (after much head-scratching, figured out the model needs to reset())
+    for (int i = 0; i < mViewStack->count(); ++i) {
+        TilesetView *v = static_cast<TilesetView *>(mViewStack->widget(i));
+        TilesetModel *m = static_cast<TilesetModel *>(v->model());
+        if (m->tileset() == tileset) {
+            m->tilesetChanged();
+        }
+    }
 }
 
 void TilesetDock::setCurrentTiles(TileLayer *tiles)

@@ -133,8 +133,10 @@ public:
     void setTransparentColor(const QColor &c) { mTransparentColor = c; }
 
     /**
-     * Load this tileset from the given tileset image. This will cause any
-     * existing tiles in this tileset to be thrown out.
+     * Load this tileset from the given tileset image. This will replace
+     * existing tile images in this tileset with new ones. If the new image
+     * contains more tiles than exist in the tileset new tiles will be
+     * appended, if there are fewer tiles the excess images will be blanked.
      *
      * The tile width and height of this tileset must be higher than 0.
      *

@@ -83,6 +83,11 @@ public:
      */
     void setTileset(Tileset *tileset);
 
+    /**
+     * Performs a reset() on the model
+     */
+    void tilesetChanged() { reset(); }
+
 private:
     Tileset *mTileset;
 };

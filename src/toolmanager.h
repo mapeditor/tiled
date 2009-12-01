@@ -85,6 +85,8 @@ private slots:
     void actionTriggered(QAction *action);
 
 private:
+    Q_DISABLE_COPY(ToolManager)
+
     ToolManager();
     ~ToolManager();
 

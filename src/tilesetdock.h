@@ -66,6 +66,7 @@ signals:
 private slots:
     void addTilesetView(Tileset *tileset);
     void selectionChanged();
+    void tilesetChanged(const Tileset *tileset);
 
 private:
     void setCurrentTiles(TileLayer *tiles);

@@ -22,13 +22,19 @@
 #include "tilesetmanager.h"
 #include "tileset.h"
 
+#include <QTimer>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 TilesetManager *TilesetManager::mInstance = 0;
 
-TilesetManager::TilesetManager()
+TilesetManager::TilesetManager():
+    mWatcher(this)
 {
+    setObjectName(QLatin1String("TilesetManager"));
+    connect(&mWatcher, SIGNAL(fileChanged(const QString &)),
+            this, SLOT(fileChanged(const QString &)));
 }
 
 TilesetManager::~TilesetManager()
@@ -48,8 +54,14 @@ TilesetManager *TilesetManager::instance()
 
 void TilesetManager::deleteInstance()
 {
-    delete mInstance;
-    mInstance = 0;
+    if (mInstance) {
+        QStringList watched = mInstance->mWatcher.files();
+        if (!watched.isEmpty())
+            mInstance->mWatcher.removePaths(watched);
+
+        delete mInstance;
+        mInstance = 0;
+    }
 }
 
 Tileset *TilesetManager::findTileset(const QString &fileName) const
@@ -79,10 +91,14 @@ Tileset *TilesetManager::findTileset(const TilesetSpec &spec) const
 
 void TilesetManager::addReference(Tileset *tileset)
 {
-    if (!mTilesets.contains(tileset))
-        mTilesets.insert(tileset, 1);
-    else
+    if (mTilesets.contains(tileset))
         mTilesets[tileset]++;
+    else {
+        mTilesets.insert(tileset, 1);
+        if (!tileset->fileName().isEmpty()) {
+            mWatcher.addPath(tileset->fileName());
+        }
+    }
 }
 
 void TilesetManager::removeReference(Tileset *tileset)
@@ -92,6 +108,9 @@ void TilesetManager::removeReference(Tileset *tileset)
 
     if (mTilesets.value(tileset) == 0) {
         mTilesets.remove(tileset);
+        if (!tileset->fileName().isEmpty()) {
+            mWatcher.removePath(tileset->fileName());
+        }
         delete tileset;
     }
 }
@@ -99,4 +118,29 @@ void TilesetManager::removeReference(Tileset *tileset)
 QList<Tileset*> TilesetManager::tilesets() const
 {
     return mTilesets.keys();
+}
+
+void TilesetManager::fileChanged(const QString &path)
+{
+    // use a one-shot timer since gimp (for example) seems
+    // to generate many file changes during a save, and some
+    // of the intermediate attempts to reload the tileset
+    // images actually fail (at least for .png files)
+    if (!mChangedFiles.contains(path)) {
+        mChangedFiles.insert(path);
+        QTimer::singleShot(100, this, SLOT(fileChangedTimeout()));
+    }
+}
+
+void TilesetManager::fileChangedTimeout()
+{
+    foreach (Tileset *tileset, tilesets()) {
+        if (mChangedFiles.contains(tileset->fileName())) {
+            tileset->loadFromImage(tileset->fileName());
+            // allow GUI elements to update
+            emit tilesetChanged(tileset);
+        }
+    }
+
+    mChangedFiles.clear();
 }

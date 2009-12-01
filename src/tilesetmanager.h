@@ -22,9 +22,12 @@
 #ifndef TILESETMANAGER_H
 #define TILESETMANAGER_H
 
+#include <QObject>
 #include <QList>
 #include <QMap>
 #include <QString>
+#include <QSet>
+#include <QFileSystemWatcher>
 
 namespace Tiled {
 
@@ -51,8 +54,10 @@ struct TilesetSpec
  *
  * TODO: Add a way to remove tilesets from the manager.
  */
-class TilesetManager
+class TilesetManager : public QObject
 {
+    Q_OBJECT
+
 public:
     /**
      * Requests the tileset manager. When the manager doesn't exist yet, it
@@ -94,6 +99,16 @@ public:
      */
     QList<Tileset*> tilesets() const;
 
+signals:
+    /**
+     * Emitted when a tileset's images have changed and views need updating.
+     */
+    void tilesetChanged(const Tileset *tileset);
+
+private slots:
+    void fileChanged(const QString &path);
+    void fileChangedTimeout();
+
 private:
     Q_DISABLE_COPY(TilesetManager)
 
@@ -113,6 +128,8 @@ private:
      * Stores the tilesets and maps them to the number of references.
      */
     QMap<Tileset*, int> mTilesets;
+    QFileSystemWatcher mWatcher;
+    QSet<QString> mChangedFiles;
 };
 
 } // namespace Internal
