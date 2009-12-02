@@ -279,15 +279,24 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
     event->accept();
     QMenu menu;
+    QIcon dupIcon(QLatin1String(":images/16x16/stock-duplicate-16.png"));
     QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QAction *removeAction = menu.addAction(delIcon, QObject::tr("Remove"));
+    QAction *dupAction = menu.addAction(dupIcon, QObject::tr("&Duplicate"));
+    QAction *removeAction = menu.addAction(delIcon, QObject::tr("&Remove"));
+    menu.addSeparator();
     QAction *propertiesAction = menu.addAction(propIcon,
-                                               QObject::tr("Properties..."));
+                                               QObject::tr("&Properties..."));
 
     QAction *selectedAction = menu.exec(event->screenPos());
 
-    if (selectedAction == removeAction) {
+    if (selectedAction == dupAction) {
+        MapDocument *doc = mapDocument();
+        doc->undoStack()->push(new AddMapObject(doc,
+                                                mObject->objectGroup(),
+                                                mObject->clone()));
+    }
+    else if (selectedAction == removeAction) {
         MapDocument *doc = mapDocument();
         doc->undoStack()->push(new RemoveMapObject(doc, mObject));
     }
