@@ -100,8 +100,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
         QRectF rect = exposed.adjusted(0, 0, 0, extraHeight);
         rect.translate(-layerPos);
 
-        startX = (int) rect.x() / tileWidth;
-        startY = (int) rect.y() / tileHeight;
+        startX = qMax((int) rect.x() / tileWidth, 0);
+        startY = qMax((int) rect.y() / tileHeight, 0);
         endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
         endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
     }
