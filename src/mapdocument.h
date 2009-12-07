@@ -90,6 +90,15 @@ public:
      */
     void resizeMap(const QSize &size, const QPoint &offset);
 
+    /**
+     * Offsets the layers at \a layerIndexes by \a offset, within \a bounds,
+     * and optionally wraps on the X or Y axis.
+     */
+    void offsetMap(const QSet<int> &layerIndexes,
+                   const QPoint &offset,
+                   const QRect &bounds,
+                   bool wrapX, bool wrapY);
+
     enum LayerType {
         TileLayerType,
         ObjectLayerType

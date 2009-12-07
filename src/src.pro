@@ -72,7 +72,9 @@ SOURCES += aboutdialog.cpp \
     changeselection.cpp \
     clipboardmanager.cpp \
     orthogonalrenderer.cpp \
-    isometricrenderer.cpp
+    isometricrenderer.cpp \
+    offsetlayer.cpp \
+    offsetmapdialog.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -138,14 +140,17 @@ HEADERS += aboutdialog.h \
     clipboardmanager.h \
     undocommands.h \
     orthogonalrenderer.h \
-    isometricrenderer.h
+    isometricrenderer.h \
+    offsetlayer.h \
+    offsetmapdialog.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
     propertiesdialog.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
-    saveasimagedialog.ui
+    saveasimagedialog.ui \
+    offsetmapdialog.ui
 RESOURCES += tiled.qrc
 TRANSLATIONS = translations/tiled_nl.ts \
     translations/tiled_pt.ts

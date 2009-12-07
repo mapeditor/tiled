@@ -26,6 +26,7 @@
 #include <QPointF>
 #include <QSizeF>
 #include <QString>
+#include <QRectF>
 
 namespace Tiled {
 
@@ -133,6 +134,11 @@ public:
      * Sets the height of this object.
      */
     void setHeight(qreal height) { mSize.setHeight(height); }
+
+    /**
+     * Shortcut to getting a QRect from position() and size()
+     */
+    QRectF bounds() const { return QRectF(mPos, mSize); }
 
     /**
      * Returns the type of this object. The type usually says something about

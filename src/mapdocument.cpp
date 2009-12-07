@@ -33,7 +33,9 @@
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetmanager.h"
+#include "offsetlayer.h"
 
+#include <QSet>
 #include <QRect>
 #include <QUndoStack>
 
@@ -114,6 +116,27 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 
     // TODO: Handle layers that don't match the map size correctly
     // TODO: Objects that fall outside of the map should be deleted
+}
+
+void MapDocument::offsetMap(const QSet<int> &layerIndexes,
+                            const QPoint &offset,
+                            const QRect &bounds,
+                            bool wrapX, bool wrapY)
+{
+    if (layerIndexes.empty())
+        return;
+
+    if (layerIndexes.size() == 1) {
+        mUndoStack->push(new OffsetLayer(this, *layerIndexes.begin(), offset,
+                                         bounds, wrapX, wrapY));
+    } else {
+        mUndoStack->beginMacro(QObject::tr("Offset Map"));
+        foreach (int layerIndex, layerIndexes) {
+            mUndoStack->push(new OffsetLayer(this, layerIndex, offset,
+                                             bounds, wrapX, wrapY));
+        }
+            mUndoStack->endMacro();
+    }
 }
 
 /**

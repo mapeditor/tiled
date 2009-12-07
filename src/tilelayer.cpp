@@ -99,6 +99,48 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     Layer::resize(size, offset);
 }
 
+void TileLayer::offset(const QPoint &offset,
+                       const QRect &bounds,
+                       bool wrapX, bool wrapY)
+{
+    QVector<Tile*> newTiles(mWidth * mHeight);
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+
+            //skip out of bounds tiles
+            if (!bounds.contains(x, y)) {
+                newTiles[x + y * mWidth] = tileAt(x, y);
+                continue;
+            }
+
+            //get position to pull tile value from
+            int oldX = x - offset.x();
+            int oldY = y - offset.y();
+
+            //wrap x value that will be pulled from
+            if (wrapX && bounds.width() > 0) {
+                while (oldX < bounds.left ())oldX += bounds.width();
+                while (oldX > bounds.right())oldX -= bounds.width();
+            }
+
+            //wrap y value that will be pulled from
+            if (wrapY && bounds.height() > 0) {
+                while (oldY < bounds.top   ())oldY += bounds.height();
+                while (oldY > bounds.bottom())oldY -= bounds.height();
+            }
+
+            //set the new tile
+            if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
+                newTiles[x + y * mWidth] = tileAt(oldX, oldY);
+            else
+                newTiles[x + y * mWidth] = NULL;
+        }
+    }
+
+    mTiles = newTiles;
+}
+
 /**
  * Returns a duplicate of this TileLayer.
  *

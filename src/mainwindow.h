@@ -95,6 +95,7 @@ private slots:
 
     void newTileset();
     void resizeMap();
+    void offsetMap();
     void editMapProperties();
     void updateModified();
     void updateActions();

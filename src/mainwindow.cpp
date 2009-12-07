@@ -37,6 +37,7 @@
 #include "newtilesetdialog.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "offsetmapdialog.h"
 #include "saveasimagedialog.h"
 #include "selectiontool.h"
 #include "stampbrush.h"
@@ -170,6 +171,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
+    connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
 
@@ -548,6 +550,71 @@ void MainWindow::resizeMap()
         const QPoint &offset = resizeDialog.offset();
         if (newSize != map->size() || !offset.isNull())
             mMapDocument->resizeMap(newSize, offset);
+    }
+}
+
+void MainWindow::offsetMap()
+{
+    if (!mMapDocument || !mMapDocument->map())
+        return;
+
+    OffsetMapDialog offsetDialog(this, mMapDocument);
+    if (offsetDialog.exec())
+    {
+        //get layers from dialog selection box
+        QSet<int> layerIndexes;
+        switch (offsetDialog.layerSelection()) {
+        case OffsetMapDialog::ALL_VISIBLE_LAYERS:
+            for (int i = 0; i < mMapDocument->map()->layerCount(); i++)
+                if (mMapDocument->map()->layerAt(i)->isVisible())
+                    layerIndexes.insert(i);
+            break;
+
+        case OffsetMapDialog::ALL_LAYERS:
+            for (int i = 0; i < mMapDocument->map()->layerCount(); i++)
+                layerIndexes.insert(i);
+            break;
+
+        case OffsetMapDialog::SELECTED_LAYERS:
+            layerIndexes.insert(mMapDocument->currentLayer());
+            break;
+
+        default:
+            Q_ASSERT_X(false, "MainWindow::offsetMap()",
+                              "unknown layer selection mode");
+        }
+
+        if (layerIndexes.empty())
+            return;
+
+        //get bounds from dialog selection box
+        QRect bounds;
+        switch (offsetDialog.boundsSelection()) {
+        case OffsetMapDialog::WHOLE_MAP:
+            bounds.setTopLeft(QPoint(0, 0));
+            bounds.setSize(mMapDocument->map()->size());
+            break;
+
+        case OffsetMapDialog::CURRENT_SELECTION_AREA: {
+            Q_ASSERT_X(mMapDocument && mMapDocument->selectionModel(),
+                       "MainWindow::offsetMap()", "selection unavailable");
+
+            QRegion selection = mMapDocument->selectionModel()->selection();
+
+            Q_ASSERT_X(!selection.isEmpty(),
+                       "MainWindow::offsetMap()", "selection is empty");
+
+            bounds = selection.boundingRect();
+            break;
+        }
+
+        default:
+            Q_ASSERT_X(false,
+                       "MainWindow::offsetMap()", "unknown bounds mode");
+        }
+
+        mMapDocument->offsetMap(layerIndexes, offsetDialog.offset(), bounds,
+                                offsetDialog.wrapX(), offsetDialog.wrapY());
     }
 }
 

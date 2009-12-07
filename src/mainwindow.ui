@@ -82,6 +82,8 @@
     <addaction name="actionNewTileset"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
+    <addaction name="actionOffsetMap"/>
+    <addaction name="separator"/>
     <addaction name="actionMapProperties"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -392,6 +394,14 @@
    </property>
    <property name="text">
     <string>Cu&amp;t</string>
+   </property>
+  </action>
+  <action name="actionOffsetMap">
+   <property name="text">
+    <string>O&amp;ffset Map...</string>
+   </property>
+   <property name="toolTip">
+    <string>Offsets everything in a layer</string>
    </property>
   </action>
  </widget>

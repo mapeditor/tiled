@@ -96,6 +96,16 @@ public:
      */
     virtual void resize(const QSize &size, const QPoint &offset);
 
+    /**
+     * Offsets the objects in this group by \a offset, within \bounds
+     * and optionally wraps it.
+     *
+     * \sa Layer::offset()
+     */
+    virtual void offset(const QPoint &offset,
+                        const QRect &bounds,
+                        bool wrapX, bool wrapY);
+
     virtual Layer *clone() const;
 
 protected:

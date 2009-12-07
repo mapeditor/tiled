@@ -131,6 +131,12 @@ public:
     virtual void resize(const QSize &size, const QPoint &offset);
 
     /**
+     * Offsets the layer by the given amount, and optionally wraps it around.
+     */
+    virtual void offset(const QPoint &offset, const QRect &bounds,
+                        bool wrapX, bool wrapY) = 0;
+
+    /**
      * Returns a pointer to the properties of this layer. This allows
      * modification of the properties.
      */
