@@ -70,7 +70,7 @@ bool Tileset::loadFromImage(const QString &fileName)
         }
     }
 
-    // blank out any remaining tiles to avoid confusion
+    // Blank out any remaining tiles to avoid confusion
     while (tileNum < oldTilesetSize) {
         QPixmap tilePixmap = QPixmap(mTileWidth, mTileHeight);
         tilePixmap.fill();

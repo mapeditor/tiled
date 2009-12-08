@@ -60,8 +60,8 @@ MapScene::MapScene(QObject *parent):
             this, SLOT(setActiveTool(AbstractTool*)));
 
     TilesetManager *tilesetManager = TilesetManager::instance();
-    connect(tilesetManager, SIGNAL(tilesetChanged(const Tileset *)),
-            this, SLOT(tilesetChanged(const Tileset *)));
+    connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
+            this, SLOT(tilesetChanged(Tileset*)));
 }
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
@@ -231,16 +231,19 @@ void MapScene::mapChanged()
 {
     const QSize mapSize = mMapDocument->renderer()->mapSize();
     setSceneRect(0, 0, mapSize.width(), mapSize.height());
-    
+
     foreach (QGraphicsItem *item, mLayerItems) {
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
     }
 }
 
-void MapScene::tilesetChanged(const Tileset *tileset)
+void MapScene::tilesetChanged(Tileset *tileset)
 {
-    if (mMapDocument && mMapDocument->map()->tilesets().contains(const_cast<Tileset*>(tileset)))
+    if (!mMapDocument)
+        return;
+
+    if (mMapDocument->map()->tilesets().contains(tileset))
         update();
 }
 

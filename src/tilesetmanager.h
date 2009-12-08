@@ -27,7 +27,9 @@
 #include <QMap>
 #include <QString>
 #include <QSet>
-#include <QFileSystemWatcher>
+#include <QTimer>
+
+class QFileSystemWatcher;
 
 namespace Tiled {
 
@@ -49,10 +51,9 @@ struct TilesetSpec
 };
 
 /**
- * The tileset manager keeps track of all tilesets used by loaded maps and the
- * clipboard.
- *
- * TODO: Add a way to remove tilesets from the manager.
+ * The tileset manager keeps track of all tilesets used by loaded maps. It also
+ * watches the tileset images for changes and will attempt to reload them when
+ * they change.
  */
 class TilesetManager : public QObject
 {
@@ -103,7 +104,7 @@ signals:
     /**
      * Emitted when a tileset's images have changed and views need updating.
      */
-    void tilesetChanged(const Tileset *tileset);
+    void tilesetChanged(Tileset *tileset);
 
 private slots:
     void fileChanged(const QString &path);
@@ -128,8 +129,9 @@ private:
      * Stores the tilesets and maps them to the number of references.
      */
     QMap<Tileset*, int> mTilesets;
-    QFileSystemWatcher mWatcher;
+    QFileSystemWatcher *mWatcher;
     QSet<QString> mChangedFiles;
+    QTimer mChangedFilesTimer;
 };
 
 } // namespace Internal

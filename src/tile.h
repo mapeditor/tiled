@@ -57,7 +57,6 @@ public:
     /**
      * Sets the image of this tile.
      */
-    
     void setImage(const QPixmap &image) { mImage = image; }
 
     /**

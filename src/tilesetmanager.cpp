@@ -22,7 +22,7 @@
 #include "tilesetmanager.h"
 #include "tileset.h"
 
-#include <QTimer>
+#include <QFileSystemWatcher>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -30,11 +30,16 @@ using namespace Tiled::Internal;
 TilesetManager *TilesetManager::mInstance = 0;
 
 TilesetManager::TilesetManager():
-    mWatcher(this)
+    mWatcher(new QFileSystemWatcher(this))
 {
-    setObjectName(QLatin1String("TilesetManager"));
-    connect(&mWatcher, SIGNAL(fileChanged(const QString &)),
-            this, SLOT(fileChanged(const QString &)));
+    connect(mWatcher, SIGNAL(fileChanged(QString)),
+            this, SLOT(fileChanged(QString)));
+
+    mChangedFilesTimer.setInterval(100);
+    mChangedFilesTimer.setSingleShot(true);
+
+    connect(&mChangedFilesTimer, SIGNAL(timeout()),
+            this, SLOT(fileChangedTimeout()));
 }
 
 TilesetManager::~TilesetManager()
@@ -47,21 +52,15 @@ TilesetManager::~TilesetManager()
 TilesetManager *TilesetManager::instance()
 {
     if (!mInstance)
-        mInstance = new TilesetManager();
+        mInstance = new TilesetManager;
 
     return mInstance;
 }
 
 void TilesetManager::deleteInstance()
 {
-    if (mInstance) {
-        QStringList watched = mInstance->mWatcher.files();
-        if (!watched.isEmpty())
-            mInstance->mWatcher.removePaths(watched);
-
-        delete mInstance;
-        mInstance = 0;
-    }
+    delete mInstance;
+    mInstance = 0;
 }
 
 Tileset *TilesetManager::findTileset(const QString &fileName) const
@@ -91,26 +90,25 @@ Tileset *TilesetManager::findTileset(const TilesetSpec &spec) const
 
 void TilesetManager::addReference(Tileset *tileset)
 {
-    if (mTilesets.contains(tileset))
+    if (mTilesets.contains(tileset)) {
         mTilesets[tileset]++;
-    else {
+    } else {
         mTilesets.insert(tileset, 1);
-        if (!tileset->fileName().isEmpty()) {
-            mWatcher.addPath(tileset->fileName());
-        }
+        if (!tileset->fileName().isEmpty())
+            mWatcher->addPath(tileset->fileName());
     }
 }
 
 void TilesetManager::removeReference(Tileset *tileset)
 {
-    Q_ASSERT(mTilesets.contains(tileset) && mTilesets.value(tileset) > 0);
+    Q_ASSERT(mTilesets.value(tileset) > 0);
     mTilesets[tileset]--;
 
     if (mTilesets.value(tileset) == 0) {
         mTilesets.remove(tileset);
-        if (!tileset->fileName().isEmpty()) {
-            mWatcher.removePath(tileset->fileName());
-        }
+        if (!tileset->fileName().isEmpty())
+            mWatcher->removePath(tileset->fileName());
+
         delete tileset;
     }
 }
@@ -122,13 +120,14 @@ QList<Tileset*> TilesetManager::tilesets() const
 
 void TilesetManager::fileChanged(const QString &path)
 {
-    // use a one-shot timer since gimp (for example) seems
-    // to generate many file changes during a save, and some
-    // of the intermediate attempts to reload the tileset
-    // images actually fail (at least for .png files)
+    /*
+     * Use a one-shot timer since GIMP (for example) seems to generate many
+     * file changes during a save, and some of the intermediate attempts to
+     * reload the tileset images actually fail (at least for .png files).
+     */
     if (!mChangedFiles.contains(path)) {
         mChangedFiles.insert(path);
-        QTimer::singleShot(100, this, SLOT(fileChangedTimeout()));
+        mChangedFilesTimer.start();
     }
 }
 
@@ -137,7 +136,6 @@ void TilesetManager::fileChangedTimeout()
     foreach (Tileset *tileset, tilesets()) {
         if (mChangedFiles.contains(tileset->fileName())) {
             tileset->loadFromImage(tileset->fileName());
-            // allow GUI elements to update
             emit tilesetChanged(tileset);
         }
     }

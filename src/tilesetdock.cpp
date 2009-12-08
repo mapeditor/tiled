@@ -55,8 +55,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mTabBar, SIGNAL(currentChanged(int)),
             mViewStack, SLOT(setCurrentIndex(int)));
 
-    connect(TilesetManager::instance(), SIGNAL(tilesetChanged(const Tileset *)),
-            this, SLOT(tilesetChanged(const Tileset *)));
+    connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
+            this, SLOT(tilesetChanged(Tileset*)));
 
     setWidget(w);
 }
@@ -143,14 +143,15 @@ void TilesetDock::selectionChanged()
     setCurrentTiles(tileLayer);
 }
 
-void TilesetDock::tilesetChanged(const Tileset *tileset)
+void TilesetDock::tilesetChanged(Tileset *tileset)
 {
-    // update the GUI (after much head-scratching, figured out the model needs to reset())
+    // Update the affected tileset model
     for (int i = 0; i < mViewStack->count(); ++i) {
         TilesetView *v = static_cast<TilesetView *>(mViewStack->widget(i));
         TilesetModel *m = static_cast<TilesetModel *>(v->model());
         if (m->tileset() == tileset) {
             m->tilesetChanged();
+            break;
         }
     }
 }
