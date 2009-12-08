@@ -21,22 +21,25 @@
 
 #include "offsetmapdialog.h"
 
+#include "map.h"
 #include "mapdocument.h"
+#include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "ui_offsetmapdialog.h"
 
 using namespace Tiled::Internal;
 
-OffsetMapDialog::OffsetMapDialog(QWidget *parent, MapDocument *mapDocument)
+OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     : QDialog(parent)
+    , mMapDocument(mapDocument)
 {
     mUi = new Ui::OffsetMapDialog;
     mUi->setupUi(this);
 
-    if (!mapDocument
-        || !mapDocument->selectionModel()
-        || mapDocument->selectionModel()->selection().isEmpty())
+    if (mMapDocument->selectionModel()->selection().isEmpty())
         disableBoundsSelectionCurrentArea();
+    else
+        mUi->boundsSelection->setCurrentIndex(1);
 }
 
 OffsetMapDialog::~OffsetMapDialog()
@@ -44,17 +47,69 @@ OffsetMapDialog::~OffsetMapDialog()
     delete mUi;
 }
 
+QList<int> OffsetMapDialog::affectedLayerIndexes() const
+{
+    QList<int> layerIndexes;
+    const Map *map = mMapDocument->map();
+
+    switch (layerSelection()) {
+    case AllVisibleLayers:
+        for (int i = 0; i < map->layerCount(); i++)
+            if (map->layerAt(i)->isVisible())
+                layerIndexes.append(i);
+        break;
+    case AllLayers:
+        for (int i = 0; i < map->layerCount(); i++)
+            layerIndexes.append(i);
+        break;
+    case SelectedLayer:
+        layerIndexes.append(mMapDocument->currentLayer());
+        break;
+    }
+
+    return layerIndexes;
+}
+
+QRect OffsetMapDialog::affectedBoundingRect() const
+{
+    QRect boundingRect;
+
+    switch (boundsSelection()) {
+    case WholeMap:
+        boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
+        break;
+    case CurrentSelectionArea: {
+        const QRegion selection = mMapDocument->selectionModel()->selection();
+
+        Q_ASSERT_X(!selection.isEmpty(),
+                   "OffsetMapDialog::affectedBoundingRect()",
+                   "selection is empty");
+
+        boundingRect = selection.boundingRect();
+        break;
+    }
+    }
+
+    return boundingRect;
+}
+
 OffsetMapDialog::LayerSelection OffsetMapDialog::layerSelection() const
 {
-    if (mUi->layerSelection->currentIndex() == 0)return ALL_VISIBLE_LAYERS;
-    if (mUi->layerSelection->currentIndex() == 1)return ALL_LAYERS;
-    return SELECTED_LAYERS;
+    switch (mUi->layerSelection->currentIndex()) {
+    case 0:
+        return AllVisibleLayers;
+    case 1:
+        return AllLayers;
+    default:
+        return SelectedLayer;
+    }
 }
 
 OffsetMapDialog::BoundsSelection OffsetMapDialog::boundsSelection() const
 {
-    if (mUi->boundsSelection->currentIndex() == 0)return WHOLE_MAP;
-    return CURRENT_SELECTION_AREA;
+    if (mUi->boundsSelection->currentIndex() == 0)
+        return WholeMap;
+    return CurrentSelectionArea;
 }
 
 QPoint OffsetMapDialog::offset() const
@@ -64,12 +119,12 @@ QPoint OffsetMapDialog::offset() const
 
 bool OffsetMapDialog::wrapX() const
 {
-    return mUi->wrapX->checkState();
+    return mUi->wrapX->isChecked();
 }
 
 bool OffsetMapDialog::wrapY() const
 {
-    return mUi->wrapY->checkState();
+    return mUi->wrapY->isChecked();
 }
 
 void OffsetMapDialog::disableBoundsSelectionCurrentArea()

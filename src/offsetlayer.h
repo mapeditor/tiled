@@ -35,7 +35,7 @@ namespace Internal {
 class MapDocument;
 
 /**
- * Undo command that offsets a map layer
+ * Undo command that offsets a map layer.
  */
 class OffsetLayer : public QUndoCommand
 {

@@ -84,19 +84,19 @@ void ObjectGroup::offset(const QPoint &offset,
                        objectBounds.top () + offset.y());
 
         if (wrapX && bounds.width() > 0) {
-            while (newPos.x() + objectBounds.width() / qreal(2.0)
+            while (newPos.x() + objectBounds.width() / 2
                 < qreal(bounds.left()))
                 newPos.rx() += qreal(bounds.width());
-            while (newPos.x() + objectBounds.width() / qreal(2.0)
+            while (newPos.x() + objectBounds.width() / 2
                 > qreal(bounds.left() + bounds.width()))
                 newPos.rx() -= qreal(bounds.width());
         }
 
         if (wrapY && bounds.height() > 0) {
-            while (newPos.y() + objectBounds.height() / qreal(2.0) \
+            while (newPos.y() + objectBounds.height() / 2
                 < qreal(bounds.top()))
                 newPos.ry() += qreal(bounds.height());
-            while (newPos.y() + objectBounds.height() / qreal(2.0)
+            while (newPos.y() + objectBounds.height() / 2
                 > qreal(bounds.top() + bounds.height()))
                 newPos.ry() -= qreal(bounds.height());
         }

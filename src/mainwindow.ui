@@ -398,7 +398,7 @@
   </action>
   <action name="actionOffsetMap">
    <property name="text">
-    <string>O&amp;ffset Map...</string>
+    <string>&amp;Offset Map...</string>
    </property>
    <property name="toolTip">
     <string>Offsets everything in a layer</string>

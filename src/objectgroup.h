@@ -80,7 +80,7 @@ public:
     virtual void resize(const QSize &size, const QPoint &offset);
 
     /**
-     * Offsets all objects within the group, and optionally wraps it. The
+     * Offsets all objects within the group, and optionally wraps them. The
      * object's center must be within \a bounds, and wrapping occurs if the
      * displaced center is out of the bounds.
      *

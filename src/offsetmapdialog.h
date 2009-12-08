@@ -38,23 +38,36 @@ class OffsetMapDialog : public QDialog
     Q_OBJECT
 
 public:
-    OffsetMapDialog(QWidget *parent, MapDocument *mapDocument);
+    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = 0);
 
     ~OffsetMapDialog();
 
-    enum LayerSelection { ALL_VISIBLE_LAYERS, ALL_LAYERS, SELECTED_LAYERS };
-    enum BoundsSelection { WHOLE_MAP, CURRENT_SELECTION_AREA };
+    QList<int> affectedLayerIndexes() const;
+    QRect affectedBoundingRect() const;
 
-    LayerSelection layerSelection() const;
-    BoundsSelection boundsSelection() const;
     QPoint offset() const;
     bool wrapX() const;
     bool wrapY() const;
 
 private:
+    enum LayerSelection {
+        AllVisibleLayers,
+        AllLayers,
+        SelectedLayer
+    };
+
+    enum BoundsSelection {
+        WholeMap,
+        CurrentSelectionArea
+    };
+
+    LayerSelection layerSelection() const;
+    BoundsSelection boundsSelection() const;
+
     void disableBoundsSelectionCurrentArea();
 
     Ui::OffsetMapDialog *mUi;
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

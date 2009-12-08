@@ -27,15 +27,14 @@
 #include "map.h"
 #include "movelayer.h"
 #include "objectgroup.h"
+#include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "resizelayer.h"
 #include "resizemap.h"
 #include "tilelayer.h"
 #include "tileselectionmodel.h"
 #include "tilesetmanager.h"
-#include "offsetlayer.h"
 
-#include <QSet>
 #include <QRect>
 #include <QUndoStack>
 
@@ -118,7 +117,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
     // TODO: Objects that fall outside of the map should be deleted
 }
 
-void MapDocument::offsetMap(const QSet<int> &layerIndexes,
+void MapDocument::offsetMap(const QList<int> &layerIndexes,
                             const QPoint &offset,
                             const QRect &bounds,
                             bool wrapX, bool wrapY)
@@ -127,15 +126,15 @@ void MapDocument::offsetMap(const QSet<int> &layerIndexes,
         return;
 
     if (layerIndexes.size() == 1) {
-        mUndoStack->push(new OffsetLayer(this, *layerIndexes.begin(), offset,
+        mUndoStack->push(new OffsetLayer(this, layerIndexes.first(), offset,
                                          bounds, wrapX, wrapY));
     } else {
-        mUndoStack->beginMacro(QObject::tr("Offset Map"));
+        mUndoStack->beginMacro(tr("Offset Map"));
         foreach (int layerIndex, layerIndexes) {
             mUndoStack->push(new OffsetLayer(this, layerIndex, offset,
                                              bounds, wrapX, wrapY));
         }
-            mUndoStack->endMacro();
+        mUndoStack->endMacro();
     }
 }
 

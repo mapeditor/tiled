@@ -94,7 +94,7 @@ public:
      * Offsets the layers at \a layerIndexes by \a offset, within \a bounds,
      * and optionally wraps on the X or Y axis.
      */
-    void offsetMap(const QSet<int> &layerIndexes,
+    void offsetMap(const QList<int> &layerIndexes,
                    const QPoint &offset,
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
