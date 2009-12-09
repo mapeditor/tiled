@@ -94,8 +94,8 @@ void TilesetManager::addReference(Tileset *tileset)
         mTilesets[tileset]++;
     } else {
         mTilesets.insert(tileset, 1);
-        if (!tileset->fileName().isEmpty())
-            mWatcher->addPath(tileset->fileName());
+        if (!tileset->imageSource().isEmpty())
+            mWatcher->addPath(tileset->imageSource());
     }
 }
 
@@ -106,8 +106,8 @@ void TilesetManager::removeReference(Tileset *tileset)
 
     if (mTilesets.value(tileset) == 0) {
         mTilesets.remove(tileset);
-        if (!tileset->fileName().isEmpty())
-            mWatcher->removePath(tileset->fileName());
+        if (!tileset->imageSource().isEmpty())
+            mWatcher->removePath(tileset->imageSource());
 
         delete tileset;
     }
@@ -134,8 +134,8 @@ void TilesetManager::fileChanged(const QString &path)
 void TilesetManager::fileChangedTimeout()
 {
     foreach (Tileset *tileset, tilesets()) {
-        if (mChangedFiles.contains(tileset->fileName())) {
-            tileset->loadFromImage(tileset->fileName());
+        if (mChangedFiles.contains(tileset->imageSource())) {
+            tileset->loadFromImage(tileset->imageSource());
             emit tilesetChanged(tileset);
         }
     }
