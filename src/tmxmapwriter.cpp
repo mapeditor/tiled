@@ -43,7 +43,7 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        mError = QObject::tr("Could not open file for writing.");
+        mError = tr("Could not open file for writing.");
         return false;
     }
 

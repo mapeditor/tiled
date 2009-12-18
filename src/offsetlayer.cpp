@@ -26,6 +26,8 @@
 #include "map.h"
 #include "mapdocument.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -35,7 +37,8 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                          const QRect &bounds,
                          bool wrapX,
                          bool wrapY)
-    : QUndoCommand(QObject::tr("Offset Layer"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Offset Layer"))
     , mMapDocument(mapDocument)
     , mIndex(index)
     , mOriginalLayer(0)

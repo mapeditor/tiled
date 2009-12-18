@@ -25,6 +25,8 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -65,6 +67,17 @@ void AddRemoveMapObject::removeObject()
 }
 
 
+AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
+                           MapObject *mapObject)
+    : AddRemoveMapObject(mapDocument,
+                         objectGroup,
+                         mapObject,
+                         true)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Add Object"));
+}
+
+
 RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject)
     : AddRemoveMapObject(mapDocument,
@@ -72,5 +85,5 @@ RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
                          mapObject,
                          false)
 {
-    setText(QObject::tr("Remove Object"));
+    setText(QCoreApplication::translate("Undo Commands", "Remove Object"));
 }

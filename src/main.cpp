@@ -105,8 +105,8 @@ int main(int argc, char *argv[])
     a.setApplicationVersion(QLatin1String("0.3.1"));
 
     QTranslator translator;
-    translator.load(QLatin1String("tiled_") + QLocale::system().name());
-    a.installTranslator(&translator);
+    if (translator.load(QLatin1String("tiled_") + QLocale::system().name()))
+        a.installTranslator(&translator);
 
     CommandLineOptions options;
     parseCommandLineArguments(options);

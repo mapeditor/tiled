@@ -282,11 +282,10 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QIcon dupIcon(QLatin1String(":images/16x16/stock-duplicate-16.png"));
     QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QAction *dupAction = menu.addAction(dupIcon, QObject::tr("&Duplicate"));
-    QAction *removeAction = menu.addAction(delIcon, QObject::tr("&Remove"));
+    QAction *dupAction = menu.addAction(dupIcon, tr("&Duplicate"));
+    QAction *removeAction = menu.addAction(delIcon, tr("&Remove"));
     menu.addSeparator();
-    QAction *propertiesAction = menu.addAction(propIcon,
-                                               QObject::tr("&Properties..."));
+    QAction *propertiesAction = menu.addAction(propIcon, tr("&Properties..."));
 
     QAction *selectedAction = menu.exec(event->screenPos());
 

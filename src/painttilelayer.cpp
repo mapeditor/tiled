@@ -26,6 +26,8 @@
 #include "tilelayer.h"
 #include "tilepainter.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -45,7 +47,7 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
     mErased = mTarget->copy(mX - mTarget->x(),
                             mY - mTarget->y(),
                             mSource->width(), mSource->height());
-    setText(QObject::tr("Paint"));
+    setText(QCoreApplication::translate("Undo Commands", "Paint"));
 }
 
 PaintTileLayer::~PaintTileLayer()

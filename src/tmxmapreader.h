@@ -19,12 +19,12 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "mapreaderinterface.h"
-
 #ifndef TMXMAPREADER_H
 #define TMXMAPREADER_H
 
-#include <QObject>
+#include "mapreaderinterface.h"
+
+#include <QCoreApplication>
 #include <QString>
 
 namespace Tiled {
@@ -35,6 +35,8 @@ namespace Internal {
  */
 class TmxMapReader : public MapReaderInterface
 {
+    Q_DECLARE_TR_FUNCTIONS(TmxMapReader)
+
 public:
     Map *read(const QString &fileName);
 
@@ -46,7 +48,7 @@ public:
      */
     Map *fromString(const QString &string);
 
-    QString name() const { return QObject::tr("XML map reader (*.tmx)"); }
+    QString name() const { return tr("XML map reader (*.tmx)"); }
 
     QString errorString() const { return mError; }
 

@@ -24,6 +24,8 @@
 #include "tilelayer.h"
 #include "tilepainter.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -35,7 +37,7 @@ EraseTiles::EraseTiles(MapDocument *mapDocument,
     , mRegion(region)
     , mMergeable(false)
 {
-    setText(QObject::tr("Erase"));
+    setText(QCoreApplication::translate("Undo Commands", "Erase"));
 
     // Store the tiles that are to be erased
     const QRegion r = mRegion.translated(-mTileLayer->x(), -mTileLayer->y());

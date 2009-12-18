@@ -35,6 +35,8 @@ namespace Internal {
  */
 class UndoDock : public QDockWidget
 {
+    Q_OBJECT
+
 public:
     UndoDock(QUndoGroup *undoGroup, QWidget *parent = 0);
 };

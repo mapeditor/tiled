@@ -24,6 +24,8 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -35,7 +37,7 @@ ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
     , mOldSize(oldSize)
     , mNewSize(mapObject->size())
 {
-    setText(QObject::tr("Resize Object"));
+    setText(QCoreApplication::translate("Undo Commands", "Resize Object"));
 }
 
 void ResizeMapObject::undo()

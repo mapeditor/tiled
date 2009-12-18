@@ -24,6 +24,8 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -35,7 +37,7 @@ MoveMapObject::MoveMapObject(MapDocument *mapDocument,
     , mOldPos(oldPos)
     , mNewPos(mapObject->position())
 {
-    setText(QObject::tr("Move Object"));
+    setText(QCoreApplication::translate("Undo Commands", "Move Object"));
 }
 
 void MoveMapObject::undo()

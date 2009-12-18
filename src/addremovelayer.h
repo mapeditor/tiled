@@ -22,6 +22,7 @@
 #ifndef ADDREMOVELAYER_H
 #define ADDREMOVELAYER_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -64,7 +65,7 @@ public:
     AddLayer(MapDocument *mapDocument, int index, Layer *layer)
         : AddRemoveLayer(mapDocument, index, layer)
     {
-        setText(QObject::tr("Add Layer"));
+        setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
     }
 
     void undo()
@@ -86,7 +87,7 @@ public:
     RemoveLayer(MapDocument *mapDocument, int index)
         : AddRemoveLayer(mapDocument, index, 0)
     {
-        setText(QObject::tr("Remove Layer"));
+        setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
     }
 
     void undo()

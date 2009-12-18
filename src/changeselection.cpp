@@ -24,11 +24,14 @@
 #include "mapdocument.h"
 #include "tileselectionmodel.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled::Internal;
 
 ChangeSelection::ChangeSelection(MapDocument *mapDocument,
                                  const QRegion &newSelection)
-    : QUndoCommand(QObject::tr("Change Selection"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Selection"))
     , mMapDocument(mapDocument)
     , mSelection(newSelection)
 {

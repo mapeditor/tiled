@@ -21,11 +21,13 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;Copyright 2008-2009 Thorbjørn Lindeijer&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;(see the AUTHORS file for a full list of contributors)&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled (Qt).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled (Qt).&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://mapeditor.org/&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://mapeditor.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.ui" line="120"/>
+        <location filename="../aboutdialog.ui" line="125"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -58,189 +60,217 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Mapa</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="89"/>
+        <location filename="../mainwindow.ui" line="91"/>
         <source>&amp;View</source>
         <translation>&amp;Ver</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="99"/>
+        <location filename="../mainwindow.ui" line="101"/>
         <source>&amp;Layer</source>
         <translation>&amp;Camada</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="120"/>
+        <location filename="../mainwindow.ui" line="122"/>
         <source>Main Toolbar</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="140"/>
+        <location filename="../mainwindow.ui" line="142"/>
         <source>&amp;Open...</source>
         <translation>&amp;Abrir...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="149"/>
+        <location filename="../mainwindow.ui" line="151"/>
         <source>&amp;Save</source>
         <translation>&amp;Salvar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="158"/>
+        <location filename="../mainwindow.ui" line="160"/>
         <source>&amp;Quit</source>
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="170"/>
+        <location filename="../mainwindow.ui" line="172"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copiar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="182"/>
+        <location filename="../mainwindow.ui" line="184"/>
         <source>&amp;Paste</source>
         <translation>&amp;Colar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="191"/>
+        <location filename="../mainwindow.ui" line="193"/>
         <source>&amp;About Tiled</source>
         <translation>&amp;Acerca do Tiled</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="196"/>
+        <location filename="../mainwindow.ui" line="198"/>
         <source>About Qt</source>
         <translation>Acerca do Qt</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="205"/>
+        <location filename="../mainwindow.ui" line="207"/>
         <source>&amp;Resize Map...</source>
         <translation>&amp;Redimensionar Mapa...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="214"/>
+        <location filename="../mainwindow.ui" line="216"/>
         <source>Map &amp;Properties...</source>
         <translation>&amp;Propriedades do Mapa...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="223"/>
+        <location filename="../mainwindow.ui" line="225"/>
         <source>&amp;Recent Files</source>
         <translation>Ficheiros &amp;Recentes</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="231"/>
+        <location filename="../mainwindow.ui" line="233"/>
         <source>Show &amp;Grid</source>
         <translation>Mostrar &amp;Grelha</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="234"/>
+        <location filename="../mainwindow.ui" line="236"/>
         <source>Ctrl+G</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="243"/>
+        <location filename="../mainwindow.ui" line="245"/>
         <source>Save &amp;As...</source>
         <translation>Salvar &amp;Como...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="252"/>
+        <location filename="../mainwindow.ui" line="254"/>
         <source>Move Layer &amp;Up</source>
         <translation>Mover Camada para &amp;Cima</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="255"/>
+        <location filename="../mainwindow.ui" line="257"/>
         <source>Ctrl+Shift+Up</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="264"/>
+        <location filename="../mainwindow.ui" line="266"/>
         <source>Move Layer Dow&amp;n</source>
         <translation>Mover Camada para &amp;Baixo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="267"/>
+        <location filename="../mainwindow.ui" line="269"/>
         <source>Ctrl+Shift+Down</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="272"/>
+        <location filename="../mainwindow.ui" line="274"/>
         <source>Select &amp;All</source>
         <translation>Selecionar &amp;Tudo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="277"/>
+        <location filename="../mainwindow.ui" line="279"/>
         <source>Select &amp;None</source>
         <translation>Limpar &amp;Selecção</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="286"/>
+        <location filename="../mainwindow.ui" line="288"/>
         <source>New...</source>
         <translation>Novo...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="295"/>
+        <location filename="../mainwindow.ui" line="297"/>
         <source>New &amp;Tileset...</source>
         <translation>Novo &amp;Tileset...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="304"/>
+        <location filename="../mainwindow.ui" line="306"/>
         <source>&amp;Remove Layer</source>
         <translation>&amp;Remover Camada</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="313"/>
+        <location filename="../mainwindow.ui" line="315"/>
         <source>&amp;Close</source>
         <translation>&amp;Fechar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="318"/>
+        <location filename="../mainwindow.ui" line="320"/>
         <source>Add &amp;Tile Layer...</source>
         <translation>Adicionar Camada de &amp;Tiles...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="323"/>
+        <location filename="../mainwindow.ui" line="325"/>
         <source>Add &amp;Object Layer...</source>
         <translation>Adicionar Camada de &amp;Objectos...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="332"/>
+        <location filename="../mainwindow.ui" line="334"/>
         <source>&amp;Duplicate Layer</source>
         <translation>&amp;Duplicar Camada</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="335"/>
+        <location filename="../mainwindow.ui" line="337"/>
         <source>Ctrl+Shift+D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="344"/>
+        <location filename="../mainwindow.ui" line="346"/>
         <source>Layer &amp;Properties...</source>
         <translation>&amp;Propriedades da Camada...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="353"/>
+        <location filename="../mainwindow.ui" line="355"/>
         <source>Zoom In</source>
         <translation>Aumentar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="362"/>
+        <location filename="../mainwindow.ui" line="364"/>
         <source>Zoom Out</source>
         <translation>Diminuir</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="374"/>
+        <location filename="../mainwindow.ui" line="376"/>
         <source>Normal Size</source>
         <translation>Tamanho Normal</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="377"/>
+        <location filename="../mainwindow.ui" line="379"/>
         <source>Ctrl+0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="382"/>
+        <location filename="../mainwindow.ui" line="384"/>
         <source>Save As Image...</source>
         <translation>Salvar como Imagem...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="394"/>
+        <location filename="../mainwindow.ui" line="396"/>
         <source>Cu&amp;t</source>
         <translation>Cor&amp;tar</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="401"/>
+        <source>&amp;Offset Map...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.ui" line="404"/>
+        <source>Offsets everything in a layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MapObjectItem</name>
+    <message>
+        <location filename="../mapobjectitem.cpp" line="285"/>
+        <source>&amp;Duplicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mapobjectitem.cpp" line="286"/>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mapobjectitem.cpp" line="288"/>
+        <source>&amp;Properties...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -332,6 +362,70 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>OffsetMapDialog</name>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="17"/>
+        <source>Offset Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="29"/>
+        <source>Offset Contents of Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="35"/>
+        <source>X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="58"/>
+        <location filename="../offsetmapdialog.ui" line="101"/>
+        <source>Wrap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="65"/>
+        <source>Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="108"/>
+        <source>Layers:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="116"/>
+        <source>All Visible Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="121"/>
+        <source>All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="126"/>
+        <source>Selected Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="134"/>
+        <source>Bounds:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="142"/>
+        <source>Whole Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetmapdialog.ui" line="147"/>
+        <source>Current Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PropertiesDialog</name>
     <message>
         <location filename="../propertiesdialog.ui" line="14"/>
@@ -342,207 +436,161 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../addremovelayer.h" line="67"/>
         <source>Add Layer</source>
-        <translation>Addicionar Camada</translation>
+        <translation type="obsolete">Addicionar Camada</translation>
     </message>
     <message>
-        <location filename="../addremovelayer.h" line="89"/>
         <source>Remove Layer</source>
-        <translation>Remover Camada</translation>
+        <translation type="obsolete">Remover Camada</translation>
     </message>
     <message>
-        <location filename="../addremovemapobject.cpp" line="75"/>
         <source>Remove Object</source>
-        <translation>Remover Objecto</translation>
+        <translation type="obsolete">Remover Objecto</translation>
     </message>
     <message>
-        <location filename="../addremovemapobject.h" line="73"/>
         <source>Add Object</source>
-        <translation>Adicionar Objecto</translation>
+        <translation type="obsolete">Adicionar Objecto</translation>
     </message>
     <message>
-        <location filename="../changemapobject.cpp" line="34"/>
         <source>Change Object</source>
-        <translation>Modificar Objecto</translation>
+        <translation type="obsolete">Modificar Objecto</translation>
     </message>
     <message>
-        <location filename="../changeproperties.cpp" line="34"/>
         <source>Change %1 Properties</source>
-        <translation>Mudar %1 Propriedades</translation>
+        <translation type="obsolete">Mudar %1 Propriedades</translation>
     </message>
     <message>
-        <location filename="../changeselection.cpp" line="31"/>
         <source>Change Selection</source>
-        <translation>Mudar Selecção</translation>
+        <translation type="obsolete">Mudar Selecção</translation>
     </message>
     <message>
-        <location filename="../eraser.cpp" line="37"/>
         <source>Eraser</source>
-        <translation>Apagador</translation>
+        <translation type="obsolete">Apagador</translation>
     </message>
     <message>
-        <location filename="../erasetiles.cpp" line="37"/>
         <source>Erase</source>
-        <translation>Apagar</translation>
+        <translation type="obsolete">Apagar</translation>
     </message>
     <message>
-        <location filename="../mapobjectitem.cpp" line="279"/>
         <source>Remove</source>
-        <translation>Remover</translation>
+        <translation type="obsolete">Remover</translation>
     </message>
     <message>
-        <location filename="../mapobjectitem.cpp" line="281"/>
         <source>Properties...</source>
-        <translation>Propriedades...</translation>
+        <translation type="obsolete">Propriedades...</translation>
     </message>
     <message>
-        <location filename="../movelayer.cpp" line="37"/>
         <source>Move Layer Down</source>
-        <translation>Mover Camada para Baixo</translation>
+        <translation type="obsolete">Mover Camada para Baixo</translation>
     </message>
     <message>
-        <location filename="../movelayer.cpp" line="38"/>
         <source>Move Layer Up</source>
-        <translation>Mover Camada para Cima</translation>
+        <translation type="obsolete">Mover Camada para Cima</translation>
     </message>
     <message>
-        <location filename="../movemapobject.cpp" line="38"/>
         <source>Move Object</source>
-        <translation>Mover Objecto</translation>
+        <translation type="obsolete">Mover Objecto</translation>
     </message>
     <message>
-        <location filename="../painttilelayer.cpp" line="46"/>
         <source>Paint</source>
-        <translation>PPintar</translation>
+        <translation type="obsolete">PPintar</translation>
     </message>
     <message>
-        <location filename="../renamelayer.cpp" line="39"/>
         <source>Rename Layer</source>
-        <translation>Renomear Camada</translation>
+        <translation type="obsolete">Renomear Camada</translation>
     </message>
     <message>
-        <location filename="../resizelayer.cpp" line="36"/>
         <source>Resize Layer</source>
-        <translation>Redimensionar Camada</translation>
+        <translation type="obsolete">Redimensionar Camada</translation>
     </message>
     <message>
-        <location filename="../resizemap.cpp" line="31"/>
         <source>Resize Map</source>
-        <translation>Redimensionar Mapa</translation>
+        <translation type="obsolete">Redimensionar Mapa</translation>
     </message>
     <message>
-        <location filename="../resizemapobject.cpp" line="38"/>
         <source>Resize Object</source>
-        <translation>Redimensionar Objecto</translation>
+        <translation type="obsolete">Redimensionar Objecto</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="135"/>
-        <location filename="../tmxmapreader.cpp" line="156"/>
         <source>Not a map file.</source>
-        <translation>Não é um ficheiro de Mapa.</translation>
+        <translation type="obsolete">Não é um ficheiro de Mapa.</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="177"/>
         <source>Not a tileset file.</source>
-        <translation>Não é um ficheiro de tileset.</translation>
+        <translation type="obsolete">Não é um ficheiro de tileset.</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="192"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation>%3
+        <translation type="obsolete">%3
 
 Linha %1, coluna %2</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="202"/>
-        <source>File not found: %1</source>
-        <translatorcomment>Ficheiro não encontrado: %1</translatorcomment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../tmxmapreader.cpp" line="205"/>
         <source>Unable to read file: %1</source>
-        <translation>Incapaz de ler ficheiro: %1</translation>
+        <translation type="obsolete">Incapaz de ler ficheiro: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="303"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
+        <translation type="obsolete">Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="357"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation>Erro a carregar tileset &apos;%1&apos;: %2</translation>
+        <translation type="obsolete">Erro a carregar tileset &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="380"/>
         <source>Invalid tile ID: %1</source>
-        <translation>Tile ID inválido: %1</translation>
+        <translation type="obsolete">Tile ID inválido: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="413"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
-        <translation>Erroa a Carregar a imagem de tileser: &apos;%1&apos;</translation>
+        <translation type="obsolete">Erroa a Carregar a imagem de tileser: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="463"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation>Demaseados elementos &lt;tile&gt;</translation>
+        <translation type="obsolete">Demaseados elementos &lt;tile&gt;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="474"/>
-        <location filename="../tmxmapreader.cpp" line="536"/>
         <source>Invalid tile: %1</source>
-        <translation>Tile inválido: %1</translation>
+        <translation type="obsolete">Tile inválido: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="486"/>
         <source>Unknown encoding: %1</source>
-        <translation>Codificação desconhecida: %1</translation>
+        <translation type="obsolete">Codificação desconhecida: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="509"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Método de compressão &apos;%1&apos; não suportado</translation>
+        <translation type="obsolete">Método de compressão &apos;%1&apos; não suportado</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="515"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Data de Camada corrumpido para a Camada &apos;%1&apos;</translation>
+        <translation type="obsolete">Data de Camada corrumpido para a Camada &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="553"/>
         <source>Invalid global tile id (less than 0): %1</source>
-        <translation>ID global de tile inválido (inferior a 0): %1</translation>
+        <translation type="obsolete">ID global de tile inválido (inferior a 0): %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="559"/>
         <source>Tile used but no tilesets specified</source>
-        <translation>Tile usado mas nenhum tileset especificado</translation>
+        <translation type="obsolete">Tile usado mas nenhum tileset especificado</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.h" line="49"/>
         <source>XML map reader (*.tmx)</source>
-        <translation>Leitor de mapas XML (*.tmx)</translation>
+        <translation type="obsolete">Leitor de mapas XML (*.tmx)</translation>
     </message>
     <message>
-        <location filename="../tmxmapwriter.cpp" line="47"/>
         <source>Could not open file for writing.</source>
-        <translation>Impossivel abrir para escrita.</translation>
+        <translation type="obsolete">Impossivel abrir para escrita.</translation>
     </message>
     <message>
-        <location filename="../tmxmapwriter.h" line="64"/>
         <source>XML map writer (*.tmx)</source>
-        <translation>Escrita de mapas XML (*.tmx)</translation>
+        <translation type="obsolete">Escrita de mapas XML (*.tmx)</translation>
     </message>
     <message>
-        <location filename="../toolmanager.cpp" line="54"/>
         <source>Tools</source>
-        <translation>Ferramentas</translation>
+        <translation type="obsolete">Ferramentas</translation>
     </message>
 </context>
 <context>
@@ -624,6 +672,11 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::Eraser</name>
     <message>
+        <location filename="../eraser.cpp" line="37"/>
+        <source>Eraser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../eraser.cpp" line="40"/>
         <source>E</source>
         <translation></translation>
@@ -666,88 +719,88 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="109"/>
+        <location filename="../mainwindow.cpp" line="110"/>
         <source>Undo</source>
         <translation>Desfazer</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="110"/>
+        <location filename="../mainwindow.cpp" line="111"/>
         <source>Redo</source>
         <translation>Refazer</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="342"/>
+        <location filename="../mainwindow.cpp" line="344"/>
         <source>Error while opening map</source>
         <translation>Erro na abertura do mapa</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="377"/>
+        <location filename="../mainwindow.cpp" line="379"/>
         <source>Open Map</source>
         <translation>Abrir Mapa</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="378"/>
-        <location filename="../mainwindow.cpp" line="410"/>
+        <location filename="../mainwindow.cpp" line="380"/>
+        <location filename="../mainwindow.cpp" line="412"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Ficheiros de mapa do Tiled (*.tmx)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="387"/>
+        <location filename="../mainwindow.cpp" line="389"/>
         <source>Error while saving map</source>
         <translation>Erro a salvar o mapa</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="422"/>
+        <location filename="../mainwindow.cpp" line="424"/>
         <source>Unsaved Changes</source>
         <translation>Mudanças por salvar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="423"/>
+        <location filename="../mainwindow.cpp" line="425"/>
         <source>There are unsaved changes. Do you want to save now?</source>
         <translation>Existem mudanças por salvar. Deseja salvar agora?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="477"/>
+        <location filename="../mainwindow.cpp" line="479"/>
         <source>Cut</source>
         <translation>Cortar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="558"/>
+        <location filename="../mainwindow.cpp" line="579"/>
         <source>Map</source>
         <translation>Mapa</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="681"/>
+        <location filename="../mainwindow.cpp" line="702"/>
         <source>%1%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="718"/>
+        <location filename="../mainwindow.cpp" line="739"/>
         <source>Add Tile Layer</source>
         <translation>Adicionar Camade de Tiles</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="720"/>
+        <location filename="../mainwindow.cpp" line="741"/>
         <source>Add Object Layer</source>
         <translation>Adicionar Camade de Objectos</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="725"/>
+        <location filename="../mainwindow.cpp" line="746"/>
         <source>Layer name:</source>
         <translation>Nome da Camada:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="726"/>
+        <location filename="../mainwindow.cpp" line="747"/>
         <source>New Layer</source>
         <translation>Nova Camada</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="775"/>
+        <location filename="../mainwindow.cpp" line="796"/>
         <source>Layer</source>
         <translation>Camada</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="832"/>
+        <location filename="../mainwindow.cpp" line="853"/>
         <source>%1[*] - Tiled</source>
         <translation></translation>
     </message>
@@ -755,17 +808,22 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../mapdocument.cpp" line="100"/>
+        <location filename="../mapdocument.cpp" line="110"/>
         <source>Resize Map</source>
         <translation>Redimensionar Mapa</translation>
     </message>
     <message>
-        <location filename="../mapdocument.cpp" line="139"/>
+        <location filename="../mapdocument.cpp" line="132"/>
+        <source>Offset Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mapdocument.cpp" line="170"/>
         <source>Copy of %1</source>
         <translation>Copia de %1</translation>
     </message>
     <message>
-        <location filename="../mapdocument.cpp" line="143"/>
+        <location filename="../mapdocument.cpp" line="174"/>
         <source>Duplicate Layer</source>
         <translation>Duplicar Camada</translation>
     </message>
@@ -773,7 +831,7 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
-        <location filename="../newmapdialog.cpp" line="56"/>
+        <location filename="../newmapdialog.cpp" line="57"/>
         <source>Layer 1</source>
         <translation>Camada1</translation>
     </message>
@@ -839,7 +897,18 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::SaveAsImageDialog</name>
     <message>
-        <location filename="../saveasimagedialog.cpp" line="123"/>
+        <location filename="../saveasimagedialog.cpp" line="92"/>
+        <source>Save as Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../saveasimagedialog.cpp" line="93"/>
+        <source>%1 already exists.
+Do you want to replace it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../saveasimagedialog.cpp" line="140"/>
         <source>Image</source>
         <translation>Imagem</translation>
     </message>
@@ -857,7 +926,7 @@ Linha %1, coluna %2</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../selectiontool.cpp" line="67"/>
+        <location filename="../selectiontool.cpp" line="64"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
         <translation>%1, %2 - Rectangulo: (%3 x %4)</translation>
     </message>
@@ -878,9 +947,17 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../tilesetdock.cpp" line="39"/>
+        <location filename="../tilesetdock.cpp" line="40"/>
         <source>Tilesets</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::ToolManager</name>
+    <message>
+        <location filename="../toolmanager.cpp" line="54"/>
+        <source>Tools</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -889,6 +966,205 @@ Linha %1, coluna %2</translation>
         <location filename="../undodock.cpp" line="31"/>
         <source>Undo Stack</source>
         <translation>Histórico</translation>
+    </message>
+</context>
+<context>
+    <name>TmxMapReader</name>
+    <message>
+        <location filename="../tmxmapreader.h" line="51"/>
+        <source>XML map reader (*.tmx)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapwriter.cpp" line="46"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapwriter.h" line="65"/>
+        <source>XML map writer (*.tmx)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TmxReader</name>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="137"/>
+        <location filename="../tmxmapreader.cpp" line="158"/>
+        <source>Not a map file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="179"/>
+        <source>Not a tileset file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="194"/>
+        <source>%3
+
+Line %1, column %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="204"/>
+        <source>File not found: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="207"/>
+        <source>Unable to read file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="268"/>
+        <source>Unsupported map orientation: &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="324"/>
+        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="378"/>
+        <source>Error while loading tileset &apos;%1&apos;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="400"/>
+        <source>Invalid tile ID: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="433"/>
+        <source>Error loading tileset image:
+&apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="482"/>
+        <source>Too many &lt;tile&gt; elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="493"/>
+        <location filename="../tmxmapreader.cpp" line="557"/>
+        <source>Invalid tile: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="507"/>
+        <source>Unknown encoding: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="530"/>
+        <source>Compression method &apos;%1&apos; not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="536"/>
+        <source>Corrupt layer data for layer &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="574"/>
+        <source>Invalid global tile id (less than 0): %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tmxmapreader.cpp" line="580"/>
+        <source>Tile used but no tilesets specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Undo Commands</name>
+    <message>
+        <location filename="../addremovelayer.h" line="68"/>
+        <source>Add Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addremovelayer.h" line="90"/>
+        <source>Remove Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addremovemapobject.cpp" line="77"/>
+        <source>Add Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../addremovemapobject.cpp" line="88"/>
+        <source>Remove Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../changemapobject.cpp" line="36"/>
+        <source>Change Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../changeproperties.cpp" line="34"/>
+        <source>Change %1 Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../changeselection.cpp" line="33"/>
+        <source>Change Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../erasetiles.cpp" line="40"/>
+        <source>Erase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../movelayer.cpp" line="38"/>
+        <source>Move Layer Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../movelayer.cpp" line="39"/>
+        <source>Move Layer Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../movemapobject.cpp" line="40"/>
+        <source>Move Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../offsetlayer.cpp" line="40"/>
+        <source>Offset Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../painttilelayer.cpp" line="50"/>
+        <source>Paint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../renamelayer.cpp" line="41"/>
+        <source>Rename Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../resizelayer.cpp" line="38"/>
+        <source>Resize Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../resizemap.cpp" line="33"/>
+        <source>Resize Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../resizemapobject.cpp" line="40"/>
+        <source>Resize Object</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -25,7 +25,7 @@
 #include "layermodel.h"
 #include "mapdocument.h"
 
-#include <QObject>
+#include <QCoreApplication>
 
 using namespace Tiled::Internal;
 
@@ -34,8 +34,9 @@ MoveLayer::MoveLayer(MapDocument *mapDocument, int index, Direction direction):
     mIndex(index),
     mDirection(direction)
 {
-    setText((direction == Down) ? QObject::tr("Move Layer Down") :
-                                  QObject::tr("Move Layer Up"));
+    setText((direction == Down) ?
+            QCoreApplication::translate("Undo Commands", "Move Layer Down") :
+            QCoreApplication::translate("Undo Commands", "Move Layer Up"));
 }
 
 void MoveLayer::redo()

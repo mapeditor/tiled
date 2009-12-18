@@ -19,14 +19,14 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "mapwriterinterface.h"
-
 #ifndef TMXMAPWRITER_H
 #define TMXMAPWRITER_H
 
+#include "mapwriterinterface.h"
+
+#include <QCoreApplication>
 #include <QDir>
 #include <QMap>
-#include <QObject>
 #include <QString>
 #include <QXmlStreamWriter>
 
@@ -46,6 +46,8 @@ namespace Internal {
  */
 class TmxMapWriter : public MapWriterInterface
 {
+    Q_DECLARE_TR_FUNCTIONS(TmxMapReader)
+
 public:
     TmxMapWriter();
 
@@ -60,7 +62,7 @@ public:
      */
     QString toString(const Map *map);
 
-    QString name() const { return QObject::tr("XML map writer (*.tmx)"); }
+    QString name() const { return tr("XML map writer (*.tmx)"); }
 
     QString errorString() const { return mError; }
 

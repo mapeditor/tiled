@@ -24,6 +24,8 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -31,7 +33,8 @@ ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
                                  const QString &name,
                                  const QString &type)
-    : QUndoCommand(QObject::tr("Change Object"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Object"))
     , mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mName(name)

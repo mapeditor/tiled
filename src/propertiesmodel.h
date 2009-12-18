@@ -32,6 +32,8 @@ namespace Internal {
 
 class PropertiesModel : public QAbstractTableModel
 {
+    Q_OBJECT
+
 public:
     /**
      * Constructor.

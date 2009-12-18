@@ -21,7 +21,7 @@
 
 #include "changeproperties.h"
 
-#include <QObject>
+#include <QCoreApplication>
 
 using namespace Tiled::Internal;
 
@@ -31,7 +31,8 @@ ChangeProperties::ChangeProperties(const QString &kind,
     : mProperties(properties)
     , mNewProperties(newProperties)
 {
-    setText(QObject::tr("Change %1 Properties").arg(kind));
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change %1 Properties").arg(kind));
 }
 
 void ChangeProperties::redo()

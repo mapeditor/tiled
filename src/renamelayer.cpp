@@ -26,6 +26,8 @@
 #include "map.h"
 #include "mapdocument.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -36,7 +38,7 @@ RenameLayer::RenameLayer(MapDocument *mapDocument,
     mLayerIndex(layerIndex),
     mName(name)
 {
-    setText(QObject::tr("Rename Layer"));
+    setText(QCoreApplication::translate("Undo Commands", "Rename Layer"));
 }
 
 void RenameLayer::undo()

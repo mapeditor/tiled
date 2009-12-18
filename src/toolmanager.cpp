@@ -51,7 +51,7 @@ ToolManager::ToolManager()
     , mSelectedTool(0)
 {
     mToolBar->setObjectName(QLatin1String("toolsToolBar"));
-    mToolBar->setWindowTitle(QObject::tr("Tools"));
+    mToolBar->setWindowTitle(tr("Tools"));
 
     mActionGroup->setExclusive(true);
     connect(mActionGroup, SIGNAL(triggered(QAction*)),

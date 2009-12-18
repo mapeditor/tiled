@@ -26,6 +26,8 @@
 #include "map.h"
 #include "mapdocument.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -33,7 +35,8 @@ ResizeLayer::ResizeLayer(MapDocument *mapDocument,
                          int index,
                          const QSize &size,
                          const QPoint &offset)
-    : QUndoCommand(QObject::tr("Resize Layer"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Resize Layer"))
     , mMapDocument(mapDocument)
     , mIndex(index)
     , mOriginalLayer(0)

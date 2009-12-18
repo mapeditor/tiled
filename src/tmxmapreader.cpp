@@ -46,6 +46,8 @@ namespace {
  */
 class TmxReader
 {
+    Q_DECLARE_TR_FUNCTIONS(TmxReader)
+
 public:
     TmxReader() :
         mMap(0),
@@ -132,7 +134,7 @@ Map *TmxReader::readMap(const QString &fileName)
         if (readNextStartElement() && xml.name() == "map") {
             map = readMap();
         } else {
-            xml.raiseError(QObject::tr("Not a map file."));
+            xml.raiseError(tr("Not a map file."));
         }
 
         mGidsToTileset.clear();
@@ -153,7 +155,7 @@ Map *TmxReader::readMapFromString(const QString &string)
     if (readNextStartElement() && xml.name() == "map") {
         map = readMap();
     } else {
-        xml.raiseError(QObject::tr("Not a map file."));
+        xml.raiseError(tr("Not a map file."));
     }
 
     mGidsToTileset.clear();
@@ -174,7 +176,7 @@ Tileset *TmxReader::readTileset(const QString &fileName)
         if (readNextStartElement() && xml.name() == "tileset")
             tileset = readTileset();
         else
-            xml.raiseError(QObject::tr("Not a tileset file."));
+            xml.raiseError(tr("Not a tileset file."));
 
         if (tileset)
             tileset->setFileName(fileName);
@@ -189,7 +191,7 @@ QString TmxReader::errorString() const
     if (!mError.isEmpty()) {
         return mError;
     } else {
-        return QObject::tr("%3\n\nLine %1, column %2")
+        return tr("%3\n\nLine %1, column %2")
                 .arg(xml.lineNumber())
                 .arg(xml.columnNumber())
                 .arg(xml.errorString());
@@ -199,10 +201,10 @@ QString TmxReader::errorString() const
 bool TmxReader::openFile(QFile *file)
 {
     if (!file->exists()) {
-        mError = QObject::tr("File not found: %1").arg(file->fileName());
+        mError = tr("File not found: %1").arg(file->fileName());
         return false;
     } else if (!file->open(QFile::ReadOnly | QFile::Text)) {
-        mError = QObject::tr("Unable to read file: %1").arg(file->fileName());
+        mError = tr("Unable to read file: %1").arg(file->fileName());
         return false;
     }
 
@@ -263,7 +265,7 @@ Map *TmxReader::readMap()
             orientationFromString(orientationRef);
 
     if (orientation == Map::Unknown) {
-        xml.raiseError(QObject::tr("Unsupported map orientation: \"%1\"")
+        xml.raiseError(tr("Unsupported map orientation: \"%1\"")
                        .arg(orientationRef.toString()));
     }
 
@@ -319,8 +321,8 @@ Tileset *TmxReader::readTileset()
 
         if (tileWidth <= 0 || tileHeight <= 0
             || (firstGid <= 0 && !mReadingExternalTileset)) {
-            xml.raiseError(QObject::tr("Invalid tileset parameters for tileset"
-                                       " '%1'").arg(name));
+            xml.raiseError(tr("Invalid tileset parameters for tileset"
+                              " '%1'").arg(name));
         } else {
             tileset = new Tileset(name, tileWidth, tileHeight,
                                   tileSpacing, margin);
@@ -373,8 +375,7 @@ Tileset *TmxReader::readTileset()
             tileset = reader.readTileset(canonicalSource);
 
             if (!tileset) {
-                xml.raiseError(QObject::tr(
-                        "Error while loading tileset '%1': %2")
+                xml.raiseError(tr("Error while loading tileset '%1': %2")
                                .arg(absoluteSource, reader.errorString()));
             }
         }
@@ -396,7 +397,7 @@ void TmxReader::readTilesetTile(Tileset *tileset)
     const int id = atts.value(QLatin1String("id")).toString().toInt();
 
     if (id < 0 || id >= tileset->tileCount()) {
-        xml.raiseError(QObject::tr("Invalid tile ID: %1").arg(id));
+        xml.raiseError(tr("Invalid tile ID: %1").arg(id));
         return;
     }
 
@@ -429,8 +430,7 @@ void TmxReader::readTilesetImage(Tileset *tileset)
     source = makeAbsolute(source);
 
     if (!tileset->loadFromImage(source)) {
-        xml.raiseError(QObject::tr("Error loading tileset image:\n'%1'")
-                       .arg(source));
+        xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
     }
 
     skipCurrentElement();
@@ -479,7 +479,7 @@ void TmxReader::readLayerData(TileLayer *tileLayer)
         else if (xml.isStartElement()) {
             if (xml.name() == QLatin1String("tile")) {
                 if (y >= tileLayer->height()) {
-                    xml.raiseError(QObject::tr("Too many <tile> elements"));
+                    xml.raiseError(tr("Too many <tile> elements"));
                     continue;
                 }
 
@@ -490,7 +490,7 @@ void TmxReader::readLayerData(TileLayer *tileLayer)
                 if (ok)
                     tileLayer->setTile(x, y, tile);
                 else
-                    xml.raiseError(QObject::tr("Invalid tile: %1").arg(gid));
+                    xml.raiseError(tr("Invalid tile: %1").arg(gid));
 
                 x++;
                 if (x >= tileLayer->width()) {
@@ -504,7 +504,7 @@ void TmxReader::readLayerData(TileLayer *tileLayer)
             }
         } else if (xml.isCharacters() && !xml.isWhitespace()) {
             if (encoding != QLatin1String("base64")) {
-                xml.raiseError(QObject::tr("Unknown encoding: %1")
+                xml.raiseError(tr("Unknown encoding: %1")
                                .arg(encoding.toString()));
                 continue;
             }
@@ -527,13 +527,13 @@ void TmxReader::decodeBinaryLayerData(TileLayer *tileLayer,
         || compression == QLatin1String("gzip")) {
         tileData = decompress(tileData, size);
     } else if (!compression.isEmpty()) {
-        xml.raiseError(QObject::tr("Compression method '%1' not supported")
+        xml.raiseError(tr("Compression method '%1' not supported")
                        .arg(compression.toString()));
         return;
     }
 
     if (size != tileData.length()) {
-        xml.raiseError(QObject::tr("Corrupt layer data for layer '%1'")
+        xml.raiseError(tr("Corrupt layer data for layer '%1'")
                        .arg(tileLayer->name()));
         return;
     }
@@ -554,7 +554,7 @@ void TmxReader::decodeBinaryLayerData(TileLayer *tileLayer,
         if (ok)
             tileLayer->setTile(x, y, tile);
         else {
-            xml.raiseError(QObject::tr("Invalid tile: %1").arg(gid));
+            xml.raiseError(tr("Invalid tile: %1").arg(gid));
             return;
         }
 
@@ -571,13 +571,13 @@ Tile *TmxReader::tileForGid(int gid, bool &ok)
     Tile *result = 0;
 
     if (gid < 0) {
-        xml.raiseError(QObject::tr("Invalid global tile id (less than 0): %1")
+        xml.raiseError(tr("Invalid global tile id (less than 0): %1")
                        .arg(gid));
         ok = false;
     } else if (gid == 0) {
         ok = true;
     } else if (mGidsToTileset.isEmpty()) {
-        xml.raiseError(QObject::tr("Tile used but no tilesets specified"));
+        xml.raiseError(tr("Tile used but no tilesets specified"));
         ok = false;
     } else {
         // Find the tileset containing this tile

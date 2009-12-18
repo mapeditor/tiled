@@ -24,11 +24,13 @@
 #include "map.h"
 #include "mapdocument.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 namespace Internal {
 
 ResizeMap::ResizeMap(MapDocument *mapDocument, const QSize &size)
-    : QUndoCommand(QObject::tr("Resize Map"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Resize Map"))
     , mMapDocument(mapDocument)
     , mSize(size)
 {

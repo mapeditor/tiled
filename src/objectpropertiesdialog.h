@@ -36,6 +36,8 @@ class MapDocument;
 
 class ObjectPropertiesDialog : public PropertiesDialog
 {
+    Q_OBJECT
+
 public:
     ObjectPropertiesDialog(MapDocument *mapDocument,
                            MapObject *mapObject,

@@ -22,6 +22,7 @@
 #ifndef MAPOBJECTITEM_H
 #define MAPOBJECTITEM_H
 
+#include <QCoreApplication>
 #include <QGraphicsItem>
 
 namespace Tiled {
@@ -39,6 +40,8 @@ class ResizeHandle;
  */
 class MapObjectItem : public QGraphicsItem
 {
+    Q_DECLARE_TR_FUNCTIONS(MapObjectItem)
+
 public:
     /**
      * Constructor.

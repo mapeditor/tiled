@@ -64,14 +64,7 @@ class AddMapObject : public AddRemoveMapObject
 {
 public:
     AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
-                 MapObject *mapObject)
-        : AddRemoveMapObject(mapDocument,
-                             objectGroup,
-                             mapObject,
-                             true)
-    {
-        setText(QObject::tr("Add Object"));
-    }
+                 MapObject *mapObject);
 
     void undo()
     { removeObject(); }
