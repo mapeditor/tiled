@@ -202,7 +202,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     menu->addSeparator();
     QIcon clearIcon(QLatin1String(":images/16x16/edit-clear.png"));
     QAction *clear = new QAction(clearIcon,
-                                 QLatin1String("Clear Recent Files"),
+                                 tr("Clear Recent Files"),
                                  this);
     menu->addAction(clear);
     connect(clear, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
