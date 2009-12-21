@@ -4,12 +4,12 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.ui" line="14"/>
+        <location filename="../src/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
         <translation>Over Tiled</translation>
     </message>
     <message utf8="true">
-        <location filename="../aboutdialog.ui" line="69"/>
+        <location line="+55"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -38,7 +38,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://mapeditor.org/&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://mapeditor.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.ui" line="125"/>
+        <location line="+56"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -46,222 +46,222 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.ui" line="14"/>
+        <location filename="../src/mainwindow.ui" line="+14"/>
         <source>Tiled</source>
         <translation>Tiled</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="47"/>
+        <location line="+33"/>
         <source>&amp;File</source>
         <translation>&amp;Bestand</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="62"/>
+        <location line="+15"/>
         <source>&amp;Edit</source>
         <translation>Be&amp;werken</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="73"/>
+        <location line="+11"/>
         <source>&amp;Help</source>
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="80"/>
+        <location line="+7"/>
         <source>&amp;Map</source>
         <translation>&amp;Map</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="91"/>
+        <location line="+11"/>
         <source>&amp;View</source>
         <translation>Beel&amp;d</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="101"/>
+        <location line="+10"/>
         <source>&amp;Layer</source>
         <translation>&amp;Laag</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="122"/>
+        <location line="+21"/>
         <source>Main Toolbar</source>
         <translation>Hoofd Toolbalk</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="142"/>
+        <location line="+20"/>
         <source>&amp;Open...</source>
         <translation>&amp;Openen...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="151"/>
+        <location line="+9"/>
         <source>&amp;Save</source>
         <translation>Op&amp;slaan</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="160"/>
+        <location line="+9"/>
         <source>&amp;Quit</source>
         <translation>&amp;Afsluiten</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="172"/>
+        <location line="+12"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="184"/>
+        <location line="+12"/>
         <source>&amp;Paste</source>
         <translation>&amp;Plakken</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="193"/>
+        <location line="+9"/>
         <source>&amp;About Tiled</source>
         <translation>&amp;Over Tiled</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="198"/>
+        <location line="+5"/>
         <source>About Qt</source>
         <translation>Over Qt</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="207"/>
+        <location line="+9"/>
         <source>&amp;Resize Map...</source>
         <translation>Map &amp;Formaat Veranderen...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="216"/>
+        <location line="+9"/>
         <source>Map &amp;Properties...</source>
         <translation>Map &amp;Eigenschappen...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="225"/>
+        <location line="+9"/>
         <source>&amp;Recent Files</source>
         <translation>&amp;Recente Bestanden</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="233"/>
+        <location line="+8"/>
         <source>Show &amp;Grid</source>
         <translation>&amp;Raster Weergeven</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="236"/>
+        <location line="+3"/>
         <source>Ctrl+G</source>
         <translation>Ctrl+G</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="245"/>
+        <location line="+9"/>
         <source>Save &amp;As...</source>
         <translation>Opslaan &amp;Als...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="254"/>
+        <location line="+9"/>
         <source>Move Layer &amp;Up</source>
         <translation>Laag &amp;Omhoog</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="257"/>
+        <location line="+3"/>
         <source>Ctrl+Shift+Up</source>
         <translation>Ctrl+Shift+Up</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="266"/>
+        <location line="+9"/>
         <source>Move Layer Dow&amp;n</source>
         <translation>Laag Om&amp;laag</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="269"/>
+        <location line="+3"/>
         <source>Ctrl+Shift+Down</source>
         <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="274"/>
+        <location line="+5"/>
         <source>Select &amp;All</source>
         <translation>&amp;Alles Selecteren</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="279"/>
+        <location line="+5"/>
         <source>Select &amp;None</source>
         <translation>&amp;Niets Selecteren</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="288"/>
+        <location line="+9"/>
         <source>New...</source>
         <translation>Nieuw...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="297"/>
+        <location line="+9"/>
         <source>New &amp;Tileset...</source>
         <translation>Nieuwe &amp;Tileset...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="306"/>
+        <location line="+9"/>
         <source>&amp;Remove Layer</source>
         <translation>Laag &amp;Verwijderen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="315"/>
+        <location line="+9"/>
         <source>&amp;Close</source>
         <translation>Sl&amp;uiten</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="320"/>
+        <location line="+5"/>
         <source>Add &amp;Tile Layer...</source>
         <translation>&amp;Tilelaag Toevoegen...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="325"/>
+        <location line="+5"/>
         <source>Add &amp;Object Layer...</source>
         <translation>&amp;Objectlaag Toevoegen...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="334"/>
+        <location line="+9"/>
         <source>&amp;Duplicate Layer</source>
         <translation>Laag &amp;Verdubbelen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="337"/>
+        <location line="+3"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="346"/>
+        <location line="+9"/>
         <source>Layer &amp;Properties...</source>
         <translation>Laag &amp;Eigenschappen...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="355"/>
+        <location line="+9"/>
         <source>Zoom In</source>
         <translation>Inzoomen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="364"/>
+        <location line="+9"/>
         <source>Zoom Out</source>
         <translation>Uitzoomen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="376"/>
+        <location line="+12"/>
         <source>Normal Size</source>
         <translation>Normaal Formaat</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="379"/>
+        <location line="+3"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="384"/>
+        <location line="+5"/>
         <source>Save As Image...</source>
         <translation>Opslaan Als Afbeelding...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="396"/>
+        <location line="+12"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Knippen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="401"/>
+        <location line="+5"/>
         <source>&amp;Offset Map...</source>
         <translation>Map Ver&amp;schuiven...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="404"/>
+        <location line="+3"/>
         <source>Offsets everything in a layer</source>
         <translation>Verschuift alles in een laag</translation>
     </message>
@@ -269,17 +269,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MapObjectItem</name>
     <message>
-        <location filename="../mapobjectitem.cpp" line="285"/>
+        <location filename="../src/mapobjectitem.cpp" line="+285"/>
         <source>&amp;Duplicate</source>
         <translation>Ver&amp;dubbelen</translation>
     </message>
     <message>
-        <location filename="../mapobjectitem.cpp" line="286"/>
+        <location line="+1"/>
         <source>&amp;Remove</source>
         <translation>&amp;Verwijderen</translation>
     </message>
     <message>
-        <location filename="../mapobjectitem.cpp" line="288"/>
+        <location line="+2"/>
         <source>&amp;Properties...</source>
         <translation>&amp;Eigenschappen...</translation>
     </message>
@@ -287,29 +287,29 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NewMapDialog</name>
     <message>
-        <location filename="../newmapdialog.ui" line="14"/>
+        <location filename="../src/newmapdialog.ui" line="+14"/>
         <source>New Map</source>
         <translation>Nieuwe Map</translation>
     </message>
     <message>
-        <location filename="../newmapdialog.ui" line="23"/>
+        <location line="+9"/>
         <source>Map size</source>
         <translation>Map Formaat</translation>
     </message>
     <message>
-        <location filename="../newmapdialog.ui" line="29"/>
-        <location filename="../newmapdialog.ui" line="78"/>
+        <location line="+6"/>
+        <location line="+49"/>
         <source>Width:</source>
         <translation>Breedte:</translation>
     </message>
     <message>
-        <location filename="../newmapdialog.ui" line="49"/>
-        <location filename="../newmapdialog.ui" line="98"/>
+        <location line="-29"/>
+        <location line="+49"/>
         <source>Height:</source>
         <translation>Hoogte:</translation>
     </message>
     <message>
-        <location filename="../newmapdialog.ui" line="72"/>
+        <location line="-26"/>
         <source>Tile size</source>
         <translation>Tile Formaat</translation>
     </message>
@@ -317,57 +317,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>NewTilesetDialog</name>
     <message>
-        <location filename="../newtilesetdialog.ui" line="6"/>
+        <location filename="../src/newtilesetdialog.ui" line="+6"/>
         <source>New Tileset</source>
         <translation>Nieuwe Tileset</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="12"/>
+        <location line="+6"/>
         <source>Tileset</source>
         <translation>Tileset</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="18"/>
+        <location line="+6"/>
         <source>&amp;Name:</source>
         <translation>&amp;Naam:</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="31"/>
+        <location line="+13"/>
         <source>Image:</source>
         <translation>Afbeelding:</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="41"/>
+        <location line="+10"/>
         <source>&amp;Browse...</source>
         <translation>&amp;Bladeren...</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="50"/>
+        <location line="+9"/>
         <source>Use transparent color:</source>
         <translation>Gebruik een transparante kleur:</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="82"/>
+        <location line="+32"/>
         <source>Tiles</source>
         <translation>Tiles</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="88"/>
+        <location line="+6"/>
         <source>Tile width:</source>
         <translation>Tile breedte:</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="111"/>
+        <location line="+23"/>
         <source>Margin:</source>
         <translation>Marge:</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="131"/>
+        <location line="+20"/>
         <source>Tile height:</source>
         <translation>Tile hoogte:</translation>
     </message>
     <message>
-        <location filename="../newtilesetdialog.ui" line="151"/>
+        <location line="+20"/>
         <source>Spacing:</source>
         <translation>Tussenruimte:</translation>
     </message>
@@ -375,63 +375,63 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OffsetMapDialog</name>
     <message>
-        <location filename="../offsetmapdialog.ui" line="17"/>
+        <location filename="../src/offsetmapdialog.ui" line="+17"/>
         <source>Offset Map</source>
         <translation>Map Verschuiven</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="29"/>
+        <location line="+12"/>
         <source>Offset Contents of Map</source>
         <translation>Inhoud van de Map Verschuiven</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="35"/>
+        <location line="+6"/>
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="58"/>
-        <location filename="../offsetmapdialog.ui" line="101"/>
+        <location line="+23"/>
+        <location line="+43"/>
         <source>Wrap</source>
         <translation>Omwikkelen</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="65"/>
+        <location line="-36"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="108"/>
+        <location line="+43"/>
         <source>Layers:</source>
         <translation>Lagen:</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="116"/>
+        <location line="+8"/>
         <source>All Visible Layers</source>
         <translation>Alle Zichtbare Lagen</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="121"/>
+        <location line="+5"/>
         <source>All Layers</source>
         <translation>Alle Lagen</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="126"/>
+        <location line="+5"/>
         <source>Selected Layer</source>
         <translation>Geselecteerde Laag</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="134"/>
+        <location line="+8"/>
         <source>Bounds:</source>
         <translation>Begrenzing:</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="142"/>
+        <location line="+8"/>
         <source>Whole Map</source>
         <translation>Hele Map</translation>
     </message>
     <message>
-        <location filename="../offsetmapdialog.ui" line="147"/>
+        <location line="+5"/>
         <source>Current Selection</source>
         <translation>Huidige Selectie</translation>
     </message>
@@ -439,7 +439,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <location filename="../propertiesdialog.ui" line="14"/>
+        <location filename="../src/propertiesdialog.ui" line="+14"/>
         <source>Properties</source>
         <translation>Eigenschappen</translation>
     </message>
@@ -447,37 +447,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ResizeDialog</name>
     <message>
-        <location filename="../resizedialog.ui" line="13"/>
+        <location filename="../src/resizedialog.ui" line="+13"/>
         <source>Resize</source>
         <translation>Formaat Veranderen</translation>
     </message>
     <message>
-        <location filename="../resizedialog.ui" line="19"/>
+        <location line="+6"/>
         <source>Size</source>
         <translation>Formaat</translation>
     </message>
     <message>
-        <location filename="../resizedialog.ui" line="25"/>
+        <location line="+6"/>
         <source>Width:</source>
         <translation>Hoogte:</translation>
     </message>
     <message>
-        <location filename="../resizedialog.ui" line="45"/>
+        <location line="+20"/>
         <source>Height:</source>
         <translation>Breedte:</translation>
     </message>
     <message>
-        <location filename="../resizedialog.ui" line="68"/>
+        <location line="+23"/>
         <source>Offset</source>
         <translation>Verschuiving</translation>
     </message>
     <message>
-        <location filename="../resizedialog.ui" line="74"/>
+        <location line="+6"/>
         <source>X:</source>
         <translation>x:</translation>
     </message>
     <message>
-        <location filename="../resizedialog.ui" line="94"/>
+        <location line="+20"/>
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
@@ -485,37 +485,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SaveAsImageDialog</name>
     <message>
-        <location filename="../saveasimagedialog.ui" line="14"/>
+        <location filename="../src/saveasimagedialog.ui" line="+14"/>
         <source>Save As Image</source>
         <translation>Opslaan Als Afbeelding</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.ui" line="20"/>
+        <location line="+6"/>
         <source>Location</source>
         <translation>Locatie</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.ui" line="26"/>
+        <location line="+6"/>
         <source>Name:</source>
         <translation>Naam:</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.ui" line="39"/>
+        <location line="+13"/>
         <source>&amp;Browse...</source>
         <translation>&amp;Bladeren...</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.ui" line="49"/>
+        <location line="+10"/>
         <source>Settings</source>
         <translation>Opties</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.ui" line="55"/>
+        <location line="+6"/>
         <source>Only include &amp;visible layers</source>
         <translation>&amp;Alleen zichtbare lagen</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.ui" line="65"/>
+        <location line="+10"/>
         <source>Use current &amp;zoom level</source>
         <translation>Gebruik huidig &amp;zoom niveau</translation>
     </message>
@@ -523,12 +523,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::Eraser</name>
     <message>
-        <location filename="../eraser.cpp" line="37"/>
+        <location filename="../src/eraser.cpp" line="+37"/>
         <source>Eraser</source>
         <translation>Wisser</translation>
     </message>
     <message>
-        <location filename="../eraser.cpp" line="40"/>
+        <location line="+3"/>
         <source>E</source>
         <translation>W</translation>
     </message>
@@ -536,12 +536,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../layerdock.cpp" line="41"/>
+        <location filename="../src/layerdock.cpp" line="+41"/>
         <source>Layers</source>
         <translation>Lagen</translation>
     </message>
     <message>
-        <location filename="../layerdock.cpp" line="42"/>
+        <location line="+1"/>
         <source>Opacity:</source>
         <translation>Dekking:</translation>
     </message>
@@ -549,7 +549,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::LayerModel</name>
     <message>
-        <location filename="../layermodel.cpp" line="115"/>
+        <location filename="../src/layermodel.cpp" line="+115"/>
         <source>Layer</source>
         <translation>Laag</translation>
     </message>
@@ -557,12 +557,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::LayerView</name>
     <message>
-        <location filename="../layerdock.cpp" line="197"/>
+        <location filename="../src/layerdock.cpp" line="+155"/>
         <source>Properties...</source>
         <translation>Eigenschappen...</translation>
     </message>
     <message>
-        <location filename="../layerdock.cpp" line="202"/>
+        <location line="+5"/>
         <source>Layer</source>
         <translation>Laag</translation>
     </message>
@@ -570,93 +570,93 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="110"/>
+        <location filename="../src/mainwindow.cpp" line="+110"/>
         <source>Undo</source>
         <translation>Ongedaan Maken</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="111"/>
+        <location line="+1"/>
         <source>Redo</source>
         <translation>Opnieuw</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="205"/>
+        <location line="+94"/>
         <source>Clear Recent Files</source>
         <translation>Geschiedenis Wissen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="344"/>
+        <location line="+139"/>
         <source>Error while opening map</source>
         <translation>Fout tijdens het openen van de map</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="379"/>
+        <location line="+35"/>
         <source>Open Map</source>
         <translation>Map Openen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="380"/>
-        <location filename="../mainwindow.cpp" line="412"/>
+        <location line="+1"/>
+        <location line="+32"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Tiled map bestanden (*.tmx)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="389"/>
+        <location line="-23"/>
         <source>Error while saving map</source>
         <translation>Fout tijdens het opslaan van de map</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="424"/>
+        <location line="+35"/>
         <source>Unsaved Changes</source>
         <translation>Wijzigingen Opslaan</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="425"/>
+        <location line="+1"/>
         <source>There are unsaved changes. Do you want to save now?</source>
         <translation>Wijzigingen zijn nog niet opgeslagen. Nu opslaan?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="479"/>
+        <location line="+54"/>
         <source>Cut</source>
         <translation>Knippen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="579"/>
+        <location line="+100"/>
         <source>Map</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="702"/>
+        <location line="+123"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="739"/>
+        <location line="+37"/>
         <source>Add Tile Layer</source>
         <translation>Tilelaag Toevoegen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="741"/>
+        <location line="+2"/>
         <source>Add Object Layer</source>
         <translation>Objectlaag Toevoegen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="746"/>
+        <location line="+5"/>
         <source>Layer name:</source>
         <translation>Naam:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="747"/>
+        <location line="+1"/>
         <source>New Layer</source>
         <translation>Nieuwe Laag</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="796"/>
+        <location line="+49"/>
         <source>Layer</source>
         <translation>Laag</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="853"/>
+        <location line="+57"/>
         <source>%1[*] - Tiled</source>
         <translation>%1[*] - Tiled</translation>
     </message>
@@ -664,22 +664,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../mapdocument.cpp" line="110"/>
+        <location filename="../src/mapdocument.cpp" line="+110"/>
         <source>Resize Map</source>
         <translation>Map Formaat Veranderen</translation>
     </message>
     <message>
-        <location filename="../mapdocument.cpp" line="132"/>
+        <location line="+22"/>
         <source>Offset Map</source>
         <translation>Map Verschuiven</translation>
     </message>
     <message>
-        <location filename="../mapdocument.cpp" line="170"/>
+        <location line="+38"/>
         <source>Copy of %1</source>
         <translation>Kopie van %1</translation>
     </message>
     <message>
-        <location filename="../mapdocument.cpp" line="174"/>
+        <location line="+4"/>
         <source>Duplicate Layer</source>
         <translation>Laag Verdubbelen</translation>
     </message>
@@ -687,7 +687,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
-        <location filename="../newmapdialog.cpp" line="57"/>
+        <location filename="../src/newmapdialog.cpp" line="+57"/>
         <source>Layer 1</source>
         <translation>Laag 1</translation>
     </message>
@@ -695,7 +695,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::NewTilesetDialog</name>
     <message>
-        <location filename="../newtilesetdialog.cpp" line="90"/>
+        <location filename="../src/newtilesetdialog.cpp" line="+90"/>
         <source>Tileset Image</source>
         <translation>Tileset Afbeelding</translation>
     </message>
@@ -703,22 +703,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::ObjectPropertiesDialog</name>
     <message>
-        <location filename="../objectpropertiesdialog.cpp" line="39"/>
+        <location filename="../src/objectpropertiesdialog.cpp" line="+39"/>
         <source>Object</source>
         <translation>Object</translation>
     </message>
     <message>
-        <location filename="../objectpropertiesdialog.cpp" line="49"/>
+        <location line="+10"/>
         <source>Name:</source>
         <translation>Naam:</translation>
     </message>
     <message>
-        <location filename="../objectpropertiesdialog.cpp" line="50"/>
+        <location line="+1"/>
         <source>Type:</source>
         <translation>Type:</translation>
     </message>
     <message>
-        <location filename="../objectpropertiesdialog.cpp" line="65"/>
+        <location line="+15"/>
         <source>Change Object</source>
         <translation>Object Veranderen</translation>
     </message>
@@ -726,7 +726,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::PropertiesDialog</name>
     <message>
-        <location filename="../propertiesdialog.cpp" line="56"/>
+        <location filename="../src/propertiesdialog.cpp" line="+56"/>
         <source>%1 Properties</source>
         <translation>%1 Eigenschappen</translation>
     </message>
@@ -734,18 +734,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::PropertiesModel</name>
     <message>
-        <location filename="../propertiesmodel.cpp" line="51"/>
-        <location filename="../propertiesmodel.cpp" line="75"/>
+        <location filename="../src/propertiesmodel.cpp" line="+51"/>
+        <location line="+24"/>
         <source>&lt;new property&gt;</source>
         <translation>&lt;nieuwe eigenschap&gt;</translation>
     </message>
     <message>
-        <location filename="../propertiesmodel.cpp" line="119"/>
+        <location line="+44"/>
         <source>Name</source>
         <translation>Naam</translation>
     </message>
     <message>
-        <location filename="../propertiesmodel.cpp" line="120"/>
+        <location line="+1"/>
         <source>Value</source>
         <translation>Waarde</translation>
     </message>
@@ -753,19 +753,19 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::SaveAsImageDialog</name>
     <message>
-        <location filename="../saveasimagedialog.cpp" line="92"/>
+        <location filename="../src/saveasimagedialog.cpp" line="+92"/>
         <source>Save as Image</source>
         <translation>Opslaan Als Afbeelding</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.cpp" line="93"/>
+        <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
         <translation>%1 bestaat al.
 Moet het bestand vervangen worden?</translation>
     </message>
     <message>
-        <location filename="../saveasimagedialog.cpp" line="140"/>
+        <location line="+47"/>
         <source>Image</source>
         <translation>Afbeelding</translation>
     </message>
@@ -773,17 +773,17 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::SelectionTool</name>
     <message>
-        <location filename="../selectiontool.cpp" line="38"/>
+        <location filename="../src/selectiontool.cpp" line="+38"/>
         <source>Rectangular Select</source>
         <translation>Rechthoekig Selecteren</translation>
     </message>
     <message>
-        <location filename="../selectiontool.cpp" line="41"/>
+        <location line="+3"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="../selectiontool.cpp" line="64"/>
+        <location line="+23"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
         <translation>%1, %2 - Rechthoek: (%3 x %4)</translation>
     </message>
@@ -791,12 +791,12 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
-        <location filename="../stampbrush.cpp" line="37"/>
+        <location filename="../src/stampbrush.cpp" line="+37"/>
         <source>Stamp Brush</source>
         <translation>Stempel</translation>
     </message>
     <message>
-        <location filename="../stampbrush.cpp" line="40"/>
+        <location line="+3"/>
         <source>B</source>
         <translation>S</translation>
     </message>
@@ -804,7 +804,7 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../tilesetdock.cpp" line="40"/>
+        <location filename="../src/tilesetdock.cpp" line="+40"/>
         <source>Tilesets</source>
         <translation>Tilesets</translation>
     </message>
@@ -812,7 +812,7 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::ToolManager</name>
     <message>
-        <location filename="../toolmanager.cpp" line="54"/>
+        <location filename="../src/toolmanager.cpp" line="+54"/>
         <source>Tools</source>
         <translation>Gereedschappen</translation>
     </message>
@@ -820,7 +820,7 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::UndoDock</name>
     <message>
-        <location filename="../undodock.cpp" line="31"/>
+        <location filename="../src/undodock.cpp" line="+31"/>
         <source>Undo Stack</source>
         <translation>Geschiedenis</translation>
     </message>
@@ -828,17 +828,17 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>TmxMapReader</name>
     <message>
-        <location filename="../tmxmapreader.h" line="51"/>
+        <location filename="../src/tmxmapreader.h" line="+51"/>
         <source>XML map reader (*.tmx)</source>
         <translation>XML map lezer (*.tmx)</translation>
     </message>
     <message>
-        <location filename="../tmxmapwriter.cpp" line="46"/>
+        <location filename="../src/tmxmapwriter.cpp" line="+46"/>
         <source>Could not open file for writing.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location filename="../tmxmapwriter.h" line="65"/>
+        <location filename="../src/tmxmapwriter.h" line="+65"/>
         <source>XML map writer (*.tmx)</source>
         <translation>XML map schrijver (*.tmx)</translation>
     </message>
@@ -846,18 +846,18 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>TmxReader</name>
     <message>
-        <location filename="../tmxmapreader.cpp" line="137"/>
-        <location filename="../tmxmapreader.cpp" line="158"/>
+        <location filename="../src/tmxmapreader.cpp" line="+137"/>
+        <location line="+21"/>
         <source>Not a map file.</source>
         <translation>Geen map bestand.</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="179"/>
+        <location line="+21"/>
         <source>Not a tileset file.</source>
         <translation>Geen tileset bestand.</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="194"/>
+        <location line="+15"/>
         <source>%3
 
 Line %1, column %2</source>
@@ -866,75 +866,75 @@ Line %1, column %2</source>
 Regel %1, colom %2</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="204"/>
+        <location line="+10"/>
         <source>File not found: %1</source>
         <translation>Bestand niet gevonden: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="207"/>
+        <location line="+3"/>
         <source>Unable to read file: %1</source>
         <translation>Kon bestand niet lezen: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="268"/>
+        <location line="+61"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>Niet ondersteunde map orientatie: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="324"/>
+        <location line="+56"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>Ongeldige tileset parameters voor tileset: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="378"/>
+        <location line="+54"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
         <translation>Fout tijdens het laden van tileset &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="400"/>
+        <location line="+22"/>
         <source>Invalid tile ID: %1</source>
         <translation>Ongeldige tile ID: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="433"/>
+        <location line="+33"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
         <translation>Fout tijdens het laden van tileset afbeelding:
 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="482"/>
+        <location line="+49"/>
         <source>Too many &lt;tile&gt; elements</source>
         <translation>Teveel &lt;tile&gt; elementen</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="493"/>
-        <location filename="../tmxmapreader.cpp" line="557"/>
+        <location line="+11"/>
+        <location line="+64"/>
         <source>Invalid tile: %1</source>
         <translation>Ongeldige tile: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="507"/>
+        <location line="-50"/>
         <source>Unknown encoding: %1</source>
         <translation>Onbekende codering: %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="530"/>
+        <location line="+23"/>
         <source>Compression method &apos;%1&apos; not supported</source>
         <translation>Compressie methode &apos;%1&apos; wordt niet ondersteund</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="536"/>
+        <location line="+6"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
         <translation>Corrupte tile data voor laag &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="574"/>
+        <location line="+38"/>
         <source>Invalid global tile id (less than 0): %1</source>
         <translation>Ongeldige globale tile id (negatief): %1</translation>
     </message>
     <message>
-        <location filename="../tmxmapreader.cpp" line="580"/>
+        <location line="+6"/>
         <source>Tile used but no tilesets specified</source>
         <translation>Tile in gebruik maar geen tilesets gespecificeerd</translation>
     </message>
@@ -942,87 +942,87 @@ Regel %1, colom %2</translation>
 <context>
     <name>Undo Commands</name>
     <message>
-        <location filename="../addremovelayer.h" line="68"/>
+        <location filename="../src/addremovelayer.h" line="+68"/>
         <source>Add Layer</source>
         <translation>Laag Toevoegen</translation>
     </message>
     <message>
-        <location filename="../addremovelayer.h" line="90"/>
+        <location line="+22"/>
         <source>Remove Layer</source>
         <translation>Laag Verwijderen</translation>
     </message>
     <message>
-        <location filename="../addremovemapobject.cpp" line="77"/>
+        <location filename="../src/addremovemapobject.cpp" line="+77"/>
         <source>Add Object</source>
         <translation>Object Toevoegen</translation>
     </message>
     <message>
-        <location filename="../addremovemapobject.cpp" line="88"/>
+        <location line="+11"/>
         <source>Remove Object</source>
         <translation>Object Verwijderen</translation>
     </message>
     <message>
-        <location filename="../changemapobject.cpp" line="36"/>
+        <location filename="../src/changemapobject.cpp" line="+36"/>
         <source>Change Object</source>
         <translation>Object Veranderen</translation>
     </message>
     <message>
-        <location filename="../changeproperties.cpp" line="34"/>
+        <location filename="../src/changeproperties.cpp" line="+34"/>
         <source>Change %1 Properties</source>
         <translation>Eigenschappen Van %1 Veranderen</translation>
     </message>
     <message>
-        <location filename="../changeselection.cpp" line="33"/>
+        <location filename="../src/changeselection.cpp" line="+33"/>
         <source>Change Selection</source>
         <translation>Selectie Veranderen</translation>
     </message>
     <message>
-        <location filename="../erasetiles.cpp" line="40"/>
+        <location filename="../src/erasetiles.cpp" line="+40"/>
         <source>Erase</source>
         <translation>Wissen</translation>
     </message>
     <message>
-        <location filename="../movelayer.cpp" line="38"/>
+        <location filename="../src/movelayer.cpp" line="+38"/>
         <source>Move Layer Down</source>
         <translation>Laag Omlaag</translation>
     </message>
     <message>
-        <location filename="../movelayer.cpp" line="39"/>
+        <location line="+1"/>
         <source>Move Layer Up</source>
         <translation>Laag Omhoog</translation>
     </message>
     <message>
-        <location filename="../movemapobject.cpp" line="40"/>
+        <location filename="../src/movemapobject.cpp" line="+40"/>
         <source>Move Object</source>
         <translation>Object Verplaatsen</translation>
     </message>
     <message>
-        <location filename="../offsetlayer.cpp" line="40"/>
+        <location filename="../src/offsetlayer.cpp" line="+40"/>
         <source>Offset Layer</source>
         <translation>Laag Verschuiven</translation>
     </message>
     <message>
-        <location filename="../painttilelayer.cpp" line="50"/>
+        <location filename="../src/painttilelayer.cpp" line="+50"/>
         <source>Paint</source>
         <translation>Tekenen</translation>
     </message>
     <message>
-        <location filename="../renamelayer.cpp" line="41"/>
+        <location filename="../src/renamelayer.cpp" line="+41"/>
         <source>Rename Layer</source>
         <translation>Laag Hernoemen</translation>
     </message>
     <message>
-        <location filename="../resizelayer.cpp" line="38"/>
+        <location filename="../src/resizelayer.cpp" line="+38"/>
         <source>Resize Layer</source>
         <translation>Laag Formaat Veranderen</translation>
     </message>
     <message>
-        <location filename="../resizemap.cpp" line="33"/>
+        <location filename="../src/resizemap.cpp" line="+33"/>
         <source>Resize Map</source>
         <translation>Map Formaat Veranderen</translation>
     </message>
     <message>
-        <location filename="../resizemapobject.cpp" line="40"/>
+        <location filename="../src/resizemapobject.cpp" line="+40"/>
         <source>Resize Object</source>
         <translation>Object Formaat Veranderen</translation>
     </message>
@@ -1030,7 +1030,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../utils.cpp" line="30"/>
+        <location filename="../src/utils.cpp" line="+30"/>
         <source>Image files</source>
         <translation>Afbeeldingen</translation>
     </message>
