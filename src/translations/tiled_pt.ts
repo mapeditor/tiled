@@ -698,7 +698,7 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::LayerModel</name>
     <message>
-        <location filename="../layermodel.cpp" line="114"/>
+        <location filename="../layermodel.cpp" line="115"/>
         <source>Layer</source>
         <translation>Camada</translation>
     </message>
@@ -727,6 +727,11 @@ Linha %1, coluna %2</translation>
         <location filename="../mainwindow.cpp" line="111"/>
         <source>Redo</source>
         <translation>Refazer</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="205"/>
+        <source>Clear Recent Files</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="344"/>
