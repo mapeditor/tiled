@@ -152,8 +152,6 @@ FORMS += aboutdialog.ui \
     saveasimagedialog.ui \
     offsetmapdialog.ui
 RESOURCES += tiled.qrc
-TRANSLATIONS = translations/tiled_nl.ts \
-    translations/tiled_pt.ts
 mac {
     TARGET = Tiled
     LIBS += -lz
