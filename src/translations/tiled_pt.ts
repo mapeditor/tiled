@@ -265,12 +265,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../mapobjectitem.cpp" line="286"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Remover</translation>
     </message>
     <message>
         <location filename="../mapobjectitem.cpp" line="288"/>
         <source>&amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propriedades...</translation>
     </message>
 </context>
 <context>
@@ -434,166 +434,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QObject</name>
-    <message>
-        <source>Add Layer</source>
-        <translation type="obsolete">Addicionar Camada</translation>
-    </message>
-    <message>
-        <source>Remove Layer</source>
-        <translation type="obsolete">Remover Camada</translation>
-    </message>
-    <message>
-        <source>Remove Object</source>
-        <translation type="obsolete">Remover Objecto</translation>
-    </message>
-    <message>
-        <source>Add Object</source>
-        <translation type="obsolete">Adicionar Objecto</translation>
-    </message>
-    <message>
-        <source>Change Object</source>
-        <translation type="obsolete">Modificar Objecto</translation>
-    </message>
-    <message>
-        <source>Change %1 Properties</source>
-        <translation type="obsolete">Mudar %1 Propriedades</translation>
-    </message>
-    <message>
-        <source>Change Selection</source>
-        <translation type="obsolete">Mudar Selecção</translation>
-    </message>
-    <message>
-        <source>Eraser</source>
-        <translation type="obsolete">Apagador</translation>
-    </message>
-    <message>
-        <source>Erase</source>
-        <translation type="obsolete">Apagar</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Remover</translation>
-    </message>
-    <message>
-        <source>Properties...</source>
-        <translation type="obsolete">Propriedades...</translation>
-    </message>
-    <message>
-        <source>Move Layer Down</source>
-        <translation type="obsolete">Mover Camada para Baixo</translation>
-    </message>
-    <message>
-        <source>Move Layer Up</source>
-        <translation type="obsolete">Mover Camada para Cima</translation>
-    </message>
-    <message>
-        <source>Move Object</source>
-        <translation type="obsolete">Mover Objecto</translation>
-    </message>
-    <message>
-        <source>Paint</source>
-        <translation type="obsolete">PPintar</translation>
-    </message>
-    <message>
-        <source>Rename Layer</source>
-        <translation type="obsolete">Renomear Camada</translation>
-    </message>
-    <message>
-        <source>Resize Layer</source>
-        <translation type="obsolete">Redimensionar Camada</translation>
-    </message>
-    <message>
-        <source>Resize Map</source>
-        <translation type="obsolete">Redimensionar Mapa</translation>
-    </message>
-    <message>
-        <source>Resize Object</source>
-        <translation type="obsolete">Redimensionar Objecto</translation>
-    </message>
-    <message>
-        <source>Not a map file.</source>
-        <translation type="obsolete">Não é um ficheiro de Mapa.</translation>
-    </message>
-    <message>
-        <source>Not a tileset file.</source>
-        <translation type="obsolete">Não é um ficheiro de tileset.</translation>
-    </message>
-    <message>
-        <source>%3
-
-Line %1, column %2</source>
-        <translation type="obsolete">%3
-
-Linha %1, coluna %2</translation>
-    </message>
-    <message>
-        <source>Unable to read file: %1</source>
-        <translation type="obsolete">Incapaz de ler ficheiro: %1</translation>
-    </message>
-    <message>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation type="obsolete">Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation type="obsolete">Erro a carregar tileset &apos;%1&apos;: %2</translation>
-    </message>
-    <message>
-        <source>Invalid tile ID: %1</source>
-        <translation type="obsolete">Tile ID inválido: %1</translation>
-    </message>
-    <message>
-        <source>Error loading tileset image:
-&apos;%1&apos;</source>
-        <translation type="obsolete">Erroa a Carregar a imagem de tileser: &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Too many &lt;tile&gt; elements</source>
-        <translation type="obsolete">Demaseados elementos &lt;tile&gt;</translation>
-    </message>
-    <message>
-        <source>Invalid tile: %1</source>
-        <translation type="obsolete">Tile inválido: %1</translation>
-    </message>
-    <message>
-        <source>Unknown encoding: %1</source>
-        <translation type="obsolete">Codificação desconhecida: %1</translation>
-    </message>
-    <message>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation type="obsolete">Método de compressão &apos;%1&apos; não suportado</translation>
-    </message>
-    <message>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation type="obsolete">Data de Camada corrumpido para a Camada &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Invalid global tile id (less than 0): %1</source>
-        <translation type="obsolete">ID global de tile inválido (inferior a 0): %1</translation>
-    </message>
-    <message>
-        <source>Tile used but no tilesets specified</source>
-        <translation type="obsolete">Tile usado mas nenhum tileset especificado</translation>
-    </message>
-    <message>
-        <source>XML map reader (*.tmx)</source>
-        <translation type="obsolete">Leitor de mapas XML (*.tmx)</translation>
-    </message>
-    <message>
-        <source>Could not open file for writing.</source>
-        <translation type="obsolete">Impossivel abrir para escrita.</translation>
-    </message>
-    <message>
-        <source>XML map writer (*.tmx)</source>
-        <translation type="obsolete">Escrita de mapas XML (*.tmx)</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="obsolete">Ferramentas</translation>
-    </message>
-</context>
-<context>
     <name>ResizeDialog</name>
     <message>
         <location filename="../resizedialog.ui" line="13"/>
@@ -674,7 +514,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../eraser.cpp" line="37"/>
         <source>Eraser</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagador</translation>
     </message>
     <message>
         <location filename="../eraser.cpp" line="40"/>
@@ -904,7 +744,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../saveasimagedialog.cpp" line="92"/>
         <source>Save as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar Como Imagem</translation>
     </message>
     <message>
         <location filename="../saveasimagedialog.cpp" line="93"/>
@@ -962,7 +802,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../toolmanager.cpp" line="54"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramentas</translation>
     </message>
 </context>
 <context>
@@ -978,17 +818,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../tmxmapreader.h" line="51"/>
         <source>XML map reader (*.tmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Leitor de mapas XML (*.tmx)</translation>
     </message>
     <message>
         <location filename="../tmxmapwriter.cpp" line="46"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossivel abrir para escrita.</translation>
     </message>
     <message>
         <location filename="../tmxmapwriter.h" line="65"/>
         <source>XML map writer (*.tmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Escrita de mapas XML (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -997,19 +837,21 @@ Do you want to replace it?</source>
         <location filename="../tmxmapreader.cpp" line="137"/>
         <location filename="../tmxmapreader.cpp" line="158"/>
         <source>Not a map file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é um ficheiro de Mapa.</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="179"/>
         <source>Not a tileset file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é um ficheiro de tileset.</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="194"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%3
+
+Linha %1, coluna %2</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="204"/>
@@ -1019,7 +861,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../tmxmapreader.cpp" line="207"/>
         <source>Unable to read file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de ler ficheiro: %1</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="268"/>
@@ -1029,59 +871,60 @@ Line %1, column %2</source>
     <message>
         <location filename="../tmxmapreader.cpp" line="324"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="378"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro a carregar tileset &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="400"/>
         <source>Invalid tile ID: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile ID inválido: %1</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="433"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erroa a Carregar a imagem de tileser:
+&apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="482"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation type="unfinished"></translation>
+        <translation>Demaseados elementos &lt;tile&gt;</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="493"/>
         <location filename="../tmxmapreader.cpp" line="557"/>
         <source>Invalid tile: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile inválido: %1</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="507"/>
         <source>Unknown encoding: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Codificação desconhecida: %1</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="530"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Método de compressão &apos;%1&apos; não suportado</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="536"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Data de Camada corrumpido para a Camada &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="574"/>
         <source>Invalid global tile id (less than 0): %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ID global de tile inválido (inferior a 0): %1</translation>
     </message>
     <message>
         <location filename="../tmxmapreader.cpp" line="580"/>
         <source>Tile used but no tilesets specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile usado mas nenhum tileset especificado</translation>
     </message>
 </context>
 <context>
@@ -1089,57 +932,57 @@ Line %1, column %2</source>
     <message>
         <location filename="../addremovelayer.h" line="68"/>
         <source>Add Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Addicionar Camada</translation>
     </message>
     <message>
         <location filename="../addremovelayer.h" line="90"/>
         <source>Remove Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover Camada</translation>
     </message>
     <message>
         <location filename="../addremovemapobject.cpp" line="77"/>
         <source>Add Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Objecto</translation>
     </message>
     <message>
         <location filename="../addremovemapobject.cpp" line="88"/>
         <source>Remove Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover Objecto</translation>
     </message>
     <message>
         <location filename="../changemapobject.cpp" line="36"/>
         <source>Change Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar Objecto</translation>
     </message>
     <message>
         <location filename="../changeproperties.cpp" line="34"/>
         <source>Change %1 Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar %1 Propriedades</translation>
     </message>
     <message>
         <location filename="../changeselection.cpp" line="33"/>
         <source>Change Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar Selecção</translation>
     </message>
     <message>
         <location filename="../erasetiles.cpp" line="40"/>
         <source>Erase</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagar</translation>
     </message>
     <message>
         <location filename="../movelayer.cpp" line="38"/>
         <source>Move Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover Camada para Baixo</translation>
     </message>
     <message>
         <location filename="../movelayer.cpp" line="39"/>
         <source>Move Layer Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover Camada para Cima</translation>
     </message>
     <message>
         <location filename="../movemapobject.cpp" line="40"/>
         <source>Move Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover Objecto</translation>
     </message>
     <message>
         <location filename="../offsetlayer.cpp" line="40"/>
@@ -1149,27 +992,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../painttilelayer.cpp" line="50"/>
         <source>Paint</source>
-        <translation type="unfinished"></translation>
+        <translation>PPintar</translation>
     </message>
     <message>
         <location filename="../renamelayer.cpp" line="41"/>
         <source>Rename Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Renomear Camada</translation>
     </message>
     <message>
         <location filename="../resizelayer.cpp" line="38"/>
         <source>Resize Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Redimensionar Camada</translation>
     </message>
     <message>
         <location filename="../resizemap.cpp" line="33"/>
         <source>Resize Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Redimensionar Mapa</translation>
     </message>
     <message>
         <location filename="../resizemapobject.cpp" line="40"/>
         <source>Resize Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Redimensionar Objecto</translation>
     </message>
 </context>
 <context>

@@ -46,14 +46,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <source>Layers</source>
-        <translation type="obsolete">Lagen</translation>
-    </message>
-    <message>
-        <source>Open Map</source>
-        <translation type="obsolete">Map Openen</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.ui" line="14"/>
         <source>Tiled</source>
         <translation>Tiled</translation>
@@ -275,69 +267,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>MainWindowClass</name>
-    <message>
-        <source>Tiled</source>
-        <translation type="obsolete">Tiled</translation>
-    </message>
-    <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">&amp;Bestand</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Bewerken</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Help</translation>
-    </message>
-    <message>
-        <source>Map</source>
-        <translation type="obsolete">Map</translation>
-    </message>
-    <message>
-        <source>&amp;Open...</source>
-        <translation type="obsolete">&amp;Openen</translation>
-    </message>
-    <message>
-        <source>&amp;Save...</source>
-        <translation type="obsolete">Op&amp;slaan</translation>
-    </message>
-    <message>
-        <source>&amp;Quit</source>
-        <translation type="obsolete">&amp;Afsluiten</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">&amp;Kopieren</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">&amp;Plakken</translation>
-    </message>
-    <message>
-        <source>&amp;About Tiled</source>
-        <translation type="obsolete">&amp;Over Tiled</translation>
-    </message>
-    <message>
-        <source>About Qt</source>
-        <translation type="obsolete">Over Qt</translation>
-    </message>
-    <message>
-        <source>&amp;Resize</source>
-        <translation type="obsolete">&amp;Formaat veranderen</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">&amp;Eigenschappen</translation>
-    </message>
-    <message>
-        <source>&amp;Recent Files</source>
-        <translation type="obsolete">&amp;Recente bestanden</translation>
-    </message>
-</context>
-<context>
     <name>MapObjectItem</name>
     <message>
         <location filename="../mapobjectitem.cpp" line="285"/>
@@ -513,17 +442,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../propertiesdialog.ui" line="14"/>
         <source>Properties</source>
         <translation>Eigenschappen</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>&quot;%1&quot; element outside of &quot;%2&quot; element.</source>
-        <translation type="obsolete">Element &quot;%1&quot; buiten element &quot;%2&quot;.</translation>
-    </message>
-    <message>
-        <source>XML map reader (*.tmx)</source>
-        <translation type="obsolete">XML map lezer (*.tmx)</translation>
     </message>
 </context>
 <context>
