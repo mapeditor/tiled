@@ -31,6 +31,7 @@ using namespace Tiled::Internal;
 
 LayerModel::LayerModel(QObject *parent):
     QAbstractListModel(parent),
+    mMapDocument(0),
     mMap(0)
 {
 }
