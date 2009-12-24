@@ -37,7 +37,7 @@ TilesetManager::TilesetManager():
     connect(mWatcher, SIGNAL(fileChanged(QString)),
             this, SLOT(fileChanged(QString)));
 
-    mChangedFilesTimer.setInterval(100);
+    mChangedFilesTimer.setInterval(200);
     mChangedFilesTimer.setSingleShot(true);
 
     connect(&mChangedFilesTimer, SIGNAL(timeout()),
