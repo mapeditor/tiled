@@ -54,11 +54,16 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
+protected:
+    void changeEvent(QEvent *e);
+
 private slots:
     void updateOpacitySlider();
     void setLayerOpacity(int opacity);
 
 private:
+    void retranslateUi();
+
     QLabel *mOpacityLabel;
     QSlider *mOpacitySlider;
     LayerView *mLayerView;

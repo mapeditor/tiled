@@ -154,6 +154,8 @@ private:
 
     void addLayer(MapDocument::LayerType type);
 
+    void retranslateUi();
+
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapScene *mScene;

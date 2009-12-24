@@ -63,6 +63,9 @@ signals:
      */
     void currentTilesChanged(const TileLayer *tiles);
 
+protected:
+    void changeEvent(QEvent *e);
+
 private slots:
     void addTilesetView(Tileset *tileset);
     void selectionChanged();
@@ -70,6 +73,7 @@ private slots:
 
 private:
     void setCurrentTiles(TileLayer *tiles);
+    void retranslateUi();
 
     MapDocument *mMapDocument;
     QTabBar *mTabBar;

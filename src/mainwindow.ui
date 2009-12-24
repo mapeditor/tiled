@@ -46,9 +46,19 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuRecentFiles">
+     <property name="title">
+      <string>&amp;Recent Files</string>
+     </property>
+     <property name="icon">
+      <iconset resource="tiled.qrc">
+       <normaloff>:/images/16x16/document-open-recent.png</normaloff>:/images/16x16/document-open-recent.png</iconset>
+     </property>
+     <addaction name="actionClearRecentFiles"/>
+    </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
-    <addaction name="actionRecentFiles"/>
+    <addaction name="menuRecentFiles"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
@@ -216,15 +226,6 @@
    </property>
    <property name="text">
     <string>Map &amp;Properties...</string>
-   </property>
-  </action>
-  <action name="actionRecentFiles">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-open-recent.png</normaloff>:/images/16x16/document-open-recent.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Recent Files</string>
    </property>
   </action>
   <action name="actionShowGrid">
@@ -409,6 +410,15 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Pre&amp;ferences...</string>
+   </property>
+  </action>
+  <action name="actionClearRecentFiles">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/edit-clear.png</normaloff>:/images/16x16/edit-clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear Recent Files</string>
    </property>
   </action>
  </widget>

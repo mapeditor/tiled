@@ -29,6 +29,7 @@
 #include "tilesetview.h"
 #include "tilesetmanager.h"
 
+#include <QEvent>
 #include <QStackedWidget>
 #include <QTabBar>
 #include <QVBoxLayout>
@@ -37,7 +38,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 TilesetDock::TilesetDock(QWidget *parent):
-    QDockWidget(tr("Tilesets"), parent),
+    QDockWidget(parent),
     mMapDocument(0),
     mTabBar(new QTabBar),
     mViewStack(new QStackedWidget),
@@ -59,6 +60,7 @@ TilesetDock::TilesetDock(QWidget *parent):
             this, SLOT(tilesetChanged(Tileset*)));
 
     setWidget(w);
+    retranslateUi();
 }
 
 TilesetDock::~TilesetDock()
@@ -88,6 +90,18 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
         connect(mMapDocument, SIGNAL(tilesetAdded(Tileset*)),
                 SLOT(addTilesetView(Tileset*)));
+    }
+}
+
+void TilesetDock::changeEvent(QEvent *e)
+{
+    QDockWidget::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
     }
 }
 
@@ -165,4 +179,9 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     mCurrentTiles = tiles;
 
     emit currentTilesChanged(mCurrentTiles);
+}
+
+void TilesetDock::retranslateUi()
+{
+    setWindowTitle(tr("Tilesets"));
 }

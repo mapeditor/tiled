@@ -79,6 +79,17 @@ static void setThemeIcon(QAction *action, const char *name)
     if (!themeIcon.isNull())
         action->setIcon(themeIcon);
 }
+
+/**
+ * Looks up the icon with the specified \a name from the system theme and set
+ * it on the \a menu when found.
+ */
+static void setThemeIcon(QMenu *menu, const char *name)
+{
+    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
+    if (!themeIcon.isNull())
+        menu->setIcon(themeIcon);
+}
 #endif
 
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
@@ -153,6 +164,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mUi->actionNew, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
+    connect(mUi->actionClearRecentFiles, SIGNAL(triggered()),
+            SLOT(clearRecentFiles()));
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
@@ -195,31 +208,25 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    QMenu *menu = new QMenu(this);
+    // Add recent file actions to the recent files menu
+    QMenu *menu = mUi->menuRecentFiles;
     for (int i = 0; i < MaxRecentFiles; ++i)
     {
          mRecentFiles[i] = new QAction(this);
-         menu->addAction(mRecentFiles[i]);
+         menu->insertAction(mUi->actionClearRecentFiles, mRecentFiles[i]);
          mRecentFiles[i]->setVisible(false);
          connect(mRecentFiles[i], SIGNAL(triggered()),
                  this, SLOT(openRecentFile()));
     }
-    menu->addSeparator();
-    QIcon clearIcon(QLatin1String(":images/16x16/edit-clear.png"));
-    QAction *clear = new QAction(clearIcon,
-                                 tr("Clear Recent Files"),
-                                 this);
-    menu->addAction(clear);
-    connect(clear, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
-    mUi->actionRecentFiles->setMenu(menu);
+    menu->insertSeparator(mUi->actionClearRecentFiles);
 
     // Qt 4.6 supports requesting icons from the system theme, at least on
     // desktops where there is a system theme (ie. Linux).
 #if QT_VERSION >= 0x040600
     setThemeIcon(mUi->actionNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
-    setThemeIcon(mUi->actionRecentFiles, "document-open-recent");
-    setThemeIcon(clear, "edit-clear");
+    setThemeIcon(mUi->menuRecentFiles, "document-open-recent");
+    setThemeIcon(mUi->actionClearRecentFiles, "edit-clear");
     setThemeIcon(mUi->actionSave, "document-save");
     setThemeIcon(mUi->actionSaveAs, "document-save-as");
     setThemeIcon(mUi->actionClose, "window-close");
@@ -314,6 +321,7 @@ void MainWindow::changeEvent(QEvent *event)
     switch (event->type()) {
     case QEvent::LanguageChange:
         mUi->retranslateUi(this);
+        retranslateUi();
         break;
     default:
         break;
@@ -391,7 +399,12 @@ bool MainWindow::saveFile(const QString &fileName)
 {
     if (!mMapDocument)
         return false;
+
+    Preferences *prefs = Preferences::instance();
+
     TmxMapWriter mapWriter;
+    mapWriter.setLayerDataFormat(prefs->layerDataFormat());
+
     if (!mapWriter.write(mMapDocument->map(), fileName)) {
         QMessageBox::critical(this, tr("Error while saving map"),
                               mapWriter.errorString());
@@ -659,7 +672,7 @@ void MainWindow::updateRecentFiles()
     {
         mRecentFiles[j]->setVisible(false);
     }
-    mUi->actionRecentFiles->setEnabled(numRecentFiles > 0);
+    mUi->menuRecentFiles->setEnabled(numRecentFiles > 0);
 }
 
 void MainWindow::updateActions()
@@ -898,4 +911,12 @@ void MainWindow::aboutTiled()
 {
     AboutDialog aboutDialog(this);
     aboutDialog.exec();
+}
+
+void MainWindow::retranslateUi()
+{
+    if (!mCurrentFileName.isEmpty()) {
+        const QString fileName = QFileInfo(mCurrentFileName).fileName();
+        setWindowTitle(tr("%1[*] - Tiled").arg(fileName));
+    }
 }

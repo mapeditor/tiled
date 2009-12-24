@@ -21,6 +21,7 @@
 
 #include "undodock.h"
 
+#include <QEvent>
 #include <QUndoView>
 #include <QVBoxLayout>
 
@@ -28,7 +29,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 UndoDock::UndoDock(QUndoGroup *undoGroup, QWidget *parent)
-    : QDockWidget(tr("Undo Stack"), parent)
+    : QDockWidget(parent)
 {
     setObjectName(QLatin1String("undoViewDock"));
 
@@ -43,4 +44,22 @@ UndoDock::UndoDock(QUndoGroup *undoGroup, QWidget *parent)
     layout->addWidget(undoView);
 
     setWidget(widget);
+    retranslateUi();
+}
+
+void UndoDock::changeEvent(QEvent *e)
+{
+    QDockWidget::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
+}
+
+void UndoDock::retranslateUi()
+{
+    setWindowTitle(tr("Undo Stack"));
 }

@@ -39,6 +39,12 @@ class UndoDock : public QDockWidget
 
 public:
     UndoDock(QUndoGroup *undoGroup, QWidget *parent = 0);
+
+protected:
+    void changeEvent(QEvent *e);
+
+private:
+    void retranslateUi();
 };
 
 } // namespace Internal

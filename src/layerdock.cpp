@@ -38,8 +38,8 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 LayerDock::LayerDock(QWidget *parent):
-    QDockWidget(tr("Layers"), parent),
-    mOpacityLabel(new QLabel(tr("Opacity:"))),
+    QDockWidget(parent),
+    mOpacityLabel(new QLabel),
     mOpacitySlider(new QSlider(Qt::Horizontal)),
     mLayerView(new LayerView),
     mMapDocument(0)
@@ -61,6 +61,7 @@ LayerDock::LayerDock(QWidget *parent):
     layout->addWidget(mLayerView);
 
     setWidget(widget);
+    retranslateUi();
 
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(setLayerOpacity(int)));
@@ -83,6 +84,18 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
 
     mLayerView->setMapDocument(mapDocument);
     updateOpacitySlider();
+}
+
+void LayerDock::changeEvent(QEvent *e)
+{
+    QDockWidget::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
 }
 
 void LayerDock::updateOpacitySlider()
@@ -120,6 +133,12 @@ void LayerDock::setLayerOpacity(int opacity)
                             qreal(opacity) / 100,
                             LayerModel::OpacityRole);
     }
+}
+
+void LayerDock::retranslateUi()
+{
+    setWindowTitle(tr("Layers"));
+    mOpacityLabel->setText(tr("Opacity:"));
 }
 
 
