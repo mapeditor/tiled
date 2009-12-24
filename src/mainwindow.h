@@ -92,6 +92,7 @@ private slots:
     void cut();
     void copy();
     void paste();
+    void openPreferences();
 
     void newTileset();
     void resizeMap();

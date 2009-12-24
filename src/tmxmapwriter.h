@@ -66,6 +66,25 @@ public:
 
     QString errorString() const { return mError; }
 
+    /**
+     * The different formats in which the tile layer data can be stored.
+     */
+    enum LayerDataFormat {
+        XML        = 0,
+        Base64     = 1,
+        Base64Gzip = 2,
+        Base64Zlib = 3
+    };
+
+    /**
+     * Sets the format in which the tile layer data is stored.
+     */
+    void setLayerDataFormat(LayerDataFormat format)
+    { mLayerDataFormat = format; }
+
+    LayerDataFormat layerDataFormat() const
+    { return mLayerDataFormat; }
+
 private:
     void writeMap(QXmlStreamWriter &w, const Map *map);
     void writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
@@ -82,6 +101,7 @@ private:
     QDir mMapDir;     // The directory in which the map is being saved
     QMap<int, const Tileset*> mFirstGidToTileset;
     bool mUseAbsolutePaths;
+    LayerDataFormat mLayerDataFormat;
 };
 
 } // namespace Internal

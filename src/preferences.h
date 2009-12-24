@@ -19,58 +19,50 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef OFFSETMAPDIALOG_H
-#define OFFSETMAPDIALOG_H
+#ifndef PREFERENCES_H
+#define PREFERENCES_H
 
-#include <QDialog>
+#include <QString>
 
-namespace Ui {
-class OffsetMapDialog;
-}
+#include "tmxmapwriter.h"
+
+class QSettings;
 
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
-
-class OffsetMapDialog : public QDialog
+/**
+ * This class holds user preferences and provides a convenient interface to
+ * access them.
+ */
+class Preferences
 {
-    Q_OBJECT
-
 public:
-    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = 0);
+    static Preferences *instance();
+    static void deleteInstance();
 
-    ~OffsetMapDialog();
+    TmxMapWriter::LayerDataFormat layerDataFormat() const;
+    void setLayerDataFormat(TmxMapWriter::LayerDataFormat layerDataFormat);
 
-    QList<int> affectedLayerIndexes() const;
-    QRect affectedBoundingRect() const;
+    QString language() const;
+    void setLanguage(const QString &language);
 
-    QPoint offset() const;
-    bool wrapX() const;
-    bool wrapY() const;
+    bool reloadTilesetsOnChange() const;
+    void setReloadTilesetsOnChanged(bool value);
 
 private:
-    enum LayerSelection {
-        AllVisibleLayers,
-        AllLayers,
-        SelectedLayer
-    };
+    Preferences();
+    ~Preferences();
 
-    enum BoundsSelection {
-        WholeMap,
-        CurrentSelectionArea
-    };
+    QSettings *mSettings;
+    TmxMapWriter::LayerDataFormat mLayerDataFormat;
+    QString mLanguage;
+    bool mReloadTilesetsOnChange;
 
-    LayerSelection layerSelection() const;
-    BoundsSelection boundsSelection() const;
-
-    void disableBoundsSelectionCurrentArea();
-
-    Ui::OffsetMapDialog *mUi;
-    MapDocument *mMapDocument;
+    static Preferences *mInstance;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // OFFSETMAPDIALOG_H
+#endif // PREFERENCES_H

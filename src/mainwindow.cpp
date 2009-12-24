@@ -27,6 +27,7 @@
 #include "clipboardmanager.h"
 #include "eraser.h"
 #include "erasetiles.h"
+#include "languagemanager.h"
 #include "layer.h"
 #include "layerdock.h"
 #include "layermodel.h"
@@ -38,6 +39,8 @@
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "offsetmapdialog.h"
+#include "preferences.h"
+#include "preferencesdialog.h"
 #include "saveasimagedialog.h"
 #include "selectiontool.h"
 #include "stampbrush.h"
@@ -161,6 +164,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
     connect(mUi->actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mUi->actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
+    connect(mUi->actionPreferences, SIGNAL(triggered()),
+            SLOT(openPreferences()));
 
     connect(mUi->actionZoomIn, SIGNAL(triggered()),
             mUi->mapView, SLOT(zoomIn()));
@@ -280,6 +285,8 @@ MainWindow::~MainWindow()
 
     ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
+    Preferences::deleteInstance();
+    LanguageManager::deleteInstance();
 
     delete mUi;
 }
@@ -518,6 +525,12 @@ void MainWindow::paste()
         qDeleteAll(map->tilesets());
         delete map;
     }
+}
+
+void MainWindow::openPreferences()
+{
+    PreferencesDialog preferencesDialog(this);
+    preferencesDialog.exec();
 }
 
 void MainWindow::newTileset()

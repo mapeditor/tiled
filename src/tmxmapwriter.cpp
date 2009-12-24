@@ -193,48 +193,74 @@ void TmxMapWriter::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     w.writeEndElement();
 }
 
-void TmxMapWriter::writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer)
+void TmxMapWriter::writeTileLayer(QXmlStreamWriter &w,
+                                  const TileLayer *tileLayer)
 {
     w.writeStartElement(QLatin1String("layer"));
     writeLayerAttributes(w, tileLayer);
     writeProperties(w, tileLayer->properties());
 
-    QByteArray tileData;
-    tileData.reserve(tileLayer->height() * tileLayer->width() * 4);
-
-    for (int y = 0; y < tileLayer->height(); ++y) {
-        for (int x = 0; x < tileLayer->width(); ++x) {
-            const Tile *tile = tileLayer->tileAt(x, y);
-            const int gid = gidForTile(tile);
-            tileData.append((char) (gid));
-            tileData.append((char) (gid >> 8));
-            tileData.append((char) (gid >> 16));
-            tileData.append((char) (gid >> 24));
-        }
-    }
-
-    // TODO: Add support for a non-binary map format, though maybe not as silly
-    //       as the non-binary format used by Tiled Java. Better would be a CSV
-    //       format like:
+    // TODO: Add support for a nicer non-binary map format, maybe like:
     //
-    //        <data format="csv">
+    //        <data encoding="csv">
     //         gid,gid,gid,gid,...
     //         gid,gid,gid,gid,...
     //         gid,gid,gid,gid,...
     //        </data>
 
-    // TODO: Add support for choosing zlib compression
-    tileData = compress(tileData, Gzip);
+    QString encoding;
+    QString compression;
+
+    if (mLayerDataFormat != XML) {
+        encoding = QLatin1String("base64");
+
+        if (mLayerDataFormat == Base64Gzip)
+            compression = QLatin1String("gzip");
+        else if (mLayerDataFormat == Base64Zlib)
+            compression = QLatin1String("zlib");
+    }
 
     w.writeStartElement(QLatin1String("data"));
-    w.writeAttribute(QLatin1String("encoding"), QLatin1String("base64"));
-    w.writeAttribute(QLatin1String("compression"), QLatin1String("gzip"));
-    w.writeCharacters(QLatin1String("\n   "));
-    w.writeCharacters(QString::fromLatin1(tileData.toBase64()));
-    w.writeCharacters(QLatin1String("\n  "));
-    w.writeEndElement();
+    if (!encoding.isEmpty())
+        w.writeAttribute(QLatin1String("encoding"), encoding);
+    if (!compression.isEmpty())
+        w.writeAttribute(QLatin1String("compression"), compression);
 
-    w.writeEndElement();
+    if (mLayerDataFormat == XML) {
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            for (int x = 0; x < tileLayer->width(); ++x) {
+                const int gid = gidForTile(tileLayer->tileAt(x, y));
+                w.writeStartElement(QLatin1String("tile"));
+                w.writeAttribute(QLatin1String("gid"), QString::number(gid));
+                w.writeEndElement();
+            }
+        }
+    } else {
+        QByteArray tileData;
+        tileData.reserve(tileLayer->height() * tileLayer->width() * 4);
+
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            for (int x = 0; x < tileLayer->width(); ++x) {
+                const int gid = gidForTile(tileLayer->tileAt(x, y));
+                tileData.append((char) (gid));
+                tileData.append((char) (gid >> 8));
+                tileData.append((char) (gid >> 16));
+                tileData.append((char) (gid >> 24));
+            }
+        }
+
+        if (mLayerDataFormat == Base64Gzip)
+            tileData = compress(tileData, Gzip);
+        else if (mLayerDataFormat == Base64Zlib)
+            tileData = compress(tileData, Zlib);
+
+        w.writeCharacters(QLatin1String("\n   "));
+        w.writeCharacters(QString::fromLatin1(tileData.toBase64()));
+        w.writeCharacters(QLatin1String("\n  "));
+    }
+
+    w.writeEndElement(); // </data>
+    w.writeEndElement(); // </layer>
 }
 
 void TmxMapWriter::writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer)

@@ -20,12 +20,10 @@
  */
 
 #include "mainwindow.h"
+#include "languagemanager.h"
 
 #include <QApplication>
 #include <QDebug>
-#include <QDir>
-#include <QLocale>
-#include <QTranslator>
 
 using namespace Tiled::Internal;
 
@@ -101,17 +99,12 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    a.setOrganizationName(QLatin1String("mapeditor.org"));
+    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));
     a.setApplicationVersion(QLatin1String("0.3.1"));
 
-    QDir translationsDir(QCoreApplication::applicationDirPath());
-    translationsDir.cd(QLatin1String("../translations"));
-
-    QTranslator translator;
-    if (translator.load(QLatin1String("tiled_") + QLocale::system().name(),
-                        translationsDir.path()))
-        a.installTranslator(&translator);
+    LanguageManager *languageManager = LanguageManager::instance();
+    languageManager->installTranslators();
 
     CommandLineOptions options;
     parseCommandLineArguments(options);

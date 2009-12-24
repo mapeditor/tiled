@@ -67,6 +67,8 @@
     <addaction name="separator"/>
     <addaction name="actionSelectAll"/>
     <addaction name="actionSelectNone"/>
+    <addaction name="separator"/>
+    <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -402,6 +404,11 @@
    </property>
    <property name="toolTip">
     <string>Offsets everything in a layer</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Pre&amp;ferences...</string>
    </property>
   </action>
  </widget>

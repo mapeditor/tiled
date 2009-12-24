@@ -19,58 +19,50 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef OFFSETMAPDIALOG_H
-#define OFFSETMAPDIALOG_H
+#ifndef PREFERENCESDIALOG_H
+#define PREFERENCESDIALOG_H
+
+#include "tmxmapwriter.h"
 
 #include <QDialog>
 
 namespace Ui {
-class OffsetMapDialog;
+class PreferencesDialog;
 }
 
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
-
-class OffsetMapDialog : public QDialog
+/**
+ * The preferences dialog. Allows the user to configure some general behaviour
+ * settings of Tiled and choose the language.
+ */
+class PreferencesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = 0);
+    PreferencesDialog(QWidget *parent = 0);
+    ~PreferencesDialog();
 
-    ~OffsetMapDialog();
+protected:
+    void changeEvent(QEvent *e);
 
-    QList<int> affectedLayerIndexes() const;
-    QRect affectedBoundingRect() const;
-
-    QPoint offset() const;
-    bool wrapX() const;
-    bool wrapY() const;
+private slots:
+    void languageSelected(int index);
 
 private:
-    enum LayerSelection {
-        AllVisibleLayers,
-        AllLayers,
-        SelectedLayer
-    };
+    void fromPreferences();
+    void toPreferences();
 
-    enum BoundsSelection {
-        WholeMap,
-        CurrentSelectionArea
-    };
+    TmxMapWriter::LayerDataFormat layerDataFormat() const;
 
-    LayerSelection layerSelection() const;
-    BoundsSelection boundsSelection() const;
-
-    void disableBoundsSelectionCurrentArea();
-
-    Ui::OffsetMapDialog *mUi;
-    MapDocument *mMapDocument;
+    Ui::PreferencesDialog *mUi;
+    QStringList mLanguages;
 };
+
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // OFFSETMAPDIALOG_H
+#endif // PREFERENCESDIALOG_H

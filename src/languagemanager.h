@@ -19,58 +19,48 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef OFFSETMAPDIALOG_H
-#define OFFSETMAPDIALOG_H
+#ifndef LANGUAGEMANAGER_H
+#define LANGUAGEMANAGER_H
 
-#include <QDialog>
+#include <QStringList>
 
-namespace Ui {
-class OffsetMapDialog;
-}
+class QTranslator;
 
 namespace Tiled {
 namespace Internal {
 
-class MapDocument;
-
-class OffsetMapDialog : public QDialog
+class LanguageManager
 {
-    Q_OBJECT
-
 public:
-    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = 0);
+    static LanguageManager *instance();
+    static void deleteInstance();
 
-    ~OffsetMapDialog();
+    /**
+     * Installs the translators on the application for Qt and Tiled. Should be
+     * called again when the language changes.
+     */
+    void installTranslators();
 
-    QList<int> affectedLayerIndexes() const;
-    QRect affectedBoundingRect() const;
-
-    QPoint offset() const;
-    bool wrapX() const;
-    bool wrapY() const;
+    /**
+     * Returns the available languages as a list of country codes.
+     */
+    QStringList availableLanguages();
 
 private:
-    enum LayerSelection {
-        AllVisibleLayers,
-        AllLayers,
-        SelectedLayer
-    };
+    LanguageManager();
+    ~LanguageManager();
 
-    enum BoundsSelection {
-        WholeMap,
-        CurrentSelectionArea
-    };
+    void loadAvailableLanguages();
 
-    LayerSelection layerSelection() const;
-    BoundsSelection boundsSelection() const;
+    QString mTranslationsDir;
+    QStringList mLanguages;
+    QTranslator *mQtTranslator;
+    QTranslator *mAppTranslator;
 
-    void disableBoundsSelectionCurrentArea();
-
-    Ui::OffsetMapDialog *mUi;
-    MapDocument *mMapDocument;
+    static LanguageManager *mInstance;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // OFFSETMAPDIALOG_H
+#endif // LANGUAGEMANAGER_H
