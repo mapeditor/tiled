@@ -57,7 +57,7 @@ public:
      * to the map origin. Returns 0 if the coordinates lay outside of the
      * layer.
      */
-    Tile *tileAt(int x, int y);
+    Tile *tileAt(int x, int y) const;
 
     /**
      * Sets the tile for the given coordinates. The coordinates are relative to
@@ -84,9 +84,42 @@ public:
     void drawTiles(int x, int y, TileLayer *tiles);
 
     /**
+     * Draws the stamp within the given \a drawRegion region, repeating the
+     * stamp as needed.
+     *
+     * The coordinates \a x and \a y are relative to the map origin.
+     *
+     * Empty tiles in the stamp are skipped if \a skipEmptyTiles is true,
+     * otherwise empty tiles drawn.
+     */
+    void drawStamp(const TileLayer *stamp,
+                   const QRegion &drawRegion,
+                   bool skipEmptyTiles = true);
+
+    /**
      * Erases the tiles in the given region.
      */
     void erase(const QRegion &region);
+
+    /**
+     * Fills the layer with the given stamp using the method described in
+     * computeFillRegion. It returns the region that was filled.
+     *
+     * If outputLayer is not 0, then the fill will be drawn on output
+     * layer instead.
+     */
+    QRegion fill(const QPoint &fillOrigin, const TileLayer *stamp);
+
+    /**
+     * Computes a fill region made up of all tiles of the same type as that
+     * at \a fillOrigin that are connected.
+     */
+    QRegion computeFillRegion(const QPoint &fillOrigin) const;
+
+    /**
+     * Returns true if the given tile is drawable.
+     */
+    bool isDrawable(int x, int y) const;
 
     // TODO: Add more operations (fill, copy)
 

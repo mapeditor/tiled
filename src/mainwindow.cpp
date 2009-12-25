@@ -27,6 +27,8 @@
 #include "clipboardmanager.h"
 #include "eraser.h"
 #include "erasetiles.h"
+#include "bucketfilltool.h"
+#include "filltiles.h"
 #include "languagemanager.h"
 #include "layer.h"
 #include "layerdock.h"
@@ -261,9 +263,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             this, SLOT(setStampBrush(const TileLayer*)));
 
     mStampBrush = new StampBrush(this);
+    mBucketFillTool = new BucketFillTool(this);
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
+    toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new SelectionTool(this));
 
@@ -832,8 +836,10 @@ void MainWindow::editLayerProperties()
  */
 void MainWindow::setStampBrush(const TileLayer *tiles)
 {
-    if (tiles)
+    if (tiles) {
         mStampBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
+        mBucketFillTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
+    }
 }
 
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
@@ -889,6 +895,7 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
     mLayerDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
     mStampBrush->setMapDocument(mapDocument);
+    mBucketFillTool->setMapDocument(mapDocument);
 
     // TODO: Add support for multiple map documents
     delete mMapDocument;

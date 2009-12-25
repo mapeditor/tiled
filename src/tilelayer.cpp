@@ -144,6 +144,16 @@ void TileLayer::offset(const QPoint &offset,
     mTiles = newTiles;
 }
 
+bool TileLayer::isEmpty() const
+{
+    for (int y = 0; y < mHeight; ++y)
+        for (int x = 0; x < mWidth; ++x)
+            if (tileAt(x, y))
+                return false;
+
+    return true;
+}
+
 /**
  * Returns a duplicate of this TileLayer.
  *

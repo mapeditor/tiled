@@ -77,7 +77,9 @@ SOURCES += aboutdialog.cpp \
     orthogonalrenderer.cpp \
     isometricrenderer.cpp \
     offsetlayer.cpp \
-    offsetmapdialog.cpp
+    offsetmapdialog.cpp \
+    bucketfilltool.cpp \
+    filltiles.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -148,7 +150,9 @@ HEADERS += aboutdialog.h \
     orthogonalrenderer.h \
     isometricrenderer.h \
     offsetlayer.h \
-    offsetmapdialog.h
+    offsetmapdialog.h \
+    bucketfilltool.h \
+    filltiles.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

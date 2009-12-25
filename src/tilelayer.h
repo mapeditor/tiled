@@ -106,6 +106,11 @@ public:
                         const QRect &bounds,
                         bool wrapX, bool wrapY);
 
+    /**
+     * Returns true if all tiles in the layer are empty.
+     */
+    bool isEmpty() const;
+
     virtual Layer *clone() const;
 
 protected:

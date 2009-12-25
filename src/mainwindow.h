@@ -45,6 +45,7 @@ class ClipboardManager;
 class LayerDock;
 class MapScene;
 class StampBrush;
+class BucketFillTool;
 class TilesetDock;
 
 /**
@@ -168,6 +169,7 @@ private:
     QUndoGroup *mUndoGroup;
 
     StampBrush *mStampBrush;
+    BucketFillTool *mBucketFillTool;
 
     ClipboardManager *mClipboardManager;
 
