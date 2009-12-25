@@ -1,13 +1,18 @@
-Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+Main developer and maintainer:
+
+Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
 
 Contributors:
 
-Christian Henz (added handling of non-encoded map data)
+Christian Henz  (added handling of non-encoded map data)
 Dennis Honeyman (implemented the nice about dialog)
-Roderic Morris (added many icons and initial object group support)
+Edward Hutchins (added automatic reloading of changed tileset images)
+Jeff Bland      (added Offset Map feature and fill tool)
+Roderic Morris  (added many icons and initial object group support)
 
 Translators:
 
-Porfírio Ribeiro (Portugese)
+Porfírio Ribeiro    (Portugese)
+Thorbjørn Lindeijer (Dutch)
 
 The icons are from the GNOME and GIMP icon themes (GPL)

@@ -1,3 +1,12 @@
+0.4.0 (?)
+* Added automatic reloading of tileset images when they change
+* Added Offset Map action that can shift a set of layers by a certain amount
+* Added a fill tool
+* Added ability to duplicate map objects
+* Added support for choosing the tile layer data format used when saving
+* Made translations functional
+* Updated Dutch and Portuguese translations
+
 0.3.1 (22 November 2009)
 * Enabled undo command compression for stamp brush and eraser
 * Fixed reading of maps with non-binary-encoded layer data
