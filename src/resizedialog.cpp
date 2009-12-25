@@ -30,6 +30,13 @@ ResizeDialog::ResizeDialog(QWidget *parent)
     mUi = new Ui::ResizeDialog;
     mUi->setupUi(this);
 
+    // Initialize the new size of the resizeHelper to the default values of
+    // the spin boxes. Otherwise, if the map width or height is default, then
+    // setOldSize() will simply reset default values, causing callbacks in the
+    // resize helper to not be called.
+    mUi->resizeHelper->setNewSize(QSize(mUi->widthSpinBox->value(),
+                                        mUi->heightSpinBox->value()));
+
     connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
                                SLOT(updateOffsetBounds(QRect)));
 }
