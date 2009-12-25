@@ -86,29 +86,13 @@ public:
     /**
      * Draws the stamp within the given \a drawRegion region, repeating the
      * stamp as needed.
-     *
-     * The coordinates \a x and \a y are relative to the map origin.
-     *
-     * Empty tiles in the stamp are skipped if \a skipEmptyTiles is true,
-     * otherwise empty tiles drawn.
      */
-    void drawStamp(const TileLayer *stamp,
-                   const QRegion &drawRegion,
-                   bool skipEmptyTiles = true);
+    void drawStamp(const TileLayer *stamp, const QRegion &drawRegion);
 
     /**
      * Erases the tiles in the given region.
      */
     void erase(const QRegion &region);
-
-    /**
-     * Fills the layer with the given stamp using the method described in
-     * computeFillRegion. It returns the region that was filled.
-     *
-     * If outputLayer is not 0, then the fill will be drawn on output
-     * layer instead.
-     */
-    QRegion fill(const QPoint &fillOrigin, const TileLayer *stamp);
 
     /**
      * Computes a fill region made up of all tiles of the same type as that

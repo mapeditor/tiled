@@ -109,24 +109,21 @@ void TilePainter::drawTiles(int x, int y, TileLayer *tiles)
 }
 
 void TilePainter::drawStamp(const TileLayer *stamp,
-                            const QRegion &drawRegion,
-                            bool skipEmptyTiles)
+                            const QRegion &drawRegion)
 {
-    if (!stamp || stamp->bounds().size().isEmpty())
+    Q_ASSERT(stamp);
+    if (stamp->bounds().isEmpty())
         return;
 
     const QRegion region = paintableRegion(drawRegion);
-
-    if (skipEmptyTiles && region.isEmpty())
+    if (region.isEmpty())
         return;
 
     foreach (const QRect &rect, region.rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                Tile * const tile = stamp->tileAt(
-                    _x % stamp->width(),
-                    _y % stamp->height());
-
+                Tile *tile = stamp->tileAt(_x % stamp->width(),
+                                           _y % stamp->height());
                 if (!tile)
                     continue;
 
@@ -159,15 +156,6 @@ void TilePainter::erase(const QRegion &region)
     mMapDocument->emitRegionChanged(paintable);
 }
 
-QRegion TilePainter::fill(const QPoint &fillOrigin, const TileLayer *stamp)
-{
-    QRegion fillRegion = computeFillRegion(fillOrigin);
-
-    drawStamp(stamp, fillRegion);
-
-    return fillRegion;
-}
-
 QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
 {
     // Create that region that will hold the fill
@@ -192,18 +180,18 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
     // Create an array that will store which tiles have been processed
     // This is faster than checking if a given tile is in the region/list
     QVector<quint8> processedTilesVec(mapSize);
-    quint8 *processedTiles = &processedTilesVec[0];
-    memset(processedTiles, 0, mapSize);
+    quint8 *processedTiles = processedTilesVec.data();
 
     // Loop through queued positions and fill them, while at the same time
     // checking adjacent positions to see if they should be added
     while (!fillPositions.empty()) {
         const QPoint currentPoint = fillPositions.takeFirst();
+        const int startOfLine = currentPoint.y() * mapWidth;
 
         // Seek as far left as we can
         int left = currentPoint.x();
         while (left >= 0 &&
-               !processedTiles[currentPoint.y() * mapWidth + left],
+               !processedTiles[startOfLine + left],
                tileAt(left - 1, currentPoint.y()) == matchTile &&
                isDrawable(left - 1, currentPoint.y()))
             --left;
@@ -211,7 +199,7 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
         // Seek as far right as we can
         int right = currentPoint.x();
         while (right < mapWidth &&
-               !processedTiles[currentPoint.y() * mapWidth + right],
+               !processedTiles[startOfLine + right],
                tileAt(right + 1, currentPoint.y()) == matchTile &&
                isDrawable(right + 1, currentPoint.y()))
             ++right;
@@ -220,7 +208,7 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
         fillRegion += QRegion(left, currentPoint.y(), right - left + 1, 1);
 
         // Add tile strip to processed tiles
-        memset(&processedTiles[currentPoint.y() * mapWidth + left],
+        memset(&processedTiles[startOfLine + left],
                1,
                right - left);
 

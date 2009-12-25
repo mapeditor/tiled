@@ -24,6 +24,8 @@
 #include "tilelayer.h"
 #include "tilepainter.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -31,7 +33,7 @@ FillTiles::FillTiles(MapDocument *mapDocument,
                      TileLayer *tileLayer,
                      const QRegion &fillRegion,
                      const TileLayer *fillStamp)
-    : QUndoCommand(QObject::tr("Fill Area"))
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Fill Area"))
     , mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
     , mFillRegion(fillRegion)
@@ -48,9 +50,10 @@ FillTiles::~FillTiles()
 
 void FillTiles::undo()
 {
+    const QRect boundingRect = mFillRegion.boundingRect();
     TilePainter painter(mMapDocument, mTileLayer);
-    painter.setTiles(mFillRegion.boundingRect().x(),
-                     mFillRegion.boundingRect().y(),
+    painter.setTiles(boundingRect.x(),
+                     boundingRect.y(),
                      mOriginalTiles,
                      mFillRegion);
 }
