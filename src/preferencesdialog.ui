@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>366</width>
-    <height>212</height>
+    <height>237</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,10 +57,20 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="reloadTilesetImages">
         <property name="text">
          <string>&amp;Reload tileset images when they change</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="enableDtd">
+        <property name="toolTip">
+         <string>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</string>
+        </property>
+        <property name="text">
+         <string>Include &amp;DTD reference in saved maps</string>
         </property>
        </widget>
       </item>

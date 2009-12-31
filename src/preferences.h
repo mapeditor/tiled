@@ -44,6 +44,9 @@ public:
     TmxMapWriter::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(TmxMapWriter::LayerDataFormat layerDataFormat);
 
+    bool dtdEnabled() const;
+    void setDtdEnabled(bool enabled);
+
     QString language() const;
     void setLanguage(const QString &language);
 
@@ -56,6 +59,7 @@ private:
 
     QSettings *mSettings;
     TmxMapWriter::LayerDataFormat mLayerDataFormat;
+    bool mDtdEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;
 

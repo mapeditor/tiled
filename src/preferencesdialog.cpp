@@ -88,6 +88,7 @@ void PreferencesDialog::fromPreferences()
 {
     const Preferences *prefs = Preferences::instance();
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
+    mUi->enableDtd->setChecked(prefs->dtdEnabled());
 
     int formatIndex = 0;
     switch (prefs->layerDataFormat()) {
@@ -116,6 +117,7 @@ void PreferencesDialog::toPreferences()
     Preferences *prefs = Preferences::instance();
 
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
+    prefs->setDtdEnabled(mUi->enableDtd->isChecked());
     prefs->setLayerDataFormat(layerDataFormat());
 }
 

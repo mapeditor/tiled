@@ -85,6 +85,15 @@ public:
     LayerDataFormat layerDataFormat() const
     { return mLayerDataFormat; }
 
+    /**
+     * Sets whether the DTD reference is written when saving the map.
+     */
+    void setDtdEnabled(bool enabled)
+    { mDtdEnabled = enabled; }
+
+    bool isDtdEnabled() const
+    { return mDtdEnabled; }
+
 private:
     void writeMap(QXmlStreamWriter &w, const Map *map);
     void writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
@@ -102,6 +111,7 @@ private:
     QMap<int, const Tileset*> mFirstGidToTileset;
     bool mUseAbsolutePaths;
     LayerDataFormat mLayerDataFormat;
+    bool mDtdEnabled;
 };
 
 } // namespace Internal
