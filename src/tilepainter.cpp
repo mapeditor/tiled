@@ -119,11 +119,15 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     if (region.isEmpty())
         return;
 
+    const int w = stamp->width();
+    const int h = stamp->height();
+    const QRect regionBounds = region.boundingRect();
+
     foreach (const QRect &rect, region.rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                Tile *tile = stamp->tileAt(_x % stamp->width(),
-                                           _y % stamp->height());
+                Tile *tile = stamp->tileAt((_x - regionBounds.left()) % w,
+                                           (_y - regionBounds.top()) % h);
                 if (!tile)
                     continue;
 
