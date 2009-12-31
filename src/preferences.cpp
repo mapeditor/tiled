@@ -22,6 +22,7 @@
 #include "preferences.h"
 
 #include "languagemanager.h"
+#include "tilesetmanager.h"
 
 #include <QSettings>
 
@@ -59,6 +60,9 @@ Preferences::Preferences()
     mLanguage = mSettings->value(QLatin1String("Language"),
                                  QString()).toString();
     mSettings->endGroup();
+
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
 }
 
 Preferences::~Preferences()
@@ -111,4 +115,7 @@ void Preferences::setReloadTilesetsOnChanged(bool value)
     mReloadTilesetsOnChange = value;
     mSettings->setValue(QLatin1String("Storage/ReloadTilesets"),
                         mReloadTilesetsOnChange);
+
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
 }

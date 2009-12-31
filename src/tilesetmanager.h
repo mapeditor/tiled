@@ -100,6 +100,15 @@ public:
      */
     QList<Tileset*> tilesets() const;
 
+    /**
+     * Sets whether tilesets are automatically reloaded when their tileset
+     * image changes.
+     */
+    void setReloadTilesetsOnChange(bool enabled);
+
+    bool reloadTilesetsOnChange() const
+    { return mReloadTilesetsOnChange; }
+
 signals:
     /**
      * Emitted when a tileset's images have changed and views need updating.
@@ -132,6 +141,7 @@ private:
     QFileSystemWatcher *mWatcher;
     QSet<QString> mChangedFiles;
     QTimer mChangedFilesTimer;
+    bool mReloadTilesetsOnChange;
 };
 
 } // namespace Internal

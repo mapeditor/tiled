@@ -21,7 +21,6 @@
 
 #include "tilesetmanager.h"
 
-#include "preferences.h"
 #include "tileset.h"
 
 #include <QFileSystemWatcher>
@@ -32,7 +31,8 @@ using namespace Tiled::Internal;
 TilesetManager *TilesetManager::mInstance = 0;
 
 TilesetManager::TilesetManager():
-    mWatcher(new QFileSystemWatcher(this))
+    mWatcher(new QFileSystemWatcher(this)),
+    mReloadTilesetsOnChange(false)
 {
     connect(mWatcher, SIGNAL(fileChanged(QString)),
             this, SLOT(fileChanged(QString)));
@@ -120,9 +120,15 @@ QList<Tileset*> TilesetManager::tilesets() const
     return mTilesets.keys();
 }
 
+void TilesetManager::setReloadTilesetsOnChange(bool enabled)
+{
+    mReloadTilesetsOnChange = enabled;
+    // TODO: Clear the file system watcher when disabled
+}
+
 void TilesetManager::fileChanged(const QString &path)
 {
-    if (!Preferences::instance()->reloadTilesetsOnChange())
+    if (mReloadTilesetsOnChange)
         return;
 
     /*

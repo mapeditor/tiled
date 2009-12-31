@@ -28,6 +28,13 @@ namespace Tiled {
 
 class Map;
 
+/**
+ * An interface to be implemented by map writers. A map writer implements
+ * support for saving to a certain map format.
+ *
+ * At the moment, Tiled only provides a writer for its own .tmx map format
+ * through the TmxMapWriter.
+ */
 class MapWriterInterface
 {
 public:
