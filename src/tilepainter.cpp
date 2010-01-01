@@ -190,17 +190,13 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
 
         // Seek as far left as we can
         int left = currentPoint.x();
-        while (left >= 0 &&
-               !processedTiles[startOfLine + left],
-               tileAt(left - 1, currentPoint.y()) == matchTile &&
+        while (tileAt(left - 1, currentPoint.y()) == matchTile &&
                isDrawable(left - 1, currentPoint.y()))
             --left;
 
         // Seek as far right as we can
         int right = currentPoint.x();
-        while (right < mapWidth &&
-               !processedTiles[startOfLine + right],
-               tileAt(right + 1, currentPoint.y()) == matchTile &&
+        while (tileAt(right + 1, currentPoint.y()) == matchTile &&
                isDrawable(right + 1, currentPoint.y()))
             ++right;
 
