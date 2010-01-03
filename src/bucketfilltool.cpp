@@ -27,6 +27,7 @@
 #include "tilepainter.h"
 #include "mapscene.h"
 #include "mapdocument.h"
+#include "tileselectionmodel.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -172,11 +173,17 @@ void BucketFillTool::makeConnections()
         return;
 
     // Overlay may need to be cleared if a region changed
-    connect(mMapDocument, SIGNAL(regionChanged(const QRegion &)),
+    connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
             this, SLOT(clearOverlay()));
 
     // Overlay needs to be cleared if we switch to another layer
     connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+            this, SLOT(clearOverlay()));
+
+    // Overlay needs be cleared if the selection changes, since
+    // the overlay may be bound or may need to be bound to the selection
+    const TileSelectionModel *selectionModel = mMapDocument->selectionModel();
+    connect(selectionModel, SIGNAL(selectionChanged(QRegion,QRegion)),
             this, SLOT(clearOverlay()));
 }
 
@@ -185,11 +192,13 @@ void BucketFillTool::clearConnections()
     if (!mMapDocument)
         return;
 
-    // Overlay may need to be cleared if a region changed
-    disconnect(mMapDocument, SIGNAL(regionChanged(const QRegion &)),
+    disconnect(mMapDocument, SIGNAL(regionChanged(QRegion)),
                this, SLOT(clearOverlay()));
 
-    // Overlay needs to be cleared if we switch to another layer
     disconnect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+               this, SLOT(clearOverlay()));
+
+    const TileSelectionModel *selectionModel = mMapDocument->selectionModel();
+    disconnect(selectionModel, SIGNAL(selectionChanged(QRegion,QRegion)),
                this, SLOT(clearOverlay()));
 }
