@@ -25,6 +25,7 @@
 #include "layer.h"
 
 #include <QList>
+#include <QColor>
 
 namespace Tiled {
 
@@ -89,6 +90,17 @@ public:
     virtual void offset(const QPoint &offset, const QRect &bounds,
                         bool wrapX, bool wrapY);
 
+    /**
+     * Returns the color of the object group, or an invalid color if no color
+     * is set.
+     */
+    const QColor &color() const { return  mColor; }
+
+    /**
+     * Sets the display color of the object group.
+     */
+    void setColor(const QColor &color) {  mColor = color; }
+
     Layer *clone() const;
 
 protected:
@@ -96,6 +108,7 @@ protected:
 
 private:
     QList<MapObject*> mObjects;
+    QColor mColor;
 };
 
 } // namespace Tiled

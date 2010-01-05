@@ -26,6 +26,8 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "propertiesdialog.h"
+#include "objectgrouppropertiesdialog.h"
+#include "objectgroup.h"
 
 #include <QBoxLayout>
 #include <QContextMenuEvent>
@@ -218,10 +220,20 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     if (menu.exec(event->globalPos()) == layerProperties) {
         Layer *layer = mMapDocument->map()->layerAt(layerIndex);
 
-        PropertiesDialog propertiesDialog(tr("Layer"),
-                                          layer->properties(),
-                                          mMapDocument->undoStack(),
-                                          this);
-        propertiesDialog.exec();
+        ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(layer);
+
+        if (objectGroup) {
+            ObjectGroupPropertiesDialog propertiesDialog(mMapDocument,
+                                                         objectGroup,
+                                                         this);
+            propertiesDialog.exec();
+        } else {
+            PropertiesDialog propertiesDialog(tr("Layer"),
+                                              layer->properties(),
+                                              mMapDocument->undoStack(),
+                                              this);
+
+            propertiesDialog.exec();
+        }
     }
 }

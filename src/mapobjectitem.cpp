@@ -96,7 +96,7 @@ void ResizeHandle::paint(QPainter *painter,
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    painter->setBrush(mMapObjectItem->colorForType());
+    painter->setBrush(mMapObjectItem->color());
     painter->setPen(Qt::black);
     painter->drawRect(QRectF(-5, -5, 10, 10));
 }
@@ -225,7 +225,8 @@ void MapObjectItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
                           QWidget *)
 {
-    QColor color = colorForType();
+    QColor color = MapObjectItem::color();
+
     QColor brushColor = color;
     brushColor.setAlpha(50);
     QBrush brush(brushColor);
@@ -365,6 +366,22 @@ MapDocument *MapObjectItem::mapDocument() const
     return mapScene->mapDocument();
 }
 
+QColor MapObjectItem::color() const
+{
+    // Type color takes precedence
+    const Qt::GlobalColor typeColor = colorForType();
+    if (typeColor != Qt::transparent)
+        return typeColor;
+
+    // Get color from object group
+    const ObjectGroup *objectGroup = mObject->objectGroup();
+    if (objectGroup && objectGroup->color().isValid())
+        return objectGroup->color();
+
+    // Fallback color
+    return Qt::gray;
+}
+
 Qt::GlobalColor MapObjectItem::colorForType() const
 {
     static const struct {
@@ -378,7 +395,7 @@ Qt::GlobalColor MapObjectItem::colorForType() const
         { 0, Qt::black }
     };
 
-    Qt::GlobalColor color = Qt::gray;
+    Qt::GlobalColor color = Qt::transparent;
     const QString &type = mType;
 
     for (int i = 0; types[i].type; ++i) {

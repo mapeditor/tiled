@@ -27,8 +27,8 @@
 using namespace Tiled;
 
 ObjectGroup::ObjectGroup(const QString &name,
-                         int x, int y, int width, int height):
-    Layer(name, x, y, width, height)
+                         int x, int y, int width, int height)
+    : Layer(name, x, y, width, height)
 {
 }
 

@@ -607,6 +607,10 @@ ObjectGroup *TmxReader::readObjectGroup()
     ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height);
     readLayerAttributes(objectGroup, atts);
 
+    const QString color = atts.value(QLatin1String("color")).toString();
+    if (!color.isEmpty())
+        objectGroup->setColor(color);
+
     while (readNextStartElement()) {
         if (xml.name() == "object")
             objectGroup->addObject(readObject());

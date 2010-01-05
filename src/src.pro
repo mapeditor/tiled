@@ -79,7 +79,9 @@ SOURCES += aboutdialog.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     bucketfilltool.cpp \
-    filltiles.cpp
+    filltiles.cpp \
+    objectgrouppropertiesdialog.cpp \
+    changeobjectgroupproperties.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -152,7 +154,9 @@ HEADERS += aboutdialog.h \
     offsetlayer.h \
     offsetmapdialog.h \
     bucketfilltool.h \
-    filltiles.h
+    filltiles.h \
+    objectgrouppropertiesdialog.h \
+    changeobjectgroupproperties.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

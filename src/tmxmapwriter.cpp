@@ -316,6 +316,11 @@ void TmxMapWriter::writeObjectGroup(QXmlStreamWriter &w,
                                     const ObjectGroup *objectGroup)
 {
     w.writeStartElement(QLatin1String("objectgroup"));
+
+    if (objectGroup->color().isValid())
+        w.writeAttribute(QLatin1String("color"),
+                         objectGroup->color().name());
+
     writeLayerAttributes(w, objectGroup);
     writeProperties(w, objectGroup->properties());
 
