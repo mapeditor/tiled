@@ -128,7 +128,7 @@ void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 
 void TilesetManager::fileChanged(const QString &path)
 {
-    if (mReloadTilesetsOnChange)
+    if (!mReloadTilesetsOnChange)
         return;
 
     /*
