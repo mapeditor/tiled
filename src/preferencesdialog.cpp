@@ -67,6 +67,7 @@ void PreferencesDialog::changeEvent(QEvent *e)
             const int formatIndex = mUi->layerDataCombo->currentIndex();
             mUi->retranslateUi(this);
             mUi->layerDataCombo->setCurrentIndex(formatIndex);
+            mUi->languageCombo->setItemText(0, tr("System default"));
         }
         break;
     default:
