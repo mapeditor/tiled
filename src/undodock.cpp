@@ -61,5 +61,5 @@ void UndoDock::changeEvent(QEvent *e)
 
 void UndoDock::retranslateUi()
 {
-    setWindowTitle(tr("Undo Stack"));
+    setWindowTitle(tr("History"));
 }
