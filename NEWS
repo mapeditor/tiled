@@ -5,7 +5,7 @@
 * Added ability to duplicate map objects
 * Added support for choosing the tile layer data format used when saving
 * Made translations functional
-* Updated Dutch and Portuguese translations
+* Updated Dutch, Portuguese, Spanish and German translations
 
 0.3.1 (22 November 2009)
 * Enabled undo command compression for stamp brush and eraser

@@ -8,7 +8,7 @@
 #
 
 # The list of supported translations
-LANGUAGES = nl pt es
+LANGUAGES = nl pt es de
 
 # Helper function to adapt the slashes in a path to the system
 defineReplace(fixSlashes) {
