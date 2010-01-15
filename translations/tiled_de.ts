@@ -23,7 +23,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled (Qt).&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://mapeditor.org/&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://mapeditor.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+56"/>
@@ -137,7 +137,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+9"/>
         <source>Save &amp;As...</source>
-        <translation>Speichere &amp;als...</translation>
+        <translation>Speichere &amp;unter...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -182,7 +182,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+9"/>
         <source>&amp;Remove Layer</source>
-        <translation>&amp;Lösche Ebene</translation>
+        <translation>Ebene &amp;löschen</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -358,7 +358,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+23"/>
         <source>Margin:</source>
-        <translation>Seiterand:</translation>
+        <translation>Seitenrand:</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -381,7 +381,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+12"/>
         <source>Offset Contents of Map</source>
-        <translation>Verschiebe Inhalte auf der Karte</translation>
+        <translation>Verschiebe Inhalte der Karte</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -427,7 +427,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+8"/>
         <source>Whole Map</source>
-        <translation>Ganze Karte</translation>
+        <translation>Gesamte Karte</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -519,7 +519,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/resizedialog.ui" line="+13"/>
         <source>Resize</source>
-        <translation>Größe ändern</translation>
+        <translation>Kartengröße ändern</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -539,7 +539,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+23"/>
         <source>Offset</source>
-        <translation>Offset</translation>
+        <translation>Verschieben</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -582,7 +582,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation>Nur &amp;sichtbare Ebenen inkludieren</translation>
+        <translation>Nur &amp;sichtbare Ebenen rendern</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -686,7 +686,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+1"/>
         <source>There are unsaved changes. Do you want to save now?</source>
-        <translation>Es wurden Änderungen vorgenommen. Sollen diese Änderungen nun gespeichert werden?</translation>
+        <translation>Es wurden Änderungen vorgenommen. Sollen diese Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -696,7 +696,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+106"/>
         <source>Map</source>
-        <translation>Karte</translation>
+        <translation>Karten</translation>
     </message>
     <message>
         <location line="+123"/>
@@ -716,7 +716,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+5"/>
         <source>Layer name:</source>
-        <translation>Ebenenname:</translation>
+        <translation>Name der Ebene:</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -726,7 +726,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+49"/>
         <source>Layer</source>
-        <translation>Ebene</translation>
+        <translation>Ebenen</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -824,7 +824,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/propertiesdialog.cpp" line="+56"/>
         <source>%1 Properties</source>
-        <translation>%1 Eigenschaften</translation>
+        <translation>%1eigenschaften</translation>
     </message>
 </context>
 <context>
@@ -917,7 +917,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/undodock.cpp" line="+64"/>
         <source>History</source>
-        <translation>Chronik</translation>
+        <translation>Protokoll</translation>
     </message>
 </context>
 <context>
