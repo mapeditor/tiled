@@ -33,9 +33,13 @@ class PropertiesDialog;
 }
 
 namespace Tiled {
+
+class Layer;
+
 namespace Internal {
 
 class PropertiesModel;
+class MapDocument;
 
 class PropertiesDialog : public QDialog
 {
@@ -64,6 +68,14 @@ public:
      * ChangeProperties command and adding it to the undo stack.
      */
     void accept();
+
+    /**
+     * Creates an object of the appropriate PropertiesDialog subclass
+     * for the given layer. The caller takes responsibility for the dialog.
+     */
+    static PropertiesDialog *createDialogFor(Layer *layer,
+                                             MapDocument *mapDocument,
+                                             QWidget *parent);
 
 private slots:
     void deleteSelectedProperties();

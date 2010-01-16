@@ -824,11 +824,15 @@ void MainWindow::editLayerProperties()
         return;
 
     Layer *layer = mMapDocument->map()->layerAt(layerIndex);
-    PropertiesDialog propertiesDialog(tr("Layer"),
-                                      layer->properties(),
-                                      mMapDocument->undoStack(),
-                                      this);
-    propertiesDialog.exec();
+
+    PropertiesDialog *propertiesDialog =
+        PropertiesDialog::createDialogFor(layer,
+                                          mMapDocument,
+                                          this);
+
+    propertiesDialog->exec();
+
+    delete propertiesDialog;
 }
 
 /**

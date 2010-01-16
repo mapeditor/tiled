@@ -220,20 +220,13 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     if (menu.exec(event->globalPos()) == layerProperties) {
         Layer *layer = mMapDocument->map()->layerAt(layerIndex);
 
-        ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(layer);
-
-        if (objectGroup) {
-            ObjectGroupPropertiesDialog propertiesDialog(mMapDocument,
-                                                         objectGroup,
-                                                         this);
-            propertiesDialog.exec();
-        } else {
-            PropertiesDialog propertiesDialog(tr("Layer"),
-                                              layer->properties(),
-                                              mMapDocument->undoStack(),
+        PropertiesDialog *propertiesDialog =
+            PropertiesDialog::createDialogFor(layer,
+                                              mMapDocument,
                                               this);
 
-            propertiesDialog.exec();
-        }
+        propertiesDialog->exec();
+
+        delete propertiesDialog;
     }
 }
