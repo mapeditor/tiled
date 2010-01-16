@@ -33,6 +33,8 @@ class ObjectGroup;
 
 namespace Internal {
 
+class MapDocument;
+
 class ChangeObjectGroupProperties : public QUndoCommand
 {
 public:

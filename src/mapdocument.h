@@ -157,12 +157,6 @@ public:
     inline void emitObjectChanged(MapObject *object)
     { emitObjectsChanged(QList<MapObject*>() << object); }
 
-    /**
-     * Snaps the given point to the tile grid of this map document.
-     * TODO: Move to MapRenderer
-     */
-    QPoint snapToTileGrid(const QPoint &p) const;
-
 signals:
     /**
      * Emitted when the map size or its tile size changes.

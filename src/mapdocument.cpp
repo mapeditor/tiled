@@ -260,14 +260,6 @@ void MapDocument::emitObjectsChanged(const QList<MapObject*> &objects)
     emit objectsChanged(objects);
 }
 
-QPoint MapDocument::snapToTileGrid(const QPoint &p) const
-{
-    const int w = mMap->tileWidth();
-    const int h = mMap->tileHeight();
-    return QPoint(((p.x() + w / 2) / w) * w,
-                  ((p.y() + h / 2) / h) * h);
-}
-
 void MapDocument::onLayerAdded(int index)
 {
     emit layerAdded(index);

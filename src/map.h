@@ -141,11 +141,6 @@ public:
     inline int extraTileHeight() const
     { return mMaxTileHeight - mTileHeight; }
 
-    QPoint toPixelCoordinates(const QPointF &p) const;
-    QSize toPixelCoordinates(const QSizeF &p) const;
-    QPointF toTileCoordinates(const QPoint &p) const;
-    QSizeF toTileCoordinates(const QSize &p) const;
-
     /**
      * Returns the number of layers of this map.
      */

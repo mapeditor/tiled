@@ -165,7 +165,8 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
     } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
         foreach (MapObject *object, og->objects()) {
-            MapObjectItem *item = new MapObjectItem(object, ogItem);
+            MapObjectItem *item = new MapObjectItem(object, mMapDocument,
+                                                    ogItem);
             mObjectItems.insert(object, item);
         }
         layerItem = ogItem;
@@ -307,10 +308,7 @@ void MapScene::objectsAdded(const QList<MapObject*> &objects)
 
         Q_ASSERT(ogItem);
 
-        MapObjectItem *item = new MapObjectItem(object);
-
-        // Set parent item later to prevent snapping to grid when setting pos
-        item->setParentItem(ogItem);
+        MapObjectItem *item = new MapObjectItem(object, mMapDocument, ogItem);
 
         mObjectItems.insert(object, item);
         if (ogItem == mSelectedObjectGroupItem)
@@ -394,16 +392,19 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 
     if (mNewMapObjectItem) {
+        const MapRenderer *renderer = mMapDocument->renderer();
+
         // Update the size of the new map object
-        const QPoint pixelPos = mouseEvent->scenePos().toPoint();
-        const QPoint origin = mNewMapObjectItem->pos().toPoint();
-        QPoint newSize(qMax(0, pixelPos.x() - origin.x()),
-                       qMax(0, pixelPos.y() - origin.y()));
+        const QPointF pixelPos = mouseEvent->scenePos();
+        const QPointF tileCoords = renderer->pixelToTileCoords(pixelPos);
+        const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
+        QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
+                       qMax(qreal(0), tileCoords.y() - objectPos.y()));
 
-        if (mGridVisible)
-            newSize = mMapDocument->snapToTileGrid(newSize);
+        if (mouseEvent->modifiers() & Qt::ControlModifier)
+            newSize = newSize.toSize();
 
-        mNewMapObjectItem->resize(QSize(newSize.x(), newSize.y()));
+        mNewMapObjectItem->resize(newSize);
         mouseEvent->accept();
     } else if (mActiveTool) {
         mActiveTool->mouseMoved(mouseEvent->scenePos(),
@@ -431,7 +432,13 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         && mSelectedObjectGroupItem
         && !mNewMapObjectItem)
     {
-        startNewMapObject(mouseEvent->scenePos());
+        const MapRenderer *renderer = mMapDocument->renderer();
+        const QPointF scenePos = mouseEvent->scenePos();
+        QPointF tileCoords = renderer->pixelToTileCoords(scenePos);
+        if (mouseEvent->modifiers() & Qt::ControlModifier)
+            tileCoords = tileCoords.toPoint();
+
+        startNewMapObject(tileCoords);
         mouseEvent->accept();
     } else if (mActiveTool) {
         mActiveTool->mousePressed(mouseEvent->scenePos(), mouseEvent->button(),
@@ -460,14 +467,15 @@ void MapScene::startNewMapObject(const QPointF &pos)
     Q_ASSERT(!mNewMapObjectItem);
 
     MapObject *newMapObject = new MapObject;
+    newMapObject->setPosition(pos);
 
     ObjectGroup *objectGroup = mSelectedObjectGroupItem->objectGroup();
     objectGroup->addObject(newMapObject);
 
     mNewMapObjectItem = new MapObjectItem(newMapObject,
+                                          mMapDocument,
                                           mSelectedObjectGroupItem);
     mNewMapObjectItem->setEditable(true);
-    mNewMapObjectItem->setPos(pos);
 }
 
 MapObject *MapScene::clearNewMapObjectItem()

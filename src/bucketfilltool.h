@@ -65,11 +65,9 @@ public:
     void setStamp(TileLayer *stamp);
 
 private slots:
-
     void clearOverlay();
 
 private:
-
     void makeConnections();
     void clearConnections();
 

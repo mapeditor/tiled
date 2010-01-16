@@ -28,6 +28,7 @@ namespace Tiled {
 
 class Layer;
 class Map;
+class MapObject;
 class TileLayer;
 
 namespace Internal {
@@ -58,6 +59,12 @@ public:
     virtual QRect boundingRect(const QRect &rect) const = 0;
 
     /**
+     * Returns the bounding rectangle in pixels of the given \a object, as it
+     * would be drawn by drawMapObject().
+     */
+    virtual QRectF boundingRect(const MapObject *object) const = 0;
+
+    /**
      * Draws the tile grid in the specified \a rect using the given
      * \a painter.
      */
@@ -84,12 +91,27 @@ public:
                                    const QRectF &exposed) const = 0;
 
     /**
-     * Returns the coordinates of the tile beneath the given pixel position.
+     * Draws the \a object in the given \a color using the \a painter.
      */
-    virtual QPoint screenToTileCoords(int x, int y) const = 0;
+    virtual void drawMapObject(QPainter *painter,
+                               const MapObject *object,
+                               const QColor &color) const = 0;
 
-    inline QPoint screenToTileCoords(const QPoint &point) const
-    { return screenToTileCoords(point.x(), point.y()); }
+    /**
+     * Returns the tile coordinates matching the given pixel position.
+     */
+    virtual QPointF pixelToTileCoords(qreal x, qreal y) const = 0;
+
+    inline QPointF pixelToTileCoords(const QPointF &point) const
+    { return pixelToTileCoords(point.x(), point.y()); }
+
+    /**
+     * Returns the pixel coordinates matching the given tile coordinates.
+     */
+    virtual QPointF tileToPixelCoords(qreal x, qreal y) const = 0;
+
+    inline QPointF tileToPixelCoords(const QPointF &point) const
+    { return tileToPixelCoords(point.x(), point.y()); }
 
 protected:
     /**

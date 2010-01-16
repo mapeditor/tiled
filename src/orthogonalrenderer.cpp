@@ -22,6 +22,7 @@
 #include "orthogonalrenderer.h"
 
 #include "map.h"
+#include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -44,6 +45,19 @@ QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
                  rect.y() * tileHeight,
                  rect.width() * tileWidth,
                  rect.height() * tileHeight);
+}
+
+QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
+{
+    const QRectF bounds = object->bounds();
+    const QRectF rect(tileToPixelCoords(bounds.topLeft()),
+                      tileToPixelCoords(bounds.bottomRight()));
+
+    // The -2 and +3 are to account for the pen width and shadow
+    if (rect.isNull())
+        return rect.adjusted(-15 - 2, -25 - 2, 10 + 3, 10 + 3);
+    else
+        return rect.adjusted(-2, -15 - 2, 3, 3);
 }
 
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
@@ -134,8 +148,72 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
     }
 }
 
-QPoint OrthogonalRenderer::screenToTileCoords(int x, int y) const
+void OrthogonalRenderer::drawMapObject(QPainter *painter,
+                                       const MapObject *object,
+                                       const QColor &color) const
 {
-    return QPoint(x / map()->tileWidth(),
-                  y / map()->tileHeight());
+    QColor brushColor = color;
+    brushColor.setAlpha(50);
+    QBrush brush(brushColor);
+
+    QPen pen(Qt::black);
+    pen.setWidth(3);
+    pen.setJoinStyle(Qt::RoundJoin);
+
+    // Make sure the line aligns nicely on the pixels
+    if (pen.width() % 2)
+        painter->translate(0.5, 0.5);
+
+    painter->setPen(pen);
+    painter->setRenderHint(QPainter::Antialiasing);
+    const QFontMetrics fm = painter->fontMetrics();
+
+    const QRectF bounds = object->bounds();
+    const QRectF rect(tileToPixelCoords(bounds.topLeft()),
+                      tileToPixelCoords(bounds.bottomRight()));
+    painter->translate(rect.topLeft());
+
+    if (rect.isNull())
+    {
+        QString name = fm.elidedText(object->name(), Qt::ElideRight, 30);
+
+        // Draw the shadow
+        painter->drawEllipse(QRect(- 10 + 1, - 10 + 1, 20, 20));
+        painter->drawText(QPoint(-15 + 1, -15 + 1), name);
+
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->setBrush(brush);
+        painter->drawEllipse(QRect(-10, -10, 20, 20));
+        painter->drawText(QPoint(-15, -15), name);
+    }
+    else
+    {
+        QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                     rect.width() + 2);
+
+        // Draw the shadow
+        painter->drawRoundedRect(QRectF(QPointF(1, 1), rect.size()),
+                                 10.0, 10.0);
+        painter->drawText(QPoint(1, -5 + 1), name);
+
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->setBrush(brush);
+        painter->drawRoundedRect(QRectF(QPointF(0, 0), rect.size()),
+                                 10.0, 10.0);
+        painter->drawText(QPoint(0, -5), name);
+    }
+}
+
+QPointF OrthogonalRenderer::pixelToTileCoords(qreal x, qreal y) const
+{
+    return QPointF(x / map()->tileWidth(),
+                   y / map()->tileHeight());
+}
+
+QPointF OrthogonalRenderer::tileToPixelCoords(qreal x, qreal y) const
+{
+    return QPointF(x * map()->tileWidth(),
+                   y * map()->tileHeight());
 }

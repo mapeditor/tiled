@@ -49,7 +49,8 @@ public:
      * @param object the object to be displayed
      * @param parent the item of the object group this object belongs to
      */
-    MapObjectItem(MapObject *object, ObjectGroupItem *parent = 0);
+    MapObjectItem(MapObject *object, MapDocument *mapDocument,
+                  ObjectGroupItem *parent = 0);
 
     MapObject *mapObject() const
     { return mObject; }
@@ -79,7 +80,7 @@ public:
      * Resizes this map object item and the associated map object. The
      * \a size is given in pixels.
      */
-    void resize(const QSize &size);
+    void resize(const QSizeF &size);
 
 protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
@@ -94,10 +95,12 @@ private:
     Qt::GlobalColor colorForType() const;
 
     MapObject *mObject;
+    MapDocument *mMapDocument;
     ResizeHandle *mResizeHandle;
-    QPointF mOldPos;
-    /** Copy of size (in pixels) for adapting to geometry change correctly. */
-    QSize mSize;
+    QPointF mOldObjectPos;
+    QPointF mOldItemPos;
+    /** Bounding rect cached, for adapting to geometry change correctly. */
+    QRectF mBoundingRect;
     QString mName; // Copies of name and type, so we know when they change
     QString mType;
     bool mIsEditable;

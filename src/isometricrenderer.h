@@ -43,6 +43,8 @@ public:
 
     QRect boundingRect(const QRect &rect) const;
 
+    QRectF boundingRect(const MapObject *object) const;
+
     void drawGrid(QPainter *painter, const QRectF &rect) const;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
@@ -53,16 +55,19 @@ public:
                            const QColor &color,
                            const QRectF &exposed) const;
 
-    using MapRenderer::screenToTileCoords;
-    QPoint screenToTileCoords(int x, int y) const;
+    void drawMapObject(QPainter *painter,
+                       const MapObject *object,
+                       const QColor &color) const;
+
+    using MapRenderer::pixelToTileCoords;
+    QPointF pixelToTileCoords(qreal x, qreal y) const;
+
+    using MapRenderer::tileToPixelCoords;
+    QPointF tileToPixelCoords(qreal x, qreal y) const;
 
 private:
-    QPoint tileToScreenCoords(int x, int y) const;
-
-    inline QPoint tileToScreenCoords(const QPoint &point) const
-    { return tileToScreenCoords(point.x(), point.y()); }
-
-    QPolygon tileRectToPolygon(const QRect &rect) const;
+    QPolygonF tileRectToPolygon(const QRect &rect) const;
+    QPolygonF tileRectToPolygon(const QRectF &rect) const;
 };
 
 } // namespace Internal

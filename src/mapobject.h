@@ -136,7 +136,7 @@ public:
     void setHeight(qreal height) { mSize.setHeight(height); }
 
     /**
-     * Shortcut to getting a QRect from position() and size().
+     * Shortcut to getting a QRectF from position() and size().
      */
     QRectF bounds() const { return QRectF(mPos, mSize); }
 

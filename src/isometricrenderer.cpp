@@ -22,8 +22,11 @@
 #include "isometricrenderer.h"
 
 #include "map.h"
+#include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
+
+#include <cmath>
 
 using namespace Tiled::Internal;
 
@@ -52,6 +55,14 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
     return QRect(pos, size);
 }
 
+QRectF IsometricRenderer::boundingRect(const MapObject *object) const
+{
+    // Take the bounding rect of the projected object, and then add a few
+    // pixels on all sides to correct for the line width.
+    const QRectF base = tileRectToPolygon(object->bounds()).boundingRect();
+    return base.adjusted(-2, -3, 2, 2);
+}
+
 void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
 {
     const int tileWidth = map()->tileWidth();
@@ -61,12 +72,12 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     r.adjust(-tileWidth / 2, -tileHeight / 2,
              tileWidth / 2, tileHeight / 2);
 
-    const int startX = qMax(0, screenToTileCoords(r.topLeft()).x());
-    const int startY = qMax(0, screenToTileCoords(r.topRight()).y());
-    const int endX = qMin(map()->width(),
-                          screenToTileCoords(r.bottomRight()).x());
-    const int endY = qMin(map()->height(),
-                          screenToTileCoords(r.bottomLeft()).y());
+    const int startX = qMax(qreal(0), pixelToTileCoords(r.topLeft()).x());
+    const int startY = qMax(qreal(0), pixelToTileCoords(r.topRight()).y());
+    const int endX = qMin(qreal(map()->width()),
+                          pixelToTileCoords(r.bottomRight()).x());
+    const int endY = qMin(qreal(map()->height()),
+                          pixelToTileCoords(r.bottomLeft()).y());
 
     QColor gridColor(Qt::black);
     gridColor.setAlpha(128);
@@ -76,13 +87,13 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     painter->setPen(gridPen);
 
     for (int y = startY; y <= endY; ++y) {
-        const QPoint start = tileToScreenCoords(startX, y);
-        const QPoint end = tileToScreenCoords(endX, y);
+        const QPointF start = tileToPixelCoords(startX, y);
+        const QPointF end = tileToPixelCoords(endX, y);
         painter->drawLine(start, end);
     }
     for (int x = startX; x <= endX; ++x) {
-        const QPoint start = tileToScreenCoords(x, startY);
-        const QPoint end = tileToScreenCoords(x, endY);
+        const QPointF start = tileToPixelCoords(x, startY);
+        const QPointF end = tileToPixelCoords(x, endY);
         painter->drawLine(start, end);
     }
 }
@@ -102,8 +113,10 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     rect.adjust(0, 0, 0, extraHeight);
 
     // Determine the tile and pixel coordinates to start at
-    QPoint rowItr = screenToTileCoords(rect.x(), rect.y());
-    QPoint startPos = tileToScreenCoords(rowItr);
+    QPointF tilePos = pixelToTileCoords(rect.x(), rect.y());
+    QPoint rowItr = QPoint((int) std::floor(tilePos.x()),
+                           (int) std::floor(tilePos.y()));
+    QPointF startPos = tileToPixelCoords(rowItr);
     startPos.rx() -= tileWidth / 2;
     startPos.ry() += tileHeight;
 
@@ -171,51 +184,94 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
     painter->setBrush(color);
     painter->setPen(Qt::NoPen);
     foreach (const QRect &r, region.rects()) {
-        QPolygon polygon = tileRectToPolygon(r);
+        QPolygonF polygon = tileRectToPolygon(r);
         if (QRectF(polygon.boundingRect()).intersects(exposed))
             painter->drawConvexPolygon(polygon);
     }
 }
 
-QPoint IsometricRenderer::screenToTileCoords(int x, int y) const
+void IsometricRenderer::drawMapObject(QPainter *painter,
+                                      const MapObject *object,
+                                      const QColor &color) const
+{
+    QColor brushColor = color;
+    brushColor.setAlpha(50);
+    QBrush brush(brushColor);
+
+    QPen pen(Qt::black);
+    pen.setJoinStyle(Qt::RoundJoin);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setWidth(3);
+
+    // Make sure the line aligns nicely on the pixels
+    if (pen.width() % 2)
+        painter->translate(0.5, 0.5);
+
+    painter->setPen(pen);
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    // TODO: Draw the object name
+    // TODO: Do something sensible to make null-sized objects usable
+
+    QPolygonF polygon = tileRectToPolygon(object->bounds());
+
+    painter->drawPolygon(polygon);
+    pen.setColor(color);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    polygon.translate(0, -1);
+    painter->drawPolygon(polygon);
+}
+
+QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
     const qreal ratio = (qreal) tileWidth / tileHeight;
 
     x -= map()->height() * tileWidth / 2;
-    const int mx = y + (int) (x / ratio);
-    const int my = y - (int) (x / ratio);
+    const qreal mx = y + (x / ratio);
+    const qreal my = y - (x / ratio);
 
-    return QPoint(((mx < 0) ? mx - tileHeight + 1 : mx) / tileHeight,
-                  ((my < 0) ? my - tileHeight + 1 : my) / tileHeight);
+    return QPointF(mx / tileHeight,
+                   my / tileHeight);
 }
 
-QPoint IsometricRenderer::tileToScreenCoords(int x, int y) const
+QPointF IsometricRenderer::tileToPixelCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
     const int originX = map()->height() * tileWidth / 2;
 
-    return QPoint((x - y) * tileWidth / 2 + originX,
-                  (x + y) * tileHeight / 2);
+    return QPointF((x - y) * tileWidth / 2 + originX,
+                   (x + y) * tileHeight / 2);
 }
 
-QPolygon IsometricRenderer::tileRectToPolygon(const QRect &rect) const
+QPolygonF IsometricRenderer::tileRectToPolygon(const QRect &rect) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    const QPoint topRight = tileToScreenCoords(rect.topRight());
-    const QPoint bottomRight = tileToScreenCoords(rect.bottomRight());
-    const QPoint bottomLeft = tileToScreenCoords(rect.bottomLeft());
+    const QPointF topRight = tileToPixelCoords(rect.topRight());
+    const QPointF bottomRight = tileToPixelCoords(rect.bottomRight());
+    const QPointF bottomLeft = tileToPixelCoords(rect.bottomLeft());
 
-    QPolygon polygon(4);
-    polygon.setPoint(0, tileToScreenCoords(rect.topLeft()));
-    polygon.setPoint(1, topRight.x() + tileWidth / 2,
-                     topRight.y() + tileHeight / 2);
-    polygon.setPoint(2, bottomRight.x(), bottomRight.y() + tileHeight);
-    polygon.setPoint(3, bottomLeft.x() - tileWidth / 2,
-                     bottomLeft.y() + tileHeight / 2);
+    QPolygonF polygon;
+    polygon << QPointF(tileToPixelCoords(rect.topLeft()));
+    polygon << QPointF(topRight.x() + tileWidth / 2,
+                       topRight.y() + tileHeight / 2);
+    polygon << QPointF(bottomRight.x(), bottomRight.y() + tileHeight);
+    polygon << QPointF(bottomLeft.x() - tileWidth / 2,
+                       bottomLeft.y() + tileHeight / 2);
+    return polygon;
+}
+
+QPolygonF IsometricRenderer::tileRectToPolygon(const QRectF &rect) const
+{
+    QPolygonF polygon;
+    polygon << QPointF(tileToPixelCoords(rect.topLeft()));
+    polygon << QPointF(tileToPixelCoords(rect.topRight()));
+    polygon << QPointF(tileToPixelCoords(rect.bottomRight()));
+    polygon << QPointF(tileToPixelCoords(rect.bottomLeft()));
     return polygon;
 }

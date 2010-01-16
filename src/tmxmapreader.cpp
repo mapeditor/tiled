@@ -636,10 +636,23 @@ MapObject *TmxReader::readObject()
     const QString type = atts.value(QLatin1String("type")).toString();
 
     // Convert pixel coordinates to tile coordinates
-    const qreal xF = (qreal) x / mMap->tileWidth();
-    const qreal yF = (qreal) y / mMap->tileHeight();
-    const qreal widthF = (qreal) width / mMap->tileWidth();
-    const qreal heightF = (qreal) height / mMap->tileHeight();
+    const int tileHeight = mMap->tileHeight();
+    const int tileWidth = mMap->tileWidth();
+    qreal xF, yF, widthF, heightF;
+
+    if (mMap->orientation() == Map::Isometric) {
+        // Isometric needs special handling, since the pixel values are based
+        // solely on the tile height.
+        xF = (qreal) x / tileHeight;
+        yF = (qreal) y / tileHeight;
+        widthF = (qreal) width / tileHeight;
+        heightF = (qreal) height / tileHeight;
+    } else {
+        xF = (qreal) x / tileWidth;
+        yF = (qreal) y / tileHeight;
+        widthF = (qreal) width / tileWidth;
+        heightF = (qreal) height / tileHeight;
+    }
 
     MapObject *object = new MapObject(name, type, xF, yF, widthF, heightF);
 

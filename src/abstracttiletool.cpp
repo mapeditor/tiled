@@ -28,7 +28,7 @@
 #include "mapscene.h"
 #include "tilelayer.h"
 
-#include <QGraphicsSceneMouseEvent>
+#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -91,17 +91,15 @@ void AbstractTileTool::mouseLeft()
 void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
     const MapDocument *mapDocument = mMapScene->mapDocument();
-    const Map *map = mapDocument->map();
-    const int tileWidth = map->tileWidth();
-    const int tileHeight = map->tileHeight();
-
-    QPointF position = pos;
-    // TODO: Move this position difference into the map renderer?
-    if (mTilePositionMethod == BetweenTiles)
-        position += QPointF(tileWidth / 2, tileHeight / 2);
-
     const MapRenderer *renderer = mapDocument->renderer();
-    const QPoint tilePos = renderer->screenToTileCoords(position.toPoint());
+    const QPointF tilePosF = renderer->pixelToTileCoords(pos);
+    QPoint tilePos;
+
+    if (mTilePositionMethod == BetweenTiles)
+        tilePos = tilePosF.toPoint();
+    else
+        tilePos = QPoint((int) std::floor(tilePosF.x()),
+                         (int) std::floor(tilePosF.y()));
 
     if (mTileX != tilePos.x() || mTileY != tilePos.y()) {
         mTileX = tilePos.x();

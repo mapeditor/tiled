@@ -341,18 +341,33 @@ void TmxMapWriter::writeObject(QXmlStreamWriter &w, const MapObject *mapObject)
     // Convert from tile to pixel coordinates
     const ObjectGroup *objectGroup = mapObject->objectGroup();
     const Map *map = objectGroup->map();
-    const QPoint pos = map->toPixelCoordinates(mapObject->position());
-    const QSize size = map->toPixelCoordinates(mapObject->size());
+    const int tileHeight = map->tileHeight();
+    const int tileWidth = map->tileWidth();
+    const QRectF bounds = mapObject->bounds();
 
-    w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
-    w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
+    int x, y, width, height;
 
-    if (size.width() != 0)
-        w.writeAttribute(QLatin1String("width"),
-                         QString::number(size.width()));
-    if (size.height() != 0)
-        w.writeAttribute(QLatin1String("height"),
-                         QString::number(size.height()));
+    if (map->orientation() == Map::Isometric) {
+        // Isometric needs special handling, since the pixel values are based
+        // solely on the tile height.
+        x = qRound(bounds.x() * tileHeight);
+        y = qRound(bounds.y() * tileHeight);
+        width = qRound(bounds.width() * tileHeight);
+        height = qRound(bounds.height() * tileHeight);
+    } else {
+        x = qRound(bounds.x() * tileHeight);
+        y = qRound(bounds.y() * tileWidth);
+        width = qRound(bounds.width() * tileHeight);
+        height = qRound(bounds.height() * tileWidth);
+    }
+
+    w.writeAttribute(QLatin1String("x"), QString::number(x));
+    w.writeAttribute(QLatin1String("y"), QString::number(y));
+
+    if (width != 0)
+        w.writeAttribute(QLatin1String("width"), QString::number(width));
+    if (height != 0)
+        w.writeAttribute(QLatin1String("height"), QString::number(height));
     writeProperties(w, mapObject->properties());
     w.writeEndElement();
 }

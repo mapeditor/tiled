@@ -107,7 +107,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 }
 
 void BucketFillTool::mousePressed(const QPointF &pos, Qt::MouseButton button,
-                      Qt::KeyboardModifiers modifiers)
+                                  Qt::KeyboardModifiers modifiers)
 {
     Q_UNUSED(pos);
     Q_UNUSED(modifiers);
