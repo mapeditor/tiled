@@ -44,6 +44,7 @@ public:
     QRect boundingRect(const QRect &rect) const;
 
     QRectF boundingRect(const MapObject *object) const;
+    QPainterPath shape(const MapObject *object) const;
 
     void drawGrid(QPainter *painter, const QRectF &rect) const;
 

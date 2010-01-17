@@ -223,6 +223,11 @@ QRectF MapObjectItem::boundingRect() const
     return mBoundingRect;
 }
 
+QPainterPath MapObjectItem::shape() const
+{
+    return mMapDocument->renderer()->shape(mObject).translated(-pos());
+}
+
 void MapObjectItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
                           QWidget *)

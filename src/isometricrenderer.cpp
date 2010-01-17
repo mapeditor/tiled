@@ -63,6 +63,13 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
     return base.adjusted(-2, -3, 2, 2);
 }
 
+QPainterPath IsometricRenderer::shape(const MapObject *object) const
+{
+    QPainterPath path;
+    path.addPolygon(tileRectToPolygon(object->bounds()));
+    return path;
+}
+
 void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
 {
     const int tileWidth = map()->tileWidth();

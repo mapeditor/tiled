@@ -60,6 +60,20 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
         return rect.adjusted(-2, -15 - 2, 3, 3);
 }
 
+QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
+{
+    const QRectF bounds = object->bounds();
+    const QRectF rect(tileToPixelCoords(bounds.topLeft()),
+                      tileToPixelCoords(bounds.bottomRight()));
+
+    QPainterPath path;
+    if (rect.isNull())
+        path.addEllipse(rect.topLeft(), 20, 20);
+    else
+        path.addRoundedRect(rect, 10, 10);
+    return path;
+}
+
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
 {
     const int tileWidth = map()->tileWidth();

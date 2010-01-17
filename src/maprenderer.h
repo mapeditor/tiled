@@ -65,6 +65,13 @@ public:
     virtual QRectF boundingRect(const MapObject *object) const = 0;
 
     /**
+     * Returns the shape in pixels of the given \a object. This is used for
+     * mouse interaction and should match the rendered object as closely as
+     * possible.
+     */
+    virtual QPainterPath shape(const MapObject *object) const = 0;
+
+    /**
      * Draws the tile grid in the specified \a rect using the given
      * \a painter.
      */
