@@ -268,7 +268,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MapObjectItem</name>
     <message>
-        <location filename="../src/mapobjectitem.cpp" line="+286"/>
+        <location filename="../src/mapobjectitem.cpp" line="+253"/>
         <source>&amp;Duplicate</source>
         <translation>&amp;Duplizieren</translation>
     </message>
@@ -297,20 +297,40 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+6"/>
-        <location line="+49"/>
+        <location line="+55"/>
         <source>Width:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location line="-29"/>
-        <location line="+49"/>
+        <location line="-32"/>
+        <location line="+55"/>
         <source>Height:</source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location line="-26"/>
+        <location line="-29"/>
         <source>Tile size</source>
         <translation>Kachelgröße</translation>
+    </message>
+    <message>
+        <location line="+78"/>
+        <source>Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Orientation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Orthogonal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Isometric</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -509,9 +529,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/bucketfilltool.cpp" line="+36"/>
         <source>Bucket Fill Tool</source>
-        <translation>Füllwerkzeug</translation>
+        <translation type="obsolete">Füllwerkzeug</translation>
     </message>
 </context>
 <context>
@@ -593,7 +612,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::BucketFillTool</name>
     <message>
-        <location filename="../src/bucketfilltool.cpp" line="+3"/>
+        <location filename="../src/bucketfilltool.cpp" line="+36"/>
+        <source>Bucket Fill Tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>F</source>
         <translation>F</translation>
     </message>
@@ -640,15 +664,14 @@ p, li { white-space: pre-wrap; }
         <translation>Eigenschaften...</translation>
     </message>
     <message>
-        <location line="+13"/>
         <source>Layer</source>
-        <translation>Ebenen</translation>
+        <translation type="obsolete">Ebenen</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+126"/>
+        <location filename="../src/mainwindow.cpp" line="+127"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
@@ -689,7 +712,7 @@ p, li { white-space: pre-wrap; }
         <translation>Es wurden Änderungen vorgenommen. Sollen diese Änderungen gespeichert werden?</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+55"/>
         <source>Cut</source>
         <translation>Ausschneiden</translation>
     </message>
@@ -699,7 +722,7 @@ p, li { white-space: pre-wrap; }
         <translation>Karten</translation>
     </message>
     <message>
-        <location line="+123"/>
+        <location line="+124"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -724,12 +747,11 @@ p, li { white-space: pre-wrap; }
         <translation>Neue Ebene</translation>
     </message>
     <message>
-        <location line="+49"/>
         <source>Layer</source>
-        <translation>Ebenen</translation>
+        <translation type="obsolete">Ebenen</translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+105"/>
         <location line="+42"/>
         <source>%1[*] - Tiled</source>
         <translation>%1[*] - Tiled</translation>
@@ -761,7 +783,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
-        <location filename="../src/newmapdialog.cpp" line="+57"/>
+        <location filename="../src/newmapdialog.cpp" line="+58"/>
         <source>Layer 1</source>
         <translation>Ebene 1</translation>
     </message>
@@ -822,9 +844,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::PropertiesDialog</name>
     <message>
-        <location filename="../src/propertiesdialog.cpp" line="+56"/>
+        <location filename="../src/propertiesdialog.cpp" line="+61"/>
         <source>%1 Properties</source>
         <translation>%1eigenschaften</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1062,7 +1089,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Objekt ändern</translation>
     </message>
     <message>
-        <location filename="../src/changeobjectgroupproperties.cpp" line="+36"/>
+        <location filename="../src/changeobjectgroupproperties.cpp" line="+37"/>
         <location filename="../src/objectgrouppropertiesdialog.cpp" line="+21"/>
         <source>Change Object Layer Properties</source>
         <translation>Objektebeneneigenschaften ändern</translation>
