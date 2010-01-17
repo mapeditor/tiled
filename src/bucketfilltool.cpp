@@ -33,7 +33,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 BucketFillTool::BucketFillTool(QObject *parent)
-    : AbstractTileTool(QObject::tr("Bucket Fill Tool"),
+    : AbstractTileTool(tr("Bucket Fill Tool"),
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-bucket-fill.png")),
                        QKeySequence(tr("F")),
