@@ -70,12 +70,11 @@ public:
     void accept();
 
     /**
-     * Creates an object of the appropriate PropertiesDialog subclass
-     * for the given layer. The caller takes responsibility for the dialog.
+     * Shows the appropriate properties dialog for the given layer.
      */
-    static PropertiesDialog *createDialogFor(Layer *layer,
-                                             MapDocument *mapDocument,
-                                             QWidget *parent);
+    static void showDialogFor(Layer *layer,
+                              MapDocument *mapDocument,
+                              QWidget *parent);
 
 private slots:
     void deleteSelectedProperties();

@@ -824,15 +824,7 @@ void MainWindow::editLayerProperties()
         return;
 
     Layer *layer = mMapDocument->map()->layerAt(layerIndex);
-
-    PropertiesDialog *propertiesDialog =
-        PropertiesDialog::createDialogFor(layer,
-                                          mMapDocument,
-                                          this);
-
-    propertiesDialog->exec();
-
-    delete propertiesDialog;
+    PropertiesDialog::showDialogFor(layer, mMapDocument, this);
 }
 
 /**

@@ -77,21 +77,26 @@ void PropertiesDialog::accept()
     QDialog::accept();
 }
 
-PropertiesDialog *PropertiesDialog::createDialogFor(Layer *layer,
-                                       MapDocument *mapDocument,
-                                       QWidget *parent)
+void PropertiesDialog::showDialogFor(Layer *layer,
+                                     MapDocument *mapDocument,
+                                     QWidget *parent)
 {
     ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(layer);
+    PropertiesDialog *dialog;
 
-    if (objectGroup)
-        return new ObjectGroupPropertiesDialog(mapDocument,
-                                               objectGroup,
-                                               parent);
+    if (objectGroup) {
+        dialog = new ObjectGroupPropertiesDialog(mapDocument,
+                                                 objectGroup,
+                                                 parent);
+    } else {
+        dialog = new PropertiesDialog(tr("Layer"),
+                                      layer->properties(),
+                                      mapDocument->undoStack(),
+                                      parent);
+    }
 
-    return new PropertiesDialog(tr("Layer"),
-                                layer->properties(),
-                                mapDocument->undoStack(),
-                                parent);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->exec();
 }
 
 void PropertiesDialog::deleteSelectedProperties()
