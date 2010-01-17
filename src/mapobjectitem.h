@@ -97,7 +97,6 @@ private:
 
     MapObject *mObject;
     MapDocument *mMapDocument;
-    ResizeHandle *mResizeHandle;
     QPointF mOldObjectPos;
     QPointF mOldItemPos;
     /** Bounding rect cached, for adapting to geometry change correctly. */
@@ -106,6 +105,7 @@ private:
     QString mType;
     bool mIsEditable;
     bool mSyncing;
+    ResizeHandle *mResizeHandle;
 
     friend class ResizeHandle;
 };

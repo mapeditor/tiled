@@ -162,9 +162,9 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
     QGraphicsItem(parent),
     mObject(object),
     mMapDocument(mapDocument),
-    mResizeHandle(new ResizeHandle(this)),
     mIsEditable(false),
-    mSyncing(false)
+    mSyncing(false),
+    mResizeHandle(new ResizeHandle(this))
 {
     syncWithMapObject();
     mResizeHandle->setVisible(false);
