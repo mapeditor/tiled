@@ -68,6 +68,7 @@ Preferences::Preferences()
 
 Preferences::~Preferences()
 {
+    delete mSettings;
 }
 
 TmxMapWriter::LayerDataFormat Preferences::layerDataFormat() const
