@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>164</height>
+    <width>270</width>
+    <height>201</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetFixedSize</enum>
    </property>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Map size</string>
@@ -27,6 +27,9 @@
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Width:</string>
+        </property>
+        <property name="buddy">
+         <cstring>mapWidth</cstring>
         </property>
        </widget>
       </item>
@@ -48,6 +51,9 @@
         <property name="text">
          <string>Height:</string>
         </property>
+        <property name="buddy">
+         <cstring>mapHeight</cstring>
+        </property>
        </widget>
       </item>
       <item row="1" column="1">
@@ -66,7 +72,7 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item row="1" column="1">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Tile size</string>
@@ -76,6 +82,9 @@
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Width:</string>
+        </property>
+        <property name="buddy">
+         <cstring>tileWidth</cstring>
         </property>
        </widget>
       </item>
@@ -97,6 +106,9 @@
         <property name="text">
          <string>Height:</string>
         </property>
+        <property name="buddy">
+         <cstring>tileHeight</cstring>
+        </property>
        </widget>
       </item>
       <item row="1" column="1">
@@ -115,17 +127,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -138,8 +140,65 @@
      </property>
     </spacer>
    </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="">
+     <property name="title">
+      <string>Map</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Orientation:</string>
+        </property>
+        <property name="buddy">
+         <cstring>orientation</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="orientation">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <item>
+         <property name="text">
+          <string>Orthogonal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Isometric</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>orientation</tabstop>
+  <tabstop>mapWidth</tabstop>
+  <tabstop>mapHeight</tabstop>
+  <tabstop>tileWidth</tabstop>
+  <tabstop>tileHeight</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
