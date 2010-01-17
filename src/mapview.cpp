@@ -21,15 +21,17 @@
 
 #include "mapview.h"
 
+#include "zoomable.h"
+
 #include <QWheelEvent>
 #include <QScrollBar>
 
 using namespace Tiled::Internal;
 
-MapView::MapView(QWidget *parent):
-    QGraphicsView(parent),
-    mScale(1),
-    mHandScrolling(false)
+MapView::MapView(QWidget *parent)
+    : QGraphicsView(parent)
+    , mHandScrolling(false)
+    , mZoomable(new Zoomable(this))
 {
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 
@@ -42,66 +44,15 @@ MapView::MapView(QWidget *parent):
     /* Since Qt 4.6, mouse tracking is disabled when no graphics item uses
      * hover events. We need to set it since our scene wants the events. */
     v->setMouseTracking(true);
+
+    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
 }
 
-void MapView::setScale(qreal scale)
+void MapView::adjustScale(qreal scale)
 {
-    if (scale == mScale)
-        return;
-
-    mScale = scale;
-    setTransform(QTransform::fromScale(mScale, mScale));
-    setRenderHint(QPainter::SmoothPixmapTransform, mScale < qreal(1));
-    emit scaleChanged(mScale);
-}
-
-static const int zoomFactorCount = 10;
-static const qreal zoomFactors[zoomFactorCount] = {
-    0.0625,
-    0.125,
-    0.25,
-    0.5,
-    0.75,
-    1.0,
-    1.5,
-    2.0,
-    3.0,
-    4.0
-};
-
-bool MapView::canZoomIn() const
-{
-    return mScale < zoomFactors[zoomFactorCount - 1];
-}
-
-bool MapView::canZoomOut() const
-{
-    return mScale > zoomFactors[0];
-}
-
-void MapView::zoomIn()
-{
-    for (int i = 0; i < zoomFactorCount; ++i) {
-        if (zoomFactors[i] > mScale) {
-            setScale(zoomFactors[i]);
-            break;
-        }
-    }
-}
-
-void MapView::zoomOut()
-{
-    for (int i = zoomFactorCount - 1; i >= 0; --i) {
-        if (zoomFactors[i] < mScale) {
-            setScale(zoomFactors[i]);
-            break;
-        }
-    }
-}
-
-void MapView::resetZoom()
-{
-    setScale(1);
+    setTransform(QTransform::fromScale(scale, scale));
+    setRenderHint(QPainter::SmoothPixmapTransform,
+                  mZoomable->smoothTransform());
 }
 
 /**
@@ -114,9 +65,9 @@ void MapView::wheelEvent(QWheelEvent *event)
     {
         setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
         if (event->delta() > 0)
-            zoomIn();
+            mZoomable->zoomIn();
         else
-            zoomOut();
+            mZoomable->zoomOut();
         setTransformationAnchor(QGraphicsView::AnchorViewCenter);
         return;
     }

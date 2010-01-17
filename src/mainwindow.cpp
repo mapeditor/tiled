@@ -55,6 +55,7 @@
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 #include "undodock.h"
+#include "zoomable.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -135,8 +136,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     addDockWidget(Qt::BottomDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, undoDock);
 
-    updateZoomLabel(mUi->mapView->scale());
-    connect(mUi->mapView, SIGNAL(scaleChanged(qreal)),
+    updateZoomLabel(mUi->mapView->zoomable()->scale());
+    connect(mUi->mapView->zoomable(), SIGNAL(scaleChanged(qreal)),
             this, SLOT(updateZoomLabel(qreal)));
 
     statusBar()->addPermanentWidget(mZoomLabel);
@@ -183,11 +184,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             SLOT(openPreferences()));
 
     connect(mUi->actionZoomIn, SIGNAL(triggered()),
-            mUi->mapView, SLOT(zoomIn()));
+            mUi->mapView->zoomable(), SLOT(zoomIn()));
     connect(mUi->actionZoomOut, SIGNAL(triggered()),
-            mUi->mapView, SLOT(zoomOut()));
+            mUi->mapView->zoomable(), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()),
-            mUi->mapView, SLOT(resetZoom()));
+            mUi->mapView->zoomable(), SLOT(resetZoom()));
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
@@ -382,7 +383,7 @@ void MainWindow::openLastFile()
         mSettings.beginGroup(QLatin1String("mainwindow"));
         qreal scale = mSettings.value(QLatin1String("mapScale")).toDouble();
         if (scale > 0)
-            mUi->mapView->setScale(scale);
+            mUi->mapView->zoomable()->setScale(scale);
 
         const int hor = mSettings.value(QLatin1String("scrollX")).toInt();
         const int ver = mSettings.value(QLatin1String("scrollY")).toInt();
@@ -466,7 +467,8 @@ void MainWindow::saveAsImage()
 
     SaveAsImageDialog dialog(mMapDocument,
                              mCurrentFileName,
-                             mUi->mapView->scale(), this);
+                             mUi->mapView->zoomable()->scale(),
+                             this);
     dialog.exec();
 }
 
@@ -726,8 +728,9 @@ void MainWindow::updateActions()
 
 void MainWindow::updateZoomLabel(qreal scale)
 {
-    mUi->actionZoomIn->setEnabled(mUi->mapView->canZoomIn());
-    mUi->actionZoomOut->setEnabled(mUi->mapView->canZoomOut());
+    const Zoomable *zoomable = mUi->mapView->zoomable();
+    mUi->actionZoomIn->setEnabled(zoomable->canZoomIn());
+    mUi->actionZoomOut->setEnabled(zoomable->canZoomOut());
     mUi->actionZoomNormal->setEnabled(scale != 1);
 
     mZoomLabel->setText(tr("%1%").arg(scale * 100));
@@ -851,7 +854,8 @@ void MainWindow::writeSettings()
     mSettings.setValue(QLatin1String("state"), saveState());
     mSettings.setValue(QLatin1String("gridVisible"),
                        mUi->actionShowGrid->isChecked());
-    mSettings.setValue(QLatin1String("mapScale"), mUi->mapView->scale());
+    mSettings.setValue(QLatin1String("mapScale"),
+                       mUi->mapView->zoomable()->scale());
     mSettings.setValue(QLatin1String("scrollX"),
                        mUi->mapView->horizontalScrollBar()->sliderPosition());
     mSettings.setValue(QLatin1String("scrollY"),

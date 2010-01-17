@@ -27,15 +27,30 @@
 namespace Tiled {
 namespace Internal {
 
+class Zoomable;
+
 /**
  * The tileset view. May only be used with the TilesetModel.
  */
 class TilesetView : public QTableView
 {
+    Q_OBJECT
+
 public:
     TilesetView(QWidget *parent = 0);
 
     QSize sizeHint() const;
+
+    Zoomable *zoomable() const { return mZoomable; }
+
+protected:
+    void wheelEvent(QWheelEvent *event);
+
+private slots:
+    void adjustScale();
+
+private:
+    Zoomable *mZoomable;
 };
 
 } // namespace Internal

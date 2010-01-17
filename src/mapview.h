@@ -1,6 +1,6 @@
 /*
  * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * Copyright 2008,2009,2010 Tiled (Qt) developers (see AUTHORS file)
  *
  * This file is part of Tiled (Qt).
  *
@@ -27,6 +27,8 @@
 namespace Tiled {
 namespace Internal {
 
+class Zoomable;
+
 /**
  * The map view shows the map scene. This class sets some MapScene specific
  * properties on the viewport and implements zooming. It also allows the view
@@ -44,19 +46,7 @@ public:
      */
     MapView(QWidget *parent = 0);
 
-    void setScale(qreal scale);
-    qreal scale() const { return mScale; }
-
-    bool canZoomIn() const;
-    bool canZoomOut() const;
-
-signals:
-    void scaleChanged(qreal scale);
-
-public slots:
-    void zoomIn();
-    void zoomOut();
-    void resetZoom();
+    Zoomable *zoomable() const { return mZoomable; }
 
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -65,10 +55,13 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
+private slots:
+    void adjustScale(qreal scale);
+
 private:
-    qreal mScale;
     QPoint mLastMousePos;
     bool mHandScrolling;
+    Zoomable *mZoomable;
 };
 
 } // namespace Internal

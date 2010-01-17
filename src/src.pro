@@ -81,7 +81,8 @@ SOURCES += aboutdialog.cpp \
     bucketfilltool.cpp \
     filltiles.cpp \
     objectgrouppropertiesdialog.cpp \
-    changeobjectgroupproperties.cpp
+    changeobjectgroupproperties.cpp \
+    zoomable.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -156,7 +157,8 @@ HEADERS += aboutdialog.h \
     bucketfilltool.h \
     filltiles.h \
     objectgrouppropertiesdialog.h \
-    changeobjectgroupproperties.h
+    changeobjectgroupproperties.h \
+    zoomable.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

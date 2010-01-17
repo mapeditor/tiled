@@ -23,10 +23,12 @@
 
 #include "tileset.h"
 #include "tilesetmodel.h"
+#include "zoomable.h"
 
 #include <QAbstractItemDelegate>
 #include <QHeaderView>
 #include <QPainter>
+#include <QWheelEvent>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -39,8 +41,9 @@ namespace {
 class TileDelegate : public QAbstractItemDelegate
 {
 public:
-    TileDelegate(QObject *parent = 0)
+    TileDelegate(TilesetView *tilesetView, QObject *parent = 0)
         : QAbstractItemDelegate(parent)
+        , mTilesetView(tilesetView)
     { }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -48,6 +51,9 @@ public:
 
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const;
+
+private:
+    TilesetView *mTilesetView;
 };
 
 void TileDelegate::paint(QPainter *painter,
@@ -57,7 +63,11 @@ void TileDelegate::paint(QPainter *painter,
     // Draw the tile image
     const QVariant display = index.model()->data(index, Qt::DisplayRole);
     const QPixmap tileImage = display.value<QPixmap>();
-    painter->drawPixmap(option.rect.x(), option.rect.y(), tileImage);
+
+    if (mTilesetView->zoomable()->smoothTransform())
+        painter->setRenderHint(QPainter::SmoothPixmapTransform);
+
+    painter->drawPixmap(option.rect.adjusted(0, 0, -1, -1), tileImage);
 
     // Overlay with highlight color when selected
     if (option.state & QStyle::State_Selected) {
@@ -74,15 +84,17 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 {
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
     const Tileset *tileset = m->tileset();
+    const qreal zoom = mTilesetView->zoomable()->scale();
 
-    return QSize(tileset->tileWidth() + 1,
-                 tileset->tileHeight() + 1);
+    return QSize(tileset->tileWidth() * zoom + 1,
+                 tileset->tileHeight() * zoom + 1);
 }
 
 } // anonymous namespace
 
-TilesetView::TilesetView(QWidget *parent):
-    QTableView(parent)
+TilesetView::TilesetView(QWidget *parent)
+    : QTableView(parent)
+    , mZoomable(new Zoomable(this))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -99,9 +111,34 @@ TilesetView::TilesetView(QWidget *parent):
     header->hide();
     header->setResizeMode(QHeaderView::ResizeToContents);
     header->setMinimumSectionSize(1);
+
+    connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
 }
 
 QSize TilesetView::sizeHint() const
 {
     return QSize(130, 100);
+}
+
+/**
+ * Override to support zooming in and out using the mouse wheel.
+ */
+void TilesetView::wheelEvent(QWheelEvent *event)
+{
+    if (event->modifiers() & Qt::ControlModifier
+        && event->orientation() == Qt::Vertical)
+    {
+        if (event->delta() > 0)
+            mZoomable->zoomIn();
+        else
+            mZoomable->zoomOut();
+        return;
+    }
+
+    QTableView::wheelEvent(event);
+}
+
+void TilesetView::adjustScale()
+{
+    static_cast<TilesetModel*>(model())->tilesetChanged();
 }
