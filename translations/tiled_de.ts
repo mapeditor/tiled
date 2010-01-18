@@ -315,22 +315,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+78"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Karte</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Orientation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientierung:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Orthogonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Orthogonal</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Isometric</source>
-        <translation type="unfinished"></translation>
+        <translation>Isometrisch</translation>
     </message>
 </context>
 <context>
@@ -614,7 +614,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/bucketfilltool.cpp" line="+36"/>
         <source>Bucket Fill Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Füllwerkzeug</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -851,7 +851,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+31"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
 </context>
 <context>
