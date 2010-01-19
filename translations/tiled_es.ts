@@ -314,22 +314,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+78"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Orientation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientación:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Orthogonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortogonal</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Isometric</source>
-        <translation type="unfinished"></translation>
+        <translation>Isométrico</translation>
     </message>
 </context>
 <context>
@@ -613,7 +613,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/bucketfilltool.cpp" line="+36"/>
         <source>Bucket Fill Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Herramienta de Rellenado</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -850,7 +850,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+31"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa</translation>
     </message>
 </context>
 <context>
@@ -948,7 +948,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/undodock.cpp" line="+64"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia</translation>
     </message>
 </context>
 <context>
