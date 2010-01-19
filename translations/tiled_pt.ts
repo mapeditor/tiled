@@ -247,22 +247,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Deslocamento do mapa...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Offsets everything in a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslucar tudo numa camada</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pre&amp;ferências...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Clear Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpar Ficheiros Recentes</translation>
     </message>
 </context>
 <context>
@@ -270,7 +270,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/mapobjectitem.cpp" line="+253"/>
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplicar</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -315,22 +315,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+78"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Orientation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientação:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Orthogonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ortogonal</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Isometric</source>
-        <translation type="unfinished"></translation>
+        <translation>Isométrica</translation>
     </message>
 </context>
 <context>
@@ -396,63 +396,63 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/offsetmapdialog.ui" line="+17"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslocamento do Mapa</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Offset Contents of Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslocamento dos conteúdos do Mapa</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+23"/>
         <location line="+43"/>
         <source>Wrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Embrulhar</translation>
     </message>
     <message>
         <location line="-36"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Camadas:</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>All Visible Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Todas as Camadas Visíveis</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Todas as Camadas</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Selected Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar Camada</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Bounds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Limites:</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Whole Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Todo o Mapa</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Current Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleção Currente</translation>
     </message>
 </context>
 <context>
@@ -460,62 +460,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/preferencesdialog.ui" line="+14"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferências</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Saving and Loading</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar e Abrir</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Store tile layer data as:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Armazenar dados das camadas de tiles como:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>XML</source>
-        <translation type="unfinished"></translation>
+        <translation>XML</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (uncompressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (descomprimido)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (gzip compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (comprimido com gzip)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (zlib compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (comprimido com zlib)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Recarregar imagens de tileset quando existirem mudanças</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Desabilitado por defeito porque a referencia para um DTD externo é conhecida por causar problemas para alguns analisadores de XML.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Include &amp;DTD reference in saved maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Incluir referências &amp;DTD nos mapas guardados</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interface</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Linguagem:</translation>
     </message>
 </context>
 <context>
@@ -607,12 +607,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/bucketfilltool.cpp" line="+36"/>
         <source>Bucket Fill Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Ferramenta de Preenchimento</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
 </context>
 <context>
@@ -760,7 +760,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+22"/>
         <source>Offset Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslocamento do Mapa</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -794,12 +794,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/objectgrouppropertiesdialog.cpp" line="+43"/>
         <source>Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de Objectos</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor:</translation>
     </message>
 </context>
 <context>
@@ -831,7 +831,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/preferencesdialog.cpp" line="+38"/>
         <location line="+32"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>Padrão do Sistema</translation>
     </message>
 </context>
 <context>
@@ -844,7 +844,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+31"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada</translation>
     </message>
 </context>
 <context>
@@ -877,7 +877,8 @@ p, li { white-space: pre-wrap; }
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 já existe.
+Deseja substituí-lo?</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -941,7 +942,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/undodock.cpp" line="+64"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Histórico</translation>
     </message>
 </context>
 <context>
@@ -987,7 +988,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiro não encontrado: %1</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -997,7 +998,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+61"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientação de mapa não suportado: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+56"/>
@@ -1118,7 +1119,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/offsetlayer.cpp" line="+40"/>
         <source>Offset Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Deslocamento da Camada</translation>
     </message>
     <message>
         <location filename="../src/painttilelayer.cpp" line="+50"/>
@@ -1149,12 +1150,12 @@ Linha %1, coluna %2</translation>
         <location filename="../src/changeobjectgroupproperties.cpp" line="+37"/>
         <location filename="../src/objectgrouppropertiesdialog.cpp" line="+21"/>
         <source>Change Object Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudificar Propriedades da Camada de Objectos</translation>
     </message>
     <message>
         <location filename="../src/filltiles.cpp" line="+36"/>
         <source>Fill Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Área de Preênchimento</translation>
     </message>
 </context>
 <context>
