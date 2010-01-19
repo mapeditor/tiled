@@ -20,7 +20,11 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(vea en el fichero AUTHORS una lista completa de los colaboradores)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Usted puede modificar y redistribuir este programa bajo los terminos de la GPL (versión 2 ó superior). Una copia de la GPL se encuentra en el fichero &apos;COPYING&apos; que acompaña a Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -132,22 +136,22 @@
     <message>
         <location line="+9"/>
         <source>&amp;New...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nuevo...</translation>
     </message>
     <message>
         <location line="+95"/>
         <source>&amp;Export As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportar como...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add External Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Añadir un conjunto de Patrones Externo...</translation>
     </message>
     <message>
         <source>Move Layer &amp;Up</source>
@@ -279,17 +283,17 @@
     <message>
         <location filename="../src/tiled/mapobjectitem.cpp" line="+265"/>
         <source>&amp;Duplicate Object</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplicar Objeto</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Object</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eliminar Objeto</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propiedades del Objeto...</translation>
     </message>
 </context>
 <context>
@@ -405,47 +409,47 @@
     <message>
         <location filename="../src/tiled/objectpropertiesdialog.ui" line="+26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulario</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Name:</source>
-        <translation type="unfinished">Nombre:</translation>
+        <translation>Nombre:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Type:</source>
-        <translation type="unfinished">Tipo:</translation>
+        <translation>Tipo:</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Posición</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished">X:</translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Y:</source>
-        <translation type="unfinished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>Size</source>
-        <translation type="unfinished">Tamaño</translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Width:</source>
-        <translation type="unfinished">Ancho:</translation>
+        <translation>Ancho:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Height:</source>
-        <translation type="unfinished">Alto:</translation>
+        <translation>Alto:</translation>
     </message>
 </context>
 <context>
@@ -552,7 +556,7 @@
     <message>
         <location line="+5"/>
         <source>CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -673,7 +677,7 @@
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dibujar guía para patrones</translation>
     </message>
 </context>
 <context>
@@ -773,29 +777,29 @@
         <location line="-338"/>
         <location line="+835"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished">&amp;Capas</translation>
+        <translation>&amp;Capa</translation>
     </message>
     <message>
         <location line="-611"/>
         <source>Error Opening Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Error Abriendo Mapa</translation>
     </message>
     <message>
         <location line="+33"/>
         <location line="+125"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos los ficheros (*)</translation>
     </message>
     <message>
         <location line="-80"/>
         <location line="+126"/>
         <source>Error Saving Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Error Guardando Mapa</translation>
     </message>
     <message>
         <location line="-95"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished"></translation>
+        <translation>untitled.tmx</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -810,17 +814,17 @@
     <message>
         <location line="+40"/>
         <source>Export As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar como...</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Unknown File Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato de fichero desconocido</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The given filename does not have any known file extension.</source>
-        <translation type="unfinished"></translation>
+        <translation>El nombre de fichero dado tiene una extensión desconocida.</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -830,22 +834,22 @@
     <message>
         <location line="+34"/>
         <source>Add Tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir conjunto de Patrones</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Add External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir conjunto de Patrones Externo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheros de conjunto de patrones de Tiled (*.tsx)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Error Leyendo conjunto de Patrones</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -899,12 +903,12 @@
     <message>
         <location line="+20"/>
         <source>Tile Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de patrones %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Object Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de Objetos %1</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -922,67 +926,67 @@
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished">Seleccionar &amp;Todo</translation>
+        <translation>Seleccionar &amp;Todo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;None</source>
-        <translation type="unfinished">Seleccionar &amp;Nada</translation>
+        <translation>Seleccionar &amp;Nada</translation>
     </message>
     <message>
         <location line="-56"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Add &amp;Tile Layer...</source>
-        <translation type="unfinished">Añadir Capa de &amp;Patrones...</translation>
+        <translation>Añadir Capa de &amp;Patrones...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer...</source>
-        <translation type="unfinished">Añadir Capa de &amp;Objetos...</translation>
+        <translation>Añadir Capa de &amp;Objetos...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Duplicate Layer</source>
-        <translation type="unfinished">&amp;Duplicar Capa</translation>
+        <translation>&amp;Duplicar Capa</translation>
     </message>
     <message>
         <location line="-54"/>
         <source>Ctrl+Shift+D</source>
-        <translation type="unfinished">Ctrl+Shift+D</translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>&amp;Remove Layer</source>
-        <translation type="unfinished">&amp;Eliminar Capa</translation>
+        <translation>&amp;Eliminar Capa</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Layer &amp;Up</source>
-        <translation type="unfinished">&amp;Subir Capa</translation>
+        <translation>&amp;Subir Capa</translation>
     </message>
     <message>
         <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
-        <translation type="unfinished">Ctrl+Shift+Up</translation>
+        <translation>Ctrl+Shift+Up</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Move Layer Dow&amp;n</source>
-        <translation type="unfinished">&amp;Bajar Capa</translation>
+        <translation>&amp;Bajar Capa</translation>
     </message>
     <message>
         <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
-        <translation type="unfinished">Ctrl+Shift+Down</translation>
+        <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Layer &amp;Properties...</source>
-        <translation type="unfinished">&amp;Propiedades de la Capa...</translation>
+        <translation>&amp;Propiedades de la Capa...</translation>
     </message>
 </context>
 <context>
@@ -994,7 +998,7 @@
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+81"/>
         <source>Tile Layer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de Patrones 1</translation>
     </message>
 </context>
 <context>
@@ -1003,17 +1007,17 @@
         <location filename="../src/tiled/newtilesetdialog.cpp" line="+115"/>
         <location line="+7"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló al cargar la imagen de conjunto de patrones &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontraron patrones en la imagen del conjunto de patrones usando las dimensiones, margen y espaciado de patrones suministradas!</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1156,17 +1160,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+236"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina conjunto de Patrones</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡El conjunto de patrones &quot;%1&quot; está siendo todavía utilizado por el mapa!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Eliminar este conjunto de patrones y todas las referencias a patrones de dicho conjunto?</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -1183,17 +1187,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+207"/>
         <source>Tile &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propiedades del Patrón...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Export Tileset As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportar conjuntos de Patrones como...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importar conjuntos de Patrones</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1203,12 +1207,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+19"/>
         <source>Export Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar conjuntos de Patrones</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheros de conjuntos de patrones de Tiled (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -1233,7 +1237,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Vacía&gt;</translation>
     </message>
 </context>
 <context>
@@ -1241,22 +1245,26 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Encontradas múltiples capas de colisiones!</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>No collision layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontró capa de colisiones!</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para escritura.</translation>
+        <translation>No se pudo abrir el archivo para escritura.</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheros de colisiones TMW-eAthena (*.wlk)</translation>
+    </message>
+    <message>
+        <source>TMW-eAthena collision files 2 (*.wlk2)</source>
+        <translation type="obsolete">Ficheros de colisiones TMW-eAthena 2 (*.wlk2)</translation>
     </message>
 </context>
 <context>
@@ -1278,7 +1286,7 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/tmxmapreader.h" line="+55"/>
         <location filename="../src/tiled/tmxmapwriter.h" line="+67"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Archivos de mapas de Tiled (*.tmx)</translation>
+        <translation>Archivos de mapas de Tiled (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -1371,7 +1379,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+12"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de interpretar patrón en (%1,%2) en la capa &apos;%3&apos;</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1485,27 +1493,27 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
         <source>Add Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir conjunto de Patrones</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.h" line="+78"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar conjunto de Patrones</translation>
     </message>
     <message>
         <location filename="../src/tiled/movetileset.cpp" line="+31"/>
         <source>Move Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover conjunto de Patrones</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="-147"/>
         <source>Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar conjunto de Patrones</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Export Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar conjunto de Patrones</translation>
     </message>
 </context>
 <context>
