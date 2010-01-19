@@ -268,12 +268,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Voorkeuren...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Clear Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Geschiedenis Wissen</translation>
     </message>
 </context>
 <context>
@@ -326,22 +326,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+78"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Map</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Orientation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientatie:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Orthogonal</source>
-        <translation type="unfinished"></translation>
+        <translation>Orthogonaal</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Isometric</source>
-        <translation type="unfinished"></translation>
+        <translation>Isometrisch</translation>
     </message>
 </context>
 <context>
@@ -471,62 +471,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/preferencesdialog.ui" line="+14"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorkeuren</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Saving and Loading</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan en Laden</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Store tile layer data as:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tilelagen opslaan als:</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>XML</source>
-        <translation type="unfinished"></translation>
+        <translation>XML</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (uncompressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (ongecomprimeerd)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (gzip compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (gzip gecomprimeerd)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (zlib compressed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Base64 (zlib gecomprimeerd)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset &amp;afbeeldingen herladen als ze veranderen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wordt standaard weggelaten omdat een externe DTD problemen veroorzaakt met sommige XML parsers.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Include &amp;DTD reference in saved maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik een &amp;DTD referentie bij het opslaan</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interface</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Taal:</translation>
     </message>
 </context>
 <context>
@@ -618,12 +618,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/bucketfilltool.cpp" line="+36"/>
         <source>Bucket Fill Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Vullen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
 </context>
 <context>
@@ -809,12 +809,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/objectgrouppropertiesdialog.cpp" line="+43"/>
         <source>Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objectlaag</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleur:</translation>
     </message>
 </context>
 <context>
@@ -846,7 +846,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/preferencesdialog.cpp" line="+38"/>
         <location line="+32"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard</translation>
     </message>
 </context>
 <context>
@@ -859,7 +859,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+31"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag</translation>
     </message>
 </context>
 <context>
@@ -957,7 +957,7 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location filename="../src/undodock.cpp" line="+64"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Geschiedenis</translation>
     </message>
 </context>
 <context>
@@ -1165,12 +1165,12 @@ Regel %1, colom %2</translation>
         <location filename="../src/changeobjectgroupproperties.cpp" line="+37"/>
         <location filename="../src/objectgrouppropertiesdialog.cpp" line="+21"/>
         <source>Change Object Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenschappen Van Objectlaag Veranderen</translation>
     </message>
     <message>
         <location filename="../src/filltiles.cpp" line="+36"/>
         <source>Fill Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Vullen</translation>
     </message>
 </context>
 <context>
