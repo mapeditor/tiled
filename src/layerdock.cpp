@@ -28,6 +28,7 @@
 #include "propertiesdialog.h"
 #include "objectgrouppropertiesdialog.h"
 #include "objectgroup.h"
+#include "utils.h"
 
 #include <QBoxLayout>
 #include <QContextMenuEvent>
@@ -216,6 +217,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QAction *layerProperties = menu.addAction(propIcon, tr("Properties..."));
+
+    Utils::setThemeIcon(layerProperties, "document-properties");
 
     if (menu.exec(event->globalPos()) == layerProperties) {
         Layer *layer = mMapDocument->map()->layerAt(layerIndex);

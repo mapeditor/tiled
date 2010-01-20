@@ -24,6 +24,9 @@
 
 #include <QString>
 
+class QAction;
+class QMenu;
+
 namespace Tiled {
 namespace Utils {
 
@@ -36,6 +39,22 @@ QString readableImageFormatsFilter();
  * Returns a file dialog filter that matches all writable image formats.
  */
 QString writableImageFormatsFilter();
+
+/**
+ * Looks up the icon with the specified \a name from the system theme and set
+ * it on the \a action when found.
+ *
+ * Does nothing for Qt < 4.6 or when the platform is not Linux.
+ */
+void setThemeIcon(QAction *action, const char *name);
+
+/**
+ * Looks up the icon with the specified \a name from the system theme and set
+ * it on the \a menu when found.
+ *
+ * Does nothing for Qt < 4.6 or when the platform is not Linux.
+ */
+void setThemeIcon(QMenu *menu, const char *name);
 
 } // namespace Utils
 } // namespace Tiled

@@ -32,6 +32,7 @@
 #include "objectgroupitem.h"
 #include "objectpropertiesdialog.h"
 #include "resizemapobject.h"
+#include "utils.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
@@ -265,6 +266,9 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QAction *removeAction = menu.addAction(delIcon, tr("&Remove"));
     menu.addSeparator();
     QAction *propertiesAction = menu.addAction(propIcon, tr("&Properties..."));
+
+    Utils::setThemeIcon(removeAction, "edit-delete");
+    Utils::setThemeIcon(propertiesAction, "document-properties");
 
     QAction *selectedAction = menu.exec(event->screenPos());
 

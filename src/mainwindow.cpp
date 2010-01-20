@@ -55,6 +55,7 @@
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 #include "undodock.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QCloseEvent>
@@ -70,30 +71,7 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-#if QT_VERSION >= 0x040600
-/**
- * Looks up the icon with the specified \a name from the system theme and set
- * it on the \a action when found.
- */
-static void setThemeIcon(QAction *action, const char *name)
-{
-    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
-    if (!themeIcon.isNull())
-        action->setIcon(themeIcon);
-}
-
-/**
- * Looks up the icon with the specified \a name from the system theme and set
- * it on the \a menu when found.
- */
-static void setThemeIcon(QMenu *menu, const char *name)
-{
-    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
-    if (!themeIcon.isNull())
-        menu->setIcon(themeIcon);
-}
-#endif
+using namespace Tiled::Utils;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
@@ -223,9 +201,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     }
     menu->insertSeparator(mUi->actionClearRecentFiles);
 
-    // Qt 4.6 supports requesting icons from the system theme, at least on
-    // desktops where there is a system theme (ie. Linux).
-#if QT_VERSION >= 0x040600
     setThemeIcon(mUi->actionNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
     setThemeIcon(mUi->menuRecentFiles, "document-open-recent");
@@ -250,7 +225,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionMoveLayerDown, "go-down");
     setThemeIcon(mUi->actionLayerProperties, "document-properties");
     setThemeIcon(mUi->actionAbout, "help-about");
-#endif
 
     mScene = new MapScene(this);
     mUi->mapView->setScene(mScene);
