@@ -88,6 +88,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
 
+    QIcon tiledIcon(QLatin1String(":images/tiled-icon-16.png"));
+    tiledIcon.addFile(QLatin1String(":images/tiled-icon-32.png"));
+    setWindowIcon(tiledIcon);
+
     // Add larger icon versions for actions used in the tool bar
     QIcon newIcon = mUi->actionNew->icon();
     QIcon openIcon = mUi->actionOpen->icon();
