@@ -24,7 +24,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
-#include "tileselectionmodel.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -41,8 +40,7 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 #endif
 
-    TileSelectionModel *selectionModel = mMapDocument->selectionModel();
-    connect(selectionModel, SIGNAL(selectionChanged(QRegion,QRegion)),
+    connect(mMapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
             this, SLOT(selectionChanged(QRegion,QRegion)));
 
     updateBoundingRect();
@@ -57,7 +55,7 @@ void TileSelectionItem::paint(QPainter *painter,
                               const QStyleOptionGraphicsItem *option,
                               QWidget *)
 {
-    const QRegion selection = mMapDocument->selectionModel()->selection();
+    const QRegion &selection = mMapDocument->tileSelection();
     QColor highlight = QApplication::palette().highlight().color();
     highlight.setAlpha(128);
 
@@ -79,6 +77,6 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
 
 void TileSelectionItem::updateBoundingRect()
 {
-    const QRect b = mMapDocument->selectionModel()->selection().boundingRect();
+    const QRect b = mMapDocument->tileSelection().boundingRect();
     mBoundingRect = mMapDocument->renderer()->boundingRect(b);
 }

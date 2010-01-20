@@ -47,7 +47,6 @@
 #include "selectiontool.h"
 #include "stampbrush.h"
 #include "tilelayer.h"
-#include "tileselectionmodel.h"
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
@@ -474,7 +473,7 @@ void MainWindow::cut()
     if (!tileLayer)
         return;
 
-    const QRegion &selection = mMapDocument->selectionModel()->selection();
+    const QRegion &selection = mMapDocument->tileSelection();
     if (selection.isEmpty())
         return;
 
@@ -670,7 +669,7 @@ void MainWindow::updateActions()
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayer = mMapDocument->currentLayer();
-        selection = mMapDocument->selectionModel()->selection();
+        selection = mMapDocument->tileSelection();
 
         if (currentLayer != -1) {
             Layer *layer = mMapDocument->map()->layerAt(currentLayer);
@@ -730,7 +729,7 @@ void MainWindow::selectNone()
     if (!mMapDocument)
         return;
 
-    if (mMapDocument->selectionModel()->selection().isEmpty())
+    if (mMapDocument->tileSelection().isEmpty())
         return;
 
     QUndoCommand *command = new ChangeSelection(mMapDocument, QRegion());
@@ -883,8 +882,7 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mapDocument, SIGNAL(currentLayerChanged(int)),
                 SLOT(updateActions()));
-        connect(mapDocument->selectionModel(),
-                SIGNAL(selectionChanged(QRegion,QRegion)),
+        connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
                 SLOT(updateActions()));
 
         QUndoStack *undoStack = mMapDocument->undoStack();

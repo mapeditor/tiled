@@ -23,10 +23,10 @@
 #define MAPDOCUMENT_H
 
 #include <QObject>
+#include <QRegion>
 
 class QPoint;
 class QRect;
-class QRegion;
 class QSize;
 class QUndoStack;
 
@@ -121,11 +121,6 @@ public:
     LayerModel *layerModel() const { return mLayerModel; }
 
     /**
-     * Returns the selection model.
-     */
-    TileSelectionModel *selectionModel() const { return mSelectionModel; }
-
-    /**
      * Returns the map renderer.
      */
     MapRenderer *renderer() const { return mRenderer; }
@@ -135,6 +130,16 @@ public:
      * commands on that modify the map.
      */
     QUndoStack *undoStack() const { return mUndoStack; }
+
+    /**
+     * Returns the selected area of tiles.
+     */
+    const QRegion &tileSelection() const { return mTileSelection; }
+
+    /**
+     * Sets the selected area of tiles.
+     */
+    void setTileSelection(const QRegion &selection);
 
     void emitMapChanged();
 
@@ -158,6 +163,13 @@ public:
     { emitObjectsChanged(QList<MapObject*>() << object); }
 
 signals:
+    /**
+     * Emitted when the selected tile region changes. Sends the currently
+     * selected region and the previously selected region.
+     */
+    void tileSelectionChanged(const QRegion &newSelection,
+                              const QRegion &oldSelection);
+
     /**
      * Emitted when the map size or its tile size changes.
      */
@@ -194,7 +206,7 @@ private slots:
 private:
     Map *mMap;
     LayerModel *mLayerModel;
-    TileSelectionModel *mSelectionModel;
+    QRegion mTileSelection;
     MapRenderer *mRenderer;
     int mCurrentLayer;
     QUndoStack *mUndoStack;

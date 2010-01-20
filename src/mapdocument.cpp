@@ -32,7 +32,6 @@
 #include "resizelayer.h"
 #include "resizemap.h"
 #include "tilelayer.h"
-#include "tileselectionmodel.h"
 #include "tilesetmanager.h"
 
 #include <QRect>
@@ -44,7 +43,6 @@ using namespace Tiled::Internal;
 MapDocument::MapDocument(Map *map):
     mMap(map),
     mLayerModel(new LayerModel(this)),
-    mSelectionModel(new TileSelectionModel(this, this)),
     mUndoStack(new QUndoStack(this))
 {
     switch (map->orientation()) {
@@ -217,6 +215,15 @@ void MapDocument::addTileset(Tileset *tileset)
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
     emit tilesetAdded(tileset);
+}
+
+void MapDocument::setTileSelection(const QRegion &selection)
+{
+    if (mTileSelection != selection) {
+        const QRegion oldTileSelection = mTileSelection;
+        mTileSelection = selection;
+        emit tileSelectionChanged(mTileSelection, oldTileSelection);
+    }
 }
 
 /**

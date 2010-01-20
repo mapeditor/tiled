@@ -27,7 +27,6 @@
 #include "tmxmapwriter.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileselectionmodel.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -84,7 +83,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     if (!tileLayer)
         return;
 
-    const QRegion &selection = mapDocument->selectionModel()->selection();
+    const QRegion &selection = mapDocument->tileSelection();
     if (selection.isEmpty())
         return;
 

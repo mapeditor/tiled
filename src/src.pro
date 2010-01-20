@@ -35,7 +35,6 @@ SOURCES += aboutdialog.cpp \
     resizehelper.cpp \
     resizedialog.cpp \
     tileselectionitem.cpp \
-    tileselectionmodel.cpp \
     tileset.cpp \
     tilesetdock.cpp \
     tilesetmanager.cpp \
@@ -109,7 +108,6 @@ HEADERS += aboutdialog.h \
     resizehelper.h \
     tile.h \
     tileselectionitem.h \
-    tileselectionmodel.h \
     tileset.h \
     tilesetdock.h \
     tilesetmanager.h \

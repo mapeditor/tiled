@@ -22,7 +22,6 @@
 #include "tilepainter.h"
 
 #include "mapdocument.h"
-#include "tileselectionmodel.h"
 #include "tilelayer.h"
 #include "map.h"
 
@@ -48,7 +47,7 @@ Tile *TilePainter::tileAt(int x, int y) const
 
 void TilePainter::setTile(int x, int y, Tile *tile)
 {
-    const QRegion selection = mMapDocument->selectionModel()->selection();
+    const QRegion &selection = mMapDocument->tileSelection();
     if (!(selection.isEmpty() || selection.contains(QPoint(x, y))))
         return;
 
@@ -266,7 +265,7 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
 
 bool TilePainter::isDrawable(int x, int y) const
 {
-    const QRegion selection = mMapDocument->selectionModel()->selection();
+    const QRegion &selection = mMapDocument->tileSelection();
     if (!(selection.isEmpty() || selection.contains(QPoint(x, y))))
         return false;
 
@@ -284,7 +283,7 @@ QRegion TilePainter::paintableRegion(const QRegion &region) const
     const QRegion bounds = QRegion(mTileLayer->bounds());
     QRegion intersection = bounds.intersected(region);
 
-    const QRegion selection = mMapDocument->selectionModel()->selection();
+    const QRegion &selection = mMapDocument->tileSelection();
     if (!selection.isEmpty())
         intersection &= selection;
 

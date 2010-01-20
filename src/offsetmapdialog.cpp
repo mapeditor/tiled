@@ -24,7 +24,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
-#include "tileselectionmodel.h"
 #include "ui_offsetmapdialog.h"
 
 using namespace Tiled::Internal;
@@ -36,7 +35,7 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     mUi = new Ui::OffsetMapDialog;
     mUi->setupUi(this);
 
-    if (mMapDocument->selectionModel()->selection().isEmpty())
+    if (mMapDocument->tileSelection().isEmpty())
         disableBoundsSelectionCurrentArea();
     else
         mUi->boundsSelection->setCurrentIndex(1);
@@ -79,7 +78,7 @@ QRect OffsetMapDialog::affectedBoundingRect() const
         boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
         break;
     case CurrentSelectionArea: {
-        const QRegion selection = mMapDocument->selectionModel()->selection();
+        const QRegion &selection = mMapDocument->tileSelection();
 
         Q_ASSERT_X(!selection.isEmpty(),
                    "OffsetMapDialog::affectedBoundingRect()",

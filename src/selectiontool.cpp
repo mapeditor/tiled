@@ -27,7 +27,6 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "tilelayer.h"
-#include "tileselectionmodel.h"
 
 #include <QGraphicsSceneMouseEvent>
 
@@ -93,8 +92,7 @@ void SelectionTool::mouseReleased(const QPointF &,
         mSelecting = false;
 
         MapDocument *mapDocument = mapScene()->mapDocument();
-        TileSelectionModel *selectionModel = mapDocument->selectionModel();
-        QRegion selection = selectionModel->selection();
+        QRegion selection = mapDocument->tileSelection();
         const QRect area = selectedArea();
 
         switch (mSelectionMode) {
@@ -104,7 +102,7 @@ void SelectionTool::mouseReleased(const QPointF &,
         case Intersect: selection &= area; break;
         }
 
-        if (selection != selectionModel->selection()) {
+        if (selection != mapDocument->tileSelection()) {
             QUndoCommand *cmd = new ChangeSelection(mapDocument, selection);
             mapDocument->undoStack()->push(cmd);
         }

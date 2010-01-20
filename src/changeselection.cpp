@@ -22,7 +22,6 @@
 #include "changeselection.h"
 
 #include "mapdocument.h"
-#include "tileselectionmodel.h"
 
 #include <QCoreApplication>
 
@@ -49,9 +48,7 @@ void ChangeSelection::redo()
 
 void ChangeSelection::swapSelection()
 {
-    TileSelectionModel *selectionModel = mMapDocument->selectionModel();
-
-    const QRegion oldSelection = selectionModel->selection();
-    selectionModel->setSelection(mSelection);
+    const QRegion oldSelection = mMapDocument->tileSelection();
+    mMapDocument->setTileSelection(mSelection);
     mSelection = oldSelection;
 }
