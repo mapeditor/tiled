@@ -90,6 +90,12 @@ void StampBrush::mouseReleased(const QPointF &, Qt::MouseButton button)
         endCapture();
 }
 
+void StampBrush::languageChanged()
+{
+    setName(tr("Stamp Brush"));
+    setShortcut(QKeySequence(tr("B")));
+}
+
 void StampBrush::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)

@@ -83,6 +83,7 @@ signals:
 
 private slots:
     void actionTriggered(QAction *action);
+    void languageChanged();
 
 private:
     Q_DISABLE_COPY(ToolManager)

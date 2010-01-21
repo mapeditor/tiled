@@ -40,6 +40,8 @@ public:
                       Qt::KeyboardModifiers modifiers);
     void mouseReleased(const QPointF &pos, Qt::MouseButton button);
 
+    void languageChanged();
+
 protected:
     void updateStatusInfo();
 

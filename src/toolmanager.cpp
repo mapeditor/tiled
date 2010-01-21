@@ -25,10 +25,44 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QEvent>
 #include <QToolBar>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+namespace {
+
+/**
+ * A tool bar that emits a signal when the application language changes.
+ */
+class ToolBar : public QToolBar
+{
+    Q_OBJECT
+
+public:
+    ToolBar(QWidget *parent = 0)
+        : QToolBar(parent)
+    {}
+
+signals:
+    void languageChanged();
+
+protected:
+    void changeEvent(QEvent *event)
+    {
+        QToolBar::changeEvent(event);
+        switch (event->type()) {
+        case QEvent::LanguageChange:
+            emit languageChanged();
+            break;
+        default:
+            break;
+        }
+    }
+};
+
+} // anonymous namespace
 
 ToolManager *ToolManager::mInstance = 0;
 
@@ -46,12 +80,14 @@ void ToolManager::deleteInstance()
 }
 
 ToolManager::ToolManager()
-    : mToolBar(new QToolBar)
+    : mToolBar(new ToolBar)
     , mActionGroup(new QActionGroup(this))
     , mSelectedTool(0)
 {
     mToolBar->setObjectName(QLatin1String("toolsToolBar"));
     mToolBar->setWindowTitle(tr("Tools"));
+    connect(mToolBar, SIGNAL(languageChanged()),
+            this, SLOT(languageChanged()));
 
     mActionGroup->setExclusive(true);
     connect(mActionGroup, SIGNAL(triggered(QAction*)),
@@ -97,6 +133,21 @@ void ToolManager::actionTriggered(QAction *action)
     setSelectedTool(action->data().value<AbstractTool*>());
 }
 
+void ToolManager::languageChanged()
+{
+    // Allow the tools to adapt to the new language
+    foreach (QAction *action, mActionGroup->actions()) {
+        AbstractTool *tool = action->data().value<AbstractTool*>();
+        tool->languageChanged();
+
+        // Update the text, shortcut and tooltip of the action
+        action->setText(tool->name());
+        action->setShortcut(tool->shortcut());
+        action->setToolTip(QString(QLatin1String("%1 (%2)")).arg(
+                tool->name(), tool->shortcut().toString()));
+    }
+}
+
 void ToolManager::setSelectedTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)
@@ -114,3 +165,5 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
                 this, SIGNAL(statusInfoChanged(QString)));
     }
 }
+
+#include "toolmanager.moc"

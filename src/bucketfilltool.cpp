@@ -128,6 +128,12 @@ void BucketFillTool::mouseReleased(const QPointF &pos, Qt::MouseButton button)
     Q_UNUSED(button);
 }
 
+void BucketFillTool::languageChanged()
+{
+    setName(tr("Bucket Fill Tool"));
+    setShortcut(QKeySequence(tr("F")));
+}
+
 void BucketFillTool::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)

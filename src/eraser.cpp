@@ -66,6 +66,12 @@ void Eraser::mouseReleased(const QPointF &, Qt::MouseButton button)
         mErasing = false;
 }
 
+void Eraser::languageChanged()
+{
+    setName(tr("Eraser"));
+    setShortcut(QKeySequence(tr("E")));
+}
+
 void Eraser::doErase(bool mergeable)
 {
     MapDocument *mapDocument = mapScene()->mapDocument();

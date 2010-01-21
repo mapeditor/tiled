@@ -112,6 +112,12 @@ void SelectionTool::mouseReleased(const QPointF &,
     }
 }
 
+void SelectionTool::languageChanged()
+{
+    setName(tr("Rectangular Select"));
+    setShortcut(QKeySequence(tr("R")));
+}
+
 QRect SelectionTool::selectedArea() const
 {
     const QPoint tilePos = tilePosition();

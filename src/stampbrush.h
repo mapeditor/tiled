@@ -50,6 +50,8 @@ public:
                       Qt::KeyboardModifiers modifiers);
     void mouseReleased(const QPointF &pos, Qt::MouseButton button);
 
+    void languageChanged();
+
     /**
      * Sets the map document on which this brush operates. The correct map
      * document needs to be set before calling setStamp().
