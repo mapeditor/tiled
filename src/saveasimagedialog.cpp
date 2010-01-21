@@ -25,6 +25,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "tilelayer.h"
 #include "utils.h"
 
@@ -110,6 +111,7 @@ void SaveAsImageDialog::accept()
         mapSize *= mCurrentScale;
 
     QImage image(mapSize, QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
     QPainter painter(&image);
 
     if (useCurrentScale && mCurrentScale != qreal(1)) {
@@ -120,9 +122,22 @@ void SaveAsImageDialog::accept()
     }
 
     foreach (const Layer *layer, mMapDocument->map()->layers()) {
-        if (const TileLayer *tl = dynamic_cast<const TileLayer*>(layer)) {
-            if (!visibleLayersOnly || tl->isVisible())
-                renderer->drawTileLayer(&painter, tl);
+        if (visibleLayersOnly && !layer->isVisible())
+            continue;
+
+        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
+        const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
+
+        if (tileLayer) {
+            renderer->drawTileLayer(&painter, tileLayer);
+        } else if (objGroup) {
+            QColor color = objGroup->color();
+            if (!color.isValid())
+                color = Qt::gray;
+
+            // TODO: Support colors for different object types
+            foreach (const MapObject *object, objGroup->objects())
+                renderer->drawMapObject(&painter, object, color);
         }
     }
 

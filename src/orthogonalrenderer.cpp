@@ -166,6 +166,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                        const MapObject *object,
                                        const QColor &color) const
 {
+    painter->save();
+
     QColor brushColor = color;
     brushColor.setAlpha(50);
     QBrush brush(brushColor);
@@ -218,6 +220,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                  10.0, 10.0);
         painter->drawText(QPoint(0, -5), name);
     }
+
+    painter->restore();
 }
 
 QPointF OrthogonalRenderer::pixelToTileCoords(qreal x, qreal y) const

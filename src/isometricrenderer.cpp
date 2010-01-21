@@ -201,6 +201,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
                                       const MapObject *object,
                                       const QColor &color) const
 {
+    painter->save();
+
     QColor brushColor = color;
     brushColor.setAlpha(50);
     QBrush brush(brushColor);
@@ -228,6 +230,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     painter->setBrush(brush);
     polygon.translate(0, -1);
     painter->drawPolygon(polygon);
+
+    painter->restore();
 }
 
 QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
