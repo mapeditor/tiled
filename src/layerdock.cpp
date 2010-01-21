@@ -68,6 +68,7 @@ LayerDock::LayerDock(QWidget *parent):
 
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(setLayerOpacity(int)));
+    updateOpacitySlider();
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)

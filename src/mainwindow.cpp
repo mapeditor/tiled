@@ -114,8 +114,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     UndoDock *undoDock = new UndoDock(mUndoGroup, this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-    addDockWidget(Qt::BottomDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, undoDock);
+    tabifyDockWidget(undoDock, mLayerDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
 
     updateZoomLabel(mUi->mapView->zoomable()->scale());
     connect(mUi->mapView->zoomable(), SIGNAL(scaleChanged(qreal)),
@@ -690,6 +691,7 @@ void MainWindow::updateActions()
     mUi->actionSelectNone->setEnabled(!selection.isEmpty());
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
+    mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
     mUi->actionAddTileLayer->setEnabled(map);
     mUi->actionAddObjectLayer->setEnabled(map);
