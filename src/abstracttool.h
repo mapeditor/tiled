@@ -29,7 +29,6 @@
 #include <QString>
 
 class QEvent;
-class QGraphicsSceneMouseEvent;
 
 namespace Tiled {
 namespace Internal {

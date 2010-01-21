@@ -28,8 +28,6 @@
 #include "mapscene.h"
 #include "tilelayer.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 using namespace Tiled;
 using namespace Tiled::Internal;
 
