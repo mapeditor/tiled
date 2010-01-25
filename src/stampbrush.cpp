@@ -161,7 +161,10 @@ void StampBrush::endCapture()
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());
-        setStamp(tileLayer->copy(captured));
+        TileLayer *capture = tileLayer->copy(captured);
+        emit currentTilesChanged(capture);
+        // A copy will have been created, so delete this version
+        delete capture;
     } else {
         updatePosition();
     }

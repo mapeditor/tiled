@@ -64,6 +64,14 @@ public:
      */
     void setStamp(TileLayer *stamp);
 
+signals:
+    /**
+     * Emitted when the currently selected tiles changed. The stamp brush emits
+     * this signal instead of setting its stamp directly so that the fill tool
+     * also gets the new stamp.
+     */
+    void currentTilesChanged(const TileLayer *tiles);
+
 private:
     void beginPaint();
     void endPaint();

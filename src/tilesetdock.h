@@ -59,7 +59,7 @@ public:
 
 signals:
     /**
-     * Emitted when the currently selected tile changed.
+     * Emitted when the currently selected tiles changed.
      */
     void currentTilesChanged(const TileLayer *tiles);
 

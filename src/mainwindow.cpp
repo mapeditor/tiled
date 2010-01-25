@@ -238,11 +238,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
             mScene, SLOT(setGridVisible(bool)));
 
-    connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
-
     mStampBrush = new StampBrush(this);
     mBucketFillTool = new BucketFillTool(this);
+
+    connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
+            this, SLOT(setStampBrush(const TileLayer*)));
+    connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
+            this, SLOT(setStampBrush(const TileLayer*)));
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
