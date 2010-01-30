@@ -267,7 +267,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MapObjectItem</name>
     <message>
-        <location filename="../src/mapobjectitem.cpp" line="+253"/>
+        <location filename="../src/mapobjectitem.cpp" line="+265"/>
         <source>&amp;Duplicate</source>
         <translation>&amp;Duplicar</translation>
     </message>
@@ -611,12 +611,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::BucketFillTool</name>
     <message>
-        <location filename="../src/bucketfilltool.cpp" line="+36"/>
+        <location filename="../src/bucketfilltool.cpp" line="+35"/>
+        <location line="+98"/>
         <source>Bucket Fill Tool</source>
         <translation>Herramienta de Rellenado</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-95"/>
+        <location line="+96"/>
         <source>F</source>
         <translation>R</translation>
     </message>
@@ -624,12 +626,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::Eraser</name>
     <message>
-        <location filename="../src/eraser.cpp" line="+37"/>
+        <location filename="../src/eraser.cpp" line="+35"/>
+        <location line="+34"/>
         <source>Eraser</source>
         <translation>Goma</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-31"/>
+        <location line="+32"/>
         <source>E</source>
         <translation>G</translation>
     </message>
@@ -637,7 +641,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/layerdock.cpp" line="+142"/>
+        <location filename="../src/layerdock.cpp" line="+144"/>
         <source>Layers</source>
         <translation>Capas</translation>
     </message>
@@ -670,7 +674,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+127"/>
+        <location filename="../src/mainwindow.cpp" line="+108"/>
         <source>Undo</source>
         <translation>Deshacer</translation>
     </message>
@@ -680,7 +684,7 @@ p, li { white-space: pre-wrap; }
         <translation>Rehacer</translation>
     </message>
     <message>
-        <location line="+236"/>
+        <location line="+235"/>
         <source>Error while opening map</source>
         <translation>Error en la apertura del mapa</translation>
     </message>
@@ -721,7 +725,7 @@ p, li { white-space: pre-wrap; }
         <translation>Mapa</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+125"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -751,7 +755,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+105"/>
-        <location line="+42"/>
+        <location line="+41"/>
         <source>%1[*] - Tiled</source>
         <translation>%1[*] - Tiled</translation>
     </message>
@@ -759,7 +763,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/mapdocument.cpp" line="+110"/>
+        <location filename="../src/mapdocument.cpp" line="+108"/>
         <source>Resize Map</source>
         <translation>Redimensionar Mapa</translation>
     </message>
@@ -875,7 +879,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::SaveAsImageDialog</name>
     <message>
-        <location filename="../src/saveasimagedialog.cpp" line="+92"/>
+        <location filename="../src/saveasimagedialog.cpp" line="+93"/>
         <source>Save as Image</source>
         <translation>Guardar como Imagen</translation>
     </message>
@@ -887,7 +891,7 @@ Do you want to replace it?</source>
 ¿Quiere reemplazarla?</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+61"/>
         <source>Image</source>
         <translation>Imagen</translation>
     </message>
@@ -895,17 +899,19 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::SelectionTool</name>
     <message>
-        <location filename="../src/selectiontool.cpp" line="+38"/>
+        <location filename="../src/selectiontool.cpp" line="+35"/>
+        <location line="+80"/>
         <source>Rectangular Select</source>
         <translation>Selección Rectangular</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-77"/>
+        <location line="+78"/>
         <source>R</source>
         <translation>S</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-55"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
         <translation>%1, %2 - Rectángulo: (%3 x %4)</translation>
     </message>
@@ -913,12 +919,14 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
-        <location filename="../src/stampbrush.cpp" line="+37"/>
+        <location filename="../src/stampbrush.cpp" line="+35"/>
+        <location line="+58"/>
         <source>Stamp Brush</source>
         <translation>Brocha de Estampar</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-55"/>
+        <location line="+56"/>
         <source>B</source>
         <translation>B</translation>
     </message>
@@ -932,9 +940,22 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::TilesetView</name>
+    <message>
+        <location filename="../src/tilesetview.cpp" line="+165"/>
+        <source>Properties...</source>
+        <translation>Propiedades...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Tile</source>
+        <translation>Patrón</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::ToolManager</name>
     <message>
-        <location filename="../src/toolmanager.cpp" line="+54"/>
+        <location filename="../src/toolmanager.cpp" line="+88"/>
         <source>Tools</source>
         <translation>Herramientas</translation>
     </message>
@@ -1104,7 +1125,7 @@ Línea %1, columna %2</translation>
         <translation>Cambiar %1 Propiedades</translation>
     </message>
     <message>
-        <location filename="../src/changeselection.cpp" line="+33"/>
+        <location filename="../src/changeselection.cpp" line="+32"/>
         <source>Change Selection</source>
         <translation>Cambiar Selección</translation>
     </message>
@@ -1167,7 +1188,7 @@ Línea %1, columna %2</translation>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/utils.cpp" line="+30"/>
+        <location filename="../src/utils.cpp" line="+33"/>
         <source>Image files</source>
         <translation>Ficheros de imagen</translation>
     </message>

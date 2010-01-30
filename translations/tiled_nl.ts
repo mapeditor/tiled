@@ -279,7 +279,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MapObjectItem</name>
     <message>
-        <location filename="../src/mapobjectitem.cpp" line="+253"/>
+        <location filename="../src/mapobjectitem.cpp" line="+265"/>
         <source>&amp;Duplicate</source>
         <translation>Ver&amp;dubbelen</translation>
     </message>
@@ -616,12 +616,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::BucketFillTool</name>
     <message>
-        <location filename="../src/bucketfilltool.cpp" line="+36"/>
+        <location filename="../src/bucketfilltool.cpp" line="+35"/>
+        <location line="+98"/>
         <source>Bucket Fill Tool</source>
         <translation>Vullen</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-95"/>
+        <location line="+96"/>
         <source>F</source>
         <translation>V</translation>
     </message>
@@ -629,12 +631,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::Eraser</name>
     <message>
-        <location filename="../src/eraser.cpp" line="+37"/>
+        <location filename="../src/eraser.cpp" line="+35"/>
+        <location line="+34"/>
         <source>Eraser</source>
         <translation>Wisser</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-31"/>
+        <location line="+32"/>
         <source>E</source>
         <translation>W</translation>
     </message>
@@ -642,7 +646,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/layerdock.cpp" line="+142"/>
+        <location filename="../src/layerdock.cpp" line="+144"/>
         <source>Layers</source>
         <translation>Lagen</translation>
     </message>
@@ -675,7 +679,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="+127"/>
+        <location filename="../src/mainwindow.cpp" line="+108"/>
         <source>Undo</source>
         <translation>Ongedaan Maken</translation>
     </message>
@@ -689,7 +693,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Geschiedenis Wissen</translation>
     </message>
     <message>
-        <location line="+236"/>
+        <location line="+235"/>
         <source>Error while opening map</source>
         <translation>Fout tijdens het openen van de map</translation>
     </message>
@@ -730,7 +734,7 @@ p, li { white-space: pre-wrap; }
         <translation>Map</translation>
     </message>
     <message>
-        <location line="+124"/>
+        <location line="+125"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -760,7 +764,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+105"/>
-        <location line="+42"/>
+        <location line="+41"/>
         <source>%1[*] - Tiled</source>
         <translation>%1[*] - Tiled</translation>
     </message>
@@ -768,7 +772,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/mapdocument.cpp" line="+110"/>
+        <location filename="../src/mapdocument.cpp" line="+108"/>
         <source>Resize Map</source>
         <translation>Map Formaat Veranderen</translation>
     </message>
@@ -884,7 +888,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Tiled::Internal::SaveAsImageDialog</name>
     <message>
-        <location filename="../src/saveasimagedialog.cpp" line="+92"/>
+        <location filename="../src/saveasimagedialog.cpp" line="+93"/>
         <source>Save as Image</source>
         <translation>Opslaan Als Afbeelding</translation>
     </message>
@@ -896,7 +900,7 @@ Do you want to replace it?</source>
 Moet het bestand vervangen worden?</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+61"/>
         <source>Image</source>
         <translation>Afbeelding</translation>
     </message>
@@ -904,17 +908,19 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::SelectionTool</name>
     <message>
-        <location filename="../src/selectiontool.cpp" line="+38"/>
+        <location filename="../src/selectiontool.cpp" line="+35"/>
+        <location line="+80"/>
         <source>Rectangular Select</source>
         <translation>Rechthoekig Selecteren</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-77"/>
+        <location line="+78"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-55"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
         <translation>%1, %2 - Rechthoek: (%3 x %4)</translation>
     </message>
@@ -922,12 +928,14 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
-        <location filename="../src/stampbrush.cpp" line="+37"/>
+        <location filename="../src/stampbrush.cpp" line="+35"/>
+        <location line="+58"/>
         <source>Stamp Brush</source>
         <translation>Stempel</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-55"/>
+        <location line="+56"/>
         <source>B</source>
         <translation>S</translation>
     </message>
@@ -941,9 +949,22 @@ Moet het bestand vervangen worden?</translation>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::TilesetView</name>
+    <message>
+        <location filename="../src/tilesetview.cpp" line="+165"/>
+        <source>Properties...</source>
+        <translation>Eigenschappen...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Tile</source>
+        <translation>Tile</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::ToolManager</name>
     <message>
-        <location filename="../src/toolmanager.cpp" line="+54"/>
+        <location filename="../src/toolmanager.cpp" line="+88"/>
         <source>Tools</source>
         <translation>Gereedschappen</translation>
     </message>
@@ -1107,7 +1128,7 @@ Regel %1, colom %2</translation>
         <translation>Eigenschappen Van %1 Veranderen</translation>
     </message>
     <message>
-        <location filename="../src/changeselection.cpp" line="+33"/>
+        <location filename="../src/changeselection.cpp" line="+32"/>
         <source>Change Selection</source>
         <translation>Selectie Veranderen</translation>
     </message>
@@ -1176,7 +1197,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/utils.cpp" line="+30"/>
+        <location filename="../src/utils.cpp" line="+33"/>
         <source>Image files</source>
         <translation>Afbeeldingen</translation>
     </message>
