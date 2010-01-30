@@ -106,7 +106,6 @@ TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this));
     setShowGrid(false);
-    setSelectionMode(QAbstractItemView::ContiguousSelection);
 
     QHeaderView *header = horizontalHeader();
     header->hide();

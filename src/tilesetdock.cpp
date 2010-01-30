@@ -140,9 +140,6 @@ void TilesetDock::selectionChanged()
     }
 
     // Create a tile layer from the current selection
-    // Precondition: the selection is contiguous
-    Q_ASSERT((maxX - minX + 1) * (maxY - minY + 1) == indexes.size());
-
     TileLayer *tileLayer = new TileLayer(QString(), 0, 0,
                                          maxX - minX + 1,
                                          maxY - minY + 1);
