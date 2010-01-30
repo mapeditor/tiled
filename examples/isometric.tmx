@@ -2,6 +2,11 @@
 <map version="1.0" orientation="isometric" width="40" height="40" tilewidth="64" tileheight="32">
  <tileset firstgid="1" name="Isometric Tileset" tilewidth="64" tileheight="128">
   <image source="isometric_tileset.png"/>
+  <tile id="0">
+   <properties>
+    <property name="obstacle" value="1"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Layer 0" width="40" height="40">
   <data encoding="base64" compression="gzip">

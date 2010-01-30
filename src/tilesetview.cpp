@@ -21,12 +21,17 @@
 
 #include "tilesetview.h"
 
+#include "mapdocument.h"
+#include "propertiesdialog.h"
+#include "tile.h"
 #include "tileset.h"
 #include "tilesetmodel.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
 #include <QHeaderView>
+#include <QMenu>
 #include <QPainter>
 #include <QWheelEvent>
 
@@ -92,9 +97,10 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 
 } // anonymous namespace
 
-TilesetView::TilesetView(QWidget *parent)
+TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
     : QTableView(parent)
     , mZoomable(new Zoomable(this))
+    , mMapDocument(mapDocument)
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -136,6 +142,37 @@ void TilesetView::wheelEvent(QWheelEvent *event)
     }
 
     QTableView::wheelEvent(event);
+}
+
+/**
+ * Allow changing tile properties through a context menu.
+ */
+void TilesetView::contextMenuEvent(QContextMenuEvent *event)
+{
+    const QModelIndex index = indexAt(event->pos());
+    const TilesetModel *m = static_cast<const TilesetModel*>(model());
+    Tile *tile = m->tileAt(index);
+    if (!tile)
+        return;
+
+    // Select this tile to make sure it is clear that only the properties of a
+    // single tile are being edited.
+    selectionModel()->setCurrentIndex(index,
+                                      QItemSelectionModel::SelectCurrent);
+
+    QMenu menu;
+    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QAction *tileProperties = menu.addAction(propIcon, tr("Properties..."));
+
+    Utils::setThemeIcon(tileProperties, "document-properties");
+
+    if (menu.exec(event->globalPos()) == tileProperties) {
+        PropertiesDialog propertiesDialog(tr("Tile"),
+                                          tile->properties(),
+                                          mMapDocument->undoStack(),
+                                          this);
+        propertiesDialog.exec();
+    }
 }
 
 void TilesetView::adjustScale()

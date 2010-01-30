@@ -1,4 +1,4 @@
-0.4.0 (?)
+0.4.0 (30 January 2010)
 * Added support for isometric maps
 * Added automatic reloading of tileset images when they change
 * Added Offset Map action that can shift a set of layers by a certain amount
@@ -7,6 +7,7 @@
 * Added support for choosing the tile layer data format used when saving
 * Added mouse wheel zooming support to the tileset view
 * Added an object display color attribute to object groups
+* Added ability to edit tile properties through a context menu
 * Made writing out a DTD reference optional and disabled it by default
 * Made translations functional
 * Updated Dutch, Portuguese, Spanish and German translations

@@ -27,6 +27,7 @@
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
 class Zoomable;
 
 /**
@@ -37,7 +38,7 @@ class TilesetView : public QTableView
     Q_OBJECT
 
 public:
-    TilesetView(QWidget *parent = 0);
+    TilesetView(MapDocument *mapDocument, QWidget *parent = 0);
 
     QSize sizeHint() const;
 
@@ -45,12 +46,14 @@ public:
 
 protected:
     void wheelEvent(QWheelEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
     void adjustScale();
 
 private:
     Zoomable *mZoomable;
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

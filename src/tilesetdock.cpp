@@ -107,7 +107,7 @@ void TilesetDock::changeEvent(QEvent *e)
 
 void TilesetDock::addTilesetView(Tileset *tileset)
 {
-    TilesetView *view = new TilesetView;
+    TilesetView *view = new TilesetView(mMapDocument);
     view->setModel(new TilesetModel(tileset, view));
 
     connect(view->selectionModel(),
