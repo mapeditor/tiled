@@ -102,6 +102,9 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));
     a.setApplicationVersion(QLatin1String("0.4.0"));
+#ifdef Q_WS_MAC
+    a.setAttribute(Qt::AA_DontShowIconsInMenus);
+#endif
 
     LanguageManager *languageManager = LanguageManager::instance();
     languageManager->installTranslators();
