@@ -176,3 +176,9 @@ mac {
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.5.sdk
 }
 win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
+contains(CONFIG, static) {
+    QTPLUGIN += \
+        qgif \
+        qjpeg \
+        qtiff
+}

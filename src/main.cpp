@@ -24,6 +24,13 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QtPlugin>
+
+#if !defined(QT_SHARED) && !defined(QT_DLL)
+Q_IMPORT_PLUGIN(qgif)
+Q_IMPORT_PLUGIN(qjpeg)
+Q_IMPORT_PLUGIN(qtiff)
+#endif
 
 using namespace Tiled::Internal;
 
