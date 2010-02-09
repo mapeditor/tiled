@@ -6,7 +6,7 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
 INCLUDEPATH += .
 QT += core \
     gui
-CONFIG += debug
+QMAKE_CXXFLAGS += -g
 MOC_DIR = .moc
 UI_DIR = .uic
 RCC_DIR = .rcc
@@ -170,5 +170,9 @@ RESOURCES += tiled.qrc
 mac {
     TARGET = Tiled
     LIBS += -lz
+    QMAKE_INFO_PLIST = Info.plist
+    ICON = images/tiled-icon-mac.icns
+    CONFIG += x86 ppc
+    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.5.sdk
 }
 win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
