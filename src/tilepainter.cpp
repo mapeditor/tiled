@@ -231,7 +231,7 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
                 {
                     // Do not add the above tile to the queue if it's
                     // x-adjacent tile was added.
-                    if(!lastAboveTile)
+                    if (!lastAboveTile)
                         fillPositions.append(aboveTile);
 
                     lastAboveTile = true;
@@ -249,7 +249,7 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
                 {
                     // Do not add the below tile to the queue if it's
                     // x-adjacent tile was added.
-                    if(!lastBelowTile)
+                    if (!lastBelowTile)
                         fillPositions.append(belowTile);
 
                     lastBelowTile = true;

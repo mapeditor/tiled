@@ -102,6 +102,9 @@ void PreferencesDialog::fromPreferences()
     case TmxMapWriter::Base64Zlib:
         formatIndex = 3;
         break;
+    case TmxMapWriter::CSV:
+        formatIndex = 4;
+        break;
     default:
         formatIndex = 2;
         break;
@@ -131,6 +134,8 @@ TmxMapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
         return TmxMapWriter::Base64;
     case 3:
         return TmxMapWriter::Base64Zlib;
+    case 4:
+        return TmxMapWriter::CSV;
     default:
         return TmxMapWriter::Base64Gzip;
     }

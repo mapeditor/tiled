@@ -207,25 +207,21 @@ void TmxMapWriter::writeTileLayer(QXmlStreamWriter &w,
     writeLayerAttributes(w, tileLayer);
     writeProperties(w, tileLayer->properties());
 
-    // TODO: Add support for a nicer non-binary map format, maybe like:
-    //
-    //        <data encoding="csv">
-    //         gid,gid,gid,gid,...
-    //         gid,gid,gid,gid,...
-    //         gid,gid,gid,gid,...
-    //        </data>
-
     QString encoding;
     QString compression;
 
-    if (mLayerDataFormat != XML) {
+    if (mLayerDataFormat == Base64 || mLayerDataFormat == Base64Gzip
+        || mLayerDataFormat == Base64Zlib) {
+
         encoding = QLatin1String("base64");
 
         if (mLayerDataFormat == Base64Gzip)
             compression = QLatin1String("gzip");
         else if (mLayerDataFormat == Base64Zlib)
             compression = QLatin1String("zlib");
-    }
+
+    } else if (mLayerDataFormat == CSV)
+        encoding = QLatin1String("csv");
 
     w.writeStartElement(QLatin1String("data"));
     if (!encoding.isEmpty())
@@ -242,6 +238,22 @@ void TmxMapWriter::writeTileLayer(QXmlStreamWriter &w,
                 w.writeEndElement();
             }
         }
+    } else if (mLayerDataFormat == CSV) {
+        QString tileData;
+
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            for (int x = 0; x < tileLayer->width(); ++x) {
+                const int gid = gidForTile(tileLayer->tileAt(x, y));
+                tileData.append(QString::number(gid));
+                if (x != tileLayer->width() - 1
+                    || y != tileLayer->height() - 1)
+                    tileData.append(QLatin1String(","));
+            }
+            tileData.append(QLatin1String("\n"));
+        }
+
+        w.writeCharacters(QLatin1String("\n"));
+        w.writeCharacters(tileData);
     } else {
         QByteArray tileData;
         tileData.reserve(tileLayer->height() * tileLayer->width() * 4);

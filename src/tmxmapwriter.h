@@ -73,7 +73,8 @@ public:
         XML        = 0,
         Base64     = 1,
         Base64Gzip = 2,
-        Base64Zlib = 3
+        Base64Zlib = 3,
+        CSV        = 4,
     };
 
     /**

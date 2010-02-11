@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
-    <height>237</height>
+    <width>405</width>
+    <height>245</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,6 +53,11 @@
         <item>
          <property name="text">
           <string>Base64 (zlib compressed)</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>CSV</string>
          </property>
         </item>
        </widget>

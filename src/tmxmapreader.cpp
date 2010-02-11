@@ -88,6 +88,7 @@ private:
     void decodeBinaryLayerData(TileLayer *tileLayer,
                                const QString &text,
                                const QStringRef &compression);
+    void decodeCSVLayerData(TileLayer *tileLayer, const QString &text);
 
     /**
      * Returns the tile for the given global tile ID. When an error occurs,
@@ -503,15 +504,17 @@ void TmxReader::readLayerData(TileLayer *tileLayer)
                 readUnknownElement();
             }
         } else if (xml.isCharacters() && !xml.isWhitespace()) {
-            if (encoding != QLatin1String("base64")) {
+            if (encoding == QLatin1String("base64")) {
+                decodeBinaryLayerData(tileLayer,
+                                      xml.text().toString(),
+                                      compression);
+            } else if (encoding == QLatin1String("csv")) {
+                decodeCSVLayerData(tileLayer, xml.text().toString());
+            } else {
                 xml.raiseError(tr("Unknown encoding: %1")
                                .arg(encoding.toString()));
                 continue;
             }
-
-            decodeBinaryLayerData(tileLayer,
-                                  xml.text().toString(),
-                                  compression);
         }
     }
 }
@@ -562,6 +565,39 @@ void TmxReader::decodeBinaryLayerData(TileLayer *tileLayer,
         if (x == tileLayer->width()) {
             x = 0;
             y++;
+        }
+    }
+}
+
+void TmxReader::decodeCSVLayerData(TileLayer *tileLayer, const QString &text)
+{
+    QString trimText = text.trimmed();
+    QStringList tiles = trimText.split(QLatin1Char(','));
+
+    if (tiles.length() != tileLayer->width() * tileLayer->height()) {
+        xml.raiseError(tr("Corrupt layer data for layer '%1'")
+                       .arg(tileLayer->name()));
+        return;
+    }
+
+    for (int y = 0; y < tileLayer->height(); y++) {
+        for (int x = 0; x < tileLayer->width(); x++) {
+            bool conversionOk;
+            const int gid = tiles.at(y * tileLayer->width() + x)
+                            .toInt(&conversionOk);
+            if (!conversionOk) {
+                xml.raiseError(
+                        tr("Unable to parse tile at (%1,%2) on layer '%3'")
+                               .arg(x + 1).arg(y + 1).arg(tileLayer->name()));
+                return;
+            }
+            bool gidOk;
+            Tile *tile = tileForGid(gid, gidOk);
+            if (gidOk)
+                tileLayer->setTile(x, y, tile);
+            else {
+                xml.raiseError(tr("Invalid tile: %1").arg(gid));
+            }
         }
     }
 }
