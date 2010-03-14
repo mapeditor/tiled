@@ -54,6 +54,11 @@ public:
     MapScene(QObject *parent);
 
     /**
+     * Destructor.
+     */
+    ~MapScene();
+
+    /**
      * Returns the map document this scene is displaying.
      */
     MapDocument *mapDocument() const { return mMapDocument; }
@@ -129,12 +134,15 @@ private:
     void cancelNewMapObject();
     void finishNewMapObject();
 
+    bool eventFilter(QObject *object, QEvent *event);
+
     MapDocument *mMapDocument;
     ObjectGroupItem *mSelectedObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
     AbstractTool *mActiveTool;
     bool mGridVisible;
     bool mUnderMouse;
+    Qt::KeyboardModifiers mCurrentModifiers;
     QPointF mLastMousePos;
     QVector<QGraphicsItem*> mLayerItems;
 

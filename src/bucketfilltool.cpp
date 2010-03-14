@@ -28,6 +28,8 @@
 #include "mapscene.h"
 #include "mapdocument.h"
 
+#include <QApplication>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -58,12 +60,18 @@ void BucketFillTool::enable(MapScene *scene)
 
 void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 {
+    bool shiftPressed = QApplication::keyboardModifiers() & Qt::ShiftModifier;
+
     // Optimization: we don't need to recalculate the fill area
     // if the new mouse position is still over the filled region
-    if (mFillRegion.contains(tilePos))
+    // and the shift modifier hasn't changed.
+    if (mFillRegion.contains(tilePos) && shiftPressed == mLastShiftStatus)
         return;
 
-    // Clear overlay to make way for new one
+    // Cache information about how the fill region was created
+    mLastShiftStatus = shiftPressed;
+
+    // Clear overlay to make way for a new one
     // This also clears the connections so we don't get callbacks
     clearOverlay();
 
@@ -77,17 +85,33 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
         return;
 
     // Get the new fill region
-    TilePainter regionComputer(mMapDocument, currentTileLayer());
-    mFillRegion = regionComputer.computeFillRegion(tilePos);
+    if (!shiftPressed) {
+        // If not holding shift, a region is generated from the current pos
+        TilePainter regionComputer(mMapDocument, tileLayer);
+        mFillRegion = regionComputer.computeFillRegion(tilePos);
+    } else {
+        // If holding shift, the region is the selection bounds
+        mFillRegion = mMapDocument->tileSelection();
+
+        // Fill region is the whole map is there is no selection
+        if (mFillRegion.isEmpty())
+            mFillRegion = tileLayer->bounds();
+
+        // The mouse needs to be in the region
+        if (!mFillRegion.contains(tilePos))
+            mFillRegion = QRegion();
+    }
+
+    // Ensure that a fill region was created before making an overlay layer
     if (mFillRegion.isEmpty())
         return;
 
     // Create a new overlay region
     mFillOverlay = new TileLayer(QString(),
-                                 currentTileLayer()->x(),
-                                 currentTileLayer()->y(),
-                                 currentTileLayer()->width(),
-                                 currentTileLayer()->height());
+                                 tileLayer->x(),
+                                 tileLayer->y(),
+                                 tileLayer->width(),
+                                 tileLayer->height());
 
     // Paint the new overlay
     TilePainter tilePainter(mMapDocument, mFillOverlay);
@@ -126,6 +150,15 @@ void BucketFillTool::mouseReleased(const QPointF &pos, Qt::MouseButton button)
 {
     Q_UNUSED(pos);
     Q_UNUSED(button);
+}
+
+void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)
+{
+    // Don't need to recalculate fill region if there was no fill region
+    if (!mFillOverlay)
+        return;
+
+    tilePositionChanged(tilePosition());
 }
 
 void BucketFillTool::languageChanged()

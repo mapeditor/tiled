@@ -52,6 +52,8 @@ public:
                       Qt::KeyboardModifiers modifiers);
     void mouseReleased(const QPointF &pos, Qt::MouseButton button);
 
+    void modifiersChanged(Qt::KeyboardModifiers);
+
     void languageChanged();
 
     /**
@@ -77,6 +79,8 @@ private:
     TileLayer *mStamp;
     TileLayer *mFillOverlay;
     QRegion mFillRegion;
+
+    bool mLastShiftStatus;
 };
 
 } // namespace Internal

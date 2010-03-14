@@ -38,6 +38,8 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QKeyEvent>
+#include <QApplication>
 
 #include <cmath>
 
@@ -51,7 +53,8 @@ MapScene::MapScene(QObject *parent):
     mNewMapObjectItem(0),
     mActiveTool(0),
     mGridVisible(true),
-    mUnderMouse(false)
+    mUnderMouse(false),
+    mCurrentModifiers(Qt::NoModifier)
 {
     setBackgroundBrush(Qt::darkGray);
 
@@ -62,6 +65,15 @@ MapScene::MapScene(QObject *parent):
     TilesetManager *tilesetManager = TilesetManager::instance();
     connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
+
+    // Install an event filter so that we can get key events on behalf of the
+    // active tool without having to have the current focus.
+    qApp->installEventFilter(this);
+}
+
+MapScene::~MapScene()
+{
+    qApp->removeEventFilter(this);
 }
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
@@ -116,6 +128,11 @@ void MapScene::setActiveTool(AbstractTool *tool)
 
     if (mMapDocument && mActiveTool) {
         mActiveTool->enable(this);
+
+        mCurrentModifiers = QApplication::keyboardModifiers();
+        if (mCurrentModifiers != Qt::NoModifier)
+            mActiveTool->modifiersChanged(mCurrentModifiers);
+
         if (mUnderMouse) {
             mActiveTool->mouseEntered();
             mActiveTool->mouseMoved(mLastMousePos, Qt::KeyboardModifiers());
@@ -506,4 +523,20 @@ void MapScene::finishNewMapObject()
     mMapDocument->undoStack()->push(new AddMapObject(mMapDocument,
                                                      objectGroup,
                                                      newMapObject));
+}
+
+bool MapScene::eventFilter(QObject *, QEvent *event)
+{
+    QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
+
+    if (keyEvent) {
+        Qt::KeyboardModifiers newModifiers = keyEvent->modifiers();
+
+        if (newModifiers != mCurrentModifiers) {
+            mActiveTool->modifiersChanged(newModifiers);
+            mCurrentModifiers = newModifiers;
+        }
+    }
+
+    return false;
 }
