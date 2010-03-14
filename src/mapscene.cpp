@@ -527,15 +527,20 @@ void MapScene::finishNewMapObject()
 
 bool MapScene::eventFilter(QObject *, QEvent *event)
 {
-    QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
+    switch (event->type()) {
+    case QEvent::KeyPress:
+    case QEvent::KeyRelease: {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+            Qt::KeyboardModifiers newModifiers = keyEvent->modifiers();
 
-    if (keyEvent) {
-        Qt::KeyboardModifiers newModifiers = keyEvent->modifiers();
-
-        if (newModifiers != mCurrentModifiers) {
-            mActiveTool->modifiersChanged(newModifiers);
-            mCurrentModifiers = newModifiers;
+            if (newModifiers != mCurrentModifiers) {
+                mActiveTool->modifiersChanged(newModifiers);
+                mCurrentModifiers = newModifiers;
+            }
         }
+        break;
+    default:
+        break;
     }
 
     return false;
