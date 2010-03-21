@@ -33,6 +33,18 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
 {
 }
 
+QRegion TileLayer::region() const
+{
+    QRegion region = bounds();
+
+    for (int y = 0; y < mHeight; ++y)
+        for (int x = 0; x < mWidth; ++x)
+            if (!tileAt(x, y))
+                region -= QRegion(x + mX, y + mY, 1, 1);
+
+    return region;
+}
+
 void TileLayer::setTile(int x, int y, Tile *tile)
 {
     if (tile && tile->height() > mMaxTileHeight) {

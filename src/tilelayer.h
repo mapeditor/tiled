@@ -58,6 +58,12 @@ public:
     { return contains(point.x(), point.y()); }
 
     /**
+     * Calculates the region occupied by the tiles of this layer. Similar to
+     * Layer::bounds(), but leaves out the regions without tiles.
+     */
+    QRegion region() const;
+
+    /**
      * Returns the tile at the given coordinates. The coordinates have to
      * be within this layer.
      */

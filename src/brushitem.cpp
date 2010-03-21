@@ -63,6 +63,7 @@ void BrushItem::setTileLayer(TileLayer *tileLayer)
         return;
 
     mTileLayer = tileLayer;
+    mRegion = tileLayer ? tileLayer->region() : QRegion();
     updateBoundingRect();
     update();
 }
@@ -96,7 +97,7 @@ void BrushItem::paint(QPainter *painter,
         renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
         painter->setOpacity(opacity);
 
-        renderer->drawTileSelection(painter, mTileLayer->bounds(), highlight,
+        renderer->drawTileSelection(painter, mRegion, highlight,
                                     option->exposedRect);
     } else {
         renderer->drawTileSelection(painter, mRegion, highlight,
