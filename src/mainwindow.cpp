@@ -724,6 +724,9 @@ void MainWindow::selectAll()
 
     Map *map = mMapDocument->map();
     QRect all(0, 0, map->width(), map->height());
+    if (mMapDocument->tileSelection() == all)
+        return;
+
     QUndoCommand *command = new ChangeSelection(mMapDocument, all);
     mMapDocument->undoStack()->push(command);
 }
