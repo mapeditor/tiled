@@ -34,18 +34,16 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 {
     mUi->setupUi(this);
 
-    QStringList items;
-    items.append(tr("System default"));
-
     foreach (const QString &name, mLanguages) {
         QLocale locale(name);
         QString string = QString(QLatin1String("%1 (%2)"))
             .arg(QLocale::languageToString(locale.language()))
             .arg(QLocale::countryToString(locale.country()));
-        items.append(string);
+        mUi->languageCombo->addItem(string, name);
     }
 
-    mUi->languageCombo->addItems(items);
+    mUi->languageCombo->model()->sort(0);
+    mUi->languageCombo->insertItem(0, tr("System default"));
 
     fromPreferences();
 
@@ -77,10 +75,7 @@ void PreferencesDialog::changeEvent(QEvent *e)
 
 void PreferencesDialog::languageSelected(int index)
 {
-    const int languageIndex = index - 1;
-    const QString language =
-            (languageIndex < 0) ? QString() : mLanguages.at(languageIndex);
-
+    const QString language = mUi->languageCombo->itemData(index).toString();
     Preferences *prefs = Preferences::instance();
     prefs->setLanguage(language);
 }
@@ -99,20 +94,23 @@ void PreferencesDialog::fromPreferences()
     case TmxMapWriter::Base64:
         formatIndex = 1;
         break;
+    case TmxMapWriter::Base64Gzip:
+    default:
+        formatIndex = 2;
+        break;
     case TmxMapWriter::Base64Zlib:
         formatIndex = 3;
         break;
     case TmxMapWriter::CSV:
         formatIndex = 4;
         break;
-    default:
-        formatIndex = 2;
-        break;
     }
     mUi->layerDataCombo->setCurrentIndex(formatIndex);
 
     // Not found (-1) ends up at index 0, system default
-    const int languageIndex = mLanguages.indexOf(prefs->language()) + 1;
+    int languageIndex = mUi->languageCombo->findData(prefs->language());
+    if (languageIndex == -1)
+        languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
 }
 
@@ -132,11 +130,12 @@ TmxMapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
         return TmxMapWriter::XML;
     case 1:
         return TmxMapWriter::Base64;
+    case 2:
+    default:
+        return TmxMapWriter::Base64Gzip;
     case 3:
         return TmxMapWriter::Base64Zlib;
     case 4:
         return TmxMapWriter::CSV;
-    default:
-        return TmxMapWriter::Base64Gzip;
     }
 }
