@@ -38,6 +38,7 @@
 #include "mapscene.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
+#include "pluginmanager.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "offsetmapdialog.h"
@@ -83,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mClipboardManager(new ClipboardManager(this))
 {
     mUi->setupUi(this);
+
+    PluginManager::instance()->loadPlugins();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
@@ -154,6 +157,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
+    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
@@ -194,16 +198,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     // Add recent file actions to the recent files menu
-    QMenu *menu = mUi->menuRecentFiles;
     for (int i = 0; i < MaxRecentFiles; ++i)
     {
          mRecentFiles[i] = new QAction(this);
-         menu->insertAction(mUi->actionClearRecentFiles, mRecentFiles[i]);
+         mUi->menuRecentFiles->insertAction(mUi->actionClearRecentFiles,
+                                            mRecentFiles[i]);
          mRecentFiles[i]->setVisible(false);
          connect(mRecentFiles[i], SIGNAL(triggered()),
                  this, SLOT(openRecentFile()));
     }
-    menu->insertSeparator(mUi->actionClearRecentFiles);
+    mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);
 
     setThemeIcon(mUi->actionNew, "document-new");
     setThemeIcon(mUi->actionOpen, "document-open");
@@ -279,6 +283,7 @@ MainWindow::~MainWindow()
     TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
+    PluginManager::deleteInstance();
 
     delete mUi;
 }
@@ -450,6 +455,49 @@ void MainWindow::saveAsImage()
                              mUi->mapView->zoomable()->scale(),
                              this);
     dialog.exec();
+}
+
+void MainWindow::exportAs()
+{
+    if (!mMapDocument)
+        return;
+
+    PluginManager *pm = PluginManager::instance();
+    QList<MapWriterInterface*> writers = pm->interfaces<MapWriterInterface>();
+    QString filter;
+    foreach (MapWriterInterface *writer, writers) {
+        if (!filter.isEmpty())
+            filter += QLatin1String(";;");
+        filter += writer->nameFilter();
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
+                                                    fileDialogStartLocation(),
+                                                    filter);
+    if (fileName.isEmpty())
+        return;
+
+    MapWriterInterface *chosenWriter = 0;
+
+    QString suffix = QFileInfo(fileName).completeSuffix();
+    if (!suffix.isEmpty()) {
+        suffix.prepend(QLatin1String("*."));
+        foreach (MapWriterInterface *writer, writers)
+            if (writer->nameFilter().contains(suffix, Qt::CaseInsensitive))
+                chosenWriter = writer;
+    }
+
+    if (!chosenWriter) {
+        QMessageBox::critical(this, tr("Unknown File Format"),
+                              tr("The given filename does not have any known "
+                                 "file extension."));
+        return;
+    }
+
+    if (!chosenWriter->write(mMapDocument->map(), fileName)) {
+        QMessageBox::critical(this, tr("Error while saving map"),
+                              chosenWriter->errorString());
+    }
 }
 
 void MainWindow::closeFile()

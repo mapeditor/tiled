@@ -119,6 +119,8 @@ public:
 
     virtual Layer *clone() const;
 
+    virtual TileLayer *asTileLayer() { return this; }
+
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 

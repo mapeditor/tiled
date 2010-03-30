@@ -62,7 +62,7 @@ public:
      */
     QString toString(const Map *map);
 
-    QString name() const { return tr("XML map writer (*.tmx)"); }
+    QString nameFilter() const { return tr("Tiled map files (*.tmx)"); }
 
     QString errorString() const { return mError; }
 

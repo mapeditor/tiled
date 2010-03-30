@@ -22,6 +22,8 @@
 #ifndef MAPWRITERINTERFACE_H
 #define MAPWRITERINTERFACE_H
 
+#include <QtPlugin>
+
 class QString;
 
 namespace Tiled {
@@ -49,9 +51,9 @@ public:
     virtual bool write(const Map *map, const QString &fileName) = 0;
 
     /**
-     * Returns the name of this map writer.
+     * Returns the name filter of this map writer.
      */
-    virtual QString name() const = 0;
+    virtual QString nameFilter() const = 0;
 
     /**
      * Returns the error to be shown to the user if an error occured while
@@ -61,5 +63,8 @@ public:
 };
 
 } // namespace Tiled
+
+Q_DECLARE_INTERFACE(Tiled::MapWriterInterface,
+                    "org.mapeditor.MapWriterInterface")
 
 #endif // MAPWRITERINTERFACE_H
