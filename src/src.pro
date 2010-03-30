@@ -28,6 +28,7 @@ SOURCES += aboutdialog.cpp \
     mapview.cpp \
     objectgroup.cpp \
     painttilelayer.cpp \
+    pluginmanager.cpp \
     preferencesdialog.cpp \
     preferences.cpp \
     propertiesdialog.cpp \
@@ -100,6 +101,7 @@ HEADERS += aboutdialog.h \
     mapview.h \
     objectgroup.h \
     painttilelayer.h \
+    pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
     propertiesdialog.h \

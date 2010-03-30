@@ -38,6 +38,7 @@
 #include "mapscene.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
+#include "pluginmanager.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "offsetmapdialog.h"
@@ -83,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mClipboardManager(new ClipboardManager(this))
 {
     mUi->setupUi(this);
+
+    PluginManager::instance()->loadPlugins();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
@@ -279,6 +282,7 @@ MainWindow::~MainWindow()
     TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
+    PluginManager::deleteInstance();
 
     delete mUi;
 }
