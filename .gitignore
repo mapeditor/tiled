@@ -1,4 +1,5 @@
 bin/tiled
+lib/tiled/plugins/*
 Makefile*
 *.o
 *.qm

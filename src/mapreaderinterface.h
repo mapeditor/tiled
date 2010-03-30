@@ -22,6 +22,8 @@
 #ifndef MAPREADERINTERFACE_H
 #define MAPREADERINTERFACE_H
 
+#include <QtPlugin>
+
 class QString;
 
 namespace Tiled {
@@ -46,9 +48,9 @@ public:
     virtual Map *read(const QString &fileName) = 0;
 
     /**
-     * Returns the name of this map reader.
+     * Returns the name filter of this map reader.
      */
-    virtual QString name() const = 0;
+    virtual QString nameFilter() const = 0;
 
     /**
      * Returns the error to be shown to the user if an error occured while
@@ -58,5 +60,8 @@ public:
 };
 
 } // namespace Tiled
+
+Q_DECLARE_INTERFACE(Tiled::MapReaderInterface,
+                    "org.mapeditor.MapReaderInterface")
 
 #endif // MAPREADERINTERFACE_H

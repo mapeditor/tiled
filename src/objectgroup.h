@@ -103,6 +103,8 @@ public:
 
     Layer *clone() const;
 
+    virtual ObjectGroup *asObjectGroup() { return this; }
+
 protected:
     ObjectGroup *initializeClone(ObjectGroup *clone) const;
 

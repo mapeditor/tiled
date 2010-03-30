@@ -88,6 +88,7 @@ private slots:
     bool saveFile();
     bool saveFileAs();
     void saveAsImage();
+    void exportAs();
     void closeFile();
 
     void cut();

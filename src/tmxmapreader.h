@@ -48,7 +48,7 @@ public:
      */
     Map *fromString(const QString &string);
 
-    QString name() const { return tr("XML map reader (*.tmx)"); }
+    QString nameFilter() const { return tr("Tiled map files (*.tmx)"); }
 
     QString errorString() const { return mError; }
 

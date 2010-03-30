@@ -66,6 +66,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="actionSaveAsImage"/>
+    <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionQuit"/>
@@ -291,7 +292,7 @@
      <normaloff>:/images/16x16/document-new.png</normaloff>:/images/16x16/document-new.png</iconset>
    </property>
    <property name="text">
-    <string>New...</string>
+    <string>&amp;New...</string>
    </property>
   </action>
   <action name="actionNewTileset">
@@ -422,6 +423,11 @@
    </property>
    <property name="text">
     <string>Clear Recent Files</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>&amp;Export As...</string>
    </property>
   </action>
  </widget>

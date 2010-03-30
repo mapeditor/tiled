@@ -31,6 +31,8 @@
 namespace Tiled {
 
 class Map;
+class ObjectGroup;
+class TileLayer;
 
 /**
  * A map layer.
@@ -152,6 +154,11 @@ public:
      * ownership of this newly created layer.
      */
     virtual Layer *clone() const = 0;
+
+    // These functions allow checking whether this Layer is an instance of the
+    // given subclass without relying on a dynamic_cast.
+    virtual TileLayer *asTileLayer() { return 0; }
+    virtual ObjectGroup *asObjectGroup() { return 0; }
 
 protected:
     Layer *initializeClone(Layer *clone) const;
