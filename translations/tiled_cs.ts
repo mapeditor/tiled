@@ -1216,6 +1216,10 @@ Do you want to replace it?</source>
         <source>History</source>
         <translation>Historie</translation>
     </message>
+    <message>
+        <source>&lt;empty&gt;</source>
+        <translation>&lt;začátek&gt;</translation>
+    </message>
 </context>
 <context>
     <name>TilesetDock</name>

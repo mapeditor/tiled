@@ -25,6 +25,7 @@
 #include <QDockWidget>
 
 class QUndoGroup;
+class QUndoView;
 
 namespace Tiled {
 namespace Internal {
@@ -45,6 +46,7 @@ protected:
 
 private:
     void retranslateUi();
+    QUndoView *mUndoView;
 };
 
 } // namespace Internal
