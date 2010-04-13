@@ -28,7 +28,7 @@ using namespace Tiled;
 
 TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     Layer(name, x, y, width, height),
-    mMaxTileHeight(0),
+    mMaxTileSize(0, 0),
     mTiles(width * height)
 {
 }
@@ -47,10 +47,17 @@ QRegion TileLayer::region() const
 
 void TileLayer::setTile(int x, int y, Tile *tile)
 {
-    if (tile && tile->height() > mMaxTileHeight) {
-        mMaxTileHeight = tile->height();
-        if (mMap)
-            mMap->adjustMaxTileHeight(mMaxTileHeight);
+    if (tile) {
+        if (tile->width() > mMaxTileSize.width()) {
+            mMaxTileSize.setWidth(tile->width());
+            if (mMap)
+                mMap->adjustMaxTileSize(mMaxTileSize);
+        }
+        if (tile->height() > mMaxTileSize.height()) {
+            mMaxTileSize.setHeight(tile->height());
+            if (mMap)
+                mMap->adjustMaxTileSize(mMaxTileSize);
+        }
     }
 
     mTiles[x + y * mWidth] = tile;
@@ -180,6 +187,6 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
     clone->mTiles = mTiles;
-    clone->mMaxTileHeight = mMaxTileHeight;
+    clone->mMaxTileSize = mMaxTileSize;
     return clone;
 }

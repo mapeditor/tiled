@@ -124,8 +124,10 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     int endY = layer->height();
 
     if (!exposed.isNull()) {
-        const int extraHeight = layer->maxTileHeight() - tileHeight;
-        QRectF rect = exposed.adjusted(0, 0, 0, extraHeight);
+        const QSize maxTileSize = layer->maxTileSize();
+        const int extraWidth = maxTileSize.width() - tileWidth;
+        const int extraHeight = maxTileSize.height() - tileHeight;
+        QRectF rect = exposed.adjusted(-extraWidth, 0, 0, extraHeight);
         rect.translate(-layerPos);
 
         startX = qMax((int) rect.x() / tileWidth, 0);

@@ -43,10 +43,10 @@ public:
     TileLayer(const QString &name, int x, int y, int width, int height);
 
     /**
-     * Returns the maximum tile height of this layer. Used by the layer
+     * Returns the maximum tile size of this layer. Used by the layer
      * rendering code to determine the area that needs to be redrawn.
      */
-    int maxTileHeight() const { return mMaxTileHeight; }
+    QSize maxTileSize() const { return mMaxTileSize; }
 
     /**
      * Returns whether (x, y) is inside this map layer.
@@ -125,7 +125,7 @@ protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
-    int mMaxTileHeight;
+    QSize mMaxTileSize;
     QVector<Tile*> mTiles;
 };
 

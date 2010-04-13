@@ -35,7 +35,7 @@ Map::Map(Orientation orientation,
     mHeight(height),
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
-    mMaxTileHeight(tileHeight)
+    mMaxTileSize(tileWidth, tileHeight)
 {
 }
 
@@ -44,10 +44,12 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
-void Map::adjustMaxTileHeight(int height)
+void Map::adjustMaxTileSize(const QSize &size)
 {
-    if (height > mMaxTileHeight)
-        mMaxTileHeight = height;
+    if (size.width() > mMaxTileSize.width())
+        mMaxTileSize.setWidth(size.width());
+    if (size.height() > mMaxTileSize.height())
+        mMaxTileSize.setHeight(size.height());
 }
 
 void Map::addLayer(Layer *layer)
@@ -67,7 +69,7 @@ void Map::adoptLayer(Layer *layer)
     layer->setMap(this);
 
     if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-        adjustMaxTileHeight(tileLayer->maxTileHeight());
+        adjustMaxTileSize(tileLayer->maxTileSize());
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -90,7 +92,7 @@ QList<Tileset*> Map::tilesets() const
 Map *Map::clone() const
 {
     Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
-    o->mMaxTileHeight = mMaxTileHeight;
+    o->mMaxTileSize = mMaxTileSize;
     foreach (Layer *layer, mLayers)
         o->addLayer(layer->clone());
     o->mTilesets = mTilesets;

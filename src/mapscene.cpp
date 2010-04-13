@@ -198,10 +198,11 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 void MapScene::repaintRegion(const QRegion &region)
 {
     const MapRenderer *renderer = mMapDocument->renderer();
-    const int extra = mMapDocument->map()->extraTileHeight();
+    const QSize extra = mMapDocument->map()->extraTileSize();
 
     foreach (const QRect &r, region.rects())
-        update(renderer->boundingRect(r).adjusted(0, -extra, 0, 0));
+        update(renderer->boundingRect(r)
+               .adjusted(0, -extra.height(), extra.width(), 0));
 }
 
 /**

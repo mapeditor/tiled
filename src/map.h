@@ -120,26 +120,26 @@ public:
     int tileHeight() const { return mTileHeight; }
 
     /**
-     * Returns the maximum tile height used by tile layers of this map.
-     * @see TileLayer::maxTileHeight()
+     * Returns the maximum tile size used by tile layers of this map.
+     * @see TileLayer::extraTileSize()
      */
-    int maxTileHeight() const { return mMaxTileHeight; }
+    QSize maxTileSize() const { return mMaxTileSize; }
 
     /**
-     * Adjusts the maximum tile height to be at least as much as the given
-     * height. Called from tile layers when their maximum tile height
-     * increases.
+     * Adjusts the maximum tile size to be at least as much as the given
+     * size. Called from tile layers when their maximum tile size increases.
      */
-    void adjustMaxTileHeight(int height);
+    void adjustMaxTileSize(const QSize &size);
 
     /**
-     * Convenience method for getting the extra tile height, which is the
-     * number of pixels that tiles may extend above their regular height.
+     * Convenience method for getting the extra tile size, which is the number
+     * of pixels that tiles may extend beyond the size of the tile grid.
      *
-     * @see maxTileHeight()
+     * @see maxTileSize()
      */
-    inline int extraTileHeight() const
-    { return mMaxTileHeight - mTileHeight; }
+    QSize extraTileSize() const
+    { return QSize(mMaxTileSize.width() - mTileWidth,
+                   mMaxTileSize.height() - mTileHeight); }
 
     /**
      * Returns the number of layers of this map.
@@ -210,7 +210,7 @@ private:
     int mHeight;
     int mTileWidth;
     int mTileHeight;
-    int mMaxTileHeight;
+    QSize mMaxTileSize;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
     QMap<QString, QString> mProperties;

@@ -116,8 +116,10 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     if (rect.isNull())
         rect = boundingRect(layer->bounds());
 
-    const int extraHeight = layer->maxTileHeight() - tileHeight;
-    rect.adjust(0, 0, 0, extraHeight);
+    const QSize maxTileSize = layer->maxTileSize();
+    const int extraWidth = maxTileSize.width() - tileWidth;
+    const int extraHeight = maxTileSize.height() - tileHeight;
+    rect.adjust(-extraWidth, 0, 0, extraHeight);
 
     // Determine the tile and pixel coordinates to start at
     QPointF tilePos = pixelToTileCoords(rect.x(), rect.y());
