@@ -172,7 +172,7 @@ mac {
     LIBS += -lz
     QMAKE_INFO_PLIST = Info.plist
     ICON = images/tiled-icon-mac.icns
-    CONFIG += x86 ppc
+    contains(QT_CONFIG, ppc):CONFIG += x86 ppc
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.5.sdk
 }
 win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
