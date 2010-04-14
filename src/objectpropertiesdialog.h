@@ -51,6 +51,8 @@ private:
 
     QLineEdit *mNameEdit;
     QLineEdit *mTypeEdit;
+    QLineEdit *mPosXEdit;
+    QLineEdit *mPosYEdit;
 };
 
 } // namespace Internal
