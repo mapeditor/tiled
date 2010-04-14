@@ -52,7 +52,7 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
     mUi->propertiesView->setModel(mModel);
 
     // Delete selected properties when the delete key is pressed
-    QShortcut *deleteShortcut = new QShortcut(QKeySequence(Qt::Key_Delete),
+    QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete,
                                               mUi->propertiesView);
     deleteShortcut->setContext(Qt::WidgetShortcut);
     connect(deleteShortcut, SIGNAL(activated()),
