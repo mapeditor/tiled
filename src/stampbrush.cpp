@@ -206,15 +206,12 @@ void StampBrush::doPaint(bool mergeable)
 void StampBrush::updatePosition()
 {
     const QPoint tilePos = tilePosition();
-    QPoint newPos;
 
     if (mStamp) {
         mStampX = tilePos.x() - mStamp->width() / 2;
         mStampY = tilePos.y() - mStamp->height() / 2;
-        newPos = QPoint(mStampX, mStampY);
+        brushItem()->setTileLayerPosition(QPoint(mStampX, mStampY));
     } else {
-        newPos = tilePos;
+        brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
     }
-
-    brushItem()->setTileRegion(QRect(newPos, QSize(1, 1)));
 }

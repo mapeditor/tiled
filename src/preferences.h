@@ -53,6 +53,12 @@ public:
     bool reloadTilesetsOnChange() const;
     void setReloadTilesetsOnChanged(bool value);
 
+    /**
+     * Provides access to the QSettings instance to allow storing/retrieving
+     * arbitrary values. The naming style for groups and keys is CamelCase.
+     */
+    QSettings *settings() const { return mSettings; }
+
 private:
     Preferences();
     ~Preferences();

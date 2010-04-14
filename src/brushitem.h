@@ -58,6 +58,11 @@ public:
     void setTileLayer(TileLayer *tileLayer);
 
     /**
+     * Changes the position of the tile layer, if one is set.
+     */
+    void setTileLayerPosition(const QPoint &pos);
+
+    /**
      * Sets the region of tiles that this brush item occupies. The top left
      * of the region's bounding rect also determine the position of the tile
      * layer when one is set.

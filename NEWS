@@ -1,3 +1,11 @@
+0.4.1 (14 April 2010)
+* Added support for saving tile layer data as CSV
+* Added shift modifier to bucket fill tool for filling the selection
+* Added Brazilian Portugese, Japanese, French, Italian and Czech translations
+* Made values used in the New Map and New Tileset dialogs persistent
+* Fixed drawing selection highlight where brush is not painting
+* Fixed an incompatibility with Tiled Java in 'trans' attribute
+
 0.4.0 (30 January 2010)
 * Added support for isometric maps
 * Added automatic reloading of tileset images when they change

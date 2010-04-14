@@ -24,7 +24,16 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "preferences.h"
 #include "tilelayer.h"
+
+#include <QSettings>
+
+static const char * const ORIENTATION_KEY = "Map/Orientation";
+static const char * const MAP_WIDTH_KEY = "Map/Width";
+static const char * const MAP_HEIGHT_KEY = "Map/Height";
+static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
+static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
 
 using namespace Tiled::Internal;
 
@@ -33,6 +42,21 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi(new Ui::NewMapDialog)
 {
     mUi->setupUi(this);
+
+    // Restore previously used settings
+    QSettings *s = Preferences::instance()->settings();
+    const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
+    const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
+    const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
+    const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
+    const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
+                                    32).toInt();
+
+    mUi->orientation->setCurrentIndex(orientation);
+    mUi->mapWidth->setValue(mapWidth);
+    mUi->mapHeight->setValue(mapHeight);
+    mUi->tileWidth->setValue(tileWidth);
+    mUi->tileHeight->setValue(tileHeight);
 }
 
 NewMapDialog::~NewMapDialog()
@@ -56,6 +80,14 @@ MapDocument *NewMapDialog::createMap()
 
     // Add one filling tile layer to new maps
     map->addLayer(new TileLayer(tr("Layer 1"), 0, 0, mapWidth, mapHeight));
+
+    // Store settings for next time
+    QSettings *s = Preferences::instance()->settings();
+    s->setValue(QLatin1String(ORIENTATION_KEY), orientation);
+    s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
+    s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
+    s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
+    s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
     return new MapDocument(map);
 }

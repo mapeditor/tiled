@@ -27,6 +27,8 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>*.tmx</string>

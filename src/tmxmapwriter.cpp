@@ -180,7 +180,7 @@ void TmxMapWriter::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
 
         const QColor transColor = tileset->transparentColor();
         if (transColor.isValid())
-            w.writeAttribute(QLatin1String("trans"), transColor.name());
+            w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
 
         w.writeEndElement();
     }

@@ -68,6 +68,19 @@ void BrushItem::setTileLayer(TileLayer *tileLayer)
     update();
 }
 
+void BrushItem::setTileLayerPosition(const QPoint &pos)
+{
+    if (!mTileLayer)
+        return;
+
+    const QPoint oldPosition(mTileLayer->x(), mTileLayer->y());
+    if (oldPosition == pos)
+        return;
+
+    mRegion.translate(pos - oldPosition);
+    updateBoundingRect();
+}
+
 void BrushItem::setTileRegion(const QRegion &region)
 {
     if (mRegion == region)

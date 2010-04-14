@@ -22,11 +22,18 @@
 #include "newtilesetdialog.h"
 #include "ui_newtilesetdialog.h"
 
+#include "preferences.h"
 #include "tileset.h"
 #include "utils.h"
 
 #include <QFileDialog>
 #include <QImageReader>
+#include <QSettings>
+
+static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
+static const char * const COLOR_KEY = "Tileset/TransparentColor";
+static const char * const SPACING_KEY = "Tileset/Spacing";
+static const char * const MARGIN_KEY = "Tileset/Margin";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -39,8 +46,18 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
 {
     mUi->setupUi(this);
 
-    // TODO: Changes to this color should be persistent
-    mUi->colorButton->setColor(Qt::magenta);
+    // Restore previously used settings
+    QSettings *s = Preferences::instance()->settings();
+    bool colorEnabled = s->value(QLatin1String(COLOR_ENABLED_KEY)).toBool();
+    QString colorName = s->value(QLatin1String(COLOR_KEY)).toString();
+    QColor color = colorName.isEmpty() ? Qt::magenta : QColor(colorName);
+    int spacing = s->value(QLatin1String(SPACING_KEY)).toInt();
+    int margin = s->value(QLatin1String(MARGIN_KEY)).toInt();
+
+    mUi->useTransparentColor->setChecked(colorEnabled);
+    mUi->colorButton->setColor(color);
+    mUi->spacing->setValue(spacing);
+    mUi->margin->setValue(margin);
 
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
@@ -68,6 +85,8 @@ Tileset *NewTilesetDialog::createTileset()
 
     const QString name = mUi->name->text();
     const QString image = mUi->image->text();
+    const bool useTransparentColor = mUi->useTransparentColor->isChecked();
+    const QColor transparentColor = mUi->colorButton->color();
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
     const int spacing = mUi->spacing->value();
@@ -77,10 +96,18 @@ Tileset *NewTilesetDialog::createTileset()
                                    tileWidth, tileHeight,
                                    spacing, margin);
 
-    if (mUi->useTransparentColor->isChecked())
-        tileset->setTransparentColor(mUi->colorButton->color());
+    if (useTransparentColor)
+        tileset->setTransparentColor(transparentColor);
 
     tileset->loadFromImage(image);
+
+    // Store settings for next time
+    QSettings *s = Preferences::instance()->settings();
+    s->setValue(QLatin1String(COLOR_ENABLED_KEY), useTransparentColor);
+    s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
+    s->setValue(QLatin1String(SPACING_KEY), spacing);
+    s->setValue(QLatin1String(MARGIN_KEY), margin);
+
     return tileset;
 }
 
