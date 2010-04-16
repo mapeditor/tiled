@@ -25,6 +25,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "movemapobject.h"
+#include "resizemapobject.h"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -34,6 +35,28 @@
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+namespace
+{
+    QLineEdit *createLineEditWithValidator(const qreal initialValue)
+    {
+        QLineEdit *lineEdit = new QLineEdit(QString::number(initialValue));
+        QDoubleValidator *validator = new QDoubleValidator(lineEdit);
+        validator->setNotation(QDoubleValidator::StandardNotation);
+
+        return lineEdit;
+    }
+
+    // Tries to convert the string to a qreal. If the conversion fails the
+    // fallback value is returned
+    qreal convert(const QString string, const qreal fallback)
+    {
+        bool conversionOK = false;
+        const qreal value = string.toDouble( &conversionOK );
+
+        return conversionOK ? value : fallback;
+    }
+}
 
 ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
                                                MapObject *mapObject,
@@ -46,30 +69,26 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     , mMapObject(mapObject)
     , mNameEdit(new QLineEdit(mMapObject->name()))
     , mTypeEdit(new QLineEdit(mMapObject->type()))
-    , mPosXEdit(new QLineEdit())
-    , mPosYEdit(new QLineEdit())
+    , mPosXEdit(createLineEditWithValidator(mMapObject->x()))
+    , mPosYEdit(createLineEditWithValidator(mMapObject->y()))
+    , mWidthEdit(createLineEditWithValidator(mMapObject->width()))
+    , mHeightEdit(createLineEditWithValidator(mMapObject->height()))
 {
     QGridLayout *grid = new QGridLayout;
     grid->addWidget(new QLabel(tr("Name:")), 0, 0);
     grid->addWidget(new QLabel(tr("Type:")), 1, 0);
     grid->addWidget(mNameEdit, 0, 1, 1, 2 );
     grid->addWidget(mTypeEdit, 1, 1, 1, 2 );
+
     grid->addWidget(new QLabel(tr("Position:")), 2, 0);
     grid->addWidget(mPosXEdit, 2, 1);
     grid->addWidget(mPosYEdit, 2, 2);
+
+    grid->addWidget(new QLabel(tr("Size:")), 3, 0);
+    grid->addWidget(mWidthEdit, 3, 1);
+    grid->addWidget(mHeightEdit, 3, 2);
+
     qobject_cast<QBoxLayout*>(layout())->insertLayout(0, grid);
-
-    QDoubleValidator *xValidator = new QDoubleValidator(mPosXEdit);
-    xValidator->setNotation(QDoubleValidator::StandardNotation);
-
-    QDoubleValidator *yValidator = new QDoubleValidator(mPosYEdit);
-    yValidator->setNotation(QDoubleValidator::StandardNotation);
-
-    mPosXEdit->setValidator(xValidator);
-    mPosYEdit->setValidator(yValidator);
-
-    mPosXEdit->setText( QString::number( mMapObject->x() ) );
-    mPosYEdit->setText( QString::number( mMapObject->y() ) );
 
     mNameEdit->setFocus();
 }
@@ -79,26 +98,18 @@ void ObjectPropertiesDialog::accept()
     const QString newName = mNameEdit->text();
     const QString newType = mTypeEdit->text();
 
-    bool conversionOK = false;
-    qreal newPosX = mPosXEdit->text().toDouble( &conversionOK );
-
-    if ( !conversionOK )
-    {
-        newPosX = mMapObject->x();
-    }
-
-    qreal newPosY = mPosYEdit->text().toDouble( &conversionOK );
-
-    if ( !conversionOK )
-    {
-        newPosY = mMapObject->y();
-    }
+    const qreal newPosX = convert(mPosXEdit->text(), mMapObject->x());
+    const qreal newPosY = convert(mPosYEdit->text(), mMapObject->y());
+    const qreal newWidth = convert(mWidthEdit->text(), mMapObject->width());
+    const qreal newHeight = convert(mHeightEdit->text(), mMapObject->height());
 
     bool changed = false;
     changed |= mMapObject->name() != newName;
     changed |= mMapObject->type() != newType;
     changed |= mMapObject->x() != newPosX;
     changed |= mMapObject->y() != newPosY;
+    changed |= mMapObject->width() != newWidth;
+    changed |= mMapObject->height() != newHeight;
 
     if (changed) {
         QUndoStack *undo = mMapDocument->undoStack();
@@ -110,6 +121,11 @@ void ObjectPropertiesDialog::accept()
         mMapObject->setX(newPosX);
         mMapObject->setY(newPosY);
         undo->push(new MoveMapObject(mMapDocument, mMapObject, oldPos));
+
+        const QSizeF oldSize = mMapObject->size();
+        mMapObject->setWidth(newWidth);
+        mMapObject->setHeight(newHeight);
+        undo->push(new ResizeMapObject(mMapDocument, mMapObject, oldSize));
 
         PropertiesDialog::accept(); // Let PropertiesDialog add its command
         undo->endMacro();
