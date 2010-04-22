@@ -23,6 +23,7 @@
 #define OBJECTPROPERTIESDIALOG_H
 
 #include "propertiesdialog.h"
+#include "ui_objectpropertiesdialog.h"
 
 class QLineEdit;
 
@@ -49,12 +50,7 @@ private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
 
-    QLineEdit *mNameEdit;
-    QLineEdit *mTypeEdit;
-    QLineEdit *mPosXEdit;
-    QLineEdit *mPosYEdit;
-    QLineEdit *mWidthEdit;
-    QLineEdit *mHeightEdit;
+    Ui::ObjectPropertiesDialog *mObjectPropertiesDialog;
 };
 
 } // namespace Internal

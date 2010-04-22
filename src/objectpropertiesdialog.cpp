@@ -31,32 +31,9 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QUndoStack>
-#include <QDoubleValidator>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-namespace
-{
-    QLineEdit *createLineEditWithValidator(const qreal initialValue)
-    {
-        QLineEdit *lineEdit = new QLineEdit(QString::number(initialValue));
-        QDoubleValidator *validator = new QDoubleValidator(lineEdit);
-        validator->setNotation(QDoubleValidator::StandardNotation);
-
-        return lineEdit;
-    }
-
-    // Tries to convert the string to a qreal. If the conversion fails the
-    // fallback value is returned
-    qreal convert(const QString string, const qreal fallback)
-    {
-        bool conversionOK = false;
-        const qreal value = string.toDouble( &conversionOK );
-
-        return conversionOK ? value : fallback;
-    }
-}
 
 ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
                                                MapObject *mapObject,
@@ -67,41 +44,33 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
                        parent)
     , mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mNameEdit(new QLineEdit(mMapObject->name()))
-    , mTypeEdit(new QLineEdit(mMapObject->type()))
-    , mPosXEdit(createLineEditWithValidator(mMapObject->x()))
-    , mPosYEdit(createLineEditWithValidator(mMapObject->y()))
-    , mWidthEdit(createLineEditWithValidator(mMapObject->width()))
-    , mHeightEdit(createLineEditWithValidator(mMapObject->height()))
+    , mObjectPropertiesDialog(new Ui::ObjectPropertiesDialog)
 {
-    QGridLayout *grid = new QGridLayout;
-    grid->addWidget(new QLabel(tr("Name:")), 0, 0);
-    grid->addWidget(new QLabel(tr("Type:")), 1, 0);
-    grid->addWidget(mNameEdit, 0, 1, 1, 2 );
-    grid->addWidget(mTypeEdit, 1, 1, 1, 2 );
+    QWidget *widget = new QWidget;
+    mObjectPropertiesDialog->setupUi(widget);
 
-    grid->addWidget(new QLabel(tr("Position:")), 2, 0);
-    grid->addWidget(mPosXEdit, 2, 1);
-    grid->addWidget(mPosYEdit, 2, 2);
+    // Initialize UI with values from the map-object
+    mObjectPropertiesDialog->name->setText(mMapObject->name());
+    mObjectPropertiesDialog->type->setText(mMapObject->type());
+    mObjectPropertiesDialog->x->setValue(mMapObject->x());
+    mObjectPropertiesDialog->y->setValue(mMapObject->y());
+    mObjectPropertiesDialog->width->setValue(mMapObject->width());
+    mObjectPropertiesDialog->height->setValue(mMapObject->height());
 
-    grid->addWidget(new QLabel(tr("Size:")), 3, 0);
-    grid->addWidget(mWidthEdit, 3, 1);
-    grid->addWidget(mHeightEdit, 3, 2);
+    qobject_cast<QBoxLayout*>(this->layout())->insertWidget(0, widget);
 
-    qobject_cast<QBoxLayout*>(layout())->insertLayout(0, grid);
-
-    mNameEdit->setFocus();
+    mObjectPropertiesDialog->name->setFocus();
 }
 
 void ObjectPropertiesDialog::accept()
 {
-    const QString newName = mNameEdit->text();
-    const QString newType = mTypeEdit->text();
+    const QString newName = mObjectPropertiesDialog->name->text();
+    const QString newType = mObjectPropertiesDialog->type->text();
 
-    const qreal newPosX = convert(mPosXEdit->text(), mMapObject->x());
-    const qreal newPosY = convert(mPosYEdit->text(), mMapObject->y());
-    const qreal newWidth = convert(mWidthEdit->text(), mMapObject->width());
-    const qreal newHeight = convert(mHeightEdit->text(), mMapObject->height());
+    const qreal newPosX = mObjectPropertiesDialog->x->value();
+    const qreal newPosY = mObjectPropertiesDialog->y->value();
+    const qreal newWidth = mObjectPropertiesDialog->width->value();
+    const qreal newHeight = mObjectPropertiesDialog->height->value();
 
     bool changed = false;
     changed |= mMapObject->name() != newName;
