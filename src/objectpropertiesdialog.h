@@ -50,7 +50,7 @@ private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
 
-    Ui::ObjectPropertiesDialog *mObjectPropertiesDialog;
+    Ui::ObjectPropertiesDialog *mUi;
 };
 
 } // namespace Internal

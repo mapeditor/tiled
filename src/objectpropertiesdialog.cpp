@@ -44,33 +44,36 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
                        parent)
     , mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mObjectPropertiesDialog(new Ui::ObjectPropertiesDialog)
+    , mUi(new Ui::ObjectPropertiesDialog)
 {
     QWidget *widget = new QWidget;
-    mObjectPropertiesDialog->setupUi(widget);
+    mUi->setupUi(widget);
 
     // Initialize UI with values from the map-object
-    mObjectPropertiesDialog->name->setText(mMapObject->name());
-    mObjectPropertiesDialog->type->setText(mMapObject->type());
-    mObjectPropertiesDialog->x->setValue(mMapObject->x());
-    mObjectPropertiesDialog->y->setValue(mMapObject->y());
-    mObjectPropertiesDialog->width->setValue(mMapObject->width());
-    mObjectPropertiesDialog->height->setValue(mMapObject->height());
+    mUi->name->setText(mMapObject->name());
+    mUi->type->setText(mMapObject->type());
+    mUi->x->setValue(mMapObject->x());
+    mUi->y->setValue(mMapObject->y());
+    mUi->width->setValue(mMapObject->width());
+    mUi->height->setValue(mMapObject->height());
 
-    qobject_cast<QBoxLayout*>(this->layout())->insertWidget(0, widget);
+    qobject_cast<QBoxLayout*>(layout())->insertWidget(0, widget);
 
-    mObjectPropertiesDialog->name->setFocus();
+    mUi->name->setFocus();
+
+    // Resize the dialog to its recommended size
+    resize(sizeHint());
 }
 
 void ObjectPropertiesDialog::accept()
 {
-    const QString newName = mObjectPropertiesDialog->name->text();
-    const QString newType = mObjectPropertiesDialog->type->text();
+    const QString newName = mUi->name->text();
+    const QString newType = mUi->type->text();
 
-    const qreal newPosX = mObjectPropertiesDialog->x->value();
-    const qreal newPosY = mObjectPropertiesDialog->y->value();
-    const qreal newWidth = mObjectPropertiesDialog->width->value();
-    const qreal newHeight = mObjectPropertiesDialog->height->value();
+    const qreal newPosX = mUi->x->value();
+    const qreal newPosY = mUi->y->value();
+    const qreal newWidth = mUi->width->value();
+    const qreal newHeight = mUi->height->value();
 
     bool changed = false;
     changed |= mMapObject->name() != newName;
@@ -98,8 +101,6 @@ void ObjectPropertiesDialog::accept()
 
         PropertiesDialog::accept(); // Let PropertiesDialog add its command
         undo->endMacro();
-
-        mMapDocument->emitObjectChanged(mMapObject);
     } else {
         PropertiesDialog::accept();
     }
