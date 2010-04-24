@@ -222,7 +222,7 @@
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
    <receiver>NewTilesetDialog</receiver>
-   <slot>accept()</slot>
+   <slot>tryAccept()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>248</x>
@@ -267,4 +267,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>tryAccept()</slot>
+ </slots>
 </ui>

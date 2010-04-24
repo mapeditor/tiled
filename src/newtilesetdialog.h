@@ -57,11 +57,14 @@ public:
 private slots:
     void browse();
     void nameEdited(const QString &name);
+    void updateOkButton();
+    void tryAccept();
 
 private:
     QString mPath;
     Ui::NewTilesetDialog *mUi;
     bool mNameWasEdited;
+    Tileset *mNewTileset;
 };
 
 } // namespace Internal

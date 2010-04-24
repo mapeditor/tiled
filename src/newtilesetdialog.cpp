@@ -28,7 +28,10 @@
 
 #include <QFileDialog>
 #include <QImageReader>
+#include <QMessageBox>
 #include <QSettings>
+
+#include <memory>
 
 static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
 static const char * const COLOR_KEY = "Tileset/TransparentColor";
@@ -42,7 +45,8 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     QDialog(parent),
     mPath(path),
     mUi(new Ui::NewTilesetDialog),
-    mNameWasEdited(false)
+    mNameWasEdited(false),
+    mNewTileset(0)
 {
     mUi->setupUi(this);
 
@@ -61,6 +65,10 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
 
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
+    connect(mUi->name, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
+    connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
+
+    updateOkButton();
 }
 
 NewTilesetDialog::~NewTilesetDialog()
@@ -83,6 +91,11 @@ Tileset *NewTilesetDialog::createTileset()
     if (exec() != QDialog::Accepted)
         return 0;
 
+    return mNewTileset;
+}
+
+void NewTilesetDialog::tryAccept()
+{
     const QString name = mUi->name->text();
     const QString image = mUi->image->text();
     const bool useTransparentColor = mUi->useTransparentColor->isChecked();
@@ -92,14 +105,27 @@ Tileset *NewTilesetDialog::createTileset()
     const int spacing = mUi->spacing->value();
     const int margin = mUi->margin->value();
 
-    Tileset *tileset = new Tileset(name,
-                                   tileWidth, tileHeight,
-                                   spacing, margin);
+    std::auto_ptr<Tileset> tileset(new Tileset(name,
+                                               tileWidth, tileHeight,
+                                               spacing, margin));
 
     if (useTransparentColor)
         tileset->setTransparentColor(transparentColor);
 
-    tileset->loadFromImage(image);
+    if (!tileset->loadFromImage(image)) {
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Failed to load tileset image '%1'.")
+                              .arg(image));
+        return;
+    }
+
+    if (tileset->tileCount() == 0) {
+        QMessageBox::critical(this, tr("Error"),
+                              tr("No tiles found in the tileset image when "
+                                 "using the given tile size, margin and "
+                                 "spacing!"));
+        return;
+    }
 
     // Store settings for next time
     QSettings *s = Preferences::instance()->settings();
@@ -108,7 +134,8 @@ Tileset *NewTilesetDialog::createTileset()
     s->setValue(QLatin1String(SPACING_KEY), spacing);
     s->setValue(QLatin1String(MARGIN_KEY), margin);
 
-    return tileset;
+    mNewTileset = tileset.release();
+    accept();
 }
 
 void NewTilesetDialog::browse()
@@ -121,11 +148,18 @@ void NewTilesetDialog::browse()
         mPath = f;
 
         if (!mNameWasEdited)
-            mUi->name->setText(QFileInfo(f).baseName());
+            mUi->name->setText(QFileInfo(f).completeBaseName());
     }
 }
 
 void NewTilesetDialog::nameEdited(const QString &name)
 {
     mNameWasEdited = !name.isEmpty();
+}
+
+void NewTilesetDialog::updateOkButton()
+{
+    QPushButton *okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setEnabled(!mUi->name->text().isEmpty()
+                         && !mUi->image->text().isEmpty());
 }
