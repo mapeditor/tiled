@@ -196,6 +196,16 @@ public:
     void addTileset(Tileset *tileset);
 
     /**
+     * Removes a tileset from this map.
+     *
+     * \warning Does not make sure that this map no longer refers to tiles from
+     *          the removed tileset!
+     *
+     * \sa addTileset
+     */
+    void removeTileset(Tileset *tileset);
+
+    /**
      * Returns the tilesets that the tiles on this map are using.
      */
     QList<Tileset*> tilesets() const;

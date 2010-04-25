@@ -109,10 +109,8 @@ public:
     void moveLayerDown(int index);
     void removeLayer(int index);
 
-    /**
-     * Adds a tileset to this map. Emits the appropriate signal.
-     */
     void addTileset(Tileset *tileset);
+    void removeTileset(Tileset *tileset);
 
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
@@ -190,10 +188,8 @@ signals:
      */
     void regionChanged(const QRegion &region);
 
-    /**
-     * Emitted when a tileset is added to this map.
-     */
     void tilesetAdded(Tileset *tileset);
+    void tilesetRemoved(Tileset *tileset);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);

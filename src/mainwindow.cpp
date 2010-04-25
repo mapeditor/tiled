@@ -23,6 +23,7 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
+#include "addtileset.h"
 #include "changeselection.h"
 #include "clipboardmanager.h"
 #include "eraser.h"
@@ -554,10 +555,22 @@ void MainWindow::paste()
         // We can currently only handle maps with a single tile layer
         if (map->layerCount() == 1) {
             if (TileLayer *layer = dynamic_cast<TileLayer*>(map->layerAt(0))) {
+                QList<QUndoCommand*> addTilesetCommands;
+
                 // Add tilesets that are not yet part of this map
-                foreach (Tileset *tileset, map->tilesets())
-                    if (!mMapDocument->map()->tilesets().contains(tileset))
-                        mMapDocument->addTileset(tileset);
+                foreach (Tileset *tileset, map->tilesets()) {
+                    if (!mMapDocument->map()->tilesets().contains(tileset)) {
+                        addTilesetCommands.append(new AddTileset(mMapDocument,
+                                                                 tileset));
+                    }
+                }
+                if (!addTilesetCommands.isEmpty()) {
+                    QUndoStack *undoStack = mMapDocument->undoStack();
+                    undoStack->beginMacro(tr("Add Tilesets"));
+                    foreach (QUndoCommand *command, addTilesetCommands)
+                        mMapDocument->undoStack()->push(command);
+                    undoStack->endMacro();
+                }
 
                 // Reset selection and paste into the stamp brush
                 selectNone();
@@ -593,7 +606,7 @@ void MainWindow::newTileset()
     newTileset.setTileHeight(map->tileHeight());
 
     if (Tileset *tileset = newTileset.createTileset())
-        mMapDocument->addTileset(tileset);
+        mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
 }
 
 void MainWindow::resizeMap()

@@ -97,6 +97,15 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
                 setTile(x, y, tile);
 }
 
+void TileLayer::removeReferencesToTileset(Tileset *tileset)
+{
+    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
+        const Tile *tile = mTiles.at(i);
+        if (tile && tile->tileset() == tileset)
+            mTiles.replace(i, 0);
+    }
+}
+
 void TileLayer::resize(const QSize &size, const QPoint &offset)
 {
     QVector<Tile*> newTiles(size.width() * size.height());

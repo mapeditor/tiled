@@ -90,6 +90,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
         connect(mMapDocument, SIGNAL(tilesetAdded(Tileset*)),
                 SLOT(addTilesetView(Tileset*)));
+        connect(mMapDocument, SIGNAL(tilesetRemoved(Tileset*)),
+                SLOT(tilesetRemoved(Tileset*)));
     }
 }
 
@@ -164,6 +166,27 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
             m->tilesetChanged();
             break;
         }
+    }
+}
+
+void TilesetDock::tilesetRemoved(Tileset *tileset)
+{
+    // Delete the related tileset view
+    for (int i = 0; i < mViewStack->count(); ++i) {
+        TilesetView *v = static_cast<TilesetView *>(mViewStack->widget(i));
+        TilesetModel *m = static_cast<TilesetModel *>(v->model());
+        if (m->tileset() == tileset) {
+            mTabBar->removeTab(i);
+            delete v;
+            break;
+        }
+    }
+
+    // Make sure we don't reference this tileset anymore
+    if (mCurrentTiles) {
+        TileLayer *cleaned = static_cast<TileLayer *>(mCurrentTiles->clone());
+        cleaned->removeReferencesToTileset(tileset);
+        setCurrentTiles(cleaned);
     }
 }
 

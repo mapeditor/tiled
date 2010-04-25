@@ -209,12 +209,29 @@ void MapDocument::removeLayer(int index)
     mUndoStack->push(new RemoveLayer(this, index));
 }
 
+/**
+ * Adds a tileset to this map. Emits the appropriate signal.
+ */
 void MapDocument::addTileset(Tileset *tileset)
 {
     mMap->addTileset(tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
     emit tilesetAdded(tileset);
+}
+
+/**
+ * Removes a tileset from this map. Emits the appropriate signal.
+ *
+ * \warning At the moment it does not make sure that any references to
+ *          tiles in the removed tileset are cleared.
+ */
+void MapDocument::removeTileset(Tileset *tileset)
+{
+    mMap->removeTileset(tileset);
+    emit tilesetRemoved(tileset);
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->removeReference(tileset);
 }
 
 void MapDocument::setTileSelection(const QRegion &selection)

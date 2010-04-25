@@ -84,6 +84,11 @@ void Map::addTileset(Tileset *tileset)
     mTilesets.append(tileset);
 }
 
+void Map::removeTileset(Tileset *tileset)
+{
+    mTilesets.removeOne(tileset);
+}
+
 QList<Tileset*> Map::tilesets() const
 {
     return mTilesets;

@@ -30,6 +30,7 @@
 namespace Tiled {
 
 class Tile;
+class Tileset;
 
 /**
  * A tile layer.
@@ -93,6 +94,12 @@ public:
      * layer will have no effect.
      */
     void merge(const QPoint &pos, const TileLayer *layer);
+
+    /**
+     * Removes all references to the given tileset. This sets all tiles on this
+     * layer that are from the given tileset to null.
+     */
+    void removeReferencesToTileset(Tileset *tileset);
 
     /**
      * Resizes this tile layer to \a size, while shifting all tiles by

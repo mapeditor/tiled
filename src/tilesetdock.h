@@ -70,6 +70,7 @@ private slots:
     void addTilesetView(Tileset *tileset);
     void selectionChanged();
     void tilesetChanged(Tileset *tileset);
+    void tilesetRemoved(Tileset *tileset);
 
 private:
     void setCurrentTiles(TileLayer *tiles);
