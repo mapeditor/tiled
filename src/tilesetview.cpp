@@ -163,6 +163,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QAction *tileProperties = menu.addAction(propIcon, tr("Properties..."));
 
+    // Disable this action when it's an external tileset
+    tileProperties->setEnabled(m->tileset()->fileName().isEmpty());
+
     Utils::setThemeIcon(tileProperties, "document-properties");
 
     if (menu.exec(event->globalPos()) == tileProperties) {
