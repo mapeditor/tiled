@@ -84,14 +84,24 @@ void Map::addTileset(Tileset *tileset)
     mTilesets.append(tileset);
 }
 
-void Map::removeTileset(Tileset *tileset)
+void Map::insertTileset(int index, Tileset *tileset)
 {
-    mTilesets.removeOne(tileset);
+    mTilesets.insert(index, tileset);
 }
 
-QList<Tileset*> Map::tilesets() const
+void Map::removeTilesetAt(int index)
 {
-    return mTilesets;
+    mTilesets.removeAt(index);
+}
+
+bool Map::isTilesetUsed(Tileset *tileset) const
+{
+    foreach (const Layer *layer, mLayers)
+        if (const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer))
+            if (tileLayer->referencesTileset(tileset))
+                return true;
+
+    return false;
 }
 
 Map *Map::clone() const

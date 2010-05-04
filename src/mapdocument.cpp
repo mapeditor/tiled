@@ -210,25 +210,28 @@ void MapDocument::removeLayer(int index)
 }
 
 /**
- * Adds a tileset to this map. Emits the appropriate signal.
+ * Adds a tileset to this map at the given \a index. Emits the appropriate
+ * signal.
  */
-void MapDocument::addTileset(Tileset *tileset)
+void MapDocument::insertTileset(int index, Tileset *tileset)
 {
-    mMap->addTileset(tileset);
+    mMap->insertTileset(index, tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
-    emit tilesetAdded(tileset);
+    emit tilesetAdded(index, tileset);
 }
 
 /**
- * Removes a tileset from this map. Emits the appropriate signal.
+ * Removes the tileset at the given \a index from this map. Emits the
+ * appropriate signal.
  *
- * \warning At the moment it does not make sure that any references to
- *          tiles in the removed tileset are cleared.
+ * \warning Does not make sure that any references to tiles in the removed
+ *          tileset are cleared.
  */
-void MapDocument::removeTileset(Tileset *tileset)
+void MapDocument::removeTilesetAt(int index)
 {
-    mMap->removeTileset(tileset);
+    Tileset *tileset = mMap->tilesets().at(index);
+    mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReference(tileset);

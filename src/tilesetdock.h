@@ -35,6 +35,7 @@ class Tileset;
 namespace Internal {
 
 class MapDocument;
+class TilesetView;
 
 /**
  * The dock widget that displays the tilesets. Also keeps track of the
@@ -67,14 +68,17 @@ protected:
     void changeEvent(QEvent *e);
 
 private slots:
-    void addTilesetView(Tileset *tileset);
+    void insertTilesetView(int index, Tileset *tileset);
     void selectionChanged();
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
 
+    void removeTileset(int index);
+
 private:
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
+    TilesetView *tilesetViewAt(int index) const;
 
     MapDocument *mMapDocument;
     QTabBar *mTabBar;

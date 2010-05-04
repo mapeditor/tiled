@@ -40,6 +40,8 @@ class ObjectGroup;
 /**
  * A tile map. Consists of a stack of layers, each can be either a TileLayer
  * or an ObjectGroup.
+ *
+ * It also keeps track of the list of referenced tilesets.
  */
 class Map
 {
@@ -196,19 +198,30 @@ public:
     void addTileset(Tileset *tileset);
 
     /**
-     * Removes a tileset from this map.
+     * Inserts \a tileset at \a index in the list of tilesets used by this map.
+     */
+    void insertTileset(int index, Tileset *tileset);
+
+    /**
+     * Removes the tileset at \a index from this map.
      *
      * \warning Does not make sure that this map no longer refers to tiles from
      *          the removed tileset!
      *
      * \sa addTileset
      */
-    void removeTileset(Tileset *tileset);
+    void removeTilesetAt(int index);
 
     /**
      * Returns the tilesets that the tiles on this map are using.
      */
-    QList<Tileset*> tilesets() const;
+    const QList<Tileset*> &tilesets() const { return mTilesets; }
+
+    /**
+     * Returns whether the given \a tileset is used by any tile layer of this
+     * map.
+     */
+    bool isTilesetUsed(Tileset *tileset) const;
 
     Map *clone() const;
 

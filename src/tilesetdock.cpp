@@ -21,6 +21,8 @@
 
 #include "tilesetdock.h"
 
+#include "addremovetileset.h"
+#include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
@@ -30,6 +32,7 @@
 #include "tilesetmanager.h"
 
 #include <QEvent>
+#include <QMessageBox>
 #include <QStackedWidget>
 #include <QTabBar>
 #include <QVBoxLayout>
@@ -53,8 +56,12 @@ TilesetDock::TilesetDock(QWidget *parent):
     l->addWidget(mTabBar);
     l->addWidget(mViewStack);
 
+    mTabBar->setTabsClosable(true);
+
     connect(mTabBar, SIGNAL(currentChanged(int)),
             mViewStack, SLOT(setCurrentIndex(int)));
+    connect(mTabBar, SIGNAL(tabCloseRequested(int)),
+            this, SLOT(removeTileset(int)));
 
     connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
@@ -86,10 +93,10 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         Map *map = mMapDocument->map();
         foreach (Tileset *tileset, map->tilesets())
-            addTilesetView(tileset);
+            insertTilesetView(mTabBar->count(), tileset);
 
-        connect(mMapDocument, SIGNAL(tilesetAdded(Tileset*)),
-                SLOT(addTilesetView(Tileset*)));
+        connect(mMapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
+                SLOT(insertTilesetView(int,Tileset*)));
         connect(mMapDocument, SIGNAL(tilesetRemoved(Tileset*)),
                 SLOT(tilesetRemoved(Tileset*)));
     }
@@ -107,7 +114,7 @@ void TilesetDock::changeEvent(QEvent *e)
     }
 }
 
-void TilesetDock::addTilesetView(Tileset *tileset)
+void TilesetDock::insertTilesetView(int index, Tileset *tileset)
 {
     TilesetView *view = new TilesetView(mMapDocument);
     view->setModel(new TilesetModel(tileset, view));
@@ -116,8 +123,8 @@ void TilesetDock::addTilesetView(Tileset *tileset)
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(selectionChanged()));
 
-    mTabBar->addTab(tileset->name());
-    mViewStack->addWidget(view);
+    mTabBar->insertTab(index, tileset->name());
+    mViewStack->insertWidget(index, view);
 }
 
 void TilesetDock::selectionChanged()
@@ -160,10 +167,9 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
 {
     // Update the affected tileset model
     for (int i = 0; i < mViewStack->count(); ++i) {
-        TilesetView *v = static_cast<TilesetView *>(mViewStack->widget(i));
-        TilesetModel *m = static_cast<TilesetModel *>(v->model());
-        if (m->tileset() == tileset) {
-            m->tilesetChanged();
+        TilesetModel *model = tilesetViewAt(i)->tilesetModel();
+        if (model->tileset() == tileset) {
+            model->tilesetChanged();
             break;
         }
     }
@@ -173,21 +179,70 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
 {
     // Delete the related tileset view
     for (int i = 0; i < mViewStack->count(); ++i) {
-        TilesetView *v = static_cast<TilesetView *>(mViewStack->widget(i));
-        TilesetModel *m = static_cast<TilesetModel *>(v->model());
-        if (m->tileset() == tileset) {
+        TilesetView *view = tilesetViewAt(i);
+        if (view->tilesetModel()->tileset() == tileset) {
             mTabBar->removeTab(i);
-            delete v;
+            delete view;
             break;
         }
     }
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles) {
+        // TODO: Don't clean unnecessarily (but first the concept of
+        //       "current brush" would need to be introduced)
         TileLayer *cleaned = static_cast<TileLayer *>(mCurrentTiles->clone());
         cleaned->removeReferencesToTileset(tileset);
         setCurrentTiles(cleaned);
     }
+}
+
+/**
+ * Removes the tileset at the given tab index. Prompting the user when the
+ * tileset is in use by the map.
+ */
+void TilesetDock::removeTileset(int index)
+{
+    Tileset *tileset = tilesetViewAt(index)->tilesetModel()->tileset();
+    bool inUse = false;
+
+    // If the tileset is in use, warn the user and confirm removal
+    if (mMapDocument->map()->isTilesetUsed(tileset)) {
+        QMessageBox warning(QMessageBox::Warning,
+                            tr("Remove Tileset"),
+                            tr("The tileset \"%1\" is still in use by the "
+                               "map!").arg(tileset->name()),
+                            QMessageBox::Yes | QMessageBox::No,
+                            this);
+        warning.setDefaultButton(QMessageBox::Yes);
+        warning.setInformativeText(tr("Remove this tileset and all references "
+                                      "to the tiles in this tileset?"));
+
+        if (warning.exec() != QMessageBox::Yes)
+            return;
+
+        inUse = true;
+    }
+
+    QUndoCommand *remove = new RemoveTileset(mMapDocument, index, tileset);
+    QUndoStack *undoStack = mMapDocument->undoStack();
+
+    if (inUse) {
+        // Remove references to tiles in this tileset from the current map
+        undoStack->beginMacro(remove->text());
+        foreach (Layer *layer, mMapDocument->map()->layers()) {
+            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+                const QRegion refs = tileLayer->tilesetReferences(tileset);
+                if (!refs.isEmpty()) {
+                    undoStack->push(new EraseTiles(mMapDocument,
+                                                   tileLayer, refs));
+                }
+            }
+        }
+    }
+    undoStack->push(remove);
+    if (inUse)
+        undoStack->endMacro();
 }
 
 void TilesetDock::setCurrentTiles(TileLayer *tiles)
@@ -204,4 +259,9 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
 void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
+}
+
+TilesetView *TilesetDock::tilesetViewAt(int index) const
+{
+    return static_cast<TilesetView *>(mViewStack->widget(index));
 }

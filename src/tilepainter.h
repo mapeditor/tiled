@@ -105,8 +105,6 @@ public:
      */
     bool isDrawable(int x, int y) const;
 
-    // TODO: Add more operations (fill, copy)
-
 private:
     QRegion paintableRegion(const QRegion &region) const;
     QRegion paintableRegion(int x, int y, int width, int height) const

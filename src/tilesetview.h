@@ -22,6 +22,8 @@
 #ifndef TILESETVIEW_H
 #define TILESETVIEW_H
 
+#include "tilesetmodel.h"
+
 #include <QTableView>
 
 namespace Tiled {
@@ -43,6 +45,12 @@ public:
     QSize sizeHint() const;
 
     Zoomable *zoomable() const { return mZoomable; }
+
+    /**
+     * Convenience method that returns the model as a TilesetModel.
+     */
+    TilesetModel *tilesetModel() const
+    { return static_cast<TilesetModel *>(model()); }
 
 protected:
     void wheelEvent(QWheelEvent *event);

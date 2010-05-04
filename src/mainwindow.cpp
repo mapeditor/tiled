@@ -23,7 +23,7 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
-#include "addtileset.h"
+#include "addremovetileset.h"
 #include "changeselection.h"
 #include "clipboardmanager.h"
 #include "eraser.h"

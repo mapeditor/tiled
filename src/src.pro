@@ -83,7 +83,7 @@ SOURCES += aboutdialog.cpp \
     objectgrouppropertiesdialog.cpp \
     changeobjectgroupproperties.cpp \
     zoomable.cpp \
-    addtileset.cpp
+    addremovetileset.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
     compression.h \
@@ -160,7 +160,7 @@ HEADERS += aboutdialog.h \
     objectgrouppropertiesdialog.h \
     changeobjectgroupproperties.h \
     zoomable.h \
-    addtileset.h
+    addremovetileset.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

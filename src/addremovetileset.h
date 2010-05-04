@@ -19,9 +19,10 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef ADDTILESET_H
-#define ADDTILESET_H
+#ifndef ADDREMOVETILESET_H
+#define ADDREMOVETILESET_H
 
+#include <QCoreApplication>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -33,23 +34,60 @@ namespace Internal {
 class MapDocument;
 
 /**
- * Adds a tileset to a map.
+ * Abstract base class for AddTileset and RemoveTileset.
  */
-class AddTileset : public QUndoCommand
+class AddRemoveTileset : public QUndoCommand
 {
 public:
-    explicit AddTileset(MapDocument *mapDocument, Tileset *tileset);
-    ~AddTileset();
+    AddRemoveTileset(MapDocument *mapDocument, int index, Tileset *tileset);
+    ~AddRemoveTileset();
 
-    void undo();
-    void redo();
+protected:
+    void addTileset();
+    void removeTileset();
 
 private:
     MapDocument *mMapDocument;
     Tileset *mTileset;
+    int mIndex;
+};
+
+/**
+ * Adds a tileset to a map.
+ */
+class AddTileset : public AddRemoveTileset
+{
+public:
+    AddTileset(MapDocument *mapDocument, Tileset *tileset);
+
+    void undo()
+    { removeTileset(); }
+
+    void redo()
+    { addTileset(); }
+};
+
+/**
+ * Removes a tileset from a map.
+ */
+class RemoveTileset : public AddRemoveTileset
+{
+public:
+    RemoveTileset(MapDocument *mapDocument, int index, Tileset *tileset)
+        : AddRemoveTileset(mapDocument, index, tileset)
+    {
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Remove Tileset"));
+    }
+
+    void undo()
+    { addTileset(); }
+
+    void redo()
+    { removeTileset(); }
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // ADDTILESET_H
+#endif // ADDREMOVETILESET_H

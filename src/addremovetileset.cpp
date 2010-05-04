@@ -19,35 +19,46 @@
  * Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "addtileset.h"
+#include "addremovetileset.h"
 
+#include "map.h"
 #include "mapdocument.h"
 #include "tilesetmanager.h"
 
-#include <QCoreApplication>
-
+using namespace Tiled;
 using namespace Tiled::Internal;
 
-AddTileset::AddTileset(MapDocument *mapDocument, Tileset *tileset) :
-    QUndoCommand(QCoreApplication::translate("Undo Commands", "Add Tileset")),
-    mMapDocument(mapDocument),
-    mTileset(tileset)
+AddRemoveTileset::AddRemoveTileset(MapDocument *mapDocument,
+                                   int index,
+                                   Tileset *tileset)
+    : mMapDocument(mapDocument)
+    , mTileset(tileset)
+    , mIndex(index)
 {
     // Make sure the tileset manager keeps this tileset around
     TilesetManager::instance()->addReference(mTileset);
 }
 
-AddTileset::~AddTileset()
+AddRemoveTileset::~AddRemoveTileset()
 {
     TilesetManager::instance()->removeReference(mTileset);
 }
 
-void AddTileset::undo()
+void AddRemoveTileset::removeTileset()
 {
-    mMapDocument->removeTileset(mTileset);
+    mMapDocument->removeTilesetAt(mIndex);
 }
 
-void AddTileset::redo()
+void AddRemoveTileset::addTileset()
 {
-    mMapDocument->addTileset(mTileset);
+    mMapDocument->insertTileset(mIndex, mTileset);
+}
+
+
+AddTileset::AddTileset(MapDocument *mapDocument, Tileset *tileset)
+    : AddRemoveTileset(mapDocument,
+                       mapDocument->map()->tilesets().size(),
+                       tileset)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Add Tileset"));
 }

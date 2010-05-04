@@ -97,6 +97,29 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
                 setTile(x, y, tile);
 }
 
+bool TileLayer::referencesTileset(Tileset *tileset) const
+{
+    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
+        const Tile *tile = mTiles.at(i);
+        if (tile && tile->tileset() == tileset)
+            return true;
+    }
+    return false;
+}
+
+QRegion TileLayer::tilesetReferences(Tileset *tileset) const
+{
+    QRegion region;
+
+    for (int y = 0; y < mHeight; ++y)
+        for (int x = 0; x < mWidth; ++x)
+            if (const Tile *tile = tileAt(x, y))
+                if (tile->tileset() == tileset)
+                    region += QRegion(x + mX, y + mY, 1, 1);
+
+    return region;
+}
+
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
