@@ -480,6 +480,14 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
+/**
+ * Override to ignore drag enter events.
+ */
+void MapScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
+{
+    event->ignore();
+}
+
 void MapScene::startNewMapObject(const QPointF &pos)
 {
     Q_ASSERT(!mNewMapObjectItem);

@@ -82,6 +82,9 @@ protected:
     void closeEvent(QCloseEvent *event);
     void changeEvent(QEvent *event);
 
+    void dragEnterEvent(QDragEnterEvent *);
+    void dropEvent(QDropEvent *);
+
 private slots:
     void newMap();
     void openFile();

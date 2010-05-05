@@ -10,6 +10,9 @@
     <height>367</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>Tiled</string>
   </property>
@@ -42,7 +45,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

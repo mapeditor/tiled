@@ -99,6 +99,8 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
+    void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
+
 private slots:
     /**
      * Refreshes the map scene.
