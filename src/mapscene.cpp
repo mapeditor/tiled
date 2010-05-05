@@ -86,7 +86,16 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     }
 
     mMapDocument = mapDocument;
+
+    /* The refresh may generate events. This makes sure they don't get sent to
+     * the (disabled) active tool.
+     */
+    AbstractTool *temporaryDisabledTool = mActiveTool;
+    mActiveTool = 0;
+
     refreshScene();
+
+    mActiveTool = temporaryDisabledTool;
 
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(mapChanged()),
