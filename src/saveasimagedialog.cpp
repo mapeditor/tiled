@@ -26,12 +26,18 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
+#include "preferences.h"
 #include "tilelayer.h"
 #include "utils.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QImageWriter>
+#include <QSettings>
+
+static const char * const VISIBLE_ONLY_KEY = "SaveAsImage/VisibleLayersOnly";
+static const char * const CURRENT_SCALE_KEY = "SaveAsImage/CurrentScale";
+static const char * const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -71,6 +77,19 @@ SaveAsImageDialog::SaveAsImageDialog(MapDocument *mapDocument,
 
     mUi->fileNameEdit->setText(suggestion);
 
+    // Restore previously used settings
+    QSettings *s = Preferences::instance()->settings();
+    const bool visibleLayersOnly =
+            s->value(QLatin1String(VISIBLE_ONLY_KEY), true).toBool();
+    const bool useCurrentScale =
+            s->value(QLatin1String(CURRENT_SCALE_KEY), true).toBool();
+    const bool drawTileGrid =
+            s->value(QLatin1String(DRAW_GRID_KEY), false).toBool();
+
+    mUi->visibleLayersOnly->setChecked(visibleLayersOnly);
+    mUi->currentZoomLevel->setChecked(useCurrentScale);
+    mUi->drawTileGrid->setChecked(drawTileGrid);
+
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
             this, SLOT(updateAcceptEnabled()));
@@ -103,6 +122,7 @@ void SaveAsImageDialog::accept()
 
     const bool visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
     const bool useCurrentScale = mUi->currentZoomLevel->isChecked();
+    const bool drawTileGrid = mUi->drawTileGrid->isChecked();
 
     MapRenderer *renderer = mMapDocument->renderer();
     QSize mapSize = renderer->mapSize();
@@ -141,8 +161,17 @@ void SaveAsImageDialog::accept()
         }
     }
 
+    if (drawTileGrid)
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()));
+
     image.save(fileName);
     mPath = QFileInfo(fileName).path();
+
+    // Store settings for next time
+    QSettings *s = Preferences::instance()->settings();
+    s->setValue(QLatin1String(VISIBLE_ONLY_KEY), visibleLayersOnly);
+    s->setValue(QLatin1String(CURRENT_SCALE_KEY), useCurrentScale);
+    s->setValue(QLatin1String(DRAW_GRID_KEY), drawTileGrid);
 
     QDialog::accept();
 }
