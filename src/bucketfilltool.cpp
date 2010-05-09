@@ -25,6 +25,7 @@
 #include "brushitem.h"
 #include "filltiles.h"
 #include "tilepainter.h"
+#include "tile.h"
 #include "mapscene.h"
 #include "mapdocument.h"
 
@@ -88,6 +89,13 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (!shiftPressed) {
         // If not holding shift, a region is generated from the current pos
         TilePainter regionComputer(mMapDocument, tileLayer);
+
+        // If the stamp is a single tile, ignore it when making the region
+        if (mStamp->width() == 1 && mStamp->height() == 1 &&
+            mStamp->tileAt(0, 0) == regionComputer.tileAt(tilePos.x(),
+                                                          tilePos.y()))
+            return;
+
         mFillRegion = regionComputer.computeFillRegion(tilePos);
     } else {
         // If holding shift, the region is the selection bounds
