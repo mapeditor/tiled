@@ -52,6 +52,9 @@ void Eraser::tilePositionChanged(const QPoint &tilePos)
 void Eraser::mousePressed(const QPointF &, Qt::MouseButton button,
                           Qt::KeyboardModifiers)
 {
+    if (!brushItem()->isVisible())
+        return;
+
     if (button == Qt::LeftButton) {
         mErasing = true;
         doErase(false);
