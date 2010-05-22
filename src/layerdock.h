@@ -22,6 +22,8 @@
 #ifndef LAYERDOCK_H
 #define LAYERDOCK_H
 
+#include "mapdocument.h"
+
 #include <QDockWidget>
 #include <QTreeView>
 
@@ -34,7 +36,6 @@ namespace Tiled {
 namespace Internal {
 
 class LayerView;
-class MapDocument;
 
 /**
  * The dock widget that displays the map layers.
@@ -84,6 +85,14 @@ public:
     QSize sizeHint() const;
     void setMapDocument(MapDocument *mapDocument);
 
+    void addLayer(MapDocument::LayerType type);
+    void addTileLayer();
+    void addObjectLayer();
+    void duplicateLayer(int layerIndex);
+    void moveLayerUp(int layerIndex);
+    void moveLayerDown(int layerIndex);
+    void removeLayer(int layerIndex);
+    void editLayerProperties(int layerIndex);
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
 

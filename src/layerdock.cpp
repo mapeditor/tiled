@@ -31,6 +31,8 @@
 #include "utils.h"
 
 #include <QBoxLayout>
+#include <QApplication>
+#include <QInputDialog>
 #include <QContextMenuEvent>
 #include <QLabel>
 #include <QMenu>
@@ -205,6 +207,88 @@ void LayerView::currentLayerChanged(int index)
     }
 }
 
+/**
+ * Helper function for adding a layer after having the user choose its name.
+ */
+void LayerView::addLayer(MapDocument::LayerType type)
+{
+    if (!mMapDocument)
+        return;
+
+    QString title;
+    QString defaultName;
+    switch (type) {
+    case MapDocument::TileLayerType:
+        title = tr("Add Tile Layer");
+        defaultName = tr("Tile Layer %1").arg(QString::number(mMapDocument->map()->tileLayerCount() + 1));
+        break;
+    case MapDocument::ObjectLayerType:
+        title = tr("Add Object Layer");
+        defaultName = tr("Object Layer %1").arg(QString::number(mMapDocument->map()->objectLayerCount() + 1));
+        break;
+    }
+
+    bool ok;
+    QString text = QInputDialog::getText(this, title,
+                                         tr("Layer name:"), QLineEdit::Normal,
+                                         defaultName, &ok);
+    if (ok)
+        mMapDocument->addLayer(type, text);
+}
+
+void LayerView::addTileLayer()
+{
+    addLayer(MapDocument::TileLayerType);
+}
+
+void LayerView::addObjectLayer()
+{
+    addLayer(MapDocument::ObjectLayerType);
+}
+
+void LayerView::duplicateLayer(int layerIndex)
+{
+    if (layerIndex == -1)
+        return;
+
+    mMapDocument->setCurrentLayer(layerIndex);
+    if (mMapDocument)
+        mMapDocument->duplicateLayer();
+}
+
+void LayerView::moveLayerUp(int layerIndex)
+{
+    if (layerIndex == -1)
+        return;
+
+    mMapDocument->moveLayerUp(layerIndex);
+}
+
+void LayerView::moveLayerDown(int layerIndex)
+{
+    if (layerIndex == -1)
+        return;
+
+    mMapDocument->moveLayerDown(layerIndex);
+}
+
+void LayerView::removeLayer(int layerIndex)
+{
+    if (layerIndex == -1)
+        return;
+
+    mMapDocument->removeLayer(layerIndex);
+}
+
+void LayerView::editLayerProperties(int layerIndex)
+{
+    if (layerIndex == -1)
+        return;
+
+    Layer *layer = mMapDocument->map()->layerAt(layerIndex);
+    PropertiesDialog::showDialogFor(layer, mMapDocument, this);
+}
+
 void LayerView::contextMenuEvent(QContextMenuEvent *event)
 {
     if (!mMapDocument)
@@ -212,17 +296,78 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     const QModelIndex index = indexAt(event->pos());
     const LayerModel *m = mMapDocument->layerModel();
     const int layerIndex = m->toLayerIndex(index);
-    if (layerIndex < 0)
-        return;
 
     QMenu menu;
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QAction *layerProperties = menu.addAction(propIcon, tr("Properties..."));
 
-    Utils::setThemeIcon(layerProperties, "document-properties");
+    QAction *actionAddTileLayer = new QAction(QApplication::translate("MainWindow", "Add &Tile Layer...", 0, QApplication::UnicodeUTF8), &menu);
+    menu.addAction(actionAddTileLayer);
 
-    if (menu.exec(event->globalPos()) == layerProperties) {
-        Layer *layer = mMapDocument->map()->layerAt(layerIndex);
-        PropertiesDialog::showDialogFor(layer, mMapDocument, this);
+    QAction *actionAddObjectLayer = new QAction(QApplication::translate("MainWindow", "Add &Object Layer...", 0, QApplication::UnicodeUTF8), &menu);
+    menu.addAction(actionAddObjectLayer);
+
+    QAction *actionDuplicateLayer = 0;
+    QAction *actionRemoveLayer = 0;
+    QAction *actionLayerProperties = 0;
+    QAction *actionMoveLayerUp = 0;
+    QAction *actionMoveLayerDown = 0;
+    if (layerIndex >= 0) {
+        actionDuplicateLayer = new QAction(QApplication::translate("MainWindow", "&Duplicate Layer...", 0, QApplication::UnicodeUTF8),& menu);
+        actionDuplicateLayer->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+D", 0, QApplication::UnicodeUTF8));
+        actionDuplicateLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/stock-duplicate-16.png")));
+        Utils::setThemeIcon(actionRemoveLayer, "edit-delete");
+        menu.addAction(actionDuplicateLayer);
+
+        actionRemoveLayer = new QAction(QApplication::translate("MainWindow", "&Remove Layer", 0, QApplication::UnicodeUTF8), &menu);
+        actionRemoveLayer->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
+        Utils::setThemeIcon(actionRemoveLayer, "edit-delete");
+        menu.addAction(actionRemoveLayer);
+
+        menu.addSeparator();
+
+        actionMoveLayerUp = new QAction(QApplication::translate("MainWindow", "Move Layer &Up", 0, QApplication::UnicodeUTF8), &menu);
+        actionMoveLayerUp->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+Up", 0, QApplication::UnicodeUTF8));
+        actionMoveLayerUp->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-up.png")));
+        Utils::setThemeIcon(actionMoveLayerUp, "go-up");
+        menu.addAction(actionMoveLayerUp);
+
+        actionMoveLayerDown = new QAction(QApplication::translate("MainWindow", "Move Layer Dow&n", 0, QApplication::UnicodeUTF8), &menu);
+        actionMoveLayerDown->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+Down", 0, QApplication::UnicodeUTF8));
+        actionMoveLayerDown->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-down.png")));
+        Utils::setThemeIcon(actionMoveLayerDown, "go-down");
+        menu.addAction(actionMoveLayerDown);
+
+        menu.addSeparator();
+
+        actionLayerProperties = new QAction(QApplication::translate("MainWindow", "Layer &Properties...", 0, QApplication::UnicodeUTF8), &menu);
+        actionLayerProperties->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
+        Utils::setThemeIcon(actionLayerProperties, "document-properties");
+        menu.addAction(actionLayerProperties);
     }
+
+    QAction *result = menu.exec(event->globalPos());
+    // We null-check the result first, to ensure that equality isn't made with a unfilled context item.
+    // (such as in the case when you are right-clicking without being over a layer, which gives you less options.)
+    if(result) {
+        if(result == actionAddTileLayer) {
+            addTileLayer();
+        } else if(result == actionAddObjectLayer) {
+            addObjectLayer();
+        } else if(result == actionDuplicateLayer) {
+            duplicateLayer(layerIndex);
+        } else if(result == actionRemoveLayer) {
+            removeLayer(layerIndex);
+        } else if(result == actionMoveLayerUp) {
+            moveLayerUp(layerIndex);
+        } else if(result == actionMoveLayerDown) {
+            moveLayerDown(layerIndex);
+        } else if(result == actionLayerProperties) {
+            editLayerProperties(layerIndex);
+        }
+    }
+    
+    delete actionAddTileLayer;
+    delete actionAddObjectLayer;
+    delete actionDuplicateLayer;
+    delete actionRemoveLayer;
+    delete actionLayerProperties;
 }

@@ -150,6 +150,16 @@ public:
     { return mLayers.size(); }
 
     /**
+     * Returns the number of layers of this map that are tile layers.
+     */
+    int tileLayerCount() const;
+
+    /**
+     * Returns the number of layers of this map that are object groups.
+     */
+    int objectLayerCount() const;
+
+    /**
      * Returns the layer at the specified index.
      */
     Layer *layerAt(int index) const

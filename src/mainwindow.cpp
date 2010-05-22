@@ -825,17 +825,22 @@ void MainWindow::addLayer(MapDocument::LayerType type)
         return;
 
     QString title;
+    QString defaultName;
     switch (type) {
     case MapDocument::TileLayerType:
-        title = tr("Add Tile Layer"); break;
+        title = tr("Add Tile Layer");
+        defaultName = tr("Tile Layer %1").arg(QString::number(mMapDocument->map()->tileLayerCount() + 1));
+        break;
     case MapDocument::ObjectLayerType:
-        title = tr("Add Object Layer"); break;
+        title = tr("Add Object Layer");
+        defaultName = tr("Object Layer %1").arg(QString::number(mMapDocument->map()->objectLayerCount() + 1));
+        break;
     }
 
     bool ok;
     QString text = QInputDialog::getText(this, title,
                                          tr("Layer name:"), QLineEdit::Normal,
-                                         tr("New Layer"), &ok);
+                                         defaultName, &ok);
     if (ok)
         mMapDocument->addLayer(type, text);
 }

@@ -79,7 +79,7 @@ MapDocument *NewMapDialog::createMap()
                        mapWidth, mapHeight, tileWidth, tileHeight);
 
     // Add one filling tile layer to new maps
-    map->addLayer(new TileLayer(tr("Layer 1"), 0, 0, mapWidth, mapHeight));
+    map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0, mapWidth, mapHeight));
 
     // Store settings for next time
     QSettings *s = Preferences::instance()->settings();
