@@ -371,3 +371,20 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     delete actionRemoveLayer;
     delete actionLayerProperties;
 }
+
+void LayerView::keyPressEvent(QKeyEvent *event) {
+    if (!mMapDocument) {
+        return;
+    }
+
+    const QModelIndexList indexes = selectedIndexes();
+    if(indexes.empty()) {
+        return;
+    }
+    const LayerModel *m = mMapDocument->layerModel();
+    const int layerIndex = m->toLayerIndex(indexes[0]);
+
+    if (event->key() == Qt::Key_Delete) {
+        removeLayer(layerIndex);
+    }
+}
