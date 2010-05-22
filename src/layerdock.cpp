@@ -38,6 +38,7 @@
 #include <QMenu>
 #include <QSlider>
 #include <QUndoStack>
+#include <QToolbar>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -62,6 +63,30 @@ LayerDock::LayerDock(QWidget *parent):
     opacityLayout->addWidget(mOpacitySlider);
     mOpacityLabel->setBuddy(mOpacitySlider);
 
+    QToolBar *buttonContainer = new QToolBar();
+    buttonContainer->setFloatable(false);
+    buttonContainer->setMovable(false);
+
+    mActionMoveLayerUp = new QAction(buttonContainer);
+    mActionMoveLayerUp->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-up.png")));
+    Utils::setThemeIcon(mActionMoveLayerUp, "go-up");
+    buttonContainer->addAction(mActionMoveLayerUp);
+
+    mActionMoveLayerDown = new QAction(buttonContainer);
+    mActionMoveLayerDown->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-down.png")));
+    Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
+    buttonContainer->addAction(mActionMoveLayerDown);
+
+    mActionDuplicateLayer = new QAction(buttonContainer);
+    mActionDuplicateLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/stock-duplicate-16.png")));
+    buttonContainer->addAction(mActionDuplicateLayer);
+
+    mActionRemoveLayer = new QAction(buttonContainer);
+    mActionRemoveLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/edit-delete.png")));
+    Utils::setThemeIcon(mActionRemoveLayer, "edit-delete");
+    buttonContainer->addAction(mActionRemoveLayer);
+    opacityLayout->addWidget(buttonContainer);
+
     layout->addLayout(opacityLayout);
     layout->addWidget(mLayerView);
 
@@ -70,6 +95,15 @@ LayerDock::LayerDock(QWidget *parent):
 
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(setLayerOpacity(int)));
+
+    connect(mActionMoveLayerUp, SIGNAL(triggered(bool)),
+            this, SLOT(moveLayerUp()));
+    connect(mActionMoveLayerDown, SIGNAL(triggered(bool)),
+            this, SLOT(moveLayerDown()));
+    connect(mActionDuplicateLayer, SIGNAL(triggered(bool)),
+            this, SLOT(duplicateLayer()));
+    connect(mActionRemoveLayer, SIGNAL(triggered(bool)),
+            this, SLOT(removeLayer()));
     updateOpacitySlider();
 }
 
@@ -86,6 +120,8 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
                 this, SLOT(updateOpacitySlider()));
+        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                this, SLOT(changeLayer()));
     }
 
     mLayerView->setMapDocument(mapDocument);
@@ -139,6 +175,45 @@ void LayerDock::setLayerOpacity(int opacity)
                             qreal(opacity) / 100,
                             LayerModel::OpacityRole);
     }
+}
+
+void LayerDock::changeLayer()
+{
+    const int layerIndex = mMapDocument->currentLayer();
+    if (layerIndex == -1)
+    {
+        mActionDuplicateLayer->setEnabled(false);
+        mActionMoveLayerUp->setEnabled(false);
+        mActionMoveLayerDown->setEnabled(false);
+        mActionRemoveLayer->setEnabled(false);
+    }
+    else
+    {
+        mActionDuplicateLayer->setEnabled(true);
+        mActionMoveLayerUp->setEnabled(layerIndex < mMapDocument->map()->layerCount() - 1);
+        mActionMoveLayerDown->setEnabled(layerIndex > 0);
+        mActionRemoveLayer->setEnabled(true);
+    }
+}
+
+void LayerDock::duplicateLayer()
+{
+    mLayerView->duplicateLayer(mMapDocument->currentLayer());
+}
+
+void LayerDock::moveLayerUp()
+{
+    mLayerView->moveLayerUp(mMapDocument->currentLayer());
+}
+
+void LayerDock::moveLayerDown()
+{
+    mLayerView->moveLayerDown(mMapDocument->currentLayer());
+}
+
+void LayerDock::removeLayer()
+{
+    mLayerView->removeLayer(mMapDocument->currentLayer());
 }
 
 void LayerDock::retranslateUi()
@@ -314,7 +389,6 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         actionDuplicateLayer = new QAction(QApplication::translate("MainWindow", "&Duplicate Layer...", 0, QApplication::UnicodeUTF8),& menu);
         actionDuplicateLayer->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+D", 0, QApplication::UnicodeUTF8));
         actionDuplicateLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/stock-duplicate-16.png")));
-        Utils::setThemeIcon(actionRemoveLayer, "edit-delete");
         menu.addAction(actionDuplicateLayer);
 
         actionRemoveLayer = new QAction(QApplication::translate("MainWindow", "&Remove Layer", 0, QApplication::UnicodeUTF8), &menu);
@@ -328,12 +402,14 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         actionMoveLayerUp->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+Up", 0, QApplication::UnicodeUTF8));
         actionMoveLayerUp->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-up.png")));
         Utils::setThemeIcon(actionMoveLayerUp, "go-up");
+        actionMoveLayerUp->setEnabled(layerIndex < m->rowCount() - 1);
         menu.addAction(actionMoveLayerUp);
 
         actionMoveLayerDown = new QAction(QApplication::translate("MainWindow", "Move Layer Dow&n", 0, QApplication::UnicodeUTF8), &menu);
         actionMoveLayerDown->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+Down", 0, QApplication::UnicodeUTF8));
         actionMoveLayerDown->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-down.png")));
         Utils::setThemeIcon(actionMoveLayerDown, "go-down");
+        actionMoveLayerDown->setEnabled(layerIndex > 0);
         menu.addAction(actionMoveLayerDown);
 
         menu.addSeparator();
