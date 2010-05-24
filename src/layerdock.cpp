@@ -67,21 +67,21 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->setMovable(false);
     buttonContainer->setIconSize(QSize(16, 16));
 
-    mActionMoveLayerUp = new QAction(buttonContainer);
+    mActionMoveLayerUp = new QAction(QApplication::translate("MainWindow", "Move Layer &Up", 0, QApplication::UnicodeUTF8), buttonContainer);
     mActionMoveLayerUp->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-up.png")));
     Utils::setThemeIcon(mActionMoveLayerUp, "go-up");
     buttonContainer->addAction(mActionMoveLayerUp);
 
-    mActionMoveLayerDown = new QAction(buttonContainer);
+    mActionMoveLayerDown = new QAction(QApplication::translate("MainWindow", "Move Layer Dow&n", 0, QApplication::UnicodeUTF8), buttonContainer);
     mActionMoveLayerDown->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-down.png")));
     Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
     buttonContainer->addAction(mActionMoveLayerDown);
 
-    mActionDuplicateLayer = new QAction(buttonContainer);
+    mActionDuplicateLayer = new QAction(QApplication::translate("MainWindow", "&Duplicate Layer", 0, QApplication::UnicodeUTF8), buttonContainer);
     mActionDuplicateLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/stock-duplicate-16.png")));
     buttonContainer->addAction(mActionDuplicateLayer);
 
-    mActionRemoveLayer = new QAction(buttonContainer);
+    mActionRemoveLayer = new QAction(QApplication::translate("MainWindow", "&Remove Layer", 0, QApplication::UnicodeUTF8), buttonContainer);
     mActionRemoveLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/edit-delete.png")));
     Utils::setThemeIcon(mActionRemoveLayer, "edit-delete");
     buttonContainer->addAction(mActionRemoveLayer);
