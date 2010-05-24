@@ -137,16 +137,21 @@ void MapDocument::offsetMap(const QList<int> &layerIndexes,
 }
 
 /**
- * Adds a layer of the given type to the top of the layer stack.
+ * Adds a layer of the given type to the top of the layer stack. After adding
+ * the new layer, emits editLayerNameRequested().
  */
-void MapDocument::addLayer(LayerType layerType, const QString &name)
+void MapDocument::addLayer(LayerType layerType)
 {
     Layer *layer;
+    QString name;
+
     switch (layerType) {
     case TileLayerType:
+        name = tr("Tile Layer %1").arg(mMap->tileLayerCount() + 1);
         layer = new TileLayer(name, 0, 0, mMap->width(), mMap->height());
         break;
     case ObjectLayerType:
+        name = tr("Object Layer %1").arg(mMap->objectLayerCount() + 1);
         layer = new ObjectGroup(name, 0, 0, mMap->width(), mMap->height());
         break;
     }
@@ -154,6 +159,8 @@ void MapDocument::addLayer(LayerType layerType, const QString &name)
     const int index = mMap->layerCount();
     mUndoStack->push(new AddLayer(this, index, layer));
     setCurrentLayer(index);
+
+    emit editLayerNameRequested();
 }
 
 /**

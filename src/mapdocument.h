@@ -103,7 +103,7 @@ public:
         TileLayerType,
         ObjectLayerType
     };
-    void addLayer(LayerType layerType, const QString &name);
+    void addLayer(LayerType layerType);
     void duplicateLayer();
     void moveLayerUp(int index);
     void moveLayerDown(int index);
@@ -176,6 +176,12 @@ signals:
     void layerAdded(int index);
     void layerRemoved(int index);
     void layerChanged(int index);
+
+    /**
+     * Emitted after a new layer was added and the name should be edited.
+     * Applies to the current layer.
+     */
+    void editLayerNameRequested();
 
     /**
      * Emitted when the current layer changes.

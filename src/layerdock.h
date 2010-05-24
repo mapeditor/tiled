@@ -97,14 +97,6 @@ public:
     QSize sizeHint() const;
     void setMapDocument(MapDocument *mapDocument);
 
-    void addLayer(MapDocument::LayerType type);
-    void addTileLayer();
-    void addObjectLayer();
-    void duplicateLayer(int layerIndex);
-    void moveLayerUp(int layerIndex);
-    void moveLayerDown(int layerIndex);
-    void removeLayer(int layerIndex);
-    void editLayerProperties(int layerIndex);
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     void keyPressEvent(QKeyEvent *event);
@@ -112,6 +104,8 @@ protected:
 private slots:
     void currentRowChanged(const QModelIndex &index);
     void currentLayerChanged(int index);
+
+    void editLayerName();
 
 private:
     MapDocument *mMapDocument;

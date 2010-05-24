@@ -32,7 +32,6 @@
 
 #include <QBoxLayout>
 #include <QApplication>
-#include <QInputDialog>
 #include <QContextMenuEvent>
 #include <QLabel>
 #include <QMenu>
@@ -96,6 +95,7 @@ LayerDock::LayerDock(QWidget *parent):
 
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(setLayerOpacity(int)));
+    updateOpacitySlider();
 
     connect(mActionMoveLayerUp, SIGNAL(triggered(bool)),
             this, SLOT(moveLayerUp()));
@@ -105,7 +105,11 @@ LayerDock::LayerDock(QWidget *parent):
             this, SLOT(duplicateLayer()));
     connect(mActionRemoveLayer, SIGNAL(triggered(bool)),
             this, SLOT(removeLayer()));
-    updateOpacitySlider();
+
+    // Workaround since a tabbed dockwidget that is not currently visible still
+    // returns true for isVisible()
+    connect(this, SIGNAL(visibilityChanged(bool)),
+            mLayerView, SLOT(setVisible(bool)));
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
@@ -197,22 +201,26 @@ void LayerDock::changeLayer()
 
 void LayerDock::duplicateLayer()
 {
-    mLayerView->duplicateLayer(mMapDocument->currentLayer());
+    if (mMapDocument)
+        mMapDocument->duplicateLayer();
 }
 
 void LayerDock::moveLayerUp()
 {
-    mLayerView->moveLayerUp(mMapDocument->currentLayer());
+    if (mMapDocument)
+        mMapDocument->moveLayerUp(mMapDocument->currentLayer());
 }
 
 void LayerDock::moveLayerDown()
 {
-    mLayerView->moveLayerDown(mMapDocument->currentLayer());
+    if (mMapDocument)
+        mMapDocument->moveLayerDown(mMapDocument->currentLayer());
 }
 
 void LayerDock::removeLayer()
 {
-    mLayerView->removeLayer(mMapDocument->currentLayer());
+    if (mMapDocument)
+        mMapDocument->removeLayer(mMapDocument->currentLayer());
 }
 
 void LayerDock::retranslateUi()
@@ -253,6 +261,8 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 
         connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
                 this, SLOT(currentLayerChanged(int)));
+        connect(mMapDocument, SIGNAL(editLayerNameRequested()),
+                this, SLOT(editLayerName()));
 
         QItemSelectionModel *s = selectionModel();
         connect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
@@ -281,86 +291,14 @@ void LayerView::currentLayerChanged(int index)
     }
 }
 
-/**
- * Helper function for adding a layer after having the user choose its name.
- */
-void LayerView::addLayer(MapDocument::LayerType type)
+void LayerView::editLayerName()
 {
-    if (!mMapDocument)
+    if (!isVisible())
         return;
 
-    QString title;
-    QString defaultName;
-    switch (type) {
-    case MapDocument::TileLayerType:
-        title = tr("Add Tile Layer");
-        defaultName = tr("Tile Layer %1").arg(mMapDocument->map()->tileLayerCount() + 1);
-        break;
-    case MapDocument::ObjectLayerType:
-        title = tr("Add Object Layer");
-        defaultName = tr("Object Layer %1").arg(mMapDocument->map()->objectLayerCount() + 1);
-        break;
-    }
-
-    bool ok;
-    QString text = QInputDialog::getText(this, title,
-                                         tr("Layer name:"), QLineEdit::Normal,
-                                         defaultName, &ok);
-    if (ok)
-        mMapDocument->addLayer(type, text);
-}
-
-void LayerView::addTileLayer()
-{
-    addLayer(MapDocument::TileLayerType);
-}
-
-void LayerView::addObjectLayer()
-{
-    addLayer(MapDocument::ObjectLayerType);
-}
-
-void LayerView::duplicateLayer(int layerIndex)
-{
-    if (layerIndex == -1)
-        return;
-
-    mMapDocument->setCurrentLayer(layerIndex);
-    if (mMapDocument)
-        mMapDocument->duplicateLayer();
-}
-
-void LayerView::moveLayerUp(int layerIndex)
-{
-    if (layerIndex == -1)
-        return;
-
-    mMapDocument->moveLayerUp(layerIndex);
-}
-
-void LayerView::moveLayerDown(int layerIndex)
-{
-    if (layerIndex == -1)
-        return;
-
-    mMapDocument->moveLayerDown(layerIndex);
-}
-
-void LayerView::removeLayer(int layerIndex)
-{
-    if (layerIndex == -1)
-        return;
-
-    mMapDocument->removeLayer(layerIndex);
-}
-
-void LayerView::editLayerProperties(int layerIndex)
-{
-    if (layerIndex == -1)
-        return;
-
-    Layer *layer = mMapDocument->map()->layerAt(layerIndex);
-    PropertiesDialog::showDialogFor(layer, mMapDocument, this);
+    const LayerModel *layerModel = mMapDocument->layerModel();
+    const int row = layerModel->layerIndexToRow(mMapDocument->currentLayer());
+    edit(layerModel->index(row));
 }
 
 void LayerView::contextMenuEvent(QContextMenuEvent *event)
@@ -420,19 +358,20 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
     if (QAction *result = menu.exec(event->globalPos())) {
         if (result == actionAddTileLayer) {
-            addTileLayer();
+            mMapDocument->addLayer(MapDocument::TileLayerType);
         } else if (result == actionAddObjectLayer) {
-            addObjectLayer();
+            mMapDocument->addLayer(MapDocument::ObjectLayerType);
         } else if (result == actionDuplicateLayer) {
-            duplicateLayer(layerIndex);
+            mMapDocument->duplicateLayer();
         } else if (result == actionRemoveLayer) {
-            removeLayer(layerIndex);
+            mMapDocument->removeLayer(layerIndex);
         } else if (result == actionMoveLayerUp) {
-            moveLayerUp(layerIndex);
+            mMapDocument->moveLayerUp(layerIndex);
         } else if (result == actionMoveLayerDown) {
-            moveLayerDown(layerIndex);
+            mMapDocument->moveLayerDown(layerIndex);
         } else if (result == actionLayerProperties) {
-            editLayerProperties(layerIndex);
+            Layer *layer = mMapDocument->map()->layerAt(layerIndex);
+            PropertiesDialog::showDialogFor(layer, mMapDocument, this);
         }
     }
 }

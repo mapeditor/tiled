@@ -157,8 +157,6 @@ private:
      */
     void updateRecentFiles();
 
-    void addLayer(MapDocument::LayerType type);
-
     void retranslateUi();
 
     Ui::MainWindow *mUi;

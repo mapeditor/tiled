@@ -61,7 +61,6 @@
 
 #include <QCloseEvent>
 #include <QFileDialog>
-#include <QInputDialog>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSessionManager>
@@ -816,43 +815,16 @@ void MainWindow::selectNone()
     mMapDocument->undoStack()->push(command);
 }
 
-/**
- * Helper function for adding a layer after having the user choose its name.
- */
-void MainWindow::addLayer(MapDocument::LayerType type)
-{
-    if (!mMapDocument)
-        return;
-
-    QString title;
-    QString defaultName;
-    switch (type) {
-    case MapDocument::TileLayerType:
-        title = tr("Add Tile Layer");
-        defaultName = tr("Tile Layer %1").arg(QString::number(mMapDocument->map()->tileLayerCount() + 1));
-        break;
-    case MapDocument::ObjectLayerType:
-        title = tr("Add Object Layer");
-        defaultName = tr("Object Layer %1").arg(QString::number(mMapDocument->map()->objectLayerCount() + 1));
-        break;
-    }
-
-    bool ok;
-    QString text = QInputDialog::getText(this, title,
-                                         tr("Layer name:"), QLineEdit::Normal,
-                                         defaultName, &ok);
-    if (ok)
-        mMapDocument->addLayer(type, text);
-}
-
 void MainWindow::addTileLayer()
 {
-    addLayer(MapDocument::TileLayerType);
+    if (mMapDocument)
+        mMapDocument->addLayer(MapDocument::TileLayerType);
 }
 
 void MainWindow::addObjectLayer()
 {
-    addLayer(MapDocument::ObjectLayerType);
+    if (mMapDocument)
+        mMapDocument->addLayer(MapDocument::ObjectLayerType);
 }
 
 void MainWindow::duplicateLayer()
