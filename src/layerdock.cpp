@@ -26,6 +26,7 @@
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "mapdocumentactionhandler.h"
 #include "propertiesdialog.h"
 #include "objectgrouppropertiesdialog.h"
 #include "objectgroup.h"
@@ -68,24 +69,11 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->setMovable(false);
     buttonContainer->setIconSize(QSize(16, 16));
 
-    mActionMoveLayerUp = new QAction(QApplication::translate("MainWindow", "Move Layer &Up", 0, QApplication::UnicodeUTF8), buttonContainer);
-    mActionMoveLayerUp->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-up.png")));
-    Utils::setThemeIcon(mActionMoveLayerUp, "go-up");
-    buttonContainer->addAction(mActionMoveLayerUp);
-
-    mActionMoveLayerDown = new QAction(QApplication::translate("MainWindow", "Move Layer Dow&n", 0, QApplication::UnicodeUTF8), buttonContainer);
-    mActionMoveLayerDown->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-down.png")));
-    Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
-    buttonContainer->addAction(mActionMoveLayerDown);
-
-    mActionDuplicateLayer = new QAction(QApplication::translate("MainWindow", "&Duplicate Layer", 0, QApplication::UnicodeUTF8), buttonContainer);
-    mActionDuplicateLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/stock-duplicate-16.png")));
-    buttonContainer->addAction(mActionDuplicateLayer);
-
-    mActionRemoveLayer = new QAction(QApplication::translate("MainWindow", "&Remove Layer", 0, QApplication::UnicodeUTF8), buttonContainer);
-    mActionRemoveLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/edit-delete.png")));
-    Utils::setThemeIcon(mActionRemoveLayer, "edit-delete");
-    buttonContainer->addAction(mActionRemoveLayer);
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+    buttonContainer->addAction(handler->actionMoveLayerUp());
+    buttonContainer->addAction(handler->actionMoveLayerDown());
+    buttonContainer->addAction(handler->actionDuplicateLayer());
+    buttonContainer->addAction(handler->actionRemoveLayer());
 
     layout->addLayout(opacityLayout);
     layout->addWidget(mLayerView);
@@ -97,15 +85,6 @@ LayerDock::LayerDock(QWidget *parent):
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(setLayerOpacity(int)));
     updateOpacitySlider();
-
-    connect(mActionMoveLayerUp, SIGNAL(triggered(bool)),
-            this, SLOT(moveLayerUp()));
-    connect(mActionMoveLayerDown, SIGNAL(triggered(bool)),
-            this, SLOT(moveLayerDown()));
-    connect(mActionDuplicateLayer, SIGNAL(triggered(bool)),
-            this, SLOT(duplicateLayer()));
-    connect(mActionRemoveLayer, SIGNAL(triggered(bool)),
-            this, SLOT(removeLayer()));
 
     // Workaround since a tabbed dockwidget that is not currently visible still
     // returns true for isVisible()
@@ -126,8 +105,6 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
                 this, SLOT(updateOpacitySlider()));
-        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
-                this, SLOT(changeLayer()));
     }
 
     mLayerView->setMapDocument(mapDocument);
@@ -181,47 +158,6 @@ void LayerDock::setLayerOpacity(int opacity)
                             qreal(opacity) / 100,
                             LayerModel::OpacityRole);
     }
-}
-
-void LayerDock::changeLayer()
-{
-    const int layerIndex = mMapDocument->currentLayer();
-    if (layerIndex == -1) {
-        mActionDuplicateLayer->setEnabled(false);
-        mActionMoveLayerUp->setEnabled(false);
-        mActionMoveLayerDown->setEnabled(false);
-        mActionRemoveLayer->setEnabled(false);
-    } else {
-        const int layerCount = mMapDocument->map()->layerCount();
-        mActionDuplicateLayer->setEnabled(true);
-        mActionMoveLayerUp->setEnabled(layerIndex < layerCount - 1);
-        mActionMoveLayerDown->setEnabled(layerIndex > 0);
-        mActionRemoveLayer->setEnabled(true);
-    }
-}
-
-void LayerDock::duplicateLayer()
-{
-    if (mMapDocument)
-        mMapDocument->duplicateLayer();
-}
-
-void LayerDock::moveLayerUp()
-{
-    if (mMapDocument)
-        mMapDocument->moveLayerUp(mMapDocument->currentLayer());
-}
-
-void LayerDock::moveLayerDown()
-{
-    if (mMapDocument)
-        mMapDocument->moveLayerDown(mMapDocument->currentLayer());
-}
-
-void LayerDock::removeLayer()
-{
-    if (mMapDocument)
-        mMapDocument->removeLayer(mMapDocument->currentLayer());
 }
 
 void LayerDock::retranslateUi()
@@ -311,70 +247,23 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     const LayerModel *m = mMapDocument->layerModel();
     const int layerIndex = m->toLayerIndex(index);
 
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+
     QMenu menu;
-
-    QAction *actionAddTileLayer = new QAction(QApplication::translate("MainWindow", "Add &Tile Layer...", 0, QApplication::UnicodeUTF8), &menu);
-    menu.addAction(actionAddTileLayer);
-
-    QAction *actionAddObjectLayer = new QAction(QApplication::translate("MainWindow", "Add &Object Layer...", 0, QApplication::UnicodeUTF8), &menu);
-    menu.addAction(actionAddObjectLayer);
-
-    QAction *actionDuplicateLayer = 0;
-    QAction *actionRemoveLayer = 0;
-    QAction *actionLayerProperties = 0;
-    QAction *actionMoveLayerUp = 0;
-    QAction *actionMoveLayerDown = 0;
+    menu.addAction(handler->actionAddTileLayer());
+    menu.addAction(handler->actionAddObjectLayer());
 
     if (layerIndex >= 0) {
-        actionDuplicateLayer = new QAction(QApplication::translate("MainWindow", "&Duplicate Layer", 0, QApplication::UnicodeUTF8), &menu);
-        actionDuplicateLayer->setIcon(QIcon(QString::fromUtf8(":/images/16x16/stock-duplicate-16.png")));
-        menu.addAction(actionDuplicateLayer);
-
-        actionRemoveLayer = new QAction(QApplication::translate("MainWindow", "&Remove Layer", 0, QApplication::UnicodeUTF8), &menu);
-        actionRemoveLayer->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
-        Utils::setThemeIcon(actionRemoveLayer, "edit-delete");
-        menu.addAction(actionRemoveLayer);
-
+        menu.addAction(handler->actionDuplicateLayer());
+        menu.addAction(handler->actionRemoveLayer());
         menu.addSeparator();
-
-        actionMoveLayerUp = new QAction(QApplication::translate("MainWindow", "Move Layer &Up", 0, QApplication::UnicodeUTF8), &menu);
-        actionMoveLayerUp->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-up.png")));
-        Utils::setThemeIcon(actionMoveLayerUp, "go-up");
-        actionMoveLayerUp->setEnabled(layerIndex < m->rowCount() - 1);
-        menu.addAction(actionMoveLayerUp);
-
-        actionMoveLayerDown = new QAction(QApplication::translate("MainWindow", "Move Layer Dow&n", 0, QApplication::UnicodeUTF8), &menu);
-        actionMoveLayerDown->setIcon(QIcon(QString::fromUtf8(":/images/16x16/go-down.png")));
-        Utils::setThemeIcon(actionMoveLayerDown, "go-down");
-        actionMoveLayerDown->setEnabled(layerIndex > 0);
-        menu.addAction(actionMoveLayerDown);
-
+        menu.addAction(handler->actionMoveLayerUp());
+        menu.addAction(handler->actionMoveLayerDown());
         menu.addSeparator();
-
-        actionLayerProperties = new QAction(QApplication::translate("MainWindow", "Layer &Properties...", 0, QApplication::UnicodeUTF8), &menu);
-        actionLayerProperties->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
-        Utils::setThemeIcon(actionLayerProperties, "document-properties");
-        menu.addAction(actionLayerProperties);
+        menu.addAction(handler->actionLayerProperties());
     }
 
-    if (QAction *result = menu.exec(event->globalPos())) {
-        if (result == actionAddTileLayer) {
-            mMapDocument->addLayer(MapDocument::TileLayerType);
-        } else if (result == actionAddObjectLayer) {
-            mMapDocument->addLayer(MapDocument::ObjectLayerType);
-        } else if (result == actionDuplicateLayer) {
-            mMapDocument->duplicateLayer();
-        } else if (result == actionRemoveLayer) {
-            mMapDocument->removeLayer(layerIndex);
-        } else if (result == actionMoveLayerUp) {
-            mMapDocument->moveLayerUp(layerIndex);
-        } else if (result == actionMoveLayerDown) {
-            mMapDocument->moveLayerDown(layerIndex);
-        } else if (result == actionLayerProperties) {
-            Layer *layer = mMapDocument->map()->layerAt(layerIndex);
-            PropertiesDialog::showDialogFor(layer, mMapDocument, this);
-        }
-    }
+    menu.exec(event->globalPos());
 }
 
 void LayerView::keyPressEvent(QKeyEvent *event)

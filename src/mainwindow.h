@@ -44,6 +44,7 @@ namespace Internal {
 
 class ClipboardManager;
 class LayerDock;
+class MapDocumentActionHandler;
 class MapScene;
 class StampBrush;
 class BucketFillTool;
@@ -113,12 +114,6 @@ private slots:
 
     void selectAll();
     void selectNone();
-    void addTileLayer();
-    void addObjectLayer();
-    void duplicateLayer();
-    void moveLayerUp();
-    void moveLayerDown();
-    void removeLayer();
     void editLayerProperties();
 
     void setStampBrush(const TileLayer *tiles);
@@ -162,6 +157,7 @@ private:
 
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
+    MapDocumentActionHandler *mActionHandler;
     MapScene *mScene;
     LayerDock *mLayerDock;
     TilesetDock *mTilesetDock;

@@ -63,19 +63,8 @@ private slots:
     void updateOpacitySlider();
     void setLayerOpacity(int opacity);
 
-    void changeLayer();
-    void duplicateLayer();
-    void moveLayerUp();
-    void moveLayerDown();
-    void removeLayer();
-
 private:
     void retranslateUi();
-
-    QAction *mActionMoveLayerUp;
-    QAction *mActionMoveLayerDown;
-    QAction *mActionRemoveLayer;
-    QAction *mActionDuplicateLayer;
 
     QLabel *mOpacityLabel;
     QSlider *mOpacitySlider;

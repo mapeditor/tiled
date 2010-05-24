@@ -22,6 +22,7 @@ SOURCES += aboutdialog.cpp \
     mainwindow.cpp \
     map.cpp \
     mapdocument.cpp \
+    mapdocumentactionhandler.cpp \
     mapobject.cpp \
     mapobjectitem.cpp \
     mapscene.cpp \
@@ -96,6 +97,7 @@ HEADERS += aboutdialog.h \
     mapwriterinterface.h \
     map.h \
     mapdocument.h \
+    mapdocumentactionhandler.h \
     mapobject.h \
     mapobjectitem.h \
     mapscene.h \

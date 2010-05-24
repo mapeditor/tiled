@@ -115,25 +115,10 @@
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomNormal"/>
    </widget>
-   <widget class="QMenu" name="menuLayer">
-    <property name="title">
-     <string>&amp;Layer</string>
-    </property>
-    <addaction name="actionAddTileLayer"/>
-    <addaction name="actionAddObjectLayer"/>
-    <addaction name="actionDuplicateLayer"/>
-    <addaction name="actionRemoveLayer"/>
-    <addaction name="separator"/>
-    <addaction name="actionMoveLayerUp"/>
-    <addaction name="actionMoveLayerDown"/>
-    <addaction name="separator"/>
-    <addaction name="actionLayerProperties"/>
-   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuMap"/>
-   <addaction name="menuLayer"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -255,30 +240,6 @@
     <string>Save &amp;As...</string>
    </property>
   </action>
-  <action name="actionMoveLayerUp">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/go-up.png</normaloff>:/images/16x16/go-up.png</iconset>
-   </property>
-   <property name="text">
-    <string>Move Layer &amp;Up</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+Up</string>
-   </property>
-  </action>
-  <action name="actionMoveLayerDown">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/go-down.png</normaloff>:/images/16x16/go-down.png</iconset>
-   </property>
-   <property name="text">
-    <string>Move Layer Dow&amp;n</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+Down</string>
-   </property>
-  </action>
   <action name="actionSelectAll">
    <property name="text">
     <string>Select &amp;All</string>
@@ -307,15 +268,6 @@
     <string>New &amp;Tileset...</string>
    </property>
   </action>
-  <action name="actionRemoveLayer">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-delete.png</normaloff>:/images/16x16/edit-delete.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Remove Layer</string>
-   </property>
-  </action>
   <action name="actionClose">
    <property name="icon">
     <iconset resource="tiled.qrc">
@@ -323,37 +275,6 @@
    </property>
    <property name="text">
     <string>&amp;Close</string>
-   </property>
-  </action>
-  <action name="actionAddTileLayer">
-   <property name="text">
-    <string>Add &amp;Tile Layer...</string>
-   </property>
-  </action>
-  <action name="actionAddObjectLayer">
-   <property name="text">
-    <string>Add &amp;Object Layer...</string>
-   </property>
-  </action>
-  <action name="actionDuplicateLayer">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/stock-duplicate-16.png</normaloff>:/images/16x16/stock-duplicate-16.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Duplicate Layer</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+D</string>
-   </property>
-  </action>
-  <action name="actionLayerProperties">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
-   </property>
-   <property name="text">
-    <string>Layer &amp;Properties...</string>
    </property>
   </action>
   <action name="actionZoomIn">

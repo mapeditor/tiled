@@ -40,6 +40,7 @@
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
@@ -81,6 +82,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     : QMainWindow(parent, flags)
     , mUi(new Ui::MainWindow)
     , mMapDocument(0)
+    , mActionHandler(new MapDocumentActionHandler(this))
     , mLayerDock(new LayerDock(this))
     , mTilesetDock(new TilesetDock(this))
     , mZoomLabel(new QLabel)
@@ -154,6 +156,19 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->mainToolBar->addAction(undoAction);
     mUi->mainToolBar->addAction(redoAction);
 
+    QMenu *layerMenu = new QMenu(tr("&Layer"), this);
+    layerMenu->addAction(mActionHandler->actionAddTileLayer());
+    layerMenu->addAction(mActionHandler->actionAddObjectLayer());
+    layerMenu->addAction(mActionHandler->actionDuplicateLayer());
+    layerMenu->addAction(mActionHandler->actionRemoveLayer());
+    layerMenu->addSeparator();
+    layerMenu->addAction(mActionHandler->actionMoveLayerUp());
+    layerMenu->addAction(mActionHandler->actionMoveLayerDown());
+    layerMenu->addSeparator();
+    layerMenu->addAction(mActionHandler->actionLayerProperties());
+
+    menuBar()->insertMenu(mUi->menuHelp->menuAction(), layerMenu);
+
     connect(mUi->actionNew, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
     connect(mUi->actionClearRecentFiles, SIGNAL(triggered()),
@@ -186,16 +201,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
 
-    connect(mUi->actionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
-    connect(mUi->actionAddObjectLayer, SIGNAL(triggered()),
-            SLOT(addObjectLayer()));
-    connect(mUi->actionDuplicateLayer, SIGNAL(triggered()),
-            SLOT(duplicateLayer()));
-    connect(mUi->actionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
-    connect(mUi->actionMoveLayerDown, SIGNAL(triggered()),
-            SLOT(moveLayerDown()));
-    connect(mUi->actionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
-    connect(mUi->actionLayerProperties, SIGNAL(triggered()),
+    connect(mActionHandler->actionLayerProperties(), SIGNAL(triggered()),
             SLOT(editLayerProperties()));
 
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
@@ -232,10 +238,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
-    setThemeIcon(mUi->actionRemoveLayer, "edit-delete");
-    setThemeIcon(mUi->actionMoveLayerUp, "go-up");
-    setThemeIcon(mUi->actionMoveLayerDown, "go-down");
-    setThemeIcon(mUi->actionLayerProperties, "document-properties");
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mScene = new MapScene(this);
@@ -770,16 +772,6 @@ void MainWindow::updateActions()
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
-    mUi->actionAddTileLayer->setEnabled(map);
-    mUi->actionAddObjectLayer->setEnabled(map);
-
-    const int layerCount = map ? map->layerCount() : 0;
-    mUi->actionDuplicateLayer->setEnabled(currentLayer >= 0);
-    mUi->actionMoveLayerUp->setEnabled(currentLayer >= 0 &&
-                                       currentLayer < layerCount - 1);
-    mUi->actionMoveLayerDown->setEnabled(currentLayer > 0);
-    mUi->actionRemoveLayer->setEnabled(currentLayer >= 0);
-    mUi->actionLayerProperties->setEnabled(currentLayer >= 0);
 }
 
 void MainWindow::updateZoomLabel(qreal scale)
@@ -816,42 +808,6 @@ void MainWindow::selectNone()
 
     QUndoCommand *command = new ChangeSelection(mMapDocument, QRegion());
     mMapDocument->undoStack()->push(command);
-}
-
-void MainWindow::addTileLayer()
-{
-    if (mMapDocument)
-        mMapDocument->addLayer(MapDocument::TileLayerType);
-}
-
-void MainWindow::addObjectLayer()
-{
-    if (mMapDocument)
-        mMapDocument->addLayer(MapDocument::ObjectLayerType);
-}
-
-void MainWindow::duplicateLayer()
-{
-    if (mMapDocument)
-        mMapDocument->duplicateLayer();
-}
-
-void MainWindow::moveLayerUp()
-{
-    if (mMapDocument)
-        mMapDocument->moveLayerUp(mMapDocument->currentLayer());
-}
-
-void MainWindow::moveLayerDown()
-{
-    if (mMapDocument)
-        mMapDocument->moveLayerDown(mMapDocument->currentLayer());
-}
-
-void MainWindow::removeLayer()
-{
-    if (mMapDocument)
-        mMapDocument->removeLayer(mMapDocument->currentLayer());
 }
 
 void MainWindow::editLayerProperties()
@@ -929,6 +885,7 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument)
         mUndoGroup->removeStack(mMapDocument->undoStack());
 
+    mActionHandler->setMapDocument(mapDocument);
     mScene->setMapDocument(mapDocument);
     mLayerDock->setMapDocument(mapDocument);
     mTilesetDock->setMapDocument(mapDocument);
