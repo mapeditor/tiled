@@ -150,12 +150,14 @@ public:
     { return mLayers.size(); }
 
     /**
-     * Returns the number of layers of this map that are tile layers.
+     * Convenience function that returns the number of layers of this map that
+     * are tile layers.
      */
     int tileLayerCount() const;
 
     /**
-     * Returns the number of layers of this map that are object groups.
+     * Convenience function that returns the number of layers of this map that
+     * are object groups.
      */
     int objectLayerCount() const;
 

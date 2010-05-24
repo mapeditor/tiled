@@ -55,22 +55,18 @@ void Map::adjustMaxTileSize(const QSize &size)
 int Map::tileLayerCount() const
 {
     int count = 0;
-    for(int i = 0; i < mLayers.size(); i++) {
-       if(mLayers[i]->asTileLayer()) {
+    foreach (Layer *layer, mLayers)
+       if (layer->asTileLayer())
            count++;
-       }
-    }
     return count;
 }
 
 int Map::objectLayerCount() const
 {
     int count = 0;
-    for(int i = 0; i < mLayers.size(); i++) {
-       if(mLayers[i]->asObjectGroup()) {
+    foreach (Layer *layer, mLayers)
+        if (layer->asObjectGroup())
            count++;
-       }
-    }
     return count;
 }
 
