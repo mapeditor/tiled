@@ -26,7 +26,7 @@
 #include <QDebug>
 #include <QtPlugin>
 
-#if !defined(QT_SHARED) && !defined(QT_DLL)
+#ifdef STATIC_BUILD
 Q_IMPORT_PLUGIN(qgif)
 Q_IMPORT_PLUGIN(qjpeg)
 Q_IMPORT_PLUGIN(qtiff)

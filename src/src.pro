@@ -172,7 +172,7 @@ FORMS += aboutdialog.ui \
     offsetmapdialog.ui \
     objectpropertiesdialog.ui
 RESOURCES += tiled.qrc
-mac { 
+mac {
     TARGET = Tiled
     LIBS += -lz
     QMAKE_INFO_PLIST = Info.plist
@@ -182,6 +182,9 @@ mac {
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.5.sdk
 }
 win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
-contains(CONFIG, static):QTPLUGIN += qgif \
-    qjpeg \
-    qtiff
+contains(CONFIG, static) {
+    DEFINES += STATIC_BUILD
+    QTPLUGIN += qgif \
+        qjpeg \
+        qtiff
+}
