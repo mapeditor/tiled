@@ -1,0 +1,1354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="lv_LV">
+<context>
+    <name>AboutDialog</name>
+    <message>
+        <location filename="../src/aboutdialog.ui" line="+14"/>
+        <source>About Tiled</source>
+        <translation>Par Tiled</translation>
+    </message>
+    <message utf8="true">
+        <location line="+55"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:12pt; font-weight:600;&quot;&gt;Tiled (Qt) Map Editor&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-style:italic;&quot;&gt;Version %1&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;Copyright 2008-2009 Thorbjørn Lindeijer&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;(see the AUTHORS file for a full list of contributors)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled (Qt).&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://mapeditor.org/&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://mapeditor.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:12pt; font-weight:600;&quot;&gt;Karšu redaktors Tiled (Qt)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-style:italic;&quot;&gt;Versija %1&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;Autortiesības 2008-2009 Thorbjørn Lindeijer&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;(lai redzētu pilnu sarakstu ar cilvēkiem, kas palīdzējuši izstrādāt šo lietojumprogrammu, skat. datni AUTHORS)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;Šo programmu atļauts modificēt un izplatīt saskaņā ar GPL licences (versija 2 vai jaunāka) noteikumiem. GPL licences noteikumu kopija tiek izplatīta kopā ar šo lietojumprogrammu un ir atrodama datnē COPYING (angļu valodā).&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://mapeditor.org/&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://mapeditor.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+56"/>
+        <source>OK</source>
+        <translation>Labi</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../src/mainwindow.ui" line="+17"/>
+        <source>Tiled</source>
+        <translation>Tiled</translation>
+    </message>
+    <message>
+        <location line="+36"/>
+        <source>&amp;File</source>
+        <translation>&amp;Datne</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>&amp;Recent Files</source>
+        <translation>&amp;Nesen izmantotās datnes</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>&amp;Edit</source>
+        <translation>&amp;Rediģēšana</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Palīdzība</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&amp;Map</source>
+        <translation>&amp;Karte</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>&amp;View</source>
+        <translation>&amp;Skats</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>&amp;Layer</source>
+        <translation>S&amp;lānis</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Main Toolbar</source>
+        <translation>Galvenā rīkjosla</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>&amp;Open...</source>
+        <translation>&amp;Atvērt...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;Save</source>
+        <translation>&amp;Saglabāt</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;Quit</source>
+        <translation>&amp;Iziet</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>&amp;Copy</source>
+        <translation>&amp;Kopēt</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>&amp;Paste</source>
+        <translation>&amp;Ielīmēt</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;About Tiled</source>
+        <translation>&amp;Par Tiled</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>About Qt</source>
+        <translation>Par Qt</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;Resize Map...</source>
+        <translation>&amp;Mainīt kartes izmēru...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Map &amp;Properties...</source>
+        <translation>Kartes &amp;rekvizīti...</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Show &amp;Grid</source>
+        <translation>Rādīt &amp;režģi</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+G</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Save &amp;As...</source>
+        <translation>Saglabāt &amp;kā...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <location filename="../src/layerdock.cpp" line="+71"/>
+        <location line="+269"/>
+        <source>Move Layer &amp;Up</source>
+        <translation>Pārvietot slāni uz &amp;augšu</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+Shift+Up</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <location filename="../src/layerdock.cpp" line="-264"/>
+        <location line="+270"/>
+        <source>Move Layer Dow&amp;n</source>
+        <translation>Pārvietot slāni uz &amp;leju</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+Shift+Down</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Select &amp;All</source>
+        <translation>Atlasīt &amp;visu</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Select &amp;None</source>
+        <translation>&amp;Noņemt atlasi</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;New...</source>
+        <translation>&amp;Izveidot...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>New &amp;Tileset...</source>
+        <translation>Izveidot attēļu &amp;komplektu...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <location filename="../src/layerdock.cpp" line="-261"/>
+        <location line="+248"/>
+        <source>&amp;Remove Layer</source>
+        <translation>&amp;Dzēst slāni</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;Close</source>
+        <translation>&amp;Aizvērt</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location filename="../src/layerdock.cpp" line="-17"/>
+        <source>Add &amp;Tile Layer...</source>
+        <translation>Pievienot &amp;mozaīkslāni...</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location filename="../src/layerdock.cpp" line="+3"/>
+        <source>Add &amp;Object Layer...</source>
+        <translation>Pievienot &amp;objektu grupu...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <location filename="../src/layerdock.cpp" line="-238"/>
+        <location line="+248"/>
+        <source>&amp;Duplicate Layer</source>
+        <translation>&amp;Izveidot slāņa kopiju</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+Shift+D</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <location filename="../src/layerdock.cpp" line="+25"/>
+        <source>Layer &amp;Properties...</source>
+        <translation>Slāņa &amp;rekvizīti...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Zoom In</source>
+        <translation>Palielināt skatu</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Zoom Out</source>
+        <translation>Samazināt skatu</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Normal Size</source>
+        <translation>Iestatīt normālu skatīšanas lielumu</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+0</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Save As Image...</source>
+        <translation>Saglabāt kā attēlu...</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Cu&amp;t</source>
+        <translation>I&amp;zgriezt</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Offset Map...</source>
+        <translation>Iestatīt kartes &amp;nobīdi...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Offsets everything in a layer</source>
+        <translation>Veic visu slāņa elementu nobīdi</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Pre&amp;ferences...</source>
+        <translation>Ies&amp;tatījumi...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Clear Recent Files</source>
+        <translation>Dzēst datņu vēsturi</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Export As...</source>
+        <translation>&amp;Eksportēt kā...</translation>
+    </message>
+</context>
+<context>
+    <name>MapObjectItem</name>
+    <message>
+        <location filename="../src/mapobjectitem.cpp" line="+265"/>
+        <source>&amp;Duplicate</source>
+        <translation>&amp;Izveidot kopiju</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Remove</source>
+        <translation>&amp;Dzēst</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Properties...</source>
+        <translation>&amp;Rekvizīti...</translation>
+    </message>
+</context>
+<context>
+    <name>NewMapDialog</name>
+    <message>
+        <location filename="../src/newmapdialog.ui" line="+14"/>
+        <source>New Map</source>
+        <translation>Izveidot karti</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Map size</source>
+        <translation>Kartes izmērs</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <location line="+55"/>
+        <source>Width:</source>
+        <translation>Platums:</translation>
+    </message>
+    <message>
+        <location line="-32"/>
+        <location line="+55"/>
+        <source>Height:</source>
+        <translation>Augstums:</translation>
+    </message>
+    <message>
+        <location line="-29"/>
+        <source>Tile size</source>
+        <translation>Mozaīkelementa izmērs</translation>
+    </message>
+    <message>
+        <location line="+78"/>
+        <source>Map</source>
+        <translation>Karte</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Orientation:</source>
+        <translation>Kartes projekcija:</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Orthogonal</source>
+        <translation>Ortogonāla projekcija</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Isometric</source>
+        <translation>Izometriska projekcija</translation>
+    </message>
+</context>
+<context>
+    <name>NewTilesetDialog</name>
+    <message>
+        <location filename="../src/newtilesetdialog.ui" line="+6"/>
+        <source>New Tileset</source>
+        <translation>Izveidot mozaīkelementu komplektu</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Tileset</source>
+        <translation>Mozaīkelement komplekts</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Name:</source>
+        <translation>&amp;Nosaukums:</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Image:</source>
+        <translation>Attēls:</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>&amp;Browse...</source>
+        <translation>&amp;Pārlūkot...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Use transparent color:</source>
+        <translation>Caurredzamā krāsa:</translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>Tiles</source>
+        <translation>Mozaīkelementi</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Tile width:</source>
+        <translation>Mozaīkelementa platums:</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Margin:</source>
+        <translation>Mala ap elementiem:</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Tile height:</source>
+        <translation>Mozaīkelementa augstums:</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Spacing:</source>
+        <translation>Atstarpes starp elementiem:</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectPropertiesDialog</name>
+    <message>
+        <location filename="../src/objectpropertiesdialog.ui" line="+26"/>
+        <source>Form</source>
+        <translation>Forma</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Name:</source>
+        <translation>Nosaukums:</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Type:</source>
+        <translation>Veids:</translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Position</source>
+        <translation>Novietojums</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>X:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Y:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+42"/>
+        <source>Size</source>
+        <translation>Izmērs</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Width:</source>
+        <translation>Platums:</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Height:</source>
+        <translation>Augstums:</translation>
+    </message>
+</context>
+<context>
+    <name>OffsetMapDialog</name>
+    <message>
+        <location filename="../src/offsetmapdialog.ui" line="+17"/>
+        <source>Offset Map</source>
+        <translation>Veikt kartes nobīdi</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Offset Contents of Map</source>
+        <translation>Veic kartes elementu nobīdi</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>X:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <location line="+43"/>
+        <source>Wrap</source>
+        <translation>Aptīšanās</translation>
+    </message>
+    <message>
+        <location line="-36"/>
+        <source>Y:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Layers:</source>
+        <translation>Slāņu izvēle:</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>All Visible Layers</source>
+        <translation>Nobīdīt tikai redzamos slāņus</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>All Layers</source>
+        <translation>Nobīdīt visus slāņus</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Selected Layer</source>
+        <translation>Atlasītais slānis</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Bounds:</source>
+        <translation>Robežas:</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Whole Map</source>
+        <translation>Izmantot visu karti</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Current Selection</source>
+        <translation>Veikt nobīdi pašreizējās atlases robežās</translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesDialog</name>
+    <message>
+        <location filename="../src/preferencesdialog.ui" line="+14"/>
+        <source>Preferences</source>
+        <translation>Iestatījumi</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Saving and Loading</source>
+        <translation>Datņu saglabāšana un ielāde</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Store tile layer data as:</source>
+        <translation>&amp;Slāņa datu glabāšanas veids:</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>XML</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Base64 (uncompressed)</source>
+        <translation>Base64 (bez kompresijas)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Base64 (gzip compressed)</source>
+        <translation>Base64 (ar gzip kompresiju)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Base64 (zlib compressed)</source>
+        <translation>Base64 (ar zlib kompresiju)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>CSV</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>&amp;Reload tileset images when they change</source>
+        <translation>&amp;Atsvaidzināt mozaīkelementu komplektu attēlus, ja ir veiktas izmaiņas to datnēs</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
+        <translation>Šī iespēja pēc noklusējuma ir atspējota, jo atsauce uz ārēju DTD var izraisīt problēmas dažos XML parsētājos.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Include &amp;DTD reference in saved maps</source>
+        <translation>Iekļaut &amp;DTD atsauci saglabātajās kartēs</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Interface</source>
+        <translation>Saskarne</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Language:</source>
+        <translation>&amp;Valoda:</translation>
+    </message>
+</context>
+<context>
+    <name>PropertiesDialog</name>
+    <message>
+        <location filename="../src/propertiesdialog.ui" line="+14"/>
+        <source>Properties</source>
+        <translation>Rekvizīti</translation>
+    </message>
+</context>
+<context>
+    <name>ResizeDialog</name>
+    <message>
+        <location filename="../src/resizedialog.ui" line="+13"/>
+        <source>Resize</source>
+        <translation>Mainīt izmēru</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Size</source>
+        <translation>Izmēŗs</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Width:</source>
+        <translation>Platums:</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Height:</source>
+        <translation>Augstums:</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Offset</source>
+        <translation>Nobīde</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>X:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Y:</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>SaveAsImageDialog</name>
+    <message>
+        <location filename="../src/saveasimagedialog.ui" line="+14"/>
+        <source>Save As Image</source>
+        <translation>Saglabāt kā attēlu</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Location</source>
+        <translation>Atrašanās vieta</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Name:</source>
+        <translation>Nosaukums:</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>&amp;Browse...</source>
+        <translation>&amp;Pārlūkot...</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Settings</source>
+        <translation>Iestatījumi</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Only include &amp;visible layers</source>
+        <translation>Iekļaut tikai &amp;redzamos slāņus</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Use current &amp;zoom level</source>
+        <translation>Izmantot pašreizējo &amp;skatīšanas lielumu</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>&amp;Draw tile grid</source>
+        <translation>Iekļaut &amp;režģi</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::BucketFillTool</name>
+    <message>
+        <location filename="../src/bucketfilltool.cpp" line="+39"/>
+        <location line="+137"/>
+        <source>Bucket Fill Tool</source>
+        <translation>Aizpildīšanas rīks</translation>
+    </message>
+    <message>
+        <location line="-134"/>
+        <location line="+135"/>
+        <source>F</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::Eraser</name>
+    <message>
+        <location filename="../src/eraser.cpp" line="+34"/>
+        <location line="+37"/>
+        <source>Eraser</source>
+        <translation>Dzēšgumija</translation>
+    </message>
+    <message>
+        <location line="-34"/>
+        <location line="+35"/>
+        <source>E</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::LayerDock</name>
+    <message>
+        <location filename="../src/layerdock.cpp" line="-125"/>
+        <source>Layers</source>
+        <translation>Slāņi</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Opacity:</source>
+        <translation>Necaurredzamība:</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::LayerModel</name>
+    <message>
+        <location filename="../src/layermodel.cpp" line="+114"/>
+        <source>Layer</source>
+        <translation>Slānis</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::LayerView</name>
+    <message>
+        <source>Properties...</source>
+        <translation type="obsolete">Rekvizīti...</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::MainWindow</name>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="+115"/>
+        <source>Undo</source>
+        <translation>Atsaukt darbību</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Redo</source>
+        <translation>Atatsaukt darbību</translation>
+    </message>
+    <message>
+        <location line="+249"/>
+        <source>Error while opening map</source>
+        <translation>Kartes atvēršanas laikā radās kļūda</translation>
+    </message>
+    <message>
+        <location line="+35"/>
+        <source>Open Map</source>
+        <translation>Atvērt karti</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+38"/>
+        <source>Tiled map files (*.tmx)</source>
+        <translation>Lietojumprogrammas Tiled karšu formāts (*.tmx)</translation>
+    </message>
+    <message>
+        <location line="-23"/>
+        <location line="+98"/>
+        <source>Error while saving map</source>
+        <translation>Kartes saglabāšanas laikā radās kļūda</translation>
+    </message>
+    <message>
+        <location line="-63"/>
+        <source>Unsaved Changes</source>
+        <translation>Nesaglabātās izmaiņas</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are unsaved changes. Do you want to save now?</source>
+        <translation>Ir veiktas nesaglabātas izmaiņas. Vai vēlaties tās saglabāt?</translation>
+    </message>
+    <message>
+        <location line="+38"/>
+        <source>Export As...</source>
+        <translation>Eksportēt kā...</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Unknown File Format</source>
+        <translation>Datnes formāts nav atpazīts</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The given filename does not have any known file extension.</source>
+        <translation>Dotās datnes paplašinājums nav zināms.</translation>
+    </message>
+    <message>
+        <location line="+42"/>
+        <source>Cut</source>
+        <translation>Izgriezt</translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>Add Tilesets</source>
+        <translation>Pievienot mozaīkelementu komplektus</translation>
+    </message>
+    <message>
+        <location line="+84"/>
+        <source>Map</source>
+        <translation>Karte</translation>
+    </message>
+    <message>
+        <location line="+124"/>
+        <source>%1%</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Add Tile Layer</source>
+        <translation type="obsolete">Pievienot slāni</translation>
+    </message>
+    <message>
+        <source>Add Object Layer</source>
+        <translation type="obsolete">Pievienot objektu grupu</translation>
+    </message>
+    <message>
+        <source>Layer name:</source>
+        <translation type="obsolete">Slāņa nosaukums:</translation>
+    </message>
+    <message>
+        <source>New Layer</source>
+        <translation type="obsolete">Nenosaukts slānis</translation>
+    </message>
+    <message>
+        <location line="+131"/>
+        <location line="+41"/>
+        <source>%1[*] - Tiled</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::MapDocument</name>
+    <message>
+        <location filename="../src/mapdocument.cpp" line="+108"/>
+        <source>Resize Map</source>
+        <translation>Mainīt kartes izmēru</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Offset Map</source>
+        <translation>Veikt kartes nobīdi</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Tile Layer %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Object Layer %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Copy of %1</source>
+        <translation>%1 (kopija)</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Duplicate Layer</source>
+        <translation>Veikt slāņa kopiju</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::NewMapDialog</name>
+    <message>
+        <source>Layer 1</source>
+        <translation type="obsolete">Slānis 1</translation>
+    </message>
+    <message>
+        <location filename="../src/newmapdialog.cpp" line="+81"/>
+        <source>Tile Layer 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::NewTilesetDialog</name>
+    <message>
+        <location filename="../src/newtilesetdialog.cpp" line="+115"/>
+        <location line="+7"/>
+        <source>Error</source>
+        <translation>Kļūda</translation>
+    </message>
+    <message>
+        <location line="-6"/>
+        <source>Failed to load tileset image &apos;%1&apos;.</source>
+        <translation>Neizdevās ielādēt mozaīkattēlu komplekta attēlu %1.</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
+        <translation>Dotā attēla un mozaīkelementu izmēra, malu un atstarpju informācijas kombinācija nav derīga.</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Tileset Image</source>
+        <translation>Mozaīkelementu komplekta attēls</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::ObjectGroupPropertiesDialog</name>
+    <message>
+        <location filename="../src/objectgrouppropertiesdialog.cpp" line="+43"/>
+        <source>Object Layer</source>
+        <translation>Objektu grupa</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Color:</source>
+        <translation>Krāsa:</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::ObjectPropertiesDialog</name>
+    <message>
+        <location filename="../src/objectpropertiesdialog.cpp" line="+41"/>
+        <source>Object</source>
+        <translation>Objekts</translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source>Change Object</source>
+        <translation>Mainīt objektu</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::PreferencesDialog</name>
+    <message>
+        <location filename="../src/preferencesdialog.cpp" line="+45"/>
+        <location line="+22"/>
+        <source>System default</source>
+        <translation>Sistēmas valoda</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::PropertiesDialog</name>
+    <message>
+        <location filename="../src/propertiesdialog.cpp" line="+61"/>
+        <source>%1 Properties</source>
+        <translation>Objekta %1 rekvizīti</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>Layer</source>
+        <translation>Slānis</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::PropertiesModel</name>
+    <message>
+        <location filename="../src/propertiesmodel.cpp" line="+50"/>
+        <location line="+24"/>
+        <source>&lt;new property&gt;</source>
+        <translation>&lt;jauns rekvizīts&gt;</translation>
+    </message>
+    <message>
+        <location line="+44"/>
+        <source>Name</source>
+        <translation>Nosaukums</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Value</source>
+        <translation>Vērtība</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::SaveAsImageDialog</name>
+    <message>
+        <location filename="../src/saveasimagedialog.cpp" line="+111"/>
+        <source>Save as Image</source>
+        <translation>Saglabāt kā attēlu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>%1 already exists.
+Do you want to replace it?</source>
+        <translation>Datne %1 jau pastāv. Vai vēlaties to pārrakstīt?</translation>
+    </message>
+    <message>
+        <location line="+71"/>
+        <source>Image</source>
+        <translation>Attēls</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::SelectionTool</name>
+    <message>
+        <location filename="../src/selectiontool.cpp" line="+34"/>
+        <location line="+80"/>
+        <source>Rectangular Select</source>
+        <translation>Četrstūrveida atlase</translation>
+    </message>
+    <message>
+        <location line="-77"/>
+        <location line="+78"/>
+        <source>R</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="-55"/>
+        <source>%1, %2 - Rectangle: (%3 x %4)</source>
+        <translation>%1, %2 - Četrstūris: (%3 x %4)</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::StampBrush</name>
+    <message>
+        <location filename="../src/stampbrush.cpp" line="+34"/>
+        <location line="+58"/>
+        <source>Stamp Brush</source>
+        <translation>Spiedogs</translation>
+    </message>
+    <message>
+        <location line="-55"/>
+        <location line="+56"/>
+        <source>B</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::TilesetDock</name>
+    <message>
+        <location filename="../src/tilesetdock.cpp" line="+212"/>
+        <source>Remove Tileset</source>
+        <translation>Dzēst mozaīkelementu komplektu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The tileset &quot;%1&quot; is still in use by the map!</source>
+        <translation>Kartē joprojām izmantoti mozaīkelementi no komplekta %1.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Remove this tileset and all references to the tiles in this tileset?</source>
+        <translation>Vai dzēst šo mozaīkelementu komplektu un visas atsauces uz to?</translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Tilesets</source>
+        <translation>Mozaīkelementu komplekti</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::TilesetView</name>
+    <message>
+        <location filename="../src/tilesetview.cpp" line="+164"/>
+        <source>Properties...</source>
+        <translation>Rekvizīti...</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Tile</source>
+        <translation>Mozaīkelements</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::ToolManager</name>
+    <message>
+        <location filename="../src/toolmanager.cpp" line="+87"/>
+        <source>Tools</source>
+        <translation>Rīki</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::UndoDock</name>
+    <message>
+        <location filename="../src/undodock.cpp" line="+64"/>
+        <source>History</source>
+        <translation>Vēsture</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&lt;empty&gt;</source>
+        <translation>&lt;nav vēstures&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>Tmw::TmwPlugin</name>
+    <message>
+        <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
+        <source>Multiple collision layers found!</source>
+        <translation>Pastāv vairaki sadursmjus slāni.</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>No collision layer found!</source>
+        <translation>Nav atrasts neviens sadursmju slānis.</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Could not open file for writing.</source>
+        <translation>Datni nevareja atvert rakstišanai.</translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>TMW-eAthena collision files (*.wlk)</source>
+        <translation>TMW-eAthena sadursmju datnes (*.wlk)</translation>
+    </message>
+</context>
+<context>
+    <name>TmxMapReader</name>
+    <message>
+        <location filename="../src/tmxmapreader.h" line="+50"/>
+        <location filename="../src/tmxmapwriter.h" line="+65"/>
+        <source>Tiled map files (*.tmx)</source>
+        <translation>Lietojumprogrammas Tiled karšu formāts (*.tmx)</translation>
+    </message>
+    <message>
+        <location filename="../src/tmxmapwriter.cpp" line="+49"/>
+        <source>Could not open file for writing.</source>
+        <translation>Datni nevareja atvert rakstišanai.</translation>
+    </message>
+</context>
+<context>
+    <name>TmxReader</name>
+    <message>
+        <location filename="../src/tmxmapreader.cpp" line="+139"/>
+        <location line="+21"/>
+        <source>Not a map file.</source>
+        <translation>Datne nesatur informāciju par karti.</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Not a tileset file.</source>
+        <translation>Datne nesatur informaciju par mozaīkelementu komplektu.</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>%3
+
+Line %1, column %2</source>
+        <translation>%3
+
+Rinda %1, kolonna %2</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>File not found: %1</source>
+        <translation>Datne nav atrasta: %1</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Unable to read file: %1</source>
+        <translation>Nav iespejams nolasit datni: %1</translation>
+    </message>
+    <message>
+        <location line="+61"/>
+        <source>Unsupported map orientation: &quot;%1&quot;</source>
+        <translation>Kartes projekcija nav atbalstita: %1</translation>
+    </message>
+    <message>
+        <location line="+56"/>
+        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
+        <translation>Mozaikelementu komplektam %1 ir iestatiti nederigi parametri</translation>
+    </message>
+    <message>
+        <location line="+54"/>
+        <source>Error while loading tileset &apos;%1&apos;: %2</source>
+        <translation>Kļuda mozaīkelementu komplekta %1 ielādes laikā: %2</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Invalid tile ID: %1</source>
+        <translation>Nederigs mozaikelementa identifikators: %1</translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <source>Error loading tileset image:
+&apos;%1&apos;</source>
+        <translation>Kļuda mozaīkelementu komplekta attela ielādes laika:
+%1</translation>
+    </message>
+    <message>
+        <location line="+49"/>
+        <source>Too many &lt;tile&gt; elements</source>
+        <translation>Pārak liels elementu &lt;tile&gt; skaits</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <location line="+66"/>
+        <location line="+39"/>
+        <source>Invalid tile: %1</source>
+        <translation>Nederigs mozaīkelements: %1</translation>
+    </message>
+    <message>
+        <location line="-85"/>
+        <source>Unknown encoding: %1</source>
+        <translation>Nezināms kodejums: %1</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Compression method &apos;%1&apos; not supported</source>
+        <translation>Kompresijas metode %1 nav atbalstīta</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <location line="+39"/>
+        <source>Corrupt layer data for layer &apos;%1&apos;</source>
+        <translation>Slāņa %1 dati ir bojāti</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
+        <translation>Slāņa %3 mozaikelementu ar koordinātam (%1, %2) nav iespejams parsēt</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Invalid global tile id (less than 0): %1</source>
+        <translation>Nederigs globalais mozaīkelementa identifikators (mazaks nekā 0): %1</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Tile used but no tilesets specified</source>
+        <translation>Izmantots mozaikelements, bet nav noradīts mozaīkelementu komplekts</translation>
+    </message>
+</context>
+<context>
+    <name>Undo Commands</name>
+    <message>
+        <location filename="../src/addremovelayer.h" line="+67"/>
+        <source>Add Layer</source>
+        <translation>Pievienot slani</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Remove Layer</source>
+        <translation>Dzēst slāni</translation>
+    </message>
+    <message>
+        <location filename="../src/addremovemapobject.cpp" line="+76"/>
+        <source>Add Object</source>
+        <translation>Pievienot objektu</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Remove Object</source>
+        <translation>Dzēst objektu</translation>
+    </message>
+    <message>
+        <location filename="../src/addremovetileset.cpp" line="+62"/>
+        <source>Add Tileset</source>
+        <translation>Pievienot mozaīkelementu komplektu</translation>
+    </message>
+    <message>
+        <location filename="../src/addremovetileset.h" line="+78"/>
+        <source>Remove Tileset</source>
+        <translation>Dzest mozaīkelementu komplektu</translation>
+    </message>
+    <message>
+        <location filename="../src/changemapobject.cpp" line="+35"/>
+        <source>Change Object</source>
+        <translation>Mainīt objektu</translation>
+    </message>
+    <message>
+        <location filename="../src/changeobjectgroupproperties.cpp" line="+37"/>
+        <location filename="../src/objectgrouppropertiesdialog.cpp" line="+21"/>
+        <source>Change Object Layer Properties</source>
+        <translation>Mainīt objektu grupas rekvizītus</translation>
+    </message>
+    <message>
+        <location filename="../src/changeproperties.cpp" line="+33"/>
+        <source>Change %1 Properties</source>
+        <translation>Mainīt objekta %1 rekvizītus</translation>
+    </message>
+    <message>
+        <location filename="../src/changeselection.cpp" line="+31"/>
+        <source>Change Selection</source>
+        <translation>Mainīt atlasi</translation>
+    </message>
+    <message>
+        <location filename="../src/erasetiles.cpp" line="+39"/>
+        <source>Erase</source>
+        <translation>Dzest</translation>
+    </message>
+    <message>
+        <location filename="../src/filltiles.cpp" line="+36"/>
+        <source>Fill Area</source>
+        <translation>Aizpildīt apgabalu</translation>
+    </message>
+    <message>
+        <location filename="../src/movelayer.cpp" line="+37"/>
+        <source>Move Layer Down</source>
+        <translation>Pārvietot slāni uz leju</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Layer Up</source>
+        <translation>Pārvietot slāni uz augšu</translation>
+    </message>
+    <message>
+        <location filename="../src/movemapobject.cpp" line="+39"/>
+        <source>Move Object</source>
+        <translation>Pārvietot objektu</translation>
+    </message>
+    <message>
+        <location filename="../src/offsetlayer.cpp" line="+40"/>
+        <source>Offset Layer</source>
+        <translation>Veikt slāņa nobidi</translation>
+    </message>
+    <message>
+        <location filename="../src/painttilelayer.cpp" line="+49"/>
+        <source>Paint</source>
+        <translation>Zīmēt</translation>
+    </message>
+    <message>
+        <location filename="../src/renamelayer.cpp" line="+40"/>
+        <source>Rename Layer</source>
+        <translation>Mainīt slāņa nosaukumu</translation>
+    </message>
+    <message>
+        <location filename="../src/resizelayer.cpp" line="+37"/>
+        <source>Resize Layer</source>
+        <translation>Mainīt slāņa izmēru</translation>
+    </message>
+    <message>
+        <location filename="../src/resizemap.cpp" line="+32"/>
+        <source>Resize Map</source>
+        <translation>Mainīt kartes izmēru</translation>
+    </message>
+    <message>
+        <location filename="../src/resizemapobject.cpp" line="+39"/>
+        <source>Resize Object</source>
+        <translation>Mainīt objekta izmēru</translation>
+    </message>
+</context>
+<context>
+    <name>Utils</name>
+    <message>
+        <location filename="../src/utils.cpp" line="+32"/>
+        <source>Image files</source>
+        <translation>Attelu datnes</translation>
+    </message>
+</context>
+</TS>
