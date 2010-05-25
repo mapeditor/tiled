@@ -29,10 +29,15 @@ provide parts of the user interface.
 
 COMPILING
 
-If you have Qt (>= 4.5) development libraries installed, you can compile by
-running:
+Make sure the Qt (>= 4.5) development libraries are installed:
 
- $ qmake
+In Ubuntu/Debian: sudo apt-get install libqt4-dev
+In Fedora:        yum install qt-devel
+In Arch Linux:    pacman -S qt
+
+Now you can compile by running:
+
+ $ qmake (or qmake-qt4 on some systems, like Fedora)
  $ make
 
 To do a shadow build, you can run qmake from a different directory and refer
