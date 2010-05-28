@@ -157,7 +157,8 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     // Select this tile to make sure it is clear that only the properties of a
     // single tile are being edited.
     selectionModel()->setCurrentIndex(index,
-                                      QItemSelectionModel::SelectCurrent);
+                                      QItemSelectionModel::SelectCurrent |
+                                      QItemSelectionModel::Clear);
 
     QMenu menu;
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
