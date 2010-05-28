@@ -671,7 +671,6 @@ void MainWindow::editMapProperties()
 void MainWindow::updateModified()
 {
     setWindowModified(!mUndoGroup->isClean());
-    updateActions();
 }
 
 void MainWindow::openRecentFile()
@@ -754,7 +753,7 @@ void MainWindow::updateActions()
 
     const bool mapInClipboard = mClipboardManager->hasMap();
 
-    mUi->actionSave->setEnabled(map && !mUndoGroup->isClean());
+    mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionClose->setEnabled(map);
