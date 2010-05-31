@@ -1,8 +1,9 @@
 /*
- * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * tmxmapwriter.h
+ * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010, Dennis Honeyman <arcticuno@gmail.com>
  *
- * This file is part of Tiled (Qt).
+ * This file is part of Tiled.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,8 +16,7 @@
  * more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA 02111-1307, USA.
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef TMXMAPWRITER_H
@@ -52,7 +52,7 @@ public:
     TmxMapWriter();
 
     bool write(const Map *map, const QString &fileName);
-    
+
     /**
      * Converts the given map to a string (in .tmx format). This is for
      * storing a map in the clipboard. References to other files (like tileset

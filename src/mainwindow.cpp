@@ -1,8 +1,13 @@
 /*
- * Tiled Map Editor (Qt)
- * Copyright 2008 Tiled (Qt) developers (see AUTHORS file)
+ * mainwindow.cpp
+ * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
+ * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
+ * Copyright 2009, Christian Henz <chrhenz@gmx.de>
+ * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  *
- * This file is part of Tiled (Qt).
+ * This file is part of Tiled.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -15,8 +20,7 @@
  * more details.
  *
  * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
- * Place, Suite 330, Boston, MA 02111-1307, USA.
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "mainwindow.h"
