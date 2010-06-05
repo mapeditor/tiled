@@ -44,9 +44,9 @@ public:
      * FillTiles does not take ownership of \a fillStamp.
      */
     FillTiles(MapDocument *mapDocument,
-               TileLayer *tileLayer,
-               const QRegion &fillRegion,
-               const TileLayer *fillStamp);
+              TileLayer *tileLayer,
+              const QRegion &fillRegion,
+              const TileLayer *fillStamp);
     ~FillTiles();
 
     void undo();

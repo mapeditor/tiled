@@ -28,9 +28,6 @@
 #include <QSize>
 #include <QString>
 
-class QPoint;
-class QPointF;
-
 namespace Tiled {
 
 class Layer;
