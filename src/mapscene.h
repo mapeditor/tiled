@@ -77,11 +77,6 @@ public:
 
 public slots:
     /**
-     * Sets the currently active tool.
-     */
-    void setActiveTool(AbstractTool *tool);
-
-    /**
      * Sets whether the tile grid is visible.
      */
     void setGridVisible(bool visible);
@@ -104,6 +99,11 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
 
 private slots:
+    /**
+     * Sets the currently selected tool.
+     */
+    void setSelectedTool(AbstractTool *tool);
+
     /**
      * Refreshes the map scene.
      */
@@ -131,7 +131,9 @@ private:
     QGraphicsItem *createLayerItem(Layer *layer);
 
     void updateInteractionMode();
-    void setBrushVisible(bool visible);
+
+    void enableSelectedTool();
+    void disableSelectedTool();
 
     void startNewMapObject(const QPointF &pos);
     MapObject *clearNewMapObjectItem();
@@ -143,6 +145,7 @@ private:
     MapDocument *mMapDocument;
     ObjectGroupItem *mSelectedObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
+    AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;
     bool mUnderMouse;

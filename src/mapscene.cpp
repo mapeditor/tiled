@@ -53,6 +53,7 @@ MapScene::MapScene(QObject *parent):
     mMapDocument(0),
     mSelectedObjectGroupItem(0),
     mNewMapObjectItem(0),
+    mSelectedTool(0),
     mActiveTool(0),
     mGridVisible(true),
     mUnderMouse(false),
@@ -62,7 +63,7 @@ MapScene::MapScene(QObject *parent):
 
     ToolManager *toolManager = ToolManager::instance();
     connect(toolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            this, SLOT(setActiveTool(AbstractTool*)));
+            this, SLOT(setSelectedTool(AbstractTool*)));
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
@@ -83,21 +84,12 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         mMapDocument->disconnect(this);
 
-        if (mActiveTool)
-            mActiveTool->disable();
+        disableSelectedTool();
     }
 
     mMapDocument = mapDocument;
 
-    /* The refresh may generate events. This makes sure they don't get sent to
-     * the (disabled) active tool.
-     */
-    AbstractTool *temporaryDisabledTool = mActiveTool;
-    mActiveTool = 0;
-
     refreshScene();
-
-    mActiveTool = temporaryDisabledTool;
 
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(mapChanged()),
@@ -119,36 +111,18 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
 
-        if (mActiveTool)
-            mActiveTool->enable(this);
+        enableSelectedTool();
     }
 }
 
-void MapScene::setActiveTool(AbstractTool *tool)
+void MapScene::setSelectedTool(AbstractTool *tool)
 {
-    if (mActiveTool == tool)
+    if (mSelectedTool == tool)
         return;
 
-    if (mMapDocument && mActiveTool) {
-        if (mUnderMouse)
-            mActiveTool->mouseLeft();
-        mActiveTool->disable();
-    }
-
-    mActiveTool = tool;
-
-    if (mMapDocument && mActiveTool) {
-        mActiveTool->enable(this);
-
-        mCurrentModifiers = QApplication::keyboardModifiers();
-        if (mCurrentModifiers != Qt::NoModifier)
-            mActiveTool->modifiersChanged(mCurrentModifiers);
-
-        if (mUnderMouse) {
-            mActiveTool->mouseEntered();
-            mActiveTool->mouseMoved(mLastMousePos, Qt::KeyboardModifiers());
-        }
-    }
+    disableSelectedTool();
+    mSelectedTool = tool;
+    enableSelectedTool();
 }
 
 void MapScene::refreshScene()
@@ -247,6 +221,35 @@ void MapScene::updateInteractionMode()
     }
 
     mSelectedObjectGroupItem = ogItem;
+}
+
+void MapScene::enableSelectedTool()
+{
+    if (!mSelectedTool || !mMapDocument)
+        return;
+
+    mActiveTool = mSelectedTool;
+    mActiveTool->enable(this);
+
+    mCurrentModifiers = QApplication::keyboardModifiers();
+    if (mCurrentModifiers != Qt::NoModifier)
+        mActiveTool->modifiersChanged(mCurrentModifiers);
+
+    if (mUnderMouse) {
+        mActiveTool->mouseEntered();
+        mActiveTool->mouseMoved(mLastMousePos, Qt::KeyboardModifiers());
+    }
+}
+
+void MapScene::disableSelectedTool()
+{
+    if (!mActiveTool)
+        return;
+
+    if (mUnderMouse)
+        mActiveTool->mouseLeft();
+    mActiveTool->disable();
+    mActiveTool = 0;
 }
 
 void MapScene::currentLayerChanged()
