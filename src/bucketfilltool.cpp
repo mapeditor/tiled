@@ -147,6 +147,8 @@ void BucketFillTool::mousePressed(const QPointF &pos, Qt::MouseButton button,
 
     if (button != Qt::LeftButton || mFillRegion.isEmpty())
         return;
+    if (!brushItem()->isVisible())
+        return;
 
     FillTiles *fillTiles = new FillTiles(mMapDocument,
                                          currentTileLayer(),
