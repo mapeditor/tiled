@@ -244,6 +244,17 @@ void MapDocument::removeTilesetAt(int index)
     tilesetManager->removeReference(tileset);
 }
 
+void MapDocument::moveTileset(int from, int to)
+{
+    if (from == to)
+        return;
+
+    Tileset *tileset = mMap->tilesets().at(from);
+    mMap->removeTilesetAt(from);
+    mMap->insertTileset(to, tileset);
+    emit tilesetMoved(from, to);
+}
+
 void MapDocument::setTileSelection(const QRegion &selection)
 {
     if (mTileSelection != selection) {

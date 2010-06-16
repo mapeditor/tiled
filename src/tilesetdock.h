@@ -72,8 +72,10 @@ private slots:
     void selectionChanged();
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
+    void tilesetMoved(int from, int to);
 
     void removeTileset(int index);
+    void moveTileset(int from, int to);
 
 private:
     void setCurrentTiles(TileLayer *tiles);

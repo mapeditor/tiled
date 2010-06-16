@@ -111,6 +111,7 @@ public:
 
     void insertTileset(int index, Tileset *tileset);
     void removeTilesetAt(int index);
+    void moveTileset(int from, int to);
 
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
@@ -196,6 +197,7 @@ signals:
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
+    void tilesetMoved(int from, int to);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);

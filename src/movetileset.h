@@ -1,6 +1,6 @@
 /*
- * undocommands.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * movetileset.h
+ * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,17 +18,39 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UNDOCOMMANDS_H
-#define UNDOCOMMANDS_H
+#ifndef MOVETILESET_H
+#define MOVETILESET_H
+
+#include "undocommands.h"
+
+#include <QUndoCommand>
+
+namespace Tiled {
+namespace Internal {
+
+class MapDocument;
 
 /**
- * These undo command IDs are used by Qt to determine whether two undo commands
- * can be merged.
+ * An undo command for moving a tileset from one place to another.
  */
-enum UndoCommands {
-    Cmd_EraseTiles,
-    Cmd_PaintTileLayer,
-    Cmd_MoveTileset
+class MoveTileset : public QUndoCommand
+{
+public:
+    MoveTileset(MapDocument *mapDocument, int from, int to);
+
+    void undo();
+    void redo();
+
+    int id() const { return Cmd_MoveTileset; }
+    bool mergeWith(const QUndoCommand *other);
+
+private:
+    MapDocument *mMapDocument;
+    int mFrom;
+    int mTo;
 };
 
-#endif // UNDOCOMMANDS_H
+} // namespace Internal
+} // namespace Tiled
+
+#endif // MOVETILESET_H
