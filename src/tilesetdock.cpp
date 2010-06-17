@@ -216,7 +216,8 @@ void TilesetDock::tilesetMoved(int from, int to)
     const int end = qMax(from, to);
     for (int i = start; i <= end; ++i) {
         const Tileset *tileset = tilesetViewAt(i)->tilesetModel()->tileset();
-        mTabBar->setTabText(i, tileset->name());
+        if (mTabBar->tabText(i) != tileset->name())
+            mTabBar->setTabText(i, tileset->name());
     }
 }
 
