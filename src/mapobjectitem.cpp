@@ -262,10 +262,11 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QIcon dupIcon(QLatin1String(":images/16x16/stock-duplicate-16.png"));
     QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QAction *dupAction = menu.addAction(dupIcon, tr("&Duplicate"));
-    QAction *removeAction = menu.addAction(delIcon, tr("&Remove"));
+    QAction *dupAction = menu.addAction(dupIcon, tr("&Duplicate Object"));
+    QAction *removeAction = menu.addAction(delIcon, tr("&Remove Object"));
     menu.addSeparator();
-    QAction *propertiesAction = menu.addAction(propIcon, tr("&Properties..."));
+    QAction *propertiesAction = menu.addAction(propIcon,
+                                               tr("Object &Properties..."));
 
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
