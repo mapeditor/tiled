@@ -789,3 +789,15 @@ Map *TmxMapReader::fromString(const QString &string)
 
     return map;
 }
+
+Tileset *TmxMapReader::readTileset(const QString &fileName)
+{
+    mError.clear();
+
+    TmxReader reader;
+    Tileset *tileset = reader.readTileset(fileName);
+    if (!tileset)
+        mError = reader.errorString();
+
+    return tileset;
+}

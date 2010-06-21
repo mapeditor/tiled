@@ -27,6 +27,9 @@
 #include <QString>
 
 namespace Tiled {
+
+class Tileset;
+
 namespace Internal {
 
 /**
@@ -46,6 +49,8 @@ public:
      * @see TmxMapWriter::toString
      */
     Map *fromString(const QString &string);
+
+    Tileset *readTileset(const QString &fileName);
 
     QString nameFilter() const { return tr("Tiled map files (*.tmx)"); }
 

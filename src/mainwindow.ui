@@ -99,6 +99,7 @@
      <string>&amp;Map</string>
     </property>
     <addaction name="actionNewTileset"/>
+    <addaction name="actionAddExternalTileset"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
     <addaction name="actionOffsetMap"/>
@@ -352,6 +353,11 @@
   <action name="actionExport">
    <property name="text">
     <string>&amp;Export As...</string>
+   </property>
+  </action>
+  <action name="actionAddExternalTileset">
+   <property name="text">
+    <string>&amp;Add External Tileset...</string>
    </property>
   </action>
  </widget>

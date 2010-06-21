@@ -196,6 +196,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             mUi->mapView->zoomable(), SLOT(resetZoom()));
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
+    connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
+            SLOT(addExternalTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
@@ -624,6 +626,28 @@ void MainWindow::newTileset()
 
     if (Tileset *tileset = newTileset.createTileset())
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
+}
+
+void MainWindow::addExternalTileset()
+{
+    if (!mMapDocument)
+        return;
+
+    const QString start = fileDialogStartLocation();
+    const QString fileName =
+            QFileDialog::getOpenFileName(this, tr("Add External Tileset"),
+                                         start,
+                                         tr("Tiled tileset files (*.tsx)"));
+    if (fileName.isEmpty())
+        return;
+
+    TmxMapReader reader;
+    if (Tileset *tileset = reader.readTileset(fileName)) {
+        mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
+    } else {
+        QMessageBox::critical(this, tr("Error Reading Tileset"),
+                              reader.errorString());
+    }
 }
 
 void MainWindow::resizeMap()

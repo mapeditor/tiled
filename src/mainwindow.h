@@ -102,6 +102,7 @@ private slots:
     void openPreferences();
 
     void newTileset();
+    void addExternalTileset();
     void resizeMap();
     void offsetMap();
     void editMapProperties();
