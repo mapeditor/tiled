@@ -354,6 +354,9 @@
    <property name="text">
     <string>&amp;Export As...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
   <action name="actionAddExternalTileset">
    <property name="text">
