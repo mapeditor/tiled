@@ -40,7 +40,8 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MapDocument::MapDocument(Map *map):
+MapDocument::MapDocument(Map *map, const QString &fileName):
+    mFileName(fileName),
     mMap(map),
     mLayerModel(new LayerModel(this)),
     mUndoStack(new QUndoStack(this))

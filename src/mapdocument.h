@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QRegion>
+#include <QString>
 
 class QPoint;
 class QRect;
@@ -60,12 +61,16 @@ public:
      * Constructs a map document around the given map. The map document takes
      * ownership of the map.
      */
-    MapDocument(Map *map);
+    MapDocument(Map *map, const QString &fileName = QString());
 
     /**
      * Destructor.
      */
     ~MapDocument();
+
+    QString fileName() const { return mFileName; }
+
+    void setFileName(const QString &fileName) { mFileName = fileName; }
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will
@@ -208,6 +213,7 @@ private slots:
     void onLayerRemoved(int index);
 
 private:
+    QString mFileName;
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mTileSelection;

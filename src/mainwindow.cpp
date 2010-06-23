@@ -352,7 +352,6 @@ void MainWindow::newMap()
     setMapDocument(mapDocument);
     mUi->mapView->centerOn(0, 0);
 
-    setCurrentFileName(QString());
     updateActions();
 }
 
@@ -371,10 +370,9 @@ bool MainWindow::openFile(const QString &fileName)
         return false;
     }
 
-    setMapDocument(new MapDocument(map));
+    setMapDocument(new MapDocument(map, fileName));
     mUi->mapView->centerOn(0, 0);
 
-    setCurrentFileName(fileName);
     updateActions();
     return true;
 }
@@ -423,6 +421,7 @@ bool MainWindow::saveFile(const QString &fileName)
     }
 
     mMapDocument->undoStack()->setClean();
+    mMapDocument->setFileName(fileName);
     setCurrentFileName(fileName);
     return true;
 }
@@ -524,7 +523,6 @@ void MainWindow::closeFile()
 {
     if (confirmSave()) {
         setMapDocument(0);
-        setCurrentFileName(QString());
         updateActions();
     }
 }
@@ -921,6 +919,8 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
+        setCurrentFileName(mMapDocument->fileName());
+
         connect(mapDocument, SIGNAL(currentLayerChanged(int)),
                 SLOT(updateActions()));
         connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
@@ -929,6 +929,8 @@ void MainWindow::setMapDocument(MapDocument *mapDocument)
         QUndoStack *undoStack = mMapDocument->undoStack();
         mUndoGroup->addStack(undoStack);
         mUndoGroup->setActiveStack(undoStack);
+    } else {
+        setCurrentFileName(QString());
     }
 }
 
