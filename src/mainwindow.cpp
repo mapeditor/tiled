@@ -436,9 +436,17 @@ bool MainWindow::saveFile()
 
 bool MainWindow::saveFileAs()
 {
-    const QString start = fileDialogStartLocation();
+    QString suggestedFileName;
+    if (mMapDocument && !mMapDocument->fileName().isEmpty()) {
+        suggestedFileName = mMapDocument->fileName();
+    } else {
+        suggestedFileName = fileDialogStartLocation();
+        suggestedFileName += QLatin1Char('/');
+        suggestedFileName += QLatin1String("untitled.tmx");
+    }
+
     const QString fileName =
-            QFileDialog::getSaveFileName(this, QString(), start,
+            QFileDialog::getSaveFileName(this, QString(), suggestedFileName,
                                          tr("Tiled map files (*.tmx)"));
     if (!fileName.isEmpty())
         return saveFile(fileName);
