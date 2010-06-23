@@ -53,6 +53,8 @@ public:
 
     bool write(const Map *map, const QString &fileName);
 
+    bool writeTileset(const Tileset *tileset, const QString &fileName);
+
     /**
      * Converts the given map to a string (in .tmx format). This is for
      * storing a map in the clipboard. References to other files (like tileset
@@ -96,6 +98,8 @@ public:
     { return mDtdEnabled; }
 
 private:
+    QXmlStreamWriter *createWriter(QFile *file);
+
     void writeMap(QXmlStreamWriter &w, const Map *map);
     void writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                       int firstGid);

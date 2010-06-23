@@ -4,6 +4,8 @@
         <file>images/tiled-icon-16.png</file>
         <file>images/tiled-icon-32.png</file>
         <file>images/16x16/application-exit.png</file>
+        <file>images/16x16/document-export.png</file>
+        <file>images/16x16/document-import.png</file>
         <file>images/16x16/document-new.png</file>
         <file>images/16x16/document-open.png</file>
         <file>images/16x16/document-open-recent.png</file>

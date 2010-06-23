@@ -86,6 +86,11 @@ public:
     void setFileName(const QString &fileName) { mFileName = fileName; }
 
     /**
+     * Returns whether this tileset is external.
+     */
+    bool isExternal() const { return !mFileName.isEmpty(); }
+
+    /**
      * Returns the width of the tiles in this tileset.
      */
     int tileWidth() const { return mTileWidth; }

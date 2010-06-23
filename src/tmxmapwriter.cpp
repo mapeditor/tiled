@@ -42,31 +42,68 @@ TmxMapWriter::TmxMapWriter()
 {
 }
 
+QXmlStreamWriter *TmxMapWriter::createWriter(QFile *file)
+{
+    if (!file->open(QIODevice::WriteOnly)) {
+        mError = tr("Could not open file for writing.");
+        return 0;
+    }
+
+    mMapDir = QFileInfo(*file).dir();
+    mUseAbsolutePaths = false;
+
+    QXmlStreamWriter *writer = new QXmlStreamWriter(file);
+    writer->setAutoFormatting(true);
+    writer->setAutoFormattingIndent(1);
+    return writer;
+}
+
 bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly)) {
-        mError = tr("Could not open file for writing.");
+    QXmlStreamWriter *writer = createWriter(&file);
+    if (!writer)
+        return false;
+
+    writer->writeStartDocument();
+
+    if (mDtdEnabled) {
+        writer->writeDTD(QLatin1String("<!DOCTYPE map SYSTEM \""
+                                       "http://mapeditor.org/dtd/1.0/"
+                                       "map.dtd\">"));
+    }
+
+    writeMap(*writer, map);
+    writer->writeEndDocument();
+    delete writer;
+
+    if (file.error() != QFile::NoError) {
+        mError = file.errorString();
         return false;
     }
 
-    mMapDir = QFileInfo(file).dir();
-    mUseAbsolutePaths = false;
+    return true;
+}
 
-    QXmlStreamWriter writer(&file);
-    writer.setAutoFormatting(true);
-    writer.setAutoFormattingIndent(1);
+bool TmxMapWriter::writeTileset(const Tileset *tileset,
+                                const QString &fileName)
+{
+    QFile file(fileName);
+    QXmlStreamWriter *writer = createWriter(&file);
+    if (!writer)
+        return false;
 
-    writer.writeStartDocument();
+    writer->writeStartDocument();
 
     if (mDtdEnabled) {
-        writer.writeDTD(QLatin1String("<!DOCTYPE map SYSTEM \""
-                                      "http://mapeditor.org/dtd/1.0/"
-                                      "map.dtd\">"));
+        writer->writeDTD(QLatin1String("<!DOCTYPE tileset SYSTEM \""
+                                       "http://mapeditor.org/dtd/1.0/"
+                                       "map.dtd\">"));
     }
 
-    writeMap(writer, map);
-    writer.writeEndDocument();
+    writeTileset(*writer, tileset, 0);
+    writer->writeEndDocument();
+    delete writer;
 
     if (file.error() != QFile::NoError) {
         mError = file.errorString();
@@ -143,7 +180,8 @@ void TmxMapWriter::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                                 int firstGid)
 {
     w.writeStartElement(QLatin1String("tileset"));
-    w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
+    if (firstGid > 0)
+        w.writeAttribute(QLatin1String("firstgid"), QString::number(firstGid));
 
     const QString &fileName = tileset->fileName();
     if (!fileName.isEmpty()) {

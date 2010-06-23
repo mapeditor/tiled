@@ -56,6 +56,9 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
+    void exportTileset();
+    void importTileset();
+
     void adjustScale();
 
 private:
