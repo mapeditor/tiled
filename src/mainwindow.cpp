@@ -365,7 +365,7 @@ bool MainWindow::openFile(const QString &fileName)
     TmxMapReader mapReader;
     Map *map = mapReader.read(fileName);
     if (!map) {
-        QMessageBox::critical(this, tr("Error while opening map"),
+        QMessageBox::critical(this, tr("Error Opening Map"),
                               mapReader.errorString());
         return false;
     }
@@ -415,7 +415,7 @@ bool MainWindow::saveFile(const QString &fileName)
     mapWriter.setDtdEnabled(prefs->dtdEnabled());
 
     if (!mapWriter.write(mMapDocument->map(), fileName)) {
-        QMessageBox::critical(this, tr("Error while saving map"),
+        QMessageBox::critical(this, tr("Error Saving Map"),
                               mapWriter.errorString());
         return false;
     }
@@ -442,7 +442,7 @@ bool MainWindow::saveFileAs()
     } else {
         suggestedFileName = fileDialogStartLocation();
         suggestedFileName += QLatin1Char('/');
-        suggestedFileName += QLatin1String("untitled.tmx");
+        suggestedFileName += tr("untitled.tmx");
     }
 
     const QString fileName =
@@ -522,7 +522,7 @@ void MainWindow::exportAs()
     }
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
-        QMessageBox::critical(this, tr("Error while saving map"),
+        QMessageBox::critical(this, tr("Error Saving Map"),
                               chosenWriter->errorString());
     }
 }
