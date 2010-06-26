@@ -11,6 +11,7 @@ win32 {
     LIBS += -L$$OUT_PWD/../../bin
 } else {
     LIBS += -L$$OUT_PWD/../../lib
+    QMAKE_LFLAGS_RPATH = -Wl,-rpath,
     QMAKE_RPATHDIR += $$OUT_PWD/../../lib
 }
 MOC_DIR = .moc
