@@ -117,8 +117,6 @@ private slots:
     void openRecentFile();
     void clearRecentFiles();
 
-    void selectAll();
-    void selectNone();
     void editLayerProperties();
 
     void setStampBrush(const TileLayer *tiles);

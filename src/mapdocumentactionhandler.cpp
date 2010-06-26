@@ -20,6 +20,7 @@
 
 #include "mapdocumentactionhandler.h"
 
+#include "changeselection.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "utils.h"
@@ -37,6 +38,11 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 {
     Q_ASSERT(!mInstance);
     mInstance = this;
+
+    mActionSelectAll = new QAction(tr("Select &All"), this);
+    mActionSelectAll->setShortcut(QKeySequence::SelectAll);
+    mActionSelectNone = new QAction(tr("Select &None"), this);
+    mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
     mActionAddTileLayer = new QAction(tr("Add &Tile Layer..."), this);
     mActionAddObjectLayer = new QAction(tr("Add &Object Layer..."), this);
@@ -69,6 +75,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
     Utils::setThemeIcon(mActionLayerProperties, "document-properties");
 
+    connect(mActionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
+    connect(mActionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
     connect(mActionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
     connect(mActionAddObjectLayer, SIGNAL(triggered()),
             SLOT(addObjectLayer()));
@@ -97,7 +105,35 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mapDocument, SIGNAL(currentLayerChanged(int)),
                 SLOT(updateActions()));
+        connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+                SLOT(updateActions()));
     }
+}
+
+void MapDocumentActionHandler::selectAll()
+{
+    if (!mMapDocument)
+        return;
+
+    Map *map = mMapDocument->map();
+    QRect all(0, 0, map->width(), map->height());
+    if (mMapDocument->tileSelection() == all)
+        return;
+
+    QUndoCommand *command = new ChangeSelection(mMapDocument, all);
+    mMapDocument->undoStack()->push(command);
+}
+
+void MapDocumentActionHandler::selectNone()
+{
+    if (!mMapDocument)
+        return;
+
+    if (mMapDocument->tileSelection().isEmpty())
+        return;
+
+    QUndoCommand *command = new ChangeSelection(mMapDocument, QRegion());
+    mMapDocument->undoStack()->push(command);
 }
 
 void MapDocumentActionHandler::addTileLayer()
@@ -140,11 +176,16 @@ void MapDocumentActionHandler::updateActions()
 {
     Map *map = 0;
     int currentLayer = -1;
+    QRegion selection;
 
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayer = mMapDocument->currentLayer();
+        selection = mMapDocument->tileSelection();
     }
+
+    mActionSelectAll->setEnabled(map);
+    mActionSelectNone->setEnabled(!selection.isEmpty());
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectLayer->setEnabled(map);

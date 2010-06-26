@@ -47,6 +47,8 @@ public:
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
 
+    QAction *actionSelectAll() const { return mActionSelectAll; }
+    QAction *actionSelectNone() const { return mActionSelectNone; }
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectLayer() const { return mActionAddObjectLayer; }
     QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
@@ -56,6 +58,9 @@ public:
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
 public slots:
+    void selectAll();
+    void selectNone();
+
     void addTileLayer();
     void addObjectLayer();
     void duplicateLayer();
@@ -69,6 +74,8 @@ private slots:
 private:
     MapDocument *mMapDocument;
 
+    QAction *mActionSelectAll;
+    QAction *mActionSelectNone;
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectLayer;
     QAction *mActionDuplicateLayer;

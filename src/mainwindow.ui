@@ -82,9 +82,6 @@
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
-    <addaction name="actionSelectAll"/>
-    <addaction name="actionSelectNone"/>
-    <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -239,16 +236,6 @@
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
-   </property>
-  </action>
-  <action name="actionSelectAll">
-   <property name="text">
-    <string>Select &amp;All</string>
-   </property>
-  </action>
-  <action name="actionSelectNone">
-   <property name="text">
-    <string>Select &amp;None</string>
    </property>
   </action>
   <action name="actionNew">

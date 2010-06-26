@@ -28,7 +28,6 @@
 
 #include "aboutdialog.h"
 #include "addremovetileset.h"
-#include "changeselection.h"
 #include "clipboardmanager.h"
 #include "eraser.h"
 #include "erasetiles.h"
@@ -144,7 +143,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionCut->setShortcut(QKeySequence::Cut);
     mUi->actionCopy->setShortcut(QKeySequence::Copy);
     mUi->actionPaste->setShortcut(QKeySequence::Paste);
-    mUi->actionSelectAll->setShortcut(QKeySequence::SelectAll);
     undoAction->setShortcut(QKeySequence::Undo);
     redoAction->setShortcut(QKeySequence::Redo);
     mUi->actionZoomIn->setShortcut(QKeySequence::ZoomIn);
@@ -153,6 +151,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuEdit->insertAction(mUi->actionCut, undoAction);
     mUi->menuEdit->insertAction(mUi->actionCut, redoAction);
     mUi->menuEdit->insertSeparator(mUi->actionCut);
+    mUi->menuEdit->insertAction(mUi->actionPreferences,
+                                mActionHandler->actionSelectAll());
+    mUi->menuEdit->insertAction(mUi->actionPreferences,
+                                mActionHandler->actionSelectNone());
+    mUi->menuEdit->insertSeparator(mUi->actionPreferences);
     mUi->mainToolBar->addAction(undoAction);
     mUi->mainToolBar->addAction(redoAction);
 
@@ -183,8 +186,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
     connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
-    connect(mUi->actionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
-    connect(mUi->actionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
@@ -623,7 +624,7 @@ void MainWindow::cut()
     QUndoStack *stack = mMapDocument->undoStack();
     stack->beginMacro(tr("Cut"));
     stack->push(new EraseTiles(mMapDocument, tileLayer, selection));
-    selectNone();
+    mActionHandler->selectNone();
     stack->endMacro();
 }
 
@@ -662,7 +663,7 @@ void MainWindow::paste()
                 }
 
                 // Reset selection and paste into the stamp brush
-                selectNone();
+                mActionHandler->selectNone();
                 setStampBrush(layer);
                 ToolManager::instance()->selectTool(mStampBrush);
 
@@ -861,8 +862,6 @@ void MainWindow::updateActions()
     mUi->actionCut->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionPaste->setEnabled(tileLayerSelected && mapInClipboard);
-    mUi->actionSelectAll->setEnabled(map);
-    mUi->actionSelectNone->setEnabled(!selection.isEmpty());
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);
@@ -877,32 +876,6 @@ void MainWindow::updateZoomLabel(qreal scale)
     mUi->actionZoomNormal->setEnabled(scale != 1);
 
     mZoomLabel->setText(tr("%1%").arg(scale * 100));
-}
-
-void MainWindow::selectAll()
-{
-    if (!mMapDocument)
-        return;
-
-    Map *map = mMapDocument->map();
-    QRect all(0, 0, map->width(), map->height());
-    if (mMapDocument->tileSelection() == all)
-        return;
-
-    QUndoCommand *command = new ChangeSelection(mMapDocument, all);
-    mMapDocument->undoStack()->push(command);
-}
-
-void MainWindow::selectNone()
-{
-    if (!mMapDocument)
-        return;
-
-    if (mMapDocument->tileSelection().isEmpty())
-        return;
-
-    QUndoCommand *command = new ChangeSelection(mMapDocument, QRegion());
-    mMapDocument->undoStack()->push(command);
 }
 
 void MainWindow::editLayerProperties()
