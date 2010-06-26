@@ -863,6 +863,7 @@ void MainWindow::updateActions()
     mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionPaste->setEnabled(tileLayerSelected && mapInClipboard);
     mUi->actionNewTileset->setEnabled(map);
+    mUi->actionAddExternalTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
