@@ -191,46 +191,59 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     const QModelIndex index = indexAt(event->pos());
     const TilesetModel *m = tilesetModel();
     Tile *tile = m->tileAt(index);
-    if (!tile)
-        return;
 
-    // Select this tile to make sure it is clear that only the properties of a
-    // single tile are being edited.
-    selectionModel()->setCurrentIndex(index,
-                                      QItemSelectionModel::SelectCurrent |
-                                      QItemSelectionModel::Clear);
+    const bool isExternal = m->tileset()->isExternal();
+    QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    if (tile) {
+        // Select this tile to make sure it is clear that only the properties
+        // of a single tile are being edited.
+        selectionModel()->setCurrentIndex(index,
+                                          QItemSelectionModel::SelectCurrent |
+                                          QItemSelectionModel::Clear);
+
+        QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+        QAction *tileProperties = menu.addAction(propIcon,
+                                                 tr("Tile &Properties..."));
+        tileProperties->setEnabled(!isExternal);
+        Utils::setThemeIcon(tileProperties, "document-properties");
+        menu.addSeparator();
+
+        connect(tileProperties, SIGNAL(triggered()),
+                SLOT(editTileProperties()));
+    }
+
     QIcon exportIcon(QLatin1String(":images/16x16/document-export.png"));
     QIcon importIcon(QLatin1String(":images/16x16/document-import.png"));
 
-    QMenu menu;
-    QAction *tileProperties = menu.addAction(propIcon,
-                                             tr("Tile &Properties..."));
-    menu.addSeparator();
     QAction *exportTileset = menu.addAction(exportIcon,
                                             tr("&Export Tileset As..."));
     QAction *importTileset = menu.addAction(importIcon, tr("&Import Tileset"));
 
-    const bool isExternal = m->tileset()->isExternal();
-    tileProperties->setEnabled(!isExternal);
     exportTileset->setEnabled(!isExternal);
     importTileset->setEnabled(isExternal);
 
-    Utils::setThemeIcon(tileProperties, "document-properties");
     Utils::setThemeIcon(exportTileset, "document-export");
     Utils::setThemeIcon(importTileset, "document-import");
 
     connect(exportTileset, SIGNAL(triggered()), SLOT(exportTileset()));
     connect(importTileset, SIGNAL(triggered()), SLOT(importTileset()));
 
-    if (menu.exec(event->globalPos()) == tileProperties) {
-        PropertiesDialog propertiesDialog(tr("Tile"),
-                                          tile->properties(),
-                                          mMapDocument->undoStack(),
-                                          this);
-        propertiesDialog.exec();
-    }
+    menu.exec(event->globalPos());
+}
+
+void TilesetView::editTileProperties()
+{
+    const TilesetModel *m = tilesetModel();
+    Tile *tile = m->tileAt(selectionModel()->currentIndex());
+    if (!tile)
+        return;
+
+    PropertiesDialog propertiesDialog(tr("Tile"),
+                                      tile->properties(),
+                                      mMapDocument->undoStack(),
+                                      this);
+    propertiesDialog.exec();
 }
 
 void TilesetView::exportTileset()
@@ -272,5 +285,5 @@ void TilesetView::importTileset()
 
 void TilesetView::adjustScale()
 {
-    static_cast<TilesetModel*>(model())->tilesetChanged();
+    tilesetModel()->tilesetChanged();
 }

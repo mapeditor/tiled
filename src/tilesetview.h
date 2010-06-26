@@ -56,6 +56,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
+    void editTileProperties();
     void exportTileset();
     void importTileset();
 
