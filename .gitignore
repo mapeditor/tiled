@@ -1,5 +1,7 @@
 bin/tiled
+bin/*.dll
 lib/tiled/plugins/*
+lib/*.so*
 Makefile*
 *.o
 *.qm
