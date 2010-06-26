@@ -17,8 +17,11 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
 LIBS += -L$$OUT_PWD/../../lib
 
 !win32 {
-    QMAKE_LFLAGS_RPATH = -Wl,-rpath,
-    QMAKE_RPATHDIR += $$OUT_PWD/../../lib
+    QMAKE_RPATHDIR += \$\$ORIGIN/../lib
+
+    # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
+    QMAKE_LFLAGS += -Wl,-z,origin \'-Wl,-rpath,$$join(QMAKE_RPATHDIR, ":")\'
+    QMAKE_RPATHDIR =
 }
 
 MOC_DIR = .moc
