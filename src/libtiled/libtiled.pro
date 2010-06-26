@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = tiled
+TARGET = $$qtLibraryTarget(tiled)
 win32 {
     DESTDIR = ../../bin
 } else {
