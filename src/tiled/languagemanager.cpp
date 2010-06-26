@@ -51,7 +51,11 @@ LanguageManager::LanguageManager()
     , mAppTranslator(0)
 {
     mTranslationsDir = QCoreApplication::applicationDirPath();
-    mTranslationsDir += QLatin1String("/../translations");
+#ifdef Q_OS_WIN32
+    mTranslationsDir += QLatin1String("/translations");
+#else
+    mTranslationsDir += QLatin1String("/../share/tiled/translations");
+#endif
 }
 
 LanguageManager::~LanguageManager()
@@ -105,16 +109,15 @@ void LanguageManager::loadAvailableLanguages()
     mLanguages.clear();
     mLanguages.append(QLatin1String("en_US"));
 
-    QDirIterator iterator(mTranslationsDir);
+    QStringList nameFilters;
+    nameFilters.append(QLatin1String("tiled_*.qm"));
+
+    QDirIterator iterator(mTranslationsDir, nameFilters,
+                          QDir::Files | QDir::Readable);
+
     while (iterator.hasNext()) {
-        const QString fileName = iterator.next();
-        if (!fileName.endsWith(QLatin1String(".qm")))
-            continue;
-
+        iterator.next();
         const QString baseName = iterator.fileInfo().completeBaseName();
-        if (!baseName.startsWith(QLatin1String("tiled_")))
-            continue;
-
         // Cut off "tiled_" from the start
         mLanguages.append(baseName.mid(6));
     }

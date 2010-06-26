@@ -7,6 +7,7 @@
 * Added option to draw the tile grid when saving as image
 * Added a context menu and tool buttons to the layer dock
 * Added Latvian translation
+* Added an install target to the Makefile
 * Open local files when they are dropped onto Tiled
 * Allow changing position and size of objects in the Object Properties dialog
 * Fixed rendering issues with tiles wider than the tile width of the map

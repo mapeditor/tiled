@@ -7,9 +7,17 @@ CONFIG += plugin
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 INCLUDEPATH += $$PWD/../tiled
 DEPENDPATH += $$PWD/../tiled
-DESTDIR = $$PWD/../../lib/tiled/plugins
+win32 {
+    DESTDIR = $$PWD/../../plugins
+} else {
+    DESTDIR = $$PWD/../../lib/tiled/plugins
+}
 
 TARGET = $$qtLibraryTarget($$TARGET)
+
+include(../../tiled.pri)
+target.path = $${PREFIX}/lib/tiled/plugins
+INSTALLS += target
 
 include(../libtiled/libtiled.pri)
 win32 {

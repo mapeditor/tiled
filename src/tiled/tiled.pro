@@ -1,23 +1,31 @@
+include(../../tiled.pri)
+include(../libtiled/libtiled.pri)
+
 TEMPLATE = app
 TARGET = tiled
-DESTDIR = ../../bin
+target.path = $${PREFIX}/bin
+INSTALLS += target
+win32 {
+    DESTDIR = ../..
+} else {
+    DESTDIR = ../../bin
+}
+
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
-INCLUDEPATH += .
-QT += core \
-    gui
-include(../libtiled/libtiled.pri)
-win32 {
-    LIBS += -L$$OUT_PWD/../../bin
-} else {
-    LIBS += -L$$OUT_PWD/../../lib
+
+LIBS += -L$$OUT_PWD/../../lib
+
+!win32 {
     QMAKE_LFLAGS_RPATH = -Wl,-rpath,
     QMAKE_RPATHDIR += $$OUT_PWD/../../lib
 }
+
 MOC_DIR = .moc
 UI_DIR = .uic
 RCC_DIR = .rcc
 OBJECTS_DIR = .obj
+
 SOURCES += aboutdialog.cpp \
     brushitem.cpp \
     compression.cpp \

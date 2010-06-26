@@ -1,10 +1,12 @@
+include(../../tiled.pri)
+
 TEMPLATE = lib
 TARGET = $$qtLibraryTarget(tiled)
-win32 {
-    DESTDIR = ../../bin
-} else {
-    DESTDIR = ../../lib
-}
+target.path = $${PREFIX}/lib
+INSTALLS += target
+DESTDIR = ../../lib
+DLLDESTDIR = ../..
+
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY

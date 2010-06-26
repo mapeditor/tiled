@@ -1,6 +1,7 @@
 Tiled Map Editor - http://www.mapeditor.org/
 
 ABOUT TILED
+-------------------------------------------------------------------------------
 
 Tiled is a general purpose tile map editor. It is meant to be used for editing
 maps of any tile-based game, be it an RPG, a platformer or a Breakout clone.
@@ -12,6 +13,7 @@ be set on the map, its layers, the tiles or on the objects. Its map format
 tilesets while also allowing each tileset to grow or shrink as necessary later.
 
 ABOUT THE QT VERSION
+-------------------------------------------------------------------------------
 
 Tiled was originally written in Java. In 2008 the Qt version was started with
 the goal to replace the Java version with a faster, better looking and even
@@ -28,6 +30,7 @@ map views may be possible to provide via a plugin. Plugins may also be able to
 provide parts of the user interface.
 
 COMPILING
+-------------------------------------------------------------------------------
 
 Make sure the Qt (>= 4.5) development libraries are installed:
 
@@ -48,5 +51,23 @@ it to tiled.pro, for example:
  $ qmake ../tiled.pro
  $ make
 
-There is currently no install target, just run bin/tiled. The binary is self-
-contained, so installing it can be done by just copying it somewhere.
+You can now simply run Tiled using bin/tiled.
+
+INSTALLING
+-------------------------------------------------------------------------------
+
+For installing Tiled you can run 'make install'. By default Tiled will install
+to /usr/local. You can change this prefix when running qmake, and/or you can
+change the install root when running make install, as follows:
+
+Use /usr instead of /usr/local:
+
+ $ qmake -r PREFIX=/usr
+
+(Recursive needed when it's not the first time that you're running qmake, since
+this affects nested pro files)
+
+Install to some packaging directory:
+
+ $ make install INSTALL_ROOT=/tmp/tiled-pkg
+
