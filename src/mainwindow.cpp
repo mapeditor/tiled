@@ -473,7 +473,7 @@ bool MainWindow::saveFile(const QString &fileName)
 
 bool MainWindow::saveFile()
 {
-    if (!mCurrentFileName.isEmpty())
+    if (mCurrentFileName.endsWith(QLatin1String(".tmx")))
         return saveFile(mCurrentFileName);
     else
         return saveFileAs();
@@ -483,7 +483,11 @@ bool MainWindow::saveFileAs()
 {
     QString suggestedFileName;
     if (mMapDocument && !mMapDocument->fileName().isEmpty()) {
-        suggestedFileName = mMapDocument->fileName();
+        const QFileInfo fileInfo(mMapDocument->fileName());
+        suggestedFileName = fileInfo.path();
+        suggestedFileName += QLatin1Char('/');
+        suggestedFileName += fileInfo.completeBaseName();
+        suggestedFileName += QLatin1String(".tmx");
     } else {
         suggestedFileName = fileDialogStartLocation();
         suggestedFileName += QLatin1Char('/');
