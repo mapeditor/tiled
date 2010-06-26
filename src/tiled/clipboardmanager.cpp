@@ -115,7 +115,8 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
 void ClipboardManager::updateHasMap()
 {
     const QMimeData *data = mClipboard->mimeData();
-    const bool mapInClipboard = data->hasFormat(QLatin1String(TMX_MIMETYPE));
+    const bool mapInClipboard =
+            data && data->hasFormat(QLatin1String(TMX_MIMETYPE));
 
     if (mapInClipboard != mHasMap) {
         mHasMap = mapInClipboard;
