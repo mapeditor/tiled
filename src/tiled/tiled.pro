@@ -6,7 +6,6 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
 INCLUDEPATH += .
 QT += core \
     gui
-QMAKE_CXXFLAGS += -g
 include(../libtiled/libtiled.pri)
 win32 {
     LIBS += -L$$OUT_PWD/../../bin
