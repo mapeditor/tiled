@@ -1,3 +1,20 @@
+0.5.0 (... 2010)
+* Added support for import and export plugins
+* Added support for external tilesets
+* Added undo for adding tilesets and ability to remove tilesets
+* Added error handling to the New Tileset dialog
+* Added ability to change tileset order by dragging them around
+* Added option to draw the tile grid when saving as image
+* Added a context menu and tool buttons to the layer dock
+* Added Latvian translation
+* Open local files when they are dropped onto Tiled
+* Allow changing position and size of objects in the Object Properties dialog
+* Fixed rendering issues with tiles wider than the tile width of the map
+* Fixed eraser and fill tool working on invisible layers
+* Fixed a crash when using some tools when no map is loaded
+* Fixed compile errors related to detecting static builds
+* Fixed the Save dialog not suggesting any particular file extension
+
 0.4.1 (14 April 2010)
 * Added support for saving tile layer data as CSV
 * Added shift modifier to bucket fill tool for filling the selection
