@@ -39,6 +39,7 @@ class MainWindow;
 namespace Tiled {
 
 class TileLayer;
+class MapReaderInterface;
 
 namespace Internal {
 
@@ -70,9 +71,12 @@ public:
      * Opens the given file. When opened succesfully, the file is added to the
      * list of recent files.
      *
+     * When a \a reader is given, it is used to open the file. Otherwise, a
+     * reader is searched using MapReaderInterface::supportsFile.
+     *
      * @return whether the file was succesfully opened
      */
-    bool openFile(const QString &fileName);
+    bool openFile(const QString &fileName, MapReaderInterface *reader = 0);
 
     /**
      * Attempt to open the previously opened file.

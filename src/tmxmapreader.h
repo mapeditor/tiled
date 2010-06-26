@@ -54,6 +54,9 @@ public:
 
     QString nameFilter() const { return tr("Tiled map files (*.tmx)"); }
 
+    bool supportsFile(const QString &fileName) const
+    { return fileName.endsWith(QLatin1String(".tmx")); }
+
     QString errorString() const { return mError; }
 
 private:

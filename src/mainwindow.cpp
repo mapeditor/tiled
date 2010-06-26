@@ -355,18 +355,35 @@ void MainWindow::newMap()
     updateActions();
 }
 
-bool MainWindow::openFile(const QString &fileName)
+bool MainWindow::openFile(const QString &fileName,
+                          MapReaderInterface *mapReader)
 {
     if (fileName.isEmpty() || !confirmSave())
         return false;
 
-    // Use the XML map reader to read the map (assuming it's a .tmx file)
-    // TODO: Add support for input/output plugins
-    TmxMapReader mapReader;
-    Map *map = mapReader.read(fileName);
+    TmxMapReader tmxMapReader;
+
+    if (!mapReader && !tmxMapReader.supportsFile(fileName)) {
+        // Try to find a plugin that implements support for this format
+        const PluginManager *pm = PluginManager::instance();
+        QList<MapReaderInterface*> readers =
+                pm->interfaces<MapReaderInterface>();
+
+        foreach (MapReaderInterface *reader, readers) {
+            if (reader->supportsFile(fileName)) {
+                mapReader = reader;
+                break;
+            }
+        }
+    }
+
+    if (!mapReader)
+        mapReader = &tmxMapReader;
+
+    Map *map = mapReader->read(fileName);
     if (!map) {
         QMessageBox::critical(this, tr("Error Opening Map"),
-                              mapReader.errorString());
+                              mapReader->errorString());
         return false;
     }
 
@@ -398,9 +415,37 @@ void MainWindow::openLastFile()
 
 void MainWindow::openFile()
 {
-    const QString start = fileDialogStartLocation();
-    openFile(QFileDialog::getOpenFileName(this, tr("Open Map"), start,
-                                          tr("Tiled map files (*.tmx)")));
+    QString filter = tr("All Files (*)");
+    filter += QLatin1String(";;");
+
+    QString selectedFilter = tr("Tiled map files (*.tmx)");
+    filter += selectedFilter;
+
+    selectedFilter = mSettings.value(QLatin1String("lastUsedOpenFilter"),
+                                     selectedFilter).toString();
+
+    const PluginManager *pm = PluginManager::instance();
+    QList<MapReaderInterface*> readers = pm->interfaces<MapReaderInterface>();
+    foreach (MapReaderInterface *reader, readers) {
+        filter += QLatin1String(";;");
+        filter += reader->nameFilter();
+    }
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Map"),
+                                                    fileDialogStartLocation(),
+                                                    filter, &selectedFilter);
+    if (fileName.isEmpty())
+        return;
+
+    // When a particular filter was selected, use the associated reader
+    MapReaderInterface *mapReader = 0;
+    foreach (MapReaderInterface *reader, readers) {
+        if (selectedFilter == reader->nameFilter())
+            mapReader = reader;
+    }
+
+    mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
+    openFile(fileName, mapReader);
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -491,28 +536,41 @@ void MainWindow::exportAs()
 
     PluginManager *pm = PluginManager::instance();
     QList<MapWriterInterface*> writers = pm->interfaces<MapWriterInterface>();
-    QString filter;
+    QString filter = tr("All Files (*)");
     foreach (MapWriterInterface *writer, writers) {
-        if (!filter.isEmpty())
-            filter += QLatin1String(";;");
+        filter += QLatin1String(";;");
         filter += writer->nameFilter();
     }
 
+    QString selectedFilter =
+            mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
                                                     fileDialogStartLocation(),
-                                                    filter);
+                                                    filter, &selectedFilter);
     if (fileName.isEmpty())
         return;
 
     MapWriterInterface *chosenWriter = 0;
 
+    // If a specific filter was selected, use that writer
+    foreach (MapWriterInterface *writer, writers)
+        if (writer->nameFilter() == selectedFilter)
+            chosenWriter = writer;
+
+    // If not, try to find the file extension among the name filters
     QString suffix = QFileInfo(fileName).completeSuffix();
-    if (!suffix.isEmpty()) {
+    if (!chosenWriter && !suffix.isEmpty()) {
         suffix.prepend(QLatin1String("*."));
         foreach (MapWriterInterface *writer, writers)
             if (writer->nameFilter().contains(suffix, Qt::CaseInsensitive))
                 chosenWriter = writer;
     }
+
+    // Also support exporting to the TMX map format when requested
+    TmxMapWriter tmxMapWriter;
+    if (!chosenWriter && fileName.endsWith(QLatin1String(".tmx")))
+        chosenWriter = &tmxMapWriter;
 
     if (!chosenWriter) {
         QMessageBox::critical(this, tr("Unknown File Format"),
@@ -520,6 +578,8 @@ void MainWindow::exportAs()
                                  "file extension."));
         return;
     }
+
+    mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
         QMessageBox::critical(this, tr("Error Saving Map"),

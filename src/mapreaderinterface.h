@@ -52,6 +52,13 @@ public:
     virtual QString nameFilter() const = 0;
 
     /**
+     * Returns whether this map reader supports reading the given file.
+     *
+     * Generally would do a file extension check.
+     */
+    virtual bool supportsFile(const QString &fileName) const = 0;
+
+    /**
      * Returns the error to be shown to the user if an error occured while
      * trying to read a map.
      */
