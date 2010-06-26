@@ -23,6 +23,8 @@
 #ifndef OBJECTGROUP_H
 #define OBJECTGROUP_H
 
+#include "tiled_global.h"
+
 #include "layer.h"
 
 #include <QList>
@@ -35,7 +37,7 @@ class MapObject;
 /**
  * A group of objects on a map.
  */
-class ObjectGroup : public Layer
+class TILEDSHARED_EXPORT ObjectGroup : public Layer
 {
 public:
     /**

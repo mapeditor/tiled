@@ -22,6 +22,8 @@
 #ifndef TILELAYER_H
 #define TILELAYER_H
 
+#include "tiled_global.h"
+
 #include "layer.h"
 
 #include <QString>
@@ -35,7 +37,7 @@ class Tileset;
 /**
  * A tile layer.
  */
-class TileLayer : public Layer
+class TILEDSHARED_EXPORT TileLayer : public Layer
 {
 public:
     /**

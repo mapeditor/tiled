@@ -23,6 +23,8 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include "tiled_global.h"
+
 #include <QList>
 #include <QMap>
 #include <QSize>
@@ -41,7 +43,7 @@ class ObjectGroup;
  *
  * It also keeps track of the list of referenced tilesets.
  */
-class Map
+class TILEDSHARED_EXPORT Map
 {
 public:
     /**

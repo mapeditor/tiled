@@ -23,6 +23,8 @@
 #ifndef MAPOBJECT_H
 #define MAPOBJECT_H
 
+#include "tiled_global.h"
+
 #include <QMap>
 #include <QPointF>
 #include <QSizeF>
@@ -42,7 +44,7 @@ class ObjectGroup;
  * Common usages of objects include defining portals, monsters spawn areas,
  * ambient effects, scripted areas, etc.
  */
-class MapObject
+class TILEDSHARED_EXPORT MapObject
 {
 public:
     /**

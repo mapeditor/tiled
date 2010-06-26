@@ -7,6 +7,8 @@ win32 {
 }
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
+DEFINES += TILED_LIBRARY
+contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 OBJECTS_DIR = .obj
 SOURCES += layer.cpp \
     map.cpp \
@@ -19,6 +21,7 @@ HEADERS += layer.h \
     mapobject.h \
     objectgroup.h \
     tile.h \
+    tiled_global.h \
     tilelayer.h \
     tileset.h
 mac {
@@ -26,4 +29,3 @@ mac {
         ppc
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.5.sdk
 }
-

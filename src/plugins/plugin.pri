@@ -4,6 +4,7 @@ isEmpty(TARGET) {
 
 TEMPLATE = lib
 CONFIG += plugin
+contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 INCLUDEPATH += $$PWD/../tiled
 DEPENDPATH += $$PWD/../tiled
 DESTDIR = $$PWD/../../lib/tiled/plugins

@@ -22,6 +22,8 @@
 #ifndef TILE_H
 #define TILE_H
 
+#include "tiled_global.h"
+
 #include <QMap>
 #include <QPixmap>
 #include <QString>
@@ -30,7 +32,7 @@ namespace Tiled {
 
 class Tileset;
 
-class Tile
+class TILEDSHARED_EXPORT Tile
 {
 public:
     Tile(const QPixmap &image, int id, Tileset *tileset):

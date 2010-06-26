@@ -22,6 +22,8 @@
 #ifndef LAYER_H
 #define LAYER_H
 
+#include "tiled_global.h"
+
 #include <QMap>
 #include <QPixmap>
 #include <QRect>
@@ -37,7 +39,7 @@ class TileLayer;
 /**
  * A map layer.
  */
-class Layer
+class TILEDSHARED_EXPORT Layer
 {
 public:
     /**
