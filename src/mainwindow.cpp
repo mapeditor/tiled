@@ -792,6 +792,7 @@ void MainWindow::updateActions()
     mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAsImage->setEnabled(map);
+    mUi->actionExport->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionCut->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
