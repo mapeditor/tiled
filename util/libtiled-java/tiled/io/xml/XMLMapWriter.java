@@ -18,7 +18,6 @@ import java.awt.Rectangle;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.prefs.Preferences;
 import java.util.zip.GZIPOutputStream;
 
 import tiled.core.*;
@@ -26,9 +25,7 @@ import tiled.core.Map;
 import tiled.io.ImageHelper;
 import tiled.io.MapWriter;
 import tiled.io.PluginLogger;
-import tiled.mapeditor.selection.SelectionLayer;
 import tiled.util.Base64;
-import tiled.util.TiledConfiguration;
 
 /**
  * A writer for Tiled's TMX map format.
@@ -36,6 +33,13 @@ import tiled.util.TiledConfiguration;
 public class XMLMapWriter implements MapWriter
 {
     private static final int LAST_BYTE = 0x000000FF;
+
+    private static final boolean embedImages = true;
+    private static final boolean tileSetImages = false;
+    private static final String tileImagePrefix = "tile";
+
+    private static final boolean encodeLayerData = true;
+    private static final boolean compressLayerData = true && encodeLayerData;
 
     /**
      * Saves a map to an XML file.
@@ -104,7 +108,6 @@ public class XMLMapWriter implements MapWriter
     }
 
     private static void writeMap(Map map, XMLWriter w, String wp) throws IOException {
-        Preferences prefs = TiledConfiguration.node("saving");
         w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
@@ -135,8 +138,6 @@ public class XMLMapWriter implements MapWriter
             firstgid += tileset.getMaxTileId() + 1;
         }
 
-        if (prefs.getBoolean("encodeLayerData", true) && prefs.getBoolean("usefulComments", false))
-            w.writeComment("Layer data is " + (prefs.getBoolean("layerCompression", true) ? "compressed (GZip)" : "") + " binary data, encoded in Base64");
         Iterator<MapLayer> ml = map.getLayers();
         while (ml.hasNext()) {
             MapLayer layer = ml.next();
@@ -255,11 +256,6 @@ public class XMLMapWriter implements MapWriter
             }
         } else {
             // Embedded tileset
-            Preferences prefs = TiledConfiguration.node("saving");
-
-            boolean embedImages = prefs.getBoolean("embedImages", true);
-            boolean tileSetImages = prefs.getBoolean("tileSetImages", false);
-
             if (tileSetImages) {
                 Enumeration<String> ids = set.getImageIds();
                 while (ids.hasMoreElements()) {
@@ -276,8 +272,7 @@ public class XMLMapWriter implements MapWriter
                     w.endElement();
                 }
             } else if (!embedImages) {
-                String imgSource =
-                        prefs.get("tileImagePrefix", "tile") + "set.png";
+                String imgSource = tileImagePrefix + "set.png";
 
                 w.startElement("image");
                 w.writeAttribute("source", imgSource);
@@ -340,18 +335,9 @@ public class XMLMapWriter implements MapWriter
      * gids to be written to the layer data.
      */
     private static void writeMapLayer(MapLayer l, XMLWriter w, String wp) throws IOException {
-        Preferences prefs = TiledConfiguration.node("saving");
-        boolean encodeLayerData =
-                prefs.getBoolean("encodeLayerData", true);
-        boolean compressLayerData =
-                prefs.getBoolean("layerCompression", true) &&
-                        encodeLayerData;
-
         Rectangle bounds = l.getBounds();
 
-        if (l.getClass() == SelectionLayer.class) {
-            w.startElement("selection");
-        } else if(l instanceof ObjectGroup){
+        if (l instanceof ObjectGroup) {
             w.startElement("objectgroup");
         } else {
             w.startElement("layer");
@@ -480,9 +466,6 @@ public class XMLMapWriter implements MapWriter
 
         writeProperties(tile.getProperties(), w);
 
-        Preferences prefs = TiledConfiguration.node("saving");
-        boolean embedImages = prefs.getBoolean("embedImages", true);
-        boolean tileSetImages = prefs.getBoolean("tileSetImages", false);
         Image tileImage = tile.getImage();
 
         // Write encoded data
@@ -501,16 +484,7 @@ public class XMLMapWriter implements MapWriter
                 w.writeAttribute("id", tile.getImageId());
                 w.endElement();
             } else {
-                String prefix = prefs.get("tileImagePrefix", "tile");
-                String filename = prefix + tile.getId() + ".png";
-                String path = prefs.get("maplocation", "") + filename;
-                w.startElement("image");
-                w.writeAttribute("source", filename);
-                FileOutputStream fw = new FileOutputStream(new File(path));
-                byte[] data = ImageHelper.imageToPNG(tileImage);
-                fw.write(data, 0, data.length);
-                fw.close();
-                w.endElement();
+                // not supported! (writing out the tile pngs)
             }
         }
 

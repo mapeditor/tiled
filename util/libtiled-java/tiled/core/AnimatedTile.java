@@ -17,7 +17,6 @@ import java.awt.Image;
 import java.util.Iterator;
 
 import tiled.core.Sprite.KeyFrame;
-import tiled.util.TiledConfiguration;
 
 /**
  * Animated tiles take advantage of the Sprite class internally to handle
@@ -38,11 +37,7 @@ public class AnimatedTile extends Tile {
 
     public AnimatedTile(Tile[] frames) {
         this();
-        if (TiledConfiguration.node("animation").getBoolean("safe", false)) {
-            //TODO:clone all the frames, just to be safe
-        } else {
-            sprite = new Sprite(frames);
-        }
+        sprite = new Sprite(frames);
     }
 
     public AnimatedTile(Sprite s) {
