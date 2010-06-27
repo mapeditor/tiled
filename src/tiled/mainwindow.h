@@ -177,6 +177,8 @@ private:
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];
+
+    QMenu *mLayerMenu;
 };
 
 } // namespace Internal

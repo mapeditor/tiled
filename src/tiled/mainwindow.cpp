@@ -159,18 +159,18 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->mainToolBar->addAction(undoAction);
     mUi->mainToolBar->addAction(redoAction);
 
-    QMenu *layerMenu = new QMenu(tr("&Layer"), this);
-    layerMenu->addAction(mActionHandler->actionAddTileLayer());
-    layerMenu->addAction(mActionHandler->actionAddObjectLayer());
-    layerMenu->addAction(mActionHandler->actionDuplicateLayer());
-    layerMenu->addAction(mActionHandler->actionRemoveLayer());
-    layerMenu->addSeparator();
-    layerMenu->addAction(mActionHandler->actionMoveLayerUp());
-    layerMenu->addAction(mActionHandler->actionMoveLayerDown());
-    layerMenu->addSeparator();
-    layerMenu->addAction(mActionHandler->actionLayerProperties());
+    mLayerMenu = new QMenu(tr("&Layer"), this);
+    mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
+    mLayerMenu->addAction(mActionHandler->actionAddObjectLayer());
+    mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
+    mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
+    mLayerMenu->addSeparator();
+    mLayerMenu->addAction(mActionHandler->actionMoveLayerUp());
+    mLayerMenu->addAction(mActionHandler->actionMoveLayerDown());
+    mLayerMenu->addSeparator();
+    mLayerMenu->addAction(mActionHandler->actionLayerProperties());
 
-    menuBar()->insertMenu(mUi->menuHelp->menuAction(), layerMenu);
+    menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
     connect(mUi->actionNew, SIGNAL(triggered()), SLOT(newMap()));
     connect(mUi->actionOpen, SIGNAL(triggered()), SLOT(openFile()));
@@ -993,4 +993,7 @@ void MainWindow::retranslateUi()
         const QString fileName = QFileInfo(mCurrentFileName).fileName();
         setWindowTitle(tr("%1[*] - Tiled").arg(fileName));
     }
+
+    mLayerMenu->setTitle(tr("&Layer"));
+    mActionHandler->retranslateUi();
 }

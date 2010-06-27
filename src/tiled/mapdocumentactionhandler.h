@@ -44,6 +44,8 @@ public:
 
     static MapDocumentActionHandler *instance() { return mInstance; }
 
+    void retranslateUi();
+
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
 

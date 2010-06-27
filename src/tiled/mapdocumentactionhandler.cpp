@@ -39,34 +39,34 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     Q_ASSERT(!mInstance);
     mInstance = this;
 
-    mActionSelectAll = new QAction(tr("Select &All"), this);
+    mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcut(QKeySequence::SelectAll);
-    mActionSelectNone = new QAction(tr("Select &None"), this);
+    mActionSelectNone = new QAction(this);
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
-    mActionAddTileLayer = new QAction(tr("Add &Tile Layer..."), this);
-    mActionAddObjectLayer = new QAction(tr("Add &Object Layer..."), this);
+    mActionAddTileLayer = new QAction(this);
+    mActionAddObjectLayer = new QAction(this);
 
-    mActionDuplicateLayer = new QAction(tr("&Duplicate Layer"), this);
+    mActionDuplicateLayer = new QAction(this);
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
     mActionDuplicateLayer->setIcon(
             QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
 
-    mActionRemoveLayer = new QAction(tr("&Remove Layer"), this);
+    mActionRemoveLayer = new QAction(this);
     mActionRemoveLayer->setIcon(
             QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
-    mActionMoveLayerUp = new QAction(tr("Move Layer &Up"), this);
+    mActionMoveLayerUp = new QAction(this);
     mActionMoveLayerUp->setShortcut(tr("Ctrl+Shift+Up"));
     mActionMoveLayerUp->setIcon(
             QIcon(QLatin1String(":/images/16x16/go-up.png")));
 
-    mActionMoveLayerDown = new QAction(tr("Move Layer Dow&n"), this);
+    mActionMoveLayerDown = new QAction(this);
     mActionMoveLayerDown->setShortcut(tr("Ctrl+Shift+Down"));
     mActionMoveLayerDown->setIcon(
             QIcon(QLatin1String(":/images/16x16/go-down.png")));
 
-    mActionLayerProperties = new QAction(tr("Layer &Properties..."), this);
+    mActionLayerProperties = new QAction(this);
     mActionLayerProperties->setIcon(
             QIcon(QLatin1String(":images/16x16/document-properties.png")));
 
@@ -87,11 +87,26 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionMoveLayerDown, SIGNAL(triggered()), SLOT(moveLayerDown()));
 
     updateActions();
+    retranslateUi();
 }
 
 MapDocumentActionHandler::~MapDocumentActionHandler()
 {
     mInstance = 0;
+}
+
+void MapDocumentActionHandler::retranslateUi()
+{
+    mActionSelectAll->setText(tr("Select &All"));
+    mActionSelectNone->setText(tr("Select &None"));
+
+    mActionAddTileLayer->setText(tr("Add &Tile Layer..."));
+    mActionAddObjectLayer->setText(tr("Add &Object Layer..."));
+    mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
+    mActionRemoveLayer->setText(tr("&Remove Layer"));
+    mActionMoveLayerUp->setText(tr("Move Layer &Up"));
+    mActionMoveLayerDown->setText(tr("Move Layer Dow&n"));
+    mActionLayerProperties->setText(tr("Layer &Properties..."));
 }
 
 void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
