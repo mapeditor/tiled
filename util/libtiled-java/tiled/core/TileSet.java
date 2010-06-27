@@ -52,7 +52,6 @@ public class TileSet
     private Color transparentColor;
     private Properties defaultTileProperties;
     private Image tileSetImage;
-    private LinkedList<TilesetChangeListener> tilesetChangeListeners;
     private java.util.Map<Integer, String> imageSources = new HashMap<Integer, String>();
 
     /**
@@ -63,7 +62,6 @@ public class TileSet
         images = new NumberedSet();
         tileDimensions = new Rectangle();
         defaultTileProperties = new Properties();
-        tilesetChangeListeners = new LinkedList();
     }
 
     /**
@@ -193,8 +191,6 @@ public class TileSet
             tile = tileCutter.getNextTile();
             id++;
         }
-
-        fireTilesetChanged();
     }
 
     public void checkUpdate() throws IOException {
@@ -213,10 +209,7 @@ public class TileSet
      * @param source a URI of the tileset image file
      */
     public void setSource(String source) {
-        String oldSource = externalSource;
         externalSource = source;
-
-        fireSourceChanged(oldSource, source);
     }
 
     /**
@@ -259,9 +252,7 @@ public class TileSet
      * @param name the new name for this tileset
      */
     public void setName(String name) {
-        String oldName = this.name;
         this.name = name;
-        fireNameChanged(oldName, name);
     }
 
     /**
@@ -300,8 +291,6 @@ public class TileSet
         tiles.put(t.getId(), t);
         t.setTileSet(this);
 
-        fireTilesetChanged();
-
         return t.getId();
     }
 
@@ -331,7 +320,6 @@ public class TileSet
      */
     public void removeTile(int i) {
         tiles.remove(i);
-        fireTilesetChanged();
     }
 
     /**
@@ -697,34 +685,5 @@ public class TileSet
 
     public void setDefaultProperties(Properties defaultSetProperties) {
         defaultTileProperties = defaultSetProperties;
-    }
-
-    public void addTilesetChangeListener(TilesetChangeListener listener) {
-        tilesetChangeListeners.add(listener);
-    }
-
-    public void removeTilesetChangeListener(TilesetChangeListener listener) {
-        tilesetChangeListeners.remove(listener);
-    }
-
-    private void fireTilesetChanged() {
-        TilesetChangedEvent event = new TilesetChangedEvent(this);
-        for (TilesetChangeListener listener : tilesetChangeListeners) {
-            listener.tilesetChanged(event);
-        }
-    }
-
-    private void fireNameChanged(String oldName, String newName) {
-        TilesetChangedEvent event = new TilesetChangedEvent(this);
-        for (TilesetChangeListener listener : tilesetChangeListeners) {
-            listener.nameChanged(event, oldName, newName);
-        }
-    }
-
-    private void fireSourceChanged(String oldSource, String newSource) {
-        TilesetChangedEvent event = new TilesetChangedEvent(this);
-        for (TilesetChangeListener listener : tilesetChangeListeners) {
-            listener.sourceChanged(event, oldSource, newSource);
-        }
     }
 }

@@ -38,7 +38,6 @@ public abstract class MapLayer implements Cloneable
 
     protected String name;
     protected boolean isVisible = true;
-    protected boolean bLocked = false;
     protected Map myMap;
     protected float opacity = 1.0f;
     protected Rectangle bounds;
@@ -133,13 +132,7 @@ public abstract class MapLayer implements Cloneable
      * @param opacity the new opacity for this layer
      */
     public void setOpacity(float opacity) {
-        if (this.opacity != opacity) {
-            this.opacity = opacity;
-
-            if (isVisible() && myMap != null) {
-                myMap.fireMapChanged();
-            }
-        }
+        this.opacity = opacity;
     }
 
     /**
@@ -150,12 +143,7 @@ public abstract class MapLayer implements Cloneable
      *                <code>false</code> to make it invisible
      */
     public void setVisible(boolean visible) {
-        if (isVisible != visible) {
-            isVisible = visible;
-            if (myMap != null) {
-                myMap.fireMapChanged();
-            }
-        }
+        isVisible = visible;
     }
 
     /**
@@ -298,26 +286,6 @@ public abstract class MapLayer implements Cloneable
      */
     public abstract void resize(int width, int height, int dx, int dy);
 
-    /**
-     * Get the locked status of the layer.
-     *
-     * @return whether the layer is locked
-     * @see MapLayer#setLocked(boolean)
-     */
-    public boolean getLocked() {
-        return bLocked;
-    }
-
-    /**
-     * Set the locked status of the layer. A locked layer can't be edited.
-     *
-     * @param lock <code>true</code> to lock the layer, <code>false</code> to
-     *             unlock the layer
-     */
-    public void setLocked(boolean lock) {
-        bLocked = lock;
-    }
-
     public void setProperties(Properties p) {
         properties.clear();
         properties.putAll(p);
@@ -325,9 +293,5 @@ public abstract class MapLayer implements Cloneable
 
     public Properties getProperties() {
         return properties;
-    }
-
-    public boolean canEdit() {
-        return !getLocked() && isVisible();
     }
 }

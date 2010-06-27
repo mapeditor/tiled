@@ -40,7 +40,6 @@ public class Map extends MultilayerPlane
 
     private int tileWidth, tileHeight;
     private int orientation = MDO_ORTHO;
-    private final List<MapChangeListener> mapChangeListeners = new LinkedList<MapChangeListener>();
     private Properties properties;
     private String filename;
 
@@ -57,102 +56,14 @@ public class Map extends MultilayerPlane
         objects = new LinkedList<MapObject>();
     }
 
-    /**
-     * Adds a change listener. The listener will be notified when the map
-     * changes in certain ways.
-     *
-     * @param listener the change listener to add
-     * @see MapChangeListener#mapChanged(MapChangedEvent)
-     */
-    public void addMapChangeListener(MapChangeListener listener) {
-        mapChangeListeners.add(listener);
-    }
-
-    /**
-     * Removes a change listener.
-     * @param listener the listener to remove
-     */
-    public void removeMapChangeListener(MapChangeListener listener) {
-        mapChangeListeners.remove(listener);
-    }
-
-    /**
-     * Notifies all registered map change listeners about a change.
-     */
-    protected void fireMapChanged() {
-        Iterator iterator = mapChangeListeners.iterator();
-        MapChangedEvent event = null;
-
-        while (iterator.hasNext()) {
-            if (event == null) event = new MapChangedEvent(this);
-            ((MapChangeListener) iterator.next()).mapChanged(event);
-        }
-    }
-
-
-    /**
-     * Notifies all registered map change listeners about the removal of a
-     * tileset.
-     *
-     * @param index the index of the removed tileset
-     */
-    protected void fireTilesetRemoved(int index) {
-        Iterator<MapChangeListener> iterator = mapChangeListeners.iterator();
-        MapChangedEvent event = null;
-
-        while (iterator.hasNext()) {
-            if (event == null) event = new MapChangedEvent(this);
-            ((MapChangeListener) iterator.next()).tilesetRemoved(event, index);
-        }
-    }
-
-    /**
-     * Notifies all registered map change listeners about the addition of a
-     * tileset.
-     *
-     * @param tileset the new tileset
-     */
-    protected void fireTilesetAdded(TileSet tileset) {
-        Iterator<MapChangeListener> iterator = mapChangeListeners.iterator();
-        MapChangedEvent event = null;
-
-        while (iterator.hasNext()) {
-            if (event == null) event = new MapChangedEvent(this);
-            ((MapChangeListener) iterator.next()).tilesetAdded(event, tileset);
-        }
-    }
-
-    /**
-     * Notifies all registered map change listeners about the reorder of the
-     * tilesets.
-     */
-    protected void fireTilesetsSwapped(int index0, int index1) {
-        Iterator<MapChangeListener> iterator = mapChangeListeners.iterator();
-        MapChangedEvent event = null;
-
-        while (iterator.hasNext()) {
-            if (event == null) event = new MapChangedEvent(this);
-            ((MapChangeListener) iterator.next()).tilesetsSwapped(event, index0, index1);
-        }
-    }
-
-    /**
-     * Causes a MapChangedEvent to be fired.
-     */
-    public void touch() {
-        fireMapChanged();
-    }
-
     public void addLayerSpecial(MapLayer layer) {
         layer.setMap(this);
         specialLayers.add(layer);
-        fireMapChanged();
     }
 
     public MapLayer addLayer(MapLayer layer) {
         layer.setMap(this);
         super.addLayer(layer);
-        fireMapChanged();
         return layer;
     }
 
@@ -167,14 +78,12 @@ public class Map extends MultilayerPlane
         layer.setName(Resources.getString("general.layer.layer") +
                       " " + super.getTotalLayers());
         super.addLayer(layer);
-        fireMapChanged();
         return layer;
     }
 
     public void setLayer(int index, MapLayer layer) {
         layer.setMap(this);
         super.setLayer(index, layer);
-        fireMapChanged();
     }
 
     /**
@@ -188,7 +97,6 @@ public class Map extends MultilayerPlane
         layer.setName(Resources.getString("general.objectgroup.objectgroup") +
                       " " + super.getTotalLayers());
         super.addLayer(layer);
-        fireMapChanged();
         return layer;
     }
 
@@ -217,19 +125,15 @@ public class Map extends MultilayerPlane
         }
 
         tilesets.add(tileset);
-        fireTilesetAdded(tileset);
     }
 
     /**
      * Removes a {@link TileSet} from the map, and removes any tiles in the set
-     * from the map layers. A {@link MapChangedEvent} is fired when all
-     * processing is complete.
+     * from the map layers.
      *
      * @param tileset TileSet to remove
-     * @throws LayerLockedException when the tileset is in use on a locked
-     *         layer
      */
-    public void removeTileset(TileSet tileset) throws LayerLockedException {
+    public void removeTileset(TileSet tileset) {
         // Sanity check
         final int tilesetIndex = tilesets.indexOf(tileset);
         if (tilesetIndex == -1)
@@ -249,7 +153,6 @@ public class Map extends MultilayerPlane
         }
 
         tilesets.remove(tileset);
-        fireTilesetRemoved(tilesetIndex);
     }
 
     public void addObject(MapObject o) {
@@ -271,76 +174,12 @@ public class Map extends MultilayerPlane
         properties = prop;
     }
 
-    /**
-     * Calls super method, and additionally fires a {@link MapChangedEvent}.
-     *
-     * @see MultilayerPlane#removeLayer(int)
-     */
-    public MapLayer removeLayer(int index) {
-        MapLayer layer = super.removeLayer(index);
-        fireMapChanged();
-        return layer;
-    }
-
     public void removeLayerSpecial(MapLayer layer) {
-        if (specialLayers.remove(layer)) {
-            fireMapChanged();
-        }
+        specialLayers.remove(layer);
     }
 
     public void removeAllSpecialLayers() {
         specialLayers.clear();
-        fireMapChanged();
-    }
-
-    /**
-     * Calls super method, and additionally fires a {@link MapChangedEvent}.
-     *
-     * @see MultilayerPlane#removeAllLayers
-     */
-    public void removeAllLayers() {
-        super.removeAllLayers();
-        fireMapChanged();
-    }
-
-    /**
-     * Calls super method, and additionally fires a {@link MapChangedEvent}.
-     *
-     * @see MultilayerPlane#setLayerVector
-     */
-    public void setLayerVector(Vector<MapLayer> layers) {
-        super.setLayerVector(layers);
-        fireMapChanged();
-    }
-
-    /**
-     * Calls super method, and additionally fires a {@link MapChangedEvent}.
-     *
-     * @see MultilayerPlane#swapLayerUp
-     */
-    public void swapLayerUp(int index) {
-        super.swapLayerUp(index);
-        fireMapChanged();
-    }
-
-    /**
-     * Calls super method, and additionally fires a {@link MapChangedEvent}.
-     *
-     * @see MultilayerPlane#swapLayerDown
-     */
-    public void swapLayerDown(int index) {
-        super.swapLayerDown(index);
-        fireMapChanged();
-    }
-
-    /**
-     * Calls super method, and additionally fires a {@link MapChangedEvent}.
-     *
-     * @see MultilayerPlane#mergeLayerDown
-     */
-    public void mergeLayerDown(int index) {
-        super.mergeLayerDown(index);
-        fireMapChanged();
     }
 
     public void setFilename(String filename) {
@@ -354,7 +193,6 @@ public class Map extends MultilayerPlane
      */
     public void setTileWidth(int width) {
         tileWidth = width;
-        fireMapChanged();
     }
 
     /**
@@ -364,22 +202,10 @@ public class Map extends MultilayerPlane
      */
     public void setTileHeight(int height) {
         tileHeight = height;
-        fireMapChanged();
-    }
-
-    /**
-     * Calls super method, and additionally fires a {@link MapChangedEvent}.
-     *
-     * @see MultilayerPlane#resize
-     */
-    public void resize(int width, int height, int dx, int dy) {
-        super.resize(width, height, dx, dy);
-        fireMapChanged();
     }
 
     public void setOrientation(int orientation) {
         this.orientation = orientation;
-        // TODO: fire mapChangedNotification about orientation change
     }
 
     public String getFilename() {
@@ -493,34 +319,7 @@ public class Map extends MultilayerPlane
         TileSet set = tilesets.get(index0);
         tilesets.set(index0, tilesets.get(index1));
         tilesets.set(index1, set);
-
-        if (index0 > index1) {
-            int temp = index1;
-            index1 = index0;
-            index0 = temp;
-        }
-
-        fireTilesetsSwapped(index0, index1);
     }
-
-    /**
-     * Returns the sum of the size of each tile set.
-     *
-     * @return
-     */
-    /*
-    public int getTotalTiles() {
-        int totalTiles = 0;
-        Iterator itr = tilesets.iterator();
-
-        while (itr.hasNext()) {
-            TileSet cur = (TileSet)itr.next();
-            totalTiles += cur.getTotalTiles();
-        }
-
-        return totalTiles;
-    }
-    */
 
     /**
      * Returns the orientation of this map. Orientation will be one of
