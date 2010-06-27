@@ -1,7 +1,7 @@
 include(../../tiled.pri)
 
 TEMPLATE = lib
-TARGET = $$qtLibraryTarget(tiled)
+TARGET = tiled
 target.path = $${PREFIX}/lib
 INSTALLS += target
 DESTDIR = ../../lib

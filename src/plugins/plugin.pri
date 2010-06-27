@@ -13,8 +13,6 @@ win32 {
     DESTDIR = $$OUT_PWD/../../../lib/tiled/plugins
 }
 
-TARGET = $$qtLibraryTarget($$TARGET)
-
 include(../../tiled.pri)
 target.path = $${PREFIX}/lib/tiled/plugins
 INSTALLS += target
