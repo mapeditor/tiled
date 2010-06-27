@@ -21,8 +21,6 @@ import java.util.Properties;
 /**
  * A TileLayer is a specialized MapLayer, used for tracking two dimensional
  * tile data.
- *
- * @version $Id$
  */
 public class TileLayer extends MapLayer
 {

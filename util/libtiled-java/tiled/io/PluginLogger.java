@@ -14,9 +14,6 @@ package tiled.io;
 
 import java.util.LinkedList;
 
-/**
- * @version $Id$
- */
 public class PluginLogger
 {
     private final LinkedList<Object> messages = new LinkedList<Object>();

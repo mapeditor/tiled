@@ -17,9 +17,6 @@ import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.Vector;
 
-/**
- * @version $Id$
- */
 public class Sprite
 {
     private Vector<KeyFrame> keys;

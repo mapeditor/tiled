@@ -12,9 +12,6 @@
 
 package tiled.io.xml;
 
-/**
- * @version $Id$
- */
 public class XMLWriterException extends RuntimeException
 {
     public XMLWriterException(String error) {

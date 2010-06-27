@@ -20,8 +20,6 @@ import tiled.mapeditor.Resources;
  * The Map class is the focal point of the <code>tiled.core</code> package.
  * This class also handles notifing listeners if there is a change to any layer
  * or object contained by the map.
- *
- * @version $Id$
  */
 public class Map extends MultilayerPlane
 {

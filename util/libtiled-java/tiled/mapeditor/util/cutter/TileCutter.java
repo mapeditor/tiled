@@ -18,8 +18,6 @@ import java.awt.image.BufferedImage;
 
 /**
  * A generic interface to a class that implements tile cutting behavior.
- *
- * @version $Id$
  */
 public interface TileCutter
 {

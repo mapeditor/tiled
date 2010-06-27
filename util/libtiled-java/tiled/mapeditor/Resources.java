@@ -22,8 +22,6 @@ import javax.swing.ImageIcon;
 /**
  * This class implements static accessors to common editor resources. These
  * currently include icons and internationalized strings.
- *
- * @version $Id$
  */
 public final class Resources {
     // The resource bundle used by this class
@@ -31,7 +29,7 @@ public final class Resources {
             ResourceBundle.getBundle(
                     Resources.class.getPackage().getName() + ".resources.gui");
 
-    // Prevent instanciation
+    // Prevent instantiation
     private Resources() {
     }
 

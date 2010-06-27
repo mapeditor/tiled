@@ -18,8 +18,6 @@ import java.util.Properties;
 
 /**
  * The core class for our tiles.
- *
- * @version $Id$
  */
 public class Tile
 {

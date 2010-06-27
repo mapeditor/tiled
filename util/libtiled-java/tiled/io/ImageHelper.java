@@ -23,8 +23,6 @@ import javax.imageio.ImageIO;
 
 /**
  * This class provides functions to help out with saving/loading images.
- *
- * @version $Id$
  */
 public class ImageHelper
 {
