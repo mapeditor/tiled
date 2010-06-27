@@ -48,7 +48,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -160,12 +160,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+107"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add External Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pievienot ārēju mozaīkattēlu komplektu...</translation>
     </message>
     <message>
         <source>Move Layer &amp;Up</source>
@@ -291,17 +291,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tiled/mapobjectitem.cpp" line="+265"/>
         <source>&amp;Duplicate Object</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izveidot objekta dublikātu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Object</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Noņemt objektu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekta &amp;rekvizīti</translation>
     </message>
 </context>
 <context>
@@ -774,29 +774,29 @@ p, li { white-space: pre-wrap; }
         <location line="-338"/>
         <location line="+835"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished">S&amp;lānis</translation>
+        <translation>S&amp;lānis</translation>
     </message>
     <message>
         <location line="-611"/>
         <source>Error Opening Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartes atvēršanas laikā radās kļūda</translation>
     </message>
     <message>
         <location line="+33"/>
         <location line="+125"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Visas datnes (*)</translation>
     </message>
     <message>
         <location line="-80"/>
         <location line="+126"/>
         <source>Error Saving Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartes saglabāšanas laikā radās kļūda</translation>
     </message>
     <message>
         <location line="-95"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished"></translation>
+        <translation>nenosaukts.tmx</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -836,17 +836,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+50"/>
         <source>Add External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot ārēju mozaīkattēlu komplektu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietojumprogrammas Tiled mozaīkattēlu komplektu datnes (*.tsx)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozaīkattēlu komplekta nolasīšanas laikā radās kļūda</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -896,12 +896,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+20"/>
         <source>Tile Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozaīkelementu slānis %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Object Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektu grupa %1</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -919,67 +919,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished">Atlasīt &amp;visu</translation>
+        <translation>Atlasīt &amp;visu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;None</source>
-        <translation type="unfinished">&amp;Noņemt atlasi</translation>
+        <translation>&amp;Noņemt atlasi</translation>
     </message>
     <message>
         <location line="-56"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Add &amp;Tile Layer...</source>
-        <translation type="unfinished">Pievienot &amp;mozaīkslāni...</translation>
+        <translation>Pievienot &amp;mozaīkslāni...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer...</source>
-        <translation type="unfinished">Pievienot &amp;objektu grupu...</translation>
+        <translation>Pievienot &amp;objektu grupu...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Duplicate Layer</source>
-        <translation type="unfinished">&amp;Izveidot slāņa kopiju</translation>
+        <translation>&amp;Izveidot slāņa kopiju</translation>
     </message>
     <message>
         <location line="-54"/>
         <source>Ctrl+Shift+D</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>&amp;Remove Layer</source>
-        <translation type="unfinished">&amp;Dzēst slāni</translation>
+        <translation>&amp;Dzēst slāni</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Layer &amp;Up</source>
-        <translation type="unfinished">Pārvietot slāni uz &amp;augšu</translation>
+        <translation>Pārvietot slāni uz &amp;augšu</translation>
     </message>
     <message>
         <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Uz augšu</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Move Layer Dow&amp;n</source>
-        <translation type="unfinished">Pārvietot slāni uz &amp;leju</translation>
+        <translation>Pārvietot slāni uz &amp;leju</translation>
     </message>
     <message>
         <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Uz leju</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Layer &amp;Properties...</source>
-        <translation type="unfinished">Slāņa &amp;rekvizīti...</translation>
+        <translation>Slāņa &amp;rekvizīti...</translation>
     </message>
 </context>
 <context>
@@ -991,7 +991,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+81"/>
         <source>Tile Layer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>1. mozaīkelementu slānis</translation>
     </message>
 </context>
 <context>
@@ -1171,17 +1171,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+207"/>
         <source>Tile &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozaīkelementa &amp;rekvizīti ...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Export Tileset As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eksportēt mozaīkelementu komplektu kā ...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importēt mozaīkelementu komplektu</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1191,12 +1191,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+19"/>
         <source>Export Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportēt mozaīkelementu komplektu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietojumprogrammas Tiled mozaīkattēlu komplektu datnes (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -1297,7 +1297,7 @@ Rinda %1, kolonna %2</translation>
     <message>
         <location line="+56"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Mozaikelementu komplektam %1 ir iestatiti nederigi parametri</translation>
+        <translation>Mozaīkelementu komplektam %1 ir iestatīti nederīgi parametri</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1357,7 +1357,7 @@ Rinda %1, kolonna %2</translation>
     <message>
         <location line="+6"/>
         <source>Tile used but no tilesets specified</source>
-        <translation>Izmantots mozaikelements, bet nav noradīts mozaīkelementu komplekts</translation>
+        <translation>Izmantots mozaīkelements, bet nav norādīts mozaīkelementu komplekts</translation>
     </message>
 </context>
 <context>
@@ -1390,7 +1390,7 @@ Rinda %1, kolonna %2</translation>
     <message>
         <location filename="../src/tiled/addremovetileset.h" line="+78"/>
         <source>Remove Tileset</source>
-        <translation>Dzest mozaīkelementu komplektu</translation>
+        <translation>Dzēst mozaīkelementu komplektu</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+35"/>
@@ -1471,17 +1471,17 @@ Rinda %1, kolonna %2</translation>
     <message>
         <location filename="../src/tiled/movetileset.cpp" line="+31"/>
         <source>Move Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot mozaīkelementu komplektu</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="-147"/>
         <source>Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Importēt mozaīkelementu komplektu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Export Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportēt mozaīkelementu komplektu</translation>
     </message>
 </context>
 <context>
