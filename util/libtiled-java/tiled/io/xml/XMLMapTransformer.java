@@ -146,14 +146,14 @@ public class XMLMapTransformer implements MapReader
                InvocationTargetException {
         Constructor cons = null;
         try {
-            cons = reflector.getConstructor(null);
+            cons = reflector.getConstructor((Class[]) null);
         } catch (SecurityException e1) {
             e1.printStackTrace();
         } catch (NoSuchMethodException e1) {
             e1.printStackTrace();
             return null;
         }
-        Object o = cons.newInstance(null);
+        Object o = cons.newInstance((Object[]) null);
         Node n;
 
         Method[] methods = reflector.getMethods();
