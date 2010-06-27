@@ -62,7 +62,7 @@ void PluginManager::loadPlugins()
     // Determine the plugin path based on the application location
     QString pluginPath = QCoreApplication::applicationDirPath();
 #ifdef Q_OS_WIN32
-    pluginPath += QLatin1String("/plugins");
+    pluginPath += QLatin1String("/plugins/tiled");
 #else
     pluginPath += QLatin1String("/../lib/tiled/plugins");
 #endif
