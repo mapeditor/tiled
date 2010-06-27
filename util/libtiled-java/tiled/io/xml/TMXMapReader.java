@@ -35,7 +35,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import tiled.core.*;
 import tiled.io.ImageHelper;
-import tiled.io.MapReader;
 import tiled.io.PluginLogger;
 import tiled.mapeditor.Resources;
 import tiled.mapeditor.util.cutter.BasicTileCutter;
@@ -43,16 +42,16 @@ import tiled.util.Base64;
 import tiled.util.Util;
 
 /**
- * The standard map reader for TMX files.
+ * The standard map reader for TMX files. Supports reading .tmx, .tmx.gz and *.tsx files.
  */
-public class XMLMapTransformer implements MapReader
+public class TMXMapReader
 {
     private Map map;
     private String xmlPath;
     private PluginLogger logger;
     private final EntityResolver entityResolver = new MapEntityResolver();
 
-    public XMLMapTransformer() {
+    public TMXMapReader() {
         logger = new PluginLogger();
     }
 
@@ -507,7 +506,7 @@ public class XMLMapTransformer implements MapReader
                 }
                 tile.setImage(id);
             } else if ("animation".equalsIgnoreCase(child.getNodeName())) {
-                // TODO: fill this in once XMLMapWriter is complete
+                // TODO: fill this in once TMXMapWriter is complete
             }
         }
 
@@ -772,8 +771,6 @@ public class XMLMapTransformer implements MapReader
     }
 
 
-    // MapReader interface
-
     public Map readMap(String filename) throws Exception {
         xmlPath = filename.substring(0,
                 filename.lastIndexOf(File.separatorChar) + 1);
@@ -821,49 +818,18 @@ public class XMLMapTransformer implements MapReader
     }
 
     public TileSet readTileset(InputStream in) throws Exception {
-        // TODO: The MapReader interface should be changed...
         return unmarshalTilesetFile(in, ".");
     }
 
-    /**
-     * @see tiled.io.PluggableMapIO#getFilter()
-     */
-    public String getFilter() throws Exception {
-        return "*.tmx,*.tmx.gz,*.tsx";
-    }
-
-    public String getPluginPackage() {
-        return "Tiled internal TMX reader/writer";
-    }
-
-    /**
-     * @see tiled.io.PluggableMapIO#getDescription()
-     */
-    public String getDescription() {
-        return "This is the core Tiled TMX format reader\n" +
-            "\n" +
-            "Tiled Map Editor, (c) 2004-2008\n" +
-            "Adam Turk\n" +
-            "Bjorn Lindeijer";
-    }
-
-    public String getName() {
-        return "Default Tiled XML (TMX) map reader";
-    }
-
-    public boolean accept(File pathname) {
+    public boolean accept(File pathName) {
         try {
-            String path = pathname.getCanonicalPath();
+            String path = pathName.getCanonicalPath();
             if (path.endsWith(".tmx") || path.endsWith(".tsx") ||
                         path.endsWith(".tmx.gz")) {
                 return true;
             }
         } catch (IOException e) {}
         return false;
-    }
-
-    public void setLogger(PluginLogger logger) {
-        this.logger = logger;
     }
 
     private class MapEntityResolver implements EntityResolver

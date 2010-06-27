@@ -65,37 +65,9 @@ public class Map extends MultilayerPlane
         return layer;
     }
 
-    /**
-     * Create a new empty TileLayer with the dimensions of the map. By default,
-     * the new layer's name is set to "Layer [layer index]"
-     *
-     * @return The new TileLayer instance.
-     */
-    public MapLayer addLayer() {
-        MapLayer layer = new TileLayer(this, bounds.width, bounds.height);
-        layer.setName(Resources.getString("general.layer.layer") +
-                      " " + super.getTotalLayers());
-        super.addLayer(layer);
-        return layer;
-    }
-
     public void setLayer(int index, MapLayer layer) {
         layer.setMap(this);
         super.setLayer(index, layer);
-    }
-
-    /**
-     * Create a new empty ObjectGroup. By default, the new layer's name is set
-     * to "ObjectGroup [layer index]"
-     *
-     * @return The new ObjectGroup instance.
-     */
-    public MapLayer addObjectGroup() {
-        MapLayer layer = new ObjectGroup(this);
-        layer.setName(Resources.getString("general.objectgroup.objectgroup") +
-                      " " + super.getTotalLayers());
-        super.addLayer(layer);
-        return layer;
     }
 
     /**

@@ -12,7 +12,6 @@
 
 package tiled.mapeditor;
 
-import java.util.ResourceBundle;
 import java.awt.Image;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -21,26 +20,11 @@ import javax.swing.ImageIcon;
 
 /**
  * This class implements static accessors to common editor resources. These
- * currently include icons and internationalized strings.
+ * currently include icons and images.
  */
 public final class Resources {
-    // The resource bundle used by this class
-    private static final ResourceBundle resourceBundle =
-            ResourceBundle.getBundle(
-                    Resources.class.getPackage().getName() + ".resources.gui");
-
     // Prevent instantiation
     private Resources() {
-    }
-
-    /**
-     * Retrieves a string from the resource bundle in the default locale.
-     *
-     * @param key the key for the desired string
-     * @return the string for the given key
-     */
-    public static String getString(String key) {
-        return resourceBundle.getString(key);
     }
 
     /**

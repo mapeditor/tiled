@@ -23,14 +23,13 @@ import java.util.zip.GZIPOutputStream;
 import tiled.core.*;
 import tiled.core.Map;
 import tiled.io.ImageHelper;
-import tiled.io.MapWriter;
 import tiled.io.PluginLogger;
 import tiled.util.Base64;
 
 /**
  * A writer for Tiled's TMX map format.
  */
-public class XMLMapWriter implements MapWriter
+public class TMXMapWriter
 {
     private static final int LAST_BYTE = 0x000000FF;
 
@@ -39,7 +38,7 @@ public class XMLMapWriter implements MapWriter
     private static final String tileImagePrefix = "tile";
 
     private static final boolean encodeLayerData = true;
-    private static final boolean compressLayerData = true && encodeLayerData;
+    private static final boolean compressLayerData = encodeLayerData;
 
     /**
      * Saves a map to an XML file.
@@ -615,30 +614,6 @@ public class XMLMapWriter implements MapWriter
         return relPath;
     }
 
-    /**
-     * @see tiled.io.PluggableMapIO#getFilter()
-     */
-    public String getFilter() throws Exception {
-        return "*.tmx,*.tsx,*.tmx.gz";
-    }
-
-    public String getPluginPackage() {
-        return "Tiled internal TMX reader/writer";
-    }
-
-    public String getDescription() {
-        return
-            "The core Tiled TMX format writer\n" +
-            "\n" +
-            "Tiled Map Editor, (c) 2004-2008\n" +
-            "Adam Turk\n" +
-            "Bjorn Lindeijer";
-    }
-
-    public String getName() {
-        return "Default Tiled XML (TMX) map writer";
-    }
-
     public boolean accept(File pathname) {
         try {
             String path = pathname.getCanonicalPath();
@@ -647,8 +622,5 @@ public class XMLMapWriter implements MapWriter
             }
         } catch (IOException e) {}
         return false;
-    }
-
-    public void setLogger(PluginLogger logger) {
     }
 }
