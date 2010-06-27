@@ -760,11 +760,12 @@
     </message>
     <message>
         <location line="-338"/>
+        <location line="+835"/>
         <source>&amp;Layer</source>
         <translation type="unfinished">&amp;Livello</translation>
     </message>
     <message>
-        <location line="+224"/>
+        <location line="-611"/>
         <source>Error Opening Map</source>
         <translation type="unfinished"></translation>
     </message>
@@ -904,22 +905,22 @@
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+42"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
         <source>Select &amp;All</source>
         <translation type="unfinished">Seleziona T&amp;utto</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Select &amp;None</source>
         <translation type="unfinished">Seleziona &amp;Ninente</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-56"/>
         <source>Ctrl+Shift+A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+58"/>
         <source>Add &amp;Tile Layer...</source>
         <translation type="unfinished">Aggiungi Livello &amp;Cella...</translation>
     </message>
@@ -929,42 +930,42 @@
         <translation type="unfinished">Aggiungi Livello &amp;Oggetto...</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>&amp;Duplicate Layer</source>
         <translation type="unfinished">&amp;Duplica Livello</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-54"/>
         <source>Ctrl+Shift+D</source>
         <translation type="unfinished">Ctrl+Maiusc+D</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+55"/>
         <source>&amp;Remove Layer</source>
         <translation type="unfinished">&amp;Rimuovi Livello</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+1"/>
         <source>Move Layer &amp;Up</source>
         <translation type="unfinished">Muovi Il Livello In S&amp;u</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
         <translation type="unfinished">Ctrl+Maiusc+Su</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+48"/>
         <source>Move Layer Dow&amp;n</source>
         <translation type="unfinished">Muovi Il Livello I&amp;n Giù</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
         <translation type="unfinished">Ctrl+Maiusc+Giù</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+44"/>
         <source>Layer &amp;Properties...</source>
         <translation type="unfinished">&amp;Proprietà Livello...</translation>
     </message>
@@ -1219,31 +1220,22 @@ Do you want to replace it?</source>
     <name>Tmw::TmwPlugin</name>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+9"/>
         <source>No collision layer found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+6"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Impossibile aprire il file in scrittura.</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location filename="../src/plugins/tmw_import/tmwplugin.cpp" line="+43"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+25"/>
-        <source>TMW-eAthena collision files 2 (*.wlk2)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

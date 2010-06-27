@@ -771,11 +771,12 @@
     </message>
     <message>
         <location line="-338"/>
+        <location line="+835"/>
         <source>&amp;Layer</source>
         <translation type="unfinished">&amp;Calques</translation>
     </message>
     <message>
-        <location line="+224"/>
+        <location line="-611"/>
         <source>Error Opening Map</source>
         <translation type="unfinished"></translation>
     </message>
@@ -919,22 +920,22 @@
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+42"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
         <source>Select &amp;All</source>
         <translation type="unfinished">&amp;Tout sélectionner</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Select &amp;None</source>
         <translation type="unfinished">Tout &amp;désélectionner</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-56"/>
         <source>Ctrl+Shift+A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+58"/>
         <source>Add &amp;Tile Layer...</source>
         <translation type="unfinished">&amp;Ajouter un calque...</translation>
     </message>
@@ -944,42 +945,42 @@
         <translation type="unfinished">&amp;Calque d&apos;objets...</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>&amp;Duplicate Layer</source>
         <translation type="unfinished">&amp;Dupliquer le calque</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-54"/>
         <source>Ctrl+Shift+D</source>
         <translation type="unfinished">Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+55"/>
         <source>&amp;Remove Layer</source>
         <translation type="unfinished">&amp;Supprimer le calque</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+1"/>
         <source>Move Layer &amp;Up</source>
         <translation type="unfinished">Monter le calque courant</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
         <translation type="unfinished">Ctrl+Shift+Flèche haut</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+48"/>
         <source>Move Layer Dow&amp;n</source>
         <translation type="unfinished">&amp;Descendre le calque courant</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
         <translation type="unfinished">Ctrl+Shift+Flèche bas</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+44"/>
         <source>Layer &amp;Properties...</source>
         <translation type="unfinished">&amp;Propriétés du calque...</translation>
     </message>
@@ -1234,31 +1235,22 @@ Do you want to replace it?</source>
     <name>Tmw::TmwPlugin</name>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+9"/>
         <source>No collision layer found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+6"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">La tentative d&apos;écriture du fichier a échoué.</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location filename="../src/plugins/tmw_import/tmwplugin.cpp" line="+43"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+25"/>
-        <source>TMW-eAthena collision files 2 (*.wlk2)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

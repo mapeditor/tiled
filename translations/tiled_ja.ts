@@ -763,11 +763,12 @@
     </message>
     <message>
         <location line="-338"/>
+        <location line="+835"/>
         <source>&amp;Layer</source>
         <translation>レイヤー(&amp;L)</translation>
     </message>
     <message>
-        <location line="+224"/>
+        <location line="-611"/>
         <source>Error Opening Map</source>
         <translation>マップを開いている途中にエラー</translation>
     </message>
@@ -907,22 +908,22 @@
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+42"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
         <source>Select &amp;All</source>
         <translation>すべて選択(&amp;A)</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Select &amp;None</source>
         <translation>すべて選択解除(&amp;N)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-56"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+58"/>
         <source>Add &amp;Tile Layer...</source>
         <translation>タイル・レイヤーを追加(&amp;T)...</translation>
     </message>
@@ -932,42 +933,42 @@
         <translation>オブジェクト・レイヤーの追加(&amp;O)...</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>&amp;Duplicate Layer</source>
         <translation>レイヤーの複製(&amp;D)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-54"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+55"/>
         <source>&amp;Remove Layer</source>
         <translation>レイヤーを削除(&amp;R)</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+1"/>
         <source>Move Layer &amp;Up</source>
         <translation>レイヤーの順番を上げる(&amp;U)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
         <translation>Ctrl+Shift+Up</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+48"/>
         <source>Move Layer Dow&amp;n</source>
         <translation>レイヤーの順番を下げる(&amp;n)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
         <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+44"/>
         <source>Layer &amp;Properties...</source>
         <translation>レイヤーの設定(&amp;P)...</translation>
     </message>
@@ -1219,32 +1220,27 @@ Do you want to replace it?</source>
     <name>Tmw::TmwPlugin</name>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
         <translation>コリジョン・レイヤーが複数存在します!</translation>
     </message>
     <message>
         <location line="+9"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+9"/>
         <source>No collision layer found!</source>
         <translation>コリジョン・レイヤーが見つかりません!</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+6"/>
         <source>Could not open file for writing.</source>
         <translation>書き込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location filename="../src/plugins/tmw_import/tmwplugin.cpp" line="+43"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
         <translation>TMW-eAthena collision files (*.wlk)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/tmw2/tmwplugin.cpp" line="+25"/>
         <source>TMW-eAthena collision files 2 (*.wlk2)</source>
-        <translation>TMW-eAthena collision files 2 (*.wlk2)</translation>
+        <translation type="obsolete">TMW-eAthena collision files 2 (*.wlk2)</translation>
     </message>
 </context>
 <context>
