@@ -14,8 +14,13 @@ win32 {
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 
-LIBS += -L$$OUT_PWD/../../lib
+macx {
+    LIBS += -L$$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+} else {
+    LIBS += -L$$OUT_PWD/../../lib
+}
 
+# Make sure the Tiled executable can find libtiled
 !win32:!macx {
     QMAKE_RPATHDIR += \$\$ORIGIN/../lib
 

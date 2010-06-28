@@ -9,6 +9,8 @@ INCLUDEPATH += $$PWD/../tiled
 DEPENDPATH += $$PWD/../tiled
 win32 {
     DESTDIR = $$OUT_PWD/../../../plugins/tiled
+} else:macx {
+    DESTDIR = $$OUT_PWD/../../../bin/Tiled.app/Contents/PlugIns
 } else {
     DESTDIR = $$OUT_PWD/../../../lib/tiled/plugins
 }
@@ -18,4 +20,8 @@ target.path = $${PREFIX}/lib/tiled/plugins
 INSTALLS += target
 
 include(../libtiled/libtiled.pri)
-LIBS += -L$$OUT_PWD/../../../lib
+macx {
+    LIBS += -L$$OUT_PWD/../../../bin/Tiled.app/Contents/Frameworks
+} else {
+    LIBS += -L$$OUT_PWD/../../../lib
+}

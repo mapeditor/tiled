@@ -4,7 +4,12 @@ TEMPLATE = lib
 TARGET = tiled
 target.path = $${PREFIX}/lib
 INSTALLS += target
-DESTDIR = ../../lib
+macx {
+    DESTDIR = ../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LFLAGS_SONAME = -Wl,-install_name,@executable_path/../Frameworks/
+} else {
+    DESTDIR = ../../lib
+}
 DLLDESTDIR = ../..
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
