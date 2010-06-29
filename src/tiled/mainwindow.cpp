@@ -246,6 +246,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mScene = new MapScene(this);
     mUi->mapView->setScene(mScene);
     mUi->mapView->centerOn(0, 0);
+#ifdef Q_OS_MAC
+    mUi->mapView->setFrameStyle(QFrame::NoFrame);
+#endif
 
     mUi->actionShowGrid->setChecked(mScene->isGridVisible());
     connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
