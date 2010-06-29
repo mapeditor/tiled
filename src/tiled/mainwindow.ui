@@ -161,6 +161,9 @@
    <property name="text">
     <string>&amp;Quit</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
+   </property>
   </action>
   <action name="actionCopy">
    <property name="enabled">
@@ -194,10 +197,16 @@
    <property name="text">
     <string>&amp;About Tiled</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
   </action>
   <action name="actionAboutQt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutQtRole</enum>
    </property>
   </action>
   <action name="actionResizeMap">
@@ -326,6 +335,9 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Pre&amp;ferences...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
    </property>
   </action>
   <action name="actionClearRecentFiles">
