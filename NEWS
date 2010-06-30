@@ -1,4 +1,4 @@
-0.5.0 (... 2010)
+0.5.0 (30 June 2010)
 * Added support for import and export plugins
 * Added support for external tilesets
 * Added undo for adding tilesets and ability to remove tilesets
@@ -15,6 +15,8 @@
 * Fixed a crash when using some tools when no map is loaded
 * Fixed compile errors related to detecting static builds
 * Fixed the Save dialog not suggesting any particular file extension
+* Updated Japanese, Dutch, German, Brazilian Portuguese, French, Portuguese
+  and Spanish translations
 
 0.4.1 (14 April 2010)
 * Added support for saving tile layer data as CSV
