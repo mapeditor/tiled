@@ -556,7 +556,7 @@ bool MapScene::eventFilter(QObject *, QEvent *event)
             QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
             Qt::KeyboardModifiers newModifiers = keyEvent->modifiers();
 
-            if (newModifiers != mCurrentModifiers) {
+            if (mActiveTool && newModifiers != mCurrentModifiers) {
                 mActiveTool->modifiersChanged(newModifiers);
                 mCurrentModifiers = newModifiers;
             }
