@@ -4,12 +4,13 @@ Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
 
 Contributors:
 
-Christian Henz  (added handling of non-encoded map data)
-Dennis Honeyman (implemented the nice about dialog and CSV layer support)
-Edward Hutchins (added automatic reloading of changed tileset images)
-Jeff Bland      (added Offset Map feature and fill tool)
+Andrew G. Crowell (added additional ways to access layer related actions)
+Christian Henz    (added handling of non-encoded map data)
+Dennis Honeyman   (implemented the nice about dialog and CSV layer support)
+Edward Hutchins   (added automatic reloading of changed tileset images)
+Jeff Bland        (added Offset Map feature and fill tool)
 Michael Woerister (improvements to the object properties dialog)
-Roderic Morris  (added many icons and initial object group support)
+Roderic Morris    (added many icons and initial object group support)
 
 Translators:
 
