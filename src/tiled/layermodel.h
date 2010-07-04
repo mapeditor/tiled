@@ -22,6 +22,7 @@
 #define LAYERMODEL_H
 
 #include <QAbstractListModel>
+#include <QIcon>
 
 namespace Tiled {
 
@@ -129,6 +130,9 @@ signals:
 private:
     MapDocument *mMapDocument;
     Map *mMap;
+
+    QIcon mTileLayerIcon;
+    QIcon mObjectLayerIcon;
 };
 
 } // namespace Internal
