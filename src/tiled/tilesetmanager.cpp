@@ -24,6 +24,7 @@
 #include "tileset.h"
 
 #include <QFileSystemWatcher>
+#include <QImage>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -145,8 +146,9 @@ void TilesetManager::fileChanged(const QString &path)
 void TilesetManager::fileChangedTimeout()
 {
     foreach (Tileset *tileset, tilesets()) {
-        if (mChangedFiles.contains(tileset->imageSource())) {
-            tileset->loadFromImage(tileset->imageSource());
+        QString fileName = tileset->imageSource();
+        if (mChangedFiles.contains(fileName)) {
+            tileset->loadFromImage(QImage(fileName), fileName);
             emit tilesetChanged(tileset);
         }
     }

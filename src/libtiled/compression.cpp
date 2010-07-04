@@ -24,7 +24,7 @@
 #include <QByteArray>
 #include <QDebug>
 
-using namespace Tiled::Internal;
+using namespace Tiled;
 
 // TODO: Improve error reporting by showing these errors in the user interface
 static void logZlibError(int error)
@@ -46,7 +46,7 @@ static void logZlibError(int error)
     }
 }
 
-QByteArray Tiled::Internal::decompress(const QByteArray &data, int expectedSize)
+QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 {
     int bufferSize = expectedSize;
     int ret;
@@ -115,8 +115,7 @@ QByteArray Tiled::Internal::decompress(const QByteArray &data, int expectedSize)
     return outByteArray;
 }
 
-QByteArray Tiled::Internal::compress(const QByteArray &data,
-                                     CompressionMethod method)
+QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method)
 {
     int bufferSize = 1024;
     char *out = (char *) malloc(bufferSize);

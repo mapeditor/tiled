@@ -26,7 +26,7 @@
 #include "utils.h"
 
 #include <QFileDialog>
-#include <QImageReader>
+#include <QImage>
 #include <QMessageBox>
 #include <QSettings>
 
@@ -111,7 +111,7 @@ void NewTilesetDialog::tryAccept()
     if (useTransparentColor)
         tileset->setTransparentColor(transparentColor);
 
-    if (!tileset->loadFromImage(image)) {
+    if (!tileset->loadFromImage(QImage(image), image)) {
         QMessageBox::critical(this, tr("Error"),
                               tr("Failed to load tileset image '%1'.")
                               .arg(image));

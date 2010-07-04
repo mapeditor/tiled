@@ -23,6 +23,7 @@
 
 #include "map.h"
 #include "tile.h"
+#include "tileset.h"
 
 using namespace Tiled;
 
@@ -126,6 +127,16 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
         const Tile *tile = mTiles.at(i);
         if (tile && tile->tileset() == tileset)
             mTiles.replace(i, 0);
+    }
+}
+
+void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
+                                           Tileset *newTileset)
+{
+    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
+        const Tile *tile = mTiles.at(i);
+        if (tile && tile->tileset() == oldTileset)
+            mTiles.replace(i, newTileset->tileAt(tile->id()));
     }
 }
 

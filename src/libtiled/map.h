@@ -225,6 +225,13 @@ public:
     void removeTilesetAt(int index);
 
     /**
+     * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
+     * Also replaces the old tileset with the new tileset in the list of
+     * tilesets.
+     */
+    void replaceTileset(Tileset *oldTileset, Tileset *newTileset);
+
+    /**
      * Returns the tilesets that the tiles on this map are using.
      */
     const QList<Tileset*> &tilesets() const { return mTilesets; }

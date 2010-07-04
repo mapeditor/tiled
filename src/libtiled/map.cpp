@@ -113,6 +113,19 @@ void Map::removeTilesetAt(int index)
     mTilesets.removeAt(index);
 }
 
+void Map::replaceTileset(Tileset *oldTileset, Tileset *newTileset)
+{
+    const int index = mTilesets.indexOf(oldTileset);
+    Q_ASSERT(index != -1);
+
+    foreach (Layer *layer, mLayers)
+        if (TileLayer *tileLayer = layer->asTileLayer())
+            tileLayer->replaceReferencesToTileset(oldTileset, newTileset);
+
+    mTilesets.removeAt(index);
+    mTilesets.insert(index, newTileset);
+}
+
 bool Map::isTilesetUsed(Tileset *tileset) const
 {
     foreach (const Layer *layer, mLayers)

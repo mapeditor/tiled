@@ -36,7 +36,6 @@ OBJECTS_DIR = .obj
 
 SOURCES += aboutdialog.cpp \
     brushitem.cpp \
-    compression.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -106,7 +105,6 @@ SOURCES += aboutdialog.cpp \
     movetileset.cpp
 HEADERS += aboutdialog.h \
     brushitem.h \
-    compression.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \

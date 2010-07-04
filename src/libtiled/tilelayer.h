@@ -114,6 +114,11 @@ public:
     void removeReferencesToTileset(Tileset *tileset);
 
     /**
+     * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
+     */
+    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
+
+    /**
      * Resizes this tile layer to \a size, while shifting all tiles by
      * \a offset.
      *

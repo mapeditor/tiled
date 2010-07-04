@@ -28,6 +28,7 @@
 
 #include "aboutdialog.h"
 #include "addremovetileset.h"
+#include "changeproperties.h"
 #include "clipboardmanager.h"
 #include "eraser.h"
 #include "erasetiles.h"
@@ -52,6 +53,7 @@
 #include "saveasimagedialog.h"
 #include "selectiontool.h"
 #include "stampbrush.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetdock.h"
@@ -639,46 +641,85 @@ void MainWindow::copy()
     mClipboardManager->copySelection(mMapDocument);
 }
 
+static Tileset *findSimilarTileset(Tileset *tileset,
+                                   const QList<Tileset*> tilesets)
+{
+    foreach (Tileset *candidate, tilesets) {
+        if (candidate != tileset
+            && candidate->imageSource() == tileset->imageSource()
+            && candidate->tileWidth() == tileset->tileWidth()
+            && candidate->tileHeight() == tileset->tileHeight()
+            && candidate->tileSpacing() == tileset->tileSpacing()
+            && candidate->margin() == tileset->margin())
+        {
+            return candidate;
+        }
+    }
+
+    return 0;
+}
+
 void MainWindow::paste()
 {
     if (!mMapDocument)
         return;
 
-    if (Map *map = mClipboardManager->map()) {
-        // We can currently only handle maps with a single tile layer
-        if (map->layerCount() == 1) {
-            if (TileLayer *layer = dynamic_cast<TileLayer*>(map->layerAt(0))) {
-                QList<QUndoCommand*> addTilesetCommands;
+    Map *map = mClipboardManager->map();
+    if (!map)
+        return;
 
-                // Add tilesets that are not yet part of this map
-                foreach (Tileset *tileset, map->tilesets()) {
-                    if (!mMapDocument->map()->tilesets().contains(tileset)) {
-                        addTilesetCommands.append(new AddTileset(mMapDocument,
-                                                                 tileset));
-                    }
-                }
-                if (!addTilesetCommands.isEmpty()) {
-                    QUndoStack *undoStack = mMapDocument->undoStack();
-                    undoStack->beginMacro(tr("Add Tilesets"));
-                    foreach (QUndoCommand *command, addTilesetCommands)
-                        mMapDocument->undoStack()->push(command);
-                    undoStack->endMacro();
-                }
-
-                // Reset selection and paste into the stamp brush
-                mActionHandler->selectNone();
-                setStampBrush(layer);
-                ToolManager::instance()->selectTool(mStampBrush);
-
-                delete map;
-                return;
-            }
-        }
-
-        // Need to also clean up the tilesets since they didn't get an owner
+    // We can currently only handle maps with a single tile layer
+    if (!(map->layerCount() == 1 && map->layerAt(0)->asTileLayer())) {
+        // Need to clean up the tilesets since they didn't get an owner
         qDeleteAll(map->tilesets());
         delete map;
+        return;
     }
+
+    TileLayer *layer = map->layerAt(0)->asTileLayer();
+    QList<QUndoCommand*> undoCommands;
+    QList<Tileset*> existingTilesets = mMapDocument->map()->tilesets();
+
+    // Add tilesets that are not yet part of this map
+    foreach (Tileset *tileset, map->tilesets()) {
+        if (existingTilesets.contains(tileset))
+            continue;
+
+        Tileset *replacement = findSimilarTileset(tileset, existingTilesets);
+        if (!replacement) {
+            undoCommands.append(new AddTileset(mMapDocument, tileset));
+            continue;
+        }
+
+        // Unite the tile properties
+        const int sharedTileCount = qMin(tileset->tileCount(),
+                                         replacement->tileCount());
+        for (int i = 0; i < sharedTileCount; ++i) {
+            QMap<QString, QString> *properties =
+                    replacement->tileAt(i)->properties();
+            QMap<QString, QString> newProperties = *properties;
+            newProperties.unite(*tileset->tileAt(i)->properties());
+            undoCommands.append(new ChangeProperties(tr("Tile"),
+                                                     properties,
+                                                     newProperties));
+        }
+        map->replaceTileset(tileset, replacement);
+        delete tileset;
+    }
+    if (!undoCommands.isEmpty()) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->beginMacro(tr("Paste"));
+        foreach (QUndoCommand *command, undoCommands)
+            mMapDocument->undoStack()->push(command);
+        undoStack->endMacro();
+    }
+
+    // Reset selection and paste into the stamp brush
+    mActionHandler->selectNone();
+    setStampBrush(layer);
+    ToolManager::instance()->selectTool(mStampBrush);
+
+    delete map;
 }
 
 void MainWindow::openPreferences()

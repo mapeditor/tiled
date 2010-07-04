@@ -36,11 +36,10 @@ Tile *Tileset::tileAt(int id) const
     return (id < mTiles.size()) ? mTiles.at(id) : 0;
 }
 
-bool Tileset::loadFromImage(const QString &fileName)
+bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
 {
     Q_ASSERT(mTileWidth > 0 && mTileHeight > 0);
 
-    const QImage image(fileName);
     if (image.isNull())
         return false;
 
