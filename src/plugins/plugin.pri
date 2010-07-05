@@ -25,3 +25,12 @@ macx {
 } else {
     LIBS += -L$$OUT_PWD/../../../lib
 }
+
+# Set rpath so that the plugin will resolve libtiled correctly
+!win32:!macx {
+    QMAKE_RPATHDIR += \$\$ORIGIN/../..
+
+    # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
+    QMAKE_LFLAGS += -Wl,-z,origin \'-Wl,-rpath,$$join(QMAKE_RPATHDIR, ":")\'
+    QMAKE_RPATHDIR =
+}
