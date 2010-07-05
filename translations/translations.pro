@@ -40,13 +40,14 @@ LRELEASE = $$fixSlashes($$[QT_INSTALL_BINS]/lrelease)
 ts.commands = cd .. && $$LUPDATE src -ts $$TRANSLATIONS
 QMAKE_EXTRA_TARGETS += ts
 
-updateqm.input = TRANSLATIONS
 win32 {
-    updateqm.output = ${QMAKE_FILE_BASE}.qm
+    TARGET_DIR = .
 } else {
-    updateqm.output = \
-        $$OUT_PWD/../share/tiled/translations/${QMAKE_FILE_BASE}.qm
+    TARGET_DIR = ../share/tiled/translations
 }
+
+updateqm.input = TRANSLATIONS
+updateqm.output = $$OUT_PWD/$$TARGET_DIR/${QMAKE_FILE_BASE}.qm
 isEmpty(vcproj):updateqm.variable_out = PRE_TARGETDEPS
 updateqm.commands = $$LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
 updateqm.name = LRELEASE ${QMAKE_FILE_IN}
@@ -55,7 +56,7 @@ QMAKE_EXTRA_COMPILERS += updateqm
 
 # Install rule for translations
 include(../tiled.pri)
-qmfiles.files = $$prependAppend(LANGUAGES, $$OUT_PWD/tiled_, .qm)
+qmfiles.files = $$prependAppend(LANGUAGES, $$OUT_PWD/$$TARGET_DIR/tiled_, .qm)
 qmfiles.path = $${PREFIX}/share/tiled/translations
 qmfiles.CONFIG += no_check_exist
 INSTALLS += qmfiles
