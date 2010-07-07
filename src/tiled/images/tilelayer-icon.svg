@@ -15,10 +15,10 @@
    id="svg3600"
    version="1.1"
    inkscape:version="0.47 r22583"
-   inkscape:export-filename="/home/tlindeij/projects/tiled-qt/src/tiled/images/16x16/layer-tile.png"
+   inkscape:export-filename="/home/bjorn/projects/tiled-qt/src/tiled/images/16x16/layer-tile.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
-   sodipodi:docname="New document 3">
+   sodipodi:docname="tilelayer-icon.svg">
   <defs
      id="defs3602">
     <inkscape:perspective
@@ -42,9 +42,9 @@
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1328"
+     inkscape:window-width="1270"
      inkscape:window-height="626"
-     inkscape:window-x="128"
+     inkscape:window-x="0"
      inkscape:window-y="137"
      inkscape:window-maximized="0">
     <inkscape:grid
@@ -74,7 +74,8 @@
      transform="translate(0,-1036.3622)">
     <g
        id="g4156"
-       style="fill:#c7d8f9;fill-opacity:1;stroke:#375084;stroke-opacity:1">
+       style="fill:#c7d8f9;fill-opacity:1;stroke:#375084;stroke-opacity:1"
+       transform="translate(0,1)">
       <g
          id="g4130"
          style="fill:#c7d8f9;fill-opacity:1;stroke:#375084;stroke-opacity:1">
