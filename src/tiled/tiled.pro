@@ -70,6 +70,7 @@ SOURCES += aboutdialog.cpp \
     newtilesetdialog.cpp \
     objectgroupitem.cpp \
     movemapobject.cpp \
+    movemapobjecttogroup.cpp \
     resizemapobject.cpp \
     addremovemapobject.cpp \
     addremovelayer.cpp \
@@ -140,6 +141,7 @@ HEADERS += aboutdialog.h \
     newtilesetdialog.h \
     objectgroupitem.h \
     movemapobject.h \
+    movemapobjecttogroup.h \
     resizemapobject.h \
     addremovemapobject.h \
     addremovelayer.h \

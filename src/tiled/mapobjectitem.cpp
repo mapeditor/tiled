@@ -2,6 +2,7 @@
  * mapobjectitem.cpp
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of Tiled.
  *
@@ -28,6 +29,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "movemapobject.h"
+#include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "objectpropertiesdialog.h"
@@ -265,8 +267,28 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QAction *dupAction = menu.addAction(dupIcon, tr("&Duplicate Object"));
     QAction *removeAction = menu.addAction(delIcon, tr("&Remove Object"));
     menu.addSeparator();
+    QMenu *moveToLayerMenu = menu.addMenu(tr("&Move To Layer"));
+    menu.addSeparator();
     QAction *propertiesAction = menu.addAction(propIcon,
                                                tr("Object &Properties..."));
+
+    // Fill out moveToLayerMenu
+    typedef QMap<QAction*, ObjectGroup*> MoveToLayerActionMap;
+    MoveToLayerActionMap moveToLayerActions;
+    foreach (Layer* layer, mMapDocument->map()->layers()) {
+            ObjectGroup *objectGroup = layer->asObjectGroup();
+            if (!objectGroup || objectGroup == mObject->objectGroup())
+                continue;
+
+            QAction *action = moveToLayerMenu->addAction(objectGroup->name());
+            moveToLayerActions.insert(action, objectGroup);
+    }
+
+    if (moveToLayerMenu->isEmpty()) {
+        QAction *action =
+                moveToLayerMenu->addAction(tr("No other object layers"));
+        action->setEnabled(false);
+    }
 
     Utils::setThemeIcon(removeAction, "edit-delete");
     Utils::setThemeIcon(propertiesAction, "document-properties");
@@ -287,6 +309,16 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
         ObjectPropertiesDialog propertiesDialog(mMapDocument, mObject,
                                                 event->widget());
         propertiesDialog.exec();
+    }
+
+    MoveToLayerActionMap::const_iterator i =
+            moveToLayerActions.find(selectedAction);
+
+    if (i != moveToLayerActions.end()) {
+        MapDocument *doc = mMapDocument;
+        doc->undoStack()->push(new MoveMapObjectToGroup(doc,
+                                                        mObject,
+                                                        i.value()));
     }
 }
 
