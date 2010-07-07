@@ -53,6 +53,8 @@ LanguageManager::LanguageManager()
     mTranslationsDir = QCoreApplication::applicationDirPath();
 #ifdef Q_OS_WIN32
     mTranslationsDir += QLatin1String("/translations");
+#elif defined(Q_OS_MAC)
+    mTranslationsDir += QLatin1String("/../Translations");
 #else
     mTranslationsDir += QLatin1String("/../share/tiled/translations");
 #endif
