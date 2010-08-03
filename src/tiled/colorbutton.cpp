@@ -36,7 +36,7 @@ ColorButton::ColorButton(QWidget *parent)
 
 void ColorButton::setColor(const QColor &color)
 {
-    if (mColor == color && !color.isValid())
+    if (mColor == color || !color.isValid())
         return;
 
     mColor = color;
