@@ -406,10 +406,10 @@ void TmxMapWriter::writeObject(QXmlStreamWriter &w, const MapObject *mapObject)
         width = qRound(bounds.width() * tileHeight);
         height = qRound(bounds.height() * tileHeight);
     } else {
-        x = qRound(bounds.x() * tileHeight);
-        y = qRound(bounds.y() * tileWidth);
-        width = qRound(bounds.width() * tileHeight);
-        height = qRound(bounds.height() * tileWidth);
+        x = qRound(bounds.x() * tileWidth);
+        y = qRound(bounds.y() * tileHeight);
+        width = qRound(bounds.width() * tileWidth);
+        height = qRound(bounds.height() * tileHeight);
     }
 
     w.writeAttribute(QLatin1String("x"), QString::number(x));

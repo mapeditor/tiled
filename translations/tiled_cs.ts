@@ -8,34 +8,6 @@
         <source>About Tiled</source>
         <translation>O Tiled</translation>
     </message>
-    <message utf8="true">
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:12pt; font-weight:600;&quot;&gt;Tiled (Qt) Map Editor&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-style:italic;&quot;&gt;Version %1&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;Copyright 2008-2009 Thorbjørn Lindeijer&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;(see the AUTHORS file for a full list of contributors)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled (Qt).&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://mapeditor.org/&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://mapeditor.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:12pt; font-weight:600;&quot;&gt;Editor map Tiled (Qt)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-style:italic;&quot;&gt;Verze %1&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;Copyright 2008-2009 Thorbjørn Lindeijer&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;(plný seznam přispěvatelů je v souboru AUTHORS)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled (Qt).&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://mapeditor.org/&quot;&gt;&lt;span style=&quot; font-size:9pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://mapeditor.org/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
     <message>
         <location line="+96"/>
         <source>OK</source>
@@ -48,122 +20,14 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>BucketFillTool</name>
-    <message>
-        <source>Bucket Fill Tool</source>
-        <translation type="obsolete">Výplň</translation>
-    </message>
-    <message>
-        <source>F</source>
-        <translation type="obsolete">V</translation>
-    </message>
-</context>
-<context>
-    <name>Eraser</name>
-    <message>
-        <source>Eraser</source>
-        <translation type="obsolete">Guma</translation>
-    </message>
-    <message>
-        <source>E</source>
-        <translation type="obsolete">G</translation>
-    </message>
-</context>
-<context>
-    <name>LayerDock</name>
-    <message>
-        <source>Layers</source>
-        <translation type="obsolete">Vrstvy</translation>
-    </message>
-    <message>
-        <source>Opacity:</source>
-        <translation type="obsolete">Průhlednost:</translation>
-    </message>
-</context>
-<context>
-    <name>LayerModel</name>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Vrstva</translation>
-    </message>
-</context>
-<context>
-    <name>LayerView</name>
-    <message>
-        <source>Properties...</source>
-        <translation type="obsolete">Vlastnosti...</translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Editor map Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Verze %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(plný seznam přispěvatelů je v souboru AUTHORS)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Tento program můžete šířit a upravovat podle licence GPLicence (verze 2 nebo pozdější). Kopii GPLlicence najdete v souboru COPYING ve zdrojovém kódu programu Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">Zpět</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation type="obsolete">Znovu</translation>
-    </message>
-    <message>
-        <source>Error while opening map</source>
-        <translation type="obsolete">Chyba při otevírání mapy</translation>
-    </message>
-    <message>
-        <source>Open Map</source>
-        <translation type="obsolete">Otevřít mapu</translation>
-    </message>
-    <message>
-        <source>Tiled map files (*.tmx)</source>
-        <translation type="obsolete">Dlaždicové mapy (*.tmx)</translation>
-    </message>
-    <message>
-        <source>Error while saving map</source>
-        <translation type="obsolete">Chyba při ukládání mapy</translation>
-    </message>
-    <message>
-        <source>Unsaved Changes</source>
-        <translation type="obsolete">Neuložené změny</translation>
-    </message>
-    <message>
-        <source>There are unsaved changes. Do you want to save now?</source>
-        <translation type="obsolete">V mapě jsou neuložené změny. Chcete je uložit?</translation>
-    </message>
-    <message>
-        <source>Cut</source>
-        <translation type="obsolete">Vyjmout</translation>
-    </message>
-    <message>
-        <source>Map</source>
-        <translation type="obsolete">Mapa</translation>
-    </message>
-    <message>
-        <source>%1%</source>
-        <translation type="obsolete">%1%</translation>
-    </message>
-    <message>
-        <source>Add Tile Layer</source>
-        <translation type="obsolete">Vložit vrstvu dlaždic</translation>
-    </message>
-    <message>
-        <source>Add Object Layer</source>
-        <translation type="obsolete">Vložit vrstvu objektů</translation>
-    </message>
-    <message>
-        <source>Layer name:</source>
-        <translation type="obsolete">Jméno vrstvy:</translation>
-    </message>
-    <message>
-        <source>New Layer</source>
-        <translation type="obsolete">Nová vrstva</translation>
-    </message>
-    <message>
-        <source>%1[*] - Tiled</source>
-        <translation type="obsolete">%1[*] - Tiled</translation>
-    </message>
     <message>
         <location filename="../src/tiled/mainwindow.ui" line="+17"/>
         <source>Tiled</source>
@@ -200,10 +64,6 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Zobrazení</translation>
     </message>
     <message>
-        <source>&amp;Layer</source>
-        <translation type="obsolete">&amp;Vrstva</translation>
-    </message>
-    <message>
         <location line="+16"/>
         <source>Main Toolbar</source>
         <translation>Hlavní pruh nástrojů</translation>
@@ -224,7 +84,7 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Ukončit</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+15"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopírovat</translation>
     </message>
@@ -239,12 +99,12 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;O Tiled</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <source>About Qt</source>
         <translation>O Qt</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>&amp;Resize Map...</source>
         <translation>&amp;Změnit velikost mapy...</translation>
     </message>
@@ -271,84 +131,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+9"/>
         <source>&amp;New...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nový...</translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+98"/>
         <source>&amp;Export As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportovat jako...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add External Tileset...</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat externí &amp;vrstvu dlaždic...</translation>
     </message>
     <message>
-        <source>Move Layer &amp;Up</source>
-        <translation type="obsolete">Posunout vrstvu &amp;nahoru</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+Up</source>
-        <translation type="obsolete">Ctrl+Shift+Nahoru</translation>
-    </message>
-    <message>
-        <source>Move Layer Dow&amp;n</source>
-        <translation type="obsolete">Posunout vrstvu &amp;dolů</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+Down</source>
-        <translation type="obsolete">Ctrl+Shift+Dolů</translation>
-    </message>
-    <message>
-        <source>Select &amp;All</source>
-        <translation type="obsolete">Vybrat &amp;vše</translation>
-    </message>
-    <message>
-        <source>Select &amp;None</source>
-        <translation type="obsolete">&amp;Zrušit výběr</translation>
-    </message>
-    <message>
-        <source>New...</source>
-        <translation type="obsolete">Nový...</translation>
-    </message>
-    <message>
-        <location line="-94"/>
+        <location line="-97"/>
         <source>New &amp;Tileset...</source>
         <translation>Nová sada &amp;dlaždic...</translation>
-    </message>
-    <message>
-        <source>&amp;Remove Layer</source>
-        <translation type="obsolete">&amp;Zrušit vrstvu</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Close</source>
         <translation>&amp;Zavřít</translation>
-    </message>
-    <message>
-        <source>Add &amp;Tile Layer...</source>
-        <translation type="obsolete">Přidat &amp;vrstvu dlaždic...</translation>
-    </message>
-    <message>
-        <source>Add &amp;Object Layer...</source>
-        <translation type="obsolete">Přidat vrstvu &amp;objektů...</translation>
-    </message>
-    <message>
-        <source>&amp;Duplicate Layer</source>
-        <translation type="obsolete">&amp;Duplikovat vrstvu</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+D</source>
-        <translation type="obsolete">Ctrl+Shift+D</translation>
-    </message>
-    <message>
-        <source>Layer &amp;Properties...</source>
-        <translation type="obsolete">&amp;Vlastnosti vrstvy...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -396,66 +204,31 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Nastavení...</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Clear Recent Files</source>
         <translation>Zapomenout nedávno otevřené soubory</translation>
     </message>
 </context>
 <context>
-    <name>MapDocument</name>
-    <message>
-        <source>Resize Map</source>
-        <translation type="obsolete">Změnit velikost mapy</translation>
-    </message>
-    <message>
-        <source>Offset Map</source>
-        <translation type="obsolete">Posunout mapu</translation>
-    </message>
-    <message>
-        <source>Copy of %1</source>
-        <translation type="obsolete">Kopie %1</translation>
-    </message>
-    <message>
-        <source>Duplicate Layer</source>
-        <translation type="obsolete">Duplikovat vrstvu</translation>
-    </message>
-</context>
-<context>
     <name>MapObjectItem</name>
-    <message>
-        <source>&amp;Duplicate</source>
-        <translation type="obsolete">&amp;Duplikovat</translation>
-    </message>
-    <message>
-        <source>&amp;Remove</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>&amp;Properties...</source>
-        <translation type="obsolete">&amp;Vlastnosti...</translation>
-    </message>
     <message>
         <location filename="../src/tiled/mapobjectitem.cpp" line="+265"/>
         <source>&amp;Duplicate Object</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplikovat objekt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Object</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Odstranění objektu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vlastnosti objektu...</translation>
     </message>
 </context>
 <context>
     <name>NewMapDialog</name>
-    <message>
-        <source>Layer 1</source>
-        <translation type="obsolete">Vrstva 1</translation>
-    </message>
     <message>
         <location filename="../src/tiled/newmapdialog.ui" line="+14"/>
         <source>New Map</source>
@@ -506,10 +279,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>NewTilesetDialog</name>
-    <message>
-        <source>Tileset Image</source>
-        <translation type="obsolete">Obrázek sady dlaždic</translation>
-    </message>
     <message>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+6"/>
         <source>New Tileset</source>
@@ -567,70 +336,51 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>ObjectGroupPropertiesDialog</name>
-    <message>
-        <source>Object Layer</source>
-        <translation type="obsolete">Vrstva objektů</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="obsolete">Barva:</translation>
-    </message>
-</context>
-<context>
     <name>ObjectPropertiesDialog</name>
-    <message>
-        <source>Object</source>
-        <translation type="obsolete">Objekt</translation>
-    </message>
     <message>
         <location filename="../src/tiled/objectpropertiesdialog.ui" line="+26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Name:</source>
-        <translation type="unfinished">Jméno:</translation>
+        <translation>Jméno:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Type:</source>
-        <translation type="unfinished">Typ:</translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Umístění</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished">X:</translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Y:</source>
-        <translation type="unfinished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>Size</source>
-        <translation type="unfinished">Velikost</translation>
+        <translation>Velikost</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Width:</source>
-        <translation type="unfinished">Šířka:</translation>
+        <translation>Šířka:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Height:</source>
-        <translation type="unfinished">Výška:</translation>
-    </message>
-    <message>
-        <source>Change Object</source>
-        <translation type="obsolete">Změnit objekt</translation>
+        <translation>Výška:</translation>
     </message>
 </context>
 <context>
@@ -700,10 +450,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <source>System default</source>
-        <translation type="obsolete">Systémové nastavení</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+14"/>
         <source>Preferences</source>
         <translation>Vlastnosti</translation>
@@ -772,32 +518,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <source>%1 Properties</source>
-        <translation type="obsolete">Vlastnosti %1</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Vrstvy</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/propertiesdialog.ui" line="+14"/>
         <source>Properties</source>
         <translation>Vlastnosti</translation>
-    </message>
-</context>
-<context>
-    <name>PropertiesModel</name>
-    <message>
-        <source>&lt;new property&gt;</source>
-        <translation type="obsolete">&lt;nová vlastnost&gt;</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Jméno</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Hodnota</translation>
     </message>
 </context>
 <context>
@@ -841,19 +564,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SaveAsImageDialog</name>
     <message>
-        <source>Save as Image</source>
-        <translation type="obsolete">Uložit jako obrázek</translation>
-    </message>
-    <message>
-        <source>%1 already exists.
-Do you want to replace it?</source>
-        <translation type="obsolete">%1 už existuje. Má se přepsat?</translation>
-    </message>
-    <message>
-        <source>Image</source>
-        <translation type="obsolete">Obrázek</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/saveasimagedialog.ui" line="+14"/>
         <source>Save As Image</source>
         <translation>Uložit jako obrázek</translation>
@@ -891,33 +601,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SelectionTool</name>
-    <message>
-        <source>Rectangular Select</source>
-        <translation type="obsolete">Obdélníkový výběr</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <source>%1, %2 - Rectangle: (%3 x %4)</source>
-        <translation type="obsolete">%1, %2 - Obdélník: (%3 × %4)</translation>
-    </message>
-</context>
-<context>
-    <name>StampBrush</name>
-    <message>
-        <source>Stamp Brush</source>
-        <translation type="obsolete">Razítkový štětec</translation>
-    </message>
-    <message>
-        <source>B</source>
-        <translation type="obsolete">B</translation>
+        <translation>&amp;Zobrazovat mířížku</translation>
     </message>
 </context>
 <context>
@@ -972,13 +656,6 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::LayerView</name>
-    <message>
-        <source>Properties...</source>
-        <translation type="obsolete">Vlastnosti...</translation>
-    </message>
-</context>
-<context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
         <location filename="../src/tiled/mainwindow.cpp" line="+116"/>
@@ -991,11 +668,7 @@ Do you want to replace it?</source>
         <translation>Znovu</translation>
     </message>
     <message>
-        <source>Error while opening map</source>
-        <translation type="obsolete">Chyba při otevírání mapy</translation>
-    </message>
-    <message>
-        <location line="+318"/>
+        <location line="+321"/>
         <source>Open Map</source>
         <translation>Otevřít mapu</translation>
     </message>
@@ -1006,36 +679,32 @@ Do you want to replace it?</source>
         <translation>Dlaždicové mapy (*.tmx)</translation>
     </message>
     <message>
-        <source>Error while saving map</source>
-        <translation type="obsolete">Chyba při ukládání mapy</translation>
-    </message>
-    <message>
-        <location line="-338"/>
-        <location line="+835"/>
+        <location line="-341"/>
+        <location line="+838"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished">&amp;Vrstva</translation>
+        <translation>&amp;Vrstva</translation>
     </message>
     <message>
         <location line="-611"/>
         <source>Error Opening Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při otevírání mapy</translation>
     </message>
     <message>
         <location line="+33"/>
         <location line="+125"/>
         <source>All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Všechny soubory (*)</translation>
     </message>
     <message>
         <location line="-80"/>
         <location line="+126"/>
         <source>Error Saving Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při ukládání mapy</translation>
     </message>
     <message>
         <location line="-95"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished"></translation>
+        <translation>mapa.tmx</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1050,17 +719,17 @@ Do you want to replace it?</source>
     <message>
         <location line="+40"/>
         <source>Export As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat jako...</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Unknown File Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Neznámý formát souboru</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The given filename does not have any known file extension.</source>
-        <translation type="unfinished"></translation>
+        <translation>Daný soubor má neznámou koncovku.</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -1070,22 +739,22 @@ Do you want to replace it?</source>
     <message>
         <location line="+34"/>
         <source>Add Tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat sady dlaždic</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Add External Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat externí vrstvu dlaždic</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sady dlaždic (*.tsx)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Reading Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při otevírání sady slaždic</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -1096,22 +765,6 @@ Do you want to replace it?</source>
         <location line="+114"/>
         <source>%1%</source>
         <translation>%1%</translation>
-    </message>
-    <message>
-        <source>Add Tile Layer</source>
-        <translation type="obsolete">Vložit vrstvu dlaždic</translation>
-    </message>
-    <message>
-        <source>Add Object Layer</source>
-        <translation type="obsolete">Vložit vrstvu objektů</translation>
-    </message>
-    <message>
-        <source>Layer name:</source>
-        <translation type="obsolete">Jméno vrstvy:</translation>
-    </message>
-    <message>
-        <source>New Layer</source>
-        <translation type="obsolete">Nová vrstva</translation>
     </message>
     <message>
         <location line="+69"/>
@@ -1135,12 +788,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+20"/>
         <source>Tile Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrstva dlaždic %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Object Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrstva objektů %1</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1158,79 +811,75 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished">Vybrat &amp;vše</translation>
+        <translation>Vybrat &amp;vše</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;None</source>
-        <translation type="unfinished">&amp;Zrušit výběr</translation>
+        <translation>&amp;Zrušit výběr</translation>
     </message>
     <message>
         <location line="-56"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Add &amp;Tile Layer...</source>
-        <translation type="unfinished">Přidat &amp;vrstvu dlaždic...</translation>
+        <translation>Přidat &amp;vrstvu dlaždic...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer...</source>
-        <translation type="unfinished">Přidat vrstvu &amp;objektů...</translation>
+        <translation>Přidat vrstvu &amp;objektů...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Duplicate Layer</source>
-        <translation type="unfinished">&amp;Duplikovat vrstvu</translation>
+        <translation>&amp;Duplikovat vrstvu</translation>
     </message>
     <message>
         <location line="-54"/>
         <source>Ctrl+Shift+D</source>
-        <translation type="unfinished">Ctrl+Shift+D</translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>&amp;Remove Layer</source>
-        <translation type="unfinished">&amp;Zrušit vrstvu</translation>
+        <translation>&amp;Zrušit vrstvu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Layer &amp;Up</source>
-        <translation type="unfinished">Posunout vrstvu &amp;nahoru</translation>
+        <translation>Posunout vrstvu &amp;nahoru</translation>
     </message>
     <message>
         <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
-        <translation type="unfinished">Ctrl+Shift+Nahoru</translation>
+        <translation>Ctrl+Shift+Nahoru</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Move Layer Dow&amp;n</source>
-        <translation type="unfinished">Posunout vrstvu &amp;dolů</translation>
+        <translation>Posunout vrstvu &amp;dolů</translation>
     </message>
     <message>
         <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
-        <translation type="unfinished">Ctrl+Shift+Dolů</translation>
+        <translation>Ctrl+Shift+Dolů</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Layer &amp;Properties...</source>
-        <translation type="unfinished">&amp;Vlastnosti vrstvy...</translation>
+        <translation>&amp;Vlastnosti vrstvy...</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
-        <source>Layer 1</source>
-        <translation type="obsolete">Vrstva 1</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+81"/>
         <source>Tile Layer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrstva dlaždic 1</translation>
     </message>
 </context>
 <context>
@@ -1239,17 +888,17 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="+115"/>
         <location line="+7"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba načítání obrázku sady dlaždic &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pro danou velikost dlaždic, okraje a mezery nebyly nalezeny dlaždice!</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1276,14 +925,6 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/objectpropertiesdialog.cpp" line="+41"/>
         <source>Object</source>
         <translation>Objekt</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Jméno:</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="obsolete">Typ:</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1391,17 +1032,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+236"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranění sady dlaždic</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sadu dlaždic &apos;%1&apos; mapa používá!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranit tuto sadu dlaždic a všechny její dlaždice?</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -1412,23 +1053,19 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <source>Properties...</source>
-        <translation type="obsolete">Vlastnosti...</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+207"/>
         <source>Tile &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vlastnosti dlaždice...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Export Tileset As...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportovat sadu dlaždic jako...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importovat sadu dlaždic</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -1438,26 +1075,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+19"/>
         <source>Export Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat sadu dlaždic</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::TmxMapReader</name>
-    <message>
-        <source>XML map reader (*.tmx)</source>
-        <translation type="obsolete">Načítač XML map (*.tmx)</translation>
-    </message>
-</context>
-<context>
-    <name>Tiled::Internal::TmxMapWriter</name>
-    <message>
-        <source>XML map writer (*.tmx)</source>
-        <translation type="obsolete">Ukládač XML map (*.tmx)</translation>
+        <translation>Sady dlaždic (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -1482,73 +1105,40 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
-    <name>TilesetDock</name>
-    <message>
-        <source>Tilesets</source>
-        <translation type="obsolete">Sada dlaždic</translation>
-    </message>
-</context>
-<context>
-    <name>TilesetView</name>
-    <message>
-        <source>Properties...</source>
-        <translation type="obsolete">Vlastnosti...</translation>
-    </message>
-    <message>
-        <source>Tile</source>
-        <translation type="obsolete">Dlaždice</translation>
-    </message>
-</context>
-<context>
     <name>Tmw::TmwPlugin</name>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nalezeno více kolizních vrstev!</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>No collision layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebyla nalezena kolizní vrstva!</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Nepodařilo se otevřít soubor pro zápis.</translation>
+        <translation>Nepodařilo se otevřít soubor pro zápis.</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolizní soubory TMW-eAthena (*.wlk)</translation>
     </message>
 </context>
 <context>
     <name>TmxMapReader</name>
-    <message>
-        <source>XML map reader (*.tmx)</source>
-        <translation type="obsolete">Načítač XML map (*.tmx)</translation>
-    </message>
     <message>
         <location filename="../src/tiled/tmxmapwriter.cpp" line="+48"/>
         <source>Could not open file for writing.</source>
         <translation>Nepodařilo se otevřít soubor pro zápis.</translation>
     </message>
     <message>
-        <source>XML map writer (*.tmx)</source>
-        <translation type="obsolete">Ukládač XML map (*.tmx)</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/tmxmapreader.h" line="+55"/>
         <location filename="../src/tiled/tmxmapwriter.h" line="+67"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Dlaždicové mapy (*.tmx)</translation>
-    </message>
-</context>
-<context>
-    <name>TmxMapWriter</name>
-    <message>
-        <source>Could not open file for writing.</source>
-        <translation type="obsolete">Nepodařilo se otevřít soubor pro zápis.</translation>
+        <translation>Dlaždicové mapy (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -1654,13 +1244,6 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
-    <name>ToolManager</name>
-    <message>
-        <source>Tools</source>
-        <translation type="obsolete">Nástroje</translation>
-    </message>
-</context>
-<context>
     <name>Undo Commands</name>
     <message>
         <location filename="../src/tiled/addremovelayer.h" line="+67"/>
@@ -1761,34 +1344,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
         <source>Add Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidání sady dlaždic</translation>
     </message>
     <message>
         <location filename="../src/tiled/addremovetileset.h" line="+78"/>
         <source>Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranění sady dlaždic</translation>
     </message>
     <message>
         <location filename="../src/tiled/movetileset.cpp" line="+31"/>
         <source>Move Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunutí sady dlaždic</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="-147"/>
         <source>Import Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Import sady dlaždic</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Export Tileset</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>UndoDock</name>
-    <message>
-        <source>History</source>
-        <translation type="obsolete">Historie</translation>
+        <translation>Export sady dlaždic</translation>
     </message>
 </context>
 <context>
