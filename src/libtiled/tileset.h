@@ -57,6 +57,8 @@ public:
         mTileHeight(tileHeight),
         mTileSpacing(tileSpacing),
         mMargin(margin),
+        mImageWidth(0),
+        mImageHeight(0),
         mColumnCount(0)
     {
     }
@@ -128,6 +130,16 @@ public:
     int columnCount() const { return mColumnCount; }
 
     /**
+     * Returns the width of the tileset image.
+     */
+    int imageWidth() const { return mImageWidth; }
+
+    /**
+     * Returns the height of the tileset image.
+     */
+    int imageHeight() const { return mImageHeight; }
+
+    /**
      * Returns the transparent color, or an invalid color if no transparent
      * color is used.
      */
@@ -170,6 +182,8 @@ private:
     int mTileHeight;
     int mTileSpacing;
     int mMargin;
+    int mImageWidth;
+    int mImageHeight;
     int mColumnCount;
     QList<Tile*> mTiles;
 };
