@@ -20,6 +20,7 @@
 
 #include "propertiesmodel.h"
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 PropertiesModel::PropertiesModel(QObject *parent):
@@ -125,14 +126,14 @@ QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-void PropertiesModel::setProperties(const QMap<QString, QString> &properties)
+void PropertiesModel::setProperties(const Properties &properties)
 {
     mProperties = properties;
     mKeys = mProperties.keys();
     reset();
 }
 
-const QMap<QString, QString> &PropertiesModel::properties() const
+const Properties &PropertiesModel::properties() const
 {
     return mProperties;
 }

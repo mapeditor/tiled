@@ -25,8 +25,8 @@
 using namespace Tiled::Internal;
 
 ChangeProperties::ChangeProperties(const QString &kind,
-                                   QMap<QString, QString> *properties,
-                                   const QMap<QString, QString> &newProperties)
+                                   Properties *properties,
+                                   const Properties &newProperties)
     : mProperties(properties)
     , mNewProperties(newProperties)
 {
@@ -46,7 +46,7 @@ void ChangeProperties::undo()
 
 void ChangeProperties::swapProperties()
 {
-    const QMap<QString, QString> oldProperties = *mProperties;
+    const Properties oldProperties = *mProperties;
     *mProperties = mNewProperties;
     mNewProperties = oldProperties;
 }

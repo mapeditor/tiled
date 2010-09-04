@@ -22,11 +22,9 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "tiled_global.h"
+#include "properties.h"
 
-#include <QMap>
 #include <QPixmap>
-#include <QString>
 
 namespace Tiled {
 
@@ -75,18 +73,18 @@ public:
      * Returns a pointer to the properties of this tile. This allows
      * modification of the properties.
      */
-    QMap<QString, QString> *properties() { return &mProperties; }
+    Properties *properties() { return &mProperties; }
 
     /**
      * Returns a copy of the properties of this tile.
      */
-    QMap<QString, QString> properties() const { return mProperties; }
+    Properties properties() const { return mProperties; }
 
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-    QMap<QString, QString> mProperties;
+    Properties mProperties;
 };
 
 } // namespace Tiled

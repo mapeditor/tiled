@@ -691,14 +691,13 @@ void MainWindow::paste()
             continue;
         }
 
-        // Unite the tile properties
+        // Merge the tile properties
         const int sharedTileCount = qMin(tileset->tileCount(),
                                          replacement->tileCount());
         for (int i = 0; i < sharedTileCount; ++i) {
-            QMap<QString, QString> *properties =
-                    replacement->tileAt(i)->properties();
-            QMap<QString, QString> newProperties = *properties;
-            newProperties.unite(*tileset->tileAt(i)->properties());
+            Properties *properties = replacement->tileAt(i)->properties();
+            Properties newProperties = *properties;
+            newProperties.merge(*tileset->tileAt(i)->properties());
             undoCommands.append(new ChangeProperties(tr("Tile"),
                                                      properties,
                                                      newProperties));

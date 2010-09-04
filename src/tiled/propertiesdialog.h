@@ -22,8 +22,9 @@
 #ifndef PROPERTIESDIALOG_H
 #define PROPERTIESDIALOG_H
 
+#include "properties.h"
+
 #include <QDialog>
-#include <QMap>
 #include <QString>
 
 class QUndoStack;
@@ -54,7 +55,7 @@ public:
      * @param undoStack  the undo stack to push changes onto.
      */
     PropertiesDialog(const QString &kind,
-                     QMap<QString, QString> *properties,
+                     Properties *properties,
                      QUndoStack *undoStack,
                      QWidget *parent = 0);
 
@@ -83,7 +84,7 @@ private:
     Ui::PropertiesDialog *mUi;
     PropertiesModel *mModel;
     QUndoStack *mUndoStack;
-    QMap<QString, QString> *mProperties;
+    Properties *mProperties;
     QString mKind;
 };
 

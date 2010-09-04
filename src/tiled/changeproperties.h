@@ -21,7 +21,8 @@
 #ifndef CHANGEPROPERTIES_H
 #define CHANGEPROPERTIES_H
 
-#include <QMap>
+#include "properties.h"
+
 #include <QString>
 #include <QUndoCommand>
 
@@ -39,16 +40,16 @@ public:
      * @param newProperties the new properties that should be applied
      */
     ChangeProperties(const QString &kind,
-                     QMap<QString, QString> *properties,
-                     const QMap<QString, QString> &newProperties);
+                     Properties *properties,
+                     const Properties &newProperties);
     void undo();
     void redo();
 
 private:
     void swapProperties();
 
-    QMap<QString, QString> *mProperties;
-    QMap<QString, QString> mNewProperties;
+    Properties *mProperties;
+    Properties mNewProperties;
 };
 
 } // namespace Internal

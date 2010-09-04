@@ -22,9 +22,8 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include "tiled_global.h"
+#include "properties.h"
 
-#include <QMap>
 #include <QPixmap>
 #include <QRect>
 #include <QString>
@@ -144,12 +143,12 @@ public:
      * Returns a pointer to the properties of this layer. This allows
      * modification of the properties.
      */
-    QMap<QString, QString> *properties() { return &mProperties; }
+    Properties *properties() { return &mProperties; }
 
     /**
      * Returns a copy of the properties of this layer.
      */
-    QMap<QString, QString> properties() const { return mProperties; }
+    Properties properties() const { return mProperties; }
 
     /**
      * Returns a duplicate of this layer. The caller is responsible for the
@@ -173,7 +172,7 @@ protected:
     float mOpacity;
     bool mVisible;
     Map *mMap;
-    QMap<QString, QString> mProperties;
+    Properties mProperties;
 };
 
 } // namespace Tiled

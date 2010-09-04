@@ -23,6 +23,7 @@
 #define TMXMAPWRITER_H
 
 #include "mapwriterinterface.h"
+#include "properties.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -109,7 +110,7 @@ private:
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup *objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject *mapObject);
     void writeProperties(QXmlStreamWriter &w,
-                         const QMap<QString, QString> &properties);
+                         const Properties &properties);
 
     QString mError;
     QDir mMapDir;     // The directory in which the map is being saved

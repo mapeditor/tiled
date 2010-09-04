@@ -36,7 +36,7 @@
 using namespace Tiled::Internal;
 
 PropertiesDialog::PropertiesDialog(const QString &kind,
-                                   QMap<QString, QString> *properties,
+                                   Properties *properties,
                                    QUndoStack *undoStack,
                                    QWidget *parent):
     QDialog(parent),
@@ -68,7 +68,7 @@ PropertiesDialog::~PropertiesDialog()
 
 void PropertiesDialog::accept()
 {
-    const QMap<QString, QString> &properties = mModel->properties();
+    const Properties &properties = mModel->properties();
     if (mProperties && *mProperties != properties) {
         mUndoStack->push(new ChangeProperties(mKind,
                                               mProperties,

@@ -23,9 +23,8 @@
 #ifndef MAPOBJECT_H
 #define MAPOBJECT_H
 
-#include "tiled_global.h"
+#include "properties.h"
 
-#include <QMap>
 #include <QPointF>
 #include <QSizeF>
 #include <QString>
@@ -158,12 +157,12 @@ public:
      * Returns a pointer to the properties of this object. This allows
      * modification of the properties.
      */
-    QMap<QString, QString> *properties() { return &mProperties; }
+    Properties *properties() { return &mProperties; }
 
     /**
      * Returns a copy of the properties of this object.
      */
-    QMap<QString, QString> properties() const { return mProperties; }
+    Properties properties() const { return mProperties; }
 
     /**
      * Returns the object group this object belongs to.
@@ -188,7 +187,7 @@ private:
     QPointF mPos;
     QSizeF mSize;
     QString mType;
-    QMap<QString, QString> mProperties;
+    Properties mProperties;
     ObjectGroup *mObjectGroup;
 };
 

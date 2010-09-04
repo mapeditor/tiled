@@ -234,7 +234,7 @@ void TmxMapWriter::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     // Write the properties for those tiles that have them
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
-        const QMap<QString, QString> properties = tile->properties();
+        const Properties properties = tile->properties();
         if (!properties.isEmpty()) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(i));
@@ -431,15 +431,15 @@ void TmxMapWriter::writeObject(QXmlStreamWriter &w, const MapObject *mapObject)
 }
 
 void TmxMapWriter::writeProperties(QXmlStreamWriter &w,
-                                   const QMap<QString, QString> &properties)
+                                   const Properties &properties)
 {
     if (properties.isEmpty())
         return;
 
     w.writeStartElement(QLatin1String("properties"));
 
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    QMap<QString, QString>::const_iterator it_end = properties.constEnd();
+    Properties::const_iterator it = properties.constBegin();
+    Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
         w.writeStartElement(QLatin1String("property"));
         w.writeAttribute(QLatin1String("name"), it.key());

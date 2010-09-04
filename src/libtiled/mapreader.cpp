@@ -93,8 +93,8 @@ private:
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
 
-    QMap<QString, QString> readProperties();
-    void readProperty(QMap<QString, QString> *properties);
+    Properties readProperties();
+    void readProperty(Properties *properties);
 
     MapReader *p;
 
@@ -643,11 +643,11 @@ MapObject *MapReaderPrivate::readObject()
     return object;
 }
 
-QMap<QString, QString> MapReaderPrivate::readProperties()
+Properties MapReaderPrivate::readProperties()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "properties");
 
-    QMap<QString, QString> properties;
+    Properties properties;
 
     while (readNextStartElement()) {
         if (xml.name() == "property")
@@ -659,7 +659,7 @@ QMap<QString, QString> MapReaderPrivate::readProperties()
     return properties;
 }
 
-void MapReaderPrivate::readProperty(QMap<QString, QString> *properties)
+void MapReaderPrivate::readProperty(Properties *properties)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "property");
 

@@ -21,9 +21,10 @@
 #ifndef PROPERTIESMODEL_H
 #define PROPERTIESMODEL_H
 
+#include "properties.h"
+
 #include <QAbstractItemModel>
 #include <QList>
-#include <QMap>
 #include <QString>
 
 namespace Tiled {
@@ -83,15 +84,15 @@ public:
     /**
      * Sets the properties displayed by this model.
      */
-    void setProperties(const QMap<QString, QString> &properties);
+    void setProperties(const Properties &properties);
 
     /**
      * Returns the, possibly edited, properties.
      */
-    const QMap<QString, QString> &properties() const;
+    const Properties &properties() const;
 
 private:
-    QMap<QString, QString> mProperties;
+    Properties mProperties;
     QList<QString> mKeys;
 };
 

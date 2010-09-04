@@ -24,7 +24,8 @@ SOURCES += compression.cpp \
     objectgroup.cpp \
     tilelayer.cpp \
     tileset.cpp \
-    mapreader.cpp
+    mapreader.cpp \
+    properties.cpp
 HEADERS += compression.h \
     layer.h \
     map.h \
@@ -34,7 +35,8 @@ HEADERS += compression.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
-    mapreader.h
+    mapreader.h \
+    properties.h
 mac {
     contains(QT_CONFIG, ppc):CONFIG += x86 \
         ppc
