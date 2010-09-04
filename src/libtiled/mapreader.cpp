@@ -233,7 +233,7 @@ Map *MapReaderPrivate::readMap()
 
     while (readNextStartElement()) {
         if (xml.name() == "properties")
-            mMap->properties()->unite(readProperties());
+            mMap->mergeProperties(readProperties());
         else if (xml.name() == "tileset")
             mMap->addTileset(readTileset());
         else if (xml.name() == "layer")
@@ -332,7 +332,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     while (readNextStartElement()) {
         if (xml.name() == "properties") {
             Tile *tile = tileset->tileAt(id);
-            tile->properties()->unite(readProperties());
+            tile->mergeProperties(readProperties());
         } else {
             readUnknownElement();
         }
@@ -394,7 +394,7 @@ TileLayer *MapReaderPrivate::readLayer()
 
     while (readNextStartElement()) {
         if (xml.name() == "properties")
-            tileLayer->properties()->unite(readProperties());
+            tileLayer->mergeProperties(readProperties());
         else if (xml.name() == "data")
             readLayerData(tileLayer);
         else
@@ -592,7 +592,7 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
         if (xml.name() == "object")
             objectGroup->addObject(readObject());
         else if (xml.name() == "properties")
-            objectGroup->properties()->unite(readProperties());
+            objectGroup->mergeProperties(readProperties());
         else
             readUnknownElement();
     }
@@ -635,7 +635,7 @@ MapObject *MapReaderPrivate::readObject()
 
     while (readNextStartElement()) {
         if (xml.name() == "properties")
-            object->properties()->unite(readProperties());
+            object->mergeProperties(readProperties());
         else
             readUnknownElement();
     }

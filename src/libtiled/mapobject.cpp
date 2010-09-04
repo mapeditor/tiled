@@ -45,6 +45,6 @@ MapObject *MapObject::clone() const
     MapObject *o = new MapObject(mName, mType,
                                  mPos.x(), mPos.y(),
                                  mSize.width(), mSize.height());
-    o->mProperties = mProperties;
+    o->setProperties(properties());
     return o;
 }

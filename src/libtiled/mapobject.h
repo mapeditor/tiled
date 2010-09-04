@@ -23,7 +23,7 @@
 #ifndef MAPOBJECT_H
 #define MAPOBJECT_H
 
-#include "properties.h"
+#include "object.h"
 
 #include <QPointF>
 #include <QSizeF>
@@ -43,7 +43,7 @@ class ObjectGroup;
  * Common usages of objects include defining portals, monsters spawn areas,
  * ambient effects, scripted areas, etc.
  */
-class TILEDSHARED_EXPORT MapObject
+class TILEDSHARED_EXPORT MapObject : public Object
 {
 public:
     /**
@@ -154,17 +154,6 @@ public:
     void setType(const QString &type) { mType = type; }
 
     /**
-     * Returns a pointer to the properties of this object. This allows
-     * modification of the properties.
-     */
-    Properties *properties() { return &mProperties; }
-
-    /**
-     * Returns a copy of the properties of this object.
-     */
-    Properties properties() const { return mProperties; }
-
-    /**
      * Returns the object group this object belongs to.
      */
     ObjectGroup *objectGroup() const { return mObjectGroup; }
@@ -187,7 +176,6 @@ private:
     QPointF mPos;
     QSizeF mSize;
     QString mType;
-    Properties mProperties;
     ObjectGroup *mObjectGroup;
 };
 

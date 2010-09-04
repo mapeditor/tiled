@@ -41,7 +41,7 @@ ObjectGroupPropertiesDialog::ObjectGroupPropertiesDialog(
     QWidget *parent)
 
     : PropertiesDialog(tr("Object Layer"),
-                       objectGroup->properties(),
+                       objectGroup,
                        mapDocument->undoStack(),
                        parent)
     , mMapDocument(mapDocument)

@@ -23,7 +23,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "properties.h"
+#include "object.h"
 
 #include <QList>
 #include <QSize>
@@ -41,7 +41,7 @@ class ObjectGroup;
  *
  * It also keeps track of the list of referenced tilesets.
  */
-class TILEDSHARED_EXPORT Map
+class TILEDSHARED_EXPORT Map : public Object
 {
 public:
     /**
@@ -188,17 +188,6 @@ public:
     Layer *takeLayerAt(int index);
 
     /**
-     * Returns a pointer to the properties of this map. This allows
-     * modification of the properties.
-     */
-    Properties *properties() { return &mProperties; }
-
-    /**
-     * Returns a copy of the properties of this map.
-     */
-    Properties properties() const { return mProperties; }
-
-    /**
      * Adds a tileset to this map. The map does not take ownership over its
      * tilesets, this is merely for keeping track of which tilesets are used by
      * the map, and their saving order.
@@ -253,7 +242,6 @@ private:
     QSize mMaxTileSize;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
-    Properties mProperties;
 };
 
 } // namespace Tiled

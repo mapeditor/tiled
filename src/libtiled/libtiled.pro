@@ -36,7 +36,8 @@ HEADERS += compression.h \
     tilelayer.h \
     tileset.h \
     mapreader.h \
-    properties.h
+    properties.h \
+    object.h
 mac {
     contains(QT_CONFIG, ppc):CONFIG += x86 \
         ppc

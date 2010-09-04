@@ -22,7 +22,7 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "properties.h"
+#include "object.h"
 
 #include <QPixmap>
 
@@ -30,7 +30,7 @@ namespace Tiled {
 
 class Tileset;
 
-class TILEDSHARED_EXPORT Tile
+class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
     Tile(const QPixmap &image, int id, Tileset *tileset):
@@ -69,22 +69,10 @@ public:
      */
     int height() const { return mImage.height(); }
 
-    /**
-     * Returns a pointer to the properties of this tile. This allows
-     * modification of the properties.
-     */
-    Properties *properties() { return &mProperties; }
-
-    /**
-     * Returns a copy of the properties of this tile.
-     */
-    Properties properties() const { return mProperties; }
-
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-    Properties mProperties;
 };
 
 } // namespace Tiled

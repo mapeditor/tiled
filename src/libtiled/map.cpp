@@ -143,6 +143,6 @@ Map *Map::clone() const
     foreach (Layer *layer, mLayers)
         o->addLayer(layer->clone());
     o->mTilesets = mTilesets;
-    o->mProperties = mProperties;
+    o->setProperties(properties());
     return o;
 }

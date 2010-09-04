@@ -695,12 +695,12 @@ void MainWindow::paste()
         const int sharedTileCount = qMin(tileset->tileCount(),
                                          replacement->tileCount());
         for (int i = 0; i < sharedTileCount; ++i) {
-            Properties *properties = replacement->tileAt(i)->properties();
-            Properties newProperties = *properties;
-            newProperties.merge(*tileset->tileAt(i)->properties());
+            Tile *replacementTile = replacement->tileAt(i);
+            Properties properties = replacementTile->properties();
+            properties.merge(tileset->tileAt(i)->properties());
             undoCommands.append(new ChangeProperties(tr("Tile"),
-                                                     properties,
-                                                     newProperties));
+                                                     replacementTile,
+                                                     properties));
         }
         map->replaceTileset(tileset, replacement);
         delete tileset;
@@ -806,7 +806,7 @@ void MainWindow::editMapProperties()
     if (!mMapDocument)
         return;
     PropertiesDialog propertiesDialog(tr("Map"),
-                                      mMapDocument->map()->properties(),
+                                      mMapDocument->map(),
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();

@@ -240,7 +240,7 @@ void TilesetView::editTileProperties()
         return;
 
     PropertiesDialog propertiesDialog(tr("Tile"),
-                                      tile->properties(),
+                                      tile,
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();

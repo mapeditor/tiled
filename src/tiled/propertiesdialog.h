@@ -22,7 +22,7 @@
 #ifndef PROPERTIESDIALOG_H
 #define PROPERTIESDIALOG_H
 
-#include "properties.h"
+#include "object.h"
 
 #include <QDialog>
 #include <QString>
@@ -51,11 +51,11 @@ public:
      * Constructor.
      *
      * @param kind       the kind of properties (Map, Layer, Object, etc.)
-     * @param properties the properties edited by this dialog.
+     * @param object     the object of which to edit the properties.
      * @param undoStack  the undo stack to push changes onto.
      */
     PropertiesDialog(const QString &kind,
-                     Properties *properties,
+                     Object *object,
                      QUndoStack *undoStack,
                      QWidget *parent = 0);
 
@@ -84,7 +84,7 @@ private:
     Ui::PropertiesDialog *mUi;
     PropertiesModel *mModel;
     QUndoStack *mUndoStack;
-    Properties *mProperties;
+    Object *mObject;
     QString mKind;
 };
 

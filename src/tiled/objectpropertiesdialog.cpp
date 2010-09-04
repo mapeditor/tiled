@@ -39,7 +39,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
                                                MapObject *mapObject,
                                                QWidget *parent)
     : PropertiesDialog(tr("Object"),
-                       mapObject->properties(),
+                       mapObject,
                        mapDocument->undoStack(),
                        parent)
     , mMapDocument(mapDocument)
