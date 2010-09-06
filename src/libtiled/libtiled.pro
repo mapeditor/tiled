@@ -13,6 +13,8 @@ macx {
 }
 DLLDESTDIR = ../..
 
+win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
+
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY
