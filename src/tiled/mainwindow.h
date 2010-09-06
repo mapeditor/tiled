@@ -105,7 +105,7 @@ private slots:
     void paste();
     void openPreferences();
 
-    void newTileset();
+    void newTileset(const QString &path = QString());
     void addExternalTileset();
     void resizeMap();
     void offsetMap();

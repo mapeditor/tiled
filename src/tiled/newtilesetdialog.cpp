@@ -29,6 +29,7 @@
 #include <QImage>
 #include <QMessageBox>
 #include <QSettings>
+#include <QFileInfo>
 
 #include <memory>
 
@@ -66,6 +67,13 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
     connect(mUi->name, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
     connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
+
+    // Set the image and name fields if the given path is a file
+    const QFileInfo fileInfo(path);
+    if (fileInfo.isFile()) {
+        mUi->image->setText(path);
+        mUi->name->setText(fileInfo.completeBaseName());
+    }
 
     updateOkButton();
 }

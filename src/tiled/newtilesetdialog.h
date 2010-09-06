@@ -41,6 +41,11 @@ class NewTilesetDialog : public QDialog
     Q_OBJECT
 
 public:
+    /**
+     * Constructs a new tileset dialog
+     *
+     * @param path the path to start in by default, or an image file
+     */
     NewTilesetDialog(const QString &path, QWidget *parent = 0);
     ~NewTilesetDialog();
 

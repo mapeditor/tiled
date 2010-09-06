@@ -74,6 +74,7 @@
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QUndoView>
+#include <QImageReader>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -341,7 +342,21 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 
 void MainWindow::dropEvent(QDropEvent *e)
 {
-    openFile(e->mimeData()->urls().at(0).toLocalFile());
+    const QString file = e->mimeData()->urls().at(0).toLocalFile();
+    const QString extension = QFileInfo(file).suffix();
+
+    // Treat file as a tileset if it is an image. Use the extension here because
+    // QImageReader::imageFormat() treats tmx files as svg
+    const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    foreach (const QByteArray &format, formats) {
+        if (extension.compare(QString::fromLatin1(format), Qt::CaseInsensitive) == 0) {
+            newTileset(file);
+            return;
+        }
+    }
+
+    // Treat file as a map otherwise
+    openFile(file);
 }
 
 void MainWindow::newMap()
@@ -727,14 +742,18 @@ void MainWindow::openPreferences()
     preferencesDialog.exec();
 }
 
-void MainWindow::newTileset()
+void MainWindow::newTileset(const QString &path)
 {
     if (!mMapDocument)
         return;
 
     Map *map = mMapDocument->map();
 
-    NewTilesetDialog newTileset(fileDialogStartLocation(), this);
+    QString startLocation = path.isEmpty()
+                            ? fileDialogStartLocation()
+                            : path;
+
+    NewTilesetDialog newTileset(startLocation, this);
     newTileset.setTileWidth(map->tileWidth());
     newTileset.setTileHeight(map->tileHeight());
 
