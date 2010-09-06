@@ -7,6 +7,7 @@ INSTALLS += target
 macx {
     DESTDIR = ../../bin/Tiled.app/Contents/Frameworks
     QMAKE_LFLAGS_SONAME = -Wl,-install_name,@executable_path/../Frameworks/
+    LIBS += -lz
 } else {
     DESTDIR = ../../lib
 }

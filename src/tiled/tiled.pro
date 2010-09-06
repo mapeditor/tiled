@@ -188,7 +188,6 @@ FORMS += aboutdialog.ui \
 RESOURCES += tiled.qrc
 mac {
     TARGET = Tiled
-    LIBS += -lz
     QMAKE_INFO_PLIST = Info.plist
     ICON = images/tiled-icon-mac.icns
 }
