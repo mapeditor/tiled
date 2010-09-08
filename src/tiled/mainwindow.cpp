@@ -430,6 +430,11 @@ void MainWindow::openLastFile()
         const int ver = mSettings.value(QLatin1String("scrollY")).toInt();
         mUi->mapView->horizontalScrollBar()->setSliderPosition(hor);
         mUi->mapView->verticalScrollBar()->setSliderPosition(ver);
+
+        int layer = mSettings.value(QLatin1String("selectedLayer")).toInt();
+        if (layer > 0 && layer < mMapDocument->map()->layerCount())
+            mMapDocument->setCurrentLayer(layer);
+
         mSettings.endGroup();
     }
 }
@@ -984,6 +989,9 @@ void MainWindow::writeSettings()
                        mUi->mapView->horizontalScrollBar()->sliderPosition());
     mSettings.setValue(QLatin1String("scrollY"),
                        mUi->mapView->verticalScrollBar()->sliderPosition());
+    if (mMapDocument)
+        mSettings.setValue(QLatin1String("selectedLayer"),
+                           mMapDocument->currentLayer());
     mSettings.endGroup();
 }
 
