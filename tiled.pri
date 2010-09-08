@@ -1,5 +1,4 @@
 # See the README file for instructions about setting the install prefix.
-PREFIX = $$PREFIX
 isEmpty(PREFIX):PREFIX = /usr/local
 
 macx {
