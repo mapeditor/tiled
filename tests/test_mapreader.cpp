@@ -2,14 +2,13 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
-#include "tmxmapreader.h"
+#include "mapreader.h"
 
 #include <QtTest/QtTest>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
-class test_TmxMapReader : public QObject
+class test_MapReader : public QObject
 {
     Q_OBJECT
 
@@ -17,10 +16,10 @@ private slots:
     void loadMap();
 };
 
-void test_TmxMapReader::loadMap()
+void test_MapReader::loadMap()
 {
-    TmxMapReader reader;
-    Map *map = reader.read("data/mapobject.tmx");
+    MapReader reader;
+    Map *map = reader.readMap("data/mapobject.tmx");
 
     // TODO: Also test tilesets (internal and external), properties and tile
     // layer data.
@@ -54,5 +53,5 @@ void test_TmxMapReader::loadMap()
     QCOMPARE(mapObject->height(), qreal(64) / qreal(map->tileHeight()));
 }
 
-QTEST_MAIN(test_TmxMapReader)
-#include "test_tmxmapreader.moc"
+QTEST_MAIN(test_MapReader)
+#include "test_mapreader.moc"

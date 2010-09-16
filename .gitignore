@@ -12,4 +12,4 @@ ui_*.h
 qrc_*
 docs/html
 
-tests/test_tmxmapreader
+tests/test_mapreader

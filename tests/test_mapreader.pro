@@ -21,10 +21,4 @@ macx {
 }
 
 # Input
-SOURCES += test_tmxmapreader.cpp
-
-# Tiled sources to include in the test binary
-SOURCES += ../src/tiled/tilesetmanager.cpp \
-    ../src/tiled/compression.cpp \
-    ../src/tiled/tmxmapreader.cpp
-HEADERS += ../src/tiled/tilesetmanager.h
+SOURCES += test_mapreader.cpp
