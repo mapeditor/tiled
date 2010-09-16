@@ -27,6 +27,7 @@
 
 #include <cmath>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 QSize IsometricRenderer::mapSize() const

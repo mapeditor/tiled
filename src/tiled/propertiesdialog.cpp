@@ -33,6 +33,7 @@
 #include <QShortcut>
 #include <QUndoStack>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 PropertiesDialog::PropertiesDialog(const QString &kind,
