@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = tmw
+SUBDIRS = tmw tengine
