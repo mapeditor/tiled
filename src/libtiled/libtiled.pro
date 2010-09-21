@@ -7,13 +7,13 @@ INSTALLS += target
 macx {
     DESTDIR = ../../bin/Tiled.app/Contents/Frameworks
     QMAKE_LFLAGS_SONAME = -Wl,-install_name,@executable_path/../Frameworks/
-    LIBS += -lz
 } else {
     DESTDIR = ../../lib
 }
 DLLDESTDIR = ../..
 
 win32:INCLUDEPATH += $$(QTDIR)/src/3rdparty/zlib
+else:LIBS += -lz
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
