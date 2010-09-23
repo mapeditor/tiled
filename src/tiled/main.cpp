@@ -87,20 +87,12 @@ void parseCommandLineArguments(CommandLineOptions &options)
 int main(int argc, char *argv[])
 {
     /*
-     * On X11, Tiled uses the 'raster' graphics system, because the X11 native
-     * graphics system has performance problems with drawing the tile grid. We
-     * still want to allow people to override this with 'native', though.
+     * On X11, Tiled uses the 'raster' graphics system by default, because the
+     * X11 native graphics system has performance problems with drawing the
+     * tile grid.
      */
 #ifdef Q_WS_X11
-    {
-        bool graphicsSystemSpecified = false;
-        for (int i = 1; i < argc - 1; ++i) {
-            if (strcmp(argv[i], "-graphicssystem") == 0)
-                graphicsSystemSpecified = true;
-        }
-        if (!graphicsSystemSpecified)
-            QApplication::setGraphicsSystem(QLatin1String("raster"));
-    }
+    QApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 
     QApplication a(argc, argv);
