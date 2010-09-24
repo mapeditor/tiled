@@ -35,6 +35,7 @@ RCC_DIR = .rcc
 OBJECTS_DIR = .obj
 
 SOURCES += aboutdialog.cpp \
+    automap.cpp \
     brushitem.cpp \
     languagemanager.cpp \
     layerdock.cpp \
@@ -104,6 +105,7 @@ SOURCES += aboutdialog.cpp \
     addremovetileset.cpp \
     movetileset.cpp
 HEADERS += aboutdialog.h \
+    automap.h \
     brushitem.h \
     languagemanager.h \
     layerdock.h \

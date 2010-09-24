@@ -102,6 +102,7 @@
     <addaction name="actionOffsetMap"/>
     <addaction name="separator"/>
     <addaction name="actionMapProperties"/>
+    <addaction name="actionAutoMap"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -225,6 +226,11 @@
    </property>
    <property name="text">
     <string>Map &amp;Properties...</string>
+   </property>
+  </action>
+  <action name="actionAutoMap">
+   <property name="text">
+    <string>AutoMap</string>
    </property>
   </action>
   <action name="actionShowGrid">

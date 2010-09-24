@@ -110,6 +110,7 @@ private slots:
     void resizeMap();
     void offsetMap();
     void editMapProperties();
+    void autoMap();
     void updateModified();
     void updateActions();
     void updateZoomLabel(qreal scale);

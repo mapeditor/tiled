@@ -77,6 +77,15 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
+int Map::indexOfLayer(const QString &layername)
+{
+    for(int index=0; index < mLayers.size(); index++)
+        if (layerAt(index)->name().compare(layername)==0)
+            return index;
+
+    return -1;
+}
+
 void Map::insertLayer(int index, Layer *layer)
 {
     adoptLayer(layer);
@@ -106,6 +115,11 @@ void Map::addTileset(Tileset *tileset)
 void Map::insertTileset(int index, Tileset *tileset)
 {
     mTilesets.insert(index, tileset);
+}
+
+int Map::indexOfTileset(Tileset *tileset)
+{
+    return mTilesets.indexOf(tileset);
 }
 
 void Map::removeTilesetAt(int index)

@@ -27,6 +27,7 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
+#include "automap.h"
 #include "addremovetileset.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
@@ -191,6 +192,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
+    connect(mUi->actionAutoMap, SIGNAL(triggered()),
+            SLOT(autoMap()));
 
     connect(mUi->actionZoomIn, SIGNAL(triggered()),
             mUi->mapView->zoomable(), SLOT(zoomIn()));
@@ -662,7 +665,7 @@ void MainWindow::copy()
 }
 
 static Tileset *findSimilarTileset(Tileset *tileset,
-                                   const QList<Tileset*> tilesets)
+                                   const QList<Tileset*> &tilesets)
 {
     foreach (Tileset *candidate, tilesets) {
         if (candidate != tileset
@@ -745,6 +748,58 @@ void MainWindow::openPreferences()
 {
     PreferencesDialog preferencesDialog(this);
     preferencesDialog.exec();
+}
+
+
+void MainWindow::autoMap()
+{
+    QString rules_txt = QFileInfo(mMapDocument->fileName()).path() + QLatin1String("/rules.txt");
+
+    QFile myfile (rules_txt);
+    if (!myfile.exists())
+    {
+        QString err = tr("does not exist: ")+ rules_txt;
+        QMessageBox msgBox;
+        msgBox.setText(err);
+        msgBox.exec();
+    } else if (myfile.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&myfile);
+        QString rulePath = in.readLine();
+        while (!rulePath.isNull()) {
+            if (!rulePath.compare(tr(""))==0 &&
+                !rulePath.startsWith(tr("#")) &&
+                !rulePath.startsWith(tr("//"))){
+                if(QFileInfo(rulePath).isRelative())
+                    rulePath = QFileInfo(mMapDocument->fileName()).path() + QLatin1Char('/') + rulePath;
+                if(QFileInfo(rulePath).exists()){
+                    TmxMapReader tmxMapReader;
+                    MapReaderInterface *mapReader = &tmxMapReader;
+                    Map *rules = mapReader->read(rulePath);
+
+                    mMapDocument->undoStack()->beginMacro(tr("AutoMap: apply ruleset: ")+rulePath);
+                    mMapDocument->undoStack()->push(new AutomaticMapping(mMapDocument,rules));
+                    mMapDocument->undoStack()->endMacro();
+
+                    delete rules;
+                }else{
+                    QString err = tr("does not exist: ")+ rulePath;
+                    QMessageBox msgBox;
+                    msgBox.setText(err);
+                    msgBox.exec();
+                }
+            }
+            rulePath = in.readLine();
+        }
+        myfile.close();
+    }
+    else
+    {
+        QString err = tr("error opening ")+ rules_txt;
+        QMessageBox msgBox;
+        msgBox.setText(err);
+        msgBox.exec();
+    }
 }
 
 void MainWindow::newTileset(const QString &path)

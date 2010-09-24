@@ -177,6 +177,12 @@ public:
     void addLayer(Layer *layer);
 
     /**
+     * Returns the index of the Layer given by layername.
+     * returns -1 if not found.
+     */
+    int indexOfLayer(const QString &layername);
+
+    /**
      * Adds a layer to this map, inserting it at the given index.
      */
     void insertLayer(int index, Layer *layer);
@@ -200,6 +206,12 @@ public:
      * Inserts \a tileset at \a index in the list of tilesets used by this map.
      */
     void insertTileset(int index, Tileset *tileset);
+
+    /**
+     * returns the index of the given Tileset.
+     * returns -1 if it is not used in this map.
+     */
+    int indexOfTileset(Tileset *tileset);
 
     /**
      * Removes the tileset at \a index from this map.
