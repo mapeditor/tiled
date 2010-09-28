@@ -18,71 +18,72 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AUTO_MAP_H
-#define AUTO_MAP_H
+#ifndef AUTOMAP_H
+#define AUTOMAP_H
 
-#include "map.h"
-#include "tilelayer.h"
-#include "tileset.h"
-#include "addremovetileset.h"
-
+#include <QCoreApplication>
 #include <QList>
 #include <QPair>
-#include <QPoint>
-#include <QString>
-
-
-using namespace Tiled;
-using namespace Tiled::Internal;
+#include <QRegion>
+#include <QUndoCommand>
 
 namespace Tiled {
 
+class Layer;
+class Map;
+class TileLayer;
+class Tileset;
+
+namespace Internal {
+
+class MapDocument;
+
 /**
- *This is a wrapper class for the AutoMapper class.
- *Here in this class only Redo/Undo functionality is provided.
+ * This is a wrapper class for the AutoMapper class.
+ * Here in this class only undo/redo functionality is provided.
  */
-class AutomaticMapping: QObject, public QUndoCommand{
+class AutomaticMapping : public QUndoCommand
+{
 public:
     AutomaticMapping(MapDocument *workingDocument, Map *rules);
-    ~AutomaticMapping(void);
+    ~AutomaticMapping();
 
-    void undo(void);
-    void redo(void);
+    void undo();
+    void redo();
 
 private:
     Layer *swapLayer(int layerIndex, Layer *layer);
 
-    /*variables*/
     MapDocument *mMapDocument;
-    QList<Layer*> mLayers_after;
-    QList<Layer*> mLayers_prev;
+    QList<Layer*> mLayersAfter;
+    QList<Layer*> mLayersBefore;
 };
 
 /**
- *This class does all the work for the automapping feature.
- *basically it can do the following:
+ * This class does all the work for the automapping feature.
+ * basically it can do the following:
  * - check the rules map for rules and store them
  * - compare TileLayers (i. e. check if/where a certain rule must be applied)
  * - copy regions of Maps (multiple Layers, the layerlist is a
  *                         lookup-table for matching the Layers)
  */
+class AutoMapper
+{
+    Q_DECLARE_TR_FUNCTIONS(AutoMapper)
 
-class AutoMapper: QObject{
 public:
     /**
-     *Constructs a AutoMapper.
+     * Constructs a AutoMapper.
      *
-     *@param workingDocument: the map document to work on.
-     *@param rules: the map in which the ruleset is defined.
+     * @param workingDocument: the map document to work on.
+     * @param rules: the map in which the ruleset is defined.
      */
     AutoMapper(MapDocument *workingDocument, Map *rules);
-    ~AutoMapper(void);
+    ~AutoMapper();
 
     /**
-     *
-     * call setupLayers first! (or setupAll which does that for you)
-     * @param void
-     * @return a list of Strings of Layers which are likely touched.
+     * Call setupLayers first! (or setupAll which does that for you)
+     * @return A list of strings of layers which are likely touched.
      *        these give the Tilelayers which
      *        can be changed in the automap function.
      *        Note: Do not trust they are really there!
@@ -91,58 +92,42 @@ public:
      *        But it is sure, that no layer not returned
      *        by this function gets touched.
      */
-    QList<QString> getTouchedLayers(void);
+    QList<QString> getTouchedLayers() const;
 
     /**
-     * calls all setupXXX functions in the right order.
-     * @param void
+     * Calls all setupXXX functions in the right order.
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
      */
-    bool setupAll(void);
+    bool setupAll();
 
     /**
-     * here is done all the automapping.
-     * @param void
-     * @return void
+     * Here is done all the automapping.
      */
-    void automap(void);
+    void autoMap();
 
 private:
     /**
-     * searches the rules layer for regions and stores these in \a rules.
-     * @param void
+     * Searches the rules layer for regions and stores these in \a rules.
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
      */
-    bool setupRules(void);
+    bool setupRules();
 
     /**
-     * sets up the Layers, which are used for automapping
-     * @param void
+     * Sets up the layers, which are used for automapping
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
      */
-    bool setupLayers(void);
+    bool setupLayers();
 
     /**
-     * sets up the Tilesets which are used in automapping.
+     * sets up the tilesets which are used in automapping.
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
      */
     bool setupTilesets(Map *src, Map *dst);
 
-    /**
-     * This compares two TileLayers.
-     * The first TileLayer is examined at Qregion r1
-     * The second TileLayer is examined at r1+Offset
-     * Only when at both places are Tiles, these will be compared.
-     * if there is no tile at all in one layer, it is treated as equal
-     *
-     * @return bool, if the TileLayers are the same at the specific regions
-     */
-    bool compareLayers(TileLayer *l1, TileLayer *l2, \
-                       const QRegion &r1, QPoint Offset);
     /**
      * This copies all Tiles from TileLayer src to TileLayer dst
      *
@@ -154,9 +139,10 @@ private:
      * so the maybe existing tile in dst will not be overwritten.
      *
      */
-    void copyRegion(TileLayer *src_lr, int src_x, int src_y, \
-                    int width, int height, TileLayer *dst_lr, \
+    void copyRegion(TileLayer *src_lr, int src_x, int src_y,
+                    int width, int height, TileLayer *dst_lr,
                     int dst_x, int dst_y);
+
     /**
      * This copies multiple TileLayers from one map to another.
      * To handle multiple Layers, LayerTranslation is a List of Pairs.
@@ -165,8 +151,9 @@ private:
      * Only the region \a region is considered for copying.
      * In the destination it will come to the region translated by Offset.
      */
-    void copyMapRegion(const QRegion &region, QPoint Offset, \
-                       QList< QPair<TileLayer*,TileLayer*>*> *LayerTranslation);
+    void copyMapRegion(const QRegion &region, QPoint Offset,
+                       const QList< QPair<TileLayer*,TileLayer*> > &LayerTranslation);
+
     /**
      * This goes through all the positions of the mMapWork and checks if
      * there fits the rule given by the region in mMapRuleSet.
@@ -174,70 +161,62 @@ private:
      * @param rule: the region which should be compared to all positions
      *              of mMapWork
      */
-    void ApplyRule(const QRegion &rule);
+    void applyRule(const QRegion &rule);
 
     /**
-     * This returns the rule which contains the given point p.
-     * If there is no such rule, NULL will be returned.
-     * @param   p a point in mMapRuleSet, to be checked.
-     * @return  the matching rule given by a QRegion,
-     *          NULL if there is no such rule.
+     * This returns whether the given point \a p is part of an existing rule.
      */
-    QRegion *getExistingRule(QPoint p);
+    bool isPartOfExistingRule(QPoint p) const;
 
     /**
-     * This creates a Rule from a given Point.
-     * So it will be checked, which Regions are coherent to this point
+     * This creates a rule from a given point.
+     * So it will be checked, which regions are coherent to this point
      * and all these regions will be treated as a new rule,
      * which will be returned. To check what is coherent, a
      * breadth first search will be performed, whereas each Tile is a node,
-     * and the 4 coherent Tiles are connected to this node.
+     * and the 4 coherent tiles are connected to this node.
      */
-    QRegion *createRule(int x, int y);
+    QRegion createRule(int x, int y) const;
 
     /**
-     * This searches a given Map, if it contains the TileLayer given
-     * by QString whichone.
-     * if there is no such Layer, NULL will be returned.
+     * This searches \a map for a layer with the given \a name. Returns that
+     * layer if found, and NULL otherwise.
      */
-    TileLayer *findTileLayer(Map *map, const QString &whichone);
+    static TileLayer *findTileLayer(Map *map, const QString &name);
 
-/*for cleanup: delete all the objects created with 'new'*/
     void cleanUpLayers();
-    void cleanUpRuleRegions();
     void cleanUpTilesets();
-/*variables*/
-    //where to work in
+
+    // where to work in
     MapDocument *mMapDocument;
-    //the same as mMapDocument->map()
+    // the same as mMapDocument->map()
     Map *mMapWork;
-    //map containing the rules, usually different that mMapWork
+    // map containing the rules, usually different that mMapWork
     Map *mMapRules;
-    //This contains all added tilesets as pointers.
-    //if rules use Tilesets which are not in the mMapWork they are added.
-    //keep track of them, because we need to delete them afterwards,
-    //when they still are unused
-    //they will be added while setupTilesets().
-    //they will be deleted at Destructor of AutoMapper.
+    // This contains all added tilesets as pointers.
+    // if rules use Tilesets which are not in the mMapWork they are added.
+    // keep track of them, because we need to delete them afterwards,
+    // when they still are unused
+    // they will be added while setupTilesets().
+    // they will be deleted at Destructor of AutoMapper.
     QList<Tileset*> mAddedTilesets;
-    //description see: mAddedTilesets, just described by Strings
+    // description see: mAddedTilesets, just described by Strings
     QList<QString> mAddedTileLayers;
 
-    //RuleRegions is the layer where the regions are defined.
+    // RuleRegions is the layer where the regions are defined.
     TileLayer *mLayerRuleRegions;
-    //RuleSet and Set are compared to check where to apply rules.
+    // RuleSet and Set are compared to check where to apply rules.
     TileLayer *mLayerRuleSet;
     TileLayer *mLayerSet;
 
-    //List of Regions in mMapRules to know where the rules are
-    QList<QRegion*> mRules;
-    //List of Tuples with layers, these pairs are needed for translating
-    //mMapRules to mMapWork.
-    QList<QPair<TileLayer*,TileLayer*>*> mLayerList;
+    // List of Regions in mMapRules to know where the rules are
+    QList<QRegion> mRules;
+    // List of Tuples with layers, these pairs are needed for translating
+    // mMapRules to mMapWork.
+    QList<QPair<TileLayer*,TileLayer*> > mLayerList;
 };
 
+} // namespace Internal
+} // namespace Tiled
 
-
-}//end using Tiled
-
-#endif
+#endif // AUTOMAP_H

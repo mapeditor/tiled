@@ -77,10 +77,10 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layername)
+int Map::indexOfLayer(const QString &layerName) const
 {
-    for(int index=0; index < mLayers.size(); index++)
-        if (layerAt(index)->name().compare(layername)==0)
+    for (int index = 0; index < mLayers.size(); index++)
+        if (layerAt(index)->name() == layerName)
             return index;
 
     return -1;
@@ -117,7 +117,7 @@ void Map::insertTileset(int index, Tileset *tileset)
     mTilesets.insert(index, tileset);
 }
 
-int Map::indexOfTileset(Tileset *tileset)
+int Map::indexOfTileset(Tileset *tileset) const
 {
     return mTilesets.indexOf(tileset);
 }
