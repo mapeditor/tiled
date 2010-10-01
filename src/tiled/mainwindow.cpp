@@ -165,7 +165,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
-    mLayerMenu->addAction(mActionHandler->actionAddObjectLayer());
+    mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
     mLayerMenu->addAction(mActionHandler->actionDuplicateLayer());
     mLayerMenu->addAction(mActionHandler->actionRemoveLayer());
     mLayerMenu->addSeparator();

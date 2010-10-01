@@ -34,7 +34,7 @@ LayerModel::LayerModel(QObject *parent):
     mMapDocument(0),
     mMap(0),
     mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png")),
-    mObjectLayerIcon(QLatin1String(":/images/16x16/layer-object.png"))
+    mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
 {
 }
 
@@ -59,7 +59,7 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
         if (dynamic_cast<const TileLayer*>(layer))
             return mTileLayerIcon;
         else
-            return mObjectLayerIcon;
+            return mObjectGroupIcon;
     case Qt::CheckStateRole:
         return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
     case OpacityRole:

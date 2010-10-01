@@ -62,7 +62,7 @@ int Map::tileLayerCount() const
     return count;
 }
 
-int Map::objectLayerCount() const
+int Map::objectGroupCount() const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)

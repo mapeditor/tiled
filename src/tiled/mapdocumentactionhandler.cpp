@@ -45,7 +45,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
     mActionAddTileLayer = new QAction(this);
-    mActionAddObjectLayer = new QAction(this);
+    mActionAddObjectGroup = new QAction(this);
 
     mActionDuplicateLayer = new QAction(this);
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
@@ -78,8 +78,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mActionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
     connect(mActionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
-    connect(mActionAddObjectLayer, SIGNAL(triggered()),
-            SLOT(addObjectLayer()));
+    connect(mActionAddObjectGroup, SIGNAL(triggered()),
+            SLOT(addObjectGroup()));
     connect(mActionDuplicateLayer, SIGNAL(triggered()),
             SLOT(duplicateLayer()));
     connect(mActionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
@@ -101,7 +101,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionSelectNone->setText(tr("Select &None"));
 
     mActionAddTileLayer->setText(tr("Add &Tile Layer..."));
-    mActionAddObjectLayer->setText(tr("Add &Object Layer..."));
+    mActionAddObjectGroup->setText(tr("Add &Object Layer..."));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
     mActionMoveLayerUp->setText(tr("Move Layer &Up"));
@@ -157,10 +157,10 @@ void MapDocumentActionHandler::addTileLayer()
         mMapDocument->addLayer(MapDocument::TileLayerType);
 }
 
-void MapDocumentActionHandler::addObjectLayer()
+void MapDocumentActionHandler::addObjectGroup()
 {
     if (mMapDocument)
-        mMapDocument->addLayer(MapDocument::ObjectLayerType);
+        mMapDocument->addLayer(MapDocument::ObjectGroupType);
 }
 
 void MapDocumentActionHandler::duplicateLayer()
@@ -203,7 +203,7 @@ void MapDocumentActionHandler::updateActions()
     mActionSelectNone->setEnabled(!selection.isEmpty());
 
     mActionAddTileLayer->setEnabled(map);
-    mActionAddObjectLayer->setEnabled(map);
+    mActionAddObjectGroup->setEnabled(map);
 
     const int layerCount = map ? map->layerCount() : 0;
     mActionDuplicateLayer->setEnabled(currentLayer >= 0);

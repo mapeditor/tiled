@@ -151,8 +151,8 @@ void MapDocument::addLayer(LayerType layerType)
         name = tr("Tile Layer %1").arg(mMap->tileLayerCount() + 1);
         layer = new TileLayer(name, 0, 0, mMap->width(), mMap->height());
         break;
-    case ObjectLayerType:
-        name = tr("Object Layer %1").arg(mMap->objectLayerCount() + 1);
+    case ObjectGroupType:
+        name = tr("Object Layer %1").arg(mMap->objectGroupCount() + 1);
         layer = new ObjectGroup(name, 0, 0, mMap->width(), mMap->height());
         break;
     }

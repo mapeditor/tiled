@@ -132,7 +132,7 @@ private:
     Map *mMap;
 
     QIcon mTileLayerIcon;
-    QIcon mObjectLayerIcon;
+    QIcon mObjectGroupIcon;
 };
 
 } // namespace Internal

@@ -251,7 +251,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
     menu.addAction(handler->actionAddTileLayer());
-    menu.addAction(handler->actionAddObjectLayer());
+    menu.addAction(handler->actionAddObjectGroup());
 
     if (layerIndex >= 0) {
         menu.addAction(handler->actionDuplicateLayer());
