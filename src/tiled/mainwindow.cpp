@@ -192,8 +192,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
-    connect(mUi->actionAutoMap, SIGNAL(triggered()),
-            SLOT(autoMap()));
+    connect(mUi->actionAutoMap, SIGNAL(triggered()), SLOT(autoMap()));
 
     connect(mUi->actionZoomIn, SIGNAL(triggered()),
             mUi->mapView->zoomable(), SLOT(zoomIn()));
@@ -664,7 +663,7 @@ void MainWindow::copy()
     mClipboardManager->copySelection(mMapDocument);
 }
 
-static Tileset *findSimilarTileset(Tileset *tileset,
+static Tileset *findSimilarTileset(const Tileset *tileset,
                                    const QList<Tileset*> &tilesets)
 {
     foreach (Tileset *candidate, tilesets) {
@@ -748,58 +747,6 @@ void MainWindow::openPreferences()
 {
     PreferencesDialog preferencesDialog(this);
     preferencesDialog.exec();
-}
-
-
-void MainWindow::autoMap()
-{
-    QString rules_txt = QFileInfo(mMapDocument->fileName()).path() + QLatin1String("/rules.txt");
-
-    QFile myfile (rules_txt);
-    if (!myfile.exists())
-    {
-        QString err = tr("does not exist: ")+ rules_txt;
-        QMessageBox msgBox;
-        msgBox.setText(err);
-        msgBox.exec();
-    } else if (myfile.open(QIODevice::ReadOnly))
-    {
-        QTextStream in(&myfile);
-        QString rulePath = in.readLine();
-        while (!rulePath.isNull()) {
-            if (!rulePath.compare(tr(""))==0 &&
-                !rulePath.startsWith(tr("#")) &&
-                !rulePath.startsWith(tr("//"))){
-                if(QFileInfo(rulePath).isRelative())
-                    rulePath = QFileInfo(mMapDocument->fileName()).path() + QLatin1Char('/') + rulePath;
-                if(QFileInfo(rulePath).exists()){
-                    TmxMapReader tmxMapReader;
-                    MapReaderInterface *mapReader = &tmxMapReader;
-                    Map *rules = mapReader->read(rulePath);
-
-                    mMapDocument->undoStack()->beginMacro(tr("AutoMap: apply ruleset: ")+rulePath);
-                    mMapDocument->undoStack()->push(new AutomaticMapping(mMapDocument,rules));
-                    mMapDocument->undoStack()->endMacro();
-
-                    delete rules;
-                }else{
-                    QString err = tr("does not exist: ")+ rulePath;
-                    QMessageBox msgBox;
-                    msgBox.setText(err);
-                    msgBox.exec();
-                }
-            }
-            rulePath = in.readLine();
-        }
-        myfile.close();
-    }
-    else
-    {
-        QString err = tr("error opening ")+ rules_txt;
-        QMessageBox msgBox;
-        msgBox.setText(err);
-        msgBox.exec();
-    }
 }
 
 void MainWindow::newTileset(const QString &path)
@@ -889,6 +836,60 @@ void MainWindow::editMapProperties()
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();
+}
+
+void MainWindow::autoMap()
+{
+    if (!mMapDocument)
+        return;
+
+    const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
+    const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
+    QFile rulesFile(rulesFileName);
+
+    if (!rulesFile.exists()) {
+        QMessageBox::critical(
+                    this, tr("AutoMap Error"),
+                    tr("No rules file found at:\n%1").arg(rulesFileName));
+        return;
+    }
+    if (!rulesFile.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(
+                    this, tr("AutoMap Error"),
+                    tr("Error opening rules file:\n%1").arg(rulesFileName));
+        return;
+    }
+
+    QTextStream in(&rulesFile);
+    QString line = in.readLine();
+
+    for (; !line.isNull(); line = in.readLine()) {
+        QString rulePath = line.trimmed();
+        if (rulePath.isEmpty()
+                || rulePath.startsWith(QLatin1Char('#'))
+                || rulePath.startsWith(QLatin1String("//")))
+            continue;
+
+        if (QFileInfo(rulePath).isRelative())
+            rulePath = mapPath + QLatin1Char('/') + rulePath;
+
+        if (!QFileInfo(rulePath).exists()) {
+            QMessageBox::warning(
+                        this, tr("AutoMap Warning"),
+                        tr("Rules map not found:\n%1").arg(rulePath));
+            continue;
+        }
+
+        TmxMapReader mapReader;
+        Map *rules = mapReader.read(rulePath);
+
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->beginMacro(tr("AutoMap: apply ruleset: ") + rulePath);
+        undoStack->push(new AutomaticMapping(mMapDocument, rules));
+        undoStack->endMacro();
+
+        delete rules;
+    }
 }
 
 void MainWindow::updateModified()
@@ -989,6 +990,7 @@ void MainWindow::updateActions()
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
+    mUi->actionAutoMap->setEnabled(map);
 }
 
 void MainWindow::updateZoomLabel(qreal scale)
