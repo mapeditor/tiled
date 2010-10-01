@@ -188,11 +188,11 @@ FORMS += aboutdialog.ui \
 RESOURCES += tiled.qrc
 mac {
     TARGET = Tiled
-    LIBS += -lz
     QMAKE_INFO_PLIST = Info.plist
     ICON = images/tiled-icon-mac.icns
 }
 win32:INCLUDEPATH += . $$(QTDIR)/src/3rdparty/zlib
+else:LIBS += -lz
 contains(CONFIG, static) {
     DEFINES += STATIC_BUILD
     QTPLUGIN += qgif \
