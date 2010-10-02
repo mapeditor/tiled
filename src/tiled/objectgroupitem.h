@@ -43,6 +43,15 @@ public:
     ObjectGroup *objectGroup() const
     { return mObjectGroup; }
 
+    bool isEditable() const
+    { return mEditable; }
+
+    /**
+     * Sets whether objects in this object group are editable. Editable map
+     * objects can be moved and resized, and their properties can be edited.
+     */
+    void setEditable(bool editable);
+
     // QGraphicsItem
     QRectF boundingRect() const;
     void paint(QPainter *painter,
@@ -51,6 +60,7 @@ public:
 
 private:
     ObjectGroup *mObjectGroup;
+    bool mEditable;
 };
 
 } // namespace Internal

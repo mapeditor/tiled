@@ -31,6 +31,7 @@
 #include "addremovetileset.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
+#include "createobjecttool.h"
 #include "eraser.h"
 #include "erasetiles.h"
 #include "bucketfilltool.h"
@@ -278,6 +279,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new SelectionTool(this));
+    toolManager->registerTool(new CreateObjectTool(this));
 
     addToolBar(toolManager->toolBar());
 

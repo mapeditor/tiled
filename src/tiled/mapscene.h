@@ -75,6 +75,13 @@ public:
      */
     bool isGridVisible() const { return mGridVisible; }
 
+    /**
+     * Returns the selected object group item, or 0 if no object group is
+     * selected.
+     */
+    ObjectGroupItem *selectedObjectGroupItem() const
+    { return mSelectedObjectGroupItem; }
+
 public slots:
     /**
      * Sets whether the tile grid is visible.
@@ -135,16 +142,10 @@ private:
     void enableSelectedTool();
     void disableSelectedTool();
 
-    void startNewMapObject(const QPointF &pos);
-    MapObject *clearNewMapObjectItem();
-    void cancelNewMapObject();
-    void finishNewMapObject();
-
     bool eventFilter(QObject *object, QEvent *event);
 
     MapDocument *mMapDocument;
     ObjectGroupItem *mSelectedObjectGroupItem;
-    MapObjectItem *mNewMapObjectItem;
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;

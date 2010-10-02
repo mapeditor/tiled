@@ -21,6 +21,7 @@
 #include "objectgroupitem.h"
 
 #include "map.h"
+#include "mapobjectitem.h"
 #include "objectgroup.h"
 
 using namespace Tiled;
@@ -39,6 +40,18 @@ ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
            objectGroup->y() * map->tileHeight());
 
     setOpacity(objectGroup->opacity());
+}
+
+void ObjectGroupItem::setEditable(bool editable)
+{
+    if (mEditable == editable)
+        return;
+
+    mEditable = editable;
+
+    foreach (QGraphicsItem *item, childItems())
+        if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item))
+            mapObjectItem->setEditable(mEditable);
 }
 
 QRectF ObjectGroupItem::boundingRect() const

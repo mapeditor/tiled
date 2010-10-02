@@ -24,7 +24,6 @@
 #include "mapscene.h"
 
 #include "abstracttool.h"
-#include "addremovemapobject.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -52,7 +51,6 @@ MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(0),
     mSelectedObjectGroupItem(0),
-    mNewMapObjectItem(0),
     mSelectedTool(0),
     mActiveTool(0),
     mGridVisible(true),
@@ -208,17 +206,13 @@ void MapScene::updateInteractionMode()
     if (mSelectedObjectGroupItem == ogItem)
         return;
 
-    if (mSelectedObjectGroupItem) {
-        // This object group is no longer selected
-        foreach (QGraphicsItem *item, mSelectedObjectGroupItem->childItems())
-            static_cast<MapObjectItem*>(item)->setEditable(false);
-    }
+    // This object group is no longer selected
+    if (mSelectedObjectGroupItem)
+        mSelectedObjectGroupItem->setEditable(false);
 
-    if (ogItem) {
-        // This is the newly selected object group
-        foreach (QGraphicsItem *item, ogItem->childItems())
-            static_cast<MapObjectItem*>(item)->setEditable(true);
-    }
+    // This is the newly selected object group
+    if (ogItem)
+        ogItem->setEditable(true);
 
     mSelectedObjectGroupItem = ogItem;
 }
@@ -339,12 +333,8 @@ void MapScene::objectsAdded(const QList<MapObject*> &objects)
         }
 
         Q_ASSERT(ogItem);
-
         MapObjectItem *item = new MapObjectItem(object, mMapDocument, ogItem);
-
         mObjectItems.insert(object, item);
-        if (ogItem == mSelectedObjectGroupItem)
-            item->setEditable(true);
     }
 }
 
@@ -423,22 +413,7 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->isAccepted())
         return;
 
-    if (mNewMapObjectItem) {
-        const MapRenderer *renderer = mMapDocument->renderer();
-
-        // Update the size of the new map object
-        const QPointF pixelPos = mouseEvent->scenePos();
-        const QPointF tileCoords = renderer->pixelToTileCoords(pixelPos);
-        const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
-        QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
-                       qMax(qreal(0), tileCoords.y() - objectPos.y()));
-
-        if (mouseEvent->modifiers() & Qt::ControlModifier)
-            newSize = newSize.toSize();
-
-        mNewMapObjectItem->resize(newSize);
-        mouseEvent->accept();
-    } else if (mActiveTool) {
+    if (mActiveTool) {
         mActiveTool->mouseMoved(mouseEvent->scenePos(),
                                 mouseEvent->modifiers());
         mouseEvent->accept();
@@ -447,32 +422,11 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    // First check if we are creating a new map object
-    if (mNewMapObjectItem) {
-        if (mouseEvent->button() == Qt::RightButton)
-            cancelNewMapObject();
-
-        mouseEvent->accept();
-        return;
-    }
-
     QGraphicsScene::mousePressEvent(mouseEvent);
     if (mouseEvent->isAccepted())
         return;
 
-    if (mouseEvent->button() == Qt::LeftButton
-        && mSelectedObjectGroupItem
-        && !mNewMapObjectItem)
-    {
-        const MapRenderer *renderer = mMapDocument->renderer();
-        const QPointF scenePos = mouseEvent->scenePos();
-        QPointF tileCoords = renderer->pixelToTileCoords(scenePos);
-        if (mouseEvent->modifiers() & Qt::ControlModifier)
-            tileCoords = tileCoords.toPoint();
-
-        startNewMapObject(tileCoords);
-        mouseEvent->accept();
-    } else if (mActiveTool) {
+    if (mActiveTool) {
         mActiveTool->mousePressed(mouseEvent->scenePos(), mouseEvent->button(),
                                   mouseEvent->modifiers());
         mouseEvent->accept();
@@ -485,10 +439,7 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->isAccepted())
         return;
 
-    if (mouseEvent->button() == Qt::LeftButton && mNewMapObjectItem) {
-        finishNewMapObject();
-        mouseEvent->accept();
-    } else if (mActiveTool) {
+    if (mActiveTool) {
         mActiveTool->mouseReleased(mouseEvent->scenePos(), mouseEvent->button());
         mouseEvent->accept();
     }
@@ -500,52 +451,6 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void MapScene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     event->ignore();
-}
-
-void MapScene::startNewMapObject(const QPointF &pos)
-{
-    Q_ASSERT(!mNewMapObjectItem);
-
-    MapObject *newMapObject = new MapObject;
-    newMapObject->setPosition(pos);
-
-    ObjectGroup *objectGroup = mSelectedObjectGroupItem->objectGroup();
-    objectGroup->addObject(newMapObject);
-
-    mNewMapObjectItem = new MapObjectItem(newMapObject,
-                                          mMapDocument,
-                                          mSelectedObjectGroupItem);
-    mNewMapObjectItem->setEditable(true);
-}
-
-MapObject *MapScene::clearNewMapObjectItem()
-{
-    Q_ASSERT(mNewMapObjectItem);
-
-    MapObject *newMapObject = mNewMapObjectItem->mapObject();
-
-    ObjectGroup *objectGroup = mSelectedObjectGroupItem->objectGroup();
-    objectGroup->removeObject(newMapObject);
-
-    delete mNewMapObjectItem;
-    mNewMapObjectItem = 0;
-
-    return newMapObject;
-}
-
-void MapScene::cancelNewMapObject()
-{
-    MapObject *newMapObject = clearNewMapObjectItem();
-    delete newMapObject;
-}
-
-void MapScene::finishNewMapObject()
-{
-    ObjectGroup *objectGroup = mSelectedObjectGroupItem->objectGroup();
-    MapObject *newMapObject = clearNewMapObjectItem();
-    mMapDocument->undoStack()->push(new AddMapObject(mMapDocument,
-                                                     objectGroup,
-                                                     newMapObject));
 }
 
 bool MapScene::eventFilter(QObject *, QEvent *event)

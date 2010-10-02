@@ -174,6 +174,9 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
 #if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
 #endif
+
+    if (parent)
+        setEditable(parent->isEditable());
 }
 
 void MapObjectItem::syncWithMapObject()
@@ -279,13 +282,13 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     // Fill out moveToLayerMenu
     typedef QMap<QAction*, ObjectGroup*> MoveToLayerActionMap;
     MoveToLayerActionMap moveToLayerActions;
-    foreach (Layer* layer, mMapDocument->map()->layers()) {
-            ObjectGroup *objectGroup = layer->asObjectGroup();
-            if (!objectGroup || objectGroup == mObject->objectGroup())
-                continue;
+    foreach (Layer *layer, mMapDocument->map()->layers()) {
+        ObjectGroup *objectGroup = layer->asObjectGroup();
+        if (!objectGroup || objectGroup == mObject->objectGroup())
+            continue;
 
-            QAction *action = moveToLayerMenu->addAction(objectGroup->name());
-            moveToLayerActions.insert(action, objectGroup);
+        QAction *action = moveToLayerMenu->addAction(objectGroup->name());
+        moveToLayerActions.insert(action, objectGroup);
     }
 
     if (moveToLayerMenu->isEmpty()) {

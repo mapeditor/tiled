@@ -63,12 +63,6 @@ public:
     bool isEditable() const
     { return mIsEditable; }
 
-    /**
-     * Sets whether this map object is editable. Editable map objects can be
-     * moved and resized, and their properties can be edited.
-     */
-    void setEditable(bool editable);
-
     // QGraphicsItem
     QRectF boundingRect() const;
     QPainterPath shape() const;
@@ -91,6 +85,14 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+    friend class ObjectGroupItem; // Can change editabilty
+
+    /**
+     * Sets whether this map object is editable. Editable map objects can be
+     * moved and resized, and their properties can be edited.
+     */
+    void setEditable(bool editable);
+
     MapDocument *mapDocument() const;
     QColor color() const;
     Qt::GlobalColor colorForType() const;
