@@ -219,6 +219,10 @@ void MapObjectItem::setEditable(bool editable)
 
     setFlag(QGraphicsItem::ItemIsMovable, mIsEditable);
     mResizeHandle->setVisible(mIsEditable);
+    if (mIsEditable)
+        setCursor(Qt::SizeAllCursor);
+    else
+        unsetCursor();
 }
 
 QRectF MapObjectItem::boundingRect() const
