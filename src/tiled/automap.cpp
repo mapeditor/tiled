@@ -56,7 +56,7 @@ bool AutoMapper::setupLayers()
     QString prefix = QLatin1String("rule_");
     foreach (Layer *layer, mMapRules->layers()) {
         if (TileLayer *tileLayer = layer->asTileLayer()) {
-            if (layer->name().startsWith(prefix,Qt::CaseInsensitive)) {
+            if (layer->name().startsWith(prefix, Qt::CaseInsensitive)) {
                 QString name = layer->name();
                 name.remove(0, prefix.length());
                 TileLayer *t = findTileLayer(mMapWork, name);
@@ -283,27 +283,53 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
     }
 }
 
+static QList<Tile*> tilesInRegion(TileLayer *l, const QRegion &r)
+{
+    QList<Tile*> tiles;
+    foreach (QRect rect, r.rects()) {
+        for (int x = rect.left(); x <= rect.right(); x++) {
+            for (int y = rect.top(); y <= rect.bottom(); y++) {
+                Tile *t = l->tileAt(x, y);
+                if (!tiles.contains(t))
+                    tiles.append(t);
+            }
+        }
+    }
+    return tiles;
+}
+
 /**
  * This compares two tile layers.
  * The first tile layer is examined at QRegion r1
  * The second tile layer is examined at r1 + offset
- * Only when at both places are tiles, these will be compared.
- * if there is no tile at all in one layer, it is treated as equal
+ * When at both places are tiles, these will be compared.
+ *
+ * If there is no tile in one layer, in the other layer there must be a
+ * tile, which must not occur in the region of the first layer.
  *
  * @return bool, if the tile layers are the same at the specific regions
  */
 static bool compareLayers(TileLayer *l1, TileLayer *l2,
                           const QRegion &r1, QPoint offset)
 {
+    QList<Tile*> tiles1 = tilesInRegion(l1, r1);
+    QRegion r2(r1);
+    r2.translate(offset.x(), offset.y());
+    QList<Tile*> tiles2 = tilesInRegion(l1, r2);
+
     foreach (QRect rect, r1.rects()) {
         for (int x = rect.left(); x <= rect.right(); x++) {
             for (int y = rect.top(); y <= rect.bottom(); y++) {
-                if (!(l1->contains(x,y) &&
-                      l2->contains(x + offset.x(),y + offset.y())))
+                if (!(l1->contains(x, y) &&
+                      l2->contains(x + offset.x(), y + offset.y())))
                     return false;
                 Tile *t1 = l1->tileAt(x, y);
                 Tile *t2 = l2->tileAt(x + offset.x(), y + offset.y());
                 if (t1 && t2 && t1 != t2)
+                    return false;
+                if (!t1 && tiles1.contains(t2))
+                    return false;
+                if (!t2 && tiles2.contains(t1))
                     return false;
             }
         }
