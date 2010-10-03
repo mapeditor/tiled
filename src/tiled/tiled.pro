@@ -10,6 +10,7 @@ win32 {
 } else {
     DESTDIR = ../../bin
 }
+contains(QT_CONFIG, opengl): QT += opengl
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII

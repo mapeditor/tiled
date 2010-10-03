@@ -49,6 +49,7 @@ protected:
 
 private slots:
     void languageSelected(int index);
+    void useOpenGLToggled(bool useOpenGL);
 
 private:
     void fromPreferences();

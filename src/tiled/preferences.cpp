@@ -59,6 +59,7 @@ Preferences::Preferences()
     mSettings->beginGroup(QLatin1String("Interface"));
     mLanguage = mSettings->value(QLatin1String("Language"),
                                  QString()).toString();
+    mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
     mSettings->endGroup();
 
     TilesetManager *tilesetManager = TilesetManager::instance();
@@ -130,4 +131,15 @@ void Preferences::setReloadTilesetsOnChanged(bool value)
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
+}
+
+void Preferences::setUseOpenGL(bool useOpenGL)
+{
+    if (mUseOpenGL == useOpenGL)
+        return;
+
+    mUseOpenGL = useOpenGL;
+    mSettings->setValue(QLatin1String("Interface/OpenGL"), mUseOpenGL);
+
+    emit useOpenGLChanged(mUseOpenGL);
 }

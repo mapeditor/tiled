@@ -24,6 +24,10 @@
 #include "languagemanager.h"
 #include "preferences.h"
 
+#ifndef QT_NO_OPENGL
+#include <QGLFormat>
+#endif
+
 using namespace Tiled::Internal;
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
@@ -32,6 +36,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     mLanguages(LanguageManager::instance()->availableLanguages())
 {
     mUi->setupUi(this);
+
+#ifndef QT_NO_OPENGL
+    mUi->openGL->setEnabled(QGLFormat::hasOpenGL());
+#else
+    mUi->openGL->setEnabled(false);
+#endif
 
     foreach (const QString &name, mLanguages) {
         QLocale locale(name);
@@ -48,6 +58,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
+    connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -79,11 +90,18 @@ void PreferencesDialog::languageSelected(int index)
     prefs->setLanguage(language);
 }
 
+void PreferencesDialog::useOpenGLToggled(bool useOpenGL)
+{
+    Preferences::instance()->setUseOpenGL(useOpenGL);
+}
+
 void PreferencesDialog::fromPreferences()
 {
     const Preferences *prefs = Preferences::instance();
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
+    if (mUi->openGL->isEnabled())
+        mUi->openGL->setChecked(prefs->useOpenGL());
 
     int formatIndex = 0;
     switch (prefs->layerDataFormat()) {
