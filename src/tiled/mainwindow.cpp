@@ -731,7 +731,7 @@ void MainWindow::paste()
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Paste"));
         foreach (QUndoCommand *command, undoCommands)
-            mMapDocument->undoStack()->push(command);
+            undoStack->push(command);
         undoStack->endMacro();
     }
 
