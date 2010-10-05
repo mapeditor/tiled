@@ -501,7 +501,7 @@ bool MainWindow::saveFile(const QString &fileName)
 
 bool MainWindow::saveFile()
 {
-    if (mCurrentFileName.endsWith(QLatin1String(".tmx")))
+    if (mCurrentFileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive))
         return saveFile(mCurrentFileName);
     else
         return saveFileAs();
@@ -601,7 +601,8 @@ void MainWindow::exportAs()
 
     // Also support exporting to the TMX map format when requested
     TmxMapWriter tmxMapWriter;
-    if (!chosenWriter && fileName.endsWith(QLatin1String(".tmx")))
+    if (!chosenWriter && fileName.endsWith(QLatin1String(".tmx"),
+                                           Qt::CaseInsensitive))
         chosenWriter = &tmxMapWriter;
 
     if (!chosenWriter) {
