@@ -72,8 +72,7 @@
     <message>
         <location line="+20"/>
         <source>&amp;Open...</source>
-        <translation>Ö&amp;ffnen...
-</translation>
+        <translation>Ö&amp;ffnen...</translation>
     </message>
     <message>
         <location line="+9"/>
