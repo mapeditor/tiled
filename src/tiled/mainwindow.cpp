@@ -76,6 +76,9 @@
 #include <QUndoStack>
 #include <QUndoView>
 #include <QImageReader>
+#include <QSignalMapper>
+#include <QShortcut>
+#include <QTabWidget>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -292,6 +295,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     updateActions();
     readSettings();
+    setupQuickStamp();
 }
 
 MainWindow::~MainWindow()
@@ -682,24 +686,8 @@ static Tileset *findSimilarTileset(const Tileset *tileset,
     return 0;
 }
 
-void MainWindow::paste()
+void MainWindow::unifyTilesets(Map *map)
 {
-    if (!mMapDocument)
-        return;
-
-    Map *map = mClipboardManager->map();
-    if (!map)
-        return;
-
-    // We can currently only handle maps with a single tile layer
-    if (!(map->layerCount() == 1 && map->layerAt(0)->asTileLayer())) {
-        // Need to clean up the tilesets since they didn't get an owner
-        qDeleteAll(map->tilesets());
-        delete map;
-        return;
-    }
-
-    TileLayer *layer = map->layerAt(0)->asTileLayer();
     QList<QUndoCommand*> undoCommands;
     QList<Tileset*> existingTilesets = mMapDocument->map()->tilesets();
 
@@ -730,15 +718,37 @@ void MainWindow::paste()
     }
     if (!undoCommands.isEmpty()) {
         QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->beginMacro(tr("Paste"));
+        undoStack->beginMacro(tr("Tileset changes"));
         foreach (QUndoCommand *command, undoCommands)
             undoStack->push(command);
         undoStack->endMacro();
     }
+}
+
+void MainWindow::paste()
+{
+    if (!mMapDocument)
+        return;
+
+    Map *map = mClipboardManager->map();
+    if (!map)
+        return;
+
+    // We can currently only handle maps with a single tile layer
+    if (!(map->layerCount() == 1 && map->layerAt(0)->asTileLayer())) {
+        // Need to clean up the tilesets since they didn't get an owner
+        qDeleteAll(map->tilesets());
+        delete map;
+        return;
+    }
+
+    unifyTilesets(map);
+
+    TileLayer *tileLayer = map->layerAt(0)->asTileLayer();
 
     // Reset selection and paste into the stamp brush
     mActionHandler->selectNone();
-    setStampBrush(layer);
+    setStampBrush(tileLayer);
     ToolManager::instance()->selectTool(mStampBrush);
 
     delete map;
@@ -1124,4 +1134,109 @@ void MainWindow::retranslateUi()
 
     mLayerMenu->setTitle(tr("&Layer"));
     mActionHandler->retranslateUi();
+}
+
+void MainWindow::setupQuickStamp()
+{
+    QList<int> keys;
+    keys
+            << Qt::Key_1
+            << Qt::Key_2
+            << Qt::Key_3
+            << Qt::Key_4
+            << Qt::Key_5
+            << Qt::Key_6
+            << Qt::Key_7
+            << Qt::Key_8
+            << Qt::Key_9;
+    QSignalMapper *connectCall = new QSignalMapper(this);
+    QSignalMapper *connectSave = new QSignalMapper(this);
+    mQuickStamps.resize(keys.size());
+    for (int i = 0; i < keys.length(); i++) {
+        //QAction *qStamper;
+        QShortcut *qStamper;
+        // first setup connection for calling selectQuickStamps
+        qStamper = new QShortcut(this);
+        qStamper->setKey(keys.value(i));
+        connect(qStamper,SIGNAL(activated()),connectCall, SLOT(map()));
+        connectCall->setMapping(qStamper, i);
+
+        // second setup for storing selectQuickStamps
+        qStamper = new QShortcut(this);
+        qStamper->setKey(QKeySequence(Qt::CTRL + keys.value(i)));
+        connect(qStamper,SIGNAL(activated()),connectSave, SLOT(map()));
+        connectSave->setMapping(qStamper, i);
+    }
+
+    connect(connectCall, SIGNAL(mapped(int)), this, SLOT(selectQuickStamp(int)));
+    connect(connectSave, SIGNAL(mapped(int)), this, SLOT(saveQuickStamp(int)));
+}
+
+void MainWindow::selectQuickStamp(int index)
+{
+    if (mQuickStamps.at(index)) {
+        unifyTilesets(mQuickStamps.at(index));
+        setStampBrush(mQuickStamps.at(index)->layerAt(0)->asTileLayer());
+        ToolManager::instance()->selectTool(mStampBrush);
+    }
+}
+
+void MainWindow::saveQuickStamp(int index)
+{
+    const Map *map = mMapDocument->map();
+
+    // first find out, if stamping or selection tool is active.
+    // the source, where to take the layer from is different then.
+    AbstractTool *selectedTool = ToolManager::instance()->selectedTool();
+    TileLayer *copy;
+    if (selectedTool == mStampBrush) {
+        copy = mStampBrush->stamp()->clone()->asTileLayer();
+    } else {
+        int currentLayer = mMapDocument->currentLayer();
+        if (currentLayer == -1)
+            return;
+
+        const TileLayer *tLayer =
+                map->layerAt(currentLayer)->asTileLayer();
+        if (!tLayer)
+            return;
+
+        const QRegion &selection = mMapDocument->tileSelection();
+        if (selection.isEmpty())
+            return;
+
+        copy = tLayer->copy(selection.translated(-tLayer->x(), -tLayer->y()));
+    }
+
+    Map *copyMap = new Map(map->orientation(),
+                           copy->width(), copy->height(),
+                           map->tileWidth(), map->tileHeight());
+
+    // Resolve the set of tilesets used by this layer
+    QSet<Tileset*> tilesets;
+    for (int y = 0; y < copy->height(); ++y) {
+        for (int x = 0; x < copy->width(); ++x) {
+            const Tile *tile = copy->tileAt(x, y);
+            if (tile)
+                tilesets.insert(tile->tileset());
+        }
+    }
+
+    copyMap->addLayer(copy);
+
+    // add Tileset References to Map and TilesetManager
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    foreach (Tileset *tileset, tilesets) {
+        copyMap->addTileset(tileset);
+        tilesetManager->addReference(tileset);
+    }
+
+    if (mQuickStamps.at(index)) {
+        // decrease reference to Tilesets
+        foreach (Tileset *tileset, mQuickStamps.at(index)->tilesets()){
+            tilesetManager->removeReference(tileset);
+        }
+    }
+    delete mQuickStamps.at(index);
+    mQuickStamps.replace(index, copyMap);
 }

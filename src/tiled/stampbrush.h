@@ -63,6 +63,8 @@ public:
      */
     void setStamp(TileLayer *stamp);
 
+    TileLayer *stamp() const { return mStamp; }
+
 signals:
     /**
      * Emitted when the currently selected tiles changed. The stamp brush emits

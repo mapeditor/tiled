@@ -123,6 +123,9 @@ private slots:
     void setStampBrush(const TileLayer *tiles);
     void updateStatusInfoLabel(const QString &statusInfo);
 
+    void selectQuickStamp(int index);
+    void saveQuickStamp(int index);
+
 private:
     /**
       * Asks the user whether the map should be saved when necessary.
@@ -180,6 +183,22 @@ private:
     QAction *mRecentFiles[MaxRecentFiles];
 
     QMenu *mLayerMenu;
+
+    /**
+     * This contains different TileLayer points for the QuickStamp feature.
+     */
+    QVector<Map*> mQuickStamps;
+    void setupQuickStamp();
+
+    /**
+     * This Method makes sure the all Tilesets, which are used at the given Map,
+     * will be in mMapDocument.
+     * To reach the aim, all similar tilesets in map will be replaced by the
+     * versions within mMapDocument, all missing tilesets will be added to
+     * the given Map.
+     **/
+    void unifyTilesets(Map *map);
+
 };
 
 } // namespace Internal

@@ -71,6 +71,12 @@ public:
      */
     QToolBar *toolBar() const { return mToolBar; }
 
+    /**
+     * returns the selected Tool, so it can be easily found out,
+     * which tool is selected.
+     */
+    AbstractTool *selectedTool() const { return mSelectedTool; }
+
 signals:
     void selectedToolChanged(AbstractTool *tool);
 
