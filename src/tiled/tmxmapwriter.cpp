@@ -23,6 +23,8 @@
 #include "mapwriter.h"
 #include "preferences.h"
 
+#include <QBuffer>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -60,10 +62,15 @@ bool TmxMapWriter::writeTileset(const Tileset *tileset,
     return result;
 }
 
-QString TmxMapWriter::toString(const Map *map)
+QByteArray TmxMapWriter::toByteArray(const Map *map)
 {
+    QByteArray bytes;
+    QBuffer buffer(&bytes);
+    buffer.open(QIODevice::WriteOnly);
+
     MapWriter writer;
-    writer.setDtdEnabled(false);
     writer.setLayerDataFormat(MapWriter::Base64Zlib);
-    return writer.mapToString(map);
+    writer.writeMap(map, &buffer);
+
+    return bytes;
 }

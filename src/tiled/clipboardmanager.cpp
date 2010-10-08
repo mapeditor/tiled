@@ -54,9 +54,8 @@ Map *ClipboardManager::map() const
     if (data.isEmpty())
         return 0;
 
-    const QString mapData = QString::fromUtf8(data);
     TmxMapReader reader;
-    return reader.fromString(mapData);
+    return reader.fromByteArray(data);
 }
 
 void ClipboardManager::setMap(const Map *map)
@@ -64,8 +63,7 @@ void ClipboardManager::setMap(const Map *map)
     TmxMapWriter mapWriter;
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(TMX_MIMETYPE),
-                      mapWriter.toString(map).toUtf8());
+    mimeData->setData(QLatin1String(TMX_MIMETYPE), mapWriter.toByteArray(map));
 
     mClipboard->setMimeData(mimeData);
 }

@@ -56,8 +56,6 @@ public:
 
     bool openFile(QFile *file);
 
-    QString toString(const Map *map);
-
     QString mError;
     MapWriter::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
@@ -146,21 +144,6 @@ void MapWriterPrivate::writeTileset(const Tileset *tileset, QIODevice *device,
     writeTileset(*writer, tileset, 0);
     writer->writeEndDocument();
     delete writer;
-}
-
-QString MapWriterPrivate::toString(const Map *map)
-{
-    mMapDir = QDir();
-    mUseAbsolutePaths = true;
-
-    QString output;
-    QXmlStreamWriter writer(&output);
-
-    writer.writeStartDocument();
-    writeMap(writer, map);
-    writer.writeEndDocument();
-
-    return output;
 }
 
 void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
@@ -548,11 +531,6 @@ bool MapWriter::writeTileset(const Tileset *tileset, const QString &fileName)
     }
 
     return true;
-}
-
-QString MapWriter::mapToString(const Tiled::Map *map)
-{
-    return d->toString(map);
 }
 
 QString MapWriter::errorString() const

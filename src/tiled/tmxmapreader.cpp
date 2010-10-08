@@ -79,12 +79,12 @@ Map *TmxMapReader::read(const QString &fileName)
     return map;
 }
 
-Map *TmxMapReader::fromString(const QString &string)
+Map *TmxMapReader::fromByteArray(const QByteArray &data)
 {
     mError.clear();
 
-    QByteArray data = string.toUtf8();
-    QBuffer buffer(&data);
+    QByteArray dataCopy = data;
+    QBuffer buffer(&dataCopy);
     buffer.open(QBuffer::ReadOnly);
 
     EditorMapReader reader;

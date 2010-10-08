@@ -85,12 +85,6 @@ public:
     bool writeTileset(const Tileset *tileset, const QString &fileName);
 
     /**
-     * Writes a TMX map into a string and returns it. Used for placing the map
-     * on the clipboard, for example.
-     */
-    QString mapToString(const Map *map);
-
-    /**
      * Returns the error message for the last occurred error.
      */
     QString errorString() const;

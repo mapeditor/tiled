@@ -45,13 +45,13 @@ public:
     bool writeTileset(const Tileset *tileset, const QString &fileName);
 
     /**
-     * Converts the given map to a string (in .tmx format). This is for
-     * storing a map in the clipboard. References to other files (like tileset
-     * images) will be saved as absolute paths.
+     * Converts the given map to a utf8 byte array (in .tmx format). This is
+     * for storing a map in the clipboard. References to other files (like
+     * tileset images) will be saved as absolute paths.
      *
-     * @see TmxMapReader::fromString
+     * @see TmxMapReader::fromByteArray
      */
-    QString toString(const Map *map);
+    QByteArray toByteArray(const Map *map);
 
     QString nameFilter() const { return tr("Tiled map files (*.tmx)"); }
 

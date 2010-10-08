@@ -43,12 +43,12 @@ public:
     Map *read(const QString &fileName);
 
     /**
-     * Reads the map given by \a string. This is for retrieving a map from the
+     * Reads the map given by \a data. This is for retrieving a map from the
      * clipboard. Returns 0 on failure.
      *
-     * @see TmxMapWriter::toString
+     * @see TmxMapWriter::toByteArray
      */
-    Map *fromString(const QString &string);
+    Map *fromByteArray(const QByteArray &data);
 
     Tileset *readTileset(const QString &fileName);
 
