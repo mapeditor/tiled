@@ -22,7 +22,6 @@
 
 #include "map.h"
 #include "mapdocument.h"
-#include "preferences.h"
 #include "propertiesdialog.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
@@ -264,10 +263,7 @@ void TilesetView::exportTileset()
     if (fileName.isEmpty())
         return;
 
-    Preferences *prefs = Preferences::instance();
-
     TmxMapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
 
     if (writer.writeTileset(tileset, fileName)) {
         QUndoCommand *command = new SetTilesetFileName(tileset, fileName);

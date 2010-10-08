@@ -23,7 +23,7 @@
 
 #include <QObject>
 
-#include "tmxmapwriter.h"
+#include "mapwriter.h"
 
 class QSettings;
 
@@ -42,8 +42,8 @@ public:
     static Preferences *instance();
     static void deleteInstance();
 
-    TmxMapWriter::LayerDataFormat layerDataFormat() const;
-    void setLayerDataFormat(TmxMapWriter::LayerDataFormat layerDataFormat);
+    MapWriter::LayerDataFormat layerDataFormat() const;
+    void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
 
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
@@ -71,7 +71,7 @@ private:
     ~Preferences();
 
     QSettings *mSettings;
-    TmxMapWriter::LayerDataFormat mLayerDataFormat;
+    MapWriter::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;

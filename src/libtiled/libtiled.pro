@@ -28,6 +28,7 @@ SOURCES += compression.cpp \
     tilelayer.cpp \
     tileset.cpp \
     mapreader.cpp \
+    mapwriter.cpp \
     properties.cpp
 HEADERS += compression.h \
     layer.h \
@@ -39,6 +40,7 @@ HEADERS += compression.h \
     tilelayer.h \
     tileset.h \
     mapreader.h \
+    mapwriter.h \
     properties.h \
     object.h
 mac {

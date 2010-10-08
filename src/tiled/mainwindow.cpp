@@ -481,11 +481,7 @@ bool MainWindow::saveFile(const QString &fileName)
     if (!mMapDocument)
         return false;
 
-    Preferences *prefs = Preferences::instance();
-
     TmxMapWriter mapWriter;
-    mapWriter.setLayerDataFormat(prefs->layerDataFormat());
-    mapWriter.setDtdEnabled(prefs->dtdEnabled());
 
     if (!mapWriter.write(mMapDocument->map(), fileName)) {
         QMessageBox::critical(this, tr("Error Saving Map"),

@@ -55,7 +55,7 @@ public:
      *
      * Returns 0 and sets errorString() when reading failed.
      *
-     * The caller takes ownership over the newly created tileset.
+     * The caller takes ownership over the newly created map.
      */
     Map *readMap(QIODevice *device, const QString &path = QString());
 
@@ -68,7 +68,7 @@ public:
     /**
      * Reads a TSX tileset from the given \a device. Optionally a \a path can
      * be given, which will be used to resolve relative references to external
-     * images and tilesets.
+     * images.
      *
      * Returns 0 and sets errorString() when reading failed.
      *

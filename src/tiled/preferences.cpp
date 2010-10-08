@@ -25,6 +25,7 @@
 
 #include <QSettings>
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 Preferences *Preferences::mInstance = 0;
@@ -47,9 +48,9 @@ Preferences::Preferences()
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
-    mLayerDataFormat = (TmxMapWriter::LayerDataFormat)
+    mLayerDataFormat = (MapWriter::LayerDataFormat)
                        mSettings->value(QLatin1String("LayerDataFormat"),
-                                        TmxMapWriter::Base64Gzip).toInt();
+                                        MapWriter::Base64Gzip).toInt();
     mDtdEnabled = mSettings->value(QLatin1String("DtdEnabled")).toBool();
     mReloadTilesetsOnChange =
             mSettings->value(QLatin1String("ReloadTilesets"), true).toBool();
@@ -71,12 +72,12 @@ Preferences::~Preferences()
     delete mSettings;
 }
 
-TmxMapWriter::LayerDataFormat Preferences::layerDataFormat() const
+MapWriter::LayerDataFormat Preferences::layerDataFormat() const
 {
     return mLayerDataFormat;
 }
 
-void Preferences::setLayerDataFormat(TmxMapWriter::LayerDataFormat
+void Preferences::setLayerDataFormat(MapWriter::LayerDataFormat
                                      layerDataFormat)
 {
     if (mLayerDataFormat == layerDataFormat)

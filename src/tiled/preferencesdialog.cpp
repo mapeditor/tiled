@@ -28,6 +28,7 @@
 #include <QGLFormat>
 #endif
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
@@ -105,20 +106,20 @@ void PreferencesDialog::fromPreferences()
 
     int formatIndex = 0;
     switch (prefs->layerDataFormat()) {
-    case TmxMapWriter::XML:
+    case MapWriter::XML:
         formatIndex = 0;
         break;
-    case TmxMapWriter::Base64:
+    case MapWriter::Base64:
         formatIndex = 1;
         break;
-    case TmxMapWriter::Base64Gzip:
+    case MapWriter::Base64Gzip:
     default:
         formatIndex = 2;
         break;
-    case TmxMapWriter::Base64Zlib:
+    case MapWriter::Base64Zlib:
         formatIndex = 3;
         break;
-    case TmxMapWriter::CSV:
+    case MapWriter::CSV:
         formatIndex = 4;
         break;
     }
@@ -140,19 +141,19 @@ void PreferencesDialog::toPreferences()
     prefs->setLayerDataFormat(layerDataFormat());
 }
 
-TmxMapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
+MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
 {
     switch (mUi->layerDataCombo->currentIndex()) {
     case 0:
-        return TmxMapWriter::XML;
+        return MapWriter::XML;
     case 1:
-        return TmxMapWriter::Base64;
+        return MapWriter::Base64;
     case 2:
     default:
-        return TmxMapWriter::Base64Gzip;
+        return MapWriter::Base64Gzip;
     case 3:
-        return TmxMapWriter::Base64Zlib;
+        return MapWriter::Base64Zlib;
     case 4:
-        return TmxMapWriter::CSV;
+        return MapWriter::CSV;
     }
 }

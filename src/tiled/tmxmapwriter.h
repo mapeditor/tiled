@@ -1,7 +1,6 @@
 /*
  * tmxmapwriter.h
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2010, Dennis Honeyman <arcticuno@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -23,21 +22,12 @@
 #define TMXMAPWRITER_H
 
 #include "mapwriterinterface.h"
-#include "properties.h"
 
 #include <QCoreApplication>
-#include <QDir>
-#include <QMap>
 #include <QString>
-#include <QXmlStreamWriter>
 
 namespace Tiled {
 
-class Layer;
-class MapObject;
-class ObjectGroup;
-class Tile;
-class TileLayer;
 class Tileset;
 
 namespace Internal {
@@ -50,8 +40,6 @@ class TmxMapWriter : public MapWriterInterface
     Q_DECLARE_TR_FUNCTIONS(TmxMapReader)
 
 public:
-    TmxMapWriter();
-
     bool write(const Map *map, const QString &fileName);
 
     bool writeTileset(const Tileset *tileset, const QString &fileName);
@@ -69,55 +57,8 @@ public:
 
     QString errorString() const { return mError; }
 
-    /**
-     * The different formats in which the tile layer data can be stored.
-     */
-    enum LayerDataFormat {
-        XML        = 0,
-        Base64     = 1,
-        Base64Gzip = 2,
-        Base64Zlib = 3,
-        CSV        = 4,
-    };
-
-    /**
-     * Sets the format in which the tile layer data is stored.
-     */
-    void setLayerDataFormat(LayerDataFormat format)
-    { mLayerDataFormat = format; }
-
-    LayerDataFormat layerDataFormat() const
-    { return mLayerDataFormat; }
-
-    /**
-     * Sets whether the DTD reference is written when saving the map.
-     */
-    void setDtdEnabled(bool enabled)
-    { mDtdEnabled = enabled; }
-
-    bool isDtdEnabled() const
-    { return mDtdEnabled; }
-
 private:
-    QXmlStreamWriter *createWriter(QFile *file);
-
-    void writeMap(QXmlStreamWriter &w, const Map *map);
-    void writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
-                      int firstGid);
-    void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer);
-    void writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer);
-    int gidForTile(const Tile *tile) const;
-    void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup *objectGroup);
-    void writeObject(QXmlStreamWriter &w, const MapObject *mapObject);
-    void writeProperties(QXmlStreamWriter &w,
-                         const Properties &properties);
-
     QString mError;
-    QDir mMapDir;     // The directory in which the map is being saved
-    QMap<int, const Tileset*> mFirstGidToTileset;
-    bool mUseAbsolutePaths;
-    LayerDataFormat mLayerDataFormat;
-    bool mDtdEnabled;
 };
 
 } // namespace Internal
