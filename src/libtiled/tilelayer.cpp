@@ -36,12 +36,23 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
 
 QRegion TileLayer::region() const
 {
-    QRegion region = bounds();
+    QRegion region;
 
-    for (int y = 0; y < mHeight; ++y)
-        for (int x = 0; x < mWidth; ++x)
-            if (!tileAt(x, y))
-                region -= QRegion(x + mX, y + mY, 1, 1);
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            if (tileAt(x, y)) {
+                const int rangeStart = x;
+                for (++x; x <= mWidth; ++x) {
+                    if (x == mWidth || !tileAt(x, y)) {
+                        const int rangeEnd = x;
+                        region += QRect(rangeStart + mX, y + mY,
+                                        rangeEnd - rangeStart, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     return region;
 }
