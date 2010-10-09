@@ -72,8 +72,7 @@
     <message>
         <location line="+20"/>
         <source>&amp;Open...</source>
-        <translation>Ö&amp;ffnen...
-</translation>
+        <translation>Ö&amp;ffnen...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -968,7 +967,7 @@
     <message>
         <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
-        <translation>Strg+Shift+Oben</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+48"/>
@@ -978,7 +977,7 @@
     <message>
         <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
-        <translation>Strg+Shift+Unten</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+44"/>

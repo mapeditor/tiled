@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ResizeDialog</class>
- <widget class="QDialog" name="ResizeDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="ResizeDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,53 +10,53 @@
     <height>402</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Resize</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>Size</string>
      </property>
-     <layout class="QGridLayout" name="_6" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="text" >
+     <layout class="QGridLayout" name="_6">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
          <string>Width:</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>widthSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QSpinBox" name="widthSpinBox" >
-        <property name="minimum" >
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="widthSpinBox">
+        <property name="minimum">
          <number>1</number>
         </property>
-        <property name="maximum" >
-         <number>999</number>
+        <property name="maximum">
+         <number>9999</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_4" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
          <string>Height:</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>heightSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="QSpinBox" name="heightSpinBox" >
-        <property name="minimum" >
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="heightSpinBox">
+        <property name="minimum">
          <number>1</number>
         </property>
-        <property name="maximum" >
-         <number>999</number>
+        <property name="maximum">
+         <number>9999</number>
         </property>
        </widget>
       </item>
@@ -63,48 +64,48 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
       <string>Offset</string>
      </property>
-     <layout class="QGridLayout" name="_4" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
+     <layout class="QGridLayout" name="_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
          <string>X:</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>offsetXSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QSpinBox" name="offsetXSpinBox" >
-        <property name="minimum" >
-         <number>-999</number>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="offsetXSpinBox">
+        <property name="minimum">
+         <number>-9999</number>
         </property>
-        <property name="maximum" >
-         <number>999</number>
+        <property name="maximum">
+         <number>9999</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
          <string>Y:</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>offsetYSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="QSpinBox" name="offsetYSpinBox" >
-        <property name="minimum" >
-         <number>-999</number>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="offsetYSpinBox">
+        <property name="minimum">
+         <number>-9999</number>
         </property>
-        <property name="maximum" >
-         <number>999</number>
+        <property name="maximum">
+         <number>9999</number>
         </property>
        </widget>
       </item>
@@ -112,32 +113,32 @@
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+    <widget class="QFrame" name="frame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>1</verstretch>
       </sizepolicy>
      </property>
-     <property name="frameShape" >
+     <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="frameShadow" >
+     <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" name="_5" >
+     <layout class="QVBoxLayout" name="_5">
       <item>
-       <widget class="Tiled::Internal::ResizeHelper" native="1" name="resizeHelper" />
+       <widget class="Tiled::Internal::ResizeHelper" name="resizeHelper" native="true"/>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -151,12 +152,12 @@
    <header>resizehelper.h</header>
    <container>1</container>
    <slots>
+    <signal>offsetXChanged(int)</signal>
+    <signal>offsetYChanged(int)</signal>
     <slot>setOffsetX(int)</slot>
     <slot>setOffsetY(int)</slot>
     <slot>setNewWidth(int)</slot>
     <slot>setNewHeight(int)</slot>
-    <signal>offsetXChanged(int)</signal>
-    <signal>offsetYChanged(int)</signal>
    </slots>
   </customwidget>
  </customwidgets>
@@ -175,11 +176,11 @@
    <receiver>ResizeDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>227</x>
      <y>376</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -191,11 +192,11 @@
    <receiver>ResizeDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>232</x>
      <y>382</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>241</x>
      <y>274</y>
     </hint>
@@ -207,11 +208,11 @@
    <receiver>resizeHelper</receiver>
    <slot>setOffsetX(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>172</x>
      <y>154</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>120</x>
      <y>285</y>
     </hint>
@@ -223,11 +224,11 @@
    <receiver>resizeHelper</receiver>
    <slot>setOffsetY(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>172</x>
      <y>185</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>120</x>
      <y>285</y>
     </hint>
@@ -239,11 +240,11 @@
    <receiver>resizeHelper</receiver>
    <slot>setNewWidth(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>172</x>
      <y>51</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>120</x>
      <y>285</y>
     </hint>
@@ -255,11 +256,11 @@
    <receiver>resizeHelper</receiver>
    <slot>setNewHeight(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>172</x>
      <y>82</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>120</x>
      <y>285</y>
     </hint>
@@ -271,11 +272,11 @@
    <receiver>offsetXSpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>120</x>
      <y>285</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>172</x>
      <y>154</y>
     </hint>
@@ -287,11 +288,11 @@
    <receiver>offsetYSpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>120</x>
      <y>285</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>172</x>
      <y>185</y>
     </hint>
