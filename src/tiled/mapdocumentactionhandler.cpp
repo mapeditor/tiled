@@ -40,7 +40,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mInstance = this;
 
     mActionSelectAll = new QAction(this);
-    mActionSelectAll->setShortcut(QKeySequence::SelectAll);
+    mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
     mActionSelectNone = new QAction(this);
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 

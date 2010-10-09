@@ -136,21 +136,25 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     statusBar()->addPermanentWidget(mZoomLabel);
 
-    mUi->actionNew->setShortcut(QKeySequence::New);
-    mUi->actionOpen->setShortcut(QKeySequence::Open);
-    mUi->actionSave->setShortcut(QKeySequence::Save);
-    mUi->actionSaveAs->setShortcut(QKeySequence::SaveAs);
-    mUi->actionClose->setShortcut(QKeySequence::Close);
+    mUi->actionNew->setShortcuts(QKeySequence::New);
+    mUi->actionOpen->setShortcuts(QKeySequence::Open);
+    mUi->actionSave->setShortcuts(QKeySequence::Save);
+    mUi->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
+    mUi->actionClose->setShortcuts(QKeySequence::Close);
 #if QT_VERSION >= 0x040600
-    mUi->actionQuit->setShortcut(QKeySequence::Quit);
+    mUi->actionQuit->setShortcuts(QKeySequence::Quit);
 #endif
-    mUi->actionCut->setShortcut(QKeySequence::Cut);
-    mUi->actionCopy->setShortcut(QKeySequence::Copy);
-    mUi->actionPaste->setShortcut(QKeySequence::Paste);
-    undoAction->setShortcut(QKeySequence::Undo);
-    redoAction->setShortcut(QKeySequence::Redo);
-    mUi->actionZoomIn->setShortcut(QKeySequence::ZoomIn);
-    mUi->actionZoomOut->setShortcut(QKeySequence::ZoomOut);
+    mUi->actionCut->setShortcuts(QKeySequence::Cut);
+    mUi->actionCopy->setShortcuts(QKeySequence::Copy);
+    mUi->actionPaste->setShortcuts(QKeySequence::Paste);
+    undoAction->setShortcuts(QKeySequence::Undo);
+    redoAction->setShortcuts(QKeySequence::Redo);
+
+    // Make sure Ctrl+= also works for zooming in
+    QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
+    keys += QKeySequence(tr("Ctrl+="));
+    mUi->actionZoomIn->setShortcuts(keys);
+    mUi->actionZoomOut->setShortcuts(QKeySequence::ZoomOut);
 
     mUi->menuEdit->insertAction(mUi->actionCut, undoAction);
     mUi->menuEdit->insertAction(mUi->actionCut, redoAction);
