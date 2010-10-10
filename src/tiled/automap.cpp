@@ -49,9 +49,18 @@ bool AutoMapper::setupLayers()
 {
     cleanUpLayers();
 
-    mLayerRuleSet     = findTileLayer(mMapRules, QLatin1String("ruleset"));
-    mLayerRuleRegions = findTileLayer(mMapRules, QLatin1String("ruleregions"));
     mLayerSet         = findTileLayer(mMapWork, QLatin1String("set"));
+    mLayerRuleRegions = findTileLayer(mMapRules, QLatin1String("ruleregions"));
+
+    // allow multiple Set Layers
+    foreach (Layer *layer, mMapRules->layers()) {
+        if (TileLayer *tileLayer = layer->asTileLayer()) {
+            if (tileLayer->name().startsWith(
+                    QLatin1String("ruleset"), Qt::CaseInsensitive)) {
+                mLayerRuleSets.append(tileLayer);
+            }
+        }
+    }
 
     QString prefix = QLatin1String("rule_");
     foreach (Layer *layer, mMapRules->layers()) {
@@ -79,8 +88,8 @@ bool AutoMapper::setupLayers()
     if (!mLayerRuleRegions)
         error += tr("No ruleRegions layer found!") + QLatin1Char('\n');
     if (!mLayerSet)
-        error += tr("No set layer found!") + QLatin1Char('\n');
-    if (!mLayerRuleSet)
+        error += tr("No set layers found!") + QLatin1Char('\n');
+    if (mLayerRuleSets.size() == 0)
         error += tr("No ruleSet layer found!") + QLatin1Char('\n');
 
     if (!error.isEmpty()) {
@@ -283,15 +292,17 @@ void AutoMapper::copyMapRegion(const QRegion &region, QPoint offset,
     }
 }
 
-static QList<Tile*> tilesInRegion(TileLayer *l, const QRegion &r)
+static QList<Tile*> tilesInRegion(QList<TileLayer*> list, const QRegion &r)
 {
     QList<Tile*> tiles;
-    foreach (QRect rect, r.rects()) {
-        for (int x = rect.left(); x <= rect.right(); x++) {
-            for (int y = rect.top(); y <= rect.bottom(); y++) {
-                Tile *t = l->tileAt(x, y);
-                if (!tiles.contains(t))
-                    tiles.append(t);
+    foreach (TileLayer *l, list) {
+        foreach (QRect rect, r.rects()) {
+            for (int x = rect.left(); x <= rect.right(); x++) {
+                for (int y = rect.top(); y <= rect.bottom(); y++) {
+                    Tile *t = l->tileAt(x, y);
+                    if (!tiles.contains(t))
+                        tiles.append(t);
+                }
             }
         }
     }
@@ -299,37 +310,62 @@ static QList<Tile*> tilesInRegion(TileLayer *l, const QRegion &r)
 }
 
 /**
- * This compares two tile layers.
- * The first tile layer is examined at QRegion r1
- * The second tile layer is examined at r1 + offset
- * When at both places are tiles, these will be compared.
+ * This compares the TileLayer l1 to several others given in the QList list.
+ * The TileLayer l1 is examined at QRegion r1 + offset
+ * The Tilelayers within list are examined at QRegion r1.
  *
- * If there is no tile in one layer, in the other layer there must be a
- * tile, which must not occur in the region of the first layer.
+ * The comparison is done for each position within the QRegion r1.
+ * If all positions of the region are considered equal return true.
  *
- * @return bool, if the tile layers are the same at the specific regions
+ * If there is a tile in a specific position in l1, there must be the same
+ * tile at that position within one TileLayer in the list.
+ * Then this position is considered equal.
+ *
+ * If there is no tile at a specific position in l1, that position is
+ * considered equal.
+ *
+ * If there is no tile at a specific position in any TileLayer of the list,
+ * there are allowed all tiles in l1 at that position except those tiles,
+ * which are used by the complete list of layers.
+ * Then this position is considered equal.
+ *
+ * @return bool, if the tile layer matches the given list of layers.
  */
-static bool compareLayers(TileLayer *l1, TileLayer *l2,
+static bool compareLayerTo(TileLayer *l1, QList<TileLayer*> list,
                           const QRegion &r1, QPoint offset)
 {
-    QList<Tile*> tiles1 = tilesInRegion(l1, r1);
-    QRegion r2(r1);
-    r2.translate(offset.x(), offset.y());
-    QList<Tile*> tiles2 = tilesInRegion(l1, r2);
-
+    QList<Tile*> tiles = tilesInRegion(list, r1);
     foreach (QRect rect, r1.rects()) {
         for (int x = rect.left(); x <= rect.right(); x++) {
             for (int y = rect.top(); y <= rect.bottom(); y++) {
-                if (!(l1->contains(x, y) &&
-                      l2->contains(x + offset.x(), y + offset.y())))
+
+                bool posOk = false;
+
+                if (!l1->contains(x + offset.x(), y + offset.y()))
                     return false;
-                Tile *t1 = l1->tileAt(x, y);
-                Tile *t2 = l2->tileAt(x + offset.x(), y + offset.y());
-                if (t1 && t2 && t1 != t2)
-                    return false;
-                if (!t1 && tiles1.contains(t2))
-                    return false;
-                if (!t2 && tiles2.contains(t1))
+
+                Tile *t1 = l1->tileAt(x + offset.x(), y + offset.y());
+                if (!t1)
+                    continue;
+
+                bool ruleDefined = false;
+                foreach (TileLayer *l2, list) {
+
+                    if (!l2->contains(x, y))
+                        return false;
+
+                    Tile *t2 = l2->tileAt(x, y);
+                    if (t2)
+                        ruleDefined = true;
+
+                    if (t1 == t2)
+                        posOk = true;
+                }
+
+                if (!ruleDefined && !tiles.contains(t1) )
+                    posOk = true;
+
+                if (!posOk)
                     return false;
             }
         }
@@ -339,20 +375,13 @@ static bool compareLayers(TileLayer *l1, TileLayer *l2,
 
 void AutoMapper::applyRule(const QRegion &rule)
 {
-    int x = - rule.boundingRect().left();
-    int y = - rule.boundingRect().top();
-    const int max_x = x + mMapWork->width();
-    const int max_y = y + mMapWork->height();
+    const int max_x = mMapWork->width() - rule.boundingRect().left();
+    const int max_y = mMapWork->height() - rule.boundingRect().top();
 
-    while (y <= max_y) {
-        while (x <= max_x) {
-            if (compareLayers(mLayerRuleSet, mLayerSet, rule, QPoint(x, y)))
+    for (int y = - rule.boundingRect().top(); y <= max_y; y++)
+        for (int x = - rule.boundingRect().left(); x <= max_x; x++)
+            if (compareLayerTo(mLayerSet, mLayerRuleSets, rule, QPoint(x, y)))
                 copyMapRegion(rule, QPoint(x, y), mLayerList);
-            x++;
-        }
-        x = -rule.boundingRect().left();
-        y++;
-    }
 }
 
 void AutoMapper::autoMap()

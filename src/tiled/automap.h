@@ -189,10 +189,13 @@ private:
 
     // where to work in
     MapDocument *mMapDocument;
+
     // the same as mMapDocument->map()
     Map *mMapWork;
+
     // map containing the rules, usually different that mMapWork
     Map *mMapRules;
+
     // This contains all added tilesets as pointers.
     // if rules use Tilesets which are not in the mMapWork they are added.
     // keep track of them, because we need to delete them afterwards,
@@ -200,13 +203,16 @@ private:
     // they will be added while setupTilesets().
     // they will be deleted at Destructor of AutoMapper.
     QList<Tileset*> mAddedTilesets;
+
     // description see: mAddedTilesets, just described by Strings
     QList<QString> mAddedTileLayers;
 
     // RuleRegions is the layer where the regions are defined.
     TileLayer *mLayerRuleRegions;
-    // RuleSet and Set are compared to check where to apply rules.
-    TileLayer *mLayerRuleSet;
+
+    // mLayerSet is compared at each tile if it matches any Tile within the
+    // mLayerRuleSets list
+    QList<TileLayer*> mLayerRuleSets;
     TileLayer *mLayerSet;
 
     // List of Regions in mMapRules to know where the rules are
