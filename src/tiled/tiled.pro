@@ -16,9 +16,9 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 
 macx {
-    LIBS += -L$$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
 } else {
-    LIBS += -L$$OUT_PWD/../../lib
+    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../lib
 }
 
 # Make sure the Tiled executable can find libtiled

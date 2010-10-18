@@ -21,9 +21,9 @@ INSTALLS += target
 
 include(../libtiled/libtiled.pri)
 macx {
-    LIBS += -L$$OUT_PWD/../../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../../bin/Tiled.app/Contents/Frameworks
 } else {
-    LIBS += -L$$OUT_PWD/../../../lib
+    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../../lib
 }
 
 # Set rpath so that the plugin will resolve libtiled correctly
