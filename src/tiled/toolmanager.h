@@ -88,6 +88,8 @@ signals:
 private slots:
     void actionTriggered(QAction *action);
     void languageChanged();
+    void toolEnabledChanged(bool enabled);
+    void selectEnabledTool();
 
 private:
     Q_DISABLE_COPY(ToolManager)
@@ -95,6 +97,7 @@ private:
     ToolManager();
     ~ToolManager();
 
+    AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
 
     static ToolManager *mInstance;
@@ -102,6 +105,7 @@ private:
     QToolBar *mToolBar;
     QActionGroup *mActionGroup;
     AbstractTool *mSelectedTool;
+    AbstractTool *mPreviouslyDisabledTool;
 };
 
 } // namespace Internal

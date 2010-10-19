@@ -33,8 +33,6 @@ class SelectionTool : public AbstractTileTool
 public:
     SelectionTool(QObject *parent = 0);
 
-    void tilePositionChanged(const QPoint &tilePos);
-
     void mousePressed(const QPointF &pos, Qt::MouseButton button,
                       Qt::KeyboardModifiers modifiers);
     void mouseReleased(const QPointF &pos, Qt::MouseButton button);
@@ -42,6 +40,8 @@ public:
     void languageChanged();
 
 protected:
+    void tilePositionChanged(const QPoint &tilePos);
+
     void updateStatusInfo();
 
 private:

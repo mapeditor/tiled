@@ -82,6 +82,7 @@ ToolManager::ToolManager()
     : mToolBar(new ToolBar)
     , mActionGroup(new QActionGroup(this))
     , mSelectedTool(0)
+    , mPreviouslyDisabledTool(0)
 {
     mToolBar->setObjectName(QLatin1String("toolsToolBar"));
     mToolBar->setWindowTitle(tr("Tools"));
@@ -107,8 +108,12 @@ void ToolManager::registerTool(AbstractTool *tool)
     toolAction->setToolTip(
             QString(QLatin1String("%1 (%2)")).arg(tool->name(),
                                                   tool->shortcut().toString()));
+    toolAction->setEnabled(tool->isEnabled());
     mActionGroup->addAction(toolAction);
     mToolBar->addAction(toolAction);
+
+    connect(tool, SIGNAL(enabledChanged(bool)),
+            this, SLOT(toolEnabledChanged(bool)));
 
     // Select the first added tool
     if (!mSelectedTool) {
@@ -122,9 +127,14 @@ void ToolManager::selectTool(AbstractTool *tool)
     foreach (QAction *action, mActionGroup->actions()) {
         if (action->data().value<AbstractTool*>() == tool) {
             action->trigger();
-            break;
+            return;
         }
     }
+
+    // The given tool was not found. Don't select any tool.
+    foreach (QAction *action, mActionGroup->actions())
+        action->setChecked(false);
+    setSelectedTool(0);
 }
 
 void ToolManager::actionTriggered(QAction *action)
@@ -147,13 +157,62 @@ void ToolManager::languageChanged()
     }
 }
 
+void ToolManager::toolEnabledChanged(bool enabled)
+{
+    AbstractTool *tool = qobject_cast<AbstractTool*>(sender());
+
+    foreach (QAction *action, mActionGroup->actions()) {
+        if (action->data().value<AbstractTool*>() == tool) {
+            action->setEnabled(enabled);
+            break;
+        }
+    }
+
+    // Switch to another tool when the current tool gets disabled. This is done
+    // with a delayed call since we first want all the tools to update their
+    // enabled state.
+    if (!enabled && tool == mSelectedTool) {
+        QMetaObject::invokeMethod(this, "selectEnabledTool",
+                                  Qt::QueuedConnection);
+    }
+}
+
+void ToolManager::selectEnabledTool()
+{
+    // Avoid changing tools when it's no longer necessary
+    if (mSelectedTool && mSelectedTool->isEnabled())
+        return;
+
+    AbstractTool *currentTool = mSelectedTool;
+
+    // Prefer the tool we switched away from last time
+    if (mPreviouslyDisabledTool && mPreviouslyDisabledTool->isEnabled())
+        selectTool(mPreviouslyDisabledTool);
+    else
+        selectTool(firstEnabledTool());
+
+    mPreviouslyDisabledTool = currentTool;
+}
+
+AbstractTool *ToolManager::firstEnabledTool() const
+{
+    foreach (QAction *action, mActionGroup->actions())
+        if (AbstractTool *tool = action->data().value<AbstractTool*>())
+            if (tool->isEnabled())
+                return tool;
+
+    return 0;
+}
+
 void ToolManager::setSelectedTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)
         return;
 
-    if (mSelectedTool)
-        mSelectedTool->disconnect(this);
+    if (mSelectedTool) {
+        disconnect(mSelectedTool, SIGNAL(statusInfoChanged(QString)),
+                   this, SIGNAL(statusInfoChanged(QString)));
+    }
 
     mSelectedTool = tool;
     emit selectedToolChanged(mSelectedTool);

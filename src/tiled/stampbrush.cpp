@@ -36,7 +36,6 @@ StampBrush::StampBrush(QObject *parent)
                                ":images/22x22/stock-tool-clone.png")),
                        QKeySequence(tr("B")),
                        parent)
-    , mMapDocument(0)
     , mStamp(0)
     , mPainting(false)
     , mCapturing(false)
@@ -47,13 +46,6 @@ StampBrush::StampBrush(QObject *parent)
 StampBrush::~StampBrush()
 {
     delete mStamp;
-}
-
-void StampBrush::enable(MapScene *scene)
-{
-    AbstractTileTool::enable(scene);
-    setMapDocument(mapScene()->mapDocument());
-    brushItem()->setTileLayer(mStamp);
 }
 
 void StampBrush::tilePositionChanged(const QPoint &)
@@ -93,13 +85,10 @@ void StampBrush::languageChanged()
     setShortcut(QKeySequence(tr("B")));
 }
 
-void StampBrush::setMapDocument(MapDocument *mapDocument)
+void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
+                                    MapDocument *newDocument)
 {
-    if (mMapDocument == mapDocument)
-        return;
-
-    mMapDocument = mapDocument;
-    brushItem()->setMapDocument(mMapDocument);
+    AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     // Reset the brush, since it probably became invalid
     brushItem()->setTileRegion(QRegion());
@@ -193,10 +182,10 @@ void StampBrush::doPaint(bool mergeable)
                                               mStamp->height())))
         return;
 
-    PaintTileLayer *paint = new PaintTileLayer(mMapDocument, tileLayer,
+    PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
                                                mStampX, mStampY, mStamp);
     paint->setMergeable(mergeable);
-    mMapDocument->undoStack()->push(paint);
+    mapDocument()->undoStack()->push(paint);
 }
 
 /**

@@ -44,12 +44,12 @@ CreateObjectTool::CreateObjectTool(QObject *parent)
 {
 }
 
-void CreateObjectTool::enable(MapScene *scene)
+void CreateObjectTool::activate(MapScene *scene)
 {
     mMapScene = scene;
 }
 
-void CreateObjectTool::disable()
+void CreateObjectTool::deactivate(MapScene *)
 {
     mMapScene = 0;
 }
@@ -97,7 +97,7 @@ void CreateObjectTool::mousePressed(const QPointF &pos,
         return;
 
     ObjectGroup *objectGroup = currentObjectGroup();
-    if (objectGroup && !mNewMapObjectItem) {
+    if (objectGroup && objectGroup->isVisible() && !mNewMapObjectItem) {
         const MapRenderer *renderer = mMapScene->mapDocument()->renderer();
         QPointF tileCoords = renderer->pixelToTileCoords(pos);
         if (modifiers & Qt::ControlModifier)
@@ -122,6 +122,11 @@ void CreateObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("O")));
 }
 
+void CreateObjectTool::updateEnabledState()
+{
+    setEnabled(currentObjectGroup() != 0);
+}
+
 void CreateObjectTool::startNewMapObject(const QPointF &pos,
                                          ObjectGroup *objectGroup)
 {
@@ -131,6 +136,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     newMapObject->setPosition(pos);
 
     objectGroup->addObject(newMapObject);
+
     // It is currently necessary to disable editing of the currently selected
     // object group, because its objects may otherwise steal mouse events
     // during creation.
@@ -180,11 +186,12 @@ void CreateObjectTool::finishNewMapObject()
 
 ObjectGroup *CreateObjectTool::currentObjectGroup() const
 {
-    if (!mMapScene)
+    if (!mapDocument())
         return 0;
 
-    if (ObjectGroupItem *groupItem = mMapScene->selectedObjectGroupItem())
-        return groupItem->objectGroup();
-
-    return 0;
+    const int currentLayerIndex = mapDocument()->currentLayer();
+    if (currentLayerIndex < 0)
+        return 0;
+    Layer *currentLayer = mapDocument()->map()->layerAt(currentLayerIndex);
+    return dynamic_cast<ObjectGroup*>(currentLayer);
 }

@@ -33,6 +33,7 @@ class QEvent;
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
 class MapScene;
 
 /**
@@ -55,12 +56,7 @@ public:
     AbstractTool(const QString &name,
                  const QIcon &icon,
                  const QKeySequence &shortcut,
-                 QObject *parent = 0)
-        : QObject(parent)
-        , mName(name)
-        , mIcon(icon)
-        , mShortcut(shortcut)
-    {}
+                 QObject *parent = 0);
 
     virtual ~AbstractTool() {}
 
@@ -76,17 +72,20 @@ public:
     QString statusInfo() const { return mStatusInfo; }
     void setStatusInfo(const QString &statusInfo);
 
-    /**
-     * Enables this tool. If the tool plans to add any items to the scene, it
-     * probably wants to do it here.
-     */
-    virtual void enable(MapScene *scene) = 0;
+    bool isEnabled() const { return mEnabled; }
+    void setEnabled(bool enabled);
 
     /**
-     * Disables this tool. Should do any necessary cleanup to make sure the
+     * Activates this tool. If the tool plans to add any items to the scene, it
+     * probably wants to do it here.
+     */
+    virtual void activate(MapScene *scene) = 0;
+
+    /**
+     * Deactivates this tool. Should do any necessary cleanup to make sure the
      * tool is no longer active.
      */
-    virtual void disable() = 0;
+    virtual void deactivate(MapScene *scene) = 0;
 
     /**
      * Called when the mouse entered the scene. This is usually an appropriate
@@ -130,14 +129,44 @@ public:
      */
     virtual void languageChanged() = 0;
 
+protected:
+    /**
+     * Can be used to respond to the map document changing.
+     */
+    virtual void mapDocumentChanged(MapDocument *oldDocument,
+                                    MapDocument *newDocument)
+    {
+        Q_UNUSED(oldDocument)
+        Q_UNUSED(newDocument)
+    }
+
+    MapDocument *mapDocument() const { return mMapDocument; }
+
+protected slots:
+    /**
+     * By default, this function is called after the current map has changed
+     * and when the current layer changes. It can be overridden to implement
+     * custom logic for when the tool should be enabled.
+     *
+     * The default implementation enables tools when a map document is set.
+     */
+    virtual void updateEnabledState();
+
 signals:
     void statusInfoChanged(const QString &statusInfo);
+    void enabledChanged(bool enabled);
+
+private slots:
+    void setMapDocument(MapDocument *mapDocument);
 
 private:
     QString mName;
     QIcon mIcon;
     QKeySequence mShortcut;
     QString mStatusInfo;
+    bool mEnabled;
+
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

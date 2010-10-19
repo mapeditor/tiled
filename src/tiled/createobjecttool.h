@@ -37,8 +37,8 @@ class CreateObjectTool : public AbstractTool
 public:
     CreateObjectTool(QObject *parent = 0);
 
-    void enable(MapScene *scene);
-    void disable();
+    void activate(MapScene *scene);
+    void deactivate(MapScene *scene);
 
     void mouseEntered();
     void mouseLeft();
@@ -52,6 +52,13 @@ public:
 
     void languageChanged();
 
+protected:
+    /**
+     * Overridden to only enable this tool when the currently selected layer is
+     * an object group.
+     */
+    void updateEnabledState();
+
 private:
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     MapObject *clearNewMapObjectItem();
@@ -60,6 +67,7 @@ private:
 
     ObjectGroup *currentObjectGroup() const;
 
+    MapDocument *mMapDocument;
     MapScene *mMapScene;
     MapObjectItem *mNewMapObjectItem;
 };

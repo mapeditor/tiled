@@ -44,9 +44,7 @@ public:
     BucketFillTool(QObject *parent = 0);
     ~BucketFillTool();
 
-    void enable(MapScene *scene);
-
-    void tilePositionChanged(const QPoint &tilePos);
+    void activate(MapScene *scene);
 
     void mousePressed(const QPointF &pos, Qt::MouseButton button,
                       Qt::KeyboardModifiers modifiers);
@@ -57,25 +55,24 @@ public:
     void languageChanged();
 
     /**
-     * Sets the map document on which this tool operates. The correct map
-     * document needs to be set before calling setStamp().
-     */
-    void setMapDocument(MapDocument *mapDocument);
-
-    /**
      * Sets the stamp that is drawn when filling. The BucketFillTool takes
      * ownership over the stamp layer.
      */
     void setStamp(TileLayer *stamp);
+
+protected:
+    void tilePositionChanged(const QPoint &tilePos);
+
+    void mapDocumentChanged(MapDocument *oldDocument,
+                            MapDocument *newDocument);
 
 private slots:
     void clearOverlay();
 
 private:
     void makeConnections();
-    void clearConnections();
+    void clearConnections(MapDocument *mapDocument);
 
-    MapDocument *mMapDocument;
     TileLayer *mStamp;
     TileLayer *mFillOverlay;
     QRegion mFillRegion;

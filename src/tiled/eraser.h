@@ -36,13 +36,14 @@ class Eraser : public AbstractTileTool
 public:
     Eraser(QObject *parent = 0);
 
-    void tilePositionChanged(const QPoint &tilePos);
-
     void mousePressed(const QPointF &pos, Qt::MouseButton button,
                       Qt::KeyboardModifiers modifiers);
     void mouseReleased(const QPointF &pos, Qt::MouseButton button);
 
     void languageChanged();
+
+protected:
+    void tilePositionChanged(const QPoint &tilePos);
 
 private:
     void doErase(bool mergeable);

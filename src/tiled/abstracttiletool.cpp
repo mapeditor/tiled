@@ -38,7 +38,6 @@ AbstractTileTool::AbstractTileTool(const QString &name,
                                    QObject *parent)
     : AbstractTool(name, icon, shortcut, parent)
     , mTilePositionMethod(OnTiles)
-    , mMapScene(0)
     , mBrushItem(new BrushItem)
     , mTileX(0), mTileY(0)
     , mBrushVisible(false)
@@ -52,29 +51,14 @@ AbstractTileTool::~AbstractTileTool()
     delete mBrushItem;
 }
 
-void AbstractTileTool::enable(MapScene *scene)
+void AbstractTileTool::activate(MapScene *scene)
 {
-    mMapScene = scene;
-
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    connect(mapDocument, SIGNAL(layerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-    connect(mapDocument, SIGNAL(currentLayerChanged(int)),
-            this, SLOT(updateBrushVisibility()));
-
-    mBrushItem->setMapDocument(mapDocument);
-    mMapScene->addItem(mBrushItem);
-    updateBrushVisibility();
+    scene->addItem(mBrushItem);
 }
 
-void AbstractTileTool::disable()
+void AbstractTileTool::deactivate(MapScene *scene)
 {
-    // Remove the brush from the scene
-    mMapScene->removeItem(mBrushItem);
-    mBrushItem->setMapDocument(0);
-
-    // Make sure we no longer refer to the scene
-    mMapScene = 0;
+    scene->removeItem(mBrushItem);
 }
 
 void AbstractTileTool::mouseEntered()
@@ -89,8 +73,7 @@ void AbstractTileTool::mouseLeft()
 
 void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
-    const MapDocument *mapDocument = mMapScene->mapDocument();
-    const MapRenderer *renderer = mapDocument->renderer();
+    const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF tilePosF = renderer->pixelToTileCoords(pos);
     QPoint tilePos;
 
@@ -107,6 +90,18 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
         tilePositionChanged(tilePos);
         updateStatusInfo();
     }
+}
+
+void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
+                                          MapDocument *newDocument)
+{
+    Q_UNUSED(oldDocument)
+    mBrushItem->setMapDocument(newDocument);
+}
+
+void AbstractTileTool::updateEnabledState()
+{
+    setEnabled(currentTileLayer() != 0);
 }
 
 void AbstractTileTool::updateStatusInfo()
@@ -144,13 +139,12 @@ void AbstractTileTool::updateBrushVisibility()
 
 TileLayer *AbstractTileTool::currentTileLayer() const
 {
-    if (!mMapScene)
+    if (!mapDocument())
         return 0;
 
-    MapDocument *mapDocument = mMapScene->mapDocument();
-    const int currentLayerIndex = mapDocument->currentLayer();
+    const int currentLayerIndex = mapDocument()->currentLayer();
     if (currentLayerIndex < 0)
         return 0;
-    Layer *currentLayer = mapDocument->map()->layerAt(currentLayerIndex);
+    Layer *currentLayer = mapDocument()->map()->layerAt(currentLayerIndex);
     return dynamic_cast<TileLayer*>(currentLayer);
 }

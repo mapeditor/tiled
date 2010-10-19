@@ -223,7 +223,7 @@ void MapScene::enableSelectedTool()
         return;
 
     mActiveTool = mSelectedTool;
-    mActiveTool->enable(this);
+    mActiveTool->activate(this);
 
     mCurrentModifiers = QApplication::keyboardModifiers();
     if (mCurrentModifiers != Qt::NoModifier)
@@ -242,7 +242,7 @@ void MapScene::disableSelectedTool()
 
     if (mUnderMouse)
         mActiveTool->mouseLeft();
-    mActiveTool->disable();
+    mActiveTool->deactivate(this);
     mActiveTool = 0;
 }
 

@@ -21,7 +21,24 @@
 
 #include "abstracttool.h"
 
+#include "mapdocument.h"
+#include "mapdocumentactionhandler.h"
+
 using namespace Tiled::Internal;
+
+AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
+                           const QKeySequence &shortcut, QObject *parent)
+    : QObject(parent)
+    , mName(name)
+    , mIcon(icon)
+    , mShortcut(shortcut)
+    , mEnabled(true)
+    , mMapDocument(0)
+{
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+    connect(handler, SIGNAL(mapDocumentChanged(MapDocument*)),
+            SLOT(setMapDocument(MapDocument*)));
+}
 
 /**
  * Sets the current status information for this tool. This information will be
@@ -34,3 +51,43 @@ void AbstractTool::setStatusInfo(const QString &statusInfo)
         emit statusInfoChanged(mStatusInfo);
     }
 }
+
+void AbstractTool::setEnabled(bool enabled)
+{
+    if (mEnabled == enabled)
+        return;
+
+    mEnabled = enabled;
+    emit enabledChanged(mEnabled);
+}
+
+void AbstractTool::updateEnabledState()
+{
+    setEnabled(mMapDocument != 0);
+}
+
+void AbstractTool::setMapDocument(MapDocument *mapDocument)
+{
+    if (mMapDocument == mapDocument)
+        return;
+
+    if (mMapDocument) {
+        disconnect(mMapDocument, SIGNAL(layerChanged(int)),
+                   this, SLOT(updateEnabledState()));
+        disconnect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                   this, SLOT(updateEnabledState()));
+    }
+
+    MapDocument *oldDocument = mMapDocument;
+    mMapDocument = mapDocument;
+    mapDocumentChanged(oldDocument, mMapDocument);
+
+    if (mMapDocument) {
+        connect(mMapDocument, SIGNAL(layerChanged(int)),
+                this, SLOT(updateEnabledState()));
+        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                this, SLOT(updateEnabledState()));
+    }
+    updateEnabledState();
+}
+

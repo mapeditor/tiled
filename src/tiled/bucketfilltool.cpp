@@ -41,7 +41,6 @@ BucketFillTool::BucketFillTool(QObject *parent)
                                ":images/22x22/stock-tool-bucket-fill.png")),
                        QKeySequence(tr("F")),
                        parent)
-    , mMapDocument(0)
     , mStamp(0)
     , mFillOverlay(0)
 {
@@ -53,10 +52,9 @@ BucketFillTool::~BucketFillTool()
     delete mFillOverlay;
 }
 
-void BucketFillTool::enable(MapScene *scene)
+void BucketFillTool::activate(MapScene *scene)
 {
-    AbstractTileTool::enable(scene);
-    setMapDocument(scene->mapDocument());
+    AbstractTileTool::activate(scene);
     brushItem()->setTileLayer(mFillOverlay);
 }
 
@@ -89,7 +87,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     // Get the new fill region
     if (!shiftPressed) {
         // If not holding shift, a region is generated from the current pos
-        TilePainter regionComputer(mMapDocument, tileLayer);
+        TilePainter regionComputer(mapDocument(), tileLayer);
 
         // If the stamp is a single tile, ignore it when making the region
         if (mStamp->width() == 1 && mStamp->height() == 1 &&
@@ -100,7 +98,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
         mFillRegion = regionComputer.computeFillRegion(tilePos);
     } else {
         // If holding shift, the region is the selection bounds
-        mFillRegion = mMapDocument->tileSelection();
+        mFillRegion = mapDocument()->tileSelection();
 
         // Fill region is the whole map is there is no selection
         if (mFillRegion.isEmpty())
@@ -123,7 +121,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
                                  tileLayer->height());
 
     // Paint the new overlay
-    TilePainter tilePainter(mMapDocument, mFillOverlay);
+    TilePainter tilePainter(mapDocument(), mFillOverlay);
     tilePainter.drawStamp(mStamp, mFillRegion);
 
     // Crop the overlay to the smallest possible size
@@ -150,12 +148,12 @@ void BucketFillTool::mousePressed(const QPointF &pos, Qt::MouseButton button,
     if (!brushItem()->isVisible())
         return;
 
-    FillTiles *fillTiles = new FillTiles(mMapDocument,
+    FillTiles *fillTiles = new FillTiles(mapDocument(),
                                          currentTileLayer(),
                                          mFillRegion,
                                          mStamp);
 
-    mMapDocument->undoStack()->push(fillTiles);
+    mapDocument()->undoStack()->push(fillTiles);
 }
 
 void BucketFillTool::mouseReleased(const QPointF &pos, Qt::MouseButton button)
@@ -179,16 +177,12 @@ void BucketFillTool::languageChanged()
     setShortcut(QKeySequence(tr("F")));
 }
 
-void BucketFillTool::setMapDocument(MapDocument *mapDocument)
+void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
+                                        MapDocument *newDocument)
 {
-    if (mMapDocument == mapDocument)
-        return;
+    AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
-    // Clear connections to old map document
-    clearConnections();
-
-    mMapDocument = mapDocument;
-    brushItem()->setMapDocument(mMapDocument);
+    clearConnections(oldDocument);
 
     // Reset things that are probably invalid now
     setStamp(0);
@@ -207,7 +201,7 @@ void BucketFillTool::clearOverlay()
 {
     // Clear connections before clearing overlay so there is no
     // risk of getting a callback and causing an infinite loop
-    clearConnections();
+    clearConnections(mapDocument());
 
     brushItem()->setTileLayer(0);
     delete mFillOverlay;
@@ -219,34 +213,34 @@ void BucketFillTool::clearOverlay()
 
 void BucketFillTool::makeConnections()
 {
-    if (!mMapDocument)
+    if (!mapDocument())
         return;
 
     // Overlay may need to be cleared if a region changed
-    connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
+    connect(mapDocument(), SIGNAL(regionChanged(QRegion)),
             this, SLOT(clearOverlay()));
 
     // Overlay needs to be cleared if we switch to another layer
-    connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+    connect(mapDocument(), SIGNAL(currentLayerChanged(int)),
             this, SLOT(clearOverlay()));
 
     // Overlay needs be cleared if the selection changes, since
     // the overlay may be bound or may need to be bound to the selection
-    connect(mMapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+    connect(mapDocument(), SIGNAL(tileSelectionChanged(QRegion,QRegion)),
             this, SLOT(clearOverlay()));
 }
 
-void BucketFillTool::clearConnections()
+void BucketFillTool::clearConnections(MapDocument *mapDocument)
 {
-    if (!mMapDocument)
+    if (!mapDocument)
         return;
 
-    disconnect(mMapDocument, SIGNAL(regionChanged(QRegion)),
+    disconnect(mapDocument, SIGNAL(regionChanged(QRegion)),
                this, SLOT(clearOverlay()));
 
-    disconnect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+    disconnect(mapDocument, SIGNAL(currentLayerChanged(int)),
                this, SLOT(clearOverlay()));
 
-    disconnect(mMapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+    disconnect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
                this, SLOT(clearOverlay()));
 }

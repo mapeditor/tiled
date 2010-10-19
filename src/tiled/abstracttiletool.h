@@ -30,6 +30,7 @@ class TileLayer;
 namespace Internal {
 
 class BrushItem;
+class MapDocument;
 
 /**
  * A convenient base class for tile based tools.
@@ -49,12 +50,22 @@ public:
 
     ~AbstractTileTool();
 
-    void enable(MapScene *scene);
-    void disable();
+    void activate(MapScene *scene);
+    void deactivate(MapScene *scene);
 
     void mouseEntered();
     void mouseLeft();
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+
+protected:
+    void mapDocumentChanged(MapDocument *oldDocument,
+                            MapDocument *newDocument);
+
+    /**
+     * Overridden to only enable this tool when the currently selected layer is
+     * a tile layer.
+     */
+    void updateEnabledState();
 
     /**
      * New virtual method to implement for tile tools. This method is called
@@ -62,7 +73,6 @@ public:
      */
     virtual void tilePositionChanged(const QPoint &tilePos) = 0;
 
-protected:
     /**
      * Updates the status info with the current tile position. When the mouse
      * is not in the view, the status info is set to an empty string.
@@ -91,8 +101,6 @@ protected:
      */
     QPoint tilePosition() const { return QPoint(mTileX, mTileY); }
 
-    MapScene *mapScene() const { return mMapScene; }
-
     /**
      * Returns the brush item. The brush item is used to give an indication of
      * what a tile tool is going to do when used. It is automatically shown or
@@ -107,14 +115,11 @@ protected:
      */
     TileLayer *currentTileLayer() const;
 
-private slots:
-    void updateBrushVisibility();
-
 private:
     void setBrushVisible(bool visible);
+    void updateBrushVisibility();
 
     TilePositionMethod mTilePositionMethod;
-    MapScene *mMapScene;
     BrushItem *mBrushItem;
     int mTileX, mTileY;
     bool mBrushVisible;

@@ -123,6 +123,8 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
                 SLOT(updateActions()));
     }
+
+    emit mapDocumentChanged(mMapDocument);
 }
 
 void MapDocumentActionHandler::selectAll()

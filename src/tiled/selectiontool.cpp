@@ -88,8 +88,8 @@ void SelectionTool::mouseReleased(const QPointF &,
     if (button == Qt::LeftButton) {
         mSelecting = false;
 
-        MapDocument *mapDocument = mapScene()->mapDocument();
-        QRegion selection = mapDocument->tileSelection();
+        MapDocument *document = mapDocument();
+        QRegion selection = document->tileSelection();
         const QRect area = selectedArea();
 
         switch (mSelectionMode) {
@@ -99,9 +99,9 @@ void SelectionTool::mouseReleased(const QPointF &,
         case Intersect: selection &= area; break;
         }
 
-        if (selection != mapDocument->tileSelection()) {
-            QUndoCommand *cmd = new ChangeSelection(mapDocument, selection);
-            mapDocument->undoStack()->push(cmd);
+        if (selection != document->tileSelection()) {
+            QUndoCommand *cmd = new ChangeSelection(document, selection);
+            document->undoStack()->push(cmd);
         }
 
         brushItem()->setTileRegion(QRegion());

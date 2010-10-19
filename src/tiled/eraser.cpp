@@ -74,18 +74,17 @@ void Eraser::languageChanged()
 
 void Eraser::doErase(bool mergeable)
 {
-    MapDocument *mapDocument = mapScene()->mapDocument();
     TileLayer *tileLayer = currentTileLayer();
     const QPoint tilePos = tilePosition();
 
     if (!tileLayer->bounds().contains(tilePos))
         return;
 
-    EraseTiles *erase = new EraseTiles(mapDocument, tileLayer,
+    EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer,
                                        QRegion(tilePos.x(),
                                                tilePos.y(),
                                                1, 1));
     erase->setMergeable(mergeable);
 
-    mapDocument->undoStack()->push(erase);
+    mapDocument()->undoStack()->push(erase);
 }

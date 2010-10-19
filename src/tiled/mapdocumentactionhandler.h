@@ -59,6 +59,9 @@ public:
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
+signals:
+    void mapDocumentChanged(MapDocument *mapDocument);
+
 public slots:
     void selectAll();
     void selectNone();
