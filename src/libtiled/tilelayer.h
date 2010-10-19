@@ -26,6 +26,7 @@
 
 #include "layer.h"
 
+#include <QSet>
 #include <QString>
 #include <QVector>
 
@@ -96,6 +97,11 @@ public:
      * layer will have no effect.
      */
     void merge(const QPoint &pos, const TileLayer *layer);
+
+    /**
+     * Computes and returns the set of tilesets used by this tile layer.
+     */
+    QSet<Tileset*> usedTilesets() const;
 
     /**
      * Returns whether this tile layer is referencing the given tileset.

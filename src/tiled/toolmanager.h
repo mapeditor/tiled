@@ -67,15 +67,14 @@ public:
     void selectTool(AbstractTool *tool);
 
     /**
+     * Returns the selected tool.
+     */
+    AbstractTool *selectedTool() const { return mSelectedTool; }
+
+    /**
      * Returns a tool bar with all tools added to it.
      */
     QToolBar *toolBar() const { return mToolBar; }
-
-    /**
-     * returns the selected Tool, so it can be easily found out,
-     * which tool is selected.
-     */
-    AbstractTool *selectedTool() const { return mSelectedTool; }
 
 signals:
     void selectedToolChanged(AbstractTool *tool);

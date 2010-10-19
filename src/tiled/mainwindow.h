@@ -184,21 +184,20 @@ private:
 
     QMenu *mLayerMenu;
 
-    /**
-     * This contains different TileLayer points for the QuickStamp feature.
-     */
     QVector<Map*> mQuickStamps;
-    void setupQuickStamp();
+    void setupQuickStamps();
+    void cleanQuickStamps();
+    void eraseQuickStamp(int index);
 
     /**
-     * This Method makes sure the all Tilesets, which are used at the given Map,
-     * will be in mMapDocument.
-     * To reach the aim, all similar tilesets in map will be replaced by the
-     * versions within mMapDocument, all missing tilesets will be added to
-     * the given Map.
-     **/
+     * Makes sure the all tilesets which are used at the given \a map will be
+     * present in the current map document.
+     *
+     * To reach the aim, all similar tilesets will be replaced by the version
+     * in the current map document and all missing tilesets will be added to
+     * the current map document.
+     */
     void unifyTilesets(Map *map);
-
 };
 
 } // namespace Internal

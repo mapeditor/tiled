@@ -109,6 +109,17 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
                 setTile(x, y, tile);
 }
 
+QSet<Tileset*> TileLayer::usedTilesets() const
+{
+    QSet<Tileset*> tilesets;
+
+    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i)
+        if (const Tile *tile = mTiles.at(i))
+            tilesets.insert(tile->tileset());
+
+    return tilesets;
+}
+
 bool TileLayer::referencesTileset(Tileset *tileset) const
 {
     for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
