@@ -41,8 +41,7 @@ MapView::MapView(QWidget *parent)
 
 #ifndef QT_NO_OPENGL
     Preferences *prefs = Preferences::instance();
-    if (Preferences::instance()->useOpenGL() && QGLFormat::hasOpenGL())
-        setViewport(new QGLWidget);
+    setUseOpenGL(prefs->useOpenGL());
     connect(prefs, SIGNAL(useOpenGLChanged(bool)), SLOT(setUseOpenGL(bool)));
 #endif
 
@@ -70,8 +69,11 @@ void MapView::setUseOpenGL(bool useOpenGL)
 {
 #ifndef QT_NO_OPENGL
     if (useOpenGL && QGLFormat::hasOpenGL()) {
-        if (!qobject_cast<QGLWidget*>(viewport()))
-            setViewport(new QGLWidget);
+        if (!qobject_cast<QGLWidget*>(viewport())) {
+            QGLFormat format = QGLFormat::defaultFormat();
+            format.setDepth(false); // No need for a depth buffer
+            setViewport(new QGLWidget(format));
+        }
     } else {
         if (qobject_cast<QGLWidget*>(viewport()))
             setViewport(0);
