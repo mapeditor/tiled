@@ -413,8 +413,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                                    const MapObject *mapObject)
 {
     w.writeStartElement(QLatin1String("object"));
-    w.writeAttribute(QLatin1String("name"), mapObject->name());
+    const QString &name = mapObject->name();
     const QString &type = mapObject->type();
+    if (!name.isEmpty())
+        w.writeAttribute(QLatin1String("name"), name);
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
 
