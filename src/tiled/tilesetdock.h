@@ -29,6 +29,7 @@ class QTabBar;
 
 namespace Tiled {
 
+class Tile;
 class TileLayer;
 class Tileset;
 
@@ -58,7 +59,17 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
+    /**
+     * Returns the currently selected tile.
+     */
+    Tile *currentTile() const { return mCurrentTile; }
+
 signals:
+    /**
+     * Emitted when the current tile changed.
+     */
+    void currentTileChanged(Tile *tile);
+
     /**
      * Emitted when the currently selected tiles changed.
      */
@@ -78,6 +89,7 @@ private slots:
     void moveTileset(int from, int to);
 
 private:
+    void setCurrentTile(Tile *tile);
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
     TilesetView *tilesetViewAt(int index) const;
@@ -85,6 +97,7 @@ private:
     MapDocument *mMapDocument;
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
+    Tile *mCurrentTile;
     TileLayer *mCurrentTiles;
 };
 

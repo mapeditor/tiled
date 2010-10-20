@@ -54,10 +54,18 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                       tileToPixelCoords(bounds.bottomRight()));
 
     // The -2 and +3 are to account for the pen width and shadow
-    if (rect.isNull())
+    if (object->tile()) {
+        const QPointF bottomLeft = rect.topLeft();
+        const QPixmap &img = object->tile()->image();
+        return QRectF(bottomLeft.x(),
+                      bottomLeft.y() - img.height(),
+                      img.width(),
+                      img.height()).adjusted(-1, -1, 1, 1);
+    } else if (rect.isNull()) {
         return rect.adjusted(-15 - 2, -25 - 2, 10 + 3, 10 + 3);
-    else
+    } else {
         return rect.adjusted(-2, -15 - 2, 3, 3);
+    }
 }
 
 QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
@@ -67,10 +75,13 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
                       tileToPixelCoords(bounds.bottomRight()));
 
     QPainterPath path;
-    if (rect.isNull())
+    if (object->tile()) {
+        path.addRect(boundingRect(object));
+    } else if (rect.isNull()) {
         path.addEllipse(rect.topLeft(), 20, 20);
-    else
+    } else {
         path.addRoundedRect(rect, 10, 10);
+    }
     return path;
 }
 
@@ -179,8 +190,9 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     pen.setJoinStyle(Qt::RoundJoin);
 
     // Make sure the line aligns nicely on the pixels
+    QPointF pixelOffset;
     if (pen.width() % 2)
-        painter->translate(0.5, 0.5);
+        pixelOffset = QPointF(0.5, 0.5);
 
     painter->setPen(pen);
     painter->setRenderHint(QPainter::Antialiasing);
@@ -191,8 +203,25 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
                       tileToPixelCoords(bounds.bottomRight()));
     painter->translate(rect.topLeft());
 
-    if (rect.isNull())
+    if (object->tile())
     {
+        const QPixmap &img = object->tile()->image();
+        const QPoint paintOrigin(0, -img.height());
+        painter->drawPixmap(paintOrigin, img);
+
+        painter->translate(pixelOffset);
+        pen.setStyle(Qt::SolidLine);
+        pen.setWidth(1);
+        painter->setPen(pen);
+        painter->drawRect(QRect(paintOrigin, img.size()));
+        pen.setStyle(Qt::DotLine);
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->drawRect(QRect(paintOrigin, img.size()));
+    }
+    else if (rect.isNull())
+    {
+        painter->translate(pixelOffset);
         QString name = fm.elidedText(object->name(), Qt::ElideRight, 30);
 
         // Draw the shadow
@@ -207,6 +236,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     }
     else
     {
+        painter->translate(pixelOffset);
         QString name = fm.elidedText(object->name(), Qt::ElideRight,
                                      rect.width() + 2);
 

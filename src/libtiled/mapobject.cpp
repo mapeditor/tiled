@@ -25,6 +25,7 @@ using namespace Tiled;
 
 MapObject::MapObject():
     mSize(0, 0),
+    mTile(0),
     mObjectGroup(0)
 {
 }
@@ -36,6 +37,7 @@ MapObject::MapObject(const QString &name, const QString &type,
     mPos(x, y),
     mSize(width, height),
     mType(type),
+    mTile(0),
     mObjectGroup(0)
 {
 }
@@ -46,5 +48,6 @@ MapObject *MapObject::clone() const
                                  mPos.x(), mPos.y(),
                                  mSize.width(), mSize.height());
     o->setProperties(properties());
+    o->setTile(mTile);
     return o;
 }

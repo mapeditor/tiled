@@ -57,16 +57,28 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
-    // Take the bounding rect of the projected object, and then add a few
-    // pixels on all sides to correct for the line width.
-    const QRectF base = tileRectToPolygon(object->bounds()).boundingRect();
-    return base.adjusted(-2, -3, 2, 2);
+    if (object->tile()) {
+        const QPointF bottomCenter = tileToPixelCoords(object->position());
+        const QPixmap &img = object->tile()->image();
+        return QRectF(bottomCenter.x() - img.width() / 2,
+                      bottomCenter.y() - img.height(),
+                      img.width(),
+                      img.height()).adjusted(-1, -1, 1, 1);
+    } else {
+        // Take the bounding rect of the projected object, and then add a few
+        // pixels on all sides to correct for the line width.
+        const QRectF base = tileRectToPolygon(object->bounds()).boundingRect();
+        return base.adjusted(-2, -3, 2, 2);
+    }
 }
 
 QPainterPath IsometricRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
-    path.addPolygon(tileRectToPolygon(object->bounds()));
+    if (object->tile())
+        path.addRect(boundingRect(object));
+    else
+        path.addPolygon(tileRectToPolygon(object->bounds()));
     return path;
 }
 
@@ -205,33 +217,50 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 {
     painter->save();
 
-    QColor brushColor = color;
-    brushColor.setAlpha(50);
-    QBrush brush(brushColor);
-
     QPen pen(Qt::black);
-    pen.setJoinStyle(Qt::RoundJoin);
-    pen.setCapStyle(Qt::RoundCap);
-    pen.setWidth(3);
 
-    // Make sure the line aligns nicely on the pixels
-    if (pen.width() % 2)
-        painter->translate(0.5, 0.5);
+    if (object->tile()) {
+        const QPixmap &img = object->tile()->image();
+        QPointF paintOrigin(-img.width() / 2, -img.height());
+        paintOrigin += tileToPixelCoords(object->position()).toPoint();
+        painter->drawPixmap(paintOrigin, img);
 
-    painter->setPen(pen);
-    painter->setRenderHint(QPainter::Antialiasing);
+        pen.setWidth(1);
+        pen.setStyle(Qt::SolidLine);
+        painter->setPen(pen);
+        painter->drawRect(QRectF(paintOrigin, img.size()));
+        pen.setStyle(Qt::DotLine);
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->drawRect(QRectF(paintOrigin, img.size()));
+    } else {
+        QColor brushColor = color;
+        brushColor.setAlpha(50);
+        QBrush brush(brushColor);
 
-    // TODO: Draw the object name
-    // TODO: Do something sensible to make null-sized objects usable
+        pen.setJoinStyle(Qt::RoundJoin);
+        pen.setCapStyle(Qt::RoundCap);
+        pen.setWidth(3);
 
-    QPolygonF polygon = tileRectToPolygon(object->bounds());
+        painter->setPen(pen);
+        painter->setRenderHint(QPainter::Antialiasing);
 
-    painter->drawPolygon(polygon);
-    pen.setColor(color);
-    painter->setPen(pen);
-    painter->setBrush(brush);
-    polygon.translate(0, -1);
-    painter->drawPolygon(polygon);
+        // TODO: Draw the object name
+        // TODO: Do something sensible to make null-sized objects usable
+
+        QPolygonF polygon = tileRectToPolygon(object->bounds());
+
+        // Make sure the line aligns nicely on the pixels
+        if (pen.width() % 2)
+            painter->translate(0.5, 0.5);
+
+        painter->drawPolygon(polygon);
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->setBrush(brush);
+        polygon.translate(0, -1);
+        painter->drawPolygon(polygon);
+    }
 
     painter->restore();
 }

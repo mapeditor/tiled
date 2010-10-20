@@ -418,6 +418,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
 
+    if (mapObject->tile()) {
+        const int gid = gidForTile(mapObject->tile());
+        w.writeAttribute(QLatin1String("gid"), QString::number(gid));
+    }
+
     // Convert from tile to pixel coordinates
     const ObjectGroup *objectGroup = mapObject->objectGroup();
     const Map *map = objectGroup->map();

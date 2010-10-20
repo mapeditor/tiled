@@ -268,18 +268,24 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mStampBrush = new StampBrush(this);
     mBucketFillTool = new BucketFillTool(this);
+    CreateObjectTool *createTileObjectsTool =
+            new CreateObjectTool(CreateObjectTool::TileObjects, this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
+    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
+            createTileObjectsTool, SLOT(setTile(Tile*)));
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new SelectionTool(this));
-    toolManager->registerTool(new CreateObjectTool(this));
+    toolManager->registerTool(
+                new CreateObjectTool(CreateObjectTool::AreaObjects, this));
+    toolManager->registerTool(createTileObjectsTool);
 
     addToolBar(toolManager->toolBar());
 

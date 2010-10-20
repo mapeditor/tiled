@@ -33,6 +33,7 @@
 namespace Tiled {
 
 class ObjectGroup;
+class Tile;
 
 /**
  * An object on a map. Objects are positioned and scaled using floating point
@@ -154,6 +155,17 @@ public:
     void setType(const QString &type) { mType = type; }
 
     /**
+     * Sets the tile that is associated with this object. The object will
+     * display as the tile image.
+     */
+    void setTile(Tile *tile) { mTile = tile; }
+
+    /**
+     * Returns the tile associated with this object.
+     */
+    Tile *tile() const { return mTile; }
+
+    /**
      * Returns the object group this object belongs to.
      */
     ObjectGroup *objectGroup() const { return mObjectGroup; }
@@ -176,6 +188,7 @@ private:
     QPointF mPos;
     QSizeF mSize;
     QString mType;
+    Tile *mTile;
     ObjectGroup *mObjectGroup;
 };
 

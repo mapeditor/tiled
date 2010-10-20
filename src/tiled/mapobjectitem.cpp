@@ -221,7 +221,7 @@ void MapObjectItem::setEditable(bool editable)
     mIsEditable = editable;
 
     setFlag(QGraphicsItem::ItemIsMovable, mIsEditable);
-    mResizeHandle->setVisible(mIsEditable);
+    mResizeHandle->setVisible(mIsEditable && !mObject->tile());
     if (mIsEditable)
         setCursor(Qt::SizeAllCursor);
     else

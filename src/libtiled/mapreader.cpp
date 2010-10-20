@@ -606,6 +606,7 @@ MapObject *MapReaderPrivate::readObject()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
+    const int gid = atts.value(QLatin1String("gid")).toString().toInt();
     const int x = atts.value(QLatin1String("x")).toString().toInt();
     const int y = atts.value(QLatin1String("y")).toString().toInt();
     const int width = atts.value(QLatin1String("width")).toString().toInt();
@@ -632,6 +633,16 @@ MapObject *MapReaderPrivate::readObject()
     }
 
     MapObject *object = new MapObject(name, type, xF, yF, widthF, heightF);
+
+    if (gid) {
+        bool ok;
+        Tile *tile = tileForGid(gid, ok);
+        if (ok) {
+            object->setTile(tile);
+        } else {
+            xml.raiseError(tr("Invalid tile: %1").arg(gid));
+        }
+    }
 
     while (readNextStartElement()) {
         if (xml.name() == "properties")

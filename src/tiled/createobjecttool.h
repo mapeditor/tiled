@@ -27,6 +27,7 @@ namespace Tiled {
 
 class MapObject;
 class ObjectGroup;
+class Tile;
 
 namespace Internal {
 
@@ -34,8 +35,15 @@ class MapObjectItem;
 
 class CreateObjectTool : public AbstractTool
 {
+    Q_OBJECT
+
 public:
-    CreateObjectTool(QObject *parent = 0);
+    enum CreationMode {
+        AreaObjects,
+        TileObjects
+    };
+
+    CreateObjectTool(CreationMode mode, QObject *parent = 0);
 
     void activate(MapScene *scene);
     void deactivate(MapScene *scene);
@@ -51,6 +59,13 @@ public:
                        Qt::MouseButton button);
 
     void languageChanged();
+
+public slots:
+    /**
+     * Sets the tile that will be used when the creation mode is
+     * CreateTileObjects.
+     */
+    void setTile(Tile *tile) { mTile = tile; }
 
 protected:
     /**
@@ -70,6 +85,8 @@ private:
     MapDocument *mMapDocument;
     MapScene *mMapScene;
     MapObjectItem *mNewMapObjectItem;
+    Tile *mTile;
+    CreationMode mMode;
 };
 
 } // namespace Internal

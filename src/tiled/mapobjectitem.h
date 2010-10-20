@@ -73,7 +73,7 @@ public:
 
     /**
      * Resizes this map object item and the associated map object. The
-     * \a size is given in pixels.
+     * \a size is given in tiles.
      */
     void resize(const QSizeF &size);
 

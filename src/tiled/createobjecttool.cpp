@@ -29,11 +29,12 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "tile.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateObjectTool::CreateObjectTool(QObject *parent)
+CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     : AbstractTool(tr("Create Objects"),
                    QIcon(QLatin1String(
                            ":images/22x22/tool-create-object.png")),
@@ -41,7 +42,15 @@ CreateObjectTool::CreateObjectTool(QObject *parent)
                    parent)
     , mMapScene(0)
     , mNewMapObjectItem(0)
+    , mTile(0)
+    , mMode(mode)
 {
+    if (mMode == TileObjects) {
+        setIcon(QIcon(QLatin1String(
+                          ":images/22x22/tool-create-tile-object.png")));
+        setName(tr("Create Tile Objects"));
+        setShortcut(QKeySequence(tr("T")));
+    }
 }
 
 void CreateObjectTool::activate(MapScene *scene)
@@ -69,17 +78,25 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         return;
 
     const MapRenderer *renderer = mMapScene->mapDocument()->renderer();
+    QPointF tileCoords = renderer->pixelToTileCoords(pos);
 
-    // Update the size of the new map object
-    const QPointF tileCoords = renderer->pixelToTileCoords(pos);
-    const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
-    QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
-                   qMax(qreal(0), tileCoords.y() - objectPos.y()));
+    if (mMode == AreaObjects) {
+        // Update the size of the new map object
+        const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
+        QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
+                       qMax(qreal(0), tileCoords.y() - objectPos.y()));
 
-    if (modifiers & Qt::ControlModifier)
-        newSize = newSize.toSize();
+        if (modifiers & Qt::ControlModifier)
+            newSize = newSize.toSize();
 
-    mNewMapObjectItem->resize(newSize);
+        mNewMapObjectItem->resize(newSize);
+    } else {
+        if (modifiers & Qt::ControlModifier)
+            tileCoords = tileCoords.toPoint();
+
+        mNewMapObjectItem->mapObject()->setPosition(tileCoords);
+        mNewMapObjectItem->syncWithMapObject();
+    }
 }
 
 void CreateObjectTool::mousePressed(const QPointF &pos,
@@ -99,6 +116,7 @@ void CreateObjectTool::mousePressed(const QPointF &pos,
     ObjectGroup *objectGroup = currentObjectGroup();
     if (objectGroup && objectGroup->isVisible() && !mNewMapObjectItem) {
         const MapRenderer *renderer = mMapScene->mapDocument()->renderer();
+
         QPointF tileCoords = renderer->pixelToTileCoords(pos);
         if (modifiers & Qt::ControlModifier)
             tileCoords = tileCoords.toPoint();
@@ -132,8 +150,14 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
 {
     Q_ASSERT(!mNewMapObjectItem);
 
+    if (mMode == TileObjects && !mTile)
+        return;
+
     MapObject *newMapObject = new MapObject;
     newMapObject->setPosition(pos);
+
+    if (mMode == TileObjects)
+        newMapObject->setTile(mTile);
 
     objectGroup->addObject(newMapObject);
 
