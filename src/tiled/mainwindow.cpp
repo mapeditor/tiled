@@ -29,7 +29,6 @@
 #include "aboutdialog.h"
 #include "automap.h"
 #include "addremovetileset.h"
-#include "changeproperties.h"
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
 #include "eraser.h"
@@ -55,7 +54,6 @@
 #include "saveasimagedialog.h"
 #include "selectiontool.h"
 #include "stampbrush.h"
-#include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetdock.h"
@@ -676,63 +674,6 @@ void MainWindow::copy()
     mClipboardManager->copySelection(mMapDocument);
 }
 
-static Tileset *findSimilarTileset(const Tileset *tileset,
-                                   const QList<Tileset*> &tilesets)
-{
-    foreach (Tileset *candidate, tilesets) {
-        if (candidate != tileset
-            && candidate->imageSource() == tileset->imageSource()
-            && candidate->tileWidth() == tileset->tileWidth()
-            && candidate->tileHeight() == tileset->tileHeight()
-            && candidate->tileSpacing() == tileset->tileSpacing()
-            && candidate->margin() == tileset->margin())
-        {
-            return candidate;
-        }
-    }
-
-    return 0;
-}
-
-void MainWindow::unifyTilesets(Map *map)
-{
-    QList<QUndoCommand*> undoCommands;
-    QList<Tileset*> existingTilesets = mMapDocument->map()->tilesets();
-
-    // Add tilesets that are not yet part of this map
-    foreach (Tileset *tileset, map->tilesets()) {
-        if (existingTilesets.contains(tileset))
-            continue;
-
-        Tileset *replacement = findSimilarTileset(tileset, existingTilesets);
-        if (!replacement) {
-            undoCommands.append(new AddTileset(mMapDocument, tileset));
-            continue;
-        }
-
-        // Merge the tile properties
-        const int sharedTileCount = qMin(tileset->tileCount(),
-                                         replacement->tileCount());
-        for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
-            undoCommands.append(new ChangeProperties(tr("Tile"),
-                                                     replacementTile,
-                                                     properties));
-        }
-        map->replaceTileset(tileset, replacement);
-        delete tileset;
-    }
-    if (!undoCommands.isEmpty()) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->beginMacro(tr("Tileset Changes"));
-        foreach (QUndoCommand *command, undoCommands)
-            undoStack->push(command);
-        undoStack->endMacro();
-    }
-}
-
 void MainWindow::paste()
 {
     if (!mMapDocument)
@@ -750,7 +691,7 @@ void MainWindow::paste()
         return;
     }
 
-    unifyTilesets(map);
+    mMapDocument->unifyTilesets(map);
 
     TileLayer *tileLayer = map->layerAt(0)->asTileLayer();
 
@@ -1198,7 +1139,7 @@ void MainWindow::eraseQuickStamp(int index)
 void MainWindow::selectQuickStamp(int index)
 {
     if (Map *stampMap = mQuickStamps.at(index)) {
-        unifyTilesets(stampMap);
+        mMapDocument->unifyTilesets(stampMap);
         setStampBrush(stampMap->layerAt(0)->asTileLayer());
         ToolManager::instance()->selectTool(mStampBrush);
     }

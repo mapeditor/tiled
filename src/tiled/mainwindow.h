@@ -188,16 +188,6 @@ private:
     void setupQuickStamps();
     void cleanQuickStamps();
     void eraseQuickStamp(int index);
-
-    /**
-     * Makes sure the all tilesets which are used at the given \a map will be
-     * present in the current map document.
-     *
-     * To reach the aim, all similar tilesets will be replaced by the version
-     * in the current map document and all missing tilesets will be added to
-     * the current map document.
-     */
-    void unifyTilesets(Map *map);
 };
 
 } // namespace Internal
