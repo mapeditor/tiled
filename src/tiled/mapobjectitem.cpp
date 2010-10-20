@@ -201,6 +201,7 @@ void MapObjectItem::syncWithMapObject()
 
     mSyncing = true;
     setPos(pixelPos);
+    setZValue(pixelPos.y());
 
     if (mBoundingRect != bounds) {
         // Notify the graphics scene about the geometry change in advance
@@ -378,6 +379,7 @@ QVariant MapObjectItem::itemChange(GraphicsItemChange change,
             const QPointF newPixelPos =
                     renderer->tileToPixelCoords(mOldObjectPos) + pixelDiff;
             mObject->setPosition(renderer->pixelToTileCoords(newPixelPos));
+            setZValue(newPixelPos.y());
         }
     }
 
