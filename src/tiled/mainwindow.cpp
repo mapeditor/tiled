@@ -805,51 +805,11 @@ void MainWindow::autoMap()
 
     const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
     const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
-    QFile rulesFile(rulesFileName);
 
-    if (!rulesFile.exists()) {
-        QMessageBox::critical(
-                    this, tr("AutoMap Error"),
-                    tr("No rules file found at:\n%1").arg(rulesFileName));
-        return;
-    }
-    if (!rulesFile.open(QIODevice::ReadOnly)) {
-        QMessageBox::critical(
-                    this, tr("AutoMap Error"),
-                    tr("Error opening rules file:\n%1").arg(rulesFileName));
-        return;
-    }
-
-    QTextStream in(&rulesFile);
-    QString line = in.readLine();
-
-    for (; !line.isNull(); line = in.readLine()) {
-        QString rulePath = line.trimmed();
-        if (rulePath.isEmpty()
-                || rulePath.startsWith(QLatin1Char('#'))
-                || rulePath.startsWith(QLatin1String("//")))
-            continue;
-
-        if (QFileInfo(rulePath).isRelative())
-            rulePath = mapPath + QLatin1Char('/') + rulePath;
-
-        if (!QFileInfo(rulePath).exists()) {
-            QMessageBox::warning(
-                        this, tr("AutoMap Warning"),
-                        tr("Rules map not found:\n%1").arg(rulePath));
-            continue;
-        }
-
-        TmxMapReader mapReader;
-        Map *rules = mapReader.read(rulePath);
-
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->beginMacro(tr("AutoMap: apply ruleset: ") + rulePath);
-        undoStack->push(new AutomaticMapping(mMapDocument, rules));
-        undoStack->endMacro();
-
-        delete rules;
-    }
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->beginMacro(tr("Apply AutoMap rules"));
+    new AutomaticMappingFileHandler(mMapDocument, rulesFileName);
+    undoStack->endMacro();
 }
 
 void MainWindow::updateModified()
