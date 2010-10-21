@@ -96,8 +96,6 @@ SOURCES += aboutdialog.cpp \
     abstracttool.cpp \
     changeselection.cpp \
     clipboardmanager.cpp \
-    orthogonalrenderer.cpp \
-    isometricrenderer.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     bucketfilltool.cpp \
@@ -155,7 +153,6 @@ HEADERS += aboutdialog.h \
     resizemap.h \
     objectpropertiesdialog.h \
     changemapobject.h \
-    maprenderer.h \
     abstracttool.h \
     stampbrush.h \
     toolmanager.h \
@@ -170,8 +167,6 @@ HEADERS += aboutdialog.h \
     changeselection.h \
     clipboardmanager.h \
     undocommands.h \
-    orthogonalrenderer.h \
-    isometricrenderer.h \
     offsetlayer.h \
     offsetmapdialog.h \
     bucketfilltool.h \

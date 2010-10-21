@@ -35,12 +35,12 @@ namespace Tiled {
 
 class Map;
 class MapObject;
+class MapRenderer;
 class Tileset;
 
 namespace Internal {
 
 class LayerModel;
-class MapRenderer;
 class TileSelectionModel;
 
 /**

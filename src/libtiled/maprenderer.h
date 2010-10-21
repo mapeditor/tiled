@@ -21,6 +21,8 @@
 #ifndef MAPRENDERER_H
 #define MAPRENDERER_H
 
+#include "tiled_global.h"
+
 #include <QPainter>
 
 namespace Tiled {
@@ -30,14 +32,12 @@ class Map;
 class MapObject;
 class TileLayer;
 
-namespace Internal {
-
 /**
  * This interface is used for rendering tile layers and retrieving associated
  * metrics. The different implementations deal with different map
  * orientations.
  */
-class MapRenderer
+class TILEDSHARED_EXPORT MapRenderer
 {
 public:
     MapRenderer(const Map *map) : mMap(map) {}
@@ -129,7 +129,6 @@ private:
     const Map *mMap;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 #endif // MAPRENDERER_H

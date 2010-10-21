@@ -25,11 +25,10 @@
 
 namespace Tiled {
 
+class MapRenderer;
 class TileLayer;
 
 namespace Internal {
-
-class MapRenderer;
 
 /**
  * A graphics item displaying a tile layer in a QGraphicsView.

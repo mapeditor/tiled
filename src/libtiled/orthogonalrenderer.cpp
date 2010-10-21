@@ -28,7 +28,6 @@
 #include <cmath>
 
 using namespace Tiled;
-using namespace Tiled::Internal;
 
 QSize OrthogonalRenderer::mapSize() const
 {

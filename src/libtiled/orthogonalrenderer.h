@@ -1,5 +1,5 @@
 /*
- * isometricrenderer.h
+ * orthogonalrenderer.h
  * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,25 +18,21 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ISOMETRICRENDERER_H
-#define ISOMETRICRENDERER_H
+#ifndef ORTHOGONALRENDERER_H
+#define ORTHOGONALRENDERER_H
 
 #include "maprenderer.h"
 
 namespace Tiled {
-namespace Internal {
 
 /**
- * An isometric map renderer.
- *
- * Isometric maps have diamond shaped tiles. This map renderer renders them in
- * such a way that the map will also be diamond shaped. The X axis points to
- * the bottom right while the Y axis points to the bottom left.
+ * The orthogonal map renderer. This is the most basic map renderer,
+ * dealing with maps that use rectangular tiles.
  */
-class IsometricRenderer : public MapRenderer
+class TILEDSHARED_EXPORT OrthogonalRenderer : public MapRenderer
 {
 public:
-    IsometricRenderer(const Map *map) : MapRenderer(map) {}
+    OrthogonalRenderer(const Map *map) : MapRenderer(map) {}
 
     QSize mapSize() const;
 
@@ -59,18 +55,12 @@ public:
                        const MapObject *object,
                        const QColor &color) const;
 
-    using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;
 
     using MapRenderer::tileToPixelCoords;
     QPointF tileToPixelCoords(qreal x, qreal y) const;
-
-private:
-    QPolygonF tileRectToPolygon(const QRect &rect) const;
-    QPolygonF tileRectToPolygon(const QRectF &rect) const;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
-#endif // ISOMETRICRENDERER_H
+#endif // ORTHOGONALRENDERER_H
