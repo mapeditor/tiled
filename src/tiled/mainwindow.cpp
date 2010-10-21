@@ -1138,6 +1138,9 @@ void MainWindow::eraseQuickStamp(int index)
 
 void MainWindow::selectQuickStamp(int index)
 {
+    if (!mMapDocument)
+        return;
+
     if (Map *stampMap = mQuickStamps.at(index)) {
         mMapDocument->unifyTilesets(stampMap);
         setStampBrush(stampMap->layerAt(0)->asTileLayer());
