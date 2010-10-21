@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     if (!options.fileToOpen.isEmpty())
         w.openFile(options.fileToOpen);
     else
-        w.openLastFile();
+        w.openLastFiles();
 
     return a.exec();
 }

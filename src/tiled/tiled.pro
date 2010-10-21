@@ -40,6 +40,7 @@ OBJECTS_DIR = .obj
 SOURCES += aboutdialog.cpp \
     automap.cpp \
     brushitem.cpp \
+    documentmanager.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -110,6 +111,7 @@ SOURCES += aboutdialog.cpp \
 HEADERS += aboutdialog.h \
     automap.h \
     brushitem.h \
+    documentmanager.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \

@@ -45,12 +45,14 @@ class MapReaderInterface;
 namespace Internal {
 
 class ClipboardManager;
+class DocumentManager;
 class LayerDock;
 class MapDocumentActionHandler;
 class MapScene;
 class StampBrush;
 class BucketFillTool;
 class TilesetDock;
+class MapView;
 
 /**
  * The main editor window.
@@ -83,7 +85,7 @@ public:
      * Attempt to open the previously opened file.
      * TODO: Opening last file should be optional
      */
-    void openLastFile();
+    void openLastFiles();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -127,15 +129,27 @@ private slots:
     void selectQuickStamp(int index);
     void saveQuickStamp(int index);
 
+    void mapDocumentChanged();
+    void closeMapDocument(int index);
+
 private:
     /**
-      * Asks the user whether the map should be saved when necessary.
+      * Asks the user whether the current map should be saved when necessary.
       *
       * @return <code>true</code> when any unsaved data is either discarded or
       *         saved, <code>false</code> when the user cancelled or saving
       *         failed.
       */
     bool confirmSave();
+
+    /**
+      * Checks all maps for changes, if so, ask if to save these changes.
+      *
+      * @return <code>true</code> when any unsaved data is either discarded or
+      *         saved, <code>false</code> when the user cancelled or saving
+      *         failed.
+      */
+    bool confirmAllSave();
 
     /**
      * Save the current map to the given file name. When saved succesfully, the
@@ -146,8 +160,9 @@ private:
 
     void writeSettings();
     void readSettings();
+
     void setCurrentFileName(const QString &fileName);
-    void setMapDocument(MapDocument *mapDocument);
+    void addMapDocument(MapDocument *mapDocument);
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
 
@@ -189,6 +204,9 @@ private:
     void setupQuickStamps();
     void cleanQuickStamps();
     void eraseQuickStamp(int index);
+
+    MapView *mMapView;
+    DocumentManager *mDocumentManager;
 };
 
 } // namespace Internal

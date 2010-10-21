@@ -25,15 +25,12 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="Tiled::Internal::MapView" name="mapView">
+     <widget class="Tiled::Internal::DocumentManager" name="documentManager">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
         <horstretch>1</horstretch>
         <verstretch>1</verstretch>
        </sizepolicy>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
@@ -372,13 +369,13 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>Tiled::Internal::MapView</class>
-   <extends>QGraphicsView</extends>
-   <header>mapview.h</header>
+   <class>Tiled::Internal::DocumentManager</class>
+   <extends>QTabWidget</extends>
+   <header>documentmanager.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mapView</tabstop>
+  <tabstop>documentManager</tabstop>
  </tabstops>
  <resources>
   <include location="tiled.qrc"/>

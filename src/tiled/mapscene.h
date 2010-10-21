@@ -39,6 +39,7 @@ namespace Internal {
 class AbstractTool;
 class MapDocument;
 class MapObjectItem;
+class MapScene;
 class ObjectGroupItem;
 
 /**
@@ -92,6 +93,18 @@ public:
      */
     void setSelectedObjectItems(const QSet<MapObjectItem*> &items);
 
+    /**
+     * Enables the selected tool at this map scene.
+     * Therefore it tells that tool, that this is the active map scene.
+     */
+    void enableSelectedTool();
+    void disableSelectedTool();
+
+    /**
+     * Sets the currently selected tool.
+     */
+    void setSelectedTool(AbstractTool *tool);
+
 public slots:
     /**
      * Sets whether the tile grid is visible.
@@ -116,11 +129,6 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
 
 private slots:
-    /**
-     * Sets the currently selected tool.
-     */
-    void setSelectedTool(AbstractTool *tool);
-
     /**
      * Refreshes the map scene.
      */
@@ -148,9 +156,6 @@ private:
     QGraphicsItem *createLayerItem(Layer *layer);
 
     void updateInteractionMode();
-
-    void enableSelectedTool();
-    void disableSelectedTool();
 
     bool eventFilter(QObject *object, QEvent *event);
 

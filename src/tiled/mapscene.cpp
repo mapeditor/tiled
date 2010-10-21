@@ -59,10 +59,6 @@ MapScene::MapScene(QObject *parent):
 {
     setBackgroundBrush(Qt::darkGray);
 
-    ToolManager *toolManager = ToolManager::instance();
-    connect(toolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            this, SLOT(setSelectedTool(AbstractTool*)));
-
     TilesetManager *tilesetManager = TilesetManager::instance();
     connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
@@ -81,8 +77,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument) {
         mMapDocument->disconnect(this);
-
-        disableSelectedTool();
     }
 
     mMapDocument = mapDocument;
@@ -108,8 +102,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(objectsRemoved(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
-
-        enableSelectedTool();
     }
 }
 
@@ -129,9 +121,7 @@ void MapScene::setSelectedTool(AbstractTool *tool)
     if (mSelectedTool == tool)
         return;
 
-    disableSelectedTool();
     mSelectedTool = tool;
-    enableSelectedTool();
 }
 
 void MapScene::refreshScene()
