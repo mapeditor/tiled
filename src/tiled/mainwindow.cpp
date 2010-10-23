@@ -808,7 +808,7 @@ void MainWindow::autoMap()
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Apply AutoMap rules"));
-    new AutomaticMappingFileHandler(mMapDocument, rulesFileName);
+    AutomaticMapping::handleFile(mMapDocument, rulesFileName);
     undoStack->endMacro();
 }
 

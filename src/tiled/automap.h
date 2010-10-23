@@ -77,10 +77,13 @@ public:
     /**
      * Calls all setup-functions in the right order needed for processing
      * a new rules file.
+     *
+     * param rulePath is only used to have better error message descriptions.
+     *
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
      */
-    bool setupRulesMap(Map *rules);
+    bool setupRulesMap(Map *rules, QString rulePath);
 
     void cleanRulesMap();
 
@@ -221,9 +224,16 @@ private:
 
     // List of Regions in mMapRules to know where the rules are
     QList<QRegion> mRules;
-    // List of Tuples with layers, these pairs are needed for translating
-    // mMapRules to mMapWork.
-    QList<QPair<TileLayer*,TileLayer*> > mLayerList;
+
+    // The inner List of Tuples with layers is needed for translating
+    // tile layers from mMapRules to mMapWork.
+    // the outer list is used to hold different translation tables
+    // => one of the inner lists is chosen by chance
+    QList<QList<QPair<TileLayer*,TileLayer*> >* > mLayerList;
+
+    // store the name of the processed rules file, to have detailed
+    // error messages available
+    QString mRulePath;
 };
 
 /**
@@ -241,6 +251,18 @@ public:
     void undo();
     void redo();
 
+    /**
+     * This function parses the "rules.txt" file.
+     * For each path which is a rule, (fileextension is tmx) the AutoMapper class
+     * is setup properly and an AutomaticMapping object is called to apply
+     * the changes of the AutoMapper.
+     *
+     * If a fileextension is txt, this file will be opened and searched for rules
+     * again.
+     */
+
+    static void handleFile(MapDocument *mapDocument, const QString &filePath);
+
 private:
     Layer *swapLayer(int layerIndex, Layer *layer);
 
@@ -248,26 +270,6 @@ private:
     QList<Layer*> mLayersAfter;
     QList<Layer*> mLayersBefore;
 };
-
-/**
- * This class parses the "rules.txt" file.
- * For each path which is a rule, (fileextension is tmx) the AutoMapper class
- * is setup properly and an AutomaticMapping object is called to apply
- * the changes of the AutoMapper.
- *
- * If a fileextension is txt, this file will be opened and searched for rules
- * again.
- */
-class AutomaticMappingFileHandler
-{
-    Q_DECLARE_TR_FUNCTIONS(AutomaticMappingFileHandler)
-
-public:
-    AutomaticMappingFileHandler(MapDocument *mapDocument,
-                                const QString &filePath);
-    ~AutomaticMappingFileHandler();
-};
-
 } // namespace Internal
 } // namespace Tiled
 

@@ -43,7 +43,8 @@ using namespace Tiled::Internal;
 AutoMapper::AutoMapper(MapDocument *workingDocument)
     : mMapDocument(workingDocument),
       mMapWork(workingDocument->map()),
-      mMapRules(0)
+      mMapRules(0),
+      mRulePath(QLatin1String(""))
 {
 }
 
@@ -67,49 +68,71 @@ bool AutoMapper::setupRuleMapLayers()
     cleanUpRuleMapLayers();
     cleanUpTilesets();
 
-    mLayerSet         = findTileLayer(mMapWork, QLatin1String("set"));
-    mLayerRuleRegions = findTileLayer(mMapRules, QLatin1String("ruleregions"));
+    QString prefix = QLatin1String("rule");
 
-    // allow multiple Set Layers
     foreach (Layer *layer, mMapRules->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer()) {
-            if (tileLayer->name().startsWith(
-                    QLatin1String("ruleset"), Qt::CaseInsensitive)) {
-                mLayerRuleSets.append(tileLayer);
-            }
-        }
-    }
+    if (TileLayer *tileLayer = layer->asTileLayer()) {
 
-    // allow multiple ruleNotSet Layers
-    foreach (Layer *layer, mMapRules->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer()) {
-            if (tileLayer->name().startsWith(
-                    QLatin1String("rulenotset"), Qt::CaseInsensitive)) {
-                mLayerRuleNotSets.append(tileLayer);
-            }
-        }
-    }
+        if (!tileLayer->name().startsWith(
+                    QLatin1String("rule"), Qt::CaseInsensitive))
+            continue;
 
-    QString prefix = QLatin1String("rule_");
-    foreach (Layer *layer, mMapRules->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer()) {
-            if (layer->name().startsWith(prefix, Qt::CaseInsensitive)) {
-                QString name = layer->name();
-                name.remove(0, prefix.length());
-                TileLayer *t = findTileLayer(mMapWork, name);
-                if (!t) {
-                    const int index = mMapWork->layerCount();
-                    t = new TileLayer(name, 0, 0,
-                                      mMapWork->width(), mMapWork->height());
-                    mMapDocument->undoStack()->push(
-                                new AddLayer(mMapDocument, index, t));
-                    mMapDocument->setCurrentLayer(index);
-                    mAddedTileLayers.append(t->name());
-                }
-                mLayerList << QPair<TileLayer*, TileLayer*>(tileLayer, t);
-            }
+        // strip leading prefix, to make handling better
+        QString layername = tileLayer->name();
+        layername.remove(0, prefix.length());
+
+        if (layername.startsWith(
+                QLatin1String("set"), Qt::CaseInsensitive)) {
+            mLayerRuleSets.append(tileLayer);
+            continue;
         }
-    }
+
+        if (layername.startsWith(
+                QLatin1String("notset"), Qt::CaseInsensitive)) {
+            mLayerRuleNotSets.append(tileLayer);
+            continue;
+        }
+
+        if (layername.startsWith(
+                QLatin1String("regions"), Qt::CaseInsensitive)) {
+            mLayerRuleRegions = tileLayer;
+            continue;
+        }
+
+
+        int pos = layername.indexOf(QLatin1Char('_'), Qt::CaseInsensitive) + 1;
+        QString group = layername.left(pos) ;
+        QString name = layername.right(layername.size() - pos);
+
+        TileLayer *t = findTileLayer(mMapWork, name);
+        if (!t) {
+            const int index = mMapWork->layerCount();
+            t = new TileLayer(name, 0, 0,
+                              mMapWork->width(), mMapWork->height());
+            mMapDocument->undoStack()->push(
+                        new AddLayer(mMapDocument, index, t));
+            mMapDocument->setCurrentLayer(index);
+            mAddedTileLayers.append(t->name());
+        }
+        QPair<TileLayer*, TileLayer*> addPair(tileLayer, t);
+
+        QList<QPair<TileLayer*, TileLayer*> > *list = 0;
+        int j = 0;
+
+        while ( !list && j!=mLayerList.size() ) {
+            if (mLayerList.at(j)->at(0).first->name().startsWith(prefix + group))
+                list = mLayerList.at(j);
+            j++;
+        }
+        if (!list) {
+            list = new QList<QPair<TileLayer*, TileLayer*> >();
+            list->append(addPair);
+            mLayerList.append(list);
+        } else {
+            list->append(addPair);
+        }
+    } // if(asTileLayer)
+    } // foreach(layer)
 
     QString error;
 
@@ -126,6 +149,7 @@ bool AutoMapper::setupRuleMapLayers()
     // these layers are not necessary.
 
     if (!error.isEmpty()) {
+        error = mRulePath + QLatin1Char('\n') + error;
         QMessageBox msgBox;
         msgBox.setText(error);
         msgBox.exec();
@@ -135,9 +159,10 @@ bool AutoMapper::setupRuleMapLayers()
     return true;
 }
 
-bool AutoMapper::setupRulesMap(Map *rules)
+bool AutoMapper::setupRulesMap(Map *rules, QString rulePath)
 {
     mMapRules = rules;
+    mRulePath = rulePath;
 
     if (!setupRuleMapLayers())
         return false;
@@ -163,10 +188,13 @@ void AutoMapper::cleanRulesMap()
 QList<QString> AutoMapper::getTouchedLayers() const
 {
     QList<QString> ret;
-    QList<QPair<TileLayer*, TileLayer*> >::const_iterator j;
+    QList<QList<QPair<TileLayer*, TileLayer*> >* >::const_iterator j;
+    QList<QPair<TileLayer*, TileLayer*> >::const_iterator i;
 
     for (j = mLayerList.constBegin(); j != mLayerList.constEnd(); ++j)
-        ret << j->second->name();
+        for (i = (*j)->constBegin(); i != (*j)->constEnd(); ++i)
+            if (!ret.contains(i->second->name()))
+                ret << i->second->name();
 
     return ret;
 }
@@ -528,8 +556,13 @@ void AutoMapper::applyRule(const QRegion &rule)
     for (int y = - rule.boundingRect().top(); y <= max_y; y++)
         for (int x = - rule.boundingRect().left(); x <= max_x; x++)
             if (compareLayerTo(mLayerSet, mLayerRuleSets,
-                               mLayerRuleNotSets, rule, QPoint(x, y)))
-                copyMapRegion(rule, QPoint(x, y), mLayerList);
+                               mLayerRuleNotSets, rule, QPoint(x, y))) {
+                // choose by chance which group of rule_layers should be used:
+                int r = 0;
+                if (mLayerList.size()>1)
+                    r = qrand() % mLayerList.size();
+                copyMapRegion(rule, QPoint(x, y), *mLayerList.at(r));
+            }
 }
 
 void AutoMapper::autoMap()
@@ -551,6 +584,9 @@ void AutoMapper::cleanUpRuleMapLayers()
         }
     }
 
+    QList<QList<QPair<TileLayer*, TileLayer*> >* >::const_iterator j;
+    for (j = mLayerList.constBegin(); j != mLayerList.constEnd(); ++j)
+        delete (*j);
 
     mLayerList.clear();
     mLayerRuleRegions=0;
@@ -642,8 +678,8 @@ Layer *AutomaticMapping::swapLayer(int layerIndex, Layer *layer)
     return replaced;
 }
 
-AutomaticMappingFileHandler::AutomaticMappingFileHandler(
-                            MapDocument *mapDocument, const QString &filePath)
+void AutomaticMapping::handleFile(MapDocument *mapDocument,
+                                  const QString &filePath)
 {
     const QString absPath = QFileInfo(filePath).path();
     QFile rulesFile(filePath);
@@ -679,16 +715,23 @@ AutomaticMappingFileHandler::AutomaticMappingFileHandler(
                 rulePath = absPath + QLatin1Char('/') + rulePath;
 
             if (!QFileInfo(rulePath).exists()) {
-                QMessageBox::warning(
-                            0, tr("AutoMap Warning"),
-                            tr("file not found:\n%1").arg(rulePath));
+                QMessageBox::warning(0, tr("AutoMap Warning"),
+                    tr("file not found:\n%1").arg(rulePath));
                 continue;
             }
             if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)){
                 TmxMapReader mapReader;
+
                 Map *rules = mapReader.read(rulePath);
 
-                if(autoMapper->setupRulesMap(rules)){
+                if (!rules){
+                    QMessageBox::warning(
+                            0, tr("Error Opening Rules Map"),
+                            mapReader.errorString());
+                    continue;
+                }
+
+                if (autoMapper->setupRulesMap(rules, rulePath)){
                     AutomaticMapping *a = new AutomaticMapping(autoMapper);
                     mapDocument->undoStack()->push(a);
                     autoMapper->cleanRulesMap();
@@ -696,7 +739,8 @@ AutomaticMappingFileHandler::AutomaticMappingFileHandler(
                 delete rules;
             }
             if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)){
-                new AutomaticMappingFileHandler(mapDocument, rulePath);
+                AutomaticMapping::handleFile(
+                        mapDocument, rulePath);
             }
         }
     }
