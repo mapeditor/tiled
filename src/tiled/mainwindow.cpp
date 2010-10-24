@@ -6,6 +6,7 @@
  * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
  * Copyright 2009, Christian Henz <chrhenz@gmx.de>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
+ * Copyright 2010, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
