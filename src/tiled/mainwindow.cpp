@@ -154,8 +154,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
     keys += QKeySequence(tr("Ctrl+="));
+    keys += QKeySequence(tr("+"));
     mUi->actionZoomIn->setShortcuts(keys);
-    mUi->actionZoomOut->setShortcuts(QKeySequence::ZoomOut);
+    keys = QKeySequence::keyBindings(QKeySequence::ZoomOut);
+    keys += QKeySequence(tr("-"));
+    mUi->actionZoomOut->setShortcuts(keys);
 
     mUi->menuEdit->insertAction(mUi->actionCut, undoAction);
     mUi->menuEdit->insertAction(mUi->actionCut, redoAction);
