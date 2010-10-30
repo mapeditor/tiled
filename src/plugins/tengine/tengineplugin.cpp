@@ -219,6 +219,29 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
             }
         }
     }
+
+    // Check for an ObjectGroup named AddZone
+    out << endl << "-- addZone section" << endl;
+    foreach (Layer *layer, map->layers()) {
+        ObjectGroup *objectLayer = layer->asObjectGroup();
+        if (objectLayer and objectLayer->name().toLower() == "addzone") {
+            foreach (MapObject *obj, objectLayer->objects()) {
+                QList<QString> propertyOrder;
+                propertyOrder.append("type");
+                propertyOrder.append("subtype");
+                QString args = constructArgs(obj->properties(), propertyOrder);
+                if (not args.isEmpty()) {
+                    args = QString(", %1").arg(args);
+                }
+                int top_left_x = floor(obj->x());
+                int top_left_y = floor(obj->y());
+                int bottom_right_x = floor(obj->x() + obj->width());
+                int bottom_right_y = floor(obj->y() + obj->height());
+                out << QString("addZone({%1, %2, %3, %4}%5)").arg(top_left_x).arg(top_left_y).arg(bottom_right_x).arg(bottom_right_y).arg(args) << endl;
+            }
+        }
+    }
+
     // Write the map
     QString returnStart;
     QString returnStop;
