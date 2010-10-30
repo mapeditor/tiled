@@ -70,12 +70,17 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     propertyOrder.append("trap");
     propertyOrder.append("status");
     propertyOrder.append("spot");
+    // Ability to handle overflow and strings for display
+    bool outputLists = false;
+    int asciiDisplay = ASCII_MIN;
+    int overflowDisplay = 1;
+    QHash<QString, Tiled::Properties>::const_iterator i;
     // Add the empty tile
     int numEmptyTiles = 0;
     Properties emptyTile;
     emptyTile["display"] = "?";
     cachedTiles["?"] = emptyTile;
-    // Process the map, collecting used display characters as we go
+    // Process the map, collecting used display strings as we go
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             Properties currentTile = cachedTiles["?"];
@@ -99,8 +104,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 if (tileLayer) {
                     Tile *tile = tileLayer->tileAt(x, y);
                     if (tile) {
-                        // Have to make sure the display string is only 1 element long
-                        currentTile["display"] = tile->property("display")[0];
+                        currentTile["display"] = tile->property("display");
                         currentTile[layerKey] = tile->property("value");
                     }
                 // Process the Object Layer
@@ -110,9 +114,9 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                             if (floor(obj->x()) <= x and x <= floor(obj->x() + obj->width())) {
                                 // Check the Object Layer properties if either display or value was missing
                                 if (not obj->property("display").isEmpty()) {
-                                    currentTile["display"] = obj->property("display")[0];
+                                    currentTile["display"] = obj->property("display");
                                 } else if (not objectLayer->property("display").isEmpty()) {
-                                    currentTile["display"] = objectLayer->property("display")[0];
+                                    currentTile["display"] = objectLayer->property("display");
                                 }
                                 if (not obj->property("value").isEmpty()) {
                                     currentTile[layerKey] = obj->property("value");
@@ -124,30 +128,52 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                     }
                 }
             }
+            // Need to escape the " characters
+            currentTile["display"].replace("\"", "\\\"");
             // If the currentTile does not exist in the cache, add it
             if (not cachedTiles.contains(currentTile["display"])) {
                 cachedTiles[currentTile["display"]] = currentTile;
             // Otherwise check that it EXACTLY matches the cached one
-            // And assign a new display character if the currentTile is indeed different
-            // ASCII characters between decimals 32 and 126 should be ok
+            // and if not...
             } else if (currentTile != cachedTiles[currentTile["display"]]) {
-                for (int i = ASCII_MIN; x <= ASCII_MAX; ++i) {
-                    QString selectedChar = QString(QChar::fromAscii(i));
-                    currentTile["display"] = selectedChar;
-                    if (cachedTiles.contains(selectedChar)) {
-                        if (currentTile == cachedTiles[selectedChar]) {
-                            break;
-                        }
-                    } else {
-                        cachedTiles[currentTile["display"]] = currentTile;
+                // Search the cached tiles for a match
+                bool foundInCache = false;
+                QString displayString;
+                for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); i++) {
+                    displayString = i.key();
+                    currentTile["display"] = displayString;
+                    if (currentTile == i.value()) {
+                        foundInCache = true;
                         break;
                     }
-                    // We ran out of possibilities!
-                    if (i == ASCII_MAX) {
-                        mError = "Ran out of unique ASCII characters.";
-                        return false;
+                }
+                // If we haven't found a match then find a random display string
+                // and cache it
+                if (not foundInCache) {
+                    while (true) {
+                        // First try to use the ASCII characters
+                        if (asciiDisplay < ASCII_MAX) {
+                            displayString = QString(QChar::fromAscii(asciiDisplay));
+                            displayString.replace("\"", "\\\"");
+                            asciiDisplay++;
+                        // Then fall back onto integers
+                        } else {
+                            displayString = QString::number(overflowDisplay);
+                            overflowDisplay++;
+                        }
+                        currentTile["display"] = displayString;
+                        if (not cachedTiles.contains(displayString)) {
+                            cachedTiles[displayString] = currentTile;
+                            break;
+                        } else if (currentTile == cachedTiles[currentTile["display"]]) {
+                            break;
+                        }
                     }
                 }
+            }
+            // Check the output type
+            if (currentTile["display"].length() > 1) {
+                outputLists = true;
             }
             // Check if we are still the emptyTile
             if (currentTile == emptyTile) {
@@ -159,25 +185,17 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
     // Write the definitions to the file
     out << "-- defineTile section" << endl;
-    QHash<QString, Tiled::Properties>::const_iterator i;
     for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); i++) {
-        QString displayChar = i.key();
-        // Handle the special characters
-        if (displayChar == "\"") {
-            displayChar = "\\\"";
-        } else if (displayChar == "\\") {
-            displayChar = "\\\\";
-        } else if (displayChar == "\'") {
-            displayChar = "\\\'";
+        QString displayString = i.key();
         // Only print the emptyTile definition if there were empty tiles
-        } else if (displayChar == "?" and numEmptyTiles == 0) {
+        if (displayString == "?" and numEmptyTiles == 0) {
             continue;
         }
         QString args = constructArgs(i.value(), propertyOrder);
         if (not args.isEmpty()) {
             args = QString(", %1").arg(args);
         }
-        out << QString("defineTile(\"%1\"%2)").arg(displayChar, args) << endl;
+        out << QString("defineTile(\"%1\"%2)").arg(displayString, args) << endl;
     }
 
     // Check for an ObjectGroup named AddSpot
@@ -202,22 +220,46 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
     }
     // Write the map
+    QString returnStart;
+    QString returnStop;
+    QString lineStart;
+    QString lineStop;
+    QString itemStart;
+    QString itemStop;
+    QString seperator;
+    if (outputLists) {
+        returnStart = "{";
+        returnStop = "}";
+        lineStart = "{";
+        lineStop = "},";
+        itemStart = "\"";
+        itemStop = "\"";
+        seperator = ",";
+    } else {
+        returnStart = "[[";
+        returnStop = "]]";
+        lineStart = "";
+        lineStop = "";
+        itemStart = "";
+        itemStop = "";
+        seperator = "";
+    }
     out << endl << "-- ASCII map section" << endl;
-    out << "return [[" << endl;
+    out << "return " << returnStart << endl;
     for (int y = 0; y < height; ++y) {
+        out << lineStart;
         for (int x = 0; x < width; ++x) {
-            out << asciiMap[x + (y * width)];
+            out << itemStart << asciiMap[x + (y * width)] << itemStop << seperator;
         }
         if (y == height - 1){
-            out << "]]";
+            out << lineStop << returnStop;
         } else {
-            out << endl;
+            out << lineStop << endl;
         }
     }
 
     // And close the file
     file.close();
-
     return true;
 }
 
