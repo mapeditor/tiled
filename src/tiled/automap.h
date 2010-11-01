@@ -191,48 +191,68 @@ private:
      */
     void cleanUpTilesets();
 
-    // where to work in
+    /**
+     * where to work in
+     */
     MapDocument *mMapDocument;
 
-    // the same as mMapDocument->map()
+    /**
+     * the same as mMapDocument->map()
+     */
     Map *mMapWork;
 
-    // map containing the rules, usually different that mMapWork
+    /**
+     * map containing the rules, usually different than mMapWork
+     */
     Map *mMapRules;
 
-    // This contains all added tilesets as pointers.
-    // if rules use Tilesets which are not in the mMapWork they are added.
-    // keep track of them, because we need to delete them afterwards,
-    // when they still are unused
-    // they will be added while setupTilesets().
-    // they will be deleted at Destructor of AutoMapper.
+    /**
+     * This contains all added tilesets as pointers.
+     * if rules use Tilesets which are not in the mMapWork they are added.
+     * keep track of them, because we need to delete them afterwards,
+     * when they still are unused
+     * they will be added while setupTilesets().
+     * they will be deleted at Destructor of AutoMapper.
+     */
     QList<Tileset*> mAddedTilesets;
 
-    // description see: mAddedTilesets, just described by Strings
+    /**
+     * description see: mAddedTilesets, just described by Strings
+     */
     QList<QString> mAddedTileLayers;
 
-    // RuleRegions is the layer where the regions are defined.
+    /**
+     * RuleRegions is the layer where the regions are defined.
+     */
     TileLayer *mLayerRuleRegions;
 
-    // mLayerSet is compared at each tile if it matches any Tile within the
-    // mLayerRuleSets list
-    // it must not match with any Tile to mLayerRuleNotSets
+    /**
+     * mLayerSet is compared at each tile if it matches any Tile within the
+     * mLayerRuleSets list
+     * it must not match with any Tile to mLayerRuleNotSets
+     */
     QList<TileLayer*> mLayerRuleSets;
     QList<TileLayer*> mLayerRuleNotSets;
 
     TileLayer *mLayerSet;
 
-    // List of Regions in mMapRules to know where the rules are
+    /**
+     * List of Regions in mMapRules to know where the rules are
+     */
     QList<QRegion> mRules;
 
-    // The inner List of Tuples with layers is needed for translating
-    // tile layers from mMapRules to mMapWork.
-    // the outer list is used to hold different translation tables
-    // => one of the inner lists is chosen by chance
+    /**
+     *  The inner List of Tuples with layers is needed for translating
+     * tile layers from mMapRules to mMapWork.
+     * the outer list is used to hold different translation tables
+     * => one of the inner lists is chosen by chance
+     */
     QList<QList<QPair<TileLayer*,TileLayer*> >* > mLayerList;
 
-    // store the name of the processed rules file, to have detailed
-    // error messages available
+    /**
+     * store the name of the processed rules file, to have detailed
+     * error messages available
+     */
     QString mRulePath;
 };
 
@@ -240,14 +260,17 @@ private:
  * This is a wrapper class for the AutoMapper class.
  * Here in this class only undo/redo functionality for one rulemap
  * is provided.
+ * This class' static function handleFile is initially called, when starting
+ * an automapping.
+ * That static function creates an instance of this class for each map
+ * containing rules.
+ * This class will take a snapshot of the layers before and after the automapping
+ * is done. In between an instance of AutoMapper is doing the work.
  */
 class AutomaticMapping : public QUndoCommand
 {
     Q_DECLARE_TR_FUNCTIONS(AutomaticMapping)
 public:
-    AutomaticMapping(AutoMapper *autoMapper);
-    ~AutomaticMapping();
-
     void undo();
     void redo();
 
@@ -260,10 +283,16 @@ public:
      * If a fileextension is txt, this file will be opened and searched for rules
      * again.
      */
-
     static void handleFile(MapDocument *mapDocument, const QString &filePath);
 
 private:
+    /**
+     * constructor and destructor can be private:
+     * they are called by the static class function handleFile
+     */
+    AutomaticMapping(AutoMapper *autoMapper);
+    ~AutomaticMapping();
+
     Layer *swapLayer(int layerIndex, Layer *layer);
 
     MapDocument *mMapDocument;
