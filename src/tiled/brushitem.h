@@ -1,6 +1,7 @@
 /*
  * brushitem.h
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010 Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -55,6 +56,11 @@ public:
      * The BrushItem does not take ownership over the tile layer.
      */
     void setTileLayer(TileLayer *tileLayer);
+
+    /**
+     * Returns the current tile layer.
+     */
+    TileLayer *tileLayer() const { return mTileLayer; }
 
     /**
      * Changes the position of the tile layer, if one is set.
