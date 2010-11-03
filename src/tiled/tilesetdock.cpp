@@ -68,6 +68,8 @@ TilesetDock::TilesetDock(QWidget *parent):
             this, SLOT(removeTileset(int)));
     connect(mTabBar, SIGNAL(tabMoved(int,int)),
             this, SLOT(moveTileset(int,int)));
+    connect(mViewStack, SIGNAL(currentChanged(int)),
+            this, SLOT(updateCurrentTiles()));
 
     connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
@@ -129,15 +131,19 @@ void TilesetDock::insertTilesetView(int index, Tileset *tileset)
 
     connect(view->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(selectionChanged()));
+            SLOT(updateCurrentTiles()));
 
     mTabBar->insertTab(index, tileset->name());
     mViewStack->insertWidget(index, view);
 }
 
-void TilesetDock::selectionChanged()
+void TilesetDock::updateCurrentTiles()
 {
-    const QItemSelectionModel *s = static_cast<QItemSelectionModel*>(sender());
+    const int viewIndex = mViewStack->currentIndex();
+    if (viewIndex == -1)
+        return;
+
+    const QItemSelectionModel *s = tilesetViewAt(viewIndex)->selectionModel();
     const QModelIndexList indexes = s->selection().indexes();
 
     if (indexes.isEmpty())

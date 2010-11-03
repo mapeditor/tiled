@@ -80,7 +80,7 @@ protected:
 
 private slots:
     void insertTilesetView(int index, Tileset *tileset);
-    void selectionChanged();
+    void updateCurrentTiles();
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
