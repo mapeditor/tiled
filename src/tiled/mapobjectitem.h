@@ -95,7 +95,6 @@ private:
 
     MapDocument *mapDocument() const;
     QColor color() const;
-    Qt::GlobalColor colorForType() const;
 
     MapObject *mObject;
     MapDocument *mMapDocument;

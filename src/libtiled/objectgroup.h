@@ -97,7 +97,7 @@ public:
      * Returns the color of the object group, or an invalid color if no color
      * is set.
      */
-    const QColor &color() const { return  mColor; }
+    const QColor &color() const { return mColor; }
 
     /**
      * Sets the display color of the object group.

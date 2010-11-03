@@ -400,11 +400,6 @@ MapDocument *MapObjectItem::mapDocument() const
 
 QColor MapObjectItem::color() const
 {
-    // Type color takes precedence
-    const Qt::GlobalColor typeColor = colorForType();
-    if (typeColor != Qt::transparent)
-        return typeColor;
-
     // Get color from object group
     const ObjectGroup *objectGroup = mObject->objectGroup();
     if (objectGroup && objectGroup->color().isValid())
@@ -412,30 +407,4 @@ QColor MapObjectItem::color() const
 
     // Fallback color
     return Qt::gray;
-}
-
-Qt::GlobalColor MapObjectItem::colorForType() const
-{
-    static const struct {
-        const char *type;
-        Qt::GlobalColor color;
-    } types[] = {
-        { "warp", Qt::cyan },
-        { "npc", Qt::yellow },
-        { "spawn", Qt::magenta },
-        { "particle_effect", Qt::green },
-        { 0, Qt::black }
-    };
-
-    Qt::GlobalColor color = Qt::transparent;
-    const QString &type = mType;
-
-    for (int i = 0; types[i].type; ++i) {
-        if (!type.compare(QLatin1String(types[i].type), Qt::CaseInsensitive)) {
-            color = types[i].color;
-            break;
-        }
-    }
-
-    return color;
 }
