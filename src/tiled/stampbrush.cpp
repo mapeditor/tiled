@@ -234,7 +234,7 @@ void StampBrush::configureBrush(const QVector<QPoint> &list)
     foreach (QPoint p, list) {
         const QRegion update = stampRegion.translated(p.x() - mStampX,
                                                       p.y() - mStampY);
-        if (reg.intersect(update).isEmpty()) {
+        if (!reg.intersects(update)) {
             reg += update;
             stamp->merge(p, mStamp);
         }
