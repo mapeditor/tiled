@@ -136,8 +136,7 @@ void Map::replaceTileset(Tileset *oldTileset, Tileset *newTileset)
         if (TileLayer *tileLayer = layer->asTileLayer())
             tileLayer->replaceReferencesToTileset(oldTileset, newTileset);
 
-    mTilesets.removeAt(index);
-    mTilesets.insert(index, newTileset);
+    mTilesets.replace(index, newTileset);
 }
 
 bool Map::isTilesetUsed(Tileset *tileset) const

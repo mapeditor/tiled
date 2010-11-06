@@ -116,6 +116,18 @@ void TilesetManager::removeReference(Tileset *tileset)
     }
 }
 
+void TilesetManager::addReferences(const QList<Tileset*> &tilesets)
+{
+    foreach (Tileset *tileset, tilesets)
+        addReference(tileset);
+}
+
+void TilesetManager::removeReferences(const QList<Tileset*> &tilesets)
+{
+    foreach (Tileset *tileset, tilesets)
+        removeReference(tileset);
+}
+
 QList<Tileset*> TilesetManager::tilesets() const
 {
     return mTilesets.keys();

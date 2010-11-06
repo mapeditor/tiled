@@ -152,6 +152,9 @@ public:
      * To reach the aim, all similar tilesets will be replaced by the version
      * in the current map document and all missing tilesets will be added to
      * the current map document.
+     *
+     * \warning This method assumes that the tilesets in \a map are managed by
+     *          the TilesetManager!
      */
     void unifyTilesets(Map *map);
 

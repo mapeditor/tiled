@@ -695,6 +695,9 @@ void MainWindow::paste()
         return;
     }
 
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->addReferences(map->tilesets());
+
     mMapDocument->unifyTilesets(map);
 
     TileLayer *tileLayer = map->layerAt(0)->asTileLayer();
@@ -704,6 +707,7 @@ void MainWindow::paste()
     setStampBrush(tileLayer);
     ToolManager::instance()->selectTool(mStampBrush);
 
+    tilesetManager->removeReferences(map->tilesets());
     delete map;
 }
 
@@ -1094,8 +1098,7 @@ void MainWindow::eraseQuickStamp(int index)
     if (Map *quickStamp = mQuickStamps.at(index)) {
         // Decrease reference to tilesets
         TilesetManager *tilesetManager = TilesetManager::instance();
-        foreach (Tileset *tileset, quickStamp->tilesets())
-            tilesetManager->removeReference(tileset);
+        tilesetManager->removeReferences(quickStamp->tilesets());
         delete quickStamp;
     }
 }

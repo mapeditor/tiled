@@ -69,16 +69,14 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
 
     // Register tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, mMap->tilesets())
-        tilesetManager->addReference(tileset);
+    tilesetManager->addReferences(mMap->tilesets());
 }
 
 MapDocument::~MapDocument()
 {
     // Unregister tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, mMap->tilesets())
-        tilesetManager->removeReference(tileset);
+    tilesetManager->removeReferences(mMap->tilesets());
 
     delete mRenderer;
     delete mMap;
@@ -299,6 +297,7 @@ void MapDocument::unifyTilesets(Map *map)
 {
     QList<QUndoCommand*> undoCommands;
     QList<Tileset*> existingTilesets = mMap->tilesets();
+    TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of this map
     foreach (Tileset *tileset, map->tilesets()) {
@@ -323,7 +322,9 @@ void MapDocument::unifyTilesets(Map *map)
                                                      properties));
         }
         map->replaceTileset(tileset, replacement);
-        delete tileset;
+
+        tilesetManager->addReference(replacement);
+        tilesetManager->removeReference(tileset);
     }
     if (!undoCommands.isEmpty()) {
         mUndoStack->beginMacro(tr("Tileset Changes"));

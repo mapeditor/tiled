@@ -96,6 +96,18 @@ public:
     void removeReference(Tileset *tileset);
 
     /**
+     * Convenience method to add references to multiple tilesets.
+     * @see addReference
+     */
+    void addReferences(const QList<Tileset*> &tilesets);
+
+    /**
+     * Convenience method to remove references from multiple tilesets.
+     * @see removeReference
+     */
+    void removeReferences(const QList<Tileset*> &tilesets);
+
+    /**
      * Returns all currently available tilesets.
      */
     QList<Tileset*> tilesets() const;
