@@ -55,6 +55,10 @@ public:
      */
     void setStamp(TileLayer *stamp);
 
+    /**
+     * This returns the actual tile layer which is used to define the current
+     * state.
+     */
     TileLayer *stamp() const { return mStamp; }
 
 signals:
@@ -103,7 +107,7 @@ private:
 
     /**
      * This updates the brush item.
-     * It tries to put at all given points a stamp of mStamp at the
+     * It tries to put at all given points a stamp of the current stamp at the
      * corresponding position.
      * It also takes care, that no overlaps appear.
      * So it will check for every point if it can place a stamp there without
@@ -116,12 +120,15 @@ private:
      * It must be one of the following:
      */
     enum BrushBehavior {
-        Free,       // nothing special: you can move the mouse,
-                    // preview of the selection
-        Paint,      // left mouse pressed: free painting
-        Capture,    // right mouse pressed: capture a rectangle
-        Line,       // hold shift: a line
-        Circle      // hold Ctrl: a circle
+        Free,           // nothing special: you can move the mouse,
+                        // preview of the selection
+        Paint,          // left mouse pressed: free painting
+        Capture,        // right mouse pressed: capture a rectangle
+        Line,           // hold shift: a line
+        LineStartSet,   // when you have defined a starting point,
+                        // cancel with right click
+        Circle,         // hold Shift + Ctrl: a circle
+        CircleMidSet
     };
 
     /**
@@ -130,11 +137,11 @@ private:
     BrushBehavior mBrushBehavior;
 
     /**
-     * The last active position. Needed for drawing lines and circles.
+     * The starting position needed for drawing lines and circles.
      * When drawing lines, this point will be one end.
      * When drawing circles this will be the midpoint.
      */
-    int mLastStampX, mLastStampY;
+    int mStampReferenceX, mStampReferenceY;
 };
 
 } // namespace Internal

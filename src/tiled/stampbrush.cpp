@@ -43,8 +43,8 @@ StampBrush::StampBrush(QObject *parent)
     , mStamp(0)
     , mStampX(0), mStampY(0)
     , mBrushBehavior(Free)
-    , mLastStampX(0)
-    , mLastStampY(0)
+    , mStampReferenceX(0)
+    , mStampReferenceY(0)
 {
 }
 
@@ -53,50 +53,75 @@ StampBrush::~StampBrush()
     delete mStamp;
 }
 
+
 /**
- * Returns a lists of points on a circle.
+ * Returns a lists of points on an ellipse.
  * (x0,y0) is the midpoint
  * (x1,y1) to determines the radius.
  * It is adapted from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+ * here is the orginal: http://homepage.smc.edu/kennedy_john/belipse.pdf
  */
-static QVector<QPoint> rasterCircle(int x0, int y0, int x1, int y1)
+static QVector<QPoint> rasterEllipse(int x0, int y0, int x1, int y1)
 {
     QVector<QPoint> ret;
+    int x, y;
+    int xChange, yChange;
+    int ellipseError;
+    int twoXSquare, twoYSquare;
+    int stoppingX, stoppingY;
+    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
+    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
 
-    const int radius = sqrt((x0 - x1) * (x0 - x1) +
-                            (y0 - y1) * (y0 - y1));
+    if (radiusX == 0 && radiusY == 0)
+        return ret;
 
-    int f = 1 - radius;
-    int ddF_x = 1;
-    int ddF_y = -2 * radius;
-    int x = 0;
-    int y = radius;
-
-    ret += QPoint(x0, y0 + radius);
-    ret += QPoint(x0, y0 - radius);
-    ret += QPoint(x0 + radius, y0);
-    ret += QPoint(x0 - radius, y0);
-
-    while (x < y) {
-        // ddF_x == 2 * x + 1;
-        // ddF_y == -2 * y;
-        // f == x*x + y*y - radius*radius + 2*x - y + 1;
-        if (f >= 0) {
-          y--;
-          ddF_y += 2;
-          f += ddF_y;
-        }
-        x++;
-        ddF_x += 2;
-        f += ddF_x;
+    twoXSquare = 2 * radiusX * radiusX;
+    twoYSquare = 2 * radiusY * radiusY;
+    x = radiusX;
+    y = 0;
+    xChange = radiusY * radiusY * (1 - 2 * radiusX);
+    yChange = radiusX * radiusX;
+    ellipseError = 0;
+    stoppingX = twoYSquare*radiusX;
+    stoppingY = 0;
+    while ( stoppingX >= stoppingY ) {
         ret += QPoint(x0 + x, y0 + y);
         ret += QPoint(x0 - x, y0 + y);
         ret += QPoint(x0 + x, y0 - y);
         ret += QPoint(x0 - x, y0 - y);
-        ret += QPoint(x0 + y, y0 + x);
-        ret += QPoint(x0 - y, y0 + x);
-        ret += QPoint(x0 + y, y0 - x);
-        ret += QPoint(x0 - y, y0 - x);
+        y++;
+        stoppingY += twoXSquare;
+        ellipseError += yChange;
+        yChange += twoXSquare;
+        if ((2 * ellipseError + xChange) > 0 ) {
+            x--;
+            stoppingX -= twoYSquare;
+            ellipseError += xChange;
+            xChange += twoYSquare;
+        }
+    }
+    x = 0;
+    y = radiusY;
+    xChange = radiusY * radiusY;
+    yChange = radiusX * radiusX * (1 - 2 * radiusY);
+    ellipseError = 0;
+    stoppingX = 0;
+    stoppingY = twoXSquare * radiusY;
+    while ( stoppingX <= stoppingY ) {
+        ret += QPoint(x0 + x, y0 + y);
+        ret += QPoint(x0 - x, y0 + y);
+        ret += QPoint(x0 + x, y0 - y);
+        ret += QPoint(x0 - x, y0 - y);
+        x++;
+        stoppingX += twoYSquare;
+        ellipseError += xChange;
+        xChange += twoYSquare;
+        if ((2 * ellipseError + yChange) > 0 ) {
+            y--;
+            stoppingY -= twoXSquare;
+            ellipseError += yChange;
+            yChange += twoXSquare;
+        }
     }
 
     return ret;
@@ -155,20 +180,23 @@ void StampBrush::tilePositionChanged(const QPoint &)
     case Paint:
         doPaint(true, mStampX, mStampY);
         break;
-    case Line:
-        configureBrush(calculateLine(mLastStampX, mLastStampY,
+    case LineStartSet:
+        configureBrush(calculateLine(mStampReferenceX, mStampReferenceY,
                                      mStampX, mStampY));
         break;
-    case Circle:
-        configureBrush(rasterCircle(mLastStampX, mLastStampY,
-                                    mStampX, mStampY));
+    case CircleMidSet:
+        configureBrush(rasterEllipse(mStampReferenceX, mStampReferenceY,
+                                     mStampX, mStampY));
         break;
     case Capture:
         brushItem()->setTileRegion(capturedArea());
         break;
-    default:
+    case Line:
+    case Circle:
+        updatePosition();
+        break;
     case Free:
-        // do nothing here
+        updatePosition();
         break;
     }
 }
@@ -179,19 +207,34 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     if (event->button() == Qt::LeftButton) {
-        if (mBrushBehavior == Line || mBrushBehavior == Circle) {
-            if (mBrushBehavior == Line) {
-                configureBrush(calculateLine(mLastStampX, mLastStampY,
-                                             mStampX, mStampY));
-            } else if (mBrushBehavior == Circle) {
-                configureBrush(rasterCircle(mLastStampX, mLastStampY,
-                                            mStampX, mStampY));
-            }
+        switch (mBrushBehavior) {
+        case Line:
+            mStampReferenceX = mStampX;
+            mStampReferenceY = mStampY;
+            mBrushBehavior = LineStartSet;
+            break;
+        case Circle:
+            mStampReferenceX = mStampX;
+            mStampReferenceY = mStampY;
+            mBrushBehavior = CircleMidSet;
+            break;
+        case LineStartSet:
             doPaint(false, 0, 0);
-            mLastStampX = mStampX;
-            mLastStampY = mStampY;
-        } else {
+            mStampReferenceX = mStampX;
+            mStampReferenceY = mStampY;
+            break;
+        case CircleMidSet:
+            doPaint(false, 0, 0);
+            break;
+        case Paint:
             beginPaint();
+            break;
+        case Free:
+            beginPaint();
+            mBrushBehavior = Paint;
+            break;
+        case Capture:
+            break;
         }
     } else {
         if (event->button() == Qt::RightButton)
@@ -246,15 +289,27 @@ void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
     if (!mStamp)
         return;
 
-    if (modifiers & Qt::ShiftModifier)
+    if (modifiers & Qt::ShiftModifier) {
         mBrushBehavior = Line;
-    else if (modifiers & Qt::ControlModifier)
-        mBrushBehavior = Circle;
-    else
+        if (modifiers & Qt::ControlModifier) {
+            mBrushBehavior = Circle;
+            // while finding the mid point, there is no need to show
+            // the (maybe bigger than 1x1) stamp
+//            brushItem()->setTileLayer(new TileLayer(QString(),0,0,1,1));
+            brushItem()->setTileLayer(0);
+            brushItem()->setTileRegion(QRect(tilePosition(), QSize(1, 1)));
+        }
+    } else {
         mBrushBehavior = Free;
+    }
 
-    brushItem()->setTileLayer(mStamp->clone()->asTileLayer());
-    updatePosition();
+    switch (mBrushBehavior) {
+    case Circle:
+        // do not update brushItems tilelayer by setStamp
+        break;
+    default:
+        setStamp(static_cast<TileLayer*>(mStamp->clone()));
+    }
 }
 
 void StampBrush::languageChanged()
@@ -360,8 +415,6 @@ void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
                             whereX, whereY, brushItem()->tileLayer());
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
-    mLastStampX = mStampX;
-    mLastStampY = mStampY;
     mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
@@ -372,7 +425,7 @@ void StampBrush::updatePosition()
 {
     const QPoint tilePos = tilePosition();
 
-    if (mStamp) {
+    if (brushItem()->tileLayer()) {
         mStampX = tilePos.x() - mStamp->width() / 2;
         mStampY = tilePos.y() - mStamp->height() / 2;
         brushItem()->setTileLayerPosition(QPoint(mStampX, mStampY));
