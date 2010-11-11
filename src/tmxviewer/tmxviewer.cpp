@@ -157,6 +157,7 @@ TmxViewer::TmxViewer(QWidget *parent) :
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
                          | QGraphicsView::DontSavePainterState);
     setBackgroundBrush(Qt::black);
+    setFrameStyle(QFrame::NoFrame);
 
     viewport()->setAttribute(Qt::WA_StaticContents);
 }
