@@ -180,27 +180,12 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 {
     painter->save();
 
-    QColor brushColor = color;
-    brushColor.setAlpha(50);
-    QBrush brush(brushColor);
-
-    QPen pen(Qt::black);
-    pen.setWidth(3);
-    pen.setJoinStyle(Qt::RoundJoin);
-
-    // Make sure the line aligns nicely on the pixels
-    QPointF pixelOffset;
-    if (pen.width() % 2)
-        pixelOffset = QPointF(0.5, 0.5);
-
-    painter->setPen(pen);
-    painter->setRenderHint(QPainter::Antialiasing);
-    const QFontMetrics fm = painter->fontMetrics();
-
     const QRectF bounds = object->bounds();
-    const QRectF rect(tileToPixelCoords(bounds.topLeft()),
-                      tileToPixelCoords(bounds.bottomRight()));
+    QRectF rect(tileToPixelCoords(bounds.topLeft()),
+                tileToPixelCoords(bounds.bottomRight()));
+
     painter->translate(rect.topLeft());
+    rect.moveTopLeft(QPointF(0, 0));
 
     if (object->tile())
     {
@@ -208,9 +193,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         const QPoint paintOrigin(0, -img.height());
         painter->drawPixmap(paintOrigin, img);
 
-        painter->translate(pixelOffset);
-        pen.setStyle(Qt::SolidLine);
-        pen.setWidth(1);
+        QPen pen(Qt::SolidLine);
         painter->setPen(pen);
         painter->drawRect(QRect(paintOrigin, img.size()));
         pen.setStyle(Qt::DotLine);
@@ -218,37 +201,31 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         painter->setPen(pen);
         painter->drawRect(QRect(paintOrigin, img.size()));
     }
-    else if (rect.isNull())
-    {
-        painter->translate(pixelOffset);
-        QString name = fm.elidedText(object->name(), Qt::ElideRight, 30);
-
-        // Draw the shadow
-        painter->drawEllipse(QRect(- 10 + 1, - 10 + 1, 20, 20));
-        painter->drawText(QPoint(-15 + 1, -15 + 1), name);
-
-        pen.setColor(color);
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        painter->drawEllipse(QRect(-10, -10, 20, 20));
-        painter->drawText(QPoint(-15, -15), name);
-    }
     else
     {
-        painter->translate(pixelOffset);
+        if (rect.isNull())
+            rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
+
+        const QFontMetrics fm = painter->fontMetrics();
         QString name = fm.elidedText(object->name(), Qt::ElideRight,
                                      rect.width() + 2);
 
+        painter->setRenderHint(QPainter::Antialiasing);
+
         // Draw the shadow
-        painter->drawRoundedRect(QRectF(QPointF(1, 1), rect.size()),
-                                 10.0, 10.0);
+        QPen pen(Qt::black, 2);
+        painter->setPen(pen);
+        painter->drawRect(rect.translated(QPointF(1, 1)));
         painter->drawText(QPoint(1, -5 + 1), name);
+
+        QColor brushColor = color;
+        brushColor.setAlpha(50);
+        QBrush brush(brushColor);
 
         pen.setColor(color);
         painter->setPen(pen);
         painter->setBrush(brush);
-        painter->drawRoundedRect(QRectF(QPointF(0, 0), rect.size()),
-                                 10.0, 10.0);
+        painter->drawRect(rect);
         painter->drawText(QPoint(0, -5), name);
     }
 

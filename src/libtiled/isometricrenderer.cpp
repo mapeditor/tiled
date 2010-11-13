@@ -224,7 +224,6 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         paintOrigin += tileToPixelCoords(object->position()).toPoint();
         painter->drawPixmap(paintOrigin, img);
 
-        pen.setWidth(1);
         pen.setStyle(Qt::SolidLine);
         painter->setPen(pen);
         painter->drawRect(QRectF(paintOrigin, img.size()));
@@ -239,7 +238,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
         pen.setJoinStyle(Qt::RoundJoin);
         pen.setCapStyle(Qt::RoundCap);
-        pen.setWidth(3);
+        pen.setWidth(2);
 
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);
