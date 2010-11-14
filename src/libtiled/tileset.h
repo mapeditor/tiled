@@ -170,6 +170,12 @@ public:
     bool loadFromImage(const QImage &image, const QString &fileName);
 
     /**
+     * This checks if there is a similar tileset in the given list.
+     * It is needed for replacing this tileset by its similar copy.
+     */
+    Tileset *findSimilarTileset(const QList<Tileset*> &tilesets) const;
+
+    /**
      * Returns the file name of the external image that contains the tiles in
      * this tileset. Is an empty string when this tileset doesn't have a
      * tileset image.

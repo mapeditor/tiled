@@ -310,6 +310,7 @@ MainWindow::~MainWindow()
     cleanQuickStamps();
     mDocumentManager->closeMapDocuments();
 
+    AutomaticMappingManager::deleteInstance();
     ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
     Preferences::deleteInstance();
@@ -831,16 +832,7 @@ void MainWindow::editMapProperties()
 
 void MainWindow::autoMap()
 {
-    if (!mMapDocument)
-        return;
-
-    const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
-    const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Apply AutoMap rules"));
-    AutomaticMapping::handleFile(mMapDocument, rulesFileName);
-    undoStack->endMacro();
+    AutomaticMappingManager::instance()->automap();
 }
 
 void MainWindow::updateModified()
@@ -1091,6 +1083,8 @@ void MainWindow::mapDocumentChanged()
 
     mLayerDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
+    AutomaticMappingManager::instance()->setMapDocument(mMapDocument);
+
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
     handler->setMapDocument(mMapDocument);
 

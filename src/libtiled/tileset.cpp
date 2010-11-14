@@ -84,3 +84,18 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
     mImageSource = fileName;
     return true;
 }
+
+Tileset *Tileset::findSimilarTileset(const QList<Tileset*> &tilesets) const
+{
+    foreach (Tileset *candidate, tilesets) {
+        if (candidate != this
+            && candidate->imageSource() == imageSource()
+            && candidate->tileWidth() == tileWidth()
+            && candidate->tileHeight() == tileHeight()
+            && candidate->tileSpacing() == tileSpacing()
+            && candidate->margin() == margin()) {
+                return candidate;
+        }
+    }
+    return 0;
+}

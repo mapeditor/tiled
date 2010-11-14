@@ -267,24 +267,6 @@ void MapDocument::setTileSelection(const QRegion &selection)
     }
 }
 
-static Tileset *findSimilarTileset(const Tileset *tileset,
-                                   const QList<Tileset*> &tilesets)
-{
-    foreach (Tileset *candidate, tilesets) {
-        if (candidate != tileset
-            && candidate->imageSource() == tileset->imageSource()
-            && candidate->tileWidth() == tileset->tileWidth()
-            && candidate->tileHeight() == tileset->tileHeight()
-            && candidate->tileSpacing() == tileset->tileSpacing()
-            && candidate->margin() == tileset->margin())
-        {
-            return candidate;
-        }
-    }
-
-    return 0;
-}
-
 /**
  * Makes sure the all tilesets which are used at the given \a map will be
  * present in the map document.
@@ -304,7 +286,7 @@ void MapDocument::unifyTilesets(Map *map)
         if (existingTilesets.contains(tileset))
             continue;
 
-        Tileset *replacement = findSimilarTileset(tileset, existingTilesets);
+        Tileset *replacement = tileset->findSimilarTileset(existingTilesets);
         if (!replacement) {
             undoCommands.append(new AddTileset(this, tileset));
             continue;
