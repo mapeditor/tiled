@@ -26,8 +26,7 @@
 
 #include <QGraphicsScene>
 #include <QMap>
-
-class QModelIndex;
+#include <QSet>
 
 namespace Tiled {
 
@@ -81,6 +80,17 @@ public:
      */
     ObjectGroupItem *selectedObjectGroupItem() const
     { return mSelectedObjectGroupItem; }
+
+    /**
+     * Returns the set of selected map object items.
+     */
+    const QSet<MapObjectItem*> &selectedObjectItems() const
+    { return mSelectedObjectItems; }
+
+    /**
+     * Sets the set of selected map object items.
+     */
+    void setSelectedObjectItems(const QSet<MapObjectItem*> &items);
 
 public slots:
     /**
@@ -156,6 +166,7 @@ private:
 
     typedef QMap<MapObject*, MapObjectItem*> ObjectItems;
     ObjectItems mObjectItems;
+    QSet<MapObjectItem*> mSelectedObjectItems;
 };
 
 } // namespace Internal

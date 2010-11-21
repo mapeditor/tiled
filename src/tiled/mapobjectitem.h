@@ -60,6 +60,12 @@ public:
      */
     void syncWithMapObject();
 
+    /**
+     * Sets whether this map object is editable. Editable map objects can be
+     * resized and get a move cursor.
+     */
+    void setEditable(bool editable);
+
     bool isEditable() const
     { return mIsEditable; }
 
@@ -79,27 +85,14 @@ public:
 
 protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
-    friend class ObjectGroupItem; // Can change editabilty
-
-    /**
-     * Sets whether this map object is editable. Editable map objects can be
-     * moved and resized, and their properties can be edited.
-     */
-    void setEditable(bool editable);
-
     MapDocument *mapDocument() const;
     QColor color() const;
 
     MapObject *mObject;
     MapDocument *mMapDocument;
-    QPointF mOldObjectPos;
-    QPointF mOldItemPos;
+
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
     QString mName; // Copy of the name, so we know when it changes

@@ -42,18 +42,6 @@ ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
     setOpacity(objectGroup->opacity());
 }
 
-void ObjectGroupItem::setEditable(bool editable)
-{
-    if (mEditable == editable)
-        return;
-
-    mEditable = editable;
-
-    foreach (QGraphicsItem *item, childItems())
-        if (MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item))
-            mapObjectItem->setEditable(mEditable);
-}
-
 QRectF ObjectGroupItem::boundingRect() const
 {
     return QRectF();

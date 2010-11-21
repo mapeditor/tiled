@@ -113,6 +113,17 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     }
 }
 
+void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
+{
+    // Update the editable state of the items
+    foreach (MapObjectItem *item, mSelectedObjectItems - items)
+        item->setEditable(false);
+    foreach (MapObjectItem *item, items - mSelectedObjectItems)
+        item->setEditable(true);
+
+    mSelectedObjectItems = items;
+}
+
 void MapScene::setSelectedTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)
@@ -205,14 +216,6 @@ void MapScene::updateInteractionMode()
 
     if (mSelectedObjectGroupItem == ogItem)
         return;
-
-    // This object group is no longer selected
-    if (mSelectedObjectGroupItem)
-        mSelectedObjectGroupItem->setEditable(false);
-
-    // This is the newly selected object group
-    if (ogItem)
-        ogItem->setEditable(true);
 
     mSelectedObjectGroupItem = ogItem;
 }
@@ -347,6 +350,7 @@ void MapScene::objectsRemoved(const QList<MapObject*> &objects)
         ObjectItems::iterator i = mObjectItems.find(o);
         Q_ASSERT(i != mObjectItems.end());
 
+        mSelectedObjectItems.remove(i.value());
         delete i.value();
         mObjectItems.erase(i);
     }

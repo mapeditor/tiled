@@ -105,7 +105,8 @@ SOURCES += aboutdialog.cpp \
     zoomable.cpp \
     addremovetileset.cpp \
     movetileset.cpp \
-    createobjecttool.cpp
+    createobjecttool.cpp \
+    objectselectiontool.cpp
 HEADERS += aboutdialog.h \
     automap.h \
     brushitem.h \
@@ -176,7 +177,8 @@ HEADERS += aboutdialog.h \
     zoomable.h \
     addremovetileset.h \
     movetileset.h \
-    createobjecttool.h
+    createobjecttool.h \
+    objectselectiontool.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

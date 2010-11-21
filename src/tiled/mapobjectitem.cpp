@@ -40,8 +40,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 #include <QPainter>
+#include <QPalette>
 #include <QStyleOptionGraphicsItem>
-#include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -171,12 +171,6 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
 {
     syncWithMapObject();
     mResizeHandle->setVisible(false);
-#if QT_VERSION >= 0x040600
-    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-#endif
-
-    if (parent)
-        setEditable(parent->isEditable());
 }
 
 void MapObjectItem::syncWithMapObject()
@@ -198,7 +192,6 @@ void MapObjectItem::syncWithMapObject()
     QRectF bounds = renderer->boundingRect(mObject);
     bounds.translate(-pixelPos);
 
-    mSyncing = true;
     setPos(pixelPos);
     setZValue(pixelPos.y());
 
@@ -208,9 +201,10 @@ void MapObjectItem::syncWithMapObject()
         mBoundingRect = bounds;
         const QPointF bottomRight = mObject->bounds().bottomRight();
         const QPointF handlePos = renderer->tileToPixelCoords(bottomRight);
+        mSyncing = true;
         mResizeHandle->setPos(handlePos - pixelPos);
+        mSyncing = false;
     }
-    mSyncing = false;
 }
 
 void MapObjectItem::setEditable(bool editable)
@@ -220,12 +214,13 @@ void MapObjectItem::setEditable(bool editable)
 
     mIsEditable = editable;
 
-    setFlag(QGraphicsItem::ItemIsMovable, mIsEditable);
     mResizeHandle->setVisible(mIsEditable && !mObject->tile());
     if (mIsEditable)
         setCursor(Qt::SizeAllCursor);
     else
         unsetCursor();
+
+    update();
 }
 
 QRectF MapObjectItem::boundingRect() const
@@ -260,12 +255,16 @@ void MapObjectItem::paint(QPainter *painter,
 
 /**
  * Shows the context menu for map objects. The menu allows you to duplicate and
- * remove the map object, or do edit its properties.
+ * remove the map object, or to edit its properties.
  */
 void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    if (!mIsEditable)
-        return;
+    // TODO: Apply this menu to the selection if this object is part of it
+    // TODO: Move this menu from the ObjectSelectionTool (also solving crash
+    //       when removing an object during a move)
+    QSet<MapObjectItem *> selection;
+    selection.insert(this);
+    static_cast<MapScene*>(scene())->setSelectedObjectItems(selection);
 
     QMenu menu;
     QIcon dupIcon(QLatin1String(":images/16x16/stock-duplicate-16.png"));
@@ -329,62 +328,6 @@ void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     }
 }
 
-void MapObjectItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    // Remember the old position since we may get moved
-    if (event->button() == Qt::LeftButton) {
-        mOldObjectPos = mObject->position();
-        mOldItemPos = pos();
-    }
-
-    QGraphicsItem::mousePressEvent(event);
-}
-
-void MapObjectItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    QGraphicsItem::mouseReleaseEvent(event);
-
-    // If we got moved, create an undo command
-    if (event->button() == Qt::LeftButton
-        && mOldObjectPos != mObject->position()) {
-
-        MapDocument *document = mMapDocument;
-        QUndoCommand *cmd = new MoveMapObject(document, mObject, mOldObjectPos);
-        document->undoStack()->push(cmd);
-    }
-}
-
-QVariant MapObjectItem::itemChange(GraphicsItemChange change,
-                                   const QVariant &value)
-{
-    if (!mSyncing) {
-        MapRenderer *renderer = mMapDocument->renderer();
-
-        if (change == ItemPositionChange
-            && (QApplication::keyboardModifiers() & Qt::ControlModifier))
-        {
-            const QPointF pixelDiff = value.toPointF() - mOldItemPos;
-            const QPointF newPixelPos =
-                    renderer->tileToPixelCoords(mOldObjectPos) + pixelDiff;
-            // Snap the position to the grid
-            const QPointF newTileCoords =
-                    renderer->pixelToTileCoords(newPixelPos).toPoint();
-
-            return renderer->tileToPixelCoords(newTileCoords);
-        }
-        else if (change == ItemPositionHasChanged) {
-            // Update the position of the map object
-            const QPointF pixelDiff = value.toPointF() - mOldItemPos;
-            const QPointF newPixelPos =
-                    renderer->tileToPixelCoords(mOldObjectPos) + pixelDiff;
-            mObject->setPosition(renderer->pixelToTileCoords(newPixelPos));
-            setZValue(newPixelPos.y());
-        }
-    }
-
-    return QGraphicsItem::itemChange(change, value);
-}
-
 void MapObjectItem::resize(const QSizeF &size)
 {
     prepareGeometryChange();
@@ -399,6 +342,9 @@ MapDocument *MapObjectItem::mapDocument() const
 
 QColor MapObjectItem::color() const
 {
+    if (isEditable())
+        return QApplication::palette().highlight().color();
+
     // Get color from object group
     const ObjectGroup *objectGroup = mObject->objectGroup();
     if (objectGroup && objectGroup->color().isValid())

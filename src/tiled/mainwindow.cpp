@@ -49,6 +49,7 @@
 #include "pluginmanager.h"
 #include "propertiesdialog.h"
 #include "resizedialog.h"
+#include "objectselectiontool.h"
 #include "offsetmapdialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
@@ -285,6 +286,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new SelectionTool(this));
+    toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(
                 new CreateObjectTool(CreateObjectTool::AreaObjects, this));
     toolManager->registerTool(createTileObjectsTool);

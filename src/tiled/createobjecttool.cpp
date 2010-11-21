@@ -161,11 +161,6 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     objectGroup->addObject(newMapObject);
 
-    // It is currently necessary to disable editing of the currently selected
-    // object group, because its objects may otherwise steal mouse events
-    // during creation.
-    mMapScene->selectedObjectGroupItem()->setEditable(false);
-
     mNewMapObjectItem = new MapObjectItem(newMapObject,
                                           mMapScene->mapDocument());
     mNewMapObjectItem->setZValue(10000);
@@ -183,8 +178,6 @@ MapObject *CreateObjectTool::clearNewMapObjectItem()
 
     delete mNewMapObjectItem;
     mNewMapObjectItem = 0;
-
-    mMapScene->selectedObjectGroupItem()->setEditable(true);
 
     return newMapObject;
 }
