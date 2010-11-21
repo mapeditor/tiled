@@ -181,17 +181,16 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
 
 void MapObjectItem::syncWithMapObject()
 {
-    // Update the whole object when the name or type has changed
-    if (mObject->name() != mName || mObject->type() != mType) {
+    // Update the whole object when the name has changed
+    if (mObject->name() != mName) {
         mName = mObject->name();
-        mType = mObject->type();
         update();
-        mResizeHandle->update();
     }
 
     QString toolTip = mName;
-    if (!mType.isEmpty())
-        toolTip += QLatin1String(" (") + mType + QLatin1String(")");
+    const QString &type = mObject->type();
+    if (!type.isEmpty())
+        toolTip += QLatin1String(" (") + type + QLatin1String(")");
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();

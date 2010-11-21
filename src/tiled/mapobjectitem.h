@@ -102,8 +102,7 @@ private:
     QPointF mOldItemPos;
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
-    QString mName; // Copies of name and type, so we know when they change
-    QString mType;
+    QString mName; // Copy of the name, so we know when it changes
     bool mIsEditable;
     bool mSyncing;
     ResizeHandle *mResizeHandle;
