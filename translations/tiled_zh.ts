@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="'zh_CN">
+<TS version="2.0" language="zh_CN">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -15,15 +15,16 @@
     </message>
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+32"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled 地图编辑器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;版权所有 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;（见作者的贡献者名单档案）&lt;/p&gt;
+        <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled地图编辑器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(查看AUTHORS文件获取全部贡献者名单列表)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;你可以基于GPL(V2或更新版本)修改、重发布此应用程序.GPL的一份拷贝被包含在&apos;COPYING&apos;文件中并随Tiled一起发布.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -85,7 +86,7 @@
     <message>
         <location line="+9"/>
         <source>&amp;Quit</source>
-        <translation>推出(&amp;Q)</translation>
+        <translation>退出(&amp;Q)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -560,7 +561,7 @@
     <message>
         <location line="+8"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>修改图块的图像时重新载入(&amp;R)</translation>
+        <translation>重新载入图块的图像当他们被改变时(&amp;R)</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -575,7 +576,7 @@
     <message>
         <location line="+10"/>
         <source>Interface</source>
-        <translation>其他</translation>
+        <translation>界面</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -797,7 +798,7 @@
     <message>
         <location line="+1"/>
         <source>There are unsaved changes. Do you want to save now?</source>
-        <translation>修改为保存，你需要保存吗?</translation>
+        <translation>修改未保存，你需要保存吗?</translation>
     </message>
     <message>
         <location line="+40"/>
@@ -869,7 +870,7 @@
         <location line="+69"/>
         <location line="+46"/>
         <source>%1[*] - Tiled</source>
-        <translation>%1[*] - 块</translation>
+        <translation>%1[*] - Tiled</translation>
     </message>
 </context>
 <context>
@@ -897,7 +898,7 @@
     <message>
         <location line="+21"/>
         <source>Copy of %1</source>
-        <translation>复制％1</translation>
+        <translation>复制 %1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -992,12 +993,12 @@
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>无法载入图块图像％1。</translation>
+        <translation>无法载入图块图像%1。</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation>没有发现在图块的块图像时，使用给定的块大小，边界和间距!</translation>
+        <translation>在图块图像中使用给定的块大小、边界和间距没有发现图块!</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1091,8 +1092,8 @@
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation>％1已经存在。
-你要替换它吗？</translation>
+        <translation>%1已经存在.
+你要替换它吗?</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -1145,12 +1146,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>图块 “％1”仍然在地图使用！</translation>
+        <translation>图块 “%1”仍然在地图使用!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation>为了消除这种图块，你确定要删除所有使用块的部分？</translation>
+        <translation>为了消除这种图块，你确定要删除所有使用块的部分?</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -1167,7 +1168,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+207"/>
         <source>Tile &amp;Properties...</source>
-        <translation>Tile 属性(&amp;P)...</translation>
+        <translation type="unfinished">块属性(&amp;P)...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1221,12 +1222,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation>有多个碰撞层！</translation>
+        <translation>有多个碰撞层!</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>No collision layer found!</source>
-        <translation>没有发现碰撞层！</translation>
+        <translation>没有发现碰撞层!</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1268,7 +1269,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+21"/>
         <source>Not a tileset file.</source>
-        <translation>该图块的文件不可用</translation>
+        <translation>该图块的文件不可用.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1336,7 +1337,7 @@ Line %1, column %2</source>
     <message>
         <location line="+19"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>&apos;%1&apos;不支持压缩方式</translation>
+        <translation>不支持压缩方式&apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1347,7 +1348,7 @@ Line %1, column %2</source>
     <message>
         <location line="+12"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>无法解析块在（％1，％2层）&apos;％3&apos;</translation>
+        <translation>无法解析块在（%1，%2层）&apos;%3&apos;</translation>
     </message>
     <message>
         <location line="+20"/>
