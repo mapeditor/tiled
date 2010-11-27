@@ -62,9 +62,11 @@ void SelectionTool::updateStatusInfo()
                   .arg(area.width()).arg(area.height()));
 }
 
-void SelectionTool::mousePressed(const QPointF &, Qt::MouseButton button,
-                                 Qt::KeyboardModifiers modifiers)
+void SelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    const Qt::MouseButton button = event->button();
+    const Qt::KeyboardModifiers modifiers = event->modifiers();
+
     if (button == Qt::LeftButton) {
         if (modifiers == Qt::ControlModifier) {
             mSelectionMode = Subtract;
@@ -82,10 +84,9 @@ void SelectionTool::mousePressed(const QPointF &, Qt::MouseButton button,
     }
 }
 
-void SelectionTool::mouseReleased(const QPointF &,
-                                  Qt::MouseButton button)
+void SelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (button == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton) {
         mSelecting = false;
 
         MapDocument *document = mapDocument();

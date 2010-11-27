@@ -137,13 +137,9 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     makeConnections();
 }
 
-void BucketFillTool::mousePressed(const QPointF &pos, Qt::MouseButton button,
-                                  Qt::KeyboardModifiers modifiers)
+void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    Q_UNUSED(pos);
-    Q_UNUSED(modifiers);
-
-    if (button != Qt::LeftButton || mFillRegion.isEmpty())
+    if (event->button() != Qt::LeftButton || mFillRegion.isEmpty())
         return;
     if (!brushItem()->isVisible())
         return;
@@ -156,10 +152,8 @@ void BucketFillTool::mousePressed(const QPointF &pos, Qt::MouseButton button,
     mapDocument()->undoStack()->push(fillTiles);
 }
 
-void BucketFillTool::mouseReleased(const QPointF &pos, Qt::MouseButton button)
+void BucketFillTool::mouseReleased(QGraphicsSceneMouseEvent *)
 {
-    Q_UNUSED(pos);
-    Q_UNUSED(button);
 }
 
 void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)

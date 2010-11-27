@@ -48,21 +48,20 @@ void Eraser::tilePositionChanged(const QPoint &tilePos)
         doErase(true);
 }
 
-void Eraser::mousePressed(const QPointF &, Qt::MouseButton button,
-                          Qt::KeyboardModifiers)
+void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (!brushItem()->isVisible())
         return;
 
-    if (button == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton) {
         mErasing = true;
         doErase(false);
     }
 }
 
-void Eraser::mouseReleased(const QPointF &, Qt::MouseButton button)
+void Eraser::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (button == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton)
         mErasing = false;
 }
 

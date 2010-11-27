@@ -157,26 +157,24 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     }
 }
 
-void ObjectSelectionTool::mousePressed(const QPointF &pos,
-                                       Qt::MouseButton button,
-                                       Qt::KeyboardModifiers modifiers)
+void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (button != Qt::LeftButton)
+    if (event->button() != Qt::LeftButton)
         return;
 
-    mStart = pos;
+    mStart = event->scenePos();
     mOldSelection = mMapScene->selectedObjectItems();
 
     // If a map object item was pressed and no modifiers were held, enter
     // moving mode for this object
-    if (modifiers == Qt::NoModifier) {
-        foreach (QGraphicsItem *item, mMapScene->items(pos)) {
+    if (event->modifiers() == Qt::NoModifier) {
+        foreach (QGraphicsItem *item, mMapScene->items(mStart)) {
             MapObjectItem *objectItem = dynamic_cast<MapObjectItem*>(item);
             if (!objectItem)
                 continue;
 
             if (!mMapScene->selectedObjectItems().contains(objectItem))
-                updateSelection(pos);
+                updateSelection(mStart);
 
             mMovingItems = mMapScene->selectedObjectItems();
             if (mMovingItems.isEmpty()) // Paranoia
@@ -203,14 +201,13 @@ void ObjectSelectionTool::mousePressed(const QPointF &pos,
     }
 
     mMode = Selecting;
-    updateSelection(pos);
+    updateSelection(mStart);
     mMapScene->addItem(mSelectionRectangle);
 }
 
-void ObjectSelectionTool::mouseReleased(const QPointF &pos,
-                                        Qt::MouseButton button)
+void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (button != Qt::LeftButton)
+    if (event->button() != Qt::LeftButton || mMode == NoMode)
         return;
 
     if (mMode == Selecting) {
@@ -218,7 +215,7 @@ void ObjectSelectionTool::mouseReleased(const QPointF &pos,
         mMapScene->removeItem(mSelectionRectangle);
     } else if (mMode == Moving) {
         mMode = NoMode;
-        if (mStart == pos) // Move is a no-op
+        if (mStart == event->scenePos()) // Move is a no-op
             return;
 
         QUndoStack *undoStack = mapDocument()->undoStack();

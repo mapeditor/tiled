@@ -173,13 +173,12 @@ void StampBrush::tilePositionChanged(const QPoint &)
     }
 }
 
-void StampBrush::mousePressed(const QPointF &, Qt::MouseButton button,
-                              Qt::KeyboardModifiers)
+void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (!brushItem()->isVisible())
         return;
 
-    if (button == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton) {
         if (mBrushBehavior == Line || mBrushBehavior == Circle) {
             if (mBrushBehavior == Line) {
                 configureBrush(calculateLine(mLastStampX, mLastStampY,
@@ -195,22 +194,22 @@ void StampBrush::mousePressed(const QPointF &, Qt::MouseButton button,
             beginPaint();
         }
     } else {
-        if (button == Qt::RightButton)
+        if (event->button() == Qt::RightButton)
             beginCapture();
     }
 }
 
-void StampBrush::mouseReleased(const QPointF &, Qt::MouseButton button)
+void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     switch (mBrushBehavior) {
     case Capture:
-        if (button == Qt::RightButton) {
+        if (event->button() == Qt::RightButton) {
             endCapture();
             mBrushBehavior = Free;
         }
         break;
     case Paint:
-        if (button == Qt::LeftButton)
+        if (event->button() == Qt::LeftButton)
             mBrushBehavior = Free;
     default:
         // do nothing?

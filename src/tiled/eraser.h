@@ -36,9 +36,8 @@ class Eraser : public AbstractTileTool
 public:
     Eraser(QObject *parent = 0);
 
-    void mousePressed(const QPointF &pos, Qt::MouseButton button,
-                      Qt::KeyboardModifiers modifiers);
-    void mouseReleased(const QPointF &pos, Qt::MouseButton button);
+    void mousePressed(QGraphicsSceneMouseEvent *event);
+    void mouseReleased(QGraphicsSceneMouseEvent *event);
 
     void languageChanged();
 

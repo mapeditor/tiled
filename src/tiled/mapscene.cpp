@@ -431,9 +431,8 @@ void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 
     if (mActiveTool) {
-        mActiveTool->mousePressed(mouseEvent->scenePos(), mouseEvent->button(),
-                                  mouseEvent->modifiers());
         mouseEvent->accept();
+        mActiveTool->mousePressed(mouseEvent);
     }
 }
 
@@ -444,8 +443,8 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 
     if (mActiveTool) {
-        mActiveTool->mouseReleased(mouseEvent->scenePos(), mouseEvent->button());
         mouseEvent->accept();
+        mActiveTool->mouseReleased(mouseEvent);
     }
 }
 

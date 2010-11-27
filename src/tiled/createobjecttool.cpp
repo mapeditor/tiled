@@ -99,38 +99,33 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     }
 }
 
-void CreateObjectTool::mousePressed(const QPointF &pos,
-                                    Qt::MouseButton button,
-                                    Qt::KeyboardModifiers modifiers)
+void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     // Check if we are already creating a new map object
     if (mNewMapObjectItem) {
-        if (button == Qt::RightButton)
+        if (event->button() == Qt::RightButton)
             cancelNewMapObject();
         return;
     }
 
-    if (button != Qt::LeftButton)
+    if (event->button() != Qt::LeftButton)
         return;
 
     ObjectGroup *objectGroup = currentObjectGroup();
     if (objectGroup && objectGroup->isVisible() && !mNewMapObjectItem) {
         const MapRenderer *renderer = mMapScene->mapDocument()->renderer();
 
-        QPointF tileCoords = renderer->pixelToTileCoords(pos);
-        if (modifiers & Qt::ControlModifier)
+        QPointF tileCoords = renderer->pixelToTileCoords(event->scenePos());
+        if (event->modifiers() & Qt::ControlModifier)
             tileCoords = tileCoords.toPoint();
 
         startNewMapObject(tileCoords, objectGroup);
     }
 }
 
-void CreateObjectTool::mouseReleased(const QPointF &pos,
-                                     Qt::MouseButton button)
+void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    Q_UNUSED(pos)
-
-    if (button == Qt::LeftButton && mNewMapObjectItem)
+    if (event->button() == Qt::LeftButton && mNewMapObjectItem)
         finishNewMapObject();
 }
 

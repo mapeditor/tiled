@@ -27,6 +27,7 @@
 #include <QKeySequence>
 #include <QMetaType>
 #include <QString>
+#include <QGraphicsSceneMouseEvent>
 
 class QEvent;
 
@@ -107,15 +108,12 @@ public:
     /**
      * Called when a mouse button is pressed on the scene.
      */
-    virtual void mousePressed(const QPointF &pos,
-                              Qt::MouseButton button,
-                              Qt::KeyboardModifiers modifiers) = 0;
+    virtual void mousePressed(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
      * Called when a mouse button is released on the scene.
      */
-    virtual void mouseReleased(const QPointF &pos,
-                               Qt::MouseButton button) = 0;
+    virtual void mouseReleased(QGraphicsSceneMouseEvent *event) = 0;
 
     /**
      * Called when the user presses or releases a modifier key resulting
