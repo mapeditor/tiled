@@ -128,8 +128,6 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                     }
                 }
             }
-            // Need to escape the " characters
-            currentTile["display"].replace("\"", "\\\"");
             // If the currentTile does not exist in the cache, add it
             if (not cachedTiles.contains(currentTile["display"])) {
                 cachedTiles[currentTile["display"]] = currentTile;
@@ -154,7 +152,6 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                         // First try to use the ASCII characters
                         if (asciiDisplay < ASCII_MAX) {
                             displayString = QString(QChar::fromAscii(asciiDisplay));
-                            displayString.replace("\"", "\\\"");
                             asciiDisplay++;
                         // Then fall back onto integers
                         } else {
@@ -191,6 +188,9 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         if (displayString == "?" and numEmptyTiles == 0) {
             continue;
         }
+        // Need to escape " and \ characters
+        displayString.replace("\\", "\\\\");
+        displayString.replace("\"", "\\\"");
         QString args = constructArgs(i.value(), propertyOrder);
         if (not args.isEmpty()) {
             args = QString(", %1").arg(args);
@@ -255,8 +255,8 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         returnStop = "}";
         lineStart = "{";
         lineStop = "},";
-        itemStart = "\"";
-        itemStop = "\"";
+        itemStart = "[[";
+        itemStop = "]]";
         seperator = ",";
     } else {
         returnStart = "[[";
