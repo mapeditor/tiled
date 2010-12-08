@@ -16,7 +16,7 @@ win32 {
 }
 
 include(../../tiled.pri)
-target.path = $${PREFIX}/lib/tiled/plugins
+target.path = $${LIBDIR}/tiled/plugins
 INSTALLS += target
 
 include(../libtiled/libtiled.pri)
