@@ -207,6 +207,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 QList<QString> propertyOrder;
                 propertyOrder.append("type");
                 propertyOrder.append("subtype");
+                propertyOrder.append("additional");
                 QString args = constructArgs(obj->properties(), propertyOrder);
                 if (not args.isEmpty()) {
                     args = QString(", %1").arg(args);
@@ -229,6 +230,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 QList<QString> propertyOrder;
                 propertyOrder.append("type");
                 propertyOrder.append("subtype");
+                propertyOrder.append("additional");
                 QString args = constructArgs(obj->properties(), propertyOrder);
                 if (not args.isEmpty()) {
                     args = QString(", %1").arg(args);
