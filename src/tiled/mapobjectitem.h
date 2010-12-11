@@ -83,9 +83,6 @@ public:
      */
     void resize(const QSizeF &size);
 
-protected:
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-
 private:
     MapDocument *mapDocument() const;
     QColor color() const;

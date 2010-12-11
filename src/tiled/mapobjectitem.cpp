@@ -22,23 +22,16 @@
 
 #include "mapobjectitem.h"
 
-#include "addremovemapobject.h"
-#include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "movemapobject.h"
-#include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
-#include "objectpropertiesdialog.h"
 #include "resizemapobject.h"
-#include "utils.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
-#include <QMenu>
 #include <QPainter>
 #include <QPalette>
 #include <QStyleOptionGraphicsItem>
@@ -251,81 +244,6 @@ void MapObjectItem::paint(QPainter *painter,
     painter->translate(-pos());
     const QColor color = MapObjectItem::color();
     mMapDocument->renderer()->drawMapObject(painter, mObject, color);
-}
-
-/**
- * Shows the context menu for map objects. The menu allows you to duplicate and
- * remove the map object, or to edit its properties.
- */
-void MapObjectItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    // TODO: Apply this menu to the selection if this object is part of it
-    // TODO: Move this menu from the ObjectSelectionTool (also solving crash
-    //       when removing an object during a move)
-    QSet<MapObjectItem *> selection;
-    selection.insert(this);
-    static_cast<MapScene*>(scene())->setSelectedObjectItems(selection);
-
-    QMenu menu;
-    QIcon dupIcon(QLatin1String(":images/16x16/stock-duplicate-16.png"));
-    QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QAction *dupAction = menu.addAction(dupIcon, tr("&Duplicate Object"));
-    QAction *removeAction = menu.addAction(delIcon, tr("&Remove Object"));
-    menu.addSeparator();
-    QMenu *moveToLayerMenu = menu.addMenu(tr("&Move To Layer"));
-    menu.addSeparator();
-    QAction *propertiesAction = menu.addAction(propIcon,
-                                               tr("Object &Properties..."));
-
-    // Fill out moveToLayerMenu
-    typedef QMap<QAction*, ObjectGroup*> MoveToLayerActionMap;
-    MoveToLayerActionMap moveToLayerActions;
-    foreach (Layer *layer, mMapDocument->map()->layers()) {
-        ObjectGroup *objectGroup = layer->asObjectGroup();
-        if (!objectGroup || objectGroup == mObject->objectGroup())
-            continue;
-
-        QAction *action = moveToLayerMenu->addAction(objectGroup->name());
-        moveToLayerActions.insert(action, objectGroup);
-    }
-
-    if (moveToLayerMenu->isEmpty()) {
-        QAction *action =
-                moveToLayerMenu->addAction(tr("No other object layers"));
-        action->setEnabled(false);
-    }
-
-    Utils::setThemeIcon(removeAction, "edit-delete");
-    Utils::setThemeIcon(propertiesAction, "document-properties");
-
-    QAction *selectedAction = menu.exec(event->screenPos());
-
-    if (selectedAction == dupAction) {
-        MapDocument *doc = mMapDocument;
-        doc->undoStack()->push(new AddMapObject(doc,
-                                                mObject->objectGroup(),
-                                                mObject->clone()));
-    }
-    else if (selectedAction == removeAction) {
-        MapDocument *doc = mMapDocument;
-        doc->undoStack()->push(new RemoveMapObject(doc, mObject));
-    }
-    else if (selectedAction == propertiesAction) {
-        ObjectPropertiesDialog propertiesDialog(mMapDocument, mObject,
-                                                event->widget());
-        propertiesDialog.exec();
-    }
-
-    MoveToLayerActionMap::const_iterator i =
-            moveToLayerActions.find(selectedAction);
-
-    if (i != moveToLayerActions.end()) {
-        MapDocument *doc = mMapDocument;
-        doc->undoStack()->push(new MoveMapObjectToGroup(doc,
-                                                        mObject,
-                                                        i.value()));
-    }
 }
 
 void MapObjectItem::resize(const QSizeF &size)

@@ -26,6 +26,10 @@
 #include <QSet>
 
 namespace Tiled {
+
+class MapObject;
+class ObjectGroup;
+
 namespace Internal {
 
 class MapObjectItem;
@@ -60,11 +64,26 @@ private:
         Moving
     };
 
-    void updateSelection(const QPointF &pos);
+    void updateSelection(const QPointF &pos,
+                         Qt::KeyboardModifiers modifiers);
+    void showContextMenu(QPoint screenPos, QWidget *parent);
+
+    void startSelecting();
+
+    void startMoving();
+    void updateMovingItems(const QPointF &pos,
+                           Qt::KeyboardModifiers modifiers);
+    void finishMoving(const QPointF &pos);
+
+    void duplicateObjects(const QList<MapObject*> &objects);
+    void removeObjects(const QList<MapObject*> &objects);
+    void moveObjectsToGroup(const QList<MapObject*> &objects,
+                            ObjectGroup *objectGroup);
 
     MapScene *mMapScene;
     SelectionRectangle *mSelectionRectangle;
-    QSet<MapObjectItem*> mOldSelection;
+    bool mMousePressed;
+    MapObjectItem *mClickedObjectItem;
     QSet<MapObjectItem*> mMovingItems;
     QVector<QPointF> mOldObjectItemPositions;
     QVector<QPointF> mOldObjectPositions;
