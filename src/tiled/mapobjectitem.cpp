@@ -244,6 +244,22 @@ void MapObjectItem::paint(QPainter *painter,
     painter->translate(-pos());
     const QColor color = MapObjectItem::color();
     mMapDocument->renderer()->drawMapObject(painter, mObject, color);
+
+    if (mIsEditable) {
+        painter->translate(pos());
+
+        QPen dashPen(Qt::DashLine);
+        dashPen.setDashOffset(qMax(qreal(0), x()));
+        painter->setPen(dashPen);
+        painter->drawLine(mBoundingRect.topLeft(), mBoundingRect.topRight());
+        painter->drawLine(mBoundingRect.bottomLeft(),
+                          mBoundingRect.bottomRight());
+        dashPen.setDashOffset(qMax(qreal(0), y()));
+        painter->setPen(dashPen);
+        painter->drawLine(mBoundingRect.topLeft(), mBoundingRect.bottomLeft());
+        painter->drawLine(mBoundingRect.topRight(),
+                          mBoundingRect.bottomRight());
+    }
 }
 
 void MapObjectItem::resize(const QSizeF &size)
@@ -260,9 +276,6 @@ MapDocument *MapObjectItem::mapDocument() const
 
 QColor MapObjectItem::color() const
 {
-    if (isEditable())
-        return QApplication::palette().highlight().color();
-
     // Get color from object group
     const ObjectGroup *objectGroup = mObject->objectGroup();
     if (objectGroup && objectGroup->color().isValid())
