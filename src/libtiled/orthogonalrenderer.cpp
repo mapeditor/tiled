@@ -90,8 +90,8 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    const int startX = (int) (rect.x() / tileWidth) * tileWidth;
-    const int startY = (int) (rect.y() / tileHeight) * tileHeight;
+    const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
+    const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
     const int endX = qMin((int) std::ceil(rect.right()),
                           map()->width() * tileWidth + 1);
     const int endY = qMin((int) std::ceil(rect.bottom()),
@@ -103,18 +103,18 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     QPen gridPen(gridColor);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
 
-    if ((int) rect.top() < endY) {
-        gridPen.setDashOffset(rect.top());
+    if (startY < endY) {
+        gridPen.setDashOffset(startY);
         painter->setPen(gridPen);
         for (int x = startX; x < endX; x += tileWidth)
-            painter->drawLine(x, (int) rect.top(), x, endY - 1);
+            painter->drawLine(x, startY, x, endY - 1);
     }
 
-    if ((int) rect.left() < endX) {
-        gridPen.setDashOffset(rect.left());
+    if (startX < endX) {
+        gridPen.setDashOffset(startX);
         painter->setPen(gridPen);
         for (int y = startY; y < endY; y += tileHeight)
-            painter->drawLine((int) rect.left(), y, endX - 1, y);
+            painter->drawLine(startX, y, endX - 1, y);
     }
 }
 
