@@ -752,7 +752,7 @@
     <message>
         <location line="+1"/>
         <source>Redo</source>
-        <translation>Désannuler</translation>
+        <translation>Rétablir</translation>
     </message>
     <message>
         <source>Error while opening map</source>
