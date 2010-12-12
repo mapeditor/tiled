@@ -1,4 +1,5 @@
 bin/tiled
+bin/tmxviewer
 bin/*.dll
 lib/tiled/plugins/*
 lib/*.so*
