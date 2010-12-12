@@ -21,6 +21,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <QIcon>
 #include <QString>
 
 class QAction;
@@ -41,19 +42,25 @@ QString writableImageFormatsFilter();
 
 /**
  * Looks up the icon with the specified \a name from the system theme and set
- * it on the \a action when found.
+ * it on the instance \a t when found.
+ *
+ * This is a templated method which is used on instances of QAction, QMenu,
+ * QToolButton, etc.
  *
  * Does nothing for Qt < 4.6 or when the platform is not Linux.
  */
-void setThemeIcon(QAction *action, const char *name);
-
-/**
- * Looks up the icon with the specified \a name from the system theme and set
- * it on the \a menu when found.
- *
- * Does nothing for Qt < 4.6 or when the platform is not Linux.
- */
-void setThemeIcon(QMenu *menu, const char *name);
+template <class T>
+void setThemeIcon(T *t, const char *name)
+{
+#if QT_VERSION >= 0x040600 && defined(Q_OS_LINUX)
+    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
+    if (!themeIcon.isNull())
+        t->setIcon(themeIcon);
+#else
+    Q_UNUSED(t)
+    Q_UNUSED(name)
+#endif
+}
 
 } // namespace Utils
 } // namespace Tiled

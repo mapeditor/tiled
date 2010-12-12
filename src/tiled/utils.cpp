@@ -22,7 +22,6 @@
 
 #include <QAction>
 #include <QCoreApplication>
-#include <QIcon>
 #include <QImageReader>
 #include <QImageWriter>
 #include <QMenu>
@@ -54,30 +53,6 @@ QString readableImageFormatsFilter()
 QString writableImageFormatsFilter()
 {
     return toImageFileFilter(QImageWriter::supportedImageFormats());
-}
-
-void setThemeIcon(QAction *action, const char *name)
-{
-#if QT_VERSION >= 0x040600 && defined(Q_OS_LINUX)
-    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
-    if (!themeIcon.isNull())
-        action->setIcon(themeIcon);
-#else
-    Q_UNUSED(action)
-    Q_UNUSED(name)
-#endif
-}
-
-void setThemeIcon(QMenu *menu, const char *name)
-{
-#if QT_VERSION >= 0x040600 && defined(Q_OS_LINUX)
-    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
-    if (!themeIcon.isNull())
-        menu->setIcon(themeIcon);
-#else
-    Q_UNUSED(menu)
-    Q_UNUSED(name)
-#endif
 }
 
 } // namespace Utils

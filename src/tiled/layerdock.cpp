@@ -64,12 +64,25 @@ LayerDock::LayerDock(QWidget *parent):
     opacityLayout->addWidget(mOpacitySlider);
     mOpacityLabel->setBuddy(mOpacitySlider);
 
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+
+    QMenu *newLayerMenu = new QMenu(this);
+    newLayerMenu->addAction(handler->actionAddTileLayer());
+    newLayerMenu->addAction(handler->actionAddObjectGroup());
+
+    const QIcon newIcon(QLatin1String(":/images/16x16/document-new.png"));
+    QToolButton *newLayerButton = new QToolButton;
+    newLayerButton->setPopupMode(QToolButton::InstantPopup);
+    newLayerButton->setMenu(newLayerMenu);
+    newLayerButton->setIcon(newIcon);
+    Utils::setThemeIcon(newLayerButton, "document-new");
+
     QToolBar *buttonContainer = new QToolBar;
     buttonContainer->setFloatable(false);
     buttonContainer->setMovable(false);
     buttonContainer->setIconSize(QSize(16, 16));
 
-    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+    buttonContainer->addWidget(newLayerButton);
     buttonContainer->addAction(handler->actionMoveLayerUp());
     buttonContainer->addAction(handler->actionMoveLayerDown());
     buttonContainer->addAction(handler->actionDuplicateLayer());
