@@ -299,15 +299,18 @@ void ObjectSelectionTool::showContextMenu(QPoint screenPos, QWidget *parent)
     QIcon dupIcon(QLatin1String(":images/16x16/stock-duplicate-16.png"));
     QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QAction *dupAction = menu.addAction(dupIcon, tr("&Duplicate Object"));
-    QAction *removeAction = menu.addAction(delIcon, tr("&Remove Object"));
+    QString dupText = tr("Duplicate %n Object(s)", "", selectedObjects.size());
+    QString removeText = tr("Remove %n Object(s)", "", selectedObjects.size());
+    QAction *dupAction = menu.addAction(dupIcon, dupText);
+    QAction *removeAction = menu.addAction(delIcon, removeText);
 
     typedef QMap<QAction*, ObjectGroup*> MoveToLayerActionMap;
     MoveToLayerActionMap moveToLayerActions;
 
     if (objectGroups.size() > 1) {
-        menu.addSeparator();
-        QMenu *moveToLayerMenu = menu.addMenu(tr("&Move To Layer"));
+        menu.addSeparator();        
+        QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
+                                                 "", selectedObjects.size()));
         foreach (ObjectGroup *objectGroup, objectGroups) {
             QAction *action = moveToLayerMenu->addAction(objectGroup->name());
             moveToLayerActions.insert(action, objectGroup);
@@ -419,7 +422,7 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
         return;
 
     QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Move Object(s)")); // TODO: plural
+    undoStack->beginMacro(tr("Move %n Object(s)", "", mMovingItems.size()));
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
         MapObject *object = objectItem->mapObject();
@@ -436,8 +439,6 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
 
 void ObjectSelectionTool::duplicateObjects(const QList<MapObject *> &objects)
 {
-    // TODO: Check why the plural thing isn't working properly
-
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
     foreach (MapObject *mapObject, objects) {
