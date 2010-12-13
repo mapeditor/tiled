@@ -95,9 +95,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mZoomLabel(new QLabel)
     , mStatusInfoLabel(new QLabel)
     , mClipboardManager(new ClipboardManager(this))
-    , mDocumentManager(0)
+    , mDocumentManager(new DocumentManager(this))
 {
     mUi->setupUi(this);
+    setCentralWidget(mDocumentManager->widget());
 
     PluginManager::instance()->loadPlugins();
 
@@ -249,7 +250,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mUi->actionAbout, "help-about");
 
-    mDocumentManager = mUi->documentManager;
     mMapView = mDocumentManager->currentMapView();
     mScene = mDocumentManager->currentMapScene();
     mMapView->centerOn(0, 0);
@@ -295,7 +295,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mDocumentManager, SIGNAL(currentMapDocumentChanged()),
             SLOT(mapDocumentChanged()));
-    connect(mDocumentManager, SIGNAL(tabCloseRequested(int)),
+    connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
             this, SLOT(closeMapDocument(int)));
 
     updateActions();
@@ -580,7 +580,7 @@ bool MainWindow::confirmSave()
 bool MainWindow::confirmAllSave()
 {
     for (int i = 0; i < mDocumentManager->mapDocumentCount(); i++) {
-        mDocumentManager->setCurrentIndex(i);
+        mDocumentManager->switchToMapDocument(i);
         if (!confirmSave())
             return false;
     }
@@ -1007,7 +1007,7 @@ void MainWindow::writeSettings()
     QStringList scrollY;
     QStringList selectedLayer;
     for (int i = 0; i < mDocumentManager->mapDocumentCount(); i++) {
-        mDocumentManager->setCurrentIndex(i);
+        mDocumentManager->switchToMapDocument(i);
         mapScales.append(QString::number(mMapView->zoomable()->scale()));
         scrollX.append(QString::number(
                        mMapView->horizontalScrollBar()->sliderPosition()));
@@ -1237,7 +1237,7 @@ void MainWindow::saveQuickStamp(int index)
 
 void MainWindow::closeMapDocument(int index)
 {
-    mDocumentManager->setCurrentIndex(index);
+    mDocumentManager->switchToMapDocument(index);
     if (confirmSave())
         mDocumentManager->closeMapDocument();
     updateActions();

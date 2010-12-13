@@ -21,14 +21,14 @@
 #ifndef DOCUMENT_MANAGER_H
 #define DOCUMENT_MANAGER_H
 
-#include <QList>
-#include <QPair>
-#include <QTabWidget>
-#include <QCoreApplication>
-
 #include "mapview.h"
 #include "mapscene.h"
 #include "mapdocument.h"
+
+#include <QList>
+#include <QPair>
+
+class QTabWidget;
 
 namespace Tiled {
 
@@ -43,13 +43,19 @@ class MapView;
 /**
  * This class controls the open documents.
  */
-class DocumentManager : public QTabWidget
+class DocumentManager : public QObject
 {
     Q_OBJECT
 
 public:
-    DocumentManager(QWidget *parent);
+    DocumentManager(QObject *parent = 0);
     ~DocumentManager();
+
+    /**
+     * Returns the document manager widget. It contains the different map views
+     * and a tab bar to switch between them.
+     */
+    QWidget *widget() const;
 
     /**
      * Returns the current map document, the map view and the map scene
@@ -64,6 +70,11 @@ public:
      * Returns the number of mapdocuments.
      */
     int mapDocumentCount() const;
+
+    /**
+     * Switches to the map document at the given \a index.
+     */
+    void switchToMapDocument(int index);
 
     /**
      * Adds a new or an opened MapDocument to this Manager
@@ -96,24 +107,20 @@ public:
      */
     void mapDocumentsFileNameChanged();
 
-public slots:
-    /**
-     * Set the selected tool of the current active map
-     */
-    void setSelectedTool(AbstractTool *tool);
-
-private slots:
-    /**
-     * This slot function switches to another MapDocument;
-     * This should be connected to the QTabWidget in mainwindow.ui
-     */
-    void switchToMapDocument(int index);
-
 signals:
     /**
      * Emitted when the current displayed MapDocument changed.
      */
     void currentMapDocumentChanged();
+
+    /**
+     * Emitted when the user requested the document at \a index to be closed.
+     */
+    void documentCloseRequested(int index);
+
+private slots:
+    void currentIndexChanged(int index);
+    void setSelectedTool(AbstractTool *tool);
 
 private:
     /**
@@ -132,6 +139,8 @@ private:
      * This bool tells you, if there is a tab with this empty view.
      */
     bool emptyView;
+
+    QTabWidget *mTabWidget;
     AbstractTool *mActiveTool;
     int mIndex;
     QString mUntitledFileName;

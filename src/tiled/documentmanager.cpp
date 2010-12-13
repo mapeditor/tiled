@@ -23,18 +23,20 @@
 #include "toolmanager.h"
 #include "abstracttool.h"
 
+#include <QTabWidget>
 #include <QFileInfo>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-DocumentManager::DocumentManager(QWidget *parent):
-    QTabWidget(parent),
-    mUntitledFileName(tr("untitled.tmx"))
+DocumentManager::DocumentManager(QObject *parent)
+    : QObject(parent)
+    , mTabWidget(new QTabWidget)
+    , mActiveTool(0)
+    , mIndex(0)
+    , mUntitledFileName(tr("untitled.tmx"))
 {
-    setDocumentMode(true);
-    mIndex = 0;
-    mActiveTool = 0;
+    mTabWidget->setDocumentMode(true);
 
     // since we need at least one view and mapscene, add an empty document
     emptyView = false;
@@ -42,7 +44,10 @@ DocumentManager::DocumentManager(QWidget *parent):
     // set emptyView after adding the empty view!
     emptyView = true;
 
-    connect(this, SIGNAL(currentChanged(int)), SLOT(switchToMapDocument(int)));
+    connect(mTabWidget, SIGNAL(currentChanged(int)),
+            SLOT(currentIndexChanged(int)));
+    connect(mTabWidget, SIGNAL(tabCloseRequested(int)),
+            SIGNAL(documentCloseRequested(int)));
 
     ToolManager *toolManager = ToolManager::instance();
     setSelectedTool(toolManager->selectedTool());
@@ -61,6 +66,13 @@ DocumentManager::~DocumentManager()
     // TODO: correct this behavior:
     // the map view will get deleted by ui!
     // so do not delete mMaps.at(0).second;
+
+    delete mTabWidget;
+}
+
+QWidget *DocumentManager::widget() const
+{
+    return mTabWidget;
 }
 
 MapDocument *DocumentManager::currentMapDocument() const
@@ -83,23 +95,29 @@ int DocumentManager::mapDocumentCount() const
     return emptyView ? 0 : mMaps.size();
 }
 
+void DocumentManager::switchToMapDocument(int index)
+{
+    mTabWidget->setCurrentIndex(index);
+}
+
 void DocumentManager::addMapDocument(MapDocument *mapDocument)
 {
     mMaps.append(QPair<MapScene*, MapView*>(new MapScene(this), new MapView()));
 
     if (mapDocument) {
         if (QFileInfo(mapDocument->fileName()).exists())
-            this->addTab(mMaps.at(mMaps.size() - 1).second,
+            mTabWidget->addTab(mMaps.at(mMaps.size() - 1).second,
                             QFileInfo(mapDocument->fileName()).fileName());
         else
-            this->addTab(mMaps.at(mMaps.size() - 1).second, mUntitledFileName);
+            mTabWidget->addTab(mMaps.at(mMaps.size() - 1).second,
+                               mUntitledFileName);
     } else {
-        this->addTab(mMaps.at(mMaps.size() - 1).second, tr(""));
+        mTabWidget->addTab(mMaps.at(mMaps.size() - 1).second, tr(""));
     }
 
     // remove the tab with empty view, which is displayed when nothing is loaded
     if (emptyView == true) {
-        removeTab(0);
+        mTabWidget->removeTab(0);
         delete mMaps.at(0).first;
         delete mMaps.at(0).second;
         mMaps.removeAt(0);
@@ -120,10 +138,10 @@ void DocumentManager::addMapDocument(MapDocument *mapDocument)
     mMaps.at(index).second->setAlignment(Qt::AlignCenter);
 
     if (mMaps.size() > 1)
-        setTabsClosable(true);
+        mTabWidget->setTabsClosable(true);
 
-    switchToMapDocument(index);
-    setCurrentIndex(index);
+    currentIndexChanged(index);
+    mTabWidget->setCurrentIndex(index);
 }
 
 void DocumentManager::closeMapDocument()
@@ -138,25 +156,25 @@ void DocumentManager::closeMapDocument()
         // correct mIndex to the proper value
         mIndex = 0;
     }
-    // make a copy of mIndex, since that is modified in switchToMapDocument()
+    // make a copy of mIndex, since that is modified in currentIndexChanged()
     int index = mIndex;
     MapScene *mapScene = currentMapScene();
     MapView *mapView = currentMapView();
 
     // let the QTabWidget find the best next tab
     // so remove the current tab and take currentIndex() as next tab
-    removeTab(index);
-    int newindex = currentIndex();
+    mTabWidget->removeTab(index);
+    int newindex = mTabWidget->currentIndex();
 
     if (newindex >= index)
         // +1 needs to be added, because in mMaps still holds one element more
         // the 'index' element was removed from the tabs but not from mMaps
-        // this needs to be done in this order, so switchToMapDocument can
+        // this needs to be done in this order, so currentIndexChanged can
         // deactivate the tool at the map to be closed.
-        switchToMapDocument(newindex + 1);
+        currentIndexChanged(newindex + 1);
     else
         // both indices are equal, since there is no additional element within
-        switchToMapDocument(newindex);
+        currentIndexChanged(newindex);
 
     mMaps.removeAt(index);
 
@@ -170,7 +188,7 @@ void DocumentManager::closeMapDocument()
     delete mapView;
 
     if (mMaps.size() < 2)
-        setTabsClosable(false);
+        mTabWidget->setTabsClosable(false);
 
     mapDocumentsFileNameChanged();
 }
@@ -197,7 +215,7 @@ QList<MapDocument*> DocumentManager::mapDocuments() const
     return ret;
 }
 
-void DocumentManager::switchToMapDocument(int index)
+void DocumentManager::currentIndexChanged(int index)
 {
     MapScene *mapScene = currentMapScene();
     mapScene->disableSelectedTool();
@@ -232,14 +250,14 @@ void DocumentManager::mapDocumentsFileNameChanged()
             if (QFileInfo(md->fileName()).exists()) {
                 QString fName = QFileInfo(md->fileName()).fileName();
                 if (fName == mUntitledFileName)
-                    setTabText(i, md->fileName());
+                    mTabWidget->setTabText(i, md->fileName());
                 else
-                    setTabText(i, QFileInfo(md->fileName()).fileName());
+                    mTabWidget->setTabText(i, QFileInfo(md->fileName()).fileName());
             } else {
-                setTabText(i, mUntitledFileName);
+                mTabWidget->setTabText(i, mUntitledFileName);
             }
         } else {
-            setTabText(i, tr(""));
+            mTabWidget->setTabText(i, tr(""));
         }
     }
 }

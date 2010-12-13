@@ -24,16 +24,6 @@
     <property name="margin">
      <number>0</number>
     </property>
-    <item>
-     <widget class="Tiled::Internal::DocumentManager" name="documentManager">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>1</horstretch>
-        <verstretch>1</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -367,16 +357,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>Tiled::Internal::DocumentManager</class>
-   <extends>QTabWidget</extends>
-   <header>documentmanager.h</header>
-  </customwidget>
- </customwidgets>
- <tabstops>
-  <tabstop>documentManager</tabstop>
- </tabstops>
  <resources>
   <include location="tiled.qrc"/>
  </resources>
