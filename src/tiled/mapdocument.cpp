@@ -348,6 +348,11 @@ void MapDocument::emitRegionChanged(const QRegion &region)
     emit regionChanged(region);
 }
 
+void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
+{
+    emit regionEdited(region, layer);
+}
+
 /**
  * Emits the objects added signal with the specified list of objects.
  * This will cause the scene to insert the related items.

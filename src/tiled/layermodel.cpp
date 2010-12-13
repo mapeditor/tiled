@@ -160,6 +160,7 @@ void LayerModel::insertLayer(int index, Layer *layer)
 
 Layer *LayerModel::takeLayerAt(int index)
 {
+    emit layerAboutToBeRemoved(index);
     const int row = layerIndexToRow(index);
     beginRemoveRows(QModelIndex(), row, row);
     Layer *layer = mMap->takeLayerAt(index);
@@ -170,9 +171,11 @@ Layer *LayerModel::takeLayerAt(int index)
 
 void LayerModel::renameLayer(int layerIndex, const QString &name)
 {
+    emit layerAboutToBeRenamed(layerIndex);
     const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
     Layer *layer = mMap->layerAt(layerIndex);
     layer->setName(name);
+    emit layerRenamed(layerIndex);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layerIndex);
 }

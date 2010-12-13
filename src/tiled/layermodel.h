@@ -124,7 +124,10 @@ public:
 
 signals:
     void layerAdded(int index);
+    void layerAboutToBeRemoved(int index);
     void layerRemoved(int index);
+    void layerAboutToBeRenamed(int index);
+    void layerRenamed(int index);
     void layerChanged(int index);
 
 private:

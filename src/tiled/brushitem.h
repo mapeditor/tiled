@@ -68,11 +68,15 @@ public:
     void setTileLayerPosition(const QPoint &pos);
 
     /**
-     * Sets the region of tiles that this brush item occupies. The top left
-     * of the region's bounding rect also determine the position of the tile
-     * layer when one is set.
+     * Sets the region of tiles that this brush item occupies.
      */
     void setTileRegion(const QRegion &region);
+
+    /**
+     * Returns the region of the current tile layer or the region that was set
+     * using setTileRegion.
+     */
+    QRegion tileRegion() const { return mRegion; }
 
     // QGraphicsItem
     QRectF boundingRect() const;

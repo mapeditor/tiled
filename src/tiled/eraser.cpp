@@ -79,11 +79,10 @@ void Eraser::doErase(bool mergeable)
     if (!tileLayer->bounds().contains(tilePos))
         return;
 
-    EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer,
-                                       QRegion(tilePos.x(),
-                                               tilePos.y(),
-                                               1, 1));
+    QRegion eraseRegion(tilePos.x(), tilePos.y(), 1, 1);
+    EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
     erase->setMergeable(mergeable);
 
     mapDocument()->undoStack()->push(erase);
+    mapDocument()->emitRegionEdited(eraseRegion, tileLayer);
 }

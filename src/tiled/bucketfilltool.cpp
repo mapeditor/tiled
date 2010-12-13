@@ -149,7 +149,9 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
                                          mFillRegion,
                                          mStamp);
 
+    QRegion fillRegion(mFillRegion);
     mapDocument()->undoStack()->push(fillTiles);
+    mapDocument()->emitRegionEdited(fillRegion, currentTileLayer());
 }
 
 void BucketFillTool::mouseReleased(QGraphicsSceneMouseEvent *)

@@ -362,6 +362,7 @@ void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
     mapDocument()->undoStack()->push(paint);
     mLastStampX = mStampX;
     mLastStampY = mStampY;
+    mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
 /**

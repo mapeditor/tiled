@@ -33,6 +33,7 @@ class QUndoStack;
 
 namespace Tiled {
 
+class Layer;
 class Map;
 class MapObject;
 class MapRenderer;
@@ -166,6 +167,13 @@ public:
      */
     void emitRegionChanged(const QRegion &region);
 
+    /**
+     * Emits the region edited signal for the specified region and tile layer.
+     * The region should be in tile coordinates. This should be called from
+     * all map document changing classes which are triggered by user input.
+     */
+    void emitRegionEdited(const QRegion &region, Layer *layer);
+
     void emitObjectsAdded(const QList<MapObject*> &objects);
     void emitObjectsRemoved(const QList<MapObject*> &objects);
     void emitObjectsChanged(const QList<MapObject*> &objects);
@@ -212,6 +220,13 @@ signals:
      * tile coordinates.
      */
     void regionChanged(const QRegion &region);
+
+    /**
+     * Emitted when a certain region of the map was edited by user input.
+     * The region is given in tile coordinates.
+     * If multiple layers have been edited, multiple signals will be emitted.
+     */
+    void regionEdited(const QRegion &region, Layer *layer);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
