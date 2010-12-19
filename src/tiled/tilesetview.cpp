@@ -143,7 +143,7 @@ TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    setItemDelegate(new TileDelegate(this));
+    setItemDelegate(new TileDelegate(this, this));
     setShowGrid(false);
 
     QHeaderView *header = horizontalHeader();
