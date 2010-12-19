@@ -60,7 +60,7 @@ public:
     /**
      * Returns the current map document, the map view and the map scene
      */
-    MapDocument *currentMapDocument() const;
+    MapDocument *currentDocument() const;
 
     MapView *currentMapView() const;
 
@@ -69,49 +69,49 @@ public:
     /**
      * Returns the number of mapdocuments.
      */
-    int mapDocumentCount() const;
+    int documentCount() const;
 
     /**
      * Switches to the map document at the given \a index.
      */
-    void switchToMapDocument(int index);
+    void switchToDocument(int index);
 
     /**
      * Adds a new or an opened MapDocument to this Manager
      * as parameter, only the mapDocument needs to be given.
      * the mapView, QWidget Tab and so on will be created by this manager
      */
-    void addMapDocument(MapDocument *mapDocument);
+    void addDocument(MapDocument *mapDocument);
 
     /**
      * Deletes/frees the current mapdocument. There is no questionaire, if
      * changes should be saved.
      */
-    void closeMapDocument();
+    void closeCurrentDocument();
 
     /**
      * Close all documents. Even here will be no questionaire, wether to save
      * anything.
      */
-    void closeMapDocuments();
+    void closeAllDocuments();
 
     /**
      * Returns all MapDocuments.
      * when there is an empty tab (having a null pointer as Mapdocument)
      * an empty list will be returned.
      */
-    QList<MapDocument*> mapDocuments() const;
+    QList<MapDocument*> documents() const;
 
     /**
      * This will rename the current opened tab.
      */
-    void mapDocumentsFileNameChanged();
+    void documentsFileNameChanged();
 
 signals:
     /**
      * Emitted when the current displayed MapDocument changed.
      */
-    void currentMapDocumentChanged();
+    void currentDocumentChanged();
 
     /**
      * Emitted when the user requested the document at \a index to be closed.

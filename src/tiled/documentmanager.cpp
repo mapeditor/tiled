@@ -40,7 +40,7 @@ DocumentManager::DocumentManager(QObject *parent)
 
     // since we need at least one view and mapscene, add an empty document
     emptyView = false;
-    addMapDocument(0);
+    addDocument(0);
     // set emptyView after adding the empty view!
     emptyView = true;
 
@@ -75,7 +75,7 @@ QWidget *DocumentManager::widget() const
     return mTabWidget;
 }
 
-MapDocument *DocumentManager::currentMapDocument() const
+MapDocument *DocumentManager::currentDocument() const
 {
     return mMaps.at(mIndex).first->mapDocument();
 }
@@ -90,17 +90,17 @@ MapScene *DocumentManager::currentMapScene() const
     return mMaps.at(mIndex).first;
 }
 
-int DocumentManager::mapDocumentCount() const
+int DocumentManager::documentCount() const
 {
     return emptyView ? 0 : mMaps.size();
 }
 
-void DocumentManager::switchToMapDocument(int index)
+void DocumentManager::switchToDocument(int index)
 {
     mTabWidget->setCurrentIndex(index);
 }
 
-void DocumentManager::addMapDocument(MapDocument *mapDocument)
+void DocumentManager::addDocument(MapDocument *mapDocument)
 {
     mMaps.append(QPair<MapScene*, MapView*>(new MapScene(this), new MapView()));
 
@@ -144,12 +144,12 @@ void DocumentManager::addMapDocument(MapDocument *mapDocument)
     mTabWidget->setCurrentIndex(index);
 }
 
-void DocumentManager::closeMapDocument()
+void DocumentManager::closeCurrentDocument()
 {
     // there must be always a view and mapscene, so add an empty,
     // if there was removed the last useful view.
     if (mMaps.size() == 1) {
-        addMapDocument(0);
+        addDocument(0);
         // set emptyView *after* adding the empty View!
         emptyView = true;
         // addMapDocument changed mIndex to the just added document
@@ -190,16 +190,16 @@ void DocumentManager::closeMapDocument()
     if (mMaps.size() < 2)
         mTabWidget->setTabsClosable(false);
 
-    mapDocumentsFileNameChanged();
+    documentsFileNameChanged();
 }
 
-void DocumentManager::closeMapDocuments()
+void DocumentManager::closeAllDocuments()
 {
     while (!emptyView)
-        closeMapDocument();
+        closeCurrentDocument();
 }
 
-QList<MapDocument*> DocumentManager::mapDocuments() const
+QList<MapDocument*> DocumentManager::documents() const
 {
     QList<MapDocument*> ret;
 
@@ -222,7 +222,7 @@ void DocumentManager::currentIndexChanged(int index)
 
     mIndex = index;
 
-    emit currentMapDocumentChanged();
+    emit currentDocumentChanged();
 
     mapScene = currentMapScene();
     mapScene->setSelectedTool(mActiveTool);
@@ -242,7 +242,7 @@ void DocumentManager::setSelectedTool(AbstractTool *tool)
     }
 }
 
-void DocumentManager::mapDocumentsFileNameChanged()
+void DocumentManager::documentsFileNameChanged()
 {
     for (int i = 0; i < mMaps.size(); i++) {
         MapDocument *md = mMaps.at(i).first->mapDocument();

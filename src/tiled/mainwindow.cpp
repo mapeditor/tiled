@@ -293,7 +293,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
-    connect(mDocumentManager, SIGNAL(currentMapDocumentChanged()),
+    connect(mDocumentManager, SIGNAL(currentDocumentChanged()),
             SLOT(mapDocumentChanged()));
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
             this, SLOT(closeMapDocument(int)));
@@ -308,7 +308,7 @@ MainWindow::~MainWindow()
     writeSettings();
 
     cleanQuickStamps();
-    mDocumentManager->closeMapDocuments();
+    mDocumentManager->closeAllDocuments();
 
     AutomaticMappingManager::deleteInstance();
     ToolManager::deleteInstance();
@@ -580,8 +580,8 @@ bool MainWindow::confirmSave()
 
 bool MainWindow::confirmAllSave()
 {
-    for (int i = 0; i < mDocumentManager->mapDocumentCount(); i++) {
-        mDocumentManager->switchToMapDocument(i);
+    for (int i = 0; i < mDocumentManager->documentCount(); i++) {
+        mDocumentManager->switchToDocument(i);
         if (!confirmSave())
             return false;
     }
@@ -663,7 +663,7 @@ void MainWindow::exportAs()
 void MainWindow::closeFile()
 {
     if (confirmSave())
-        mDocumentManager->closeMapDocument();
+        mDocumentManager->closeCurrentDocument();
 }
 
 void MainWindow::cut()
@@ -992,14 +992,14 @@ void MainWindow::writeSettings()
 
     mSettings.beginGroup(QLatin1String("recentFiles"));
     mSettings.setValue(QLatin1String("recentOpenedFiles"),
-                       mDocumentManager->mapDocumentCount());
+                       mDocumentManager->documentCount());
 
     QStringList mapScales;
     QStringList scrollX;
     QStringList scrollY;
     QStringList selectedLayer;
-    for (int i = 0; i < mDocumentManager->mapDocumentCount(); i++) {
-        mDocumentManager->switchToMapDocument(i);
+    for (int i = 0; i < mDocumentManager->documentCount(); i++) {
+        mDocumentManager->switchToDocument(i);
         mapScales.append(QString::number(mMapView->zoomable()->scale()));
         scrollX.append(QString::number(
                        mMapView->horizontalScrollBar()->sliderPosition()));
@@ -1037,12 +1037,12 @@ void MainWindow::setCurrentFileName(const QString &fileName)
     setWindowFilePath(mCurrentFileName);
     setWindowTitle(tr("%1[*] - Tiled").arg(QFileInfo(fileName).fileName()));
     setRecentFile(mCurrentFileName);
-    mDocumentManager->mapDocumentsFileNameChanged();
+    mDocumentManager->documentsFileNameChanged();
 }
 
 void MainWindow::addMapDocument(MapDocument *mapDocument)
 {
-    mDocumentManager->addMapDocument(mapDocument);
+    mDocumentManager->addDocument(mapDocument);
 
     if (mMapDocument) {
         setCurrentFileName(mMapDocument->fileName());
@@ -1076,7 +1076,7 @@ void MainWindow::retranslateUi()
 
 void MainWindow::mapDocumentChanged()
 {
-    mMapDocument = mDocumentManager->currentMapDocument();
+    mMapDocument = mDocumentManager->currentDocument();
     mScene = mDocumentManager->currentMapScene();
 
     mActionHandler->setMapDocument(mMapDocument);
@@ -1231,8 +1231,8 @@ void MainWindow::saveQuickStamp(int index)
 
 void MainWindow::closeMapDocument(int index)
 {
-    mDocumentManager->switchToMapDocument(index);
+    mDocumentManager->switchToDocument(index);
     if (confirmSave())
-        mDocumentManager->closeMapDocument();
+        mDocumentManager->closeCurrentDocument();
     updateActions();
 }
