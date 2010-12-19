@@ -30,14 +30,14 @@
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "tile.h"
+#include "utils.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
-    : AbstractTool(tr("Create Objects"),
-                   QIcon(QLatin1String(
-                           ":images/22x22/tool-create-object.png")),
+    : AbstractTool(QString(),
+                   QIcon(QLatin1String(":images/24x24/insert-object.png")),
                    QKeySequence(tr("O")),
                    parent)
     , mMapScene(0)
@@ -45,12 +45,19 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mTile(0)
     , mMode(mode)
 {
-    if (mMode == TileObjects) {
-        setIcon(QIcon(QLatin1String(
-                          ":images/22x22/tool-create-tile-object.png")));
-        setName(tr("Create Tile Objects"));
-        setShortcut(QKeySequence(tr("T")));
+    if (mMode == TileObjects)
+        setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
+
+    switch (mMode) {
+    case AreaObjects:
+        Utils::setThemeIcon(this, "insert-object");
+        break;
+    case TileObjects:
+        Utils::setThemeIcon(this, "insert-image");
+        break;
     }
+
+    languageChanged();
 }
 
 void CreateObjectTool::activate(MapScene *scene)
@@ -131,8 +138,16 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void CreateObjectTool::languageChanged()
 {
-    setName(tr("Create Objects"));
-    setShortcut(QKeySequence(tr("O")));
+    switch (mMode) {
+    case AreaObjects:
+        setName(tr("Insert Objects"));
+        setShortcut(QKeySequence(tr("O")));
+        break;
+    case TileObjects:
+        setName(tr("Insert Tile Objects"));
+        setShortcut(QKeySequence(tr("T")));
+        break;
+    }
 }
 
 void CreateObjectTool::updateEnabledState()
