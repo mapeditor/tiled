@@ -26,6 +26,7 @@
 namespace Tiled {
 namespace Internal {
 
+class MapScene;
 class Zoomable;
 
 /**
@@ -44,6 +45,8 @@ public:
      * Constructor.
      */
     MapView(QWidget *parent = 0);
+
+    MapScene *mapScene() const;
 
     Zoomable *zoomable() const { return mZoomable; }
 

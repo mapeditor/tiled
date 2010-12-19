@@ -31,7 +31,6 @@
 #include <QSettings>
 
 class QLabel;
-class QUndoGroup;
 
 namespace Ui {
 class MainWindow;
@@ -108,6 +107,10 @@ private slots:
     void paste();
     void openPreferences();
 
+    void zoomIn();
+    void zoomOut();
+    void zoomNormal();
+
     void newTileset(const QString &path = QString());
     void addExternalTileset();
     void resizeMap();
@@ -116,7 +119,7 @@ private slots:
     void autoMap();
     void updateModified();
     void updateActions();
-    void updateZoomLabel(qreal scale);
+    void updateZoomLabel();
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();
@@ -129,7 +132,7 @@ private slots:
     void selectQuickStamp(int index);
     void saveQuickStamp(int index);
 
-    void mapDocumentChanged();
+    void mapDocumentChanged(MapDocument *mapDocument);
     void closeMapDocument(int index);
 
 private:
@@ -181,14 +184,12 @@ private:
     Ui::MainWindow *mUi;
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
-    MapScene *mScene;
     LayerDock *mLayerDock;
     TilesetDock *mTilesetDock;
     QLabel *mZoomLabel;
     QLabel *mStatusInfoLabel;
     QSettings mSettings;
     QString mCurrentFileName;
-    QUndoGroup *mUndoGroup;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
@@ -205,7 +206,6 @@ private:
     void cleanQuickStamps();
     void eraseQuickStamp(int index);
 
-    MapView *mMapView;
     DocumentManager *mDocumentManager;
 };
 

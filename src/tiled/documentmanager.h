@@ -1,6 +1,7 @@
 /*
  * documentmanager.h
  * Copyright 2010, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -29,6 +30,7 @@
 #include <QPair>
 
 class QTabWidget;
+class QUndoGroup;
 
 namespace Tiled {
 
@@ -58,18 +60,32 @@ public:
     QWidget *widget() const;
 
     /**
-     * Returns the current map document, the map view and the map scene
+     * Returns the undo group that combines the undo stacks of all opened map
+     * documents.
+     *
+     * @see MapDocument::undoStack()
+     */
+    QUndoGroup *undoGroup() const { return mUndoGroup; }
+
+    /**
+     * Returns the current map document, or 0 when there is none.
      */
     MapDocument *currentDocument() const;
 
+    /**
+     * Returns the map view of the current document, or 0 when there is none.
+     */
     MapView *currentMapView() const;
 
+    /**
+     * Returns the map scene of the current document, or 0 when there is none.
+     */
     MapScene *currentMapScene() const;
 
     /**
-     * Returns the number of mapdocuments.
+     * Returns the number of map documents.
      */
-    int documentCount() const;
+    int documentCount() const { return mDocuments.size(); }
 
     /**
      * Switches to the map document at the given \a index.
@@ -77,41 +93,31 @@ public:
     void switchToDocument(int index);
 
     /**
-     * Adds a new or an opened MapDocument to this Manager
-     * as parameter, only the mapDocument needs to be given.
-     * the mapView, QWidget Tab and so on will be created by this manager
+     * Adds the new or opened \a mapDocument to the document manager.
      */
     void addDocument(MapDocument *mapDocument);
 
     /**
-     * Deletes/frees the current mapdocument. There is no questionaire, if
-     * changes should be saved.
+     * Closes the current map document. Will not ask the user whether to save
+     * any changes!
      */
     void closeCurrentDocument();
 
     /**
-     * Close all documents. Even here will be no questionaire, wether to save
-     * anything.
+     * Close all documents. Will not ask the user whether to save any changes!
      */
     void closeAllDocuments();
 
     /**
-     * Returns all MapDocuments.
-     * when there is an empty tab (having a null pointer as Mapdocument)
-     * an empty list will be returned.
+     * Returns all open map documents.
      */
-    QList<MapDocument*> documents() const;
-
-    /**
-     * This will rename the current opened tab.
-     */
-    void documentsFileNameChanged();
+    QList<MapDocument*> documents() const { return mDocuments; }
 
 signals:
     /**
-     * Emitted when the current displayed MapDocument changed.
+     * Emitted when the current displayed map document changed.
      */
-    void currentDocumentChanged();
+    void currentDocumentChanged(MapDocument *mapDocument);
 
     /**
      * Emitted when the user requested the document at \a index to be closed.
@@ -119,30 +125,17 @@ signals:
     void documentCloseRequested(int index);
 
 private slots:
-    void currentIndexChanged(int index);
+    void currentIndexChanged();
     void setSelectedTool(AbstractTool *tool);
+    void documentFileNameChanged();
 
 private:
-    /**
-     * This stores references to map scenes and map views.
-     * These map scenes have pointers to the corresponding map documents.
-     * To make sure there is always a map view available,
-     * this data structure should be initialized with a Pair of
-     * (new MapScene(this), new MapView()));
-     * The map views need to have to set the scene to the
-     * corresponding MapScene of course.
-     */
-    QList<QPair<MapScene*,MapView*> > mMaps;
-
-    /**
-     * When there is no document loaded there is still an empty view.
-     * This bool tells you, if there is a tab with this empty view.
-     */
-    bool emptyView;
+    QList<MapDocument*> mDocuments;
 
     QTabWidget *mTabWidget;
-    AbstractTool *mActiveTool;
-    int mIndex;
+    QUndoGroup *mUndoGroup;
+    AbstractTool *mSelectedTool;
+    MapScene *mSceneWithTool;
     QString mUntitledFileName;
 };
 

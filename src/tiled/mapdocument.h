@@ -71,7 +71,7 @@ public:
 
     QString fileName() const { return mFileName; }
 
-    void setFileName(const QString &fileName) { mFileName = fileName; }
+    void setFileName(const QString &fileName);
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will
@@ -188,6 +188,8 @@ public:
     { emitObjectsChanged(QList<MapObject*>() << object); }
 
 signals:
+    void fileNameChanged();
+
     /**
      * Emitted when the selected tile region changes. Sends the currently
      * selected region and the previously selected region.

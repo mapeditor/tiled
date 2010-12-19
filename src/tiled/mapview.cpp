@@ -20,6 +20,7 @@
 
 #include "mapview.h"
 
+#include "mapscene.h"
 #include "preferences.h"
 #include "zoomable.h"
 
@@ -38,6 +39,9 @@ MapView::MapView(QWidget *parent)
     , mZoomable(new Zoomable(this))
 {
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+#ifdef Q_OS_MAC
+    setFrameStyle(QFrame::NoFrame);
+#endif
 
 #ifndef QT_NO_OPENGL
     Preferences *prefs = Preferences::instance();
@@ -56,6 +60,11 @@ MapView::MapView(QWidget *parent)
     v->setMouseTracking(true);
 
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
+}
+
+MapScene *MapView::mapScene() const
+{
+    return static_cast<MapScene*>(scene());
 }
 
 void MapView::adjustScale(qreal scale)

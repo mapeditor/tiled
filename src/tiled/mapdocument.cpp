@@ -82,6 +82,15 @@ MapDocument::~MapDocument()
     delete mMap;
 }
 
+void MapDocument::setFileName(const QString &fileName)
+{
+    if (mFileName == fileName)
+        return;
+
+    mFileName = fileName;
+    emit fileNameChanged();
+}
+
 void MapDocument::setCurrentLayer(int index)
 {
     Q_ASSERT(index >= -1 && index < mMap->layerCount());
