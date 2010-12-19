@@ -48,7 +48,7 @@ QVariant PropertiesModel::data(const QModelIndex &index, int role) const
                 case 1: return mProperties.value(key);
             }
         } else if (index.column() == 0) {
-            return tr("<new property>");
+            return (role == Qt::EditRole) ? QString() : tr("<new property>");
         }
     }
     return QVariant();
