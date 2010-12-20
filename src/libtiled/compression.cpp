@@ -48,7 +48,8 @@ static void logZlibError(int error)
 
 QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 {
-    QByteArray out(expectedSize, Qt::Uninitialized);
+    QByteArray out;
+    out.resize(expectedSize);
     z_stream strm;
 
     strm.zalloc = Z_NULL;
@@ -104,7 +105,8 @@ QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 
 QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method)
 {
-    QByteArray out(1024, Qt::Uninitialized);
+    QByteArray out;
+    out.resize(1024);
     int err;
     z_stream strm;
     strm.zalloc = Z_NULL;

@@ -139,7 +139,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
                                      Qt::KeyboardModifiers modifiers)
 {
     if (mMode == NoMode && mMousePressed) {
-        const int dragDistance = (mStart - pos).manhattanLength();
+        const int dragDistance = (mStart - pos).toPoint().manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
             if (mClickedObjectItem)
                 startMoving();
