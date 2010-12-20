@@ -72,7 +72,7 @@ bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
         QString text = value.toString();
         if (index.row() == mKeys.size()) {
             // Add a new property
-            if (text == tr("<new property>"))
+            if (text.isEmpty())
                 return false;
             mProperties.insert(text, QString());
         } else {
