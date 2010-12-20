@@ -57,7 +57,7 @@ QByteArray TILEDSHARED_EXPORT decompress(const QByteArray &data,
  * @return the compressed data, or a null QByteArray if compression failed
  */
 QByteArray TILEDSHARED_EXPORT compress(const QByteArray &data,
-                                       CompressionMethod method = Gzip);
+                                       CompressionMethod method = Zlib);
 
 } // namespace Tiled
 

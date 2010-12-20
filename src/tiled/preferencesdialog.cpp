@@ -113,9 +113,9 @@ void PreferencesDialog::fromPreferences()
         formatIndex = 1;
         break;
     case MapWriter::Base64Gzip:
-    default:
         formatIndex = 2;
         break;
+    default:
     case MapWriter::Base64Zlib:
         formatIndex = 3;
         break;
@@ -149,9 +149,9 @@ MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
     case 1:
         return MapWriter::Base64;
     case 2:
-    default:
         return MapWriter::Base64Gzip;
     case 3:
+    default:
         return MapWriter::Base64Zlib;
     case 4:
         return MapWriter::CSV;

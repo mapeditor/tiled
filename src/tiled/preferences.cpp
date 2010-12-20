@@ -50,7 +50,7 @@ Preferences::Preferences()
     mSettings->beginGroup(QLatin1String("Storage"));
     mLayerDataFormat = (MapWriter::LayerDataFormat)
                        mSettings->value(QLatin1String("LayerDataFormat"),
-                                        MapWriter::Base64Gzip).toInt();
+                                        MapWriter::Base64Zlib).toInt();
     mDtdEnabled = mSettings->value(QLatin1String("DtdEnabled")).toBool();
     mReloadTilesetsOnChange =
             mSettings->value(QLatin1String("ReloadTilesets"), true).toBool();
