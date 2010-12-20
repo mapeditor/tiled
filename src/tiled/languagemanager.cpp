@@ -109,7 +109,6 @@ QStringList LanguageManager::availableLanguages()
 void LanguageManager::loadAvailableLanguages()
 {
     mLanguages.clear();
-    mLanguages.append(QLatin1String("en_US"));
 
     QStringList nameFilters;
     nameFilters.append(QLatin1String("tiled_*.qm"));
