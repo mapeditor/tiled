@@ -317,8 +317,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
 MainWindow::~MainWindow()
 {
-    writeSettings();
-
     cleanQuickStamps();
     mDocumentManager->closeAllDocuments();
 
@@ -343,6 +341,8 @@ void MainWindow::commitData(QSessionManager &manager)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    writeSettings();
+
     if (confirmAllSave())
         event->accept();
     else
@@ -490,6 +490,12 @@ void MainWindow::openLastFiles()
 
         }
     }
+    QString lastActiveDocument =
+            mSettings.value(QLatin1String("lastActive")).toString();
+    int documentIndex = mDocumentManager->findDocument(lastActiveDocument);
+    if (documentIndex != -1)
+        mDocumentManager->switchToDocument(documentIndex);
+
     mSettings.endGroup();
 }
 
@@ -1041,6 +1047,9 @@ void MainWindow::writeSettings()
     mSettings.beginGroup(QLatin1String("recentFiles"));
     mSettings.setValue(QLatin1String("recentOpenedFiles"),
                        mDocumentManager->documentCount());
+
+    if (MapDocument *document = mDocumentManager->currentDocument())
+        mSettings.setValue(QLatin1String("lastActive"), document->fileName());
 
     QStringList mapScales;
     QStringList scrollX;
