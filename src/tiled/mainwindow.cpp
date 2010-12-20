@@ -391,6 +391,13 @@ bool MainWindow::openFile(const QString &fileName,
     if (fileName.isEmpty())
         return false;
 
+    // Select existing document if this file is already open
+    int documentIndex = mDocumentManager->findDocument(fileName);
+    if (documentIndex != -1) {
+        mDocumentManager->switchToDocument(documentIndex);
+        return true;
+    }
+
     TmxMapReader tmxMapReader;
 
     if (!mapReader && !tmxMapReader.supportsFile(fileName)) {

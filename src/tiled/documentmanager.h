@@ -88,6 +88,12 @@ public:
     int documentCount() const { return mDocuments.size(); }
 
     /**
+     * Searches for a document with the given \a fileName and returns its
+     * index. Returns -1 when the document isn't open.
+     */
+    int findDocument(const QString &fileName) const;
+
+    /**
      * Switches to the map document at the given \a index.
      */
     void switchToDocument(int index);

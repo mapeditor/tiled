@@ -87,6 +87,19 @@ MapScene *DocumentManager::currentMapScene() const
     return 0;
 }
 
+int DocumentManager::findDocument(const QString &fileName) const
+{
+    const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+
+    for (int i = 0; i < mDocuments.size(); ++i) {
+        QFileInfo fileInfo(mDocuments.at(i)->fileName());
+        if (fileInfo.canonicalFilePath() == canonicalFilePath)
+            return i;
+    }
+
+    return -1;
+}
+
 void DocumentManager::switchToDocument(int index)
 {
     mTabWidget->setCurrentIndex(index);
