@@ -90,6 +90,8 @@ MapScene *DocumentManager::currentMapScene() const
 int DocumentManager::findDocument(const QString &fileName) const
 {
     const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    if (canonicalFilePath.isEmpty()) // file doesn't exist
+        return -1;
 
     for (int i = 0; i < mDocuments.size(); ++i) {
         QFileInfo fileInfo(mDocuments.at(i)->fileName());

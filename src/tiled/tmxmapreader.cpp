@@ -44,7 +44,11 @@ protected:
     QString resolveReference(const QString &reference, const QString &mapPath)
     {
         QString resolved = MapReader::resolveReference(reference, mapPath);
-        return QFileInfo(resolved).canonicalFilePath();
+        QString canonical = QFileInfo(resolved).canonicalFilePath();
+
+        // Make sure that we're not returning an empty string when the file is
+        // not found.
+        return canonical.isEmpty() ? resolved : canonical;
     }
 
     /**
