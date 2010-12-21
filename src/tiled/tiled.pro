@@ -107,7 +107,10 @@ SOURCES += aboutdialog.cpp \
     addremovetileset.cpp \
     movetileset.cpp \
     createobjecttool.cpp \
-    objectselectiontool.cpp
+    objectselectiontool.cpp \
+    commandbutton.cpp \
+    commanddatamodel.cpp \
+    commanddialog.cpp
 HEADERS += aboutdialog.h \
     automap.h \
     brushitem.h \
@@ -180,7 +183,10 @@ HEADERS += aboutdialog.h \
     addremovetileset.h \
     movetileset.h \
     createobjecttool.h \
-    objectselectiontool.h
+    objectselectiontool.h \
+    commanddatamodel.h \
+    commanddialog.h \
+    commandbutton.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
@@ -190,7 +196,8 @@ FORMS += aboutdialog.ui \
     newtilesetdialog.ui \
     saveasimagedialog.ui \
     offsetmapdialog.ui \
-    objectpropertiesdialog.ui
+    objectpropertiesdialog.ui \
+    commanddialog.ui
 RESOURCES += tiled.qrc
 mac {
     TARGET = Tiled

@@ -52,6 +52,7 @@ class StampBrush;
 class BucketFillTool;
 class TilesetDock;
 class MapView;
+class CommandButton;
 
 /**
  * The main editor window.
@@ -93,7 +94,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 
-private slots:
+public slots:
     void newMap();
     void openFile();
     bool saveFile();
@@ -190,6 +191,7 @@ private:
     QLabel *mStatusInfoLabel;
     QSettings mSettings;
     QString mCurrentFileName;
+    CommandButton *mCommandButton;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;

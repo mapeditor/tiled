@@ -67,6 +67,7 @@
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "commandbutton.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -171,6 +172,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuEdit->insertSeparator(mUi->actionPreferences);
     mUi->mainToolBar->addAction(undoAction);
     mUi->mainToolBar->addAction(redoAction);
+
+    mUi->mainToolBar->addSeparator();
+
+    mCommandButton = new CommandButton(this, mDocumentManager);
+    mUi->mainToolBar->addWidget(mCommandButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
@@ -946,6 +952,10 @@ void MainWindow::updateActions()
             Layer *layer = mMapDocument->map()->layerAt(currentLayer);
             tileLayerSelected = dynamic_cast<TileLayer*>(layer) != 0;
         }
+
+        mCommandButton->setEnabled(true);
+    } else {
+        mCommandButton->setEnabled(false);
     }
 
     const bool mapInClipboard = mClipboardManager->hasMap();

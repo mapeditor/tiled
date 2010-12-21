@@ -59,5 +59,6 @@
         <file>images/22x22/stock-tool-bucket-fill.png</file>
         <file>images/16x16/layer-object.png</file>
         <file>images/16x16/layer-tile.png</file>
+        <file>images/24x24/system-run.png</file>
     </qresource>
 </RCC>
