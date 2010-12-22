@@ -897,6 +897,10 @@ void MainWindow::editMapProperties()
 void MainWindow::autoMap()
 {
     AutomaticMappingManager::instance()->automap();
+    QString error = AutomaticMappingManager::instance()->errorString();
+    if (!error.isEmpty()) {
+        QMessageBox::critical(this, tr("Automatic Mapping"), error);
+    }
 }
 
 void MainWindow::openRecentFile()

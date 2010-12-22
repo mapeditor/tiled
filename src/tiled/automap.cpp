@@ -37,7 +37,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
-#include <QMessageBox>
 #include <QObject>
 #include <QTextStream>
 
@@ -73,6 +72,8 @@ QSet<QString> AutoMapper::getTouchedLayers() const
 
 bool AutoMapper::prepareLoad(Map *rules, const QString &rulePath)
 {
+    mError.clear();
+
     if (!setupMapDocumentLayers())
         return false;
 
@@ -111,17 +112,14 @@ TileLayer *AutoMapper::findTileLayer(Map *map, const QString &name)
         if (layer->name().compare(name, Qt::CaseInsensitive) == 0) {
             if (TileLayer *tileLayer = layer->asTileLayer()) {
                 if (ret)
-                    error = tr("Multiple layers %1 found!").arg(name);
+                    error = tr("Multiple layers %1 found!").arg(name) +
+                            QLatin1Char('\n');
                 ret = tileLayer;
             }
         }
     }
 
-    if (!error.isEmpty()) {
-        QMessageBox msgBox;
-        msgBox.setText(error);
-        msgBox.exec();
-    }
+    mError += error;
 
     return ret;
 }
@@ -242,9 +240,7 @@ bool AutoMapper::setupRuleMapLayers()
 
     if (!error.isEmpty()) {
         error = mRulePath + QLatin1Char('\n') + error;
-        QMessageBox msgBox;
-        msgBox.setText(error);
-        msgBox.exec();
+        mError += error;
         return false;
     }
 
@@ -924,14 +920,17 @@ void AutomaticMappingManager::automap()
     if (!mMapDocument)
         return;
 
-    int w = mMapDocument->map()->width();
-    int h = mMapDocument->map()->height();
-    TileLayer *l = new TileLayer(QLatin1String("set"), 0 , 0, 0, 0);
-    automap(QRect(0, 0, w, h), l, true);
-    delete l;
+    Map *map = mMapDocument->map();
+    int w = map->width();
+    int h = map->height();
+    int l = map->indexOfLayer(QLatin1String("set"));
+    if (l != -1)
+        automap(QRect(0, 0, w, h), map->layerAt(l));
+    else
+        mError = tr("No set layer found!") + QLatin1Char('\n');
 }
 
-void AutomaticMappingManager::automap(QRegion where, Layer *l, bool verbose)
+void AutomaticMappingManager::automap(QRegion where, Layer *l)
 {
     if (!mMapDocument)
         return;
@@ -942,7 +941,7 @@ void AutomaticMappingManager::automap(QRegion where, Layer *l, bool verbose)
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
         const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
-        if (loadFile(rulesFileName, verbose))
+        if (loadFile(rulesFileName))
             mLoaded = true;
     }
 
@@ -967,24 +966,21 @@ void AutomaticMappingManager::automap(QRegion where, Layer *l, bool verbose)
     mMapDocument->setCurrentLayer(map->indexOfLayer(layer));
 }
 
-bool AutomaticMappingManager::loadFile(const QString &filePath, bool verbose)
+bool AutomaticMappingManager::loadFile(const QString &filePath)
 {
+    mError.clear();
     bool ret = true;
     const QString absPath = QFileInfo(filePath).path();
     QFile rulesFile(filePath);
 
     if (!rulesFile.exists()) {
-        if (verbose)
-            QMessageBox::critical(
-                    0, tr("AutoMap Error"),
-                    tr("No rules file found at:\n%1").arg(filePath));
+        mError += tr("No rules file found at:\n%1").arg(filePath)
+                  + QLatin1Char('\n');
         return false;
     }
     if (!rulesFile.open(QIODevice::ReadOnly)) {
-        if (verbose)
-            QMessageBox::critical(
-                    0, tr("AutoMap Error"),
-                    tr("Error opening rules file:\n%1").arg(filePath));
+        mError += tr("Error opening rules file:\n%1").arg(filePath)
+                  + QLatin1Char('\n');
         return false;
     }
 
@@ -1002,9 +998,7 @@ bool AutomaticMappingManager::loadFile(const QString &filePath, bool verbose)
             rulePath = absPath + QLatin1Char('/') + rulePath;
 
         if (!QFileInfo(rulePath).exists()) {
-            if (verbose)
-                QMessageBox::warning(0, tr("AutoMap Warning"),
-                        tr("file not found:\n%1").arg(rulePath));
+            mError += tr("File not found:\n%1").arg(rulePath) + QLatin1Char('\n');
             ret = false;
             continue;
         }
@@ -1017,10 +1011,8 @@ bool AutomaticMappingManager::loadFile(const QString &filePath, bool verbose)
             tilesetManager->addReferences(rules->tilesets());
 
             if (!rules) {
-                if (verbose)
-                        QMessageBox::warning(
-                                0, tr("Error Opening Rules Map"),
-                                mapReader.errorString());
+                mError += tr("Opening rules map failed:\n%1").arg(
+                        mapReader.errorString()) + QLatin1Char('\n');
                 ret = false;
                 continue;
             }
@@ -1034,7 +1026,7 @@ bool AutomaticMappingManager::loadFile(const QString &filePath, bool verbose)
 
         }
         if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)){
-            if (!loadFile(rulePath, verbose))
+            if (!loadFile(rulePath))
                 ret = false;
         }
     }

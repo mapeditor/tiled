@@ -21,11 +21,11 @@
 #ifndef AUTOMAP_H
 #define AUTOMAP_H
 
-#include <QCoreApplication>
 #include <QList>
 #include <QPair>
 #include <QRegion>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QTimer>
 #include <QUndoCommand>
@@ -101,6 +101,8 @@ public:
      * so the auto mapper becomes ready for its next automatic mapping.
      */
     void cleanAll();
+
+    QString errorString() const { return mError; }
 
 private slots:
     /**
@@ -218,7 +220,7 @@ private:
      * This searches \a map for a layer with the given \a name. Returns that
      * layer if found, and NULL otherwise.
      */
-    static TileLayer *findTileLayer(Map *map, const QString &name);
+    TileLayer *findTileLayer(Map *map, const QString &name);
 
     /**
      * cleans up the data structes filled by setupRuleMapLayers(),
@@ -325,6 +327,8 @@ private:
     QStringList mAddLayers;
 
     QSet<QString> mTouchedLayers;
+
+    QString mError;
 };
 
 /**
@@ -337,7 +341,6 @@ private:
 
 class AutoMapperWrapper : public QUndoCommand
 {
-    Q_DECLARE_TR_FUNCTIONS(AutoMapperWrapper)
 public:
     AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMapper*> autoMapper,
                       QRegion *where);
@@ -381,6 +384,8 @@ public:
 
     void setMapDocument(MapDocument *mapDocument);
 
+    QString errorString() const { return mError; }
+
 public slots:
     /**
      * This sets up new AutoMapperWrappers, which trigger the automapping.
@@ -388,7 +393,7 @@ public slots:
      * This is a signal so it can directly be connected to the regionEdited
      * signal of map documents.
      */
-    void automap(QRegion where, Layer *layer, bool verbose = false);
+    void automap(QRegion where, Layer *layer);
 
 private slots:
     /**
@@ -423,7 +428,7 @@ private:
      *
      * @return if the loading was successful: return true if it suceeded.
      */
-    bool loadFile(const QString &filePath, bool verbose);
+    bool loadFile(const QString &filePath);
 
     /**
      * deletes all its data structures
@@ -466,6 +471,8 @@ private:
      * wait until all is over an reload everything at the timeout.
      */
     QTimer mChangedFilesTimer;
+
+    QString mError;
 };
 
 } // namespace Internal
