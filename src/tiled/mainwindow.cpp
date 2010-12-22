@@ -388,7 +388,6 @@ void MainWindow::newMap()
         return;
 
     addMapDocument(mapDocument);
-    updateActions();
 }
 
 bool MainWindow::openFile(const QString &fileName,
@@ -431,7 +430,6 @@ bool MainWindow::openFile(const QString &fileName,
     }
 
     addMapDocument(new MapDocument(map, fileName));
-    updateActions();
     return true;
 }
 
@@ -975,6 +973,8 @@ void MainWindow::updateActions()
     mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
     mUi->actionAutoMap->setEnabled(map);
+
+    updateZoomLabel(); // for the zoom actions
 }
 
 void MainWindow::updateZoomLabel()
@@ -1133,7 +1133,6 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     else
         setCurrentFileName(QString());
 
-    updateZoomLabel();
     updateActions();
 }
 
@@ -1254,5 +1253,4 @@ void MainWindow::closeMapDocument(int index)
     mDocumentManager->switchToDocument(index);
     if (confirmSave())
         mDocumentManager->closeCurrentDocument();
-    updateActions();
 }
