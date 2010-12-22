@@ -767,6 +767,12 @@ void AutoMapper::cleanTilesets()
 
 void AutoMapper::cleanUpRulesMap()
 {
+    cleanTilesets();
+
+    // mMapRules can be empty, when in prepareLoad the very first stages fail.
+    if (!mMapRules)
+        return;
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReferences(mMapRules->tilesets());
 
@@ -774,7 +780,6 @@ void AutoMapper::cleanUpRulesMap()
     mMapRules = 0;
 
     cleanUpRuleMapLayers();
-    cleanTilesets();
     mRules.clear();
 }
 
