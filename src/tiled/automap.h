@@ -23,17 +23,16 @@
 
 #include <QCoreApplication>
 #include <QList>
-#include <QVector>
 #include <QPair>
 #include <QRegion>
-#include <QUndoCommand>
-#include <QFile>
-#include <QTextStream>
-#include <QObject>
 #include <QSet>
 #include <QStringList>
-#include <QFileSystemWatcher>
 #include <QTimer>
+#include <QUndoCommand>
+#include <QVector>
+
+class QFileSystemWatcher;
+class QObject;
 
 namespace Tiled {
 

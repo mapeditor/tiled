@@ -34,24 +34,12 @@
 #include "tilesetmanager.h"
 #include "tmxmapreader.h"
 
-#include <QMessageBox>
-#include <QUndoStack>
-#include <QFileInfo>
-#include <QDebug>
-#include <QStringList>
-#include <QCoreApplication>
-#include <QList>
-#include <QVector>
-#include <QPair>
-#include <QRegion>
-#include <QUndoCommand>
 #include <QFile>
-#include <QTextStream>
-#include <QObject>
-#include <QSet>
-#include <QStringList>
+#include <QFileInfo>
 #include <QFileSystemWatcher>
-#include <QTimer>
+#include <QMessageBox>
+#include <QObject>
+#include <QTextStream>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
