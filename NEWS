@@ -1,5 +1,27 @@
-* Added automap feature, allowing creation of tile layers based on rules
+0.6.0 (...)
+* Added support for opening multiple maps in one session
+* Added support for placing tiles as objects
+* Added automatic mapping feature, allowing placing of tiles based on rules
+* Added ability to save/restore up to 9 stamps with Ctrl+<number>
+* Added an object selection tool, allowing moving/deleting multiple objects
+* Added ability to run external commands
+* Added support for drawing lines and circles with the stamp brush
+* Added icons to distinguish tile layers from object layers
+* Added "Move To Layer" submenu to the context menu of objects
+* Added option to use hardware rendering based on OpenGL
+* Added a T-Engine4 map export plugin
+* Added a simple TMX viewer application
+* Added a New Layer dropdown menu to the layers dock
 * Added Chinese translation
+* Allowed dragging an image onto Tiled to add a tileset
+* Center the map when it is smaller than the map view
+* Remember the selected layer across restarts
+* Changed the default layer data format to use zlib rather than gzip
+* Store the tileset image width and height in the map file
+* Compile fixes related to linking zlib
+* Fixed the current stamp to get updated when switching tilesets
+* Fixed the maximum sizes of the resize map dialog
+* Fixed build issues when an older version of libtiled is installed
 
 0.5.1 (2 September 2010)
 * Fixed saving of objects when tile width is different from tile height
