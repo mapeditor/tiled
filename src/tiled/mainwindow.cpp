@@ -103,6 +103,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     PluginManager::instance()->loadPlugins();
 
+    Preferences *preferences = Preferences::instance();
+
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
 
@@ -152,6 +154,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
     undoAction->setShortcuts(QKeySequence::Undo);
     redoAction->setShortcuts(QKeySequence::Redo);
+
+    mUi->actionShowGrid->setChecked(preferences->showGrid());
+    mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
 
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
@@ -208,6 +213,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
+    connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
+            preferences, SLOT(setShowGrid(bool)));
+    connect(mUi->actionSnapToGrid, SIGNAL(toggled(bool)),
+            preferences, SLOT(setSnapToGrid(bool)));
     connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
@@ -966,7 +975,6 @@ void MainWindow::updateActions()
     mUi->actionCut->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionPaste->setEnabled(tileLayerSelected && mapInClipboard);
-    mUi->actionShowGrid->setEnabled(map);
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
@@ -1028,8 +1036,6 @@ void MainWindow::writeSettings()
     mSettings.beginGroup(QLatin1String("mainwindow"));
     mSettings.setValue(QLatin1String("geometry"), saveGeometry());
     mSettings.setValue(QLatin1String("state"), saveState());
-    mSettings.setValue(QLatin1String("gridVisible"),
-                       mUi->actionShowGrid->isChecked());
     mSettings.endGroup();
 
     mSettings.beginGroup(QLatin1String("recentFiles"));
@@ -1069,8 +1075,6 @@ void MainWindow::readSettings()
         resize(800, 600);
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
-    mUi->actionShowGrid->setChecked(
-            mSettings.value(QLatin1String("gridVisible"), true).toBool());
     mSettings.endGroup();
     updateRecentFiles();
 }
@@ -1096,9 +1100,11 @@ void MainWindow::addMapDocument(MapDocument *mapDocument)
     connect(mapView->zoomable(), SIGNAL(scaleChanged(qreal)),
             this, SLOT(updateZoomLabel()));
 
+    Preferences *prefs = Preferences::instance();
+
     MapScene *mapScene = mapView->mapScene();
-    mapScene->setGridVisible(mUi->actionShowGrid->isChecked());
-    connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
+    mapScene->setGridVisible(prefs->showGrid());
+    connect(prefs, SIGNAL(showGridChanged(bool)),
             mapScene, SLOT(setGridVisible(bool)));
 }
 

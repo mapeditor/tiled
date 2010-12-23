@@ -96,6 +96,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="actionShowGrid"/>
+    <addaction name="actionSnapToGrid"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -353,6 +354,14 @@
   <action name="actionAddExternalTileset">
    <property name="text">
     <string>&amp;Add External Tileset...</string>
+   </property>
+  </action>
+  <action name="actionSnapToGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Snap to Grid</string>
    </property>
   </action>
  </widget>

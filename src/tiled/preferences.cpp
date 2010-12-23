@@ -58,6 +58,9 @@ Preferences::Preferences()
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
+    mShowGrid = mSettings->value(QLatin1String("ShowGrid"), false).toBool();
+    mSnapToGrid = mSettings->value(QLatin1String("SnapToGrid"),
+                                   false).toBool();
     mLanguage = mSettings->value(QLatin1String("Language"),
                                  QString()).toString();
     mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
@@ -70,6 +73,26 @@ Preferences::Preferences()
 Preferences::~Preferences()
 {
     delete mSettings;
+}
+
+void Preferences::setShowGrid(bool showGrid)
+{
+    if (mShowGrid == showGrid)
+        return;
+
+    mShowGrid = showGrid;
+    mSettings->setValue(QLatin1String("Interface/ShowGrid"), mShowGrid);
+    emit showGridChanged(mShowGrid);
+}
+
+void Preferences::setSnapToGrid(bool snapToGrid)
+{
+    if (mSnapToGrid == snapToGrid)
+        return;
+
+    mSnapToGrid = snapToGrid;
+    mSettings->setValue(QLatin1String("Interface/SnapToGrid"), mSnapToGrid);
+    emit snapToGridChanged(mSnapToGrid);
 }
 
 MapWriter::LayerDataFormat Preferences::layerDataFormat() const

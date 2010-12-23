@@ -32,6 +32,7 @@
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "objectpropertiesdialog.h"
+#include "preferences.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -391,7 +392,11 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mStart;
 
-    if (modifiers & Qt::ControlModifier) {
+    bool snapToGrid = Preferences::instance()->snapToGrid();
+    if (modifiers & Qt::ControlModifier)
+        snapToGrid = !snapToGrid;
+
+    if (snapToGrid) {
         const QPointF alignPixelPos =
                 renderer->tileToPixelCoords(mAlignPosition);
         const QPointF newAlignPixelPos = alignPixelPos + diff;

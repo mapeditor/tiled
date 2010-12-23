@@ -28,6 +28,7 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "preferences.h"
 #include "resizemapobject.h"
 
 #include <QApplication>
@@ -124,6 +125,10 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
         MapRenderer *renderer = mMapObjectItem->mapDocument()->renderer();
 
         if (change == ItemPositionChange) {
+            bool snapToGrid = Preferences::instance()->snapToGrid();
+            if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+                snapToGrid = !snapToGrid;
+
             // Calculate the absolute pixel position
             const QPointF itemPos = mMapObjectItem->pos();
             QPointF pixelPos = value.toPointF() + itemPos;
@@ -134,7 +139,7 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
             tileCoords -= objectPos;
             tileCoords.setX(qMax(tileCoords.x(), qreal(0)));
             tileCoords.setY(qMax(tileCoords.y(), qreal(0)));
-            if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+            if (snapToGrid)
                 tileCoords = tileCoords.toPoint();
             tileCoords += objectPos;
 

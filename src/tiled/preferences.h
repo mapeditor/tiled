@@ -42,6 +42,9 @@ public:
     static Preferences *instance();
     static void deleteInstance();
 
+    bool showGrid() const { return mShowGrid; }
+    bool snapToGrid() const { return mSnapToGrid; }
+
     MapWriter::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
 
@@ -63,7 +66,14 @@ public:
      */
     QSettings *settings() const { return mSettings; }
 
+public slots:
+    void setShowGrid(bool showGrid);
+    void setSnapToGrid(bool snapToGrid);
+
 signals:
+    void showGridChanged(bool showGrid);
+    void snapToGridChanged(bool snapToGrid);
+
     void useOpenGLChanged(bool useOpenGL);
 
 private:
@@ -71,6 +81,10 @@ private:
     ~Preferences();
 
     QSettings *mSettings;
+
+    bool mShowGrid;
+    bool mSnapToGrid;
+
     MapWriter::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
     QString mLanguage;
