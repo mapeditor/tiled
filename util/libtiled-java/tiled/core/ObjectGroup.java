@@ -45,12 +45,12 @@ public class ObjectGroup extends MapLayer
      * origin.
      *
      * @param map    the map this object group is part of
-     * @param origx  the x origin of this layer
-     * @param origy  the y origin of this layer
+     * @param origX  the x origin of this layer
+     * @param origY  the y origin of this layer
      */
-    public ObjectGroup(Map map, int origx, int origy) {
+    public ObjectGroup(Map map, int origX, int origY) {
         super(map);
-        setBounds(new Rectangle(origx, origy, 0, 0));
+        setBounds(new Rectangle(origX, origY, 0, 0));
     }
 
     /**

@@ -35,7 +35,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import tiled.core.*;
 import tiled.io.ImageHelper;
-import tiled.io.PluginLogger;
 import tiled.mapeditor.Resources;
 import tiled.mapeditor.util.cutter.BasicTileCutter;
 import tiled.util.Base64;
@@ -48,11 +47,14 @@ public class TMXMapReader
 {
     private Map map;
     private String xmlPath;
-    private PluginLogger logger;
+    private String error;
     private final EntityResolver entityResolver = new MapEntityResolver();
 
     public TMXMapReader() {
-        logger = new PluginLogger();
+    }
+
+    String getError() {
+        return error;
     }
 
     private static String makeUrl(String filename) throws MalformedURLException {
@@ -95,9 +97,7 @@ public class TMXMapReader
             } else if ("boolean".equalsIgnoreCase(parameterTypes[i].getName())) {
                 conformingArguments[i] = Boolean.valueOf(args[i]);
             } else {
-                logger.debug("Unsupported argument type " +
-                        parameterTypes[i].getName() +
-                        ", defaulting to java.lang.String");
+                // Unsupported argument type, defaulting to String
                 conformingArguments[i] = args[i];
             }
         }
@@ -115,7 +115,7 @@ public class TMXMapReader
         } else if ("shifted".equalsIgnoreCase(o)) {
             map.setOrientation(Map.ORIENTATION_SHIFTED);
         } else {
-            logger.warn("Unknown orientation '" + o + "'");
+            System.out.println("Unknown orientation '" + o + "'");
         }
     }
 
@@ -169,9 +169,9 @@ public class TMXMapReader
                         reflectInvokeMethod(o,methods[j],
                                 new String [] {n.getNodeValue()});
                     } else {
-                        logger.warn("Unsupported attribute '" +
-                                n.getNodeName() +
-                                "' on <" + node.getNodeName() + "> tag");
+                        System.out.println("Unsupported attribute '" +
+                                n.getNodeName() + "' on <" +
+                                node.getNodeName() + "> tag");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -203,10 +203,7 @@ public class TMXMapReader
                 Node node = nl.item(i);
                 if ("data".equals(node.getNodeName())) {
                     Node cdata = node.getFirstChild();
-                    if (cdata == null) {
-                        logger.warn("image <data> tag enclosed no " +
-                                "data. (empty data tag)");
-                    } else {
+                    if (cdata != null) {
                         String sdata = cdata.getNodeValue();
                         char[] charArray = sdata.trim().toCharArray();
                         byte[] imageData = Base64.decode(charArray);
@@ -260,20 +257,18 @@ public class TMXMapReader
 
             // There can be only one tileset in a .tsx file.
             tsNode = tsNodeList.item(0);
-            if (tsNode != null)
-            {
+            if (tsNode != null) {
                 set = unmarshalTileset(tsNode);
                 if (set.getSource() != null) {
-                    logger.warn("Recursive external Tilesets are not supported.");
+                    System.out.println("Recursive external tilesets are not supported.");
                 }
                 set.setSource(filename);
             }
 
             xmlPath = xmlPathSave;
         } catch (SAXException e) {
-            logger.error("Failed while loading " + filename + ": "
-                    + e.getLocalizedMessage());
-            //e.printStackTrace();
+            error = "Failed while loading " + filename + ": " +
+                    e.getLocalizedMessage();
         }
 
         return set;
@@ -299,25 +294,17 @@ public class TMXMapReader
             TileSet ext = null;
 
             try {
-                //just a little check for tricky people...
-                String extension = source.substring(source.lastIndexOf('.') + 1);
-                if (!"tsx".equals(extension.toLowerCase())) {
-                    logger.warn("tileset files should end in .tsx! ("+source+")");
-                }
-
                 InputStream in = new URL(makeUrl(filename)).openStream();
                 ext = unmarshalTilesetFile(in, filename);
+                ext.setFirstGid(firstGid);
             } catch (FileNotFoundException fnf) {
-                logger.error("Could not find external tileset file " +
-                        filename);
+                error = "Could not find external tileset file " + filename;
             }
 
             if (ext == null) {
-                logger.error("tileset "+source+" was not loaded correctly!");
-                ext = new TileSet();
+                error = "Tileset " + source + " was not loaded correctly!";
             }
 
-            ext.setFirstGid(firstGid);
             return ext;
         }
         else {
@@ -340,7 +327,7 @@ public class TMXMapReader
 
                 if (child.getNodeName().equalsIgnoreCase("image")) {
                     if (hasTilesetImage) {
-                        logger.warn("Ignoring illegal image element after tileset image.");
+                        System.out.println("Ignoring illegal image element after tileset image.");
                         continue;
                     }
 
@@ -359,8 +346,6 @@ public class TMXMapReader
                         if (! new File(imgSource).isAbsolute()) {
                             sourcePath = tilesetBaseDir + imgSource;
                         }
-
-                        logger.info("Importing " + sourcePath + "...");
 
                         if (transStr != null) {
                             int colorInt = Integer.parseInt(transStr, 16);
@@ -482,13 +467,12 @@ public class TMXMapReader
 
         try {
             if (isAnimated) {
-                tile = (Tile)unmarshalClass(AnimatedTile.class, t);
+                tile = (Tile) unmarshalClass(AnimatedTile.class, t);
             } else {
-                tile = (Tile)unmarshalClass(Tile.class, t);
+                tile = (Tile) unmarshalClass(Tile.class, t);
             }
         } catch (Exception e) {
-            logger.error("failed creating tile: "+e.getLocalizedMessage());
-            //e.printStackTrace();
+            error = "Failed creating tile: " + e.getLocalizedMessage();
             return tile;
         }
 
@@ -577,9 +561,7 @@ public class TMXMapReader
 
                 if (encoding != null && "base64".equalsIgnoreCase(encoding)) {
                     Node cdata = child.getFirstChild();
-                    if (cdata == null) {
-                        logger.warn("layer <data> tag enclosed no data. (empty data tag)");
-                    } else {
+                    if (cdata != null) {
                         char[] enc = cdata.getNodeValue().trim().toCharArray();
                         byte[] dec = Base64.decode(enc);
                         ByteArrayInputStream bais = new ByteArrayInputStream(dec);

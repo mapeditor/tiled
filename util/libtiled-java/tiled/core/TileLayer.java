@@ -435,8 +435,6 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * @see MultilayerPlane#resize
-     *
      * @param width  the new width of the layer
      * @param height the new height of the layer
      * @param dx     the shift in x direction
