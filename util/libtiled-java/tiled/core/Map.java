@@ -12,12 +12,13 @@
 
 package tiled.core;
 
+import java.awt.Rectangle;
 import java.util.*;
 
 /**
  * The Map class is the focal point of the <code>tiled.core</code> package.
  */
-public class Map extends MultilayerPlane
+public class Map implements Iterable<MapLayer>
 {
     public static final int ORIENTATION_ORTHOGONAL = 1;
     public static final int ORIENTATION_ISOMETRIC = 2;
@@ -25,33 +26,170 @@ public class Map extends MultilayerPlane
     /** Shifted (used for iso and hex). */
     public static final int ORIENTATION_SHIFTED = 5;
 
+    private Vector<MapLayer> layers;
     private Vector<TileSet> tileSets;
 
     private int tileWidth, tileHeight;
     private int orientation = ORIENTATION_ORTHOGONAL;
     private Properties properties;
     private String filename;
+    protected Rectangle bounds;          // in tiles
 
     /**
      * @param width  the map width in tiles.
      * @param height the map height in tiles.
      */
     public Map(int width, int height) {
-        super(width, height);
-
+        layers = new Vector<MapLayer>();
+        bounds = new Rectangle(width, height);
         properties = new Properties();
         tileSets = new Vector<TileSet>();
     }
 
+    /**
+     * Returns the total number of layers.
+     *
+     * @return the size of the layer vector
+     */
+    public int getLayerCount() {
+        return layers.size();
+    }
+
+    /**
+     * Changes the bounds of this plane to include all layers completely.
+     */
+    public void fitBoundsToLayers() {
+        int width = 0;
+        int height = 0;
+
+        Rectangle layerBounds = new Rectangle();
+
+        for (int i = 0; i < layers.size(); i++) {
+            getLayer(i).getBounds(layerBounds);
+            if (width < layerBounds.width) width = layerBounds.width;
+            if (height < layerBounds.height) height = layerBounds.height;
+        }
+
+        bounds.width = width;
+        bounds.height = height;
+    }
+
+    /**
+     * Returns a <code>Rectangle</code> representing the maximum bounds in
+     * tiles.
+     * @return a new rectangle containing the maximum bounds of this plane
+     */
+    public Rectangle getBounds() {
+        return new Rectangle(bounds);
+    }
+
     public MapLayer addLayer(MapLayer layer) {
         layer.setMap(this);
-        super.addLayer(layer);
+        layers.add(layer);
         return layer;
     }
 
     public void setLayer(int index, MapLayer layer) {
         layer.setMap(this);
-        super.setLayer(index, layer);
+        layers.set(index, layer);
+    }
+
+    public void insertLayer(int index, MapLayer layer) {
+        layer.setMap(this);
+        layers.add(index, layer);
+    }
+
+    /**
+     * Removes the layer at the specified index. Layers above this layer will
+     * move down to fill the gap.
+     *
+     * @param index the index of the layer to be removed
+     * @return the layer that was removed from the list
+     */
+    public MapLayer removeLayer(int index) {
+        return layers.remove(index);
+    }
+
+    /**
+     * Removes all layers from the plane.
+     */
+    public void removeAllLayers() {
+        layers.removeAllElements();
+    }
+
+    /**
+     * Returns the layer vector.
+     *
+     * @return Vector the layer vector
+     */
+    public Vector<MapLayer> getLayers() {
+        return layers;
+    }
+
+    /**
+     * Sets the layer vector to the given java.util.Vector.
+     *
+     * @param layers the new set of layers
+     */
+    public void setLayers(Vector<MapLayer> layers) {
+        this.layers = layers;
+    }
+
+    /**
+     * Returns the layer at the specified vector index.
+     *
+     * @param i the index of the layer to return
+     * @return the layer at the specified index, or null if the index is out of
+     *         bounds
+     */
+    public MapLayer getLayer(int i) {
+        try {
+            return layers.get(i);
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+        return null;
+    }
+
+    /**
+     * Resizes this plane. The (dx, dy) pair determines where the original
+     * plane should be positioned on the new area. Only layers that exactly
+     * match the bounds of the map are resized, any other layers are moved by
+     * the given shift.
+     *
+     * @see tiled.core.MapLayer#resize
+     *
+     * @param width  The new width of the map.
+     * @param height The new height of the map.
+     * @param dx     The shift in x direction in tiles.
+     * @param dy     The shift in y direction in tiles.
+     */
+    public void resize(int width, int height, int dx, int dy) {
+        for (MapLayer layer : this) {
+            if (layer.bounds.equals(bounds)) {
+                layer.resize(width, height, dx, dy);
+            } else {
+                layer.setOffset(layer.bounds.x + dx, layer.bounds.y + dy);
+            }
+        }
+
+        bounds.width = width;
+        bounds.height = height;
+    }
+
+    /**
+     * Determines whether the point (x,y) falls within the plane.
+     *
+     * @param x
+     * @param y
+     * @return <code>true</code> if the point is within the plane,
+     *         <code>false</code> otherwise
+     */
+    public boolean inBounds(int x, int y) {
+        return x >= 0 && y >= 0 && x < bounds.width && y < bounds.height;
+    }
+
+    public Iterator<MapLayer> iterator() {
+        return layers.iterator();
     }
 
     /**
