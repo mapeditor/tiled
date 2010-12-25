@@ -72,7 +72,7 @@ public class Tile
      */
     public void setImage(Image i) {
         if (tileset != null) {
-            tileset.overlayImage(tileImageId, i);
+            tileset.replaceImage(tileImageId, i);
         } else {
             internalImage = i;
         }

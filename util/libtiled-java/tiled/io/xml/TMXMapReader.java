@@ -107,13 +107,13 @@ public class TMXMapReader
 
     private void setOrientation(String o) {
         if ("isometric".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.MDO_ISO);
+            map.setOrientation(Map.ORIENTATION_ISOMETRIC);
         } else if ("orthogonal".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.MDO_ORTHO);
+            map.setOrientation(Map.ORIENTATION_ORTHOGONAL);
         } else if ("hexagonal".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.MDO_HEX);
+            map.setOrientation(Map.ORIENTATION_HEXAGONAL);
         } else if ("shifted".equalsIgnoreCase(o)) {
-            map.setOrientation(Map.MDO_SHIFTED);
+            map.setOrientation(Map.ORIENTATION_SHIFTED);
         } else {
             logger.warn("Unknown orientation '" + o + "'");
         }
@@ -227,7 +227,7 @@ public class TMXMapReader
 
         /*
         if (getAttributeValue(t, "set") != null) {
-            TileSet ts = (TileSet)map.getTilesets().get(
+            TileSet ts = (TileSet)map.getTileSets().get(
                     Integer.parseInt(getAttributeValue(t, "set")));
             if (ts != null) {
                 ts.addImage(img);
@@ -300,8 +300,8 @@ public class TMXMapReader
 
             try {
                 //just a little check for tricky people...
-                String extention = source.substring(source.lastIndexOf('.') + 1);
-                if (!"tsx".equals(extention.toLowerCase())) {
+                String extension = source.substring(source.lastIndexOf('.') + 1);
+                if (!"tsx".equals(extension.toLowerCase())) {
                     logger.warn("tileset files should end in .tsx! ("+source+")");
                 }
 

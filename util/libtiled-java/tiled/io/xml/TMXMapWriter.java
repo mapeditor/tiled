@@ -23,7 +23,6 @@ import java.util.zip.GZIPOutputStream;
 import tiled.core.*;
 import tiled.core.Map;
 import tiled.io.ImageHelper;
-import tiled.io.PluginLogger;
 import tiled.util.Base64;
 
 /**
@@ -113,13 +112,13 @@ public class TMXMapWriter
         w.writeAttribute("version", "1.0");
 
         switch (map.getOrientation()) {
-            case Map.MDO_ORTHO:
+            case Map.ORIENTATION_ORTHOGONAL:
                 w.writeAttribute("orientation", "orthogonal"); break;
-            case Map.MDO_ISO:
+            case Map.ORIENTATION_ISOMETRIC:
                 w.writeAttribute("orientation", "isometric"); break;
-            case Map.MDO_HEX:
+            case Map.ORIENTATION_HEXAGONAL:
                 w.writeAttribute("orientation", "hexagonal"); break;
-            case Map.MDO_SHIFTED:
+            case Map.ORIENTATION_SHIFTED:
                 w.writeAttribute("orientation", "shifted"); break;
         }
 
@@ -131,15 +130,13 @@ public class TMXMapWriter
         writeProperties(map.getProperties(), w);
 
         int firstgid = 1;
-        for (TileSet tileset : map.getTilesets()) {
+        for (TileSet tileset : map.getTileSets()) {
             tileset.setFirstGid(firstgid);
             writeTilesetReference(tileset, w, wp);
             firstgid += tileset.getMaxTileId() + 1;
         }
 
-        Iterator<MapLayer> ml = map.getLayers();
-        while (ml.hasNext()) {
-            MapLayer layer = ml.next();
+        for (MapLayer layer : map) {
             writeMapLayer(layer, w, wp);
         }
 
@@ -289,7 +286,7 @@ public class TMXMapWriter
 
             // Check to see if there is a need to write tile elements
             Iterator<Object> tileIterator = set.iterator();
-            boolean needWrite = !set.isOneForOne();
+            boolean needWrite;
 
             if (embedImages) {
                 needWrite = true;
@@ -605,7 +602,7 @@ public class TMXMapWriter
 
             if (!absPath.equals(relPath)) {
                 // Path is not absolute, turn slashes around
-                // Assumes: \ does not occur in filenames
+                // Assumes: \ does not occur in file names
                 relPath = relPath.replace('\\', '/');
             }
         } catch (IOException e) {
@@ -614,9 +611,9 @@ public class TMXMapWriter
         return relPath;
     }
 
-    public boolean accept(File pathname) {
+    public boolean accept(File pathName) {
         try {
-            String path = pathname.getCanonicalPath();
+            String path = pathName.getCanonicalPath();
             if (path.endsWith(".tmx") || path.endsWith(".tsx") || path.endsWith(".tmx.gz")) {
                 return true;
             }

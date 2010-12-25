@@ -48,7 +48,7 @@ public final class Resources {
      *
      * @param filename the filename of the image relative from the
      *                 <code>resources</code> directory
-     * @return the loaded icon, or <code>null</code> when an error occured
+     * @return the loaded icon, or <code>null</code> when an error occurred
      *         while loading the image
      */
     public static Icon getIcon(String filename) {

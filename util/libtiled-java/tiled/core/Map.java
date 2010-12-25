@@ -14,30 +14,21 @@ package tiled.core;
 
 import java.util.*;
 
-import tiled.mapeditor.Resources;
-
 /**
  * The Map class is the focal point of the <code>tiled.core</code> package.
- * This class also handles notifing listeners if there is a change to any layer
- * or object contained by the map.
  */
 public class Map extends MultilayerPlane
 {
-    /** Orthogonal. */
-    public static final int MDO_ORTHO   = 1;
-    /** Isometric. */
-    public static final int MDO_ISO     = 2;
-    /** Hexagonal. */
-    public static final int MDO_HEX     = 4;
+    public static final int ORIENTATION_ORTHOGONAL = 1;
+    public static final int ORIENTATION_ISOMETRIC = 2;
+    public static final int ORIENTATION_HEXAGONAL = 4;
     /** Shifted (used for iso and hex). */
-    public static final int MDO_SHIFTED = 5;
+    public static final int ORIENTATION_SHIFTED = 5;
 
-    private Vector<MapLayer> specialLayers;
-    private Vector<TileSet> tilesets;
-    private LinkedList<MapObject> objects;
+    private Vector<TileSet> tileSets;
 
     private int tileWidth, tileHeight;
-    private int orientation = MDO_ORTHO;
+    private int orientation = ORIENTATION_ORTHOGONAL;
     private Properties properties;
     private String filename;
 
@@ -49,14 +40,7 @@ public class Map extends MultilayerPlane
         super(width, height);
 
         properties = new Properties();
-        tilesets = new Vector<TileSet>();
-        specialLayers = new Vector<MapLayer>();
-        objects = new LinkedList<MapObject>();
-    }
-
-    public void addLayerSpecial(MapLayer layer) {
-        layer.setMap(this);
-        specialLayers.add(layer);
+        tileSets = new Vector<TileSet>();
     }
 
     public MapLayer addLayer(MapLayer layer) {
@@ -77,7 +61,7 @@ public class Map extends MultilayerPlane
      * @param tileset a tileset to add
      */
     public void addTileset(TileSet tileset) {
-        if (tileset == null || tilesets.indexOf(tileset) > -1) {
+        if (tileset == null || tileSets.indexOf(tileset) > -1) {
             return;
         }
 
@@ -94,7 +78,7 @@ public class Map extends MultilayerPlane
             }
         }
 
-        tilesets.add(tileset);
+        tileSets.add(tileset);
     }
 
     /**
@@ -105,7 +89,7 @@ public class Map extends MultilayerPlane
      */
     public void removeTileset(TileSet tileset) {
         // Sanity check
-        final int tilesetIndex = tilesets.indexOf(tileset);
+        final int tilesetIndex = tileSets.indexOf(tileset);
         if (tilesetIndex == -1)
             return;
 
@@ -113,24 +97,14 @@ public class Map extends MultilayerPlane
         Iterator<Object> tileIterator = tileset.iterator();
         while (tileIterator.hasNext()) {
             Tile tile = (Tile)tileIterator.next();
-            Iterator<MapLayer> layerIterator = getLayers();
-            while (layerIterator.hasNext()) {
-                MapLayer ml = (MapLayer) layerIterator.next();
+            for (MapLayer ml : this) {
                 if (ml instanceof TileLayer) {
                     ((TileLayer) ml).removeTile(tile);
                 }
             }
         }
 
-        tilesets.remove(tileset);
-    }
-
-    public void addObject(MapObject o) {
-        objects.add(o);
-    }
-
-    public Iterator<MapObject> getObjects() {
-        return objects.iterator();
+        tileSets.remove(tileset);
     }
 
     /**
@@ -142,14 +116,6 @@ public class Map extends MultilayerPlane
 
     public void setProperties(Properties prop) {
         properties = prop;
-    }
-
-    public void removeLayerSpecial(MapLayer layer) {
-        specialLayers.remove(layer);
-    }
-
-    public void removeAllSpecialLayers() {
-        specialLayers.clear();
     }
 
     public void setFilename(String filename) {
@@ -182,17 +148,13 @@ public class Map extends MultilayerPlane
         return filename;
     }
 
-    public Iterator<MapLayer> getLayersSpecial() {
-        return specialLayers.iterator();
-    }
-
     /**
-     * Returns a vector with the currently loaded tilesets.
+     * Returns a vector with the currently loaded tileSets.
      *
      * @return Vector
      */
-    public Vector<TileSet> getTilesets() {
-        return tilesets;
+    public Vector<TileSet> getTileSets() {
+        return tileSets;
     }
 
     /**
@@ -205,7 +167,7 @@ public class Map extends MultilayerPlane
      */
     public TileSet findTileSetForTileGID(int gid) {
         TileSet has = null;
-        for (TileSet tileset : tilesets) {
+        for (TileSet tileset : tileSets) {
             if (tileset.getFirstGid() <= gid) {
                 has = tileset;
             }
@@ -264,14 +226,14 @@ public class Map extends MultilayerPlane
 
     /**
      * Returns the maximum tile height. This is the height of the highest tile
-     * in all tilesets or the tile height used by this map if it's smaller.
+     * in all tileSets or the tile height used by this map if it's smaller.
      *
      * @return int The maximum tile height
      */
     public int getTileHeightMax() {
         int maxHeight = tileHeight;
 
-        for (TileSet tileset : tilesets) {
+        for (TileSet tileset : tileSets) {
             int height = tileset.getTileHeight();
             if (height > maxHeight) {
                 maxHeight = height;
@@ -286,15 +248,15 @@ public class Map extends MultilayerPlane
      */
     public void swapTileSets(int index0, int index1) {
         if (index0 == index1) return;
-        TileSet set = tilesets.get(index0);
-        tilesets.set(index0, tilesets.get(index1));
-        tilesets.set(index1, set);
+        TileSet set = tileSets.get(index0);
+        tileSets.set(index0, tileSets.get(index1));
+        tileSets.set(index1, set);
     }
 
     /**
      * Returns the orientation of this map. Orientation will be one of
-     * {@link Map#MDO_ISO}, {@link Map#MDO_ORTHO}, {@link Map#MDO_HEX},
-     * and {@link Map#MDO_SHIFTED}.
+     * {@link Map#ORIENTATION_ISOMETRIC}, {@link Map#ORIENTATION_ORTHOGONAL},
+     * {@link Map#ORIENTATION_HEXAGONAL} and {@link Map#ORIENTATION_SHIFTED}.
      *
      * @return The orientation from the enumerated set
      */
@@ -311,7 +273,7 @@ public class Map extends MultilayerPlane
      */
     public String toString() {
         return "Map[" + bounds.width + "x" + bounds.height + "x" +
-            getTotalLayers() + "][" + tileWidth + "x" +
+            getLayerCount() + "][" + tileWidth + "x" +
             tileHeight + "]";
     }
 }

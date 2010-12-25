@@ -49,7 +49,7 @@ public class MultilayerPlane implements Iterable<MapLayer>
      *
      * @return the size of the layer vector
      */
-    public int getTotalLayers() {
+    public int getLayerCount() {
         return layers.size();
     }
 
@@ -131,7 +131,7 @@ public class MultilayerPlane implements Iterable<MapLayer>
      *
      * @return Vector the layer vector
      */
-    public Vector<MapLayer> getLayerVector() {
+    public Vector<MapLayer> getLayers() {
         return layers;
     }
 
@@ -140,66 +140,8 @@ public class MultilayerPlane implements Iterable<MapLayer>
      *
      * @param layers the new set of layers
      */
-    public void setLayerVector(Vector<MapLayer> layers) {
+    public void setLayers(Vector<MapLayer> layers) {
         this.layers = layers;
-    }
-
-    /**
-     * Moves the layer at <code>index</code> up one in the vector.
-     *
-     * @param index the index of the layer to swap up
-     */
-    public void swapLayerUp(int index) {
-        if (index + 1 == layers.size()) {
-            throw new RuntimeException(
-                    "Can't swap up when already at the top.");
-        }
-
-        MapLayer hold = layers.get(index + 1);
-        layers.set(index + 1, getLayer(index));
-        layers.set(index, hold);
-    }
-
-    /**
-     * Moves the layer at <code>index</code> down one in the vector.
-     *
-     * @param index the index of the layer to swap down
-     */
-    public void swapLayerDown(int index) {
-        if (index - 1 < 0) {
-            throw new RuntimeException(
-                    "Can't swap down when already at the bottom.");
-        }
-
-        MapLayer hold = layers.get(index - 1);
-        layers.set(index - 1, getLayer(index));
-        layers.set(index, hold);
-    }
-
-    /**
-     * Merges the layer at <code>index</code> with the layer below it
-     *
-     * @see MapLayer#mergeOnto
-     * @param index the index of the layer to merge down
-     */
-    public void mergeLayerDown(int index) {
-        if (index - 1 < 0) {
-            throw new RuntimeException("Can't merge down bottom layer.");
-        }
-
-        // TODO: We're not accounting for different types of layers!!!
-        TileLayer ntl;
-        try {
-            ntl = (TileLayer) getLayer(index - 1).clone();
-        }
-        catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        getLayer(index).mergeOnto(ntl);
-        setLayer(index - 1, ntl);
-        removeLayer(index);
     }
 
     /**
@@ -218,15 +160,6 @@ public class MultilayerPlane implements Iterable<MapLayer>
     }
 
     /**
-     * Gets a listIterator of all layers.
-     *
-     * @return a listIterator
-     */
-    public ListIterator<MapLayer> getLayers() {
-        return layers.listIterator();
-    }
-
-    /**
      * Resizes this plane. The (dx, dy) pair determines where the original
      * plane should be positioned on the new area. Only layers that exactly
      * match the bounds of the map are resized, any other layers are moved by
@@ -240,9 +173,7 @@ public class MultilayerPlane implements Iterable<MapLayer>
      * @param dy     The shift in y direction in tiles.
      */
     public void resize(int width, int height, int dx, int dy) {
-        ListIterator<MapLayer> itr = getLayers();
-        while (itr.hasNext()) {
-            MapLayer layer = (MapLayer)itr.next();
+        for (MapLayer layer : this) {
             if (layer.bounds.equals(bounds)) {
                 layer.resize(width, height, dx, dy);
             } else {
@@ -255,7 +186,7 @@ public class MultilayerPlane implements Iterable<MapLayer>
     }
 
     /**
-     * Determines wether the point (x,y) falls within the plane.
+     * Determines whether the point (x,y) falls within the plane.
      *
      * @param x
      * @param y

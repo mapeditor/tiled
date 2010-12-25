@@ -187,7 +187,7 @@ public class TileSet
         Image tile = tileCutter.getNextTile();
         while (tile != null) {
             int imgId = getTile(id).tileImageId;
-            overlayImage(imgId, tile);
+            replaceImage(imgId, tile);
             tile = tileCutter.getNextTile();
             id++;
         }
@@ -350,23 +350,6 @@ public class TileSet
     }
 
     /**
-     * Generates a vector that removes the gaps that can occur if a tile is
-     * removed from the middle of a set of tiles. (Maps tiles contiguously)
-     *
-     * @return a {@link Vector} mapping ordered set location to the next
-     *         non-null tile
-     */
-    public Vector<Tile> generateGaplessVector() {
-        Vector<Tile> gapless = new Vector<Tile>();
-
-        for (int i = 0; i <= getMaxTileId(); i++) {
-            if (getTile(i) != null) gapless.add(getTile(i));
-        }
-
-        return gapless;
-    }
-
-    /**
      * Returns the width of tiles in this tileset. All tiles in a tileset
      * should be the same width, and the same as the tile width of the map the
      * tileset is used with.
@@ -516,19 +499,10 @@ public class TileSet
 
 
     /**
-     * Returns the number of images in the set.
-     *
-     * @return the number of images in the set
-     */
-    public int getTotalImages() {
-        return images.size();
-    }
-
-    /**
      * @return an Enumeration of the image ids
      */
     public Enumeration<String> getImageIds() {
-        Vector<String> v = new Vector();
+        Vector<String> v = new Vector<String>();
         for (int id = 0; id <= images.getMaxId(); ++id) {
             if (images.containsId(id)) {
                 v.add(Integer.toString(id));
@@ -540,18 +514,6 @@ public class TileSet
     // TILE IMAGE CODE
 
     /**
-     * This function uses the CRC32 checksums to find the cached version of the
-     * image supplied.
-     *
-     * @param i an Image object
-     * @return returns the id of the given image, or -1 if the image is not in
-     *         the set
-     */
-    public int getIdByImage(Image i) {
-        return images.indexOf(i);
-    }
-
-    /**
      * @param id
      * @return the image identified by the key, or <code>null</code> when
      *         there is no such image
@@ -559,26 +521,14 @@ public class TileSet
     public Image getImageById(int id) {
         return (Image) images.get(id);
     }
-    
-    /**
-     * @return the source path registered with this image ID. May be null
-     * even if an image is registered for this ID, because a source does
-     * not need to be registered (this is especially true for imbedded
-     * images)
-     * @param id
-     * @return
-     */
-    public String getImageSource(int id){
-        return imageSources.get(id);
-    }
 
     /**
-     * Overlays the image in the set referred to by the given key.
+     * Replaces the image in the set referred to by the given key.
      *
      * @param id
      * @param image
      */
-    public void overlayImage(int id, Image image) {
+    public void replaceImage(int id, Image image) {
         images.put(id, image);
     }
 
@@ -613,7 +563,7 @@ public class TileSet
      */
     public int addImage(Image image, String imageSource) {
         int id = images.findOrAdd(image);
-        if(imageSource != null)
+        if (imageSource != null)
             imageSources.put(id, imageSource);
         return id;
     }
@@ -623,15 +573,10 @@ public class TileSet
     }
     
     public int addImage(Image image, int id, String imgSource) {
-        if(imgSource != null)
+        if (imgSource != null)
             imageSources.put(id, imgSource);
         
         return images.put(id, image);
-    }
-
-    public void removeImage(int id) {
-        images.remove(id);
-        imageSources.remove(id);
     }
 
     /**
@@ -641,49 +586,5 @@ public class TileSet
      */
     public boolean isSetFromImage() {
         return tileSetImage != null;
-    }
-
-    /**
-     * Checks whether each image has a one to one relationship with the tiles.
-     *
-     * @deprecated
-     * @return <code>true</code> if each image is associated with one and only
-     *         one tile, <code>false</code> otherwise.
-     */
-    public boolean isOneForOne() {
-        Iterator itr = iterator();
-
-        //[ATURK] I don't think that this check makes complete sense...
-        /*
-        while (itr.hasNext()) {
-            Tile t = (Tile)itr.next();
-            if (t.countAnimationFrames() != 1 || t.getImageId() != t.getId()
-                    || t.getImageOrientation() != 0) {
-                return false;
-            }
-        }
-        */
-
-        for (int id = 0; id <= images.getMaxId(); ++id) {
-            int relations = 0;
-            itr = iterator();
-
-            while (itr.hasNext()) {
-                Tile t = (Tile) itr.next();
-                // todo: move the null check back into the iterator?
-                if (t != null && t.getImageId() == id) {
-                    relations++;
-                }
-            }
-            if (relations != 1) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public void setDefaultProperties(Properties defaultSetProperties) {
-        defaultTileProperties = defaultSetProperties;
     }
 }
