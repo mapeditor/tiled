@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.util.*;
 import javax.imageio.ImageIO;
 
-import tiled.mapeditor.util.TransparentImageFilter;
-import tiled.mapeditor.util.cutter.BasicTileCutter;
-import tiled.mapeditor.util.cutter.TileCutter;
+import tiled.util.TileCutter;
+import tiled.util.TransparentImageFilter;
+import tiled.util.BasicTileCutter;
 import tiled.util.NumberedSet;
 
 /**
@@ -38,7 +38,7 @@ import tiled.util.NumberedSet;
 public class TileSet
 {
     private String base;
-    private NumberedSet tiles, images;
+    private NumberedSet tiles;
     private int firstGid;
     private long tilebmpFileLastModified;
     private TileCutter tileCutter;
@@ -50,18 +50,14 @@ public class TileSet
     private File tilebmpFile;
     private String name;
     private Color transparentColor;
-    private Properties defaultTileProperties;
     private Image tileSetImage;
-    private java.util.Map<Integer, String> imageSources = new HashMap<Integer, String>();
 
     /**
      * Default constructor
      */
     public TileSet() {
         tiles = new NumberedSet();
-        images = new NumberedSet();
         tileDimensions = new Rectangle();
-        defaultTileProperties = new Properties();
     }
 
     /**
@@ -104,18 +100,18 @@ public class TileSet
      * Creates a tileset from a buffered image. Tiles are cut by the passed
      * cutter.
      *
-     * @param tilebmp     the image to be used, must not be null
+     * @param tileBitmap  the image to be used, must not be null
      * @param cutter      the tile cutter, must not be null
      */
-    private void importTileBitmap(BufferedImage tilebmp, TileCutter cutter)
+    private void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter)
     {
-        assert tilebmp != null;
+        assert tileBitmap != null;
         assert cutter != null;
 
         tileCutter = cutter;
-        tileSetImage = tilebmp;
+        tileSetImage = tileBitmap;
 
-        cutter.setImage(tilebmp);
+        cutter.setImage(tileBitmap);
 
         tileDimensions = new Rectangle(cutter.getTileDimensions());
         if (cutter instanceof BasicTileCutter) {
@@ -125,12 +121,12 @@ public class TileSet
             tilesPerRow = basicTileCutter.getTilesPerRow();
         }
 
-        Image tile = cutter.getNextTile();
-        while (tile != null) {
-            Tile newTile = new Tile();
-            newTile.setImage(addImage(tile));
-            addNewTile(newTile);
-            tile = cutter.getNextTile();
+        Image tileImage = cutter.getNextTile();
+        while (tileImage != null) {
+            Tile tile = new Tile();
+            tile.setImage(tileImage);
+            addNewTile(tile);
+            tileImage = cutter.getNextTile();
         }
     }
 
@@ -172,23 +168,23 @@ public class TileSet
      * Refreshes a tileset from a buffered image. Tiles are cut by the passed
      * cutter.
      *
-     * @param tilebmp the image to be used, must not be null
+     * @param tileBitmap the image to be used, must not be null
      */
-    private void refreshImportedTileBitmap(BufferedImage tilebmp) {
-        assert tilebmp != null;
+    private void refreshImportedTileBitmap(BufferedImage tileBitmap) {
+        assert tileBitmap != null;
 
         tileCutter.reset();
-        tileCutter.setImage(tilebmp);
+        tileCutter.setImage(tileBitmap);
 
-        tileSetImage = tilebmp;
+        tileSetImage = tileBitmap;
         tileDimensions = new Rectangle(tileCutter.getTileDimensions());
 
         int id = 0;
-        Image tile = tileCutter.getNextTile();
-        while (tile != null) {
-            int imgId = getTile(id).tileImageId;
-            replaceImage(imgId, tile);
-            tile = tileCutter.getNextTile();
+        Image tileImage = tileCutter.getNextTile();
+        while (tileImage != null) {
+            Tile tile = getTile(id);
+            tile.setImage(tileImage);
+            tileImage = tileCutter.getNextTile();
             id++;
         }
     }
@@ -283,10 +279,6 @@ public class TileSet
         if (tileDimensions.height < t.getHeight()) {
             tileDimensions.height = t.getHeight();
         }
-
-        // Add any default properties
-        // TODO: use parent properties instead?
-        t.getProperties().putAll(defaultTileProperties);
 
         tiles.put(t.getId(), t);
         t.setTileSet(this);
@@ -498,86 +490,7 @@ public class TileSet
     }
 
 
-    /**
-     * @return an Enumeration of the image ids
-     */
-    public Enumeration<String> getImageIds() {
-        Vector<String> v = new Vector<String>();
-        for (int id = 0; id <= images.getMaxId(); ++id) {
-            if (images.containsId(id)) {
-                v.add(Integer.toString(id));
-            }
-        }
-        return v.elements();
-    }
-
     // TILE IMAGE CODE
-
-    /**
-     * @param id
-     * @return the image identified by the key, or <code>null</code> when
-     *         there is no such image
-     */
-    public Image getImageById(int id) {
-        return (Image) images.get(id);
-    }
-
-    /**
-     * Replaces the image in the set referred to by the given key.
-     *
-     * @param id
-     * @param image
-     */
-    public void replaceImage(int id, Image image) {
-        images.put(id, image);
-    }
-
-    /**
-     * Returns the dimensions of an image as specified by the id.
-     *
-     * @deprecated Unless somebody can explain the purpose of this function in
-     *             its documentation, I consider this function deprecated. It
-     *             is only used by tiles, but they should in my opinion just
-     *             use their "internalImage". - Bjorn
-     * @param id the image id
-     * @return dimensions of image with referenced by given key
-     */
-    public Dimension getImageDimensions(int id) {
-        Image img = (Image) images.get(id);
-        if (img != null) {
-            return new Dimension(img.getWidth(null), img.getHeight(null));
-        } else {
-            return new Dimension(0, 0);
-        }
-    }
-
-    /**
-     * Adds the specified image to the image cache. If the image already exists
-     * in the cache, returns the id of the existing image. If it does not
-     * exist, this function adds the image and returns the new id.
-     *
-     * @param image the java.awt.Image to add to the image cache
-     * @param imageSource the path of the source image or null if none
-     *  is to be specified.
-     * @return the id as an <code>int</code> of the image in the cache
-     */
-    public int addImage(Image image, String imageSource) {
-        int id = images.findOrAdd(image);
-        if (imageSource != null)
-            imageSources.put(id, imageSource);
-        return id;
-    }
-
-    public int addImage(Image image) {
-        return addImage(image, null);
-    }
-    
-    public int addImage(Image image, int id, String imgSource) {
-        if (imgSource != null)
-            imageSources.put(id, imgSource);
-        
-        return images.put(id, image);
-    }
 
     /**
      * Returns whether the tileset is derived from a tileset image.

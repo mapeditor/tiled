@@ -19,8 +19,8 @@
       srcdir="${src}" destdir="${build}"
       includeantruntime="false"
       />
-    <copy todir="${build}/tiled/mapeditor/resources">
-      <fileset dir="${src}/tiled/mapeditor/resources">
+    <copy todir="${build}/tiled/io/resources">
+      <fileset dir="${src}/tiled/io/resources">
         <include name="map.dtd" />
       </fileset>
     </copy>

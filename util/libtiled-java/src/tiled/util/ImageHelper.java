@@ -10,16 +10,14 @@
  *  Bjorn Lindeijer <bjorn@lindeijer.nl>
  */
 
-package tiled.io;
+package tiled.util;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-
 
 /**
  * This class provides functions to help out with saving/loading images.
@@ -61,17 +59,5 @@ public class ImageHelper
      */
     static public BufferedImage bytesToImage(byte[] imageData) throws IOException {
         return ImageIO.read(new ByteArrayInputStream(imageData));
-    }
-
-    /**
-     * This function loads the image denoted by <code>file</code>. This
-     * supports PNG, GIF, JPG, and BMP (in 1.5).
-     *
-     * @param file
-     * @return the (partially) loaded image
-     * @throws IOException
-     */
-    static public BufferedImage loadImageFile(File file) throws IOException {
-        return ImageIO.read(file);
     }
 }

@@ -10,10 +10,9 @@
  *  Bjorn Lindeijer <bjorn@lindeijer.nl>
  */
 
-package tiled.io.xml;
+package tiled.io;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -22,7 +21,7 @@ import java.util.zip.GZIPOutputStream;
 
 import tiled.core.*;
 import tiled.core.Map;
-import tiled.io.ImageHelper;
+import tiled.io.xml.XMLWriter;
 import tiled.util.Base64;
 
 /**
@@ -31,10 +30,6 @@ import tiled.util.Base64;
 public class TMXMapWriter
 {
     private static final int LAST_BYTE = 0x000000FF;
-
-    private static final boolean embedImages = true;
-    private static final boolean tileSetImages = false;
-    private static final String tileImagePrefix = "tile";
 
     private static final boolean encodeLayerData = true;
     private static final boolean compressLayerData = encodeLayerData;
@@ -198,7 +193,7 @@ public class TMXMapWriter
     private static void writeTileset(TileSet set, XMLWriter w, String wp)
         throws IOException {
 
-        String tilebmpFile = set.getTilebmpFile();
+        String tileBitmapFile = set.getTilebmpFile();
         String name = set.getName();
 
         w.startElement("tileset");
@@ -208,7 +203,7 @@ public class TMXMapWriter
             w.writeAttribute("name", name);
         }
 
-        if (tilebmpFile != null) {
+        if (tileBitmapFile != null) {
             w.writeAttribute("tilewidth", set.getTileWidth());
             w.writeAttribute("tileheight", set.getTileHeight());
 
@@ -226,9 +221,9 @@ public class TMXMapWriter
             w.writeAttribute("basedir", set.getBaseDir());
         }
 
-        if (tilebmpFile != null) {
+        if (tileBitmapFile != null) {
             w.startElement("image");
-            w.writeAttribute("source", getRelativePath(wp, tilebmpFile));
+            w.writeAttribute("source", getRelativePath(wp, tileBitmapFile));
 
             Color trans = set.getTransparentColor();
             if (trans != null) {
@@ -251,54 +246,17 @@ public class TMXMapWriter
                 }
             }
         } else {
-            // Embedded tileset
-            if (tileSetImages) {
-                Enumeration<String> ids = set.getImageIds();
-                while (ids.hasMoreElements()) {
-                    String id = ids.nextElement();
-                    w.startElement("image");
-                    w.writeAttribute("format", "png");
-                    w.writeAttribute("id", id);
-                    w.startElement("data");
-                    w.writeAttribute("encoding", "base64");
-                    w.writeCDATA(new String(Base64.encode(
-                                    ImageHelper.imageToPNG(
-                                        set.getImageById(Integer.parseInt(id))))));
-                    w.endElement();
-                    w.endElement();
-                }
-            } else if (!embedImages) {
-                String imgSource = tileImagePrefix + "set.png";
-
-                w.startElement("image");
-                w.writeAttribute("source", imgSource);
-
-                String tilesetFilename = wp.substring(0,
-                        wp.lastIndexOf(File.separatorChar) + 1) + imgSource;
-                FileOutputStream fw = new FileOutputStream(new File(
-                            tilesetFilename));
-                //byte[] data = ImageHelper.imageToPNG(setImage);
-                //fw.write(data, 0, data.length);
-                w.endElement();
-
-                fw.close();
-            }
-
             // Check to see if there is a need to write tile elements
             Iterator<Object> tileIterator = set.iterator();
-            boolean needWrite;
+            boolean needWrite = false;
 
-            if (embedImages) {
-                needWrite = true;
-            } else {
-                // As long as one has properties, they all need to be written.
-                // TODO: This shouldn't be necessary
-                while (tileIterator.hasNext()) {
-                    Tile tile = (Tile)tileIterator.next();
-                    if (!tile.getProperties().isEmpty()) {
-                        needWrite = true;
-                        break;
-                    }
+            // As long as one has properties, they all need to be written.
+            // TODO: This shouldn't be necessary
+            while (tileIterator.hasNext()) {
+                Tile tile = (Tile) tileIterator.next();
+                if (!tile.getProperties().isEmpty()) {
+                    needWrite = true;
+                    break;
                 }
             }
 
@@ -456,37 +414,10 @@ public class TMXMapWriter
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
 
-        //if (groundHeight != getHeight()) {
-        //    w.writeAttribute("groundheight", "" + groundHeight);
-        //}
-
         writeProperties(tile.getProperties(), w);
 
-        Image tileImage = tile.getImage();
-
-        // Write encoded data
-        if (tileImage != null) {
-            if (embedImages && !tileSetImages) {
-                w.startElement("image");
-                w.writeAttribute("format", "png");
-                w.startElement("data");
-                w.writeAttribute("encoding", "base64");
-                w.writeCDATA(new String(Base64.encode(
-                                ImageHelper.imageToPNG(tileImage))));
-                w.endElement();
-                w.endElement();
-            } else if (embedImages && tileSetImages) {
-                w.startElement("image");
-                w.writeAttribute("id", tile.getImageId());
-                w.endElement();
-            } else {
-                // not supported! (writing out the tile pngs)
-            }
-        }
-
-        if (tile instanceof AnimatedTile) {
+        if (tile instanceof AnimatedTile)
             writeAnimation(((AnimatedTile)tile).getSprite(), w);
-        }
 
         w.endElement();
     }

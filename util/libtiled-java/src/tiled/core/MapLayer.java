@@ -20,7 +20,6 @@ import java.util.Properties;
  * A layer of a map.
  *
  * @see Map
- * @see MultilayerPlane
  */
 public abstract class MapLayer implements Cloneable
 {
@@ -277,8 +276,6 @@ public abstract class MapLayer implements Cloneable
     }
 
     /**
-     * @see MultilayerPlane#resize
-     *
      * @param width  the new width of the layer
      * @param height the new height of the layer
      * @param dx     the shift in x direction

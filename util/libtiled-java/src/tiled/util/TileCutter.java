@@ -10,7 +10,7 @@
  *  Bjorn Lindeijer <bjorn@lindeijer.nl>
  */
 
-package tiled.mapeditor.util.cutter;
+package tiled.util;
 
 import java.awt.Dimension;
 import java.awt.Image;

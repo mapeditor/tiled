@@ -10,7 +10,7 @@
  *  Bjorn Lindeijer <bjorn@lindeijer.nl>
  */
 
-package tiled.mapeditor.util;
+package tiled.util;
 
 import java.awt.image.RGBImageFilter;
 

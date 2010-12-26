@@ -285,7 +285,7 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Returns the first occurance (using top down, left to right search) of
+     * Returns the first occurrence (using top down, left to right search) of
      * the given tile.
      *
      * @param t the {@link Tile} to look for
@@ -304,7 +304,7 @@ public class TileLayer extends MapLayer
     }
 
     /**
-     * Replaces all occurances of the Tile <code>find</code> with the Tile
+     * Replaces all occurrences of the Tile <code>find</code> with the Tile
      * <code>replace</code> in the entire layer
      *
      * @param find    the tile to replace

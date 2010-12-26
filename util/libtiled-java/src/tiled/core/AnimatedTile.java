@@ -12,20 +12,14 @@
 
 package tiled.core;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.util.Iterator;
-
-import tiled.core.Sprite.KeyFrame;
-
 /**
  * Animated tiles take advantage of the Sprite class internally to handle
  * animation using an array of tiles.
  *
  * @see tiled.core.Sprite
  */
-public class AnimatedTile extends Tile {
-
+public class AnimatedTile extends Tile
+{
     private Sprite sprite;
 
     public AnimatedTile() {
@@ -59,37 +53,5 @@ public class AnimatedTile extends Tile {
 
     public Sprite getSprite() {
         return sprite;
-    }
-
-    /**
-     * In an AnimatedTile we must take the extra step of zooming all frames of
-     * the animation. This function can be somewhat slower than calling
-     * getScaledImage() on a Tile, but it depends on several factors.
-     *
-     * @see tiled.core.Tile#getScaledImage(double)
-     */
-    public Image getScaledImage(double zoom) {
-        try {
-            Iterator<KeyFrame> itr = sprite.getKeys();
-
-            while (itr.hasNext()) {
-                KeyFrame key = itr.next();
-                for (int i = 0;i < key.getTotalFrames(); i++) {
-                    key.getFrame(i).getScaledImage(zoom);
-                }
-            }
-        } catch (Exception e) {}
-        return sprite.getCurrentFrame().getScaledImage(zoom);
-    }
-
-    /**
-     * Handles drawing the correct frame, and iterating by the
-     * frame rate
-     *
-     * @see tiled.core.Tile#draw(Graphics, int, int, double)
-     */
-    public void draw(Graphics g, int x, int y, double zoom) {
-        sprite.getCurrentFrame().draw(g, x, y, zoom);
-        sprite.iterateFrame();
     }
 }

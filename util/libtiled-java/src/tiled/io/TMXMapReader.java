@@ -10,7 +10,7 @@
  *  Bjorn Lindeijer <bjorn@lindeijer.nl>
  */
 
-package tiled.io.xml;
+package tiled.io;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -34,11 +34,9 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import tiled.core.*;
-import tiled.io.ImageHelper;
-import tiled.mapeditor.Resources;
-import tiled.mapeditor.util.cutter.BasicTileCutter;
 import tiled.util.Base64;
-import tiled.util.Util;
+import tiled.util.BasicTileCutter;
+import tiled.util.ImageHelper;
 
 /**
  * The standard map reader for TMX files. Supports reading .tmx, .tmx.gz and *.tsx files.
@@ -188,14 +186,12 @@ public class TMXMapReader
         String source = getAttributeValue(t, "source");
 
         if (source != null) {
-            if (Util.checkRoot(source)) {
+            if (checkRoot(source)) {
                 source = makeUrl(source);
             } else {
                 source = makeUrl(baseDir + source);
             }
             img = ImageIO.read(new URL(source));
-            // todo: check whether external images would also be faster drawn
-            // todo: from a scaled instance, see below
         } else {
             NodeList nl = t.getChildNodes();
 
@@ -221,16 +217,6 @@ public class TMXMapReader
                 }
             }
         }
-
-        /*
-        if (getAttributeValue(t, "set") != null) {
-            TileSet ts = (TileSet)map.getTileSets().get(
-                    Integer.parseInt(getAttributeValue(t, "set")));
-            if (ts != null) {
-                ts.addImage(img);
-            }
-        }
-        */
 
         return img;
     }
@@ -287,7 +273,7 @@ public class TMXMapReader
 
         if (source != null) {
             String filename = tilesetBaseDir + source;
-            //if (Util.checkRoot(source)) {
+            //if (checkRoot(source)) {
             //    filename = makeUrl(source);
             //}
 
@@ -332,10 +318,9 @@ public class TMXMapReader
                     }
 
                     String imgSource = getAttributeValue(child, "source");
-                    String id = getAttributeValue(child, "id");
                     String transStr = getAttributeValue(child, "trans");
 
-                    if (imgSource != null && id == null) {
+                    if (imgSource != null) {
                         // Not a shared image, but an entire set in one image
                         // file. There should be only one image element in this
                         // case.
@@ -355,11 +340,6 @@ public class TMXMapReader
 
                         set.importTileBitmap(sourcePath, new BasicTileCutter(
                                 tileWidth, tileHeight, tileSpacing, tileMargin));
-                    } else {
-                        Image image = unmarshalImage(child, tilesetBaseDir);
-                        String idValue = getAttributeValue(child, "id");
-                        int imageId = Integer.parseInt(idValue);
-                        set.addImage(image, imageId, imgSource);
                     }
                 }
                 else if (child.getNodeName().equalsIgnoreCase("tile")) {
@@ -485,10 +465,7 @@ public class TMXMapReader
             if ("image".equalsIgnoreCase(child.getNodeName())) {
                 int id = getAttribute(child, "id", -1);
                 Image img = unmarshalImage(child, baseDir);
-                if (id < 0) {
-                    id = set.addImage(img);
-                }
-                tile.setImage(id);
+                tile.setImage(img);
             } else if ("animation".equalsIgnoreCase(child.getNodeName())) {
                 // TODO: fill this in once TMXMapWriter is complete
             }
@@ -818,10 +795,36 @@ public class TMXMapReader
     {
         public InputSource resolveEntity(String publicId, String systemId) {
             if (systemId.equals("http://mapeditor.org/dtd/1.0/map.dtd")) {
-                return new InputSource(Resources.class.getResourceAsStream(
+                return new InputSource(TMXMapReader.class.getResourceAsStream(
                         "resources/map.dtd"));
             }
             return null;
         }
+    }
+
+    /**
+     * This utility function will check the specified string to see if it
+     * starts with one of the OS root designations. (Ex.: '/' on Unix, 'C:' on
+     * Windows)
+     *
+     * @param filename a filename to check for absolute or relative path
+     * @return <code>true</code> if the specified filename starts with a
+     *         filesystem root, <code>false</code> otherwise.
+     */
+    public static boolean checkRoot(String filename) {
+        File[] roots = File.listRoots();
+
+        for (File root : roots) {
+            try {
+                String canonicalRoot = root.getCanonicalPath().toLowerCase();
+                if (filename.toLowerCase().startsWith(canonicalRoot)) {
+                    return true;
+                }
+            } catch (IOException e) {
+                // Do we care?
+            }
+        }
+
+        return false;
     }
 }
