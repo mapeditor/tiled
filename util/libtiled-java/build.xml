@@ -4,6 +4,7 @@
     A small Java library to load Tiled maps.
   </description>
 
+  <property name="src" location="src"/>
   <property name="build" location="build"/>
   <property name="javadoc" location="javadoc"/>
 
@@ -15,11 +16,11 @@
   <target name="jar" depends="init" description="Build libtiled.jar">
     <javac
       source="1.5" target="1.5"
-      srcdir="tiled" destdir="${build}"
+      srcdir="${src}" destdir="${build}"
       includeantruntime="false"
       />
     <copy todir="${build}/tiled/mapeditor/resources">
-      <fileset dir="./tiled/mapeditor/resources">
+      <fileset dir="${src}/tiled/mapeditor/resources">
         <include name="map.dtd" />
       </fileset>
     </copy>
@@ -37,7 +38,7 @@
     <!-- Generate Javadoc -->
     <javadoc
       packagenames="tiled.*"
-      sourcepath="tiled"
+      sourcepath="${src}"
       destdir="${javadoc}"
       windowtitle="libtiled"
       />
