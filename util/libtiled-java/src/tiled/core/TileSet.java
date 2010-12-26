@@ -23,7 +23,6 @@ import javax.imageio.ImageIO;
 import tiled.util.TileCutter;
 import tiled.util.TransparentImageFilter;
 import tiled.util.BasicTileCutter;
-import tiled.util.NumberedSet;
 
 /**
  * todo: Update documentation
@@ -38,7 +37,7 @@ import tiled.util.NumberedSet;
 public class TileSet
 {
     private String base;
-    private NumberedSet tiles;
+    final private Vector<Tile> tiles = new Vector<Tile>();
     private int firstGid;
     private long tilebmpFileLastModified;
     private TileCutter tileCutter;
@@ -56,7 +55,6 @@ public class TileSet
      * Default constructor
      */
     public TileSet() {
-        tiles = new NumberedSet();
         tileDimensions = new Rectangle();
     }
 
@@ -268,19 +266,16 @@ public class TileSet
      * @return int The <b>local</b> id of the tile
      */
     public int addTile(Tile t) {
-        if (t.getId() < 0) {
-            t.setId(tiles.getMaxId() + 1);
-        }
+        if (t.getId() < 0)
+            t.setId(tiles.size());
 
-        if (tileDimensions.width < t.getWidth()) {
+        if (tileDimensions.width < t.getWidth())
             tileDimensions.width = t.getWidth();
-        }
 
-        if (tileDimensions.height < t.getHeight()) {
+        if (tileDimensions.height < t.getHeight())
             tileDimensions.height = t.getHeight();
-        }
 
-        tiles.put(t.getId(), t);
+        tiles.add(t);
         t.setTileSet(this);
 
         return t.getId();
@@ -304,14 +299,10 @@ public class TileSet
      * indices. Removal is simply setting the reference at the specified
      * index to <b>null</b>.
      *
-     * todo: Fix the behaviour of this function? It actually does seem to
-     * todo: invalidate other tile indices due to implementation of
-     * todo: NumberedSet.
-     *
      * @param i the index to remove
      */
     public void removeTile(int i) {
-        tiles.remove(i);
+        tiles.set(i, null);
     }
 
     /**
@@ -329,7 +320,7 @@ public class TileSet
      * @return the maximum tile id, or -1 when there are no tiles
      */
     public int getMaxTileId() {
-        return tiles.getMaxId();
+        return tiles.size() - 1;
     }
 
     /**
@@ -399,7 +390,7 @@ public class TileSet
      */
     public Tile getTile(int i) {
         try {
-            return (Tile) tiles.get(i);
+            return tiles.get(i);
         } catch (ArrayIndexOutOfBoundsException a) {}
         return null;
     }
