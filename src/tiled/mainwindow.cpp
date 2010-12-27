@@ -208,6 +208,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
+    connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
     connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
@@ -695,6 +696,12 @@ void MainWindow::closeFile()
         mDocumentManager->closeCurrentDocument();
 }
 
+void MainWindow::closeAllFiles()
+{
+    if (confirmAllSave())
+        mDocumentManager->closeAllDocuments();
+}
+
 void MainWindow::cut()
 {
     if (!mMapDocument)
@@ -981,6 +988,7 @@ void MainWindow::updateActions()
     mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
     mUi->actionClose->setEnabled(map);
+    mUi->actionCloseAll->setEnabled(map);
     mUi->actionCut->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
     mUi->actionPaste->setEnabled(tileLayerSelected && mapInClipboard);

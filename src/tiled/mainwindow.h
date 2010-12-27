@@ -102,6 +102,7 @@ public slots:
     void saveAsImage();
     void exportAs();
     void closeFile();
+    void closeAllFiles();
 
     void cut();
     void copy();

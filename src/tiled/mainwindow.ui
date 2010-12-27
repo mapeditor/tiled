@@ -59,6 +59,7 @@
     <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
+    <addaction name="actionCloseAll"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -368,6 +369,14 @@
    </property>
    <property name="text">
     <string>&amp;Snap to Grid</string>
+   </property>
+  </action>
+  <action name="actionCloseAll">
+   <property name="text">
+    <string>C&amp;lose All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
    </property>
   </action>
  </widget>
