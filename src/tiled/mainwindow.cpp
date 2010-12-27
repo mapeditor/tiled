@@ -137,7 +137,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     undoAction->setIcon(undoIcon);
     redoAction->setIconText(tr("Redo"));
     undoAction->setIconText(tr("Undo"));
-    connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
+    connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
 
@@ -447,6 +447,7 @@ bool MainWindow::openFile(const QString &fileName,
     }
 
     addMapDocument(new MapDocument(map, fileName));
+    setRecentFile(fileName);
     return true;
 }
 
@@ -557,14 +558,19 @@ bool MainWindow::saveFile(const QString &fileName)
 
     mMapDocument->undoStack()->setClean();
     mMapDocument->setFileName(fileName);
-    setCurrentFileName(fileName);
+    setRecentFile(fileName);
     return true;
 }
 
 bool MainWindow::saveFile()
 {
-    if (mCurrentFileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive))
-        return saveFile(mCurrentFileName);
+    if (!mMapDocument)
+        return false;
+
+    const QString currentFileName = mMapDocument->fileName();
+
+    if (currentFileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive))
+        return saveFile(currentFileName);
     else
         return saveFileAs();
 }
@@ -594,7 +600,7 @@ bool MainWindow::saveFileAs()
 
 bool MainWindow::confirmSave()
 {
-    if (!mMapDocument || mMapDocument->undoStack()->isClean())
+    if (!mMapDocument || !mMapDocument->isModified())
         return true;
 
     int ret = QMessageBox::warning(
@@ -629,7 +635,7 @@ void MainWindow::saveAsImage()
 
     MapView *mapView = mDocumentManager->currentMapView();
     SaveAsImageDialog dialog(mMapDocument,
-                             mCurrentFileName,
+                             mMapDocument->fileName(),
                              mapView->zoomable()->scale(),
                              this);
     dialog.exec();
@@ -893,11 +899,6 @@ void MainWindow::autoMap()
     AutomaticMappingManager::instance()->automap();
 }
 
-void MainWindow::updateModified()
-{
-    setWindowModified(!mDocumentManager->undoGroup()->isClean());
-}
-
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -1103,12 +1104,17 @@ void MainWindow::readSettings()
     updateRecentFiles();
 }
 
-void MainWindow::setCurrentFileName(const QString &fileName)
+void MainWindow::updateWindowTitle()
 {
-    mCurrentFileName = fileName;
-    setWindowFilePath(mCurrentFileName);
-    setWindowTitle(tr("%1[*] - Tiled").arg(QFileInfo(fileName).fileName()));
-    setRecentFile(mCurrentFileName);
+    if (mMapDocument) {
+        setWindowTitle(tr("[*]%1 - Tiled").arg(mMapDocument->displayName()));
+        setWindowFilePath(mMapDocument->fileName());
+        setWindowModified(mMapDocument->isModified());
+    } else {
+        setWindowTitle(QApplication::applicationName());
+        setWindowFilePath(QString());
+        setWindowModified(false);
+    }
 }
 
 void MainWindow::addMapDocument(MapDocument *mapDocument)
@@ -1140,10 +1146,7 @@ void MainWindow::aboutTiled()
 
 void MainWindow::retranslateUi()
 {
-    if (!mCurrentFileName.isEmpty()) {
-        const QString fileName = QFileInfo(mCurrentFileName).fileName();
-        setWindowTitle(tr("%1[*] - Tiled").arg(fileName));
-    }
+    updateWindowTitle();
 
     mLayerMenu->setTitle(tr("&Layer"));
     mActionHandler->retranslateUi();
@@ -1158,11 +1161,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mTilesetDock->setMapDocument(mMapDocument);
     AutomaticMappingManager::instance()->setMapDocument(mMapDocument);
 
-    if (mMapDocument)
-        setCurrentFileName(mMapDocument->fileName());
-    else
-        setCurrentFileName(QString());
-
+    updateWindowTitle();
     updateActions();
 }
 

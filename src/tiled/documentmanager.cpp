@@ -37,7 +37,6 @@ DocumentManager::DocumentManager(QObject *parent)
     , mUndoGroup(new QUndoGroup(this))
     , mSelectedTool(0)
     , mSceneWithTool(0)
-    , mUntitledFileName(tr("untitled.tmx"))
 {
     mTabWidget->setDocumentMode(true);
     mTabWidget->setTabsClosable(true);
@@ -122,17 +121,13 @@ void DocumentManager::addDocument(MapDocument *mapDocument)
     view->setScene(scene);
     view->centerOn(0, 0);
 
-    QString tabTitle = QFileInfo(mapDocument->fileName()).fileName();
-    if (tabTitle.isEmpty())
-        tabTitle = mUntitledFileName;
-
-    connect(mapDocument, SIGNAL(fileNameChanged()),
-            SLOT(documentFileNameChanged()));
-
     const int documentIndex = mDocuments.size() - 1;
 
-    mTabWidget->addTab(view, tabTitle);
+    mTabWidget->addTab(view, mapDocument->displayName());
     mTabWidget->setTabToolTip(documentIndex, mapDocument->fileName());
+    connect(mapDocument, SIGNAL(fileNameChanged()), SLOT(updateDocumentTab()));
+    connect(mapDocument, SIGNAL(modifiedChanged()), SLOT(updateDocumentTab()));
+
     switchToDocument(documentIndex);
 }
 
@@ -194,14 +189,15 @@ void DocumentManager::setSelectedTool(AbstractTool *tool)
     }
 }
 
-void DocumentManager::documentFileNameChanged()
+void DocumentManager::updateDocumentTab()
 {
     MapDocument *mapDocument = static_cast<MapDocument*>(sender());
     const int index = mDocuments.indexOf(mapDocument);
 
-    QString tabTitle = QFileInfo(mapDocument->fileName()).fileName();
-    if (tabTitle.isEmpty())
-        tabTitle = mUntitledFileName;
+    QString tabText = mapDocument->displayName();
+    if (mapDocument->isModified())
+        tabText.prepend(QLatin1Char('*'));
 
-    mTabWidget->setTabText(index, tabTitle);
+    mTabWidget->setTabText(index, tabText);
+    mTabWidget->setTabToolTip(index, mapDocument->fileName());
 }

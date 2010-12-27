@@ -70,8 +70,11 @@ public:
     ~MapDocument();
 
     QString fileName() const { return mFileName; }
-
     void setFileName(const QString &fileName);
+
+    QString displayName() const;
+
+    bool isModified() const;
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will
@@ -189,6 +192,7 @@ public:
 
 signals:
     void fileNameChanged();
+    void modifiedChanged();
 
     /**
      * Emitted when the selected tile region changes. Sends the currently

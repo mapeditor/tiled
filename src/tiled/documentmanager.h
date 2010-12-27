@@ -133,7 +133,7 @@ signals:
 private slots:
     void currentIndexChanged();
     void setSelectedTool(AbstractTool *tool);
-    void documentFileNameChanged();
+    void updateDocumentTab();
 
 private:
     QList<MapDocument*> mDocuments;
@@ -142,7 +142,6 @@ private:
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapScene *mSceneWithTool;
-    QString mUntitledFileName;
 };
 
 } // namespace Tiled::Internal

@@ -119,7 +119,8 @@ public slots:
     void offsetMap();
     void editMapProperties();
     void autoMap();
-    void updateModified();
+
+    void updateWindowTitle();
     void updateActions();
     void updateZoomLabel();
     void aboutTiled();
@@ -166,7 +167,6 @@ private:
     void writeSettings();
     void readSettings();
 
-    void setCurrentFileName(const QString &fileName);
     void addMapDocument(MapDocument *mapDocument);
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
@@ -191,7 +191,6 @@ private:
     QLabel *mZoomLabel;
     QLabel *mStatusInfoLabel;
     QSettings mSettings;
-    QString mCurrentFileName;
     CommandButton *mCommandButton;
 
     StampBrush *mStampBrush;

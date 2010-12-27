@@ -38,6 +38,7 @@
 #include "tilesetmanager.h"
 #include "tileset.h"
 
+#include <QFileInfo>
 #include <QRect>
 #include <QUndoStack>
 
@@ -67,6 +68,8 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     connect(mLayerModel, SIGNAL(layerRemoved(int)), SLOT(onLayerRemoved(int)));
     connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
 
+    connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
+
     // Register tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(mMap->tilesets());
@@ -89,6 +92,27 @@ void MapDocument::setFileName(const QString &fileName)
 
     mFileName = fileName;
     emit fileNameChanged();
+}
+
+/**
+ * Returns the name with which to display this map. It is the file name without
+ * its path, or 'untitled.tmx' when the map has no file name.
+ */
+QString MapDocument::displayName() const
+{
+    QString displayName = QFileInfo(mFileName).fileName();
+    if (displayName.isEmpty())
+        displayName = tr("untitled.tmx");
+
+    return displayName;
+}
+
+/**
+ * Returns whether the map has unsaved changes.
+ */
+bool MapDocument::isModified() const
+{
+    return !mUndoStack->isClean();
 }
 
 void MapDocument::setCurrentLayer(int index)
