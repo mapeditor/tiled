@@ -1,0 +1,28 @@
+<project name="tmxviewer-java" default="build">
+
+  <description>
+    A small example application that views Tiled maps using libtiled-java.
+  </description>
+
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="build" depends="init" description="Build TMXViewer">
+    <javac
+      source="1.5" target="1.5"
+      srcdir="${src}" destdir="${build}"
+      classpath="../libtiled-java/libtiled.jar"
+      includeantruntime="false"
+      />
+  </target>
+
+  <target name="clean" description="Clean up the build directory">
+    <delete dir="${build}"/>
+  </target>
+
+</project>

@@ -1,0 +1,47 @@
+<project name="libtiled-java" default="jar">
+
+  <description>
+    A small Java library to load Tiled maps.
+  </description>
+
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="javadoc" location="javadoc"/>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="jar" depends="init" description="Build libtiled.jar">
+    <javac
+      source="1.5" target="1.5"
+      srcdir="${src}" destdir="${build}"
+      includeantruntime="false"
+      />
+    <copy todir="${build}/tiled/io/resources">
+      <fileset dir="${src}/tiled/io/resources">
+        <include name="map.dtd" />
+      </fileset>
+    </copy>
+    <jar jarfile="libtiled.jar" basedir="${build}"/>
+  </target>
+
+  <target name="clean" description="Clean up the build directory">
+    <delete dir="${build}"/>
+  </target>
+
+  <target name="javadoc" description="Generate Javadoc">
+    <!-- Clean up previous Javadoc files -->
+    <delete dir="${javadoc}"/>
+
+    <!-- Generate Javadoc -->
+    <javadoc
+      packagenames="tiled.*"
+      sourcepath="${src}"
+      destdir="${javadoc}"
+      windowtitle="libtiled"
+      />
+  </target>
+
+</project>
