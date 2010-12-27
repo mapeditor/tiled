@@ -269,7 +269,8 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/libtiled-java.iml" filepath="$PROJECT_DIR$/libtiled-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libtiled-java/libtiled-java.iml" filepath="$PROJECT_DIR$/libtiled-java/libtiled-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tmxviewer-java/tmxviewer-java.iml" filepath="$PROJECT_DIR$/tmxviewer-java/tmxviewer-java.iml" />
     </modules>
   </component>
   <component name="ProjectReloadState">
