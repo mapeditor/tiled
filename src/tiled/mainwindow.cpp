@@ -128,8 +128,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
+    redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
+    redoAction->setIconText(tr("Redo"));
+    undoAction->setIconText(tr("Undo"));
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateModified()));
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
