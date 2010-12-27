@@ -334,6 +334,9 @@ public class TMXMapReader
                         }
 
                         if (transStr != null) {
+                            if (transStr.startsWith("#"))
+                                transStr = transStr.substring(1);
+
                             int colorInt = Integer.parseInt(transStr, 16);
                             Color color = new Color(colorInt);
                             set.setTransparentColor(color);
