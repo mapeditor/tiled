@@ -253,6 +253,7 @@
         <w>gzip</w>
         <w>rect</w>
         <w>tileset</w>
+        <w>zlib</w>
       </words>
     </dictionary>
   </component>

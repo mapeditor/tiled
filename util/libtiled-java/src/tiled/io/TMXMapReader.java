@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -546,8 +547,10 @@ public class TMXMapReader
 
                         String comp = getAttributeValue(child, "compression");
 
-                        if (comp != null && "gzip".equalsIgnoreCase(comp)) {
+                        if ("gzip".equalsIgnoreCase(comp)) {
                             is = new GZIPInputStream(bais);
+                        } else if ("zlib".equalsIgnoreCase(comp)) {
+                            is = new InflaterInputStream(bais);
                         } else {
                             is = bais;
                         }
