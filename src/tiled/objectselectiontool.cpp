@@ -239,6 +239,19 @@ void ObjectSelectionTool::languageChanged()
     setShortcut(QKeySequence(tr("S")));
 }
 
+void ObjectSelectionTool::updateEnabledState()
+{
+    bool enabled = false;
+    if (MapDocument *doc = mapDocument()) {
+        const int currentLayerIndex = mapDocument()->currentLayer();
+        if (currentLayerIndex >= 0) {
+            Layer *currentLayer = doc->map()->layerAt(currentLayerIndex);
+            enabled = (dynamic_cast<ObjectGroup*>(currentLayer) != 0);
+        }
+    }
+    setEnabled(enabled);
+}
+
 void ObjectSelectionTool::updateSelection(const QPointF &pos,
                                           Qt::KeyboardModifiers modifiers)
 {

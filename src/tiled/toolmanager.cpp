@@ -116,7 +116,7 @@ void ToolManager::registerTool(AbstractTool *tool)
             this, SLOT(toolEnabledChanged(bool)));
 
     // Select the first added tool
-    if (!mSelectedTool) {
+    if (!mSelectedTool && tool->isEnabled()) {
         setSelectedTool(tool);
         toolAction->setChecked(true);
     }
@@ -171,7 +171,7 @@ void ToolManager::toolEnabledChanged(bool enabled)
     // Switch to another tool when the current tool gets disabled. This is done
     // with a delayed call since we first want all the tools to update their
     // enabled state.
-    if (!enabled && tool == mSelectedTool) {
+    if ((!enabled && tool == mSelectedTool) || (enabled && !mSelectedTool)) {
         QMetaObject::invokeMethod(this, "selectEnabledTool",
                                   Qt::QueuedConnection);
     }

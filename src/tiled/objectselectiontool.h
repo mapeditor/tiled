@@ -57,6 +57,9 @@ public:
 
     void languageChanged();
 
+protected:
+    void updateEnabledState();
+
 private:
     enum Mode {
         NoMode,
