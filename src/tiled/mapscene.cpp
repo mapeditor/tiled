@@ -116,6 +116,14 @@ void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
     mSelectedObjectItems = items;
 }
 
+void MapScene::setSelectedObjects(const QList<MapObject *> &objects)
+{
+    QSet<MapObjectItem*> items;
+    foreach (MapObject *object, objects)
+        items.insert(mObjectItems.value(object));
+    setSelectedObjectItems(items);
+}
+
 void MapScene::setSelectedTool(AbstractTool *tool)
 {
     if (mSelectedTool == tool)

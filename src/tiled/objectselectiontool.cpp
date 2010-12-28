@@ -446,12 +446,18 @@ void ObjectSelectionTool::duplicateObjects(const QList<MapObject *> &objects)
 {
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
+
+    QList<MapObject*> clones;
     foreach (MapObject *mapObject, objects) {
+        MapObject *clone = mapObject->clone();
+        clones.append(clone);
         undoStack->push(new AddMapObject(mapDocument(),
                                          mapObject->objectGroup(),
-                                         mapObject->clone()));
+                                         clone));
     }
+
     undoStack->endMacro();
+    mMapScene->setSelectedObjects(clones);
 }
 
 void ObjectSelectionTool::removeObjects(const QList<MapObject *> &objects)

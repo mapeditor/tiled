@@ -94,6 +94,12 @@ public:
     void setSelectedObjectItems(const QSet<MapObjectItem*> &items);
 
     /**
+     * Sets the set of selected map object items to those matching the given
+     * \a objects.
+     */
+    void setSelectedObjects(const QList<MapObject*> &objects);
+
+    /**
      * Enables the selected tool at this map scene.
      * Therefore it tells that tool, that this is the active map scene.
      */
