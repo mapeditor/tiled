@@ -109,7 +109,7 @@ TileLayer *AutoMapper::findTileLayer(Map *map, const QString &name)
     QString error;
 
     foreach (Layer *layer, map->layers()) {
-        if (layer->name().compare(name, Qt::CaseInsensitive) == 0) {
+        if (layer->name().compare(name) == 0) {
             if (TileLayer *tileLayer = layer->asTileLayer()) {
                 if (ret)
                     error = tr("Multiple layers %1 found!").arg(name) +
@@ -181,7 +181,7 @@ bool AutoMapper::setupRuleMapLayers()
             continue;
         }
 
-        int pos = layername.indexOf(QLatin1Char('_'), Qt::CaseInsensitive) + 1;
+        int pos = layername.indexOf(QLatin1Char('_')) + 1;
         QString group = layername.left(pos) ;
 
         QString name = layername.right(layername.size() - pos);
@@ -360,7 +360,7 @@ void AutoMapper::layerAdd(int index)
         return;
 
     QString name = layer->name();
-    if (mAddLayers.contains(name, Qt::CaseInsensitive)) {
+    if (mAddLayers.contains(name)) {
         mAddLayers.removeAt(mAddLayers.indexOf(name));
 
         QList<QList<QPair<TileLayer*, TileLayer*> >* >::const_iterator j;
@@ -369,7 +369,7 @@ void AutoMapper::layerAdd(int index)
         // update layer translation table
         for (j = mLayerList.constBegin(); j != mLayerList.constEnd(); ++j)
             for (i = (*j)->begin(); i != (*j)->end(); ++i)
-                if (i->first->name().endsWith(name, Qt::CaseInsensitive)) {
+                if (i->first->name().endsWith(name)) {
                     QPair<TileLayer*, TileLayer*> updatePair(i->first, layer);
                     *i = updatePair;
                 }
@@ -816,6 +816,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
     }
     foreach (const QString &layerName, touchedlayers) {
         const int layerindex = map->indexOfLayer(layerName);
+        Q_ASSERT(layerindex != -1);
         mLayersBefore << map->layerAt(layerindex)->clone();
     }
 
@@ -826,6 +827,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
     foreach (const QString &layerName, touchedlayers) {
         const int layerindex = map->indexOfLayer(layerName);
         // layerindex exists, because AutoMapper is still alive, dont check
+        Q_ASSERT(layerindex != -1);
         mLayersAfter << map->layerAt(layerindex)->clone();
     }
     foreach (AutoMapper *a, autoMapper) {
