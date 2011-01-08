@@ -95,7 +95,7 @@ bool AutoMapper::prepareLoad(Map *rules, const QString &rulePath)
 bool AutoMapper::setupMapDocumentLayers()
 {
     Q_ASSERT(!mLayerSet);
-    mLayerSet = findTileLayer(mMapWork, QLatin1String("set"));
+    mLayerSet = findTileLayer(mMapWork, mSetLayer);
 
     if (!mLayerSet)
         return false;
@@ -557,13 +557,13 @@ static QVector<Tile*> tilesInRegion(QVector<TileLayer*> list, const QRegion &r)
 /**
  * This function is one of the core functions for understanding the
  * automapping.
- * In this function a certain region (of the "set" layer) is compared to
+ * In this function a certain region (of the set layer) is compared to
  * several other layers (ruleSet and ruleNotSet).
  * This comparision will determine if a rule of automapping matches,
  * so if this rule is applied at this region given
  * by a QRegion and Offset given by a QPoint.
  *
- * This compares the tile layer l1 ("set" layer) to several others given
+ * This compares the tile layer l1 (set layer) to several others given
  * in the QList listYes (ruleSet) and OList listNo (ruleNotSet).
  * The tile layer l1 is examined at QRegion r1 + offset
  * The tile layers within listYes and listNo are examined at QRegion r1.
@@ -648,7 +648,7 @@ static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
 
                 Tile *t1 = l1->tileAt(x + offset.x(), y + offset.y());
 
-                // when there is no tile in l1 (= "set" layer),
+                // when there is no tile in l1 (= set layer),
                 // there should be no rule at all
                 if (!t1)
                     return false;
@@ -895,6 +895,9 @@ AutomaticMappingManager::AutomaticMappingManager(QObject *parent)
     mChangedFilesTimer.setSingleShot(true);
     connect(&mChangedFilesTimer, SIGNAL(timeout()),
             this, SLOT(fileChangedTimeout()));
+    // this should be stored in the project file later on.
+    // now just default to the value we always had.
+    mSetLayer = QLatin1String("set");
 }
 
 AutomaticMappingManager::~AutomaticMappingManager()
@@ -925,7 +928,7 @@ void AutomaticMappingManager::automap()
     Map *map = mMapDocument->map();
     int w = map->width();
     int h = map->height();
-    int l = map->indexOfLayer(QLatin1String("set"));
+    int l = map->indexOfLayer(mSetLayer);
     if (l != -1)
         automap(QRect(0, 0, w, h), map->layerAt(l));
     else
@@ -937,7 +940,7 @@ void AutomaticMappingManager::automap(QRegion where, Layer *l)
     if (!mMapDocument)
         return;
 
-    if (l->name() != QLatin1String("set"))
+    if (l->name() != mSetLayer)
         return;
 
     if (!mLoaded) {

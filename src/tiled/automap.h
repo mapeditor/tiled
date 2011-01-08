@@ -329,6 +329,13 @@ private:
     QSet<QString> mTouchedLayers;
 
     QString mError;
+
+    /**
+     * This stores the name of the layer, which is used in the working map to
+     * setup the automapper.
+     * Until this variable was introduced it was called "set" (hardcoded)
+     */
+    QString mSetLayer;
 };
 
 /**
@@ -473,6 +480,13 @@ private:
     QTimer mChangedFilesTimer;
 
     QString mError;
+
+    /**
+     * This stores the name of the layer, which is used in the working map to
+     * setup the automapper.
+     * Until this variable was introduced it was called "set" (hardcoded)
+     */
+    QString mSetLayer;
 };
 
 } // namespace Internal
