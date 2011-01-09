@@ -136,9 +136,6 @@ public slots:
     void setStampBrush(const TileLayer *tiles);
     void updateStatusInfoLabel(const QString &statusInfo);
 
-    void selectQuickStamp(int index);
-    void saveQuickStamp(int index);
-
     void mapDocumentChanged(MapDocument *mapDocument);
     void closeMapDocument(int index);
 
@@ -207,10 +204,7 @@ private:
 
     QMenu *mLayerMenu;
 
-    QVector<Map*> mQuickStamps;
     void setupQuickStamps();
-    void cleanQuickStamps();
-    void eraseQuickStamp(int index);
 
     DocumentManager *mDocumentManager;
 };

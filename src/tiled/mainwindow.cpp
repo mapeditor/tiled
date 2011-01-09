@@ -54,6 +54,7 @@
 #include "offsetmapdialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
+#include "quickstampmanager.h"
 #include "saveasimagedialog.h"
 #include "selectiontool.h"
 #include "stampbrush.h"
@@ -337,10 +338,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
 MainWindow::~MainWindow()
 {
-    cleanQuickStamps();
     mDocumentManager->closeAllDocuments();
 
     AutomaticMappingManager::deleteInstance();
+    QuickStampManager::deleteInstance();
     ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1175,6 +1176,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mLayerDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
     AutomaticMappingManager::instance()->setMapDocument(mMapDocument);
+    QuickStampManager::instance()->setMapDocument(mMapDocument);
 
     updateWindowTitle();
     updateActions();
@@ -1182,21 +1184,11 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
 void MainWindow::setupQuickStamps()
 {
-    QList<int> keys;
-    keys << Qt::Key_1
-         << Qt::Key_2
-         << Qt::Key_3
-         << Qt::Key_4
-         << Qt::Key_5
-         << Qt::Key_6
-         << Qt::Key_7
-         << Qt::Key_8
-         << Qt::Key_9;
+    QuickStampManager *quickStampManager = QuickStampManager::instance();
+    QList<int> keys = QuickStampManager::keys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
     QSignalMapper *saveMapper = new QSignalMapper(this);
-
-    mQuickStamps.resize(keys.size());
 
     for (int i = 0; i < keys.length(); i++) {
         // Set up shortcut for selecting this quick stamp
@@ -1212,84 +1204,14 @@ void MainWindow::setupQuickStamps()
         saveMapper->setMapping(saveStamp, i);
     }
 
-    connect(selectMapper, SIGNAL(mapped(int)), SLOT(selectQuickStamp(int)));
-    connect(saveMapper, SIGNAL(mapped(int)), SLOT(saveQuickStamp(int)));
-}
+    connect(selectMapper, SIGNAL(mapped(int)),
+            quickStampManager, SLOT(selectQuickStamp(int)));
+    connect(saveMapper, SIGNAL(mapped(int)),
+            quickStampManager, SLOT(saveQuickStamp(int)));
 
-void MainWindow::cleanQuickStamps()
-{
-    for (int i = 0; i < mQuickStamps.size(); i++)
-        eraseQuickStamp(i);
-}
-
-void MainWindow::eraseQuickStamp(int index)
-{
-    if (Map *quickStamp = mQuickStamps.at(index)) {
-        // Decrease reference to tilesets
-        TilesetManager *tilesetManager = TilesetManager::instance();
-        tilesetManager->removeReferences(quickStamp->tilesets());
-        delete quickStamp;
-    }
-}
-
-void MainWindow::selectQuickStamp(int index)
-{
-    if (!mMapDocument)
-        return;
-
-    if (Map *stampMap = mQuickStamps.at(index)) {
-        mMapDocument->unifyTilesets(stampMap);
-        setStampBrush(stampMap->layerAt(0)->asTileLayer());
-        ToolManager::instance()->selectTool(mStampBrush);
-    }
-}
-
-void MainWindow::saveQuickStamp(int index)
-{
-    const Map *map = mMapDocument->map();
-
-    // The source of the saved stamp depends on which tool is selected
-    AbstractTool *selectedTool = ToolManager::instance()->selectedTool();
-    TileLayer *copy = 0;
-    if (selectedTool == mStampBrush) {
-        TileLayer *stamp = mStampBrush->stamp();
-        if (!stamp)
-            return;
-
-        copy = static_cast<TileLayer*>(stamp->clone());
-    } else {
-        int currentLayer = mMapDocument->currentLayer();
-        if (currentLayer == -1)
-            return;
-
-        const TileLayer *tileLayer =
-                map->layerAt(currentLayer)->asTileLayer();
-        if (!tileLayer)
-            return;
-
-        const QRegion &selection = mMapDocument->tileSelection();
-        if (selection.isEmpty())
-            return;
-
-        copy = tileLayer->copy(selection.translated(-tileLayer->x(),
-                                                    -tileLayer->y()));
-    }
-
-    Map *copyMap = new Map(map->orientation(),
-                           copy->width(), copy->height(),
-                           map->tileWidth(), map->tileHeight());
-
-    copyMap->addLayer(copy);
-
-    // Add tileset references to map and tileset manager
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, copy->usedTilesets()) {
-        copyMap->addTileset(tileset);
-        tilesetManager->addReference(tileset);
-    }
-
-    eraseQuickStamp(index);
-    mQuickStamps.replace(index, copyMap);
+    connect(quickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
+            this, SLOT(setStampBrush(const TileLayer*)));
+    quickStampManager->setMapDocument(mMapDocument);
 }
 
 void MainWindow::closeMapDocument(int index)

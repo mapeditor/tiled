@@ -107,6 +107,7 @@ SOURCES += aboutdialog.cpp \
     addremovetileset.cpp \
     movetileset.cpp \
     createobjecttool.cpp \
+    quickstampmanager.cpp \
     objectselectiontool.cpp \
     commandbutton.cpp \
     commanddatamodel.cpp \
@@ -186,6 +187,7 @@ HEADERS += aboutdialog.h \
     addremovetileset.h \
     movetileset.h \
     createobjecttool.h \
+    quickstampmanager.h \
     objectselectiontool.h \
     commanddatamodel.h \
     commanddialog.h \
