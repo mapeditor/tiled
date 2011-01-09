@@ -5,13 +5,15 @@
 * Added ability to save/restore up to 9 stamps with Ctrl+<number>
 * Added an object selection tool, allowing moving/deleting multiple objects
 * Added ability to run external commands
-* Added support for drawing lines and circles with the stamp brush
+* Added support for drawing lines and ellipses with the stamp brush
 * Added icons to distinguish tile layers from object layers
 * Added "Move To Layer" submenu to the context menu of objects
 * Added option to use hardware rendering based on OpenGL
 * Added a T-Engine4 map export plugin
-* Added a simple TMX viewer application
+* Added a simple TMX viewer application (BSD licensed)
 * Added a New Layer dropdown menu to the layers dock
+* Added a checkbox that enables snap to grid permanently
+* Added an initial version of libtiled-java (LGPL licensed)
 * Added Chinese translation
 * Allowed dragging an image onto Tiled to add a tileset
 * Center the map when it is smaller than the map view
@@ -22,6 +24,7 @@
 * Fixed the current stamp to get updated when switching tilesets
 * Fixed the maximum sizes of the resize map dialog
 * Fixed build issues when an older version of libtiled is installed
+* Changed the license of libtiled from GPL to BSD
 
 0.5.1 (2 September 2010)
 * Fixed saving of objects when tile width is different from tile height
