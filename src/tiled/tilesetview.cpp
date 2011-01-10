@@ -156,6 +156,10 @@ TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
     header->setResizeMode(QHeaderView::ResizeToContents);
     header->setMinimumSectionSize(1);
 
+    // Hardcode this view on 'left to right' since it doesn't work properly
+    // for 'right to left' languages.
+    setLayoutDirection(Qt::LeftToRight);
+    
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
 }
 
