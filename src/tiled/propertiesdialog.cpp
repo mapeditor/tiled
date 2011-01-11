@@ -69,6 +69,12 @@ PropertiesDialog::~PropertiesDialog()
 
 void PropertiesDialog::accept()
 {
+    // On OSX, the accept button doesn't receive focus when clicked, and
+    // taking the focus off the currently-being-edited field is what causes
+    // it to commit its data to the model. This work around makes sure that
+    // the data being edited gets saved when the user clicks OK.
+    mUi->propertiesView->setFocus();
+
     const Properties &properties = mModel->properties();
     if (mObject && mObject->properties() != properties) {
         mUndoStack->push(new ChangeProperties(mKind,
