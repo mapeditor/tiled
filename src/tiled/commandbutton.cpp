@@ -46,6 +46,7 @@ CommandButton::CommandButton(MainWindow *mainWindow,
     setIcon(QIcon(QLatin1String(":images/24x24/system-run.png")));
     setThemeIcon(this, "system-run");
     setToolTip(tr("Execute Command"));
+    setShortcut(QKeySequence(tr("F5")));
 
     setPopupMode(QToolButton::MenuButtonPopup);
     setMenu(mMenu);
