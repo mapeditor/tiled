@@ -43,12 +43,13 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-AutoMapper::AutoMapper(MapDocument *workingDocument)
+AutoMapper::AutoMapper(MapDocument *workingDocument, QString setlayer)
     : mMapDocument(workingDocument)
     , mMapWork(workingDocument ? workingDocument->map() : 0)
     , mMapRules(0)
     , mLayerRuleRegions(0)
     , mLayerSet(0)
+    , mSetLayer(setlayer)
 {
 
     connect(mMapDocument, SIGNAL(layerAdded(int)), SLOT(layerAdd(int)));
@@ -1022,13 +1023,12 @@ bool AutomaticMappingManager::loadFile(const QString &filePath)
                 continue;
             }
             AutoMapper *autoMapper;
-            autoMapper = new AutoMapper(mMapDocument);
+            autoMapper = new AutoMapper(mMapDocument, mSetLayer);
 
             if (autoMapper->prepareLoad(rules, rulePath))
                 mAutoMappers.append(autoMapper);
             else
                 delete autoMapper;
-
         }
         if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)){
             if (!loadFile(rulePath))
@@ -1088,7 +1088,7 @@ void AutomaticMappingManager::fileChangedTimeout()
                 continue;
             }
 
-            AutoMapper *autoMapper = new AutoMapper(mMapDocument);
+            AutoMapper *autoMapper = new AutoMapper(mMapDocument, mSetLayer);
             if (autoMapper->prepareLoad(rules, fileName)) {
                 mAutoMappers.replace(i, autoMapper);
             } else {

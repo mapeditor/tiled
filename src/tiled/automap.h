@@ -63,7 +63,7 @@ public:
      *
      * @param workingDocument: the map to work on.
      */
-    AutoMapper(MapDocument *workingDocument);
+    AutoMapper(MapDocument *workingDocument, QString setlayer);
     ~AutoMapper();
 
     MapDocument *mapDocument() const { return mMapDocument; }
