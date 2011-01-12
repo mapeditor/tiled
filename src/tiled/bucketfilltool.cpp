@@ -190,6 +190,7 @@ void BucketFillTool::setStamp(TileLayer *stamp)
     // Clear any overlay that we presently have with an old stamp
     clearOverlay();
 
+    delete mStamp;
     mStamp = stamp;
 }
 
