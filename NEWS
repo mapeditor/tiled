@@ -14,7 +14,7 @@
 * Added a New Layer dropdown menu to the layers dock
 * Added a checkbox that enables snap to grid permanently
 * Added an initial version of libtiled-java (LGPL licensed)
-* Added Chinese translation
+* Added Chinese and Hebrew translations
 * Allowed dragging an image onto Tiled to add a tileset
 * Center the map when it is smaller than the map view
 * Remember the selected layer across restarts
@@ -24,6 +24,7 @@
 * Fixed the current stamp to get updated when switching tilesets
 * Fixed the maximum sizes of the resize map dialog
 * Fixed build issues when an older version of libtiled is installed
+* Fixed saving of property when clicking OK while editing on Mac
 * Changed the license of libtiled from GPL to BSD
 
 0.5.1 (2 September 2010)
