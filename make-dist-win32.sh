@@ -4,7 +4,9 @@
 
 SOURCEDIR="."
 BUILDDIR="../tiled-build-desktop"
-QTDIR="/c/Qt/4.7.1"
+QTSDKDIR="/c/QtSDK"
+QTDIR="$QTSDKDIR/Desktop/Qt/4.7.1/mingw"
+MINGWDIR="$QTSDKDIR/mingw"
 DESTDIR="../tiled-release"
 V="" #"-v"
 
@@ -42,12 +44,37 @@ mkdir -p $V $DESTDIR/translations
 cp $V $BUILDDIR/translations/*.qm $DESTDIR/translations
 
 
-echo "Copying files from the Qt directory..."
-cp $V $QTDIR/bin/mingwm10.dll $DESTDIR
-cp $V $QTDIR/bin/libgcc_s_dw2-1.dll $DESTDIR
+echo "Copying files from the Qt SDK..."
+cp $V $MINGWDIR/bin/mingwm10.dll $DESTDIR
+cp $V $MINGWDIR/bin/libgcc_s_dw2-1.dll $DESTDIR
 cp $V $QTDIR/bin/QtCore4.dll $DESTDIR
 cp $V $QTDIR/bin/QtGui4.dll $DESTDIR
 cp $V $QTDIR/bin/QtOpenGL4.dll $DESTDIR
+
+mkdir -p $V $DESTDIR/plugins/codecs
+cp $V $QTDIR/plugins/codecs/qcncodecs4.dll $DESTDIR/plugins/codecs
+cp $V $QTDIR/plugins/codecs/qjpcodecs4.dll $DESTDIR/plugins/codecs
+cp $V $QTDIR/plugins/codecs/qkrcodecs4.dll $DESTDIR/plugins/codecs
+cp $V $QTDIR/plugins/codecs/qtwcodecs4.dll $DESTDIR/plugins/codecs
+
+mkdir -p $V $DESTDIR/plugins/imageformats
+cp $V $QTDIR/plugins/imageformats/qgif4.dll $DESTDIR/plugins/imageformats
+cp $V $QTDIR/plugins/imageformats/qjpeg4.dll $DESTDIR/plugins/imageformats
+cp $V $QTDIR/plugins/imageformats/qtiff4.dll $DESTDIR/plugins/imageformats
+
+cp $V $QTDIR/translations/qt_cs.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_de.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_es.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_fr.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_he.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_ja.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_pt.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_zh_CN.qm $DESTDIR/translations
+cp $V $QTDIR/translations/qt_zh_TW.qm $DESTDIR/translations
+
+echo "[Paths]
+Plugins = plugins
+Translations = translations" > $DESTDIR/qt.conf
 
 
 # TODO: Zip it up
