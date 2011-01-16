@@ -805,7 +805,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
-        <location filename="../src/tiled/automap.cpp" line="+115"/>
+        <location filename="../src/tiled/automap.cpp" line="+116"/>
         <source>Multiple layers %1 found!</source>
         <translation>מספר שכבות %1 נמצאו!</translation>
     </message>
@@ -892,6 +892,11 @@ Line %1, column %2</source>
         <location filename="../src/tiled/commandbutton.cpp" line="+48"/>
         <source>Execute Command</source>
         <translation>בצע פקודה</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>F5</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+39"/>
@@ -1429,7 +1434,7 @@ Line %1, column %2</source>
         <translation>%1 ערכים</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+37"/>
         <source>Layer</source>
         <translation>שכבה</translation>
     </message>
@@ -1533,7 +1538,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+208"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+210"/>
         <source>Tile &amp;Properties...</source>
         <translation>&amp;ערכי משבצת...</translation>
     </message>
@@ -1743,7 +1748,7 @@ Do you want to replace it?</source>
         <translation>שינוי גודל עצם</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="-149"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="-151"/>
         <source>Import Tileset</source>
         <translation>ייבוא סט משבצות</translation>
     </message>

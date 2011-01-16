@@ -28,6 +28,19 @@
     </message>
 </context>
 <context>
+    <name>CommandDialog</name>
+    <message>
+        <location filename="../src/tiled/commanddialog.ui" line="+14"/>
+        <source>Properties</source>
+        <translation type="unfinished">Propriedades</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Save map before executing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../src/tiled/mainwindow.ui" line="+17"/>
@@ -35,12 +48,12 @@
         <translation></translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+23"/>
         <source>&amp;File</source>
         <translation>&amp;Ficheiro</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+27"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
@@ -55,7 +68,7 @@
         <translation>&amp;Mapa</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+13"/>
         <source>&amp;View</source>
         <translation>&amp;Ver</translation>
     </message>
@@ -64,7 +77,7 @@
         <translation type="obsolete">&amp;Camada</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+17"/>
         <source>Main Toolbar</source>
         <translation></translation>
     </message>
@@ -84,7 +97,7 @@
         <translation>&amp;Sair</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+15"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copiar</translation>
     </message>
@@ -99,12 +112,12 @@
         <translation>&amp;Acerca do Tiled</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+8"/>
         <source>About Qt</source>
         <translation>Acerca do Qt</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>&amp;Resize Map...</source>
         <translation>&amp;Redimensionar Mapa...</translation>
     </message>
@@ -114,12 +127,17 @@
         <translation>&amp;Propriedades do Mapa...</translation>
     </message>
     <message>
+        <location line="+5"/>
+        <source>AutoMap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+29"/>
         <source>&amp;New...</source>
         <translation>&amp;Novo...</translation>
     </message>
     <message>
-        <location line="+95"/>
+        <location line="+98"/>
         <source>&amp;Export As...</source>
         <translation>&amp;Exportar Como...</translation>
     </message>
@@ -134,12 +152,27 @@
         <translation>&amp;Adicionar Tileset Externo...</translation>
     </message>
     <message>
-        <location line="-293"/>
+        <location line="+8"/>
+        <source>&amp;Snap to Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>C&amp;lose All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+Shift+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-329"/>
         <source>&amp;Recent Files</source>
         <translation>Ficheiros &amp;Recentes</translation>
     </message>
     <message>
-        <location line="+169"/>
+        <location line="+186"/>
         <source>Show &amp;Grid</source>
         <translation>Mostrar &amp;Grelha</translation>
     </message>
@@ -249,7 +282,7 @@
         <translation>Pre&amp;ferências...</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+12"/>
         <source>Clear Recent Files</source>
         <translation>Limpar Ficheiros Recentes</translation>
     </message>
@@ -269,19 +302,124 @@
         <translation type="obsolete">&amp;Propriedades...</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mapobjectitem.cpp" line="+265"/>
         <source>&amp;Duplicate Object</source>
-        <translation>&amp;Duplicar Objecto</translation>
+        <translation type="obsolete">&amp;Duplicar Objecto</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>&amp;Remove Object</source>
-        <translation>&amp;Remover Objecto</translation>
+        <translation type="obsolete">&amp;Remover Objecto</translation>
+    </message>
+    <message>
+        <source>Object &amp;Properties...</source>
+        <translation type="obsolete">Objectos &amp;Propriedades...</translation>
+    </message>
+</context>
+<context>
+    <name>MapReader</name>
+    <message>
+        <location filename="../src/libtiled/mapreader.cpp" line="+132"/>
+        <source>Not a map file.</source>
+        <translation type="unfinished">Não é um ficheiro de Mapa.</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Not a tileset file.</source>
+        <translation type="unfinished">Não é um ficheiro de tileset.</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>%3
+
+Line %1, column %2</source>
+        <translation type="unfinished">%3
+
+Linha %1, coluna %2</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>File not found: %1</source>
+        <translation type="unfinished">Ficheiro não encontrado: %1</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Object &amp;Properties...</source>
-        <translation>Objectos &amp;Propriedades...</translation>
+        <source>Unable to read file: %1</source>
+        <translation type="unfinished">Incapaz de ler ficheiro: %1</translation>
+    </message>
+    <message>
+        <location line="+61"/>
+        <source>Unsupported map orientation: &quot;%1&quot;</source>
+        <translation type="unfinished">Orientação de mapa não suportado: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <location line="+56"/>
+        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
+        <translation type="unfinished">Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Error while loading tileset &apos;%1&apos;: %2</source>
+        <translation type="unfinished">Erro a carregar tileset &apos;%1&apos;: %2</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Invalid tile ID: %1</source>
+        <translation type="unfinished">Tile ID inválido: %1</translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <source>Error loading tileset image:
+&apos;%1&apos;</source>
+        <translation type="unfinished">Erroa a Carregar a imagem de tileser:
+&apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location line="+64"/>
+        <source>Too many &lt;tile&gt; elements</source>
+        <translation type="unfinished">Demaseados elementos &lt;tile&gt;</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <location line="+66"/>
+        <location line="+39"/>
+        <location line="+103"/>
+        <source>Invalid tile: %1</source>
+        <translation type="unfinished">Tile inválido: %1</translation>
+    </message>
+    <message>
+        <location line="-188"/>
+        <source>Unknown encoding: %1</source>
+        <translation type="unfinished">Codificação desconhecida: %1</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>Compression method &apos;%1&apos; not supported</source>
+        <translation type="unfinished">Método de compressão &apos;%1&apos; não suportado</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <location line="+39"/>
+        <source>Corrupt layer data for layer &apos;%1&apos;</source>
+        <translation type="unfinished">Data de Camada corrumpido para a Camada &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
+        <translation type="unfinished">Incapaz de intrepertar tile em (%1,%2) na camada &apos;%3&apos;</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Invalid global tile id (less than 0): %1</source>
+        <translation type="unfinished">ID global de tile inválido (inferior a 0): %1</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Tile used but no tilesets specified</source>
+        <translation type="unfinished">Tile usado mas nenhum tileset especificado</translation>
+    </message>
+    <message>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+102"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Impossivel abrir para escrita.</translation>
     </message>
 </context>
 <context>
@@ -571,6 +709,11 @@
         <source>&amp;Language:</source>
         <translation>&amp;Linguagem:</translation>
     </message>
+    <message>
+        <location line="+13"/>
+        <source>Hardware &amp;accelerated drawing (OpenGL)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PropertiesDialog</name>
@@ -583,7 +726,7 @@
 <context>
     <name>ResizeDialog</name>
     <message>
-        <location filename="../src/tiled/resizedialog.ui" line="+13"/>
+        <location filename="../src/tiled/resizedialog.ui" line="+14"/>
         <source>Resize</source>
         <translation>Redimensionar</translation>
     </message>
@@ -662,31 +805,229 @@
     </message>
 </context>
 <context>
+    <name>Tengine::TenginePlugin</name>
+    <message>
+        <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+50"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Impossivel abrir para escrita.</translation>
+    </message>
+    <message>
+        <location line="+243"/>
+        <source>T-Engine4 map files (*.lua)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::AutoMapper</name>
+    <message>
+        <location filename="../src/tiled/automap.cpp" line="+116"/>
+        <source>Multiple layers %1 found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+115"/>
+        <source>No ruleRegions layer found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>No set layers found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>No ruleSet layer found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+208"/>
+        <source>Tile</source>
+        <translation type="unfinished">Tile</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::AutomaticMappingManager</name>
+    <message>
+        <location line="+491"/>
+        <source>No set layer found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Apply AutoMap rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>No rules file found at:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Error opening rules file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>File not found:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Opening rules map failed:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::BucketFillTool</name>
     <message>
         <location filename="../src/tiled/bucketfilltool.cpp" line="+39"/>
-        <location line="+139"/>
+        <location line="+133"/>
         <source>Bucket Fill Tool</source>
         <translation>Ferramenta de Preenchimento</translation>
     </message>
     <message>
-        <location line="-136"/>
-        <location line="+137"/>
+        <location line="-130"/>
+        <location line="+131"/>
         <source>F</source>
         <translation>F</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CommandButton</name>
+    <message>
+        <location filename="../src/tiled/commandbutton.cpp" line="+48"/>
+        <source>Execute Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>F5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+39"/>
+        <location line="+61"/>
+        <source>Error Executing Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-60"/>
+        <source>You do not have any commands setup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Edit commands...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+50"/>
+        <source>Edit Commands...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>There was an error running the command</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CommandDataModel</name>
+    <message>
+        <location filename="../src/tiled/commanddatamodel.cpp" line="+74"/>
+        <source>Open in text editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <location line="+67"/>
+        <source>&lt;new command&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-59"/>
+        <source>Set a name for this command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Set the shell command to execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Show or hide this command in the command list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Add a new command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+100"/>
+        <source>Name</source>
+        <translation type="unfinished">Nome</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Enable</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CommandDialog</name>
+    <message>
+        <location filename="../src/tiled/commanddialog.cpp" line="+35"/>
+        <source>Edit Commands</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CreateObjectTool</name>
+    <message>
+        <location filename="../src/tiled/createobjecttool.cpp" line="+42"/>
+        <location line="+111"/>
+        <source>O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1"/>
+        <source>Insert Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Insert Tile Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>T</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::Eraser</name>
     <message>
         <location filename="../src/tiled/eraser.cpp" line="+34"/>
-        <location line="+37"/>
+        <location line="+36"/>
         <source>Eraser</source>
         <translation>Apagador</translation>
     </message>
     <message>
-        <location line="-34"/>
-        <location line="+35"/>
+        <location line="-33"/>
+        <location line="+34"/>
         <source>E</source>
         <translation></translation>
     </message>
@@ -694,7 +1035,7 @@
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+165"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+178"/>
         <source>Layers</source>
         <translation>Camadas</translation>
     </message>
@@ -707,7 +1048,7 @@
 <context>
     <name>Tiled::Internal::LayerModel</name>
     <message>
-        <location filename="../src/tiled/layermodel.cpp" line="+114"/>
+        <location filename="../src/tiled/layermodel.cpp" line="+122"/>
         <source>Layer</source>
         <translation>Camada</translation>
     </message>
@@ -726,12 +1067,14 @@
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+116"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+129"/>
+        <location line="+10"/>
         <source>Undo</source>
         <translation>Desfazer</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-9"/>
+        <location line="+8"/>
         <source>Redo</source>
         <translation>Refazer</translation>
     </message>
@@ -740,13 +1083,13 @@
         <translation type="obsolete">Erro na abertura do mapa</translation>
     </message>
     <message>
-        <location line="+318"/>
+        <location line="+391"/>
         <source>Open Map</source>
         <translation>Abrir Mapa</translation>
     </message>
     <message>
         <location line="-13"/>
-        <location line="+78"/>
+        <location line="+79"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Ficheiros de mapa do Tiled (*.tmx)</translation>
     </message>
@@ -755,30 +1098,45 @@
         <translation type="obsolete">Erro a salvar o mapa</translation>
     </message>
     <message>
-        <location line="-338"/>
-        <location line="+835"/>
+        <location line="-425"/>
+        <source>Ctrl+=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <location line="+962"/>
         <source>&amp;Layer</source>
         <translation>&amp;Camada</translation>
     </message>
     <message>
-        <location line="-611"/>
+        <location line="-711"/>
         <source>Error Opening Map</source>
         <translation>Erro na abertura do mapa</translation>
     </message>
     <message>
-        <location line="+33"/>
-        <location line="+125"/>
+        <location line="+69"/>
+        <location line="+138"/>
         <source>All Files (*)</source>
         <translation>Todos os Ficheiros (*)</translation>
     </message>
     <message>
-        <location line="-80"/>
-        <location line="+126"/>
+        <location line="-97"/>
+        <location line="+144"/>
         <source>Error Saving Map</source>
         <translation>Erro a salvar o mapa</translation>
     </message>
     <message>
-        <location line="-95"/>
+        <location line="-108"/>
         <source>untitled.tmx</source>
         <translation>sem-nome.tmx</translation>
     </message>
@@ -793,12 +1151,12 @@
         <translation>Existem mudanças por salvar. Deseja salvar agora?</translation>
     </message>
     <message>
-        <location line="+40"/>
+        <location line="+52"/>
         <source>Export As...</source>
         <translation>Exportar Como...</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+29"/>
         <source>Unknown File Format</source>
         <translation>Formato de Ficheiro Desconhecido</translation>
     </message>
@@ -808,17 +1166,21 @@
         <translation>O ficheiro especificado não tem nenhuma extenção de ficheiro conhecida.</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+47"/>
         <source>Cut</source>
         <translation>Cortar</translation>
     </message>
     <message>
-        <location line="+34"/>
-        <source>Add Tilesets</source>
-        <translation>Adicionar Tileset</translation>
+        <location line="+377"/>
+        <source>[*]%1 - Tiled</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+50"/>
+        <source>Add Tilesets</source>
+        <translation type="obsolete">Adicionar Tileset</translation>
+    </message>
+    <message>
+        <location line="-280"/>
         <source>Add External Tileset</source>
         <translation>Adicionar Tileset Externo</translation>
     </message>
@@ -838,7 +1200,12 @@
         <translation>Mapa</translation>
     </message>
     <message>
-        <location line="+114"/>
+        <location line="+12"/>
+        <source>Automatic Mapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+123"/>
         <source>%1%</source>
         <translation></translation>
     </message>
@@ -862,17 +1229,16 @@
         <source>Layer</source>
         <translation type="obsolete">Camada</translation>
     </message>
-    <message>
-        <location line="+69"/>
-        <location line="+46"/>
-        <source>%1[*] - Tiled</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+109"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+105"/>
+        <source>untitled.tmx</source>
+        <translation type="unfinished">sem-nome.tmx</translation>
+    </message>
+    <message>
+        <location line="+39"/>
         <source>Resize Map</source>
         <translation>Redimensionar Mapa</translation>
     </message>
@@ -900,6 +1266,16 @@
         <location line="+4"/>
         <source>Duplicate Layer</source>
         <translation>Duplicar Camada</translation>
+    </message>
+    <message>
+        <location line="+120"/>
+        <source>Tile</source>
+        <translation type="unfinished">Tile</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Tileset Changes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -985,7 +1361,7 @@
 <context>
     <name>Tiled::Internal::NewTilesetDialog</name>
     <message>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+115"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+123"/>
         <location line="+7"/>
         <source>Error</source>
         <translation>Erro</translation>
@@ -1041,10 +1417,65 @@
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::ObjectSelectionTool</name>
+    <message>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+103"/>
+        <location line="+135"/>
+        <source>Select Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-132"/>
+        <location line="+133"/>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location line="+77"/>
+        <location line="+145"/>
+        <source>Duplicate %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="-144"/>
+        <location line="+162"/>
+        <source>Remove %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="-153"/>
+        <location line="+163"/>
+        <source>Move %n Object(s) to Layer</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="-153"/>
+        <source>Object &amp;Properties...</source>
+        <translation type="unfinished">Objectos &amp;Propriedades...</translation>
+    </message>
+    <message numerus="yes">
+        <location line="+107"/>
+        <source>Move %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="+45"/>
-        <location line="+22"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="+56"/>
+        <location line="+23"/>
         <source>System default</source>
         <translation>Padrão do Sistema</translation>
     </message>
@@ -1052,12 +1483,12 @@
 <context>
     <name>Tiled::Internal::PropertiesDialog</name>
     <message>
-        <location filename="../src/tiled/propertiesdialog.cpp" line="+61"/>
+        <location filename="../src/tiled/propertiesdialog.cpp" line="+62"/>
         <source>%1 Properties</source>
         <translation>%1 Propriedades</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+37"/>
         <source>Layer</source>
         <translation>Camada</translation>
     </message>
@@ -1065,13 +1496,12 @@
 <context>
     <name>Tiled::Internal::PropertiesModel</name>
     <message>
-        <location filename="../src/tiled/propertiesmodel.cpp" line="+50"/>
-        <location line="+24"/>
+        <location filename="../src/tiled/propertiesmodel.cpp" line="+51"/>
         <source>&lt;new property&gt;</source>
         <translation>&lt;nova propriedade&gt;</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+68"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
@@ -1105,18 +1535,18 @@ Deseja substituí-lo?</translation>
     <name>Tiled::Internal::SelectionTool</name>
     <message>
         <location filename="../src/tiled/selectiontool.cpp" line="+34"/>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>Rectangular Select</source>
         <translation>Selecção Rectangular</translation>
     </message>
     <message>
-        <location line="-77"/>
-        <location line="+78"/>
+        <location line="-78"/>
+        <location line="+79"/>
         <source>R</source>
         <translation></translation>
     </message>
     <message>
-        <location line="-55"/>
+        <location line="-56"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
         <translation>%1, %2 - Rectangulo: (%3 x %4)</translation>
     </message>
@@ -1124,14 +1554,14 @@ Deseja substituí-lo?</translation>
 <context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
-        <location filename="../src/tiled/stampbrush.cpp" line="+34"/>
-        <location line="+58"/>
+        <location filename="../src/tiled/stampbrush.cpp" line="+38"/>
+        <location line="+279"/>
         <source>Stamp Brush</source>
         <translation>Pincel de Carimbo</translation>
     </message>
     <message>
-        <location line="-55"/>
-        <location line="+56"/>
+        <location line="-276"/>
+        <location line="+277"/>
         <source>B</source>
         <translation></translation>
     </message>
@@ -1139,7 +1569,7 @@ Deseja substituí-lo?</translation>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+236"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+247"/>
         <source>Remove Tileset</source>
         <translation>Remover Tileset</translation>
     </message>
@@ -1154,7 +1584,7 @@ Deseja substituí-lo?</translation>
         <translation>Remover este tileset e todas as referências das tiles neste tileset?</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+58"/>
         <source>Tilesets</source>
         <translation></translation>
     </message>
@@ -1166,7 +1596,7 @@ Deseja substituí-lo?</translation>
         <translation type="obsolete">Propriedades...</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+207"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+210"/>
         <source>Tile &amp;Properties...</source>
         <translation>&amp;Propriedades do Tile...</translation>
     </message>
@@ -1199,7 +1629,7 @@ Deseja substituí-lo?</translation>
 <context>
     <name>Tiled::Internal::ToolManager</name>
     <message>
-        <location filename="../src/tiled/toolmanager.cpp" line="+87"/>
+        <location filename="../src/tiled/toolmanager.cpp" line="+88"/>
         <source>Tools</source>
         <translation>Ferramentas</translation>
     </message>
@@ -1255,9 +1685,8 @@ Deseja substituí-lo?</translation>
         <translation type="obsolete">Leitor de mapas XML (*.tmx)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tmxmapwriter.cpp" line="+48"/>
         <source>Could not open file for writing.</source>
-        <translation>Impossivel abrir para escrita.</translation>
+        <translation type="obsolete">Impossivel abrir para escrita.</translation>
     </message>
     <message>
         <source>XML map writer (*.tmx)</source>
@@ -1265,7 +1694,7 @@ Deseja substituí-lo?</translation>
     </message>
     <message>
         <location filename="../src/tiled/tmxmapreader.h" line="+55"/>
-        <location filename="../src/tiled/tmxmapwriter.h" line="+67"/>
+        <location filename="../src/tiled/tmxmapwriter.h" line="+56"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Ficheiros de mapa do Tiled (*.tmx)</translation>
     </message>
@@ -1273,104 +1702,90 @@ Deseja substituí-lo?</translation>
 <context>
     <name>TmxReader</name>
     <message>
-        <location filename="../src/tiled/tmxmapreader.cpp" line="+139"/>
-        <location line="+21"/>
         <source>Not a map file.</source>
-        <translation>Não é um ficheiro de Mapa.</translation>
+        <translation type="obsolete">Não é um ficheiro de Mapa.</translation>
     </message>
     <message>
-        <location line="+21"/>
         <source>Not a tileset file.</source>
-        <translation>Não é um ficheiro de tileset.</translation>
+        <translation type="obsolete">Não é um ficheiro de tileset.</translation>
     </message>
     <message>
-        <location line="+15"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation>%3
+        <translation type="obsolete">%3
 
 Linha %1, coluna %2</translation>
     </message>
     <message>
-        <location line="+10"/>
         <source>File not found: %1</source>
-        <translation>Ficheiro não encontrado: %1</translation>
+        <translation type="obsolete">Ficheiro não encontrado: %1</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation>Incapaz de ler ficheiro: %1</translation>
+        <translation type="obsolete">Incapaz de ler ficheiro: %1</translation>
     </message>
     <message>
-        <location line="+61"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Orientação de mapa não suportado: &quot;%1&quot;</translation>
+        <translation type="obsolete">Orientação de mapa não suportado: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+56"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
+        <translation type="obsolete">Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+54"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation>Erro a carregar tileset &apos;%1&apos;: %2</translation>
+        <translation type="obsolete">Erro a carregar tileset &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location line="+22"/>
         <source>Invalid tile ID: %1</source>
-        <translation>Tile ID inválido: %1</translation>
+        <translation type="obsolete">Tile ID inválido: %1</translation>
     </message>
     <message>
-        <location line="+33"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
-        <translation>Erroa a Carregar a imagem de tileser:
+        <translation type="obsolete">Erroa a Carregar a imagem de tileser:
 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+49"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation>Demaseados elementos &lt;tile&gt;</translation>
+        <translation type="obsolete">Demaseados elementos &lt;tile&gt;</translation>
     </message>
     <message>
-        <location line="+11"/>
-        <location line="+66"/>
-        <location line="+39"/>
         <source>Invalid tile: %1</source>
-        <translation>Tile inválido: %1</translation>
+        <translation type="obsolete">Tile inválido: %1</translation>
     </message>
     <message>
-        <location line="-85"/>
         <source>Unknown encoding: %1</source>
-        <translation>Codificação desconhecida: %1</translation>
+        <translation type="obsolete">Codificação desconhecida: %1</translation>
     </message>
     <message>
-        <location line="+19"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation>Método de compressão &apos;%1&apos; não suportado</translation>
+        <translation type="obsolete">Método de compressão &apos;%1&apos; não suportado</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+39"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation>Data de Camada corrumpido para a Camada &apos;%1&apos;</translation>
+        <translation type="obsolete">Data de Camada corrumpido para a Camada &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+12"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation>Incapaz de intrepertar tile em (%1,%2) na camada &apos;%3&apos;</translation>
+        <translation type="obsolete">Incapaz de intrepertar tile em (%1,%2) na camada &apos;%3&apos;</translation>
     </message>
     <message>
-        <location line="+20"/>
         <source>Invalid global tile id (less than 0): %1</source>
-        <translation>ID global de tile inválido (inferior a 0): %1</translation>
+        <translation type="obsolete">ID global de tile inválido (inferior a 0): %1</translation>
     </message>
     <message>
-        <location line="+6"/>
         <source>Tile used but no tilesets specified</source>
-        <translation>Tile usado mas nenhum tileset especificado</translation>
+        <translation type="obsolete">Tile usado mas nenhum tileset especificado</translation>
+    </message>
+</context>
+<context>
+    <name>TmxViewer</name>
+    <message>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+166"/>
+        <source>TMX Viewer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1401,7 +1816,7 @@ Linha %1, coluna %2</translation>
         <translation>Modificar Objecto</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeproperties.cpp" line="+33"/>
+        <location filename="../src/tiled/changeproperties.cpp" line="+34"/>
         <source>Change %1 Properties</source>
         <translation>Mudar %1 Propriedades</translation>
     </message>
@@ -1487,7 +1902,7 @@ Linha %1, coluna %2</translation>
         <translation>Mover Tileset</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="-147"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="-151"/>
         <source>Import Tileset</source>
         <translation>Importar Tileset</translation>
     </message>
@@ -1496,11 +1911,16 @@ Linha %1, coluna %2</translation>
         <source>Export Tileset</source>
         <translation>Exportar Tileset</translation>
     </message>
+    <message>
+        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
+        <source>Move Object to Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="+32"/>
+        <location filename="../src/tiled/utils.cpp" line="+31"/>
         <source>Image files</source>
         <translation>Ficheiros de imagem</translation>
     </message>
