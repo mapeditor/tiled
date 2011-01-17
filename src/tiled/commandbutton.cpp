@@ -69,7 +69,8 @@ void CommandButton::runCommand(const QString &command)
     MapDocument *mapDocument = mDocumentManager->currentDocument();
     if (mapDocument) {
         const QString fileName = mapDocument->fileName();
-        finalCommand.replace(QLatin1String("%mapfile"), fileName);
+        finalCommand.replace(QLatin1String("%mapfile"),
+                             QString(QLatin1String("\"%1\"")).arg(fileName));
     }
 
     QProcess *process = new QProcess(window());
