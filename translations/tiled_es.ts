@@ -32,12 +32,12 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Properties</source>
-        <translation type="unfinished">Propiedades</translation>
+        <translation>Propiedades</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar el mapa antes de ejecutarlo</translation>
     </message>
 </context>
 <context>
@@ -134,7 +134,7 @@
     <message>
         <location line="+5"/>
         <source>AutoMap</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoMapa</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -174,17 +174,17 @@
     <message>
         <location line="+8"/>
         <source>&amp;Snap to Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajustar a la Rejilla</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>C&amp;lose All</source>
-        <translation type="unfinished"></translation>
+        <translation>C&amp;errar todo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
         <source>Move Layer &amp;Up</source>
@@ -331,63 +331,63 @@
     <message>
         <location filename="../src/libtiled/mapreader.cpp" line="+132"/>
         <source>Not a map file.</source>
-        <translation type="unfinished">No es un archivo de Mapas.</translation>
+        <translation>No es un archivo de Mapas.</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation type="unfinished">No es un archivo con un conjunto de patrones.</translation>
+        <translation>No es un archivo con un conjunto de patrones.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation type="unfinished">%3
+        <translation>%3
 
 Línea %1, columna %2</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>File not found: %1</source>
-        <translation type="unfinished">Archivo no encontrado: %1</translation>
+        <translation>Archivo no encontrado: %1</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation type="unfinished">Incapaz de leer archivo: %1</translation>
+        <translation>Incapaz de leer archivo: %1</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation type="unfinished">Orientación del Mapa no soportada: &quot;%1&quot;</translation>
+        <translation>Orientación del Mapa no soportada: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation type="unfinished">Parámetros del conjunto de patrones no válidos para el conjunto de patrones &apos;%1&apos;</translation>
+        <translation>Parámetros del conjunto de patrones no válidos para el conjunto de patrones &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation type="unfinished">Error mientras se cargaba el conjunto de patrones &apos;%1&apos;: %2</translation>
+        <translation>Error mientras se cargaba el conjunto de patrones &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Invalid tile ID: %1</source>
-        <translation type="unfinished">ID de Patrón no válido: %1</translation>
+        <translation>ID de Patrón no válido: %1</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
-        <translation type="unfinished">Error cargando la imagen del conjunto de patrones:
+        <translation>Error cargando la imagen del conjunto de patrones:
 &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation type="unfinished">Demasiados elementos &lt;tile&gt;</translation>
+        <translation>Demasiados elementos &lt;Patrón&gt;</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -395,43 +395,43 @@ Línea %1, columna %2</translation>
         <location line="+39"/>
         <location line="+103"/>
         <source>Invalid tile: %1</source>
-        <translation type="unfinished">Patrón no válido: %1</translation>
+        <translation>Patrón no válido: %1</translation>
     </message>
     <message>
         <location line="-188"/>
         <source>Unknown encoding: %1</source>
-        <translation type="unfinished">Codificación desconocida: %1</translation>
+        <translation>Codificación desconocida: %1</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation type="unfinished">Método de compresión &apos;%1&apos; no soportado</translation>
+        <translation>Método de compresión &apos;%1&apos; no soportado</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+39"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation type="unfinished">Datos corruptos para la Capa &apos;%1&apos;</translation>
+        <translation>Datos corruptos para la Capa &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation type="unfinished">Incapaz de interpretar patrón en (%1,%2) en la capa &apos;%3&apos;</translation>
+        <translation>Incapaz de interpretar patrón en (%1,%2) en la capa &apos;%3&apos;</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Invalid global tile id (less than 0): %1</source>
-        <translation type="unfinished">ID global del Patrón no válido (inferior a 0): %1</translation>
+        <translation>ID global del Patrón no válido (inferior a 0): %1</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Tile used but no tilesets specified</source>
-        <translation type="unfinished">Patrón usado, pero no especificado en el conjunto de patrones</translation>
+        <translation>Patrón usado, pero no especificado en el conjunto de patrones</translation>
     </message>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+102"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para escritura.</translation>
+        <translation>No se pudo abrir el archivo para escritura.</translation>
     </message>
 </context>
 <context>
@@ -724,7 +724,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+13"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pintado &amp;acelerado por Hardware (OpenGL)</translation>
     </message>
 </context>
 <context>
@@ -828,12 +828,12 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+50"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para escritura.</translation>
+        <translation>No se pudo abrir el archivo para escritura.</translation>
     </message>
     <message>
         <location line="+243"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de mapa T-Engine4 (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -841,27 +841,27 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/automap.cpp" line="+116"/>
         <source>Multiple layers %1 found!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Se encontraron multiples capas %1!</translation>
     </message>
     <message>
         <location line="+115"/>
         <source>No ruleRegions layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontraron capas ruleRegions!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No set layers found!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontró un set de capas!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No ruleSet layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontró la capa ruleSet!</translation>
     </message>
     <message>
         <location line="+208"/>
         <source>Tile</source>
-        <translation type="unfinished">Patrón</translation>
+        <translation>Patrón</translation>
     </message>
 </context>
 <context>
@@ -869,36 +869,40 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+491"/>
         <source>No set layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se encontró un set de capas!</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Apply AutoMap rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplicar reglas de AutoMapa</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No rules file found at:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró el archivo de reglas en:
+%1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Error opening rules file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error abriendo el archivo de reglas:
+%1</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>File not found:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo no encontrado:
+%1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Opening rules map failed:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo la carga de las reglas del mapa:
+%1</translation>
     </message>
 </context>
 <context>
@@ -921,38 +925,38 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/commandbutton.cpp" line="+48"/>
         <source>Execute Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutar orden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>F5</source>
-        <translation type="unfinished"></translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location line="+39"/>
         <location line="+61"/>
         <source>Error Executing Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Error ejecutando orden</translation>
     </message>
     <message>
         <location line="-60"/>
         <source>You do not have any commands setup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usted no tiene ninguna orden preparada.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar ordenes...</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar Ordenes...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>There was an error running the command</source>
-        <translation type="unfinished"></translation>
+        <translation>Hubo un error ejecutando la orden</translation>
     </message>
 </context>
 <context>
@@ -960,48 +964,48 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/commanddatamodel.cpp" line="+74"/>
         <source>Open in text editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir en el editor de texto</translation>
     </message>
     <message>
         <location line="+90"/>
         <location line="+67"/>
         <source>&lt;new command&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Nueva Orden&gt;</translation>
     </message>
     <message>
         <location line="-59"/>
         <source>Set a name for this command</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer un nombre para esta orden</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set the shell command to execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Establecer la orden de consola a ejecutar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show or hide this command in the command list</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar u ocultar esta orden en la lista de ordenes</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add a new command</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir una nueva orden</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Orden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar</translation>
     </message>
 </context>
 <context>
@@ -1009,7 +1013,7 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/commanddialog.cpp" line="+35"/>
         <source>Edit Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar Ordenes</translation>
     </message>
 </context>
 <context>
@@ -1018,22 +1022,22 @@ Línea %1, columna %2</translation>
         <location filename="../src/tiled/createobjecttool.cpp" line="+42"/>
         <location line="+111"/>
         <source>O</source>
-        <translation type="unfinished"></translation>
+        <translation>O</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Insert Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar Objetos</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Insert Tile Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Insertar Objetos Patrones</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
 </context>
 <context>
@@ -1119,17 +1123,17 @@ Línea %1, columna %2</translation>
     <message>
         <location line="-425"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -1177,7 +1181,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+29"/>
         <source>Unknown File Format</source>
-        <translation>Formato de fichero desconocido</translation>
+        <translation>Formato de archivo desconocido</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1192,7 +1196,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+377"/>
         <source>[*]%1 - Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>[*]%1 - Tiled</translation>
     </message>
     <message>
         <source>Add Tilesets</source>
@@ -1221,7 +1225,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+12"/>
         <source>Automatic Mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapeado Automático</translation>
     </message>
     <message>
         <location line="+123"/>
@@ -1258,7 +1262,7 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+105"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished">untitled.tmx</translation>
+        <translation>untitled.tmx</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -1283,7 +1287,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+21"/>
         <source>Copy of %1</source>
-        <translation>Copiar de %1</translation>
+        <translation>Copiar desde %1</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1293,12 +1297,12 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+120"/>
         <source>Tile</source>
-        <translation type="unfinished">Patrón</translation>
+        <translation>Patrón</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Tileset Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambios en el conjunto de Patrones</translation>
     </message>
 </context>
 <context>
@@ -1445,52 +1449,52 @@ Línea %1, columna %2</translation>
         <location filename="../src/tiled/objectselectiontool.cpp" line="+103"/>
         <location line="+135"/>
         <source>Select Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar Objetos</translation>
     </message>
     <message>
         <location line="-132"/>
         <location line="+133"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message numerus="yes">
         <location line="+77"/>
         <location line="+145"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Duplicar Objeto</numerusform>
+            <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-144"/>
         <location line="+162"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Eliminar Objeto</numerusform>
+            <numerusform>Eliminar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-153"/>
         <location line="+163"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Mover Objeto a la Capa</numerusform>
+            <numerusform>Mover %n Objetos a la Capa</numerusform>
         </translation>
     </message>
     <message>
         <location line="-153"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished">&amp;Propiedades del Objeto...</translation>
+        <translation>&amp;Propiedades del Objeto...</translation>
     </message>
     <message numerus="yes">
         <location line="+107"/>
         <source>Move %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Mover Objeto</numerusform>
+            <numerusform>Mover %n Objetos</numerusform>
         </translation>
     </message>
 </context>
@@ -1566,7 +1570,7 @@ Do you want to replace it?</source>
         <location line="-78"/>
         <location line="+79"/>
         <source>R</source>
-        <translation>S</translation>
+        <translation>R</translation>
     </message>
     <message>
         <location line="-56"/>
@@ -1808,7 +1812,7 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tmxviewer/tmxviewer.cpp" line="+166"/>
         <source>TMX Viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>TMX Viewer</translation>
     </message>
 </context>
 <context>
@@ -1937,7 +1941,7 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
         <source>Move Object to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover Objeto a la Capa</translation>
     </message>
 </context>
 <context>
