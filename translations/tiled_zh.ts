@@ -196,7 +196,7 @@
     </message>
     <message>
         <source>Move Layer Dow&amp;n</source>
-        <translation type="obsolete">下移图层(&amp;n)</translation>
+        <translation type="obsolete">下移图层(&amp;N)</translation>
     </message>
     <message>
         <source>Ctrl+Shift+Down</source>
@@ -331,7 +331,7 @@
     <message>
         <location filename="../src/libtiled/mapreader.cpp" line="+132"/>
         <source>Not a map file.</source>
-        <translation>该地图的文件不可用。</translation>
+        <translation>该地图的文件不可用.</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -431,7 +431,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+102"/>
         <source>Could not open file for writing.</source>
-        <translation>无法打开写文件。</translation>
+        <translation>无法打开写文件.</translation>
     </message>
 </context>
 <context>
@@ -679,17 +679,17 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Base64 (uncompressed)</source>
-        <translation>Base64 (未圧縮)</translation>
+        <translation>Base64 (zlib压缩)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (gzip compressed)</source>
-        <translation>Base64 (gzip圧縮)</translation>
+        <translation>Base64 (gzip压缩)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Base64 (zlib compressed)</source>
-        <translation>Base64 (zlib圧縮)</translation>
+        <translation>Base64 (zlib压缩)</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -699,7 +699,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>重新载入图块的图像当他们被改变时(&amp;R)</translation>
+        <translation>图块的图像改变时重新加载(&amp;R)</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -821,7 +821,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+50"/>
         <source>Could not open file for writing.</source>
-        <translation>无法打开写文件。</translation>
+        <translation>无法对文件进行读写.</translation>
     </message>
     <message>
         <location line="+243"/>
@@ -1023,7 +1023,7 @@ Line %1, column %2</source>
     <message>
         <location line="+4"/>
         <source>Insert Tile Objects</source>
-        <translation>插入Tile块对象</translation>
+        <translation>插入图块对象</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1173,7 +1173,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>The given filename does not have any known file extension.</source>
-        <translation>未知的文件扩展名。</translation>
+        <translation>未知的文件扩展名.</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1280,12 +1280,12 @@ Line %1, column %2</source>
     <message>
         <location line="+120"/>
         <source>Tile</source>
-        <translation>Tile块</translation>
+        <translation>图块</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Tileset Changes</source>
-        <translation>Tile块集改变</translation>
+        <translation>图块集修改</translation>
     </message>
 </context>
 <context>
@@ -1375,7 +1375,7 @@ Line %1, column %2</source>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>无法载入图块图像%1。</translation>
+        <translation>无法载入图块图像%1.</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1573,7 +1573,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+247"/>
         <source>Remove Tileset</source>
-        <translation>删除图块</translation>
+        <translation>删除图块集</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1600,7 +1600,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+210"/>
         <source>Tile &amp;Properties...</source>
-        <translation>Tile块属性(&amp;P)...</translation>
+        <translation>图块属性(&amp;P)...</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1615,7 +1615,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+21"/>
         <source>Tile</source>
-        <translation>Tile块</translation>
+        <translation>图块</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -1664,7 +1664,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+6"/>
         <source>Could not open file for writing.</source>
-        <translation>无法打开写文件。</translation>
+        <translation>无法对文件进行读写.</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -1680,7 +1680,7 @@ Do you want to replace it?</source>
     <name>TmxMapReader</name>
     <message>
         <source>Could not open file for writing.</source>
-        <translation type="obsolete">无法打开写文件。</translation>
+        <translation type="obsolete">无法对文件进行读写.</translation>
     </message>
     <message>
         <location filename="../src/tiled/tmxmapreader.h" line="+55"/>
@@ -1693,7 +1693,7 @@ Do you want to replace it?</source>
     <name>TmxReader</name>
     <message>
         <source>Not a map file.</source>
-        <translation type="obsolete">该地图的文件不可用。</translation>
+        <translation type="obsolete">该地图的文件不可用.</translation>
     </message>
     <message>
         <source>Not a tileset file.</source>
