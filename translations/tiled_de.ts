@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<TS version="2.0" language="de">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -20,7 +20,8 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation></translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(siehe AUTHORS-Datei für eine komplette Liste von Entwicklern)&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -28,12 +29,12 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Properties</source>
-        <translation type="unfinished">Eigenschaften</translation>
+        <translation>Eigenschaften</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern vor der Ausführung</translation>
     </message>
 </context>
 <context>
@@ -72,10 +73,6 @@
         <location line="+13"/>
         <source>&amp;View</source>
         <translation>&amp;Ansicht</translation>
-    </message>
-    <message>
-        <source>&amp;Layer</source>
-        <translation type="obsolete">&amp;Ebene</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -130,7 +127,7 @@
     <message>
         <location line="+5"/>
         <source>AutoMap</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoMap</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -153,96 +150,14 @@
         <translation>&amp;Neu...</translation>
     </message>
     <message>
-        <location line="+98"/>
-        <source>&amp;Export As...</source>
-        <translation>&amp;Exportieren...</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+E</source>
-        <translation>Strg+E</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>&amp;Add External Tileset...</source>
-        <translation>Externes Tileset &amp;hinzufügen...</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>&amp;Snap to Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>C&amp;lose All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+W</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move Layer &amp;Up</source>
-        <translation type="obsolete">Ebene a&amp;nheben</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+Up</source>
-        <translation type="obsolete">Strg+Shift+Oben</translation>
-    </message>
-    <message>
-        <source>Move Layer Dow&amp;n</source>
-        <translation type="obsolete">Ebene a&amp;bsenken</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+Down</source>
-        <translation type="obsolete">Strg+Shift+Unten</translation>
-    </message>
-    <message>
-        <source>Select &amp;All</source>
-        <translation type="obsolete">Selektiere &amp;alles</translation>
-    </message>
-    <message>
-        <source>Select &amp;None</source>
-        <translation type="obsolete">Selektiere &amp;nichts</translation>
-    </message>
-    <message>
-        <source>New...</source>
-        <translation type="obsolete">Neu...</translation>
-    </message>
-    <message>
-        <location line="-113"/>
+        <location line="+9"/>
         <source>New &amp;Tileset...</source>
         <translation>Neues &amp;Tileset...</translation>
-    </message>
-    <message>
-        <source>&amp;Remove Layer</source>
-        <translation type="obsolete">Ebene &amp;löschen</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Close</source>
         <translation>&amp;Schließen</translation>
-    </message>
-    <message>
-        <source>Add &amp;Tile Layer...</source>
-        <translation type="obsolete">&amp;Kachelebene hinzufügen...</translation>
-    </message>
-    <message>
-        <source>Add &amp;Object Layer...</source>
-        <translation type="obsolete">&amp;Objektebene hinzufügen...</translation>
-    </message>
-    <message>
-        <source>&amp;Duplicate Layer</source>
-        <translation type="obsolete">Ebene &amp;duplizieren</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+D</source>
-        <translation type="obsolete">Strg+Shift+D</translation>
-    </message>
-    <message>
-        <source>Layer &amp;Properties...</source>
-        <translation type="obsolete">Ebenen&amp;eigenschaften...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -294,32 +209,35 @@
         <source>Clear Recent Files</source>
         <translation>Letzte Dateien bereinigen</translation>
     </message>
-</context>
-<context>
-    <name>MapObjectItem</name>
     <message>
-        <source>&amp;Duplicate</source>
-        <translation type="obsolete">&amp;Duplizieren</translation>
+        <location line="+5"/>
+        <source>&amp;Export As...</source>
+        <translation>&amp;Exportieren...</translation>
     </message>
     <message>
-        <source>&amp;Remove</source>
-        <translation type="obsolete">&amp;Löschen</translation>
+        <location line="+3"/>
+        <source>Ctrl+E</source>
+        <translation>Strg+E</translation>
     </message>
     <message>
-        <source>&amp;Properties...</source>
-        <translation type="obsolete">&amp;Eigenschaften...</translation>
+        <location line="+5"/>
+        <source>&amp;Add External Tileset...</source>
+        <translation>Externes Tileset &amp;hinzufügen...</translation>
     </message>
     <message>
-        <source>&amp;Duplicate Object</source>
-        <translation type="obsolete">Objekt &amp;duplizieren</translation>
+        <location line="+8"/>
+        <source>&amp;Snap to Grid</source>
+        <translation>&amp;Magnetisches Raster</translation>
     </message>
     <message>
-        <source>&amp;Remove Object</source>
-        <translation type="obsolete">Objekt &amp;entfernen</translation>
+        <location line="+5"/>
+        <source>C&amp;lose All</source>
+        <translation>S&amp;chließe alles</translation>
     </message>
     <message>
-        <source>Object &amp;Properties...</source>
-        <translation type="obsolete">Objekt&amp;eigenschaften...</translation>
+        <location line="+3"/>
+        <source>Ctrl+Shift+W</source>
+        <translation>Strg+Shift+W</translation>
     </message>
 </context>
 <context>
@@ -327,63 +245,63 @@
     <message>
         <location filename="../src/libtiled/mapreader.cpp" line="+132"/>
         <source>Not a map file.</source>
-        <translation type="unfinished">Keine Kartendatei.</translation>
+        <translation>Keine Kartendatei.</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation type="unfinished">Keine Tilesetdatei.</translation>
+        <translation>Keine Tileset-Datei.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation type="unfinished">%3
+        <translation>%3
 
 Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>File not found: %1</source>
-        <translation type="unfinished">Datei nicht gefunden: %1</translation>
+        <translation>Datei nicht gefunden: %1</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Unable to read file: %1</source>
-        <translation type="unfinished">Kann Datei nicht lesen: %1</translation>
+        <translation>Datei nicht lesbar: %1</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation type="unfinished">Nicht unterstütze Kartenorientierung: &quot;%1&quot;</translation>
+        <translation>Nicht unterstützte Kartenorientierung: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation type="unfinished">Ungültige Parameter für das Tileset &apos;%1&apos;</translation>
+        <translation>Ungültige Tileset-Parameter für Tileset &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation type="unfinished">Fehler beim Laden des Tilesets  &apos;%1&apos;: %2</translation>
+        <translation>Fehler beim Laden von Tileset &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Invalid tile ID: %1</source>
-        <translation type="unfinished">Ungültige Kachel ID: %1</translation>
+        <translation>Ungültige Kachel-ID: %1</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
-        <translation type="unfinished">Fehler beim Laden des Tileset Bildes:
+        <translation>Fehler beim Laden von Tileset-Graphik:
 &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+64"/>
         <source>Too many &lt;tile&gt; elements</source>
-        <translation type="unfinished">Zu viele &lt;tile&gt; Elemente</translation>
+        <translation>Zu viele &lt;Kachel&lt;-Elemente</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -391,43 +309,43 @@ Zeile %1, Spalte %2</translation>
         <location line="+39"/>
         <location line="+103"/>
         <source>Invalid tile: %1</source>
-        <translation type="unfinished">Ungültige Kachel: %1</translation>
+        <translation>Ungültige Kachel: %1</translation>
     </message>
     <message>
         <location line="-188"/>
         <source>Unknown encoding: %1</source>
-        <translation type="unfinished">Unbekannte Kodierung: %1</translation>
+        <translation>Unbekannte Codierung: %1</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Compression method &apos;%1&apos; not supported</source>
-        <translation type="unfinished">Kompressionsmethode &apos;%1&apos; wird nicht unterstützt</translation>
+        <translation>Komprimierungsmethode &apos;%1&apos; nicht unterstützt</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+39"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation type="unfinished">Ebenendaten der Ebene &apos;%1&apos; sind korrupt</translation>
+        <translation>Korrupte Layer-Daten für Layer &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation type="unfinished">Die Kachel (%1,%2) auf dem Layer &apos;%3&apos; konnte nicht geparst werden</translation>
+        <translation>Kann Kachel an (%1, %2) auf Layer &apos;%3&apos; nicht parsen</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Invalid global tile id (less than 0): %1</source>
-        <translation type="unfinished">Ungültige globale Kachel ID (kleiner als 0): %1</translation>
+        <translation>Ungültige globale Kachel-ID (kleiner als 0): %1</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Tile used but no tilesets specified</source>
-        <translation type="unfinished">Kachel ist in Benutzung, es ist aber kein Tileset zugewiesen</translation>
+        <translation>Kachel benutzt aber keine Tilesets angegeben</translation>
     </message>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+102"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Konnte Datei zum Schreiben nicht öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
 </context>
 <context>
@@ -543,7 +461,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/objectpropertiesdialog.ui" line="+26"/>
         <source>Form</source>
-        <translation></translation>
+        <translation>Formular</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -720,7 +638,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+13"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hardwarebeschleunigtes Zeichnen (OpenGL)</translation>
     </message>
 </context>
 <context>
@@ -729,13 +647,6 @@ Zeile %1, Spalte %2</translation>
         <location filename="../src/tiled/propertiesdialog.ui" line="+14"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>Bucket Fill Tool</source>
-        <translation type="obsolete">Füllwerkzeug</translation>
     </message>
 </context>
 <context>
@@ -824,12 +735,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+50"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Konnte Datei zum Schreiben nicht öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+243"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>T-Engine4 Kartendateien (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -837,27 +748,27 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/automap.cpp" line="+116"/>
         <source>Multiple layers %1 found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Multiple Ebenen vom Typ %1 gefunden!</translation>
     </message>
     <message>
         <location line="+115"/>
         <source>No ruleRegions layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine ruleRegions Ebene gefunden!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No set layers found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine set Ebene gefunden!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No ruleSet layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine ruleSet Ebene gefunden!</translation>
     </message>
     <message>
         <location line="+208"/>
         <source>Tile</source>
-        <translation type="unfinished">Kachel</translation>
+        <translation>Kachel</translation>
     </message>
 </context>
 <context>
@@ -865,36 +776,40 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+491"/>
         <source>No set layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine set Ebene gefunden!</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Apply AutoMap rules</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoMap Regeln anwenden</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No rules file found at:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Regeldatei nicht gefunden:
+%1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Error opening rules file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Öffnen der Regeldatei:
+%1</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>File not found:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei nicht gefunden:
+%1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Opening rules map failed:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffnen der Regelkarte fehlgeschlagen:
+%1</translation>
     </message>
 </context>
 <context>
@@ -917,38 +832,38 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/commandbutton.cpp" line="+48"/>
         <source>Execute Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommando ausführen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>F5</source>
-        <translation type="unfinished"></translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location line="+39"/>
         <location line="+61"/>
         <source>Error Executing Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Ausführen des Kommandos</translation>
     </message>
     <message>
         <location line="-60"/>
         <source>You do not have any commands setup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es wurden keine Kommandos definiert.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Edit commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommandos editieren...</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Edit Commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommandos editieren...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>There was an error running the command</source>
-        <translation type="unfinished"></translation>
+        <translation>Bei der Ausführung des Kommandos ist ein Fehler aufgetreten</translation>
     </message>
 </context>
 <context>
@@ -956,48 +871,48 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/commanddatamodel.cpp" line="+74"/>
         <source>Open in text editor</source>
-        <translation type="unfinished"></translation>
+        <translation>In Texteditor öffnen</translation>
     </message>
     <message>
         <location line="+90"/>
         <location line="+67"/>
         <source>&lt;new command&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;neues Kommando&gt;</translation>
     </message>
     <message>
         <location line="-59"/>
         <source>Set a name for this command</source>
-        <translation type="unfinished"></translation>
+        <translation>Name für das Kommando festlegen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set the shell command to execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Shellkomando für die Ausführung</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Show or hide this command in the command list</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommando in der Liste anzeigen oder verstecken</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add a new command</source>
-        <translation type="unfinished"></translation>
+        <translation>Neues Kommando hinzufügen</translation>
     </message>
     <message>
         <location line="+100"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommando</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren</translation>
     </message>
 </context>
 <context>
@@ -1005,7 +920,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/commanddialog.cpp" line="+35"/>
         <source>Edit Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommandos bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -1014,22 +929,22 @@ Zeile %1, Spalte %2</translation>
         <location filename="../src/tiled/createobjecttool.cpp" line="+42"/>
         <location line="+111"/>
         <source>O</source>
-        <translation type="unfinished"></translation>
+        <translation>O</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Insert Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte einfügen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Insert Tile Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelobjekt einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -1069,17 +984,6 @@ Zeile %1, Spalte %2</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::LayerView</name>
-    <message>
-        <source>Properties...</source>
-        <translation type="obsolete">Eigenschaften...</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Ebenen</translation>
-    </message>
-</context>
-<context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
         <location filename="../src/tiled/mainwindow.cpp" line="+129"/>
@@ -1094,38 +998,19 @@ Zeile %1, Spalte %2</translation>
         <translation>Wiederherstellen</translation>
     </message>
     <message>
-        <source>Error while opening map</source>
-        <translation type="obsolete">Fehler beim Öffnen der Karte</translation>
-    </message>
-    <message>
-        <location line="+391"/>
-        <source>Open Map</source>
-        <translation>Karte öffnen</translation>
-    </message>
-    <message>
-        <location line="-13"/>
-        <location line="+79"/>
-        <source>Tiled map files (*.tmx)</source>
-        <translation>Tiled Karten (*.tmx)</translation>
-    </message>
-    <message>
-        <source>Error while saving map</source>
-        <translation type="obsolete">Fehler beim Speichern der Karte</translation>
-    </message>
-    <message>
-        <location line="-425"/>
+        <location line="+32"/>
         <source>Ctrl+=</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+=</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -1145,7 +1030,18 @@ Zeile %1, Spalte %2</translation>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="-97"/>
+        <location line="-135"/>
+        <location line="+79"/>
+        <source>Tiled map files (*.tmx)</source>
+        <translation>Tiled Karten (*.tmx)</translation>
+    </message>
+    <message>
+        <location line="-66"/>
+        <source>Open Map</source>
+        <translation>Karte öffnen</translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <location line="+144"/>
         <source>Error Saving Map</source>
         <translation>Fehler beim speichern der Karte</translation>
@@ -1186,16 +1082,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Ausschneiden</translation>
     </message>
     <message>
-        <location line="+377"/>
-        <source>[*]%1 - Tiled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Tilesets</source>
-        <translation type="obsolete">Tilesets hinzufügen</translation>
-    </message>
-    <message>
-        <location line="-280"/>
+        <location line="+97"/>
         <source>Add External Tileset</source>
         <translation>Externes Tileset hinzufügen</translation>
     </message>
@@ -1217,36 +1104,17 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+12"/>
         <source>Automatic Mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisches Mapping</translation>
     </message>
     <message>
-        <location line="+123"/>
+        <location line="+212"/>
+        <source>[*]%1 - Tiled</source>
+        <translation>[*]%1 - Tiled</translation>
+    </message>
+    <message>
+        <location line="-89"/>
         <source>%1%</source>
         <translation>%1%</translation>
-    </message>
-    <message>
-        <source>Add Tile Layer</source>
-        <translation type="obsolete">Kachelebene hinzufügen</translation>
-    </message>
-    <message>
-        <source>Add Object Layer</source>
-        <translation type="obsolete">Objektebene hinzufügen</translation>
-    </message>
-    <message>
-        <source>Layer name:</source>
-        <translation type="obsolete">Name der Ebene:</translation>
-    </message>
-    <message>
-        <source>New Layer</source>
-        <translation type="obsolete">Neue Ebene</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Ebenen</translation>
-    </message>
-    <message>
-        <source>%1[*] - Tiled</source>
-        <translation type="obsolete">%1[*] - Tiled</translation>
     </message>
 </context>
 <context>
@@ -1254,7 +1122,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="+105"/>
         <source>untitled.tmx</source>
-        <translation type="unfinished">unbenannt.tmx</translation>
+        <translation>unbenannt.tmx</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -1289,18 +1157,38 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+120"/>
         <source>Tile</source>
-        <translation type="unfinished">Kachel</translation>
+        <translation>Kachel</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Tileset Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset-Änderungen</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+45"/>
+        <source>Ctrl+Shift+A</source>
+        <translation>Strg+Shift+A</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Ctrl+Shift+D</source>
+        <translation>Strg+Shift+D</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Ctrl+Shift+Up</source>
+        <translation>Ctrl+Shift+Up</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Ctrl+Shift+Down</source>
+        <translation>Ctrl+Shift+Down</translation>
+    </message>
+    <message>
+        <location line="+35"/>
         <source>Select &amp;All</source>
         <translation>Selektiere &amp;alles</translation>
     </message>
@@ -1310,12 +1198,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Selektiere &amp;nichts</translation>
     </message>
     <message>
-        <location line="-56"/>
-        <source>Ctrl+Shift+A</source>
-        <translation>Strg+Shift+A</translation>
-    </message>
-    <message>
-        <location line="+58"/>
+        <location line="+2"/>
         <source>Add &amp;Tile Layer...</source>
         <translation>&amp;Kachelebene hinzufügen...</translation>
     </message>
@@ -1330,12 +1213,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Ebene &amp;duplizieren</translation>
     </message>
     <message>
-        <location line="-54"/>
-        <source>Ctrl+Shift+D</source>
-        <translation>Strg+Shift+D</translation>
-    </message>
-    <message>
-        <location line="+55"/>
+        <location line="+1"/>
         <source>&amp;Remove Layer</source>
         <translation>Ebene &amp;löschen</translation>
     </message>
@@ -1345,32 +1223,18 @@ Zeile %1, Spalte %2</translation>
         <translation>Ebene a&amp;nheben</translation>
     </message>
     <message>
-        <location line="-47"/>
-        <source>Ctrl+Shift+Up</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+48"/>
+        <location line="+1"/>
         <source>Move Layer Dow&amp;n</source>
         <translation>Ebene a&amp;bsenken</translation>
     </message>
     <message>
-        <location line="-43"/>
-        <source>Ctrl+Shift+Down</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+44"/>
+        <location line="+1"/>
         <source>Layer &amp;Properties...</source>
         <translation>Ebenen&amp;eigenschaften...</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
-    <message>
-        <source>Layer 1</source>
-        <translation type="obsolete">Ebene 1</translation>
-    </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+81"/>
         <source>Tile Layer 1</source>
@@ -1422,14 +1286,6 @@ Zeile %1, Spalte %2</translation>
         <translation>Objekt</translation>
     </message>
     <message>
-        <source>Name:</source>
-        <translation type="obsolete">Name:</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="obsolete">Typ:</translation>
-    </message>
-    <message>
         <location line="+47"/>
         <source>Change Object</source>
         <translation>Objekt ändern</translation>
@@ -1441,52 +1297,52 @@ Zeile %1, Spalte %2</translation>
         <location filename="../src/tiled/objectselectiontool.cpp" line="+103"/>
         <location line="+135"/>
         <source>Select Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte auswählen</translation>
     </message>
     <message>
         <location line="-132"/>
         <location line="+133"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
+    </message>
+    <message>
+        <location line="+97"/>
+        <source>Object &amp;Properties...</source>
+        <translation>Objekt&amp;eigenschaften...</translation>
     </message>
     <message numerus="yes">
-        <location line="+77"/>
+        <location line="-20"/>
         <location line="+145"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Dupliziere Objekt</numerusform>
+            <numerusform>Dupliziere %n Objekte</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-144"/>
         <location line="+162"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Entferne Objekt</numerusform>
+            <numerusform>Entferne %n Objekte</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-153"/>
         <location line="+163"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Verschiebe Objekt zu anderer Ebene</numerusform>
+            <numerusform>Verschiebe %n Objekte zu anderer Ebene</numerusform>
         </translation>
     </message>
-    <message>
-        <location line="-153"/>
-        <source>Object &amp;Properties...</source>
-        <translation type="unfinished">Objekt&amp;eigenschaften...</translation>
-    </message>
     <message numerus="yes">
-        <location line="+107"/>
+        <location line="-46"/>
         <source>Move %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Verschiebe Objekt</numerusform>
+            <numerusform>Verschiebe %n Objekte</numerusform>
         </translation>
     </message>
 </context>
@@ -1610,10 +1466,6 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <source>Properties...</source>
-        <translation type="obsolete">Eigenschaften...</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+210"/>
         <source>Tile &amp;Properties...</source>
         <translation>Kachel&amp;eigenschaften...</translation>
@@ -1662,7 +1514,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>&lt;empty&gt;</source>
-        <translation></translation>
+        <translation>&lt;leer&gt;</translation>
     </message>
 </context>
 <context>
@@ -1691,18 +1543,6 @@ Do you want to replace it?</source>
 <context>
     <name>TmxMapReader</name>
     <message>
-        <source>XML map reader (*.tmx)</source>
-        <translation type="obsolete">XML Kartenleser (*.tmx)</translation>
-    </message>
-    <message>
-        <source>Could not open file for writing.</source>
-        <translation type="obsolete">Konnte Datei zum Schreiben nicht öffnen.</translation>
-    </message>
-    <message>
-        <source>XML map writer (*.tmx)</source>
-        <translation type="obsolete">XML Kartenschreiber (*.tmx)</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/tmxmapreader.h" line="+55"/>
         <location filename="../src/tiled/tmxmapwriter.h" line="+56"/>
         <source>Tiled map files (*.tmx)</source>
@@ -1710,92 +1550,11 @@ Do you want to replace it?</source>
     </message>
 </context>
 <context>
-    <name>TmxReader</name>
-    <message>
-        <source>Not a map file.</source>
-        <translation type="obsolete">Keine Kartendatei.</translation>
-    </message>
-    <message>
-        <source>Not a tileset file.</source>
-        <translation type="obsolete">Keine Tilesetdatei.</translation>
-    </message>
-    <message>
-        <source>%3
-
-Line %1, column %2</source>
-        <translation type="obsolete">%3
-
-Zeile %1, Spalte %2</translation>
-    </message>
-    <message>
-        <source>File not found: %1</source>
-        <translation type="obsolete">Datei nicht gefunden: %1</translation>
-    </message>
-    <message>
-        <source>Unable to read file: %1</source>
-        <translation type="obsolete">Kann Datei nicht lesen: %1</translation>
-    </message>
-    <message>
-        <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation type="obsolete">Nicht unterstütze Kartenorientierung: &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation type="obsolete">Ungültige Parameter für das Tileset &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation type="obsolete">Fehler beim Laden des Tilesets  &apos;%1&apos;: %2</translation>
-    </message>
-    <message>
-        <source>Invalid tile ID: %1</source>
-        <translation type="obsolete">Ungültige Kachel ID: %1</translation>
-    </message>
-    <message>
-        <source>Error loading tileset image:
-&apos;%1&apos;</source>
-        <translation type="obsolete">Fehler beim Laden des Tileset Bildes:
-&apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Too many &lt;tile&gt; elements</source>
-        <translation type="obsolete">Zu viele &lt;tile&gt; Elemente</translation>
-    </message>
-    <message>
-        <source>Invalid tile: %1</source>
-        <translation type="obsolete">Ungültige Kachel: %1</translation>
-    </message>
-    <message>
-        <source>Unknown encoding: %1</source>
-        <translation type="obsolete">Unbekannte Kodierung: %1</translation>
-    </message>
-    <message>
-        <source>Compression method &apos;%1&apos; not supported</source>
-        <translation type="obsolete">Kompressionsmethode &apos;%1&apos; wird nicht unterstützt</translation>
-    </message>
-    <message>
-        <source>Corrupt layer data for layer &apos;%1&apos;</source>
-        <translation type="obsolete">Ebenendaten der Ebene &apos;%1&apos; sind korrupt</translation>
-    </message>
-    <message>
-        <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
-        <translation type="obsolete">Die Kachel (%1,%2) auf dem Layer &apos;%3&apos; konnte nicht geparst werden</translation>
-    </message>
-    <message>
-        <source>Invalid global tile id (less than 0): %1</source>
-        <translation type="obsolete">Ungültige globale Kachel ID (kleiner als 0): %1</translation>
-    </message>
-    <message>
-        <source>Tile used but no tilesets specified</source>
-        <translation type="obsolete">Kachel ist in Benutzung, es ist aber kein Tileset zugewiesen</translation>
-    </message>
-</context>
-<context>
     <name>TmxViewer</name>
     <message>
         <location filename="../src/tmxviewer/tmxviewer.cpp" line="+166"/>
         <source>TMX Viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>TMX-Betrachter</translation>
     </message>
 </context>
 <context>
@@ -1819,6 +1578,16 @@ Zeile %1, Spalte %2</translation>
         <location line="+11"/>
         <source>Remove Object</source>
         <translation>Objekt löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
+        <source>Add Tileset</source>
+        <translation>Tileset hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/addremovetileset.h" line="+78"/>
+        <source>Remove Tileset</source>
+        <translation>Tileset entfernen</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+35"/>
@@ -1867,6 +1636,16 @@ Zeile %1, Spalte %2</translation>
         <translation>Objekt bewegen</translation>
     </message>
     <message>
+        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
+        <source>Move Object to Layer</source>
+        <translation>Bewege Objekt auf Layer</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/movetileset.cpp" line="+31"/>
+        <source>Move Tileset</source>
+        <translation>Tileset verschieben</translation>
+    </message>
+    <message>
         <location filename="../src/tiled/offsetlayer.cpp" line="+40"/>
         <source>Offset Layer</source>
         <translation>Offset Ebene</translation>
@@ -1897,21 +1676,6 @@ Zeile %1, Spalte %2</translation>
         <translation>Objektgröße ändern</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
-        <source>Add Tileset</source>
-        <translation>Tileset hinzufügen</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/addremovetileset.h" line="+78"/>
-        <source>Remove Tileset</source>
-        <translation>Tileset entfernen</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/movetileset.cpp" line="+31"/>
-        <source>Move Tileset</source>
-        <translation>Tileset verschieben</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/tilesetview.cpp" line="-151"/>
         <source>Import Tileset</source>
         <translation>Tileset importieren</translation>
@@ -1920,11 +1684,6 @@ Zeile %1, Spalte %2</translation>
         <location line="+3"/>
         <source>Export Tileset</source>
         <translation>Tileset exportieren</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
-        <source>Move Object to Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
