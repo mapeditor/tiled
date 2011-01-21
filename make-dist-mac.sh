@@ -1,6 +1,8 @@
 #!/bin/bash
-# This script generates a mac release from an already
-# compiled Tiled.app in the bin folder.
+# This script generates a mac release from an already compiled Tiled.app in
+# the bin folder. You should compile the release before running this:
+# qmake -r -spec macx-g++ CONFIG+=release CONFIG+=x86 CONFIG+=x86_64
+# make
 
 # Get the version
 if [ "$#" -eq "0" ]; then
@@ -38,11 +40,13 @@ macdeployqt "$tempDir/Tiled.app"
 qtCoreDir="$frameworksDir/QtCore.framework"
 qtGuiDir="$frameworksDir/QtGui.framework"
 
-# Modify libtiled and plugins to use local Qt frameworks (perhaps theres some way to get macdeployqt to do this?)
+# Modify plugins to use Qt frameworks contained within the app bundle (perhaps theres some way to get macdeployqt to do this?)
 install_name_tool -change "QtCore.framework/Versions/4/QtCore" "@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore" "$frameworksDir/libtiled.dylib"
 install_name_tool -change "QtCore.framework/Versions/4/QtCore" "@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore" "$pluginsDir/libtmw.dylib"
+install_name_tool -change "QtCore.framework/Versions/4/QtCore" "@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore" "$pluginsDir/libtengine.dylib"
 install_name_tool -change "QtGui.framework/Versions/4/QtGui" "@executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui" "$frameworksDir/libtiled.dylib"
 install_name_tool -change "QtGui.framework/Versions/4/QtGui" "@executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui" "$pluginsDir/libtmw.dylib"
+install_name_tool -change "QtGui.framework/Versions/4/QtGui" "@executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui" "$pluginsDir/libtengine.dylib"
 
 # Create dmg from the temp directory
 hdiutil create "$baseDir/$name.dmg" -srcfolder "$tempDir" -volname "Tiled $1"
