@@ -52,11 +52,18 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
     mModel->setProperties(mObject->properties());
     mUi->propertiesView->setModel(mModel);
 
-    // Delete selected properties when the delete key is pressed
+    // Delete selected properties when the delete or backspace key is pressed
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete,
                                               mUi->propertiesView);
+    QShortcut *alternativeDeleteShortcut =
+            new QShortcut(QKeySequence(Qt::Key_Backspace),
+                          mUi->propertiesView);
     deleteShortcut->setContext(Qt::WidgetShortcut);
+    alternativeDeleteShortcut->setContext(Qt::WidgetShortcut);
+
     connect(deleteShortcut, SIGNAL(activated()),
+            this, SLOT(deleteSelectedProperties()));
+    connect(alternativeDeleteShortcut, SIGNAL(activated()),
             this, SLOT(deleteSelectedProperties()));
 
     setWindowTitle(tr("%1 Properties").arg(mKind));
