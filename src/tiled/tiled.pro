@@ -110,7 +110,8 @@ SOURCES += aboutdialog.cpp \
     objectselectiontool.cpp \
     commandbutton.cpp \
     commanddatamodel.cpp \
-    commanddialog.cpp
+    commanddialog.cpp \
+    tiledapplication.cpp
 HEADERS += aboutdialog.h \
     automap.h \
     brushitem.h \
@@ -186,7 +187,8 @@ HEADERS += aboutdialog.h \
     objectselectiontool.h \
     commanddatamodel.h \
     commanddialog.h \
-    commandbutton.h
+    commandbutton.h \
+    tiledapplication.h
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \

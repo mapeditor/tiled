@@ -451,6 +451,11 @@ bool MainWindow::openFile(const QString &fileName,
     return true;
 }
 
+bool MainWindow::openFile(const QString &fileName)
+{
+    return openFile(fileName, 0);
+}
+
 void MainWindow::openLastFiles()
 {
     const QStringList files = recentFiles();
@@ -496,7 +501,6 @@ void MainWindow::openLastFiles()
             int layer = selectedLayer.at(i).toInt();
             if (layer > 0 && layer < mMapDocument->map()->layerCount())
                 mMapDocument->setCurrentLayer(layer);
-
         }
     }
     QString lastActiveDocument =

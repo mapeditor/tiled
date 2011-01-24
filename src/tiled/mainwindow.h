@@ -79,13 +79,16 @@ public:
      *
      * @return whether the file was succesfully opened
      */
-    bool openFile(const QString &fileName, MapReaderInterface *reader = 0);
+    bool openFile(const QString &fileName, MapReaderInterface *reader);
 
     /**
      * Attempt to open the previously opened file.
      * TODO: Opening last file should be optional
      */
     void openLastFiles();
+
+public slots:
+    bool openFile(const QString &fileName);
 
 protected:
     void closeEvent(QCloseEvent *event);

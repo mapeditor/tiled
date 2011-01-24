@@ -20,8 +20,8 @@
 
 #include "mainwindow.h"
 #include "languagemanager.h"
+#include "tiledapplication.h"
 
-#include <QApplication>
 #include <QDebug>
 #include <QtPlugin>
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     QApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 
-    QApplication a(argc, argv);
+    TiledApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));
@@ -119,6 +119,9 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
+
+    QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
+                     &w, SLOT(openFile(QString)));
 
     if (!options.fileToOpen.isEmpty())
         w.openFile(options.fileToOpen);
