@@ -2,7 +2,7 @@ include(../../tiled.pri)
 
 TEMPLATE = lib
 TARGET = tiled
-target.path = $${PREFIX}/lib
+target.path = $${LIBDIR}
 INSTALLS += target
 macx {
     DESTDIR = ../../bin/Tiled.app/Contents/Frameworks

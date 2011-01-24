@@ -815,7 +815,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation>Utiliser le &amp;Zooml actuel</translation>
+        <translation>Utiliser le &amp;Zoom actuel</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1095,7 +1095,7 @@ Ligne %1, colonne %2</translation>
         <location line="-9"/>
         <location line="+8"/>
         <source>Redo</source>
-        <translation>Désannuler</translation>
+        <translation>Rétablir</translation>
     </message>
     <message>
         <source>Error while opening map</source>
