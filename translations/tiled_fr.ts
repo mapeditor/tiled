@@ -184,23 +184,15 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation>Ctrl+Maj+W</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Move Layer &amp;Up</source>
         <translation type="obsolete">Monter le calque courant</translation>
     </message>
     <message>
-        <source>Ctrl+Shift+Up</source>
-        <translation type="obsolete">Ctrl+Maj+Flèche haut</translation>
-    </message>
-    <message>
         <source>Move Layer Dow&amp;n</source>
         <translation type="obsolete">&amp;Descendre le calque courant</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+Down</source>
-        <translation type="obsolete">Ctrl+Maj+Flèche bas</translation>
     </message>
     <message>
         <source>Select &amp;All</source>
@@ -239,10 +231,6 @@
     <message>
         <source>&amp;Duplicate Layer</source>
         <translation type="obsolete">&amp;Dupliquer le calque</translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+D</source>
-        <translation type="obsolete">Ctrl+Maj+D</translation>
     </message>
     <message>
         <source>Layer &amp;Properties...</source>
@@ -1316,7 +1304,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-56"/>
         <source>Ctrl+Shift+A</source>
-        <translation>Ctrl+Maj+A</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+58"/>
@@ -1336,7 +1324,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-54"/>
         <source>Ctrl+Shift+D</source>
-        <translation>Ctrl+Maj+D</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+55"/>
@@ -1351,7 +1339,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-47"/>
         <source>Ctrl+Shift+Up</source>
-        <translation>Ctrl+Maj+Flèche haut</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+48"/>
@@ -1361,7 +1349,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-43"/>
         <source>Ctrl+Shift+Down</source>
-        <translation>Ctrl+Maj+Flèche bas</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+44"/>
