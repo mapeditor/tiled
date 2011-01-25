@@ -59,20 +59,16 @@ CommandDataModel::CommandDataModel()
     const bool addedCommands = mSettings.value(addPrefStr, false).toBool();
     if (!addedCommands) {
 
-        QString defaultTextEditor;
+        // Disable default commands by default so user gets an informative
+        // warning when clicking the command button for the first time
+        Command command(false);
 #ifdef Q_WS_X11
-        defaultTextEditor = QLatin1String("gedit");
+        command.command = QLatin1String("gedit %mapfile");
 #elif defined(Q_WS_MAC)
-        defaultTextEditor = QLatin1String("/Applications/TextEdit.app/Contents/"
-                                          "MacOS/TextEdit");
+        command.command = QLatin1String("open %mapfile -a /Applications/TextEdit.app");
 #endif
-
-        if (!defaultTextEditor.isEmpty()) {
-            // Disable default commands by default so user gets an informative
-            // warning when clicking the command button for the first time
-            Command command(false);
+        if (!command.command.isEmpty()) {
             command.name = tr("Open in text editor");
-            command.command = defaultTextEditor + QLatin1String(" %mapfile");
             mCommands.push_back(command);
         }
 
