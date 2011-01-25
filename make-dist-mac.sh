@@ -48,6 +48,9 @@ install_name_tool -change "QtGui.framework/Versions/4/QtGui" "@executable_path/.
 install_name_tool -change "QtGui.framework/Versions/4/QtGui" "@executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui" "$pluginsDir/libtmw.dylib"
 install_name_tool -change "QtGui.framework/Versions/4/QtGui" "@executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui" "$pluginsDir/libtengine.dylib"
 
+# Copy tmx icon to the application
+cp "$baseDir/src/tiled/images/tmx-icon-mac.icns" "$tempDir/Tiled.app/Contents/Resources/"
+
 # Create dmg from the temp directory
 hdiutil create "$baseDir/$name.dmg" -srcfolder "$tempDir" -volname "Tiled $1"
 

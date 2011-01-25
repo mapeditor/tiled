@@ -27,11 +27,15 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Tiled Map</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>tmx-icon-mac</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>*.tmx</string>
+				<string>tmx</string>
 			</array>
 		</dict>
 	</array>
