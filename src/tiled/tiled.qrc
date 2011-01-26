@@ -32,8 +32,7 @@
         <file>images/22x22/stock-tool-clone.png</file>
         <file>images/22x22/stock-tool-eraser.png</file>
         <file>images/22x22/stock-tool-rect-select.png</file>
-        <file>images/22x22/tool-create-object.png</file>
-        <file>images/22x22/tool-create-tile-object.png</file>
+        <file>images/22x22/tool-select-objects.png</file>
         <file>images/24x24/document-new.png</file>
         <file>images/24x24/document-open.png</file>
         <file>images/24x24/document-open-recent.png</file>

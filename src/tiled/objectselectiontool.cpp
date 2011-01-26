@@ -102,7 +102,7 @@ void SelectionRectangle::paint(QPainter *painter,
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     : AbstractTool(tr("Select Objects"),
                    QIcon(QLatin1String(
-                           ":images/22x22/tool-create-object.png")),
+                           ":images/22x22/tool-select-objects.png")),
                    QKeySequence(tr("S")),
                    parent)
     , mSelectionRectangle(new SelectionRectangle)
