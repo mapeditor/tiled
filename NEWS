@@ -1,4 +1,4 @@
-0.6.0 (...)
+0.6.0 (26 January 2011)
 * Added support for opening multiple maps in one session
 * Added support for placing tiles as objects
 * Added automatic mapping feature, allowing placing of tiles based on rules
@@ -24,8 +24,12 @@
 * Fixed the current stamp to get updated when switching tilesets
 * Fixed the maximum sizes of the resize map dialog
 * Fixed build issues when an older version of libtiled is installed
-* Fixed saving of property when clicking OK while editing on Mac
+* Fixed saving of property when clicking OK while editing on MacOS X
+* Allow Backspace to delete properties to make it easier on a MacBook
+* Associate tmx files with Tiled on MacOS X
 * Changed the license of libtiled from GPL to BSD
+* Updated Czech, Spanish, German, Brazilian Portuguese, Dutch and French
+  translations
 
 0.5.1 (2 September 2010)
 * Fixed saving of objects when tile width is different from tile height
