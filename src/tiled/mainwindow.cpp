@@ -369,27 +369,14 @@ void MainWindow::changeEvent(QEvent *event)
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
     const QList<QUrl> urls = e->mimeData()->urls();
-    if (urls.size() == 1 && !urls.at(0).toLocalFile().isEmpty())
+    if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
         e->accept();
 }
 
 void MainWindow::dropEvent(QDropEvent *e)
 {
-    const QString file = e->mimeData()->urls().at(0).toLocalFile();
-    const QString extension = QFileInfo(file).suffix();
-
-    // Treat file as a tileset if it is an image. Use the extension here because
-    // QImageReader::imageFormat() treats tmx files as svg
-    const QList<QByteArray> formats = QImageReader::supportedImageFormats();
-    foreach (const QByteArray &format, formats) {
-        if (extension.compare(QString::fromLatin1(format), Qt::CaseInsensitive) == 0) {
-            newTileset(file);
-            return;
-        }
-    }
-
-    // Treat file as a map otherwise
-    openFile(file);
+    foreach (const QUrl &url, e->mimeData()->urls())
+        openFile(url.toLocalFile());
 }
 
 void MainWindow::newMap()
