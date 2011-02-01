@@ -302,23 +302,27 @@ QRegion AutoMapper::createRule(int x, int y) const
         const QPoint current = addPoints.takeFirst();
         x = current.x();
         y = current.y();
-        if (mLayerRuleRegions->tileAt(x - 1, y) == match
-                && !ret.contains(QPoint(x - 1, y))) {
+        if (mLayerRuleRegions->contains(x - 1, y)
+            && mLayerRuleRegions->tileAt(x - 1, y) == match
+            && !ret.contains(QPoint(x - 1, y))) {
             ret += QRegion(x - 1, y, 1, 1);
             addPoints.append(QPoint(x - 1, y));
         }
-        if (mLayerRuleRegions->tileAt(x + 1, y) == match
-                && !ret.contains(QPoint(x + 1, y))) {
+        if (mLayerRuleRegions->contains(x + 1, y)
+            && mLayerRuleRegions->tileAt(x + 1, y) == match
+            && !ret.contains(QPoint(x + 1, y))) {
             ret += QRegion(x + 1, y, 1, 1);
             addPoints.append(QPoint(x + 1, y));
         }
-        if (mLayerRuleRegions->tileAt(x, y - 1) == match
-                && !ret.contains(QPoint(x, y - 1))) {
+        if (mLayerRuleRegions->contains(x, y - 1)
+            && mLayerRuleRegions->tileAt(x, y - 1) == match
+            && !ret.contains(QPoint(x, y - 1))) {
             ret += QRegion(x, y - 1, 1, 1);
             addPoints.append(QPoint(x, y - 1));
         }
-        if (mLayerRuleRegions->tileAt(x, y + 1) == match
-                && !ret.contains(QPoint(x, y + 1))) {
+        if (mLayerRuleRegions->contains(x, y + 1)
+            && mLayerRuleRegions->tileAt(x, y + 1) == match
+            && !ret.contains(QPoint(x, y + 1))) {
             ret += QRegion(x, y + 1, 1, 1);
             addPoints.append(QPoint(x, y + 1));
         }
