@@ -512,6 +512,9 @@ QRect AutoMapper::applyRule(const QRegion &rule, const QRect &where)
 {
     QRect ret;
 
+    if (mLayerList.isEmpty())
+        return ret;
+
     QRect rbr = rule.boundingRect();
 
     // Since the rule itself is translated, we need to adjust the borders of the
