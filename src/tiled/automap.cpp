@@ -201,7 +201,10 @@ bool AutoMapper::setupRuleMapLayers()
 
         // put the list at the right location of mLayerList (a list of lists)
         while ( !list && j != mLayerList.size() ) {
-            if (mLayerList.at(j)->at(0).first->name().startsWith(prefix + group))
+            QString storedName = mLayerList.at(j)->at(0).first->name();
+            // check if the group name is at the right position! index != -1
+            // does not work, since the group name might be in the layer name
+            if (storedName.indexOf(group) == prefix.length())
                 list = mLayerList.at(j);
             j++;
         }
