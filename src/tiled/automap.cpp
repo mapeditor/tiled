@@ -156,8 +156,7 @@ bool AutoMapper::setupRuleMapLayers()
     foreach (Layer *layer, mMapRules->layers()) {
     if (TileLayer *tileLayer = layer->asTileLayer()) {
 
-        if (!tileLayer->name().startsWith(
-                    QLatin1String("rule"), Qt::CaseInsensitive))
+        if (!tileLayer->name().startsWith(prefix, Qt::CaseInsensitive))
             continue;
 
         // strip leading prefix, to make handling better
@@ -193,13 +192,6 @@ bool AutoMapper::setupRuleMapLayers()
         // if there is no such layer, setup later
         if (!t) {
             mAddLayers.append(name);
-//            const int index = mMapWork->layerCount();
-//            t = new TileLayer(name, 0, 0,
-//                              mMapWork->width(), mMapWork->height());
-//            mMapDocument->undoStack()->push(
-//                        new AddLayer(mMapDocument, index, t));
-//            mMapDocument->setCurrentLayer(index);
-//            mAddedTileLayers.append(t->name());
         }
 
         QPair<TileLayer*, TileLayer*> addPair(tileLayer, t);
@@ -965,8 +957,6 @@ void AutomaticMappingManager::automap(QRegion where, Layer *l)
     // use a pointer to the region, so each automapper can manipulate it and the
     // following automappers do see the impact
     QRegion *passedRegion = new QRegion(where);
-
-
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Apply AutoMap rules"));
