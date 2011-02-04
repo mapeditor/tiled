@@ -128,11 +128,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
-#if QT_VERSION >= 0x040600
     mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     mUi->actionNew->setPriority(QAction::LowPriority);
     redoAction->setPriority(QAction::LowPriority);
-#endif
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
     redoAction->setIconText(tr("Redo"));
@@ -153,9 +151,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionSave->setShortcuts(QKeySequence::Save);
     mUi->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
     mUi->actionClose->setShortcuts(QKeySequence::Close);
-#if QT_VERSION >= 0x040600
     mUi->actionQuit->setShortcuts(QKeySequence::Quit);
-#endif
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);

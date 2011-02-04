@@ -35,9 +35,7 @@ using namespace Tiled::Internal;
 TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
     : mMapDocument(mapDocument)
 {
-#if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
-#endif
 
     connect(mMapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
             this, SLOT(selectionChanged(QRegion,QRegion)));

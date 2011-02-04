@@ -47,12 +47,12 @@ QString writableImageFormatsFilter();
  * This is a templated method which is used on instances of QAction, QMenu,
  * QToolButton, etc.
  *
- * Does nothing for Qt < 4.6 or when the platform is not Linux.
+ * Does nothing when the platform is not Linux.
  */
 template <class T>
 void setThemeIcon(T *t, const char *name)
 {
-#if QT_VERSION >= 0x040600 && defined(Q_OS_LINUX)
+#ifdef Q_OS_LINUX
     QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
     if (!themeIcon.isNull())
         t->setIcon(themeIcon);

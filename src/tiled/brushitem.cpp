@@ -39,9 +39,7 @@ BrushItem::BrushItem():
     mMapDocument(0),
     mTileLayer(0)
 {
-#if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
-#endif
 }
 
 void BrushItem::setMapDocument(MapDocument *mapDocument)

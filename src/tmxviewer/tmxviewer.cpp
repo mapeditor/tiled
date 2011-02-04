@@ -86,9 +86,7 @@ public:
         , mTileLayer(tileLayer)
         , mRenderer(renderer)
     {
-#if QT_VERSION >= 0x040600
         setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
-#endif
     }
 
     QRectF boundingRect() const
@@ -116,9 +114,7 @@ public:
                     QGraphicsItem *parent = 0)
         : QGraphicsItem(parent)
     {
-#if QT_VERSION >= 0x040600
         setFlag(QGraphicsItem::ItemHasNoContents);
-#endif
 
         // Create a child item for each object
         foreach (MapObject *object, objectGroup->objects())
@@ -138,9 +134,7 @@ public:
     MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = 0)
         : QGraphicsItem(parent)
     {
-#if QT_VERSION >= 0x040600
         setFlag(QGraphicsItem::ItemHasNoContents);
-#endif
 
         // Create a child item for each layer
         foreach (Layer *layer, map->layers()) {

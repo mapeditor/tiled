@@ -35,9 +35,7 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer)
     : mLayer(layer)
     , mRenderer(renderer)
 {
-#if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
-#endif
 
     syncWithTileLayer();
     setOpacity(mLayer->opacity());

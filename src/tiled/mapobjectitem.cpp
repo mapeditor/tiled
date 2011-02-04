@@ -77,9 +77,7 @@ ResizeHandle::ResizeHandle(MapObjectItem *mapObjectItem)
 {
     setCursor(Qt::SizeFDiagCursor);
     setFlag(QGraphicsItem::ItemIsMovable);
-#if QT_VERSION >= 0x040600
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-#endif
 }
 
 QRectF ResizeHandle::boundingRect() const
@@ -229,16 +227,7 @@ QRectF MapObjectItem::boundingRect() const
 QPainterPath MapObjectItem::shape() const
 {
     QPainterPath path = mMapDocument->renderer()->shape(mObject);
-#if QT_VERSION >= 0x040600
     path.translate(-pos());
-#else
-    const QPointF p = pos();
-    const int elementCount = path.elementCount();
-    for (int i = 0; i < elementCount; i++) {
-        const QPainterPath::Element &element = path.elementAt(i);
-        path.setElementPositionAt(i, element.x - p.x(), element.y - p.y());
-    }
-#endif
     return path;
 }
 

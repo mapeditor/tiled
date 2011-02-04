@@ -70,9 +70,7 @@ public:
     QString errorString() const;
 
 private:
-    bool readNextStartElement();
     void readUnknownElement();
-    void skipCurrentElement();
 
     Map *readMap();
 
@@ -126,7 +124,7 @@ Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
 
     xml.setDevice(device);
 
-    if (readNextStartElement() && xml.name() == "map") {
+    if (xml.readNextStartElement() && xml.name() == "map") {
         map = readMap();
     } else {
         xml.raiseError(tr("Not a map file."));
@@ -145,7 +143,7 @@ Tileset *MapReaderPrivate::readTileset(QIODevice *device, const QString &path)
 
     xml.setDevice(device);
 
-    if (readNextStartElement() && xml.name() == "tileset")
+    if (xml.readNextStartElement() && xml.name() == "tileset")
         tileset = readTileset();
     else
         xml.raiseError(tr("Not a tileset file."));
@@ -179,27 +177,10 @@ bool MapReaderPrivate::openFile(QFile *file)
     return true;
 }
 
-bool MapReaderPrivate::readNextStartElement()
-{
-    while (xml.readNext() != QXmlStreamReader::Invalid) {
-        if (xml.isEndElement())
-            return false;
-        else if (xml.isStartElement())
-            return true;
-    }
-    return false;
-}
-
 void MapReaderPrivate::readUnknownElement()
 {
     qDebug() << "Unknown element (fixme):" << xml.name();
-    skipCurrentElement();
-}
-
-void MapReaderPrivate::skipCurrentElement()
-{
-    while (readNextStartElement())
-        skipCurrentElement();
+    xml.skipCurrentElement();
 }
 
 static Map::Orientation orientationFromString(const QStringRef &string)
@@ -239,7 +220,7 @@ Map *MapReaderPrivate::readMap()
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
 
-    while (readNextStartElement()) {
+    while (xml.readNextStartElement()) {
         if (xml.name() == "properties")
             mMap->mergeProperties(readProperties());
         else if (xml.name() == "tileset")
@@ -295,7 +276,7 @@ Tileset *MapReaderPrivate::readTileset()
             tileset = new Tileset(name, tileWidth, tileHeight,
                                   tileSpacing, margin);
 
-            while (readNextStartElement()) {
+            while (xml.readNextStartElement()) {
                 if (xml.name() == "tile")
                     readTilesetTile(tileset);
                 else if (xml.name() == "image")
@@ -314,7 +295,7 @@ Tileset *MapReaderPrivate::readTileset()
                            .arg(absoluteSource, error));
         }
 
-        skipCurrentElement();
+        xml.skipCurrentElement();
     }
 
     if (tileset && !mReadingExternalTileset)
@@ -337,7 +318,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
 
     // TODO: Add support for individual tiles (then it needs to be added here)
 
-    while (readNextStartElement()) {
+    while (xml.readNextStartElement()) {
         if (xml.name() == "properties") {
             Tile *tile = tileset->tileAt(id);
             tile->mergeProperties(readProperties());
@@ -367,7 +348,7 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
     if (!tileset->loadFromImage(tilesetImage, source))
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
 
-    skipCurrentElement();
+    xml.skipCurrentElement();
 }
 
 static void readLayerAttributes(Layer *layer,
@@ -400,7 +381,7 @@ TileLayer *MapReaderPrivate::readLayer()
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(tileLayer, atts);
 
-    while (readNextStartElement()) {
+    while (xml.readNextStartElement()) {
         if (xml.name() == "properties")
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == "data")
@@ -448,7 +429,7 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
                     y++;
                 }
 
-                skipCurrentElement();
+                xml.skipCurrentElement();
             } else {
                 readUnknownElement();
             }
@@ -596,7 +577,7 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     if (!color.isEmpty())
         objectGroup->setColor(color);
 
-    while (readNextStartElement()) {
+    while (xml.readNextStartElement()) {
         if (xml.name() == "object")
             objectGroup->addObject(readObject());
         else if (xml.name() == "properties")
@@ -652,7 +633,7 @@ MapObject *MapReaderPrivate::readObject()
         }
     }
 
-    while (readNextStartElement()) {
+    while (xml.readNextStartElement()) {
         if (xml.name() == "properties")
             object->mergeProperties(readProperties());
         else
@@ -668,7 +649,7 @@ Properties MapReaderPrivate::readProperties()
 
     Properties properties;
 
-    while (readNextStartElement()) {
+    while (xml.readNextStartElement()) {
         if (xml.name() == "property")
             readProperty(&properties);
         else
