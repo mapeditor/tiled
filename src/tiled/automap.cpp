@@ -523,8 +523,8 @@ QRect AutoMapper::applyRule(const QRegion &rule, const QRect &where)
     const int min_x = where.left() - rbr.left() - rbr.width() + 1 ;
     const int min_y = where.top() - rbr.top() - rbr.height() + 1;
 
-    const int max_x = where.right() - rbr.left() + rbr.height() - 1;
-    const int max_y = where.bottom() - rbr.top() + rbr.width() - 1;
+    const int max_x = where.right() - rbr.left() + rbr.width() - 1;
+    const int max_y = where.bottom() - rbr.top() + rbr.height() - 1;
 
     for (int y = min_y; y <= max_y; y++)
         for (int x = min_x; x <= max_x; x++)
