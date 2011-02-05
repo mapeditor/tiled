@@ -526,10 +526,10 @@ void MainWindow::openFile()
         filter += reader->nameFilter();
     }
 
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Map"),
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
                                                     fileDialogStartLocation(),
                                                     filter, &selectedFilter);
-    if (fileName.isEmpty())
+    if (fileNames.isEmpty())
         return;
 
     // When a particular filter was selected, use the associated reader
@@ -540,7 +540,8 @@ void MainWindow::openFile()
     }
 
     mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
-    openFile(fileName, mapReader);
+    foreach (const QString &fileName, fileNames)
+        openFile(fileName, mapReader);
 }
 
 bool MainWindow::saveFile(const QString &fileName)

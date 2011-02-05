@@ -156,8 +156,7 @@ bool AutoMapper::setupRuleMapLayers()
     foreach (Layer *layer, mMapRules->layers()) {
     if (TileLayer *tileLayer = layer->asTileLayer()) {
 
-        if (!tileLayer->name().startsWith(
-                    QLatin1String("rule"), Qt::CaseInsensitive))
+        if (!tileLayer->name().startsWith(prefix, Qt::CaseInsensitive))
             continue;
 
         // strip leading prefix, to make handling better
@@ -193,13 +192,6 @@ bool AutoMapper::setupRuleMapLayers()
         // if there is no such layer, setup later
         if (!t) {
             mAddLayers.append(name);
-//            const int index = mMapWork->layerCount();
-//            t = new TileLayer(name, 0, 0,
-//                              mMapWork->width(), mMapWork->height());
-//            mMapDocument->undoStack()->push(
-//                        new AddLayer(mMapDocument, index, t));
-//            mMapDocument->setCurrentLayer(index);
-//            mAddedTileLayers.append(t->name());
         }
 
         QPair<TileLayer*, TileLayer*> addPair(tileLayer, t);
@@ -209,7 +201,10 @@ bool AutoMapper::setupRuleMapLayers()
 
         // put the list at the right location of mLayerList (a list of lists)
         while ( !list && j != mLayerList.size() ) {
-            if (mLayerList.at(j)->at(0).first->name().startsWith(prefix + group))
+            QString storedName = mLayerList.at(j)->at(0).first->name();
+            // check if the group name is at the right position! index != -1
+            // does not work, since the group name might be in the layer name
+            if (storedName.indexOf(group) == prefix.length())
                 list = mLayerList.at(j);
             j++;
         }
@@ -302,23 +297,27 @@ QRegion AutoMapper::createRule(int x, int y) const
         const QPoint current = addPoints.takeFirst();
         x = current.x();
         y = current.y();
-        if (mLayerRuleRegions->tileAt(x - 1, y) == match
-                && !ret.contains(QPoint(x - 1, y))) {
+        if (mLayerRuleRegions->contains(x - 1, y)
+            && mLayerRuleRegions->tileAt(x - 1, y) == match
+            && !ret.contains(QPoint(x - 1, y))) {
             ret += QRegion(x - 1, y, 1, 1);
             addPoints.append(QPoint(x - 1, y));
         }
-        if (mLayerRuleRegions->tileAt(x + 1, y) == match
-                && !ret.contains(QPoint(x + 1, y))) {
+        if (mLayerRuleRegions->contains(x + 1, y)
+            && mLayerRuleRegions->tileAt(x + 1, y) == match
+            && !ret.contains(QPoint(x + 1, y))) {
             ret += QRegion(x + 1, y, 1, 1);
             addPoints.append(QPoint(x + 1, y));
         }
-        if (mLayerRuleRegions->tileAt(x, y - 1) == match
-                && !ret.contains(QPoint(x, y - 1))) {
+        if (mLayerRuleRegions->contains(x, y - 1)
+            && mLayerRuleRegions->tileAt(x, y - 1) == match
+            && !ret.contains(QPoint(x, y - 1))) {
             ret += QRegion(x, y - 1, 1, 1);
             addPoints.append(QPoint(x, y - 1));
         }
-        if (mLayerRuleRegions->tileAt(x, y + 1) == match
-                && !ret.contains(QPoint(x, y + 1))) {
+        if (mLayerRuleRegions->contains(x, y + 1)
+            && mLayerRuleRegions->tileAt(x, y + 1) == match
+            && !ret.contains(QPoint(x, y + 1))) {
             ret += QRegion(x, y + 1, 1, 1);
             addPoints.append(QPoint(x, y + 1));
         }
@@ -508,6 +507,9 @@ QRect AutoMapper::applyRule(const QRegion &rule, const QRect &where)
 {
     QRect ret;
 
+    if (mLayerList.isEmpty())
+        return ret;
+
     QRect rbr = rule.boundingRect();
 
     // Since the rule itself is translated, we need to adjust the borders of the
@@ -516,8 +518,8 @@ QRect AutoMapper::applyRule(const QRegion &rule, const QRect &where)
     const int min_x = where.left() - rbr.left() - rbr.width() + 1 ;
     const int min_y = where.top() - rbr.top() - rbr.height() + 1;
 
-    const int max_x = where.right() - rbr.left() + rbr.height() - 1;
-    const int max_y = where.bottom() - rbr.top() + rbr.width() - 1;
+    const int max_x = where.right() - rbr.left() + rbr.width() - 1;
+    const int max_y = where.bottom() - rbr.top() + rbr.height() - 1;
 
     for (int y = min_y; y <= max_y; y++)
         for (int x = min_x; x <= max_x; x++)
@@ -958,8 +960,6 @@ void AutomaticMappingManager::automap(QRegion where, Layer *l)
     // use a pointer to the region, so each automapper can manipulate it and the
     // following automappers do see the impact
     QRegion *passedRegion = new QRegion(where);
-
-
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Apply AutoMap rules"));
