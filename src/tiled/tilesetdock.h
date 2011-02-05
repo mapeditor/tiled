@@ -75,8 +75,16 @@ signals:
      */
     void currentTilesChanged(const TileLayer *tiles);
 
+    /**
+     * Emitted when files are dropped at the tileset dock.
+     */
+    void tilesetsDropped(const QStringList &paths);
+
 protected:
     void changeEvent(QEvent *e);
+
+    void dragEnterEvent(QDragEnterEvent *);
+    void dropEvent(QDropEvent *);
 
 private slots:
     void insertTilesetView(int index, Tileset *tileset);

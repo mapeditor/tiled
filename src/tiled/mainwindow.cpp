@@ -240,6 +240,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
+    connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
+            SLOT(newTilesets(QStringList)));
+
     // Add recent file actions to the recent files menu
     for (int i = 0; i < MaxRecentFiles; ++i)
     {
@@ -793,10 +796,10 @@ void MainWindow::zoomNormal()
         mapView->zoomable()->resetZoom();
 }
 
-void MainWindow::newTileset(const QString &path)
+bool MainWindow::newTileset(const QString &path)
 {
     if (!mMapDocument)
-        return;
+        return false;
 
     Map *map = mMapDocument->map();
 
@@ -808,8 +811,18 @@ void MainWindow::newTileset(const QString &path)
     newTileset.setTileWidth(map->tileWidth());
     newTileset.setTileHeight(map->tileHeight());
 
-    if (Tileset *tileset = newTileset.createTileset())
+    if (Tileset *tileset = newTileset.createTileset()) {
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
+        return true;
+    }
+    return false;
+}
+
+void MainWindow::newTilesets(const QStringList &paths)
+{
+    foreach (const QString &path, paths)
+        if (!newTileset(path))
+            return;
 }
 
 void MainWindow::addExternalTileset()

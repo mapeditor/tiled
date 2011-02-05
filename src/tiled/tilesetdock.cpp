@@ -34,9 +34,11 @@
 #include "tilesetmanager.h"
 
 #include <QEvent>
+#include <QDropEvent>
 #include <QMessageBox>
 #include <QStackedWidget>
 #include <QTabBar>
+#include <QUrl>
 #include <QVBoxLayout>
 
 using namespace Tiled;
@@ -76,6 +78,7 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     setWidget(w);
     retranslateUi();
+    setAcceptDrops(true);
 }
 
 TilesetDock::~TilesetDock()
@@ -121,6 +124,27 @@ void TilesetDock::changeEvent(QEvent *e)
         break;
     default:
         break;
+    }
+}
+
+void TilesetDock::dragEnterEvent(QDragEnterEvent *e)
+{
+    const QList<QUrl> urls = e->mimeData()->urls();
+    if (!urls.isEmpty() && !urls.at(0).toLocalFile().isEmpty())
+        e->accept();
+}
+
+void TilesetDock::dropEvent(QDropEvent *e)
+{
+    QStringList paths;
+    foreach (const QUrl &url, e->mimeData()->urls()) {
+        const QString localFile = url.toLocalFile();
+        if (!localFile.isEmpty())
+            paths.append(localFile);
+    }
+    if (!paths.isEmpty()) {
+        emit tilesetsDropped(paths);
+        e->accept();
     }
 }
 
