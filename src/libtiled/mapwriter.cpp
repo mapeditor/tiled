@@ -42,6 +42,7 @@
 #include "terrain.h"
 
 #include <QCoreApplication>
+#include <QBuffer>
 #include <QDir>
 #include <QXmlStreamWriter>
 
@@ -314,7 +315,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         unsigned int terrain = tile->terrain();
         int probability = tile->terrainProbability();
 
-        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1) {
+        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1 || imageSource.isEmpty()) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(i));
             if (terrain != 0xFFFFFFFF)
@@ -323,6 +324,23 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                 w.writeAttribute(QLatin1String("probability"), QString::number(probability));
             if (!properties.isEmpty())
                 writeProperties(w, properties);
+            if (imageSource.isEmpty()) {
+                w.writeStartElement(QLatin1String("image"));
+                w.writeAttribute(QLatin1String("format"),
+                                 QLatin1String("png"));
+
+                w.writeStartElement(QLatin1String("data"));
+                w.writeAttribute(QLatin1String("encoding"),
+                                 QLatin1String("base64"));
+
+                QBuffer buffer;
+                tile->image().save(&buffer, "png");
+                w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
+
+                w.writeEndElement();
+
+                w.writeEndElement();
+            }
             w.writeEndElement();
         }
     }
