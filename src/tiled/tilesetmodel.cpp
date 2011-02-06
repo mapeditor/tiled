@@ -87,7 +87,7 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    const int i = index.column() + index.row() * mTileset->columnCount();
+    const int i = index.column() + index.row() * columnCount();
     return mTileset->tileAt(i);
 }
 
