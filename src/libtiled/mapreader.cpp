@@ -367,8 +367,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());
         } else if (xml.name() == QLatin1String("image")) {
-            Tile *tile = tileset->tileAt(id);
-            tile->setImage(QPixmap::fromImage(readImage()));
+            tileset->setTileImage(id, QPixmap::fromImage(readImage()));
         } else {
             readUnknownElement();
         }
