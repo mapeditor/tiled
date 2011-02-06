@@ -37,6 +37,7 @@
 #include <QVector>
 #include <QPoint>
 #include <QString>
+#include <QPixmap>
 
 class QImage;
 
@@ -110,12 +111,12 @@ public:
     bool isExternal() const { return !mFileName.isEmpty(); }
 
     /**
-     * Returns the width of the tiles in this tileset.
+     * Returns the maximum width of the tiles in this tileset.
      */
     int tileWidth() const { return mTileWidth; }
 
     /**
-     * Returns the height of the tiles in this tileset.
+     * Returns the maximum height of the tiles in this tileset.
      */
     int tileHeight() const { return mTileHeight; }
 
@@ -245,12 +246,22 @@ public:
      */
     void addTile(const QPixmap &image);
 
+    /**
+     * Set a tile's image
+     */
+    void setTileImage(int index, const QPixmap &image);
+
 private:
     /**
      * Detaches from the external image. Should be called everytime the tileset
      * is changed.
      */
     void detachExternalImage();
+
+    /**
+     * Sets tile size to the maximum size
+     */
+    void updateTileSize();
 
     QString mName;
     QString mFileName;
