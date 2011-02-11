@@ -87,6 +87,8 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addAction(handler->actionMoveLayerDown());
     buttonContainer->addAction(handler->actionDuplicateLayer());
     buttonContainer->addAction(handler->actionRemoveLayer());
+    buttonContainer->addSeparator();
+    buttonContainer->addAction(handler->actionToggleOtherLayers());
 
     layout->addLayout(opacityLayout);
     layout->addWidget(mLayerView);
@@ -272,6 +274,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
         menu.addAction(handler->actionMoveLayerUp());
         menu.addAction(handler->actionMoveLayerDown());
+        menu.addSeparator();
+        menu.addAction(handler->actionToggleOtherLayers());
         menu.addSeparator();
         menu.addAction(handler->actionLayerProperties());
     }

@@ -57,6 +57,8 @@ public:
     QAction *actionRemoveLayer() const { return mActionRemoveLayer; }
     QAction *actionMoveLayerUp() const { return mActionMoveLayerUp; }
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
+    QAction *actionToggleOtherLayers() const
+    { return mActionToggleOtherLayers; }
     QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
 signals:
@@ -72,6 +74,7 @@ public slots:
     void moveLayerUp();
     void moveLayerDown();
     void removeLayer();
+    void toggleOtherLayers();
 
 private slots:
     void updateActions();
@@ -87,6 +90,7 @@ private:
     QAction *mActionRemoveLayer;
     QAction *mActionMoveLayerUp;
     QAction *mActionMoveLayerDown;
+    QAction *mActionToggleOtherLayers;
     QAction *mActionLayerProperties;
 
     static MapDocumentActionHandler *mInstance;

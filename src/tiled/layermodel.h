@@ -122,6 +122,13 @@ public:
      */
     void renameLayer(int index, const QString &name);
 
+    /**
+      * Show or hide all other layers except the layer at the given index.
+      * If any other layer is visible then all layers will be hidden, otherwise
+      * the layers will be shown.
+      */
+    void toggleOtherLayers(int layerIndex);
+
 signals:
     void layerAdded(int index);
     void layerAboutToBeRemoved(int index);

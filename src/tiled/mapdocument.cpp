@@ -253,6 +253,16 @@ void MapDocument::removeLayer(int index)
 }
 
 /**
+  * Show or hide all other layers except the layer at the given index.
+  * If any other layer is visible then all layers will be hidden, otherwise
+  * the layers will be shown.
+  */
+void MapDocument::toggleOtherLayers(int index)
+{
+    mLayerModel->toggleOtherLayers(index);
+}
+
+/**
  * Adds a tileset to this map at the given \a index. Emits the appropriate
  * signal.
  */

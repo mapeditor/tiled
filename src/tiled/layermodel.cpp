@@ -179,3 +179,29 @@ void LayerModel::renameLayer(int layerIndex, const QString &name)
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layerIndex);
 }
+
+void LayerModel::toggleOtherLayers(int layerIndex)
+{
+    bool visibility = true;
+    for (int i = 0; i < mMap->layerCount(); i++) {
+        if (i == layerIndex)
+            continue;
+
+        Layer *layer = mMap->layerAt(i);
+        if (layer->isVisible()) {
+            visibility = false;
+            break;
+        }
+    }
+
+    for (int i = 0; i < mMap->layerCount(); i++) {
+        if (i == layerIndex)
+            continue;
+
+        const QModelIndex modelIndex = index(layerIndexToRow(i), 0);
+        Layer *layer = mMap->layerAt(i);
+        layer->setVisible(visibility);
+        emit dataChanged(modelIndex, modelIndex);
+        emit layerChanged(i);
+    }
+}

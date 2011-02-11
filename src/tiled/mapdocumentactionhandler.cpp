@@ -66,6 +66,11 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionMoveLayerDown->setIcon(
             QIcon(QLatin1String(":/images/16x16/go-down.png")));
 
+    mActionToggleOtherLayers = new QAction(this);
+    mActionToggleOtherLayers->setShortcut(tr("Ctrl+Shift+H"));
+    mActionToggleOtherLayers->setIcon(
+            QIcon(QLatin1String(":/images/16x16/show_hide_others.png")));
+
     mActionLayerProperties = new QAction(this);
     mActionLayerProperties->setIcon(
             QIcon(QLatin1String(":images/16x16/document-properties.png")));
@@ -85,6 +90,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
     connect(mActionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
     connect(mActionMoveLayerDown, SIGNAL(triggered()), SLOT(moveLayerDown()));
+    connect(mActionToggleOtherLayers, SIGNAL(triggered()),
+            SLOT(toggleOtherLayers()));
 
     updateActions();
     retranslateUi();
@@ -106,6 +113,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionRemoveLayer->setText(tr("&Remove Layer"));
     mActionMoveLayerUp->setText(tr("Move Layer &Up"));
     mActionMoveLayerDown->setText(tr("Move Layer Dow&n"));
+    mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
     mActionLayerProperties->setText(tr("Layer &Properties..."));
 }
 
@@ -189,6 +197,12 @@ void MapDocumentActionHandler::removeLayer()
         mMapDocument->removeLayer(mMapDocument->currentLayer());
 }
 
+void MapDocumentActionHandler::toggleOtherLayers()
+{
+    if (mMapDocument)
+        mMapDocument->toggleOtherLayers(mMapDocument->currentLayer());
+}
+
 void MapDocumentActionHandler::updateActions()
 {
     Map *map = 0;
@@ -212,6 +226,7 @@ void MapDocumentActionHandler::updateActions()
     mActionMoveLayerUp->setEnabled(currentLayer >= 0 &&
                                    currentLayer < layerCount - 1);
     mActionMoveLayerDown->setEnabled(currentLayer > 0);
+    mActionToggleOtherLayers->setEnabled(layerCount > 1);
     mActionRemoveLayer->setEnabled(currentLayer >= 0);
     mActionLayerProperties->setEnabled(currentLayer >= 0);
 }

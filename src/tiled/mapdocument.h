@@ -117,6 +117,7 @@ public:
     void moveLayerUp(int index);
     void moveLayerDown(int index);
     void removeLayer(int index);
+    void toggleOtherLayers(int index);
 
     void insertTileset(int index, Tileset *tileset);
     void removeTilesetAt(int index);
