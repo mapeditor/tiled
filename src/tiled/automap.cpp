@@ -48,8 +48,8 @@ AutoMapper::AutoMapper(MapDocument *workingDocument, QString setlayer)
     , mMapWork(workingDocument ? workingDocument->map() : 0)
     , mMapRules(0)
     , mLayerRuleRegions(0)
-    , mLayerSet(0)
     , mSetLayer(setlayer)
+    , mLayerSet(0)
 {
 
     connect(mMapDocument, SIGNAL(layerAdded(int)), SLOT(layerAdd(int)));
@@ -497,7 +497,8 @@ void AutoMapper::clearRegion(TileLayer *dstLayer, const QRegion &where)
     foreach (QRect r, region.rects())
         for (int x = r.left(); x <= r.right(); x++)
             for (int y = r.top(); y <= r.bottom(); y++)
-                dstLayer->setTile(x, y, 0);
+                if (mLayerSet->tileAt(x, y) && dstLayer->contains(x, y))
+                    dstLayer->setTile(x, y, 0);
 }
 
 static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,

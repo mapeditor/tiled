@@ -285,6 +285,18 @@ private:
     QVector<TileLayer*> mLayerRuleSets;
     QVector<TileLayer*> mLayerRuleNotSets;
 
+    /**
+     * This stores the name of the layer, which is used in the working map to
+     * setup the automapper.
+     * Until this variable was introduced it was called "set" (hardcoded)
+     */
+    QString mSetLayer;
+
+    /**
+     * This is a pointer to the Layer, which is used in the working map for
+     * automapping.
+     * So if anything is correct mLayerSet->name() equals mSetLayer.
+     */
     TileLayer *mLayerSet;
 
     /**
@@ -329,13 +341,6 @@ private:
     QSet<QString> mTouchedLayers;
 
     QString mError;
-
-    /**
-     * This stores the name of the layer, which is used in the working map to
-     * setup the automapper.
-     * Until this variable was introduced it was called "set" (hardcoded)
-     */
-    QString mSetLayer;
 };
 
 /**
