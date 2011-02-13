@@ -190,9 +190,9 @@ bool AutoMapper::setupRuleMapLayers()
 
         TileLayer *t = findTileLayer(mMapWork, name);
         // if there is no such layer, setup later
-        if (!t) {
+        // (only append it once, so check if it is already in there)
+        if (!t && !mAddLayers.contains(name))
             mAddLayers.append(name);
-        }
 
         QPair<TileLayer*, TileLayer*> addPair(tileLayer, t);
 
