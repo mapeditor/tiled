@@ -458,14 +458,14 @@ void AutoMapper::autoMap(QRegion *where)
 {
     // first resize the active area
     if (mAutoMappingRadius) {
-        QRegion *n = new QRegion();
-        foreach (QRect r, where->rects()) {
-            *n += r.adjusted(- mAutoMappingRadius,
-                             - mAutoMappingRadius,
-                             + mAutoMappingRadius,
-                             + mAutoMappingRadius);
+        QRegion n;
+        foreach (const QRect &r, where->rects()) {
+            n += r.adjusted(- mAutoMappingRadius,
+                            - mAutoMappingRadius,
+                            + mAutoMappingRadius,
+                            + mAutoMappingRadius);
         }
-        *where += *n;
+        *where += n;
     }
 
     // delete all the relevant area, if the property "DeleteTiles" is set
