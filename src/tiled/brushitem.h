@@ -53,9 +53,10 @@ public:
      * Sets a tile layer representing this brush. When no tile layer is set,
      * the brush only draws the selection color.
      *
-     * The BrushItem does not take ownership over the tile layer.
+     * The BrushItem does not take ownership over the tile layer, but makes a
+     * personal copy of the tile layer.
      */
-    void setTileLayer(TileLayer *tileLayer);
+    void setTileLayer(const TileLayer *tileLayer);
 
     /**
      * Returns the current tile layer.
