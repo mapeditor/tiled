@@ -431,5 +431,7 @@ void StampBrush::updatePosition()
         brushItem()->setTileLayerPosition(QPoint(mStampX, mStampY));
     } else {
         brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
+        mStampX = tilePos.x();
+        mStampY = tilePos.y();
     }
 }
