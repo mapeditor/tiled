@@ -47,8 +47,8 @@ RequestExecutionLevel admin
     !define MUI_FINISHPAGE_NOAUTOCLOSE
     !define MUI_FINISHPAGE_RUN "$INSTDIR\${P}\${P_NORM}.exe"
     !define MUI_FINISHPAGE_RUN_CHECKED
-    !define MUI_FINISHPAGE_RUN_TEXT "Launch ${P}-${V}"
-    !define MUI_FINISHPAGE_SHOWREADME_CHECKED
+    !define MUI_FINISHPAGE_RUN_TEXT "Launch ${P}"
+    !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
 	!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\${P}\README.txt"
 !insertmacro MUI_PAGE_FINISH
 
@@ -215,7 +215,7 @@ File /r /x .gitignore /x README /x README.txt ${ROOT_DIR}\util\*.*
 
 ; Shortcuts 
 CreateDirectory "$SMPROGRAMS\${P}"
-CreateShortCut  "$SMPROGRAMS\${P}\${P_NORM}.lnk" "$INSTDIR\${P}\${P_NORM}.exe"
+CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P}\${P_NORM}.exe"
 CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\${P}\uninstall.exe"
 
 ; File associations
