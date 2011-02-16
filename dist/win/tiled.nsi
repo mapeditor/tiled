@@ -262,7 +262,7 @@ RMDir /r $INSTDIR\util
 RMDir  $INSTDIR
 
 ; Removing shortcuts
-Delete "$SMPROGRAMS\${P}\${P_NORM}.lnk"
+Delete "$SMPROGRAMS\${P}\${P}.lnk"
 Delete "$SMPROGRAMS\${P}\uninstall.lnk"
 RMDir  "$SMPROGRAMS\${P}"
 
