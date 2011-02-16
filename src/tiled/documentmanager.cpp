@@ -31,6 +31,21 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+DocumentManager *DocumentManager::mInstance = 0;
+
+DocumentManager *DocumentManager::instance()
+{
+    if (!mInstance)
+        mInstance = new DocumentManager;
+    return mInstance;
+}
+
+void DocumentManager::deleteInstance()
+{
+    delete mInstance;
+    mInstance = 0;
+}
+
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
     , mTabWidget(new QTabWidget)

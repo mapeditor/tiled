@@ -50,8 +50,8 @@ class DocumentManager : public QObject
     Q_OBJECT
 
 public:
-    DocumentManager(QObject *parent = 0);
-    ~DocumentManager();
+    static DocumentManager *instance();
+    static void deleteInstance();
 
     /**
      * Returns the document manager widget. It contains the different map views
@@ -136,12 +136,17 @@ private slots:
     void updateDocumentTab();
 
 private:
+    DocumentManager(QObject *parent = 0);
+    ~DocumentManager();
+
     QList<MapDocument*> mDocuments;
 
     QTabWidget *mTabWidget;
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapScene *mSceneWithTool;
+
+    static DocumentManager *mInstance;
 };
 
 } // namespace Tiled::Internal

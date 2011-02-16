@@ -96,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mZoomLabel(new QLabel)
     , mStatusInfoLabel(new QLabel)
     , mClipboardManager(new ClipboardManager(this))
-    , mDocumentManager(new DocumentManager(this))
+    , mDocumentManager(DocumentManager::instance())
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -330,6 +330,7 @@ MainWindow::~MainWindow()
     AutomaticMappingManager::deleteInstance();
     ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
+    DocumentManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
