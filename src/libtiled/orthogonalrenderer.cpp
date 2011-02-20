@@ -98,6 +98,9 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
+    if (tileWidth <= 0 || tileHeight <= 0)
+        return;
+
     const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
     const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
     const int endX = qMin((int) std::ceil(rect.right()),

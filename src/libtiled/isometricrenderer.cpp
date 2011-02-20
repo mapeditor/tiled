@@ -131,6 +131,9 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
+    if (tileWidth <= 0 || tileHeight <= 1)
+        return;
+
     QRect rect = exposed.toAlignedRect();
     if (rect.isNull())
         rect = boundingRect(layer->bounds());
