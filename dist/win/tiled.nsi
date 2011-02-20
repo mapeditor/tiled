@@ -181,13 +181,13 @@ File ${QT_DIR}\bin\QtCore4.dll
 File ${QT_DIR}\bin\QtGui4.dll
 File ${QT_DIR}\bin\QtOpenGL4.dll
 
-SetOutPath $INSTDIR\plugin\codecs
+SetOutPath $INSTDIR\plugins\codecs
 File ${QT_DIR}\plugins\codecs\qcncodecs4.dll
 File ${QT_DIR}\plugins\codecs\qjpcodecs4.dll
 File ${QT_DIR}\plugins\codecs\qtwcodecs4.dll
 File ${QT_DIR}\plugins\codecs\qkrcodecs4.dll
 
-SetOutPath $INSTDIR\plugin\imageformats
+SetOutPath $INSTDIR\plugins\imageformats
 File ${QT_DIR}\plugins\imageformats\qgif4.dll
 File ${QT_DIR}\plugins\imageformats\qjpeg4.dll
 File ${QT_DIR}\plugins\imageformats\qtiff4.dll
@@ -248,12 +248,12 @@ Delete $INSTDIR\libgcc_s_dw2-1.dll
 Delete $INSTDIR\libstdc++-6.dll
 Delete $INSTDIR\QtCore4.dll
 Delete $INSTDIR\QtGui4.dll
-Delete $INSTDIR\\QtOpenGL4.dll
+Delete $INSTDIR\QtOpenGL4.dll
 Delete $INSTDIR\uninstall.exe
 
-RMDir /r $INSTDIR\plugin\codecs
-RMDir /r $INSTDIR\plugin\imageformats
-RMDir    $INSTDIR\plugin
+RMDir /r $INSTDIR\plugins\codecs
+RMDir /r $INSTDIR\plugins\imageformats
+RMDir    $INSTDIR\plugins
 RMDir /r $INSTDIR\translations
 RMDir /r $INSTDIR\examples
 RMDir /r $INSTDIR\docs
