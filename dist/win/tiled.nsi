@@ -20,7 +20,7 @@ SetCompressor /FINAL /SOLID lzma
 !define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tiled"
 !define PRODUCT_REG_KEY "Tiled Map Editor"
 
-InstallDir "$PROGRAMFILES"                    ; Default installation directory
+InstallDir "$PROGRAMFILES\${P}"               ; Default installation directory
 Name "${P}"                                   ; Name displayed on installer
 OutFile "setup-${P_NORM}-${V}-win${ARCH}.exe" ; Resulting installer filename
 BrandingText /TRIMLEFT "${P_NORM}-${V}"
@@ -45,11 +45,11 @@ RequestExecutionLevel admin
 !insertmacro MUI_PAGE_INSTFILES
     ; These indented statements modify settings for MUI_PAGE_FINISH
     !define MUI_FINISHPAGE_NOAUTOCLOSE
-    !define MUI_FINISHPAGE_RUN "$INSTDIR\${P}\${P_NORM}.exe"
+    !define MUI_FINISHPAGE_RUN "$INSTDIR\${P_NORM}.exe"
     !define MUI_FINISHPAGE_RUN_CHECKED
     !define MUI_FINISHPAGE_RUN_TEXT "Launch ${P}"
     !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
-	!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\${P}\README.txt"
+    !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
 !insertmacro MUI_PAGE_FINISH
 
 ;-------------- Uninstall Pages -------------
@@ -161,8 +161,8 @@ FunctionEnd
 Section "" ; No components page, name is not important
 Call checkAlreadyInstalled
 
-SetOutPath $INSTDIR\${P} ; Set output path to the installation directory.
-WriteUninstaller $INSTDIR\${P}\uninstall.exe ; Location of the uninstaller
+SetOutPath $INSTDIR ; Set output path to the installation directory.
+WriteUninstaller $INSTDIR\uninstall.exe ; Location of the uninstaller
 
 File /oname=COPYING.txt ${ROOT_DIR}\COPYING 
 File /oname=AUTHORS.txt ${ROOT_DIR}\AUTHORS
@@ -181,18 +181,18 @@ File ${QT_DIR}\bin\QtCore4.dll
 File ${QT_DIR}\bin\QtGui4.dll
 File ${QT_DIR}\bin\QtOpenGL4.dll
 
-SetOutPath $INSTDIR\${P}\plugin\codecs
+SetOutPath $INSTDIR\plugin\codecs
 File ${QT_DIR}\plugins\codecs\qcncodecs4.dll
 File ${QT_DIR}\plugins\codecs\qjpcodecs4.dll
 File ${QT_DIR}\plugins\codecs\qtwcodecs4.dll
 File ${QT_DIR}\plugins\codecs\qkrcodecs4.dll
 
-SetOutPath $INSTDIR\${P}\plugin\imageformats
+SetOutPath $INSTDIR\plugin\imageformats
 File ${QT_DIR}\plugins\imageformats\qgif4.dll
 File ${QT_DIR}\plugins\imageformats\qjpeg4.dll
 File ${QT_DIR}\plugins\imageformats\qtiff4.dll
 
-SetOutPath $INSTDIR\${P}\translations
+SetOutPath $INSTDIR\translations
 File  ${ROOT_DIR}\translations\*.qm
 ;File  ${QT_DIR}\translations\qt_cs.qm
 ;File  ${QT_DIR}\translations\qt_de.qm
@@ -204,30 +204,30 @@ File  ${ROOT_DIR}\translations\*.qm
 ;File  ${QT_DIR}\translations\qt_zh_CN.qm
 ;File  ${QT_DIR}\translations\qt_zh_TW.qm
 
-SetOutPath $INSTDIR\${P}\examples
+SetOutPath $INSTDIR\examples
 File /r ${ROOT_DIR}\examples\*.*
 
-SetOutPath $INSTDIR\${P}\docs
+SetOutPath $INSTDIR\docs
 File /r ${ROOT_DIR}\docs\map.*
 
-SetOutPath $INSTDIR\${P}\util
+SetOutPath $INSTDIR\util
 File /r /x .gitignore /x README /x README.txt ${ROOT_DIR}\util\*.*
 
 ; Shortcuts 
 CreateDirectory "$SMPROGRAMS\${P}"
-CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P}\${P_NORM}.exe"
-CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\${P}\uninstall.exe"
+CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P_NORM}.exe"
+CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 ; File associations
-${RegisterExtension} "$INSTDIR\${P}\tiled.exe" ".tmx" "Tiled.tmx"
+${RegisterExtension} "$INSTDIR\tiled.exe" ".tmx" "Tiled.tmx"
 
 ; Add version number to Registry
 WriteRegStr HKLM "Software\${PRODUCT_REG_KEY}" "Version" "${V}"
 
 ; Add uninstall information to "Add/Remove Programs"
 WriteRegStr HKLM ${ADD_REMOVE} "DisplayName" "Tiled - Tiled Map Editor"
-WriteRegStr HKLM ${ADD_REMOVE} "UninstallString" "$\"$INSTDIR\${P}\uninstall.exe$\""
-WriteRegStr HKLM ${ADD_REMOVE} "QuietUninstallString" "$\"$INSTDIR\${P}\uninstall.exe$\" /S"
+WriteRegStr HKLM ${ADD_REMOVE} "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+WriteRegStr HKLM ${ADD_REMOVE} "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
 WriteRegStr HKLM ${ADD_REMOVE} "Version" "${V}"
 SectionEnd
 ;------------ Uninstaller -------------
