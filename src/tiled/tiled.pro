@@ -201,7 +201,7 @@ FORMS += aboutdialog.ui \
     objectpropertiesdialog.ui \
     commanddialog.ui
 RESOURCES += tiled.qrc
-mac {
+macx {
     TARGET = Tiled
     QMAKE_INFO_PLIST = Info.plist
     ICON = images/tiled-icon-mac.icns
