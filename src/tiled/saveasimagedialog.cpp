@@ -144,6 +144,8 @@ void SaveAsImageDialog::accept()
         if (visibleLayersOnly && !layer->isVisible())
             continue;
 
+        painter.setOpacity(layer->opacity());
+
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
 
