@@ -12,7 +12,7 @@ LANGUAGES = en nl pt es de pt_BR ja fr it cs he lv zh
 
 # Helper function to adapt the slashes in a path to the system
 defineReplace(fixSlashes) {
-    win32:1 ~= s|/|\|g
+    win32:1 ~= s|/|\\|g
     return($$1)
 }
 

@@ -281,7 +281,9 @@ void StampBrush::configureBrush(const QVector<QPoint> &list)
             stamp->merge(p, mStamp);
         }
     }
+
     brushItem()->setTileLayer(stamp);
+    delete stamp;
 }
 
 void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -431,5 +433,7 @@ void StampBrush::updatePosition()
         brushItem()->setTileLayerPosition(QPoint(mStampX, mStampY));
     } else {
         brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
+        mStampX = tilePos.x();
+        mStampY = tilePos.y();
     }
 }

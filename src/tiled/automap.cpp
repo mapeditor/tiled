@@ -48,8 +48,8 @@ AutoMapper::AutoMapper(MapDocument *workingDocument, QString setlayer)
     , mMapWork(workingDocument ? workingDocument->map() : 0)
     , mMapRules(0)
     , mLayerRuleRegions(0)
-    , mLayerSet(0)
     , mSetLayer(setlayer)
+    , mLayerSet(0)
 {
 
     connect(mMapDocument, SIGNAL(layerAdded(int)), SLOT(layerAdd(int)));
@@ -190,9 +190,9 @@ bool AutoMapper::setupRuleMapLayers()
 
         TileLayer *t = findTileLayer(mMapWork, name);
         // if there is no such layer, setup later
-        if (!t) {
+        // (only append it once, so check if it is already in there)
+        if (!t && !mAddLayers.contains(name))
             mAddLayers.append(name);
-        }
 
         QPair<TileLayer*, TileLayer*> addPair(tileLayer, t);
 
@@ -458,14 +458,14 @@ void AutoMapper::autoMap(QRegion *where)
 {
     // first resize the active area
     if (mAutoMappingRadius) {
-        QRegion *n = new QRegion();
-        foreach (QRect r, where->rects()) {
-            *n += r.adjusted(- mAutoMappingRadius,
-                             - mAutoMappingRadius,
-                             + mAutoMappingRadius,
-                             + mAutoMappingRadius);
+        QRegion n;
+        foreach (const QRect &r, where->rects()) {
+            n += r.adjusted(- mAutoMappingRadius,
+                            - mAutoMappingRadius,
+                            + mAutoMappingRadius,
+                            + mAutoMappingRadius);
         }
-        *where += *n;
+        *where += n;
     }
 
     // delete all the relevant area, if the property "DeleteTiles" is set
@@ -497,7 +497,8 @@ void AutoMapper::clearRegion(TileLayer *dstLayer, const QRegion &where)
     foreach (QRect r, region.rects())
         for (int x = r.left(); x <= r.right(); x++)
             for (int y = r.top(); y <= r.bottom(); y++)
-                dstLayer->setTile(x, y, 0);
+                if (mLayerSet->tileAt(x, y) && dstLayer->contains(x, y))
+                    dstLayer->setTile(x, y, 0);
 }
 
 static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,

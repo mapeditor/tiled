@@ -54,13 +54,17 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
     updateBoundingRect();
 }
 
-void BrushItem::setTileLayer(TileLayer *tileLayer)
+void BrushItem::setTileLayer(const TileLayer *tileLayer)
 {
-    if (mTileLayer == tileLayer)
-        return;
+    delete mTileLayer;
 
-    mTileLayer = tileLayer;
-    mRegion = tileLayer ? tileLayer->region() : QRegion();
+    if (tileLayer) {
+        mTileLayer = static_cast<TileLayer*>(tileLayer->clone());
+        mRegion = mTileLayer->region();
+    } else {
+        mTileLayer = 0;
+        mRegion = QRegion();
+    }
     updateBoundingRect();
     update();
 }
