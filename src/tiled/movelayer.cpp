@@ -34,8 +34,8 @@ MoveLayer::MoveLayer(MapDocument *mapDocument, int index, Direction direction):
     mDirection(direction)
 {
     setText((direction == Down) ?
-            QCoreApplication::translate("Undo Commands", "Move Layer Down") :
-            QCoreApplication::translate("Undo Commands", "Move Layer Up"));
+            QCoreApplication::translate("Undo Commands", "Lower Layer") :
+            QCoreApplication::translate("Undo Commands", "Raise Layer"));
 }
 
 void MoveLayer::redo()

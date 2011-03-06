@@ -123,8 +123,8 @@ void MapDocumentActionHandler::retranslateUi()
     mActionRemoveLayer->setText(tr("&Remove Layer"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
     mActionSelectNextLayer->setText(tr("Select &Next Layer"));
-    mActionMoveLayerUp->setText(tr("Move Layer &Up"));
-    mActionMoveLayerDown->setText(tr("Move Layer Dow&n"));
+    mActionMoveLayerUp->setText(tr("R&aise Layer"));
+    mActionMoveLayerDown->setText(tr("&Lower Layer"));
     mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
     mActionLayerProperties->setText(tr("Layer &Properties..."));
 }
