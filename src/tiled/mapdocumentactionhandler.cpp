@@ -56,6 +56,12 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionRemoveLayer->setIcon(
             QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
+    mActionSelectPreviousLayer = new QAction(this);
+    mActionSelectPreviousLayer->setShortcut(tr("PgUp"));
+
+    mActionSelectNextLayer = new QAction(this);
+    mActionSelectNextLayer->setShortcut(tr("PgDown"));
+
     mActionMoveLayerUp = new QAction(this);
     mActionMoveLayerUp->setShortcut(tr("Ctrl+Shift+Up"));
     mActionMoveLayerUp->setIcon(
@@ -87,6 +93,10 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
             SLOT(addObjectGroup()));
     connect(mActionDuplicateLayer, SIGNAL(triggered()),
             SLOT(duplicateLayer()));
+    connect(mActionSelectPreviousLayer, SIGNAL(triggered()),
+            SLOT(selectPreviousLayer()));
+    connect(mActionSelectNextLayer, SIGNAL(triggered()),
+            SLOT(selectNextLayer()));
     connect(mActionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
     connect(mActionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
     connect(mActionMoveLayerDown, SIGNAL(triggered()), SLOT(moveLayerDown()));
@@ -111,6 +121,8 @@ void MapDocumentActionHandler::retranslateUi()
     mActionAddObjectGroup->setText(tr("Add &Object Layer..."));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
+    mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
+    mActionSelectNextLayer->setText(tr("Select &Next Layer"));
     mActionMoveLayerUp->setText(tr("Move Layer &Up"));
     mActionMoveLayerDown->setText(tr("Move Layer Dow&n"));
     mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
@@ -179,6 +191,24 @@ void MapDocumentActionHandler::duplicateLayer()
         mMapDocument->duplicateLayer();
 }
 
+void MapDocumentActionHandler::selectPreviousLayer()
+{
+    if (mMapDocument) {
+        const int currentLayer = mMapDocument->currentLayer();
+        if (currentLayer < mMapDocument->map()->layerCount() - 1)
+            mMapDocument->setCurrentLayer(currentLayer + 1);
+    }
+}
+
+void MapDocumentActionHandler::selectNextLayer()
+{
+    if (mMapDocument) {
+        const int currentLayer = mMapDocument->currentLayer();
+        if (currentLayer > 0)
+            mMapDocument->setCurrentLayer(currentLayer - 1);
+    }
+}
+
 void MapDocumentActionHandler::moveLayerUp()
 {
     if (mMapDocument)
@@ -222,10 +252,15 @@ void MapDocumentActionHandler::updateActions()
     mActionAddObjectGroup->setEnabled(map);
 
     const int layerCount = map ? map->layerCount() : 0;
+    const bool hasPreviousLayer = currentLayer >= 0
+            && currentLayer < layerCount - 1;
+    const bool hasNextLayer = currentLayer > 0;
+
     mActionDuplicateLayer->setEnabled(currentLayer >= 0);
-    mActionMoveLayerUp->setEnabled(currentLayer >= 0 &&
-                                   currentLayer < layerCount - 1);
-    mActionMoveLayerDown->setEnabled(currentLayer > 0);
+    mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
+    mActionSelectNextLayer->setEnabled(hasNextLayer);
+    mActionMoveLayerUp->setEnabled(hasPreviousLayer);
+    mActionMoveLayerDown->setEnabled(hasNextLayer);
     mActionToggleOtherLayers->setEnabled(layerCount > 1);
     mActionRemoveLayer->setEnabled(currentLayer >= 0);
     mActionLayerProperties->setEnabled(currentLayer >= 0);
