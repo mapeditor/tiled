@@ -69,6 +69,23 @@ public:
      */
     ~MapDocument();
 
+    /**
+     * Saves the map to its current file name. Returns whether or not the file
+     * was saved successfully. If not, <i>error</i> will be set to the error
+     * message if it is not 0.
+     */
+    bool save(QString *error = 0);
+
+    /**
+     * Saves the map to the file at \a fileName. Returns whether or not the
+     * file was saved successfully. If not, <i>error</i> will be set to the
+     * error message if it is not 0.
+     *
+     * If the save was succesful, the file name of this document will be set
+     * to \a fileName.
+     */
+    bool save(const QString &fileName, QString *error = 0);
+
     QString fileName() const { return mFileName; }
     void setFileName(const QString &fileName);
 

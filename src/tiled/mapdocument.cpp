@@ -37,6 +37,7 @@
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "tileset.h"
+#include "tmxmapwriter.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -83,6 +84,27 @@ MapDocument::~MapDocument()
 
     delete mRenderer;
     delete mMap;
+}
+
+bool MapDocument::save(QString *error)
+{
+    return save(fileName(), error);
+}
+
+bool MapDocument::save(const QString &fileName, QString *error)
+{
+    TmxMapWriter mapWriter;
+
+    if (!mapWriter.write(map(), fileName)) {
+        if (error)
+            *error = mapWriter.errorString();
+        return false;
+    }
+
+    undoStack()->setClean();
+    setFileName(fileName);
+
+    return true;
 }
 
 void MapDocument::setFileName(const QString &fileName)
