@@ -20,37 +20,26 @@
 
 #include "commanddatamodel.h"
 
+#include <QMenu>
+#include <QSignalMapper>
+#include <QMimeData>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+const char *commandMimeType = "application/x-tiled-commandptr";
 
 CommandDataModel::CommandDataModel()
 {
     // Load saveBeforeExecute option
-
     QVariant s = mSettings.value(QLatin1String("saveBeforeExecute"), true);
     mSaveBeforeExecute = s.toBool();
 
     // Load command list
-
     const QVariant variant = mSettings.value(QLatin1String("commandList"));
     const QList<QVariant> commands = variant.toList();
-
-    const QString namePref = QLatin1String("Name");
-    const QString commandPref = QLatin1String("Command");
-    const QString enablePref = QLatin1String("Enabled");
-    foreach (const QVariant &commandVariant, commands) {
-        QHash<QString, QVariant> commandHash = commandVariant.toHash();
-
-        Command command;
-        if (commandHash.contains(enablePref))
-            command.isEnabled = commandHash[enablePref].toBool();
-        if (commandHash.contains(namePref))
-            command.name = commandHash[namePref].toString();
-        if (commandHash.contains(commandPref))
-            command.command = commandHash[commandPref].toString();
-
-        mCommands.append(command);
-    }
+    foreach (const QVariant &commandVariant, commands)
+        mCommands.append(Command::fromQVariant(commandVariant));
 
     // Add default commands the first time the app has booted up.
     // This is useful on it's own and helps demonstrate how to use the commands.
@@ -80,21 +69,12 @@ CommandDataModel::CommandDataModel()
 void CommandDataModel::commit()
 {
     // Save saveBeforeExecute option
-
     mSettings.setValue(QLatin1String("saveBeforeExecute"), mSaveBeforeExecute);
 
     // Save command list
-
     QList<QVariant> commands;
-
-    foreach (const Command &command, mCommands) {
-        QHash<QString, QVariant> commandHash;
-        commandHash[QLatin1String("Enabled")] = command.isEnabled;
-        commandHash[QLatin1String("Name")] = command.name;
-        commandHash[QLatin1String("Command")] = command.command;
-        commands.append(commandHash);
-    }
-
+    foreach (const Command &command, mCommands)
+        commands.append(command.toQVariant());
     mSettings.setValue(QLatin1String("commandList"), commands);
 }
 
@@ -107,7 +87,19 @@ Command CommandDataModel::firstEnabledCommand() const
     return Command(false);
 }
 
-void CommandDataModel::deleteCommands(QModelIndexList indices)
+bool CommandDataModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (row < 0 || row + count > mCommands.size())
+        return false;
+
+    beginRemoveRows(parent, row, row + count);
+    mCommands.erase(mCommands.begin() + row, mCommands.begin() + row + count);
+    endRemoveRows();
+
+    return true;
+}
+
+void CommandDataModel::removeRows(QModelIndexList indices)
 {
     while (!indices.empty()) {
         const int row = indices.takeFirst().row();
@@ -117,7 +109,7 @@ void CommandDataModel::deleteCommands(QModelIndexList indices)
         beginRemoveRows(QModelIndex(), row, row);
         mCommands.removeAt(row);
 
-        // Decrement later indicies since we removed a row
+        // Decrement later indices since we removed a row
         for (QModelIndexList::iterator i = indices.begin(); i != indices.end();
                                                                             ++i)
             if (i->row() > row)
@@ -254,10 +246,11 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
     Qt::ItemFlags f = QAbstractTableModel::flags(index);
 
     if (isNormalRow) {
-        f |= Qt::ItemIsEditable;
+        f |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
     } else {
+        f |= Qt::ItemIsDropEnabled;
         if (index.column() == NameColumn)
             f |= Qt::ItemIsEditable;
     }
@@ -277,4 +270,198 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
         QT_TR_NOOP("Enable") };
 
     return tr(sectionLabels[section]);
+}
+
+QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
+{
+    QMenu *menu = NULL;
+    const int row = index.row();
+
+    if (row >= 0 && row < mCommands.size()) {
+        menu = new QMenu(parent);
+
+        if (row > 0) {
+            QAction *action = menu->addAction(tr("Move Up"));
+            QSignalMapper *mapper = new QSignalMapper(action);
+            mapper->setMapping(action, row);
+            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+            connect(mapper, SIGNAL(mapped(int)), SLOT(moveUp(int)));
+        }
+
+        if (row+1 < mCommands.size()) {
+            QAction *action = menu->addAction(tr("Move Down"));
+            QSignalMapper *mapper = new QSignalMapper(action);
+            mapper->setMapping(action, row + 1);
+            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+            connect(mapper, SIGNAL(mapped(int)), SLOT(moveUp(int)));
+        }
+
+        menu->addSeparator();
+
+        {
+            QAction *action = menu->addAction(tr("Execute"));
+            QSignalMapper *mapper = new QSignalMapper(action);
+            mapper->setMapping(action, row);
+            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+            connect(mapper, SIGNAL(mapped(int)), SLOT(execute(int)));
+        }
+
+        menu->addSeparator();
+
+        {
+            QAction *action = menu->addAction(tr("Delete"));
+            QSignalMapper *mapper = new QSignalMapper(action);
+            mapper->setMapping(action, row);
+            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+            connect(mapper, SIGNAL(mapped(int)), SLOT(remove(int)));
+        }
+    }
+
+    return menu;
+}
+
+QMimeData *CommandDataModel::mimeData(const QModelIndexList &indices) const
+{
+    int row = -1;
+
+    foreach (const QModelIndex &index, indices) {
+        // Only generate mime data on command rows
+        if (index.row() < 0 || index.row() >= mCommands.size())
+            return 0;
+
+        // Currently only one row at a time is supported for drags
+        // Note: we can get multiple indexes in the same row (different columns)
+        if (row != -1 && index.row() != row)
+            return 0;
+
+        row = index.row();
+    }
+
+    const Command &command = mCommands[row];
+    QMimeData* mimeData = new QMimeData();
+
+    // Text data is used if command is dragged to a text editor or terminal
+    mimeData->setText(command.finalCommand());
+
+    // Ptr is used if command is dragged onto another command
+    // We could store the index instead, the only difference would be that if
+    // the item is moved or deleted shomehow during the drag, the ptr approach
+    // will result in a no-op instead of moving the wrong thing.
+    const Command *addr = &command;
+    mimeData->setData(QLatin1String(commandMimeType),
+                      QByteArray((const char *)&addr, sizeof(addr)));
+
+    return mimeData;
+}
+
+QStringList CommandDataModel::mimeTypes() const
+{
+    QStringList result(QLatin1String("text/plain"));
+    result.append(QLatin1String(commandMimeType));
+    return result;
+}
+
+Qt::DropActions CommandDataModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
+                                    int, const QModelIndex &parent)
+{
+    if (!parent.isValid())
+        return false;
+
+    const int dstRow = parent.row();
+
+    if (data->hasFormat(QLatin1String(commandMimeType))) {
+
+        // Get the ptr to the command that was being dragged
+        const QByteArray byteData = data->data(QLatin1String(commandMimeType));
+        Q_ASSERT(byteData.length() == sizeof(Command*));
+        const Command *addr = *(Command**)byteData.data();
+
+        // Find the command in the command list so we can move/copy it
+        for (int srcRow = 0; srcRow < mCommands.size(); ++srcRow)
+            if (addr == &mCommands[srcRow]) {
+
+                // If a command is dropped on another command,
+                // move the src command into the positon of the dst command.
+                if (dstRow < mCommands.size())
+                    return move(srcRow, dstRow);
+
+                // If a command is dropped elsewhere, create a copy of it
+                if (dstRow == mCommands.size()) {
+                    append(Command(addr->isEnabled,
+                                   tr("%1 (copy)").arg(addr->name),
+                                   addr->command));
+                    return true;
+                }
+            }
+    }
+
+    if (data->hasText()) {
+
+        // If text is dropped on a valid command, just replace the data
+        if (dstRow < mCommands.size())
+            return setData(parent, data->text(), Qt::EditRole);
+
+        // If text is dropped elsewhere, create a new command
+        // Assume the dropped text is the command, not the name
+        if (dstRow == mCommands.size()) {
+            append(Command(true, tr("New command"), data->text()));
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CommandDataModel::move(int commandIndex, int newIndex)
+{
+    if (commandIndex < 0 || commandIndex >= mCommands.size() ||
+        newIndex < 0 || newIndex >= mCommands.size() ||
+        newIndex == commandIndex)
+        return false;
+
+    if (!beginMoveRows(QModelIndex(), commandIndex, commandIndex, QModelIndex(),
+                       newIndex > commandIndex ? newIndex + 1 : newIndex))
+        return false;
+
+    if (commandIndex - newIndex == 1 || newIndex - commandIndex == 1)
+        // Swapping is probably more efficient than removing/inserting
+        mCommands.swap(commandIndex, newIndex);
+    else {
+        const Command command = mCommands.at(commandIndex);
+        mCommands.removeAt(commandIndex);
+        mCommands.insert(newIndex, command);
+    }
+
+    endMoveRows();
+
+    return true;
+}
+
+void CommandDataModel::append(const Command &command)
+{
+    beginInsertRows(QModelIndex(), mCommands.size(), mCommands.size());
+
+    mCommands.append(command);
+
+    endInsertRows();
+}
+
+void CommandDataModel::moveUp(int commandIndex)
+{
+    move(commandIndex, commandIndex - 1);
+}
+
+void CommandDataModel::execute(int commandIndex) const
+{
+    mCommands.at(commandIndex).execute();
+}
+
+void CommandDataModel::remove(int commandIndex)
+{
+    removeRow(commandIndex);
 }

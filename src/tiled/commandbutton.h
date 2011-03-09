@@ -36,18 +36,14 @@ class CommandButton : public QToolButton
    Q_OBJECT
 
 public:
-    CommandButton(MainWindow *mainWindow, DocumentManager *documentManager);
+    CommandButton(QWidget *parent);
 
 private slots:
-    void runCommand(const QString &command = QString());
-    void runPrimaryCommand();
+    void runCommand();
     void showDialog();
     void populateMenu();
-    void showError();
 
 private:
-    MainWindow *mMainWindow;
-    DocumentManager *mDocumentManager;
     QMenu *mMenu;
 };
 

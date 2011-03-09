@@ -20,8 +20,12 @@
 
 #include "commanddialog.h"
 #include "ui_commanddialog.h"
+#include "commanddatamodel.h"
 
 #include <QShortcut>
+#include <QMenu>
+#include <QContextMenuEvent>
+#include <QModelIndex>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -31,29 +35,9 @@ CommandDialog::CommandDialog(QWidget *parent)
     , mUi(new Ui::CommandDialog)
 {
     mUi->setupUi(this);
+    mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute());
 
     setWindowTitle(tr("Edit Commands"));
-
-    mUi->treeView->setModel(&mModel);
-    mUi->treeView->setColumnWidth(0, 200);
-    mUi->treeView->setRootIsDecorated(false);
-
-    QHeaderView *header = mUi->treeView->header();
-    header->setStretchLastSection(false);
-    header->setResizeMode(CommandDataModel::NameColumn,
-                          QHeaderView::Interactive);
-    header->setResizeMode(CommandDataModel::CommandColumn,
-                          QHeaderView::Stretch);
-    header->setResizeMode(CommandDataModel::EnabledColumn,
-                          QHeaderView::ResizeToContents);
-
-    QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete,
-                                              mUi->treeView);
-    deleteShortcut->setContext(Qt::WidgetShortcut);
-    connect(deleteShortcut, SIGNAL(activated()),
-                            SLOT(deleteSelectedCommands()));
-
-    mUi->saveBox->setChecked(mModel.saveBeforeExecute());
 }
 
 CommandDialog::~CommandDialog()
@@ -65,18 +49,67 @@ void CommandDialog::accept()
 {
     QDialog::accept();
 
-    mModel.setSaveBeforeExecute(mUi->saveBox->isChecked());
-    mModel.commit();
+    mUi->treeView->model()->setSaveBeforeExecute(mUi->saveBox->isChecked());
+    mUi->treeView->model()->commit();
 }
 
-void CommandDialog::deleteSelectedCommands()
+CommandTreeView::CommandTreeView(QWidget *parent)
+    : QTreeView(parent)
+    , mModel(new CommandDataModel)
 {
-    QItemSelectionModel *selection = mUi->treeView->selectionModel();
+    setModel(mModel);
+    setRootIsDecorated(false);
+
+    // Setup resizing so the command column stretches
+    setColumnWidth(0, 200);
+    QHeaderView *h = header();
+    h->setStretchLastSection(false);
+    h->setResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
+    h->setResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setResizeMode(CommandDataModel::EnabledColumn,
+                     QHeaderView::ResizeToContents);
+
+    // Allow deletion via keyboard
+    QShortcut *d = new QShortcut(QKeySequence::Delete, this);
+    d->setContext(Qt::WidgetShortcut);
+    connect(d, SIGNAL(activated()), SLOT(removeSelectedCommands()));
+
+    connect(mModel, SIGNAL(rowsRemoved(QModelIndex, int, int)),
+                    SLOT(handleRowsRemoved(QModelIndex, int, int)));
+}
+
+CommandTreeView::~CommandTreeView()
+{
+    delete mModel;
+}
+
+void CommandTreeView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QModelIndex index = indexAt(event->pos());
+
+    // Generate a run a menu for the index
+    QMenu *menu = mModel->contextMenu(this, index);
+    if (menu)
+        menu->exec(event->globalPos());
+}
+
+void CommandTreeView::handleRowsRemoved(const QModelIndex &parent, int, int)
+{
+    if (parent.isValid())
+        return;
+
+    // Reselect the same row index of the removed row
+    QItemSelectionModel *sModel = selectionModel();
+    QModelIndex index = sModel->currentIndex();
+
+    sModel->select(index.sibling(index.row() + 1,index.column()),
+                   QItemSelectionModel::ClearAndSelect |
+                   QItemSelectionModel::Rows);
+}
+
+void CommandTreeView::removeSelectedCommands()
+{
+    QItemSelectionModel *selection = selectionModel();
     const QModelIndexList indices = selection->selectedRows();
-    if (!indices.isEmpty()) {
-        mModel.deleteCommands(indices);
-        selection->select(mUi->treeView->currentIndex(),
-                          QItemSelectionModel::ClearAndSelect |
-                          QItemSelectionModel::Rows);
-    }
+    mModel->removeRows(indices);
 }

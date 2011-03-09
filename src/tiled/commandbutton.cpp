@@ -19,28 +19,19 @@
  */
 
 #include "commandbutton.h"
+#include "commanddatamodel.h"
 #include "commanddialog.h"
-#include "documentmanager.h"
-#include "mapdocument.h"
-#include "mainwindow.h"
 #include "utils.h"
 
-#include <QSettings>
-#include <QMouseEvent>
 #include <QMenu>
-#include <QSignalMapper>
 #include <QMessageBox>
-#include <QProcess>
 
 using namespace Tiled;
 using namespace Tiled::Utils;
 using namespace Tiled::Internal;
 
-CommandButton::CommandButton(MainWindow *mainWindow,
-                             DocumentManager *documentManager)
-    : QToolButton(mainWindow)
-    , mMainWindow(mainWindow)
-    , mDocumentManager(documentManager)
+CommandButton::CommandButton(QWidget *parent)
+    : QToolButton(parent)
     , mMenu(new QMenu(this))
 {
     setIcon(QIcon(QLatin1String(":images/24x24/system-run.png")));
@@ -52,55 +43,40 @@ CommandButton::CommandButton(MainWindow *mainWindow,
     setMenu(mMenu);
 
     connect(mMenu, SIGNAL(aboutToShow()), SLOT(populateMenu()));
-    connect(this, SIGNAL(clicked()), SLOT(runPrimaryCommand()));
+    connect(this, SIGNAL(clicked()), SLOT(runCommand()));
 }
 
-void CommandButton::runCommand(const QString &command)
+void CommandButton::runCommand()
 {
-    // Save if save option is unset or true
-    QSettings settings;
-    QVariant variant = settings.value(QLatin1String("saveBeforeExecute"), true);
-    if (variant.toBool())
-        mMainWindow->saveFile();
+    Command command;
 
-    QString finalCommand = command;
+    QAction *action = dynamic_cast<QAction*>(sender());
+    if (action && action->data().isValid())
+        //run the command passed by the action
+        command = Command::fromQVariant(action->data());
+    else {
+        //run the default command
+        command = CommandDataModel().firstEnabledCommand();
 
-    // Perform map filename replacement
-    MapDocument *mapDocument = mDocumentManager->currentDocument();
-    if (mapDocument) {
-        const QString fileName = mapDocument->fileName();
-        finalCommand.replace(QLatin1String("%mapfile"),
-                             QString(QLatin1String("\"%1\"")).arg(fileName));
+        if (!command.isEnabled) {
+            QMessageBox msgBox(window());
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setWindowTitle(tr("Error Executing Command"));
+            msgBox.setText(tr("You do not have any commands setup."));
+            msgBox.addButton(QMessageBox::Ok);
+            msgBox.addButton(tr("Edit commands..."), QMessageBox::ActionRole);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.setEscapeButton(QMessageBox::Ok);
+
+            QAbstractButton *button = msgBox.buttons().last();
+            connect(button, SIGNAL(clicked()), SLOT(showDialog()));
+
+            msgBox.exec();
+            return;
+        }
     }
 
-    QProcess *process = new QProcess(window());
-    connect(process, SIGNAL(finished(int)), process, SLOT(deleteLater()));
-    connect(process, SIGNAL(error(QProcess::ProcessError)), SLOT(showError()));
-    process->start(finalCommand);
-}
-
-void CommandButton::runPrimaryCommand()
-{
-    const CommandDataModel model;
-    Command command = model.firstEnabledCommand();
-    if (!command.isEnabled) {
-        QMessageBox msgBox(window());
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowTitle(tr("Error Executing Command"));
-        msgBox.setText(tr("You do not have any commands setup."));
-        msgBox.addButton(QMessageBox::Ok);
-        msgBox.addButton(tr("Edit commands..."), QMessageBox::ActionRole);
-        msgBox.setDefaultButton(QMessageBox::Ok);
-        msgBox.setEscapeButton(QMessageBox::Ok);
-
-        QAbstractButton *button = msgBox.buttons().last();
-        connect(button, SIGNAL(clicked()), SLOT(showDialog()));
-
-        msgBox.exec();
-        return;
-    }
-
-    runCommand(command.command);
+    command.execute();
 }
 
 void CommandButton::showDialog()
@@ -112,7 +88,6 @@ void CommandButton::showDialog()
 void CommandButton::populateMenu()
 {
     mMenu->clear();
-    QSignalMapper *mapper = new QSignalMapper(this);
 
     // Use a data model for getting the command list to avoid having to
     // manually parse the settings
@@ -125,15 +100,10 @@ void CommandButton::populateMenu()
 
         QAction *action = new QAction(command.name, this);
         action->setStatusTip(command.command);
-
-        mapper->setMapping(action, command.command);
-        connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
-
+        action->setData(command.toQVariant());
+        connect(action, SIGNAL(triggered()), SLOT(runCommand()));
         mMenu->addAction(action);
     }
-
-    connect(mapper, SIGNAL(mapped(const QString &)),
-                    SLOT(runCommand(const QString &)));
 
     if (!mMenu->isEmpty())
         mMenu->addSeparator();
@@ -142,11 +112,4 @@ void CommandButton::populateMenu()
     QAction *action = new QAction(tr("Edit Commands..."), this);
     connect(action, SIGNAL(triggered()), SLOT(showDialog()));
     mMenu->addAction(action);
-}
-
-void CommandButton::showError()
-{
-    QMessageBox::warning(window(),
-                         tr("Error Executing Command"),
-                         tr("There was an error running the command"));
 }

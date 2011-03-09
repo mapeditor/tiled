@@ -21,10 +21,8 @@
 #ifndef COMMANDDIALOG_H
 #define COMMANDDIALOG_H
 
-#include "commanddatamodel.h"
-
 #include <QDialog>
-#include <QSettings>
+#include <QTreeView>
 
 namespace Ui {
 class CommandDialog;
@@ -32,6 +30,8 @@ class CommandDialog;
 
 namespace Tiled {
 namespace Internal {
+
+class CommandDataModel;
 
 class CommandDialog : public QDialog
 {
@@ -47,18 +47,42 @@ public:
       */
     void accept();
 
+private:
+    Ui::CommandDialog *mUi;
+};
+
+class CommandTreeView : public QTreeView
+{
+    Q_OBJECT
+
+public:
+    CommandTreeView(QWidget *parent);
+    ~CommandTreeView();
+
+    /**
+      * Returns the model used by this view in CommandDataMode  form.
+      */
+    CommandDataModel *model() const { return mModel; }
+
 private slots:
+    /**
+      * Displays a context menu for the item at <i>event</i>'s position.
+      */
+    void contextMenuEvent(QContextMenuEvent *event);
+
+    /**
+      * Fixes the selection after rows have been removed.
+      */
+    void handleRowsRemoved(const QModelIndex &parent, int start, int end);
 
     /**
       * Gets the currently selected rows and tells the model to delete them.
       */
-    void deleteSelectedCommands();
+    void removeSelectedCommands();
 
 private:
-    Ui::CommandDialog *mUi;
-    CommandDataModel mModel;
+    CommandDataModel *mModel;
 };
-
 
 } // namespace Internal
 } // namespace Tiled

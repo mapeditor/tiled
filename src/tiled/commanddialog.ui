@@ -15,7 +15,10 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="treeView">
+    <widget class="Tiled::Internal::CommandTreeView" name="treeView">
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragDrop</enum>
+     </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
@@ -50,6 +53,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Tiled::Internal::CommandTreeView</class>
+   <extends>QTreeView</extends>
+   <header>commanddialog.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -183,7 +183,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mUi->mainToolBar->addSeparator();
 
-    mCommandButton = new CommandButton(this, mDocumentManager);
+    mCommandButton = new CommandButton(this);
     mUi->mainToolBar->addWidget(mCommandButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);

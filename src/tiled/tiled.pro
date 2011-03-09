@@ -111,7 +111,9 @@ SOURCES += aboutdialog.cpp \
     commandbutton.cpp \
     commanddatamodel.cpp \
     commanddialog.cpp \
-    tiledapplication.cpp
+    tiledapplication.cpp \
+    command.cpp
+
 HEADERS += aboutdialog.h \
     automap.h \
     brushitem.h \
@@ -188,7 +190,9 @@ HEADERS += aboutdialog.h \
     commanddatamodel.h \
     commanddialog.h \
     commandbutton.h \
-    tiledapplication.h
+    tiledapplication.h \
+    command.h
+
 FORMS += aboutdialog.ui \
     mainwindow.ui \
     resizedialog.ui \
