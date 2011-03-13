@@ -318,6 +318,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
             this, SLOT(closeMapDocument(int)));
 
+    QShortcut *switchToLeftDocument = new QShortcut(tr("Ctrl+PgUp"), this);
+    connect(switchToLeftDocument, SIGNAL(activated()),
+            mDocumentManager, SLOT(switchToLeftDocument()));
+
+    QShortcut *switchToRightDocument = new QShortcut(tr("Ctrl+PgDown"), this);
+    connect(switchToRightDocument, SIGNAL(activated()),
+            mDocumentManager, SLOT(switchToRightDocument()));
+
     updateActions();
     readSettings();
     setupQuickStamps();

@@ -106,6 +106,26 @@ void DocumentManager::switchToDocument(int index)
     mTabWidget->setCurrentIndex(index);
 }
 
+void DocumentManager::switchToLeftDocument()
+{
+    const int tabCount = mTabWidget->count();
+    if (tabCount < 2)
+        return;
+
+    const int currentIndex = mTabWidget->currentIndex();
+    switchToDocument((currentIndex > 0 ? currentIndex : tabCount) - 1);
+}
+
+void DocumentManager::switchToRightDocument()
+{
+    const int tabCount = mTabWidget->count();
+    if (tabCount < 2)
+        return;
+
+    const int currentIndex = mTabWidget->currentIndex();
+    switchToDocument((currentIndex + 1) % tabCount);
+}
+
 void DocumentManager::addDocument(MapDocument *mapDocument)
 {
     Q_ASSERT(mapDocument);
