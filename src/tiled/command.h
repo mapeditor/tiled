@@ -42,23 +42,23 @@ struct Command
     QString command;
 
     /**
-      * Returns the final command with replaced tokens.
-      */
+     * Returns the final command with replaced tokens.
+     */
     QString finalCommand() const;
 
     /**
-      * Executes the command in the operating system shell.
-      */
+     * Executes the command in the operating system shell.
+     */
     void execute() const;
 
     /**
-      * Stores this command in a QVariant.
-      */
+     * Stores this command in a QVariant.
+     */
     QVariant toQVariant() const;
 
     /**
-      * Generates a command from a QVariant.
-      */
+     * Generates a command from a QVariant.
+     */
     static Command fromQVariant(const QVariant &variant);
 };
 
@@ -67,15 +67,12 @@ class CommandProcess : public QProcess
     Q_OBJECT
 
 public:
-
     CommandProcess(const Command &command);
 
 private slots:
-
     void handleError(QProcess::ProcessError);
 
 private:
-
     QString mName;
     QString mFinalCommand;
 };

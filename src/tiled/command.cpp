@@ -69,7 +69,7 @@ QVariant Command::toQVariant() const
 
 Command Command::fromQVariant(const QVariant &variant)
 {
-    QHash<QString, QVariant> hash = variant.toHash();
+    const QHash<QString, QVariant> hash = variant.toHash();
 
     const QString namePref = QLatin1String("Name");
     const QString commandPref = QLatin1String("Command");
@@ -92,7 +92,7 @@ CommandProcess::CommandProcess(const Command &command)
     , mFinalCommand(command.finalCommand())
 {
     // Give an error if the command is empty or just whitespace
-    if(mFinalCommand.count(QLatin1String(" ")) == mFinalCommand.size()) {
+    if (mFinalCommand.trimmed().isEmpty()) {
         handleError(QProcess::FailedToStart);
         return;
     }
@@ -109,10 +109,15 @@ void CommandProcess::handleError(QProcess::ProcessError error)
 {
     QString errorStr;
     switch (error) {
-    case QProcess::FailedToStart: errorStr = tr("The command failed to start.");
-                                  break;
-    case QProcess::Crashed: errorStr = tr("The command crashed."); break;
-    case QProcess::Timedout: errorStr = tr("The command timed out."); break;
+    case QProcess::FailedToStart:
+        errorStr = tr("The command failed to start.");
+        break;
+    case QProcess::Crashed:
+        errorStr = tr("The command crashed.");
+        break;
+    case QProcess::Timedout:
+        errorStr = tr("The command timed out.");
+        break;
     default: errorStr = tr("An unknown error occurred.");
     }
 
@@ -120,7 +125,7 @@ void CommandProcess::handleError(QProcess::ProcessError error)
 
     QString message = errorStr + QLatin1String("\n\n") + mFinalCommand;
 
-    QWidget *parent = (QWidget*)DocumentManager::instance()->widget();
+    QWidget *parent = DocumentManager::instance()->widget();
     QMessageBox::warning(parent, title, message);
 
     // Make sure this object gets deleted if the process failed to start

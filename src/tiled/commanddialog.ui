@@ -35,7 +35,7 @@
      <item>
       <widget class="QCheckBox" name="saveBox">
        <property name="text">
-        <string>Save map before executing</string>
+        <string>&amp;Save map before executing</string>
        </property>
       </widget>
      </item>

@@ -60,7 +60,7 @@ public:
     ~CommandTreeView();
 
     /**
-      * Returns the model used by this view in CommandDataMode  form.
+      * Returns the model used by this view in CommandDataMode form.
       */
     CommandDataModel *model() const { return mModel; }
 

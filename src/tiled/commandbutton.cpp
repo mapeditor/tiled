@@ -51,10 +51,10 @@ void CommandButton::runCommand()
     Command command;
 
     QAction *action = dynamic_cast<QAction*>(sender());
-    if (action && action->data().isValid())
+    if (action && action->data().isValid()) {
         //run the command passed by the action
         command = Command::fromQVariant(action->data());
-    else {
+    } else {
         //run the default command
         command = CommandDataModel().firstEnabledCommand();
 
