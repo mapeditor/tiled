@@ -68,6 +68,9 @@ void parseCommandLineArguments(CommandLineOptions &options)
 
     for (int i = 1; i < arguments.size(); ++i) {
         const QString &arg = arguments.at(i);
+        if (arg.isEmpty())
+            continue;
+
         if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
             options.showHelp = true;
         } else if (arg == QLatin1String("--version")
