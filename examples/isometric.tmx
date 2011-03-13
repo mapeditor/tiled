@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" width="40" height="40" tilewidth="64" tileheight="32">
  <tileset firstgid="1" name="Isometric Tileset" tilewidth="64" tileheight="128">
-  <image source="isometric_tileset.png"/>
+  <image source="isometric_tileset.png" width="128" height="128"/>
   <tile id="0">
    <properties>
     <property name="obstacle" value="1"/>
@@ -9,16 +9,16 @@
   </tile>
  </tileset>
  <layer name="Layer 0" width="40" height="40">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+2X0QrFIAxD3f7/o+/LFUpo2r20qWAhbPjgDkl1+q613qurq2P1/KXmOJVvM6oZTvXwAal5snwnM05lQ++mcp7EN7EnPb5JbN4aUfMhF7575fVAJRsbtzxY6v2IeYeMyuyjes2zO9/Mw83W1X/sO18y7uKLvFAz7mKsjAn5KtY07iNs/qjsXJUeog92TMXGckHGqLr+JdG4go2dBZiXjLM6VzzrRXl7/ViZq9dv9pn1QOc/GPfrtbi/Cj6WcZZ1lWx95e72ynJm31ee9zbftPuH51HWf1OkvmP8AJSKFe8AGQAA
+  <data encoding="base64" compression="zlib">
+   eJztl9EKxSAMQ93+/6PvyxVKaNq9tKlgIWz44A5Jdfqutd6rq6tj9fyl5jiVbzOqGU718AGpebJ8JzNOZUPvpnKexDexJz2+SWzeGlHzIRe+e+X1QCUbG7c8WOr9iHmHjMrso3rNszvfzMPN1tV/7DtfMu7ii7xQM+5irIwJ+SrWNO4jbP6o7FyVHqIPdkzFxnJBxqi6/iXRuIKNnQWYl4yzOlc860V5e/1YmavXb/aZ9UDnPxj367W4vwo+lnGWdZVsfeXu9spyZt9Xnvc237T7h+dR1n9TpL5j/AAbDAss
   </data>
  </layer>
  <objectgroup color="#ffaa00" name="Objects" width="40" height="40">
-  <object name="" x="1261" y="428" width="141" height="74"/>
-  <object name="" type="npc" x="498" y="35" width="156" height="42"/>
-  <object name="" x="576" y="224" width="448" height="128"/>
-  <object name="" x="2183" y="747" width="228" height="96"/>
+  <object x="1261" y="428" width="141" height="74"/>
+  <object type="npc" x="498" y="35" width="156" height="42"/>
+  <object x="576" y="224" width="448" height="128"/>
+  <object x="2183" y="747" width="228" height="96"/>
   <object name="fddsadsa" type="warp" x="960" y="416" width="192" height="96"/>
-  <object name="" x="1100" y="556" width="138" height="23"/>
+  <object x="1100" y="556" width="138" height="23"/>
  </objectgroup>
 </map>
