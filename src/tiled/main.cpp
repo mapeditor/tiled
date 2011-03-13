@@ -43,14 +43,14 @@ struct CommandLineOptions {
 
     bool showHelp;
     bool showVersion;
-    QString fileToOpen;
+    QStringList filesToOpen;
 };
 
 void showHelp()
 {
     // TODO: Make translatable
     qWarning() <<
-            "Usage: tiled [option] [file]\n\n"
+            "Usage: tiled [option] [files...]\n\n"
             "Options:\n"
             "  -h --help    : Display this help\n"
             "  -v --version : Display the version";
@@ -76,8 +76,8 @@ void parseCommandLineArguments(CommandLineOptions &options)
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
-        } else if (options.fileToOpen.isEmpty()) {
-            options.fileToOpen = arg;
+        } else {
+            options.filesToOpen.append(arg);
         }
     }
 }
@@ -123,10 +123,12 @@ int main(int argc, char *argv[])
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));
 
-    if (!options.fileToOpen.isEmpty())
-        w.openFile(options.fileToOpen);
-    else
+    if (!options.filesToOpen.empty()) {
+        foreach (const QString &fileName, options.filesToOpen)
+            w.openFile(fileName);
+    } else {
         w.openLastFiles();
+    }
 
     return a.exec();
 }
