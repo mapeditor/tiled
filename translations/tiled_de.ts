@@ -32,9 +32,13 @@
         <translation>Eigenschaften</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+24"/>
+        <source>&amp;Save map before executing</source>
+        <translation>&amp;Speichere Karte vor der Ausführung</translation>
+    </message>
+    <message>
         <source>Save map before executing</source>
-        <translation>Speichern vor der Ausführung</translation>
+        <translation type="obsolete">Speichern vor der Ausführung</translation>
     </message>
 </context>
 <context>
@@ -181,8 +185,12 @@
     </message>
     <message>
         <location line="+5"/>
+        <source>Save As &amp;Image...</source>
+        <translation>Speicher als &amp;Bild...</translation>
+    </message>
+    <message>
         <source>Save As Image...</source>
-        <translation>Speichern als Bild...</translation>
+        <translation type="obsolete">Speichern als Bild...</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -243,7 +251,7 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+132"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+130"/>
         <source>Not a map file.</source>
         <translation>Keine Kartendatei.</translation>
     </message>
@@ -272,7 +280,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Datei nicht lesbar: %1</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+44"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>Nicht unterstützte Kartenorientierung: &quot;%1&quot;</translation>
     </message>
@@ -638,7 +646,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+13"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
-        <translation>Hardwarebeschleunigtes Zeichnen (OpenGL)</translation>
+        <translation>Hardware&amp;beschleunigtes Zeichnen (OpenGL)</translation>
     </message>
 </context>
 <context>
@@ -751,7 +759,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Multiple Ebenen vom Typ %1 gefunden!</translation>
     </message>
     <message>
-        <location line="+115"/>
+        <location line="+110"/>
         <source>No ruleRegions layer found!</source>
         <translation>Keine ruleRegions Ebene gefunden!</translation>
     </message>
@@ -766,7 +774,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Keine ruleSet Ebene gefunden!</translation>
     </message>
     <message>
-        <location line="+208"/>
+        <location line="+212"/>
         <source>Tile</source>
         <translation>Kachel</translation>
     </message>
@@ -774,12 +782,12 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::AutomaticMappingManager</name>
     <message>
-        <location line="+491"/>
+        <location line="+495"/>
         <source>No set layer found!</source>
         <translation>Keine set Ebene gefunden!</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+27"/>
         <source>Apply AutoMap rules</source>
         <translation>AutoMap Regeln anwenden</translation>
     </message>
@@ -830,7 +838,7 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::CommandButton</name>
     <message>
-        <location filename="../src/tiled/commandbutton.cpp" line="+48"/>
+        <location filename="../src/tiled/commandbutton.cpp" line="+39"/>
         <source>Execute Command</source>
         <translation>Kommando ausführen</translation>
     </message>
@@ -840,13 +848,12 @@ Zeile %1, Spalte %2</translation>
         <translation>F5</translation>
     </message>
     <message>
-        <location line="+39"/>
-        <location line="+61"/>
+        <location line="+24"/>
         <source>Error Executing Command</source>
         <translation>Fehler beim Ausführen des Kommandos</translation>
     </message>
     <message>
-        <location line="-60"/>
+        <location line="+1"/>
         <source>You do not have any commands setup.</source>
         <translation>Es wurden keine Kommandos definiert.</translation>
     </message>
@@ -856,25 +863,24 @@ Zeile %1, Spalte %2</translation>
         <translation>Kommandos editieren...</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+45"/>
         <source>Edit Commands...</source>
         <translation>Kommandos editieren...</translation>
     </message>
     <message>
-        <location line="+9"/>
         <source>There was an error running the command</source>
-        <translation>Bei der Ausführung des Kommandos ist ein Fehler aufgetreten</translation>
+        <translation type="obsolete">Bei der Ausführung des Kommandos ist ein Fehler aufgetreten</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::CommandDataModel</name>
     <message>
-        <location filename="../src/tiled/commanddatamodel.cpp" line="+74"/>
+        <location filename="../src/tiled/commanddatamodel.cpp" line="+60"/>
         <source>Open in text editor</source>
         <translation>In Texteditor öffnen</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+92"/>
         <location line="+67"/>
         <source>&lt;new command&gt;</source>
         <translation>&lt;neues Kommando&gt;</translation>
@@ -900,7 +906,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Neues Kommando hinzufügen</translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+101"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
@@ -914,13 +920,71 @@ Zeile %1, Spalte %2</translation>
         <source>Enable</source>
         <translation>Aktivieren</translation>
     </message>
+    <message>
+        <location line="+14"/>
+        <source>Move Up</source>
+        <translation>Nach oben bewegen</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Move Down</source>
+        <translation>Nach unten bewegen</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Execute</source>
+        <translation>Ausführen</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Delete</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location line="+84"/>
+        <source>%1 (copy)</source>
+        <translation>%1 (kopieren)</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>New command</source>
+        <translation>Neues Kommando</translation>
+    </message>
 </context>
 <context>
     <name>Tiled::Internal::CommandDialog</name>
     <message>
-        <location filename="../src/tiled/commanddialog.cpp" line="+35"/>
+        <location filename="../src/tiled/commanddialog.cpp" line="+40"/>
         <source>Edit Commands</source>
         <translation>Kommandos bearbeiten</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CommandProcess</name>
+    <message>
+        <location filename="../src/tiled/command.cpp" line="+113"/>
+        <source>The command failed to start.</source>
+        <translation>Dieses Kommando konnte nicht ausgeführt werden.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>The command crashed.</source>
+        <translation>Das Kommando führte zu einem Absturz.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>The command timed out.</source>
+        <translation>Das Kommando benötigte zu lange (Timeout).</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>An unknown error occurred.</source>
+        <translation>Ein unbekannter Fehler ist aufgetreten.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Error Executing %1</source>
+        <translation>Fehler bei der Ausführung %1</translation>
     </message>
 </context>
 <context>
@@ -965,7 +1029,7 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+178"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+180"/>
         <source>Layers</source>
         <translation>Ebenen</translation>
     </message>
@@ -987,18 +1051,18 @@ Zeile %1, Spalte %2</translation>
     <name>Tiled::Internal::MainWindow</name>
     <message>
         <location filename="../src/tiled/mainwindow.cpp" line="+129"/>
-        <location line="+10"/>
+        <location line="+8"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location line="-9"/>
-        <location line="+8"/>
+        <location line="-7"/>
+        <location line="+6"/>
         <source>Redo</source>
         <translation>Wiederherstellen</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+30"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
@@ -1014,35 +1078,35 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+19"/>
-        <location line="+962"/>
+        <location line="+968"/>
         <source>&amp;Layer</source>
         <translation>&amp;Ebene</translation>
     </message>
     <message>
-        <location line="-711"/>
+        <location line="-722"/>
         <source>Error Opening Map</source>
         <translation>Fehler beim öffnen der Karte</translation>
     </message>
     <message>
-        <location line="+69"/>
-        <location line="+138"/>
+        <location line="+73"/>
+        <location line="+135"/>
         <source>All Files (*)</source>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="-135"/>
-        <location line="+79"/>
+        <location line="-132"/>
+        <location line="+76"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Tiled Karten (*.tmx)</translation>
     </message>
     <message>
-        <location line="-66"/>
+        <location line="-63"/>
         <source>Open Map</source>
         <translation>Karte öffnen</translation>
     </message>
     <message>
         <location line="+25"/>
-        <location line="+144"/>
+        <location line="+141"/>
         <source>Error Saving Map</source>
         <translation>Fehler beim speichern der Karte</translation>
     </message>
@@ -1082,7 +1146,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Ausschneiden</translation>
     </message>
     <message>
-        <location line="+97"/>
+        <location line="+107"/>
         <source>Add External Tileset</source>
         <translation>Externes Tileset hinzufügen</translation>
     </message>
@@ -1120,7 +1184,7 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+105"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+127"/>
         <source>untitled.tmx</source>
         <translation>unbenannt.tmx</translation>
     </message>
@@ -1155,7 +1219,7 @@ Zeile %1, Spalte %2</translation>
         <translation>Ebene duplizieren</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+130"/>
         <source>Tile</source>
         <translation>Kachel</translation>
     </message>
@@ -1179,6 +1243,16 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+9"/>
+        <source>PgUp</source>
+        <translation>Bild oben</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>PgDown</source>
+        <translation>Bild unten</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Ctrl+Shift+Up</source>
         <translation>Ctrl+Shift+Up</translation>
     </message>
@@ -1188,7 +1262,12 @@ Zeile %1, Spalte %2</translation>
         <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+5"/>
+        <source>Ctrl+Shift+H</source>
+        <translation>Strg+Shift+H</translation>
+    </message>
+    <message>
+        <location line="+41"/>
         <source>Select &amp;All</source>
         <translation>Selektiere &amp;alles</translation>
     </message>
@@ -1219,13 +1298,36 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Move Layer &amp;Up</source>
-        <translation>Ebene a&amp;nheben</translation>
+        <source>Select Pre&amp;vious Layer</source>
+        <translation>Wähle &amp;vorherige Ebene aus</translation>
     </message>
     <message>
         <location line="+1"/>
+        <source>Select &amp;Next Layer</source>
+        <translation>Wähle &amp;nächste Ebene aus</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>R&amp;aise Layer</source>
+        <translation>Ebene &amp;anheben</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Lower Layer</source>
+        <translation>Ebene ab&amp;senken</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show/&amp;Hide all Other Layers</source>
+        <translation>Zeige/&amp;Verstecke alle anderen Ebenen</translation>
+    </message>
+    <message>
+        <source>Move Layer &amp;Up</source>
+        <translation type="obsolete">Ebene a&amp;nheben</translation>
+    </message>
+    <message>
         <source>Move Layer Dow&amp;n</source>
-        <translation>Ebene a&amp;bsenken</translation>
+        <translation type="obsolete">Ebene a&amp;bsenken</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1358,7 +1460,7 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::PropertiesDialog</name>
     <message>
-        <location filename="../src/tiled/propertiesdialog.cpp" line="+62"/>
+        <location filename="../src/tiled/propertiesdialog.cpp" line="+69"/>
         <source>%1 Properties</source>
         <translation>%1eigenschaften</translation>
     </message>
@@ -1400,7 +1502,7 @@ Do you want to replace it?</source>
         <translation>Die Datei %1 existiert bereits. Soll sie ersetzt werden?</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+73"/>
         <source>Image</source>
         <translation>Bild</translation>
     </message>
@@ -1429,13 +1531,13 @@ Do you want to replace it?</source>
     <name>Tiled::Internal::StampBrush</name>
     <message>
         <location filename="../src/tiled/stampbrush.cpp" line="+38"/>
-        <location line="+279"/>
+        <location line="+281"/>
         <source>Stamp Brush</source>
         <translation>Stempel</translation>
     </message>
     <message>
-        <location line="-276"/>
-        <location line="+277"/>
+        <location line="-278"/>
+        <location line="+279"/>
         <source>B</source>
         <translation>B</translation>
     </message>
@@ -1443,7 +1545,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+247"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+271"/>
         <source>Remove Tileset</source>
         <translation>Tileset entfernen</translation>
     </message>
@@ -1552,7 +1654,7 @@ Do you want to replace it?</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+166"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+160"/>
         <source>TMX Viewer</source>
         <translation>TMX-Betrachter</translation>
     </message>
@@ -1621,14 +1723,12 @@ Do you want to replace it?</source>
         <translation>Bereich füllen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Move Layer Down</source>
-        <translation>Ebene absenken</translation>
+        <translation type="obsolete">Ebene absenken</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Move Layer Up</source>
-        <translation>Ebene anheben</translation>
+        <translation type="obsolete">Ebene anheben</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobject.cpp" line="+39"/>
@@ -1684,6 +1784,16 @@ Do you want to replace it?</source>
         <location line="+3"/>
         <source>Export Tileset</source>
         <translation>Tileset exportieren</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/movelayer.cpp" line="+37"/>
+        <source>Lower Layer</source>
+        <translation>Niedrigere Ebene</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Raise Layer</source>
+        <translation>Höhere Ebene</translation>
     </message>
 </context>
 <context>
