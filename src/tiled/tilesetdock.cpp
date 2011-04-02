@@ -96,6 +96,10 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     while (mViewStack->currentWidget())
         delete mViewStack->currentWidget();
 
+    // Clear all connections to the previous document
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
+
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
