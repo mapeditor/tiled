@@ -150,9 +150,8 @@ void Map::replaceTileset(Tileset *oldTileset, Tileset *newTileset)
 bool Map::isTilesetUsed(Tileset *tileset) const
 {
     foreach (const Layer *layer, mLayers)
-        if (const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer))
-            if (tileLayer->referencesTileset(tileset))
-                return true;
+        if (layer->referencesTileset(tileset))
+            return true;
 
     return false;
 }

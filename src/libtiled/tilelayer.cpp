@@ -128,7 +128,7 @@ QSet<Tileset*> TileLayer::usedTilesets() const
     return tilesets;
 }
 
-bool TileLayer::referencesTileset(Tileset *tileset) const
+bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
     for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
         const Tile *tile = mTiles.at(i);

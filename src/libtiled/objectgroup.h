@@ -84,6 +84,12 @@ public:
     int removeObject(MapObject *object);
 
     /**
+     * Returns whether any tile objects in this object group reference tiles
+     * in the given tileset.
+     */
+    bool referencesTileset(const Tileset *tileset) const;
+
+    /**
      * Resizes this object group to \a size, while shifting all objects by
      * \a offset tiles.
      *

@@ -42,6 +42,7 @@ namespace Tiled {
 class Map;
 class ObjectGroup;
 class TileLayer;
+class Tileset;
 
 /**
  * A map layer.
@@ -129,6 +130,11 @@ public:
      * Returns the bounds of this layer.
      */
     QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
+
+    /**
+     * Returns whether this layer is referencing the given tileset.
+     */
+    virtual bool referencesTileset(const Tileset *tileset) const = 0;
 
     /**
      * Resizes this layer to \a size, while shifting its contents by \a offset.

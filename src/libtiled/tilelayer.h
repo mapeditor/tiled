@@ -114,7 +114,7 @@ public:
     /**
      * Returns whether this tile layer is referencing the given tileset.
      */
-    bool referencesTileset(Tileset *tileset) const;
+    bool referencesTileset(const Tileset *tileset) const;
 
     /**
      * Returns the region of tiles coming from the given \a tileset.
