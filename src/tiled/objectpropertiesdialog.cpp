@@ -65,6 +65,11 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     resize(sizeHint());
 }
 
+ObjectPropertiesDialog::~ObjectPropertiesDialog()
+{
+    delete mUi;
+}
+
 void ObjectPropertiesDialog::accept()
 {
     const QString newName = mUi->name->text();

@@ -44,6 +44,8 @@ public:
                            MapObject *mapObject,
                            QWidget *parent = 0);
 
+    ~ObjectPropertiesDialog();
+
     void accept();
 
 private:
