@@ -299,6 +299,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new SelectionTool(this));
+    toolManager->addSeparator();
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(areaObjectsTool);
     toolManager->registerTool(tileObjectsTool);
@@ -320,6 +321,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             SLOT(mapDocumentChanged(MapDocument*)));
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
             this, SLOT(closeMapDocument(int)));
+
+    QShortcut *switchToLeftDocument = new QShortcut(tr("Ctrl+PgUp"), this);
+    connect(switchToLeftDocument, SIGNAL(activated()),
+            mDocumentManager, SLOT(switchToLeftDocument()));
+
+    QShortcut *switchToRightDocument = new QShortcut(tr("Ctrl+PgDown"), this);
+    connect(switchToRightDocument, SIGNAL(activated()),
+            mDocumentManager, SLOT(switchToRightDocument()));
 
     updateActions();
     readSettings();

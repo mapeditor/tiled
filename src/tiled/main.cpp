@@ -43,14 +43,14 @@ struct CommandLineOptions {
 
     bool showHelp;
     bool showVersion;
-    QString fileToOpen;
+    QStringList filesToOpen;
 };
 
 void showHelp()
 {
     // TODO: Make translatable
     qWarning() <<
-            "Usage: tiled [option] [file]\n\n"
+            "Usage: tiled [option] [files...]\n\n"
             "Options:\n"
             "  -h --help    : Display this help\n"
             "  -v --version : Display the version";
@@ -68,6 +68,9 @@ void parseCommandLineArguments(CommandLineOptions &options)
 
     for (int i = 1; i < arguments.size(); ++i) {
         const QString &arg = arguments.at(i);
+        if (arg.isEmpty())
+            continue;
+
         if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
             options.showHelp = true;
         } else if (arg == QLatin1String("--version")
@@ -76,8 +79,8 @@ void parseCommandLineArguments(CommandLineOptions &options)
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
-        } else if (options.fileToOpen.isEmpty()) {
-            options.fileToOpen = arg;
+        } else {
+            options.filesToOpen.append(arg);
         }
     }
 }
@@ -99,7 +102,7 @@ int main(int argc, char *argv[])
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));
-    a.setApplicationVersion(QLatin1String("0.6.0"));
+    a.setApplicationVersion(QLatin1String("0.6.1"));
 #ifdef Q_WS_MAC
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
@@ -123,10 +126,12 @@ int main(int argc, char *argv[])
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));
 
-    if (!options.fileToOpen.isEmpty())
-        w.openFile(options.fileToOpen);
-    else
+    if (!options.filesToOpen.empty()) {
+        foreach (const QString &fileName, options.filesToOpen)
+            w.openFile(fileName);
+    } else {
         w.openLastFiles();
+    }
 
     return a.exec();
 }

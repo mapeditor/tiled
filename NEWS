@@ -1,3 +1,16 @@
+0.6.1 (3 April 2011)
+* Added ability to open multiple files at once
+* Added Ctrl+PageUp/PageDown shortcuts to switch documents
+* Added an example to show how automatic mapping works
+* Fixed bugs, crashes and leaks in the automatic mapping feature
+* Fixed starting point for circles to be the click position
+* Fixed a memory leak when using lines or circles
+* Fixed layer opacity to be taken into account when saving as image
+* Fixed endless loop when tile size is set to 0
+* Fixed crash when passing an empty string as command line parameter
+* Fixed problems with the tileset view after switching documents
+* Fixed tile objects to be removed when their tileset is removed
+
 0.6.0 (26 January 2011)
 * Added support for opening multiple maps in one session
 * Added support for placing tiles as objects

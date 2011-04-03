@@ -130,6 +130,10 @@ signals:
      */
     void documentCloseRequested(int index);
 
+public slots:
+    void switchToLeftDocument();
+    void switchToRightDocument();
+
 private slots:
     void currentIndexChanged();
     void setSelectedTool(AbstractTool *tool);

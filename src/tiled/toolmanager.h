@@ -61,6 +61,12 @@ public:
     void registerTool(AbstractTool *tool);
 
     /**
+     * Adds a separator to the tool bar between the last registered tool and
+     * the next tool that is registered.
+     */
+    void addSeparator();
+
+    /**
      * Selects the given tool. It should be previously added using
      * registerTool().
      */

@@ -21,11 +21,14 @@
 
 #include "tilesetdock.h"
 
+#include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "mapobject.h"
 #include "movetileset.h"
+#include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -98,6 +101,10 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
         mTabBar->removeTab(0);
     while (mViewStack->currentWidget())
         delete mViewStack->currentWidget();
+
+    // Clear all connections to the previous document
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
 
     mMapDocument = mapDocument;
 
@@ -263,10 +270,10 @@ void TilesetDock::tilesetMoved(int from, int to)
 void TilesetDock::removeTileset(int index)
 {
     Tileset *tileset = tilesetViewAt(index)->tilesetModel()->tileset();
-    bool inUse = false;
+    const bool inUse = mMapDocument->map()->isTilesetUsed(tileset);
 
     // If the tileset is in use, warn the user and confirm removal
-    if (mMapDocument->map()->isTilesetUsed(tileset)) {
+    if (inUse) {
         QMessageBox warning(QMessageBox::Warning,
                             tr("Remove Tileset"),
                             tr("The tileset \"%1\" is still in use by the "
@@ -279,8 +286,6 @@ void TilesetDock::removeTileset(int index)
 
         if (warning.exec() != QMessageBox::Yes)
             return;
-
-        inUse = true;
     }
 
     QUndoCommand *remove = new RemoveTileset(mMapDocument, index, tileset);
@@ -290,11 +295,19 @@ void TilesetDock::removeTileset(int index)
         // Remove references to tiles in this tileset from the current map
         undoStack->beginMacro(remove->text());
         foreach (Layer *layer, mMapDocument->map()->layers()) {
-            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+            if (TileLayer *tileLayer = layer->asTileLayer()) {
                 const QRegion refs = tileLayer->tilesetReferences(tileset);
                 if (!refs.isEmpty()) {
                     undoStack->push(new EraseTiles(mMapDocument,
                                                    tileLayer, refs));
+                }
+            } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+                foreach (MapObject *object, objectGroup->objects()) {
+                    const Tile *tile = object->tile();
+                    if (tile && tile->tileset() == tileset) {
+                        undoStack->push(new RemoveMapObject(mMapDocument,
+                                                            object));
+                    }
                 }
             }
         }

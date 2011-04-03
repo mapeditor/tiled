@@ -128,7 +128,7 @@ QSet<Tileset*> TileLayer::usedTilesets() const
     return tilesets;
 }
 
-bool TileLayer::referencesTileset(Tileset *tileset) const
+bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
     for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
         const Tile *tile = mTiles.at(i);
@@ -238,10 +238,9 @@ void TileLayer::offset(const QPoint &offset,
 
 bool TileLayer::isEmpty() const
 {
-    for (int y = 0; y < mHeight; ++y)
-        for (int x = 0; x < mWidth; ++x)
-            if (tileAt(x, y))
-                return false;
+    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i)
+        if (mTiles.at(i))
+            return false;
 
     return true;
 }
