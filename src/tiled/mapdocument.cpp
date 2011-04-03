@@ -178,7 +178,7 @@ void MapDocument::offsetMap(const QList<int> &layerIndexes,
  */
 void MapDocument::addLayer(LayerType layerType)
 {
-    Layer *layer;
+    Layer *layer = 0;
     QString name;
 
     switch (layerType) {
@@ -191,6 +191,7 @@ void MapDocument::addLayer(LayerType layerType)
         layer = new ObjectGroup(name, 0, 0, mMap->width(), mMap->height());
         break;
     }
+    Q_ASSERT(layer);
 
     const int index = mMap->layerCount();
     mUndoStack->push(new AddLayer(this, index, layer));
