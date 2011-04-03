@@ -122,6 +122,11 @@ void ToolManager::registerTool(AbstractTool *tool)
     }
 }
 
+void ToolManager::addSeparator()
+{
+    mToolBar->addSeparator();
+}
+
 void ToolManager::selectTool(AbstractTool *tool)
 {
     foreach (QAction *action, mActionGroup->actions()) {
