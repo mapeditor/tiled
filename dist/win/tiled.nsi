@@ -29,6 +29,10 @@ RequestExecutionLevel admin
 ; ----------- Icon and Bitmap ---------
 ;!define MUI_ICON install.ico                 ; TODO: find suitable icon
 ;!define MUI_UNICON uninstall.ico             ; TODO: find suitable icon
+!define MUI_HEADERIMAGE
+	!define MUI_HEADERIMAGE_BITMAP headerimage.bmp
+	!define MUI_HEADERIMAGE_UNBITMAP headerimage.bmp
+!define MUI_HEADER_TRANSPARENT_TEXT
 
 ; -------------------------------------
 !define MUI_ABORTWARNING
@@ -180,6 +184,7 @@ File ${MINGW_DIR}\bin\libstdc++-6.dll
 File ${QT_DIR}\bin\QtCore4.dll
 File ${QT_DIR}\bin\QtGui4.dll
 File ${QT_DIR}\bin\QtOpenGL4.dll
+File ${ROOT_DIR}\src\tiled\images\tiled-icon.ico
 
 SetOutPath $INSTDIR\plugins\codecs
 File ${QT_DIR}\plugins\codecs\qcncodecs4.dll
@@ -219,20 +224,20 @@ CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P_NORM}.exe"
 CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 ; File associations
-${RegisterExtension} "$INSTDIR\tiled.exe" ".tmx" "Tiled.tmx"
+${RegisterExtension} "$INSTDIR\${P_NORM}" ".tmx" "Tiled.tmx"
 
 ; Add version number to Registry
 WriteRegStr HKLM "Software\${PRODUCT_REG_KEY}" "Version" "${V}"
 
 ; Add uninstall information to "Add/Remove Programs"
 WriteRegStr HKLM ${ADD_REMOVE} "DisplayName" "Tiled - Tiled Map Editor"
+WriteRegStr HKLM ${ADD_REMOVE} "DisplayIcon" "$INSTDIR\${P_NORM}-icon.ico"
 WriteRegStr HKLM ${ADD_REMOVE} "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 WriteRegStr HKLM ${ADD_REMOVE} "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
 WriteRegStr HKLM ${ADD_REMOVE} "Version" "${V}"
 SectionEnd
 ;------------ Uninstaller -------------
 Section "uninstall"
-
 Delete $INSTDIR\COPYING.txt
 Delete $INSTDIR\AUTHORS.txt
 Delete $INSTDIR\README.txt
@@ -249,6 +254,7 @@ Delete $INSTDIR\libstdc++-6.dll
 Delete $INSTDIR\QtCore4.dll
 Delete $INSTDIR\QtGui4.dll
 Delete $INSTDIR\QtOpenGL4.dll
+Delete $INSTDIR\tiled-icon.ico
 Delete $INSTDIR\uninstall.exe
 
 RMDir /r $INSTDIR\plugins\codecs

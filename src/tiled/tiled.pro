@@ -206,6 +206,9 @@ macx {
     QMAKE_INFO_PLIST = Info.plist
     ICON = images/tiled-icon-mac.icns
 }
+win32 {
+    RC_FILE = tiled.rc
+}
 win32:INCLUDEPATH += .
 contains(CONFIG, static) {
     DEFINES += STATIC_BUILD
