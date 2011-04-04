@@ -64,6 +64,7 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     mTabBar->setTabsClosable(true);
     mTabBar->setMovable(true);
+    mTabBar->setUsesScrollButtons(true);
 
     connect(mTabBar, SIGNAL(currentChanged(int)),
             mViewStack, SLOT(setCurrentIndex(int)));
