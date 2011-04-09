@@ -141,7 +141,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+G</source>
-        <translation>Strg+G</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+9"/>
@@ -181,7 +181,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+0</source>
-        <translation>Strg+0</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -225,7 +225,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+E</source>
-        <translation>Strg+E</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -245,7 +245,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation>Strg+Shift+W</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1234,37 +1234,37 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+45"/>
         <source>Ctrl+Shift+A</source>
-        <translation>Strg+Shift+A</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ctrl+Shift+D</source>
-        <translation>Strg+Shift+D</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>PgUp</source>
-        <translation>Bild oben</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>PgDown</source>
-        <translation>Bild unten</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+Up</source>
-        <translation>Ctrl+Shift+Up</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
-        <translation>Ctrl+Shift+Down</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+H</source>
-        <translation>Strg+Shift+H</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+41"/>
