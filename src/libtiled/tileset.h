@@ -126,6 +126,8 @@ public:
 
     /**
      * Returns the tile for the given tile ID.
+     * The tile ID is local to this tileset, which means the IDs are in range
+     * [0, tileCount() - 1].
      */
     Tile *tileAt(int id) const;
 
