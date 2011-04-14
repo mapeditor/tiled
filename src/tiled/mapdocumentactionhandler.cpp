@@ -117,8 +117,8 @@ void MapDocumentActionHandler::retranslateUi()
     mActionSelectAll->setText(tr("Select &All"));
     mActionSelectNone->setText(tr("Select &None"));
 
-    mActionAddTileLayer->setText(tr("Add &Tile Layer..."));
-    mActionAddObjectGroup->setText(tr("Add &Object Layer..."));
+    mActionAddTileLayer->setText(tr("Add &Tile Layer"));
+    mActionAddObjectGroup->setText(tr("Add &Object Layer"));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
