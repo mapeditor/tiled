@@ -81,7 +81,7 @@ private:
     TileLayer *readLayer();
     void readLayerData(TileLayer *tileLayer);
     void decodeBinaryLayerData(TileLayer *tileLayer,
-                               const QString &text,
+                               const QStringRef &text,
                                const QStringRef &compression);
     void decodeCSVLayerData(TileLayer *tileLayer, const QString &text);
 
@@ -436,7 +436,7 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
         } else if (xml.isCharacters() && !xml.isWhitespace()) {
             if (encoding == QLatin1String("base64")) {
                 decodeBinaryLayerData(tileLayer,
-                                      xml.text().toString(),
+                                      xml.text(),
                                       compression);
             } else if (encoding == QLatin1String("csv")) {
                 decodeCSVLayerData(tileLayer, xml.text().toString());
@@ -450,10 +450,16 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
 }
 
 void MapReaderPrivate::decodeBinaryLayerData(TileLayer *tileLayer,
-                                      const QString &text,
-                                      const QStringRef &compression)
+                                             const QStringRef &text,
+                                             const QStringRef &compression)
 {
-    QByteArray tileData = QByteArray::fromBase64(text.toLatin1());
+#if QT_VERSION <= 0x040700
+    const QString textData = QString::fromRawData(text.unicode(), text.size());
+    const QByteArray latin1Text = textData.toLatin1();
+#else
+    const QByteArray latin1Text = text.toLatin1();
+#endif
+    QByteArray tileData = QByteArray::fromBase64(latin1Text);
     const int size = (tileLayer->width() * tileLayer->height()) * 4;
 
     if (compression == QLatin1String("zlib")
