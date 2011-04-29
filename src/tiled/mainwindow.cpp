@@ -1139,11 +1139,6 @@ void MainWindow::addMapDocument(MapDocument *mapDocument)
 {
     mDocumentManager->addDocument(mapDocument);
 
-    connect(mapDocument, SIGNAL(currentLayerChanged(int)),
-            SLOT(updateActions()));
-    connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
-            SLOT(updateActions()));
-
     MapView *mapView = mDocumentManager->currentMapView();
     connect(mapView->zoomable(), SIGNAL(scaleChanged(qreal)),
             this, SLOT(updateZoomLabel()));
@@ -1172,12 +1167,24 @@ void MainWindow::retranslateUi()
 
 void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 {
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
+
     mMapDocument = mapDocument;
 
     mActionHandler->setMapDocument(mMapDocument);
     mLayerDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
     AutomaticMappingManager::instance()->setMapDocument(mMapDocument);
+
+    if (mMapDocument) {
+        connect(mMapDocument, SIGNAL(fileNameChanged()),
+                SLOT(updateWindowTitle()));
+        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+                SLOT(updateActions()));
+        connect(mMapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+                SLOT(updateActions()));
+    }
 
     updateWindowTitle();
     updateActions();
