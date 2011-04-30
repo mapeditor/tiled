@@ -453,7 +453,7 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer *tileLayer,
                                              const QStringRef &text,
                                              const QStringRef &compression)
 {
-#if QT_VERSION <= 0x040700
+#if QT_VERSION < 0x040800
     const QString textData = QString::fromRawData(text.unicode(), text.size());
     const QByteArray latin1Text = textData.toLatin1();
 #else
