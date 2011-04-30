@@ -172,17 +172,28 @@ Layer *MapDocument::currentLayer() const
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 {
     const QRegion movedSelection = mTileSelection.translated(offset);
+    const QRectF newArea = QRectF(-offset, size);
 
     // Resize the map and each layer
     mUndoStack->beginMacro(tr("Resize Map"));
-    for (int i = 0; i < mMap->layerCount(); ++i)
+    for (int i = 0; i < mMap->layerCount(); ++i) {
+        if (ObjectGroup *objectGroup = mMap->layerAt(i)->asObjectGroup()) {
+            // Remove objects that will fall outside of the map
+            foreach (MapObject *o, objectGroup->objects()) {
+                if (!(newArea.contains(o->position())
+                      || newArea.intersects(o->bounds()))) {
+                    mUndoStack->push(new RemoveMapObject(this, o));
+                }
+            }
+        }
+
         mUndoStack->push(new ResizeLayer(this, i, size, offset));
+    }
     mUndoStack->push(new ResizeMap(this, size));
     mUndoStack->push(new ChangeTileSelection(this, movedSelection));
     mUndoStack->endMacro();
 
     // TODO: Handle layers that don't match the map size correctly
-    // TODO: Objects that fall outside of the map should be deleted
 }
 
 void MapDocument::offsetMap(const QList<int> &layerIndexes,
