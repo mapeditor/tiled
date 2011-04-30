@@ -56,6 +56,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     mActionAddTileLayer = new QAction(this);
     mActionAddObjectGroup = new QAction(this);
+    mActionAddImageLayer = new QAction(this);
 
     mActionDuplicateLayer = new QAction(this);
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
@@ -108,6 +109,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
     connect(mActionAddObjectGroup, SIGNAL(triggered()),
             SLOT(addObjectGroup()));
+    connect(mActionAddImageLayer, SIGNAL(triggered()), SLOT(addImageLayer()));
     connect(mActionDuplicateLayer, SIGNAL(triggered()),
             SLOT(duplicateLayer()));
     connect(mActionMergeLayerDown, SIGNAL(triggered()),
@@ -136,11 +138,10 @@ void MapDocumentActionHandler::retranslateUi()
 {
     mActionSelectAll->setText(tr("Select &All"));
     mActionSelectNone->setText(tr("Select &None"));
-
     mActionCropToSelection->setText(tr("&Crop to Selection"));
-
     mActionAddTileLayer->setText(tr("Add &Tile Layer"));
     mActionAddObjectGroup->setText(tr("Add &Object Layer"));
+    mActionAddImageLayer->setText(tr("Add &Image Layer"));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
@@ -244,6 +245,12 @@ void MapDocumentActionHandler::addObjectGroup()
         mMapDocument->addLayer(Layer::ObjectGroupType);
 }
 
+void MapDocumentActionHandler::addImageLayer()
+{
+     if (mMapDocument)
+        mMapDocument->addLayer(Layer::ImageLayerType);
+}
+
 void MapDocumentActionHandler::duplicateLayer()
 {
     if (mMapDocument)
@@ -330,6 +337,7 @@ void MapDocumentActionHandler::updateActions()
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectGroup->setEnabled(map);
+    mActionAddImageLayer->setEnabled(map);
 
     const int layerCount = map ? map->layerCount() : 0;
     const bool hasPreviousLayer = currentLayerIndex >= 0

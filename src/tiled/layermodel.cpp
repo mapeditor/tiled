@@ -26,6 +26,9 @@
 #include "renamelayer.h"
 #include "tilelayer.h"
 
+#include <cstdio>
+
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -34,7 +37,8 @@ LayerModel::LayerModel(QObject *parent):
     mMapDocument(0),
     mMap(0),
     mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png")),
-    mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
+    mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png")),
+    mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))
 {
 }
 
@@ -56,10 +60,14 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
     case Qt::EditRole:
         return layer->name();
     case Qt::DecorationRole:
-        if (dynamic_cast<const TileLayer*>(layer))
+        if (layer->isTileLayer())
             return mTileLayerIcon;
-        else
+        else if (layer->isObjectGroup())
             return mObjectGroupIcon;
+        else if (layer->isImageLayer())
+            return mImageLayerIcon;
+        else
+            Q_ASSERT();
     case Qt::CheckStateRole:
         return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
     case OpacityRole:

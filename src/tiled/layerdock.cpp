@@ -70,6 +70,7 @@ LayerDock::LayerDock(QWidget *parent):
     QMenu *newLayerMenu = new QMenu(this);
     newLayerMenu->addAction(handler->actionAddTileLayer());
     newLayerMenu->addAction(handler->actionAddObjectGroup());
+    newLayerMenu->addAction(handler->actionAddImageLayer());
 
     const QIcon newIcon(QLatin1String(":/images/16x16/document-new.png"));
     QToolButton *newLayerButton = new QToolButton;
@@ -268,6 +269,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu;
     menu.addAction(handler->actionAddTileLayer());
     menu.addAction(handler->actionAddObjectGroup());
+    menu.addAction(handler->actionAddImageLayer());
 
     if (layerIndex >= 0) {
         menu.addAction(handler->actionDuplicateLayer());

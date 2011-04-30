@@ -91,6 +91,15 @@ int Map::objectGroupCount() const
     return count;
 }
 
+int Map::imageLayerCount() const
+{
+	int count = 0;
+	foreach (Layer *layer, mLayers)
+		if (layer->asImageLayer())
+		   count++;
+	return count;
+}
+
 void Map::addLayer(Layer *layer)
 {
     adoptLayer(layer);

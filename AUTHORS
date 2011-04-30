@@ -13,6 +13,7 @@ Michael Woerister (improvements to the object properties dialog)
 Roderic Morris    (added many icons and initial object group support)
 Stefan Beller     (added the automap feature, quick stamps, lines/circles
                    support for multiple maps, random stamps)
+Alexander Kuhrt <alex@qrt.de>
 
 Translators:
 
@@ -43,7 +44,7 @@ See http://p.yusukekamiyamane.com/
 The dice icon is based on an SVG by Steaphan Greene that I found on Wikipedia:
 http://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
 
-The rename icon for tilesets is a strong modified version of the 
+The rename icon for tilesets is a strong modified version of the
 'new Tileset' icon by Stefan Beller (GPL, CC-BY-SA3)
 
 Tilesets:

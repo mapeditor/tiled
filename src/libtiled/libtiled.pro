@@ -26,6 +26,7 @@ DEFINES += TILED_LIBRARY
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 OBJECTS_DIR = .obj
 SOURCES += compression.cpp \
+    imagelayer.cpp \
     isometricrenderer.cpp \
     layer.cpp \
     map.cpp \
@@ -41,6 +42,7 @@ SOURCES += compression.cpp \
     tileset.cpp \
     gidmapper.cpp
 HEADERS += compression.h \
+    imagelayer.h \
     isometricrenderer.h \
     layer.h \
     map.h \

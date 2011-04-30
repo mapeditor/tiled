@@ -39,6 +39,7 @@ class Layer;
 class Map;
 class MapObject;
 class TileLayer;
+class ImageLayer;
 
 /**
  * This interface is used for rendering tile layers and retrieving associated
@@ -110,6 +111,13 @@ public:
     virtual void drawMapObject(QPainter *painter,
                                const MapObject *object,
                                const QColor &color) const = 0;
+
+    /**
+     * Draws the given \a layer using the given
+     */
+    virtual void drawImageLayer(QPainter *painter,
+                                const ImageLayer *layer,
+                                const QRectF &exposed = QRectF()) const = 0;
 
     /**
      * Returns the tile coordinates matching the given pixel position.

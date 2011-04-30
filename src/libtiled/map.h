@@ -161,6 +161,12 @@ public:
     int objectGroupCount() const;
 
     /**
+     * Convenience function that returns the number of layers of this map that
+     * are image layers.
+     */
+    int imageLayerCount() const;
+
+    /**
      * Returns the layer at the specified index.
      */
     Layer *layerAt(int index) const

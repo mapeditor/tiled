@@ -52,6 +52,7 @@ SOURCES += aboutdialog.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     changemapobject.cpp \
+    changeimagelayerproperties.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
@@ -70,6 +71,8 @@ SOURCES += aboutdialog.cpp \
     erasetiles.cpp \
     filesystemwatcher.cpp \
     filltiles.cpp \
+    imagelayeritem.cpp \
+    imagelayerpropertiesdialog.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -141,6 +144,7 @@ HEADERS += aboutdialog.h \
     brushitem.h \
     bucketfilltool.h \
     changemapobject.h \
+    changeimagelayerproperties.h\
     changeobjectgroupproperties.h \
     changepolygon.h \
     changeproperties.h \
@@ -159,6 +163,8 @@ HEADERS += aboutdialog.h \
     erasetiles.h \
     filesystemwatcher.h \
     filltiles.h \
+    imagelayeritem.h \
+    imagelayerpropertiesdialog.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
@@ -234,7 +240,8 @@ FORMS += aboutdialog.ui \
     preferencesdialog.ui \
     propertiesdialog.ui \
     resizedialog.ui \
-    saveasimagedialog.ui
+    saveasimagedialog.ui\
+    newimagelayerdialog.ui
 
 RESOURCES += tiled.qrc
 macx {
@@ -252,3 +259,4 @@ contains(CONFIG, static) {
         qjpeg \
         qtiff
 }
+

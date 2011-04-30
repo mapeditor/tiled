@@ -134,6 +134,7 @@ public:
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
 
+
     void addLayer(Layer::Type layerType);
     void duplicateLayer();
     void mergeLayerDown();

@@ -55,6 +55,7 @@ public:
     QAction *actionCropToSelection() const { return mActionCropToSelection; }
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectGroup() const { return mActionAddObjectGroup; }
+    QAction *actionAddImageLayer() const { return mActionAddImageLayer; }
     QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
     QAction *actionMergeLayerDown() const { return mActionMergeLayerDown; }
     QAction *actionRemoveLayer() const { return mActionRemoveLayer; }
@@ -81,6 +82,7 @@ public slots:
 
     void addTileLayer();
     void addObjectGroup();
+    void addImageLayer();
     void duplicateLayer();
     void mergeLayerDown();
     void selectPreviousLayer();
@@ -102,6 +104,7 @@ private:
     QAction *mActionCropToSelection;
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectGroup;
+    QAction *mActionAddImageLayer;
     QAction *mActionDuplicateLayer;
     QAction *mActionMergeLayerDown;
     QAction *mActionRemoveLayer;

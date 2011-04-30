@@ -41,6 +41,7 @@
 namespace Tiled {
 
 class Map;
+class ImageLayer;
 class ObjectGroup;
 class TileLayer;
 class Tileset;
@@ -54,6 +55,7 @@ public:
     enum Type {
         TileLayerType   = 0x01,
         ObjectGroupType = 0x02,
+        ImageLayerType  = 0x04,
         AnyLayerType    = 0xFF
     };
 
@@ -210,10 +212,12 @@ public:
     // given subclass without relying on a dynamic_cast.
     bool isTileLayer() const { return mType == TileLayerType; }
     bool isObjectGroup() const { return mType == ObjectGroupType; }
+    bool isImageLayer() const { return mType == ImageLayerType; }
 
     // These actually return this layer cast to one of its subclasses.
     TileLayer *asTileLayer();
     ObjectGroup *asObjectGroup();
+    ImageLayer *asImageLayer();
 
 protected:
     Layer *initializeClone(Layer *clone) const;

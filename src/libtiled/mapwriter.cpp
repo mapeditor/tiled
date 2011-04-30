@@ -34,6 +34,7 @@
 #include "gidmapper.h"
 #include "map.h"
 #include "mapobject.h"
+#include "imagelayer.h"
 #include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -76,6 +77,7 @@ private:
     void writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer);
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup *objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject *mapObject);
+    void writeImageLayer(QXmlStreamWriter &w, const ImageLayer *imageLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 
@@ -183,6 +185,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
             writeTileLayer(w, static_cast<const TileLayer*>(layer));
         else if (dynamic_cast<const ObjectGroup*>(layer) != 0)
             writeObjectGroup(w, static_cast<const ObjectGroup*>(layer));
+        else if (dynamic_cast<const ImageLayer*>(layer) != 0)
+            writeImageLayer(w, static_cast<const ImageLayer*>(layer));
     }
 
     w.writeEndElement();
@@ -469,6 +473,33 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("points"), points);
         w.writeEndElement();
     }
+
+    w.writeEndElement();
+}
+
+void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
+                                        const ImageLayer *imageLayer)
+{
+    w.writeStartElement(QLatin1String("imagelayer"));
+    writeLayerAttributes(w, imageLayer);
+
+    // Write the image element
+    const QString &imageSource = imageLayer->imageSource();
+    if (!imageSource.isEmpty()) {
+        w.writeStartElement(QLatin1String("image"));
+        QString source = imageSource;
+        if (!mUseAbsolutePaths)
+            source = mMapDir.relativeFilePath(source);
+        w.writeAttribute(QLatin1String("source"), source);
+
+        const QColor transColor = imageLayer->transparentColor();
+        if (transColor.isValid())
+            w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
+
+        w.writeEndElement();
+    }
+
+    writeProperties(w, imageLayer->properties());
 
     w.writeEndElement();
 }

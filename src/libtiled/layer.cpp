@@ -29,8 +29,10 @@
 
 #include "layer.h"
 
+#include "imagelayer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
+
 
 using namespace Tiled;
 
@@ -82,4 +84,9 @@ TileLayer *Layer::asTileLayer()
 ObjectGroup *Layer::asObjectGroup()
 {
     return isObjectGroup() ? static_cast<ObjectGroup*>(this) : 0;
+}
+
+ImageLayer *Layer::asImageLayer()
+{
+    return isImageLayer() ? static_cast<ImageLayer*>(this) : 0;
 }

@@ -33,6 +33,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "imagelayer.h"
 
 #include <cmath>
 
@@ -172,6 +173,14 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
         for (int y = startY; y < endY; y += tileHeight)
             painter->drawLine(startX, y, endX - 1, y);
     }
+}
+
+void OrthogonalRenderer::drawImageLayer(QPainter *painter, const ImageLayer *imageLayer, const QRectF &/*exposed*/) const
+{
+    const QPointF layerPos(imageLayer->x() * map()->tileWidth(), imageLayer->y() * map()->tileHeight());
+    const QPixmap &img = imageLayer->image();
+
+    painter->drawPixmap(layerPos, img);
 }
 
 void OrthogonalRenderer::drawTileLayer(QPainter *painter,

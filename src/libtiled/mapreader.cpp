@@ -32,6 +32,7 @@
 
 #include "compression.h"
 #include "gidmapper.h"
+#include "imagelayer.h"
 #include "objectgroup.h"
 #include "map.h"
 #include "mapobject.h"
@@ -94,6 +95,9 @@ private:
      *         empty cell if not found
      */
     Cell cellForGid(uint gid);
+
+    ImageLayer *readImageLayer();
+    void readImageLayerImage(ImageLayer *imageLayer);
 
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
@@ -218,6 +222,8 @@ Map *MapReaderPrivate::readMap()
             mMap->addLayer(readLayer());
         else if (xml.name() == "objectgroup")
             mMap->addLayer(readObjectGroup());
+        else if (xml.name() == "imagelayer")
+            mMap->addLayer(readImageLayer());
         else
             readUnknownElement();
     }
@@ -565,6 +571,55 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     }
 
     return objectGroup;
+}
+
+ImageLayer *MapReaderPrivate::readImageLayer()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "imagelayer");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const QString name = atts.value(QLatin1String("name")).toString();
+    const int x = atts.value(QLatin1String("x")).toString().toInt();
+    const int y = atts.value(QLatin1String("y")).toString().toInt();
+    const int width = atts.value(QLatin1String("width")).toString().toInt();
+    const int height = atts.value(QLatin1String("height")).toString().toInt();
+
+    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
+    readLayerAttributes(imageLayer, atts);
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == "image")
+            readImageLayerImage(imageLayer);
+        else if (xml.name() == "properties")
+            imageLayer->mergeProperties(readProperties());
+        else
+            readUnknownElement();
+    }
+
+    return imageLayer;
+}
+
+void MapReaderPrivate::readImageLayerImage(ImageLayer *imageLayer)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "image");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    QString source = atts.value(QLatin1String("source")).toString();
+    QString trans = atts.value(QLatin1String("trans")).toString();
+
+    if (!trans.isEmpty()) {
+        if (!trans.startsWith(QLatin1Char('#')))
+            trans.prepend(QLatin1Char('#'));
+        imageLayer->setTransparentColor(QColor(trans));
+    }
+
+    source = p->resolveReference(source, mPath);
+
+    const QImage imageLayerImage = p->readExternalImage(source);
+    if (!imageLayer->loadFromImage(imageLayerImage, source))
+        xml.raiseError(tr("Error loading image layer image:\n'%1'").arg(source));
+
+    xml.skipCurrentElement();
 }
 
 static QPointF pixelToTileCoordinates(Map *map, int x, int y)
