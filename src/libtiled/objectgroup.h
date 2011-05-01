@@ -89,6 +89,11 @@ public:
     int removeObject(MapObject *object);
 
     /**
+     * Returns the bounding rect around all objects in this object group.
+     */
+    QRectF objectsBoundingRect() const;
+
+    /**
      * Computes and returns the set of tilesets used by this object group.
      */
     QSet<Tileset*> usedTilesets() const;

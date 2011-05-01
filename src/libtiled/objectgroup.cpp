@@ -70,6 +70,14 @@ int ObjectGroup::removeObject(MapObject *object)
     return index;
 }
 
+QRectF ObjectGroup::objectsBoundingRect() const
+{
+    QRectF boundingRect;
+    foreach (const MapObject *object, mObjects)
+        boundingRect = boundingRect.united(object->bounds());
+    return boundingRect;
+}
+
 QSet<Tileset*> ObjectGroup::usedTilesets() const
 {
     QSet<Tileset*> tilesets;

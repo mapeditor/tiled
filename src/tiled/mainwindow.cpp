@@ -46,6 +46,7 @@
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapobject.h"
+#include "maprenderer.h"
 #include "mapscene.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
@@ -792,6 +793,25 @@ void MainWindow::paste()
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         Layer *currentLayer = mMapDocument->map()->layerAt(currentLayerIndex);
         if (ObjectGroup *currentObjectGroup = currentLayer->asObjectGroup()) {
+            // Determine where to insert the objects
+            const QPointF center = objectGroup->objectsBoundingRect().center();
+            const MapView *view = mDocumentManager->currentMapView();
+
+            // Take the mouse position if the mouse is on the view, otherwise
+            // take the center of the view.
+            QPoint viewPos;
+            if (view->underMouse())
+                viewPos = view->mapFromGlobal(QCursor::pos());
+            else
+                viewPos = QPoint(view->width() / 2, view->height() / 2);
+
+            const MapRenderer *renderer = mMapDocument->renderer();
+            const QPointF scenePos = view->mapToScene(viewPos);
+            QPointF insertPos = renderer->pixelToTileCoords(scenePos);
+            if (Preferences::instance()->snapToGrid())
+                insertPos = insertPos.toPoint();
+            const QPointF offset = insertPos - center;
+
             QUndoStack *undoStack = mMapDocument->undoStack();
             QList<MapObject*> pastedObjects;
 #if QT_VERSION >= 0x040700
@@ -800,6 +820,7 @@ void MainWindow::paste()
             undoStack->beginMacro(tr("Paste Objects"));
             foreach (const MapObject *mapObject, objectGroup->objects()) {
                 MapObject *objectClone = mapObject->clone();
+                objectClone->setPosition(objectClone->position() + offset);
                 pastedObjects.append(objectClone);
                 undoStack->push(new AddMapObject(mMapDocument,
                                                  currentObjectGroup,
