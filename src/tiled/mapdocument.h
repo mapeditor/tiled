@@ -286,9 +286,12 @@ signals:
 
 private slots:
     void onLayerAdded(int index);
+    void onLayerAboutToBeRemoved(int index);
     void onLayerRemoved(int index);
 
 private:
+    void deselectObjects(const QList<MapObject*> &objects);
+
     QString mFileName;
     Map *mMap;
     LayerModel *mLayerModel;

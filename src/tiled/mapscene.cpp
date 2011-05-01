@@ -363,8 +363,12 @@ void MapScene::updateSelectedObjectItems()
     const QList<MapObject *> &objects = mMapDocument->selectedObjects();
 
     QSet<MapObjectItem*> items;
-    foreach (MapObject *object, objects)
-        items.insert(mObjectItems.value(object));
+    foreach (MapObject *object, objects) {
+        MapObjectItem *item = mObjectItems.value(object);
+        Q_ASSERT(item);
+
+        items.insert(item);
+    }
 
     // Update the editable state of the items
     foreach (MapObjectItem *item, mSelectedObjectItems - items)

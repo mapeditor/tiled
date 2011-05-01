@@ -66,6 +66,8 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
 
     // Forward signals emitted from the layer model
     connect(mLayerModel, SIGNAL(layerAdded(int)), SLOT(onLayerAdded(int)));
+    connect(mLayerModel, SIGNAL(layerAboutToBeRemoved(int)),
+            SLOT(onLayerAboutToBeRemoved(int)));
     connect(mLayerModel, SIGNAL(layerRemoved(int)), SLOT(onLayerRemoved(int)));
     connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
 
@@ -429,13 +431,7 @@ void MapDocument::emitObjectsAdded(const QList<MapObject*> &objects)
  */
 void MapDocument::emitObjectsRemoved(const QList<MapObject*> &objects)
 {
-    int removedCount = 0;
-    foreach (MapObject *object, objects)
-        removedCount += mSelectedObjects.removeAll(object);
-
-    if (removedCount > 0)
-        emit selectedObjectsChanged();
-
+    deselectObjects(objects);
     emit objectsRemoved(objects);
 }
 
@@ -457,6 +453,13 @@ void MapDocument::onLayerAdded(int index)
         setCurrentLayerIndex(0);
 }
 
+void MapDocument::onLayerAboutToBeRemoved(int index)
+{
+    // Deselect any objects on this layer when necessary
+    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(mMap->layerAt(index)))
+        deselectObjects(og->objects());
+}
+
 void MapDocument::onLayerRemoved(int index)
 {
     // Bring the current layer index to safety
@@ -464,4 +467,14 @@ void MapDocument::onLayerRemoved(int index)
         setCurrentLayerIndex(mCurrentLayerIndex - 1);
 
     emit layerRemoved(index);
+}
+
+void MapDocument::deselectObjects(const QList<MapObject *> &objects)
+{
+    int removedCount = 0;
+    foreach (MapObject *object, objects)
+        removedCount += mSelectedObjects.removeAll(object);
+
+    if (removedCount > 0)
+        emit selectedObjectsChanged();
 }
