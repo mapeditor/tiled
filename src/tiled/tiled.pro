@@ -95,7 +95,7 @@ SOURCES += aboutdialog.cpp \
     selectiontool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
-    changeselection.cpp \
+    changetileselection.cpp \
     clipboardmanager.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
@@ -174,7 +174,7 @@ HEADERS += aboutdialog.h \
     undodock.h \
     selectiontool.h \
     abstracttiletool.h \
-    changeselection.h \
+    changetileselection.h \
     clipboardmanager.h \
     undocommands.h \
     offsetlayer.h \

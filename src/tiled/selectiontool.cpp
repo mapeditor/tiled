@@ -21,7 +21,7 @@
 #include "selectiontool.h"
 
 #include "brushitem.h"
-#include "changeselection.h"
+#include "changetileselection.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -101,7 +101,7 @@ void SelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         }
 
         if (selection != document->tileSelection()) {
-            QUndoCommand *cmd = new ChangeSelection(document, selection);
+            QUndoCommand *cmd = new ChangeTileSelection(document, selection);
             document->undoStack()->push(cmd);
         }
 

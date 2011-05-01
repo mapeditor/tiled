@@ -20,7 +20,7 @@
 
 #include "mapdocumentactionhandler.h"
 
-#include "changeselection.h"
+#include "changetileselection.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "utils.h"
@@ -157,7 +157,7 @@ void MapDocumentActionHandler::selectAll()
     if (mMapDocument->tileSelection() == all)
         return;
 
-    QUndoCommand *command = new ChangeSelection(mMapDocument, all);
+    QUndoCommand *command = new ChangeTileSelection(mMapDocument, all);
     mMapDocument->undoStack()->push(command);
 }
 
@@ -169,7 +169,7 @@ void MapDocumentActionHandler::selectNone()
     if (mMapDocument->tileSelection().isEmpty())
         return;
 
-    QUndoCommand *command = new ChangeSelection(mMapDocument, QRegion());
+    QUndoCommand *command = new ChangeTileSelection(mMapDocument, QRegion());
     mMapDocument->undoStack()->push(command);
 }
 
