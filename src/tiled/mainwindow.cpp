@@ -505,7 +505,7 @@ void MainWindow::openLastFiles()
 
             int layer = selectedLayer.at(i).toInt();
             if (layer > 0 && layer < mMapDocument->map()->layerCount())
-                mMapDocument->setCurrentLayer(layer);
+                mMapDocument->setCurrentLayerIndex(layer);
         }
     }
     QString lastActiveDocument =
@@ -723,7 +723,7 @@ void MainWindow::cut()
     if (!mMapDocument)
         return;
 
-    const int currentLayer = mMapDocument->currentLayer();
+    const int currentLayer = mMapDocument->currentLayerIndex();
     if (currentLayer == -1)
         return;
 
@@ -763,7 +763,7 @@ void MainWindow::paste()
     if (!mMapDocument)
         return;
 
-    const int currentLayerIndex = mMapDocument->currentLayer();
+    const int currentLayerIndex = mMapDocument->currentLayerIndex();
     if (currentLayerIndex == -1)
         return;
 
@@ -1043,7 +1043,7 @@ void MainWindow::updateActions()
 
     if (mMapDocument) {
         map = mMapDocument->map();
-        currentLayer = mMapDocument->currentLayer();
+        currentLayer = mMapDocument->currentLayerIndex();
         selection = mMapDocument->tileSelection();
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
 
@@ -1098,7 +1098,7 @@ void MainWindow::editLayerProperties()
     if (!mMapDocument)
         return;
 
-    const int layerIndex = mMapDocument->currentLayer();
+    const int layerIndex = mMapDocument->currentLayerIndex();
     if (layerIndex == -1)
         return;
 
@@ -1144,14 +1144,14 @@ void MainWindow::writeSettings()
     for (int i = 0; i < mDocumentManager->documentCount(); i++) {
         mDocumentManager->switchToDocument(i);
         MapView *mapView = mDocumentManager->currentMapView();
+        const int currentLayerIndex = mMapDocument->currentLayerIndex();
 
         mapScales.append(QString::number(mapView->zoomable()->scale()));
         scrollX.append(QString::number(
                        mapView->horizontalScrollBar()->sliderPosition()));
         scrollY.append(QString::number(
                        mapView->verticalScrollBar()->sliderPosition()));
-        selectedLayer.append(QString::number(mMapDocument->currentLayer()));
-
+        selectedLayer.append(QString::number(currentLayerIndex));
     }
     mSettings.setValue(QLatin1String("mapScale"), mapScales);
     mSettings.setValue(QLatin1String("scrollX"), scrollX);
@@ -1191,7 +1191,7 @@ void MainWindow::addMapDocument(MapDocument *mapDocument)
 {
     mDocumentManager->addDocument(mapDocument);
 
-    connect(mapDocument, SIGNAL(currentLayerChanged(int)),
+    connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
             SLOT(updateActions()));
     connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
             SLOT(updateActions()));

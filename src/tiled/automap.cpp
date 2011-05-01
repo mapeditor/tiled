@@ -873,14 +873,14 @@ void AutoMapperWrapper::redo()
 
 Layer *AutoMapperWrapper::swapLayer(int layerIndex, Layer *layer)
 {
-    const int currentIndex = mMapDocument->currentLayer();
+    const int currentIndex = mMapDocument->currentLayerIndex();
 
     LayerModel *layerModel = mMapDocument->layerModel();
     Layer *replaced = layerModel->takeLayerAt(layerIndex);
     layerModel->insertLayer(layerIndex, layer);
 
     if (layerIndex == currentIndex)
-        mMapDocument->setCurrentLayer(layerIndex);
+        mMapDocument->setCurrentLayerIndex(layerIndex);
 
     return replaced;
 }
@@ -956,7 +956,7 @@ void AutomaticMappingManager::automap(QRegion where, Layer *l)
 
     Map *map = mMapDocument->map();
 
-    QString layer = map->layerAt(mMapDocument->currentLayer())->name();
+    QString layer = map->layerAt(mMapDocument->currentLayerIndex())->name();
 
     // use a pointer to the region, so each automapper can manipulate it and the
     // following automappers do see the impact
@@ -970,7 +970,7 @@ void AutomaticMappingManager::automap(QRegion where, Layer *l)
 
     mMapDocument->emitRegionChanged(*passedRegion);
     delete passedRegion;
-    mMapDocument->setCurrentLayer(map->indexOfLayer(layer));
+    mMapDocument->setCurrentLayerIndex(map->indexOfLayer(layer));
 }
 
 bool AutomaticMappingManager::loadFile(const QString &filePath)

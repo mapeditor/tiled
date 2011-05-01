@@ -218,7 +218,7 @@ void BucketFillTool::makeConnections()
             this, SLOT(clearOverlay()));
 
     // Overlay needs to be cleared if we switch to another layer
-    connect(mapDocument(), SIGNAL(currentLayerChanged(int)),
+    connect(mapDocument(), SIGNAL(currentLayerIndexChanged(int)),
             this, SLOT(clearOverlay()));
 
     // Overlay needs be cleared if the selection changes, since
@@ -235,7 +235,7 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     disconnect(mapDocument, SIGNAL(regionChanged(QRegion)),
                this, SLOT(clearOverlay()));
 
-    disconnect(mapDocument, SIGNAL(currentLayerChanged(int)),
+    disconnect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                this, SLOT(clearOverlay()));
 
     disconnect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),

@@ -138,7 +138,7 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     updateActions();
 
     if (mMapDocument) {
-        connect(mapDocument, SIGNAL(currentLayerChanged(int)),
+        connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));
         connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
                 SLOT(updateActions()));
@@ -194,54 +194,54 @@ void MapDocumentActionHandler::duplicateLayer()
 void MapDocumentActionHandler::selectPreviousLayer()
 {
     if (mMapDocument) {
-        const int currentLayer = mMapDocument->currentLayer();
+        const int currentLayer = mMapDocument->currentLayerIndex();
         if (currentLayer < mMapDocument->map()->layerCount() - 1)
-            mMapDocument->setCurrentLayer(currentLayer + 1);
+            mMapDocument->setCurrentLayerIndex(currentLayer + 1);
     }
 }
 
 void MapDocumentActionHandler::selectNextLayer()
 {
     if (mMapDocument) {
-        const int currentLayer = mMapDocument->currentLayer();
+        const int currentLayer = mMapDocument->currentLayerIndex();
         if (currentLayer > 0)
-            mMapDocument->setCurrentLayer(currentLayer - 1);
+            mMapDocument->setCurrentLayerIndex(currentLayer - 1);
     }
 }
 
 void MapDocumentActionHandler::moveLayerUp()
 {
     if (mMapDocument)
-        mMapDocument->moveLayerUp(mMapDocument->currentLayer());
+        mMapDocument->moveLayerUp(mMapDocument->currentLayerIndex());
 }
 
 void MapDocumentActionHandler::moveLayerDown()
 {
     if (mMapDocument)
-        mMapDocument->moveLayerDown(mMapDocument->currentLayer());
+        mMapDocument->moveLayerDown(mMapDocument->currentLayerIndex());
 }
 
 void MapDocumentActionHandler::removeLayer()
 {
     if (mMapDocument)
-        mMapDocument->removeLayer(mMapDocument->currentLayer());
+        mMapDocument->removeLayer(mMapDocument->currentLayerIndex());
 }
 
 void MapDocumentActionHandler::toggleOtherLayers()
 {
     if (mMapDocument)
-        mMapDocument->toggleOtherLayers(mMapDocument->currentLayer());
+        mMapDocument->toggleOtherLayers(mMapDocument->currentLayerIndex());
 }
 
 void MapDocumentActionHandler::updateActions()
 {
     Map *map = 0;
-    int currentLayer = -1;
+    int currentLayerIndex = -1;
     QRegion selection;
 
     if (mMapDocument) {
         map = mMapDocument->map();
-        currentLayer = mMapDocument->currentLayer();
+        currentLayerIndex = mMapDocument->currentLayerIndex();
         selection = mMapDocument->tileSelection();
     }
 
@@ -252,16 +252,16 @@ void MapDocumentActionHandler::updateActions()
     mActionAddObjectGroup->setEnabled(map);
 
     const int layerCount = map ? map->layerCount() : 0;
-    const bool hasPreviousLayer = currentLayer >= 0
-            && currentLayer < layerCount - 1;
-    const bool hasNextLayer = currentLayer > 0;
+    const bool hasPreviousLayer = currentLayerIndex >= 0
+            && currentLayerIndex < layerCount - 1;
+    const bool hasNextLayer = currentLayerIndex > 0;
 
-    mActionDuplicateLayer->setEnabled(currentLayer >= 0);
+    mActionDuplicateLayer->setEnabled(currentLayerIndex >= 0);
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
     mActionMoveLayerUp->setEnabled(hasPreviousLayer);
     mActionMoveLayerDown->setEnabled(hasNextLayer);
     mActionToggleOtherLayers->setEnabled(layerCount > 1);
-    mActionRemoveLayer->setEnabled(currentLayer >= 0);
-    mActionLayerProperties->setEnabled(currentLayer >= 0);
+    mActionRemoveLayer->setEnabled(currentLayerIndex >= 0);
+    mActionLayerProperties->setEnabled(currentLayerIndex >= 0);
 }

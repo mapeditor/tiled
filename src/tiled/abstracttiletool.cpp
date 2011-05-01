@@ -142,7 +142,7 @@ TileLayer *AbstractTileTool::currentTileLayer() const
     if (!mapDocument())
         return 0;
 
-    const int currentLayerIndex = mapDocument()->currentLayer();
+    const int currentLayerIndex = mapDocument()->currentLayerIndex();
     if (currentLayerIndex < 0)
         return 0;
     Layer *currentLayer = mapDocument()->map()->layerAt(currentLayerIndex);

@@ -103,13 +103,13 @@ public:
     /**
      * Sets the current layer to the given index.
      */
-    void setCurrentLayer(int index);
+    void setCurrentLayerIndex(int index);
 
     /**
      * Returns the index of the currently selected layer. Returns -1 if no
      * layer is currently selected.
      */
-    int currentLayer() const;
+    int currentLayerIndex() const;
 
     /**
      * Resize this map to the given \a size, while at the same time shifting
@@ -253,9 +253,9 @@ signals:
     void editLayerNameRequested();
 
     /**
-     * Emitted when the current layer changes.
+     * Emitted when the current layer index changes.
      */
-    void currentLayerChanged(int index);
+    void currentLayerIndexChanged(int index);
 
     /**
      * Emitted when a certain region of the map changes. The region is given in
@@ -289,7 +289,7 @@ private:
     QRegion mTileSelection;
     QList<MapObject*> mSelectedObjects;
     MapRenderer *mRenderer;
-    int mCurrentLayer;
+    int mCurrentLayerIndex;
     QUndoStack *mUndoStack;
 };
 

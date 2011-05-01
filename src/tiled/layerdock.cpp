@@ -118,7 +118,7 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
+        connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(updateOpacitySlider()));
     }
 
@@ -141,13 +141,13 @@ void LayerDock::changeEvent(QEvent *e)
 void LayerDock::updateOpacitySlider()
 {
     const bool enabled = mMapDocument &&
-                         mMapDocument->currentLayer() != -1;
+                         mMapDocument->currentLayerIndex() != -1;
 
     mOpacitySlider->setEnabled(enabled);
     mOpacityLabel->setEnabled(enabled);
 
     if (enabled) {
-        int layerIndex = mMapDocument->currentLayer();
+        int layerIndex = mMapDocument->currentLayerIndex();
         qreal opacity = mMapDocument->map()->layerAt(layerIndex)->opacity();
         mOpacitySlider->setValue((int) (opacity * 100));
     } else {
@@ -160,7 +160,7 @@ void LayerDock::setLayerOpacity(int opacity)
     if (!mMapDocument)
         return;
 
-    const int layerIndex = mMapDocument->currentLayer();
+    const int layerIndex = mMapDocument->currentLayerIndex();
     if (layerIndex == -1)
         return;
 
@@ -211,8 +211,8 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         setModel(mMapDocument->layerModel());
 
-        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
-                this, SLOT(currentLayerChanged(int)));
+        connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                this, SLOT(currentLayerIndexChanged(int)));
         connect(mMapDocument, SIGNAL(editLayerNameRequested()),
                 this, SLOT(editLayerName()));
 
@@ -220,7 +220,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
         connect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this, SLOT(currentRowChanged(QModelIndex)));
 
-        currentLayerChanged(mMapDocument->currentLayer());
+        currentLayerIndexChanged(mMapDocument->currentLayerIndex());
     } else {
         setModel(0);
     }
@@ -229,10 +229,10 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 void LayerView::currentRowChanged(const QModelIndex &index)
 {
     const int layer = mMapDocument->layerModel()->toLayerIndex(index);
-    mMapDocument->setCurrentLayer(layer);
+    mMapDocument->setCurrentLayerIndex(layer);
 }
 
-void LayerView::currentLayerChanged(int index)
+void LayerView::currentLayerIndexChanged(int index)
 {
     if (index > -1) {
         const LayerModel *layerModel = mMapDocument->layerModel();
@@ -249,7 +249,8 @@ void LayerView::editLayerName()
         return;
 
     const LayerModel *layerModel = mMapDocument->layerModel();
-    const int row = layerModel->layerIndexToRow(mMapDocument->currentLayer());
+    const int currentLayerIndex = mMapDocument->currentLayerIndex();
+    const int row = layerModel->layerIndexToRow(currentLayerIndex);
     edit(layerModel->index(row));
 }
 

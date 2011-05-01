@@ -243,7 +243,7 @@ void ObjectSelectionTool::updateEnabledState()
 {
     bool enabled = false;
     if (MapDocument *doc = mapDocument()) {
-        const int currentLayerIndex = mapDocument()->currentLayer();
+        const int currentLayerIndex = mapDocument()->currentLayerIndex();
         if (currentLayerIndex >= 0) {
             Layer *currentLayer = doc->map()->layerAt(currentLayerIndex);
             enabled = (dynamic_cast<ObjectGroup*>(currentLayer) != 0);

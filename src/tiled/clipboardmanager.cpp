@@ -72,7 +72,7 @@ void ClipboardManager::setMap(const Map *map)
 
 void ClipboardManager::copySelection(const MapDocument *mapDocument)
 {
-    int currentLayer = mapDocument->currentLayer();
+    int currentLayer = mapDocument->currentLayerIndex();
     if (currentLayer == -1)
         return;
 

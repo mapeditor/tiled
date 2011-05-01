@@ -61,7 +61,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
         break;
     }
 
-    mCurrentLayer = (map->layerCount() == 0) ? -1 : 0;
+    mCurrentLayerIndex = (map->layerCount() == 0) ? -1 : 0;
     mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
@@ -137,10 +137,10 @@ bool MapDocument::isModified() const
     return !mUndoStack->isClean();
 }
 
-void MapDocument::setCurrentLayer(int index)
+void MapDocument::setCurrentLayerIndex(int index)
 {
     Q_ASSERT(index >= -1 && index < mMap->layerCount());
-    mCurrentLayer = index;
+    mCurrentLayerIndex = index;
 
     /* This function always sends the following signal, even if the index
      * didn't actually change. This is because the selected index in the layer
@@ -152,12 +152,12 @@ void MapDocument::setCurrentLayer(int index)
      * of other items. The selected item doesn't change in that case, but our
      * layer index does.
      */
-    emit currentLayerChanged(mCurrentLayer);
+    emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
-int MapDocument::currentLayer() const
+int MapDocument::currentLayerIndex() const
 {
-    return mCurrentLayer;
+    return mCurrentLayerIndex;
 }
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
@@ -217,7 +217,7 @@ void MapDocument::addLayer(LayerType layerType)
 
     const int index = mMap->layerCount();
     mUndoStack->push(new AddLayer(this, index, layer));
-    setCurrentLayer(index);
+    setCurrentLayerIndex(index);
 
     emit editLayerNameRequested();
 }
@@ -227,17 +227,17 @@ void MapDocument::addLayer(LayerType layerType)
  */
 void MapDocument::duplicateLayer()
 {
-    if (mCurrentLayer == -1)
+    if (mCurrentLayerIndex == -1)
         return;
 
-    Layer *duplicate = mMap->layerAt(mCurrentLayer)->clone();
+    Layer *duplicate = mMap->layerAt(mCurrentLayerIndex)->clone();
     duplicate->setName(tr("Copy of %1").arg(duplicate->name()));
 
-    const int index = mCurrentLayer + 1;
+    const int index = mCurrentLayerIndex + 1;
     QUndoCommand *cmd = new AddLayer(this, index, duplicate);
     cmd->setText(tr("Duplicate Layer"));
     mUndoStack->push(cmd);
-    setCurrentLayer(index);
+    setCurrentLayerIndex(index);
 }
 
 /**
@@ -451,14 +451,14 @@ void MapDocument::onLayerAdded(int index)
 
     // Select the first layer that gets added to the map
     if (mMap->layerCount() == 1)
-        setCurrentLayer(0);
+        setCurrentLayerIndex(0);
 }
 
 void MapDocument::onLayerRemoved(int index)
 {
     // Bring the current layer index to safety
-    if (mCurrentLayer == mMap->layerCount())
-        setCurrentLayer(mCurrentLayer - 1);
+    if (mCurrentLayerIndex == mMap->layerCount())
+        setCurrentLayerIndex(mCurrentLayerIndex - 1);
 
     emit layerRemoved(index);
 }

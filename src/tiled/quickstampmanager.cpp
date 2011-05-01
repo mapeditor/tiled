@@ -75,7 +75,7 @@ void QuickStampManager::saveQuickStamp(int index)
 
         copy = static_cast<TileLayer*>(stamp->clone());
     } else if (dynamic_cast<SelectionTool*>(selectedTool)){
-        int currentLayer = mMapDocument->currentLayer();
+        int currentLayer = mMapDocument->currentLayerIndex();
         if (currentLayer == -1)
             return;
 

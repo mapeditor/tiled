@@ -71,14 +71,14 @@ void OffsetLayer::redo()
 
 Layer *OffsetLayer::swapLayer(Layer *layer)
 {
-    const int currentIndex = mMapDocument->currentLayer();
+    const int currentIndex = mMapDocument->currentLayerIndex();
 
     LayerModel *layerModel = mMapDocument->layerModel();
     Layer *replaced = layerModel->takeLayerAt(mIndex);
     layerModel->insertLayer(mIndex, layer);
 
     if (mIndex == currentIndex)
-        mMapDocument->setCurrentLayer(mIndex);
+        mMapDocument->setCurrentLayerIndex(mIndex);
 
     return replaced;
 }

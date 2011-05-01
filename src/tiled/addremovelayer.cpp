@@ -43,25 +43,25 @@ AddRemoveLayer::~AddRemoveLayer()
 
 void AddRemoveLayer::addLayer()
 {
-    const int currentLayer = mMapDocument->currentLayer();
+    const int currentLayer = mMapDocument->currentLayerIndex();
 
     mMapDocument->layerModel()->insertLayer(mIndex, mLayer);
     mLayer = 0;
 
     // Insertion below or at the current layer increases current layer index
     if (mIndex <= currentLayer)
-        mMapDocument->setCurrentLayer(currentLayer + 1);
+        mMapDocument->setCurrentLayerIndex(currentLayer + 1);
 }
 
 void AddRemoveLayer::removeLayer()
 {
-    const int currentLayer = mMapDocument->currentLayer();
+    const int currentLayer = mMapDocument->currentLayerIndex();
 
     mLayer = mMapDocument->layerModel()->takeLayerAt(mIndex);
 
     // Removal below the current layer decreases the current layer index
     if (mIndex < currentLayer)
-        mMapDocument->setCurrentLayer(currentLayer - 1);
+        mMapDocument->setCurrentLayerIndex(currentLayer - 1);
 }
 
 } // namespace Internal

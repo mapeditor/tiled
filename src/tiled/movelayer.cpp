@@ -50,7 +50,7 @@ void MoveLayer::undo()
 
 void MoveLayer::moveLayer()
 {
-    const int currentIndex = mMapDocument->currentLayer();
+    const int currentIndex = mMapDocument->currentLayerIndex();
     const bool selectedBefore = (mIndex == currentIndex);
     const int prevIndex = mIndex;
 
@@ -66,6 +66,7 @@ void MoveLayer::moveLayer()
     layerModel->insertLayer(mIndex, layer);
 
     // Set the layer that is now supposed to be selected
-    mMapDocument->setCurrentLayer(selectedBefore ? mIndex :
-                                  (selectedAfter ? prevIndex : currentIndex));
+    mMapDocument->setCurrentLayerIndex(
+                selectedBefore ? mIndex :
+                                 (selectedAfter ? prevIndex : currentIndex));
 }

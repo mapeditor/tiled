@@ -62,7 +62,7 @@ QList<int> OffsetMapDialog::affectedLayerIndexes() const
             layerIndexes.append(i);
         break;
     case SelectedLayer:
-        layerIndexes.append(mMapDocument->currentLayer());
+        layerIndexes.append(mMapDocument->currentLayerIndex());
         break;
     }
 

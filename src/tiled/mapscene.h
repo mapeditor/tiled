@@ -140,7 +140,7 @@ private slots:
      */
     void repaintRegion(const QRegion &region);
 
-    void currentLayerChanged();
+    void currentLayerIndexChanged();
 
     void mapChanged();
     void tilesetChanged(Tileset *tileset);

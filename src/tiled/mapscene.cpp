@@ -93,8 +93,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(layerRemoved(int)));
         connect(mMapDocument, SIGNAL(layerChanged(int)),
                 this, SLOT(layerChanged(int)));
-        connect(mMapDocument, SIGNAL(currentLayerChanged(int)),
-                this, SLOT(currentLayerChanged()));
+        connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
+                this, SLOT(currentLayerIndexChanged()));
         connect(mMapDocument, SIGNAL(objectsAdded(QList<MapObject*>)),
                 this, SLOT(objectsAdded(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
@@ -196,7 +196,7 @@ void MapScene::updateInteractionMode()
 {
     ObjectGroupItem *ogItem = 0;
 
-    const int index = mMapDocument->currentLayer();
+    const int index = mMapDocument->currentLayerIndex();
     if (index != -1) {
         Layer *layer = mMapDocument->map()->layerAt(index);
         if (layer->isVisible() && dynamic_cast<ObjectGroup*>(layer))
@@ -238,7 +238,7 @@ void MapScene::disableSelectedTool()
     mActiveTool = 0;
 }
 
-void MapScene::currentLayerChanged()
+void MapScene::currentLayerIndexChanged()
 {
     updateInteractionMode();
 }
