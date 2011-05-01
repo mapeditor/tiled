@@ -72,15 +72,14 @@ void ClipboardManager::setMap(const Map *map)
 
 void ClipboardManager::copySelection(const MapDocument *mapDocument)
 {
-    int currentLayer = mapDocument->currentLayerIndex();
-    if (currentLayer == -1)
+    const Layer *currentLayer = mapDocument->currentLayer();
+    if (!currentLayer)
         return;
 
     const Map *map = mapDocument->map();
     const QRegion &tileSelection = mapDocument->tileSelection();
     const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
-    const Layer *layer = map->layerAt(currentLayer);
-    const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
+    const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(currentLayer);
     Layer *copyLayer = 0;
 
     if (!tileSelection.isEmpty() && tileLayer) {

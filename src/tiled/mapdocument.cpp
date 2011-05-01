@@ -155,9 +155,12 @@ void MapDocument::setCurrentLayerIndex(int index)
     emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
-int MapDocument::currentLayerIndex() const
+Layer *MapDocument::currentLayer() const
 {
-    return mCurrentLayerIndex;
+    if (mCurrentLayerIndex == -1)
+        return 0;
+
+    return mMap->layerAt(mCurrentLayerIndex);
 }
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)

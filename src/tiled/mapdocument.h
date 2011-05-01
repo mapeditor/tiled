@@ -109,7 +109,13 @@ public:
      * Returns the index of the currently selected layer. Returns -1 if no
      * layer is currently selected.
      */
-    int currentLayerIndex() const;
+    int currentLayerIndex() const { return mCurrentLayerIndex; }
+
+    /**
+     * Returns the currently selected layer, or 0 if no layer is currently
+     * selected.
+     */
+    Layer *currentLayer() const;
 
     /**
      * Resize this map to the given \a size, while at the same time shifting

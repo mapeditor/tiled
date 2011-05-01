@@ -225,9 +225,5 @@ ObjectGroup *CreateObjectTool::currentObjectGroup() const
     if (!mapDocument())
         return 0;
 
-    const int currentLayerIndex = mapDocument()->currentLayerIndex();
-    if (currentLayerIndex < 0)
-        return 0;
-    Layer *currentLayer = mapDocument()->map()->layerAt(currentLayerIndex);
-    return dynamic_cast<ObjectGroup*>(currentLayer);
+    return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }

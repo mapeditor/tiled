@@ -147,8 +147,7 @@ void LayerDock::updateOpacitySlider()
     mOpacityLabel->setEnabled(enabled);
 
     if (enabled) {
-        int layerIndex = mMapDocument->currentLayerIndex();
-        qreal opacity = mMapDocument->map()->layerAt(layerIndex)->opacity();
+        qreal opacity = mMapDocument->currentLayer()->opacity();
         mOpacitySlider->setValue((int) (opacity * 100));
     } else {
         mOpacitySlider->setValue(100);

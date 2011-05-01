@@ -723,13 +723,11 @@ void MainWindow::cut()
     if (!mMapDocument)
         return;
 
-    const int currentLayer = mMapDocument->currentLayerIndex();
-    if (currentLayer == -1)
+    Layer *currentLayer = mMapDocument->currentLayer();
+    if (!currentLayer)
         return;
 
-    Map *map = mMapDocument->map();
-    Layer *layer = map->layerAt(currentLayer);
-    TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer);
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
     const QRegion &tileSelection = mMapDocument->tileSelection();
     const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
 
@@ -763,8 +761,8 @@ void MainWindow::paste()
     if (!mMapDocument)
         return;
 
-    const int currentLayerIndex = mMapDocument->currentLayerIndex();
-    if (currentLayerIndex == -1)
+    Layer *currentLayer = mMapDocument->currentLayer();
+    if (!currentLayer)
         return;
 
     Map *map = mClipboardManager->map();
@@ -791,7 +789,6 @@ void MainWindow::paste()
         setStampBrush(tileLayer);
         ToolManager::instance()->selectTool(mStampBrush);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        Layer *currentLayer = mMapDocument->map()->layerAt(currentLayerIndex);
         if (ObjectGroup *currentObjectGroup = currentLayer->asObjectGroup()) {
             // Determine where to insert the objects
             const QPointF center = objectGroup->objectsBoundingRect().center();
@@ -1036,21 +1033,17 @@ void MainWindow::updateRecentFiles()
 void MainWindow::updateActions()
 {
     Map *map = 0;
-    int currentLayer = -1;
     bool tileLayerSelected = false;
     bool objectsSelected = false;
     QRegion selection;
 
     if (mMapDocument) {
-        map = mMapDocument->map();
-        currentLayer = mMapDocument->currentLayerIndex();
-        selection = mMapDocument->tileSelection();
-        objectsSelected = !mMapDocument->selectedObjects().isEmpty();
+        Layer *currentLayer = mMapDocument->currentLayer();
 
-        if (currentLayer != -1) {
-            Layer *layer = mMapDocument->map()->layerAt(currentLayer);
-            tileLayerSelected = dynamic_cast<TileLayer*>(layer) != 0;
-        }
+        map = mMapDocument->map();
+        tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != 0;
+        objectsSelected = !mMapDocument->selectedObjects().isEmpty();
+        selection = mMapDocument->tileSelection();
     }
 
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
@@ -1098,12 +1091,8 @@ void MainWindow::editLayerProperties()
     if (!mMapDocument)
         return;
 
-    const int layerIndex = mMapDocument->currentLayerIndex();
-    if (layerIndex == -1)
-        return;
-
-    Layer *layer = mMapDocument->map()->layerAt(layerIndex);
-    PropertiesDialog::showDialogFor(layer, mMapDocument, this);
+    if (Layer *layer = mMapDocument->currentLayer())
+        PropertiesDialog::showDialogFor(layer, mMapDocument, this);
 }
 
 /**
