@@ -75,9 +75,8 @@ MapScene::~MapScene()
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMapDocument) {
+    if (mMapDocument)
         mMapDocument->disconnect(this);
-    }
 
     mMapDocument = mapDocument;
 
@@ -102,33 +101,25 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(objectsRemoved(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
+        connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
+                this, SLOT(updateSelectedObjectItems()));
     }
 }
 
 void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
 {
-    // Update the editable state of the items
-    foreach (MapObjectItem *item, mSelectedObjectItems - items)
-        item->setEditable(false);
-    foreach (MapObjectItem *item, items - mSelectedObjectItems)
-        item->setEditable(true);
-
-    mSelectedObjectItems = items;
-}
-
-void MapScene::setSelectedObjects(const QList<MapObject *> &objects)
-{
-    QSet<MapObjectItem*> items;
-    foreach (MapObject *object, objects)
-        items.insert(mObjectItems.value(object));
-    setSelectedObjectItems(items);
+    // Inform the map document about the newly selected objects
+    QList<MapObject*> selectedObjects;
+#if QT_VERSION >= 0x040700
+    selectedObjects.reserve(items.size());
+#endif
+    foreach (MapObjectItem *item, items)
+        selectedObjects.append(item->mapObject());
+    mMapDocument->setSelectedObjects(selectedObjects);
 }
 
 void MapScene::setSelectedTool(AbstractTool *tool)
 {
-    if (mSelectedTool == tool)
-        return;
-
     mSelectedTool = tool;
 }
 
@@ -365,6 +356,23 @@ void MapScene::objectsChanged(const QList<MapObject*> &objects)
 
         item->syncWithMapObject();
     }
+}
+
+void MapScene::updateSelectedObjectItems()
+{
+    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
+
+    QSet<MapObjectItem*> items;
+    foreach (MapObject *object, objects)
+        items.insert(mObjectItems.value(object));
+
+    // Update the editable state of the items
+    foreach (MapObjectItem *item, mSelectedObjectItems - items)
+        item->setEditable(false);
+    foreach (MapObjectItem *item, items - mSelectedObjectItems)
+        item->setEditable(true);
+
+    mSelectedObjectItems = items;
 }
 
 void MapScene::setGridVisible(bool visible)

@@ -64,6 +64,11 @@ public:
     const QList<MapObject*> &objects() const { return mObjects; }
 
     /**
+     * Returns the number of objects in this object group.
+     */
+    int objectCount() const { return mObjects.size(); }
+
+    /**
      * Adds an object to this object group.
      */
     void addObject(MapObject *object);
@@ -84,10 +89,21 @@ public:
     int removeObject(MapObject *object);
 
     /**
+     * Computes and returns the set of tilesets used by this object group.
+     */
+    QSet<Tileset*> usedTilesets() const;
+
+    /**
      * Returns whether any tile objects in this object group reference tiles
      * in the given tileset.
      */
     bool referencesTileset(const Tileset *tileset) const;
+
+    /**
+     * Replaces all references to tiles from \a oldTileset with tiles from
+     * \a newTileset.
+     */
+    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
 
     /**
      * Resizes this object group to \a size, while shifting all objects by

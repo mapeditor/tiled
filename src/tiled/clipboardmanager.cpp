@@ -22,6 +22,8 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "mapobject.h"
+#include "objectgroup.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
@@ -75,29 +77,36 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
         return;
 
     const Map *map = mapDocument->map();
+    const QRegion &tileSelection = mapDocument->tileSelection();
+    const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
     const Layer *layer = map->layerAt(currentLayer);
     const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-    if (!tileLayer)
-        return;
+    Layer *copyLayer = 0;
 
-    const QRegion &selection = mapDocument->tileSelection();
-    if (selection.isEmpty())
+    if (!tileSelection.isEmpty() && tileLayer) {
+        // Copy the selected part of the layer
+        copyLayer = tileLayer->copy(tileSelection.translated(-tileLayer->x(),
+                                                             -tileLayer->y()));
+    } else if (!selectedObjects.isEmpty()) {
+        // Create a new object group with clones of the selected objects
+        ObjectGroup *objectGroup = new ObjectGroup(QString(), 0, 0, 0, 0);
+        foreach (const MapObject *mapObject, selectedObjects)
+            objectGroup->addObject(mapObject->clone());
+        copyLayer = objectGroup;
+    } else {
         return;
-
-    // Copy the selected part of the layer
-    TileLayer *copy = tileLayer->copy(selection.translated(-tileLayer->x(),
-                                                           -tileLayer->y()));
+    }
 
     // Create a temporary map to write to the clipboard
     Map copyMap(map->orientation(),
-                copy->width(), copy->height(),
+                copyLayer->width(), copyLayer->height(),
                 map->tileWidth(), map->tileHeight());
 
     // Resolve the set of tilesets used by this layer
-    foreach (Tileset *tileset, copy->usedTilesets())
+    foreach (Tileset *tileset, copyLayer->usedTilesets())
         copyMap.addTileset(tileset);
 
-    copyMap.addLayer(copy);
+    copyMap.addLayer(copyLayer);
 
     setMap(&copyMap);
 }

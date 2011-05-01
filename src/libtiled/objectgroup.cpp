@@ -33,6 +33,7 @@
 #include "map.h"
 #include "mapobject.h"
 #include "tile.h"
+#include "tileset.h"
 
 using namespace Tiled;
 
@@ -69,6 +70,17 @@ int ObjectGroup::removeObject(MapObject *object)
     return index;
 }
 
+QSet<Tileset*> ObjectGroup::usedTilesets() const
+{
+    QSet<Tileset*> tilesets;
+
+    foreach (const MapObject *object, mObjects)
+        if (const Tile *tile = object->tile())
+            tilesets.insert(tile->tileset());
+
+    return tilesets;
+}
+
 bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 {
     foreach (const MapObject *object, mObjects) {
@@ -78,6 +90,16 @@ bool ObjectGroup::referencesTileset(const Tileset *tileset) const
     }
 
     return false;
+}
+
+void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
+                                             Tileset *newTileset)
+{
+    foreach (MapObject *object, mObjects) {
+        const Tile *tile = object->tile();
+        if (tile && tile->tileset() == oldTileset)
+            object->setTile(newTileset->tileAt(tile->id()));
+    }
 }
 
 void ObjectGroup::resize(const QSize &size, const QPoint &offset)

@@ -470,7 +470,7 @@ void ObjectSelectionTool::duplicateObjects(const QList<MapObject *> &objects)
     }
 
     undoStack->endMacro();
-    mMapScene->setSelectedObjects(clones);
+    mapDocument()->setSelectedObjects(clones);
 }
 
 void ObjectSelectionTool::removeObjects(const QList<MapObject *> &objects)

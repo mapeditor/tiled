@@ -22,6 +22,7 @@
 #ifndef MAPDOCUMENT_H
 #define MAPDOCUMENT_H
 
+#include <QList>
 #include <QObject>
 #include <QRegion>
 #include <QString>
@@ -168,6 +169,18 @@ public:
     void setTileSelection(const QRegion &selection);
 
     /**
+     * Returns the list of selected objects.
+     */
+    const QList<MapObject*> &selectedObjects() const
+    { return mSelectedObjects; }
+
+    /**
+     * Sets the list of selected objects, emitting the selectedObjectsChanged
+     * signal.
+     */
+    void setSelectedObjects(const QList<MapObject*> &selectedObjects);
+
+    /**
      * Makes sure the all tilesets which are used at the given \a map will be
      * present in the map document.
      *
@@ -220,6 +233,11 @@ signals:
                               const QRegion &oldSelection);
 
     /**
+     * Emitted when the list of selected objects changes.
+     */
+    void selectedObjectsChanged();
+
+    /**
      * Emitted when the map size or its tile size changes.
      */
     void mapChanged();
@@ -269,6 +287,7 @@ private:
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mTileSelection;
+    QList<MapObject*> mSelectedObjects;
     MapRenderer *mRenderer;
     int mCurrentLayer;
     QUndoStack *mUndoStack;

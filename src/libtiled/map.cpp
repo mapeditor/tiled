@@ -141,8 +141,7 @@ void Map::replaceTileset(Tileset *oldTileset, Tileset *newTileset)
     Q_ASSERT(index != -1);
 
     foreach (Layer *layer, mLayers)
-        if (TileLayer *tileLayer = layer->asTileLayer())
-            tileLayer->replaceReferencesToTileset(oldTileset, newTileset);
+        layer->replaceReferencesToTileset(oldTileset, newTileset);
 
     mTilesets.replace(index, newTileset);
 }

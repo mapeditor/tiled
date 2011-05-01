@@ -28,6 +28,7 @@
 #include "ui_mainwindow.h"
 
 #include "aboutdialog.h"
+#include "addremovemapobject.h"
 #include "automap.h"
 #include "addremovetileset.h"
 #include "clipboardmanager.h"
@@ -44,6 +45,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+#include "mapobject.h"
 #include "mapscene.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
@@ -51,6 +53,7 @@
 #include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "objectselectiontool.h"
+#include "objectgroup.h"
 #include "offsetmapdialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
@@ -719,26 +722,30 @@ void MainWindow::cut()
     if (!mMapDocument)
         return;
 
-    int currentLayer = mMapDocument->currentLayer();
+    const int currentLayer = mMapDocument->currentLayer();
     if (currentLayer == -1)
         return;
 
     Map *map = mMapDocument->map();
     Layer *layer = map->layerAt(currentLayer);
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer);
-    if (!tileLayer)
-        return;
-
-    const QRegion &selection = mMapDocument->tileSelection();
-    if (selection.isEmpty())
-        return;
+    const QRegion &tileSelection = mMapDocument->tileSelection();
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
 
     copy();
 
     QUndoStack *stack = mMapDocument->undoStack();
     stack->beginMacro(tr("Cut"));
-    stack->push(new EraseTiles(mMapDocument, tileLayer, selection));
+
+    if (tileLayer && !tileSelection.isEmpty()) {
+        stack->push(new EraseTiles(mMapDocument, tileLayer, tileSelection));
+    } else if (!selectedObjects.isEmpty()) {
+        foreach (MapObject *mapObject, selectedObjects)
+            stack->push(new RemoveMapObject(mMapDocument, mapObject));
+    }
+
     mActionHandler->selectNone();
+
     stack->endMacro();
 }
 
@@ -755,12 +762,16 @@ void MainWindow::paste()
     if (!mMapDocument)
         return;
 
+    const int currentLayerIndex = mMapDocument->currentLayer();
+    if (currentLayerIndex == -1)
+        return;
+
     Map *map = mClipboardManager->map();
     if (!map)
         return;
 
-    // We can currently only handle maps with a single tile layer
-    if (!(map->layerCount() == 1 && map->layerAt(0)->asTileLayer())) {
+    // We can currently only handle maps with a single layer
+    if (map->layerCount() != 1) {
         // Need to clean up the tilesets since they didn't get an owner
         qDeleteAll(map->tilesets());
         delete map;
@@ -771,13 +782,34 @@ void MainWindow::paste()
     tilesetManager->addReferences(map->tilesets());
 
     mMapDocument->unifyTilesets(map);
+    Layer *layer = map->layerAt(0);
 
-    TileLayer *tileLayer = map->layerAt(0)->asTileLayer();
+    if (TileLayer *tileLayer = layer->asTileLayer()) {
+        // Reset selection and paste into the stamp brush
+        mActionHandler->selectNone();
+        setStampBrush(tileLayer);
+        ToolManager::instance()->selectTool(mStampBrush);
+    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+        Layer *currentLayer = mMapDocument->map()->layerAt(currentLayerIndex);
+        if (ObjectGroup *currentObjectGroup = currentLayer->asObjectGroup()) {
+            QUndoStack *undoStack = mMapDocument->undoStack();
+            QList<MapObject*> pastedObjects;
+#if QT_VERSION >= 0x040700
+            pastedObjects.reserve(objectGroup->objectCount());
+#endif
+            undoStack->beginMacro(tr("Paste Objects"));
+            foreach (const MapObject *mapObject, objectGroup->objects()) {
+                MapObject *objectClone = mapObject->clone();
+                pastedObjects.append(objectClone);
+                undoStack->push(new AddMapObject(mMapDocument,
+                                                 currentObjectGroup,
+                                                 objectClone));
+            }
+            undoStack->endMacro();
 
-    // Reset selection and paste into the stamp brush
-    mActionHandler->selectNone();
-    setStampBrush(tileLayer);
-    ToolManager::instance()->selectTool(mStampBrush);
+            mMapDocument->setSelectedObjects(pastedObjects);
+        }
+    }
 
     tilesetManager->removeReferences(map->tilesets());
     delete map;
@@ -985,24 +1017,23 @@ void MainWindow::updateActions()
     Map *map = 0;
     int currentLayer = -1;
     bool tileLayerSelected = false;
+    bool objectsSelected = false;
     QRegion selection;
 
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayer = mMapDocument->currentLayer();
         selection = mMapDocument->tileSelection();
+        objectsSelected = !mMapDocument->selectedObjects().isEmpty();
 
         if (currentLayer != -1) {
             Layer *layer = mMapDocument->map()->layerAt(currentLayer);
             tileLayerSelected = dynamic_cast<TileLayer*>(layer) != 0;
         }
-
-        mCommandButton->setEnabled(true);
-    } else {
-        mCommandButton->setEnabled(false);
     }
 
-    const bool mapInClipboard = mClipboardManager->hasMap();
+    const bool canCopy = (tileLayerSelected && !selection.isEmpty())
+            || objectsSelected;
 
     mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
@@ -1010,15 +1041,17 @@ void MainWindow::updateActions()
     mUi->actionExport->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionCloseAll->setEnabled(map);
-    mUi->actionCut->setEnabled(tileLayerSelected && !selection.isEmpty());
-    mUi->actionCopy->setEnabled(tileLayerSelected && !selection.isEmpty());
-    mUi->actionPaste->setEnabled(tileLayerSelected && mapInClipboard);
+    mUi->actionCut->setEnabled(canCopy);
+    mUi->actionCopy->setEnabled(canCopy);
+    mUi->actionPaste->setEnabled(mClipboardManager->hasMap());
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);
     mUi->actionMapProperties->setEnabled(map);
     mUi->actionAutoMap->setEnabled(map);
+
+    mCommandButton->setEnabled(map);
 
     updateZoomLabel(); // for the zoom actions
 }
@@ -1140,6 +1173,8 @@ void MainWindow::addMapDocument(MapDocument *mapDocument)
     connect(mapDocument, SIGNAL(currentLayerChanged(int)),
             SLOT(updateActions()));
     connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+            SLOT(updateActions()));
+    connect(mapDocument, SIGNAL(selectedObjectsChanged()),
             SLOT(updateActions()));
 
     MapView *mapView = mDocumentManager->currentMapView();

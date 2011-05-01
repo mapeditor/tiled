@@ -333,6 +333,12 @@ void MapDocument::setTileSelection(const QRegion &selection)
     }
 }
 
+void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
+{
+    mSelectedObjects = selectedObjects;
+    emit selectedObjectsChanged();
+}
+
 /**
  * Makes sure the all tilesets which are used at the given \a map will be
  * present in the map document.
@@ -413,9 +419,20 @@ void MapDocument::emitObjectsAdded(const QList<MapObject*> &objects)
 /**
  * Emits the objects removed signal with the specified list of objects.
  * This will cause the scene to remove the related items.
+ *
+ * Before emitting the signal, the objects are also removed from the list of
+ * selected objects, triggering a selectedObjectsChanged signal when
+ * appropriate.
  */
 void MapDocument::emitObjectsRemoved(const QList<MapObject*> &objects)
 {
+    int removedCount = 0;
+    foreach (MapObject *object, objects)
+        removedCount += mSelectedObjects.removeAll(object);
+
+    if (removedCount > 0)
+        emit selectedObjectsChanged();
+
     emit objectsRemoved(objects);
 }
 
