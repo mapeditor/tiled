@@ -1,3 +1,8 @@
+0.6.2 (2 May 2011)
+* Fixed object layers losing their color when resizing the map
+* Fixed the tabs in the Tilesets dock to use scroll buttons on MacOS X
+* Fixed window title to update when saving a map with a different name
+
 0.6.1 (3 April 2011)
 * Added ability to open multiple files at once
 * Added Ctrl+PageUp/PageDown shortcuts to switch documents

@@ -642,7 +642,6 @@ static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
                 // this is only used in the case where only one list has layers
                 // it is needed for the exception mentioned above
                 bool ruleDefinedListYes = false;
-                bool ruleDefinedListNo  = false;
 
                 bool matchListYes = false;
                 bool matchListNo  = false;
@@ -681,8 +680,6 @@ static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
                         return false;
 
                     Tile *t2 = l2->tileAt(x, y);
-                    if (t2)
-                        ruleDefinedListNo = true;
 
                     if (t2 && t1 == t2)
                         matchListNo = true;
