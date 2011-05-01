@@ -22,15 +22,18 @@
 #include "mapdocument.h"
 
 #include "addremovelayer.h"
+#include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "changeproperties.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
 #include "map.h"
+#include "mapobject.h"
 #include "movelayer.h"
 #include "objectgroup.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
+#include "painttilelayer.h"
 #include "resizelayer.h"
 #include "resizemap.h"
 #include "tile.h"
@@ -243,6 +246,51 @@ void MapDocument::duplicateLayer()
     cmd->setText(tr("Duplicate Layer"));
     mUndoStack->push(cmd);
     setCurrentLayerIndex(index);
+}
+
+/**
+ * Merges the currently selected layer with the layer below. This only works
+ * when the layers are either both tile layers or both object groups.
+ */
+void MapDocument::mergeLayerDown()
+{
+    if (mCurrentLayerIndex < 1)
+        return;
+
+    Layer *upperLayer = mMap->layerAt(mCurrentLayerIndex);
+    Layer *lowerLayer = mMap->layerAt(mCurrentLayerIndex - 1);
+
+    QUndoCommand *mergeCommand = 0;
+
+    if (TileLayer *upperTileLayer = dynamic_cast<TileLayer*>(upperLayer)) {
+        TileLayer *lowerTileLayer = dynamic_cast<TileLayer*>(lowerLayer);
+        if (!lowerTileLayer)
+            return;
+
+        mergeCommand = new PaintTileLayer(this, lowerTileLayer,
+                                          upperTileLayer->x(),
+                                          upperTileLayer->y(),
+                                          upperTileLayer);
+    }
+
+    if (ObjectGroup *upperOG = dynamic_cast<ObjectGroup*>(upperLayer)) {
+        ObjectGroup *lowerOG = dynamic_cast<ObjectGroup*>(lowerLayer);
+        if (!lowerOG)
+            return;
+
+        mergeCommand = new QUndoCommand;
+        foreach (const MapObject *mapObject, upperOG->objects()) {
+            MapObject *objectClone = mapObject->clone();
+            new AddMapObject(this, lowerOG, objectClone, mergeCommand);
+        }
+    }
+
+    if (mergeCommand) {
+        mUndoStack->beginMacro(tr("Merge Layer Down"));
+        mUndoStack->push(mergeCommand);
+        mUndoStack->push(new RemoveLayer(this, mCurrentLayerIndex));
+        mUndoStack->endMacro();
+    }
 }
 
 /**

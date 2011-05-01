@@ -32,8 +32,10 @@ using namespace Tiled::Internal;
 AddRemoveMapObject::AddRemoveMapObject(MapDocument *mapDocument,
                                        ObjectGroup *objectGroup,
                                        MapObject *mapObject,
-                                       bool ownObject)
-    : mMapDocument(mapDocument)
+                                       bool ownObject,
+                                       QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mObjectGroup(objectGroup)
     , mIndex(-1)
@@ -67,22 +69,25 @@ void AddRemoveMapObject::removeObject()
 
 
 AddMapObject::AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
-                           MapObject *mapObject)
+                           MapObject *mapObject, QUndoCommand *parent)
     : AddRemoveMapObject(mapDocument,
                          objectGroup,
                          mapObject,
-                         true)
+                         true,
+                         parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Object"));
 }
 
 
 RemoveMapObject::RemoveMapObject(MapDocument *mapDocument,
-                                 MapObject *mapObject)
+                                 MapObject *mapObject,
+                                 QUndoCommand *parent)
     : AddRemoveMapObject(mapDocument,
                          mapObject->objectGroup(),
                          mapObject,
-                         false)
+                         false,
+                         parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Object"));
 }

@@ -138,6 +138,7 @@ public:
     };
     void addLayer(LayerType layerType);
     void duplicateLayer();
+    void mergeLayerDown();
     void moveLayerUp(int index);
     void moveLayerDown(int index);
     void removeLayer(int index);

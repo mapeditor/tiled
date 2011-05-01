@@ -118,6 +118,11 @@ public:
     void setY(int y) { mY = y; }
 
     /**
+     * Returns the position of this layer (in tiles).
+     */
+    QPoint pos() const { return QPoint(mX, mY); }
+
+    /**
      * Returns the width of this layer.
      */
     int width() const { return mWidth; }

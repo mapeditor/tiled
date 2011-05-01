@@ -21,6 +21,7 @@
 #include "mapdocumentactionhandler.h"
 
 #include "changetileselection.h"
+#include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "utils.h"
@@ -51,6 +52,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionDuplicateLayer->setShortcut(tr("Ctrl+Shift+D"));
     mActionDuplicateLayer->setIcon(
             QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
+
+    mActionMergeLayerDown = new QAction(this);
 
     mActionRemoveLayer = new QAction(this);
     mActionRemoveLayer->setIcon(
@@ -93,6 +96,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
             SLOT(addObjectGroup()));
     connect(mActionDuplicateLayer, SIGNAL(triggered()),
             SLOT(duplicateLayer()));
+    connect(mActionMergeLayerDown, SIGNAL(triggered()),
+            SLOT(mergeLayerDown()));
     connect(mActionSelectPreviousLayer, SIGNAL(triggered()),
             SLOT(selectPreviousLayer()));
     connect(mActionSelectNextLayer, SIGNAL(triggered()),
@@ -120,6 +125,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionAddTileLayer->setText(tr("Add &Tile Layer"));
     mActionAddObjectGroup->setText(tr("Add &Object Layer"));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
+    mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
     mActionSelectNextLayer->setText(tr("Select &Next Layer"));
@@ -191,6 +197,12 @@ void MapDocumentActionHandler::duplicateLayer()
         mMapDocument->duplicateLayer();
 }
 
+void MapDocumentActionHandler::mergeLayerDown()
+{
+    if (mMapDocument)
+        mMapDocument->mergeLayerDown();
+}
+
 void MapDocumentActionHandler::selectPreviousLayer()
 {
     if (mMapDocument) {
@@ -238,11 +250,21 @@ void MapDocumentActionHandler::updateActions()
     Map *map = 0;
     int currentLayerIndex = -1;
     QRegion selection;
+    bool canMergeDown = false;
 
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayerIndex = mMapDocument->currentLayerIndex();
         selection = mMapDocument->tileSelection();
+
+        if (currentLayerIndex > 0) {
+            Layer *upper = map->layerAt(currentLayerIndex);
+            Layer *lower = map->layerAt(currentLayerIndex - 1);
+
+            if ((upper->asTileLayer() && lower->asTileLayer())
+                    || (upper->asObjectGroup() && lower->asObjectGroup()))
+                canMergeDown = true;
+        }
     }
 
     mActionSelectAll->setEnabled(map);
@@ -257,6 +279,7 @@ void MapDocumentActionHandler::updateActions()
     const bool hasNextLayer = currentLayerIndex > 0;
 
     mActionDuplicateLayer->setEnabled(currentLayerIndex >= 0);
+    mActionMergeLayerDown->setEnabled(canMergeDown);
     mActionSelectPreviousLayer->setEnabled(hasPreviousLayer);
     mActionSelectNextLayer->setEnabled(hasNextLayer);
     mActionMoveLayerUp->setEnabled(hasPreviousLayer);

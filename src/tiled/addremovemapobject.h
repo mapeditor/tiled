@@ -41,7 +41,8 @@ public:
     AddRemoveMapObject(MapDocument *mapDocument,
                        ObjectGroup *objectGroup,
                        MapObject *mapObject,
-                       bool ownObject);
+                       bool ownObject,
+                       QUndoCommand *parent = 0);
     ~AddRemoveMapObject();
 
 protected:
@@ -63,7 +64,7 @@ class AddMapObject : public AddRemoveMapObject
 {
 public:
     AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
-                 MapObject *mapObject);
+                 MapObject *mapObject, QUndoCommand *parent = 0);
 
     void undo()
     { removeObject(); }
@@ -78,7 +79,8 @@ public:
 class RemoveMapObject : public AddRemoveMapObject
 {
 public:
-    RemoveMapObject(MapDocument *mapDocument, MapObject *mapObject);
+    RemoveMapObject(MapDocument *mapDocument, MapObject *mapObject,
+                    QUndoCommand *parent = 0);
 
     void undo()
     { addObject(); }
