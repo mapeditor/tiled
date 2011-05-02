@@ -129,7 +129,7 @@ void ToolManager::addSeparator()
 
 void ToolManager::selectTool(AbstractTool *tool)
 {
-    if (!tool->isEnabled()) // Refuse to select disabled tools
+    if (tool && !tool->isEnabled()) // Refuse to select disabled tools
         return;
 
     foreach (QAction *action, mActionGroup->actions()) {
