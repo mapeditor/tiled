@@ -170,7 +170,7 @@ WriteUninstaller $INSTDIR\uninstall.exe ; Location of the uninstaller
 
 File /oname=COPYING.txt ${ROOT_DIR}\COPYING 
 File /oname=AUTHORS.txt ${ROOT_DIR}\AUTHORS
-File /oname=README.txt ${ROOT_DIR}\README
+File /oname=README.txt ${ROOT_DIR}\README.md
 File /oname=NEWS.txt ${ROOT_DIR}\NEWS
 File /oname=LICENSE.BSD.txt ${ROOT_DIR}\LICENSE.BSD
 File /oname=LICENSE.GPL.txt ${ROOT_DIR}\LICENSE.GPL
