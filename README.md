@@ -34,9 +34,9 @@ Compiling
 
 Make sure the Qt (>= 4.6) development libraries are installed:
 
-* In Ubuntu/Debian: sudo apt-get install libqt4-dev
-* In Fedora:        yum install qt-devel
-* In Arch Linux:    pacman -S qt
+* In Ubuntu/Debian: `sudo apt-get install libqt4-dev libqt4-opengl-dev`
+* In Fedora:        `yum install qt-devel`
+* In Arch Linux:    `pacman -S qt`
 
 Now you can compile by running:
 
