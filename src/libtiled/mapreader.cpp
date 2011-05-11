@@ -235,11 +235,11 @@ Map *MapReaderPrivate::readMap()
 
     // Clean up in case of error
     if (xml.hasError()) {
+        // The tilesets are not owned by the map
+        qDeleteAll(mMap->tilesets());
+
         delete mMap;
         mMap = 0;
-
-        // The tilesets are not owned by the map
-        qDeleteAll(mGidsToTileset.values());
     }
 
     return mMap;
