@@ -191,6 +191,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mCommandButton = new CommandButton(this);
     mUi->mainToolBar->addWidget(mCommandButton);
 
+    mUi->menuMap->insertAction(mUi->actionOffsetMap,
+                               mActionHandler->actionCropToSelection());
+
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
     mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());

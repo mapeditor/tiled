@@ -25,6 +25,7 @@
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "changeproperties.h"
+#include "changetileselection.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -170,11 +171,14 @@ Layer *MapDocument::currentLayer() const
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 {
+    const QRegion movedSelection = mTileSelection.translated(offset);
+
     // Resize the map and each layer
     mUndoStack->beginMacro(tr("Resize Map"));
     for (int i = 0; i < mMap->layerCount(); ++i)
         mUndoStack->push(new ResizeLayer(this, i, size, offset));
     mUndoStack->push(new ResizeMap(this, size));
+    mUndoStack->push(new ChangeTileSelection(this, movedSelection));
     mUndoStack->endMacro();
 
     // TODO: Handle layers that don't match the map size correctly
