@@ -41,6 +41,7 @@ SOURCES += aboutdialog.cpp \
     automap.cpp \
     brushitem.cpp \
     documentmanager.cpp \
+    filesystemwatcher.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -119,6 +120,7 @@ HEADERS += aboutdialog.h \
     automap.h \
     brushitem.h \
     documentmanager.h \
+    filesystemwatcher.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
