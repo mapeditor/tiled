@@ -44,7 +44,7 @@ RequestExecutionLevel admin
 
 ;-------------- Install Pages -------------
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE ${ROOT_DIR}\gpl-2.0.rtf
+!insertmacro MUI_PAGE_LICENSE ${ROOT_DIR}\dist\win\gpl-2.0.rtf
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
     ; These indented statements modify settings for MUI_PAGE_FINISH
