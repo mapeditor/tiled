@@ -260,10 +260,7 @@ void MapDocumentActionHandler::updateActions()
         if (currentLayerIndex > 0) {
             Layer *upper = map->layerAt(currentLayerIndex);
             Layer *lower = map->layerAt(currentLayerIndex - 1);
-
-            if ((upper->asTileLayer() && lower->asTileLayer())
-                    || (upper->asObjectGroup() && lower->asObjectGroup()))
-                canMergeDown = true;
+            canMergeDown = lower->canMergeWith(upper);
         }
     }
 

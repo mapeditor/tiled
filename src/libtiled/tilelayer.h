@@ -149,6 +149,9 @@ public:
                         const QRect &bounds,
                         bool wrapX, bool wrapY);
 
+    bool canMergeWith(Layer *other) const;
+    Layer *mergedWith(Layer *other) const;
+
     /**
      * Returns true if all tiles in the layer are empty.
      */

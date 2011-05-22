@@ -236,6 +236,25 @@ void TileLayer::offset(const QPoint &offset,
     mTiles = newTiles;
 }
 
+bool TileLayer::canMergeWith(Layer *other) const
+{
+    return dynamic_cast<TileLayer*>(other) != 0;
+}
+
+Layer *TileLayer::mergedWith(Layer *other) const
+{
+    Q_ASSERT(canMergeWith(other));
+
+    const TileLayer *o = static_cast<TileLayer*>(other);
+    const QRect unitedBounds = bounds().united(o->bounds());
+    const QPoint offset = pos() - unitedBounds.topLeft();
+
+    TileLayer *merged = static_cast<TileLayer*>(clone());
+    merged->resize(unitedBounds.size(), offset);
+    merged->merge(o->pos() - unitedBounds.topLeft(), o);
+    return merged;
+}
+
 bool TileLayer::isEmpty() const
 {
     for (int i = 0, i_end = mTiles.size(); i < i_end; ++i)
