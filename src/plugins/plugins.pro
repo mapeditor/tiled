@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = droidcraft tmw tengine
+SUBDIRS = droidcraft tmw tengine json
