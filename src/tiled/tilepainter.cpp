@@ -1,6 +1,6 @@
 /*
  * tilepainter.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of Tiled.
@@ -34,18 +34,18 @@ TilePainter::TilePainter(MapDocument *mapDocument, TileLayer *tileLayer)
 {
 }
 
-Tile *TilePainter::tileAt(int x, int y) const
+Cell TilePainter::cellAt(int x, int y) const
 {
     const int layerX = x - mTileLayer->x();
     const int layerY = y - mTileLayer->y();
 
     if (!mTileLayer->contains(layerX, layerY))
-        return 0;
+        return Cell();
 
-    return mTileLayer->tileAt(layerX, layerY);
+    return mTileLayer->cellAt(layerX, layerY);
 }
 
-void TilePainter::setTile(int x, int y, Tile *tile)
+void TilePainter::setCell(int x, int y, const Cell &cell)
 {
     const QRegion &selection = mMapDocument->tileSelection();
     if (!(selection.isEmpty() || selection.contains(QPoint(x, y))))
@@ -57,13 +57,17 @@ void TilePainter::setTile(int x, int y, Tile *tile)
     if (!mTileLayer->contains(layerX, layerY))
         return;
 
-    mTileLayer->setTile(layerX, layerY, tile);
+    mTileLayer->setCell(layerX, layerY, cell);
     mMapDocument->emitRegionChanged(QRegion(x, y, 1, 1));
 }
 
-void TilePainter::setTiles(int x, int y, TileLayer *tiles, const QRegion &mask)
+void TilePainter::setCells(int x, int y,
+                           TileLayer *tileLayer,
+                           const QRegion &mask)
 {
-    QRegion region = paintableRegion(x, y, tiles->width(), tiles->height());
+    QRegion region = paintableRegion(x, y,
+                                     tileLayer->width(),
+                                     tileLayer->height());
     if (!mask.isEmpty())
         region &= mask;
     if (region.isEmpty())
@@ -72,9 +76,9 @@ void TilePainter::setTiles(int x, int y, TileLayer *tiles, const QRegion &mask)
     foreach (const QRect &rect, region.rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                mTileLayer->setTile(_x - mTileLayer->x(),
+                mTileLayer->setCell(_x - mTileLayer->x(),
                                     _y - mTileLayer->y(),
-                                    tiles->tileAt(_x - x, _y - y));
+                                    tileLayer->cellAt(_x - x, _y - y));
             }
         }
     }
@@ -82,24 +86,24 @@ void TilePainter::setTiles(int x, int y, TileLayer *tiles, const QRegion &mask)
     mMapDocument->emitRegionChanged(region);
 }
 
-void TilePainter::drawTiles(int x, int y, TileLayer *tiles)
+void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
 {
     const QRegion region = paintableRegion(x, y,
-                                           tiles->width(),
-                                           tiles->height());
+                                           tileLayer->width(),
+                                           tileLayer->height());
     if (region.isEmpty())
         return;
 
     foreach (const QRect &rect, region.rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                Tile * const tile = tiles->tileAt(_x - x, _y - y);
-                if (!tile)
+                const Cell &cell = tileLayer->cellAt(_x - x, _y - y);
+                if (cell.isEmpty())
                     continue;
 
-                mTileLayer->setTile(_x - mTileLayer->x(),
+                mTileLayer->setCell(_x - mTileLayer->x(),
                                     _y - mTileLayer->y(),
-                                    tile);
+                                    cell);
             }
         }
     }
@@ -125,14 +129,15 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     foreach (const QRect &rect, region.rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                Tile *tile = stamp->tileAt((_x - regionBounds.left()) % w,
-                                           (_y - regionBounds.top()) % h);
-                if (!tile)
+                const int stampX = (_x - regionBounds.left()) % w;
+                const int stampY = (_y - regionBounds.top()) % h;
+                const Cell &cell = stamp->cellAt(stampX, stampY);
+                if (cell.isEmpty())
                     continue;
 
-                mTileLayer->setTile(_x - mTileLayer->x(),
+                mTileLayer->setCell(_x - mTileLayer->x(),
                                     _y - mTileLayer->y(),
-                                    tile);
+                                    cell);
             }
         }
     }
@@ -149,9 +154,9 @@ void TilePainter::erase(const QRegion &region)
     foreach (const QRect &rect, paintable.rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                mTileLayer->setTile(_x - mTileLayer->x(),
+                mTileLayer->setCell(_x - mTileLayer->x(),
                                     _y - mTileLayer->y(),
-                                    0);
+                                    Cell());
             }
         }
     }
@@ -168,22 +173,22 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
     if (!isDrawable(fillOrigin.x(), fillOrigin.y()))
         return fillRegion;
 
-    // Cache tile that we will match other tiles against
-    const Tile *matchTile = tileAt(fillOrigin.x(), fillOrigin.y());
+    // Cache cell that we will match other cells against
+    const Cell matchCell = cellAt(fillOrigin.x(), fillOrigin.y());
 
     // Grab map dimensions for later use.
     const int mapWidth = mMapDocument->map()->width();
     const int mapHeight = mMapDocument->map()->height();
     const int mapSize = mapWidth * mapHeight;
 
-    // Create a queue to hold tiles that need filling
+    // Create a queue to hold cells that need filling
     QList<QPoint> fillPositions;
     fillPositions.append(fillOrigin);
 
-    // Create an array that will store which tiles have been processed
-    // This is faster than checking if a given tile is in the region/list
-    QVector<quint8> processedTilesVec(mapSize);
-    quint8 *processedTiles = processedTilesVec.data();
+    // Create an array that will store which cells have been processed
+    // This is faster than checking if a given cell is in the region/list
+    QVector<quint8> processedCellsVec(mapSize);
+    quint8 *processedCells = processedCellsVec.data();
 
     // Loop through queued positions and fill them, while at the same time
     // checking adjacent positions to see if they should be added
@@ -193,69 +198,69 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
 
         // Seek as far left as we can
         int left = currentPoint.x();
-        while (tileAt(left - 1, currentPoint.y()) == matchTile &&
+        while (cellAt(left - 1, currentPoint.y()) == matchCell &&
                isDrawable(left - 1, currentPoint.y()))
             --left;
 
         // Seek as far right as we can
         int right = currentPoint.x();
-        while (tileAt(right + 1, currentPoint.y()) == matchTile &&
+        while (cellAt(right + 1, currentPoint.y()) == matchCell &&
                isDrawable(right + 1, currentPoint.y()))
             ++right;
 
-        // Add tiles between left and right to the region
+        // Add cells between left and right to the region
         fillRegion += QRegion(left, currentPoint.y(), right - left + 1, 1);
 
-        // Add tile strip to processed tiles
-        memset(&processedTiles[startOfLine + left],
+        // Add cell strip to processed cells
+        memset(&processedCells[startOfLine + left],
                1,
                right - left);
 
-        // These variables cache whether the last tile was added to the queue
-        // or not as an optimization, since adjacent tiles on the x axis
+        // These variables cache whether the last cell was added to the queue
+        // or not as an optimization, since adjacent cells on the x axis
         // do not need to be added to the queue.
-        bool lastAboveTile = false;
-        bool lastBelowTile = false;
+        bool lastAboveCell = false;
+        bool lastBelowCell = false;
 
-        // Loop between left and right and check if tiles above or
+        // Loop between left and right and check if cells above or
         // below need to be added to the queue
         for (int x = left; x <= right; ++x) {
             const QPoint fillPoint(x, currentPoint.y());
 
-            // Check tile above
+            // Check cell above
             if (fillPoint.y() > 0) {
-                QPoint aboveTile(fillPoint.x(), fillPoint.y() - 1);
-                if (!processedTiles[aboveTile.y()*mapWidth + aboveTile.x()] &&
-                    tileAt(aboveTile.x(), aboveTile.y()) == matchTile &&
-                    isDrawable(aboveTile.x(), aboveTile.y()))
+                QPoint aboveCell(fillPoint.x(), fillPoint.y() - 1);
+                if (!processedCells[aboveCell.y()*mapWidth + aboveCell.x()] &&
+                    cellAt(aboveCell.x(), aboveCell.y()) == matchCell &&
+                    isDrawable(aboveCell.x(), aboveCell.y()))
                 {
-                    // Do not add the above tile to the queue if it's
-                    // x-adjacent tile was added.
-                    if (!lastAboveTile)
-                        fillPositions.append(aboveTile);
+                    // Do not add the above cell to the queue if its
+                    // x-adjacent cell was added.
+                    if (!lastAboveCell)
+                        fillPositions.append(aboveCell);
 
-                    lastAboveTile = true;
-                } else lastAboveTile = false;
+                    lastAboveCell = true;
+                } else lastAboveCell = false;
 
-                processedTiles[aboveTile.y() * mapWidth + aboveTile.x()] = 1;
+                processedCells[aboveCell.y() * mapWidth + aboveCell.x()] = 1;
             }
 
-            // Check tile below
+            // Check cell below
             if (fillPoint.y() + 1 < mapHeight) {
-                QPoint belowTile(fillPoint.x(), fillPoint.y() + 1);
-                if (!processedTiles[belowTile.y()*mapWidth + belowTile.x()] &&
-                    tileAt(belowTile.x(), belowTile.y()) == matchTile &&
-                    isDrawable(belowTile.x(), belowTile.y()))
+                QPoint belowCell(fillPoint.x(), fillPoint.y() + 1);
+                if (!processedCells[belowCell.y()*mapWidth + belowCell.x()] &&
+                    cellAt(belowCell.x(), belowCell.y()) == matchCell &&
+                    isDrawable(belowCell.x(), belowCell.y()))
                 {
-                    // Do not add the below tile to the queue if it's
-                    // x-adjacent tile was added.
-                    if (!lastBelowTile)
-                        fillPositions.append(belowTile);
+                    // Do not add the below cell to the queue if its
+                    // x-adjacent cell was added.
+                    if (!lastBelowCell)
+                        fillPositions.append(belowCell);
 
-                    lastBelowTile = true;
-                } else lastBelowTile = false;
+                    lastBelowCell = true;
+                } else lastBelowCell = false;
 
-                processedTiles[belowTile.y() * mapWidth + belowTile.x()] = 1;
+                processedCells[belowCell.y() * mapWidth + belowCell.x()] = 1;
             }
         }
     }

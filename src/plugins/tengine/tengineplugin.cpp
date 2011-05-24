@@ -102,7 +102,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 ObjectGroup *objectLayer = layer->asObjectGroup();
                 // Process the Tile Layer
                 if (tileLayer) {
-                    Tile *tile = tileLayer->tileAt(x, y);
+                    Tile *tile = tileLayer->cellAt(x, y).tile;
                     if (tile) {
                         currentTile["display"] = tile->property("display");
                         currentTile[layerKey] = tile->property("value");

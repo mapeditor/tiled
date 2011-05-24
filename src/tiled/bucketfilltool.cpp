@@ -91,7 +91,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
         // If the stamp is a single tile, ignore it when making the region
         if (mStamp->width() == 1 && mStamp->height() == 1 &&
-            mStamp->tileAt(0, 0) == regionComputer.tileAt(tilePos.x(),
+            mStamp->cellAt(0, 0) == regionComputer.cellAt(tilePos.x(),
                                                           tilePos.y()))
             return;
 

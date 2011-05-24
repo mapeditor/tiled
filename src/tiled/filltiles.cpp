@@ -37,14 +37,14 @@ FillTiles::FillTiles(MapDocument *mapDocument,
     , mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
     , mFillRegion(fillRegion)
-    , mOriginalTiles(tileLayer->copy(mFillRegion))
+    , mOriginalCells(tileLayer->copy(mFillRegion))
     , mFillStamp(static_cast<TileLayer*>(fillStamp->clone()))
 {
 }
 
 FillTiles::~FillTiles()
 {
-    delete mOriginalTiles;
+    delete mOriginalCells;
     delete mFillStamp;
 }
 
@@ -52,9 +52,9 @@ void FillTiles::undo()
 {
     const QRect boundingRect = mFillRegion.boundingRect();
     TilePainter painter(mMapDocument, mTileLayer);
-    painter.setTiles(boundingRect.x(),
+    painter.setCells(boundingRect.x(),
                      boundingRect.y(),
-                     mOriginalTiles,
+                     mOriginalCells,
                      mFillRegion);
 }
 
