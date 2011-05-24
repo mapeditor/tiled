@@ -201,9 +201,9 @@ void TilesetDock::updateCurrentTiles()
 
     const TilesetModel *model = static_cast<const TilesetModel*>(s->model());
     foreach (const QModelIndex &index, indexes) {
-        tileLayer->setTile(index.column() - minX,
+        tileLayer->setCell(index.column() - minX,
                            index.row() - minY,
-                           model->tileAt(index));
+                           Cell(model->tileAt(index)));
     }
 
     setCurrentTiles(tileLayer);

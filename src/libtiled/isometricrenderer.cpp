@@ -183,9 +183,19 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 
         for (int x = startPos.x(); x < rect.right(); x += tileWidth) {
             if (layer->contains(columnItr)) {
-                if (const Tile *tile = layer->tileAt(columnItr)) {
-                    const QPixmap &img = tile->image();
-                    painter->drawPixmap(x, y - img.height(), img);
+                const Cell &cell = layer->cellAt(columnItr);
+                if (!cell.isEmpty()) {
+                    const QPixmap &img = cell.tile->image();
+                    int flipX = cell.flippedHorizontally ? -1 : 1;
+                    int flipY = cell.flippedVertically ? -1 : 1;
+                    int offsetX = cell.flippedHorizontally ? img.width() : 0;
+                    int offsetY = cell.flippedVertically ? 0 : img.height();
+
+                    painter->scale(flipX, flipY);
+                    painter->drawPixmap(x * flipX - offsetX,
+                                        y * flipY - offsetY,
+                                        img);
+                    painter->scale(flipX, flipY);
                 }
             }
 

@@ -46,6 +46,10 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+// Bits on the far end of the 32-bit global tile ID are used for tile flags
+const int FlippedHorizontallyFlag = 0x80000000;
+const int FlippedVerticallyFlag   = 0x40000000;
+
 namespace Tiled {
 namespace Internal {
 
@@ -71,17 +75,17 @@ public:
 private:
     void writeMap(QXmlStreamWriter &w, const Map *map);
     void writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
-                      int firstGid);
+                      uint firstGid);
     void writeTileLayer(QXmlStreamWriter &w, const TileLayer *tileLayer);
     void writeLayerAttributes(QXmlStreamWriter &w, const Layer *layer);
-    int gidForTile(const Tile *tile) const;
+    uint gidForCell(const Cell &cell) const;
     void writeObjectGroup(QXmlStreamWriter &w, const ObjectGroup *objectGroup);
     void writeObject(QXmlStreamWriter &w, const MapObject *mapObject);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 
     QDir mMapDir;     // The directory in which the map is being saved
-    QMap<int, const Tileset*> mFirstGidToTileset;
+    QMap<uint, const Tileset*> mFirstGidToTileset;
     bool mUseAbsolutePaths;
 };
 
@@ -186,7 +190,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     writeProperties(w, map->properties());
 
     mFirstGidToTileset.clear();
-    int firstGid = 1;
+    uint firstGid = 1;
     foreach (const Tileset *tileset, map->tilesets()) {
         writeTileset(w, tileset, firstGid);
         mFirstGidToTileset.insert(firstGid, tileset);
@@ -204,7 +208,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
 }
 
 void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
-                                    int firstGid)
+                                    uint firstGid)
 {
     w.writeStartElement(QLatin1String("tileset"));
     if (firstGid > 0)
@@ -306,7 +310,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (mLayerDataFormat == MapWriter::XML) {
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
-                const int gid = gidForTile(tileLayer->tileAt(x, y));
+                const uint gid = gidForCell(tileLayer->cellAt(x, y));
                 w.writeStartElement(QLatin1String("tile"));
                 w.writeAttribute(QLatin1String("gid"), QString::number(gid));
                 w.writeEndElement();
@@ -317,7 +321,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
 
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
-                const int gid = gidForTile(tileLayer->tileAt(x, y));
+                const uint gid = gidForCell(tileLayer->cellAt(x, y));
                 tileData.append(QString::number(gid));
                 if (x != tileLayer->width() - 1
                     || y != tileLayer->height() - 1)
@@ -334,7 +338,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
 
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
-                const int gid = gidForTile(tileLayer->tileAt(x, y));
+                const uint gid = gidForCell(tileLayer->cellAt(x, y));
                 tileData.append((char) (gid));
                 tileData.append((char) (gid >> 8));
                 tileData.append((char) (gid >> 16));
@@ -377,30 +381,39 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
 }
 
 /**
- * Returns the global tile ID for the given tile. Only valid after the
+ * Returns the global tile ID for the given cell. Only valid after the
  * firstGidToTileset map has been initialized.
  *
- * @param tile the tile to return the global ID for
+ * @param cell the cell to return the global ID for
  * @return the appropriate global tile ID, or 0 if not found
  */
-int MapWriterPrivate::gidForTile(const Tile *tile) const
+uint MapWriterPrivate::gidForCell(const Cell &cell) const
 {
-    if (!tile)
+    if (cell.isEmpty())
         return 0;
 
-    const Tileset *tileset = tile->tileset();
+    const Tileset *tileset = cell.tile->tileset();
 
     // Find the first GID for the tileset
-    QMap<int, const Tileset*>::const_iterator i = mFirstGidToTileset.begin();
-    QMap<int, const Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
+    QMap<uint, const Tileset*>::const_iterator i = mFirstGidToTileset.begin();
+    QMap<uint, const Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
     while (i != i_end && i.value() != tileset)
         ++i;
 
-    return (i != i_end) ? i.key() + tile->id() : 0;
+    if (i == i_end) // tileset not found
+        return 0;
+
+    uint gid = i.key() + cell.tile->id();
+    if (cell.flippedHorizontally)
+        gid |= FlippedHorizontallyFlag;
+    if (cell.flippedVertically)
+        gid |= FlippedVerticallyFlag;
+
+    return gid;
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
-                                    const ObjectGroup *objectGroup)
+                                        const ObjectGroup *objectGroup)
 {
     w.writeStartElement(QLatin1String("objectgroup"));
 
@@ -429,7 +442,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("type"), type);
 
     if (mapObject->tile()) {
-        const int gid = gidForTile(mapObject->tile());
+        const uint gid = gidForCell(Cell(mapObject->tile()));
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 

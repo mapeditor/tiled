@@ -74,7 +74,7 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            Tile *tile = collisionLayer->tileAt(x, y);
+            Tile *tile = collisionLayer->cellAt(x, y).tile;
             stream << (qint8) (tile && tile->id() > 0);
         }
     }

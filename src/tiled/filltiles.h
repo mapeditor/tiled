@@ -56,7 +56,7 @@ private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
     QRegion mFillRegion;
-    TileLayer *mOriginalTiles;
+    TileLayer *mOriginalCells;
     TileLayer *mFillStamp;
 };
 
