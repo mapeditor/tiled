@@ -80,6 +80,11 @@ public:
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
 public:
+    enum FlipDirection {
+        FlipHorizontally,
+        FlipVertically
+    };
+
     /**
      * Constructor.
      */
@@ -136,6 +141,12 @@ public:
      * layer will have no effect.
      */
     void merge(const QPoint &pos, const TileLayer *layer);
+
+    /**
+     * Flip this tile layer in the given \a direction. This doesn't change the
+     * dimensions of the tile layer.
+     */
+    void flip(FlipDirection direction);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.
