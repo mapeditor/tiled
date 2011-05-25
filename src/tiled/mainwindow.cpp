@@ -339,6 +339,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(switchToRightDocument, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
+    new QShortcut(tr("X"), this, SLOT(flipStampHorizontally()));
+    new QShortcut(tr("Y"), this, SLOT(flipStampVertically()));
+
     updateActions();
     readSettings();
     setupQuickStamps();
@@ -1097,6 +1100,24 @@ void MainWindow::editLayerProperties()
 
     if (Layer *layer = mMapDocument->currentLayer())
         PropertiesDialog::showDialogFor(layer, mMapDocument, this);
+}
+
+void MainWindow::flipStampHorizontally()
+{
+    if (TileLayer *stamp = mStampBrush->stamp()) {
+        stamp = static_cast<TileLayer*>(stamp->clone());
+        stamp->flip(TileLayer::FlipHorizontally);
+        setStampBrush(stamp);
+    }
+}
+
+void MainWindow::flipStampVertically()
+{
+    if (TileLayer *stamp = mStampBrush->stamp()) {
+        stamp = static_cast<TileLayer*>(stamp->clone());
+        stamp->flip(TileLayer::FlipVertically);
+        setStampBrush(stamp);
+    }
 }
 
 /**

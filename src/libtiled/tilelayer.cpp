@@ -121,6 +121,28 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
     }
 }
 
+void TileLayer::flip(FlipDirection direction)
+{
+    QVector<Cell> newGrid(mWidth * mHeight);
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            Cell &dest = newGrid[x + y * mWidth];
+            if (direction == FlipHorizontally) {
+                const Cell &source = cellAt(mWidth - x - 1, y);
+                dest = source;
+                dest.flippedHorizontally = !source.flippedHorizontally;
+            } else {
+                const Cell &source = cellAt(x, mHeight - y - 1);
+                dest = source;
+                dest.flippedVertically = !source.flippedVertically;
+            }
+        }
+    }
+
+    mGrid = newGrid;
+}
+
 QSet<Tileset*> TileLayer::usedTilesets() const
 {
     QSet<Tileset*> tilesets;
