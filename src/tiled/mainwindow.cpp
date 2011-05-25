@@ -1288,7 +1288,6 @@ void MainWindow::setupQuickStamps()
 
     connect(quickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
-    quickStampManager->setMapDocument(mMapDocument);
 }
 
 void MainWindow::closeMapDocument(int index)
