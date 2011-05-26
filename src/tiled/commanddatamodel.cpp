@@ -306,6 +306,16 @@ QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
             connect(mapper, SIGNAL(mapped(int)), SLOT(execute(int)));
         }
 
+#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+        {
+            QAction *action = menu->addAction(tr("Execute in Terminal"));
+            QSignalMapper *mapper = new QSignalMapper(action);
+            mapper->setMapping(action, row);
+            connect(action, SIGNAL(triggered()), mapper, SLOT(map()));
+            connect(mapper, SIGNAL(mapped(int)), SLOT(executeInTerminal(int)));
+        }
+#endif
+
         menu->addSeparator();
 
         {
@@ -459,6 +469,11 @@ void CommandDataModel::moveUp(int commandIndex)
 void CommandDataModel::execute(int commandIndex) const
 {
     mCommands.at(commandIndex).execute();
+}
+
+void CommandDataModel::executeInTerminal(int commandIndex) const
+{
+    mCommands.at(commandIndex).execute(true);
 }
 
 void CommandDataModel::remove(int commandIndex)

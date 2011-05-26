@@ -165,6 +165,12 @@ public slots:
     void execute(int commandIndex) const;
 
     /**
+     * Executes the command at <i>commandIndex</i> within the systems native
+     * terminal if available.
+     */
+    void executeInTerminal(int commandIndex) const;
+
+    /**
      * Deletes the command at <i>commandIndex</i>.
      */
     void remove(int commandIndex);
