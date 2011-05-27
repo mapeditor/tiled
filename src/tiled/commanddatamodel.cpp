@@ -54,7 +54,7 @@ CommandDataModel::CommandDataModel()
 #ifdef Q_WS_X11
         command.command = QLatin1String("gedit %mapfile");
 #elif defined(Q_WS_MAC)
-        command.command = QLatin1String("open %mapfile -a /Applications/TextEdit.app");
+        command.command = QLatin1String("open -t %mapfile");
 #endif
         if (!command.command.isEmpty()) {
             command.name = tr("Open in text editor");
