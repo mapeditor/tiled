@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QTextStream>
 
+
 JsonPlugin::JsonPlugin()
 {
 }
@@ -37,6 +38,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
     QTextStream out(&file);
+
 
     out << Json::stringify(mapToVariant(map,QFileInfo(fileName).dir()));
 

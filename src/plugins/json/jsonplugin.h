@@ -12,8 +12,11 @@
 #include <QVariant>
 #include <QDir>
 
+
 using namespace Tiled;
 
+const int FlippedHorizontallyFlag = 0x80000000;
+const int FlippedVerticallyFlag   = 0x40000000;
 
 Map *variantToMap(QVariantMap map, QDir mapDir=QDir());
 QVariantMap mapToVariant(const Map *map, QDir mapDir=QDir());
