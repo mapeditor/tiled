@@ -197,6 +197,9 @@ File ${QT_DIR}\plugins\imageformats\qgif4.dll
 File ${QT_DIR}\plugins\imageformats\qjpeg4.dll
 File ${QT_DIR}\plugins\imageformats\qtiff4.dll
 
+SetOutPath $INSTDIR\plugins\tiled
+File /r ${BUILD_DIR}\plugins\tiled\*.dll
+
 SetOutPath $INSTDIR\translations
 File  ${ROOT_DIR}\translations\*.qm
 ;File  ${QT_DIR}\translations\qt_cs.qm
@@ -259,6 +262,7 @@ Delete $INSTDIR\uninstall.exe
 
 RMDir /r $INSTDIR\plugins\codecs
 RMDir /r $INSTDIR\plugins\imageformats
+RMDir /r $INSTDIR\plugins\tiled
 RMDir    $INSTDIR\plugins
 RMDir /r $INSTDIR\translations
 RMDir /r $INSTDIR\examples
