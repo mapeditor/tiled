@@ -31,6 +31,7 @@
 #include "mapreader.h"
 
 #include "compression.h"
+#include "gidmapper.h"
 #include "objectgroup.h"
 #include "map.h"
 #include "mapobject.h"
@@ -42,15 +43,10 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
-#include <QMap>
 #include <QXmlStreamReader>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-// Bits on the far end of the 32-bit global tile ID are used for tile flags
-const int FlippedHorizontallyFlag = 0x80000000;
-const int FlippedVerticallyFlag   = 0x40000000;
 
 namespace Tiled {
 namespace Internal {
@@ -111,7 +107,7 @@ private:
     QString mError;
     QString mPath;
     Map *mMap;
-    QMap<uint, Tileset*> mGidsToTileset;
+    GidMapper mGidMapper;
     bool mReadingExternalTileset;
 
     QXmlStreamReader xml;
@@ -134,7 +130,7 @@ Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
         xml.raiseError(tr("Not a map file."));
     }
 
-    mGidsToTileset.clear();
+    mGidMapper.clear();
     return map;
 }
 
@@ -303,7 +299,7 @@ Tileset *MapReaderPrivate::readTileset()
     }
 
     if (tileset && !mReadingExternalTileset)
-        mGidsToTileset.insert(firstGid, tileset);
+        mGidMapper.insert(firstGid, tileset);
 
     return tileset;
 }
@@ -546,27 +542,11 @@ Cell MapReaderPrivate::cellForGid(uint gid, bool &ok)
 {
     Cell result;
 
-    if (gid == 0) {
-        ok = true;
-    } else if (mGidsToTileset.isEmpty()) {
+    if (mGidMapper.isEmpty()) {
         xml.raiseError(tr("Tile used but no tilesets specified"));
         ok = false;
     } else {
-        // Read out the flags
-        result.flippedHorizontally = (gid & FlippedHorizontallyFlag);
-        result.flippedVertically = (gid & FlippedVerticallyFlag);
-
-        // Clear the flags
-        gid &= ~(FlippedHorizontallyFlag | FlippedVerticallyFlag);
-
-        // Find the tileset containing this tile
-        QMap<uint, Tileset*>::const_iterator i = mGidsToTileset.upperBound(gid);
-        --i; // Navigate one tileset back since upper bound finds the next
-        const int tileId = gid - i.key();
-        const Tileset *tileset = i.value();
-
-        result.tile = tileset ? tileset->tileAt(tileId) : 0;
-        ok = true;
+        result = mGidMapper.gidToCell(gid, ok);
     }
 
     return result;
