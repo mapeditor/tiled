@@ -53,6 +53,7 @@ public:
     void writeKeyAndValue(const QByteArray &key, int value);
     void writeKeyAndValue(const QByteArray &key, uint value);
     void writeKeyAndValue(const QByteArray &key, double value);
+    void writeKeyAndValue(const QByteArray &key, bool value);
     void writeKeyAndValue(const QByteArray &key, const char *value);
     void writeKeyAndValue(const QByteArray &key, const QByteArray &value);
     void writeKeyAndValue(const QByteArray &key, const QString &value);
@@ -99,6 +100,9 @@ inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, uint value)
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, double value)
 { writeKeyAndUnquotedValue(key, QByteArray::number(value)); }
+
+inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, bool value)
+{ writeKeyAndUnquotedValue(key, value ? "true" : "false"); }
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, const QString &value)
 { writeKeyAndValue(key, value.toUtf8()); }

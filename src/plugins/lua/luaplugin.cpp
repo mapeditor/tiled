@@ -190,7 +190,7 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     writer.writeKeyAndValue("y", tileLayer->y());
     writer.writeKeyAndValue("width", tileLayer->width());
     writer.writeKeyAndValue("height", tileLayer->height());
-    writer.writeKeyAndValue("visible", tileLayer->isVisible() ? 1 : 0);
+    writer.writeKeyAndValue("visible", tileLayer->isVisible());
     writer.writeKeyAndValue("opacity", tileLayer->opacity());
     writeProperties(writer, tileLayer->properties());
 
@@ -214,7 +214,7 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writer.writeStartTable();
     writer.writeKeyAndValue("type", "objectgroup");
     writer.writeKeyAndValue("name", objectGroup->name());
-    writer.writeKeyAndValue("visible", objectGroup->isVisible() ? 1 : 0);
+    writer.writeKeyAndValue("visible", objectGroup->isVisible());
     writer.writeKeyAndValue("opacity", objectGroup->opacity());
     writeProperties(writer, objectGroup->properties());
 
