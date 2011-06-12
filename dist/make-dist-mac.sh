@@ -12,7 +12,7 @@ fi
 name="tiled-qt-$1"
 
 # Get various directories
-baseDir=`dirname $01`
+baseDir=`dirname $01`/..
 binDir="$baseDir/bin"
 
 # Create a temporary staging directory
@@ -23,7 +23,7 @@ echo $tempDir
 cp "$baseDir/AUTHORS" "$tempDir/"
 cp "$baseDir/COPYING" "$tempDir/"
 cp "$baseDir/NEWS" "$tempDir/"
-cp "$baseDir/README" "$tempDir/"
+cp "$baseDir/README.md" "$tempDir/"
 cp -R "$baseDir/examples" "$tempDir/"
 cp -R "$binDir/Tiled.app" "$tempDir/"
 
