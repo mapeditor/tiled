@@ -114,7 +114,8 @@ SOURCES += aboutdialog.cpp \
     commanddatamodel.cpp \
     commanddialog.cpp \
     tiledapplication.cpp \
-    command.cpp
+    command.cpp \
+    abstractobjecttool.cpp
 
 HEADERS += aboutdialog.h \
     automap.h \
@@ -195,7 +196,8 @@ HEADERS += aboutdialog.h \
     commanddialog.h \
     commandbutton.h \
     tiledapplication.h \
-    command.h
+    command.h \
+    abstractobjecttool.h
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \
