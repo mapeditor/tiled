@@ -285,6 +285,32 @@ Layer *TileLayer::mergedWith(Layer *other) const
     return merged;
 }
 
+QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
+{
+    QRegion ret;
+
+    const int dx = other->x() - mX;
+    const int dy = other->y() - mY;
+    QRect r = QRect(0, 0, width(), height());
+    r &= QRect(dx, dy, other->width(), other->height());
+
+    for (int y = r.top(); y <= r.bottom(); ++y) {
+        for (int x = r.left(); x <= r.right(); ++x) {
+            if (cellAt(x, y) != other->cellAt(x - dx, y - dy)) {
+                const int rangeStart = x;
+                while (x <= r.right() &&
+                       cellAt(x, y) != other->cellAt(x - dx, y - dy)) {
+                    ++x;
+                }
+                const int rangeEnd = x;
+                ret += QRect(rangeStart, y, rangeEnd - rangeStart, 1);
+            }
+        }
+    }
+
+    return ret;
+}
+
 bool TileLayer::isEmpty() const
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
