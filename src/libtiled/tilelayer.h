@@ -82,7 +82,11 @@ public:
 };
 
 /**
- * A tile layer.
+ * A tile layer is a grid of cells. Each cell refers to a specific tile, and
+ * stores how the tile is flipped.
+ *
+ * Coordinates and regions passed to function parameters are in local
+ * coordinates and do not take into account the position of the layer.
  */
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
@@ -148,6 +152,16 @@ public:
      * layer will have no effect.
      */
     void merge(const QPoint &pos, const TileLayer *layer);
+
+    /**
+     * Sets the cells starting at the given position to the cells in the given
+     * \a tileLayer. Parts that fall outside of this layer will be ignored.
+     *
+     * When a \a mask is given, only cells that fall within this mask are set.
+     * The mask is applied in local coordinates.
+     */
+    void setCells(int x, int y, TileLayer *tileLayer,
+                  const QRegion &mask = QRegion());
 
     /**
      * Flip this tile layer in the given \a direction. This doesn't change the

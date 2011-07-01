@@ -125,6 +125,22 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
     }
 }
 
+void TileLayer::setCells(int x, int y, TileLayer *layer,
+                         const QRegion &mask)
+{
+    // Determine the overlapping area
+    QRegion area = QRect(x, y, layer->width(), layer->height());
+    area &= QRect(0, 0, width(), height());
+
+    if (!mask.isEmpty())
+        area &= mask;
+
+    foreach (const QRect &rect, area.rects())
+        for (int _x = rect.left(); _x <= rect.right(); ++_x)
+            for (int _y = rect.top(); _y <= rect.bottom(); ++_y)
+                setCell(_x, _y, layer->cellAt(_x - x, _y - y));
+}
+
 void TileLayer::flip(FlipDirection direction)
 {
     QVector<Cell> newGrid(mWidth * mHeight);

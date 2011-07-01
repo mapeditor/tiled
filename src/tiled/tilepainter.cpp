@@ -73,15 +73,10 @@ void TilePainter::setCells(int x, int y,
     if (region.isEmpty())
         return;
 
-    foreach (const QRect &rect, region.rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                mTileLayer->setCell(_x - mTileLayer->x(),
-                                    _y - mTileLayer->y(),
-                                    tileLayer->cellAt(_x - x, _y - y));
-            }
-        }
-    }
+    mTileLayer->setCells(x - mTileLayer->x(),
+                         y - mTileLayer->y(),
+                         tileLayer,
+                         region.translated(-mTileLayer->position()));
 
     mMapDocument->emitRegionChanged(region);
 }
