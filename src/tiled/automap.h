@@ -351,11 +351,11 @@ public:
     void redo();
 
 private:
-    Layer *swapLayer(int layerIndex, Layer *layer);
+    void patchLayer(int layerIndex, TileLayer *layer);
 
     MapDocument *mMapDocument;
-    QVector<Layer*> mLayersAfter;
-    QVector<Layer*> mLayersBefore;
+    QVector<TileLayer*> mLayersAfter;
+    QVector<TileLayer*> mLayersBefore;
 };
 
 /**

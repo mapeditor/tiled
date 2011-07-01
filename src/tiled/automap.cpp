@@ -768,7 +768,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
     foreach (const QString &layerName, touchedlayers) {
         const int layerindex = map->indexOfLayer(layerName);
         Q_ASSERT(layerindex != -1);
-        mLayersBefore << map->layerAt(layerindex)->clone();
+        mLayersBefore << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
     }
 
     foreach (AutoMapper *a, autoMapper) {
@@ -779,8 +779,29 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
         const int layerindex = map->indexOfLayer(layerName);
         // layerindex exists, because AutoMapper is still alive, dont check
         Q_ASSERT(layerindex != -1);
-        mLayersAfter << map->layerAt(layerindex)->clone();
+        mLayersAfter << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
     }
+    // reduce memory usage by saving only diffs
+    Q_ASSERT(mLayersAfter.size() == mLayersBefore.size());
+    for (int i = 0; i < mLayersAfter.size(); i++) {
+        TileLayer *before = mLayersBefore.at(i);
+        TileLayer *after = mLayersAfter.at(i);
+        QRect diffRegion = before->computeDiffRegion(after).boundingRect();
+
+        TileLayer *before1 = before->copy(diffRegion);
+        TileLayer *after1 = after->copy(diffRegion);
+
+        before1->setPosition(diffRegion.topLeft());
+        after1->setPosition(diffRegion.topLeft());
+        before1->setName(before->name());
+        after1->setName(after->name());
+        mLayersBefore.replace(i, before1);
+        mLayersAfter.replace(i, after1);
+
+        delete before;
+        delete after;
+    }
+
     foreach (AutoMapper *a, autoMapper) {
         a->cleanAll();
     }
@@ -788,7 +809,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
 
 AutoMapperWrapper::~AutoMapperWrapper()
 {
-    QVector<Layer*>::iterator i;
+    QVector<TileLayer*>::iterator i;
     for (i = mLayersAfter.begin(); i != mLayersAfter.end(); ++i)
         delete *i;
     for (i = mLayersBefore.begin(); i != mLayersBefore.end(); ++i)
@@ -798,38 +819,37 @@ AutoMapperWrapper::~AutoMapperWrapper()
 void AutoMapperWrapper::undo()
 {
     Map *map = mMapDocument->map();
-    QVector<Layer*>::iterator i;
+    QVector<TileLayer*>::iterator i;
     for (i = mLayersBefore.begin(); i != mLayersBefore.end(); ++i) {
         const int layerindex = map->indexOfLayer((*i)->name());
         if (layerindex != -1)
-            //just put a clone, so the saved layers wont be altered by others.
-            delete swapLayer(layerindex, (*i)->clone());
+            patchLayer(layerindex, *i);
     }
 }
+
 void AutoMapperWrapper::redo()
 {
     Map *map = mMapDocument->map();
-    QVector<Layer*>::iterator i;
+    QVector<TileLayer*>::iterator i;
     for (i = mLayersAfter.begin(); i != mLayersAfter.end(); ++i) {
         const int layerindex = (map->indexOfLayer((*i)->name()));
         if (layerindex != -1)
-            // just put a clone, so the saved layers wont be altered by others.
-            delete swapLayer(layerindex, (*i)->clone());
+            patchLayer(layerindex, *i);
     }
+
 }
 
-Layer *AutoMapperWrapper::swapLayer(int layerIndex, Layer *layer)
+void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
 {
-    const int currentIndex = mMapDocument->currentLayerIndex();
+    Map *map = mMapDocument->map();
+    QRect b = layer->bounds();
 
-    LayerModel *layerModel = mMapDocument->layerModel();
-    Layer *replaced = layerModel->takeLayerAt(layerIndex);
-    layerModel->insertLayer(layerIndex, layer);
+    Q_ASSERT(map->layerAt(layerIndex)->asTileLayer());
+    TileLayer *t = static_cast<TileLayer*>(map->layerAt(layerIndex));
 
-    if (layerIndex == currentIndex)
-        mMapDocument->setCurrentLayerIndex(layerIndex);
-
-    return replaced;
+    t->setCells(b.left() - t->x(), b.top() - t->y(), layer,
+                b.translated(-t->position()));
+    mMapDocument->emitRegionChanged(b);
 }
 
 AutomaticMappingManager *AutomaticMappingManager::mInstance = 0;
