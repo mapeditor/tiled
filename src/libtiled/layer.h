@@ -120,7 +120,13 @@ public:
     /**
      * Returns the position of this layer (in tiles).
      */
-    QPoint pos() const { return QPoint(mX, mY); }
+    QPoint position() const { return QPoint(mX, mY); }
+
+    /**
+     * Sets the position of this layer (in tiles).
+     */
+    void setPosition(QPoint pos) { setPosition(pos.x(), pos.y()); }
+    void setPosition(int x, int y) { mX = x; mY = y; }
 
     /**
      * Returns the width of this layer.

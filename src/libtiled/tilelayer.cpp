@@ -277,11 +277,11 @@ Layer *TileLayer::mergedWith(Layer *other) const
 
     const TileLayer *o = static_cast<TileLayer*>(other);
     const QRect unitedBounds = bounds().united(o->bounds());
-    const QPoint offset = pos() - unitedBounds.topLeft();
+    const QPoint offset = position() - unitedBounds.topLeft();
 
     TileLayer *merged = static_cast<TileLayer*>(clone());
     merged->resize(unitedBounds.size(), offset);
-    merged->merge(o->pos() - unitedBounds.topLeft(), o);
+    merged->merge(o->position() - unitedBounds.topLeft(), o);
     return merged;
 }
 
