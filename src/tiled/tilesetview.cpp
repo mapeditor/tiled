@@ -72,17 +72,18 @@ void TileDelegate::paint(QPainter *painter,
     // Draw the tile image
     const QVariant display = index.model()->data(index, Qt::DisplayRole);
     const QPixmap tileImage = display.value<QPixmap>();
+    const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
     if (mTilesetView->zoomable()->smoothTransform())
         painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->drawPixmap(option.rect.adjusted(0, 0, -1, -1), tileImage);
+    painter->drawPixmap(option.rect.adjusted(0, 0, -extra, -extra), tileImage);
 
     // Overlay with highlight color when selected
     if (option.state & QStyle::State_Selected) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.5);
-        painter->fillRect(option.rect.adjusted(0, 0, -1, -1),
+        painter->fillRect(option.rect.adjusted(0, 0, -extra, -extra),
                           option.palette.highlight());
         painter->setOpacity(opacity);
     }
@@ -94,9 +95,10 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
     const Tileset *tileset = m->tileset();
     const qreal zoom = mTilesetView->zoomable()->scale();
+    const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
-    return QSize(tileset->tileWidth() * zoom + 1,
-                 tileset->tileHeight() * zoom + 1);
+    return QSize(tileset->tileWidth() * zoom + extra,
+                 tileset->tileHeight() * zoom + extra);
 }
 
 /**
@@ -140,6 +142,7 @@ TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
     : QTableView(parent)
     , mZoomable(new Zoomable(this))
     , mMapDocument(mapDocument)
+    , mDrawGrid(true)
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -232,6 +235,13 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     connect(exportTileset, SIGNAL(triggered()), SLOT(exportTileset()));
     connect(importTileset, SIGNAL(triggered()), SLOT(importTileset()));
 
+    menu.addSeparator();
+    QAction *toggleGrid = menu.addAction(tr("Show &Grid"));
+    toggleGrid->setCheckable(true);
+    toggleGrid->setChecked(mDrawGrid);
+
+    connect(toggleGrid, SIGNAL(toggled(bool)), SLOT(toggleGrid()));
+
     menu.exec(event->globalPos());
 }
 
@@ -281,6 +291,12 @@ void TilesetView::importTileset()
 
     QUndoCommand *command = new SetTilesetFileName(tileset, QString());
     mMapDocument->undoStack()->push(command);
+}
+
+void TilesetView::toggleGrid()
+{
+    mDrawGrid = !mDrawGrid;
+    tilesetModel()->tilesetChanged();
 }
 
 void TilesetView::adjustScale()

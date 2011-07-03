@@ -45,6 +45,8 @@ public:
 
     Zoomable *zoomable() const { return mZoomable; }
 
+    bool drawGrid() const { return mDrawGrid; }
+
     /**
      * Convenience method that returns the model as a TilesetModel.
      */
@@ -59,12 +61,14 @@ private slots:
     void editTileProperties();
     void exportTileset();
     void importTileset();
+    void toggleGrid();
 
     void adjustScale();
 
 private:
     Zoomable *mZoomable;
     MapDocument *mMapDocument;
+    bool mDrawGrid;
 };
 
 } // namespace Internal
