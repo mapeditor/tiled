@@ -40,6 +40,8 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     mMaxTileSize(0, 0),
     mGrid(width * height)
 {
+    Q_ASSERT(width >= 0);
+    Q_ASSERT(height >= 0);
 }
 
 QRegion TileLayer::region() const
@@ -67,6 +69,8 @@ QRegion TileLayer::region() const
 
 void TileLayer::setCell(int x, int y, const Cell &cell)
 {
+    Q_ASSERT(contains(x, y));
+
     if (cell.tile) {
         if (cell.tile->width() > mMaxTileSize.width()) {
             mMaxTileSize.setWidth(cell.tile->width());
