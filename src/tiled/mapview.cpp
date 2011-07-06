@@ -24,6 +24,8 @@
 #include "preferences.h"
 #include "zoomable.h"
 
+#include <QApplication>
+#include <QCursor>
 #include <QWheelEvent>
 #include <QScrollBar>
 
@@ -62,6 +64,11 @@ MapView::MapView(QWidget *parent)
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
 }
 
+MapView::~MapView()
+{
+    setHandScrolling(false); // Just in case we didn't get a hide event
+}
+
 MapScene *MapView::mapScene() const
 {
     return static_cast<MapScene*>(scene());
@@ -94,6 +101,44 @@ void MapView::setUseOpenGL(bool useOpenGL)
 #endif
 }
 
+void MapView::setHandScrolling(bool handScrolling)
+{
+    if (mHandScrolling == handScrolling)
+        return;
+
+    mHandScrolling = handScrolling;
+    setInteractive(!mHandScrolling);
+
+    if (mHandScrolling) {
+        mLastMousePos = QCursor::pos();
+        QApplication::setOverrideCursor(QCursor(Qt::ClosedHandCursor));
+        viewport()->grabMouse();
+    } else {
+        viewport()->releaseMouse();
+        QApplication::restoreOverrideCursor();
+    }
+}
+
+bool MapView::event(QEvent *e)
+{
+    // Ignore space bar events since they're handled by the MainWindow
+    if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
+        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Space) {
+            e->ignore();
+            return false;
+        }
+    }
+
+    return QGraphicsView::event(e);
+}
+
+void MapView::hideEvent(QHideEvent *event)
+{
+    // Disable hand scrolling when the view gets hidden in any way
+    setHandScrolling(false);
+    QGraphicsView::hideEvent(event);
+}
+
 /**
  * Override to support zooming in and out using the mouse wheel.
  */
@@ -120,9 +165,7 @@ void MapView::wheelEvent(QWheelEvent *event)
 void MapView::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton) {
-        viewport()->setCursor(Qt::ClosedHandCursor);
-        setInteractive(false);
-        mHandScrolling = true;
+        setHandScrolling(true);
         return;
     }
 
@@ -135,9 +178,7 @@ void MapView::mousePressEvent(QMouseEvent *event)
 void MapView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton) {
-        viewport()->setCursor(QCursor());
-        setInteractive(true);
-        mHandScrolling = false;
+        setHandScrolling(false);
         return;
     }
 
@@ -152,14 +193,14 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
     if (mHandScrolling) {
         QScrollBar *hBar = horizontalScrollBar();
         QScrollBar *vBar = verticalScrollBar();
-        const QPoint d = event->pos() - mLastMousePos;
+        const QPoint d = event->globalPos() - mLastMousePos;
         hBar->setValue(hBar->value() + (isRightToLeft() ? d.x() : -d.x()));
         vBar->setValue(vBar->value() - d.y());
 
-        mLastMousePos = event->pos();
+        mLastMousePos = event->globalPos();
         return;
     }
 
     QGraphicsView::mouseMoveEvent(event);
-    mLastMousePos = event->pos();
+    mLastMousePos = event->globalPos();
 }

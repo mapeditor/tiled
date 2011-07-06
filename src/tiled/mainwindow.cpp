@@ -395,6 +395,20 @@ void MainWindow::changeEvent(QEvent *event)
     }
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
+        if (MapView *mapView = mDocumentManager->currentMapView())
+            mapView->setHandScrolling(true);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
+        if (MapView *mapView = mDocumentManager->currentMapView())
+            mapView->setHandScrolling(false);
+}
+
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
     const QList<QUrl> urls = e->mimeData()->urls();

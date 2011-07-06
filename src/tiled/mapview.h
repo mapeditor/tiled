@@ -41,16 +41,21 @@ class MapView : public QGraphicsView
     Q_OBJECT
 
 public:
-    /**
-     * Constructor.
-     */
     MapView(QWidget *parent = 0);
+    ~MapView();
 
     MapScene *mapScene() const;
 
     Zoomable *zoomable() const { return mZoomable; }
 
+    bool handScrolling() const { return mHandScrolling; }
+    void setHandScrolling(bool handScrolling);
+
 protected:
+    bool event(QEvent *event);
+
+    void hideEvent(QHideEvent *);
+
     void wheelEvent(QWheelEvent *event);
 
     void mousePressEvent(QMouseEvent *event);

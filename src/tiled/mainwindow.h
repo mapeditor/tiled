@@ -94,6 +94,9 @@ protected:
     void closeEvent(QCloseEvent *event);
     void changeEvent(QEvent *event);
 
+    void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
+
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 
