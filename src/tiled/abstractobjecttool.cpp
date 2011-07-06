@@ -25,6 +25,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
+#include "maprenderer.h"
 #include "mapscene.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
@@ -33,6 +34,8 @@
 
 #include <QMenu>
 #include <QUndoStack>
+
+#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -54,6 +57,20 @@ void AbstractObjectTool::activate(MapScene *scene)
 void AbstractObjectTool::deactivate(MapScene *)
 {
     mMapScene = 0;
+}
+
+void AbstractObjectTool::mouseLeft()
+{
+    setStatusInfo(QString());
+}
+
+void AbstractObjectTool::mouseMoved(const QPointF &pos,
+                                    Qt::KeyboardModifiers)
+{
+    const QPointF tilePosF = mapDocument()->renderer()->pixelToTileCoords(pos);
+    const int x = (int) std::floor(tilePosF.x());
+    const int y = (int) std::floor(tilePosF.y());
+    setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)

@@ -41,7 +41,6 @@ public:
     ~ObjectSelectionTool();
 
     void mouseEntered();
-    void mouseLeft();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);

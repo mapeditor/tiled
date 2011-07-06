@@ -64,13 +64,11 @@ void CreateObjectTool::mouseEntered()
 {
 }
 
-void CreateObjectTool::mouseLeft()
-{
-}
-
 void CreateObjectTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
 {
+    AbstractObjectTool::mouseMoved(pos, modifiers);
+
     if (!mNewMapObjectItem)
         return;
 

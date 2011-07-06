@@ -44,7 +44,6 @@ public:
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
 
     void mouseEntered();
-    void mouseLeft();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
