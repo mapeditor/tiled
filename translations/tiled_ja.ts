@@ -34,9 +34,54 @@
         <translation>プロパティ</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+24"/>
+        <source>&amp;Save map before executing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Save map before executing</source>
-        <translation>コマンド実行前に保存</translation>
+        <translation type="obsolete">コマンド実行前に保存</translation>
+    </message>
+</context>
+<context>
+    <name>Droidcraft::DroidcraftPlugin</name>
+    <message>
+        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
+        <source>This is not a valid Droidcraft map file!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
+        <source>The map needs to have exactly one tile layer!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>The layer must have a size of 48 x 48 tiles!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Droidcraft map files (*.dat)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Lua::LuaPlugin</name>
+    <message>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Lua files (*.lua)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -156,7 +201,12 @@
         <translation>新しいファイル(&amp;N)...</translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+56"/>
+        <source>Save As &amp;Image...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+42"/>
         <source>&amp;Export As...</source>
         <translation>名前をつけてエクスポート(&amp;E)...</translation>
     </message>
@@ -268,12 +318,11 @@
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location line="+5"/>
         <source>Save As Image...</source>
-        <translation>画像で保存...</translation>
+        <translation type="obsolete">画像で保存...</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+17"/>
         <source>Cu&amp;t</source>
         <translation>切り取り(&amp;t)</translation>
     </message>
@@ -328,7 +377,7 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+132"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+130"/>
         <source>Not a map file.</source>
         <translation>マップファイルではありません。</translation>
     </message>
@@ -357,7 +406,7 @@ Line %1, column %2</source>
         <translation>読み込めませんでした: %1</translation>
     </message>
     <message>
-        <location line="+61"/>
+        <location line="+44"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>マップの回転がサポートされていないものです: &quot;%1&quot;</translation>
     </message>
@@ -390,19 +439,19 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+11"/>
-        <location line="+66"/>
+        <location line="+72"/>
         <location line="+39"/>
-        <location line="+103"/>
+        <location line="+90"/>
         <source>Invalid tile: %1</source>
         <translation>不正なタイル: %1</translation>
     </message>
     <message>
-        <location line="-188"/>
+        <location line="-181"/>
         <source>Unknown encoding: %1</source>
         <translation>エンコーディングがよく分かりません: %1</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+25"/>
         <source>Compression method &apos;%1&apos; not supported</source>
         <translation>&apos;%1&apos;という圧縮方法には対応していません</translation>
     </message>
@@ -418,19 +467,51 @@ Line %1, column %2</source>
         <translation>レイヤー &apos;%3&apos;の(%1,%2)のタイルをパースできません</translation>
     </message>
     <message>
-        <location line="+20"/>
         <source>Invalid global tile id (less than 0): %1</source>
-        <translation>グローバル・タイルIDが不正です (0未満): %1</translation>
+        <translation type="obsolete">グローバル・タイルIDが不正です (0未満): %1</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+20"/>
         <source>Tile used but no tilesets specified</source>
         <translation>タイルセットが指定されていません</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+102"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+101"/>
         <source>Could not open file for writing.</source>
         <translation>書き込み用ファイルを開けませんでした.</translation>
+    </message>
+</context>
+<context>
+    <name>NewImageLayerDialog</name>
+    <message>
+        <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
+        <source>New Tileset</source>
+        <translation type="unfinished">新しいタイルセット</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Image layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Name:</source>
+        <translation type="unfinished">名前(&amp;N):</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Image:</source>
+        <translation type="unfinished">画像:</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>&amp;Browse...</source>
+        <translation type="unfinished">参照(&amp;B)...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Use transparent color:</source>
+        <translation type="unfinished">透過色を設定する:</translation>
     </message>
 </context>
 <context>
@@ -829,6 +910,38 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::AbstractObjectTool</name>
+    <message numerus="yes">
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
+        <location line="+54"/>
+        <source>Duplicate %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform>%nつのオブジェクトを複製</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="-53"/>
+        <location line="+71"/>
+        <source>Remove %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform>%nつのオブジェクトを削除</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="-62"/>
+        <location line="+72"/>
+        <source>Move %n Object(s) to Layer</source>
+        <translation type="unfinished">
+            <numerusform>%nつのオブジェクトを別レイヤーへ移動</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="-62"/>
+        <source>Object &amp;Properties...</source>
+        <translation type="unfinished">オブジェクトのプロパティ(&amp;P)...</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automap.cpp" line="+116"/>
@@ -836,7 +949,7 @@ Line %1, column %2</source>
         <translation>複数のレイヤー %1 が見つかりました!</translation>
     </message>
     <message>
-        <location line="+115"/>
+        <location line="+110"/>
         <source>No ruleRegions layer found!</source>
         <translation>ruleRegionsレイヤーが見つかりません!</translation>
     </message>
@@ -851,7 +964,7 @@ Line %1, column %2</source>
         <translation>ruleSetレイヤーが見つかりません!</translation>
     </message>
     <message>
-        <location line="+208"/>
+        <location line="+212"/>
         <source>Tile</source>
         <translation>タイル</translation>
     </message>
@@ -859,12 +972,12 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AutomaticMappingManager</name>
     <message>
-        <location line="+491"/>
+        <location line="+497"/>
         <source>No set layer found!</source>
         <translation>setレイヤーが見つかりません!</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+27"/>
         <source>Apply AutoMap rules</source>
         <translation>AutoMap rulesを適用</translation>
     </message>
@@ -915,7 +1028,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::CommandButton</name>
     <message>
-        <location filename="../src/tiled/commandbutton.cpp" line="+48"/>
+        <location filename="../src/tiled/commandbutton.cpp" line="+39"/>
         <source>Execute Command</source>
         <translation>コマンドを実行</translation>
     </message>
@@ -925,13 +1038,12 @@ Line %1, column %2</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location line="+39"/>
-        <location line="+61"/>
+        <location line="+24"/>
         <source>Error Executing Command</source>
         <translation>コマンド実行中にエラー発生</translation>
     </message>
     <message>
-        <location line="-60"/>
+        <location line="+1"/>
         <source>You do not have any commands setup.</source>
         <translation>コマンドが１つも登録されていません.</translation>
     </message>
@@ -941,25 +1053,24 @@ Line %1, column %2</source>
         <translation>コマンドを編集...</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+45"/>
         <source>Edit Commands...</source>
         <translation>コマンドを編集...</translation>
     </message>
     <message>
-        <location line="+9"/>
         <source>There was an error running the command</source>
-        <translation>コマンドを実行中にエラーが発生しました</translation>
+        <translation type="obsolete">コマンドを実行中にエラーが発生しました</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::CommandDataModel</name>
     <message>
-        <location filename="../src/tiled/commanddatamodel.cpp" line="+74"/>
+        <location filename="../src/tiled/commanddatamodel.cpp" line="+60"/>
         <source>Open in text editor</source>
         <translation>テキストエディタで開く</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+92"/>
         <location line="+67"/>
         <source>&lt;new command&gt;</source>
         <translation>&lt;コマンドを追加&gt;</translation>
@@ -985,7 +1096,7 @@ Line %1, column %2</source>
         <translation>コマンドを追加</translation>
     </message>
     <message>
-        <location line="+100"/>
+        <location line="+101"/>
         <source>Name</source>
         <translation>名前</translation>
     </message>
@@ -999,20 +1110,93 @@ Line %1, column %2</source>
         <source>Enable</source>
         <translation>有効化</translation>
     </message>
+    <message>
+        <location line="+14"/>
+        <source>Move Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Move Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Execute in Terminal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+84"/>
+        <source>%1 (copy)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>New command</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tiled::Internal::CommandDialog</name>
     <message>
-        <location filename="../src/tiled/commanddialog.cpp" line="+35"/>
+        <location filename="../src/tiled/commanddialog.cpp" line="+40"/>
         <source>Edit Commands</source>
         <translation>コマンドの編集</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CommandProcess</name>
+    <message>
+        <location filename="../src/tiled/command.cpp" line="+122"/>
+        <source>Unable to create/open %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Unable to add executable permissions to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>The command failed to start.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>The command crashed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>The command timed out.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>An unknown error occurred.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Error Executing %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::CreateObjectTool</name>
     <message>
         <location filename="../src/tiled/createobjecttool.cpp" line="+42"/>
-        <location line="+111"/>
+        <location line="+100"/>
         <source>O</source>
         <translation>O</translation>
     </message>
@@ -1048,9 +1232,37 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::ImageLayerPropertiesDialog</name>
+    <message>
+        <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
+        <source>Image Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Image:</source>
+        <translation type="unfinished">画像:</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Transparent color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Layer Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+178"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+179"/>
         <source>Layers</source>
         <translation>レイヤー</translation>
     </message>
@@ -1078,14 +1290,14 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+129"/>
-        <location line="+10"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+134"/>
+        <location line="+8"/>
         <source>Undo</source>
         <translation>元に戻す</translation>
     </message>
     <message>
-        <location line="-9"/>
-        <location line="+8"/>
+        <location line="-7"/>
+        <location line="+6"/>
         <source>Redo</source>
         <translation>やり直す</translation>
     </message>
@@ -1094,13 +1306,13 @@ Line %1, column %2</source>
         <translation type="obsolete">マップを開くときにエラーが発生しました</translation>
     </message>
     <message>
-        <location line="+391"/>
+        <location line="+418"/>
         <source>Open Map</source>
         <translation>マップを開く</translation>
     </message>
     <message>
         <location line="-13"/>
-        <location line="+79"/>
+        <location line="+76"/>
         <source>Tiled map files (*.tmx)</source>
         <translation></translation>
     </message>
@@ -1109,7 +1321,7 @@ Line %1, column %2</source>
         <translation type="obsolete">マップを保存中にエラーが発生しました</translation>
     </message>
     <message>
-        <location line="-425"/>
+        <location line="-451"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
@@ -1124,25 +1336,45 @@ Line %1, column %2</source>
         <translation>-</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <location line="+962"/>
+        <location line="+22"/>
+        <location line="+1047"/>
         <source>&amp;Layer</source>
         <translation>レイヤー(&amp;L)</translation>
     </message>
     <message>
-        <location line="-711"/>
+        <location line="-910"/>
+        <source>Ctrl+PgUp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Ctrl+PgDown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+127"/>
         <source>Error Opening Map</source>
         <translation>マップを開いている途中にエラー</translation>
     </message>
     <message>
-        <location line="+69"/>
-        <location line="+138"/>
+        <location line="+73"/>
+        <location line="+135"/>
         <source>All Files (*)</source>
         <translation>すべてのファイル (*)</translation>
     </message>
     <message>
-        <location line="-97"/>
-        <location line="+144"/>
+        <location line="-94"/>
+        <location line="+141"/>
         <source>Error Saving Map</source>
         <translation>マップを保存中にエラー</translation>
     </message>
@@ -1177,12 +1409,17 @@ Line %1, column %2</source>
         <translation>入力されたファイル名にサポートしている拡張子が含まれていません。</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+41"/>
         <source>Cut</source>
         <translation>カット</translation>
     </message>
     <message>
-        <location line="+377"/>
+        <location line="+80"/>
+        <source>Paste Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+370"/>
         <source>[*]%1 - Tiled</source>
         <translation>[*]%1 - Tiled</translation>
     </message>
@@ -1191,7 +1428,7 @@ Line %1, column %2</source>
         <translation type="obsolete">タイルセットを追加</translation>
     </message>
     <message>
-        <location line="-280"/>
+        <location line="-291"/>
         <source>Add External Tileset</source>
         <translation>拡張タイルセットを追加</translation>
     </message>
@@ -1216,7 +1453,7 @@ Line %1, column %2</source>
         <translation>自動マッピング</translation>
     </message>
     <message>
-        <location line="+123"/>
+        <location line="+120"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
@@ -1244,17 +1481,17 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+105"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+133"/>
         <source>untitled.tmx</source>
         <translation>untitled.tmx</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+44"/>
         <source>Resize Map</source>
         <translation>マップのリサイズ</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+23"/>
         <source>Offset Map</source>
         <translation>マップをずらす</translation>
     </message>
@@ -1269,7 +1506,7 @@ Line %1, column %2</source>
         <translation>オブジェクト・レイヤー %1</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+22"/>
         <source>Copy of %1</source>
         <translation>%1をコピー</translation>
     </message>
@@ -1279,7 +1516,12 @@ Line %1, column %2</source>
         <translation>レイヤーの複製</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+24"/>
+        <source>Merge Layer Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+138"/>
         <source>Tile</source>
         <translation>タイル</translation>
     </message>
@@ -1292,7 +1534,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+100"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+126"/>
         <source>Select &amp;All</source>
         <translation>すべて選択(&amp;A)</translation>
     </message>
@@ -1302,57 +1544,113 @@ Line %1, column %2</source>
         <translation>すべて選択解除(&amp;N)</translation>
     </message>
     <message>
-        <location line="-56"/>
+        <location line="-81"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
-        <location line="+58"/>
         <source>Add &amp;Tile Layer...</source>
-        <translation>タイル・レイヤーを追加(&amp;T)...</translation>
+        <translation type="obsolete">タイル・レイヤーを追加(&amp;T)...</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Add &amp;Object Layer...</source>
-        <translation>オブジェクト・レイヤーの追加(&amp;O)...</translation>
+        <translation type="obsolete">オブジェクト・レイヤーの追加(&amp;O)...</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+87"/>
         <source>&amp;Duplicate Layer</source>
         <translation>レイヤーの複製(&amp;D)</translation>
     </message>
     <message>
-        <location line="-54"/>
+        <location line="-79"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+11"/>
+        <source>PgUp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>PgDown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Ctrl+Shift+H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+48"/>
+        <source>&amp;Crop to Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add &amp;Tile Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Add &amp;Object Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Merge Layer Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>&amp;Remove Layer</source>
         <translation>レイヤーを削除(&amp;R)</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Move Layer &amp;Up</source>
-        <translation>レイヤーの順番を上げる(&amp;U)</translation>
+        <translation type="obsolete">レイヤーの順番を上げる(&amp;U)</translation>
     </message>
     <message>
-        <location line="-47"/>
+        <location line="-64"/>
         <source>Ctrl+Shift+Up</source>
         <translation>Ctrl+Shift+Up</translation>
     </message>
     <message>
-        <location line="+48"/>
         <source>Move Layer Dow&amp;n</source>
-        <translation>レイヤーの順番を下げる(&amp;n)</translation>
+        <translation type="obsolete">レイヤーの順番を下げる(&amp;n)</translation>
     </message>
     <message>
-        <location line="-43"/>
+        <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
         <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+60"/>
+        <source>Select Pre&amp;vious Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Select &amp;Next Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>R&amp;aise Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Lower Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show/&amp;Hide all Other Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Layer &amp;Properties...</source>
         <translation>レイヤーの設定(&amp;P)...</translation>
     </message>
@@ -1418,7 +1716,7 @@ Line %1, column %2</source>
         <translation type="obsolete">種類:</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+52"/>
         <source>Change Object</source>
         <translation>オブジェクトを変更</translation>
     </message>
@@ -1426,48 +1724,41 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+103"/>
-        <location line="+135"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+98"/>
+        <location line="+110"/>
         <source>Select Objects</source>
         <translation>オブジェクトを選択</translation>
     </message>
     <message>
-        <location line="-132"/>
-        <location line="+133"/>
+        <location line="-108"/>
+        <location line="+109"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message numerus="yes">
-        <location line="+77"/>
-        <location line="+145"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%nつのオブジェクトを複製</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="-144"/>
-        <location line="+162"/>
         <source>Remove %n Object(s)</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%nつのオブジェクトを削除</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="-153"/>
-        <location line="+163"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%nつのオブジェクトを別レイヤーへ移動</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-153"/>
         <source>Object &amp;Properties...</source>
-        <translation>オブジェクトのプロパティ(&amp;P)...</translation>
+        <translation type="obsolete">オブジェクトのプロパティ(&amp;P)...</translation>
     </message>
     <message numerus="yes">
-        <location line="+107"/>
+        <location line="+117"/>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>%nつのオブジェクトを移動</numerusform>
@@ -1486,7 +1777,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::PropertiesDialog</name>
     <message>
-        <location filename="../src/tiled/propertiesdialog.cpp" line="+62"/>
+        <location filename="../src/tiled/propertiesdialog.cpp" line="+69"/>
         <source>%1 Properties</source>
         <translation>%1 プロパティ</translation>
     </message>
@@ -1529,7 +1820,7 @@ Do you want to replace it?</source>
 上書きしてよろしいですか?</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+73"/>
         <source>Image</source>
         <translation>画像</translation>
     </message>
@@ -1558,13 +1849,13 @@ Do you want to replace it?</source>
     <name>Tiled::Internal::StampBrush</name>
     <message>
         <location filename="../src/tiled/stampbrush.cpp" line="+38"/>
-        <location line="+279"/>
+        <location line="+281"/>
         <source>Stamp Brush</source>
         <translation>スタンプ</translation>
     </message>
     <message>
-        <location line="-276"/>
-        <location line="+277"/>
+        <location line="-278"/>
+        <location line="+279"/>
         <source>B</source>
         <translation></translation>
     </message>
@@ -1572,7 +1863,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+247"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+279"/>
         <source>Remove Tileset</source>
         <translation>タイルセットを削除</translation>
     </message>
@@ -1587,7 +1878,7 @@ Do you want to replace it?</source>
         <translation>このタイルセットを削除し、タイル使用部分をすべて取り除いてよろしいですか?</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+64"/>
         <source>Tilesets</source>
         <translation>タイルセット</translation>
     </message>
@@ -1599,7 +1890,7 @@ Do you want to replace it?</source>
         <translation type="obsolete">プロパティ...</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+210"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+213"/>
         <source>Tile &amp;Properties...</source>
         <translation>タイルの設定(&amp;P)...</translation>
     </message>
@@ -1614,7 +1905,12 @@ Do you want to replace it?</source>
         <translation>タイルセットをインポート(&amp;I)</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+12"/>
+        <source>Show &amp;Grid</source>
+        <translation type="unfinished">グリッドの表示(&amp;G)</translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Tile</source>
         <translation>タイル</translation>
     </message>
@@ -1774,7 +2070,7 @@ Line %1, column %2</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+166"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+160"/>
         <source>TMX Viewer</source>
         <translation>TMXビューアー</translation>
     </message>
@@ -1792,12 +2088,12 @@ Line %1, column %2</source>
         <translation>レイヤーを削除</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovemapobject.cpp" line="+76"/>
+        <location filename="../src/tiled/addremovemapobject.cpp" line="+79"/>
         <source>Add Object</source>
         <translation>オブジェクトを追加</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+13"/>
         <source>Remove Object</source>
         <translation>オブジェクトを削除</translation>
     </message>
@@ -1818,7 +2114,7 @@ Line %1, column %2</source>
         <translation>%1 プロパティを変更</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeselection.cpp" line="+31"/>
+        <location filename="../src/tiled/changetileselection.cpp" line="+31"/>
         <source>Change Selection</source>
         <translation>選択を変更</translation>
     </message>
@@ -1833,14 +2129,12 @@ Line %1, column %2</source>
         <translation>塗りつぶし</translation>
     </message>
     <message>
-        <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Move Layer Down</source>
-        <translation>レイヤーを下に移動</translation>
+        <translation type="obsolete">レイヤーを下に移動</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Move Layer Up</source>
-        <translation>レイヤーを上に移動</translation>
+        <translation type="obsolete">レイヤーを上に移動</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobject.cpp" line="+39"/>
@@ -1893,7 +2187,7 @@ Line %1, column %2</source>
         <translation>タイルセットを移動</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="-151"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="-159"/>
         <source>Import Tileset</source>
         <translation>タイルセットをインポート</translation>
     </message>
@@ -1906,6 +2200,22 @@ Line %1, column %2</source>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
         <source>Move Object to Layer</source>
         <translation>オブジェクトをレイヤーに移動</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
+        <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
+        <source>Change Image Layer Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/movelayer.cpp" line="+37"/>
+        <source>Lower Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Raise Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
