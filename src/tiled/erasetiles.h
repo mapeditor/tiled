@@ -58,7 +58,7 @@ public:
 private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
-    TileLayer *mErasedTiles;
+    TileLayer *mErasedCells;
     QRegion mRegion;
     bool mMergeable;
 };

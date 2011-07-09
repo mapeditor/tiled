@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  format 0.7.1 by
+  TMX version 1.1 by
     Tiled Developers (mapeditor.org)
   documented in dtd form originally by
     Olivier.Beaton@quadir.net
     Creative Commons Attribution 3.0
     http://creativecommons.org/licenses/by/3.0/
   last updated on
-    2008-08-05
+    2011-06-06
 -->
 
 <!ELEMENT map (properties?, tileset*, (layer | objectgroup)*)>
@@ -47,6 +47,8 @@
   id          CDATA   #IMPLIED
   source      CDATA   #IMPLIED
   trans       CDATA   #IMPLIED
+  width       CDATA   #IMPLIED
+  height      CDATA   #IMPLIED
 >
 
 <!--
@@ -101,21 +103,24 @@
   visible     (0 | 1) #IMPLIED
 >
 
-<!ELEMENT objectgroup (object*)>
+<!ELEMENT objectgroup (properties?, object*)>
 <!ATTLIST objectgroup
   name        CDATA   #REQUIRED
   width       CDATA   #IMPLIED
   height      CDATA   #IMPLIED
   x           CDATA   #IMPLIED
   y           CDATA   #IMPLIED
+  opacity     CDATA   #IMPLIED
+  visible     (0 | 1) #IMPLIED
 >
 
-<!ELEMENT object (properties?, image?)>
+<!ELEMENT object (properties?)>
 <!ATTLIST object
-  name        CDATA   #REQUIRED
-  type        CDATA   #REQUIRED
+  name        CDATA   #IMPLIED
+  type        CDATA   #IMPLIED
   x           CDATA   #REQUIRED
   y           CDATA   #REQUIRED
   width       CDATA   #IMPLIED
   height      CDATA   #IMPLIED
+  gid         CDATA   #IMPLIED
 >

@@ -48,7 +48,8 @@ void QuickStampManager::deleteInstance()
     mInstance = 0;
 }
 
-QuickStampManager::QuickStampManager()
+QuickStampManager::QuickStampManager() :
+    mMapDocument(0)
 {
     mQuickStamps.resize(keys().length());
 }

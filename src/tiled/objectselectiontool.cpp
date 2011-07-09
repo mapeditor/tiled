@@ -20,7 +20,6 @@
 
 #include "objectselectiontool.h"
 
-#include "addremovemapobject.h"
 #include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -29,15 +28,11 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "movemapobject.h"
-#include "movemapobjecttogroup.h"
 #include "objectgroup.h"
-#include "objectpropertiesdialog.h"
 #include "preferences.h"
-#include "utils.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
-#include <QMenu>
 #include <QPainter>
 #include <QPalette>
 #include <QUndoStack>
@@ -100,11 +95,10 @@ void SelectionRectangle::paint(QPainter *painter,
 
 
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
-    : AbstractTool(tr("Select Objects"),
-                   QIcon(QLatin1String(
-                           ":images/22x22/tool-select-objects.png")),
-                   QKeySequence(tr("S")),
-                   parent)
+    : AbstractObjectTool(tr("Select Objects"),
+          QIcon(QLatin1String(":images/22x22/tool-select-objects.png")),
+          QKeySequence(tr("S")),
+          parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
     , mClickedObjectItem(0)
@@ -118,27 +112,15 @@ ObjectSelectionTool::~ObjectSelectionTool()
     delete mSelectionRectangle;
 }
 
-void ObjectSelectionTool::activate(MapScene *scene)
-{
-    mMapScene = scene;
-}
-
-void ObjectSelectionTool::deactivate(MapScene *)
-{
-    mMapScene = 0;
-}
-
 void ObjectSelectionTool::mouseEntered()
-{
-}
-
-void ObjectSelectionTool::mouseLeft()
 {
 }
 
 void ObjectSelectionTool::mouseMoved(const QPointF &pos,
                                      Qt::KeyboardModifiers modifiers)
 {
+    AbstractObjectTool::mouseMoved(pos, modifiers);
+
     if (mMode == NoMode && mMousePressed) {
         const int dragDistance = (mStart - pos).toPoint().manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
@@ -161,31 +143,19 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     }
 }
 
-static MapObjectItem *topMostObjectItemAt(MapScene *scene, QPointF pos)
-{
-    foreach (QGraphicsItem *item, scene->items(pos)) {
-        if (MapObjectItem *objectItem = dynamic_cast<MapObjectItem*>(item))
-            return objectItem;
-    }
-    return 0;
-}
-
 void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (mMode != NoMode) // Ignore additional presses during select/move
         return;
 
-    mClickedObjectItem = topMostObjectItemAt(mMapScene, event->scenePos());
-
     switch (event->button()) {
-    case Qt::RightButton:
-        showContextMenu(event->screenPos(), event->widget());
-        break;
     case Qt::LeftButton:
         mMousePressed = true;
         mStart = event->scenePos();
+        mClickedObjectItem = topMostObjectItemAt(mStart);
         break;
     default:
+        AbstractObjectTool::mousePressed(event);
         break;
     }
 }
@@ -198,7 +168,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     switch (mMode) {
     case NoMode:
         if (mClickedObjectItem) {
-            QSet<MapObjectItem*> selection = mMapScene->selectedObjectItems();
+            QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
             const Qt::KeyboardModifiers modifiers = event->modifiers();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
                 if (selection.contains(mClickedObjectItem))
@@ -209,14 +179,14 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                 selection.clear();
                 selection.insert(mClickedObjectItem);
             }
-            mMapScene->setSelectedObjectItems(selection);
+            mapScene()->setSelectedObjectItems(selection);
         } else {
-            mMapScene->setSelectedObjectItems(QSet<MapObjectItem*>());
+            mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>());
         }
         break;
     case Selecting:
         updateSelection(event->scenePos(), event->modifiers());
-        mMapScene->removeItem(mSelectionRectangle);
+        mapScene()->removeItem(mSelectionRectangle);
         mMode = NoMode;
         break;
     case Moving:
@@ -259,13 +229,13 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
 
     QSet<MapObjectItem*> selectedItems;
 
-    foreach (QGraphicsItem *item, mMapScene->items(rect)) {
+    foreach (QGraphicsItem *item, mapScene()->items(rect)) {
         MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item);
         if (mapObjectItem)
             selectedItems.insert(mapObjectItem);
     }
 
-    const QSet<MapObjectItem*> oldSelection = mMapScene->selectedObjectItems();
+    const QSet<MapObjectItem*> oldSelection = mapScene()->selectedObjectItems();
     QSet<MapObjectItem*> newSelection;
 
     if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier)) {
@@ -274,107 +244,24 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
         newSelection = selectedItems;
     }
 
-    mMapScene->setSelectedObjectItems(newSelection);
-}
-
-/**
- * Shows the context menu for map objects. The menu allows you to duplicate and
- * remove the map objects, or to edit their properties.
- */
-void ObjectSelectionTool::showContextMenu(QPoint screenPos, QWidget *parent)
-{
-    QSet<MapObjectItem *> selection = mMapScene->selectedObjectItems();
-    if (mClickedObjectItem && !selection.contains(mClickedObjectItem)) {
-        selection.clear();
-        selection.insert(mClickedObjectItem);
-        mMapScene->setSelectedObjectItems(selection);
-    }
-    if (selection.isEmpty())
-        return;
-
-    QList<MapObject*> selectedObjects;
-#if QT_VERSION >= 0x040700
-    selectedObjects.reserve(selection.size());
-#endif
-    foreach (MapObjectItem *item, selection)
-        selectedObjects.append(item->mapObject());
-
-    QList<ObjectGroup*> objectGroups;
-    foreach (Layer *layer, mapDocument()->map()->layers()) {
-        if (ObjectGroup *objectGroup = layer->asObjectGroup())
-            objectGroups.append(objectGroup);
-    }
-
-    QMenu menu;
-    QIcon dupIcon(QLatin1String(":images/16x16/stock-duplicate-16.png"));
-    QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-    QString dupText = tr("Duplicate %n Object(s)", "", selectedObjects.size());
-    QString removeText = tr("Remove %n Object(s)", "", selectedObjects.size());
-    QAction *dupAction = menu.addAction(dupIcon, dupText);
-    QAction *removeAction = menu.addAction(delIcon, removeText);
-
-    typedef QMap<QAction*, ObjectGroup*> MoveToLayerActionMap;
-    MoveToLayerActionMap moveToLayerActions;
-
-    if (objectGroups.size() > 1) {
-        menu.addSeparator();        
-        QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
-                                                 "", selectedObjects.size()));
-        foreach (ObjectGroup *objectGroup, objectGroups) {
-            QAction *action = moveToLayerMenu->addAction(objectGroup->name());
-            moveToLayerActions.insert(action, objectGroup);
-        }
-    }
-
-    menu.addSeparator();
-    QAction *propertiesAction = menu.addAction(propIcon,
-                                               tr("Object &Properties..."));
-    // TODO: Implement editing of properties for multiple objects
-    propertiesAction->setEnabled(selectedObjects.size() == 1);
-
-    Utils::setThemeIcon(removeAction, "edit-delete");
-    Utils::setThemeIcon(propertiesAction, "document-properties");
-
-    QAction *selectedAction = menu.exec(screenPos);
-
-    if (selectedAction == dupAction) {
-        duplicateObjects(selectedObjects);
-    }
-    else if (selectedAction == removeAction) {
-        removeObjects(selectedObjects);
-    }
-    else if (selectedAction == propertiesAction) {
-        MapObject *mapObject = selectedObjects.first();
-        ObjectPropertiesDialog propertiesDialog(mapDocument(), mapObject,
-                                                parent);
-        propertiesDialog.exec();
-    }
-
-    MoveToLayerActionMap::const_iterator i =
-            moveToLayerActions.find(selectedAction);
-
-    if (i != moveToLayerActions.end()) {
-        ObjectGroup *objectGroup = i.value();
-        moveObjectsToGroup(selectedObjects, objectGroup);
-    }
+    mapScene()->setSelectedObjectItems(newSelection);
 }
 
 void ObjectSelectionTool::startSelecting()
 {
     mMode = Selecting;
-    mMapScene->addItem(mSelectionRectangle);
+    mapScene()->addItem(mSelectionRectangle);
 }
 
 void ObjectSelectionTool::startMoving()
 {
-    mMovingItems = mMapScene->selectedObjectItems();
+    mMovingItems = mapScene()->selectedObjectItems();
 
     // Move only the clicked item, if it was not part of the selection
     if (!mMovingItems.contains(mClickedObjectItem)) {
         mMovingItems.clear();
         mMovingItems.insert(mClickedObjectItem);
-        mMapScene->setSelectedObjectItems(mMovingItems);
+        mapScene()->setSelectedObjectItems(mMovingItems);
     }
 
     mMode = Moving;
@@ -449,47 +336,4 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
     mOldObjectItemPositions.clear();
     mOldObjectPositions.clear();
     mMovingItems.clear();
-}
-
-void ObjectSelectionTool::duplicateObjects(const QList<MapObject *> &objects)
-{
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
-
-    QList<MapObject*> clones;
-    foreach (MapObject *mapObject, objects) {
-        MapObject *clone = mapObject->clone();
-        clones.append(clone);
-        undoStack->push(new AddMapObject(mapDocument(),
-                                         mapObject->objectGroup(),
-                                         clone));
-    }
-
-    undoStack->endMacro();
-    mapDocument()->setSelectedObjects(clones);
-}
-
-void ObjectSelectionTool::removeObjects(const QList<MapObject *> &objects)
-{
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    foreach (MapObject *mapObject, objects)
-        undoStack->push(new RemoveMapObject(mapDocument(), mapObject));
-    undoStack->endMacro();
-}
-
-void ObjectSelectionTool::moveObjectsToGroup(const QList<MapObject *> &objects,
-                                             ObjectGroup *objectGroup)
-{
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
-                             objects.size()));
-    foreach (MapObject *mapObject, objects) {
-        if (mapObject->objectGroup() == objectGroup)
-            continue;
-        undoStack->push(new MoveMapObjectToGroup(mapDocument(),
-                                                 mapObject,
-                                                 objectGroup));
-    }
-    undoStack->endMacro();
 }

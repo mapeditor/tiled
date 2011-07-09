@@ -1,6 +1,6 @@
 /*
  * tilepainter.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of Tiled.
@@ -26,7 +26,7 @@
 
 namespace Tiled {
 
-class Tile;
+class Cell;
 class TileLayer;
 
 namespace Internal {
@@ -34,7 +34,7 @@ namespace Internal {
 class MapDocument;
 
 /**
- * The tile painter is meant for painting tiles on a tile layer. It makes sure
+ * The tile painter is meant for painting cells of a tile layer. It makes sure
  * that each paint operation sends out the proper events, so that views can
  * redraw the changed parts.
  *
@@ -53,35 +53,35 @@ public:
     TilePainter(MapDocument *mapDocument, TileLayer *tileLayer);
 
     /**
-     * Returns the tile at the given coordinates. The coordinates are relative
-     * to the map origin. Returns 0 if the coordinates lay outside of the
-     * layer.
+     * Returns the cell at the given coordinates. The coordinates are relative
+     * to the map origin. Returns an empty cell if the coordinates lay outside
+     * of the layer.
      */
-    Tile *tileAt(int x, int y) const;
+    Cell cellAt(int x, int y) const;
 
     /**
-     * Sets the tile for the given coordinates. The coordinates are relative to
+     * Sets the cell at the given coordinates. The coordinates are relative to
      * the map origin.
      */
-    void setTile(int x, int y, Tile *tile);
+    void setCell(int x, int y, const Cell &cell);
 
     /**
-     * Sets the tiles at the given coordinates to the tiles in the given tile
+     * Sets the cells at the given coordinates to the cells in the given tile
      * layer. The coordinates \a x and \a y are relative to the map origin.
      *
-     * When a \a mask is given, only tiles that fall within this mask are set.
+     * When a \a mask is given, only cells that fall within this mask are set.
      * The mask is applied in map coordinates.
      */
-    void setTiles(int x, int y, TileLayer *tiles,
+    void setCells(int x, int y, TileLayer *tileLayer,
                   const QRegion &mask = QRegion());
 
     /**
-     * Draws the tiles in the given tile layer at the given coordinates. The
+     * Draws the cells in the given tile layer at the given coordinates. The
      * coordinates \a x and \a y are relative to the map origin.
      *
-     * Empty tiles are skipped.
+     * Empty cells are skipped.
      */
-    void drawTiles(int x, int y, TileLayer *tiles);
+    void drawCells(int x, int y, TileLayer *tileLayer);
 
     /**
      * Draws the stamp within the given \a drawRegion region, repeating the
@@ -90,18 +90,18 @@ public:
     void drawStamp(const TileLayer *stamp, const QRegion &drawRegion);
 
     /**
-     * Erases the tiles in the given region.
+     * Erases the cells in the given region.
      */
     void erase(const QRegion &region);
 
     /**
-     * Computes a fill region made up of all tiles of the same type as that
+     * Computes a fill region made up of all cells of the same type as that
      * at \a fillOrigin that are connected.
      */
     QRegion computeFillRegion(const QPoint &fillOrigin) const;
 
     /**
-     * Returns true if the given tile is drawable.
+     * Returns true if the given cell is drawable.
      */
     bool isDrawable(int x, int y) const;
 

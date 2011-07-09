@@ -266,7 +266,7 @@ bool AutoMapper::setupRuleList()
 
     for (int y = 1; y < mMapRules->height(); y++ ) {
         for (int x = 1; x < mMapRules->width();  x++ ) {
-            if (mLayerRuleRegions->tileAt(x, y)
+            if (!mLayerRuleRegions->cellAt(x, y).isEmpty()
                     && !isPartOfExistingRule(QPoint(x, y))) {
                 QRegion rule = createRule(x, y);
                 mRules << rule;
@@ -290,7 +290,7 @@ QRegion AutoMapper::createRule(int x, int y) const
     Q_ASSERT(mLayerRuleRegions);
     QRegion ret(x, y, 1, 1);
     QList<QPoint> addPoints;
-    Tile *match = mLayerRuleRegions->tileAt(x, y);
+    const Cell &match = mLayerRuleRegions->cellAt(x, y);
     addPoints.append(QPoint(x, y));
 
     while (!addPoints.empty()) {
@@ -298,25 +298,25 @@ QRegion AutoMapper::createRule(int x, int y) const
         x = current.x();
         y = current.y();
         if (mLayerRuleRegions->contains(x - 1, y)
-            && mLayerRuleRegions->tileAt(x - 1, y) == match
+            && mLayerRuleRegions->cellAt(x - 1, y) == match
             && !ret.contains(QPoint(x - 1, y))) {
             ret += QRegion(x - 1, y, 1, 1);
             addPoints.append(QPoint(x - 1, y));
         }
         if (mLayerRuleRegions->contains(x + 1, y)
-            && mLayerRuleRegions->tileAt(x + 1, y) == match
+            && mLayerRuleRegions->cellAt(x + 1, y) == match
             && !ret.contains(QPoint(x + 1, y))) {
             ret += QRegion(x + 1, y, 1, 1);
             addPoints.append(QPoint(x + 1, y));
         }
         if (mLayerRuleRegions->contains(x, y - 1)
-            && mLayerRuleRegions->tileAt(x, y - 1) == match
+            && mLayerRuleRegions->cellAt(x, y - 1) == match
             && !ret.contains(QPoint(x, y - 1))) {
             ret += QRegion(x, y - 1, 1, 1);
             addPoints.append(QPoint(x, y - 1));
         }
         if (mLayerRuleRegions->contains(x, y + 1)
-            && mLayerRuleRegions->tileAt(x, y + 1) == match
+            && mLayerRuleRegions->cellAt(x, y + 1) == match
             && !ret.contains(QPoint(x, y + 1))) {
             ret += QRegion(x, y + 1, 1, 1);
             addPoints.append(QPoint(x, y + 1));
@@ -497,8 +497,9 @@ void AutoMapper::clearRegion(TileLayer *dstLayer, const QRegion &where)
     foreach (QRect r, region.rects())
         for (int x = r.left(); x <= r.right(); x++)
             for (int y = r.top(); y <= r.bottom(); y++)
-                if (mLayerSet->tileAt(x, y) && dstLayer->contains(x, y))
-                    dstLayer->setTile(x, y, 0);
+                if (!mLayerSet->cellAt(x, y).isEmpty())
+                    if (dstLayer->contains(x, y))
+                        dstLayer->setCell(x, y, Cell());
 }
 
 static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
@@ -538,24 +539,24 @@ QRect AutoMapper::applyRule(const QRegion &rule, const QRect &where)
 }
 
 /**
- * returns a list of all tiles which can be found within all tile layers
+ * Returns a list of all cells which can be found within all tile layers
  * within the given region.
  */
-static QVector<Tile*> tilesInRegion(QVector<TileLayer*> list, const QRegion &r)
+static QVector<Cell> cellsInRegion(QVector<TileLayer*> list, const QRegion &r)
 {
-    QVector<Tile*> tiles;
+    QVector<Cell> cells;
     foreach (TileLayer *l, list) {
-        foreach (QRect rect, r.rects()) {
+        foreach (const QRect &rect, r.rects()) {
             for (int x = rect.left(); x <= rect.right(); x++) {
                 for (int y = rect.top(); y <= rect.bottom(); y++) {
-                    Tile *t = l->tileAt(x, y);
-                    if (!tiles.contains(t))
-                        tiles.append(t);
+                    const Cell &cell = l->cellAt(x, y);
+                    if (!cells.contains(cell))
+                        cells.append(cell);
                 }
             }
         }
     }
-    return tiles;
+    return cells;
 }
 
 /**
@@ -630,11 +631,11 @@ static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
     if (listYes.size() == 0 && listNo.size() == 0)
         return false;
 
-    QVector<Tile*> tiles;
+    QVector<Cell> cells;
     if (listYes.size() == 0)
-        tiles = tilesInRegion(listNo, r1);
+        cells = cellsInRegion(listNo, r1);
     if (listNo.size() == 0)
-        tiles = tilesInRegion(listYes, r1);
+        cells = cellsInRegion(listYes, r1);
 
     foreach (QRect rect, r1.rects()) {
         for (int x = rect.left(); x <= rect.right(); x++) {
@@ -649,11 +650,11 @@ static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
                 if (!l1->contains(x + offset.x(), y + offset.y()))
                     return false;
 
-                Tile *t1 = l1->tileAt(x + offset.x(), y + offset.y());
+                const Cell &c1 = l1->cellAt(x + offset.x(), y + offset.y());
 
                 // when there is no tile in l1 (= set layer),
                 // there should be no rule at all
-                if (!t1)
+                if (c1.isEmpty())
                     return false;
 
                 // ruleDefined will be set when there is a tile in at least
@@ -662,26 +663,26 @@ static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
                 // if there is given no tile at all in the listYes layers,
                 // consider all tiles valid.
 
-                foreach(TileLayer *l2, listYes) {
+                foreach (TileLayer *l2, listYes) {
 
                     if (!l2->contains(x, y))
                         return false;
 
-                    Tile *t2 = l2->tileAt(x, y);
-                    if (t2)
+                    const Cell &c2 = l2->cellAt(x, y);
+                    if (!c2.isEmpty())
                         ruleDefinedListYes = true;
 
-                    if (t2 && t1 == t2)
+                    if (!c2.isEmpty() && c1 == c2)
                         matchListYes = true;
                 }
-                foreach(TileLayer *l2, listNo) {
+                foreach (TileLayer *l2, listNo) {
 
                     if (!l2->contains(x, y))
                         return false;
 
-                    Tile *t2 = l2->tileAt(x, y);
+                    const Cell &c2 = l2->cellAt(x, y);
 
-                    if (t2 && t1 == t2)
+                    if (!c2.isEmpty() && c1 == c2)
                         matchListNo = true;
                 }
 
@@ -699,7 +700,7 @@ static bool compareLayerTo(TileLayer *l1, QVector<TileLayer*> listYes,
                 if (listNo.size() == 0 ) {
                     if (matchListYes)
                         continue;
-                    if (!ruleDefinedListYes && !tiles.contains(t1))
+                    if (!ruleDefinedListYes && !cells.contains(c1))
                         continue;
                     return false;
                 }
@@ -735,11 +736,15 @@ void AutoMapper::copyRegion(TileLayer *srcLayer, int srcX, int srcY,
                             int width, int height,
                             TileLayer *dstLayer, int dstX, int dstY)
 {
-    for (int x = 0; x < width; x++)
-        for (int y = 0; y < height; y++)
-            if (Tile *t = srcLayer->tileAt(srcX + x, srcY + y))
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            const Cell &cell = srcLayer->cellAt(srcX + x, srcY + y);
+            if (!cell.isEmpty()) {
                 // this is without graphics update, it's done afterwards for all
-                dstLayer->setTile(dstX + x, dstY + y, t);
+                dstLayer->setCell(dstX + x, dstY + y, cell);
+            }
+        }
+    }
 }
 
 void AutoMapper::cleanAll()

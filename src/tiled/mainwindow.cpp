@@ -191,6 +191,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mCommandButton = new CommandButton(this);
     mUi->mainToolBar->addWidget(mCommandButton);
 
+    mUi->menuMap->insertAction(mUi->actionOffsetMap,
+                               mActionHandler->actionCropToSelection());
+
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
     mLayerMenu->addAction(mActionHandler->actionAddObjectGroup());
@@ -336,6 +339,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(switchToRightDocument, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
+    new QShortcut(tr("X"), this, SLOT(flipStampHorizontally()));
+    new QShortcut(tr("Y"), this, SLOT(flipStampVertically()));
+
     updateActions();
     readSettings();
     setupQuickStamps();
@@ -387,6 +393,20 @@ void MainWindow::changeEvent(QEvent *event)
     default:
         break;
     }
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
+        if (MapView *mapView = mDocumentManager->currentMapView())
+            mapView->setHandScrolling(true);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
+        if (MapView *mapView = mDocumentManager->currentMapView())
+            mapView->setHandScrolling(false);
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
@@ -1096,6 +1116,24 @@ void MainWindow::editLayerProperties()
         PropertiesDialog::showDialogFor(layer, mMapDocument, this);
 }
 
+void MainWindow::flipStampHorizontally()
+{
+    if (TileLayer *stamp = mStampBrush->stamp()) {
+        stamp = static_cast<TileLayer*>(stamp->clone());
+        stamp->flip(TileLayer::FlipHorizontally);
+        setStampBrush(stamp);
+    }
+}
+
+void MainWindow::flipStampVertically()
+{
+    if (TileLayer *stamp = mStampBrush->stamp()) {
+        stamp = static_cast<TileLayer*>(stamp->clone());
+        stamp->flip(TileLayer::FlipVertically);
+        setStampBrush(stamp);
+    }
+}
+
 /**
  * Sets the stamp brush in response to a change in the selection in the tileset
  * view.
@@ -1264,7 +1302,6 @@ void MainWindow::setupQuickStamps()
 
     connect(quickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
-    quickStampManager->setMapDocument(mMapDocument);
 }
 
 void MainWindow::closeMapDocument(int index)

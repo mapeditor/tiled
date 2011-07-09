@@ -41,6 +41,7 @@ SOURCES += aboutdialog.cpp \
     automap.cpp \
     brushitem.cpp \
     documentmanager.cpp \
+    filesystemwatcher.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -113,12 +114,14 @@ SOURCES += aboutdialog.cpp \
     commanddatamodel.cpp \
     commanddialog.cpp \
     tiledapplication.cpp \
-    command.cpp
+    command.cpp \
+    abstractobjecttool.cpp
 
 HEADERS += aboutdialog.h \
     automap.h \
     brushitem.h \
     documentmanager.h \
+    filesystemwatcher.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
@@ -193,7 +196,8 @@ HEADERS += aboutdialog.h \
     commanddialog.h \
     commandbutton.h \
     tiledapplication.h \
-    command.h
+    command.h \
+    abstractobjecttool.h
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \

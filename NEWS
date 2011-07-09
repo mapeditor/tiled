@@ -1,3 +1,15 @@
+0.7.0 (...)
+* Added support for horizontal and vertical flipping of tiles
+* Added copy/paste support for objects
+* Added merge layer down action
+* Added Show or Hide all Other Layers action
+* Added actions to select the previous/next layer
+* Added Crop to Selection action
+* Added a Lua export plugin
+* Added Droidcraft plugin to read and export the map files
+* Various improvements to running external commands
+* Fixed problems with watching tilesets multiple times
+
 0.6.2 (2 May 2011)
 * Fixed object layers losing their color when resizing the map
 * Fixed the tabs in the Tilesets dock to use scroll buttons on MacOS X

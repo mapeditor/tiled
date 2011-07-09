@@ -58,13 +58,13 @@ PaintTileLayer::~PaintTileLayer()
 void PaintTileLayer::undo()
 {
     TilePainter painter(mMapDocument, mTarget);
-    painter.setTiles(mX, mY, mErased, mPaintedRegion);
+    painter.setCells(mX, mY, mErased, mPaintedRegion);
 }
 
 void PaintTileLayer::redo()
 {
     TilePainter painter(mMapDocument, mTarget);
-    painter.drawTiles(mX, mY, mSource);
+    painter.drawCells(mX, mY, mSource);
 }
 
 bool PaintTileLayer::mergeWith(const QUndoCommand *other)
@@ -99,9 +99,9 @@ bool PaintTileLayer::mergeWith(const QUndoCommand *other)
     foreach (const QRect &rect, newRegion.rects())
         for (int y = rect.top(); y <= rect.bottom(); ++y)
             for (int x = rect.left(); x <= rect.right(); ++x)
-                mErased->setTile(x - mX,
+                mErased->setCell(x - mX,
                                  y - mY,
-                                 o->mErased->tileAt(x - o->mX, y - o->mY));
+                                 o->mErased->cellAt(x - o->mX, y - o->mY));
 
     return true;
 }

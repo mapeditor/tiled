@@ -1,6 +1,6 @@
 /*
  * tilelayer.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of libtiled.
@@ -38,8 +38,10 @@ using namespace Tiled;
 TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     Layer(name, x, y, width, height),
     mMaxTileSize(0, 0),
-    mTiles(width * height)
+    mGrid(width * height)
 {
+    Q_ASSERT(width >= 0);
+    Q_ASSERT(height >= 0);
 }
 
 QRegion TileLayer::region() const
@@ -48,10 +50,10 @@ QRegion TileLayer::region() const
 
     for (int y = 0; y < mHeight; ++y) {
         for (int x = 0; x < mWidth; ++x) {
-            if (tileAt(x, y)) {
+            if (!cellAt(x, y).isEmpty()) {
                 const int rangeStart = x;
                 for (++x; x <= mWidth; ++x) {
-                    if (x == mWidth || !tileAt(x, y)) {
+                    if (x == mWidth || cellAt(x, y).isEmpty()) {
                         const int rangeEnd = x;
                         region += QRect(rangeStart + mX, y + mY,
                                         rangeEnd - rangeStart, 1);
@@ -65,22 +67,24 @@ QRegion TileLayer::region() const
     return region;
 }
 
-void TileLayer::setTile(int x, int y, Tile *tile)
+void TileLayer::setCell(int x, int y, const Cell &cell)
 {
-    if (tile) {
-        if (tile->width() > mMaxTileSize.width()) {
-            mMaxTileSize.setWidth(tile->width());
+    Q_ASSERT(contains(x, y));
+
+    if (cell.tile) {
+        if (cell.tile->width() > mMaxTileSize.width()) {
+            mMaxTileSize.setWidth(cell.tile->width());
             if (mMap)
                 mMap->adjustMaxTileSize(mMaxTileSize);
         }
-        if (tile->height() > mMaxTileSize.height()) {
-            mMaxTileSize.setHeight(tile->height());
+        if (cell.tile->height() > mMaxTileSize.height()) {
+            mMaxTileSize.setHeight(cell.tile->height());
             if (mMap)
                 mMap->adjustMaxTileSize(mMaxTileSize);
         }
     }
 
-    mTiles[x + y * mWidth] = tile;
+    mGrid[x + y * mWidth] = cell;
 }
 
 TileLayer *TileLayer::copy(const QRegion &region) const
@@ -98,9 +102,9 @@ TileLayer *TileLayer::copy(const QRegion &region) const
     foreach (const QRect &rect, area.rects())
         for (int x = rect.left(); x <= rect.right(); ++x)
             for (int y = rect.top(); y <= rect.bottom(); ++y)
-                copied->setTile(x - areaBounds.x() + offsetX,
+                copied->setCell(x - areaBounds.x() + offsetX,
                                 y - areaBounds.y() + offsetY,
-                                tileAt(x, y));
+                                cellAt(x, y));
 
     return copied;
 }
@@ -111,18 +115,44 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
     QRect area = QRect(pos, QSize(layer->width(), layer->height()));
     area &= QRect(0, 0, width(), height());
 
-    for (int y = area.top(); y <= area.bottom(); ++y)
-        for (int x = area.left(); x <= area.right(); ++x)
-            if (Tile *tile = layer->tileAt(x - area.left(), y - area.top()))
-                setTile(x, y, tile);
+    for (int y = area.top(); y <= area.bottom(); ++y) {
+        for (int x = area.left(); x <= area.right(); ++x) {
+            const Cell &cell = layer->cellAt(x - area.left(),
+                                             y - area.top());
+            if (!cell.isEmpty())
+                setCell(x, y, cell);
+        }
+    }
+}
+
+void TileLayer::flip(FlipDirection direction)
+{
+    QVector<Cell> newGrid(mWidth * mHeight);
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            Cell &dest = newGrid[x + y * mWidth];
+            if (direction == FlipHorizontally) {
+                const Cell &source = cellAt(mWidth - x - 1, y);
+                dest = source;
+                dest.flippedHorizontally = !source.flippedHorizontally;
+            } else {
+                const Cell &source = cellAt(x, mHeight - y - 1);
+                dest = source;
+                dest.flippedVertically = !source.flippedVertically;
+            }
+        }
+    }
+
+    mGrid = newGrid;
 }
 
 QSet<Tileset*> TileLayer::usedTilesets() const
 {
     QSet<Tileset*> tilesets;
 
-    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i)
-        if (const Tile *tile = mTiles.at(i))
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
+        if (const Tile *tile = mGrid.at(i).tile)
             tilesets.insert(tile->tileset());
 
     return tilesets;
@@ -130,8 +160,8 @@ QSet<Tileset*> TileLayer::usedTilesets() const
 
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
-    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
-        const Tile *tile = mTiles.at(i);
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        const Tile *tile = mGrid.at(i).tile;
         if (tile && tile->tileset() == tileset)
             return true;
     }
@@ -144,7 +174,7 @@ QRegion TileLayer::tilesetReferences(Tileset *tileset) const
 
     for (int y = 0; y < mHeight; ++y)
         for (int x = 0; x < mWidth; ++x)
-            if (const Tile *tile = tileAt(x, y))
+            if (const Tile *tile = cellAt(x, y).tile)
                 if (tile->tileset() == tileset)
                     region += QRegion(x + mX, y + mY, 1, 1);
 
@@ -153,26 +183,26 @@ QRegion TileLayer::tilesetReferences(Tileset *tileset) const
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
-    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
-        const Tile *tile = mTiles.at(i);
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        const Tile *tile = mGrid.at(i).tile;
         if (tile && tile->tileset() == tileset)
-            mTiles.replace(i, 0);
+            mGrid.replace(i, Cell());
     }
 }
 
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
-    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i) {
-        const Tile *tile = mTiles.at(i);
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        const Tile *tile = mGrid.at(i).tile;
         if (tile && tile->tileset() == oldTileset)
-            mTiles.replace(i, newTileset->tileAt(tile->id()));
+            mGrid[i].tile = newTileset->tileAt(tile->id());
     }
 }
 
 void TileLayer::resize(const QSize &size, const QPoint &offset)
 {
-    QVector<Tile*> newTiles(size.width() * size.height());
+    QVector<Cell> newGrid(size.width() * size.height());
 
     // Copy over the preserved part
     const int startX = qMax(0, -offset.x());
@@ -183,11 +213,11 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
             const int index = x + offset.x() + (y + offset.y()) * size.width();
-            newTiles[index] = tileAt(x, y);
+            newGrid[index] = cellAt(x, y);
         }
     }
 
-    mTiles = newTiles;
+    mGrid = newGrid;
     Layer::resize(size, offset);
 }
 
@@ -195,13 +225,13 @@ void TileLayer::offset(const QPoint &offset,
                        const QRect &bounds,
                        bool wrapX, bool wrapY)
 {
-    QVector<Tile*> newTiles(mWidth * mHeight);
+    QVector<Cell> newGrid(mWidth * mHeight);
 
     for (int y = 0; y < mHeight; ++y) {
         for (int x = 0; x < mWidth; ++x) {
             // Skip out of bounds tiles
             if (!bounds.contains(x, y)) {
-                newTiles[x + y * mWidth] = tileAt(x, y);
+                newGrid[x + y * mWidth] = cellAt(x, y);
                 continue;
             }
 
@@ -227,19 +257,38 @@ void TileLayer::offset(const QPoint &offset,
 
             // Set the new tile
             if (contains(oldX, oldY) && bounds.contains(oldX, oldY))
-                newTiles[x + y * mWidth] = tileAt(oldX, oldY);
+                newGrid[x + y * mWidth] = cellAt(oldX, oldY);
             else
-                newTiles[x + y * mWidth] = 0;
+                newGrid[x + y * mWidth] = Cell();
         }
     }
 
-    mTiles = newTiles;
+    mGrid = newGrid;
+}
+
+bool TileLayer::canMergeWith(Layer *other) const
+{
+    return dynamic_cast<TileLayer*>(other) != 0;
+}
+
+Layer *TileLayer::mergedWith(Layer *other) const
+{
+    Q_ASSERT(canMergeWith(other));
+
+    const TileLayer *o = static_cast<TileLayer*>(other);
+    const QRect unitedBounds = bounds().united(o->bounds());
+    const QPoint offset = pos() - unitedBounds.topLeft();
+
+    TileLayer *merged = static_cast<TileLayer*>(clone());
+    merged->resize(unitedBounds.size(), offset);
+    merged->merge(o->pos() - unitedBounds.topLeft(), o);
+    return merged;
 }
 
 bool TileLayer::isEmpty() const
 {
-    for (int i = 0, i_end = mTiles.size(); i < i_end; ++i)
-        if (mTiles.at(i))
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
+        if (!mGrid.at(i).isEmpty())
             return false;
 
     return true;
@@ -258,7 +307,7 @@ Layer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
-    clone->mTiles = mTiles;
+    clone->mGrid = mGrid;
     clone->mMaxTileSize = mMaxTileSize;
     return clone;
 }

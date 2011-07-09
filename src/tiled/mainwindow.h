@@ -94,6 +94,9 @@ protected:
     void closeEvent(QCloseEvent *event);
     void changeEvent(QEvent *event);
 
+    void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
+
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 
@@ -132,6 +135,9 @@ public slots:
     void clearRecentFiles();
 
     void editLayerProperties();
+
+    void flipStampHorizontally();
+    void flipStampVertically();
 
     void setStampBrush(const TileLayer *tiles);
     void updateStatusInfoLabel(const QString &statusInfo);

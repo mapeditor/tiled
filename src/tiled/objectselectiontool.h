@@ -21,22 +21,18 @@
 #ifndef OBJECTSELECTIONTOOL_H
 #define OBJECTSELECTIONTOOL_H
 
-#include "abstracttool.h"
+#include "abstractobjecttool.h"
 
 #include <QSet>
 
 namespace Tiled {
-
-class MapObject;
-class ObjectGroup;
-
 namespace Internal {
 
 class MapObjectItem;
 class MapScene;
 class SelectionRectangle;
 
-class ObjectSelectionTool : public AbstractTool
+class ObjectSelectionTool : public AbstractObjectTool
 {
     Q_OBJECT
 
@@ -44,11 +40,7 @@ public:
     explicit ObjectSelectionTool(QObject *parent = 0);
     ~ObjectSelectionTool();
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
-
     void mouseEntered();
-    void mouseLeft();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
@@ -69,7 +61,6 @@ private:
 
     void updateSelection(const QPointF &pos,
                          Qt::KeyboardModifiers modifiers);
-    void showContextMenu(QPoint screenPos, QWidget *parent);
 
     void startSelecting();
 
@@ -78,12 +69,6 @@ private:
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
-    void duplicateObjects(const QList<MapObject*> &objects);
-    void removeObjects(const QList<MapObject*> &objects);
-    void moveObjectsToGroup(const QList<MapObject*> &objects,
-                            ObjectGroup *objectGroup);
-
-    MapScene *mMapScene;
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
     MapObjectItem *mClickedObjectItem;

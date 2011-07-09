@@ -21,19 +21,17 @@
 #ifndef CREATEOBJECTTOOL_H
 #define CREATEOBJECTTOOL_H
 
-#include "abstracttool.h"
+#include "abstractobjecttool.h"
 
 namespace Tiled {
 
-class MapObject;
-class ObjectGroup;
 class Tile;
 
 namespace Internal {
 
 class MapObjectItem;
 
-class CreateObjectTool : public AbstractTool
+class CreateObjectTool : public AbstractObjectTool
 {
     Q_OBJECT
 
@@ -45,11 +43,7 @@ public:
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
-
     void mouseEntered();
-    void mouseLeft();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
@@ -64,23 +58,12 @@ public slots:
      */
     void setTile(Tile *tile) { mTile = tile; }
 
-protected:
-    /**
-     * Overridden to only enable this tool when the currently selected layer is
-     * an object group.
-     */
-    void updateEnabledState();
-
 private:
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     MapObject *clearNewMapObjectItem();
     void cancelNewMapObject();
     void finishNewMapObject();
 
-    ObjectGroup *currentObjectGroup() const;
-
-    MapDocument *mMapDocument;
-    MapScene *mMapScene;
     MapObjectItem *mNewMapObjectItem;
     Tile *mTile;
     CreationMode mMode;

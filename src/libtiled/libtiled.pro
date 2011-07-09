@@ -31,7 +31,8 @@ SOURCES += compression.cpp \
     orthogonalrenderer.cpp \
     properties.cpp \
     tilelayer.cpp \
-    tileset.cpp
+    tileset.cpp \
+    gidmapper.cpp
 HEADERS += compression.h \
     isometricrenderer.h \
     layer.h \
@@ -47,9 +48,9 @@ HEADERS += compression.h \
     tile.h \
     tiled_global.h \
     tilelayer.h \
-    tileset.h
+    tileset.h \
+    gidmapper.h
 macx {
     contains(QT_CONFIG, ppc):CONFIG += x86 \
         ppc
-    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.5.sdk
 }

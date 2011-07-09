@@ -29,13 +29,13 @@
 #include <QSet>
 #include <QTimer>
 
-class QFileSystemWatcher;
-
 namespace Tiled {
 
 class Tileset;
 
 namespace Internal {
+
+class FileSystemWatcher;
 
 /**
  * A tileset specification that uniquely identifies a certain tileset. Does not
@@ -150,7 +150,7 @@ private:
      * Stores the tilesets and maps them to the number of references.
      */
     QMap<Tileset*, int> mTilesets;
-    QFileSystemWatcher *mWatcher;
+    FileSystemWatcher *mWatcher;
     QSet<QString> mChangedFiles;
     QTimer mChangedFilesTimer;
     bool mReloadTilesetsOnChange;

@@ -45,6 +45,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectNone = new QAction(this);
     mActionSelectNone->setShortcut(tr("Ctrl+Shift+A"));
 
+    mActionCropToSelection = new QAction(this);
+
     mActionAddTileLayer = new QAction(this);
     mActionAddObjectGroup = new QAction(this);
 
@@ -91,6 +93,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     connect(mActionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mActionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
+    connect(mActionCropToSelection, SIGNAL(triggered()),
+            SLOT(cropToSelection()));
     connect(mActionAddTileLayer, SIGNAL(triggered()), SLOT(addTileLayer()));
     connect(mActionAddObjectGroup, SIGNAL(triggered()),
             SLOT(addObjectGroup()));
@@ -122,6 +126,8 @@ void MapDocumentActionHandler::retranslateUi()
     mActionSelectAll->setText(tr("Select &All"));
     mActionSelectNone->setText(tr("Select &None"));
 
+    mActionCropToSelection->setText(tr("&Crop to Selection"));
+
     mActionAddTileLayer->setText(tr("Add &Tile Layer"));
     mActionAddObjectGroup->setText(tr("Add &Object Layer"));
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
@@ -139,6 +145,9 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
         return;
+
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
 
     mMapDocument = mapDocument;
     updateActions();
@@ -177,6 +186,18 @@ void MapDocumentActionHandler::selectNone()
 
     QUndoCommand *command = new ChangeTileSelection(mMapDocument, QRegion());
     mMapDocument->undoStack()->push(command);
+}
+
+void MapDocumentActionHandler::cropToSelection()
+{
+    if (!mMapDocument)
+        return;
+
+    const QRect bounds = mMapDocument->tileSelection().boundingRect();
+    if (bounds.isNull())
+        return;
+
+    mMapDocument->resizeMap(bounds.size(), -bounds.topLeft());
 }
 
 void MapDocumentActionHandler::addTileLayer()
@@ -260,15 +281,14 @@ void MapDocumentActionHandler::updateActions()
         if (currentLayerIndex > 0) {
             Layer *upper = map->layerAt(currentLayerIndex);
             Layer *lower = map->layerAt(currentLayerIndex - 1);
-
-            if ((upper->asTileLayer() && lower->asTileLayer())
-                    || (upper->asObjectGroup() && lower->asObjectGroup()))
-                canMergeDown = true;
+            canMergeDown = lower->canMergeWith(upper);
         }
     }
 
     mActionSelectAll->setEnabled(map);
     mActionSelectNone->setEnabled(!selection.isEmpty());
+
+    mActionCropToSelection->setEnabled(!selection.isEmpty());
 
     mActionAddTileLayer->setEnabled(map);
     mActionAddObjectGroup->setEnabled(map);

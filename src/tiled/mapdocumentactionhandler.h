@@ -51,6 +51,7 @@ public:
 
     QAction *actionSelectAll() const { return mActionSelectAll; }
     QAction *actionSelectNone() const { return mActionSelectNone; }
+    QAction *actionCropToSelection() const { return mActionCropToSelection; }
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectGroup() const { return mActionAddObjectGroup; }
     QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
@@ -72,6 +73,8 @@ public slots:
     void selectAll();
     void selectNone();
 
+    void cropToSelection();
+
     void addTileLayer();
     void addObjectGroup();
     void duplicateLayer();
@@ -91,6 +94,7 @@ private:
 
     QAction *mActionSelectAll;
     QAction *mActionSelectNone;
+    QAction *mActionCropToSelection;
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectGroup;
     QAction *mActionDuplicateLayer;

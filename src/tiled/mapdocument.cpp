@@ -25,6 +25,7 @@
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "changeproperties.h"
+#include "changetileselection.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -170,11 +171,14 @@ Layer *MapDocument::currentLayer() const
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 {
+    const QRegion movedSelection = mTileSelection.translated(offset);
+
     // Resize the map and each layer
     mUndoStack->beginMacro(tr("Resize Map"));
     for (int i = 0; i < mMap->layerCount(); ++i)
         mUndoStack->push(new ResizeLayer(this, i, size, offset));
     mUndoStack->push(new ResizeMap(this, size));
+    mUndoStack->push(new ChangeTileSelection(this, movedSelection));
     mUndoStack->endMacro();
 
     // TODO: Handle layers that don't match the map size correctly
@@ -250,7 +254,9 @@ void MapDocument::duplicateLayer()
 
 /**
  * Merges the currently selected layer with the layer below. This only works
- * when the layers are either both tile layers or both object groups.
+ * when the layers can be merged.
+ *
+ * \see Layer::canMergeWith
  */
 void MapDocument::mergeLayerDown()
 {
@@ -260,37 +266,16 @@ void MapDocument::mergeLayerDown()
     Layer *upperLayer = mMap->layerAt(mCurrentLayerIndex);
     Layer *lowerLayer = mMap->layerAt(mCurrentLayerIndex - 1);
 
-    QUndoCommand *mergeCommand = 0;
+    if (!lowerLayer->canMergeWith(upperLayer))
+        return;
 
-    if (TileLayer *upperTileLayer = dynamic_cast<TileLayer*>(upperLayer)) {
-        TileLayer *lowerTileLayer = dynamic_cast<TileLayer*>(lowerLayer);
-        if (!lowerTileLayer)
-            return;
+    Layer *merged = lowerLayer->mergedWith(upperLayer);
 
-        mergeCommand = new PaintTileLayer(this, lowerTileLayer,
-                                          upperTileLayer->x(),
-                                          upperTileLayer->y(),
-                                          upperTileLayer);
-    }
-
-    if (ObjectGroup *upperOG = dynamic_cast<ObjectGroup*>(upperLayer)) {
-        ObjectGroup *lowerOG = dynamic_cast<ObjectGroup*>(lowerLayer);
-        if (!lowerOG)
-            return;
-
-        mergeCommand = new QUndoCommand;
-        foreach (const MapObject *mapObject, upperOG->objects()) {
-            MapObject *objectClone = mapObject->clone();
-            new AddMapObject(this, lowerOG, objectClone, mergeCommand);
-        }
-    }
-
-    if (mergeCommand) {
-        mUndoStack->beginMacro(tr("Merge Layer Down"));
-        mUndoStack->push(mergeCommand);
-        mUndoStack->push(new RemoveLayer(this, mCurrentLayerIndex));
-        mUndoStack->endMacro();
-    }
+    mUndoStack->beginMacro(tr("Merge Layer Down"));
+    mUndoStack->push(new AddLayer(this, mCurrentLayerIndex - 1, merged));
+    mUndoStack->push(new RemoveLayer(this, mCurrentLayerIndex));
+    mUndoStack->push(new RemoveLayer(this, mCurrentLayerIndex));
+    mUndoStack->endMacro();
 }
 
 /**

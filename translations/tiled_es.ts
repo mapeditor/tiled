@@ -73,6 +73,19 @@
     </message>
 </context>
 <context>
+    <name>Lua::LuaPlugin</name>
+    <message>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">No se pudo abrir el archivo para escritura.</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Lua files (*.lua)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../src/tiled/mainwindow.ui" line="+17"/>
@@ -429,12 +442,12 @@ Línea %1, columna %2</translation>
         <location line="+11"/>
         <location line="+72"/>
         <location line="+39"/>
-        <location line="+103"/>
+        <location line="+90"/>
         <source>Invalid tile: %1</source>
         <translation>Patrón no válido: %1</translation>
     </message>
     <message>
-        <location line="-194"/>
+        <location line="-181"/>
         <source>Unknown encoding: %1</source>
         <translation>Codificación desconocida: %1</translation>
     </message>
@@ -455,19 +468,51 @@ Línea %1, columna %2</translation>
         <translation>Incapaz de interpretar patrón en (%1,%2) en la capa &apos;%3&apos;</translation>
     </message>
     <message>
-        <location line="+20"/>
         <source>Invalid global tile id (less than 0): %1</source>
-        <translation>ID global del Patrón no válido (inferior a 0): %1</translation>
+        <translation type="obsolete">ID global del Patrón no válido (inferior a 0): %1</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+20"/>
         <source>Tile used but no tilesets specified</source>
         <translation>Patrón usado, pero no especificado en el conjunto de patrones</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+102"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+101"/>
         <source>Could not open file for writing.</source>
         <translation>No se pudo abrir el archivo para escritura.</translation>
+    </message>
+</context>
+<context>
+    <name>NewImageLayerDialog</name>
+    <message>
+        <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
+        <source>New Tileset</source>
+        <translation type="unfinished">Nuevo conjunto de Patrones</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Image layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Name:</source>
+        <translation type="unfinished">&amp;Nombre:</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Image:</source>
+        <translation type="unfinished">Imagen:</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>&amp;Browse...</source>
+        <translation type="unfinished">&amp;Explorar...</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Use transparent color:</source>
+        <translation type="unfinished">Usar color transparente:</translation>
     </message>
 </context>
 <context>
@@ -873,6 +918,41 @@ Línea %1, columna %2</translation>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::AbstractObjectTool</name>
+    <message numerus="yes">
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
+        <location line="+54"/>
+        <source>Duplicate %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform>Duplicar Objeto</numerusform>
+            <numerusform>Duplicar %n Objetos</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="-53"/>
+        <location line="+71"/>
+        <source>Remove %n Object(s)</source>
+        <translation type="unfinished">
+            <numerusform>Eliminar Objeto</numerusform>
+            <numerusform>Eliminar %n Objetos</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="-62"/>
+        <location line="+72"/>
+        <source>Move %n Object(s) to Layer</source>
+        <translation type="unfinished">
+            <numerusform>Mover Objeto a la Capa</numerusform>
+            <numerusform>Mover %n Objetos a la Capa</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="-62"/>
+        <source>Object &amp;Properties...</source>
+        <translation type="unfinished">&amp;Propiedades del Objeto...</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <location filename="../src/tiled/automap.cpp" line="+116"/>
@@ -903,7 +983,7 @@ Línea %1, columna %2</translation>
 <context>
     <name>Tiled::Internal::AutomaticMappingManager</name>
     <message>
-        <location line="+492"/>
+        <location line="+497"/>
         <source>No set layer found!</source>
         <translation>¡No se encontró un set de capas!</translation>
     </message>
@@ -1057,7 +1137,12 @@ Línea %1, columna %2</translation>
         <translation>Ejecutar</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+9"/>
+        <source>Execute in Terminal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
@@ -1083,7 +1168,17 @@ Línea %1, columna %2</translation>
 <context>
     <name>Tiled::Internal::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+113"/>
+        <location filename="../src/tiled/command.cpp" line="+122"/>
+        <source>Unable to create/open %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Unable to add executable permissions to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <source>The command failed to start.</source>
         <translation>La orden falló al iniciarse.</translation>
     </message>
@@ -1098,12 +1193,12 @@ Línea %1, columna %2</translation>
         <translation>La orden agotó el tiempo.</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>An unknown error occurred.</source>
         <translation>Ocurrió un error desconocido.</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+8"/>
         <source>Error Executing %1</source>
         <translation>Error ejecutando %1</translation>
     </message>
@@ -1112,7 +1207,7 @@ Línea %1, columna %2</translation>
     <name>Tiled::Internal::CreateObjectTool</name>
     <message>
         <location filename="../src/tiled/createobjecttool.cpp" line="+42"/>
-        <location line="+111"/>
+        <location line="+100"/>
         <source>O</source>
         <translation>O</translation>
     </message>
@@ -1145,6 +1240,34 @@ Línea %1, columna %2</translation>
         <location line="+34"/>
         <source>E</source>
         <translation>G</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::ImageLayerPropertiesDialog</name>
+    <message>
+        <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
+        <source>Image Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Image:</source>
+        <translation type="unfinished">Imagen:</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Transparent color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Layer Image</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1198,7 +1321,7 @@ Línea %1, columna %2</translation>
         <translation type="obsolete">Error en la apertura del mapa</translation>
     </message>
     <message>
-        <location line="+398"/>
+        <location line="+418"/>
         <source>Open Map</source>
         <translation>Abrir Mapa</translation>
     </message>
@@ -1213,7 +1336,7 @@ Línea %1, columna %2</translation>
         <translation type="obsolete">Error en la grabación del mapa</translation>
     </message>
     <message>
-        <location line="-431"/>
+        <location line="-451"/>
         <source>Ctrl+=</source>
         <translation>Ctrl+=</translation>
     </message>
@@ -1228,13 +1351,13 @@ Línea %1, columna %2</translation>
         <translation>-</translation>
     </message>
     <message>
-        <location line="+19"/>
-        <location line="+1012"/>
+        <location line="+22"/>
+        <location line="+1047"/>
         <source>&amp;Layer</source>
         <translation>&amp;Capa</translation>
     </message>
     <message>
-        <location line="-875"/>
+        <location line="-910"/>
         <source>Ctrl+PgUp</source>
         <translation>Ctrl+PgUp</translation>
     </message>
@@ -1244,7 +1367,17 @@ Línea %1, columna %2</translation>
         <translation>Ctrl+PgDown</translation>
     </message>
     <message>
-        <location line="+115"/>
+        <location line="+4"/>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+127"/>
         <source>Error Opening Map</source>
         <translation>Error Abriendo Mapa</translation>
     </message>
@@ -1301,7 +1434,7 @@ Línea %1, columna %2</translation>
         <translation>Pegar Objetos</translation>
     </message>
     <message>
-        <location line="+352"/>
+        <location line="+370"/>
         <source>[*]%1 - Tiled</source>
         <translation>[*]%1 - Tiled</translation>
     </message>
@@ -1310,7 +1443,7 @@ Línea %1, columna %2</translation>
         <translation type="obsolete">Añadir conjunto de Patrones</translation>
     </message>
     <message>
-        <location line="-273"/>
+        <location line="-291"/>
         <source>Add External Tileset</source>
         <translation>Añadir conjunto de Patrones Externo</translation>
     </message>
@@ -1367,17 +1500,17 @@ Línea %1, columna %2</translation>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+132"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+133"/>
         <source>untitled.tmx</source>
         <translation>untitled.tmx</translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+44"/>
         <source>Resize Map</source>
         <translation>Redimensionar Mapa</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+23"/>
         <source>Offset Map</source>
         <translation>Desplazar Mapa</translation>
     </message>
@@ -1402,7 +1535,7 @@ Línea %1, columna %2</translation>
         <translation>Duplicar Capa</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+24"/>
         <source>Merge Layer Down</source>
         <translation>Mezclar capa hacía abajo</translation>
     </message>
@@ -1420,7 +1553,7 @@ Línea %1, columna %2</translation>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+122"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+126"/>
         <source>Select &amp;All</source>
         <translation>Seleccionar &amp;Todo</translation>
     </message>
@@ -1430,7 +1563,7 @@ Línea %1, columna %2</translation>
         <translation>Seleccionar &amp;Nada</translation>
     </message>
     <message>
-        <location line="-77"/>
+        <location line="-81"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
@@ -1443,12 +1576,12 @@ Línea %1, columna %2</translation>
         <translation type="obsolete">Añadir Capa de &amp;Objetos...</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+87"/>
         <source>&amp;Duplicate Layer</source>
         <translation>&amp;Duplicar Capa</translation>
     </message>
     <message>
-        <location line="-75"/>
+        <location line="-79"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
@@ -1468,7 +1601,12 @@ Línea %1, columna %2</translation>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+48"/>
+        <source>&amp;Crop to Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>Add &amp;Tile Layer</source>
         <translation>Añadir Capa de &amp;Patrones</translation>
     </message>
@@ -1492,7 +1630,7 @@ Línea %1, columna %2</translation>
         <translation type="obsolete">&amp;Subir Capa</translation>
     </message>
     <message>
-        <location line="-60"/>
+        <location line="-64"/>
         <source>Ctrl+Shift+Up</source>
         <translation>Ctrl+Shift+Up</translation>
     </message>
@@ -1506,7 +1644,7 @@ Línea %1, columna %2</translation>
         <translation>Ctrl+Shift+Down</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+60"/>
         <source>Select Pre&amp;vious Layer</source>
         <translation>Seleccionar la Capa Pre&amp;via</translation>
     </message>
@@ -1609,51 +1747,44 @@ Línea %1, columna %2</translation>
 <context>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+103"/>
-        <location line="+135"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+98"/>
+        <location line="+110"/>
         <source>Select Objects</source>
         <translation>Seleccionar Objetos</translation>
     </message>
     <message>
-        <location line="-132"/>
-        <location line="+133"/>
+        <location line="-108"/>
+        <location line="+109"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message numerus="yes">
-        <location line="+73"/>
-        <location line="+145"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Duplicar Objeto</numerusform>
             <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="-144"/>
-        <location line="+162"/>
         <source>Remove %n Object(s)</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Eliminar Objeto</numerusform>
             <numerusform>Eliminar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="-153"/>
-        <location line="+163"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Mover Objeto a la Capa</numerusform>
             <numerusform>Mover %n Objetos a la Capa</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-153"/>
         <source>Object &amp;Properties...</source>
-        <translation>&amp;Propiedades del Objeto...</translation>
+        <translation type="obsolete">&amp;Propiedades del Objeto...</translation>
     </message>
     <message numerus="yes">
-        <location line="+107"/>
+        <location line="+117"/>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>Mover Objeto</numerusform>
@@ -1786,7 +1917,7 @@ Do you want to replace it?</source>
         <translation type="obsolete">Propiedades...</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+210"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+213"/>
         <source>Tile &amp;Properties...</source>
         <translation>&amp;Propiedades del Patrón...</translation>
     </message>
@@ -1801,7 +1932,12 @@ Do you want to replace it?</source>
         <translation>&amp;Importar conjuntos de Patrones</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+12"/>
+        <source>Show &amp;Grid</source>
+        <translation type="unfinished">Mostrar &amp;Rejilla</translation>
+    </message>
+    <message>
+        <location line="+16"/>
         <source>Tile</source>
         <translation>Patrón</translation>
     </message>
@@ -2090,7 +2226,7 @@ Línea %1, columna %2</translation>
         <translation>Mover conjunto de Patrones</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="-151"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="-159"/>
         <source>Import Tileset</source>
         <translation>Importar conjunto de Patrones</translation>
     </message>
@@ -2113,6 +2249,12 @@ Línea %1, columna %2</translation>
         <location line="+1"/>
         <source>Raise Layer</source>
         <translation>Subir Capa</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
+        <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
+        <source>Change Image Layer Properties</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

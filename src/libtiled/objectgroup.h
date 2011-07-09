@@ -128,6 +128,9 @@ public:
     virtual void offset(const QPoint &offset, const QRect &bounds,
                         bool wrapX, bool wrapY);
 
+    bool canMergeWith(Layer *other) const;
+    Layer *mergedWith(Layer *other) const;
+
     /**
      * Returns the color of the object group, or an invalid color if no color
      * is set.

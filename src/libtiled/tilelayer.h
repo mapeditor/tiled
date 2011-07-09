@@ -1,6 +1,6 @@
 /*
  * tilelayer.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of libtiled.
@@ -43,11 +43,48 @@ class Tile;
 class Tileset;
 
 /**
+ * A cell on a tile layer grid.
+ */
+class Cell
+{
+public:
+    Cell() :
+        tile(0),
+        flippedHorizontally(false),
+        flippedVertically(false)
+    {}
+
+    explicit Cell(Tile *tile) :
+        tile(tile),
+        flippedHorizontally(false),
+        flippedVertically(false)
+    {}
+
+    bool isEmpty() const { return tile == 0; }
+
+    bool operator == (const Cell &other) const
+    {
+        return tile == other.tile
+                && flippedHorizontally == other.flippedHorizontally
+                && flippedVertically == other.flippedVertically;
+    }
+
+    Tile *tile;
+    bool flippedHorizontally;
+    bool flippedVertically;
+};
+
+/**
  * A tile layer.
  */
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
 public:
+    enum FlipDirection {
+        FlipHorizontally,
+        FlipVertically
+    };
+
     /**
      * Constructor.
      */
@@ -75,19 +112,19 @@ public:
     QRegion region() const;
 
     /**
-     * Returns the tile at the given coordinates. The coordinates have to
-     * be within this layer.
+     * Returns a read-only reference to the cell at the given coordinates. The
+     * coordinates have to be within this layer.
      */
-    Tile *tileAt(int x, int y) const
-    { return mTiles.at(x + y * mWidth); }
+    const Cell &cellAt(int x, int y) const
+    { return mGrid.at(x + y * mWidth); }
 
-    Tile *tileAt(const QPoint &point) const
-    { return tileAt(point.x(), point.y()); }
+    const Cell &cellAt(const QPoint &point) const
+    { return cellAt(point.x(), point.y()); }
 
     /**
-     * Sets the tile for the given coordinates.
+     * Sets the cell at the given coordinates.
      */
-    void setTile(int x, int y, Tile *tile);
+    void setCell(int x, int y, const Cell &cell);
 
     /**
      * Returns a copy of the area specified by the given \a region. The
@@ -104,6 +141,12 @@ public:
      * layer will have no effect.
      */
     void merge(const QPoint &pos, const TileLayer *layer);
+
+    /**
+     * Flip this tile layer in the given \a direction. This doesn't change the
+     * dimensions of the tile layer.
+     */
+    void flip(FlipDirection direction);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.
@@ -149,6 +192,9 @@ public:
                         const QRect &bounds,
                         bool wrapX, bool wrapY);
 
+    bool canMergeWith(Layer *other) const;
+    Layer *mergedWith(Layer *other) const;
+
     /**
      * Returns true if all tiles in the layer are empty.
      */
@@ -163,7 +209,7 @@ protected:
 
 private:
     QSize mMaxTileSize;
-    QVector<Tile*> mTiles;
+    QVector<Cell> mGrid;
 };
 
 } // namespace Tiled

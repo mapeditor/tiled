@@ -17,17 +17,9 @@ About the Qt Version
 
 Tiled was originally written in Java. In 2008 the Qt version was started with
 the goal to replace the Java version with a faster, better looking and even
-easier to use map editor.
-
-Qt offers many opportunities to improve the performance and usability of the
-user interface, and has a more extensive feature set than the standard Java
-libraries.
-
-In starting from scratch, we'll also try to do some things better than they are
-done in the original Tiled. For example we will try to not only use
-input/output plugins, but anything from brushes to object types and maybe even
-map views may be possible to provide via a plugin. Plugins may also be able to
-provide parts of the user interface.
+easier to use map editor. Qt offered many opportunities to improve the
+performance and usability of the user interface, and has a more extensive
+feature set than the standard Java libraries.
 
 Compiling
 -------------------------------------------------------------------------------

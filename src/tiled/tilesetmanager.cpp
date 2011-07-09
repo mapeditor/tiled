@@ -21,9 +21,9 @@
 
 #include "tilesetmanager.h"
 
+#include "filesystemwatcher.h"
 #include "tileset.h"
 
-#include <QFileSystemWatcher>
 #include <QImage>
 
 using namespace Tiled;
@@ -32,7 +32,7 @@ using namespace Tiled::Internal;
 TilesetManager *TilesetManager::mInstance = 0;
 
 TilesetManager::TilesetManager():
-    mWatcher(new QFileSystemWatcher(this)),
+    mWatcher(new FileSystemWatcher(this)),
     mReloadTilesetsOnChange(false)
 {
     connect(mWatcher, SIGNAL(fileChanged(QString)),
