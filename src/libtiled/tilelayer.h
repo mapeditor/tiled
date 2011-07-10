@@ -69,6 +69,13 @@ public:
                 && flippedVertically == other.flippedVertically;
     }
 
+    bool operator != (const Cell &other) const
+    {
+        return tile != other.tile
+                || flippedHorizontally != other.flippedHorizontally
+                || flippedVertically != other.flippedVertically;
+    }
+
     Tile *tile;
     bool flippedHorizontally;
     bool flippedVertically;
