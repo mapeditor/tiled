@@ -96,7 +96,7 @@
     <message>
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;שמור מפה לפני ביצוע</translation>
     </message>
     <message>
         <source>Save map before executing</source>
@@ -108,27 +108,27 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>זהו אינו קובץ מפת Droidcraft תקין!</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>חייב להיות למפה בדיוק שכבת משבצות אחת!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>המפה חייבת להיות בגודל של 48x48 משבצות!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן לפתוח את הקובץ לכתיבה.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>קובץ מפת Droidcraft (*.dat(</translation>
     </message>
 </context>
 <context>
@@ -136,12 +136,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>לא היה ניתן לפתוח את הקובץ לכתיבה.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>קבצי Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -259,7 +259,7 @@
     <message>
         <location line="+9"/>
         <source>New &amp;Tileset...</source>
-        <translation>סט משבצות חדש...</translation>
+        <translation>סט מ&amp;שבצות חדש...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -289,7 +289,7 @@
     <message>
         <location line="+5"/>
         <source>Save As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>שמור בתור &amp;תמונה...</translation>
     </message>
     <message>
         <source>Save As Image...</source>
@@ -303,7 +303,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
-        <translation>שנה את תחילת המפה...</translation>
+        <translation>שנה את &amp;תחילת המפה...</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -343,7 +343,7 @@
     <message>
         <location line="+5"/>
         <source>C&amp;lose All</source>
-        <translation>סגור הכל</translation>
+        <translation>סגור ה&amp;כל</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -460,32 +460,32 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation type="unfinished">סט משבצות חדש</translation>
+        <translation>סט משבצות חדש</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image layer</source>
-        <translation type="unfinished"></translation>
+        <translation>שכבת תמונה</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished">&amp;שם:</translation>
+        <translation>&amp;שם:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Image:</source>
-        <translation type="unfinished">תמונה:</translation>
+        <translation>תמונה:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;סייר...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished">השתמש בצבע שקוף:</translation>
+        <translation>השתמש בצבע שקוף:</translation>
     </message>
 </context>
 <context>
@@ -763,7 +763,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Include &amp;DTD reference in saved maps</source>
-        <translation>כלול ייחוס לDTD במפות שמורות</translation>
+        <translation>כלול ייחוס ל&amp;DTD במפות שמורות</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -773,7 +773,7 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>&amp;Language:</source>
-        <translation>שפה:</translation>
+        <translation>&amp;שפה:</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -889,7 +889,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>שכפל %n עצמ(ים)</numerusform>
             <numerusform>שכפל %n עצמים</numerusform>
         </translation>
@@ -898,8 +898,8 @@ Line %1, column %2</source>
         <location line="-53"/>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>מחק עצמים</numerusform>
+        <translation>
+            <numerusform>מחק %n עצמים</numerusform>
             <numerusform>Remove %n Objects</numerusform>
         </translation>
     </message>
@@ -907,7 +907,7 @@ Line %1, column %2</source>
         <location line="-62"/>
         <location line="+72"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>הזז עצם לשכבה</numerusform>
             <numerusform>הזז %n עצמים לשכבה</numerusform>
         </translation>
@@ -915,7 +915,7 @@ Line %1, column %2</source>
     <message>
         <location line="-62"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished">&amp;ערכי העצם...</translation>
+        <translation>&amp;ערכי העצם...</translation>
     </message>
 </context>
 <context>
@@ -1012,7 +1012,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>F5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1090,37 +1090,37 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>הזז למעלה</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>הזז למטה</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>בצע</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>בצע בטרמינל</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>מחק</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>%1 (copy)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (העתק)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>New command</source>
-        <translation type="unfinished"></translation>
+        <translation>פקודה חדשה</translation>
     </message>
 </context>
 <context>
@@ -1136,37 +1136,37 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/command.cpp" line="+122"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן ליצור/לפתוח %1</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן להוסיף גישות יישום ל%1</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>The command failed to start.</source>
-        <translation type="unfinished"></translation>
+        <translation>כישלון בהפעלת הפקודה.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation type="unfinished"></translation>
+        <translation>הפקודה קרסה.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command timed out.</source>
-        <translation type="unfinished"></translation>
+        <translation>חלף הזמן שניתן לפקודה להתצבע.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>התרחשה שגיאה לא ידועה.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation type="unfinished"></translation>
+        <translation>שגיאה בביצוע %1</translation>
     </message>
 </context>
 <context>
@@ -1221,27 +1221,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>שכבת תמונה</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>סייר...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">תמונה:</translation>
+        <translation>תמונה:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Transparent color:</source>
-        <translation type="unfinished"></translation>
+        <translation>צבע שקוף:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished"></translation>
+        <translation>תמונת שכבה</translation>
     </message>
 </context>
 <context>
@@ -1303,22 +1303,22 @@ Line %1, column %2</source>
     <message>
         <location line="-910"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+127"/>
@@ -1386,7 +1386,7 @@ Line %1, column %2</source>
     <message>
         <location line="+80"/>
         <source>Paste Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>הדבק עצמים</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1468,7 +1468,7 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>מזג עם שכבה למטה</translation>
     </message>
     <message>
         <location line="+138"/>
@@ -1496,12 +1496,12 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1516,7 +1516,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+45"/>
@@ -1531,42 +1531,42 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;חתוך לבחירה</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add &amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף שכבת מ&amp;שבצות</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף שכבת &amp;עצמים</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Select Pre&amp;vious Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>בחר שכבה &amp;קודמת</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;Next Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>בחר שכבה אח&amp;רי</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ה&amp;עלה שכבה</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>הנמ&amp;ך שכבה</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>ה&amp;צג/החבא את השכבות האחרות</translation>
     </message>
     <message>
         <source>Add &amp;Tile Layer...</source>
@@ -1584,7 +1584,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>&amp;Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>מ&amp;זג שכבה למטה</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1849,7 +1849,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+12"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished">הצג &amp;לוח</translation>
+        <translation>הצג &amp;לוח</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2058,17 +2058,17 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה מאפייני שכבת תמונה</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>הנמך שכבה</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>העלה שכבה</translation>
     </message>
 </context>
 <context>
