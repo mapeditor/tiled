@@ -104,19 +104,6 @@ public:
 
     QString errorString() const { return mError; }
 
-private slots:
-    /**
-     * This slot is called, when its map document adds a layer
-     * The layer translation table will be updated in there.
-     */
-    void layerAdd(int index);
-
-    /**
-     * This slot is called, when its map document removes a layer
-     * The layer translation table will be updated in there.
-     */
-    void layerRemove(int index);
-
 private:
     /**
      * Calls all setup-functions in the right order needed for processing
@@ -154,6 +141,14 @@ private:
     bool setupRuleMapLayers();
 
     /**
+     * Checks if the layers setup as in setupRuleMapLayers are still right.
+     * If it's not right, correct them.
+     * @return returns true if everything went fine. false is returned when
+     *         no set layer was found
+     */
+    bool setupMissingLayers();
+
+    /**
      * sets up the tilesets which are used in automapping.
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
@@ -189,7 +184,7 @@ private:
      * In the destination it will come to the region translated by Offset.
      */
     void copyMapRegion(const QRegion &region, QPoint Offset,
-            const QList< QPair<TileLayer*, TileLayer*> > &LayerTranslation);
+            const QList< QPair<TileLayer*, int> > &LayerTranslation);
 
     /**
      * This goes through all the positions of the mMapWork and checks if
@@ -233,8 +228,6 @@ private:
      * so the next rule can be processed.
      */
     void cleanTilesets();
-
-    bool setupMissingLayers();
 
     /**
      * checks if this the rules from the given rules map could be used anyway
@@ -293,11 +286,12 @@ private:
     QString mSetLayer;
 
     /**
-     * This is a pointer to the Layer, which is used in the working map for
+     * This is the index of the tile layer, which is used in the working map for
      * automapping.
-     * So if anything is correct mLayerSet->name() equals mSetLayer.
+     * So if anything is correct mMapWork->layerAt(mLayerSet)->name()
+     * equals mSetLayer.
      */
-    TileLayer *mLayerSet;
+    int mLayerSet;
 
     /**
      * List of Regions in mMapRules to know where the rules are
@@ -305,12 +299,19 @@ private:
     QList<QRegion> mRules;
 
     /**
-     *  The inner List of Tuples with layers is needed for translating
+     * The inner List of Tuples with layers is needed for translating
      * tile layers from mMapRules to mMapWork.
-     * the outer list is used to hold different translation tables
-     * => one of the inner lists is chosen by chance
+     *
+     * QPairs first entry is the  pointer to the layer in the rulemap. The
+     * pointer to the layer within the working map is not hardwired, but the
+     * position in the layerlist, where it was found the last time.
+     * This loosely bound pointer ensures we will get the right layer, since we
+     * need to check before anyway, and it is still fast.
+     *
+     * The outer list is used to hold different translation tables
+     * => one of the inner lists is chosen by chance, so randomness is available
      */
-    QList<QList<QPair<TileLayer*, TileLayer*> >* > mLayerList;
+    QList<QList<QPair<TileLayer*, int> >* > mLayerList;
 
     /**
      * store the name of the processed rules file, to have detailed
@@ -331,12 +332,6 @@ private:
      * It defaults to zero.
      */
     int mAutoMappingRadius;
-
-    /**
-     * Here we store all the layers, which need to be added when starting
-     * automapping.
-     */
-    QStringList mAddLayers;
 
     QSet<QString> mTouchedLayers;
 
