@@ -46,27 +46,27 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist keine valide Droidcraft Datei!</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Karte benötigt exakt eine Kachelebene!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Ebene muss eine Größe von 48 x 48 Kacheln haben!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei zum schreiben nicht öffnen.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Droidcraft Kartendateuen (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -74,12 +74,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei zum schreiben nicht öffnen.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lua Dateien (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -401,32 +401,32 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation type="unfinished">Neues Tileset</translation>
+        <translation>Neues Tileset</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildebene</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished">&amp;Name:</translation>
+        <translation>&amp;Name:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Image:</source>
-        <translation type="unfinished">Bild:</translation>
+        <translation>Bild:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Durchsuchen...</translation>
+        <translation>&amp;Durchsuchen...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished">Nutze Transparenzfarbe:</translation>
+        <translation>Nutze Transparenzfarbe:</translation>
     </message>
 </context>
 <context>
@@ -830,7 +830,7 @@ Zeile %1, Spalte %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Dupliziere Objekt</numerusform>
             <numerusform>Dupliziere %n Objekte</numerusform>
         </translation>
@@ -839,7 +839,7 @@ Zeile %1, Spalte %2</translation>
         <location line="-53"/>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Entferne Objekt</numerusform>
             <numerusform>Entferne %n Objekte</numerusform>
         </translation>
@@ -848,7 +848,7 @@ Zeile %1, Spalte %2</translation>
         <location line="-62"/>
         <location line="+72"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Verschiebe Objekt zu anderer Ebene</numerusform>
             <numerusform>Verschiebe %n Objekte zu anderer Ebene</numerusform>
         </translation>
@@ -856,7 +856,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-62"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished">Objekt&amp;eigenschaften...</translation>
+        <translation>Objekt&amp;eigenschaften...</translation>
     </message>
 </context>
 <context>
@@ -1046,7 +1046,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Terminal ausführen</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1077,12 +1077,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/command.cpp" line="+122"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 konnte nicht erzeugt bzw. geöffnet werden</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 konnten keine Berechtigungen zur Ausführung hinzugefügt werden</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1154,27 +1154,27 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildebene</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">Bild:</translation>
+        <translation>Bild:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Transparent color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparenzfarbe:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenenbild:</translation>
     </message>
 </context>
 <context>
@@ -1236,22 +1236,22 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-910"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+127"/>
@@ -1319,7 +1319,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+80"/>
         <source>Paste Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte einfügen</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -1397,7 +1397,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene nach unten vereinigen</translation>
     </message>
     <message>
         <location line="+138"/>
@@ -1460,17 +1460,17 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selektion &amp;ausschneiden</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add &amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kachelebene hinzufügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Objektebene hinzufügen</translation>
     </message>
     <message>
         <source>Add &amp;Tile Layer...</source>
@@ -1488,7 +1488,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ebene nach unten vereinigen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1777,7 +1777,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+12"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished">Zeige &amp;Raster</translation>
+        <translation>Zeige &amp;Raster</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1996,7 +1996,7 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildebenen Eigenschaften ändern</translation>
     </message>
 </context>
 <context>
