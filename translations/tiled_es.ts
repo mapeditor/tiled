@@ -77,12 +77,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para escritura.</translation>
+        <translation>No se pudo abrir el archivo para escritura.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheros Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -487,32 +487,32 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation type="unfinished">Nuevo conjunto de Patrones</translation>
+        <translation>Nuevo conjunto de Patrones</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de Imagen</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished">&amp;Nombre:</translation>
+        <translation>&amp;Nombre:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Image:</source>
-        <translation type="unfinished">Imagen:</translation>
+        <translation>Imagen:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Explorar...</translation>
+        <translation>&amp;Explorar...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished">Usar color transparente:</translation>
+        <translation>Usar color transparente:</translation>
     </message>
 </context>
 <context>
@@ -923,7 +923,7 @@ Línea %1, columna %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Duplicar Objeto</numerusform>
             <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
@@ -932,7 +932,7 @@ Línea %1, columna %2</translation>
         <location line="-53"/>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Eliminar Objeto</numerusform>
             <numerusform>Eliminar %n Objetos</numerusform>
         </translation>
@@ -941,7 +941,7 @@ Línea %1, columna %2</translation>
         <location line="-62"/>
         <location line="+72"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Mover Objeto a la Capa</numerusform>
             <numerusform>Mover %n Objetos a la Capa</numerusform>
         </translation>
@@ -949,7 +949,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="-62"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished">&amp;Propiedades del Objeto...</translation>
+        <translation>&amp;Propiedades del Objeto...</translation>
     </message>
 </context>
 <context>
@@ -1139,7 +1139,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutar en la Consola</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1170,17 +1170,17 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/command.cpp" line="+122"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No es posible crear ó abrir %1</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No es posible dar permiso de ejecución a %1</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>The command failed to start.</source>
-        <translation>La orden falló al iniciarse.</translation>
+        <translation>La orden fue incapaz de iniciarse.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1247,27 +1247,27 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de Imagen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Explorar...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">Imagen:</translation>
+        <translation>Imagen:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Transparent color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Color Transparente:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa de Imagen</translation>
     </message>
 </context>
 <context>
@@ -1369,12 +1369,12 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+4"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+127"/>
@@ -1603,7 +1603,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+48"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Recortar la Selección</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1934,7 +1934,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+12"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished">Mostrar &amp;Rejilla</translation>
+        <translation>Mostrar &amp;Rejilla</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2254,7 +2254,7 @@ Línea %1, columna %2</translation>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar las propiedades de la Capa de Imagen</translation>
     </message>
 </context>
 <context>
