@@ -291,7 +291,7 @@ private:
      * So if anything is correct mMapWork->layerAt(mLayerSet)->name()
      * equals mSetLayer.
      */
-    int mLayerSet;
+    int mSetLayerIndex;
 
     /**
      * List of Regions in mMapRules to know where the rules are

@@ -49,7 +49,7 @@ AutoMapper::AutoMapper(MapDocument *workingDocument, QString setlayer)
     , mMapRules(0)
     , mLayerRuleRegions(0)
     , mSetLayer(setlayer)
-    , mLayerSet(-1)
+    , mSetLayerIndex(-1)
 {
 
 }
@@ -88,10 +88,10 @@ bool AutoMapper::prepareLoad(Map *rules, const QString &rulePath)
 
 bool AutoMapper::setupMapDocumentLayers()
 {
-    Q_ASSERT(mLayerSet == -1);
-    mLayerSet = mMapWork->indexOfLayer(mSetLayer);
+    Q_ASSERT(mSetLayerIndex == -1);
+    mSetLayerIndex = mMapWork->indexOfLayer(mSetLayer);
 
-    if (mLayerSet == -1)
+    if (mSetLayerIndex == -1)
         return false;
 
     return true;
@@ -214,7 +214,7 @@ bool AutoMapper::setupRuleMapLayers()
     if (!mLayerRuleRegions)
         error += tr("No ruleRegions layer found!") + QLatin1Char('\n');
 
-    if (mLayerSet == -1)
+    if (mSetLayerIndex == -1)
         error += tr("No set layers found!") + QLatin1Char('\n');
 
     if (mLayerRuleSets.size() == 0)
@@ -234,7 +234,7 @@ bool AutoMapper::setupRuleMapLayers()
 
 bool AutoMapper::setupRulesUsedCheck()
 {
-    TileLayer *setLayer = mMapWork->layerAt(mLayerSet)->asTileLayer();
+    TileLayer *setLayer = mMapWork->layerAt(mSetLayerIndex)->asTileLayer();
     QList<Tileset*> tilesetWork = setLayer->usedTilesets().toList();
     foreach (TileLayer *tl, mLayerRuleSets)
         foreach (Tileset *ts, tl->usedTilesets())
@@ -361,12 +361,12 @@ bool AutoMapper::setupMissingLayers()
     }
 
     // check the set layer as well:
-    if (mLayerSet >= mMapWork->layerCount() ||
-            mSetLayer != mMapWork->layerAt(mLayerSet)->name()) {
+    if (mSetLayerIndex >= mMapWork->layerCount() ||
+            mSetLayer != mMapWork->layerAt(mSetLayerIndex)->name()) {
 
-        mLayerSet = mMapWork->indexOfLayer(mSetLayer);
+        mSetLayerIndex = mMapWork->indexOfLayer(mSetLayer);
 
-        if (mLayerSet == -1)
+        if (mSetLayerIndex == -1)
             return false;
     }
     return true;
@@ -454,7 +454,7 @@ void AutoMapper::autoMap(QRegion *where)
 
 void AutoMapper::clearRegion(TileLayer *dstLayer, const QRegion &where)
 {
-    TileLayer *setLayer = mMapWork->layerAt(mLayerSet)->asTileLayer();
+    TileLayer *setLayer = mMapWork->layerAt(mSetLayerIndex)->asTileLayer();
     QRegion region = where.intersected(dstLayer->bounds());
     foreach (QRect r, region.rects())
         for (int x = r.left(); x <= r.right(); x++)
@@ -485,7 +485,7 @@ QRect AutoMapper::applyRule(const QRegion &rule, const QRect &where)
 
     const int max_x = where.right() - rbr.left() + rbr.width() - 1;
     const int max_y = where.bottom() - rbr.top() + rbr.height() - 1;
-    TileLayer *setLayer = mMapWork->layerAt(mLayerSet)->asTileLayer();
+    TileLayer *setLayer = mMapWork->layerAt(mSetLayerIndex)->asTileLayer();
     for (int y = min_y; y <= max_y; y++)
         for (int x = min_x; x <= max_x; x++)
             if (compareLayerTo(setLayer, mLayerRuleSets,
