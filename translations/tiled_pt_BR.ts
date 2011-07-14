@@ -64,7 +64,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Salvar mapa antes de executar</translation>
     </message>
     <message>
         <source>Save map before executing</source>
@@ -76,27 +76,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Este não é um mapa de Droidcraft válido!</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Este mapa deve ter apenas uma camada!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>A camada deve ter o tamanho de 48x48 tiles!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Não foi possível abrir o arquivo para escrita.</translation>
+        <translation>Não foi possível abrir o arquivo para escrita.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos de mapa do Droidcraft (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -104,12 +104,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Não foi possível abrir o arquivo para escrita.</translation>
+        <translation>Não foi possível abrir o arquivo para escrita.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos LUA (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -211,7 +211,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+56"/>
         <source>Save As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar como &amp;Imagem...</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -502,32 +502,32 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation type="unfinished">Novo Tileset</translation>
+        <translation>Novo Tileset</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de Imagem</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished">&amp;Nome:</translation>
+        <translation>&amp;Nome:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Image:</source>
-        <translation type="unfinished">Imagem:</translation>
+        <translation>Imagem:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Explorar...</translation>
+        <translation>&amp;Explorar...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished">Usar cor transparente:</translation>
+        <translation>Usar cor transparente:</translation>
     </message>
 </context>
 <context>
@@ -931,33 +931,33 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>Duplicar %n Objeto(s)</numerusform>
-            <numerusform>Duplicar %n Objeto(s)</numerusform>
+        <translation>
+            <numerusform>Duplicar %n Objeto</numerusform>
+            <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-53"/>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>Remover %n Objeto(s)</numerusform>
-            <numerusform>Remover %n Objeto(s)</numerusform>
+        <translation>
+            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-62"/>
         <location line="+72"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
-            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
-            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
+        <translation>
+            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
     <message>
         <location line="-62"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished">&amp;Propriedades do Objeto...</translation>
+        <translation>&amp;Propriedades do Objeto...</translation>
     </message>
 </context>
 <context>
@@ -1132,37 +1132,37 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+14"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Acima</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaixo</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Executar</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Executar em Terminal</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Apagar</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>%1 (copy)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (copiar)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>New command</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo comando</translation>
     </message>
 </context>
 <context>
@@ -1178,37 +1178,37 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/command.cpp" line="+122"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Foi impossível criar/abrir %1</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Foi impossivel adicionar permissões de execução para %1</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>The command failed to start.</source>
-        <translation type="unfinished"></translation>
+        <translation>O comando falhou ao iniciar.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation type="unfinished"></translation>
+        <translation>O comando falhou.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command timed out.</source>
-        <translation type="unfinished"></translation>
+        <translation>O comando ultrapassou o tempo limite permitido.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocorreu um erro desconhecido.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro Executando %1</translation>
     </message>
 </context>
 <context>
@@ -1255,27 +1255,27 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de Imagem</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Explorar...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">Imagem:</translation>
+        <translation>Imagem:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Transparent color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor transparente:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagem da Camada</translation>
     </message>
 </context>
 <context>
@@ -1367,22 +1367,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-910"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+PgUp</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+PgDown</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+127"/>
@@ -1439,7 +1439,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+80"/>
         <source>Paste Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Colar Objetos</translation>
     </message>
     <message>
         <location line="+370"/>
@@ -1541,7 +1541,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Mesclar Camada Para Baixo</translation>
     </message>
     <message>
         <location line="+138"/>
@@ -1592,37 +1592,37 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+11"/>
         <source>PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation>PgUp</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation>PgDown</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cortar para Seleção</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add &amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Camada de &amp;Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Camada de &amp;Objetos</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mesclar Camada para Baixo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1650,27 +1650,27 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+60"/>
         <source>Select Pre&amp;vious Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar Camada &amp;Anterior</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;Next Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar &amp;Próxima Camada</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Subir Camada</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Abaixar Camada</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/&amp;Esconder todas as outras camadas</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1938,7 +1938,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+12"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished">Mostrar &amp;Grade</translation>
+        <translation>Mostrar &amp;Grade</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2244,17 +2244,17 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterar Propriedades da Camada de Imagem</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaixar Camada</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Subir Camada</translation>
     </message>
 </context>
 <context>
