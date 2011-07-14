@@ -37,7 +37,7 @@
     <message>
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>执行前保存地图(&amp;S)</translation>
     </message>
     <message>
         <source>Save map before executing</source>
@@ -49,27 +49,27 @@
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>无效的Droidcraft地图文件！</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>地图必须至少有一个图层！</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>图层至少得有一个48x48的块!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>文件不可写</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Droidcraft map 文件 (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -77,12 +77,12 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>文件不可写</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lua 文件 (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -204,7 +204,7 @@
     <message>
         <location line="+56"/>
         <source>Save As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>另存为图片(&amp;I)...</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -487,32 +487,32 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation type="unfinished">新图块</translation>
+        <translation>新图块集</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image layer</source>
-        <translation type="unfinished"></translation>
+        <translation>图像图层</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished">名称(&amp;N):</translation>
+        <translation>名称(&amp;N):</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Image:</source>
-        <translation type="unfinished">图像:</translation>
+        <translation>图像:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">浏览(&amp;B)...</translation>
+        <translation>浏览(&amp;B)...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished">设置透明度:</translation>
+        <translation>使用透明色:</translation>
     </message>
 </context>
 <context>
@@ -916,7 +916,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform><byte value="x1d"/>复制<byte value="x1d"/>%n个对象</numerusform>
         </translation>
     </message>
@@ -924,7 +924,7 @@ Line %1, column %2</source>
         <location line="-53"/>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>移除%n个对象</numerusform>
         </translation>
     </message>
@@ -932,14 +932,14 @@ Line %1, column %2</source>
         <location line="-62"/>
         <location line="+72"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>移动%n个对象到层</numerusform>
         </translation>
     </message>
     <message>
         <location line="-62"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished">对象属性(&amp;P)...</translation>
+        <translation>对象属性(&amp;P)...</translation>
     </message>
 </context>
 <context>
@@ -1112,37 +1112,37 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>上移</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>下移</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>执行</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>在终端中执行</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>删除</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>%1 (copy)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (复制)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>New command</source>
-        <translation type="unfinished"></translation>
+        <translation>新命令</translation>
     </message>
 </context>
 <context>
@@ -1158,37 +1158,37 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/command.cpp" line="+122"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>不能创建/打开%1</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>不能给%1增加可执行权限</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>The command failed to start.</source>
-        <translation type="unfinished"></translation>
+        <translation>命令无法启动.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation type="unfinished"></translation>
+        <translation>命令崩溃.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command timed out.</source>
-        <translation type="unfinished"></translation>
+        <translation>命令超时.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>未知的错误发生.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation type="unfinished"></translation>
+        <translation>执行错误%1</translation>
     </message>
 </context>
 <context>
@@ -1235,27 +1235,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>图像图层</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>浏览...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">图像:</translation>
+        <translation>图像:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Transparent color:</source>
-        <translation type="unfinished"></translation>
+        <translation>透明色:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished"></translation>
+        <translation>图层图像:</translation>
     </message>
 </context>
 <context>
@@ -1343,22 +1343,22 @@ Line %1, column %2</source>
     <message>
         <location line="-910"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+127"/>
@@ -1415,7 +1415,7 @@ Line %1, column %2</source>
     <message>
         <location line="+80"/>
         <source>Paste Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>粘贴对象</translation>
     </message>
     <message>
         <location line="+370"/>
@@ -1517,7 +1517,7 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>向下合并图层</translation>
     </message>
     <message>
         <location line="+138"/>
@@ -1568,37 +1568,38 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+48"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>这个不是很确定意思</translatorcomment>
+        <translation>剪辑选择</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add &amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>添加图层(&amp;T)...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>添加对象层(&amp;O)...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>向下合并图层(&amp;M)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1626,27 +1627,27 @@ Line %1, column %2</source>
     <message>
         <location line="+60"/>
         <source>Select Pre&amp;vious Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>选择上一个图层(&amp;Y)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;Next Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>选择下一个图层(&amp;N)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>前置图层(&amp;A)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>后置图层(&amp;L)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>显示/隐藏所有其它图层(&amp;H)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1906,7 +1907,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+12"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished">显示网格(&amp;G)</translation>
+        <translation>显示网格(&amp;G)</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2204,17 +2205,17 @@ Line %1, column %2</source>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>改变图像图层属性</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>后置图层</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>前置图层</translation>
     </message>
 </context>
 <context>
