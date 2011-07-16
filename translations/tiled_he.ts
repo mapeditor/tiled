@@ -890,7 +890,7 @@ Line %1, column %2</source>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>שכפל %n עצמ(ים)</numerusform>
+            <numerusform>שכפל עצם</numerusform>
             <numerusform>שכפל %n עצמים</numerusform>
         </translation>
     </message>
@@ -899,8 +899,8 @@ Line %1, column %2</source>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
         <translation>
+            <numerusform>מחק עצם</numerusform>
             <numerusform>מחק %n עצמים</numerusform>
-            <numerusform>Remove %n Objects</numerusform>
         </translation>
     </message>
     <message numerus="yes">
