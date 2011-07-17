@@ -65,7 +65,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
-        <translation type="unfinished"></translation>
+        <translation>Voor het uitvoeren map op&amp;slaan</translation>
     </message>
     <message>
         <source>Save map before executing</source>
@@ -77,27 +77,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
         <source>This is not a valid Droidcraft map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit is geen geldig Droidcraft map bestand!</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>The map needs to have exactly one tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>De map moet precies één laag hebben!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>The layer must have a size of 48 x 48 tiles!</source>
-        <translation type="unfinished"></translation>
+        <translation>De laag moet 48 x 48 tiles groot zijn!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Droidcraft map bestanden (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -105,12 +105,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Lua files (*.lua)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lua bestanden (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -172,7 +172,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+15"/>
         <source>&amp;Copy</source>
-        <translation>&amp;Kopiëren</translation>
+        <translation>K&amp;opiëren</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -212,7 +212,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+56"/>
         <source>Save As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opslaan Als Af&amp;beelding...</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -227,7 +227,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+5"/>
         <source>&amp;Add External Tileset...</source>
-        <translation>&amp;Externe Tileset Toevoegen...</translation>
+        <translation>E&amp;xterne Tileset Toevoegen...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -515,32 +515,32 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation type="unfinished">Nieuwe Tileset</translation>
+        <translation>Nieuwe Tileset</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Image Laag</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished">&amp;Naam:</translation>
+        <translation>&amp;Naam:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Image:</source>
-        <translation type="unfinished">Afbeelding:</translation>
+        <translation>Afbeelding:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Bladeren...</translation>
+        <translation>&amp;Bladeren...</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished">Gebruik een transparante kleur:</translation>
+        <translation>Gebruik een transparante kleur:</translation>
     </message>
 </context>
 <context>
@@ -944,7 +944,7 @@ Regel %1, colom %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Object Ver&amp;dubbelen</numerusform>
             <numerusform>%n Objecten Ver&amp;dubbelen</numerusform>
         </translation>
@@ -953,7 +953,7 @@ Regel %1, colom %2</translation>
         <location line="-53"/>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Object Verwijderen</numerusform>
             <numerusform>%n Objecten Verwijderen</numerusform>
         </translation>
@@ -962,7 +962,7 @@ Regel %1, colom %2</translation>
         <location line="-62"/>
         <location line="+72"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Verplaats Object naar Laag</numerusform>
             <numerusform>Verplaats %n Objecten naar Laag</numerusform>
         </translation>
@@ -970,7 +970,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-62"/>
         <source>Object &amp;Properties...</source>
-        <translation type="unfinished">Object &amp;Eigenschappen...</translation>
+        <translation>Object &amp;Eigenschappen...</translation>
     </message>
 </context>
 <context>
@@ -1144,37 +1144,37 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+14"/>
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Naar Boven</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Naar Beneden</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Execute in Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoeren in een Terminal</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <location line="+84"/>
         <source>%1 (copy)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (kopie)</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>New command</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw commando</translation>
     </message>
 </context>
 <context>
@@ -1190,37 +1190,37 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/command.cpp" line="+122"/>
         <source>Unable to create/open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon tijdelijk bestand %1 niet aanmaken</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon geen toestemming geven tot het uitvoeren van %1</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>The command failed to start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens het starten van het commando.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het commando is gecrasht.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The command timed out.</source>
-        <translation type="unfinished"></translation>
+        <translation>Time-out bij het uitvoeren van het commando.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een onbekende fout is opgetreden.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout Bij Het Uitvoeren Van %1</translation>
     </message>
 </context>
 <context>
@@ -1267,27 +1267,27 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbeelding Laag</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bladeren...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">Afbeelding:</translation>
+        <translation>Afbeelding:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Transparent color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparante kleur:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbeelding voor de Laag</translation>
     </message>
 </context>
 <context>
@@ -1383,22 +1383,22 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-910"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+127"/>
@@ -1455,7 +1455,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+80"/>
         <source>Paste Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten Plakken</translation>
     </message>
     <message>
         <location line="+370"/>
@@ -1561,7 +1561,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Neerwaarts Samenvoegen</translation>
     </message>
     <message>
         <location line="+138"/>
@@ -1602,7 +1602,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+87"/>
         <source>&amp;Duplicate Layer</source>
-        <translation>Laag &amp;Verdubbelen</translation>
+        <translation>Laag Ver&amp;dubbelen</translation>
     </message>
     <message>
         <location line="-79"/>
@@ -1612,42 +1612,42 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+11"/>
         <source>PgUp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>PgDown</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+48"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bijsnijden tot Selectie</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add &amp;Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tilelaag Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Objectlaag Toevoegen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Merge Layer Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Neerwaarts &amp;Samenvoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Layer</source>
-        <translation>Laag &amp;Verwijderen</translation>
+        <translation>Laag Ver&amp;wijderen</translation>
     </message>
     <message>
         <source>Move Layer &amp;Up</source>
@@ -1670,27 +1670,27 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+60"/>
         <source>Select Pre&amp;vious Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vorige Laag Selecteren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select &amp;Next Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vol&amp;gende Laag Selecteren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag Om&amp;hoog</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag Om&amp;laag</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show/&amp;Hide all Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zichtbaarheid Van Andere Lagen Omzetten</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1959,7 +1959,7 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location line="+12"/>
         <source>Show &amp;Grid</source>
-        <translation type="unfinished">&amp;Raster Weergeven</translation>
+        <translation>&amp;Raster Weergeven</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2265,17 +2265,17 @@ Regel %1, colom %2</translation>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenschappen Van Afbeeldinglaag Veranderen</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Lower Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag Omlaag</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag Omhoog</translation>
     </message>
 </context>
 <context>
