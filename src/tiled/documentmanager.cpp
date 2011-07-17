@@ -21,8 +21,9 @@
 
 #include "documentmanager.h"
 
-#include "toolmanager.h"
 #include "abstracttool.h"
+#include "maprenderer.h"
+#include "toolmanager.h"
 
 #include <QTabWidget>
 #include <QUndoGroup>
@@ -154,7 +155,7 @@ void DocumentManager::addDocument(MapDocument *mapDocument)
 
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
-    view->centerOn(0, 0);
+    view->centerOn(mapDocument->renderer()->tileToPixelCoords(0, 0));
 
     const int documentIndex = mDocuments.size() - 1;
 
