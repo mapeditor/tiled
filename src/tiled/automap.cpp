@@ -97,27 +97,6 @@ bool AutoMapper::setupMapDocumentLayers()
     return true;
 }
 
-TileLayer *AutoMapper::findTileLayer(Map *map, const QString &name)
-{
-    TileLayer *ret = 0;
-    QString error;
-
-    foreach (Layer *layer, map->layers()) {
-        if (layer->name().compare(name) == 0) {
-            if (TileLayer *tileLayer = layer->asTileLayer()) {
-                if (ret)
-                    error = tr("Multiple layers %1 found!").arg(name) +
-                            QLatin1Char('\n');
-                ret = tileLayer;
-            }
-        }
-    }
-
-    mError += error;
-
-    return ret;
-}
-
 bool AutoMapper::setupRulesMap(Map *rules, const QString &rulePath)
 {
     Q_ASSERT(!mMapRules);
@@ -181,9 +160,9 @@ bool AutoMapper::setupRuleMapLayers()
 
         mTouchedLayers |= name;
 
-        TileLayer *t = findTileLayer(mMapWork, name);
+        int t = mMapWork->indexOfLayer(name);
 
-        QPair<TileLayer*, int> addPair(tileLayer, mMapWork->layers().indexOf(t));
+        QPair<TileLayer*, int> addPair(tileLayer, t);
 
         QList<QPair<TileLayer*, int> > *list = 0;
         int j = 0;

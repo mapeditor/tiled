@@ -212,12 +212,6 @@ private:
     QRegion createRule(int x, int y) const;
 
     /**
-     * This searches \a map for a layer with the given \a name. Returns that
-     * layer if found, and NULL otherwise.
-     */
-    TileLayer *findTileLayer(Map *map, const QString &name);
-
-    /**
      * cleans up the data structes filled by setupRuleMapLayers(),
      * so the next rule can be processed.
      */
