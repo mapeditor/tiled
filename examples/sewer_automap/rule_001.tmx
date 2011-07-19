@@ -2,7 +2,7 @@
 <!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
 <map version="1.0" orientation="orthogonal" width="7" height="3" tilewidth="24" tileheight="24">
  <properties>
-  <property name="AutomappingRadius" value="1"/>
+  <property name="AutomappingRadius" value="3"/>
   <property name="DeleteTiles" value="yes"/>
  </properties>
  <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
