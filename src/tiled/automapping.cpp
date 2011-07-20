@@ -23,6 +23,7 @@
 #include "automapperwrapper.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "preferences.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "tmxmapreader.h"
@@ -48,9 +49,11 @@ AutomaticMappingManager::AutomaticMappingManager(QObject *parent)
     mChangedFilesTimer.setSingleShot(true);
     connect(&mChangedFilesTimer, SIGNAL(timeout()),
             this, SLOT(fileChangedTimeout()));
-    // this should be stored in the project file later on.
-    // now just default to the value we always had.
-    mSetLayer = QLatin1String("set");
+
+    Preferences *prefs = Preferences::instance();
+    mSetLayer = prefs->autoMapSetLayer();
+    connect(prefs, SIGNAL(autoMapSetLayerChanged(QString)),
+            SLOT(setLayerChanged(QString)));
 }
 
 AutomaticMappingManager::~AutomaticMappingManager()
@@ -87,10 +90,18 @@ void AutomaticMappingManager::autoMap()
     if (l != -1)
         passedLayer = map->layerAt(l);
 
-    autoMap(QRect(0, 0, w, h), passedLayer);
+    autoMapInternal(QRect(0, 0, w, h), passedLayer);
 }
 
 void AutomaticMappingManager::autoMap(QRegion where, Layer *setLayer)
+{
+    if (!Preferences::instance()->autoMapDrawing())
+        return;
+
+    autoMapInternal(where, setLayer);
+}
+
+void AutomaticMappingManager::autoMapInternal(QRegion where, Layer *setLayer)
 {
     if (!mMapDocument) {
         mError = tr("No map document found!") + QLatin1Char('\n');
@@ -260,4 +271,12 @@ void AutomaticMappingManager::fileChangedTimeout()
         }
     }
     mChangedFiles.clear();
+}
+
+void AutomaticMappingManager::setLayerChanged(QString setLayer)
+{
+    mSetLayer = setLayer;
+    foreach (AutoMapper *autoMapper, mAutoMappers) {
+        autoMapper->setSetLayer(setLayer);
+    }
 }

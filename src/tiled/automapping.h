@@ -93,6 +93,8 @@ private slots:
      */
     void fileChangedTimeout();
 
+    void setLayerChanged(QString setLayer);
+
 private:
     Q_DISABLE_COPY(AutomaticMappingManager)
 
@@ -104,6 +106,8 @@ private:
     ~AutomaticMappingManager();
 
     static AutomaticMappingManager *mInstance;
+
+    void autoMapInternal(QRegion where, Layer *setLayer);
 
     /**
      * This function parses a rules file.

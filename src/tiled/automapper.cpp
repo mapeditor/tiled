@@ -758,4 +758,3 @@ void AutoMapper::cleanUpRuleMapLayers()
     mLayerRuleSets.clear();
     mLayerRuleNotSets.clear();
 }
-
