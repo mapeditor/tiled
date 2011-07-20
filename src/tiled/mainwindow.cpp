@@ -29,7 +29,7 @@
 
 #include "aboutdialog.h"
 #include "addremovemapobject.h"
-#include "automap.h"
+#include "automappingmanager.h"
 #include "addremovetileset.h"
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
@@ -364,7 +364,7 @@ MainWindow::~MainWindow()
 {
     mDocumentManager->closeAllDocuments();
 
-    AutomaticMappingManager::deleteInstance();
+    AutomappingManager::deleteInstance();
     QuickStampManager::deleteInstance();
     ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
@@ -1001,8 +1001,8 @@ void MainWindow::editMapProperties()
 
 void MainWindow::autoMap()
 {
-    AutomaticMappingManager::instance()->automap();
-    QString error = AutomaticMappingManager::instance()->errorString();
+    AutomappingManager::instance()->automap();
+    QString error = AutomappingManager::instance()->errorString();
     if (!error.isEmpty()) {
         QMessageBox::critical(this, tr("Automatic Mapping"), error);
     }
@@ -1284,7 +1284,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mActionHandler->setMapDocument(mMapDocument);
     mLayerDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
-    AutomaticMappingManager::instance()->setMapDocument(mMapDocument);
+    AutomappingManager::instance()->setMapDocument(mMapDocument);
     QuickStampManager::instance()->setMapDocument(mMapDocument);
 
     if (mMapDocument) {
