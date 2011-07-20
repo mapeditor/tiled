@@ -29,7 +29,7 @@
 
 #include "aboutdialog.h"
 #include "addremovemapobject.h"
-#include "automap.h"
+#include "automapping.h"
 #include "addremovetileset.h"
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
