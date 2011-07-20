@@ -34,6 +34,14 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+/*
+ * About the order of the methods in this file.
+ * The Automapper class has 3 bigger public functions, that is
+ * prepareLoad(), prepareAutoMap() and autoMap().
+ * These three functions make use of lots of different private methods, which
+ * are put directly below each of these functions.
+ */
+
 AutoMapper::AutoMapper(MapDocument *workingDocument, QString setlayer)
     : mMapDocument(workingDocument)
     , mMapWork(workingDocument ? workingDocument->map() : 0)
@@ -58,6 +66,7 @@ QSet<QString> AutoMapper::getTouchedLayers() const
 bool AutoMapper::prepareLoad(Map *rules, const QString &rulePath)
 {
     mError.clear();
+    mWarning.clear();
 
     if (!setupMapDocumentLayers())
         return false;
@@ -119,8 +128,12 @@ bool AutoMapper::setupRuleMapLayers()
     foreach (Layer *layer, mMapRules->layers()) {
     if (TileLayer *tileLayer = layer->asTileLayer()) {
 
-        if (!tileLayer->name().startsWith(prefix, Qt::CaseInsensitive))
+        if (!tileLayer->name().startsWith(prefix, Qt::CaseInsensitive)) {
+            mWarning += tr("Layer %1 found in automapping rules."
+                           "Did you mean %2_%1? Ignoring that layer!")
+                        .arg(tileLayer->name(), prefix) + QLatin1Char('\n');
             continue;
+        }
 
         // strip leading prefix, to make handling better
         QString layername = tileLayer->name();
@@ -745,3 +758,4 @@ void AutoMapper::cleanUpRuleMapLayers()
     mLayerRuleSets.clear();
     mLayerRuleNotSets.clear();
 }
+

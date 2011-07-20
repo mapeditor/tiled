@@ -73,7 +73,7 @@ void AutomaticMappingManager::deleteInstance()
     mInstance = 0;
 }
 
-void AutomaticMappingManager::automap()
+void AutomaticMappingManager::autoMap()
 {
     if (!mMapDocument)
         return;
@@ -82,18 +82,27 @@ void AutomaticMappingManager::automap()
     int w = map->width();
     int h = map->height();
     int l = map->indexOfLayer(mSetLayer);
+
+    Layer *passedLayer = 0;
     if (l != -1)
-        automap(QRect(0, 0, w, h), map->layerAt(l));
-    else
-        mError = tr("No set layer found!") + QLatin1Char('\n');
+        passedLayer = map->layerAt(l);
+
+    autoMap(QRect(0, 0, w, h), passedLayer);
 }
 
-void AutomaticMappingManager::automap(QRegion where, Layer *l)
+void AutomaticMappingManager::autoMap(QRegion where, Layer *setLayer)
 {
-    if (!mMapDocument)
+    if (!mMapDocument) {
+        mError = tr("No map document found!") + QLatin1Char('\n');
         return;
+    }
 
-    if (l->name() != mSetLayer)
+    if (!setLayer) {
+        mError = tr("No set layer found!") + QLatin1Char('\n');
+        return;
+    }
+
+    if (setLayer->name() != mSetLayer)
         return;
 
     if (!mLoaded) {
@@ -175,10 +184,14 @@ bool AutomaticMappingManager::loadFile(const QString &filePath)
             AutoMapper *autoMapper;
             autoMapper = new AutoMapper(mMapDocument, mSetLayer);
 
-            if (autoMapper->prepareLoad(rules, rulePath))
+            bool loadSuccess = autoMapper->prepareLoad(rules, rulePath);
+            mWarning += autoMapper->warningString();
+            if (loadSuccess) {
                 mAutoMappers.append(autoMapper);
-            else
+            } else {
+                mError += autoMapper->errorString();
                 delete autoMapper;
+            }
         }
         if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)){
             if (!loadFile(rulePath))
@@ -198,9 +211,8 @@ void AutomaticMappingManager::setMapDocument(MapDocument *mapDocument)
 
     if (mMapDocument)
         connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(automap(QRegion,Layer*)));
+                this, SLOT(autoMap(QRegion,Layer*)));
     mLoaded = false;
-
 }
 
 void AutomaticMappingManager::cleanUp()

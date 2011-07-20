@@ -34,12 +34,11 @@ class MapDocument;
 
 /**
  * This is a wrapper class for the AutoMapper class.
- * Here in this class only undo/redo functionality for one rulemap
+ * Here in this class only undo/redo functionality all rulemaps
  * is provided.
  * This class will take a snapshot of the layers before and after the
  * automapping is done. In between instances of AutoMapper are doing the work.
  */
-
 class AutoMapperWrapper : public QUndoCommand
 {
 public:
