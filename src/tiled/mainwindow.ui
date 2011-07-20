@@ -221,6 +221,9 @@
    <property name="text">
     <string>AutoMap</string>
    </property>
+   <property name="shortcut">
+    <string>A</string>
+   </property>
   </action>
   <action name="actionShowGrid">
    <property name="checkable">
