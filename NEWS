@@ -1,4 +1,4 @@
-0.7.0 (...)
+0.7.0 (20 July 2011)
 * Added support for horizontal and vertical flipping of tiles
 * Added copy/paste support for objects
 * Added merge layer down action
@@ -7,8 +7,17 @@
 * Added Crop to Selection action
 * Added a Lua export plugin
 * Added Droidcraft plugin to read and export the map files
+* Added option to turn off grid in the tileset view
+* Added hand scrolling while holding the spacebar
+* Made the object context menu available in all object tools
+* Display tile coordinates also when using object tools
 * Various improvements to running external commands
+* Automapping stability and memory consumption improvements
+* Objects that fall outside of the map on resize are now removed
 * Fixed problems with watching tilesets multiple times
+* Fixed several issues related to restoring previously opened files
+* Updated Brazilian Portuguese, Chinese, German, Spanish, Japanese, Hebrew,
+  Portuguese, Dutch and French translations
 
 0.6.2 (2 May 2011)
 * Fixed object layers losing their color when resizing the map
