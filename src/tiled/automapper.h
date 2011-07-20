@@ -98,6 +98,8 @@ public:
 
     QString errorString() const { return mError; }
 
+    QString warningString() const { return mWarning; }
+
 private:
     /**
      * Calls all setup-functions in the right order needed for processing
@@ -324,6 +326,8 @@ private:
     QSet<QString> mTouchedLayers;
 
     QString mError;
+
+    QString mWarning;
 };
 
 } // namespace Internal

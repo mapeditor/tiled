@@ -988,7 +988,14 @@ void MainWindow::editMapProperties()
 
 void MainWindow::autoMap()
 {
-    AutomaticManager::instance()->automap();
+
+    AutomaticManager::instance()->autoMap();
+
+    QString warnings = AutomaticManager::instance()->warningString();
+    if (!warnings.isEmpty()) {
+        QMessageBox::warning(this, tr("Automatic Mapping"), warnings);
+    }
+
     QString error = AutomaticManager::instance()->errorString();
     if (!error.isEmpty()) {
         QMessageBox::critical(this, tr("Automatic Mapping"), error);
