@@ -23,25 +23,10 @@
 
 #include "automapper.h"
 
-#include <QList>
-#include <QPair>
-#include <QRegion>
-#include <QSet>
-#include <QString>
-#include <QStringList>
-#include <QTimer>
 #include <QUndoCommand>
 #include <QVector>
 
-class QFileSystemWatcher;
-class QObject;
-
 namespace Tiled {
-
-class Layer;
-class Map;
-class TileLayer;
-class Tileset;
 
 namespace Internal {
 

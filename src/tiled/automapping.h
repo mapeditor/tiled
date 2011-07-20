@@ -21,17 +21,10 @@
 #ifndef AUTOMAPPING_H
 #define AUTOMAPPING_H
 
-#include "automapper.h"
-#include "automapperwrapper.h"
-
-#include <QList>
-#include <QPair>
 #include <QRegion>
 #include <QSet>
 #include <QString>
-#include <QStringList>
 #include <QTimer>
-#include <QUndoCommand>
 #include <QVector>
 
 class QFileSystemWatcher;
@@ -46,6 +39,7 @@ class Tileset;
 
 namespace Internal {
 
+class AutoMapper;
 class MapDocument;
 
 /**

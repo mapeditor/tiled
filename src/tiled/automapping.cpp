@@ -20,24 +20,15 @@
 
 #include "automapping.h"
 
-#include "addremovelayer.h"
-#include "addremovetileset.h"
-#include "changeproperties.h"
-#include "layer.h"
-#include "layermodel.h"
+#include "automapperwrapper.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "tile.h"
 #include "tilelayer.h"
-#include "tilepainter.h"
-#include "tileset.h"
 #include "tilesetmanager.h"
 #include "tmxmapreader.h"
 
-#include <QFile>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
-#include <QObject>
 #include <QTextStream>
 
 using namespace Tiled;
