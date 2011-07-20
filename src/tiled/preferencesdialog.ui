@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
-    <height>273</height>
+    <width>581</width>
+    <height>444</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -107,6 +107,32 @@
          <string>Hardware &amp;accelerated drawing (OpenGL)</string>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gridGroupBox">
+     <property name="title">
+      <string>AutoMap Feature</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="autoMapWhileDrawing">
+        <property name="text">
+         <string>Use Automap feature, when drawing into layer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="autoMapSetLayerLabel">
+        <property name="text">
+         <string>Layer name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLineEdit" name="autoMapSetLayer"/>
       </item>
      </layout>
     </widget>

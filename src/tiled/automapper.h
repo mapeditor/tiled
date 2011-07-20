@@ -100,6 +100,8 @@ public:
 
     QString warningString() const { return mWarning; }
 
+    void setSetLayer(QString setLayer) { mSetLayer = setLayer; }
+
 private:
     /**
      * Calls all setup-functions in the right order needed for processing

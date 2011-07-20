@@ -66,6 +66,13 @@ Preferences::Preferences()
     mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
     mSettings->endGroup();
 
+    mSettings->beginGroup(QLatin1String("AutoMap"));
+    mAutoMapDrawing = mSettings->value(QLatin1String("WhileDrawing"),
+                                       false).toBool();
+    mAutoMapSetLayer = mSettings->value(QLatin1String("SetLayer"),
+                                        QLatin1String("set")).toString();
+    mSettings->endGroup();
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
 }
@@ -166,4 +173,17 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     mSettings->setValue(QLatin1String("Interface/OpenGL"), mUseOpenGL);
 
     emit useOpenGLChanged(mUseOpenGL);
+}
+
+void Preferences::setAutoMapDrawing(bool enabled)
+{
+    mAutoMapDrawing = enabled;
+    mSettings->setValue(QLatin1String("AutoMap/WhileDrawing"), enabled);
+}
+
+void Preferences::setAutoMapSetLayer(QString setLayer)
+{
+    mAutoMapSetLayer = setLayer;
+    mSettings->setValue(QLatin1String("AutoMap/SetLayer"), setLayer);
+    emit autoMapSetLayerChanged(setLayer);
 }
