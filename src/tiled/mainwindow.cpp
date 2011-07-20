@@ -1001,10 +1001,18 @@ void MainWindow::editMapProperties()
 
 void MainWindow::autoMap()
 {
-    AutomappingManager::instance()->automap();
+    AutomappingManager::instance()->autoMap();
+
+    const QString title = tr("Automatic Mapping");
+
+    QString warnings = AutomappingManager::instance()->warningString();
+    if (!warnings.isEmpty()) {
+        QMessageBox::warning(this, title, warnings);
+    }
+
     QString error = AutomappingManager::instance()->errorString();
     if (!error.isEmpty()) {
-        QMessageBox::critical(this, tr("Automatic Mapping"), error);
+        QMessageBox::critical(this, title, error);
     }
 }
 

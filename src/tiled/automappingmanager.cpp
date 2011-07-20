@@ -73,7 +73,7 @@ void AutomappingManager::deleteInstance()
     mInstance = 0;
 }
 
-void AutomappingManager::automap()
+void AutomappingManager::autoMap()
 {
     if (!mMapDocument)
         return;
@@ -82,16 +82,25 @@ void AutomappingManager::automap()
     int w = map->width();
     int h = map->height();
     int l = map->indexOfLayer(mSetLayer);
+
+    Layer *passedLayer = 0;
     if (l != -1)
-        automap(QRect(0, 0, w, h), map->layerAt(l));
-    else
-        mError = tr("No set layer found!") + QLatin1Char('\n');
+        passedLayer = map->layerAt(l);
+
+    autoMap(QRect(0, 0, w, h), passedLayer);
 }
 
-void AutomappingManager::automap(QRegion where, Layer *l)
+void AutomappingManager::autoMap(QRegion where, Layer *l)
 {
-    if (!mMapDocument)
+    if (!mMapDocument) {
+        mError = tr("No map document found!") + QLatin1Char('\n');
         return;
+    }
+
+    if (!l) {
+        mError = tr("No set layer found!") + QLatin1Char('\n');
+        return;
+    }
 
     if (l->name() != mSetLayer)
         return;
@@ -175,10 +184,14 @@ bool AutomappingManager::loadFile(const QString &filePath)
             AutoMapper *autoMapper;
             autoMapper = new AutoMapper(mMapDocument, mSetLayer);
 
-            if (autoMapper->prepareLoad(rules, rulePath))
+            bool loadSuccess = autoMapper->prepareLoad(rules, rulePath);
+            mWarning += autoMapper->warningString();
+            if (loadSuccess) {
                 mAutoMappers.append(autoMapper);
-            else
+            } else {
+                mError += autoMapper->errorString();
                 delete autoMapper;
+            }
         }
         if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)){
             if (!loadFile(rulePath))
@@ -198,9 +211,8 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
 
     if (mMapDocument)
         connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(automap(QRegion,Layer*)));
+                this, SLOT(autoMap(QRegion,Layer*)));
     mLoaded = false;
-
 }
 
 void AutomappingManager::cleanUp()

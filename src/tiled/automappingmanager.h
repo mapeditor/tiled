@@ -65,11 +65,13 @@ public:
     /**
      * This triggers an automapping on the whole current map document.
      */
-    void automap();
+    void autoMap();
 
     void setMapDocument(MapDocument *mapDocument);
 
     QString errorString() const { return mError; }
+
+    QString warningString() const { return mWarning; }
 
 public slots:
     /**
@@ -78,7 +80,7 @@ public slots:
      * This is a signal so it can directly be connected to the regionEdited
      * signal of map documents.
      */
-    void automap(QRegion where, Layer *layer);
+    void autoMap(QRegion where, Layer *layer);
 
 private slots:
     /**
@@ -138,7 +140,7 @@ private:
     bool mLoaded;
 
     /**
-     * The all used rulefiles are monitored by this object, so in case of
+     * All the used rulefiles are monitored by this object, so in case of
      * external changes it will automatically reloaded.
      */
     QFileSystemWatcher *mWatcher;
@@ -157,7 +159,17 @@ private:
      */
     QTimer mChangedFilesTimer;
 
+    /**
+     * Contains all errors which occurred until canceling.
+     * If mError is not empty, no serious result can be expected.
+     */
     QString mError;
+
+    /**
+     * Contains all strings, which try to explain unusual and unexpected
+     * behavior.
+     */
+    QString mWarning;
 
     /**
      * This stores the name of the layer, which is used in the working map to
