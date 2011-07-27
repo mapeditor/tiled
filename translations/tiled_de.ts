@@ -66,7 +66,7 @@
     <message>
         <location line="+12"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation>Droidcraft Kartendateuen (*.dat)</translation>
+        <translation>Droidcraft Kartendateien (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -227,7 +227,7 @@
     <message>
         <location line="+5"/>
         <source>Save As &amp;Image...</source>
-        <translation>Speicher als &amp;Bild...</translation>
+        <translation>Speichern als &amp;Bild...</translation>
     </message>
     <message>
         <source>Save As Image...</source>
