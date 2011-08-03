@@ -22,11 +22,12 @@
 
 using namespace Tiled::Internal;
 
-static const int zoomFactorCount = 10;
+static const int zoomFactorCount = 11;
 static const qreal zoomFactors[zoomFactorCount] = {
     0.0625,
     0.125,
     0.25,
+    0.33,
     0.5,
     0.75,
     1.0,
