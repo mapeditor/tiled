@@ -50,6 +50,8 @@ protected:
 private slots:
     void languageSelected(int index);
     void useOpenGLToggled(bool useOpenGL);
+    void useAutomapDrawingToggled(bool enabled);
+    void autoMapSetLayer(QString setLayer);
 
 private:
     void fromPreferences();

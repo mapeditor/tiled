@@ -60,6 +60,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
     connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
+    connect(mUi->autoMapWhileDrawing, SIGNAL(toggled(bool)),
+            SLOT(useAutomapDrawingToggled(bool)));
+    connect(mUi->autoMapSetLayer, SIGNAL(textEdited(QString)),
+            SLOT(autoMapSetLayer(QString)));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -130,6 +134,8 @@ void PreferencesDialog::fromPreferences()
     if (languageIndex == -1)
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
+    mUi->autoMapSetLayer->setText(prefs->autoMapSetLayer());
+    mUi->autoMapWhileDrawing->setChecked(prefs->autoMapDrawing());
 }
 
 void PreferencesDialog::toPreferences()
@@ -139,6 +145,8 @@ void PreferencesDialog::toPreferences()
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
     prefs->setLayerDataFormat(layerDataFormat());
+    prefs->setAutoMapDrawing(mUi->autoMapWhileDrawing->isChecked());
+    prefs->setAutoMapSetLayer(mUi->autoMapSetLayer->text());
 }
 
 MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
@@ -156,4 +164,14 @@ MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
     case 4:
         return MapWriter::CSV;
     }
+}
+
+void PreferencesDialog::useAutomapDrawingToggled(bool enabled)
+{
+    Preferences::instance()->setAutoMapDrawing(enabled);
+}
+
+void PreferencesDialog::autoMapSetLayer(QString setLayer)
+{
+    Preferences::instance()->setAutoMapSetLayer(setLayer);
 }
