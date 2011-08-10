@@ -86,6 +86,7 @@
 #include <QImageReader>
 #include <QSignalMapper>
 #include <QShortcut>
+#include <QToolButton>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -193,6 +194,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
+
+    QToolButton *randomButton = new QToolButton(this);
+    randomButton->setToolTip(tr("Random Mode"));
+    randomButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-random-clone.png")));
+    randomButton->setCheckable(true);
+    mUi->mainToolBar->addWidget(randomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
@@ -302,6 +309,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
+
+    connect(randomButton, SIGNAL(toggled(bool)),
+            mStampBrush, SLOT(setRandom(bool)));
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);

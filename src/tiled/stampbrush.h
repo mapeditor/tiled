@@ -23,8 +23,12 @@
 #define STAMPBRUSH_H
 
 #include "abstracttiletool.h"
+#include "tilelayer.h"
 
 namespace Tiled {
+
+class Tile;
+
 namespace Internal {
 
 class MapDocument;
@@ -60,6 +64,9 @@ public:
      * state.
      */
     TileLayer *stamp() const { return mStamp; }
+
+public slots:
+    void setRandom(bool value);
 
 signals:
     /**
@@ -142,6 +149,26 @@ private:
      * When drawing circles this will be the midpoint.
      */
     int mStampReferenceX, mStampReferenceY;
+
+    bool mIsRandom;
+    QList<Cell> mRandomList;
+
+    /**
+     * Returns a tile layer containing one tile randomly choosen
+     * from mRandomList.
+     */
+    TileLayer *getRandomTileLayer() const;
+
+    /**
+     * Updates the list used random stamps.
+     * This is done by taking all non-null tiles from the original stamp mStamp.
+     */
+    void updateRandomList();
+
+    /**
+     * Sets the stamp to a random stamp.
+     */
+    void setRandomStamp();
 };
 
 } // namespace Internal
