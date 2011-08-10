@@ -33,12 +33,12 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
     mMapDocument = mapDocument;
     Map *map = mMapDocument->map();
 
-    QSet<QString> touchedlayers;
+    QSet<QString> touchedLayers;
     foreach (AutoMapper *a, autoMapper) {
         a->prepareAutoMap();
-        touchedlayers|= a->getTouchedLayers();
+        touchedLayers|= a->getTouchedLayers();
     }
-    foreach (const QString &layerName, touchedlayers) {
+    foreach (const QString &layerName, touchedLayers) {
         const int layerindex = map->indexOfLayer(layerName);
         Q_ASSERT(layerindex != -1);
         mLayersBefore << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
@@ -48,7 +48,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
         a->autoMap(where);
     }
 
-    foreach (const QString &layerName, touchedlayers) {
+    foreach (const QString &layerName, touchedLayers) {
         const int layerindex = map->indexOfLayer(layerName);
         // layerindex exists, because AutoMapper is still alive, dont check
         Q_ASSERT(layerindex != -1);
