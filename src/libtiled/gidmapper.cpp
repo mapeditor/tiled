@@ -34,6 +34,15 @@ GidMapper::GidMapper()
 {
 }
 
+GidMapper::GidMapper(const QList<Tileset *> &tilesets)
+{
+    uint firstGid = 1;
+    foreach (Tileset *tileset, tilesets) {
+        insert(firstGid, tileset);
+        firstGid += tileset->tileCount();
+    }
+}
+
 Cell GidMapper::gidToCell(uint gid, bool &ok) const
 {
     Cell result;

@@ -88,12 +88,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     out << "\n";
 
-    GidMapper g;
-    uint firstGid = 1;
-    foreach (Tileset *tileset, map->tilesets()) {
-        g.insert(firstGid, tileset);
-        firstGid += tileset->tileCount();
-    }
+    GidMapper gidMapper(map->tilesets());
 
     // write layers
     foreach (Layer *layer, map->layers()) {
@@ -107,7 +102,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     Cell t = tileLayer->cellAt(x, y);
                     int id = 0;
                     if (t.tile)
-                        id = g.cellToGid(t);
+                        id = gidMapper.cellToGid(t);
                     out << id;
                     if (x < mapHeight - 1)
                         out << ",";

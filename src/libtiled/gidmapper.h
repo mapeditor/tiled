@@ -40,6 +40,11 @@ public:
     GidMapper();
 
     /**
+     * Constructor that initializes the gid mapper using the given \a tilesets.
+     */
+    GidMapper(const QList<Tileset *> &tilesets);
+
+    /**
      * Insert the given \a tileset with \a firstGid as its first global ID.
      */
     void insert(uint firstGid, Tileset *tileset)
