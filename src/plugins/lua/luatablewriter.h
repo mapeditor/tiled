@@ -40,6 +40,7 @@ public:
     void writeEndDocument();
 
     void writeStartTable();
+    void writeStartReturnTable();
     void writeStartTable(const QByteArray &name);
     void writeEndTable();
 

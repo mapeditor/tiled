@@ -54,6 +54,15 @@ void LuaTableWriter::writeStartTable()
     m_valueWritten = false;
 }
 
+void LuaTableWriter::writeStartReturnTable()
+{
+    prepareNewLine();
+    write("return {");
+    ++m_indent;
+    m_newLine = false;
+    m_valueWritten = false;
+}
+
 void LuaTableWriter::writeStartTable(const QByteArray &name)
 {
     prepareNewLine();
