@@ -1,6 +1,6 @@
 /*
- * automap.cpp
- * Copyright 2010, Stefan Beller, stefanbeller@googlemail.com
+ * automapper.cpp
+ * Copyright 2010-2011, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
  *
@@ -18,30 +18,29 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "automap.h"
+#include "automapper.h"
 
 #include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "changeproperties.h"
-#include "layer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tilepainter.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
-#include "tmxmapreader.h"
-
-#include <QFile>
-#include <QFileInfo>
-#include <QFileSystemWatcher>
-#include <QObject>
-#include <QTextStream>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+/*
+ * About the order of the methods in this file.
+ * The Automapper class has 3 bigger public functions, that is
+ * prepareLoad(), prepareAutoMap() and autoMap().
+ * These three functions make use of lots of different private methods, which
+ * are put directly below each of these functions.
+ */
 
 AutoMapper::AutoMapper(MapDocument *workingDocument, QString setlayer)
     : mMapDocument(workingDocument)
@@ -67,6 +66,7 @@ QSet<QString> AutoMapper::getTouchedLayers() const
 bool AutoMapper::prepareLoad(Map *rules, const QString &rulePath)
 {
     mError.clear();
+    mWarning.clear();
 
     if (!setupMapDocumentLayers())
         return false;
@@ -128,8 +128,12 @@ bool AutoMapper::setupRuleMapLayers()
     foreach (Layer *layer, mMapRules->layers()) {
     if (TileLayer *tileLayer = layer->asTileLayer()) {
 
-        if (!tileLayer->name().startsWith(prefix, Qt::CaseInsensitive))
+        if (!tileLayer->name().startsWith(prefix, Qt::CaseInsensitive)) {
+            mWarning += tr("Layer %1 found in automapping rules."
+                           "Did you mean %2_%1? Ignoring that layer!")
+                        .arg(tileLayer->name(), prefix) + QLatin1Char('\n');
             continue;
+        }
 
         // strip leading prefix, to make handling better
         QString layername = tileLayer->name();
@@ -753,317 +757,4 @@ void AutoMapper::cleanUpRuleMapLayers()
     mLayerRuleRegions = 0;
     mLayerRuleSets.clear();
     mLayerRuleNotSets.clear();
-}
-
-AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMapper*> autoMapper, QRegion *where)
-{
-    mMapDocument = mapDocument;
-    Map *map = mMapDocument->map();
-
-    QSet<QString> touchedlayers;
-    foreach (AutoMapper *a, autoMapper) {
-        a->prepareAutoMap();
-        touchedlayers|= a->getTouchedLayers();
-    }
-    foreach (const QString &layerName, touchedlayers) {
-        const int layerindex = map->indexOfLayer(layerName);
-        Q_ASSERT(layerindex != -1);
-        mLayersBefore << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
-    }
-
-    foreach (AutoMapper *a, autoMapper) {
-        a->autoMap(where);
-    }
-
-    foreach (const QString &layerName, touchedlayers) {
-        const int layerindex = map->indexOfLayer(layerName);
-        // layerindex exists, because AutoMapper is still alive, dont check
-        Q_ASSERT(layerindex != -1);
-        mLayersAfter << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
-    }
-    // reduce memory usage by saving only diffs
-    Q_ASSERT(mLayersAfter.size() == mLayersBefore.size());
-    for (int i = 0; i < mLayersAfter.size(); i++) {
-        TileLayer *before = mLayersBefore.at(i);
-        TileLayer *after = mLayersAfter.at(i);
-        QRect diffRegion = before->computeDiffRegion(after).boundingRect();
-
-        TileLayer *before1 = before->copy(diffRegion);
-        TileLayer *after1 = after->copy(diffRegion);
-
-        before1->setPosition(diffRegion.topLeft());
-        after1->setPosition(diffRegion.topLeft());
-        before1->setName(before->name());
-        after1->setName(after->name());
-        mLayersBefore.replace(i, before1);
-        mLayersAfter.replace(i, after1);
-
-        delete before;
-        delete after;
-    }
-
-    foreach (AutoMapper *a, autoMapper) {
-        a->cleanAll();
-    }
-}
-
-AutoMapperWrapper::~AutoMapperWrapper()
-{
-    QVector<TileLayer*>::iterator i;
-    for (i = mLayersAfter.begin(); i != mLayersAfter.end(); ++i)
-        delete *i;
-    for (i = mLayersBefore.begin(); i != mLayersBefore.end(); ++i)
-        delete *i;
-}
-
-void AutoMapperWrapper::undo()
-{
-    Map *map = mMapDocument->map();
-    QVector<TileLayer*>::iterator i;
-    for (i = mLayersBefore.begin(); i != mLayersBefore.end(); ++i) {
-        const int layerindex = map->indexOfLayer((*i)->name());
-        if (layerindex != -1)
-            patchLayer(layerindex, *i);
-    }
-}
-
-void AutoMapperWrapper::redo()
-{
-    Map *map = mMapDocument->map();
-    QVector<TileLayer*>::iterator i;
-    for (i = mLayersAfter.begin(); i != mLayersAfter.end(); ++i) {
-        const int layerindex = (map->indexOfLayer((*i)->name()));
-        if (layerindex != -1)
-            patchLayer(layerindex, *i);
-    }
-
-}
-
-void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
-{
-    Map *map = mMapDocument->map();
-    QRect b = layer->bounds();
-
-    Q_ASSERT(map->layerAt(layerIndex)->asTileLayer());
-    TileLayer *t = static_cast<TileLayer*>(map->layerAt(layerIndex));
-
-    t->setCells(b.left() - t->x(), b.top() - t->y(), layer,
-                b.translated(-t->position()));
-    mMapDocument->emitRegionChanged(b);
-}
-
-AutomaticMappingManager *AutomaticMappingManager::mInstance = 0;
-
-AutomaticMappingManager::AutomaticMappingManager(QObject *parent)
-    : QObject(parent)
-    , mMapDocument(0)
-    , mLoaded(false)
-    , mWatcher(new QFileSystemWatcher(this))
-{
-    connect(mWatcher, SIGNAL(fileChanged(QString)),
-            this, SLOT(fileChanged(QString)));
-    mChangedFilesTimer.setInterval(100);
-    mChangedFilesTimer.setSingleShot(true);
-    connect(&mChangedFilesTimer, SIGNAL(timeout()),
-            this, SLOT(fileChangedTimeout()));
-    // this should be stored in the project file later on.
-    // now just default to the value we always had.
-    mSetLayer = QLatin1String("set");
-}
-
-AutomaticMappingManager::~AutomaticMappingManager()
-{
-    cleanUp();
-    delete mWatcher;
-}
-
-AutomaticMappingManager *AutomaticMappingManager::instance()
-{
-    if (!mInstance)
-        mInstance = new AutomaticMappingManager(0);
-
-    return mInstance;
-}
-
-void AutomaticMappingManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = 0;
-}
-
-void AutomaticMappingManager::automap()
-{
-    if (!mMapDocument)
-        return;
-
-    Map *map = mMapDocument->map();
-    int w = map->width();
-    int h = map->height();
-    int l = map->indexOfLayer(mSetLayer);
-    if (l != -1)
-        automap(QRect(0, 0, w, h), map->layerAt(l));
-    else
-        mError = tr("No set layer found!") + QLatin1Char('\n');
-}
-
-void AutomaticMappingManager::automap(QRegion where, Layer *l)
-{
-    if (!mMapDocument)
-        return;
-
-    if (l->name() != mSetLayer)
-        return;
-
-    if (!mLoaded) {
-        const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
-        const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
-        if (loadFile(rulesFileName))
-            mLoaded = true;
-    }
-
-    Map *map = mMapDocument->map();
-
-    QString layer = map->layerAt(mMapDocument->currentLayerIndex())->name();
-
-    // use a pointer to the region, so each automapper can manipulate it and the
-    // following automappers do see the impact
-    QRegion *passedRegion = new QRegion(where);
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Apply AutoMap rules"));
-    AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, mAutoMappers, passedRegion);
-    undoStack->push(aw);
-    undoStack->endMacro();
-
-    mMapDocument->emitRegionChanged(*passedRegion);
-    delete passedRegion;
-    mMapDocument->setCurrentLayerIndex(map->indexOfLayer(layer));
-}
-
-bool AutomaticMappingManager::loadFile(const QString &filePath)
-{
-    mError.clear();
-    bool ret = true;
-    const QString absPath = QFileInfo(filePath).path();
-    QFile rulesFile(filePath);
-
-    if (!rulesFile.exists()) {
-        mError += tr("No rules file found at:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
-        return false;
-    }
-    if (!rulesFile.open(QIODevice::ReadOnly)) {
-        mError += tr("Error opening rules file:\n%1").arg(filePath)
-                  + QLatin1Char('\n');
-        return false;
-    }
-
-    QTextStream in(&rulesFile);
-    QString line = in.readLine();
-
-    for (; !line.isNull(); line = in.readLine()) {
-        QString rulePath = line.trimmed();
-        if (rulePath.isEmpty()
-                || rulePath.startsWith(QLatin1Char('#'))
-                || rulePath.startsWith(QLatin1String("//")))
-            continue;
-
-        if (QFileInfo(rulePath).isRelative())
-            rulePath = absPath + QLatin1Char('/') + rulePath;
-
-        if (!QFileInfo(rulePath).exists()) {
-            mError += tr("File not found:\n%1").arg(rulePath) + QLatin1Char('\n');
-            ret = false;
-            continue;
-        }
-        if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)){
-            TmxMapReader mapReader;
-
-            Map *rules = mapReader.read(rulePath);
-
-            TilesetManager *tilesetManager = TilesetManager::instance();
-            tilesetManager->addReferences(rules->tilesets());
-
-            if (!rules) {
-                mError += tr("Opening rules map failed:\n%1").arg(
-                        mapReader.errorString()) + QLatin1Char('\n');
-                ret = false;
-                continue;
-            }
-            AutoMapper *autoMapper;
-            autoMapper = new AutoMapper(mMapDocument, mSetLayer);
-
-            if (autoMapper->prepareLoad(rules, rulePath))
-                mAutoMappers.append(autoMapper);
-            else
-                delete autoMapper;
-        }
-        if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)){
-            if (!loadFile(rulePath))
-                ret = false;
-        }
-    }
-    return ret;
-}
-
-void AutomaticMappingManager::setMapDocument(MapDocument *mapDocument)
-{
-    cleanUp();
-    if (mMapDocument)
-        mMapDocument->disconnect(this);
-
-    mMapDocument = mapDocument;
-
-    if (mMapDocument)
-        connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
-                this, SLOT(automap(QRegion,Layer*)));
-    mLoaded = false;
-
-}
-
-void AutomaticMappingManager::cleanUp()
-{
-    foreach (AutoMapper *autoMapper, mAutoMappers) {
-        delete autoMapper;
-    }
-    mAutoMappers.clear();
-}
-
-void AutomaticMappingManager::fileChanged(const QString &path)
-{
-    /*
-     * Use a one-shot timer and wait a little, to be sure there are no
-     * further modifications within very short time.
-     */
-    if (!mChangedFiles.contains(path)) {
-        mChangedFiles.insert(path);
-        mChangedFilesTimer.start();
-    }
-}
-
-void AutomaticMappingManager::fileChangedTimeout()
-{
-    for (int i = 0; i != mAutoMappers.size(); i++) {
-        AutoMapper *am = mAutoMappers.at(i);
-        QString fileName = am->ruleSetPath();
-        if (mChangedFiles.contains(fileName)) {
-            delete am;
-
-            TmxMapReader mapReader;
-            Map *rules = mapReader.read(fileName);
-            if (!rules) {
-                mAutoMappers.remove(i);
-                continue;
-            }
-
-            AutoMapper *autoMapper = new AutoMapper(mMapDocument, mSetLayer);
-            if (autoMapper->prepareLoad(rules, fileName)) {
-                mAutoMappers.replace(i, autoMapper);
-            } else {
-                delete autoMapper;
-                mAutoMappers.remove(i);
-            }
-        }
-    }
-    mChangedFiles.clear();
 }

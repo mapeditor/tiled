@@ -38,7 +38,9 @@ RCC_DIR = .rcc
 OBJECTS_DIR = .obj
 
 SOURCES += aboutdialog.cpp \
-    automap.cpp \
+    automapper.cpp \
+    automapperwrapper.cpp \
+    automappingmanager.cpp \
     brushitem.cpp \
     documentmanager.cpp \
     filesystemwatcher.cpp \
@@ -118,7 +120,9 @@ SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp
 
 HEADERS += aboutdialog.h \
-    automap.h \
+    automapper.h \
+    automapperwrapper.h \
+    automappingmanager.h \
     brushitem.h \
     documentmanager.h \
     filesystemwatcher.h \

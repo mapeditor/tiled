@@ -60,6 +60,12 @@ public:
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
+    QString autoMapSetLayer() const { return mAutoMapSetLayer; }
+    void setAutoMapSetLayer(QString setLayer);
+
+    bool autoMapDrawing() const { return mAutoMapDrawing; }
+    void setAutoMapDrawing(bool enabled);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -76,6 +82,8 @@ signals:
 
     void useOpenGLChanged(bool useOpenGL);
 
+    void autoMapSetLayerChanged(QString setLayer);
+
 private:
     Preferences();
     ~Preferences();
@@ -90,6 +98,9 @@ private:
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
+
+    bool mAutoMapDrawing;
+    QString mAutoMapSetLayer;
 
     static Preferences *mInstance;
 };
