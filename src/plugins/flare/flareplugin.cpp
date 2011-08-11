@@ -29,25 +29,14 @@
 #include "tileset.h"
 #include "objectgroup.h"
 
-
 #include <QFile>
 #include <QTextStream>
 
 using namespace Flare;
 using namespace Tiled;
 
-static int layerCount(QList<Tiled::Layer*> mapLayers, const QString &layerName)
-{
-    int count = 0;
-    foreach (Layer *layer, mapLayers)
-        if (layer->name() == layerName)
-            count++;
-    return count;
-}
-
 FlarePlugin::FlarePlugin()
 {
-
 }
 
 QString FlarePlugin::nameFilter() const
@@ -62,61 +51,30 @@ QString FlarePlugin::errorString() const
 
 bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-    QList<Layer* > mapLayers = map->layers();
+    if (!checkOneLayerWithName(map, QLatin1String("background")))
+        return false;
+    if (!checkOneLayerWithName(map, QLatin1String("object")))
+        return false;
+    if (!checkOneLayerWithName(map, QLatin1String("collision")))
+        return false;
 
-    // check background layer
-    int count = layerCount(mapLayers, QString("background"));
-    if (count == 0) {
-        mError = tr("No background layer found!");
-        return false;
-    } else if (count > 1) {
-        mError = tr("Multiple background layers found!");
-    }
+    QString title = checkProperty(map, QLatin1String("title"));
+    QString tileset = checkProperty(map, QLatin1String("tileset"));
+    QString music = checkProperty(map, QLatin1String("music"));
 
-    // check object layer
-    count = layerCount(mapLayers, QString("object"));
-    if (count == 0) {
-        mError = tr("No object layer found!");
+    if (title.isEmpty() || tileset.isEmpty() || music.isEmpty())
         return false;
-    } else if (count > 1) {
-        mError = tr("Multiple object layers found!");
-        return false;
-    }
-
-    // check collision layer
-    count = layerCount(mapLayers, QString("collision"));
-    if (count == 0) {
-        mError = tr("No collision layer found!");
-        return false;
-    } else if (count > 1) {
-        mError = tr("Multiple collision layers found!");
-        return false;
-    }
-
-    QString title = map->property(QLatin1String("title"));
-    if (title.isEmpty()) {
-        mError = tr("No map property 'title' found!");
-        return false;
-    }
-    QString tileset = map->property(QLatin1String("tileset"));
-    if (tileset.isEmpty()) {
-        mError = tr("No map property 'tileset' found!");
-        return false;
-    }
-    QString music = map->property(QLatin1String("music"));
-    if (music.isEmpty()) {
-        mError = tr("No map property 'music' found!");
-        return false;
-    }
 
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         mError = tr("File cannot be opened");
         return false;
     }
+
     QTextStream out(&file);
     int mapWidth = map->width();
     int mapHeight = map->height();
+
     // write [header]
     out << "[header]\n";
     out << "width=" << mapWidth << "\n";
@@ -138,7 +96,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     // write layers
-    foreach (Layer *layer, mapLayers) {
+    foreach (Layer *layer, map->layers()) {
         if (TileLayer *tileLayer = layer->asTileLayer()) {
             out << "[layer]\n";
             out << "id=" << layer->name() << "\n";
@@ -184,6 +142,34 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
     file.close();
     return true;
+}
+
+bool FlarePlugin::checkOneLayerWithName(const Tiled::Map *map,
+                                        const QString &name)
+{
+    int count = 0;
+    foreach (Layer *layer, map->layers())
+        if (layer->name() == name)
+            count++;
+
+    if (count == 0) {
+        mError = tr("No \"%1\" layer found!").arg(name);
+        return false;
+    } else if (count > 1) {
+        mError = tr("Multiple \"%1\" layers found!").arg(name);
+        return false;
+    }
+
+    return true;
+}
+
+QString FlarePlugin::checkProperty(const Tiled::Map *map,
+                                   const QString &name)
+{
+    QString value = map->property(name);
+    if (value.isEmpty())
+        mError = tr("No map property \"%1\" found!").arg(name);
+    return value;
 }
 
 Q_EXPORT_PLUGIN2(Flare, FlarePlugin)

@@ -21,13 +21,13 @@
 
 #ifndef FLAREPLUGIN_H
 #define FLAREPLUGIN_H
+
 #include "flare_global.h"
 
 #include "mapwriterinterface.h"
 
 #include <QObject>
 #include <QMap>
-#include "tileset.h"
 
 namespace Flare {
 
@@ -47,6 +47,9 @@ public:
     QString errorString() const;
 
 private:
+    bool checkOneLayerWithName(const Tiled::Map *map, const QString &name);
+    QString checkProperty(const Tiled::Map *object, const QString &name);
+
     QString mError;
 };
 
