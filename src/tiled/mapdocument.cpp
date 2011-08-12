@@ -37,6 +37,7 @@
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
+#include "pluginmanager.h"
 #include "resizelayer.h"
 #include "resizemap.h"
 #include "staggeredrenderer.h"
@@ -117,11 +118,19 @@ bool MapDocument::save(QString *error)
 
 bool MapDocument::save(const QString &fileName, QString *error)
 {
-    TmxMapWriter mapWriter;
+    PluginManager *pm = PluginManager::instance();
 
-    if (!mapWriter.write(map(), fileName)) {
+    MapWriterInterface *chosenWriter = 0;
+    if (const Plugin *plugin = pm->pluginByFileName(mWriterPluginFileName))
+        chosenWriter = qobject_cast<MapWriterInterface*>(plugin->instance);
+
+    TmxMapWriter mapWriter;
+    if (!chosenWriter)
+        chosenWriter = &mapWriter;
+
+    if (!chosenWriter->write(map(), fileName)) {
         if (error)
-            *error = mapWriter.errorString();
+            *error = chosenWriter->errorString();
         return false;
     }
 

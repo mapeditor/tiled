@@ -86,13 +86,18 @@ public:
      * file was saved successfully. If not, <i>error</i> will be set to the
      * error message if it is not 0.
      *
-     * If the save was succesful, the file name of this document will be set
+     * If the save was successful, the file name of this document will be set
      * to \a fileName.
+     *
+     * The map format will be the same as this map was opened with.
      */
     bool save(const QString &fileName, QString *error = 0);
 
     QString fileName() const { return mFileName; }
-    void setFileName(const QString &fileName);
+
+    QString writerPluginFileName() const { return mWriterPluginFileName; }
+    void setWriterPluginFileName(const QString &writerPluginFileName)
+    { mWriterPluginFileName = writerPluginFileName; }
 
     QString displayName() const;
 
@@ -296,9 +301,19 @@ private slots:
     void onLayerRemoved(int index);
 
 private:
+    void setFileName(const QString &fileName);
     void deselectObjects(const QList<MapObject*> &objects);
 
     QString mFileName;
+
+    /**
+     * The filename of a plugin is unique. So it can be used to determine
+     * the right plugin to be used for saving the map again.
+     * The nameFilter of a plugin can not be used, since it's translatable.
+     * The filename of a plugin must not change while maps are open using this
+     * plugin.
+     */
+    QString mWriterPluginFileName;
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mTileSelection;
