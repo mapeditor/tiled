@@ -68,6 +68,11 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                       bottomLeft.y() - img.height(),
                       img.width(),
                       img.height()).adjusted(-1, -1, 1, 1);
+    } else if (!object->polygon().isEmpty()) {
+        QPolygonF polygon;
+        foreach (const QPointF &point, object->polygon())
+            polygon.append(tileToPixelCoords(point + object->position()));
+        return polygon.boundingRect().adjusted(-2, -2, 3, 3);
     } else if (rect.isNull()) {
         return rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
     } else {
@@ -85,6 +90,11 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
     QPainterPath path;
     if (object->tile()) {
         path.addRect(boundingRect(object));
+    } else if (!object->polygon().isEmpty()) {
+        QPolygonF polygon;
+        foreach (const QPointF &point, object->polygon())
+            polygon.append(tileToPixelCoords(point + object->position()));
+        path.addPolygon(polygon);
     } else if (rect.isNull()) {
         path.addEllipse(rect.topLeft(), 20, 20);
     } else {
@@ -219,6 +229,28 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         pen.setColor(color);
         painter->setPen(pen);
         painter->drawRect(QRect(paintOrigin, img.size()));
+    }
+    else if (!object->polygon().isEmpty())
+    {
+        QPolygonF polygon;
+        foreach (const QPointF &point, object->polygon())
+            polygon.append(tileToPixelCoords(point));
+
+        painter->setRenderHint(QPainter::Antialiasing);
+
+        // Draw the shadow
+        QPen pen(Qt::black, 2);
+        painter->setPen(pen);
+        painter->drawPolygon(polygon.translated(1, 1));
+
+        QColor brushColor = color;
+        brushColor.setAlpha(50);
+        QBrush brush(brushColor);
+
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->setBrush(brush);
+        painter->drawPolygon(polygon);
     }
     else
     {

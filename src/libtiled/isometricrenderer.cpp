@@ -71,6 +71,11 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                       bottomCenter.y() - img.height(),
                       img.width(),
                       img.height()).adjusted(-1, -1, 1, 1);
+    } else if (!object->polygon().isEmpty()) {
+        QPolygonF polygon;
+        foreach (const QPointF &point, object->polygon())
+            polygon.append(tileToPixelCoords(point + object->position()));
+        return polygon.boundingRect().adjusted(-2, -2, 3, 3);
     } else {
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
@@ -82,10 +87,16 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 QPainterPath IsometricRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
-    if (object->tile())
+    if (object->tile()) {
         path.addRect(boundingRect(object));
-    else
+    } else if (!object->polygon().isEmpty()) {
+        QPolygonF polygon;
+        foreach (const QPointF &point, object->polygon())
+            polygon.append(tileToPixelCoords(point + object->position()));
+        path.addPolygon(polygon);
+    } else {
         path.addPolygon(tileRectToPolygon(object->bounds()));
+    }
     return path;
 }
 
@@ -252,6 +263,26 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         pen.setColor(color);
         painter->setPen(pen);
         painter->drawRect(QRectF(paintOrigin, img.size()));
+    } else if (!object->polygon().isEmpty()) {
+        QPolygonF polygon;
+        foreach (const QPointF &point, object->polygon())
+            polygon.append(tileToPixelCoords(point + object->position()));
+
+        painter->setRenderHint(QPainter::Antialiasing);
+
+        // Draw the shadow
+        QPen pen(Qt::black, 2);
+        painter->setPen(pen);
+        painter->drawPolygon(polygon.translated(1, 1));
+
+        QColor brushColor = color;
+        brushColor.setAlpha(50);
+        QBrush brush(brushColor);
+
+        pen.setColor(color);
+        painter->setPen(pen);
+        painter->setBrush(brush);
+        painter->drawPolygon(polygon);
     } else {
         QColor brushColor = color;
         brushColor.setAlpha(50);

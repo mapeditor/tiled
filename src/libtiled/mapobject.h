@@ -33,7 +33,7 @@
 
 #include "object.h"
 
-#include <QPointF>
+#include <QPolygonF>
 #include <QSizeF>
 #include <QString>
 #include <QRectF>
@@ -64,8 +64,8 @@ public:
      * Constructor.
      */
     MapObject(const QString &name, const QString &type,
-              qreal x, qreal y,
-              qreal width, qreal height);
+              const QPointF &pos,
+              const QSizeF &size);
 
     /**
      * Destructor.
@@ -147,6 +147,17 @@ public:
     void setHeight(qreal height) { mSize.setHeight(height); }
 
     /**
+     * Sets the polygon associated with this object.
+     */
+    void setPolygon(const QPolygonF &polygon) { mPolygon = polygon; }
+
+    /**
+     * Returns the polygon associated with this object. Returns an empty
+     * polygon when no polygon is associated with this object.
+     */
+    const QPolygonF &polygon() const { return mPolygon; }
+
+    /**
      * Shortcut to getting a QRectF from position() and size().
      */
     QRectF bounds() const { return QRectF(mPos, mSize); }
@@ -195,6 +206,7 @@ private:
     QString mName;
     QPointF mPos;
     QSizeF mSize;
+    QPolygonF mPolygon;
     QString mType;
     Tile *mTile;
     ObjectGroup *mObjectGroup;

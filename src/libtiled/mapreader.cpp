@@ -98,6 +98,7 @@ private:
 
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
+    QPolygonF readPolygon();
 
     Properties readProperties();
     void readProperty(Properties *properties);
@@ -582,6 +583,22 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     return objectGroup;
 }
 
+static QPointF pixelToTileCoordinates(Map *map, int x, int y)
+{
+    const int tileHeight = map->tileHeight();
+    const int tileWidth = map->tileWidth();
+
+    if (map->orientation() == Map::Isometric) {
+        // Isometric needs special handling, since the pixel values are based
+        // solely on the tile height.
+        return QPointF((qreal) x / tileHeight,
+                       (qreal) y / tileHeight);
+    } else {
+        return QPointF((qreal) x / tileWidth,
+                       (qreal) y / tileHeight);
+    }
+}
+
 MapObject *MapReaderPrivate::readObject()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "object");
@@ -595,26 +612,11 @@ MapObject *MapReaderPrivate::readObject()
     const int height = atts.value(QLatin1String("height")).toString().toInt();
     const QString type = atts.value(QLatin1String("type")).toString();
 
-    // Convert pixel coordinates to tile coordinates
-    const int tileHeight = mMap->tileHeight();
-    const int tileWidth = mMap->tileWidth();
-    qreal xF, yF, widthF, heightF;
+    const QPointF pos = pixelToTileCoordinates(mMap, x, y);
+    const QPointF size = pixelToTileCoordinates(mMap, width, height);
 
-    if (mMap->orientation() == Map::Isometric) {
-        // Isometric needs special handling, since the pixel values are based
-        // solely on the tile height.
-        xF = (qreal) x / tileHeight;
-        yF = (qreal) y / tileHeight;
-        widthF = (qreal) width / tileHeight;
-        heightF = (qreal) height / tileHeight;
-    } else {
-        xF = (qreal) x / tileWidth;
-        yF = (qreal) y / tileHeight;
-        widthF = (qreal) width / tileWidth;
-        heightF = (qreal) height / tileHeight;
-    }
-
-    MapObject *object = new MapObject(name, type, xF, yF, widthF, heightF);
+    MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
+                                                              size.y()));
 
     if (gid) {
         bool ok;
@@ -629,11 +631,49 @@ MapObject *MapReaderPrivate::readObject()
     while (xml.readNextStartElement()) {
         if (xml.name() == "properties")
             object->mergeProperties(readProperties());
+        else if (xml.name() == "polygon")
+            object->setPolygon(readPolygon());
         else
             readUnknownElement();
     }
 
     return object;
+}
+
+QPolygonF MapReaderPrivate::readPolygon()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "polygon");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    const QString points = atts.value(QLatin1String("points")).toString();
+    const QStringList pointsList = points.split(QLatin1Char(' '),
+                                                QString::SkipEmptyParts);
+
+    QPolygonF polygon;
+    bool ok = true;
+
+    foreach (const QString &point, pointsList) {
+        const int commaPos = point.indexOf(QLatin1Char(','));
+        if (commaPos == -1) {
+            ok = false;
+            break;
+        }
+
+        const int x = point.left(commaPos).toInt(&ok);
+        if (!ok)
+            break;
+        const int y = point.mid(commaPos + 1).toInt(&ok);
+        if (!ok)
+            break;
+
+        polygon.append(pixelToTileCoordinates(mMap, x, y));
+    }
+
+    if (!ok)
+        xml.raiseError(tr("Invalid points data for polygon"));
+
+    xml.skipCurrentElement();
+    return polygon;
 }
 
 Properties MapReaderPrivate::readProperties()
