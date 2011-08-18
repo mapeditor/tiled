@@ -1,7 +1,7 @@
 /*
  * mapobjectitem.h
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -31,8 +31,10 @@ class MapObject;
 
 namespace Internal {
 
+class Handle;
 class MapDocument;
 class ObjectGroupItem;
+class PointHandle;
 class ResizeHandle;
 
 /**
@@ -83,6 +85,11 @@ public:
      */
     void resize(const QSizeF &size);
 
+    /**
+     * Sets a new polygon on the associated object.
+     */
+    void setPolygon(const QPolygonF &polygon);
+
 private:
     MapDocument *mapDocument() const;
     QColor color() const;
@@ -96,7 +103,10 @@ private:
     bool mIsEditable;
     bool mSyncing;
     ResizeHandle *mResizeHandle;
+    QList<PointHandle*> mPointHandles;
 
+    friend class Handle;
+    friend class PointHandle;
     friend class ResizeHandle;
 };
 

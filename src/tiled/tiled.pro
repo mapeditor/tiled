@@ -115,7 +115,8 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     tiledapplication.cpp \
     command.cpp \
-    abstractobjecttool.cpp
+    abstractobjecttool.cpp \
+    movepoints.cpp
 
 HEADERS += aboutdialog.h \
     automap.h \
@@ -197,7 +198,8 @@ HEADERS += aboutdialog.h \
     commandbutton.h \
     tiledapplication.h \
     command.h \
-    abstractobjecttool.h
+    abstractobjecttool.h \
+    movepoints.h
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \
