@@ -87,8 +87,7 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
 
     mImageWidth = image.width();
     mImageHeight = image.height();
-    mColumnCount = (image.width() - mMargin * 2 + mTileSpacing)
-                   / (mTileWidth + mTileSpacing);
+    mColumnCount = columnCountForWidth(mImageWidth);
     mImageSource = fileName;
     return true;
 }
@@ -106,4 +105,10 @@ Tileset *Tileset::findSimilarTileset(const QList<Tileset*> &tilesets) const
         }
     }
     return 0;
+}
+
+int Tileset::columnCountForWidth(int width) const
+{
+    Q_ASSERT(mTileWidth > 0);
+    return (width - mMargin + mTileSpacing) / (mTileWidth + mTileSpacing);
 }

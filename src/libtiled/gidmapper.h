@@ -72,8 +72,16 @@ public:
      */
     uint cellToGid(const Cell &cell) const;
 
+    /**
+     * This sets the original tileset width. In case the image size has
+     * changed, the tile indexes will be adjusted automatically when using
+     * gidToCell().
+     */
+    void setTilesetWidth(const Tileset *tileset, int width);
+
 private:
     QMap<uint, Tileset*> mFirstGidToTileset;
+    QMap<const Tileset*, int> mTilesetColumnCounts;
 };
 
 } // namespace Tiled

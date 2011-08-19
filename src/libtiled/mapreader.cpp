@@ -345,6 +345,10 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
 
     source = p->resolveReference(source, mPath);
 
+    // Set the width that the tileset had when the map was saved
+    const int width = atts.value(QLatin1String("width")).toString().toInt();
+    mGidMapper.setTilesetWidth(tileset, width);
+
     const QImage tilesetImage = p->readExternalImage(source);
     if (!tileset->loadFromImage(tilesetImage, source))
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));

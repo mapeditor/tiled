@@ -71,6 +71,8 @@ public:
         mImageHeight(0),
         mColumnCount(0)
     {
+        Q_ASSERT(tileSpacing >= 0);
+        Q_ASSERT(margin >= 0);
     }
 
     /**
@@ -191,6 +193,13 @@ public:
      * tileset image.
      */
     const QString &imageSource() const { return mImageSource; }
+
+    /**
+     * Returns the column count that this tileset would have if the tileset
+     * image would have the given \a width. This takes into account the tile
+     * size, margin and spacing.
+     */
+    int columnCountForWidth(int width) const;
 
 private:
     QString mName;
