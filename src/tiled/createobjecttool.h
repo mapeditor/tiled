@@ -43,6 +43,7 @@ public:
     };
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
+    ~CreateObjectTool();
 
     void mouseEntered();
     void mouseMoved(const QPointF &pos,
@@ -66,6 +67,9 @@ private:
     void finishNewMapObject();
 
     MapObjectItem *mNewMapObjectItem;
+    ObjectGroup *mOverlayObjectGroup;
+    MapObject *mOverlayPolygonObject;
+    MapObjectItem *mOverlayPolygonItem;
     Tile *mTile;
     CreationMode mMode;
 };

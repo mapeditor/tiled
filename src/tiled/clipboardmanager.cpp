@@ -88,7 +88,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
                                                              -tileLayer->y()));
     } else if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects
-        ObjectGroup *objectGroup = new ObjectGroup(QString(), 0, 0, 0, 0);
+        ObjectGroup *objectGroup = new ObjectGroup;
         foreach (const MapObject *mapObject, selectedObjects)
             objectGroup->addObject(mapObject->clone());
         copyLayer = objectGroup;

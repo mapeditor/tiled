@@ -49,7 +49,12 @@ class TILEDSHARED_EXPORT ObjectGroup : public Layer
 {
 public:
     /**
-     * Constructor.
+     * Default constructor.
+     */
+    ObjectGroup();
+
+    /**
+     * Constructor with some parameters.
      */
     ObjectGroup(const QString &name, int x, int y, int width, int height);
 

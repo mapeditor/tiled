@@ -33,6 +33,9 @@
 #include "tile.h"
 #include "utils.h"
 
+#include <QApplication>
+#include <QPalette>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -42,6 +45,9 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
           QKeySequence(tr("O")),
           parent)
     , mNewMapObjectItem(0)
+    , mOverlayObjectGroup(0)
+    , mOverlayPolygonObject(0)
+    , mOverlayPolygonItem(0)
     , mTile(0)
     , mMode(mode)
 {
@@ -49,16 +55,32 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     case CreateArea:
         Utils::setThemeIcon(this, "insert-object");
         break;
+
     case CreateTile:
         setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
         Utils::setThemeIcon(this, "insert-image");
         break;
-    case CreatePolygon:
+
+    case CreatePolygon: {
         setIcon(QIcon(QLatin1String(":images/24x24/insert-polygon.png")));
+
+        mOverlayPolygonObject = new MapObject;
+
+        mOverlayObjectGroup = new ObjectGroup;
+        mOverlayObjectGroup->addObject(mOverlayPolygonObject);
+
+        QColor highlight = QApplication::palette().highlight().color();
+        mOverlayObjectGroup->setColor(highlight);
         break;
+    }
     }
 
     languageChanged();
+}
+
+CreateObjectTool::~CreateObjectTool()
+{
+    delete mOverlayObjectGroup;
 }
 
 void CreateObjectTool::mouseEntered()
@@ -107,9 +129,9 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 
         tileCoords -= mNewMapObjectItem->mapObject()->position();
 
-        QPolygonF polygon = mNewMapObjectItem->mapObject()->polygon();
+        QPolygonF polygon = mOverlayPolygonObject->polygon();
         polygon.last() = tileCoords;
-        mNewMapObjectItem->setPolygon(polygon);
+        mOverlayPolygonItem->setPolygon(polygon);
         break;
     }
     }
@@ -127,21 +149,19 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
             break;
         case CreatePolygon:
             if (event->button() == Qt::RightButton) {
-                // Remove the temporary last point
-                QPolygonF polygon = mNewMapObjectItem->mapObject()->polygon();
-                polygon.pop_back();
-                if (polygon.size() > 1) {
-                    mNewMapObjectItem->setPolygon(polygon);
+                // The polygon needs to have at least two points
+                if (mNewMapObjectItem->mapObject()->polygon().size() > 1)
                     finishNewMapObject();
-                } else {
-                    // The polygon needs to have at least two points
+                else
                     cancelNewMapObject();
-                }
             } else if (event->button() == Qt::LeftButton) {
-                // Make the last point permanent by duplicating it
-                QPolygonF polygon = mNewMapObjectItem->mapObject()->polygon();
-                polygon.append(polygon.last());
+                // Assign current overlay polygon to the new object
+                QPolygonF polygon = mOverlayPolygonObject->polygon();
                 mNewMapObjectItem->setPolygon(polygon);
+
+                // Add a new editable point to the overlay
+                polygon.append(polygon.last());
+                mOverlayPolygonItem->setPolygon(polygon);
             }
             break;
         }
@@ -172,9 +192,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
-        if (mMode == CreatePolygon)
-            ; // TODO: Make line segment permanent
-        else
+        if (mMode != CreatePolygon)
             finishNewMapObject();
     }
 }
@@ -214,14 +232,20 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     if (mMode == CreatePolygon) {
         QPolygonF polygon;
         polygon.append(QPointF());
-        polygon.append(QPointF()); // The last point is connected to the mouse
         newMapObject->setPolygon(polygon);
+
+        polygon.append(QPointF()); // The last point is connected to the mouse
+        mOverlayPolygonObject->setPolygon(polygon);
+        mOverlayPolygonObject->setPosition(pos);
+
+        mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
+                                                mapDocument());
+        mapScene()->addItem(mOverlayPolygonItem);
     }
 
     objectGroup->addObject(newMapObject);
 
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument());
-    mNewMapObjectItem->setZValue(10000);
     mapScene()->addItem(mNewMapObjectItem);
 }
 
@@ -236,6 +260,9 @@ MapObject *CreateObjectTool::clearNewMapObjectItem()
 
     delete mNewMapObjectItem;
     mNewMapObjectItem = 0;
+
+    delete mOverlayPolygonItem;
+    mOverlayPolygonItem = 0;
 
     return newMapObject;
 }

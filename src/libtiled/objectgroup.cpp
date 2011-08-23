@@ -37,6 +37,11 @@
 
 using namespace Tiled;
 
+ObjectGroup::ObjectGroup()
+    : Layer(QString(), 0, 0, 0, 0)
+{
+}
+
 ObjectGroup::ObjectGroup(const QString &name,
                          int x, int y, int width, int height)
     : Layer(name, x, y, width, height)
