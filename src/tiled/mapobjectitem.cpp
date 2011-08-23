@@ -56,6 +56,8 @@ public:
     {
         setFlag(QGraphicsItem::ItemIsMovable);
         setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+        setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
     }
 
     QRectF boundingRect() const;
