@@ -380,17 +380,19 @@ void MapObjectItem::paint(QPainter *painter,
     if (mIsEditable) {
         painter->translate(pos());
 
+        QLineF top(mBoundingRect.topLeft(), mBoundingRect.topRight());
+        QLineF left(mBoundingRect.topLeft(), mBoundingRect.bottomLeft());
+        QLineF right(mBoundingRect.topRight(), mBoundingRect.bottomRight());
+        QLineF bottom(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight());
+
         QPen dashPen(Qt::DashLine);
         dashPen.setDashOffset(qMax(qreal(0), x()));
         painter->setPen(dashPen);
-        painter->drawLine(mBoundingRect.topLeft(), mBoundingRect.topRight());
-        painter->drawLine(mBoundingRect.bottomLeft(),
-                          mBoundingRect.bottomRight());
+        painter->drawLines(QVector<QLineF>() << top << bottom);
+
         dashPen.setDashOffset(qMax(qreal(0), y()));
         painter->setPen(dashPen);
-        painter->drawLine(mBoundingRect.topLeft(), mBoundingRect.bottomLeft());
-        painter->drawLine(mBoundingRect.topRight(),
-                          mBoundingRect.bottomRight());
+        painter->drawLines(QVector<QLineF>() << left << right);
     }
 }
 
