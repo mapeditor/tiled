@@ -99,7 +99,8 @@ private:
 
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
-    QString mName; // Copy of the name, so we know when it changes
+    QString mName;      // Copy of the name, so we know when it changes
+    QPolygonF mPolygon; // Copy of the polygon, for the same reason
     bool mIsEditable;
     bool mSyncing;
     ResizeHandle *mResizeHandle;

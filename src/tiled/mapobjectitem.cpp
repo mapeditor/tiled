@@ -276,9 +276,10 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
 
 void MapObjectItem::syncWithMapObject()
 {
-    // Update the whole object when the name has changed
-    if (mObject->name() != mName) {
+    // Update the whole object when the name or polygon has changed
+    if (mObject->name() != mName || mObject->polygon() != mPolygon) {
         mName = mObject->name();
+        mPolygon = mObject->polygon();
         update();
     }
 
@@ -307,8 +308,8 @@ void MapObjectItem::syncWithMapObject()
         mResizeHandle->setPos(handlePos - pixelPos);
     }
 
-    if (!mObject->tile()) {
-        const QPolygonF &polygon = mObject->polygon();
+    if (!mPolygon.isEmpty()) {
+        const QPolygonF &polygon = mPolygon;
         const bool handlesVisible = mIsEditable && !mObject->tile();
 
         // Create missing handles

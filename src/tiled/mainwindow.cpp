@@ -299,9 +299,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mStampBrush = new StampBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateObjectTool(
-            CreateObjectTool::TileObjects, this);
+            CreateObjectTool::CreateTile, this);
     CreateObjectTool *areaObjectsTool = new CreateObjectTool(
-            CreateObjectTool::AreaObjects, this);
+            CreateObjectTool::CreateArea, this);
+    CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
+            CreateObjectTool::CreatePolygon, this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
@@ -322,6 +324,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(areaObjectsTool);
     toolManager->registerTool(tileObjectsTool);
+    toolManager->registerTool(polygonObjectsTool);
 
     addToolBar(toolManager->toolBar());
 

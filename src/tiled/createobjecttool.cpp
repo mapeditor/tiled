@@ -45,15 +45,16 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mTile(0)
     , mMode(mode)
 {
-    if (mMode == TileObjects)
-        setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
-
     switch (mMode) {
-    case AreaObjects:
+    case CreateArea:
         Utils::setThemeIcon(this, "insert-object");
         break;
-    case TileObjects:
+    case CreateTile:
+        setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
         Utils::setThemeIcon(this, "insert-image");
+        break;
+    case CreatePolygon:
+        setIcon(QIcon(QLatin1String(":images/24x24/insert-polygon.png")));
         break;
     }
 
@@ -79,7 +80,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     if (modifiers & Qt::ControlModifier)
         snapToGrid = !snapToGrid;
 
-    if (mMode == AreaObjects) {
+    switch (mMode) {
+    case CreateArea: {
         // Update the size of the new map object
         const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
         QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
@@ -89,12 +91,27 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
             newSize = newSize.toSize();
 
         mNewMapObjectItem->resize(newSize);
-    } else {
+        break;
+    }
+    case CreateTile: {
         if (snapToGrid)
             tileCoords = tileCoords.toPoint();
 
         mNewMapObjectItem->mapObject()->setPosition(tileCoords);
         mNewMapObjectItem->syncWithMapObject();
+        break;
+    }
+    case CreatePolygon: {
+        if (snapToGrid)
+            tileCoords = tileCoords.toPoint();
+
+        tileCoords -= mNewMapObjectItem->mapObject()->position();
+
+        QPolygonF polygon = mNewMapObjectItem->mapObject()->polygon();
+        polygon.last() = tileCoords;
+        mNewMapObjectItem->setPolygon(polygon);
+        break;
+    }
     }
 }
 
@@ -102,8 +119,32 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     // Check if we are already creating a new map object
     if (mNewMapObjectItem) {
-        if (event->button() == Qt::RightButton)
-            cancelNewMapObject();
+        switch (mMode) {
+        case CreateArea:
+        case CreateTile:
+            if (event->button() == Qt::RightButton)
+                cancelNewMapObject();
+            break;
+        case CreatePolygon:
+            if (event->button() == Qt::RightButton) {
+                // Remove the temporary last point
+                QPolygonF polygon = mNewMapObjectItem->mapObject()->polygon();
+                polygon.pop_back();
+                if (polygon.size() > 1) {
+                    mNewMapObjectItem->setPolygon(polygon);
+                    finishNewMapObject();
+                } else {
+                    // The polygon needs to have at least two points
+                    cancelNewMapObject();
+                }
+            } else if (event->button() == Qt::LeftButton) {
+                // Make the last point permanent by duplicating it
+                QPolygonF polygon = mNewMapObjectItem->mapObject()->polygon();
+                polygon.append(polygon.last());
+                mNewMapObjectItem->setPolygon(polygon);
+            }
+            break;
+        }
         return;
     }
 
@@ -130,20 +171,28 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && mNewMapObjectItem)
-        finishNewMapObject();
+    if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
+        if (mMode == CreatePolygon)
+            ; // TODO: Make line segment permanent
+        else
+            finishNewMapObject();
+    }
 }
 
 void CreateObjectTool::languageChanged()
 {
     switch (mMode) {
-    case AreaObjects:
-        setName(tr("Insert Objects"));
+    case CreateArea:
+        setName(tr("Insert Object"));
         setShortcut(QKeySequence(tr("O")));
         break;
-    case TileObjects:
-        setName(tr("Insert Tile Objects"));
+    case CreateTile:
+        setName(tr("Insert Tile"));
         setShortcut(QKeySequence(tr("T")));
+        break;
+    case CreatePolygon:
+        setName(tr("Insert Polygon"));
+        setShortcut(QKeySequence(tr("P")));
         break;
     }
 }
@@ -153,14 +202,21 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
 {
     Q_ASSERT(!mNewMapObjectItem);
 
-    if (mMode == TileObjects && !mTile)
+    if (mMode == CreateTile && !mTile)
         return;
 
     MapObject *newMapObject = new MapObject;
     newMapObject->setPosition(pos);
 
-    if (mMode == TileObjects)
+    if (mMode == CreateTile)
         newMapObject->setTile(mTile);
+
+    if (mMode == CreatePolygon) {
+        QPolygonF polygon;
+        polygon.append(QPointF());
+        polygon.append(QPointF()); // The last point is connected to the mouse
+        newMapObject->setPolygon(polygon);
+    }
 
     objectGroup->addObject(newMapObject);
 

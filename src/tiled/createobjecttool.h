@@ -37,8 +37,9 @@ class CreateObjectTool : public AbstractObjectTool
 
 public:
     enum CreationMode {
-        AreaObjects,
-        TileObjects
+        CreateArea,
+        CreateTile,
+        CreatePolygon
     };
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
