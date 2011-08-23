@@ -27,7 +27,7 @@ namespace Tiled {
 namespace Internal {
 
 /**
- * Custom QApplication subclass which handles the QFileOpenRequest, in order
+ * Custom QApplication subclass which handles the QFileOpenEvent, in order
  * to be able to open files appropriately on MacOS X.
  */
 class TiledApplication : public QApplication
