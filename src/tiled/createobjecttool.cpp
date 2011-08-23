@@ -60,6 +60,14 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     languageChanged();
 }
 
+void CreateObjectTool::deactivate(MapScene *scene)
+{
+    if (mNewMapObjectItem)
+        cancelNewMapObject();
+
+    AbstractObjectTool::deactivate(scene);
+}
+
 void CreateObjectTool::mouseEntered()
 {
 }

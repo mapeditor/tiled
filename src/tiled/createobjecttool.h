@@ -43,6 +43,8 @@ public:
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
 
+    void deactivate(MapScene *scene);
+
     void mouseEntered();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
