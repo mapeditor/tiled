@@ -6,7 +6,7 @@
  * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
  * Copyright 2009, Christian Henz <chrhenz@gmx.de>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
- * Copyright 2010, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -158,6 +158,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
     mUi->actionClose->setShortcuts(QKeySequence::Close);
     mUi->actionQuit->setShortcuts(QKeySequence::Quit);
+    mUi->actionDelete->setShortcuts(QKeySequence::Delete);
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
@@ -176,9 +177,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     keys += QKeySequence(tr("-"));
     mUi->actionZoomOut->setShortcuts(keys);
 
-    mUi->menuEdit->insertAction(mUi->actionCut, undoAction);
-    mUi->menuEdit->insertAction(mUi->actionCut, redoAction);
-    mUi->menuEdit->insertSeparator(mUi->actionCut);
+    mUi->menuEdit->insertAction(mUi->actionDelete, undoAction);
+    mUi->menuEdit->insertAction(mUi->actionDelete, redoAction);
+    mUi->menuEdit->insertSeparator(mUi->actionDelete);
     mUi->menuEdit->insertAction(mUi->actionPreferences,
                                 mActionHandler->actionSelectAll());
     mUi->menuEdit->insertAction(mUi->actionPreferences,
@@ -231,6 +232,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
 
+    connect(mUi->actionDelete, SIGNAL(triggered()), SLOT(remove()));
     connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
     connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
@@ -283,6 +285,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionSaveAs, "document-save-as");
     setThemeIcon(mUi->actionClose, "window-close");
     setThemeIcon(mUi->actionQuit, "application-exit");
+    setThemeIcon(mUi->actionDelete, "edit-delete");
     setThemeIcon(mUi->actionCut, "edit-cut");
     setThemeIcon(mUi->actionCopy, "edit-copy");
     setThemeIcon(mUi->actionPaste, "edit-paste");
@@ -761,6 +764,34 @@ void MainWindow::closeAllFiles()
         mDocumentManager->closeAllDocuments();
 }
 
+void MainWindow::remove()
+{
+    if (!mMapDocument)
+        return;
+
+    Layer *currentLayer = mMapDocument->currentLayer();
+    if (!currentLayer)
+        return;
+
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
+    const QRegion &tileSelection = mMapDocument->tileSelection();
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (tileLayer && !tileSelection.isEmpty()) {
+        undoStack->beginMacro(tr("Remove Tileselection"));
+        undoStack->push(new EraseTiles(mMapDocument, tileLayer, tileSelection));
+    } else if (!selectedObjects.isEmpty()) {
+        undoStack->beginMacro(tr("Remove %n Object(s)", "",
+                                 selectedObjects.size()));
+        foreach (MapObject *mapObject, selectedObjects)
+            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
+    }
+
+    mActionHandler->selectNone();
+    undoStack->endMacro();
+}
+
 void MainWindow::cut()
 {
     if (!mMapDocument)
@@ -1098,6 +1129,7 @@ void MainWindow::updateActions()
     mUi->actionExport->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionCloseAll->setEnabled(map);
+    mUi->actionDelete->setEnabled(canCopy);
     mUi->actionCut->setEnabled(canCopy);
     mUi->actionCopy->setEnabled(canCopy);
     mUi->actionPaste->setEnabled(mClipboardManager->hasMap());
