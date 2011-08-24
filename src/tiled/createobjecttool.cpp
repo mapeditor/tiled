@@ -83,6 +83,14 @@ CreateObjectTool::~CreateObjectTool()
     delete mOverlayObjectGroup;
 }
 
+void CreateObjectTool::deactivate(MapScene *scene)
+{
+    if (mNewMapObjectItem)
+        cancelNewMapObject();
+
+    AbstractObjectTool::deactivate(scene);
+}
+
 void CreateObjectTool::mouseEntered()
 {
 }

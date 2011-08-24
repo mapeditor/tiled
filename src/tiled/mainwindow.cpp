@@ -1157,15 +1157,22 @@ void MainWindow::flipStampVertically()
 }
 
 /**
- * Sets the stamp brush in response to a change in the selection in the tileset
- * view.
+ * Sets the stamp brush, which is used by both the stamp brush and the bucket
+ * fill tool.
  */
 void MainWindow::setStampBrush(const TileLayer *tiles)
 {
-    if (tiles) {
-        mStampBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
-        mBucketFillTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
-    }
+    if (!tiles)
+        return;
+
+    mStampBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
+    mBucketFillTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
+
+    // When selecting a new stamp, it makes sense to switch to a stamp tool
+    ToolManager *m = ToolManager::instance();
+    AbstractTool *selectedTool = m->selectedTool();
+    if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
+        m->selectTool(mStampBrush);
 }
 
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)

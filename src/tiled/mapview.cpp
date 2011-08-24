@@ -88,6 +88,7 @@ void MapView::setUseOpenGL(bool useOpenGL)
         if (!qobject_cast<QGLWidget*>(viewport())) {
             QGLFormat format = QGLFormat::defaultFormat();
             format.setDepth(false); // No need for a depth buffer
+            format.setSampleBuffers(true); // Enable anti-aliasing
             setViewport(new QGLWidget(format));
         }
     } else {

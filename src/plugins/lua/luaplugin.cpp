@@ -69,7 +69,7 @@ QString LuaPlugin::errorString() const
 
 void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 {
-    writer.writeStartTable("map");
+    writer.writeStartReturnTable();
 
     writer.writeKeyAndValue("version", "1.1");
     writer.writeKeyAndValue("luaversion", "5.1");
