@@ -22,8 +22,7 @@
 
 using namespace Tiled::Internal;
 
-static const int zoomFactorCount = 11;
-static const qreal zoomFactors[zoomFactorCount] = {
+static const qreal zoomFactors[] = {
     0.0625,
     0.125,
     0.25,
@@ -36,6 +35,7 @@ static const qreal zoomFactors[zoomFactorCount] = {
     3.0,
     4.0
 };
+const int zoomFactorCount = sizeof(zoomFactors) / sizeof(zoomFactors[0]);
 
 Zoomable::Zoomable(QObject *parent)
     : QObject(parent)
