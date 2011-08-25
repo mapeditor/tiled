@@ -6,7 +6,7 @@
  * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
  * Copyright 2009, Christian Henz <chrhenz@gmx.de>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
- * Copyright 2010, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -161,6 +161,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
+    mUi->actionDelete->setShortcuts(QKeySequence::Delete);
     undoAction->setShortcuts(QKeySequence::Undo);
     redoAction->setShortcuts(QKeySequence::Redo);
 
@@ -234,6 +235,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
     connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
+    connect(mUi->actionDelete, SIGNAL(triggered()), SLOT(delete_()));
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
@@ -286,6 +288,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionCut, "edit-cut");
     setThemeIcon(mUi->actionCopy, "edit-copy");
     setThemeIcon(mUi->actionPaste, "edit-paste");
+    setThemeIcon(mUi->actionDelete, "edit-delete");
     setThemeIcon(redoAction, "edit-redo");
     setThemeIcon(undoAction, "edit-undo");
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
@@ -879,6 +882,33 @@ void MainWindow::paste()
     delete map;
 }
 
+void MainWindow::delete_()
+{
+    if (!mMapDocument)
+        return;
+
+    Layer *currentLayer = mMapDocument->currentLayer();
+    if (!currentLayer)
+        return;
+
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
+    const QRegion &tileSelection = mMapDocument->tileSelection();
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->beginMacro(tr("Delete"));
+
+    if (tileLayer && !tileSelection.isEmpty()) {
+        undoStack->push(new EraseTiles(mMapDocument, tileLayer, tileSelection));
+    } else if (!selectedObjects.isEmpty()) {
+        foreach (MapObject *mapObject, selectedObjects)
+            undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
+    }
+
+    mActionHandler->selectNone();
+    undoStack->endMacro();
+}
+
 void MainWindow::openPreferences()
 {
     PreferencesDialog preferencesDialog(this);
@@ -1112,6 +1142,7 @@ void MainWindow::updateActions()
     mUi->actionCut->setEnabled(canCopy);
     mUi->actionCopy->setEnabled(canCopy);
     mUi->actionPaste->setEnabled(mClipboardManager->hasMap());
+    mUi->actionDelete->setEnabled(canCopy);
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
