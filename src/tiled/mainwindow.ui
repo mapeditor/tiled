@@ -69,6 +69,7 @@
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
+    <addaction name="actionDelete"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
@@ -374,6 +375,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16x16/edit-delete.png</normaloff>:/images/16x16/edit-delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+   <property name="iconText">
+    <string>Delete</string>
    </property>
   </action>
  </widget>
