@@ -51,13 +51,15 @@ public:
     Cell() :
         tile(0),
         flippedHorizontally(false),
-        flippedVertically(false)
+        flippedVertically(false),
+        flippedDiagonally(false)
     {}
 
     explicit Cell(Tile *tile) :
         tile(tile),
         flippedHorizontally(false),
-        flippedVertically(false)
+        flippedVertically(false),
+        flippedDiagonally(false)
     {}
 
     bool isEmpty() const { return tile == 0; }
@@ -66,19 +68,22 @@ public:
     {
         return tile == other.tile
                 && flippedHorizontally == other.flippedHorizontally
-                && flippedVertically == other.flippedVertically;
+                && flippedVertically == other.flippedVertically
+                && flippedDiagonally == other.flippedDiagonally;
     }
 
     bool operator != (const Cell &other) const
     {
         return tile != other.tile
                 || flippedHorizontally != other.flippedHorizontally
-                || flippedVertically != other.flippedVertically;
+                || flippedVertically != other.flippedVertically
+                || flippedDiagonally != other.flippedDiagonally;
     }
 
     Tile *tile;
     bool flippedHorizontally;
     bool flippedVertically;
+    bool flippedDiagonally;
 };
 
 /**
@@ -93,7 +98,8 @@ class TILEDSHARED_EXPORT TileLayer : public Layer
 public:
     enum FlipDirection {
         FlipHorizontally,
-        FlipVertically
+        FlipVertically,
+        FlipDiagonally
     };
 
     /**
@@ -164,10 +170,18 @@ public:
                   const QRegion &mask = QRegion());
 
     /**
-     * Flip this tile layer in the given \a direction. This doesn't change the
-     * dimensions of the tile layer.
+     * Flip this tile layer in the given \a direction. Direction must be
+     * horizontal or vertical.  This doesn't change the dimensions of the 
+     * tile layer.
      */
     void flip(FlipDirection direction);
+
+    /**
+     * Rotate this tile layer by 90 degrees clockwise or counter-clockwise.  
+     * The tile positions are rotated within the layer, and the tiles 
+     * themselves are rotated.  The dimensions of the tile layer are swapped.
+     */
+    void rotate(bool clockwise);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.

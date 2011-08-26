@@ -139,6 +139,8 @@ public slots:
 
     void flipStampHorizontally();
     void flipStampVertically();
+    void rotateStampCW();
+    void rotateStampCCW();
 
     void setStampBrush(const TileLayer *tiles);
     void updateStatusInfoLabel(const QString &statusInfo);

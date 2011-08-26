@@ -145,6 +145,8 @@ void TileLayer::flip(FlipDirection direction)
 {
     QVector<Cell> newGrid(mWidth * mHeight);
 
+    Q_ASSERT(direction == FlipHorizontally || direction == FlipVertically);
+
     for (int y = 0; y < mHeight; ++y) {
         for (int x = 0; x < mWidth; ++x) {
             Cell &dest = newGrid[x + y * mWidth];
@@ -152,16 +154,54 @@ void TileLayer::flip(FlipDirection direction)
                 const Cell &source = cellAt(mWidth - x - 1, y);
                 dest = source;
                 dest.flippedHorizontally = !source.flippedHorizontally;
-            } else {
+            } else if (direction == FlipVertically) {
                 const Cell &source = cellAt(x, mHeight - y - 1);
                 dest = source;
                 dest.flippedVertically = !source.flippedVertically;
-            }
+            }	
         }
     }
 
     mGrid = newGrid;
 }
+
+void TileLayer::rotate(bool clockwise)
+{
+    static char rotateCWMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
+    static char rotateCCWMask[8] =  { 3, 2, 7, 6, 1, 0, 5, 4 };
+
+    int newWidth = mHeight;
+    int newHeight = mWidth;
+    QVector<Cell> newGrid(newWidth * newHeight);
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            const Cell &source = cellAt(x, y);
+            Cell dest = source;
+
+            unsigned char mask = (dest.flippedHorizontally<<2) | (dest.flippedVertically<<1) | (dest.flippedDiagonally<<0);
+
+            if (clockwise)
+                mask = rotateCWMask[mask];
+            else
+                mask = rotateCCWMask[mask];
+
+            dest.flippedHorizontally = (mask & 4) != 0;
+            dest.flippedVertically = (mask & 2) != 0;
+            dest.flippedDiagonally = (mask & 1) != 0;
+
+            if (clockwise)
+                newGrid[x * newWidth + (mHeight-y-1)] = dest;
+            else
+                newGrid[(mWidth-x-1) * newWidth + y] = dest;
+        }
+    }
+
+    mWidth = newWidth;
+    mHeight = newHeight;
+    mGrid = newGrid;
+}
+
 
 QSet<Tileset*> TileLayer::usedTilesets() const
 {
