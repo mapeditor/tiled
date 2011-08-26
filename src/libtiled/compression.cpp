@@ -1,6 +1,6 @@
 /*
  * compression.cpp
- * Copyright 2008, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008, ThorbjÃ¸rn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -28,12 +28,15 @@
 
 #include "compression.h"
 
+#if 0
 #include <zlib.h>
+#endif
 #include <QByteArray>
 #include <QDebug>
 
 using namespace Tiled;
 
+#if 0
 // TODO: Improve error reporting by showing these errors in the user interface
 static void logZlibError(int error)
 {
@@ -53,9 +56,13 @@ static void logZlibError(int error)
             qDebug() << "Unknown error while (de)compressing data!";
     }
 }
+#endif
 
 QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 {
+#if 1
+    return QByteArray();
+#else
     QByteArray out;
     out.resize(expectedSize);
     z_stream strm;
@@ -109,10 +116,14 @@ QByteArray Tiled::decompress(const QByteArray &data, int expectedSize)
 
     out.resize(outLength);
     return out;
+#endif
 }
 
 QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method)
 {
+#if 1
+    return QByteArray();
+#else
     QByteArray out;
     out.resize(1024);
     int err;
@@ -159,4 +170,5 @@ QByteArray Tiled::compress(const QByteArray &data, CompressionMethod method)
 
     out.resize(outLength);
     return out;
+#endif
 }

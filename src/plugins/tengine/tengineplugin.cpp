@@ -18,6 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+ #if 0
+ 
 #include "tengineplugin.h"
 
 #include "math.h"
@@ -343,3 +345,4 @@ QString TenginePlugin::constructAdditionalTable(Tiled::Properties props, QList<Q
 }
 
 Q_EXPORT_PLUGIN2(Tengine, TenginePlugin)
+#endif
