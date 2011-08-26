@@ -187,6 +187,8 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
+    QTransform baseTransform = painter->transform();
+
     for (int y = startPos.y(); y - tileHeight < rect.bottom();
          y += tileHeight / 2)
     {
@@ -197,16 +199,28 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
                     const QPixmap &img = cell.tile->image();
-                    int flipX = cell.flippedHorizontally ? -1 : 1;
-                    int flipY = cell.flippedVertically ? -1 : 1;
-                    int offsetX = cell.flippedHorizontally ? img.width() : 0;
-                    int offsetY = cell.flippedVertically ? 0 : img.height();
 
-                    painter->scale(flipX, flipY);
-                    painter->drawPixmap(x * flipX - offsetX,
-                                        y * flipY - offsetY,
-                                        img);
-                    painter->scale(flipX, flipY);
+                    float m11 = 1, m12 = 0, m21 = 0, m22 = 1;
+                    float dx = x, dy = y - img.height();
+                    if (cell.flippedDiagonally) {
+                        std::swap(m11, m12);
+                        std::swap(m21, m22);
+                    }
+                    if (cell.flippedHorizontally) {
+                        m11 = -m11;
+                        m21 = -m21;
+                        dx += img.width();
+                    }
+                    if (cell.flippedVertically) {
+                        m12 = -m12;
+                        m22 = -m22;
+                        dy += img.height();
+                    }
+
+                    QTransform transform(m11, m12, m21, m22, dx, dy);
+                    painter->setTransform(transform * baseTransform);
+
+                    painter->drawPixmap(0, 0, img);
                 }
             }
 
@@ -226,6 +240,8 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             shifted = false;
         }
     }
+
+    painter->setTransform(baseTransform);
 }
 
 void IsometricRenderer::drawTileSelection(QPainter *painter,
