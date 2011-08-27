@@ -33,6 +33,7 @@ using namespace Tiled;
 
 MapObject::MapObject():
     mSize(0, 0),
+    mShape(Rectangle),
     mTile(0),
     mObjectGroup(0)
 {
@@ -42,9 +43,10 @@ MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
     mName(name),
+    mType(type),
     mPos(pos),
     mSize(size),
-    mType(type),
+    mShape(Rectangle),
     mTile(0),
     mObjectGroup(0)
 {
@@ -54,7 +56,8 @@ MapObject *MapObject::clone() const
 {
     MapObject *o = new MapObject(mName, mType, mPos, mSize);
     o->setProperties(properties());
-    o->setTile(mTile);
     o->setPolygon(mPolygon);
+    o->setShape(mShape);
+    o->setTile(mTile);
     return o;
 }

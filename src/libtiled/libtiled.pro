@@ -26,6 +26,7 @@ SOURCES += compression.cpp \
     map.cpp \
     mapobject.cpp \
     mapreader.cpp \
+    maprenderer.cpp \
     mapwriter.cpp \
     objectgroup.cpp \
     orthogonalrenderer.cpp \

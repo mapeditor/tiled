@@ -1,6 +1,6 @@
 /*
  * isometricrenderer.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -72,10 +72,10 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                       img.width(),
                       img.height()).adjusted(-1, -1, 1, 1);
     } else if (!object->polygon().isEmpty()) {
-        QPolygonF polygon;
-        foreach (const QPointF &point, object->polygon())
-            polygon.append(tileToPixelCoords(point + object->position()));
-        return polygon.boundingRect().adjusted(-2, -2, 3, 3);
+        const QPointF &pos = object->position();
+        const QPolygonF polygon = object->polygon().translated(pos);
+        const QPolygonF screenPolygon = tileToPixelCoords(polygon);
+        return screenPolygon.boundingRect().adjusted(-2, -2, 3, 3);
     } else {
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
@@ -89,13 +89,28 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
     QPainterPath path;
     if (object->tile()) {
         path.addRect(boundingRect(object));
-    } else if (!object->polygon().isEmpty()) {
-        QPolygonF polygon;
-        foreach (const QPointF &point, object->polygon())
-            polygon.append(tileToPixelCoords(point + object->position()));
-        path.addPolygon(polygon);
     } else {
-        path.addPolygon(tileRectToPolygon(object->bounds()));
+        switch (object->shape()) {
+        case MapObject::Rectangle:
+            path.addPolygon(tileRectToPolygon(object->bounds()));
+            break;
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            const QPolygonF screenPolygon = tileToPixelCoords(polygon);
+            if (object->shape() == MapObject::Polygon) {
+                path.addPolygon(screenPolygon);
+            } else {
+                for (int i = 1; i < screenPolygon.size(); ++i) {
+                    path.addPolygon(lineToPolygon(screenPolygon[i - 1],
+                                                  screenPolygon[i]));
+                }
+                path.setFillRule(Qt::WindingFill);
+            }
+            break;
+        }
+        }
     }
     return path;
 }
@@ -263,26 +278,6 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         pen.setColor(color);
         painter->setPen(pen);
         painter->drawRect(QRectF(paintOrigin, img.size()));
-    } else if (!object->polygon().isEmpty()) {
-        QPolygonF polygon;
-        foreach (const QPointF &point, object->polygon())
-            polygon.append(tileToPixelCoords(point + object->position()));
-
-        painter->setRenderHint(QPainter::Antialiasing);
-
-        // Draw the shadow
-        QPen pen(Qt::black, 2);
-        painter->setPen(pen);
-        painter->drawPolygon(polygon.translated(1, 1));
-
-        QColor brushColor = color;
-        brushColor.setAlpha(50);
-        QBrush brush(brushColor);
-
-        pen.setColor(color);
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        painter->drawPolygon(polygon);
     } else {
         QColor brushColor = color;
         brushColor.setAlpha(50);
@@ -298,18 +293,49 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         // TODO: Draw the object name
         // TODO: Do something sensible to make null-sized objects usable
 
-        QPolygonF polygon = tileRectToPolygon(object->bounds());
+        switch (object->shape()) {
+        case MapObject::Rectangle: {
+            QPolygonF polygon = tileRectToPolygon(object->bounds());
+            painter->drawPolygon(polygon);
 
-        // Make sure the line aligns nicely on the pixels
-        if (pen.width() % 2)
-            painter->translate(0.5, 0.5);
+            pen.setColor(color);
+            painter->setPen(pen);
+            painter->setBrush(brush);
+            polygon.translate(0, -1);
 
-        painter->drawPolygon(polygon);
-        pen.setColor(color);
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        polygon.translate(0, -1);
-        painter->drawPolygon(polygon);
+            painter->drawPolygon(polygon);
+            break;
+        }
+        case MapObject::Polygon: {
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            QPolygonF screenPolygon = tileToPixelCoords(polygon);
+
+            painter->drawPolygon(screenPolygon);
+
+            pen.setColor(color);
+            painter->setPen(pen);
+            painter->setBrush(brush);
+            screenPolygon.translate(0, -1);
+
+            painter->drawPolygon(screenPolygon);
+            break;
+        }
+        case MapObject::Polyline: {
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            QPolygonF screenPolygon = tileToPixelCoords(polygon);
+
+            painter->drawPolyline(screenPolygon);
+
+            pen.setColor(color);
+            painter->setPen(pen);
+            screenPolygon.translate(0, -1);
+
+            painter->drawPolyline(screenPolygon);
+            break;
+        }
+        }
     }
 
     painter->restore();

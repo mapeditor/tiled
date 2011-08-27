@@ -1,6 +1,6 @@
 /*
  * orthogonalrenderer.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -60,46 +60,80 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
     const QRectF rect(tileToPixelCoords(bounds.topLeft()),
                       tileToPixelCoords(bounds.bottomRight()));
 
-    // The -2 and +3 are to account for the pen width and shadow
+    QRectF boundingRect;
+
     if (object->tile()) {
         const QPointF bottomLeft = rect.topLeft();
         const QPixmap &img = object->tile()->image();
-        return QRectF(bottomLeft.x(),
-                      bottomLeft.y() - img.height(),
-                      img.width(),
-                      img.height()).adjusted(-1, -1, 1, 1);
-    } else if (!object->polygon().isEmpty()) {
-        QPolygonF polygon;
-        foreach (const QPointF &point, object->polygon())
-            polygon.append(tileToPixelCoords(point + object->position()));
-        return polygon.boundingRect().adjusted(-2, -2, 3, 3);
-    } else if (rect.isNull()) {
-        return rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
+        boundingRect = QRectF(bottomLeft.x(),
+                              bottomLeft.y() - img.height(),
+                              img.width(),
+                              img.height()).adjusted(-1, -1, 1, 1);
     } else {
-        const int nameHeight = object->name().isEmpty() ? 0 : 15;
-        return rect.adjusted(-2, -nameHeight - 2, 3, 3);
+        // The -2 and +3 are to account for the pen width and shadow
+        switch (object->shape()) {
+        case MapObject::Rectangle:
+            if (rect.isNull()) {
+                boundingRect = rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
+            } else {
+                const int nameHeight = object->name().isEmpty() ? 0 : 15;
+                boundingRect = rect.adjusted(-2, -nameHeight - 2, 3, 3);
+            }
+            break;
+
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            QPolygonF screenPolygon = tileToPixelCoords(polygon);
+            boundingRect = screenPolygon.boundingRect().adjusted(-2, -2, 3, 3);
+            break;
+        }
+        }
     }
+
+    return boundingRect;
 }
 
 QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
 {
-    const QRectF bounds = object->bounds();
-    const QRectF rect(tileToPixelCoords(bounds.topLeft()),
-                      tileToPixelCoords(bounds.bottomRight()));
-
     QPainterPath path;
+
     if (object->tile()) {
         path.addRect(boundingRect(object));
-    } else if (!object->polygon().isEmpty()) {
-        QPolygonF polygon;
-        foreach (const QPointF &point, object->polygon())
-            polygon.append(tileToPixelCoords(point + object->position()));
-        path.addPolygon(polygon);
-    } else if (rect.isNull()) {
-        path.addEllipse(rect.topLeft(), 20, 20);
     } else {
-        path.addRoundedRect(rect, 10, 10);
+        switch (object->shape()) {
+        case MapObject::Rectangle: {
+            const QRectF bounds = object->bounds();
+            const QRectF rect(tileToPixelCoords(bounds.topLeft()),
+                              tileToPixelCoords(bounds.bottomRight()));
+
+            if (rect.isNull()) {
+                path.addEllipse(rect.topLeft(), 20, 20);
+            } else {
+                path.addRoundedRect(rect, 10, 10);
+            }
+            break;
+        }
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            const QPolygonF screenPolygon = tileToPixelCoords(polygon);
+            if (object->shape() == MapObject::Polygon) {
+                path.addPolygon(screenPolygon);
+            } else {
+                for (int i = 1; i < screenPolygon.size(); ++i) {
+                    path.addPolygon(lineToPolygon(screenPolygon[i - 1],
+                                                  screenPolygon[i]));
+                }
+                path.setFillRule(Qt::WindingFill);
+            }
+            break;
+        }
+        }
     }
+
     return path;
 }
 
@@ -216,8 +250,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
 
-    if (object->tile())
-    {
+    if (object->tile()) {
         const QPixmap &img = object->tile()->image();
         const QPoint paintOrigin(0, -img.height());
         painter->drawPixmap(paintOrigin, img);
@@ -229,57 +262,64 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         pen.setColor(color);
         painter->setPen(pen);
         painter->drawRect(QRect(paintOrigin, img.size()));
-    }
-    else if (!object->polygon().isEmpty())
-    {
-        QPolygonF polygon;
-        foreach (const QPointF &point, object->polygon())
-            polygon.append(tileToPixelCoords(point));
-
-        painter->setRenderHint(QPainter::Antialiasing);
-
-        // Draw the shadow
-        QPen pen(Qt::black, 2);
-        painter->setPen(pen);
-        painter->drawPolygon(polygon.translated(1, 1));
+    } else {
+        const QPen linePen(color, 2);
+        const QPen shadowPen(Qt::black, 2);
 
         QColor brushColor = color;
         brushColor.setAlpha(50);
-        QBrush brush(brushColor);
-
-        pen.setColor(color);
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        painter->drawPolygon(polygon);
-    }
-    else
-    {
-        if (rect.isNull())
-            rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
-
-        const QFontMetrics fm = painter->fontMetrics();
-        QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                     rect.width() + 2);
+        const QBrush fillBrush(brushColor);
 
         painter->setRenderHint(QPainter::Antialiasing);
 
-        // Draw the shadow
-        QPen pen(Qt::black, 2);
-        painter->setPen(pen);
-        painter->drawRect(rect.translated(QPointF(1, 1)));
-        if (!name.isEmpty())
-            painter->drawText(QPoint(1, -5 + 1), name);
+        switch (object->shape()) {
+        case MapObject::Rectangle: {
+            if (rect.isNull())
+                rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
 
-        QColor brushColor = color;
-        brushColor.setAlpha(50);
-        QBrush brush(brushColor);
+            const QFontMetrics fm = painter->fontMetrics();
+            QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                         rect.width() + 2);
 
-        pen.setColor(color);
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        painter->drawRect(rect);
-        if (!name.isEmpty())
-            painter->drawText(QPoint(0, -5), name);
+            // Draw the shadow
+            painter->setPen(shadowPen);
+            painter->drawRect(rect.translated(QPointF(1, 1)));
+            if (!name.isEmpty())
+                painter->drawText(QPoint(1, -5 + 1), name);
+
+            painter->setPen(linePen);
+            painter->setBrush(fillBrush);
+            painter->drawRect(rect);
+            if (!name.isEmpty())
+                painter->drawText(QPoint(0, -5), name);
+
+            break;
+        }
+
+        case MapObject::Polyline: {
+            QPolygonF screenPolygon = tileToPixelCoords(object->polygon());
+
+            painter->setPen(shadowPen);
+            painter->drawPolyline(screenPolygon.translated(1, 1));
+
+            painter->setPen(linePen);
+            painter->setBrush(fillBrush);
+            painter->drawPolyline(screenPolygon);
+            break;
+        }
+
+        case MapObject::Polygon: {
+            QPolygonF screenPolygon = tileToPixelCoords(object->polygon());
+
+            painter->setPen(shadowPen);
+            painter->drawPolygon(screenPolygon.translated(1, 1));
+
+            painter->setPen(linePen);
+            painter->setBrush(fillBrush);
+            painter->drawPolygon(screenPolygon);
+            break;
+        }
+        }
     }
 
     painter->restore();

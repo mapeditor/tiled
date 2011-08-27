@@ -629,12 +629,17 @@ MapObject *MapReaderPrivate::readObject()
     }
 
     while (xml.readNextStartElement()) {
-        if (xml.name() == "properties")
+        if (xml.name() == "properties") {
             object->mergeProperties(readProperties());
-        else if (xml.name() == "polygon")
+        } else if (xml.name() == "polygon") {
             object->setPolygon(readPolygon());
-        else
+            object->setShape(MapObject::Polygon);
+        } else if (xml.name() == "polyline") {
+            object->setPolygon(readPolygon());
+            object->setShape(MapObject::Polyline);
+        } else {
             readUnknownElement();
+        }
     }
 
     return object;
@@ -642,7 +647,8 @@ MapObject *MapReaderPrivate::readObject()
 
 QPolygonF MapReaderPrivate::readPolygon()
 {
-    Q_ASSERT(xml.isStartElement() && xml.name() == "polygon");
+    Q_ASSERT(xml.isStartElement() && (xml.name() == "polygon" ||
+                                      xml.name() == "polyline"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString points = atts.value(QLatin1String("points")).toString();

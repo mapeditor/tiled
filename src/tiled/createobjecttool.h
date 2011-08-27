@@ -39,7 +39,8 @@ public:
     enum CreationMode {
         CreateArea,
         CreateTile,
-        CreatePolygon
+        CreatePolygon,
+        CreatePolyline
     };
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);

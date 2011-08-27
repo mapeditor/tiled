@@ -1,6 +1,6 @@
 /*
  * maprenderer.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -126,6 +126,16 @@ public:
 
     inline QPointF tileToPixelCoords(const QPointF &point) const
     { return tileToPixelCoords(point.x(), point.y()); }
+
+    QPolygonF tileToPixelCoords(const QPolygonF &polygon) const
+    {
+        QPolygonF screenPolygon(polygon.size());
+        for (int i = polygon.size() - 1; i >= 0; --i)
+            screenPolygon[i] = tileToPixelCoords(polygon[i]);
+        return screenPolygon;
+    }
+
+    static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
 protected:
     /**

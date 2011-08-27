@@ -1,6 +1,6 @@
 /*
  * createobjecttool.cpp
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -61,8 +61,13 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
         Utils::setThemeIcon(this, "insert-image");
         break;
 
-    case CreatePolygon: {
+    case CreatePolygon:
         setIcon(QIcon(QLatin1String(":images/24x24/insert-polygon.png")));
+        // fall through
+
+    case CreatePolyline: {
+        if (mMode != CreatePolygon)
+            setIcon(QIcon(QLatin1String(":images/24x24/insert-polyline.png")));
 
         mOverlayPolygonObject = new MapObject;
 
@@ -131,7 +136,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         mNewMapObjectItem->syncWithMapObject();
         break;
     }
-    case CreatePolygon: {
+    case CreatePolygon:
+    case CreatePolyline: {
         if (snapToGrid)
             tileCoords = tileCoords.toPoint();
 
@@ -156,9 +162,12 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
                 cancelNewMapObject();
             break;
         case CreatePolygon:
+        case CreatePolyline:
             if (event->button() == Qt::RightButton) {
-                // The polygon needs to have at least two points
-                if (mNewMapObjectItem->mapObject()->polygon().size() > 1)
+                // The polygon needs to have at least three points and a
+                // polyline needs at least two.
+                int min = mMode == CreatePolygon ? 3 : 2;
+                if (mNewMapObjectItem->mapObject()->polygon().size() >= min)
                     finishNewMapObject();
                 else
                     cancelNewMapObject();
@@ -200,7 +209,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
-        if (mMode != CreatePolygon)
+        if (mMode == CreateArea || mMode == CreateTile)
             finishNewMapObject();
     }
 }
@@ -220,6 +229,10 @@ void CreateObjectTool::languageChanged()
         setName(tr("Insert Polygon"));
         setShortcut(QKeySequence(tr("P")));
         break;
+    case CreatePolyline:
+        setName(tr("Insert Polyline"));
+        setShortcut(QKeySequence(tr("L")));
+        break;
     }
 }
 
@@ -237,13 +250,17 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     if (mMode == CreateTile)
         newMapObject->setTile(mTile);
 
-    if (mMode == CreatePolygon) {
+    if (mMode == CreatePolygon || mMode == CreatePolyline) {
+        MapObject::Shape shape = mMode == CreatePolygon ? MapObject::Polygon
+                                                        : MapObject::Polyline;
         QPolygonF polygon;
         polygon.append(QPointF());
         newMapObject->setPolygon(polygon);
+        newMapObject->setShape(shape);
 
         polygon.append(QPointF()); // The last point is connected to the mouse
         mOverlayPolygonObject->setPolygon(polygon);
+        mOverlayPolygonObject->setShape(shape);
         mOverlayPolygonObject->setPosition(pos);
 
         mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,

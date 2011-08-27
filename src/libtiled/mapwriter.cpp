@@ -453,9 +453,13 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     writeProperties(w, mapObject->properties());
 
-    const QPolygonF polygon = mapObject->polygon();
+    const QPolygonF &polygon = mapObject->polygon();
     if (!polygon.isEmpty()) {
-        w.writeStartElement(QLatin1String("polygon"));
+        if (mapObject->shape() == MapObject::Polygon)
+            w.writeStartElement(QLatin1String("polygon"));
+        else
+            w.writeStartElement(QLatin1String("polyline"));
+
         QString points;
         foreach (const QPointF &point, polygon) {
             const QPoint pos = toPixel(point.x(), point.y());

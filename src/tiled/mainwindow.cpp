@@ -304,6 +304,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             CreateObjectTool::CreateArea, this);
     CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreatePolygon, this);
+    CreateObjectTool *polylineObjectsTool = new CreateObjectTool(
+            CreateObjectTool::CreatePolyline, this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
@@ -325,6 +327,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(areaObjectsTool);
     toolManager->registerTool(tileObjectsTool);
     toolManager->registerTool(polygonObjectsTool);
+    toolManager->registerTool(polylineObjectsTool);
 
     addToolBar(toolManager->toolBar());
 
