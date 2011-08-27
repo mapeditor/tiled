@@ -121,7 +121,6 @@ void AutomappingManager::autoMap(QRegion where, Layer *l)
     }
 
     Map *map = mMapDocument->map();
-
     QString layer = map->layerAt(mMapDocument->currentLayerIndex())->name();
 
     // use a pointer to the region, so each automapper can manipulate it and the
@@ -255,7 +254,7 @@ void AutomappingManager::fileChanged(const QString &path)
 
 void AutomappingManager::fileChangedTimeout()
 {
-    for (int i = 0; i != mAutoMappers.size(); i++) {
+    for (int i = 0; i != mAutoMappers.size(); ++i) {
         AutoMapper *am = mAutoMappers.at(i);
         QString fileName = am->ruleSetPath();
         if (mChangedFiles.contains(fileName)) {

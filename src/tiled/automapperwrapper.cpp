@@ -56,7 +56,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMappe
     }
     // reduce memory usage by saving only diffs
     Q_ASSERT(mLayersAfter.size() == mLayersBefore.size());
-    for (int i = 0; i < mLayersAfter.size(); i++) {
+    for (int i = 0; i < mLayersAfter.size(); ++i) {
         TileLayer *before = mLayersBefore.at(i);
         TileLayer *after = mLayersAfter.at(i);
         QRect diffRegion = before->computeDiffRegion(after).boundingRect();

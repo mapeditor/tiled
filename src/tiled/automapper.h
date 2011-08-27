@@ -39,6 +39,8 @@ namespace Internal {
 
 class MapDocument;
 
+typedef QMap<TileLayer*, int> IndexByTileLayer;
+
 /**
  * This class does all the work for the automapping feature.
  * basically it can do the following:
@@ -81,7 +83,8 @@ public:
     /**
      * This needs to be called directly before the autoMap call.
      * It sets up some data structures which change rapidly, so it is quite
-     * painful to keep these datastructures up to date all time.
+     * painful to keep these datastructures up to date all time. (indices of
+     * layers of the working map)
      */
     bool prepareAutoMap();
 
@@ -143,7 +146,13 @@ private:
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
      */
-    bool setupRuleMapLayers();
+    bool setupRuleMapTileLayers();
+
+    /**
+     * Checks if all needed layers in the working map are there.
+     * If not, add them in the correct order.
+     */
+    bool setupMissingLayers();
 
     /**
      * Checks if the layers setup as in setupRuleMapLayers are still right.
@@ -151,7 +160,7 @@ private:
      * @return returns true if everything went fine. false is returned when
      *         no set layer was found
      */
-    bool setupMissingLayers();
+    bool setupCorrectIndexes();
 
     /**
      * sets up the tilesets which are used in automapping.
@@ -189,7 +198,7 @@ private:
      * In the destination it will come to the region translated by Offset.
      */
     void copyMapRegion(const QRegion &region, QPoint Offset,
-            const QList< QPair<TileLayer*, int> > &LayerTranslation);
+                       const IndexByTileLayer *LayerTranslation);
 
     /**
      * This goes through all the positions of the mMapWork and checks if
@@ -217,19 +226,19 @@ private:
     QRegion createRule(int x, int y) const;
 
     /**
-     * cleans up the data structes filled by setupRuleMapLayers(),
+     * Cleans up the data structes filled by setupRuleMapLayers(),
      * so the next rule can be processed.
      */
     void cleanUpRuleMapLayers();
 
     /**
-     * cleans up the data structes filled by setupTilesets(),
+     * Cleans up the data structes filled by setupTilesets(),
      * so the next rule can be processed.
      */
     void cleanTilesets();
 
     /**
-     * checks if this the rules from the given rules map could be used anyway
+     * Checks if this the rules from the given rules map could be used anyway
      * by comparing the used tilesets of the set layer and ruleset layer.
      */
     bool setupRulesUsedCheck();
@@ -298,19 +307,19 @@ private:
     QList<QRegion> mRules;
 
     /**
-     * The inner List of Tuples with layers is needed for translating
+     * The inner set with layers to indexes is needed for translating
      * tile layers from mMapRules to mMapWork.
      *
-     * QPairs first entry is the  pointer to the layer in the rulemap. The
+     * The key is the pointer to the layer in the rulemap. The
      * pointer to the layer within the working map is not hardwired, but the
      * position in the layerlist, where it was found the last time.
      * This loosely bound pointer ensures we will get the right layer, since we
      * need to check before anyway, and it is still fast.
      *
-     * The outer list is used to hold different translation tables
-     * => one of the inner lists is chosen by chance, so randomness is available
+     * The list is used to hold different translation tables
+     * => one of the tables is chosen by chance, so randomness is available
      */
-    QList<QList<QPair<TileLayer*, int> >* > mLayerList;
+    QList<IndexByTileLayer*> mLayerList;
 
     /**
      * store the name of the processed rules file, to have detailed
@@ -337,7 +346,7 @@ private:
      */
     bool mNoOverlappingRules;
 
-    QSet<QString> mTouchedLayers;
+    QList<QString> mTouchedLayers;
 
     QString mError;
 
