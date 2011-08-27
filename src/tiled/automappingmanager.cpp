@@ -92,13 +92,17 @@ void AutomappingManager::autoMap()
 
 void AutomappingManager::autoMap(QRegion where, Layer *l)
 {
+    mError.clear();
+    mWarning.clear();
     if (!mMapDocument) {
         mError = tr("No map document found!") + QLatin1Char('\n');
+        emit errorsOccurred();
         return;
     }
 
     if (!l) {
         mError = tr("No set layer found!") + QLatin1Char('\n');
+        emit errorsOccurred();
         return;
     }
 
@@ -108,8 +112,12 @@ void AutomappingManager::autoMap(QRegion where, Layer *l)
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
         const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
-        if (loadFile(rulesFileName))
+        if (loadFile(rulesFileName)) {
             mLoaded = true;
+        } else {
+            emit errorsOccurred();
+            return;
+        }
     }
 
     Map *map = mMapDocument->map();
@@ -126,14 +134,24 @@ void AutomappingManager::autoMap(QRegion where, Layer *l)
     undoStack->push(aw);
     undoStack->endMacro();
 
+    foreach (AutoMapper *automapper, mAutoMappers) {
+        mWarning += automapper->warningString();
+        mError += automapper->errorString();
+    }
+
     mMapDocument->emitRegionChanged(*passedRegion);
     delete passedRegion;
     mMapDocument->setCurrentLayerIndex(map->indexOfLayer(layer));
+
+    if (!mWarning.isEmpty())
+        emit warningsOccurred();
+
+    if (!mError.isEmpty())
+        emit errorsOccurred();
 }
 
 bool AutomappingManager::loadFile(const QString &filePath)
 {
-    mError.clear();
     bool ret = true;
     const QString absPath = QFileInfo(filePath).path();
     QFile rulesFile(filePath);

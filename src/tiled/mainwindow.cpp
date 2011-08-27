@@ -371,6 +371,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     updateActions();
     readSettings();
     setupQuickStamps();
+
+    connect(AutomappingManager::instance(), SIGNAL(warningsOccurred()),
+            this, SLOT(autoMappingWarning()));
+    connect(AutomappingManager::instance(), SIGNAL(errorsOccurred()),
+            this, SLOT(autoMappingError()));
 }
 
 MainWindow::~MainWindow()
@@ -1042,14 +1047,20 @@ void MainWindow::editMapProperties()
 void MainWindow::autoMap()
 {
     AutomappingManager::instance()->autoMap();
+}
 
-    const QString title = tr("Automatic Mapping");
-
+void MainWindow::autoMappingWarning()
+{
+    const QString title = tr("Automatic Mapping Warning");
     QString warnings = AutomappingManager::instance()->warningString();
     if (!warnings.isEmpty()) {
         QMessageBox::warning(this, title, warnings);
     }
+}
 
+void MainWindow::autoMappingError()
+{
+    const QString title = tr("Automatic Mapping Error");
     QString error = AutomappingManager::instance()->errorString();
     if (!error.isEmpty()) {
         QMessageBox::critical(this, title, error);

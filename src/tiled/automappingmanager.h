@@ -73,6 +73,17 @@ public:
 
     QString warningString() const { return mWarning; }
 
+signals:
+    /**
+     * This signal is emited after automapping was done and an error occurred.
+     */
+    void errorsOccurred();
+
+    /**
+     * This signal is emited after automapping was done and a warning occurred.
+     */
+    void warningsOccurred();
+
 public slots:
     /**
      * This sets up new AutoMapperWrappers, which trigger the automapping.

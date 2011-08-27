@@ -320,6 +320,9 @@ QRegion AutoMapper::createRule(int x, int y) const
 
 bool AutoMapper::prepareAutoMap()
 {
+    mError.clear();
+    mWarning.clear();
+
     if (!setupMissingLayers())
         return false;
 

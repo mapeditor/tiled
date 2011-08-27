@@ -148,6 +148,8 @@ public slots:
     void mapDocumentChanged(MapDocument *mapDocument);
     void closeMapDocument(int index);
 
+    void autoMappingError();
+    void autoMappingWarning();
 private:
     /**
       * Asks the user whether the current map should be saved when necessary.

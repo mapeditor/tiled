@@ -96,8 +96,17 @@ public:
      */
     void cleanAll();
 
+    /**
+     * Contains all errors until operation was canceled.
+     * The errorlist is cleared within prepareLoad and prepareAutoMap.
+     */
     QString errorString() const { return mError; }
 
+    /**
+     * Contains all warnings which occur at loading a rules map or while
+     * automapping.
+     * The errorlist is cleared within prepareLoad and prepareAutoMap.
+     */
     QString warningString() const { return mWarning; }
 
 private:
