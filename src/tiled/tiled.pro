@@ -95,7 +95,7 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     colorbutton.cpp \
     undodock.cpp \
-    selectiontool.cpp \
+    tileselectiontool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
     changetileselection.cpp \
@@ -180,7 +180,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     colorbutton.h \
     undodock.h \
-    selectiontool.h \
+    tileselectiontool.h \
     abstracttiletool.h \
     changetileselection.h \
     clipboardmanager.h \

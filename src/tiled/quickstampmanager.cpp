@@ -23,9 +23,9 @@
 #include "abstracttool.h"
 #include "mapdocument.h"
 #include "map.h"
-#include "selectiontool.h"
 #include "stampbrush.h"
 #include "tilelayer.h"
+#include "tileselectiontool.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
@@ -75,7 +75,7 @@ void QuickStampManager::saveQuickStamp(int index)
             return;
 
         copy = static_cast<TileLayer*>(stamp->clone());
-    } else if (dynamic_cast<SelectionTool*>(selectedTool)){
+    } else if (dynamic_cast<TileSelectionTool*>(selectedTool)){
         const TileLayer *tileLayer =
                 dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
         if (!tileLayer)

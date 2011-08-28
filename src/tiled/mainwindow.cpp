@@ -60,9 +60,9 @@
 #include "preferencesdialog.h"
 #include "quickstampmanager.h"
 #include "saveasimagedialog.h"
-#include "selectiontool.h"
 #include "stampbrush.h"
 #include "tilelayer.h"
+#include "tileselectiontool.h"
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
@@ -324,7 +324,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(mStampBrush);
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
-    toolManager->registerTool(new SelectionTool(this));
+    toolManager->registerTool(new TileSelectionTool(this));
     toolManager->addSeparator();
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(areaObjectsTool);

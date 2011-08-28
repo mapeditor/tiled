@@ -1,5 +1,5 @@
 /*
- * selectiontool.h
+ * tileselectiontool.h
  * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,20 +18,20 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SELECTIONTOOL_H
-#define SELECTIONTOOL_H
+#ifndef TILESELECTIONTOOL_H
+#define TILESELECTIONTOOL_H
 
 #include "abstracttiletool.h"
 
 namespace Tiled {
 namespace Internal {
 
-class SelectionTool : public AbstractTileTool
+class TileSelectionTool : public AbstractTileTool
 {
     Q_OBJECT
 
 public:
-    SelectionTool(QObject *parent = 0);
+    TileSelectionTool(QObject *parent = 0);
 
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);
@@ -61,4 +61,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // SELECTIONTOOL_H
+#endif // TILESELECTIONTOOL_H

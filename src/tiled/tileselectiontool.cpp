@@ -1,5 +1,5 @@
 /*
- * selectiontool.cpp
+ * tileselectiontool.cpp
  * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "selectiontool.h"
+#include "tileselectiontool.h"
 
 #include "brushitem.h"
 #include "changetileselection.h"
@@ -30,7 +30,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-SelectionTool::SelectionTool(QObject *parent)
+TileSelectionTool::TileSelectionTool(QObject *parent)
     : AbstractTileTool(tr("Rectangular Select"),
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-rect-select.png")),
@@ -42,13 +42,13 @@ SelectionTool::SelectionTool(QObject *parent)
     setTilePositionMethod(BetweenTiles);
 }
 
-void SelectionTool::tilePositionChanged(const QPoint &)
+void TileSelectionTool::tilePositionChanged(const QPoint &)
 {
     if (mSelecting)
         brushItem()->setTileRegion(selectedArea());
 }
 
-void SelectionTool::updateStatusInfo()
+void TileSelectionTool::updateStatusInfo()
 {
     if (!isBrushVisible() || !mSelecting) {
         AbstractTileTool::updateStatusInfo();
@@ -62,7 +62,7 @@ void SelectionTool::updateStatusInfo()
                   .arg(area.width()).arg(area.height()));
 }
 
-void SelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
+void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     const Qt::MouseButton button = event->button();
     const Qt::KeyboardModifiers modifiers = event->modifiers();
@@ -84,7 +84,7 @@ void SelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void SelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         mSelecting = false;
@@ -110,13 +110,13 @@ void SelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void SelectionTool::languageChanged()
+void TileSelectionTool::languageChanged()
 {
     setName(tr("Rectangular Select"));
     setShortcut(QKeySequence(tr("R")));
 }
 
-QRect SelectionTool::selectedArea() const
+QRect TileSelectionTool::selectedArea() const
 {
     const QPoint tilePos = tilePosition();
     const QPoint pos(qMin(tilePos.x(), mSelectionStart.x()),
