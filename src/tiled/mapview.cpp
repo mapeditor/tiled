@@ -61,6 +61,9 @@ MapView::MapView(QWidget *parent)
      * hover events. We need to set it since our scene wants the events. */
     v->setMouseTracking(true);
 
+    // Adjustment for antialiasing is done by the items that need it
+    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);
+
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
 }
 
