@@ -38,7 +38,7 @@ TilesetManager::TilesetManager():
     connect(mWatcher, SIGNAL(fileChanged(QString)),
             this, SLOT(fileChanged(QString)));
 
-    mChangedFilesTimer.setInterval(200);
+    mChangedFilesTimer.setInterval(500);
     mChangedFilesTimer.setSingleShot(true);
 
     connect(&mChangedFilesTimer, SIGNAL(timeout()),
@@ -149,20 +149,17 @@ void TilesetManager::fileChanged(const QString &path)
      * file changes during a save, and some of the intermediate attempts to
      * reload the tileset images actually fail (at least for .png files).
      */
-    if (!mChangedFiles.contains(path)) {
-        mChangedFiles.insert(path);
-        mChangedFilesTimer.start();
-    }
+    mChangedFiles.insert(path);
+    mChangedFilesTimer.start();
 }
 
 void TilesetManager::fileChangedTimeout()
 {
     foreach (Tileset *tileset, tilesets()) {
         QString fileName = tileset->imageSource();
-        if (mChangedFiles.contains(fileName)) {
-            tileset->loadFromImage(QImage(fileName), fileName);
-            emit tilesetChanged(tileset);
-        }
+        if (mChangedFiles.contains(fileName))
+            if (tileset->loadFromImage(QImage(fileName), fileName))
+                emit tilesetChanged(tileset);
     }
 
     mChangedFiles.clear();
