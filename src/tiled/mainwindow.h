@@ -113,6 +113,7 @@ public slots:
     void cut();
     void copy();
     void paste();
+    void erase();
     void openPreferences();
 
     void zoomIn();

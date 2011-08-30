@@ -234,6 +234,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mUi->actionCut, SIGNAL(triggered()), SLOT(cut()));
     connect(mUi->actionCopy, SIGNAL(triggered()), SLOT(copy()));
     connect(mUi->actionPaste, SIGNAL(triggered()), SLOT(paste()));
+    connect(mUi->actionErase, SIGNAL(triggered()), SLOT(erase()));
     connect(mUi->actionPreferences, SIGNAL(triggered()),
             SLOT(openPreferences()));
 
@@ -876,6 +877,34 @@ void MainWindow::paste()
 
     tilesetManager->removeReferences(map->tilesets());
     delete map;
+}
+
+void MainWindow::erase()
+{
+    if (!mMapDocument)
+        return;
+
+    Layer *currentLayer = mMapDocument->currentLayer();
+    if (!currentLayer)
+        return;
+
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
+    const QRegion &tileSelection = mMapDocument->tileSelection();
+    const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
+
+    QUndoStack *stack = mMapDocument->undoStack();
+    stack->beginMacro(tr("Cut"));
+
+    if (tileLayer && !tileSelection.isEmpty()) {
+        stack->push(new EraseTiles(mMapDocument, tileLayer, tileSelection));
+    } else if (!selectedObjects.isEmpty()) {
+        foreach (MapObject *mapObject, selectedObjects)
+            stack->push(new RemoveMapObject(mMapDocument, mapObject));
+    }
+
+    mActionHandler->selectNone();
+
+    stack->endMacro();
 }
 
 void MainWindow::openPreferences()
