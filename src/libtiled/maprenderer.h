@@ -94,6 +94,17 @@ public:
                                const QRectF &exposed = QRectF()) const = 0;
 
     /**
+     * Draws the tile coverage of a given \layer using the given \a painter.
+     *
+     * Tiles that are not empty will be painted in the given \a color.
+     *
+     * Optionally, you can pass in the \a exposed rect (of pixels), so that
+     * only tiles that can be visible in this area will be drawn.
+     */
+    virtual void drawTileCoverage(QPainter *painter, const TileLayer *layer,
+                                  const QColor &color, const QRectF &exposed) const = 0;
+
+    /**
      * Draws the tile selection given by \a region in the specified \a color.
      *
      * The implementation can be optimized by taking into account the

@@ -100,6 +100,8 @@
     <addaction name="actionShowGrid"/>
     <addaction name="actionSnapToGrid"/>
     <addaction name="separator"/>
+    <addaction name="actionShowTileCoverage"/>
+    <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomNormal"/>
@@ -380,6 +382,14 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="actionShowTileCoverage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Tile Coverage</string>
    </property>
   </action>
  </widget>

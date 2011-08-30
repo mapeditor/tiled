@@ -207,6 +207,50 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     painter->setTransform(savedTransform);
 }
 
+void OrthogonalRenderer::drawTileCoverage(QPainter *painter, const TileLayer *layer,
+                                          const QColor &color, const QRectF &exposed) const
+{
+    QTransform savedTransform = painter->transform();
+
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+    const QPointF layerPos(layer->x() * tileWidth,
+                           layer->y() * tileHeight);
+
+    painter->translate(layerPos);
+
+    int startX = 0;
+    int startY = 0;
+    int endX = layer->width();
+    int endY = layer->height();
+
+    if (!exposed.isNull()) {
+        const QSize maxTileSize = layer->maxTileSize();
+        const int extraWidth = maxTileSize.width() - tileWidth;
+        const int extraHeight = maxTileSize.height() - tileHeight;
+        QRectF rect = exposed.adjusted(-extraWidth, 0, 0, extraHeight);
+        rect.translate(-layerPos);
+
+        startX = qMax((int) rect.x() / tileWidth, 0);
+        startY = qMax((int) rect.y() / tileHeight, 0);
+        endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
+        endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
+    }
+
+    for (int y = startY; y < endY; ++y) {
+        for (int x = startX; x < endX; ++x) {
+            const Cell &cell = layer->cellAt(x, y);
+            if (cell.isEmpty())
+                continue;
+
+            const QRectF rect = QRectF(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+            painter->fillRect(rect, color);
+        }
+    }
+
+    painter->setTransform(savedTransform);
+}
+
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,
                                            const QRegion &region,
                                            const QColor &color,

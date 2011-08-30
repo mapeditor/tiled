@@ -244,6 +244,96 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     painter->setTransform(baseTransform);
 }
 
+void IsometricRenderer::drawTileCoverage(QPainter *painter, const TileLayer *layer,
+                                          const QColor &color, const QRectF &exposed) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+
+    if (tileWidth <= 0 || tileHeight <= 1)
+        return;
+
+    QRect rect = exposed.toAlignedRect();
+    if (rect.isNull())
+        rect = boundingRect(layer->bounds());
+
+    const QSize maxTileSize = layer->maxTileSize();
+    const int extraWidth = maxTileSize.width() - tileWidth;
+    const int extraHeight = maxTileSize.height() - tileHeight;
+    rect.adjust(-extraWidth, 0, 0, extraHeight);
+
+    // Determine the tile and pixel coordinates to start at
+    QPointF tilePos = pixelToTileCoords(rect.x(), rect.y());
+    QPoint rowItr = QPoint((int) std::floor(tilePos.x()),
+                           (int) std::floor(tilePos.y()));
+    QPointF startPos = tileToPixelCoords(rowItr);
+    startPos.rx() -= tileWidth / 2;
+    startPos.ry() += tileHeight;
+
+    // Compensate for the layer position
+    rowItr -= QPoint(layer->x(), layer->y());
+
+    /* Determine in which half of the tile the top-left corner of the area we
+     * need to draw is. If we're in the upper half, we need to start one row
+     * up due to those tiles being visible as well. How we go up one row
+     * depends on whether we're in the left or right half of the tile.
+     */
+    const bool inUpperHalf = startPos.y() - rect.y() > tileHeight / 2;
+    const bool inLeftHalf = rect.x() - startPos.x() < tileWidth / 2;
+
+    if (inUpperHalf) {
+        if (inLeftHalf) {
+            --rowItr.rx();
+            startPos.rx() -= tileWidth / 2;
+        } else {
+            --rowItr.ry();
+            startPos.rx() += tileWidth / 2;
+        }
+        startPos.ry() -= tileHeight / 2;
+    }
+
+    // Determine whether the current row is shifted half a tile to the right
+    bool shifted = inUpperHalf ^ inLeftHalf;
+
+    painter->setBrush(color);
+    painter->setPen(Qt::NoPen);
+
+    for (int y = startPos.y(); y - tileHeight < rect.bottom();
+         y += tileHeight / 2)
+    {
+        QPoint columnItr = rowItr;
+
+        for (int x = startPos.x(); x < rect.right(); x += tileWidth) {
+            if (layer->contains(columnItr)) {
+                const Cell &cell = layer->cellAt(columnItr);
+                if (!cell.isEmpty()) {
+
+                    QRectF rect(x, y, tileWidth, tileHeight);
+                    QPolygonF polygon = tileRectToPolygon(rect);
+                    if (QRectF(polygon.boundingRect()).intersects(exposed)) {
+                        painter->drawConvexPolygon(polygon);
+                    }
+                }
+            }
+
+            // Advance to the next column
+            ++columnItr.rx();
+            --columnItr.ry();
+        }
+
+        // Advance to the next row
+        if (!shifted) {
+            ++rowItr.rx();
+            startPos.rx() += tileWidth / 2;
+            shifted = true;
+        } else {
+            ++rowItr.ry();
+            startPos.rx() -= tileWidth / 2;
+            shifted = false;
+        }
+    }
+}
+
 void IsometricRenderer::drawTileSelection(QPainter *painter,
                                           const QRegion &region,
                                           const QColor &color,

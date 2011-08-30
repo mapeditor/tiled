@@ -45,6 +45,8 @@ public:
     bool showGrid() const { return mShowGrid; }
     bool snapToGrid() const { return mSnapToGrid; }
 
+    bool showTileCoverage() const { return mShowTileCoverage; }
+
     MapWriter::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
 
@@ -70,9 +72,13 @@ public slots:
     void setShowGrid(bool showGrid);
     void setSnapToGrid(bool snapToGrid);
 
+    void setShowTileCoverage(bool showTileCoverage);
+
 signals:
     void showGridChanged(bool showGrid);
     void snapToGridChanged(bool snapToGrid);
+
+    void showTileCoverageChanged(bool showTileCoverage);
 
     void useOpenGLChanged(bool useOpenGL);
 
@@ -84,6 +90,8 @@ private:
 
     bool mShowGrid;
     bool mSnapToGrid;
+
+    bool mShowTileCoverage;
 
     MapWriter::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;

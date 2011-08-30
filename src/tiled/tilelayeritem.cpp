@@ -24,6 +24,7 @@
 #include "tilelayer.h"
 #include "map.h"
 #include "maprenderer.h"
+#include "preferences.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -56,6 +57,9 @@ void TileLayerItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
                           QWidget *)
 {
+    if (Preferences::instance()->showTileCoverage())
+        mRenderer->drawTileCoverage(painter, mLayer, QColor(255, 128, 128, 64), option->exposedRect);
+
     // TODO: Display a border around the layer when selected
     mRenderer->drawTileLayer(painter, mLayer, option->exposedRect);
 }

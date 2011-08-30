@@ -36,6 +36,7 @@
 #include "tileselectionitem.h"
 #include "toolmanager.h"
 #include "tilesetmanager.h"
+#include "preferences.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -62,6 +63,8 @@ MapScene::MapScene(QObject *parent):
     TilesetManager *tilesetManager = TilesetManager::instance();
     connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
+
+    connect(Preferences::instance(), SIGNAL(showTileCoverageChanged(bool)), SLOT(update()));
 
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
