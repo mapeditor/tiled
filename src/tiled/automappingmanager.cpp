@@ -217,7 +217,7 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
 
 void AutomappingManager::cleanUp()
 {
-    foreach (AutoMapper *autoMapper, mAutoMappers) {
+    foreach (const AutoMapper *autoMapper, mAutoMappers) {
         delete autoMapper;
     }
     mAutoMappers.clear();

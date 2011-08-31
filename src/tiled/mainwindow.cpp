@@ -581,7 +581,7 @@ void MainWindow::openFile()
 
     const PluginManager *pm = PluginManager::instance();
     QList<MapReaderInterface*> readers = pm->interfaces<MapReaderInterface>();
-    foreach (MapReaderInterface *reader, readers) {
+    foreach (const MapReaderInterface *reader, readers) {
         filter += QLatin1String(";;");
         filter += reader->nameFilter();
     }
@@ -706,7 +706,7 @@ void MainWindow::exportAs()
     PluginManager *pm = PluginManager::instance();
     QList<MapWriterInterface*> writers = pm->interfaces<MapWriterInterface>();
     QString filter = tr("All Files (*)");
-    foreach (MapWriterInterface *writer, writers) {
+    foreach (const MapWriterInterface *writer, writers) {
         filter += QLatin1String(";;");
         filter += writer->nameFilter();
     }

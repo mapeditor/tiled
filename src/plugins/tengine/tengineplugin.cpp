@@ -54,7 +54,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     // Write the header
     QString header = map->property("header");
-    foreach (QString line, header.split("\\n")) {
+    foreach (const QString &line, header.split("\\n")) {
         out << line << endl;
     }
 
@@ -109,7 +109,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                     }
                 // Process the Object Layer
                 } else if (objectLayer) {
-                    foreach (MapObject *obj, objectLayer->objects()) {
+                    foreach (const MapObject *obj, objectLayer->objects()) {
                         if (floor(obj->y()) <= y and y <= floor(obj->y() + obj->height())) {
                             if (floor(obj->x()) <= x and x <= floor(obj->x() + obj->width())) {
                                 // Check the Object Layer properties if either display or value was missing
@@ -203,7 +203,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     foreach (Layer *layer, map->layers()) {
         ObjectGroup *objectLayer = layer->asObjectGroup();
         if (objectLayer and objectLayer->name().startsWith("addspot", Qt::CaseInsensitive)) {
-            foreach (MapObject *obj, objectLayer->objects()) {
+            foreach (const MapObject *obj, objectLayer->objects()) {
                 QList<QString> propertyOrder;
                 propertyOrder.append("type");
                 propertyOrder.append("subtype");

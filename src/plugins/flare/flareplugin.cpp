@@ -114,7 +114,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
             out << "\n";
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
-            foreach (MapObject *o, group->objects()) {
+            foreach (const MapObject *o, group->objects()) {
                 out << "[" << group->name() << "]\n";
                 out << "type=" << o->type() << "\n";
                 out << "location=" << o->x() << "," << o->y();
@@ -143,7 +143,7 @@ bool FlarePlugin::checkOneLayerWithName(const Tiled::Map *map,
                                         const QString &name)
 {
     int count = 0;
-    foreach (Layer *layer, map->layers())
+    foreach (const Layer *layer, map->layers())
         if (layer->name() == name)
             count++;
 
