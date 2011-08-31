@@ -159,7 +159,7 @@ Map *Map::clone() const
 {
     Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
     o->mMaxTileSize = mMaxTileSize;
-    foreach (Layer *layer, mLayers)
+    foreach (const Layer *layer, mLayers)
         o->addLayer(layer->clone());
     o->mTilesets = mTilesets;
     o->setProperties(properties());
