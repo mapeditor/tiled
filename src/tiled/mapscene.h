@@ -95,6 +95,12 @@ public:
     void setSelectedObjectItems(const QSet<MapObjectItem*> &items);
 
     /**
+     * Returns the MapObjectItem associated with the given \a mapObject.
+     */
+    MapObjectItem *itemForObject(MapObject *object) const
+    { return mObjectItems.value(object); }
+
+    /**
      * Enables the selected tool at this map scene.
      * Therefore it tells that tool, that this is the active map scene.
      */
@@ -105,6 +111,9 @@ public:
      * Sets the currently selected tool.
      */
     void setSelectedTool(AbstractTool *tool);
+
+signals:
+    void selectedObjectItemsChanged();
 
 public slots:
     /**

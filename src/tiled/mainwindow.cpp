@@ -34,6 +34,7 @@
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
 #include "documentmanager.h"
+#include "editpolygontool.h"
 #include "eraser.h"
 #include "erasetiles.h"
 #include "bucketfilltool.h"
@@ -327,6 +328,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(new TileSelectionTool(this));
     toolManager->addSeparator();
     toolManager->registerTool(new ObjectSelectionTool(this));
+    toolManager->registerTool(new EditPolygonTool(this));
     toolManager->registerTool(areaObjectsTool);
     toolManager->registerTool(tileObjectsTool);
     toolManager->registerTool(polygonObjectsTool);

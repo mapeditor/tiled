@@ -104,7 +104,6 @@ private:
     bool mIsEditable;
     bool mSyncing;
     ResizeHandle *mResizeHandle;
-    QList<PointHandle*> mPointHandles;
 
     friend class Handle;
     friend class PointHandle;

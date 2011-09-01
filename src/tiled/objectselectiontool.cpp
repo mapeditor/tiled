@@ -30,69 +30,14 @@
 #include "movemapobject.h"
 #include "objectgroup.h"
 #include "preferences.h"
+#include "selectionrectangle.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
-#include <QPainter>
-#include <QPalette>
 #include <QUndoStack>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-namespace Tiled {
-namespace Internal {
-
-class SelectionRectangle : public QGraphicsItem
-{
-public:
-    void setRectangle(const QRectF &rectangle);
-
-    QRectF boundingRect() const;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
-
-private:
-    QRectF mRectangle;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-void SelectionRectangle::setRectangle(const QRectF &rectangle)
-{
-    prepareGeometryChange();
-    mRectangle = rectangle;
-}
-
-QRectF SelectionRectangle::boundingRect() const
-{
-    return mRectangle.adjusted(-1, -1, 2, 2);
-}
-
-void SelectionRectangle::paint(QPainter *painter,
-                               const QStyleOptionGraphicsItem *, QWidget *)
-{
-    if (mRectangle.isNull())
-        return;
-
-    // Draw a shadow
-    QColor black(Qt::black);
-    black.setAlpha(128);
-    QPen pen(black, 2, Qt::DotLine);
-    painter->setPen(pen);
-    painter->drawRect(mRectangle.translated(1, 1));
-
-    // Draw a rectangle in the highlight color
-    QColor highlight = QApplication::palette().highlight().color();
-    pen.setColor(highlight);
-    highlight.setAlpha(32);
-    painter->setPen(pen);
-    painter->setBrush(highlight);
-    painter->drawRect(mRectangle);
-}
-
 
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     : AbstractObjectTool(tr("Select Objects"),
@@ -104,7 +49,6 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mClickedObjectItem(0)
     , mMode(NoMode)
 {
-    mSelectionRectangle->setZValue(10000);
 }
 
 ObjectSelectionTool::~ObjectSelectionTool()
@@ -122,7 +66,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
     if (mMode == NoMode && mMousePressed) {
-        const int dragDistance = (mStart - pos).toPoint().manhattanLength();
+        const int dragDistance = (mStart - pos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
             if (mClickedObjectItem)
                 startMoving();
@@ -207,15 +151,6 @@ void ObjectSelectionTool::languageChanged()
 {
     setName(tr("Select Objects"));
     setShortcut(QKeySequence(tr("S")));
-}
-
-void ObjectSelectionTool::updateEnabledState()
-{
-    bool enabled = false;
-    if (MapDocument *doc = mapDocument())
-        enabled = (dynamic_cast<ObjectGroup*>(doc->currentLayer()) != 0);
-
-    setEnabled(enabled);
 }
 
 void ObjectSelectionTool::updateSelection(const QPointF &pos,

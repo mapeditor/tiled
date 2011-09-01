@@ -1,5 +1,5 @@
 /*
- * movepoints.h
+ * changepolygon.h
  * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,12 +18,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOVEPOINTS_H
-#define MOVEPOINTS_H
+#ifndef CHANGEPOLYGON_H
+#define CHANGEPOLYGON_H
 
-#include <QPointF>
+#include <QPolygonF>
 #include <QUndoCommand>
-#include <QVector>
 
 namespace Tiled {
 
@@ -34,18 +33,17 @@ namespace Internal {
 class MapDocument;
 
 /**
- * Moves one or more points of the polygon of a MapObject.
+ * Changes the polygon of a MapObject.
  *
- * This class expects the points to be already moved, and takes the old
- * positions of the moved points in the constructor.
+ * This class expects the polygon to be already changed, and takes the previous
+ * polygon in the constructor.
  */
-class MovePoints : public QUndoCommand
+class ChangePolygon : public QUndoCommand
 {
 public:
-    MovePoints(MapDocument *mapDocument,
-               MapObject *mapObject,
-               const QVector<QPointF> &oldPositions,
-               const QVector<int> &pointIndexes);
+    ChangePolygon(MapDocument *mapDocument,
+                  MapObject *mapObject,
+                  const QPolygonF &oldPolygon);
 
     void undo();
     void redo();
@@ -54,14 +52,11 @@ private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
 
-    // Using QVector since a QList would cause each point to be allocated on
-    // the heap.
-    QVector<QPointF> mOldPositions;
-    QVector<QPointF> mNewPositions;
-    QVector<int> mPointIndexes;
+    QPolygonF mOldPolygon;
+    QPolygonF mNewPolygon;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // MOVEPOINTS_H
+#endif // CHANGEPOLYGON_H

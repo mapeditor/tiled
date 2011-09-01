@@ -118,7 +118,9 @@ SOURCES += aboutdialog.cpp \
     tiledapplication.cpp \
     command.cpp \
     abstractobjecttool.cpp \
-    movepoints.cpp
+    changepolygon.cpp \
+    editpolygontool.cpp \
+    selectionrectangle.cpp
 
 HEADERS += aboutdialog.h \
     automapper.h \
@@ -203,7 +205,9 @@ HEADERS += aboutdialog.h \
     tiledapplication.h \
     command.h \
     abstractobjecttool.h \
-    movepoints.h
+    changepolygon.h \
+    editpolygontool.h \
+    selectionrectangle.h
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \

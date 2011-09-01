@@ -26,7 +26,6 @@
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "movepoints.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "preferences.h"
@@ -54,10 +53,10 @@ public:
         : QGraphicsItem(mapObjectItem)
         , mMapObjectItem(mapObjectItem)
     {
-        setFlag(QGraphicsItem::ItemIsMovable);
-        setFlag(QGraphicsItem::ItemSendsGeometryChanges);
-        setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
+        setFlags(QGraphicsItem::ItemIsMovable |
+                 QGraphicsItem::ItemSendsGeometryChanges |
+                 QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
     }
 
     QRectF boundingRect() const;
@@ -89,30 +88,6 @@ protected:
 
 private:
     QSizeF mOldSize;
-};
-
-/**
- * A handle that allows moving around a point of a polygon.
- */
-class PointHandle : public Handle
-{
-public:
-    PointHandle(MapObjectItem *mapObjectItem, int pointIndex)
-        : Handle(mapObjectItem)
-        , mPointIndex(pointIndex)
-    {
-        setCursor(Qt::SizeAllCursor);
-    }
-
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
-private:
-    int mPointIndex;
-    QPointF mOldPos;
 };
 
 } // namespace Internal
@@ -196,73 +171,6 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
 }
 
 
-
-void PointHandle::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    // Remember the old position of the point since we may change it
-    if (event->button() == Qt::LeftButton)
-        mOldPos = mMapObjectItem->mapObject()->polygon().at(mPointIndex);
-
-    Handle::mousePressEvent(event);
-}
-
-void PointHandle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    Handle::mouseReleaseEvent(event);
-
-    // If we resized the object, create an undo command
-    MapObject *obj = mMapObjectItem->mapObject();
-    QPointF newPos = obj->polygon().at(mPointIndex);
-    if (event->button() == Qt::LeftButton && mOldPos != newPos) {
-        MapDocument *document = mMapObjectItem->mapDocument();
-        QUndoCommand *cmd = new MovePoints(document, obj,
-                                           QVector<QPointF>() << mOldPos,
-                                           QVector<int>() << mPointIndex);
-        document->undoStack()->push(cmd);
-    }
-}
-
-QVariant PointHandle::itemChange(GraphicsItemChange change,
-                                 const QVariant &value)
-{
-    if (!mMapObjectItem->mSyncing) {
-        MapRenderer *renderer = mMapObjectItem->mapDocument()->renderer();
-
-        if (change == ItemPositionChange) {
-            bool snapToGrid = Preferences::instance()->snapToGrid();
-            if (QApplication::keyboardModifiers() & Qt::ControlModifier)
-                snapToGrid = !snapToGrid;
-
-            // Calculate the absolute pixel position
-            const QPointF itemPos = mMapObjectItem->pos();
-            QPointF pixelPos = value.toPointF() + itemPos;
-
-            // Calculate the new coordinates in tiles
-            QPointF tileCoords = renderer->pixelToTileCoords(pixelPos);
-            const QPointF objectPos = mMapObjectItem->mapObject()->position();
-            tileCoords -= objectPos;
-            if (snapToGrid)
-                tileCoords = tileCoords.toPoint();
-            tileCoords += objectPos;
-
-            return renderer->tileToPixelCoords(tileCoords) - itemPos;
-        }
-        else if (change == ItemPositionHasChanged) {
-            // Update the position of this point
-            const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
-            QPointF tileCoords = renderer->pixelToTileCoords(newPos);
-            tileCoords -= mMapObjectItem->mapObject()->position();
-
-            QPolygonF polygon = mMapObjectItem->mapObject()->polygon();
-            polygon[mPointIndex] = tileCoords;
-            mMapObjectItem->setPolygon(polygon);
-        }
-    }
-
-    return Handle::itemChange(change, value);
-}
-
-
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
                              ObjectGroupItem *parent):
     QGraphicsItem(parent),
@@ -310,29 +218,6 @@ void MapObjectItem::syncWithMapObject()
         mResizeHandle->setPos(handlePos - pixelPos);
     }
 
-    if (!mPolygon.isEmpty()) {
-        const QPolygonF &polygon = mPolygon;
-        const bool handlesVisible = mIsEditable && !mObject->tile();
-
-        // Create missing handles
-        while (mPointHandles.size() < polygon.size()) {
-            PointHandle *handle = new PointHandle(this, mPointHandles.size());
-            handle->setVisible(handlesVisible);
-            mPointHandles.append(handle);
-        }
-
-        // Remove superfluous handles
-        while (mPointHandles.size() > polygon.size())
-            delete mPointHandles.takeLast();
-
-        // Update the position of all handles
-        for (int i = 0; i < mPointHandles.size(); ++i) {
-            const QPointF point = polygon.at(i) + mObject->position();
-            const QPointF handlePos = renderer->tileToPixelCoords(point);
-            mPointHandles.at(i)->setPos(handlePos - pixelPos);
-        }
-    }
-
     mSyncing = false;
 }
 
@@ -345,9 +230,6 @@ void MapObjectItem::setEditable(bool editable)
 
     const bool handlesVisible = mIsEditable && !mObject->tile();
     mResizeHandle->setVisible(handlesVisible && mObject->polygon().isEmpty());
-
-    foreach (PointHandle *pointHandle, mPointHandles)
-        pointHandle->setVisible(handlesVisible);
 
     if (mIsEditable)
         setCursor(Qt::SizeAllCursor);

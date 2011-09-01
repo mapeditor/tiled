@@ -350,8 +350,8 @@ void MapScene::objectsRemoved(const QList<MapObject*> &objects)
  */
 void MapScene::objectsChanged(const QList<MapObject*> &objects)
 {
-    foreach (MapObject *o, objects) {
-        MapObjectItem *item = mObjectItems.value(o);
+    foreach (MapObject *object, objects) {
+        MapObjectItem *item = itemForObject(object);
         Q_ASSERT(item);
 
         item->syncWithMapObject();
@@ -364,7 +364,7 @@ void MapScene::updateSelectedObjectItems()
 
     QSet<MapObjectItem*> items;
     foreach (MapObject *object, objects) {
-        MapObjectItem *item = mObjectItems.value(object);
+        MapObjectItem *item = itemForObject(object);
         Q_ASSERT(item);
 
         items.insert(item);
@@ -377,6 +377,7 @@ void MapScene::updateSelectedObjectItems()
         item->setEditable(true);
 
     mSelectedObjectItems = items;
+    emit selectedObjectItemsChanged();
 }
 
 void MapScene::setGridVisible(bool visible)

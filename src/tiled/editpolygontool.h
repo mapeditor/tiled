@@ -1,6 +1,6 @@
 /*
- * objectselectiontool.h
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * editpolygontool.h
+ * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,26 +18,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECTSELECTIONTOOL_H
-#define OBJECTSELECTIONTOOL_H
+#ifndef EDITPOLYGONTOOL_H
+#define EDITPOLYGONTOOL_H
 
 #include "abstractobjecttool.h"
 
+#include <QMap>
 #include <QSet>
+
+class QGraphicsItem;
 
 namespace Tiled {
 namespace Internal {
 
 class MapObjectItem;
+class PointHandle;
 class SelectionRectangle;
 
-class ObjectSelectionTool : public AbstractObjectTool
+/**
+ * A tool that allows dragging around the points of a polygon.
+ */
+class EditPolygonTool : public AbstractObjectTool
 {
     Q_OBJECT
 
 public:
-    explicit ObjectSelectionTool(QObject *parent = 0);
-    ~ObjectSelectionTool();
+    explicit EditPolygonTool(QObject *parent = 0);
+    ~EditPolygonTool();
+
+    void activate(MapScene *scene);
+    void deactivate(MapScene *scene);
 
     void mouseEntered();
     void mouseMoved(const QPointF &pos,
@@ -48,12 +58,18 @@ public:
 
     void languageChanged();
 
+private slots:
+    void updateHandles();
+    void objectsRemoved(const QList<MapObject *> &objects);
+
 private:
     enum Mode {
         NoMode,
         Selecting,
         Moving
     };
+
+    void setSelectedHandles(const QSet<PointHandle*> &handles);
 
     void updateSelection(const QPointF &pos,
                          Qt::KeyboardModifiers modifiers);
@@ -67,17 +83,21 @@ private:
 
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
+    PointHandle *mClickedHandle;
     MapObjectItem *mClickedObjectItem;
-    QSet<MapObjectItem*> mMovingItems;
-    QVector<QPointF> mOldObjectItemPositions;
-    QVector<QPointF> mOldObjectPositions;
+    QVector<QPointF> mOldHandlePositions;
+    QMap<MapObject*, QPolygonF> mOldPolygons;
     QPointF mAlignPosition;
     Mode mMode;
     QPointF mStart;
     Qt::KeyboardModifiers mModifiers;
+
+    /// The list of handles associated with each selected map object
+    QMap<MapObjectItem*, QList<PointHandle*> > mHandles;
+    QSet<PointHandle*> mSelectedHandles;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // OBJECTSELECTIONTOOL_H
+#endif // EDITPOLYGONTOOL_H
