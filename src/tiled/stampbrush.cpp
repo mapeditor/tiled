@@ -279,7 +279,7 @@ void StampBrush::configureBrush(const QVector<QPoint> &list)
     TileLayer *stamp = new TileLayer(QString(), 0, 0,
                                      map->width(), map->height());
 
-    foreach (QPoint p, list) {
+    foreach (const QPoint p, list) {
         const QRegion update = stampRegion.translated(p.x() - mStampX,
                                                       p.y() - mStampY);
         if (!reg.intersects(update)) {

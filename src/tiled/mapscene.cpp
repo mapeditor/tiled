@@ -113,7 +113,7 @@ void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
 #if QT_VERSION >= 0x040700
     selectedObjects.reserve(items.size());
 #endif
-    foreach (MapObjectItem *item, items)
+    foreach (const MapObjectItem *item, items)
         selectedObjects.append(item->mapObject());
     mMapDocument->setSelectedObjects(selectedObjects);
 }

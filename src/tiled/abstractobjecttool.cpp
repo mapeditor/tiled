@@ -188,7 +188,7 @@ void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects)
     undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
 
     QList<MapObject*> clones;
-    foreach (MapObject *mapObject, objects) {
+    foreach (const MapObject *mapObject, objects) {
         MapObject *clone = mapObject->clone();
         clones.append(clone);
         undoStack->push(new AddMapObject(mapDocument(),

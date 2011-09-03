@@ -191,7 +191,7 @@ Layer *ObjectGroup::clone() const
 ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
 {
     Layer::initializeClone(clone);
-    foreach (MapObject *object, mObjects)
+    foreach (const MapObject *object, mObjects)
         clone->addObject(object->clone());
     clone->setColor(mColor);
     return clone;
