@@ -768,6 +768,7 @@ void AutoMapper::copyRegion(TileLayer *srcLayer, int srcX, int srcY,
 void AutoMapper::cleanAll()
 {
     cleanTilesets();
+    cleanTileLayers();
 }
 
 void AutoMapper::cleanTilesets()
@@ -784,6 +785,23 @@ void AutoMapper::cleanTilesets()
         undo->push(new RemoveTileset(mMapDocument, layerIndex, tileset));
     }
     mAddedTilesets.clear();
+}
+
+void AutoMapper::cleanTileLayers()
+{
+    foreach (const QString &tilelayerName, mAddedTileLayers) {
+        const int layerIndex = mMapWork->indexOfLayer(tilelayerName);
+        if (layerIndex == -1)
+            continue;
+
+        const TileLayer *tilelayer = mMapWork->layerAt(layerIndex)->asTileLayer();
+        if (!tilelayer->isEmpty())
+            continue;
+
+        QUndoStack *undo = mMapDocument->undoStack();
+        undo->push(new RemoveLayer(mMapDocument, layerIndex));
+    }
+    mAddedTileLayers.clear();
 }
 
 void AutoMapper::cleanUpRulesMap()
@@ -806,17 +824,7 @@ void AutoMapper::cleanUpRulesMap()
 
 void AutoMapper::cleanUpRuleMapLayers()
 {
-    foreach (const QString &t, mAddedTileLayers) {
-        const int layerindex = mMapWork->indexOfLayer(t);
-        if (layerindex == -1)
-            continue;
-
-        const TileLayer *t = mMapWork->layerAt(layerindex)->asTileLayer();
-        if (t->isEmpty()) {
-            QUndoStack *undo = mMapDocument->undoStack();
-            undo->push(new RemoveLayer(mMapDocument, layerindex));
-        }
-    }
+    cleanTileLayers();
 
     QList<IndexByTileLayer*>::const_iterator it;
     for (it = mLayerList.constBegin(); it != mLayerList.constEnd(); ++it)

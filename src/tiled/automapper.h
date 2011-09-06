@@ -238,6 +238,12 @@ private:
     void cleanTilesets();
 
     /**
+     * Cleans up the added tile layers setup by setupMissingLayers(),
+     * so we have a minimal addition of tile layers by the automapping.
+     */
+    void cleanTileLayers();
+
+    /**
      * Checks if this the rules from the given rules map could be used anyway
      * by comparing the used tilesets of the set layer and ruleset layer.
      */
