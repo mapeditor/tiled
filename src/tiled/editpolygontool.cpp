@@ -20,6 +20,7 @@
 
 #include "editpolygontool.h"
 
+#include "addremovemapobject.h"
 #include "changepolygon.h"
 #include "layer.h"
 #include "map.h"
@@ -30,11 +31,13 @@
 #include "mapscene.h"
 #include "preferences.h"
 #include "selectionrectangle.h"
+#include "utils.h"
 
 #include <QApplication>
+#include <QGraphicsItem>
+#include <QMenu>
 #include <QPainter>
 #include <QPalette>
-#include <QGraphicsItem>
 #include <QUndoStack>
 
 using namespace Tiled;
@@ -62,6 +65,8 @@ public:
     }
 
     MapObject *mapObject() const { return mMapObjectItem->mapObject(); }
+
+    int pointIndex() const { return mPointIndex; }
 
     QPointF pointPosition() const;
     void setPointPosition(const QPointF &pos);
@@ -229,6 +234,17 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
         const QList<QGraphicsItem *> items = mapScene()->items(mStart);
         mClickedObjectItem = first<MapObjectItem>(items);
         mClickedHandle = first<PointHandle>(items);
+        break;
+    }
+    case Qt::RightButton: {
+        QList<QGraphicsItem *> items = mapScene()->items(event->scenePos());
+        PointHandle *clickedHandle = first<PointHandle>(items);
+        if (clickedHandle || !mSelectedHandles.isEmpty()) {
+            showHandleContextMenu(clickedHandle,
+                                  event->screenPos());
+        } else {
+            AbstractObjectTool::mousePressed(event);
+        }
         break;
     }
     default:
@@ -449,7 +465,7 @@ void EditPolygonTool::startMoving()
 {
     // Move only the clicked handle, if it was not part of the selection
     if (!mSelectedHandles.contains(mClickedHandle))
-        setSelectedHandles(QSet<PointHandle*>() << mClickedHandle);
+        setSelectedHandle(mClickedHandle);
 
     mMode = Moving;
 
@@ -526,4 +542,165 @@ void EditPolygonTool::finishMoving(const QPointF &pos)
 
     mOldHandlePositions.clear();
     mOldPolygons.clear();
+}
+
+void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
+                                            QPoint screenPos)
+{
+    if (clickedHandle && !mSelectedHandles.contains(clickedHandle))
+        setSelectedHandle(clickedHandle);
+
+    const int n = mSelectedHandles.size();
+    Q_ASSERT(n > 0);
+
+    QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
+    QString delText = tr("Delete %n Node(s)", "", n);
+
+    QMenu menu;
+
+    QAction *deleteNodesAction = menu.addAction(delIcon, delText);
+    QAction *splitSegmentsAction = menu.addAction(tr("Split Segments"));
+
+    Utils::setThemeIcon(deleteNodesAction, "edit-delete");
+
+    splitSegmentsAction->setEnabled(n > 1);
+
+    connect(deleteNodesAction, SIGNAL(triggered()), SLOT(deleteNodes()));
+    connect(splitSegmentsAction, SIGNAL(triggered()), SLOT(splitSegments()));
+
+    menu.exec(screenPos);
+}
+
+typedef QMap<MapObject*, QList<int> > PointIndexesByObject;
+static PointIndexesByObject
+groupIndexesByObject(const QSet<PointHandle*> &handles)
+{
+    PointIndexesByObject result;
+
+    // Build the list of point indexes for each map object
+    foreach (PointHandle *handle, handles) {
+        QList<int> &pointIndexes = result[handle->mapObject()];
+        pointIndexes.append(handle->pointIndex());
+    }
+
+    return result;
+}
+
+void EditPolygonTool::deleteNodes()
+{
+    if (mSelectedHandles.isEmpty())
+        return;
+
+    PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
+    QMutableMapIterator<MapObject*, QList<int> > i(p);
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+
+    QString delText = tr("Delete %n Node(s)", "", mSelectedHandles.size());
+    undoStack->beginMacro(delText);
+
+    while (i.hasNext()) {
+        MapObject *object = i.next().key();
+        QList<int> &pointIndexes = i.value();
+
+        QPolygonF oldPolygon = object->polygon();
+        QPolygonF newPolygon = oldPolygon;
+
+        // Remove points, back to front to keep the indexes valid
+        qSort(pointIndexes);
+        for (int i = pointIndexes.size() - 1; i >= 0; --i)
+            newPolygon.remove(pointIndexes.at(i));
+
+        if (newPolygon.isEmpty()) {
+            // We've removed the entire object
+            undoStack->push(new RemoveMapObject(mapDocument(), object));
+        } else {
+            object->setPolygon(newPolygon);
+            undoStack->push(new ChangePolygon(mapDocument(), object,
+                                              oldPolygon));
+        }
+    }
+
+    undoStack->endMacro();
+}
+
+/**
+ * Splits the selected segments by inserting new nodes in the middle. The
+ * selected segments are defined by each pair of consecutive \a indexes.
+ *
+ * This method can deal with both polygons as well as polylines. For polygons,
+ * pass <code>true</code> for \a closed.
+ */
+static QPolygonF splitPolygonSegments(const QPolygonF &polygon,
+                                      const QList<int> &indexes,
+                                      bool closed)
+{
+    // Nothing to do when we are dealing with less than 2 points
+    if (indexes.size() < 2)
+        return polygon;
+
+    const int n = polygon.size();
+
+    QVector<bool> selected(n, false);
+    foreach (int index, indexes)
+        selected[index] = true;
+
+    QPolygonF result = polygon;
+
+    for (int i = polygon.size() - 1; i > 0; --i) {
+        if (!selected[i])
+            continue;
+
+        int j = i - 1;
+        for (; j >= 0 && selected[j]; --j) {
+            const QPointF splitPoint = (result.at(j) + result.at(j + 1)) / 2;
+            result.insert(j + 1, splitPoint);
+        }
+
+        i = j;
+    }
+
+    // Special handling of the case where the first and last nodes are selected
+    if (closed && selected[0] && selected[n - 1]) {
+        const QPointF splitPoint = (result.first() + result.last()) / 2;
+        result.append(splitPoint);
+    }
+
+    return result;
+}
+
+void EditPolygonTool::splitSegments()
+{
+    if (mSelectedHandles.size() < 2)
+        return;
+
+    const PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
+    QMapIterator<MapObject*, QList<int> > i(p);
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    bool macroStarted = false;
+
+    while (i.hasNext()) {
+        MapObject *object = i.next().key();
+        QList<int> pointIndexes = i.value();
+
+        const bool closed = object->shape() == MapObject::Polygon;
+        QPolygonF oldPolygon = object->polygon();
+        QPolygonF newPolygon = splitPolygonSegments(oldPolygon, pointIndexes,
+                                                    closed);
+
+        if (newPolygon.size() > oldPolygon.size()) {
+            if (!macroStarted) {
+                undoStack->beginMacro(tr("Split Segments"));
+                macroStarted = true;
+            }
+
+            object->setPolygon(newPolygon);
+            undoStack->push(new ChangePolygon(mapDocument(), object,
+                                              oldPolygon));
+        }
+    }
+
+    if (macroStarted)
+        undoStack->endMacro();
 }

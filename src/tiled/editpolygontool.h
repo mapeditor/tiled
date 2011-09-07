@@ -62,6 +62,9 @@ private slots:
     void updateHandles();
     void objectsRemoved(const QList<MapObject *> &objects);
 
+    void deleteNodes();
+    void splitSegments();
+
 private:
     enum Mode {
         NoMode,
@@ -70,6 +73,8 @@ private:
     };
 
     void setSelectedHandles(const QSet<PointHandle*> &handles);
+    void setSelectedHandle(PointHandle *handle)
+    { setSelectedHandles(QSet<PointHandle*>() << handle); }
 
     void updateSelection(const QPointF &pos,
                          Qt::KeyboardModifiers modifiers);
@@ -80,6 +85,8 @@ private:
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
+
+    void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);
 
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
