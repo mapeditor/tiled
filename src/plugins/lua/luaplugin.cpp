@@ -226,6 +226,34 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
+// TODO: Unduplicate this class since it's used also in mapwriter.cpp
+class TileToPixelCoordinates
+{
+public:
+    TileToPixelCoordinates(Map *map)
+    {
+        if (map->orientation() == Map::Isometric) {
+            // Isometric needs special handling, since the pixel values are
+            // based solely on the tile height.
+            mMultiplierX = map->tileHeight();
+            mMultiplierY = map->tileHeight();
+        } else {
+            mMultiplierX = map->tileWidth();
+            mMultiplierY = map->tileHeight();
+        }
+    }
+
+    QPoint operator() (qreal x, qreal y) const
+    {
+        return QPoint(qRound(x * mMultiplierX),
+                      qRound(y * mMultiplierY));
+    }
+
+private:
+    int mMultiplierX;
+    int mMultiplierY;
+};
+
 void LuaPlugin::writeMapObject(LuaTableWriter &writer,
                                const Tiled::MapObject *mapObject)
 {
@@ -233,35 +261,46 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     writer.writeKeyAndValue("name", mapObject->name());
     writer.writeKeyAndValue("type", mapObject->type());
 
-    // Convert from tile to pixel coordinates
     const ObjectGroup *objectGroup = mapObject->objectGroup();
-    const Map *map = objectGroup->map();
-    const int tileHeight = map->tileHeight();
-    const int tileWidth = map->tileWidth();
-    const QRectF bounds = mapObject->bounds();
+    const TileToPixelCoordinates toPixel(objectGroup->map());
 
-    int x, y, width, height;
+    const QPoint pos = toPixel(mapObject->x(), mapObject->y());
+    const QPoint size = toPixel(mapObject->width(), mapObject->height());
 
-    if (map->orientation() == Map::Isometric) {
-        // Isometric needs special handling, since the pixel values are based
-        // solely on the tile height.
-        x = qRound(bounds.x() * tileHeight);
-        y = qRound(bounds.y() * tileHeight);
-        width = qRound(bounds.width() * tileHeight);
-        height = qRound(bounds.height() * tileHeight);
-    } else {
-        x = qRound(bounds.x() * tileWidth);
-        y = qRound(bounds.y() * tileHeight);
-        width = qRound(bounds.width() * tileWidth);
-        height = qRound(bounds.height() * tileHeight);
-    }
+    writer.writeKeyAndValue("x", pos.x());
+    writer.writeKeyAndValue("y", pos.y());
+    writer.writeKeyAndValue("width", size.x());
+    writer.writeKeyAndValue("height", size.y());
 
-    writer.writeKeyAndValue("x", x);
-    writer.writeKeyAndValue("y", y);
-    writer.writeKeyAndValue("width", width);
-    writer.writeKeyAndValue("height", height);
     if (Tile *tile = mapObject->tile())
         writer.writeKeyAndValue("gid", mGidMapper.cellToGid(Cell(tile)));
+
+    const QPolygonF &polygon = mapObject->polygon();
+    if (!polygon.isEmpty()) {
+        if (mapObject->shape() == MapObject::Polygon)
+            writer.writeStartTable("polygon");
+        else
+            writer.writeStartTable("polyline");
+
+        /* Writing it out in two tables, one for the x coordinates and one for
+         * the y coordinates is a compromise between code readability and
+         * performance. Using a table for each point with 'x' and 'y' members
+         * would take a lot more memory.
+         */
+
+        writer.writeStartTable("x");
+        foreach (const QPointF &point, polygon)
+            writer.writeValue(toPixel(point.x(), point.y()).x());
+        writer.writeEndTable();
+
+        writer.writeStartTable("y");
+        foreach (const QPointF &point, polygon)
+            writer.writeValue(toPixel(point.x(), point.y()).y());
+        writer.writeEndTable();
+
+        writer.writeEndTable();
+    }
+
     writeProperties(writer, mapObject->properties());
 
     writer.writeEndTable();
