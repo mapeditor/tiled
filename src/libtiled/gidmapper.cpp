@@ -29,6 +29,7 @@ using namespace Tiled;
 // Bits on the far end of the 32-bit global tile ID are used for tile flags
 const int FlippedHorizontallyFlag = 0x80000000;
 const int FlippedVerticallyFlag   = 0x40000000;
+const int RotatedCWFlag = 0x20000000;
 
 GidMapper::GidMapper()
 {
@@ -50,9 +51,10 @@ Cell GidMapper::gidToCell(uint gid, bool &ok) const
     // Read out the flags
     result.flippedHorizontally = (gid & FlippedHorizontallyFlag);
     result.flippedVertically = (gid & FlippedVerticallyFlag);
-
+    result.rotatedCW = (gid & RotatedCWFlag);
+	
     // Clear the flags
-    gid &= ~(FlippedHorizontallyFlag | FlippedVerticallyFlag);
+    gid &= ~(FlippedHorizontallyFlag | FlippedVerticallyFlag | RotatedCWFlag);
 
     if (gid == 0) {
         ok = true;
@@ -106,6 +108,8 @@ uint GidMapper::cellToGid(const Cell &cell) const
         gid |= FlippedHorizontallyFlag;
     if (cell.flippedVertically)
         gid |= FlippedVerticallyFlag;
+    if (cell.rotatedCW)
+        gid |= RotatedCWFlag;
 
     return gid;
 }

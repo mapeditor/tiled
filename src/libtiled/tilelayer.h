@@ -51,13 +51,15 @@ public:
     Cell() :
         tile(0),
         flippedHorizontally(false),
-        flippedVertically(false)
+        flippedVertically(false),
+		rotatedCW(false)
     {}
 
     explicit Cell(Tile *tile) :
         tile(tile),
         flippedHorizontally(false),
-        flippedVertically(false)
+        flippedVertically(false),
+		rotatedCW(false)
     {}
 
     bool isEmpty() const { return tile == 0; }
@@ -66,19 +68,22 @@ public:
     {
         return tile == other.tile
                 && flippedHorizontally == other.flippedHorizontally
-                && flippedVertically == other.flippedVertically;
+                && flippedVertically == other.flippedVertically
+				&& rotatedCW == other.rotatedCW;
     }
 
     bool operator != (const Cell &other) const
     {
         return tile != other.tile
                 || flippedHorizontally != other.flippedHorizontally
-                || flippedVertically != other.flippedVertically;
+                || flippedVertically != other.flippedVertically
+				|| rotatedCW != other.rotatedCW;
     }
 
     Tile *tile;
     bool flippedHorizontally;
     bool flippedVertically;
+	bool rotatedCW;
 };
 
 /**
@@ -95,6 +100,10 @@ public:
         FlipHorizontally,
         FlipVertically
     };
+	enum RotateDirection {
+		RotateCW,
+		RotateCCW
+	};
 
     /**
      * Constructor.
@@ -169,6 +178,13 @@ public:
      */
     void flip(FlipDirection direction);
 
+	/**
+	 * Rotate this tile layer by 90 degrees clockwise or counter-clockwise.
+	 * The tile positions are rotated within the layer, and the tiles
+	 * themselves are rotated. The dimensions of the tile layer are swapped.
+	 */
+    void rotate(RotateDirection direction);
+	
     /**
      * Computes and returns the set of tilesets used by this tile layer.
      */
