@@ -75,12 +75,8 @@ void LuaTableWriter::writeStartTable(const QByteArray &name)
 void LuaTableWriter::writeEndTable()
 {
     --m_indent;
-
-    if (!m_newLine) {
-        write('\n');
-        writeIndent();
-    }
-
+    if (m_valueWritten)
+        writeNewline();
     write('}');
     m_newLine = false;
     m_valueWritten = true;
@@ -158,21 +154,13 @@ void LuaTableWriter::prepareNewLine()
         write(m_valueSeparator);
         m_valueWritten = false;
     }
-    if (!m_newLine) {
-        write('\n');
-        writeIndent();
-        m_newLine = true;
-    }
+    writeNewline();
 }
 
 void LuaTableWriter::prepareNewValue()
 {
     if (!m_valueWritten) {
-        if (!m_newLine) {
-            write('\n');
-            writeIndent();
-            m_newLine = true;
-        }
+        writeNewline();
     } else {
         write(m_valueSeparator);
         write(' ');
@@ -183,6 +171,19 @@ void LuaTableWriter::writeIndent()
 {
     for (int level = m_indent; level; --level)
         write("  ");
+}
+
+void LuaTableWriter::writeNewline()
+{
+    if (!m_newLine) {
+        if (m_suppressNewlines) {
+            write(' ');
+        } else {
+            write('\n');
+            writeIndent();
+        }
+        m_newLine = true;
+    }
 }
 
 void LuaTableWriter::write(const char *bytes, uint length)

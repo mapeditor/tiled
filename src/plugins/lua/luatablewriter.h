@@ -63,6 +63,9 @@ public:
     void writeKeyAndUnquotedValue(const QByteArray &key,
                                   const QByteArray &value);
 
+    void setSuppressNewlines(bool suppressNewlines);
+    bool suppressNewlines() const;
+
     void prepareNewLine();
 
     bool hasError() const { return m_error; }
@@ -71,6 +74,7 @@ private:
     void prepareNewValue();
     void writeIndent();
 
+    void writeNewline();
     void write(const char *bytes, uint length);
     void write(const char *bytes);
     void write(const QByteArray &bytes);
@@ -79,6 +83,7 @@ private:
     QIODevice *m_device;
     int m_indent;
     char m_valueSeparator;
+    bool m_suppressNewlines;
     bool m_newLine;
     bool m_valueWritten;
     bool m_error;
@@ -116,6 +121,16 @@ inline void LuaTableWriter::write(const QByteArray &bytes)
 
 inline void LuaTableWriter::write(char c)
 { write(&c, 1); }
+
+/**
+ * Sets whether newlines should be suppressed. While newlines are suppressed,
+ * the writer will write out spaces instead of newlines.
+ */
+inline void LuaTableWriter::setSuppressNewlines(bool suppressNewlines)
+{ m_suppressNewlines = suppressNewlines; }
+
+inline bool LuaTableWriter::suppressNewlines() const
+{ return m_suppressNewlines; }
 
 } // namespace Lua
 

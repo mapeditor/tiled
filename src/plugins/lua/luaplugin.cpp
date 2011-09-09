@@ -32,6 +32,14 @@
 
 #include <QFile>
 
+/**
+ * See below for an explanation of the different formats. One of these needs
+ * to be defined.
+ */
+#define POLYGON_FORMAT_FULL
+//#define POLYGON_FORMAT_PAIRS
+//#define POLYGON_FORMAT_OPTIMAL
+
 using namespace Lua;
 using namespace Tiled;
 
@@ -282,21 +290,72 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
         else
             writer.writeStartTable("polyline");
 
+#if defined(POLYGON_FORMAT_FULL)
+        /* This format is the easiest to read and understand:
+         *
+         *  {
+         *    { x = 1, y = 1 },
+         *    { x = 2, y = 2 },
+         *    { x = 3, y = 3 },
+         *    ...
+         *  }
+         */
+        foreach (const QPointF &point, polygon) {
+            writer.writeStartTable();
+            writer.setSuppressNewlines(true);
+
+            const QPoint pixelCoordinates = toPixel(point.x(), point.y());
+            writer.writeKeyAndValue("x", pixelCoordinates.x());
+            writer.writeKeyAndValue("y", pixelCoordinates.y());
+
+            writer.writeEndTable();
+            writer.setSuppressNewlines(false);
+        }
+#elif defined(POLYGON_FORMAT_PAIRS)
+        /* This is an alternative that takes about 25% less memory.
+         *
+         *  {
+         *    { 1, 1 },
+         *    { 2, 2 },
+         *    { 3, 3 },
+         *    ...
+         *  }
+         */
+        foreach (const QPointF &point, polygon) {
+            writer.writeStartTable();
+            writer.setSuppressNewlines(true);
+
+            const QPoint pixelCoordinates = toPixel(point.x(), point.y());
+            writer.writeValue(pixelCoordinates.x());
+            writer.writeValue(pixelCoordinates.y());
+
+            writer.writeEndTable();
+            writer.setSuppressNewlines(false);
+        }
+#elif defined(POLYGON_FORMAT_OPTIMAL)
         /* Writing it out in two tables, one for the x coordinates and one for
-         * the y coordinates is a compromise between code readability and
-         * performance. Using a table for each point with 'x' and 'y' members
-         * would take a lot more memory.
+         * the y coordinates. It is a compromise between code readability and
+         * performance. This takes the least amount of memory (60% less than
+         * the first approach).
+         *
+         * x = { 1, 2, 3, ... }
+         * y = { 1, 2, 3, ... }
          */
 
         writer.writeStartTable("x");
+        writer.setSuppressNewlines(true);
         foreach (const QPointF &point, polygon)
             writer.writeValue(toPixel(point.x(), point.y()).x());
         writer.writeEndTable();
+        writer.setSuppressNewlines(false);
 
         writer.writeStartTable("y");
+        writer.setSuppressNewlines(true);
         foreach (const QPointF &point, polygon)
             writer.writeValue(toPixel(point.x(), point.y()).y());
         writer.writeEndTable();
+        writer.setSuppressNewlines(false);
+#endif
 
         writer.writeEndTable();
     }
