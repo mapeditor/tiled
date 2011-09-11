@@ -207,7 +207,8 @@ HEADERS += aboutdialog.h \
     abstractobjecttool.h \
     changepolygon.h \
     editpolygontool.h \
-    selectionrectangle.h
+    selectionrectangle.h \
+    rangeset.h
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \
