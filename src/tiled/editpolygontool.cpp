@@ -30,6 +30,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "preferences.h"
+#include "rangeset.h"
 #include "selectionrectangle.h"
 #include "utils.h"
 
@@ -571,7 +572,7 @@ void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
     menu.exec(screenPos);
 }
 
-typedef QMap<MapObject*, QList<int> > PointIndexesByObject;
+typedef QMap<MapObject*, RangeSet<int> > PointIndexesByObject;
 static PointIndexesByObject
 groupIndexesByObject(const QSet<PointHandle*> &handles)
 {
@@ -579,8 +580,8 @@ groupIndexesByObject(const QSet<PointHandle*> &handles)
 
     // Build the list of point indexes for each map object
     foreach (PointHandle *handle, handles) {
-        QList<int> &pointIndexes = result[handle->mapObject()];
-        pointIndexes.append(handle->pointIndex());
+        RangeSet<int> &pointIndexes = result[handle->mapObject()];
+        pointIndexes.insert(handle->pointIndex());
     }
 
     return result;
@@ -592,7 +593,7 @@ void EditPolygonTool::deleteNodes()
         return;
 
     PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMutableMapIterator<MapObject*, QList<int> > i(p);
+    QMapIterator<MapObject*, RangeSet<int> > i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
 
@@ -601,15 +602,19 @@ void EditPolygonTool::deleteNodes()
 
     while (i.hasNext()) {
         MapObject *object = i.next().key();
-        QList<int> &pointIndexes = i.value();
+        const RangeSet<int> &indexRanges = i.value();
 
         QPolygonF oldPolygon = object->polygon();
         QPolygonF newPolygon = oldPolygon;
 
         // Remove points, back to front to keep the indexes valid
-        qSort(pointIndexes);
-        for (int i = pointIndexes.size() - 1; i >= 0; --i)
-            newPolygon.remove(pointIndexes.at(i));
+        RangeSet<int>::Range it = indexRanges.end();
+        RangeSet<int>::Range begin = indexRanges.begin();
+        // assert: end != begin, since there is at least one entry
+        do {
+            --it;
+            newPolygon.remove(it.first(), it.length());
+        } while (it != begin);
 
         if (newPolygon.isEmpty()) {
             // We've removed the entire object
@@ -626,45 +631,45 @@ void EditPolygonTool::deleteNodes()
 
 /**
  * Splits the selected segments by inserting new nodes in the middle. The
- * selected segments are defined by each pair of consecutive \a indexes.
+ * selected segments are defined by each pair of consecutive \a indexRanges.
  *
  * This method can deal with both polygons as well as polylines. For polygons,
  * pass <code>true</code> for \a closed.
  */
 static QPolygonF splitPolygonSegments(const QPolygonF &polygon,
-                                      const QList<int> &indexes,
+                                      const RangeSet<int> &indexRanges,
                                       bool closed)
 {
-    // Nothing to do when we are dealing with less than 2 points
-    if (indexes.size() < 2)
+    if (indexRanges.isEmpty())
         return polygon;
 
     const int n = polygon.size();
 
-    QVector<bool> selected(n, false);
-    foreach (int index, indexes)
-        selected[index] = true;
-
     QPolygonF result = polygon;
 
-    for (int i = polygon.size() - 1; i > 0; --i) {
-        if (!selected[i])
-            continue;
+    RangeSet<int>::Range firstRange = indexRanges.begin();
+    RangeSet<int>::Range it = indexRanges.end();
+    // assert: firstRange != it
 
-        int j = i - 1;
-        for (; j >= 0 && selected[j]; --j) {
-            const QPointF splitPoint = (result.at(j) + result.at(j + 1)) / 2;
-            result.insert(j + 1, splitPoint);
+    if (closed) {
+        RangeSet<int>::Range lastRange = it;
+        --lastRange; // We know there is at least one range
+
+        // Handle the case where the first and last nodes are selected
+        if (firstRange.first() == 0 && lastRange.last() == n - 1) {
+            const QPointF splitPoint = (result.first() + result.last()) / 2;
+            result.append(splitPoint);
         }
-
-        i = j;
     }
 
-    // Special handling of the case where the first and last nodes are selected
-    if (closed && selected[0] && selected[n - 1]) {
-        const QPointF splitPoint = (result.first() + result.last()) / 2;
-        result.append(splitPoint);
-    }
+    do {
+        --it;
+
+        for (int i = it.last(); i > it.first(); --i) {
+            const QPointF splitPoint = (result.at(i) + result.at(i - 1)) / 2;
+            result.insert(i, splitPoint);
+        }
+    } while (it != firstRange);
 
     return result;
 }
@@ -675,18 +680,18 @@ void EditPolygonTool::splitSegments()
         return;
 
     const PointIndexesByObject p = groupIndexesByObject(mSelectedHandles);
-    QMapIterator<MapObject*, QList<int> > i(p);
+    QMapIterator<MapObject*, RangeSet<int> > i(p);
 
     QUndoStack *undoStack = mapDocument()->undoStack();
     bool macroStarted = false;
 
     while (i.hasNext()) {
         MapObject *object = i.next().key();
-        QList<int> pointIndexes = i.value();
+        const RangeSet<int> &indexRanges = i.value();
 
         const bool closed = object->shape() == MapObject::Polygon;
         QPolygonF oldPolygon = object->polygon();
-        QPolygonF newPolygon = splitPolygonSegments(oldPolygon, pointIndexes,
+        QPolygonF newPolygon = splitPolygonSegments(oldPolygon, indexRanges,
                                                     closed);
 
         if (newPolygon.size() > oldPolygon.size()) {
