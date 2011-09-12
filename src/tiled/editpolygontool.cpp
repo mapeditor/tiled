@@ -619,7 +619,7 @@ void EditPolygonTool::deleteNodes()
             newPolygon.remove(it.first(), it.length());
         } while (it != begin);
 
-        if (newPolygon.isEmpty()) {
+        if (newPolygon.size() < 2) {
             // We've removed the entire object
             undoStack->push(new RemoveMapObject(mapDocument(), object));
         } else {
