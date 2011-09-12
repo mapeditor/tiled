@@ -63,6 +63,7 @@ private slots:
     void objectsRemoved(const QList<MapObject *> &objects);
 
     void deleteNodes();
+    void joinNodes();
     void splitSegments();
 
 private:
