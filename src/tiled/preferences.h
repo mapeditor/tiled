@@ -21,7 +21,9 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 
+#include <QColor>
 #include <QObject>
+#include <QVector>
 
 #include "mapwriter.h"
 
@@ -29,6 +31,25 @@ class QSettings;
 
 namespace Tiled {
 namespace Internal {
+
+/**
+ * Quick definition of an object type. It has a name and a color.
+ */
+struct ObjectType
+{
+    ObjectType() : color(Qt::gray) {}
+
+    ObjectType(const QString &name,
+               const QColor &color)
+        : name(name)
+        , color(color)
+    {}
+
+    QString name;
+    QColor color;
+};
+
+typedef QVector<ObjectType> ObjectTypes;
 
 /**
  * This class holds user preferences and provides a convenient interface to
@@ -60,6 +81,9 @@ public:
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
+    const ObjectTypes &objectTypes() const { return mObjectTypes; }
+    void setObjectTypes(const ObjectTypes &objectTypes);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -76,6 +100,8 @@ signals:
 
     void useOpenGLChanged(bool useOpenGL);
 
+    void objectTypesChanged();
+
 private:
     Preferences();
     ~Preferences();
@@ -90,6 +116,7 @@ private:
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
+    ObjectTypes mObjectTypes;
 
     static Preferences *mInstance;
 };

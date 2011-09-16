@@ -163,6 +163,7 @@ private slots:
     void objectsChanged(const QList<MapObject*> &objects);
 
     void updateSelectedObjectItems();
+    void syncAllObjectItems();
 
 private:
     QGraphicsItem *createLayerItem(Layer *layer);

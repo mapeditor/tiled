@@ -66,6 +66,18 @@ Preferences::Preferences()
     mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
     mSettings->endGroup();
 
+    // Retrieve defined object types
+    mSettings->beginGroup(QLatin1String("ObjectTypes"));
+    const QStringList names =
+            mSettings->value(QLatin1String("Names")).toStringList();
+    const QStringList colors =
+            mSettings->value(QLatin1String("Colors")).toStringList();
+    mSettings->endGroup();
+
+    const int count = qMin(names.size(), colors.size());
+    for (int i = 0; i < count; ++i)
+        mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
 }
@@ -166,4 +178,23 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     mSettings->setValue(QLatin1String("Interface/OpenGL"), mUseOpenGL);
 
     emit useOpenGLChanged(mUseOpenGL);
+}
+
+void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
+{
+    mObjectTypes = objectTypes;
+
+    QStringList names;
+    QStringList colors;
+    foreach (const ObjectType &objectType, objectTypes) {
+        names.append(objectType.name);
+        colors.append(objectType.color.name());
+    }
+
+    mSettings->beginGroup(QLatin1String("ObjectTypes"));
+    mSettings->setValue(QLatin1String("Names"), names);
+    mSettings->setValue(QLatin1String("Colors"), colors);
+    mSettings->endGroup();
+
+    emit objectTypesChanged();
 }

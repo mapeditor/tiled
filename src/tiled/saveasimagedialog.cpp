@@ -23,6 +23,7 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "preferences.h"
@@ -152,13 +153,10 @@ void SaveAsImageDialog::accept()
         if (tileLayer) {
             renderer->drawTileLayer(&painter, tileLayer);
         } else if (objGroup) {
-            QColor color = objGroup->color();
-            if (!color.isValid())
-                color = Qt::gray;
-
-            // TODO: Support colors for different object types
-            foreach (const MapObject *object, objGroup->objects())
+            foreach (const MapObject *object, objGroup->objects()) {
+                const QColor color = MapObjectItem::objectColor(object);
                 renderer->drawMapObject(&painter, object, color);
+            }
         }
     }
 

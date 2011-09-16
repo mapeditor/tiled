@@ -25,6 +25,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "movemapobject.h"
+#include "objecttypesmodel.h"
 #include "resizemapobject.h"
 
 #include <QGridLayout>
@@ -49,9 +50,13 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     QWidget *widget = new QWidget;
     mUi->setupUi(widget);
 
+    ObjectTypesModel *objectTypesModel = new ObjectTypesModel(this);
+    objectTypesModel->setObjectTypes(Preferences::instance()->objectTypes());
+    mUi->type->setModel(objectTypesModel);
+
     // Initialize UI with values from the map-object
     mUi->name->setText(mMapObject->name());
-    mUi->type->setText(mMapObject->type());
+    mUi->type->setEditText(mMapObject->type());
     mUi->x->setValue(mMapObject->x());
     mUi->y->setValue(mMapObject->y());
     mUi->width->setValue(mMapObject->width());
@@ -73,7 +78,7 @@ ObjectPropertiesDialog::~ObjectPropertiesDialog()
 void ObjectPropertiesDialog::accept()
 {
     const QString newName = mUi->name->text();
-    const QString newType = mUi->type->text();
+    const QString newType = mUi->type->currentText();
 
     const qreal newPosX = mUi->x->value();
     const qreal newPosY = mUi->y->value();

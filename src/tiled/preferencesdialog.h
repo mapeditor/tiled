@@ -25,12 +25,16 @@
 
 #include <QDialog>
 
+class QModelIndex;
+
 namespace Ui {
 class PreferencesDialog;
 }
 
 namespace Tiled {
 namespace Internal {
+
+class ObjectTypesModel;
 
 /**
  * The preferences dialog. Allows the user to configure some general behaviour
@@ -51,6 +55,12 @@ private slots:
     void languageSelected(int index);
     void useOpenGLToggled(bool useOpenGL);
 
+    void addObjectType();
+    void selectedObjectTypesChanged();
+    void removeSelectedObjectTypes();
+    void objectTypeIndexClicked(const QModelIndex &index);
+    void applyObjectTypes();
+
 private:
     void fromPreferences();
     void toPreferences();
@@ -59,6 +69,7 @@ private:
 
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
+    ObjectTypesModel *mObjectTypesModel;
 };
 
 

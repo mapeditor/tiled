@@ -120,7 +120,8 @@ SOURCES += aboutdialog.cpp \
     abstractobjecttool.cpp \
     changepolygon.cpp \
     editpolygontool.cpp \
-    selectionrectangle.cpp
+    selectionrectangle.cpp \
+    objecttypesmodel.cpp
 
 HEADERS += aboutdialog.h \
     automapper.h \
@@ -208,7 +209,8 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     editpolygontool.h \
     selectionrectangle.h \
-    rangeset.h
+    rangeset.h \
+    objecttypesmodel.h
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \

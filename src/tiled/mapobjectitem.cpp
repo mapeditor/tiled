@@ -193,6 +193,13 @@ void MapObjectItem::syncWithMapObject()
         update();
     }
 
+    const QColor color = objectColor(mObject);
+    if (mColor != color) {
+        mColor = color;
+        update();
+        mResizeHandle->update();
+    }
+
     QString toolTip = mName;
     const QString &type = mObject->type();
     if (!type.isEmpty())
@@ -256,8 +263,7 @@ void MapObjectItem::paint(QPainter *painter,
                           QWidget *)
 {
     painter->translate(-pos());
-    const QColor color = MapObjectItem::color();
-    mMapDocument->renderer()->drawMapObject(painter, mObject, color);
+    mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
 
     if (mIsEditable) {
         painter->translate(pos());
@@ -297,8 +303,19 @@ MapDocument *MapObjectItem::mapDocument() const
 
 QColor MapObjectItem::color() const
 {
-    // Get color from object group
-    const ObjectGroup *objectGroup = mObject->objectGroup();
+    return mColor;
+}
+
+QColor MapObjectItem::objectColor(const MapObject *object)
+{
+    // See if this object type has a color associated with it
+    foreach (const ObjectType &type, Preferences::instance()->objectTypes()) {
+        if (type.name.compare(object->type(), Qt::CaseInsensitive) == 0)
+            return type.color;
+    }
+
+    // If not, get color from object group
+    const ObjectGroup *objectGroup = object->objectGroup();
     if (objectGroup && objectGroup->color().isValid())
         return objectGroup->color();
 

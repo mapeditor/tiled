@@ -31,6 +31,7 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "preferences.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
@@ -62,6 +63,9 @@ MapScene::MapScene(QObject *parent):
     TilesetManager *tilesetManager = TilesetManager::instance();
     connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
+
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
 
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
@@ -378,6 +382,12 @@ void MapScene::updateSelectedObjectItems()
 
     mSelectedObjectItems = items;
     emit selectedObjectItemsChanged();
+}
+
+void MapScene::syncAllObjectItems()
+{
+    foreach (MapObjectItem *item, mObjectItems)
+        item->syncWithMapObject();
 }
 
 void MapScene::setGridVisible(bool visible)
