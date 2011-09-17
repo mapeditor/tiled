@@ -54,6 +54,7 @@ SaveAsImageDialog::SaveAsImageDialog(MapDocument *mapDocument,
     , mCurrentScale(currentScale)
 {
     mUi->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Default to the last chosen location
     QString suggestion = mPath;

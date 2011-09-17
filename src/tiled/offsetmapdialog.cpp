@@ -30,10 +30,11 @@ using namespace Tiled::Internal;
 
 OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     : QDialog(parent)
+    , mUi(new Ui::OffsetMapDialog)
     , mMapDocument(mapDocument)
 {
-    mUi = new Ui::OffsetMapDialog;
     mUi->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     if (mMapDocument->tileSelection().isEmpty())
         disableBoundsSelectionCurrentArea();

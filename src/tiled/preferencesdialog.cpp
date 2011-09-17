@@ -94,6 +94,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     mLanguages(LanguageManager::instance()->availableLanguages())
 {
     mUi->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 #ifndef QT_NO_OPENGL
     mUi->openGL->setEnabled(QGLFormat::hasOpenGL());

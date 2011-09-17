@@ -41,12 +41,13 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
                                    QUndoStack *undoStack,
                                    QWidget *parent):
     QDialog(parent),
+    mUi(new Ui::PropertiesDialog),
     mUndoStack(undoStack),
     mObject(object),
     mKind(kind)
 {
-    mUi = new Ui::PropertiesDialog;
     mUi->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     mModel = new PropertiesModel(this);
     mModel->setProperties(mObject->properties());

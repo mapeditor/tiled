@@ -49,6 +49,7 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     mNewTileset(0)
 {
     mUi->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();

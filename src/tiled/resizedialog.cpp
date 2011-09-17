@@ -26,9 +26,10 @@ using namespace Tiled::Internal;
 
 ResizeDialog::ResizeDialog(QWidget *parent)
     : QDialog(parent)
+    , mUi(new Ui::ResizeDialog)
 {
-    mUi = new Ui::ResizeDialog;
     mUi->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Initialize the new size of the resizeHelper to the default values of
     // the spin boxes. Otherwise, if the map width or height is default, then
