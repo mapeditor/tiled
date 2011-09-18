@@ -21,35 +21,15 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 
-#include <QColor>
 #include <QObject>
-#include <QVector>
 
 #include "mapwriter.h"
+#include "objecttypes.h"
 
 class QSettings;
 
 namespace Tiled {
 namespace Internal {
-
-/**
- * Quick definition of an object type. It has a name and a color.
- */
-struct ObjectType
-{
-    ObjectType() : color(Qt::gray) {}
-
-    ObjectType(const QString &name,
-               const QColor &color)
-        : name(name)
-        , color(color)
-    {}
-
-    QString name;
-    QColor color;
-};
-
-typedef QVector<ObjectType> ObjectTypes;
 
 /**
  * This class holds user preferences and provides a convenient interface to
@@ -83,6 +63,13 @@ public:
 
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
+
+    enum FileType {
+        ObjectTypesFile
+    };
+
+    QString lastPath(FileType fileType) const;
+    void setLastPath(FileType fileType, const QString &path);
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving

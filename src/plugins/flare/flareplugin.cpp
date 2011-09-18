@@ -67,7 +67,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        mError = tr("File cannot be opened");
+        mError = tr("Could not open file for writing.");
         return false;
     }
 

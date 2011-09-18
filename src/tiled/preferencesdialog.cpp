@@ -27,6 +27,8 @@
 #include "utils.h"
 
 #include <QColorDialog>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #ifndef QT_NO_OPENGL
 #include <QGLFormat>
@@ -138,6 +140,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
             SLOT(addObjectType()));
     connect(mUi->removeObjectTypeButton, SIGNAL(clicked()),
             SLOT(removeSelectedObjectTypes()));
+    connect(mUi->importObjectTypesButton, SIGNAL(clicked()),
+            SLOT(importObjectTypes()));
+    connect(mUi->exportObjectTypesButton, SIGNAL(clicked()),
+            SLOT(exportObjectTypes()));
 
     connect(mObjectTypesModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             SLOT(applyObjectTypes()));
@@ -221,6 +227,55 @@ void PreferencesDialog::applyObjectTypes()
 {
     Preferences *prefs = Preferences::instance();
     prefs->setObjectTypes(mObjectTypesModel->objectTypes());
+}
+
+void PreferencesDialog::importObjectTypes()
+{
+    Preferences *prefs = Preferences::instance();
+    const QString lastPath = prefs->lastPath(Preferences::ObjectTypesFile);
+    const QString fileName =
+            QFileDialog::getOpenFileName(this, tr("Import Object Types"),
+                                         lastPath,
+                                         tr("Object Types files (*.xml)"));
+    if (fileName.isEmpty())
+        return;
+
+    prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
+
+    ObjectTypesReader reader;
+    ObjectTypes objectTypes = reader.readObjectTypes(fileName);
+
+    if (reader.errorString().isEmpty()) {
+        prefs->setObjectTypes(objectTypes);
+        mObjectTypesModel->setObjectTypes(objectTypes);
+    } else {
+        QMessageBox::critical(this, tr("Error Reading Object Types"),
+                              reader.errorString());
+    }
+}
+
+void PreferencesDialog::exportObjectTypes()
+{
+    Preferences *prefs = Preferences::instance();
+    QString lastPath = prefs->lastPath(Preferences::ObjectTypesFile);
+
+    if (!lastPath.endsWith(QLatin1String(".xml")))
+        lastPath.append(QLatin1String("/objecttypes.xml"));
+
+    const QString fileName =
+            QFileDialog::getSaveFileName(this, tr("Export Object Types"),
+                                         lastPath,
+                                         tr("Object Types files (*.xml)"));
+    if (fileName.isEmpty())
+        return;
+
+    prefs->setLastPath(Preferences::ObjectTypesFile, fileName);
+
+    ObjectTypesWriter writer;
+    if (!writer.writeObjectTypes(fileName, prefs->objectTypes())) {
+        QMessageBox::critical(this, tr("Error Writing Object Types"),
+                              writer.errorString());
+    }
 }
 
 void PreferencesDialog::fromPreferences()

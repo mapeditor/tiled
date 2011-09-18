@@ -20,9 +20,12 @@
 
 #include "preferences.h"
 
+#include "documentmanager.h"
 #include "languagemanager.h"
 #include "tilesetmanager.h"
 
+#include <QDesktopServices>
+#include <QFileInfo>
 #include <QSettings>
 
 using namespace Tiled;
@@ -197,4 +200,54 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
     mSettings->endGroup();
 
     emit objectTypesChanged();
+}
+
+static QString lastPathKey(Preferences::FileType fileType)
+{
+    QString key = QLatin1String("LastPaths/");
+
+    switch (fileType) {
+    case Preferences::ObjectTypesFile:
+        key.append(QLatin1String("ObjectTypes"));
+        break;
+    default:
+        Q_ASSERT(false); // Getting here means invalid file type
+    }
+
+    return key;
+}
+
+/**
+ * Returns the last location of a file chooser for the given file type. As long
+ * as it was set using setLastPath().
+ *
+ * When no last path for this file type exists yet, the path of the currently
+ * selected map is returned.
+ *
+ * When no map is open, the user's 'Documents' folder is returned.
+ */
+QString Preferences::lastPath(FileType fileType) const
+{
+    QString path = mSettings->value(lastPathKey(fileType)).toString();
+
+    if (path.isEmpty()) {
+        DocumentManager *documentManager = DocumentManager::instance();
+        MapDocument *mapDocument = documentManager->currentDocument();
+        if (mapDocument)
+            path = QFileInfo(mapDocument->fileName()).path();
+    }
+
+    if (path.isEmpty())
+        path = QDesktopServices::storageLocation(
+                    QDesktopServices::DocumentsLocation);
+
+    return path;
+}
+
+/**
+ * \see lastPath()
+ */
+void Preferences::setLastPath(FileType fileType, const QString &path)
+{
+    mSettings->setValue(lastPathKey(fileType), path);
 }
