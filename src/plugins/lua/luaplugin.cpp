@@ -50,7 +50,7 @@ LuaPlugin::LuaPlugin()
 bool LuaPlugin::write(const Map *map, const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
