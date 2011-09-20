@@ -167,6 +167,8 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             writer.writeKeyAndValue("transparentColor",
                                     tileset->transparentColor().name());
         }
+
+        writeProperties(writer, tileset->properties());
     }
 
     writer.writeStartTable("tiles");
