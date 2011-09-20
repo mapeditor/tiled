@@ -35,54 +35,153 @@ using namespace Tiled::Internal;
 
 namespace {
 
-struct CommandLineOptions {
-    CommandLineOptions()
-        : showHelp(false)
-        , showVersion(false)
+// a structure containing the resulted of parsing the command-line
+// instead of taking action all at once, so we can catch errors early
+struct ParsedCommandLine {
+    ParsedCommandLine()
+        : quit(false)
+        , showedHelp(false)
+        , showedVersion(false)
+        , filesToOpen()
     {}
 
-    bool showHelp;
-    bool showVersion;
+    bool quit;
+    bool showedHelp;
+    bool showedVersion;
     QStringList filesToOpen;
 };
 
-void showHelp()
+typedef void (*ArgCallback)(ParsedCommandLine& later, QStringList& rest);
+
+struct PossibleArgument {
+    char shortName;
+    const char *longName;
+    ArgCallback func;
+    const char *help;
+};
+
+void showHelp(ParsedCommandLine& cl, QStringList&);
+
+void showVersion(ParsedCommandLine& cl, QStringList&)
 {
+    if (cl.showedVersion)
+        return;
+    cl.showedVersion = true;
+    qWarning() << "Tiled (Qt) Map Editor"
+            << qPrintable(QApplication::applicationVersion());
+    cl.quit = true;
+}
+
+void justQuit(ParsedCommandLine& cl, QStringList&)
+{
+    cl.quit = true;
+}
+/// A list of callback functions be be invoked immediately.
+// These shouldn't do anything major, until ALL arguments are done.
+PossibleArgument possibleArguments[] =
+{
+    { 'h',      "--help",       showHelp,       "Display this help" },
+    { 'v',      "--version",    showVersion,    "Display the version" },
+    { '\0',     "--quit",       justQuit,       "Only check validity of arguments, don't actually load any files" },
+};
+
+const size_t possibleArgumentCount = sizeof(possibleArguments) / sizeof(possibleArguments[0]);
+// must be of type int
+const int longestArgument = strlen("--version");
+
+void showHelp(ParsedCommandLine& cl, QStringList&)
+{
+    if (cl.showedHelp)
+        return;
+    cl.showedHelp = true;
     // TODO: Make translatable
     qWarning() <<
             "Usage: tiled [option] [files...]\n\n"
-            "Options:\n"
-            "  -h --help    : Display this help\n"
-            "  -v --version : Display the version";
+            "Options:";
+    for (size_t i = 0; i < possibleArgumentCount; i++) {
+        char c = possibleArguments[i].shortName;
+        const char *l = possibleArguments[i].longName;
+        const char *h = possibleArguments[i].help;
+        if (c)
+            qWarning("  -%c %-*s : %s", c, longestArgument, l, h);
+        else
+            qWarning("     %-*s : %s", longestArgument, l, h);
+    }
+    cl.quit = true;
 }
 
-void showVersion()
+ParsedCommandLine parseCommandLineArguments()
 {
-    qWarning() << "Tiled (Qt) Map Editor"
-            << qPrintable(QApplication::applicationVersion());
-}
+    ParsedCommandLine out;
+    QStringList arguments = QCoreApplication::arguments();
+    //std::cout << "invoked as " << arguments.first();
+    arguments.removeFirst();
 
-void parseCommandLineArguments(CommandLineOptions &options)
-{
-    const QStringList arguments = QCoreApplication::arguments();
-
-    for (int i = 1; i < arguments.size(); ++i) {
-        const QString &arg = arguments.at(i);
+    size_t idx = 0;
+    bool noMoreArguments = false;
+    while (!arguments.empty()) {
+        idx++;
+        const QString arg = arguments.takeFirst();
         if (arg.isEmpty())
             continue;
-
-        if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
-            options.showHelp = true;
-        } else if (arg == QLatin1String("--version")
-                || arg == QLatin1String("-v")) {
-            options.showVersion = true;
-        } else if (arg.at(0) == QLatin1Char('-')) {
-            qWarning() << "Unknown option" << arg;
-            options.showHelp = true;
-        } else {
-            options.filesToOpen.append(arg);
+        if (noMoreArguments || arg.at(0) != QLatin1Char('-')) {
+            out.filesToOpen.append(arg);
+            continue;
         }
+        if (arg.length() == 1) {
+            // traditionally this means:
+            // read file from stdin
+            // write file to stdout
+
+            // I'm not sure whether that's applicable
+            // and in any case it would be hard.
+            qWarning() << "Bad argument " << idx << ": lonely hyphen";
+            showHelp(out, arguments);
+            // showHelp sets quit for the caller
+            return out;
+        }
+        // long options
+        if (arg.at(1) == QLatin1Char('-')) {
+            if (arg.length() == 2) {
+                noMoreArguments = true;
+                continue;
+            }
+            // yay, lookup! It's linear, but that's as fast as a series of if
+            for (size_t i = 0; i < possibleArgumentCount; i++) {
+                if (arg == QLatin1String(possibleArguments[i].longName)) {
+                    possibleArguments[i].func(out, arguments);
+                    goto continue_outer;
+                }
+            }
+            qWarning() << "Unknown long argument " << idx << ": " << arg;
+            showHelp(out, arguments);
+            // showHelp sets quit for the caller
+            return out;
+        }
+        // short options
+
+        // can't use foreach because we have to skip the first character
+        for (int ci = 1; ci < arg.length(); ++ci) {
+            QChar c = arg.at(ci);
+            for (size_t i = 0; i < possibleArgumentCount; i++) {
+                if (c == QLatin1Char(possibleArguments[i].shortName)) {
+                    possibleArguments[i].func(out, arguments);
+                    goto continue_middle;
+                }
+            }
+            qWarning() << "Unknown short argument " << idx << '.' << ci << ": " << c;
+            showHelp(out, arguments);
+            //showHelp sets quit for the caller
+            return out;
+        continue_middle:
+            // label can't be empty
+            ;
+        }
+    continue_outer:
+        // label can't be empty
+        ;
     }
+    return out;
 }
 
 } // anonymous namespace
@@ -110,14 +209,8 @@ int main(int argc, char *argv[])
     LanguageManager *languageManager = LanguageManager::instance();
     languageManager->installTranslators();
 
-    CommandLineOptions options;
-    parseCommandLineArguments(options);
-
-    if (options.showVersion)
-        showVersion();
-    if (options.showHelp)
-        showHelp();
-    if (options.showVersion || options.showHelp)
+    ParsedCommandLine whatNow = parseCommandLineArguments();
+    if (whatNow.quit)
         return 0;
 
     MainWindow w;
@@ -126,8 +219,8 @@ int main(int argc, char *argv[])
     QObject::connect(&a, SIGNAL(fileOpenRequest(QString)),
                      &w, SLOT(openFile(QString)));
 
-    if (!options.filesToOpen.empty()) {
-        foreach (const QString &fileName, options.filesToOpen)
+    if (!whatNow.filesToOpen.empty()) {
+        foreach (const QString &fileName, whatNow.filesToOpen)
             w.openFile(fileName);
     } else {
         w.openLastFiles();
