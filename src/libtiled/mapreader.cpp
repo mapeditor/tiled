@@ -280,6 +280,8 @@ Tileset *MapReaderPrivate::readTileset()
             while (xml.readNextStartElement()) {
                 if (xml.name() == "tile")
                     readTilesetTile(tileset);
+                else if (xml.name() == "properties")
+                    tileset->mergeProperties(readProperties());
                 else if (xml.name() == "image")
                     readTilesetImage(tileset);
                 else

@@ -234,6 +234,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     if (margin != 0)
         w.writeAttribute(QLatin1String("margin"), QString::number(margin));
 
+    // Write the tileset properties
+    writeProperties(w, tileset->properties());
+
     // Write the image element
     const QString &imageSource = tileset->imageSource();
     if (!imageSource.isEmpty()) {

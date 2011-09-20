@@ -201,6 +201,8 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     const bool isExternal = m->tileset()->isExternal();
     QMenu menu;
 
+    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+
     if (tile) {
         // Select this tile to make sure it is clear that only the properties
         // of a single tile are being edited.
@@ -208,7 +210,6 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                           QItemSelectionModel::SelectCurrent |
                                           QItemSelectionModel::Clear);
 
-        QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
         QAction *tileProperties = menu.addAction(propIcon,
                                                  tr("Tile &Properties..."));
         tileProperties->setEnabled(!isExternal);
@@ -225,15 +226,21 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     QAction *exportTileset = menu.addAction(exportIcon,
                                             tr("&Export Tileset As..."));
     QAction *importTileset = menu.addAction(importIcon, tr("&Import Tileset"));
+    QAction *tilesetProperties = menu.addAction(propIcon,
+                                                tr("Tile&set Properties..."));
 
     exportTileset->setEnabled(!isExternal);
     importTileset->setEnabled(isExternal);
+    tilesetProperties->setEnabled(!isExternal);
 
     Utils::setThemeIcon(exportTileset, "document-export");
     Utils::setThemeIcon(importTileset, "document-import");
+    Utils::setThemeIcon(tilesetProperties, "document-properties");
 
     connect(exportTileset, SIGNAL(triggered()), SLOT(exportTileset()));
     connect(importTileset, SIGNAL(triggered()), SLOT(importTileset()));
+    connect(tilesetProperties, SIGNAL(triggered()),
+            SLOT(editTilesetProperties()));
 
     menu.addSeparator();
     QAction *toggleGrid = menu.addAction(tr("Show &Grid"));
@@ -254,6 +261,15 @@ void TilesetView::editTileProperties()
 
     PropertiesDialog propertiesDialog(tr("Tile"),
                                       tile,
+                                      mMapDocument->undoStack(),
+                                      this);
+    propertiesDialog.exec();
+}
+
+void TilesetView::editTilesetProperties()
+{
+    PropertiesDialog propertiesDialog(tr("Tileset"),
+                                      tilesetModel()->tileset(),
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();

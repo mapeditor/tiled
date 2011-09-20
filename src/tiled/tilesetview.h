@@ -59,6 +59,7 @@ protected:
 
 private slots:
     void editTileProperties();
+    void editTilesetProperties();
     void exportTileset();
     void importTileset();
     void toggleGrid();

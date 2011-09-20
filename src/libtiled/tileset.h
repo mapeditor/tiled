@@ -30,7 +30,7 @@
 #ifndef TILESET_H
 #define TILESET_H
 
-#include "tiled_global.h"
+#include "object.h"
 
 #include <QColor>
 #include <QList>
@@ -48,7 +48,7 @@ class Tile;
  * This class currently only supports loading tiles from a tileset image, using
  * loadFromImage(). There is no way to add or remove arbitrary tiles.
  */
-class TILEDSHARED_EXPORT Tileset
+class TILEDSHARED_EXPORT Tileset : public Object
 {
 public:
     /**
