@@ -62,14 +62,14 @@ QVariant ObjectTypesModel::headerData(int section,
 
 QVariant ObjectTypesModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole || role == Qt::EditRole) {
-        const ObjectType &objectType = mObjectTypes.at(index.row());
+    const ObjectType &objectType = mObjectTypes.at(index.row());
 
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
         if (index.column() == 0)
             return objectType.name;
-        if (index.column() == 1)
-            return objectType.color;
-    }
+
+    if (role == ColorRole && index.column() == 1)
+        return objectType.color;
 
     return QVariant();
 }

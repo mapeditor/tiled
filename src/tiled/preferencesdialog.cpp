@@ -29,6 +29,7 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QStyledItemDelegate>
 
 #ifndef QT_NO_OPENGL
 #include <QGLFormat>
@@ -40,11 +41,11 @@ using namespace Tiled::Internal;
 namespace Tiled {
 namespace Internal {
 
-class ColorDelegate : public QAbstractItemDelegate
+class ColorDelegate : public QStyledItemDelegate
 {
 public:
     ColorDelegate(QObject *parent = 0)
-        : QAbstractItemDelegate(parent)
+        : QStyledItemDelegate(parent)
     { }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -62,7 +63,10 @@ void ColorDelegate::paint(QPainter *painter,
                           const QStyleOptionViewItem &option,
                           const QModelIndex &index) const
 {
-    const QVariant displayData = index.model()->data(index, Qt::DisplayRole);
+    QStyledItemDelegate::paint(painter, option, index);
+
+    const QVariant displayData =
+            index.model()->data(index, ObjectTypesModel::ColorRole);
     const QColor color = displayData.value<QColor>();
     const QRect rect = option.rect.adjusted(4, 4, -4, -4);
 
