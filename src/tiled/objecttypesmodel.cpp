@@ -62,6 +62,10 @@ QVariant ObjectTypesModel::headerData(int section,
 
 QVariant ObjectTypesModel::data(const QModelIndex &index, int role) const
 {
+    // QComboBox requests data for an invalid index when the model is empty
+    if (!index.isValid())
+        return QVariant();
+
     const ObjectType &objectType = mObjectTypes.at(index.row());
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
