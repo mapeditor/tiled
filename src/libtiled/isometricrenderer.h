@@ -50,6 +50,8 @@ public:
     QRect boundingRect(const QRect &rect) const;
 
     QRectF boundingRect(const MapObject *object) const;
+    QRectF boundingRect(const MapObject *object, bool useOffset) const;
+
     QPainterPath shape(const MapObject *object) const;
 
     void drawGrid(QPainter *painter, const QRectF &rect) const;
@@ -65,6 +67,11 @@ public:
     void drawMapObject(QPainter *painter,
                        const MapObject *object,
                        const QColor &color) const;
+
+    void drawMapObject(QPainter *painter,
+                       const MapObject *object,
+                       const QColor &color,
+                       bool useOffset) const;
 
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;

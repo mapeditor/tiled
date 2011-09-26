@@ -69,6 +69,10 @@ Preferences::Preferences()
     mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
     mSettings->endGroup();
 
+    mSettings->beginGroup(QLatin1String("Compatibility"));
+    mUseIssue67 = mSettings->value(QLatin1String("Issue67"), false).toBool();
+    mSettings->endGroup();
+
     // Retrieve defined object types
     mSettings->beginGroup(QLatin1String("ObjectTypes"));
     const QStringList names =
@@ -181,6 +185,15 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     mSettings->setValue(QLatin1String("Interface/OpenGL"), mUseOpenGL);
 
     emit useOpenGLChanged(mUseOpenGL);
+}
+
+void Preferences::setUseIssue67(bool useOffset)
+{
+    if (mUseIssue67 == useOffset)
+        return;
+
+    mUseIssue67 = useOffset;
+    mSettings->setValue(QLatin1String("Compatibility/Issue67"), useOffset);
 }
 
 void Preferences::setObjectTypes(const ObjectTypes &objectTypes)

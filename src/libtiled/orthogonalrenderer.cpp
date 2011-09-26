@@ -56,6 +56,11 @@ QRect OrthogonalRenderer::boundingRect(const QRect &rect) const
 
 QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 {
+    return boundingRect(&*object, true);
+}
+
+QRectF OrthogonalRenderer::boundingRect(const MapObject *object, bool useOffset) const
+{
     const QRectF bounds = object->bounds();
     const QRectF rect(tileToPixelCoords(bounds.topLeft()),
                       tileToPixelCoords(bounds.bottomRight()));
@@ -65,8 +70,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
     if (object->tile()) {
         const QPointF topLeft = rect.topLeft();
         const QPixmap &img = object->tile()->image();
+        qreal tly = topLeft.y();
+        if (useOffset) tly -= img.height();
         boundingRect = QRectF(topLeft.x(),
-                              topLeft.y(),
+                              tly,
                               img.width(),
                               img.height()).adjusted(-1, -1, 1, 1);
     } else {
@@ -241,6 +248,14 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                        const MapObject *object,
                                        const QColor &color) const
 {
+    drawMapObject(&*painter, &*object, color, true);
+}
+
+void OrthogonalRenderer::drawMapObject(QPainter *painter,
+                                       const MapObject *object,
+                                       const QColor &color,
+                                       bool useOffset) const
+{
     painter->save();
 
     const QRectF bounds = object->bounds();
@@ -252,7 +267,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     if (object->tile()) {
         const QPixmap &img = object->tile()->image();
-        const QPoint paintOrigin(0, 0);
+        qreal tly = (useOffset) ? -img.height() : 0;
+        const QPoint paintOrigin(0, tly);
         painter->drawPixmap(paintOrigin, img);
 
         QPen pen(Qt::SolidLine);

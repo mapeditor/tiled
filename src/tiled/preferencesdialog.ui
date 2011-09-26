@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>421</width>
-    <height>313</height>
+    <width>423</width>
+    <height>335</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -122,14 +122,30 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Compatibiliity</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QCheckBox" name="issue67">
+            <property name="text">
+             <string>Increase Tile Object y index by 1</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>381</width>
-           <height>1</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>

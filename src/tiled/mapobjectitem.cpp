@@ -263,7 +263,8 @@ void MapObjectItem::paint(QPainter *painter,
                           QWidget *)
 {
     painter->translate(-pos());
-    mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
+    bool useOffset = Preferences::instance()->useIssue67();
+    mMapDocument->renderer()->drawMapObject(painter, mObject, mColor, useOffset);
 
     if (mIsEditable) {
         painter->translate(pos());

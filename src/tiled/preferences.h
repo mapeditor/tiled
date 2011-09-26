@@ -61,6 +61,9 @@ public:
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
+    bool useIssue67() const { return mUseIssue67; }
+    void setUseIssue67(bool useOffset);
+
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
 
@@ -103,6 +106,7 @@ private:
     QString mLanguage;
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
+    bool mUseIssue67;
     ObjectTypes mObjectTypes;
 
     static Preferences *mInstance;

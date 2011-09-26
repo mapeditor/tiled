@@ -134,6 +134,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
     connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
+    connect(mUi->issue67, SIGNAL(toggled(bool)), SLOT(useIssue67Toggled(bool)));
 
     connect(mUi->objectTypesTable->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -187,6 +188,11 @@ void PreferencesDialog::languageSelected(int index)
 void PreferencesDialog::useOpenGLToggled(bool useOpenGL)
 {
     Preferences::instance()->setUseOpenGL(useOpenGL);
+}
+
+void PreferencesDialog::useIssue67Toggled(bool useOffset)
+{
+    Preferences::instance()->setUseIssue67(useOffset);
 }
 
 void PreferencesDialog::addObjectType()
@@ -289,6 +295,7 @@ void PreferencesDialog::fromPreferences()
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
+    mUi->issue67->setChecked(prefs->useIssue67());
 
     int formatIndex = 0;
     switch (prefs->layerDataFormat()) {

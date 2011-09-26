@@ -67,9 +67,16 @@ public:
 
     /**
      * Returns the bounding rectangle in pixels of the given \a object, as it
-     * would be drawn by drawMapObject().
+     * would be drawn by drawMapObject().  Y indices are offset by 1 tile.
      */
     virtual QRectF boundingRect(const MapObject *object) const = 0;
+
+    /**
+     * Returns the bounding rectangle in pixels of the given \a object, as it
+     * would be drawn by drawMapObject().  Y indicies are offset by 1
+     * if useOffset is true.
+     */
+    virtual QRectF boundingRect(const MapObject *object, bool useOffset) const = 0;
 
     /**
      * Returns the shape in pixels of the given \a object. This is used for
@@ -106,10 +113,20 @@ public:
 
     /**
      * Draws the \a object in the given \a color using the \a painter.
+     * Y indices are offset by 1.
      */
     virtual void drawMapObject(QPainter *painter,
                                const MapObject *object,
                                const QColor &color) const = 0;
+
+    /**
+     * Draws the \a object in the given \a color using the \a painter.
+     * Y indices are offset by 1 if useOffset is true.
+     */
+    virtual void drawMapObject(QPainter *painter,
+                               const MapObject *object,
+                               const QColor &color,
+                               bool useOffset) const = 0;
 
     /**
      * Returns the tile coordinates matching the given pixel position.

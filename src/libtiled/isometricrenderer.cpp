@@ -64,11 +64,17 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
+    return boundingRect(&*object, true);
+}
+
+QRectF IsometricRenderer::boundingRect(const MapObject *object, bool useOffset) const
+{
     if (object->tile()) {
         const QPointF bottomCenter = tileToPixelCoords(object->position());
         const QPixmap &img = object->tile()->image();
+        qreal yoff = (useOffset) ? -img.height() : 0;
         return QRectF(bottomCenter.x() - img.width() / 2,
-                      bottomCenter.y() - img.height(),
+                      bottomCenter.y() - yoff,
                       img.width(),
                       img.height()).adjusted(-1, -1, 1, 1);
     } else if (!object->polygon().isEmpty()) {
@@ -261,13 +267,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
                                       const MapObject *object,
                                       const QColor &color) const
 {
+    return drawMapObject(&*painter, &*object, color, true);
+}
+
+void IsometricRenderer::drawMapObject(QPainter *painter,
+                                      const MapObject *object,
+                                      const QColor &color,
+                                      bool useOffset) const
+{
     painter->save();
 
     QPen pen(Qt::black);
 
     if (object->tile()) {
         const QPixmap &img = object->tile()->image();
-        QPointF paintOrigin(-img.width() / 2, -img.height());
+        qreal yoff = (useOffset) ? -img.height() : 0;
+        QPointF paintOrigin(-img.width() / 2, yoff);
         paintOrigin += tileToPixelCoords(object->position()).toPoint();
         painter->drawPixmap(paintOrigin, img);
 

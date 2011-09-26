@@ -124,6 +124,7 @@ void SaveAsImageDialog::accept()
     const bool visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
     const bool useCurrentScale = mUi->currentZoomLevel->isChecked();
     const bool drawTileGrid = mUi->drawTileGrid->isChecked();
+    const bool useOffset = Preferences::instance()->useIssue67();
 
     MapRenderer *renderer = mMapDocument->renderer();
     QSize mapSize = renderer->mapSize();
@@ -156,7 +157,7 @@ void SaveAsImageDialog::accept()
         } else if (objGroup) {
             foreach (const MapObject *object, objGroup->objects()) {
                 const QColor color = MapObjectItem::objectColor(object);
-                renderer->drawMapObject(&painter, object, color);
+                renderer->drawMapObject(&painter, object, color, useOffset);
             }
         }
     }
