@@ -86,15 +86,14 @@ private:
     void decodeCSVLayerData(TileLayer *tileLayer, const QString &text);
 
     /**
-     * Returns the cell for the given global tile ID. When an error occurs,
-     * \a ok is set to false and an error is raised.
+     * Returns the cell for the given global tile ID. Errors are raised with
+     * the QXmlStreamReader.
      *
      * @param gid the global tile ID
-     * @param ok  returns whether the conversion went ok
      * @return the cell data associated with the given global tile ID, or an
      *         empty cell if not found
      */
-    Cell cellForGid(uint gid, bool &ok);
+    Cell cellForGid(uint gid);
 
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
@@ -416,12 +415,7 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
 
                 const QXmlStreamAttributes atts = xml.attributes();
                 uint gid = atts.value(QLatin1String("gid")).toString().toUInt();
-                bool ok;
-                Cell cell = cellForGid(gid, ok);
-                if (ok)
-                    tileLayer->setCell(x, y, cell);
-                else
-                    xml.raiseError(tr("Invalid tile: %1").arg(gid));
+                tileLayer->setCell(x, y, cellForGid(gid));
 
                 x++;
                 if (x >= tileLayer->width()) {
@@ -488,14 +482,7 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer *tileLayer,
                          data[i + 2] << 16 |
                          data[i + 3] << 24;
 
-        bool ok;
-        Cell cell = cellForGid(gid, ok);
-        if (ok)
-            tileLayer->setCell(x, y, cell);
-        else {
-            xml.raiseError(tr("Invalid tile: %1").arg(gid));
-            return;
-        }
+        tileLayer->setCell(x, y, cellForGid(gid));
 
         x++;
         if (x == tileLayer->width()) {
@@ -527,26 +514,21 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer *tileLayer, const QString &t
                                .arg(x + 1).arg(y + 1).arg(tileLayer->name()));
                 return;
             }
-            bool gidOk;
-            Cell cell = cellForGid(gid, gidOk);
-            if (gidOk)
-                tileLayer->setCell(x, y, cell);
-            else {
-                xml.raiseError(tr("Invalid tile: %1").arg(gid));
-            }
+            tileLayer->setCell(x, y, cellForGid(gid));
         }
     }
 }
 
-Cell MapReaderPrivate::cellForGid(uint gid, bool &ok)
+Cell MapReaderPrivate::cellForGid(uint gid)
 {
-    Cell result;
+    bool ok;
+    const Cell result = mGidMapper.gidToCell(gid, ok);
 
-    if (mGidMapper.isEmpty()) {
-        xml.raiseError(tr("Tile used but no tilesets specified"));
-        ok = false;
-    } else {
-        result = mGidMapper.gidToCell(gid, ok);
+    if (!ok) {
+        if (mGidMapper.isEmpty())
+            xml.raiseError(tr("Tile used but no tilesets specified"));
+        else
+            xml.raiseError(tr("Invalid tile: %1").arg(gid));
     }
 
     return result;
@@ -617,13 +599,8 @@ MapObject *MapReaderPrivate::readObject()
     MapObject *object = new MapObject(name, type, xF, yF, widthF, heightF);
 
     if (gid) {
-        bool ok;
-        Cell cell = cellForGid(gid, ok);
-        if (ok) {
-            object->setTile(cell.tile);
-        } else {
-            xml.raiseError(tr("Invalid tile: %1").arg(gid));
-        }
+        const Cell cell = cellForGid(gid);
+        object->setTile(cell.tile);
     }
 
     while (xml.readNextStartElement()) {
