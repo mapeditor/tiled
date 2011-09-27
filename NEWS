@@ -1,3 +1,12 @@
+0.7.1 (27 September 2011)
+* Select stamp tool when selecting tiles in tileset view
+* Enable anti-aliasing for OpenGL mode
+* Small improvement to the Lua export plugin (incompatible!)
+* Fixed a bug in the Create Object tool
+* Fixed reading of maps without tilesets but with a tile layer
+* Fixed position of tile objects to center on the mouse on insertion
+* Updated the Czech translation
+
 0.7.0 (20 July 2011)
 * Added support for horizontal and vertical flipping of tiles
 * Added copy/paste support for objects

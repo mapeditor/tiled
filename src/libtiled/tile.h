@@ -77,6 +77,11 @@ public:
      */
     int height() const { return mImage.height(); }
 
+    /**
+     * Returns the size of this tile.
+     */
+    QSize size() const { return mImage.size(); }
+
 private:
     int mId;
     Tileset *mTileset;

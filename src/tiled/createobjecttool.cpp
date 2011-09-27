@@ -109,7 +109,6 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         return;
 
     const MapRenderer *renderer = mapDocument()->renderer();
-    QPointF tileCoords = renderer->pixelToTileCoords(pos);
 
     bool snapToGrid = Preferences::instance()->snapToGrid();
     if (modifiers & Qt::ControlModifier)
@@ -117,6 +116,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 
     switch (mMode) {
     case CreateArea: {
+        const QPointF tileCoords = renderer->pixelToTileCoords(pos);
+
         // Update the size of the new map object
         const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
         QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
@@ -129,6 +130,10 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         break;
     }
     case CreateTile: {
+        const QSize imgSize = mNewMapObjectItem->mapObject()->tile()->size();
+        const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
+        QPointF tileCoords = renderer->pixelToTileCoords(pos + diff);
+
         if (snapToGrid)
             tileCoords = tileCoords.toPoint();
 
@@ -138,6 +143,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     }
     case CreatePolygon:
     case CreatePolyline: {
+        QPointF tileCoords = renderer->pixelToTileCoords(pos);
+
         if (snapToGrid)
             tileCoords = tileCoords.toPoint();
 
@@ -191,19 +198,30 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     }
 
     ObjectGroup *objectGroup = currentObjectGroup();
-    if (objectGroup && objectGroup->isVisible() && !mNewMapObjectItem) {
-        const MapRenderer *renderer = mapDocument()->renderer();
-        QPointF tileCoords = renderer->pixelToTileCoords(event->scenePos());
+    if (!objectGroup || !objectGroup->isVisible())
+        return;
 
-        bool snapToGrid = Preferences::instance()->snapToGrid();
-        if (event->modifiers() & Qt::ControlModifier)
-            snapToGrid = !snapToGrid;
+    const MapRenderer *renderer = mapDocument()->renderer();
+    QPointF tileCoords;
 
-        if (snapToGrid)
-            tileCoords = tileCoords.toPoint();
+    if (mMode == CreateTile) {
+        if (!mTile)
+            return;
 
-        startNewMapObject(tileCoords, objectGroup);
+        const QPointF diff(-mTile->width() / 2, mTile->height() / 2);
+        tileCoords = renderer->pixelToTileCoords(event->scenePos() + diff);
+    } else {
+        tileCoords = renderer->pixelToTileCoords(event->scenePos());
     }
+
+    bool snapToGrid = Preferences::instance()->snapToGrid();
+    if (event->modifiers() & Qt::ControlModifier)
+        snapToGrid = !snapToGrid;
+
+    if (snapToGrid)
+        tileCoords = tileCoords.toPoint();
+
+    startNewMapObject(tileCoords, objectGroup);
 }
 
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
