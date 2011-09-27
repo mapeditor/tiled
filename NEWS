@@ -4,6 +4,7 @@
 * Small improvement to the Lua export plugin (incompatible!)
 * Fixed a bug in the Create Object tool
 * Fixed reading of maps without tilesets but with a tile layer
+* Fixed position of tile objects to center on the mouse on insertion
 * Updated the Czech translation
 
 0.7.0 (20 July 2011)
