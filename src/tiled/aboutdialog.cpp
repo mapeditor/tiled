@@ -21,6 +21,24 @@
 
 #include "aboutdialog.h"
 
+#ifdef BUILD_INFO
+#include "buildinfo.h"
+#endif
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+#ifndef BUILD_INFO_GIT
+#define BUILD_INFO_GIT ""
+#endif
+
+#ifndef BUILD_INFO_TIME
+#define BUILD_INFO_TIME ""
+#endif
+
+#define BUILD_INFO_GIT_WRAPPER QLatin1String(TOSTRING(BUILD_INFO_GIT))
+#define BUILD_INFO_TIME_WRAPPER QLatin1String(TOSTRING(BUILD_INFO_TIME))
+
 #include <QCoreApplication>
 
 using namespace Tiled::Internal;
@@ -33,11 +51,13 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
     const QString html = QCoreApplication::translate(
             "AboutDialog",
             "<p align=\"center\"><font size=\"+2\"><b>Tiled Map Editor</b></font><br><i>Version %1</i></p>\n"
+            "<p align=\"center\">%2</p>\n"
+            "<p align=\"center\">%3</p>\n"
             "<p align=\"center\">Copyright 2008-2011 Thorbj&oslash;rn Lindeijer<br>(see the AUTHORS file for a full list of contributors)</p>\n"
             "<p align=\"center\">You may modify and redistribute this program under the terms of the GPL (version 2 or later). "
             "A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.</p>\n"
             "<p align=\"center\"><a href=\"http://www.mapeditor.org/\">http://www.mapeditor.org/</a></p>\n")
-            .arg(QApplication::applicationVersion());
+            .arg(QApplication::applicationVersion(), BUILD_INFO_GIT_WRAPPER, BUILD_INFO_TIME_WRAPPER);
 
     textBrowser->setHtml(html);
 }
