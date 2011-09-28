@@ -1,6 +1,8 @@
 /*
  * main.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011, Ben Longbons <b.r.longbons@gmail.com>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -31,6 +33,9 @@ Q_IMPORT_PLUGIN(qgif)
 Q_IMPORT_PLUGIN(qjpeg)
 Q_IMPORT_PLUGIN(qtiff)
 #endif
+
+#define STRINGIFY(x) #x
+#define AS_STRING(x) STRINGIFY(x)
 
 using namespace Tiled::Internal;
 
@@ -111,7 +116,12 @@ int main(int argc, char *argv[])
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));
+#ifdef BUILD_INFO_VERSION
+    a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION));
+#else
     a.setApplicationVersion(QLatin1String("0.7.1"));
+#endif
+
 #ifdef Q_WS_MAC
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
