@@ -145,11 +145,12 @@ const short JsonGrammar::action_check [] = {
   -1, -1};
 
 
-#line 28 "json.g"
+#line 29 "json.g"
 
 /****************************************************************************
 **
 ** Copyright (c) 2010 Girish Ramakrishnan <girish@forwardbias.in>
+** Copyright (c) 2011 Denis Dzyubenko <shadone@gmail.com>
 **
 ** Use, modification and distribution is allowed without limitation,
 ** warranty, liability or support of any kind.
@@ -166,7 +167,7 @@ const short JsonGrammar::action_check [] = {
 class JsonLexer
 {
 public:
-    JsonLexer(const QByteArray &data);
+    JsonLexer(const QString &string);
     ~JsonLexer();
 
     int lex();
@@ -179,11 +180,10 @@ private:
     int parseString();
     int parseKeyword();
 
-    QByteArray m_data;
+    QString m_strdata;
     int m_lineNumber;
     int m_pos;
     QVariant m_symbol;
-    QHash<QByteArray, int> m_keywords;
 };
 
 class JsonParser : protected JsonGrammar
@@ -194,7 +194,7 @@ public:
 
     bool parse(JsonLexer *lex);
     QVariant result() const { return m_result; }
-    QString errorMessage() const { return QString("%1 at line %2 pos %3").arg(m_errorMessage).arg(m_errorLineNumber).arg(m_errorPos); }
+    QString errorMessage() const { return QString::fromLatin1("%1 at line %2 pos %3").arg(m_errorMessage).arg(m_errorLineNumber).arg(m_errorPos); }
 
 private:
     void reallocateStack();
@@ -219,11 +219,12 @@ private:
 
 #endif // JSONPARSER_P_H
 
-#line 102 "json.g"
+#line 103 "json.g"
 
 /****************************************************************************
 **
 ** Copyright (c) 2010 Girish Ramakrishnan <girish@forwardbias.in>
+** Copyright (c) 2011 Denis Dzyubenko <shadone@gmail.com>
 **
 ** Use, modification and distribution is allowed without limitation,
 ** warranty, liability or support of any kind.
@@ -232,13 +233,14 @@ private:
 
 #include <QtDebug>
 
-JsonLexer::JsonLexer(const QByteArray &ba)
-    : m_data(ba), m_lineNumber(1), m_pos(0)
+#define L1C(c) ushort(uchar(c))
+
+JsonLexer::JsonLexer(const QString &str)
+    : m_strdata(str), m_lineNumber(1), m_pos(0)
 {
-    m_keywords.insert("true", JsonGrammar::T_TRUE);
-    m_keywords.insert("false", JsonGrammar::T_FALSE);
-    m_keywords.insert("null", JsonGrammar::T_NULL);
 }
+
+
 
 JsonLexer::~JsonLexer()
 {
@@ -248,49 +250,61 @@ int JsonLexer::parseString()
 {
     bool esc = false;
     ++m_pos; // skip initial "
+    int start = m_pos;
 
-    QByteArray str;
-
-    const int remaining = m_data.length() - m_pos;
-    for (int i = 0; i < remaining; ++i) {
-        const char c = m_data.at(m_pos + i);
-        if (c == '\"') {
-            m_symbol = QString::fromUtf8(m_data.constData() + m_pos, i);
+    const ushort *uc = m_strdata.utf16();
+    const int remaining = m_strdata.length() - m_pos;
+    int i;
+    for (i = 0; i < remaining; ++i) {
+        const ushort c = uc[m_pos + i];
+        if (c == L1C('\"')) {
+            m_symbol = QString((QChar *)uc + m_pos, i);
             m_pos += i;
             ++m_pos; // eat quote
             return JsonGrammar::T_STRING;
-        } else if (c == '\\')
+        } else if (c == L1C('\\')) {
+            ++m_pos; // eat backslash
+            esc = true;
             break;
+        }
     }
 
-    for (; m_pos < m_data.length(); ++m_pos) {
-        const char c = m_data.at(m_pos);
+    QString str;
+    if (i) {
+        str.resize(i);
+        memcpy((char *)str.utf16(), uc + start, i * 2);
+        m_pos += i;
+    }
+
+    for (; m_pos < m_strdata.length(); ++m_pos) {
+        const ushort c = uc[m_pos];
         if (esc) {
-            if (c == 'b') str += '\b';
-            else if (c == 'f') str += '\f';
-            else if (c == 'n') str += '\n';
-            else if (c == 'r') str += '\r';
-            else if (c == 't') str += '\t';
-            else if (c == '\\') str += '\\';
-            else if (c == '\"') str += '\"';
-            else if (c == 'u' && m_pos+4<m_data.length()-1) {
-                QByteArray u1 = m_data.mid(m_pos+1, 2);
-                QByteArray u2 = m_data.mid(m_pos+3, 2);
+            if (c == L1C('b')) str += QLatin1Char('\b');
+            else if (c == L1C('f')) str += QLatin1Char('\f');
+            else if (c == L1C('n')) str += QLatin1Char('\n');
+            else if (c == L1C('r')) str += QLatin1Char('\r');
+            else if (c == L1C('t')) str += QLatin1Char('\t');
+            else if (c == L1C('\\')) str += QLatin1Char('\\');
+            else if (c == L1C('\"')) str += QLatin1Char('\"');
+            else if (c == L1C('u') && m_pos+4<m_strdata.length()-1) {
+                // FIXME: This code is wrong
+                QString u1 = m_strdata.mid(m_pos+1, 2); // TODO: QStringRef please
+                QString u2 = m_strdata.mid(m_pos+3, 2);
                 bool ok;
-                str += QString(QChar(u2.toInt(&ok, 16), u1.toInt(&ok, 16))).toUtf8();
+                str += QChar(u2.toInt(&ok, 16), u1.toInt(&ok, 16));
                 m_pos += 4;
             } else {
-                str += c;
+                str += QChar(c);
             }
             esc = false;
-        } else if (c == '\\') {
+        } else if (c == L1C('\\')) {
             esc = true;
-        } else if (c == '\"') {
-            m_symbol = QString::fromUtf8(str.constData(), str.size());
+        } else if (c == L1C('\"')) {
+            m_symbol = str;
             ++m_pos;
             return JsonGrammar::T_STRING;
         } else {
-            str += c;
+            str += QChar(c);
         }
     }
     return JsonGrammar::ERROR;
@@ -300,63 +314,85 @@ int JsonLexer::parseNumber()
 {
     int start = m_pos;
     bool isDouble = false;
-    for (; m_pos < m_data.length(); ++m_pos) {
-        const char c = m_data.at(m_pos);
-        if (c == '+' || c == '-' || (c >= '0' && c <= '9'))
+    const ushort *uc = m_strdata.utf16();
+    const int l = m_strdata.length();
+    const int negative = (uc[m_pos] == L1C('-') ? ++m_pos, -1 : (uc[m_pos] == L1C('+') ? ++m_pos, 1 : 1));
+    qlonglong value = 0;
+    for (; m_pos < l; ++m_pos) {
+        const ushort &c = uc[m_pos];
+        if (c == L1C('+') || c == L1C('-'))
             continue;
-        if (c == '.' || c == 'e' || c == 'E') {
+        if (c == L1C('.') || c == L1C('e') || c == L1C('E')) {
             isDouble = true;
+            continue;
+        }
+        if (c >= L1C('0') && c <= L1C('9')) {
+            if (!isDouble) {
+                value *= 10;
+                value += c - L1C('0');
+            }
             continue;
         }
         break;
     }
-    QByteArray number = QByteArray::fromRawData(m_data.constData()+start, m_pos-start);
-    bool ok;
     if (!isDouble) {
-        m_symbol = number.toInt(&ok);
-        if (!ok)
-            m_symbol = number.toLongLong(&ok);
-    }
-    if (isDouble || !ok)
+        m_symbol = value * negative;
+    } else {
+        QString number = QString::fromRawData((QChar *)uc+start, m_pos-start);
         m_symbol = number.toDouble();
+    }
     return JsonGrammar::T_NUMBER;
 }
 
 int JsonLexer::parseKeyword()
 {
     int start = m_pos;
-    for (; m_pos < m_data.length(); ++m_pos) {
-        const char c = m_data.at(m_pos);
-        if (c >= 'a' && c <= 'z')
+    for (; m_pos < m_strdata.length(); ++m_pos) {
+        const ushort c = m_strdata.at(m_pos).unicode();
+        if (c >= L1C('a') && c <= L1C('z'))
             continue;
         break;
     }
-    QByteArray keyword = QByteArray::fromRawData(m_data.constData()+start, m_pos-start);
-    if (m_keywords.contains(keyword))
-        return m_keywords.value(keyword);
+    const ushort *k = (const ushort *)m_strdata.constData() + start;
+    const int l = m_pos-start;
+    if (l == 4) {
+        static const ushort true_data[] = { 't', 'r', 'u', 'e' };
+        static const ushort null_data[] = { 'n', 'u', 'l', 'l' };
+        if (!memcmp(k, true_data, 4))
+            return JsonGrammar::T_TRUE;
+        if (!memcmp(k, null_data, 4))
+            return JsonGrammar::T_NULL;
+    } else if (l == 5) {
+        static const ushort false_data[] = { 'f', 'a', 'l', 's', 'e' };
+        if (!memcmp(k, false_data, 5))
+            return JsonGrammar::T_FALSE;
+    }
     return JsonGrammar::ERROR;
 }
 
 int JsonLexer::lex()
 {
     m_symbol.clear();
-    while (m_pos < m_data.length()) {
-        const char c = m_data.at(m_pos);
+
+    const ushort *uc = m_strdata.utf16();
+    const int len = m_strdata.length();
+    while (m_pos < len) {
+        const ushort c = uc[m_pos];
         switch (c) {
-        case '[': ++m_pos; return JsonGrammar::T_LSQUAREBRACKET;
-        case ']': ++m_pos; return JsonGrammar::T_RSQUAREBRACKET;
-        case '{': ++m_pos; return JsonGrammar::T_LCURLYBRACKET;
-        case '}': ++m_pos; return JsonGrammar::T_RCURLYBRACKET;
-        case ':': ++m_pos; return JsonGrammar::T_COLON;
-        case ',': ++m_pos; return JsonGrammar::T_COMMA;
-        case ' ': case '\r': case '\t': case 'b': ++m_pos; break;
-        case '\n': ++m_pos; ++m_lineNumber; break;
-        case '"': return parseString();
-        default: 
-            if (c == '+' || c == '-' || (c >= '0' && c <= '9')) {
-                return parseNumber(); 
+        case L1C('['): ++m_pos; return JsonGrammar::T_LSQUAREBRACKET;
+        case L1C(']'): ++m_pos; return JsonGrammar::T_RSQUAREBRACKET;
+        case L1C('{'): ++m_pos; return JsonGrammar::T_LCURLYBRACKET;
+        case L1C('}'): ++m_pos; return JsonGrammar::T_RCURLYBRACKET;
+        case L1C(':'): ++m_pos; return JsonGrammar::T_COLON;
+        case L1C(','): ++m_pos; return JsonGrammar::T_COMMA;
+        case L1C(' '): case L1C('\r'): case L1C('\t'): ++m_pos; break;
+        case L1C('\n'): ++m_pos; ++m_lineNumber; break;
+        case L1C('"'): return parseString();
+        default:
+            if (c == L1C('+') || c == L1C('-') || (c >= L1C('0') && c <= L1C('9'))) {
+                return parseNumber();
             }
-            if (c >= 'a' && c <= 'z') {
+            if (c >= L1C('a') && c <= L1C('z')) {
                 return parseKeyword();
             }
             return JsonGrammar::ERROR;
@@ -364,6 +400,7 @@ int JsonLexer::lex()
     }
     return JsonGrammar::EOF_SYMBOL;
 }
+#undef L1C
 
 JsonParser::JsonParser()
 {
@@ -415,29 +452,29 @@ bool JsonParser::parse(JsonLexer *lexer)
             act = m_stateStack.at(m_tos++);
             switch (r) {
 
-#line 299 "json.g"
-          case 0: { m_result = sym(1); break; } 
-#line 302 "json.g"
-          case 1: { sym(1) = map(2); break; } 
-#line 305 "json.g"
-          case 2: { QVariantMap m; m.insert(sym(1).toString(), sym(3)); map(1) = m; break; } 
-#line 308 "json.g"
-          case 3: { map(1).insert(sym(3).toString(), sym(5)); break; } 
-#line 311 "json.g"
-          case 4: { map(1) = QVariantMap(); break; } 
-#line 314 "json.g"
-          case 5: { sym(1) = QVariant(false); break; } 
-#line 317 "json.g"
-          case 6: { sym(1) = QVariant(true); break; } 
-#line 326 "json.g"
-          case 12: { sym(1) = list(2); break; } 
-#line 329 "json.g"
-          case 13: { QVariantList l; l.append(sym(1)); list(1) = l; break; } 
-#line 332 "json.g"
-          case 14: { list(1).append(sym(3)); break; } 
-#line 335 "json.g"
-          case 15: { list(1) = QVariantList(); break; } 
 #line 337 "json.g"
+          case 0: { m_result = sym(1); break; } 
+#line 340 "json.g"
+          case 1: { sym(1) = map(2); break; } 
+#line 343 "json.g"
+          case 2: { QVariantMap m; m.insert(sym(1).toString(), sym(3)); map(1) = m; break; } 
+#line 346 "json.g"
+          case 3: { map(1).insert(sym(3).toString(), sym(5)); break; } 
+#line 349 "json.g"
+          case 4: { map(1) = QVariantMap(); break; } 
+#line 352 "json.g"
+          case 5: { sym(1) = QVariant(false); break; } 
+#line 355 "json.g"
+          case 6: { sym(1) = QVariant(true); break; } 
+#line 364 "json.g"
+          case 12: { sym(1) = list(2); break; } 
+#line 367 "json.g"
+          case 13: { QVariantList l; l.append(sym(1)); list(1) = l; break; } 
+#line 370 "json.g"
+          case 14: { list(1).append(sym(3)); break; } 
+#line 373 "json.g"
+          case 15: { list(1) = QVariantList(); break; } 
+#line 375 "json.g"
 
             } // switch
             m_stateStack[m_tos] = nt_action(act, lhs[r] - TERMINAL_COUNT);

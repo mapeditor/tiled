@@ -1,13 +1,36 @@
+/*
+ * JSON Tiled Plugin
+ * Copyright 2011, Porfírio José Pereira Ribeiro <porfirioribeiro@gmail.com>
+ * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "jsonplugin.h"
 
-#include "json.h"
-#include "map.h"
-#include "tileset.h"
-#include <QtDebug>
+#include "maptovariantconverter.h"
+#include "varianttomapconverter.h"
+
+#include "qjsonparser/json.h"
+
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
 
+using namespace Json;
 
 JsonPlugin::JsonPlugin()
 {
@@ -16,34 +39,59 @@ JsonPlugin::JsonPlugin()
 Tiled::Map *JsonPlugin::read(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         mError = tr("Could not open file for reading.");
         return false;
     }
 
-    QVariantMap oMap=Json::parse(file.readAll(), &mError).toMap();
-    if (oMap.empty())
-        mError =tr("Error parsing file.");
-    if (mError!="")
-        return false;
-    return variantToMap(oMap, QFileInfo(fileName).dir());
+    JsonReader reader;
+    reader.parse(file.readAll());
+
+    const QVariant variant = reader.result();
+
+    if (!variant.isValid()) {
+        mError = tr("Error parsing file.");
+        return 0;
+    }
+
+    VariantToMapConverter converter;
+    Tiled::Map *map = converter.toMap(variant, QFileInfo(fileName).dir());
+
+    if (!map)
+        mError = converter.errorString();
+
+    return map;
 }
 
 bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
         mError = tr("Could not open file for writing.");
         return false;
     }
+
+    MapToVariantConverter converter;
+    QVariant variant = converter.toVariant(map, QFileInfo(fileName).dir());
+
+    JsonWriter writer;
+    writer.setAutoFormatting(true);
+
+    if (!writer.stringify(variant)) {
+        // This can only happen due to coding error
+        mError = writer.errorString();
+        return false;
+    }
+
     QTextStream out(&file);
+    out << writer.result();
+    out.flush();
 
+    if (file.error() != QFile::NoError) {
+        mError = tr("Error while writing file:\n%1").arg(file.errorString());
+        return false;
+    }
 
-    out << Json::stringify(mapToVariant(map,QFileInfo(fileName).dir()));
-
-//    QVariantMap nG=Json::parse(source).toMap();
-//    qDebug() << nG["tilesets"].toList()[0].toMap()["imageSource"];
     return true;
 }
 
@@ -63,10 +111,3 @@ QString JsonPlugin::errorString() const
 }
 
 Q_EXPORT_PLUGIN2(Json, JsonPlugin)
-
-
-
-
-
-
-

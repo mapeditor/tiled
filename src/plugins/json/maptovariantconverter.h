@@ -19,48 +19,47 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JSONPLUGIN_H
-#define JSONPLUGIN_H
+#ifndef MAPTOVARIANTCONVERTER_H
+#define MAPTOVARIANTCONVERTER_H
 
-#include "json_global.h"
+#include <QDir>
+#include <QVariant>
 
-#include "mapwriterinterface.h"
-#include "mapreaderinterface.h"
-
-#include <QObject>
+#include "gidmapper.h"
 
 namespace Tiled {
-class Map;
 }
 
 namespace Json {
 
-class JSONSHARED_EXPORT JsonPlugin
-        : public QObject
-        , public Tiled::MapReaderInterface
-        , public Tiled::MapWriterInterface
+/**
+ * Converts Map instances to QVariant. Meant to be used together with
+ * JsonWriter.
+ */
+class MapToVariantConverter
 {
-    Q_OBJECT
-    Q_INTERFACES(Tiled::MapReaderInterface Tiled::MapWriterInterface)
-
 public:
-    JsonPlugin();
+    MapToVariantConverter() {}
 
-    // MapReaderInterface
-    Tiled::Map *read(const QString &fileName);
-    bool supportsFile(const QString &fileName) const;
-
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-
-    // Both interfaces
-    QString nameFilter() const;
-    QString errorString() const;
+    /**
+     * Converts the given \s map to a QVariant. The \a mapDir is used to
+     * construct relative paths to external resources.
+     */
+    QVariant toVariant(const Tiled::Map *map, const QDir &mapDir);
 
 private:
-    QString mError;
+    QVariant toVariant(const Tiled::Tileset *tileset, int firstGid);
+    QVariant toVariant(const Tiled::Properties &properties);
+    QVariant toVariant(const Tiled::TileLayer *tileLayer);
+    QVariant toVariant(const Tiled::ObjectGroup *objectGroup);
+
+    void addLayerAttributes(QVariantMap &layerVariant,
+                            const Tiled::Layer *layer);
+
+    QDir mMapDir;
+    Tiled::GidMapper mGidMapper;
 };
 
 } // namespace Json
 
-#endif // JSONPLUGIN_H
+#endif // MAPTOVARIANTCONVERTER_H

@@ -2,10 +2,13 @@ include(../plugin.pri)
 
 DEFINES += JSON_LIBRARY
 
-include(qjsonparser/qjsonparser.pri)
-
 SOURCES += jsonplugin.cpp \
-    maptovariant.cpp \
-    varianttomap.cpp
-HEADERS += jsonplugin.h\
-        json_global.h
+    qjsonparser/json.cpp \
+    varianttomapconverter.cpp \
+    maptovariantconverter.cpp
+
+HEADERS += jsonplugin.h \
+    json_global.h \
+    qjsonparser/json.h \
+    varianttomapconverter.h \
+    maptovariantconverter.h
