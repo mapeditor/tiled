@@ -522,3 +522,10 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
     if (removedCount > 0)
         emit selectedObjectsChanged();
 }
+
+void MapDocument::setTilesetFilename(Tileset *tileset,
+                                     const QString &name)
+{
+    tileset->setFileName(name);
+    emit tilesetFilenameChanged(tileset);
+}

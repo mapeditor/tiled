@@ -25,7 +25,12 @@
 #include <QDockWidget>
 
 class QStackedWidget;
-class QTabBar;
+class QComboBox;
+class QToolBar;
+class QAction;
+class QToolButton;
+
+class SetTilesetFileName;
 
 namespace Tiled {
 
@@ -94,7 +99,17 @@ private slots:
     void tilesetMoved(int from, int to);
 
     void removeTileset(int index);
-    void moveTileset(int from, int to);
+
+    void deleteTileset();
+    void currentChanged(int index);
+
+    void editTilesetProperties();
+    void importTileset();
+    void exportTileset();
+
+    void startNameEdit();
+    void finishNameEdit();
+    void refreshCurrentView();
 
 private:
     void setCurrentTile(Tile *tile);
@@ -103,10 +118,17 @@ private:
     TilesetView *tilesetViewAt(int index) const;
 
     MapDocument *mMapDocument;
-    QTabBar *mTabBar;
+    QComboBox *mDropDown;
     QStackedWidget *mViewStack;
+    QToolBar *mToolBar;
     Tile *mCurrentTile;
     TileLayer *mCurrentTiles;
+    QToolButton *mRenameTileset;
+
+    QAction *mImportTileset;
+    QAction *mExportTileset;
+    QAction *mPropertiesTileset;
+    QAction *mDeleteTileset;
 };
 
 } // namespace Internal

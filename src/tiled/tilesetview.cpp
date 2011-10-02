@@ -101,40 +101,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
                  tileset->tileHeight() * zoom + extra);
 }
 
-/**
- * Used for exporting/importing tilesets.
- *
- * @warning Does not work for tilesets that are shared by multiple maps!
- */
-class SetTilesetFileName : public QUndoCommand
-{
-public:
-    SetTilesetFileName(Tileset *tileset, const QString &fileName)
-        : mTileset(tileset)
-        , mFileName(fileName)
-    {
-        if (fileName.isEmpty())
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Import Tileset"));
-        else
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Export Tileset"));
-    }
 
-    void undo() { swap(); }
-    void redo() { swap(); }
-
-private:
-    void swap()
-    {
-        QString previousFileName = mTileset->fileName();
-        mTileset->setFileName(mFileName);
-        mFileName = previousFileName;
-    }
-
-    Tileset *mTileset;
-    QString mFileName;
-};
 
 } // anonymous namespace
 
@@ -220,27 +187,6 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                 SLOT(editTileProperties()));
     }
 
-    QIcon exportIcon(QLatin1String(":images/16x16/document-export.png"));
-    QIcon importIcon(QLatin1String(":images/16x16/document-import.png"));
-
-    QAction *exportTileset = menu.addAction(exportIcon,
-                                            tr("&Export Tileset As..."));
-    QAction *importTileset = menu.addAction(importIcon, tr("&Import Tileset"));
-    QAction *tilesetProperties = menu.addAction(propIcon,
-                                                tr("Tile&set Properties..."));
-
-    exportTileset->setEnabled(!isExternal);
-    importTileset->setEnabled(isExternal);
-    tilesetProperties->setEnabled(!isExternal);
-
-    Utils::setThemeIcon(exportTileset, "document-export");
-    Utils::setThemeIcon(importTileset, "document-import");
-    Utils::setThemeIcon(tilesetProperties, "document-properties");
-
-    connect(exportTileset, SIGNAL(triggered()), SLOT(exportTileset()));
-    connect(importTileset, SIGNAL(triggered()), SLOT(importTileset()));
-    connect(tilesetProperties, SIGNAL(triggered()),
-            SLOT(editTilesetProperties()));
 
     menu.addSeparator();
     QAction *toggleGrid = menu.addAction(tr("Show &Grid"));
@@ -264,49 +210,6 @@ void TilesetView::editTileProperties()
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();
-}
-
-void TilesetView::editTilesetProperties()
-{
-    PropertiesDialog propertiesDialog(tr("Tileset"),
-                                      tilesetModel()->tileset(),
-                                      mMapDocument->undoStack(),
-                                      this);
-    propertiesDialog.exec();
-}
-
-void TilesetView::exportTileset()
-{
-    Tileset *tileset = tilesetModel()->tileset();
-
-    const QLatin1String extension(".tsx");
-    QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
-    suggestedFileName += QLatin1Char('/');
-    suggestedFileName += tileset->name();
-    if (!suggestedFileName.endsWith(extension))
-        suggestedFileName.append(extension);
-
-    const QString fileName =
-            QFileDialog::getSaveFileName(this, tr("Export Tileset"),
-                                         suggestedFileName,
-                                         tr("Tiled tileset files (*.tsx)"));
-    if (fileName.isEmpty())
-        return;
-
-    TmxMapWriter writer;
-
-    if (writer.writeTileset(tileset, fileName)) {
-        QUndoCommand *command = new SetTilesetFileName(tileset, fileName);
-        mMapDocument->undoStack()->push(command);
-    }
-}
-
-void TilesetView::importTileset()
-{
-    Tileset *tileset = tilesetModel()->tileset();
-
-    QUndoCommand *command = new SetTilesetFileName(tileset, QString());
-    mMapDocument->undoStack()->push(command);
 }
 
 void TilesetView::toggleGrid()

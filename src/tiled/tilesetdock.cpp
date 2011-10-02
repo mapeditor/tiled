@@ -29,51 +29,146 @@
 #include "mapobject.h"
 #include "movetileset.h"
 #include "objectgroup.h"
+#include "propertiesdialog.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
 #include "tilesetmanager.h"
+#include "tmxmapwriter.h"
+#include "utils.h"
 
+#include <QAction>
 #include <QEvent>
+#include <QComboBox>
 #include <QDropEvent>
+#include <QFileInfo>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLineEdit>
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
 #include <QStackedWidget>
-#include <QTabBar>
+#include <QToolBar>
+#include <QToolButton>
 #include <QUrl>
 #include <QVBoxLayout>
+
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+namespace {
+/**
+ * Used for exporting/importing tilesets.
+ *
+ * @warning Does not work for tilesets that are shared by multiple maps!
+ */
+class UndoSetTilesetFileName : public QUndoCommand
+{
+public:
+    UndoSetTilesetFileName(MapDocument *mapDocument,
+                           Tileset *tileset,
+                           const QString &fileName)
+        : mMapDocument(mapDocument)
+        , mTileset(tileset)
+        , mFileName(fileName)
+    {
+        if (fileName.isEmpty())
+            setText(QCoreApplication::translate("Undo Commands",
+                                                "Import Tileset"));
+        else
+            setText(QCoreApplication::translate("Undo Commands",
+                                                "Export Tileset"));
+    }
+
+    void undo() { swap(); }
+    void redo() { swap(); }
+
+private:
+    void swap()
+    {
+        QString previousFileName = mTileset->fileName();
+        mMapDocument->setTilesetFilename(mTileset, mFileName);
+        mFileName = previousFileName;
+    }
+
+    MapDocument *mMapDocument;
+    Tileset *mTileset;
+    QString mFileName;
+};
+
+} //Anonymous namespace
+
 TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(parent),
     mMapDocument(0),
-    mTabBar(new QTabBar),
+    mDropDown(new QComboBox),
     mViewStack(new QStackedWidget),
+    mToolBar(new QToolBar),
     mCurrentTile(0),
-    mCurrentTiles(0)
+    mCurrentTiles(0),
+    mRenameTileset(new QToolButton)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
     QWidget *w = new QWidget(this);
-    QLayout *l = new QVBoxLayout(w);
+    QVBoxLayout *l = new QVBoxLayout(w);
+    QHBoxLayout *h = new QHBoxLayout();
     l->setSpacing(0);
-    l->setMargin(0);
-    l->addWidget(mTabBar);
+    l->setMargin(5);
+    l->setSpacing(5);
+    l->addLayout(h);
+    h->addWidget(mRenameTileset);
+    h->addWidget(mDropDown);
+    h->setSpacing(0);
     l->addWidget(mViewStack);
+    l->addWidget(mToolBar);
 
-    mTabBar->setTabsClosable(true);
-    mTabBar->setMovable(true);
-    mTabBar->setUsesScrollButtons(true);
+    mRenameTileset->setText(tr("..."));
+    connect(mRenameTileset, SIGNAL(clicked()),
+            SLOT(startNameEdit()));
 
-    connect(mTabBar, SIGNAL(currentChanged(int)),
-            mViewStack, SLOT(setCurrentIndex(int)));
-    connect(mTabBar, SIGNAL(tabCloseRequested(int)),
-            this, SLOT(removeTileset(int)));
-    connect(mTabBar, SIGNAL(tabMoved(int,int)),
-            this, SLOT(moveTileset(int,int)));
+    mImportTileset     = new QAction(this);
+    mExportTileset     = new QAction(this);
+    mPropertiesTileset = new QAction(this);
+    mDeleteTileset     = new QAction(this);
+
+    mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
+    mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
+    mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
+    mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
+
+    Utils::setThemeIcon(mImportTileset, "document-import");
+    Utils::setThemeIcon(mExportTileset, "document-export");
+    Utils::setThemeIcon(mPropertiesTileset, "document-properties");
+    Utils::setThemeIcon(mDeleteTileset, "edit-delete");
+
+    connect(mImportTileset, SIGNAL(triggered()),
+            SLOT(importTileset()));
+    connect(mExportTileset, SIGNAL(triggered()),
+            SLOT(exportTileset()));
+    connect(mPropertiesTileset, SIGNAL(triggered()),
+            SLOT(editTilesetProperties()));
+    connect(mDeleteTileset, SIGNAL(triggered()),
+            SLOT(deleteTileset()));
+
+    mToolBar->setIconSize(QSize(16, 16));
+    mToolBar->addAction(mImportTileset);
+    mToolBar->addAction(mExportTileset);
+    mToolBar->addAction(mPropertiesTileset);
+    mToolBar->addAction(mDeleteTileset);
+
+    mDropDown->setEditable(false);
+    QSortFilterProxyModel *proxy = new QSortFilterProxyModel(mDropDown);
+    proxy->setSourceModel(mDropDown->model());
+    mDropDown->model()->setParent(proxy);
+    mDropDown->setModel(proxy);
+    mDropDown->setInsertPolicy(QComboBox::InsertAtCurrent);
+
+    connect(mDropDown, SIGNAL(currentIndexChanged(int)),
+            SLOT(currentChanged(int)));
     connect(mViewStack, SIGNAL(currentChanged(int)),
             this, SLOT(updateCurrentTiles()));
 
@@ -98,8 +193,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     setCurrentTiles(0);
 
     // Clear previous content
-    while (mTabBar->count())
-        mTabBar->removeTab(0);
+    mDropDown->clear();
     while (mViewStack->currentWidget())
         delete mViewStack->currentWidget();
 
@@ -112,7 +206,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         Map *map = mMapDocument->map();
         foreach (Tileset *tileset, map->tilesets())
-            insertTilesetView(mTabBar->count(), tileset);
+            insertTilesetView(mDropDown->count(), tileset);
 
         connect(mMapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
                 SLOT(insertTilesetView(int,Tileset*)));
@@ -120,6 +214,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 SLOT(tilesetRemoved(Tileset*)));
         connect(mMapDocument, SIGNAL(tilesetMoved(int,int)),
                 SLOT(tilesetMoved(int,int)));
+        connect(mMapDocument, SIGNAL(tilesetFilenameChanged(Tileset*)),
+                SLOT(refreshCurrentView()));
     }
 }
 
@@ -165,8 +261,32 @@ void TilesetDock::insertTilesetView(int index, Tileset *tileset)
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(updateCurrentTiles()));
 
-    mTabBar->insertTab(index, tileset->name());
     mViewStack->insertWidget(index, view);
+    QVariant userdata = QVariant::fromValue(view);
+    mDropDown->addItem(tileset->name(), userdata);
+    mDropDown->model()->sort(0);
+    mDropDown->setCurrentIndex(mDropDown->findData(userdata));
+}
+
+void TilesetDock::refreshCurrentView()
+{
+    currentChanged(mDropDown->currentIndex());
+}
+
+void TilesetDock::currentChanged(int index)
+{
+    bool external = false;
+    TilesetView *view = mDropDown->itemData(index).value<TilesetView *>();
+    if (view) {
+        mViewStack->setCurrentWidget(view);
+        external = view->tilesetModel()->tileset()->isExternal();
+    }
+
+    mRenameTileset->setEnabled(view && !external);
+    mImportTileset->setEnabled(view && external);
+    mExportTileset->setEnabled(view && !external);
+    mPropertiesTileset->setEnabled(view && !external);
+    mDeleteTileset->setEnabled(view);
 }
 
 void TilesetDock::updateCurrentTiles()
@@ -225,10 +345,11 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
 void TilesetDock::tilesetRemoved(Tileset *tileset)
 {
     // Delete the related tileset view
-    for (int i = 0; i < mViewStack->count(); ++i) {
-        TilesetView *view = tilesetViewAt(i);
+    for (int i = 0; i < mDropDown->count(); ++i) {
+        TilesetView *view = mDropDown->itemData(i).value<TilesetView *>();
         if (view->tilesetModel()->tileset() == tileset) {
-            mTabBar->removeTab(i);
+            mDropDown->removeItem(i);
+            mViewStack->removeWidget(view);
             delete view;
             break;
         }
@@ -252,16 +373,22 @@ void TilesetDock::tilesetMoved(int from, int to)
     QWidget *widget = mViewStack->widget(from);
     mViewStack->removeWidget(widget);
     mViewStack->insertWidget(to, widget);
-    mViewStack->setCurrentIndex(mTabBar->currentIndex());
 
-    // Update the titles of the affected tabs
-    const int start = qMin(from, to);
-    const int end = qMax(from, to);
-    for (int i = start; i <= end; ++i) {
-        const Tileset *tileset = tilesetViewAt(i)->tilesetModel()->tileset();
-        if (mTabBar->tabText(i) != tileset->name())
-            mTabBar->setTabText(i, tileset->name());
+    for (int i = 0; i < mDropDown->count(); ++i) {
+        TilesetView *view = mDropDown->itemData(i).value<TilesetView *>();
+        if (widget == view) {
+            mDropDown->setCurrentIndex(i);
+            break;
+        }
     }
+}
+
+/**
+ * Removes the currently view tileset
+ */
+void TilesetDock::deleteTileset()
+{
+    removeTileset(mViewStack->currentIndex());
 }
 
 /**
@@ -318,12 +445,6 @@ void TilesetDock::removeTileset(int index)
         undoStack->endMacro();
 }
 
-void TilesetDock::moveTileset(int from, int to)
-{
-    QUndoCommand *command = new MoveTileset(mMapDocument, from, to);
-    mMapDocument->undoStack()->push(command);
-}
-
 void TilesetDock::setCurrentTiles(TileLayer *tiles)
 {
     if (mCurrentTiles == tiles)
@@ -347,9 +468,87 @@ void TilesetDock::setCurrentTile(Tile *tile)
 void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
+    mRenameTileset->setToolTip(tr("Edit Name"));
+    mImportTileset->setText(tr("&Import Tileset"));
+    mExportTileset->setText(tr("&Export Tileset As..."));
+    mPropertiesTileset->setText(tr("Tile&set Properties"));
+    mDeleteTileset->setText(tr("&Delete Tileset"));
+    mRenameTileset->setToolTip(tr("Edit Name"));
 }
 
 TilesetView *TilesetDock::tilesetViewAt(int index) const
 {
     return static_cast<TilesetView *>(mViewStack->widget(index));
+}
+
+void TilesetDock::editTilesetProperties()
+{
+    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
+
+    PropertiesDialog propertiesDialog(tr("Tileset"),
+                                      view->tilesetModel()->tileset(),
+                                      mMapDocument->undoStack(),
+                                      this);
+    propertiesDialog.exec();
+}
+
+void TilesetDock::exportTileset()
+{
+    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
+    Tileset *tileset = view->tilesetModel()->tileset();
+
+    const QLatin1String extension(".tsx");
+    QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
+    suggestedFileName += QLatin1Char('/');
+    suggestedFileName += tileset->name();
+    if (!suggestedFileName.endsWith(extension))
+        suggestedFileName.append(extension);
+
+    const QString fileName =
+            QFileDialog::getSaveFileName(this, tr("Export Tileset"),
+                                         suggestedFileName,
+                                         tr("Tiled tileset files (*.tsx)"));
+    if (fileName.isEmpty())
+        return;
+
+    TmxMapWriter writer;
+
+    if (writer.writeTileset(tileset, fileName)) {
+        QUndoCommand *command = new UndoSetTilesetFileName(mMapDocument,
+                                                           tileset, fileName);
+        mMapDocument->undoStack()->push(command);
+    }
+}
+
+void TilesetDock::importTileset()
+{
+    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
+    Tileset *tileset = view->tilesetModel()->tileset();
+
+    //The undo command manages the actual property set
+    QUndoCommand *command = new UndoSetTilesetFileName(mMapDocument,
+                                                       tileset, QString());
+    mMapDocument->undoStack()->push(command);
+}
+
+void TilesetDock::startNameEdit()
+{
+    mDropDown->setEditable(true);
+    connect(mDropDown->lineEdit(), SIGNAL(editingFinished()),
+            SLOT(finishNameEdit()));
+    mDropDown->setFocus();
+}
+
+void TilesetDock::finishNameEdit()
+{
+    int index = mDropDown->currentIndex();
+    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
+
+    mDropDown->setItemData(index, QVariant::fromValue(view));
+
+    Tileset *tileset = view->tilesetModel()->tileset();
+    tileset->setName(mDropDown->currentText());
+
+    mDropDown->setEditable(false);
+    mDropDown->model()->sort(0);
 }
