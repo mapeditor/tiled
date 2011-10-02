@@ -110,17 +110,17 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 // Process the Object Layer
                 } else if (objectLayer) {
                     foreach (const MapObject *obj, objectLayer->objects()) {
-                        if (floor(obj->y()) <= y and y <= floor(obj->y() + obj->height())) {
-                            if (floor(obj->x()) <= x and x <= floor(obj->x() + obj->width())) {
+                        if (floor(obj->y()) <= y && y <= floor(obj->y() + obj->height())) {
+                            if (floor(obj->x()) <= x && x <= floor(obj->x() + obj->width())) {
                                 // Check the Object Layer properties if either display or value was missing
-                                if (not obj->property("display").isEmpty()) {
+                                if (!obj->property("display").isEmpty()) {
                                     currentTile["display"] = obj->property("display");
-                                } else if (not objectLayer->property("display").isEmpty()) {
+                                } else if (!objectLayer->property("display").isEmpty()) {
                                     currentTile["display"] = objectLayer->property("display");
                                 }
-                                if (not obj->property("value").isEmpty()) {
+                                if (!obj->property("value").isEmpty()) {
                                     currentTile[layerKey] = obj->property("value");
-                                } else if (not objectLayer->property("value").isEmpty()) {
+                                } else if (!objectLayer->property("value").isEmpty()) {
                                     currentTile[layerKey] = objectLayer->property("value");
                                 }
                             }
@@ -129,7 +129,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 }
             }
             // If the currentTile does not exist in the cache, add it
-            if (not cachedTiles.contains(currentTile["display"])) {
+            if (!cachedTiles.contains(currentTile["display"])) {
                 cachedTiles[currentTile["display"]] = currentTile;
             // Otherwise check that it EXACTLY matches the cached one
             // and if not...
@@ -147,7 +147,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 }
                 // If we haven't found a match then find a random display string
                 // and cache it
-                if (not foundInCache) {
+                if (!foundInCache) {
                     while (true) {
                         // First try to use the ASCII characters
                         if (asciiDisplay < ASCII_MAX) {
@@ -159,7 +159,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                             overflowDisplay++;
                         }
                         currentTile["display"] = displayString;
-                        if (not cachedTiles.contains(displayString)) {
+                        if (!cachedTiles.contains(displayString)) {
                             cachedTiles[displayString] = currentTile;
                             break;
                         } else if (currentTile == cachedTiles[currentTile["display"]]) {
@@ -185,14 +185,14 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); i++) {
         QString displayString = i.key();
         // Only print the emptyTile definition if there were empty tiles
-        if (displayString == "?" and numEmptyTiles == 0) {
+        if (displayString == QLatin1String("?") && numEmptyTiles == 0) {
             continue;
         }
         // Need to escape " and \ characters
-        displayString.replace("\\", "\\\\");
-        displayString.replace("\"", "\\\"");
+        displayString.replace(QLatin1Char('\\'), "\\\\");
+        displayString.replace(QLatin1Char('"'), "\\\"");
         QString args = constructArgs(i.value(), propertyOrder);
-        if (not args.isEmpty()) {
+        if (!args.isEmpty()) {
             args = QString(", %1").arg(args);
         }
         out << QString("defineTile(\"%1\"%2)").arg(displayString, args) << endl;
@@ -202,14 +202,14 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << endl << "-- addSpot section" << endl;
     foreach (Layer *layer, map->layers()) {
         ObjectGroup *objectLayer = layer->asObjectGroup();
-        if (objectLayer and objectLayer->name().startsWith("addspot", Qt::CaseInsensitive)) {
+        if (objectLayer && objectLayer->name().startsWith("addspot", Qt::CaseInsensitive)) {
             foreach (const MapObject *obj, objectLayer->objects()) {
                 QList<QString> propertyOrder;
                 propertyOrder.append("type");
                 propertyOrder.append("subtype");
                 propertyOrder.append("additional");
                 QString args = constructArgs(obj->properties(), propertyOrder);
-                if (not args.isEmpty()) {
+                if (!args.isEmpty()) {
                     args = QString(", %1").arg(args);
                 }
                 for (int y = floor(obj->y()); y <= floor(obj->y() + obj->height()); ++y) {
@@ -225,14 +225,14 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << endl << "-- addZone section" << endl;
     foreach (Layer *layer, map->layers()) {
         ObjectGroup *objectLayer = layer->asObjectGroup();
-        if (objectLayer and objectLayer->name().startsWith("addzone", Qt::CaseInsensitive)) {
+        if (objectLayer && objectLayer->name().startsWith("addzone", Qt::CaseInsensitive)) {
             foreach (MapObject *obj, objectLayer->objects()) {
                 QList<QString> propertyOrder;
                 propertyOrder.append("type");
                 propertyOrder.append("subtype");
                 propertyOrder.append("additional");
                 QString args = constructArgs(obj->properties(), propertyOrder);
-                if (not args.isEmpty()) {
+                if (!args.isEmpty()) {
                     args = QString(", %1").arg(args);
                 }
                 int top_left_x = floor(obj->x());
@@ -305,15 +305,15 @@ QString TenginePlugin::constructArgs(Tiled::Properties props, QList<QString> pro
     for (int i = propOrder.size() - 1; i >= 0; --i) {
         QString currentValue = props[propOrder[i]];
         // Special handling of the "additional" property
-        if ((propOrder[i] == "additional") and currentValue.isEmpty()) {
+        if ((propOrder[i] == "additional") && currentValue.isEmpty()) {
             currentValue = constructAdditionalTable(props, propOrder);
         }
-        if (not argString.isEmpty()) {
+        if (!argString.isEmpty()) {
             if (currentValue.isEmpty()) {
                 currentValue = "nil";
             }
             argString = QString("%1, %2").arg(currentValue, argString);
-        }  else if (not currentValue.isEmpty()) {
+        }  else if (!currentValue.isEmpty()) {
             argString = currentValue;
         }
     }
