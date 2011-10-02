@@ -24,7 +24,6 @@
 
 #include <QMessageBox>
 #include <QSettings>
-#include <QTemporaryFile>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -91,6 +90,9 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
     : QProcess(DocumentManager::instance())
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
+#ifdef Q_WS_MAC
+    , mFile(QLatin1String("tiledXXXXXX.command"))
+#endif
 {
     // Give an error if the command is empty or just whitespace
     if (mFinalCommand.trimmed().isEmpty()) {
@@ -116,21 +118,20 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
         // application to see the output.
 
         // Create and write the command to a .command file
-        QTemporaryFile tmp(QLatin1String("tiledXXXXXX.command"));
-        tmp.setAutoRemove(false);
-        if (!tmp.open()) {
-            handleError(tr("Unable to create/open %1").arg(tmp.fileName()));
+
+        if (!mFile.open()) {
+            handleError(tr("Unable to create/open %1").arg(mFile.fileName()));
             return;
         }
-        tmp.write(mFinalCommand.toStdString().c_str());
-        tmp.close();
+        mFile.write(mFinalCommand.toStdString().c_str());
+        mFile.close();
 
         // Add execute permission to the file
         int chmodRet = QProcess::execute(QString(QLatin1String(
-                                       "chmod +x \"%1\"")).arg(tmp.fileName()));
+                                     "chmod +x \"%1\"")).arg(mFile.fileName()));
         if (chmodRet != 0) {
             handleError(tr("Unable to add executable permissions to %1")
-                                                          .arg(tmp.fileName()));
+                                                        .arg(mFile.fileName()));
             return;
         }
 
@@ -138,16 +139,16 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
         // -W makes it not return immediately
         // -n makes it open a new instance of terminal if it is open already
         mFinalCommand = QString(QLatin1String("open -W -n \"%1\""))
-                                                           .arg(tmp.fileName());
+                                                         .arg(mFile.fileName());
 #endif
     }
-
-    start(mFinalCommand);
 
     connect(this, SIGNAL(error(QProcess::ProcessError)),
             SLOT(handleError(QProcess::ProcessError)));
 
     connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
+
+    start(mFinalCommand);
 }
 
 void CommandProcess::handleError(QProcess::ProcessError error)

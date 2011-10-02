@@ -25,6 +25,10 @@
 #include <QProcess>
 #include <QVariant>
 
+#ifdef Q_WS_MAC
+#include <QTemporaryFile>
+#endif
+
 namespace Tiled {
 namespace Internal {
 
@@ -78,6 +82,10 @@ private:
 
     QString mName;
     QString mFinalCommand;
+
+#ifdef Q_WS_MAC
+    QTemporaryFile mFile;
+#endif
 };
 
 } // namespace Internal
