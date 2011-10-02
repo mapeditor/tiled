@@ -163,6 +163,43 @@ void TileLayer::flip(FlipDirection direction)
     mGrid = newGrid;
 }
 
+void TileLayer::rotate(RotateDirection direction)
+{
+    static char rotateCWMask[8] = { 1, 6, 5, 2, 3, 4, 7, 0 };
+    static char rotateCCWMask[8] = { 7, 0, 3, 4, 5, 2, 1, 6 };
+
+    int newWidth = mHeight;
+    int newHeight = mWidth;
+    QVector<Cell> newGrid(newWidth * newHeight);
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            const Cell &source = cellAt(x, y);
+            Cell dest = source;
+
+            unsigned char mask = (dest.flippedHorizontally << 2) | (dest.flippedVertically << 1) | (dest.rotatedCW << 0);
+
+            if (direction == RotateCW)
+                mask = rotateCWMask[mask];
+            else
+                mask = rotateCCWMask[mask];
+
+            dest.flippedHorizontally = (mask & 4) != 0;
+            dest.flippedVertically = (mask & 2) != 0;
+            dest.rotatedCW = (mask & 1) != 0;
+
+            if (direction == RotateCW)
+                newGrid[x * newWidth + (mHeight-y-1)] = dest;
+            else
+                newGrid[(mWidth-x-1) * newWidth + y] = dest;
+        }
+    }
+
+    mWidth = newWidth;
+    mHeight = newHeight;
+    mGrid = newGrid;
+}
+
 QSet<Tileset*> TileLayer::usedTilesets() const
 {
     QSet<Tileset*> tilesets;

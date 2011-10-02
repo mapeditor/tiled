@@ -177,7 +177,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
                                        const QRectF &exposed) const
 {
-    const int tileWidth = map()->tileWidth();
+    QTransform savedTransform = painter->transform();
+	
+	const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
     const QPointF layerPos(layer->x() * tileWidth,
                            layer->y() * tileHeight);
@@ -202,6 +204,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
         endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
     }
 
+	QTransform baseTransform = painter->transform();
+	
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
             const Cell &cell = layer->cellAt(x, y);
@@ -209,20 +213,20 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                 continue;
 
             const QPixmap &img = cell.tile->image();
-            const int flipX = cell.flippedHorizontally ? -1 : 1;
-            const int flipY = cell.flippedVertically ? -1 : 1;
-            const int offsetX = cell.flippedHorizontally ? img.width() : 0;
-            const int offsetY = cell.flippedVertically ? 0 : img.height();
-
-            painter->scale(flipX, flipY);
-            painter->drawPixmap(x * tileWidth * flipX - offsetX,
-                                (y + 1) * tileHeight * flipY - offsetY,
-                                img);
-            painter->scale(flipX, flipY);
+            
+			QTransform transform(1, 0, 0, 1, x * tileWidth, y * tileHeight);
+			if (cell.flippedHorizontally)
+			  transform = QTransform(-1, 0, 0, 1, img.width(), 0) * transform;
+			if (cell.flippedVertically)
+			  transform = QTransform(1, 0, 0, -1, 0, img.height()) * transform;
+			if (cell.rotatedCW)
+			  transform = QTransform(0, 1, -1, 0, img.height(), 0) * transform;
+			painter->setTransform(transform * baseTransform);
+            painter->drawPixmap(0, 0, img);
         }
     }
 
-    painter->translate(-layerPos);
+    painter->setTransform(savedTransform);
 }
 
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,
