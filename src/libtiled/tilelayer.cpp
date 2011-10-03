@@ -72,13 +72,19 @@ void TileLayer::setCell(int x, int y, const Cell &cell)
     Q_ASSERT(contains(x, y));
 
     if (cell.tile) {
-        if (cell.tile->width() > mMaxTileSize.width()) {
-            mMaxTileSize.setWidth(cell.tile->width());
+        int width = cell.tile->width();
+        int height = cell.tile->height();
+
+        if (cell.flippedDiagonally)
+            std::swap(width, height);
+
+        if (width > mMaxTileSize.width()) {
+            mMaxTileSize.setWidth(width);
             if (mMap)
                 mMap->adjustMaxTileSize(mMaxTileSize);
         }
-        if (cell.tile->height() > mMaxTileSize.height()) {
-            mMaxTileSize.setHeight(cell.tile->height());
+        if (height > mMaxTileSize.height()) {
+            mMaxTileSize.setHeight(height);
             if (mMap)
                 mMap->adjustMaxTileSize(mMaxTileSize);
         }
@@ -165,10 +171,13 @@ void TileLayer::flip(FlipDirection direction)
     mGrid = newGrid;
 }
 
-void TileLayer::rotate(bool clockwise)
+void TileLayer::rotate(RotateDirection direction)
 {
-    static char rotateCWMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
-    static char rotateCCWMask[8] =  { 3, 2, 7, 6, 1, 0, 5, 4 };
+    static const char rotateRightMask[8] = { 5, 4, 1, 0, 7, 6, 3, 2 };
+    static const char rotateLeftMask[8]  = { 3, 2, 7, 6, 1, 0, 5, 4 };
+
+    const char (&rotateMask)[8] =
+            (direction == RotateRight) ? rotateRightMask : rotateLeftMask;
 
     int newWidth = mHeight;
     int newHeight = mWidth;
@@ -179,23 +188,26 @@ void TileLayer::rotate(bool clockwise)
             const Cell &source = cellAt(x, y);
             Cell dest = source;
 
-            unsigned char mask = (dest.flippedHorizontally<<2) | (dest.flippedVertically<<1) | (dest.flippedDiagonally<<0);
+            unsigned char mask =
+                    (dest.flippedHorizontally << 2) |
+                    (dest.flippedVertically << 1) |
+                    (dest.flippedDiagonally << 0);
 
-            if (clockwise)
-                mask = rotateCWMask[mask];
-            else
-                mask = rotateCCWMask[mask];
+            mask = rotateMask[mask];
 
             dest.flippedHorizontally = (mask & 4) != 0;
             dest.flippedVertically = (mask & 2) != 0;
             dest.flippedDiagonally = (mask & 1) != 0;
 
-            if (clockwise)
-                newGrid[x * newWidth + (mHeight-y-1)] = dest;
+            if (direction == RotateRight)
+                newGrid[x * newWidth + (mHeight - y - 1)] = dest;
             else
-                newGrid[(mWidth-x-1) * newWidth + y] = dest;
+                newGrid[(mWidth - x - 1) * newWidth + y] = dest;
         }
     }
+
+    std::swap(mMaxTileSize.rwidth(),
+              mMaxTileSize.rheight());
 
     mWidth = newWidth;
     mHeight = newHeight;

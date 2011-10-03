@@ -362,8 +362,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     new QShortcut(tr("X"), this, SLOT(flipStampHorizontally()));
     new QShortcut(tr("Y"), this, SLOT(flipStampVertically()));
-    new QShortcut(tr("Z"), this, SLOT(rotateStampCW()));
-    new QShortcut(tr("Shift+Z"), this, SLOT(rotateStampCCW()));
+    new QShortcut(tr("Z"), this, SLOT(rotateStampRight()));
+    new QShortcut(tr("Shift+Z"), this, SLOT(rotateStampLeft()));
 
     updateActions();
     readSettings();
@@ -1202,20 +1202,20 @@ void MainWindow::flipStampVertically()
     }
 }
 
-void MainWindow::rotateStampCW()
+void MainWindow::rotateStampLeft()
 {
     if (TileLayer *stamp = mStampBrush->stamp()) {
         stamp = static_cast<TileLayer*>(stamp->clone());
-        stamp->rotate(true);
+        stamp->rotate(TileLayer::RotateLeft);
         setStampBrush(stamp);
     }
 }
 
-void MainWindow::rotateStampCCW()
+void MainWindow::rotateStampRight()
 {
     if (TileLayer *stamp = mStampBrush->stamp()) {
         stamp = static_cast<TileLayer*>(stamp->clone());
-        stamp->rotate(false);
+        stamp->rotate(TileLayer::RotateRight);
         setStampBrush(stamp);
     }
 }

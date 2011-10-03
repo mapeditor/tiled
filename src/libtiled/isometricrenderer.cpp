@@ -215,24 +215,37 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                 if (!cell.isEmpty()) {
                     const QPixmap &img = cell.tile->image();
 
-                    float m11 = 1, m12 = 0, m21 = 0, m22 = 1;
-                    float dx = x, dy = y - img.height();
+                    qreal m11 = 1;      // Horizontal scaling factor
+                    qreal m12 = 0;      // Vertical shearing factor
+                    qreal m21 = 0;      // Horizontal shearing factor
+                    qreal m22 = 1;      // Vertical scaling factor
+                    qreal dx = x;
+                    qreal dy = y - img.height();
+
                     if (cell.flippedDiagonally) {
-                        std::swap(m11, m12);
-                        std::swap(m21, m22);
+                        // Use shearing to swap the X/Y axis
+                        m11 = 0;
+                        m12 = 1;
+                        m21 = 1;
+                        m22 = 0;
+
+                        // Compensate for the swap of image dimensions
+                        dy += img.height() - img.width();
                     }
                     if (cell.flippedHorizontally) {
                         m11 = -m11;
                         m21 = -m21;
-                        dx += img.width();
+                        dx += cell.flippedDiagonally ? img.height()
+                                                     : img.width();
                     }
                     if (cell.flippedVertically) {
                         m12 = -m12;
                         m22 = -m22;
-                        dy += img.height();
+                        dy += cell.flippedDiagonally ? img.width()
+                                                     : img.height();
                     }
 
-                    QTransform transform(m11, m12, m21, m22, dx, dy);
+                    const QTransform transform(m11, m12, m21, m22, dx, dy);
                     painter->setTransform(transform * baseTransform);
 
                     painter->drawPixmap(0, 0, img);

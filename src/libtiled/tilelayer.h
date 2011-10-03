@@ -102,6 +102,11 @@ public:
         FlipDiagonally
     };
 
+    enum RotateDirection {
+        RotateLeft,
+        RotateRight
+    };
+
     /**
      * Constructor.
      */
@@ -177,11 +182,11 @@ public:
     void flip(FlipDirection direction);
 
     /**
-     * Rotate this tile layer by 90 degrees clockwise or counter-clockwise.  
-     * The tile positions are rotated within the layer, and the tiles 
-     * themselves are rotated.  The dimensions of the tile layer are swapped.
+     * Rotate this tile layer by 90 degrees left or right. The tile positions
+     * are rotated within the layer, and the tiles themselves are rotated. The
+     * dimensions of the tile layer are swapped.
      */
-    void rotate(bool clockwise);
+    void rotate(RotateDirection direction);
 
     /**
      * Computes and returns the set of tilesets used by this tile layer.
