@@ -529,3 +529,9 @@ void MapDocument::setTilesetFilename(Tileset *tileset,
     tileset->setFileName(name);
     emit tilesetFilenameChanged(tileset);
 }
+
+void MapDocument::setTilesetName(Tileset *tileset, const QString &name)
+{
+    tileset->setName(name);
+    emit tilesetNameChanged(tileset);
+}

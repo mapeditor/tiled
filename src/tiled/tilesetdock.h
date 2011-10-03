@@ -23,6 +23,7 @@
 #define TILESETDOCK_H
 
 #include <QDockWidget>
+#include <QMap>
 
 class QStackedWidget;
 class QComboBox;
@@ -97,6 +98,7 @@ private slots:
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
+    void tilesetNameChanged(Tileset *tileset);
 
     void removeTileset(int index);
 
@@ -110,6 +112,8 @@ private slots:
     void startNameEdit();
     void finishNameEdit();
     void refreshCurrentView();
+
+    void documentCloseRequested(int index);
 
 private:
     void setCurrentTile(Tile *tile);
@@ -129,6 +133,10 @@ private:
     QAction *mExportTileset;
     QAction *mPropertiesTileset;
     QAction *mDeleteTileset;
+
+    QMap<MapDocument *, QString> mCurrentTilesets;
+
+    QString mOldName;
 };
 
 } // namespace Internal
