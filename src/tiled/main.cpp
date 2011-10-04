@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("Tiled"));
 #ifdef BUILD_INFO_VERSION
-    a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION));
+    a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
 #else
     a.setApplicationVersion(QLatin1String("0.7.1"));
 #endif
