@@ -57,22 +57,22 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
-
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 namespace {
+
 /**
  * Used for exporting/importing tilesets.
  *
  * @warning Does not work for tilesets that are shared by multiple maps!
  */
-class UndoSetTilesetFileName : public QUndoCommand
+class SetTilesetFileName : public QUndoCommand
 {
 public:
-    UndoSetTilesetFileName(MapDocument *mapDocument,
-                           Tileset *tileset,
-                           const QString &fileName)
+    SetTilesetFileName(MapDocument *mapDocument,
+                       Tileset *tileset,
+                       const QString &fileName)
         : mMapDocument(mapDocument)
         , mTileset(tileset)
         , mFileName(fileName)
@@ -92,7 +92,7 @@ private:
     void swap()
     {
         QString previousFileName = mTileset->fileName();
-        mMapDocument->setTilesetFilename(mTileset, mFileName);
+        mMapDocument->setTilesetFileName(mTileset, mFileName);
         mFileName = previousFileName;
     }
 
@@ -101,17 +101,19 @@ private:
     QString mFileName;
 };
 
-class UndoTilesetName : public QUndoCommand
+class RenameTileset : public QUndoCommand
 {
 public:
-    UndoTilesetName(MapDocument *mapDocument,
-                    Tileset *tileset,
-                    const QString &old_name,
-                    const QString &new_name)
-        : mMapDocument(mapDocument)
+    RenameTileset(MapDocument *mapDocument,
+                  Tileset *tileset,
+                  const QString &oldName,
+                  const QString &newName)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                                   "Change Tileset name"))
+        , mMapDocument(mapDocument)
         , mTileset(tileset)
-        , mOldName(old_name)
-        , mNewName(new_name)
+        , mOldName(oldName)
+        , mNewName(newName)
     {
         redo();
     }
@@ -133,7 +135,7 @@ private:
     QString mNewName;
 };
 
-} //Anonymous namespace
+} // anonymous namespace
 
 TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(parent),
@@ -152,19 +154,20 @@ TilesetDock::TilesetDock(QWidget *parent):
     setObjectName(QLatin1String("TilesetDock"));
 
     QWidget *w = new QWidget(this);
-    QVBoxLayout *l = new QVBoxLayout(w);
-    QHBoxLayout *h = new QHBoxLayout();
-    l->setSpacing(0);
-    l->setMargin(5);
-    l->setSpacing(5);
-    l->addLayout(h);
-    h->addWidget(mRenameTileset);
-    h->addWidget(mDropDown);
-    h->setSpacing(0);
-    l->addWidget(mViewStack);
-    l->addWidget(mToolBar);
 
-    mRenameTileset->setText(tr("..."));
+    QHBoxLayout *horizontal = new QHBoxLayout();
+    horizontal->setSpacing(0);
+    horizontal->addWidget(mDropDown);
+    horizontal->addWidget(mRenameTileset);
+
+    QVBoxLayout *vertical = new QVBoxLayout(w);
+    vertical->setSpacing(0);
+    vertical->setMargin(5);
+    vertical->addLayout(horizontal);
+    vertical->addWidget(mViewStack);
+    vertical->addWidget(mToolBar);
+
+    mRenameTileset->setText(tr("Rename"));
     connect(mRenameTileset, SIGNAL(clicked()),
             SLOT(startNameEdit()));
 
@@ -255,7 +258,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 SLOT(tilesetMoved(int,int)));
         connect(mMapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
                 SLOT(tilesetNameChanged(Tileset*)));
-        connect(mMapDocument, SIGNAL(tilesetFilenameChanged(Tileset*)),
+        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
                 SLOT(refreshCurrentView()));
 
         QString cacheName = mCurrentTilesets.take(mMapDocument);
@@ -514,12 +517,18 @@ void TilesetDock::setCurrentTile(Tile *tile)
 void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
-    mRenameTileset->setToolTip(tr("Edit Name"));
     mImportTileset->setText(tr("&Import Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
     mPropertiesTileset->setText(tr("Tile&set Properties"));
-    mDeleteTileset->setText(tr("&Delete Tileset"));
-    mRenameTileset->setToolTip(tr("Edit Name"));
+    mDeleteTileset->setText(tr("&Remove Tileset"));
+}
+
+Tileset *TilesetDock::currentTileset() const
+{
+    if (QWidget *widget = mViewStack->currentWidget())
+        return static_cast<TilesetView *>(widget)->tilesetModel()->tileset();
+
+    return 0;
 }
 
 TilesetView *TilesetDock::tilesetViewAt(int index) const
@@ -529,10 +538,8 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
 
 void TilesetDock::editTilesetProperties()
 {
-    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
-
     PropertiesDialog propertiesDialog(tr("Tileset"),
-                                      view->tilesetModel()->tileset(),
+                                      currentTileset(),
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();
@@ -540,8 +547,7 @@ void TilesetDock::editTilesetProperties()
 
 void TilesetDock::exportTileset()
 {
-    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
-    Tileset *tileset = view->tilesetModel()->tileset();
+    Tileset *tileset = currentTileset();
 
     const QLatin1String extension(".tsx");
     QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
@@ -560,20 +566,17 @@ void TilesetDock::exportTileset()
     TmxMapWriter writer;
 
     if (writer.writeTileset(tileset, fileName)) {
-        QUndoCommand *command = new UndoSetTilesetFileName(mMapDocument,
-                                                           tileset, fileName);
+        QUndoCommand *command = new SetTilesetFileName(mMapDocument,
+                                                       tileset, fileName);
         mMapDocument->undoStack()->push(command);
     }
 }
 
 void TilesetDock::importTileset()
 {
-    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
-    Tileset *tileset = view->tilesetModel()->tileset();
-
-    //The undo command manages the actual property set
-    QUndoCommand *command = new UndoSetTilesetFileName(mMapDocument,
-                                                       tileset, QString());
+    Tileset *tileset = currentTileset();
+    QUndoCommand *command = new SetTilesetFileName(mMapDocument,
+                                                   tileset, QString());
     mMapDocument->undoStack()->push(command);
 }
 
@@ -590,28 +593,24 @@ void TilesetDock::finishNameEdit()
 {
     mDropDown->setEditable(false);
 
-    if (mOldName == mDropDown->currentText()) return;
+    if (mOldName == mDropDown->currentText())
+        return;
 
     int index = mDropDown->currentIndex();
     TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
 
     mDropDown->setItemData(index, QVariant::fromValue(view));
 
-    QUndoStack *undo = mMapDocument->undoStack();
-    undo->beginMacro(tr("Change Tileset name"));
-
-    UndoTilesetName *name = new UndoTilesetName(mMapDocument,
-                                                view->tilesetModel()->tileset(),
-                                                mOldName,
-                                                mDropDown->currentText());
-    undo->push(name);
-    undo->endMacro();
+    RenameTileset *name = new RenameTileset(mMapDocument,
+                                            view->tilesetModel()->tileset(),
+                                            mOldName,
+                                            mDropDown->currentText());
+    mMapDocument->undoStack()->push(name);
 }
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)
 {
-
-    for (int i=0; i < mDropDown->count(); i++)
+    for (int i = 0; i < mDropDown->count(); i++)
     {
         TilesetView *view = mDropDown->itemData(i).value<TilesetView *>();
         if (tileset == view->tilesetModel()->tileset())
@@ -625,6 +624,6 @@ void TilesetDock::tilesetNameChanged(Tileset *tileset)
 
 void TilesetDock::documentCloseRequested(int index)
 {
-    DocumentManager *docMan = DocumentManager::instance();
-    mCurrentTilesets.remove(docMan->documents().at(index));
+    DocumentManager *documentManager = DocumentManager::instance();
+    mCurrentTilesets.remove(documentManager->documents().at(index));
 }

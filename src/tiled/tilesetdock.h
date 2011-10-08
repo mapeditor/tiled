@@ -31,8 +31,6 @@ class QToolBar;
 class QAction;
 class QToolButton;
 
-class SetTilesetFileName;
-
 namespace Tiled {
 
 class Tile;
@@ -119,6 +117,8 @@ private:
     void setCurrentTile(Tile *tile);
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
+
+    Tileset *currentTileset() const;
     TilesetView *tilesetViewAt(int index) const;
 
     MapDocument *mMapDocument;

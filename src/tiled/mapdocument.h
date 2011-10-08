@@ -147,8 +147,8 @@ public:
     void insertTileset(int index, Tileset *tileset);
     void removeTilesetAt(int index);
     void moveTileset(int from, int to);
-    void setTilesetFilename(Tileset *tileset, const QString& name);
-    void setTilesetName(Tileset *tileset, const QString& name);
+    void setTilesetFileName(Tileset *tileset, const QString &fileName);
+    void setTilesetName(Tileset *tileset, const QString &name);
 
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
@@ -282,7 +282,7 @@ signals:
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
-    void tilesetFilenameChanged(Tileset *tileset);
+    void tilesetFileNameChanged(Tileset *tileset);
     void tilesetNameChanged(Tileset *tileset);
 
     void objectsAdded(const QList<MapObject*> &objects);

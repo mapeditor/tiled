@@ -523,11 +523,11 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
         emit selectedObjectsChanged();
 }
 
-void MapDocument::setTilesetFilename(Tileset *tileset,
-                                     const QString &name)
+void MapDocument::setTilesetFileName(Tileset *tileset,
+                                     const QString &fileName)
 {
-    tileset->setFileName(name);
-    emit tilesetFilenameChanged(tileset);
+    tileset->setFileName(fileName);
+    emit tilesetFileNameChanged(tileset);
 }
 
 void MapDocument::setTilesetName(Tileset *tileset, const QString &name)
