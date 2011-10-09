@@ -1,6 +1,6 @@
 /*
  * mapscene.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
@@ -48,6 +48,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static const qreal darkeningFactor = 0.6;
+static const qreal opacityFactor = 0.4;
+
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(0),
@@ -55,7 +58,8 @@ MapScene::MapScene(QObject *parent):
     mActiveTool(0),
     mGridVisible(true),
     mUnderMouse(false),
-    mCurrentModifiers(Qt::NoModifier)
+    mCurrentModifiers(Qt::NoModifier),
+    mDarkRectangle(new QGraphicsRectItem)
 {
     setBackgroundBrush(Qt::darkGray);
 
@@ -65,6 +69,15 @@ MapScene::MapScene(QObject *parent):
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
+    connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
+            SLOT(setHighlightCurrentLayer(bool)));
+
+    mDarkRectangle->setPen(Qt::NoPen);
+    mDarkRectangle->setBrush(Qt::black);
+    mDarkRectangle->setOpacity(darkeningFactor);
+    addItem(mDarkRectangle);
+
+    mHighlightCurrentLayer = prefs->highlightCurrentLayer();
 
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
@@ -131,7 +144,9 @@ void MapScene::refreshScene()
     mLayerItems.clear();
     mObjectItems.clear();
 
+    removeItem(mDarkRectangle);
     clear();
+    addItem(mDarkRectangle);
 
     if (!mMapDocument) {
         setSceneRect(QRectF());
@@ -140,6 +155,7 @@ void MapScene::refreshScene()
 
     const QSize mapSize = mMapDocument->renderer()->mapSize();
     setSceneRect(0, 0, mapSize.width(), mapSize.height());
+    mDarkRectangle->setRect(0, 0, mapSize.width(), mapSize.height());
 
     const Map *map = mMapDocument->map();
     mLayerItems.resize(map->layerCount());
@@ -156,6 +172,8 @@ void MapScene::refreshScene()
     TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
     selectionItem->setZValue(10000 - 1);
     addItem(selectionItem);
+
+    updateCurrentLayerHighlight();
 }
 
 QGraphicsItem *MapScene::createLayerItem(Layer *layer)
@@ -178,6 +196,37 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 
     layerItem->setVisible(layer->isVisible());
     return layerItem;
+}
+
+void MapScene::updateCurrentLayerHighlight()
+{
+    if (!mMapDocument)
+        return;
+
+    const int currentLayerIndex = mMapDocument->currentLayerIndex();
+
+    if (!mHighlightCurrentLayer || currentLayerIndex == -1) {
+        mDarkRectangle->setVisible(false);
+
+        // Restore opacity for all layers
+        for (int i = 0; i < mLayerItems.size(); ++i) {
+            const Layer *layer = mMapDocument->map()->layerAt(i);
+            mLayerItems.at(i)->setOpacity(layer->opacity());
+        }
+
+        return;
+    }
+
+    // Darken layers below the current layer
+    mDarkRectangle->setZValue(currentLayerIndex - 0.5);
+    mDarkRectangle->setVisible(true);
+
+    // Set layers above the current layer to half opacity
+    for (int i = 1; i < mLayerItems.size(); ++i) {
+        const Layer *layer = mMapDocument->map()->layerAt(i);
+        const qreal multiplier = (currentLayerIndex < i) ? opacityFactor : 1;
+        mLayerItems.at(i)->setOpacity(layer->opacity() * multiplier);
+    }
 }
 
 void MapScene::repaintRegion(const QRegion &region)
@@ -221,6 +270,7 @@ void MapScene::disableSelectedTool()
 
 void MapScene::currentLayerIndexChanged()
 {
+    updateCurrentLayerHighlight();
 }
 
 /**
@@ -230,6 +280,7 @@ void MapScene::mapChanged()
 {
     const QSize mapSize = mMapDocument->renderer()->mapSize();
     setSceneRect(0, 0, mapSize.width(), mapSize.height());
+    mDarkRectangle->setRect(0, 0, mapSize.width(), mapSize.height());
 
     foreach (QGraphicsItem *item, mLayerItems) {
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
@@ -274,7 +325,12 @@ void MapScene::layerChanged(int index)
     QGraphicsItem *layerItem = mLayerItems.at(index);
 
     layerItem->setVisible(layer->isVisible());
-    layerItem->setOpacity(layer->opacity());
+
+    qreal multiplier = 1;
+    if (mHighlightCurrentLayer && mMapDocument->currentLayerIndex() < index)
+        multiplier = opacityFactor;
+
+    layerItem->setOpacity(layer->opacity() * multiplier);
 }
 
 /**
@@ -365,6 +421,15 @@ void MapScene::setGridVisible(bool visible)
 
     mGridVisible = visible;
     update();
+}
+
+void MapScene::setHighlightCurrentLayer(bool highlightCurrentLayer)
+{
+    if (mHighlightCurrentLayer == highlightCurrentLayer)
+        return;
+
+    mHighlightCurrentLayer = highlightCurrentLayer;
+    updateCurrentLayerHighlight();
 }
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)

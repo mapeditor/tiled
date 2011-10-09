@@ -1,6 +1,6 @@
 /*
  * preferences.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -64,6 +64,8 @@ Preferences::Preferences()
     mShowGrid = mSettings->value(QLatin1String("ShowGrid"), false).toBool();
     mSnapToGrid = mSettings->value(QLatin1String("SnapToGrid"),
                                    false).toBool();
+    mHighlightCurrentLayer = mSettings->value(QLatin1String("HighlightCurrentLayer"),
+                                              true).toBool();
     mShowTilesetGrid = mSettings->value(QLatin1String("ShowTilesetGrid"),
                                         true).toBool();
     mLanguage = mSettings->value(QLatin1String("Language"),
@@ -110,6 +112,17 @@ void Preferences::setSnapToGrid(bool snapToGrid)
     mSnapToGrid = snapToGrid;
     mSettings->setValue(QLatin1String("Interface/SnapToGrid"), mSnapToGrid);
     emit snapToGridChanged(mSnapToGrid);
+}
+
+void Preferences::setHighlightCurrentLayer(bool highlight)
+{
+    if (mHighlightCurrentLayer == highlight)
+        return;
+
+    mHighlightCurrentLayer = highlight;
+    mSettings->setValue(QLatin1String("Interface/HighlightCurrentLayer"),
+                        mHighlightCurrentLayer);
+    emit highlightCurrentLayerChanged(mHighlightCurrentLayer);
 }
 
 void Preferences::setShowTilesetGrid(bool showTilesetGrid)

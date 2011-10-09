@@ -198,7 +198,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     toggleGrid->setCheckable(true);
     toggleGrid->setChecked(mDrawGrid);
 
-    connect(toggleGrid, SIGNAL(toggled(bool)), SLOT(setDrawGrid(bool)));
+    Preferences *prefs = Preferences::instance();
+    connect(toggleGrid, SIGNAL(toggled(bool)),
+            prefs, SLOT(setShowTilesetGrid(bool)));
 
     menu.exec(event->globalPos());
 }
@@ -220,7 +222,6 @@ void TilesetView::editTileProperties()
 void TilesetView::setDrawGrid(bool drawGrid)
 {
     mDrawGrid = drawGrid;
-    Preferences::instance()->setShowTilesetGrid(mDrawGrid);
     tilesetModel()->tilesetChanged();
 }
 

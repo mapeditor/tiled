@@ -1,6 +1,6 @@
 /*
  * preferences.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -45,9 +45,8 @@ public:
 
     bool showGrid() const { return mShowGrid; }
     bool snapToGrid() const { return mSnapToGrid; }
-
+    bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
-    void setShowTilesetGrid(bool showTilesetGrid);
 
     MapWriter::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
@@ -83,11 +82,13 @@ public:
 public slots:
     void setShowGrid(bool showGrid);
     void setSnapToGrid(bool snapToGrid);
+    void setHighlightCurrentLayer(bool highlight);
+    void setShowTilesetGrid(bool showTilesetGrid);
 
 signals:
     void showGridChanged(bool showGrid);
     void snapToGridChanged(bool snapToGrid);
-
+    void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
 
     void useOpenGLChanged(bool useOpenGL);
@@ -102,7 +103,7 @@ private:
 
     bool mShowGrid;
     bool mSnapToGrid;
-
+    bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
 
     MapWriter::LayerDataFormat mLayerDataFormat;

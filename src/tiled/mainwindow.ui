@@ -99,6 +99,7 @@
     </property>
     <addaction name="actionShowGrid"/>
     <addaction name="actionSnapToGrid"/>
+    <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -390,6 +391,17 @@
    </property>
    <property name="iconText">
     <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionHighlightCurrentLayer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Highlight Current Layer</string>
+   </property>
+   <property name="shortcut">
+    <string>H</string>
    </property>
   </action>
  </widget>
