@@ -228,7 +228,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             qreal dx = offset.x() + x * tileWidth;
             qreal dy = offset.y() + (y + 1) * tileHeight - img.height();
 
-            if (cell.flippedDiagonally) {
+            if (cell.flippedAntiDiagonally) {
                 // Use shearing to swap the X/Y axis
                 m11 = 0;
                 m12 = 1;
@@ -241,12 +241,12 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.flippedHorizontally) {
                 m11 = -m11;
                 m21 = -m21;    
-                dx += cell.flippedDiagonally ? img.height() : img.width();
+                dx += cell.flippedAntiDiagonally ? img.height() : img.width();
             }
             if (cell.flippedVertically) {
                 m12 = -m12;
                 m22 = -m22;
-                dy += cell.flippedDiagonally ? img.width() : img.height();
+                dy += cell.flippedAntiDiagonally ? img.width() : img.height();
             }
 
             const QTransform transform(m11, m12, m21, m22, dx, dy);

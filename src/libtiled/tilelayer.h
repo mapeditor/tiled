@@ -53,14 +53,14 @@ public:
         tile(0),
         flippedHorizontally(false),
         flippedVertically(false),
-        flippedDiagonally(false)
+        flippedAntiDiagonally(false)
     {}
 
     explicit Cell(Tile *tile) :
         tile(tile),
         flippedHorizontally(false),
         flippedVertically(false),
-        flippedDiagonally(false)
+        flippedAntiDiagonally(false)
     {}
 
     bool isEmpty() const { return tile == 0; }
@@ -70,7 +70,7 @@ public:
         return tile == other.tile
                 && flippedHorizontally == other.flippedHorizontally
                 && flippedVertically == other.flippedVertically
-                && flippedDiagonally == other.flippedDiagonally;
+                && flippedAntiDiagonally == other.flippedAntiDiagonally;
     }
 
     bool operator != (const Cell &other) const
@@ -78,13 +78,13 @@ public:
         return tile != other.tile
                 || flippedHorizontally != other.flippedHorizontally
                 || flippedVertically != other.flippedVertically
-                || flippedDiagonally != other.flippedDiagonally;
+                || flippedAntiDiagonally != other.flippedAntiDiagonally;
     }
 
     Tile *tile;
     bool flippedHorizontally;
     bool flippedVertically;
-    bool flippedDiagonally;
+    bool flippedAntiDiagonally;
 };
 
 /**

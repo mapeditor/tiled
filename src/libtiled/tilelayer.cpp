@@ -91,7 +91,7 @@ void TileLayer::setCell(int x, int y, const Cell &cell)
         int width = cell.tile->width();
         int height = cell.tile->height();
 
-        if (cell.flippedDiagonally)
+        if (cell.flippedAntiDiagonally)
             std::swap(width, height);
 
         const QPoint offset = cell.tile->tileset()->tileOffset();
@@ -208,13 +208,13 @@ void TileLayer::rotate(RotateDirection direction)
             unsigned char mask =
                     (dest.flippedHorizontally << 2) |
                     (dest.flippedVertically << 1) |
-                    (dest.flippedDiagonally << 0);
+                    (dest.flippedAntiDiagonally << 0);
 
             mask = rotateMask[mask];
 
             dest.flippedHorizontally = (mask & 4) != 0;
             dest.flippedVertically = (mask & 2) != 0;
-            dest.flippedDiagonally = (mask & 1) != 0;
+            dest.flippedAntiDiagonally = (mask & 1) != 0;
 
             if (direction == RotateRight)
                 newGrid[x * newWidth + (mHeight - y - 1)] = dest;
