@@ -64,6 +64,8 @@ Preferences::Preferences()
     mShowGrid = mSettings->value(QLatin1String("ShowGrid"), false).toBool();
     mSnapToGrid = mSettings->value(QLatin1String("SnapToGrid"),
                                    false).toBool();
+    mShowTilesetGrid = mSettings->value(QLatin1String("ShowTilesetGrid"),
+                                        true).toBool();
     mLanguage = mSettings->value(QLatin1String("Language"),
                                  QString()).toString();
     mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
@@ -108,6 +110,17 @@ void Preferences::setSnapToGrid(bool snapToGrid)
     mSnapToGrid = snapToGrid;
     mSettings->setValue(QLatin1String("Interface/SnapToGrid"), mSnapToGrid);
     emit snapToGridChanged(mSnapToGrid);
+}
+
+void Preferences::setShowTilesetGrid(bool showTilesetGrid)
+{
+    if (mShowTilesetGrid == showTilesetGrid)
+        return;
+
+    mShowTilesetGrid = showTilesetGrid;
+    mSettings->setValue(QLatin1String("Interface/ShowTilesetGrid"),
+                        mShowTilesetGrid);
+    emit showTilesetGridChanged(mShowTilesetGrid);
 }
 
 MapWriter::LayerDataFormat Preferences::layerDataFormat() const

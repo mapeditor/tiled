@@ -46,6 +46,9 @@ public:
     bool showGrid() const { return mShowGrid; }
     bool snapToGrid() const { return mSnapToGrid; }
 
+    bool showTilesetGrid() const { return mShowTilesetGrid; }
+    void setShowTilesetGrid(bool showTilesetGrid);
+
     MapWriter::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
 
@@ -85,6 +88,8 @@ signals:
     void showGridChanged(bool showGrid);
     void snapToGridChanged(bool snapToGrid);
 
+    void showTilesetGridChanged(bool showTilesetGrid);
+
     void useOpenGLChanged(bool useOpenGL);
 
     void objectTypesChanged();
@@ -97,6 +102,8 @@ private:
 
     bool mShowGrid;
     bool mSnapToGrid;
+
+    bool mShowTilesetGrid;
 
     MapWriter::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;

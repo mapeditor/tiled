@@ -22,6 +22,7 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "preferences.h"
 #include "propertiesdialog.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
@@ -109,7 +110,6 @@ TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
     : QTableView(parent)
     , mZoomable(new Zoomable(this))
     , mMapDocument(mapDocument)
-    , mDrawGrid(true)
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -130,7 +130,12 @@ TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
     // for 'right to left' languages.
     setLayoutDirection(Qt::LeftToRight);
     
+    Preferences *prefs = Preferences::instance();
+    mDrawGrid = prefs->showTilesetGrid();
+
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
+    connect(prefs, SIGNAL(showTilesetGridChanged(bool)),
+            SLOT(setDrawGrid(bool)));
 }
 
 QSize TilesetView::sizeHint() const
@@ -193,7 +198,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     toggleGrid->setCheckable(true);
     toggleGrid->setChecked(mDrawGrid);
 
-    connect(toggleGrid, SIGNAL(toggled(bool)), SLOT(toggleGrid()));
+    connect(toggleGrid, SIGNAL(toggled(bool)), SLOT(setDrawGrid(bool)));
 
     menu.exec(event->globalPos());
 }
@@ -212,9 +217,10 @@ void TilesetView::editTileProperties()
     propertiesDialog.exec();
 }
 
-void TilesetView::toggleGrid()
+void TilesetView::setDrawGrid(bool drawGrid)
 {
-    mDrawGrid = !mDrawGrid;
+    mDrawGrid = drawGrid;
+    Preferences::instance()->setShowTilesetGrid(mDrawGrid);
     tilesetModel()->tilesetChanged();
 }
 

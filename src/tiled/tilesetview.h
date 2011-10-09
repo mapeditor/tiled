@@ -59,7 +59,7 @@ protected:
 
 private slots:
     void editTileProperties();
-    void toggleGrid();
+    void setDrawGrid(bool drawGrid);
 
     void adjustScale();
 
