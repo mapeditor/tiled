@@ -76,13 +76,6 @@ public:
     bool isGridVisible() const { return mGridVisible; }
 
     /**
-     * Returns the selected object group item, or 0 if no object group is
-     * selected.
-     */
-    ObjectGroupItem *selectedObjectGroupItem() const
-    { return mSelectedObjectGroupItem; }
-
-    /**
      * Returns the set of selected map object items.
      */
     const QSet<MapObjectItem*> &selectedObjectItems() const
@@ -168,12 +161,9 @@ private slots:
 private:
     QGraphicsItem *createLayerItem(Layer *layer);
 
-    void updateInteractionMode();
-
     bool eventFilter(QObject *object, QEvent *event);
 
     MapDocument *mMapDocument;
-    ObjectGroupItem *mSelectedObjectGroupItem;
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;

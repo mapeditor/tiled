@@ -51,7 +51,6 @@ using namespace Tiled::Internal;
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
     mMapDocument(0),
-    mSelectedObjectGroupItem(0),
     mSelectedTool(0),
     mActiveTool(0),
     mGridVisible(true),
@@ -129,7 +128,6 @@ void MapScene::setSelectedTool(AbstractTool *tool)
 
 void MapScene::refreshScene()
 {
-    mSelectedObjectGroupItem = 0;
     mLayerItems.clear();
     mObjectItems.clear();
 
@@ -192,27 +190,6 @@ void MapScene::repaintRegion(const QRegion &region)
                .adjusted(0, -extra.height(), extra.width(), 0));
 }
 
-/**
- * Adapts the scene to the currently selected layer. If an object group is
- * selected, it makes sure the objects in the group are movable.
- */
-void MapScene::updateInteractionMode()
-{
-    ObjectGroupItem *ogItem = 0;
-
-    const int index = mMapDocument->currentLayerIndex();
-    if (index != -1) {
-        Layer *layer = mMapDocument->map()->layerAt(index);
-        if (layer->isVisible() && dynamic_cast<ObjectGroup*>(layer))
-            ogItem = static_cast<ObjectGroupItem*>(mLayerItems.at(index));
-    }
-
-    if (mSelectedObjectGroupItem == ogItem)
-        return;
-
-    mSelectedObjectGroupItem = ogItem;
-}
-
 void MapScene::enableSelectedTool()
 {
     if (!mSelectedTool || !mMapDocument)
@@ -244,7 +221,6 @@ void MapScene::disableSelectedTool()
 
 void MapScene::currentLayerIndexChanged()
 {
-    updateInteractionMode();
 }
 
 /**
@@ -284,11 +260,7 @@ void MapScene::layerAdded(int index)
 
 void MapScene::layerRemoved(int index)
 {
-    QGraphicsItem *layerItem = mLayerItems.at(index);
-    if (layerItem == mSelectedObjectGroupItem)
-        mSelectedObjectGroupItem = 0;
-
-    delete layerItem;
+    delete mLayerItems.at(index);
     mLayerItems.remove(index);
 }
 
@@ -301,12 +273,8 @@ void MapScene::layerChanged(int index)
     const Layer *layer = mMapDocument->map()->layerAt(index);
     QGraphicsItem *layerItem = mLayerItems.at(index);
 
-    if (layer->isVisible() != layerItem->isVisible()) {
-        layerItem->setVisible(layer->isVisible());
-        updateInteractionMode();
-    }
-    if (layer->opacity() != layerItem->opacity())
-        layerItem->setOpacity(layer->opacity());
+    layerItem->setVisible(layer->isVisible());
+    layerItem->setOpacity(layer->opacity());
 }
 
 /**
