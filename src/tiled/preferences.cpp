@@ -65,7 +65,7 @@ Preferences::Preferences()
     mSnapToGrid = mSettings->value(QLatin1String("SnapToGrid"),
                                    false).toBool();
     mHighlightCurrentLayer = mSettings->value(QLatin1String("HighlightCurrentLayer"),
-                                              true).toBool();
+                                              false).toBool();
     mShowTilesetGrid = mSettings->value(QLatin1String("ShowTilesetGrid"),
                                         true).toBool();
     mLanguage = mSettings->value(QLatin1String("Language"),
