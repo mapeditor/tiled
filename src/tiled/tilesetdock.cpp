@@ -156,12 +156,12 @@ TilesetDock::TilesetDock(QWidget *parent):
     QWidget *w = new QWidget(this);
 
     QHBoxLayout *horizontal = new QHBoxLayout();
-    horizontal->setSpacing(0);
+    horizontal->setSpacing(5);
     horizontal->addWidget(mDropDown);
     horizontal->addWidget(mRenameTileset);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
-    vertical->setSpacing(0);
+    vertical->setSpacing(5);
     vertical->setMargin(5);
     vertical->addLayout(horizontal);
     vertical->addWidget(mViewStack);
