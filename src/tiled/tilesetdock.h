@@ -92,16 +92,15 @@ protected:
 
 private slots:
     void insertTilesetView(int index, Tileset *tileset);
+    void updateActions();
     void updateCurrentTiles();
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
     void tilesetNameChanged(Tileset *tileset);
 
+    void removeTileset();
     void removeTileset(int index);
-
-    void deleteTileset();
-    void currentChanged(int index);
 
     void editTilesetProperties();
     void importTileset();
@@ -109,7 +108,6 @@ private slots:
 
     void startNameEdit();
     void finishNameEdit();
-    void refreshCurrentView();
 
     void documentCloseRequested(int index);
 

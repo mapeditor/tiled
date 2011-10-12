@@ -188,7 +188,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mPropertiesTileset, SIGNAL(triggered()),
             SLOT(editTilesetProperties()));
     connect(mDeleteTileset, SIGNAL(triggered()),
-            SLOT(deleteTileset()));
+            SLOT(removeTileset()));
 
     mToolBar->setIconSize(QSize(16, 16));
     mToolBar->addAction(mImportTileset);
@@ -204,7 +204,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mDropDown->setInsertPolicy(QComboBox::InsertAtCurrent);
 
     connect(mDropDown, SIGNAL(currentIndexChanged(int)),
-            SLOT(currentChanged(int)));
+            SLOT(updateActions()));
     connect(mViewStack, SIGNAL(currentChanged(int)),
             this, SLOT(updateCurrentTiles()));
 
@@ -217,6 +217,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     setWidget(w);
     retranslateUi();
     setAcceptDrops(true);
+    updateActions();
 }
 
 TilesetDock::~TilesetDock()
@@ -259,7 +260,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
                 SLOT(tilesetNameChanged(Tileset*)));
         connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-                SLOT(refreshCurrentView()));
+                SLOT(updateActions()));
 
         QString cacheName = mCurrentTilesets.take(mMapDocument);
         int idx = mDropDown->findText(cacheName);
@@ -317,18 +318,17 @@ void TilesetDock::insertTilesetView(int index, Tileset *tileset)
     mDropDown->setCurrentIndex(mDropDown->findData(userdata));
 }
 
-void TilesetDock::refreshCurrentView()
-{
-    currentChanged(mDropDown->currentIndex());
-}
-
-void TilesetDock::currentChanged(int index)
+void TilesetDock::updateActions()
 {
     bool external = false;
-    TilesetView *view = mDropDown->itemData(index).value<TilesetView *>();
-    if (view) {
-        mViewStack->setCurrentWidget(view);
-        external = view->tilesetModel()->tileset()->isExternal();
+    TilesetView *view = 0;
+    const int index = mDropDown->currentIndex();
+    if (index > -1) {
+        view = mDropDown->itemData(index).value<TilesetView *>();
+        if (view) {
+            mViewStack->setCurrentWidget(view);
+            external = view->tilesetModel()->tileset()->isExternal();
+        }
     }
 
     mRenameTileset->setEnabled(view && !external);
@@ -433,16 +433,18 @@ void TilesetDock::tilesetMoved(int from, int to)
 }
 
 /**
- * Removes the currently view tileset
+ * Removes the currently selected tileset.
  */
-void TilesetDock::deleteTileset()
+void TilesetDock::removeTileset()
 {
-    removeTileset(mViewStack->currentIndex());
+    const int currentIndex = mViewStack->currentIndex();
+    if (currentIndex != -1)
+        removeTileset(mViewStack->currentIndex());
 }
 
 /**
- * Removes the tileset at the given tab index. Prompting the user when the
- * tileset is in use by the map.
+ * Removes the tileset at the given index. Prompting the user when the tileset
+ * is in use by the map.
  */
 void TilesetDock::removeTileset(int index)
 {
@@ -538,8 +540,12 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
 
 void TilesetDock::editTilesetProperties()
 {
+    Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
     PropertiesDialog propertiesDialog(tr("Tileset"),
-                                      currentTileset(),
+                                      tileset,
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();
@@ -548,6 +554,8 @@ void TilesetDock::editTilesetProperties()
 void TilesetDock::exportTileset()
 {
     Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
 
     const QLatin1String extension(".tsx");
     QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
@@ -575,6 +583,9 @@ void TilesetDock::exportTileset()
 void TilesetDock::importTileset()
 {
     Tileset *tileset = currentTileset();
+    if (!tileset)
+        return;
+
     QUndoCommand *command = new SetTilesetFileName(mMapDocument,
                                                    tileset, QString());
     mMapDocument->undoStack()->push(command);
