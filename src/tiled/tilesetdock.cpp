@@ -446,6 +446,11 @@ void TilesetDock::deleteTileset()
  */
 void TilesetDock::removeTileset(int index)
 {
+    if (index < 0)
+    {
+        return;
+    }
+
     Tileset *tileset = tilesetViewAt(index)->tilesetModel()->tileset();
     const bool inUse = mMapDocument->map()->isTilesetUsed(tileset);
 
@@ -538,8 +543,14 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
 
 void TilesetDock::editTilesetProperties()
 {
+    Tileset *tileset;
+    if (!(tileset = currentTileset()))
+    {
+        return;
+    }
+
     PropertiesDialog propertiesDialog(tr("Tileset"),
-                                      currentTileset(),
+                                      tileset,
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();
@@ -547,7 +558,11 @@ void TilesetDock::editTilesetProperties()
 
 void TilesetDock::exportTileset()
 {
-    Tileset *tileset = currentTileset();
+    Tileset *tileset;
+    if (!(tileset = currentTileset()))
+    {
+        return;
+    }
 
     const QLatin1String extension(".tsx");
     QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
@@ -574,7 +589,12 @@ void TilesetDock::exportTileset()
 
 void TilesetDock::importTileset()
 {
-    Tileset *tileset = currentTileset();
+    Tileset *tileset;
+    if (!(tileset = currentTileset()))
+    {
+        return;
+    }
+
     QUndoCommand *command = new SetTilesetFileName(mMapDocument,
                                                    tileset, QString());
     mMapDocument->undoStack()->push(command);
