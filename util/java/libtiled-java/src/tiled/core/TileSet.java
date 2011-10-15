@@ -42,7 +42,7 @@ import tiled.util.BasicTileCutter;
  *
  * <p>The other is the tile image.</p>
  */
-public class TileSet
+public class TileSet implements Iterable<Tile>
 {
     private String base;
     final private Vector<Tile> tiles = new Vector<Tile>();
@@ -336,7 +336,7 @@ public class TileSet
      *
      * @return an iterator over the tiles in this tileset.
      */
-    public Iterator iterator() {
+    public Iterator<Tile> iterator() {
         return tiles.iterator();
     }
 

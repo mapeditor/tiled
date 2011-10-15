@@ -241,10 +241,7 @@ public class TMXMapWriter
             w.endElement();
 
             // Write tile properties when necessary.
-            Iterator<Object> tileIterator = set.iterator();
-
-            while (tileIterator.hasNext()) {
-                Tile tile = (Tile) tileIterator.next();
+            for (Tile tile : set) {
                 // todo: move the null check back into the iterator?
                 if (tile != null && !tile.getProperties().isEmpty()) {
                     w.startElement("tile");
@@ -255,13 +252,11 @@ public class TMXMapWriter
             }
         } else {
             // Check to see if there is a need to write tile elements
-            Iterator<Object> tileIterator = set.iterator();
             boolean needWrite = false;
 
             // As long as one has properties, they all need to be written.
             // TODO: This shouldn't be necessary
-            while (tileIterator.hasNext()) {
-                Tile tile = (Tile) tileIterator.next();
+            for (Tile tile : set) {
                 if (!tile.getProperties().isEmpty()) {
                     needWrite = true;
                     break;
@@ -269,9 +264,7 @@ public class TMXMapWriter
             }
 
             if (needWrite) {
-                tileIterator = set.iterator();
-                while (tileIterator.hasNext()) {
-                    Tile tile = (Tile)tileIterator.next();
+                for (Tile tile : set) {
                     // todo: move this check back into the iterator?
                     if (tile != null) {
                         writeTile(tile, w);

@@ -112,7 +112,7 @@ public class XMLWriter
     }
 
     public void endElement() throws IOException {
-        String name = (String)openElements.pop();
+        String name = openElements.pop();
 
         // If start tag still open, end with />, else with </name>.
         if (bStartTagOpen) {

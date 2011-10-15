@@ -223,9 +223,8 @@ public class Sprite
 
     public int getTotalFrames() {
         int total = 0;
-        Iterator<KeyFrame> itr = keys.iterator();
-        while (itr.hasNext()) {
-            total += ((KeyFrame) itr.next()).getTotalFrames();
+        for (KeyFrame key : keys) {
+            total += key.getTotalFrames();
         }
 
         return total;
@@ -242,13 +241,14 @@ public class Sprite
     public KeyFrame getNextKey() {
         Iterator<KeyFrame> itr = keys.iterator();
         while (itr.hasNext()) {
-            KeyFrame k = (KeyFrame) itr.next();
+            KeyFrame k = itr.next();
             if (k == currentKey) {
-                if (itr.hasNext()) return (KeyFrame) itr.next();
+                if (itr.hasNext())
+                    return itr.next();
             }
         }
 
-        return (KeyFrame) keys.get(0);
+        return keys.get(0);
     }
 
     public KeyFrame getPreviousKey() {
@@ -269,9 +269,7 @@ public class Sprite
     }
 
     public void setKeyFrameTo(String name) {
-        Iterator<KeyFrame> itr = keys.iterator();
-        while (itr.hasNext()) {
-            KeyFrame k = (KeyFrame) itr.next();
+        for (KeyFrame k : keys) {
             if (k.equalsIgnoreCase(name)) {
                 currentKey = k;
                 break;
@@ -331,9 +329,7 @@ public class Sprite
     }
 
     public KeyFrame getKey(String keyName) {
-        Iterator<KeyFrame> itr = keys.iterator();
-        while (itr.hasNext()) {
-            KeyFrame k = (KeyFrame) itr.next();
+        for (KeyFrame k : keys) {
             if (k != null && k.equalsIgnoreCase(keyName)) {
                 return k;
             }
@@ -342,7 +338,7 @@ public class Sprite
     }
 
     public KeyFrame getKey(int i) {
-        return (KeyFrame) keys.get(i);
+        return keys.get(i);
     }
 
     public Iterator<KeyFrame> getKeys() throws Exception {

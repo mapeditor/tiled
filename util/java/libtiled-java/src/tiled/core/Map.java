@@ -240,9 +240,7 @@ public class Map implements Iterable<MapLayer>
             return;
 
         // Go through the map and remove any instances of the tiles in the set
-        Iterator<Object> tileIterator = tileset.iterator();
-        while (tileIterator.hasNext()) {
-            Tile tile = (Tile)tileIterator.next();
+        for (Tile tile : tileset) {
             for (MapLayer ml : this) {
                 if (ml instanceof TileLayer) {
                     ((TileLayer) ml).removeTile(tile);
