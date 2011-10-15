@@ -179,13 +179,19 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
                 else
                     cancelNewMapObject();
             } else if (event->button() == Qt::LeftButton) {
+                QPolygonF current = mNewMapObjectItem->mapObject()->polygon();
+                QPolygonF next = mOverlayPolygonObject->polygon();
+
+                // If the last position is still the same, ignore the click
+                if (next.last() == current.last())
+                    return;
+
                 // Assign current overlay polygon to the new object
-                QPolygonF polygon = mOverlayPolygonObject->polygon();
-                mNewMapObjectItem->setPolygon(polygon);
+                mNewMapObjectItem->setPolygon(next);
 
                 // Add a new editable point to the overlay
-                polygon.append(polygon.last());
-                mOverlayPolygonItem->setPolygon(polygon);
+                next.append(next.last());
+                mOverlayPolygonItem->setPolygon(next);
             }
             break;
         }
