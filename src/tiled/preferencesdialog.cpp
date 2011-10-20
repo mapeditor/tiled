@@ -153,6 +153,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
             SLOT(applyObjectTypes()));
     connect(mObjectTypesModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
             SLOT(applyObjectTypes()));
+
+    connect(mUi->autoMapWhileDrawing, SIGNAL(toggled(bool)),
+            SLOT(useAutomappingDrawingToggled(bool)));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -316,7 +319,7 @@ void PreferencesDialog::fromPreferences()
     if (languageIndex == -1)
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
-
+    mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }
 
@@ -327,6 +330,7 @@ void PreferencesDialog::toPreferences()
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
     prefs->setLayerDataFormat(layerDataFormat());
+    prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
 }
 
 MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
@@ -344,4 +348,9 @@ MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
     case 4:
         return MapWriter::CSV;
     }
+}
+
+void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)
+{
+    Preferences::instance()->setAutomappingDrawing(enabled);
 }

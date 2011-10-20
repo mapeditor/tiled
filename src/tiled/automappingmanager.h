@@ -85,16 +85,7 @@ signals:
     void warningsOccurred();
 
 public slots:
-    /**
-     * This sets up new AutoMapperWrappers, which trigger the automapping.
-     * The region 'where' describes where only the automapping takes place.
-     * This is a signal so it can directly be connected to the regionEdited
-     * signal of map documents. Layer \a layer is used to determine which
-     * Automappers should be used. There will only those Automappers be used
-     * which have a rule layer named as \a layer.
-     * If layer is 0, all Automappers are used.
-     */
-    void autoMap(QRegion where, Layer *layer);
+    void autoMap(QRegion where, Layer *touchedLayer);
 
 private:
     Q_DISABLE_COPY(AutomappingManager)
@@ -119,6 +110,15 @@ private:
      * @return if the loading was successful: return true if it suceeded.
      */
     bool loadFile(const QString &filePath);
+
+    /**
+     * Applies automapping to the Region \a where, considering only layer
+     * \a touchedLayer has changed.
+     * There will only those Automappers be used which have a rule layer
+     * touching the \a touchedLayer
+     * If layer is 0, all Automappers are used.
+     */
+    void autoMapInternal(QRegion where, Layer *touchedLayer);
 
     /**
      * deletes all its data structures

@@ -54,6 +54,7 @@ protected:
 private slots:
     void languageSelected(int index);
     void useOpenGLToggled(bool useOpenGL);
+    void useAutomappingDrawingToggled(bool enabled);
 
     void addObjectType();
     void selectedObjectTypesChanged();

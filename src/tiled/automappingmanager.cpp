@@ -26,6 +26,7 @@
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "tmxmapreader.h"
+#include "preferences.h"
 
 #include <QFileInfo>
 #include <QFileSystemWatcher>
@@ -71,10 +72,16 @@ void AutomappingManager::autoMap()
     int w = map->width();
     int h = map->height();
 
-    autoMap(QRect(0, 0, w, h), 0);
+    autoMapInternal(QRect(0, 0, w, h), 0);
 }
 
 void AutomappingManager::autoMap(QRegion where, Layer *touchedLayer)
+{
+    if (Preferences::instance()->automappingDrawing())
+        autoMapInternal(where, touchedLayer);
+}
+
+void AutomappingManager::autoMapInternal(QRegion where, Layer *touchedLayer)
 {
     mError.clear();
     mWarning.clear();
