@@ -22,12 +22,18 @@
 #include "mapdocumentactionhandler.h"
 
 #include "changetileselection.h"
+#include "documentmanager.h"
 #include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "maprenderer.h"
 #include "utils.h"
 
 #include <QAction>
+#include <QApplication>
+#include <QClipboard>
+#include <QCursor>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -192,6 +198,26 @@ void MapDocumentActionHandler::selectNone()
 
     QUndoCommand *command = new ChangeTileSelection(mMapDocument, QRegion());
     mMapDocument->undoStack()->push(command);
+}
+
+void MapDocumentActionHandler::copyPosition()
+{
+    const MapView *view = DocumentManager::instance()->currentMapView();
+    if (!view)
+        return;
+
+    const QPoint globalPos = QCursor::pos();
+    const QPoint viewportPos = view->viewport()->mapFromGlobal(globalPos);
+    const QPointF scenePos = view->mapToScene(viewportPos);
+
+    const MapRenderer *renderer = mapDocument()->renderer();
+    const QPointF tilePos = renderer->pixelToTileCoords(scenePos);
+    const int x = qFloor(tilePos.x());
+    const int y = qFloor(tilePos.y());
+
+    QApplication::clipboard()->setText(QString::number(x) +
+                                       QLatin1String(", ") +
+                                       QString::number(y));
 }
 
 void MapDocumentActionHandler::cropToSelection()

@@ -369,6 +369,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     new QShortcut(tr("Z"), this, SLOT(rotateStampRight()));
     new QShortcut(tr("Shift+Z"), this, SLOT(rotateStampLeft()));
 
+    QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
+    connect(copyPositionShortcut, SIGNAL(activated()),
+            mActionHandler, SLOT(copyPosition()));
+
     updateActions();
     readSettings();
     setupQuickStamps();

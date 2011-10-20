@@ -75,6 +75,8 @@ public slots:
     void selectAll();
     void selectNone();
 
+    void copyPosition();
+
     void cropToSelection();
 
     void addTileLayer();
