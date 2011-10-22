@@ -1329,7 +1329,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation>Tiled Tileset Dateuen (*.tsx)</translation>
+        <translation>Tiled Tileset Dateien (*.tsx)</translation>
     </message>
     <message>
         <location line="+8"/>
