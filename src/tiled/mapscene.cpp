@@ -232,11 +232,14 @@ void MapScene::updateCurrentLayerHighlight()
 void MapScene::repaintRegion(const QRegion &region)
 {
     const MapRenderer *renderer = mMapDocument->renderer();
-    const QSize extra = mMapDocument->map()->extraTileSize();
+    const QMargins margins = mMapDocument->map()->drawMargins();
 
-    foreach (const QRect &r, region.rects())
-        update(renderer->boundingRect(r)
-               .adjusted(0, -extra.height(), extra.width(), 0));
+    foreach (const QRect &r, region.rects()) {
+        update(renderer->boundingRect(r).adjusted(-margins.left(),
+                                                  -margins.top(),
+                                                  margins.right(),
+                                                  margins.bottom()));
+    }
 }
 
 void MapScene::enableSelectedTool()

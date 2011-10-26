@@ -34,6 +34,7 @@
 
 #include <QColor>
 #include <QList>
+#include <QPoint>
 #include <QString>
 
 class QImage;
@@ -127,6 +128,17 @@ public:
     int margin() const { return mMargin; }
 
     /**
+     * Returns the offset that is applied when drawing the tiles in this
+     * tileset.
+     */
+    QPoint tileOffset() const { return mTileOffset; }
+
+    /**
+     * @see tileOffset
+     */
+    void setTileOffset(QPoint offset) { mTileOffset = offset; }
+
+    /**
      * Returns the tile for the given tile ID.
      * The tile ID is local to this tileset, which means the IDs are in range
      * [0, tileCount() - 1].
@@ -210,6 +222,7 @@ private:
     int mTileHeight;
     int mTileSpacing;
     int mMargin;
+    QPoint mTileOffset;
     int mImageWidth;
     int mImageHeight;
     int mColumnCount;

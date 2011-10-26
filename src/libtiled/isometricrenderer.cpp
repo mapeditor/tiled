@@ -32,6 +32,7 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tileset.h"
 
 #include <cmath>
 
@@ -164,10 +165,14 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     if (rect.isNull())
         rect = boundingRect(layer->bounds());
 
-    const QSize maxTileSize = layer->maxTileSize();
-    const int extraWidth = maxTileSize.width() - tileWidth;
-    const int extraHeight = maxTileSize.height() - tileHeight;
-    rect.adjust(-extraWidth, 0, 0, extraHeight);
+    QMargins drawMargins = layer->drawMargins();
+    drawMargins.setTop(drawMargins.top() - tileHeight);
+    drawMargins.setRight(drawMargins.right() - tileWidth);
+
+    rect.adjust(-drawMargins.right(),
+                -drawMargins.bottom(),
+                drawMargins.left(),
+                drawMargins.top());
 
     // Determine the tile and pixel coordinates to start at
     QPointF tilePos = pixelToTileCoords(rect.x(), rect.y());
@@ -214,13 +219,14 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
                     const QPixmap &img = cell.tile->image();
+                    const QPoint offset = cell.tile->tileset()->tileOffset();
 
                     qreal m11 = 1;      // Horizontal scaling factor
                     qreal m12 = 0;      // Vertical shearing factor
                     qreal m21 = 0;      // Horizontal shearing factor
                     qreal m22 = 1;      // Vertical scaling factor
-                    qreal dx = x;
-                    qreal dy = y - img.height();
+                    qreal dx = offset.x() + x;
+                    qreal dy = offset.y() + y - img.height();
 
                     if (cell.flippedDiagonally) {
                         // Use shearing to swap the X/Y axis

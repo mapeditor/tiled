@@ -234,6 +234,14 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     if (margin != 0)
         w.writeAttribute(QLatin1String("margin"), QString::number(margin));
 
+    const QPoint offset = tileset->tileOffset();
+    if (!offset.isNull()) {
+        w.writeStartElement(QLatin1String("tileoffset"));
+        w.writeAttribute(QLatin1String("x"), QString::number(offset.x()));
+        w.writeAttribute(QLatin1String("y"), QString::number(offset.y()));
+        w.writeEndElement();
+    }
+
     // Write the tileset properties
     writeProperties(w, tileset->properties());
 

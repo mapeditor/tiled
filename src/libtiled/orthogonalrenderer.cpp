@@ -32,6 +32,7 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tileset.h"
 
 #include <cmath>
 
@@ -192,10 +193,15 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     int endY = layer->height();
 
     if (!exposed.isNull()) {
-        const QSize maxTileSize = layer->maxTileSize();
-        const int extraWidth = maxTileSize.width() - tileWidth;
-        const int extraHeight = maxTileSize.height() - tileHeight;
-        QRectF rect = exposed.adjusted(-extraWidth, 0, 0, extraHeight);
+        QMargins drawMargins = layer->drawMargins();
+        drawMargins.setTop(drawMargins.top() - tileHeight);
+        drawMargins.setRight(drawMargins.right() - tileWidth);
+
+        QRectF rect = exposed.adjusted(-drawMargins.right(),
+                                       -drawMargins.bottom(),
+                                       drawMargins.left(),
+                                       drawMargins.top());
+
         rect.translate(-layerPos);
 
         startX = qMax((int) rect.x() / tileWidth, 0);
@@ -213,13 +219,14 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                 continue;
 
             const QPixmap &img = cell.tile->image();
+            const QPoint offset = cell.tile->tileset()->tileOffset();
 
             qreal m11 = 1;      // Horizontal scaling factor
             qreal m12 = 0;      // Vertical shearing factor
             qreal m21 = 0;      // Horizontal shearing factor
             qreal m22 = 1;      // Vertical scaling factor
-            qreal dx = x * tileWidth;
-            qreal dy = (y + 1) * tileHeight - img.height();
+            qreal dx = offset.x() + x * tileWidth;
+            qreal dy = offset.y() + (y + 1) * tileHeight - img.height();
 
             if (cell.flippedDiagonally) {
                 // Use shearing to swap the X/Y axis

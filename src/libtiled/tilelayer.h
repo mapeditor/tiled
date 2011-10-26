@@ -34,6 +34,7 @@
 
 #include "layer.h"
 
+#include <QMargins>
 #include <QString>
 #include <QVector>
 
@@ -113,10 +114,23 @@ public:
     TileLayer(const QString &name, int x, int y, int width, int height);
 
     /**
-     * Returns the maximum tile size of this layer. Used by the layer
-     * rendering code to determine the area that needs to be redrawn.
+     * Returns the maximum tile size of this layer.
      */
     QSize maxTileSize() const { return mMaxTileSize; }
+
+    /**
+     * Returns the margins that have to be taken into account while drawing
+     * this tile layer. The margins depend on the maximum tile size and the
+     * offset applied to the tiles.
+     */
+    QMargins drawMargins() const
+    {
+        return QMargins(mOffsetMargins.left(),
+                        mOffsetMargins.top() + mMaxTileSize.height(),
+                        mOffsetMargins.right() + mMaxTileSize.width(),
+                        mOffsetMargins.bottom());
+    }
+
 
     /**
      * Returns whether (x, y) is inside this map layer.
@@ -256,6 +270,7 @@ protected:
 
 private:
     QSize mMaxTileSize;
+    QMargins mOffsetMargins;
     QVector<Cell> mGrid;
 };
 

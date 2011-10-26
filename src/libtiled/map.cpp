@@ -43,8 +43,7 @@ Map::Map(Orientation orientation,
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
-    mTileHeight(tileHeight),
-    mMaxTileSize(tileWidth, tileHeight)
+    mTileHeight(tileHeight)
 {
 }
 
@@ -53,12 +52,25 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
-void Map::adjustMaxTileSize(const QSize &size)
+static QMargins maxMargins(const QMargins &a,
+                           const QMargins &b)
 {
-    if (size.width() > mMaxTileSize.width())
-        mMaxTileSize.setWidth(size.width());
-    if (size.height() > mMaxTileSize.height())
-        mMaxTileSize.setHeight(size.height());
+    return QMargins(qMax(a.left(), b.left()),
+                    qMax(a.top(), b.top()),
+                    qMax(a.right(), b.right()),
+                    qMax(a.bottom(), b.bottom()));
+}
+
+void Map::adjustDrawMargins(const QMargins &margins)
+{
+    // The TileLayer includes the maximum tile size in its draw margins. So
+    // we need to subtract the tile size of the map, since that part does not
+    // contribute to additional margin.
+    mDrawMargins = maxMargins(QMargins(margins.left(),
+                                       margins.top() - mTileHeight,
+                                       margins.right() - mTileWidth,
+                                       margins.bottom()),
+                              mDrawMargins);
 }
 
 int Map::tileLayerCount() const
@@ -105,7 +117,7 @@ void Map::adoptLayer(Layer *layer)
     layer->setMap(this);
 
     if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-        adjustMaxTileSize(tileLayer->maxTileSize());
+        adjustDrawMargins(tileLayer->drawMargins());
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -158,7 +170,7 @@ bool Map::isTilesetUsed(Tileset *tileset) const
 Map *Map::clone() const
 {
     Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
-    o->mMaxTileSize = mMaxTileSize;
+    o->mDrawMargins = mDrawMargins;
     foreach (const Layer *layer, mLayers)
         o->addLayer(layer->clone());
     o->mTilesets = mTilesets;

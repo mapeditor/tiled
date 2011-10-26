@@ -277,14 +277,21 @@ Tileset *MapReaderPrivate::readTileset()
                                   tileSpacing, margin);
 
             while (xml.readNextStartElement()) {
-                if (xml.name() == "tile")
+                if (xml.name() == "tile") {
                     readTilesetTile(tileset);
-                else if (xml.name() == "properties")
+                } else if (xml.name() == "tileoffset") {
+                    const QXmlStreamAttributes oa = xml.attributes();
+                    int x = oa.value(QLatin1String("x")).toString().toInt();
+                    int y = oa.value(QLatin1String("y")).toString().toInt();
+                    tileset->setTileOffset(QPoint(x, y));
+                    xml.skipCurrentElement();
+                } else if (xml.name() == "properties") {
                     tileset->mergeProperties(readProperties());
-                else if (xml.name() == "image")
+                } else if (xml.name() == "image") {
                     readTilesetImage(tileset);
-                else
+                } else {
                     readUnknownElement();
+                }
             }
         }
     } else { // External tileset

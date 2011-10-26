@@ -37,6 +37,7 @@ static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
 static const char * const COLOR_KEY = "Tileset/TransparentColor";
 static const char * const SPACING_KEY = "Tileset/Spacing";
 static const char * const MARGIN_KEY = "Tileset/Margin";
+static const char * const OFFSET_KEY = "Tileset/Offset";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -58,11 +59,14 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     QColor color = colorName.isEmpty() ? Qt::magenta : QColor(colorName);
     int spacing = s->value(QLatin1String(SPACING_KEY)).toInt();
     int margin = s->value(QLatin1String(MARGIN_KEY)).toInt();
+    QPoint offset = s->value(QLatin1String(OFFSET_KEY)).toPoint();
 
     mUi->useTransparentColor->setChecked(colorEnabled);
     mUi->colorButton->setColor(color);
     mUi->spacing->setValue(spacing);
     mUi->margin->setValue(margin);
+    mUi->offsetX->setValue(offset.x());
+    mUi->offsetY->setValue(offset.y());
 
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
@@ -112,10 +116,14 @@ void NewTilesetDialog::tryAccept()
     const int tileHeight = mUi->tileHeight->value();
     const int spacing = mUi->spacing->value();
     const int margin = mUi->margin->value();
+    const QPoint offset = QPoint(mUi->offsetX->value(),
+                                 mUi->offsetY->value());
 
     std::auto_ptr<Tileset> tileset(new Tileset(name,
                                                tileWidth, tileHeight,
                                                spacing, margin));
+
+    tileset->setTileOffset(offset);
 
     if (useTransparentColor)
         tileset->setTransparentColor(transparentColor);
@@ -141,6 +149,7 @@ void NewTilesetDialog::tryAccept()
     s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
     s->setValue(QLatin1String(SPACING_KEY), spacing);
     s->setValue(QLatin1String(MARGIN_KEY), margin);
+    s->setValue(QLatin1String(OFFSET_KEY), offset);
 
     mNewTileset = tileset.release();
     accept();

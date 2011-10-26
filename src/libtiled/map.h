@@ -34,6 +34,7 @@
 #include "object.h"
 
 #include <QList>
+#include <QMargins>
 #include <QSize>
 
 namespace Tiled {
@@ -128,26 +129,18 @@ public:
     int tileHeight() const { return mTileHeight; }
 
     /**
-     * Returns the maximum tile size used by tile layers of this map.
-     * @see TileLayer::extraTileSize()
+     * Adjusts the draw margins to be at least as big as the given margins.
+     * Called from tile layers when their tiles change.
      */
-    QSize maxTileSize() const { return mMaxTileSize; }
+    void adjustDrawMargins(const QMargins &margins);
 
     /**
-     * Adjusts the maximum tile size to be at least as much as the given
-     * size. Called from tile layers when their maximum tile size increases.
-     */
-    void adjustMaxTileSize(const QSize &size);
-
-    /**
-     * Convenience method for getting the extra tile size, which is the number
-     * of pixels that tiles may extend beyond the size of the tile grid.
+     * Returns the margins that have to be taken into account when figuring
+     * out which part of the map to repaint after changing some tiles.
      *
-     * @see maxTileSize()
+     * @see TileLayer::drawMargins
      */
-    QSize extraTileSize() const
-    { return QSize(mMaxTileSize.width() - mTileWidth,
-                   mMaxTileSize.height() - mTileHeight); }
+    QMargins drawMargins() const { return mDrawMargins; }
 
     /**
      * Returns the number of layers of this map.
@@ -259,7 +252,7 @@ private:
     int mHeight;
     int mTileWidth;
     int mTileHeight;
-    QSize mMaxTileSize;
+    QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
 };

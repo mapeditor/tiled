@@ -136,11 +136,14 @@ void BrushItem::updateBoundingRect()
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {
         const Map *map = mMapDocument->map();
-        const int tileWidth = map->tileWidth();
-        const int tileHeight = map->tileHeight();
-        const QSize maxTileSize = mTileLayer->maxTileSize();
-        const int extendTop = -qMax(0, maxTileSize.height() - tileHeight);
-        const int extendRight = qMax(0, maxTileSize.width() - tileWidth);
-        mBoundingRect.adjust(0, extendTop, extendRight, 0);
+
+        QMargins drawMargins = mTileLayer->drawMargins();
+        drawMargins.setTop(drawMargins.top() - map->tileHeight());
+        drawMargins.setRight(drawMargins.right() - map->tileWidth());
+
+        mBoundingRect.adjust(-drawMargins.left(),
+                             -drawMargins.top(),
+                             drawMargins.right(),
+                             drawMargins.bottom());
     }
 }
