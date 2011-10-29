@@ -70,16 +70,11 @@ void AutomappingManager::autoMap()
     Map *map = mMapDocument->map();
     int w = map->width();
     int h = map->height();
-    int l = map->indexOfLayer(mSetLayer);
 
-    Layer *passedLayer = 0;
-    if (l != -1)
-        passedLayer = map->layerAt(l);
-
-    autoMap(QRect(0, 0, w, h), passedLayer);
+    autoMap(QRect(0, 0, w, h), 0);
 }
 
-void AutomappingManager::autoMap(QRegion where, Layer *l)
+void AutomappingManager::autoMap(QRegion where, Layer *touchedLayer)
 {
     mError.clear();
     mWarning.clear();
@@ -88,15 +83,6 @@ void AutomappingManager::autoMap(QRegion where, Layer *l)
         emit errorsOccurred();
         return;
     }
-
-    if (!l) {
-        mError = tr("No set layer found!") + QLatin1Char('\n');
-        emit errorsOccurred();
-        return;
-    }
-
-    if (l->name() != mSetLayer)
-        return;
 
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
@@ -116,12 +102,22 @@ void AutomappingManager::autoMap(QRegion where, Layer *l)
     // following automappers do see the impact
     QRegion *passedRegion = new QRegion(where);
 
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Apply AutoMap rules"));
-    AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, mAutoMappers, passedRegion);
-    undoStack->push(aw);
-    undoStack->endMacro();
-
+    QVector<AutoMapper*> passedAutoMappers;
+    if (touchedLayer) {
+        foreach (AutoMapper *a, mAutoMappers) {
+            if (a->ruleLayerNameUsed(touchedLayer->name()))
+                passedAutoMappers.append(a);
+        }
+    } else {
+        passedAutoMappers = mAutoMappers;
+    }
+    if (!passedAutoMappers.isEmpty()) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->beginMacro(tr("Apply AutoMap rules"));
+        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, passedRegion);
+        undoStack->push(aw);
+        undoStack->endMacro();
+    }
     foreach (AutoMapper *automapper, mAutoMappers) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();
@@ -189,14 +185,14 @@ bool AutomappingManager::loadFile(const QString &filePath)
             tilesetManager->addReferences(rules->tilesets());
 
             AutoMapper *autoMapper;
-            autoMapper = new AutoMapper(mMapDocument, mSetLayer);
+            autoMapper = new AutoMapper(mMapDocument, rules, rulePath);
 
-            bool loadSuccess = autoMapper->prepareLoad(rules, rulePath);
             mWarning += autoMapper->warningString();
-            if (loadSuccess) {
+            const QString error = autoMapper->errorString(); 
+            if (error.isEmpty()) {
                 mAutoMappers.append(autoMapper);
             } else {
-                mError += autoMapper->errorString();
+                mError += error;
                 delete autoMapper;
             }
         }

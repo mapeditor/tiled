@@ -89,7 +89,10 @@ public slots:
      * This sets up new AutoMapperWrappers, which trigger the automapping.
      * The region 'where' describes where only the automapping takes place.
      * This is a signal so it can directly be connected to the regionEdited
-     * signal of map documents.
+     * signal of map documents. Layer \a layer is used to determine which
+     * Automappers should be used. There will only those Automappers be used
+     * which have a rule layer named as \a layer.
+     * If layer is 0, all Automappers are used.
      */
     void autoMap(QRegion where, Layer *layer);
 
@@ -150,13 +153,6 @@ private:
      * behavior.
      */
     QString mWarning;
-
-    /**
-     * This stores the name of the layer, which is used in the working map to
-     * setup the automapper.
-     * Until this variable was introduced it was called "set" (hardcoded)
-     */
-    QString mSetLayer;
 };
 
 } // namespace Internal
