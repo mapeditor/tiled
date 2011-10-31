@@ -2,6 +2,7 @@
  * mapdocument.h
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
  *
@@ -229,6 +230,12 @@ public:
 
     inline void emitObjectChanged(MapObject *object)
     { emitObjectsChanged(QList<MapObject*>() << object); }
+
+    /**
+     * Emits the editLayerNameRequested signal, to get renamed.
+     */
+    inline void emitEditLayerNameRequested()
+    { emit editLayerNameRequested(); }
 
 signals:
     void fileNameChanged();

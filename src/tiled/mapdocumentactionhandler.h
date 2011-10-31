@@ -1,6 +1,7 @@
 /*
  * mapdocumentactionhandler.h
  * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
  *
@@ -57,6 +58,7 @@ public:
     QAction *actionDuplicateLayer() const { return mActionDuplicateLayer; }
     QAction *actionMergeLayerDown() const { return mActionMergeLayerDown; }
     QAction *actionRemoveLayer() const { return mActionRemoveLayer; }
+    QAction *actionRenameLayer() const { return mActionRenameLayer; }
     QAction *actionSelectPreviousLayer() const
     { return mActionSelectPreviousLayer; }
     QAction *actionSelectNextLayer() const { return mActionSelectNextLayer; }
@@ -84,6 +86,7 @@ public slots:
     void moveLayerUp();
     void moveLayerDown();
     void removeLayer();
+    void renameLayer();
     void toggleOtherLayers();
 
 private slots:
@@ -100,6 +103,7 @@ private:
     QAction *mActionDuplicateLayer;
     QAction *mActionMergeLayerDown;
     QAction *mActionRemoveLayer;
+    QAction *mActionRenameLayer;
     QAction *mActionSelectPreviousLayer;
     QAction *mActionSelectNextLayer;
     QAction *mActionMoveLayerUp;

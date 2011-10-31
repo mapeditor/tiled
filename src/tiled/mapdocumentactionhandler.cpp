@@ -1,6 +1,7 @@
 /*
  * mapdocumentactionhandler.cpp
  * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
  *
@@ -61,6 +62,9 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionRemoveLayer->setIcon(
             QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
+    mActionRenameLayer = new QAction(this);
+    mActionRenameLayer->setShortcut(tr("F2"));
+
     mActionSelectPreviousLayer = new QAction(this);
     mActionSelectPreviousLayer->setShortcut(tr("PgUp"));
 
@@ -106,6 +110,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
             SLOT(selectPreviousLayer()));
     connect(mActionSelectNextLayer, SIGNAL(triggered()),
             SLOT(selectNextLayer()));
+    connect(mActionRenameLayer, SIGNAL(triggered()), SLOT(renameLayer()));
     connect(mActionRemoveLayer, SIGNAL(triggered()), SLOT(removeLayer()));
     connect(mActionMoveLayerUp, SIGNAL(triggered()), SLOT(moveLayerUp()));
     connect(mActionMoveLayerDown, SIGNAL(triggered()), SLOT(moveLayerDown()));
@@ -133,6 +138,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionDuplicateLayer->setText(tr("&Duplicate Layer"));
     mActionMergeLayerDown->setText(tr("&Merge Layer Down"));
     mActionRemoveLayer->setText(tr("&Remove Layer"));
+    mActionRenameLayer->setText(tr("Re&name Layer"));
     mActionSelectPreviousLayer->setText(tr("Select Pre&vious Layer"));
     mActionSelectNextLayer->setText(tr("Select &Next Layer"));
     mActionMoveLayerUp->setText(tr("R&aise Layer"));
@@ -260,6 +266,12 @@ void MapDocumentActionHandler::removeLayer()
         mMapDocument->removeLayer(mMapDocument->currentLayerIndex());
 }
 
+void MapDocumentActionHandler::renameLayer()
+{
+    if (mMapDocument)
+        mMapDocument->emitEditLayerNameRequested();
+}
+
 void MapDocumentActionHandler::toggleOtherLayers()
 {
     if (mMapDocument)
@@ -306,5 +318,6 @@ void MapDocumentActionHandler::updateActions()
     mActionMoveLayerDown->setEnabled(hasNextLayer);
     mActionToggleOtherLayers->setEnabled(layerCount > 1);
     mActionRemoveLayer->setEnabled(currentLayerIndex >= 0);
+    mActionRenameLayer->setEnabled(currentLayerIndex >= 0);
     mActionLayerProperties->setEnabled(currentLayerIndex >= 0);
 }

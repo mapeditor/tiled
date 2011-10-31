@@ -3,6 +3,7 @@
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -272,6 +273,7 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionDuplicateLayer());
         menu.addAction(handler->actionMergeLayerDown());
         menu.addAction(handler->actionRemoveLayer());
+        menu.addAction(handler->actionRenameLayer());
         menu.addSeparator();
         menu.addAction(handler->actionMoveLayerUp());
         menu.addAction(handler->actionMoveLayerDown());
