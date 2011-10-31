@@ -525,14 +525,13 @@ QRect AutoMapper::applyRule(const QRegion &rule, const QRect &where)
                 QList<TileLayer*> tileLayers = translationTable->keys();
 
                 // check if there are no overlaps within this rule.
-                QRegion ruleRegionInLayer[tileLayers.size()];
+                QVector<QRegion> ruleRegionInLayer;
                 for (int i = 0; i < tileLayers.size(); ++i) {
                     TileLayer *tilelayer = tileLayers.at(i);
-                    ruleRegionInLayer[i] = tilelayer->region().intersected(rule);
+                    ruleRegionInLayer.append(tilelayer->region().intersected(rule));
 
                     if (appliedRegions.at(i).intersects(
                                 ruleRegionInLayer[i].translated(x, y))) {
-
                         missmatch = true;
                         break;
                     }
