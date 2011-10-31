@@ -49,6 +49,9 @@ public:
      */
     MapDocument *createMap();
 
+private slots:
+    void refreshPixelSize();
+
 private:
     Ui::NewMapDialog *mUi;
 };

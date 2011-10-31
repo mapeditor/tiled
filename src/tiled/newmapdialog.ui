@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
-    <height>201</height>
+    <width>349</width>
+    <height>241</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <enum>QLayout::SetFixedSize</enum>
    </property>
    <item row="1" column="0">
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Map size</string>
      </property>
@@ -35,6 +35,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QSpinBox" name="mapWidth">
+        <property name="suffix">
+         <string extracomment="Remember starting with a space."> tiles</string>
+        </property>
         <property name="minimum">
          <number>1</number>
         </property>
@@ -58,6 +61,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QSpinBox" name="mapHeight">
+        <property name="suffix">
+         <string> tiles</string>
+        </property>
         <property name="minimum">
          <number>1</number>
         </property>
@@ -66,6 +72,13 @@
         </property>
         <property name="value">
          <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="pixelSizeLabel">
+        <property name="text">
+         <string notr="true" extracomment="Dummy text">3200 x 3200 pixels</string>
         </property>
        </widget>
       </item>
@@ -90,6 +103,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QSpinBox" name="tileWidth">
+        <property name="suffix">
+         <string extracomment="Remember starting with a space."> px</string>
+        </property>
         <property name="minimum">
          <number>1</number>
         </property>
@@ -113,6 +129,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QSpinBox" name="tileHeight">
+        <property name="suffix">
+         <string> px</string>
+        </property>
         <property name="minimum">
          <number>1</number>
         </property>
@@ -123,6 +142,19 @@
          <number>32</number>
         </property>
        </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -151,7 +183,7 @@
     </widget>
    </item>
    <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Map</string>
      </property>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>342</width>
-    <height>369</height>
+    <width>370</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -107,6 +107,9 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="suffix">
+           <string extracomment="Remember starting with a space."> px</string>
+          </property>
           <property name="minimum">
            <number>1</number>
           </property>
@@ -127,6 +130,9 @@
         </item>
         <item row="1" column="1">
          <widget class="QSpinBox" name="tileHeight">
+          <property name="suffix">
+           <string> px</string>
+          </property>
           <property name="minimum">
            <number>1</number>
           </property>
@@ -156,6 +162,9 @@
         </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_5">
+          <property name="toolTip">
+           <string>The space at the edges of the tileset.</string>
+          </property>
           <property name="text">
            <string>Margin:</string>
           </property>
@@ -163,6 +172,9 @@
         </item>
         <item row="3" column="1">
          <widget class="QSpinBox" name="margin">
+          <property name="suffix">
+           <string> px</string>
+          </property>
           <property name="minimum">
            <number>0</number>
           </property>
@@ -174,15 +186,11 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Spacing:</string>
-          </property>
-         </widget>
-        </item>
         <item row="4" column="1">
          <widget class="QSpinBox" name="spacing">
+          <property name="suffix">
+           <string> px</string>
+          </property>
           <property name="minimum">
            <number>0</number>
           </property>
@@ -207,6 +215,16 @@
           </property>
          </spacer>
         </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="toolTip">
+           <string>The space between the tiles.</string>
+          </property>
+          <property name="text">
+           <string>Spacing:</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -230,6 +248,9 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QGroupBox" name="groupBox_3">
+         <property name="toolTip">
+          <string>An offset applied when drawing the tiles.</string>
+         </property>
          <property name="title">
           <string>Drawing Offset</string>
          </property>
@@ -245,6 +266,9 @@
            <widget class="QSpinBox" name="offsetX">
             <property name="enabled">
              <bool>true</bool>
+            </property>
+            <property name="suffix">
+             <string> px</string>
             </property>
             <property name="minimum">
              <number>-9999</number>
@@ -263,6 +287,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QSpinBox" name="offsetY">
+            <property name="suffix">
+             <string> px</string>
+            </property>
             <property name="minimum">
              <number>-9999</number>
             </property>
@@ -335,8 +362,8 @@
    <slot>tryAccept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>367</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -351,8 +378,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>367</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -371,8 +398,8 @@
      <y>117</y>
     </hint>
     <hint type="destinationlabel">
-     <x>249</x>
-     <y>117</y>
+     <x>282</x>
+     <y>131</y>
     </hint>
    </hints>
   </connection>

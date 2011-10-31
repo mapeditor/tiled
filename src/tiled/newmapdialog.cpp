@@ -57,6 +57,18 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->mapHeight->setValue(mapHeight);
     mUi->tileWidth->setValue(tileWidth);
     mUi->tileHeight->setValue(tileHeight);
+
+    // Make the font of the pixel size label smaller
+    QFont font = mUi->pixelSizeLabel->font();
+    const qreal size = QFontInfo(font).pointSizeF();
+    font.setPointSizeF(size - 1);
+    mUi->pixelSizeLabel->setFont(font);
+
+    connect(mUi->mapWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
+    connect(mUi->mapHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
+    connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
+    connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
+    refreshPixelSize();
 }
 
 NewMapDialog::~NewMapDialog()
@@ -90,4 +102,12 @@ MapDocument *NewMapDialog::createMap()
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
 
     return new MapDocument(map);
+}
+
+void NewMapDialog::refreshPixelSize()
+{
+    const int width = mUi->mapWidth->value() * mUi->tileWidth->value();
+    const int height = mUi->mapHeight->value() * mUi->tileHeight->value();
+
+    mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels").arg(width).arg(height));
 }
