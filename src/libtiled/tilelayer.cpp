@@ -1,4 +1,4 @@
-/*
+/* 
  * tilelayer.cpp
  * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>
@@ -181,7 +181,7 @@ void TileLayer::flip(FlipDirection direction)
                 const Cell &source = cellAt(x, mHeight - y - 1);
                 dest = source;
                 dest.flippedVertically = !source.flippedVertically;
-            }	
+            }
         }
     }
 
