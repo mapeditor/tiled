@@ -179,6 +179,11 @@ public:
     void merge(const QPoint &pos, const TileLayer *layer);
 
     /**
+     * Removes all cells in the specified region.
+     */
+    void erase(const QRegion &region);
+
+    /**
      * Sets the cells starting at the given position to the cells in the given
      * \a tileLayer. Parts that fall outside of this layer will be ignored.
      *

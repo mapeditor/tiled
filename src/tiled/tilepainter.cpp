@@ -146,16 +146,7 @@ void TilePainter::erase(const QRegion &region)
     if (paintable.isEmpty())
         return;
 
-    foreach (const QRect &rect, paintable.rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-                mTileLayer->setCell(_x - mTileLayer->x(),
-                                    _y - mTileLayer->y(),
-                                    Cell());
-            }
-        }
-    }
-
+    mTileLayer->erase(paintable.translated(-mTileLayer->position()));
     mMapDocument->emitRegionChanged(paintable);
 }
 

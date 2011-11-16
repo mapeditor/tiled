@@ -164,6 +164,15 @@ void TileLayer::setCells(int x, int y, TileLayer *layer,
                 setCell(_x, _y, layer->cellAt(_x - x, _y - y));
 }
 
+void TileLayer::erase(const QRegion &area)
+{
+    const Cell emptyCell;
+    foreach (const QRect &rect, area.rects())
+        for (int x = rect.left(); x <= rect.right(); ++x)
+            for (int y = rect.top(); y <= rect.bottom(); ++y)
+                setCell(x, y, emptyCell);
+}
+
 void TileLayer::flip(FlipDirection direction)
 {
     QVector<Cell> newGrid(mWidth * mHeight);
