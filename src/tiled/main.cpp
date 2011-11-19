@@ -23,6 +23,7 @@
 #include "commandlineparser.h"
 #include "mainwindow.h"
 #include "languagemanager.h"
+#include "preferences.h"
 #include "tiledapplication.h"
 
 #include <QDebug>
@@ -48,10 +49,12 @@ public:
 
     bool quit;
     bool showedVersion;
+    bool disableOpenGL;
 
 private:
     void showVersion();
     void justQuit();
+    void setDisableOpenGL();
 
     // Convenience wrapper around registerOption
     template <void (CommandLineHandler::*memberFunction)()>
@@ -72,6 +75,7 @@ private:
 CommandLineHandler::CommandLineHandler()
     : quit(false)
     , showedVersion(false)
+    , disableOpenGL(false)
 {
     option<&CommandLineHandler::showVersion>(
                 QLatin1Char('v'),
@@ -83,6 +87,11 @@ CommandLineHandler::CommandLineHandler()
                 QLatin1String("--quit"),
                 QLatin1String("Only check validity of arguments, "
                               "don't actually load any files"));
+
+    option<&CommandLineHandler::setDisableOpenGL>(
+                QChar(),
+                QLatin1String("--disable-opengl"),
+                QLatin1String("Disable hardware accelerated rendering"));
 }
 
 void CommandLineHandler::showVersion()
@@ -98,6 +107,11 @@ void CommandLineHandler::showVersion()
 void CommandLineHandler::justQuit()
 {
     quit = true;
+}
+
+void CommandLineHandler::setDisableOpenGL()
+{
+    disableOpenGL = true;
 }
 
 
@@ -135,6 +149,8 @@ int main(int argc, char *argv[])
         return 0;
     if (commandLine.quit)
         return 0;
+    if (commandLine.disableOpenGL)
+        Preferences::instance()->setUseOpenGL(false);
 
     MainWindow w;
     w.show();
