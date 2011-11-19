@@ -507,10 +507,16 @@ void MapDocument::onLayerAboutToBeRemoved(int index)
 void MapDocument::onLayerRemoved(int index)
 {
     // Bring the current layer index to safety
-    if (mCurrentLayerIndex == mMap->layerCount())
-        setCurrentLayerIndex(mCurrentLayerIndex - 1);
+    bool currentLayerRemoved = mCurrentLayerIndex == mMap->layerCount();
+    if (currentLayerRemoved)
+        mCurrentLayerIndex = mCurrentLayerIndex - 1;
 
     emit layerRemoved(index);
+
+    // Emitted after the layerRemoved signal so that the MapScene has a chance
+    // of synchronizing before adapting to the newly selected index
+    if (currentLayerRemoved)
+        emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
