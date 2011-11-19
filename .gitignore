@@ -1,6 +1,5 @@
 bin/tiled
 bin/tmxviewer
-bin/*.dll
 lib/tiled/plugins/*
 lib/*.so*
 Makefile*
@@ -9,8 +8,18 @@ Makefile*
 *.moc
 moc_*.cpp
 ui_*.h
-*.pro.user
+*.pro.user*
 qrc_*
 docs/html
+
+# Build artifacts on Windows
+tiled.exe
+tmxviewer.exe
+*.dll
+*.obj
+*.a
+*.lib
+*.exp
+*.intermediate.manifest
 
 tests/test_mapreader
