@@ -60,13 +60,14 @@ public:
      * aligned on an isometric projected grid. A Hexagonal map uses hexagon
      * shaped tiles that fit into each other by shifting every other row.
      *
-     * Only Orthogonal and Isometric maps are supported by this version of
-     * Tiled.
+     * Only Orthogonal, Isometric and Staggered maps are supported by this
+     * version of Tiled.
      */
     enum Orientation {
         Unknown,
         Orthogonal,
-        Isometric
+        Isometric,
+        Staggered
     };
 
     /**

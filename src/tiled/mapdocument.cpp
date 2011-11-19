@@ -37,6 +37,7 @@
 #include "painttilelayer.h"
 #include "resizelayer.h"
 #include "resizemap.h"
+#include "staggeredrenderer.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
@@ -59,6 +60,9 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     switch (map->orientation()) {
     case Map::Isometric:
         mRenderer = new IsometricRenderer(map);
+        break;
+    case Map::Staggered:
+        mRenderer = new StaggeredRenderer(map);
         break;
     default:
         mRenderer = new OrthogonalRenderer(map);

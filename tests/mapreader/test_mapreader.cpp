@@ -19,7 +19,7 @@ private slots:
 void test_MapReader::loadMap()
 {
     MapReader reader;
-    Map *map = reader.readMap("data/mapobject.tmx");
+    Map *map = reader.readMap("../data/mapobject.tmx");
 
     // TODO: Also test tilesets (internal and external), properties and tile
     // layer data.

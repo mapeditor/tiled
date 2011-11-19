@@ -55,6 +55,10 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
                                     32).toInt();
 
+    mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
+    mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
+    mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
+
     mUi->orientation->setCurrentIndex(orientation);
     mUi->mapWidth->setValue(mapWidth);
     mUi->mapHeight->setValue(mapHeight);
@@ -89,17 +93,22 @@ MapDocument *NewMapDialog::createMap()
     const int mapHeight = mUi->mapHeight->value();
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
-    const int orientation = mUi->orientation->currentIndex();
 
-    Map *map = new Map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
-                       mapWidth, mapHeight, tileWidth, tileHeight);
+    const int orientationIndex = mUi->orientation->currentIndex();
+    QVariant orientationData = mUi->orientation->itemData(orientationIndex);
+    const Map::Orientation orientation =
+            static_cast<Map::Orientation>(orientationData.toInt());
+
+    Map *map = new Map(orientation,
+                       mapWidth, mapHeight,
+                       tileWidth, tileHeight);
 
     // Add one filling tile layer to new maps
     map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0, mapWidth, mapHeight));
 
     // Store settings for next time
     QSettings *s = Preferences::instance()->settings();
-    s->setValue(QLatin1String(ORIENTATION_KEY), orientation);
+    s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
     s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
