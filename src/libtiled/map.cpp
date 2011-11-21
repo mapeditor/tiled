@@ -177,3 +177,31 @@ Map *Map::clone() const
     o->setProperties(properties());
     return o;
 }
+
+
+QString Tiled::orientationToString(Map::Orientation orientation)
+{
+    switch (orientation) {
+    default:
+    case Map::Unknown:
+        return QLatin1String("unknown");
+        break;
+    case Map::Orthogonal:
+        return QLatin1String("orthogonal");
+        break;
+    case Map::Isometric:
+        return QLatin1String("isometric");
+        break;
+    }
+}
+
+Map::Orientation Tiled::orientationFromString(const QString &string)
+{
+    Map::Orientation orientation = Map::Unknown;
+    if (string == QLatin1String("orthogonal")) {
+        orientation = Map::Orthogonal;
+    } else if (string == QLatin1String("isometric")) {
+        orientation = Map::Isometric;
+    }
+    return orientation;
+}

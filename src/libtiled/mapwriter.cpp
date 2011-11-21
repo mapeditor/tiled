@@ -157,24 +157,10 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
 {
     w.writeStartElement(QLatin1String("map"));
 
-    QString orientation;
-    switch (map->orientation()) {
-    case Map::Orthogonal:
-        orientation = QLatin1String("orthogonal");
-        break;
-    case Map::Isometric:
-        orientation = QLatin1String("isometric");
-        break;
-    case Map::Hexagonal:
-        orientation = QLatin1String("hexagonal");
-        break;
-    case Map::Unknown:
-        break;
-    }
+    const QString orientation = orientationToString(map->orientation());
 
     w.writeAttribute(QLatin1String("version"), QLatin1String("1.0"));
-    if (!orientation.isEmpty())
-        w.writeAttribute(QLatin1String("orientation"), orientation);
+    w.writeAttribute(QLatin1String("orientation"), orientation);
     w.writeAttribute(QLatin1String("width"), QString::number(map->width()));
     w.writeAttribute(QLatin1String("height"), QString::number(map->height()));
     w.writeAttribute(QLatin1String("tilewidth"),

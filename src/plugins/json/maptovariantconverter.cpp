@@ -39,23 +39,8 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     QVariantMap mapVariant;
 
-    QString orientation;
-    switch (map->orientation()) {
-    case Map::Orthogonal:
-        orientation = QLatin1String("orthogonal");
-        break;
-    case Map::Isometric:
-        orientation = QLatin1String("isometric");
-        break;
-    case Map::Hexagonal:
-        orientation = QLatin1String("hexagonal");
-        break;
-    case Map::Unknown:
-        break;
-    }
-
     mapVariant["version"] = 1.0;
-    mapVariant["orientation"] = orientation;
+    mapVariant["orientation"] = orientationToString(map->orientation());
     mapVariant["width"] = map->width();
     mapVariant["height"] = map->height();
     mapVariant["tilewidth"] = map->tileWidth();

@@ -66,8 +66,7 @@ public:
     enum Orientation {
         Unknown,
         Orthogonal,
-        Isometric,
-        Hexagonal
+        Isometric
     };
 
     /**
@@ -256,6 +255,23 @@ private:
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
 };
+
+/**
+ * Helper function that converts the map orientation to a string value. Useful
+ * for map writers.
+ *
+ * @return The map orientation as a lowercase string.
+ */
+QString orientationToString(Map::Orientation);
+
+/**
+ * Helper function that converts a string to a map orientation enumerator.
+ * Useful for map readers.
+ *
+ * @return The map orientation matching the given string, or Map::Unknown if
+ *         the string is unrecognized.
+ */
+Map::Orientation orientationFromString(const QString &);
 
 } // namespace Tiled
 

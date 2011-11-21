@@ -82,20 +82,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("version", "1.1");
     writer.writeKeyAndValue("luaversion", "5.1");
 
-    const char *orientation = "unknown";
-    switch (map->orientation()) {
-    case Map::Unknown:
-        break;
-    case Map::Orthogonal:
-        orientation = "orthogonal";
-        break;
-    case Map::Isometric:
-        orientation = "isometric";
-        break;
-    case Map::Hexagonal:
-        orientation = "hexagonal";
-        break;
-    }
+    const QString orientation = orientationToString(map->orientation());
 
     writer.writeKeyAndValue("orientation", orientation);
     writer.writeKeyAndValue("width", map->width());

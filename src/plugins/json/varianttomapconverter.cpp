@@ -39,23 +39,17 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     mMapDir = mapDir;
 
     const QVariantMap variantMap = variant.toMap();
-    const QString orientation = variantMap["orientation"].toString();
+    const QString orientationString = variantMap["orientation"].toString();
 
-    Map::Orientation orientationFlag = Map::Unknown;
-    if (orientation == "orthogonal") {
-        orientationFlag = Map::Orthogonal;
-    } else if (orientation == "isometric") {
-        orientationFlag = Map::Isometric;
-    } else if (orientation == "hexagonal") {
-        orientationFlag = Map::Hexagonal;
-    }
+    Map::Orientation orientation = orientationFromString(orientationString);
 
-    if (orientationFlag == Map::Unknown) {
-        mError = tr("Unsupported map orientation: \"%1\"").arg(orientation);
+    if (orientation == Map::Unknown) {
+        mError = tr("Unsupported map orientation: \"%1\"")
+                .arg(orientationString);
         return 0;
     }
 
-    mMap = new Map(orientationFlag,
+    mMap = new Map(orientation,
                    variantMap["width"].toInt(),
                    variantMap["height"].toInt(),
                    variantMap["tilewidth"].toInt(),

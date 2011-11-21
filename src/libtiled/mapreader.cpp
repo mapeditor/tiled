@@ -183,17 +183,6 @@ void MapReaderPrivate::readUnknownElement()
     xml.skipCurrentElement();
 }
 
-static Map::Orientation orientationFromString(const QStringRef &string)
-{
-    Map::Orientation orientation = Map::Unknown;
-    if (string == QLatin1String("orthogonal")) {
-        orientation = Map::Orthogonal;
-    } else if (string == QLatin1String("isometric")) {
-        orientation = Map::Isometric;
-    }
-    return orientation;
-}
-
 Map *MapReaderPrivate::readMap()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == "map");
@@ -208,14 +197,14 @@ Map *MapReaderPrivate::readMap()
     const int tileHeight =
             atts.value(QLatin1String("tileheight")).toString().toInt();
 
-    const QStringRef orientationRef =
-            atts.value(QLatin1String("orientation"));
+    const QString orientationString =
+            atts.value(QLatin1String("orientation")).toString();
     const Map::Orientation orientation =
-            orientationFromString(orientationRef);
+            orientationFromString(orientationString);
 
     if (orientation == Map::Unknown) {
         xml.raiseError(tr("Unsupported map orientation: \"%1\"")
-                       .arg(orientationRef.toString()));
+                       .arg(orientationString));
     }
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
