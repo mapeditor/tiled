@@ -37,6 +37,7 @@ UndoDock::UndoDock(QUndoGroup *undoGroup, QWidget *parent)
     QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
     mUndoView->setCleanIcon(cleanIcon);
     mUndoView->setUniformItemSizes(true);
+    mUndoView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
