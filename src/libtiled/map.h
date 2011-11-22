@@ -262,7 +262,7 @@ private:
  *
  * @return The map orientation as a lowercase string.
  */
-QString orientationToString(Map::Orientation);
+TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
 
 /**
  * Helper function that converts a string to a map orientation enumerator.
@@ -271,7 +271,7 @@ QString orientationToString(Map::Orientation);
  * @return The map orientation matching the given string, or Map::Unknown if
  *         the string is unrecognized.
  */
-Map::Orientation orientationFromString(const QString &);
+TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
 
 } // namespace Tiled
 
