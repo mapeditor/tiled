@@ -42,6 +42,25 @@ static QString toImageFileFilter(const QList<QByteArray> &formats)
     return filter;
 }
 
+/**
+ * Checks if a given rectangle \a rect is coherent to another given \a region.
+ * 'coherent' means that either the rectangle is overlapping the region or
+ * the rectangle contains at least one tile, which is a direct neighbour
+ * to a tile, which belongs to the region.
+ */
+static bool isCoherentTo(const QRect &rect, const QRegion &region)
+{
+    // check if the region is coherent at top or bottom
+    if (region.intersects(rect.adjusted(0, -1, 0, 1)))
+        return true;
+
+    // check if the region is coherent at left or right side
+    if (region.intersects(rect.adjusted(-1, 0, 1, 0)))
+        return true;
+
+    return false;
+}
+
 namespace Tiled {
 namespace Utils {
 
@@ -53,6 +72,33 @@ QString readableImageFormatsFilter()
 QString writableImageFormatsFilter()
 {
     return toImageFileFilter(QImageWriter::supportedImageFormats());
+}
+
+QList<QRegion> coherentRegions(const QRegion &region)
+{
+    QList<QRegion> result;
+    QVector<QRect> rects = region.rects();
+
+    while (!rects.isEmpty()) {
+        QRegion newCoherentRegion = rects.last();
+        rects.pop_back();
+
+        // Add up all coherent rects until there is no rect left which is
+        // coherent to the newly created region.
+        bool foundRect = true;
+        while (foundRect) {
+            foundRect = false;
+            for (int i = rects.size() - 1; i >= 0; --i) {
+                if (isCoherentTo(rects.at(i), newCoherentRegion)) {
+                    newCoherentRegion += rects.at(i);
+                    rects.remove(i);
+                    foundRect = true;
+                }
+            }
+        }
+        result += newCoherentRegion;
+    }
+    return result;
 }
 
 } // namespace Utils

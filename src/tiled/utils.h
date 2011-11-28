@@ -41,6 +41,12 @@ QString readableImageFormatsFilter();
 QString writableImageFormatsFilter();
 
 /**
+ * Calculates all coherent regions occupied by the given \a region.
+ * Returns a list of regions, where each region is coherent in itself.
+ */
+QList<QRegion> coherentRegions(const QRegion &region);
+
+/**
  * Looks up the icon with the specified \a name from the system theme and set
  * it on the instance \a t when found.
  *
