@@ -30,9 +30,11 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
+#include "utils.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+using namespace Tiled::Utils;
 
 /*
  * About the order of the methods in this file.
@@ -73,7 +75,7 @@ bool AutoMapper::prepareLoad(Map *rules, const QString &rulePath)
     if (!setupMapDocumentLayers())
         return false;
 
-    if (!setupRulesMap(rules, rulePath))
+    if (!setupRuleMapProperties(rules, rulePath))
         return false;
 
     if (!setupRuleMapTileLayers())
@@ -99,7 +101,7 @@ bool AutoMapper::setupMapDocumentLayers()
     return true;
 }
 
-bool AutoMapper::setupRulesMap(Map *rules, const QString &rulePath)
+bool AutoMapper::setupRuleMapProperties(Map *rules, const QString &rulePath)
 {
     Q_ASSERT(!mMapRules);
 
@@ -247,66 +249,9 @@ bool AutoMapper::setupRuleList()
     Q_ASSERT(mRules.isEmpty());
     Q_ASSERT(mLayerRuleRegions);
 
-    for (int y = 1; y < mMapRules->height(); ++y ) {
-        for (int x = 1; x < mMapRules->width();  ++x ) {
-            if (!mLayerRuleRegions->cellAt(x, y).isEmpty()
-                    && !isPartOfExistingRule(QPoint(x, y))) {
-                QRegion rule = createRule(x, y);
-                mRules << rule;
-            }
-        }
-    }
+    mRules = coherentRegions(mLayerRuleRegions->region());
+
     return true;
-}
-
-bool AutoMapper::isPartOfExistingRule(const QPoint &p) const
-{
-    foreach (const QRegion &region, mRules)
-        if (region.contains(p))
-            return true;
-
-    return false;
-}
-
-QRegion AutoMapper::createRule(int x, int y) const
-{
-    Q_ASSERT(mLayerRuleRegions);
-    QRegion ret(x, y, 1, 1);
-    QList<QPoint> addPoints;
-    const Cell &match = mLayerRuleRegions->cellAt(x, y);
-    addPoints.append(QPoint(x, y));
-
-    while (!addPoints.empty()) {
-        const QPoint current = addPoints.takeFirst();
-        x = current.x();
-        y = current.y();
-        if (mLayerRuleRegions->contains(x - 1, y)
-            && mLayerRuleRegions->cellAt(x - 1, y) == match
-            && !ret.contains(QPoint(x - 1, y))) {
-            ret += QRegion(x - 1, y, 1, 1);
-            addPoints.append(QPoint(x - 1, y));
-        }
-        if (mLayerRuleRegions->contains(x + 1, y)
-            && mLayerRuleRegions->cellAt(x + 1, y) == match
-            && !ret.contains(QPoint(x + 1, y))) {
-            ret += QRegion(x + 1, y, 1, 1);
-            addPoints.append(QPoint(x + 1, y));
-        }
-        if (mLayerRuleRegions->contains(x, y - 1)
-            && mLayerRuleRegions->cellAt(x, y - 1) == match
-            && !ret.contains(QPoint(x, y - 1))) {
-            ret += QRegion(x, y - 1, 1, 1);
-            addPoints.append(QPoint(x, y - 1));
-        }
-        if (mLayerRuleRegions->contains(x, y + 1)
-            && mLayerRuleRegions->cellAt(x, y + 1) == match
-            && !ret.contains(QPoint(x, y + 1))) {
-            ret += QRegion(x, y + 1, 1, 1);
-            addPoints.append(QPoint(x, y + 1));
-        }
-    }
-
-    return ret;
 }
 
 bool AutoMapper::prepareAutoMap()

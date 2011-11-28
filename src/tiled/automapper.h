@@ -55,16 +55,12 @@ class AutoMapper : public QObject
 
 public:
     /**
-     * Constructs a AutoMapper.
+     * Constructs an AutoMapper.
      *
      * @param workingDocument: the map to work on.
      */
     AutoMapper(MapDocument *workingDocument, QString setlayer);
     ~AutoMapper();
-
-    MapDocument *mapDocument() const { return mMapDocument; }
-
-    QString ruleSetPath() const { return mRulePath; }
 
     /**
      * This sets up some internal data structures, which do not change,
@@ -74,8 +70,7 @@ public:
 
     /**
      * Call prepareLoad first! Returns a set of strings describing the layers,
-     * which are likely touched. Actually this function returns all layers,
-     * which could be touched, when considering only the given layers of the
+     * which could be touched considering the given layers of the
      * rule map.
      */
     QSet<QString> getTouchedLayers() const;
@@ -114,15 +109,14 @@ public:
 
 private:
     /**
-     * Calls all setup-functions in the right order needed for processing
-     * a new rules file.
+     * Reads the map properties of the rulesmap.
      *
      * param rulePath is only used to have better error message descriptions.
      *
      * @return returns true when anything is ok, false when errors occured.
      *        (in that case will be a msg box anyway)
      */
-    bool setupRulesMap(Map *rules, const QString &rulePath);
+    bool setupRuleMapProperties(Map *rules, const QString &rulePath);
 
     void cleanUpRulesMap();
 
@@ -136,7 +130,6 @@ private:
     /**
      * Searches the rules layer for regions and stores these in \a rules.
      * @return returns true when anything is ok, false when errors occured.
-     *        (in that case will be a msg box anyway)
      */
     bool setupRuleList();
 
@@ -144,7 +137,6 @@ private:
      * Sets up the layers in the rules map, which are used for automapping.
      * The layers are detected and put in the internal data structures
      * @return returns true when anything is ok, false when errors occured.
-     *        (in that case will be a msg box anyway)
      */
     bool setupRuleMapTileLayers();
 
@@ -211,21 +203,6 @@ private:
     QRect applyRule(const QRegion &rule, const QRect &where);
 
     /**
-     * This returns whether the given point \a p is part of an existing rule.
-     */
-    bool isPartOfExistingRule(const QPoint &p) const;
-
-    /**
-     * This creates a rule from a given point.
-     * So it will be checked, which regions are coherent to this point
-     * and all these regions will be treated as a new rule,
-     * which will be returned. To check what is coherent, a
-     * breadth first search will be performed, whereas each Tile is a node,
-     * and the 4 coherent tiles are connected to this node.
-     */
-    QRegion createRule(int x, int y) const;
-
-    /**
      * Cleans up the data structes filled by setupRuleMapLayers(),
      * so the next rule can be processed.
      */
@@ -245,7 +222,7 @@ private:
 
     /**
      * Checks if this the rules from the given rules map could be used anyway
-     * by comparing the used tilesets of the set layer and ruleset layer.
+     * by comparing the used tilesets of the set layers and ruleset layer.
      */
     bool setupRulesUsedCheck();
 

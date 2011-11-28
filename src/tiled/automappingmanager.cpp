@@ -40,23 +40,12 @@ AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
     , mMapDocument(0)
     , mLoaded(false)
-    , mWatcher(new QFileSystemWatcher(this))
 {
-    connect(mWatcher, SIGNAL(fileChanged(QString)),
-            this, SLOT(fileChanged(QString)));
-    mChangedFilesTimer.setInterval(100);
-    mChangedFilesTimer.setSingleShot(true);
-    connect(&mChangedFilesTimer, SIGNAL(timeout()),
-            this, SLOT(fileChangedTimeout()));
-    // this should be stored in the project file later on.
-    // now just default to the value we always had.
-    mSetLayer = QLatin1String("set");
 }
 
 AutomappingManager::~AutomappingManager()
 {
     cleanUp();
-    delete mWatcher;
 }
 
 AutomappingManager *AutomappingManager::instance()
@@ -239,43 +228,4 @@ void AutomappingManager::cleanUp()
         delete autoMapper;
     }
     mAutoMappers.clear();
-}
-
-void AutomappingManager::fileChanged(const QString &path)
-{
-    /*
-     * Use a one-shot timer and wait a little, to be sure there are no
-     * further modifications within very short time.
-     */
-    if (!mChangedFiles.contains(path)) {
-        mChangedFiles.insert(path);
-        mChangedFilesTimer.start();
-    }
-}
-
-void AutomappingManager::fileChangedTimeout()
-{
-    for (int i = 0; i != mAutoMappers.size(); ++i) {
-        AutoMapper *am = mAutoMappers.at(i);
-        QString fileName = am->ruleSetPath();
-        if (mChangedFiles.contains(fileName)) {
-            delete am;
-
-            TmxMapReader mapReader;
-            Map *rules = mapReader.read(fileName);
-            if (!rules) {
-                mAutoMappers.remove(i);
-                continue;
-            }
-
-            AutoMapper *autoMapper = new AutoMapper(mMapDocument, mSetLayer);
-            if (autoMapper->prepareLoad(rules, fileName)) {
-                mAutoMappers.replace(i, autoMapper);
-            } else {
-                delete autoMapper;
-                mAutoMappers.remove(i);
-            }
-        }
-    }
-    mChangedFiles.clear();
 }

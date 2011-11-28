@@ -93,17 +93,6 @@ public slots:
      */
     void autoMap(QRegion where, Layer *layer);
 
-private slots:
-    /**
-     * connected to the QFileWatcher, which monitors all rules files for changes
-     */
-    void fileChanged(const QString &path);
-
-    /**
-     * This is connected to the timer, which fires once after the files changed.
-     */
-    void fileChangedTimeout();
-
 private:
     Q_DISABLE_COPY(AutomappingManager)
 
@@ -149,26 +138,6 @@ private:
      * loaded.
      */
     bool mLoaded;
-
-    /**
-     * All the used rulefiles are monitored by this object, so in case of
-     * external changes it will automatically reloaded.
-     */
-    QFileSystemWatcher *mWatcher;
-
-    /**
-     * All external changed files will be put in here, so these will be loaded
-     * altogether when the timer expires.
-     */
-    QSet<QString> mChangedFiles;
-
-    /**
-     * This timer is started when the first file was modified. The files are
-     * actually reloaded after this timer expires, so just in case the files
-     * get modified within short time delays (some editors do so), it will
-     * wait until all is over an reload everything at the timeout.
-     */
-    QTimer mChangedFilesTimer;
 
     /**
      * Contains all errors which occurred until canceling.
