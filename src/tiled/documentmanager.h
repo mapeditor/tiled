@@ -119,6 +119,11 @@ public:
      */
     QList<MapDocument*> documents() const { return mDocuments; }
 
+    /**
+     * Centers the current map on the tile coordinates \a x, \a y.
+     */
+    void centerViewOn(int x, int y);
+
 signals:
     /**
      * Emitted when the current displayed map document changed.
