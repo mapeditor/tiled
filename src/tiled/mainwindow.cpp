@@ -200,7 +200,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     QToolButton *randomButton = new QToolButton(this);
     randomButton->setToolTip(tr("Random Mode"));
-    randomButton->setIcon(QIcon(QLatin1String(":images/22x22/stock-tool-random-clone.png")));
+    randomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
     randomButton->setCheckable(true);
     mUi->mainToolBar->addWidget(randomButton);
 
