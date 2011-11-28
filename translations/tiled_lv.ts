@@ -42,13 +42,13 @@ p, li { white-space: pre-wrap; }
         <translation>Labi</translation>
     </message>
     <message>
-        <location filename="../src/tiled/aboutdialog.cpp" line="+32"/>
+        <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -93,9 +93,66 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>Flare::FlarePlugin</name>
+    <message>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+44"/>
+        <source>Flare map files (*.txt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
+    </message>
+    <message>
+        <location line="+81"/>
+        <source>No &quot;%1&quot; layer found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Multiple &quot;%1&quot; layers found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>No map property &quot;%1&quot; found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Json::JsonPlugin</name>
+    <message>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+43"/>
+        <source>Could not open file for reading.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Error parsing file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Error while writing file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Json files (*.json)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Lua::LuaPlugin</name>
     <message>
-        <location filename="../src/plugins/lua/luaplugin.cpp" line="+46"/>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+54"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
@@ -128,7 +185,7 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Rediģēšana</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>&amp;Help</source>
         <translation>&amp;Palīdzība</translation>
     </message>
@@ -147,7 +204,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">S&amp;lānis</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+18"/>
         <source>Main Toolbar</source>
         <translation>Galvenā rīkjosla</translation>
     </message>
@@ -202,6 +259,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+3"/>
+        <source>A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location line="+8"/>
         <source>Show &amp;Grid</source>
         <translation>Rādīt &amp;režģi</translation>
@@ -247,6 +309,26 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+12"/>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>&amp;Highlight Current Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Move Layer &amp;Up</source>
         <translation type="obsolete">Pārvietot slāni uz &amp;augšu</translation>
     </message>
@@ -263,7 +345,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Noņemt atlasi</translation>
     </message>
     <message>
-        <location line="-122"/>
+        <location line="-148"/>
         <source>&amp;New...</source>
         <translation>&amp;Izveidot...</translation>
     </message>
@@ -353,6 +435,104 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>MainWindowClass</name>
+    <message>
+        <location filename="../src/ui_mainwindow.h" line="+167"/>
+        <source>Tiled</source>
+        <translation type="unfinished">Tiled</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Open...</source>
+        <translation type="unfinished">&amp;Atvērt...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Save...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Quit</source>
+        <translation type="unfinished">&amp;Iziet</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished">&amp;Kopēt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished">&amp;Ielīmēt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;About Tiled</source>
+        <translation type="unfinished">&amp;Par Tiled</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>About Qt</source>
+        <translation type="unfinished">Par Qt</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Resize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Recent Files</source>
+        <translation type="unfinished">&amp;Nesen izmantotās datnes</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show &amp;grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ctrl+G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;File</source>
+        <translation type="unfinished">&amp;Datne</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">&amp;Rediģēšana</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Help</source>
+        <translation type="unfinished">&amp;Palīdzība</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Map</source>
+        <translation type="unfinished">&amp;Karte</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;View</source>
+        <translation type="unfinished">&amp;Skats</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Main toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MapObjectItem</name>
     <message>
         <source>&amp;Duplicate</source>
@@ -411,17 +591,19 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished">Nav iespejams nolasit datni: %1</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+33"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+47"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation type="unfinished">Kartes projekcija nav atbalstita: %1</translation>
     </message>
     <message>
         <location line="+56"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+58"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation type="unfinished">Mozaīkelementu komplektam %1 ir iestatīti nederīgi parametri</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+30"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
         <translation type="unfinished">Kļuda mozaīkelementu komplekta %1 ielādes laikā: %2</translation>
     </message>
@@ -431,7 +613,8 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished">Nederigs mozaikelementa identifikators: %1</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+38"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+21"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
         <translation type="unfinished">Kļuda mozaīkelementu komplekta attela ielādes laika:
@@ -443,15 +626,17 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished">Pārak liels elementu &lt;tile&gt; skaits</translation>
     </message>
     <message>
-        <location line="+11"/>
-        <location line="+72"/>
-        <location line="+39"/>
-        <location line="+90"/>
+        <location line="+119"/>
         <source>Invalid tile: %1</source>
         <translation type="unfinished">Nederigs mozaīkelements: %1</translation>
     </message>
     <message>
-        <location line="-181"/>
+        <location line="+124"/>
+        <source>Invalid points data for polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-217"/>
         <source>Unknown encoding: %1</source>
         <translation type="unfinished">Nezināms kodejums: %1</translation>
     </message>
@@ -462,12 +647,14 @@ Rinda %1, kolonna %2</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+39"/>
+        <location line="+32"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+46"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
         <translation type="unfinished">Slāņa %1 dati ir bojāti</translation>
     </message>
     <message>
         <location line="+12"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+22"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
         <translation type="unfinished">Slāņa %3 mozaikelementu ar koordinātam (%1, %2) nav iespejams parsēt</translation>
     </message>
@@ -476,7 +663,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Nederigs globalais mozaīkelementa identifikators (mazaks nekā 0): %1</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+16"/>
         <source>Tile used but no tilesets specified</source>
         <translation type="unfinished">Izmantots mozaīkelements, bet nav norādīts mozaīkelementu komplekts</translation>
     </message>
@@ -489,34 +676,24 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>NewImageLayerDialog</name>
     <message>
-        <location filename="../src/tiled/newimagelayerdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation type="unfinished">Izveidot mozaīkelementu komplektu</translation>
+        <translation type="obsolete">Izveidot mozaīkelementu komplektu</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <source>Image layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished">&amp;Nosaukums:</translation>
+        <translation type="obsolete">&amp;Nosaukums:</translation>
     </message>
     <message>
-        <location line="+13"/>
         <source>Image:</source>
-        <translation type="unfinished">Attēls:</translation>
+        <translation type="obsolete">Attēls:</translation>
     </message>
     <message>
-        <location line="+10"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Pārlūkot...</translation>
+        <translation type="obsolete">&amp;Pārlūkot...</translation>
     </message>
     <message>
-        <location line="+9"/>
         <source>Use transparent color:</source>
-        <translation type="unfinished">Caurredzamā krāsa:</translation>
+        <translation type="obsolete">Caurredzamā krāsa:</translation>
     </message>
 </context>
 <context>
@@ -533,23 +710,37 @@ Rinda %1, kolonna %2</translation>
     </message>
     <message>
         <location line="+6"/>
-        <location line="+55"/>
+        <location line="+68"/>
         <source>Width:</source>
         <translation>Platums:</translation>
     </message>
     <message>
-        <location line="-32"/>
-        <location line="+55"/>
+        <location line="-58"/>
+        <location line="+26"/>
+        <source> tiles</source>
+        <extracomment>Remember starting with a space.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-10"/>
+        <location line="+68"/>
         <source>Height:</source>
         <translation>Augstums:</translation>
     </message>
     <message>
-        <location line="-29"/>
+        <location line="-32"/>
         <source>Tile size</source>
         <translation>Mozaīkelementa izmērs</translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+16"/>
+        <location line="+26"/>
+        <source> px</source>
+        <extracomment>Remember starting with a space.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+55"/>
         <source>Map</source>
         <translation>Karte</translation>
     </message>
@@ -572,7 +763,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>NewTilesetDialog</name>
     <message>
-        <location filename="../src/tiled/newtilesetdialog.ui" line="+6"/>
+        <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
         <source>New Tileset</source>
         <translation>Izveidot mozaīkelementu komplektu</translation>
     </message>
@@ -602,7 +793,7 @@ Rinda %1, kolonna %2</translation>
         <translation>Caurredzamā krāsa:</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+37"/>
         <source>Tiles</source>
         <translation>Mozaīkelementi</translation>
     </message>
@@ -612,17 +803,58 @@ Rinda %1, kolonna %2</translation>
         <translation>Mozaīkelementa platums:</translation>
     </message>
     <message>
+        <location line="+10"/>
         <location line="+23"/>
+        <location line="+42"/>
+        <location line="+16"/>
+        <location line="+79"/>
+        <location line="+20"/>
+        <source> px</source>
+        <extracomment>Remember starting with a space.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-125"/>
+        <source>The space at the edges of the tileset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Margin:</source>
         <translation>Mala ap elementiem:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+83"/>
+        <source>An offset applied when drawing the tiles.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Drawing Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-157"/>
         <source>Tile height:</source>
         <translation>Mozaīkelementa augstums:</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+94"/>
+        <source>The space between the tiles.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Spacing:</source>
         <translation>Atstarpes starp elementiem:</translation>
     </message>
@@ -645,7 +877,7 @@ Rinda %1, kolonna %2</translation>
         <translation>Veids:</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+28"/>
         <source>Position</source>
         <translation>Novietojums</translation>
     </message>
@@ -673,6 +905,33 @@ Rinda %1, kolonna %2</translation>
         <location line="+17"/>
         <source>Height:</source>
         <translation>Augstums:</translation>
+    </message>
+</context>
+<context>
+    <name>ObjectTypes</name>
+    <message>
+        <location filename="../src/tiled/objecttypes.cpp" line="+38"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
+    </message>
+    <message>
+        <location line="+39"/>
+        <source>Could not open file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>File doesn&apos;t contain object types.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>%3
+
+Line %1, column %2</source>
+        <translation type="unfinished">%3
+
+Rinda %1, kolonna %2</translation>
     </message>
 </context>
 <context>
@@ -747,7 +1006,12 @@ Rinda %1, kolonna %2</translation>
         <translation>Iestatījumi</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+13"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>Saving and Loading</source>
         <translation>Datņu saglabāšana un ielāde</translation>
     </message>
@@ -811,6 +1075,42 @@ Rinda %1, kolonna %2</translation>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location line="+24"/>
+        <location line="+6"/>
+        <source>Object Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Add Object Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Remove Selected Object Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <source>Import...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Export...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PropertiesDialog</name>
@@ -824,36 +1124,43 @@ Rinda %1, kolonna %2</translation>
     <name>ResizeDialog</name>
     <message>
         <location filename="../src/tiled/resizedialog.ui" line="+14"/>
+        <location filename="../src/ui_resizedialog.h" line="+172"/>
         <source>Resize</source>
         <translation>Mainīt izmēru</translation>
     </message>
     <message>
         <location line="+6"/>
+        <location filename="../src/ui_resizedialog.h" line="+1"/>
         <source>Size</source>
         <translation>Izmēŗs</translation>
     </message>
     <message>
         <location line="+6"/>
+        <location filename="../src/ui_resizedialog.h" line="+1"/>
         <source>Width:</source>
         <translation>Platums:</translation>
     </message>
     <message>
         <location line="+20"/>
+        <location filename="../src/ui_resizedialog.h" line="+1"/>
         <source>Height:</source>
         <translation>Augstums:</translation>
     </message>
     <message>
         <location line="+23"/>
+        <location filename="../src/ui_resizedialog.h" line="+1"/>
         <source>Offset</source>
         <translation>Nobīde</translation>
     </message>
     <message>
         <location line="+6"/>
+        <location filename="../src/ui_resizedialog.h" line="+1"/>
         <source>X:</source>
         <translation></translation>
     </message>
     <message>
         <location line="+20"/>
+        <location filename="../src/ui_resizedialog.h" line="+1"/>
         <source>Y:</source>
         <translation></translation>
     </message>
@@ -955,12 +1262,17 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
-        <location filename="../src/tiled/automap.cpp" line="+116"/>
-        <source>Multiple layers %1 found!</source>
+        <location filename="../src/tiled/automapper.cpp" line="+130"/>
+        <source>%1: Property %2 = %3 does not make sense. Ignoring this property.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+110"/>
+        <location line="+23"/>
+        <source>Layer %1 found in automapping rules.Did you mean %2_%1? Ignoring that layer!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+55"/>
         <source>No ruleRegions layer found!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -975,15 +1287,20 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+212"/>
+        <location line="+196"/>
         <source>Tile</source>
         <translation type="unfinished">Mozaīkelements</translation>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::AutomaticMappingManager</name>
+    <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location line="+497"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+98"/>
+        <source>No map document found!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>No set layer found!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -993,7 +1310,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+28"/>
         <source>No rules file found at:
 %1</source>
         <translation type="unfinished"></translation>
@@ -1152,7 +1469,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::CommandDialog</name>
     <message>
-        <location filename="../src/tiled/commanddialog.cpp" line="+40"/>
+        <location filename="../src/tiled/commanddialog.cpp" line="+42"/>
         <source>Edit Commands</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1160,7 +1477,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+122"/>
+        <location filename="../src/tiled/command.cpp" line="+123"/>
         <source>Unable to create/open %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1198,24 +1515,90 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::CreateObjectTool</name>
     <message>
-        <location filename="../src/tiled/createobjecttool.cpp" line="+42"/>
-        <location line="+100"/>
+        <location filename="../src/tiled/createobjecttool.cpp" line="+45"/>
+        <location line="+201"/>
         <source>O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-1"/>
-        <source>Insert Objects</source>
+        <source>Insert Object</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>Insert Tile Objects</source>
+        <source>Insert Tile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Insert Polygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
+        <source>P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Insert Polyline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-8"/>
         <source>T</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::EditPolygonTool</name>
+    <message>
+        <location filename="../src/tiled/editpolygontool.cpp" line="+130"/>
+        <location line="+191"/>
+        <source>Edit Polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-189"/>
+        <location line="+190"/>
+        <source>E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location line="+210"/>
+        <source>Move %n Point(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location line="+26"/>
+        <location line="+45"/>
+        <source>Delete %n Node(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="-40"/>
+        <location line="+215"/>
+        <source>Join Nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-214"/>
+        <location line="+250"/>
+        <source>Split Segments</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1237,35 +1620,14 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::ImageLayerPropertiesDialog</name>
     <message>
-        <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
-        <source>Image Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Browse...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">Attēls:</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Transparent color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Layer Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Attēls:</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+179"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+180"/>
         <source>Layers</source>
         <translation>Slāņi</translation>
     </message>
@@ -1293,7 +1655,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+134"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+136"/>
         <location line="+8"/>
         <source>Undo</source>
         <translation>Atsaukt darbību</translation>
@@ -1309,7 +1671,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Kartes atvēršanas laikā radās kļūda</translation>
     </message>
     <message>
-        <location line="+418"/>
+        <location line="+461"/>
         <source>Open Map</source>
         <translation>Atvērt karti</translation>
     </message>
@@ -1324,7 +1686,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Kartes saglabāšanas laikā radās kļūda</translation>
     </message>
     <message>
-        <location line="-451"/>
+        <location line="-492"/>
         <source>Ctrl+=</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1339,13 +1701,18 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+22"/>
-        <location line="+1047"/>
+        <location line="+23"/>
+        <source>Random Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+1149"/>
         <source>&amp;Layer</source>
         <translation>S&amp;lānis</translation>
     </message>
     <message>
-        <location line="-910"/>
+        <location line="-997"/>
         <source>Ctrl+PgUp</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1365,12 +1732,27 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+127"/>
+        <location line="+1"/>
+        <source>Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Shift+Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Alt+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+134"/>
         <source>Error Opening Map</source>
         <translation>Kartes atvēršanas laikā radās kļūda</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+82"/>
         <location line="+135"/>
         <source>All Files (*)</source>
         <translation>Visas datnes (*)</translation>
@@ -1422,7 +1804,22 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+370"/>
+        <location line="+33"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+143"/>
+        <source>Automatic Mapping Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Automatic Mapping Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+252"/>
         <source>[*]%1 - Tiled</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1431,7 +1828,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Pievienot mozaīkelementu komplektus</translation>
     </message>
     <message>
-        <location line="-291"/>
+        <location line="-331"/>
         <source>Add External Tileset</source>
         <translation>Pievienot ārēju mozaīkattēlu komplektu</translation>
     </message>
@@ -1451,12 +1848,7 @@ Rinda %1, kolonna %2</translation>
         <translation>Karte</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <source>Automatic Mapping</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+120"/>
+        <location line="+147"/>
         <source>%1%</source>
         <translation></translation>
     </message>
@@ -1485,12 +1877,12 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished">nenosaukts.tmx</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+45"/>
         <source>Resize Map</source>
         <translation>Mainīt kartes izmēru</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+33"/>
         <source>Offset Map</source>
         <translation>Veikt kartes nobīdi</translation>
     </message>
@@ -1533,7 +1925,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+126"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+137"/>
         <source>Select &amp;All</source>
         <translation>Atlasīt &amp;visu</translation>
     </message>
@@ -1543,7 +1935,7 @@ Rinda %1, kolonna %2</translation>
         <translation>&amp;Noņemt atlasi</translation>
     </message>
     <message>
-        <location line="-81"/>
+        <location line="-85"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
@@ -1556,17 +1948,22 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Pievienot &amp;objektu grupu...</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+91"/>
         <source>&amp;Duplicate Layer</source>
         <translation>&amp;Izveidot slāņa kopiju</translation>
     </message>
     <message>
-        <location line="-79"/>
+        <location line="-83"/>
         <source>Ctrl+Shift+D</source>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location line="+11"/>
+        <source>F2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>PgUp</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1581,7 +1978,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+49"/>
         <source>&amp;Crop to Selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1610,7 +2007,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Pārvietot slāni uz &amp;augšu</translation>
     </message>
     <message>
-        <location line="-64"/>
+        <location line="-65"/>
         <source>Ctrl+Shift+Up</source>
         <translation>Ctrl+Shift+Uz augšu</translation>
     </message>
@@ -1624,7 +2021,12 @@ Rinda %1, kolonna %2</translation>
         <translation>Ctrl+Shift+Uz leju</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+61"/>
+        <source>Re&amp;name Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Select Pre&amp;vious Layer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1661,15 +2063,20 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Slānis 1</translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+81"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+94"/>
         <source>Tile Layer 1</source>
         <translation>1. mozaīkelementu slānis</translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>%1 x %2 pixels</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::NewTilesetDialog</name>
     <message>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+123"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+132"/>
         <location line="+7"/>
         <source>Error</source>
         <translation>Kļūda</translation>
@@ -1685,7 +2092,7 @@ Rinda %1, kolonna %2</translation>
         <translation>Dotā attēla un mozaīkelementu izmēra, malu un atstarpju informācijas kombinācija nav derīga.</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+21"/>
         <source>Tileset Image</source>
         <translation>Mozaīkelementu komplekta attēls</translation>
     </message>
@@ -1706,12 +2113,12 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::ObjectPropertiesDialog</name>
     <message>
-        <location filename="../src/tiled/objectpropertiesdialog.cpp" line="+41"/>
+        <location filename="../src/tiled/objectpropertiesdialog.cpp" line="+42"/>
         <source>Object</source>
         <translation>Objekts</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+56"/>
         <source>Change Object</source>
         <translation>Mainīt objektu</translation>
     </message>
@@ -1719,14 +2126,14 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+98"/>
-        <location line="+110"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+43"/>
+        <location line="+109"/>
         <source>Select Objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-108"/>
-        <location line="+109"/>
+        <location line="-107"/>
+        <location line="+108"/>
         <source>S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1735,7 +2142,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="obsolete">Objekta &amp;rekvizīti</translation>
     </message>
     <message numerus="yes">
-        <location line="+117"/>
+        <location line="+108"/>
         <source>Move %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1745,18 +2152,57 @@ Rinda %1, kolonna %2</translation>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::ObjectTypesModel</name>
+    <message>
+        <location filename="../src/tiled/objecttypesmodel.cpp" line="+51"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="+56"/>
-        <location line="+23"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="+120"/>
+        <location line="+52"/>
         <source>System default</source>
         <translation>Sistēmas valoda</translation>
+    </message>
+    <message>
+        <location line="+69"/>
+        <source>Import Object Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+29"/>
+        <source>Object Types files (*.xml)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-16"/>
+        <source>Error Reading Object Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Export Object Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Error Writing Object Types</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::PropertiesDialog</name>
     <message>
-        <location filename="../src/tiled/propertiesdialog.cpp" line="+69"/>
+        <location filename="../src/tiled/propertiesdialog.cpp" line="+70"/>
         <source>%1 Properties</source>
         <translation>Objekta %1 rekvizīti</translation>
     </message>
@@ -1787,7 +2233,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::SaveAsImageDialog</name>
     <message>
-        <location filename="../src/tiled/saveasimagedialog.cpp" line="+111"/>
+        <location filename="../src/tiled/saveasimagedialog.cpp" line="+113"/>
         <source>Save as Image</source>
         <translation>Saglabāt kā attēlu</translation>
     </message>
@@ -1798,7 +2244,7 @@ Do you want to replace it?</source>
         <translation>Datne %1 jau pastāv. Vai vēlaties to pārrakstīt?</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+70"/>
         <source>Image</source>
         <translation>Attēls</translation>
     </message>
@@ -1806,42 +2252,58 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::SelectionTool</name>
     <message>
-        <location filename="../src/tiled/selectiontool.cpp" line="+34"/>
-        <location line="+81"/>
         <source>Rectangular Select</source>
-        <translation>Četrstūrveida atlase</translation>
+        <translation type="obsolete">Četrstūrveida atlase</translation>
     </message>
     <message>
-        <location line="-78"/>
-        <location line="+79"/>
-        <source>R</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-56"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
-        <translation>%1, %2 - Četrstūris: (%3 x %4)</translation>
+        <translation type="obsolete">%1, %2 - Četrstūris: (%3 x %4)</translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
         <location filename="../src/tiled/stampbrush.cpp" line="+38"/>
-        <location line="+281"/>
+        <location line="+299"/>
         <source>Stamp Brush</source>
         <translation>Spiedogs</translation>
     </message>
     <message>
-        <location line="-278"/>
-        <location line="+279"/>
+        <location line="-296"/>
+        <location line="+297"/>
         <source>B</source>
         <translation></translation>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::TileSelectionTool</name>
+    <message>
+        <location filename="../src/tiled/tileselectiontool.cpp" line="+34"/>
+        <location line="+81"/>
+        <source>Rectangular Select</source>
+        <translation type="unfinished">Četrstūrveida atlase</translation>
+    </message>
+    <message>
+        <location line="-78"/>
+        <location line="+79"/>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-56"/>
+        <source>%1, %2 - Rectangle: (%3 x %4)</source>
+        <translation type="unfinished">%1, %2 - Četrstūris: (%3 x %4)</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+279"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+170"/>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+287"/>
         <source>Remove Tileset</source>
         <translation>Dzēst mozaīkelementu komplektu</translation>
     </message>
@@ -1856,9 +2318,44 @@ Do you want to replace it?</source>
         <translation>Vai dzēst šo mozaīkelementu komplektu un visas atsauces uz to?</translation>
     </message>
     <message>
-        <location line="+64"/>
+        <location line="+58"/>
         <source>Tilesets</source>
         <translation>Mozaīkelementu komplekti</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Import Tileset</source>
+        <translation type="unfinished">&amp;Importēt mozaīkelementu komplektu</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Export Tileset As...</source>
+        <translation type="unfinished">&amp;Eksportēt mozaīkelementu komplektu kā ...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Tile&amp;set Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Remove Tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Tileset</source>
+        <translation type="unfinished">Mozaīkelement komplekts</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Export Tileset</source>
+        <translation type="unfinished">Eksportēt mozaīkelementu komplektu</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Tiled tileset files (*.tsx)</source>
+        <translation type="unfinished">Lietojumprogrammas Tiled mozaīkattēlu komplektu datnes (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -1868,39 +2365,35 @@ Do you want to replace it?</source>
         <translation type="obsolete">Rekvizīti...</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+213"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+186"/>
         <source>Tile &amp;Properties...</source>
         <translation>Mozaīkelementa &amp;rekvizīti ...</translation>
     </message>
     <message>
-        <location line="+13"/>
         <source>&amp;Export Tileset As...</source>
-        <translation>&amp;Eksportēt mozaīkelementu komplektu kā ...</translation>
+        <translation type="obsolete">&amp;Eksportēt mozaīkelementu komplektu kā ...</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation>&amp;Importēt mozaīkelementu komplektu</translation>
+        <translation type="obsolete">&amp;Importēt mozaīkelementu komplektu</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+11"/>
         <source>Show &amp;Grid</source>
         <translation type="unfinished">Rādīt &amp;režģi</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+18"/>
         <source>Tile</source>
         <translation>Mozaīkelements</translation>
     </message>
     <message>
-        <location line="+19"/>
         <source>Export Tileset</source>
-        <translation>Eksportēt mozaīkelementu komplektu</translation>
+        <translation type="obsolete">Eksportēt mozaīkelementu komplektu</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation>Lietojumprogrammas Tiled mozaīkattēlu komplektu datnes (*.tsx)</translation>
+        <translation type="obsolete">Lietojumprogrammas Tiled mozaīkattēlu komplektu datnes (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -1914,7 +2407,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::UndoDock</name>
     <message>
-        <location filename="../src/tiled/undodock.cpp" line="+64"/>
+        <location filename="../src/tiled/undodock.cpp" line="+65"/>
         <source>History</source>
         <translation>Vēsture</translation>
     </message>
@@ -2161,7 +2654,7 @@ Rinda %1, kolonna %2</translation>
         <translation>Pārvietot mozaīkelementu komplektu</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="-159"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-489"/>
         <source>Import Tileset</source>
         <translation>Importēt mozaīkelementu komplektu</translation>
     </message>
@@ -2171,14 +2664,13 @@ Rinda %1, kolonna %2</translation>
         <translation>Eksportēt mozaīkelementu komplektu</translation>
     </message>
     <message>
-        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
-        <source>Move Object to Layer</source>
+        <location line="+27"/>
+        <source>Change Tileset name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
-        <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+28"/>
-        <source>Change Image Layer Properties</source>
+        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
+        <source>Move Object to Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2189,6 +2681,11 @@ Rinda %1, kolonna %2</translation>
     <message>
         <location line="+1"/>
         <source>Raise Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changepolygon.cpp" line="+39"/>
+        <source>Change Polygon</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
