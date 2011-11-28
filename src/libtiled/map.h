@@ -243,6 +243,16 @@ public:
 
     Map *clone() const;
 
+    /**
+     * Creates a new map that contains the given \a layer. The map size will be
+     * determined by the size of the layer.
+     *
+     * The orientation defaults to Unknown and the tile width and height will
+     * default to 0. In case this map needs to be rendered, these properties
+     * will need to be properly set.
+     */
+    static Map *fromLayer(Layer *layer);
+
 private:
     void adoptLayer(Layer *layer);
 

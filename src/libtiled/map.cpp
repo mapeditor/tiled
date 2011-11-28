@@ -205,3 +205,10 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
     }
     return orientation;
 }
+
+Map *Map::fromLayer(Layer *layer)
+{
+    Map *result = new Map(Unknown, layer->width(), layer->height(), 0, 0);
+    result->addLayer(layer);
+    return result;
+}
