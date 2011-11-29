@@ -70,7 +70,7 @@
     <message>
         <location line="+22"/>
         <source>Could not open file for writing.</source>
-        <translation>Konnte Datei nicht zum schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -88,7 +88,7 @@
     <message>
         <location line="+26"/>
         <source>Could not open file for writing.</source>
-        <translation>Konnte Datei nicht zum schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+81"/>
@@ -111,23 +111,23 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+43"/>
         <source>Could not open file for reading.</source>
-        <translation>Konnte Datei zum lesen nicht öffnen.</translation>
+        <translation>Konnte Datei zum Lesen nicht öffnen.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error parsing file.</source>
-        <translation>Fehler beim parsen der Datei.</translation>
+        <translation>Fehler beim Parsen der Datei.</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Could not open file for writing.</source>
-        <translation>Konnte Datei nicht zum schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation>Fehler beim schreiben der Datei:
+        <translation>Fehler beim Schreiben der Datei:
 %1</translation>
     </message>
     <message>
@@ -141,7 +141,7 @@
     <message>
         <location filename="../src/plugins/lua/luaplugin.cpp" line="+54"/>
         <source>Could not open file for writing.</source>
-        <translation>Konnte Datei nicht zum schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -590,7 +590,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+101"/>
         <source>Could not open file for writing.</source>
-        <translation>Konnte Datei nicht zum schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
 </context>
 <context>
@@ -836,7 +836,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/objecttypes.cpp" line="+38"/>
         <source>Could not open file for writing.</source>
-        <translation>Konnte Datei nicht zum schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -972,7 +972,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+8"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>&amp;Lade Tileset neu wenn es verändert wird</translation>
+        <translation>&amp;Lade Tileset neu sobald es verändert wird</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1137,7 +1137,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+50"/>
         <source>Could not open file for writing.</source>
-        <translation>Konnte Datei nicht zum schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+243"/>
@@ -1184,7 +1184,7 @@ Zeile %1, Spalte %2</translation>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
         <source>Multiple layers %1 found!</source>
-        <translation type="obsolete">Multiple Ebenen vom Typ %1 gefunden!</translation>
+        <translation type="obsolete">Mehrere Ebenen vom Typ %1 gefunden!</translation>
     </message>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+130"/>
@@ -1194,7 +1194,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+23"/>
         <source>Layer %1 found in automapping rules.Did you mean %2_%1? Ignoring that layer!</source>
-        <translation>Ebene %1 wurde in den Automapping Regeln gefunden. Meinst du %2_%1? Ignoriere die Ebene!</translation>
+        <translation>Ebene %1 wurde in den Automapping Regeln gefunden. Meinen Sie %2_%1? Ignoriere die Ebene!</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -1222,7 +1222,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+98"/>
         <source>No map document found!</source>
-        <translation>Kein kartendokument gefunden!</translation>
+        <translation>Kein Kartendokument gefunden!</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1452,7 +1452,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation>%1 konnten keine Berechtigungen zur Ausführung hinzugefügt werden</translation>
+        <translation>Konnte %1 keine Rechte zur Ausführung geben</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1652,7 +1652,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+32"/>
         <source>Ctrl+=</source>
-        <translation>Ctrl+=</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
