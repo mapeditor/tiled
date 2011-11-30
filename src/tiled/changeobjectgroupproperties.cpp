@@ -46,11 +46,11 @@ ChangeObjectGroupProperties::ChangeObjectGroupProperties(
 void ChangeObjectGroupProperties::redo()
 {
     mObjectGroup->setColor(mRedoColor);
-    mMapDocument->emitRegionChanged(mObjectGroup->bounds());
+    mMapDocument->emitObjectsChanged(mObjectGroup->objects());
 }
 
 void ChangeObjectGroupProperties::undo()
 {
     mObjectGroup->setColor(mUndoColor);
-    mMapDocument->emitRegionChanged(mObjectGroup->bounds());
+    mMapDocument->emitObjectsChanged(mObjectGroup->objects());
 }
