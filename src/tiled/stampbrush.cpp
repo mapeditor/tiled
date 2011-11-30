@@ -447,7 +447,9 @@ QRect StampBrush::capturedArea() const
 
 void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
 {
-    if (!mStamp)
+    TileLayer *stamp = brushItem()->tileLayer();
+
+    if (!stamp)
         return;
 
     // This method shouldn't be called when current layer is not a tile layer
@@ -455,12 +457,12 @@ void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
     Q_ASSERT(tileLayer);
 
     if (!tileLayer->bounds().intersects(QRect(whereX, whereY,
-                                              mStamp->width(),
-                                              mStamp->height())))
+                                              stamp->width(),
+                                              stamp->height())))
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
-                            whereX, whereY, brushItem()->tileLayer());
+                            whereX, whereY, stamp);
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
     mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
