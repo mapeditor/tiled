@@ -359,9 +359,15 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QShortcut *switchToLeftDocument = new QShortcut(tr("Ctrl+PgUp"), this);
     connect(switchToLeftDocument, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToLeftDocument()));
+    QShortcut *switchToLeftDocument1 = new QShortcut(tr("Ctrl+Shift+Tab"), this);
+    connect(switchToLeftDocument1, SIGNAL(activated()),
+            mDocumentManager, SLOT(switchToLeftDocument()));
 
     QShortcut *switchToRightDocument = new QShortcut(tr("Ctrl+PgDown"), this);
     connect(switchToRightDocument, SIGNAL(activated()),
+            mDocumentManager, SLOT(switchToRightDocument()));
+    QShortcut *switchToRightDocument1 = new QShortcut(tr("Ctrl+Tab"), this);
+    connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
 
     new QShortcut(tr("X"), this, SLOT(flipStampHorizontally()));
