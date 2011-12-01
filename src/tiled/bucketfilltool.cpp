@@ -3,6 +3,7 @@
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jared Adams <jaxad0127@gmail.com>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -22,7 +23,6 @@
 
 #include "bucketfilltool.h"
 
-#include "tilelayer.h"
 #include "brushitem.h"
 #include "filltiles.h"
 #include "tilepainter.h"
@@ -43,6 +43,7 @@ BucketFillTool::BucketFillTool(QObject *parent)
                        parent)
     , mStamp(0)
     , mFillOverlay(0)
+    , mIsRandom(false)
 {
 }
 
@@ -55,84 +56,108 @@ BucketFillTool::~BucketFillTool()
 void BucketFillTool::activate(MapScene *scene)
 {
     AbstractTileTool::activate(scene);
-    brushItem()->setTileLayer(mFillOverlay);
+    tilePositionChanged(tilePosition());
+}
+
+void BucketFillTool::deactivate(MapScene *scene)
+{
+    AbstractTileTool::deactivate(scene);
+    mFillRegion = QRegion();
 }
 
 void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 {
     bool shiftPressed = QApplication::keyboardModifiers() & Qt::ShiftModifier;
-
-    // Optimization: we don't need to recalculate the fill area
-    // if the new mouse position is still over the filled region
-    // and the shift modifier hasn't changed.
-    if (mFillRegion.contains(tilePos) && shiftPressed == mLastShiftStatus)
-        return;
-
-    // Cache information about how the fill region was created
-    mLastShiftStatus = shiftPressed;
-
-    // Clear overlay to make way for a new one
-    // This also clears the connections so we don't get callbacks
-    clearOverlay();
-
-    // Skip filling if the stamp is empty
-    if (!mStamp || mStamp->isEmpty())
-        return;
+    bool fillRegionChanged = false;
 
     // Make sure that a tile layer is selected
     TileLayer *tileLayer = currentTileLayer();
     if (!tileLayer)
         return;
 
-    // Get the new fill region
-    if (!shiftPressed) {
-        // If not holding shift, a region is generated from the current pos
-        TilePainter regionComputer(mapDocument(), tileLayer);
+    // Skip filling if the stamp is empty
+    if (!mStamp || mStamp->isEmpty())
+        return;
 
-        // If the stamp is a single tile, ignore it when making the region
-        if (mStamp->width() == 1 && mStamp->height() == 1 &&
+    TilePainter regionComputer(mapDocument(), tileLayer);
+    // If the stamp is a single tile, ignore it when making the region
+    if (mStamp->width() == 1 && mStamp->height() == 1 && !shiftPressed &&
             mStamp->cellAt(0, 0) == regionComputer.cellAt(tilePos.x(),
-                                                          tilePos.y()))
-            return;
+                                                           tilePos.y()))
+        return;
 
-        mFillRegion = regionComputer.computeFillRegion(tilePos);
-    } else {
-        // If holding shift, the region is the selection bounds
-        mFillRegion = mapDocument()->tileSelection();
+    // This clears the connections so we don't get callbacks
+    clearConnections(mapDocument());
 
-        // Fill region is the whole map is there is no selection
-        if (mFillRegion.isEmpty())
-            mFillRegion = tileLayer->bounds();
+    // Optimization: we don't need to recalculate the fill area
+    // if the new mouse position is still over the filled region
+    // and the shift modifier hasn't changed.
+    if (!mFillRegion.contains(tilePos) || shiftPressed != mLastShiftStatus || mIsRandom) {
 
-        // The mouse needs to be in the region
-        if (!mFillRegion.contains(tilePos))
-            mFillRegion = QRegion();
+        // Clear overlay to make way for a new one
+        clearOverlay();
+
+        // Cache information about how the fill region was created
+        mLastShiftStatus = shiftPressed;
+
+        // Get the new fill region
+        if (!shiftPressed) {
+            // If not holding shift, a region is generated from the current pos
+            mFillRegion = regionComputer.computeFillRegion(tilePos);
+        } else {
+            // If holding shift, the region is the selection bounds
+            mFillRegion = mapDocument()->tileSelection();
+
+            // Fill region is the whole map is there is no selection
+            if (mFillRegion.isEmpty())
+                mFillRegion = tileLayer->bounds();
+
+            // The mouse needs to be in the region
+            if (!mFillRegion.contains(tilePos))
+                mFillRegion = QRegion();
+        }
+        fillRegionChanged = true;
     }
 
     // Ensure that a fill region was created before making an overlay layer
     if (mFillRegion.isEmpty())
         return;
 
-    // Create a new overlay region
-    mFillOverlay = new TileLayer(QString(),
-                                 tileLayer->x(),
-                                 tileLayer->y(),
-                                 tileLayer->width(),
-                                 tileLayer->height());
+    if (mLastRandomStatus != mIsRandom)
+        fillRegionChanged = true;
+
+    if (!mFillOverlay) {
+        // Create a new overlay region
+        mFillOverlay = new TileLayer(QString(),
+                                     tileLayer->x(),
+                                     tileLayer->y(),
+                                     tileLayer->width(),
+                                     tileLayer->height());
+    }
 
     // Paint the new overlay
     TilePainter tilePainter(mapDocument(), mFillOverlay);
-    tilePainter.drawStamp(mStamp, mFillRegion);
+    if (!mIsRandom) {
+        if (fillRegionChanged)
+            tilePainter.drawStamp(mStamp, mFillRegion);
+    } else {
+        TileLayer *stamp = getRandomTileLayer(mFillRegion);
+        tilePainter.drawStamp(stamp, mFillRegion);
+        delete stamp;
+        fillRegionChanged = true;
+    }
 
-    // Crop the overlay to the smallest possible size
-    const QRect fillBounds = mFillRegion.boundingRect();
-    mFillOverlay->resize(fillBounds.size(), -fillBounds.topLeft());
-    mFillOverlay->setX(fillBounds.x());
-    mFillOverlay->setY(fillBounds.y());
+    if (fillRegionChanged) {
+        // Crop the overlay to the smallest possible size
+        const QRect fillBounds = mFillRegion.boundingRect();
+        mFillOverlay->resize(fillBounds.size(), -fillBounds.topLeft());
+        mFillOverlay->setX(fillBounds.x());
+        mFillOverlay->setY(fillBounds.y());
 
-    // Update the brush item to draw the overlay
-    brushItem()->setTileLayer(mFillOverlay);
-
+        // Update the brush item to draw the overlay
+        brushItem()->setTileLayer(mFillOverlay);
+        mLastRandomStatus = mIsRandom;
+    }
     // Create connections to know when the overlay should be cleared
     makeConnections();
 }
@@ -147,7 +172,7 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
     FillTiles *fillTiles = new FillTiles(mapDocument(),
                                          currentTileLayer(),
                                          mFillRegion,
-                                         mStamp);
+                                         brushItem()->tileLayer());
 
     QRegion fillRegion(mFillRegion);
     mapDocument()->undoStack()->push(fillTiles);
@@ -192,6 +217,9 @@ void BucketFillTool::setStamp(TileLayer *stamp)
 
     delete mStamp;
     mStamp = stamp;
+
+    if (mIsRandom)
+        updateRandomList();
 }
 
 void BucketFillTool::clearOverlay()
@@ -241,3 +269,58 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     disconnect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
                this, SLOT(clearOverlay()));
 }
+
+void BucketFillTool::setRandom(bool value)
+{
+    if (mIsRandom == value)
+        return;
+
+    mIsRandom = value;
+
+    if (mIsRandom)
+        updateRandomList();
+    else
+        mRandomList.clear();
+
+    // Don't need to recalculate fill region if there was no fill region
+    if (!mFillOverlay)
+        return;
+
+    tilePositionChanged(tilePosition());
+}
+
+TileLayer *BucketFillTool::getRandomTileLayer(const QRegion &region) const
+{
+    QRect bb = region.boundingRect();
+    TileLayer *result = new TileLayer(QString(), bb.x(), bb.y(),
+                                      bb.width(), bb.height());
+
+    if (region.isEmpty() || mRandomList.empty())
+        return result;
+
+    foreach (const QRect &rect, region.rects()) {
+        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
+            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+
+                result->setCell(_x - bb.x(),
+                                _y - bb.y(),
+                                mRandomList.at(rand() % mRandomList.size()));
+            }
+        }
+    }
+    return result;
+}
+
+void BucketFillTool::updateRandomList()
+{
+    mRandomList.clear();
+
+    if (!mStamp)
+        return;
+
+    for (int x = 0; x < mStamp->width(); x++)
+        for (int y = 0; y < mStamp->height(); y++)
+            if (!mStamp->cellAt(x, y).isEmpty())
+                mRandomList.append(mStamp->cellAt(x, y));
+}
+

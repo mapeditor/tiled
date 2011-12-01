@@ -2,6 +2,7 @@
  * bucketfilltool.h
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -24,10 +25,9 @@
 
 #include "abstracttiletool.h"
 
+#include "tilelayer.h"
+
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
 class MapDocument;
@@ -45,6 +45,7 @@ public:
     ~BucketFillTool();
 
     void activate(MapScene *scene);
+    void deactivate(MapScene *scene);
 
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);
@@ -58,6 +59,9 @@ public:
      * ownership over the stamp layer.
      */
     void setStamp(TileLayer *stamp);
+
+public slots:
+    void setRandom(bool value);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos);
@@ -77,6 +81,38 @@ private:
     QRegion mFillRegion;
 
     bool mLastShiftStatus;
+
+    /**
+     * Indicates if the tool is using the random mode.
+     */
+    bool mIsRandom;
+
+    /**
+     * Contains the value of mIsRandom at that time, when the latest call of
+     * tilePositionChanged() took place.
+     * This variable is needed to detect if the random mode was changed during
+     * mFillOverlay being brushed at an area.
+     */
+    bool mLastRandomStatus;
+
+    /**
+     * Contains all used random cells to use in random mode.
+     * The same cell can be in the list multiple times to make different
+     * random weights possible.
+     */
+    QList<Cell> mRandomList;
+
+    /**
+     * Updates the list of random cells.
+     * This is done by taking all non-null tiles from the original stamp mStamp.
+     */
+    void updateRandomList();
+
+    /**
+     * Returns a tile layer having random tiles placed at \a region.The
+     * caller is responsible for the returned tile layer.
+     */
+    TileLayer *getRandomTileLayer(const QRegion &region) const;
 };
 
 } // namespace Internal

@@ -210,6 +210,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mRandomButton->setToolTip(tr("Random Mode"));
     mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
     mRandomButton->setCheckable(true);
+    mRandomButton->setShortcut(QKeySequence(tr("D")));
     mUi->mainToolBar->addWidget(mRandomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
@@ -333,6 +334,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
+    connect(mRandomButton, SIGNAL(toggled(bool)),
+            mBucketFillTool, SLOT(setRandom(bool)));
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);

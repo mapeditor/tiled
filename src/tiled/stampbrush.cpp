@@ -360,14 +360,15 @@ TileLayer *StampBrush::getRandomTileLayer() const
 
 void StampBrush::updateRandomList()
 {
+    mRandomList.clear();
+
     if (!mStamp)
         return;
 
-    mRandomList.clear();
     for (int x = 0; x < mStamp->width(); x++)
         for (int y = 0; y < mStamp->height(); y++)
-            if (!mStamp->cellAt(x,y).isEmpty())
-                mRandomList.append(mStamp->cellAt(x,y));
+            if (!mStamp->cellAt(x, y).isEmpty())
+                mRandomList.append(mStamp->cellAt(x, y));
 }
 
 void StampBrush::setStamp(TileLayer *stamp)
