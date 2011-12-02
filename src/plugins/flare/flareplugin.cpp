@@ -2,7 +2,7 @@
  * Flare Tiled Plugin
  * Copyright 2010, Jaderamiso <jaderamiso@gmail.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
- * Copyright 2011, Clint  Bellanger <clintbellanger@gmail.com>
+ * Copyright 2011, Clint Bellanger <clintbellanger@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -109,26 +109,26 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
             foreach (const MapObject *o, group->objects()) {
-				if (o->type() != "") {
+                if (o->type() != "") {
                     out << "[" << group->name() << "]\n";
-					
-					// display object name as comment
-					if (o->name() != "") {
-					    out << "# " << o->name() << "\n";
-					}
-					
+
+                    // display object name as comment
+                    if (o->name() != "") {
+                        out << "# " << o->name() << "\n";
+                    }
+
                     out << "type=" << o->type() << "\n";
                     out << "location=" << o->x() << "," << o->y();
                     out << "," << o->width() << "," << o->height() << "\n";
-				
-	                // write all properties for this object
+
+                    // write all properties for this object
                     Properties::const_iterator it = o->properties().constBegin();
                     Properties::const_iterator it_end = o->properties().constEnd();
                     for (; it != it_end; ++it) {
                         out << it.key().toUtf8() << "=" << it.value().toUtf8() << "\n";
                     }
                     out << "\n";
-				}
+                }
             }
         }
     }
