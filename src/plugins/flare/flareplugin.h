@@ -48,7 +48,6 @@ public:
 
 private:
     bool checkOneLayerWithName(const Tiled::Map *map, const QString &name);
-    QString checkProperty(const Tiled::Map *object, const QString &name);
 
     QString mError;
 };
