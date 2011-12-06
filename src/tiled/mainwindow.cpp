@@ -75,6 +75,10 @@
 #include "zoomable.h"
 #include "commandbutton.h"
 
+#ifdef Q_WS_MAC
+#include "macsupport.h"
+#endif
+
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -109,6 +113,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setCentralWidget(mDocumentManager->widget());
 
     PluginManager::instance()->loadPlugins();
+
+#ifdef Q_WS_MAC
+    MacSupport::addFullscreen(this);
+#endif
 
     Preferences *preferences = Preferences::instance();
 
