@@ -2,6 +2,7 @@
  * Flare Tiled Plugin
  * Copyright 2010, Jaderamiso <jaderamiso@gmail.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2011, Clint Bellanger <clintbellanger@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -58,13 +59,6 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     if (!checkOneLayerWithName(map, QLatin1String("collision")))
         return false;
 
-    QString title = checkProperty(map, QLatin1String("title"));
-    QString tileset = checkProperty(map, QLatin1String("tileset"));
-    QString music = checkProperty(map, QLatin1String("music"));
-
-    if (title.isEmpty() || tileset.isEmpty() || music.isEmpty())
-        return false;
-
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         mError = tr("Could not open file for writing.");
@@ -79,14 +73,15 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "[header]\n";
     out << "width=" << mapWidth << "\n";
     out << "height=" << mapHeight << "\n";
-    out << "music=" << music << "\n";
-    out << "tileset=" << tileset << "\n";
-    out << "title=" << title << "\n";
-    QString spawnpoint = map->property(QLatin1String("spawnpoint"));
-    if (!spawnpoint.isEmpty())
-        out << "spawnpoint=" << spawnpoint << "\n";
 
+    // write all properties for this map
+    Properties::const_iterator it = map->properties().constBegin();
+    Properties::const_iterator it_end = map->properties().constEnd();
+    for (; it != it_end; ++it) {
+        out << it.key().toUtf8() << "=" << it.value().toUtf8() << "\n";
+    }
     out << "\n";
+	
 
     GidMapper gidMapper(map->tilesets());
 
@@ -94,20 +89,19 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     foreach (Layer *layer, map->layers()) {
         if (TileLayer *tileLayer = layer->asTileLayer()) {
             out << "[layer]\n";
-            out << "id=" << layer->name() << "\n";
-            out << "format=dec\n";
+            out << "type=" << layer->name() << "\n";
             out << "data=\n";
-            for (int y = 0; y < mapWidth; ++y) {
-                for (int x = 0; x < mapHeight; ++x) {
+            for (int y = 0; y < mapHeight; ++y) {
+                for (int x = 0; x < mapWidth; ++x) {
                     Cell t = tileLayer->cellAt(x, y);
                     int id = 0;
                     if (t.tile)
                         id = gidMapper.cellToGid(t);
                     out << id;
-                    if (x < mapHeight - 1)
+                    if (x < mapWidth - 1)
                         out << ",";
                 }
-                if (y < mapWidth - 1)
+                if (y < mapHeight - 1)
                     out << ",";
                 out << "\n";
             }
@@ -115,23 +109,26 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
             foreach (const MapObject *o, group->objects()) {
-                out << "[" << group->name() << "]\n";
-                out << "type=" << o->type() << "\n";
-                out << "location=" << o->x() << "," << o->y();
-                QString facing = o->property(QLatin1String("facing"));
-                if (group->name() == QLatin1String("event") || group->name() == QLatin1String("enemygroup"))
+                if (o->type() != "") {
+                    out << "[" << group->name() << "]\n";
+
+                    // display object name as comment
+                    if (o->name() != "") {
+                        out << "# " << o->name() << "\n";
+                    }
+
+                    out << "type=" << o->type() << "\n";
+                    out << "location=" << o->x() << "," << o->y();
                     out << "," << o->width() << "," << o->height() << "\n";
-                else if (group->name() == QLatin1String("enemy") && !facing.isEmpty())
-                    out << "," << facing << "\n";
-                else
-                    out << "\n";
-                Properties::const_iterator it = o->properties().constBegin();
-                Properties::const_iterator it_end = o->properties().constEnd();
-                for (; it != it_end; ++it) {
-                    if (QLatin1String(it.key().toUtf8()) != QLatin1String("facing"))
+
+                    // write all properties for this object
+                    Properties::const_iterator it = o->properties().constBegin();
+                    Properties::const_iterator it_end = o->properties().constEnd();
+                    for (; it != it_end; ++it) {
                         out << it.key().toUtf8() << "=" << it.value().toUtf8() << "\n";
+                    }
+                    out << "\n";
                 }
-                out << "\n";
             }
         }
     }
@@ -156,15 +153,6 @@ bool FlarePlugin::checkOneLayerWithName(const Tiled::Map *map,
     }
 
     return true;
-}
-
-QString FlarePlugin::checkProperty(const Tiled::Map *map,
-                                   const QString &name)
-{
-    QString value = map->property(name);
-    if (value.isEmpty())
-        mError = tr("No map property \"%1\" found!").arg(name);
-    return value;
 }
 
 Q_EXPORT_PLUGIN2(Flare, FlarePlugin)
