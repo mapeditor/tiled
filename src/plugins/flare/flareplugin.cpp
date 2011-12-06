@@ -66,8 +66,10 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(&file);
-    int mapWidth = map->width();
-    int mapHeight = map->height();
+    out.setCodec("UTF-8");
+
+    const int mapWidth = map->width();
+    const int mapHeight = map->height();
 
     // write [header]
     out << "[header]\n";
@@ -78,7 +80,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     Properties::const_iterator it = map->properties().constBegin();
     Properties::const_iterator it_end = map->properties().constEnd();
     for (; it != it_end; ++it) {
-        out << it.key().toUtf8() << "=" << it.value().toUtf8() << "\n";
+        out << it.key() << "=" << it.value() << "\n";
     }
     out << "\n";
 	
@@ -109,11 +111,11 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
             foreach (const MapObject *o, group->objects()) {
-                if (o->type() != "") {
+                if (o->type().isEmpty()) {
                     out << "[" << group->name() << "]\n";
 
                     // display object name as comment
-                    if (o->name() != "") {
+                    if (o->name().isEmpty()) {
                         out << "# " << o->name() << "\n";
                     }
 
@@ -125,7 +127,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     Properties::const_iterator it = o->properties().constBegin();
                     Properties::const_iterator it_end = o->properties().constEnd();
                     for (; it != it_end; ++it) {
-                        out << it.key().toUtf8() << "=" << it.value().toUtf8() << "\n";
+                        out << it.key() << "=" << it.value() << "\n";
                     }
                     out << "\n";
                 }
