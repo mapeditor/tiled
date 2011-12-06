@@ -1,0 +1,43 @@
+Replica Island has variably-sized objects, stored as individual images (and
+sequences of images for frames).  But we need to represent our objects as a
+single tiled image.
+
+If you have a bunch of object images of various sizes, and you want to
+make a tiled image, you place one image of each object in a directory,
+numbering them sequentially and putting in transparent placeholders for
+unused object IDs:
+
+  00_player.png
+  01_coin.png
+  02_ruby.png
+  03_diary.png
+  04_trans.png
+
+You can then convert these images into a tile image using the 'convert' and
+'montage' commands from ImageMagick:
+
+  # Trim transparent borders off of images.  This is necessary to make
+  # nice tiles out of characters who are 1.5 tiles high with a 2-tile high
+  # image.
+  mkdir trimmed
+  for F in *.png; do
+    convert $F -bordercolor none -border 1x1 -trim +repage trimmed/$F
+  done
+  cd trimmed
+
+  # Shrink images larger than 32x32.
+  mkdir shrunk
+  for F in *.png; do
+    convert $F -resize '32x32>' shrunk/$F
+  done
+  cd shrunk
+
+  # Center images on 32x32 tiles.
+  mkdir fitted
+  for F in *.png; do
+    convert $F -background none -gravity center -extent 32x32 fitted/$F
+  done
+  cd fitted
+
+  # Assemble tiles into a single image.
+  montage *.png -tile 7x -geometry +0+0 -background none objects.png

@@ -4,4 +4,5 @@ SUBDIRS = flare \
           json \
           lua \
           tengine \
-          tmw
+          tmw \
+          replicaisland
