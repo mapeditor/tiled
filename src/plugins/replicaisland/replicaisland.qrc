@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>grass.png</file>
+        <file>island.png</file>
+        <file>sewage.png</file>
+        <file>cave.png</file>
+        <file>lab.png</file>
+        <file>titletileset.png</file>
+        <file>tutorial.png</file>
+        <file>collision_map.png</file>
+        <file>objects.png</file>
+        <file>hotspots.png</file>
+    </qresource>
+</RCC>
