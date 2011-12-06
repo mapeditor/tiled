@@ -31,10 +31,11 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt; {2&quot;?} {1&lt;?} {2008-2011 ?} {2 ?}</translation>
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -87,27 +88,27 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+44"/>
         <source>Flare map files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Flare マップファイル (*.txt)</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+        <translation>書き込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>No &quot;%1&quot; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot;レイヤーが見つかりません!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Multiple &quot;%1&quot; layers found!</source>
-        <translation type="unfinished"></translation>
+        <translation>複数の&quot;%1&quot;レイヤーが見つかりました!</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>No map property &quot;%1&quot; found!</source>
-        <translation type="unfinished"></translation>
+        <translation>マップのプロパティ&quot;%1&quot;は見つかりません!</translation>
     </message>
 </context>
 <context>
@@ -115,28 +116,29 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+43"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>読み込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルをパース中にエラーが発生.</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+        <translation>書き込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルへ書き込み中にエラー:
+%1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Json files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json ファイル (*.json)</translation>
     </message>
 </context>
 <context>
@@ -251,7 +253,7 @@
     <message>
         <location line="+3"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -311,22 +313,22 @@
     <message>
         <location line="+12"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>削除(&amp;D)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Highlight Current Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のレイヤーをハイライト表示(&amp;H)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation>H</translation>
     </message>
     <message>
         <source>Move Layer &amp;Up</source>
@@ -445,97 +447,97 @@
     <message>
         <location filename="../src/ui_mainwindow.h" line="+167"/>
         <source>Tiled</source>
-        <translation type="unfinished">Tiled</translation>
+        <translation>Tiled</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished">開く(&amp;O)...</translation>
+        <translation>開く(&amp;O)...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>保存(&amp;S)...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished">終了(&amp;Q)</translation>
+        <translation>終了(&amp;Q)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">コピー(&amp;C)</translation>
+        <translation>コピー(&amp;C)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">貼り付け(&amp;P)</translation>
+        <translation>貼り付け(&amp;P)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;About Tiled</source>
-        <translation type="unfinished">Tiledについて(&amp;A)</translation>
+        <translation>Tiledについて(&amp;A)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>About Qt</source>
-        <translation type="unfinished">Qtについて</translation>
+        <translation>Qtについて</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Resize</source>
-        <translation type="unfinished"></translation>
+        <translation>リサイズ(&amp;R)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>プロパティ(&amp;P)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Recent Files</source>
-        <translation type="unfinished">最近使ったファイル(&amp;R)</translation>
+        <translation>最近使ったファイル(&amp;R)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show &amp;grid</source>
-        <translation type="unfinished"></translation>
+        <translation>グリッドを表示(&amp;g)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished">Ctrl+G</translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;File</source>
-        <translation type="unfinished">ファイル(&amp;F)</translation>
+        <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">編集(&amp;E)</translation>
+        <translation>編集(&amp;E)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">ヘルプ(&amp;H)</translation>
+        <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Map</source>
-        <translation type="unfinished">マップ(&amp;M)</translation>
+        <translation>マップ(&amp;M)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;View</source>
-        <translation type="unfinished">表示(&amp;V)</translation>
+        <translation>表示(&amp;V)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Main toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>メインツールバー</translation>
     </message>
 </context>
 <context>
@@ -639,7 +641,7 @@ Line %1, column %2</source>
     <message>
         <location line="+124"/>
         <source>Invalid points data for polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なポリゴンのポイントデータ</translation>
     </message>
     <message>
         <location line="-217"/>
@@ -729,7 +731,7 @@ Line %1, column %2</source>
         <location line="+26"/>
         <source> tiles</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> タイル</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -747,7 +749,7 @@ Line %1, column %2</source>
         <location line="+26"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -821,12 +823,12 @@ Line %1, column %2</source>
         <location line="+20"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location line="-125"/>
         <source>The space at the edges of the tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセット画像の一番端（枠）の余白.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -836,22 +838,22 @@ Line %1, column %2</source>
     <message>
         <location line="+83"/>
         <source>An offset applied when drawing the tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルを描画する時のオフセット.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Drawing Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>表示オフセット</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished">X:</translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Y:</source>
-        <translation type="unfinished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="-157"/>
@@ -861,7 +863,7 @@ Line %1, column %2</source>
     <message>
         <location line="+94"/>
         <source>The space between the tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>タイル間のスペース.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -922,24 +924,24 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypes.cpp" line="+38"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+        <translation>書き込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Could not open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>File doesn&apos;t contain object types.</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクトタイプがファイルに含まれていない.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation type="unfinished">%3
+        <translation>%3
 
 行 %1, 位置 %2</translation>
     </message>
@@ -1018,7 +1020,7 @@ Line %1, column %2</source>
     <message>
         <location line="+13"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>一般</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1089,37 +1091,37 @@ Line %1, column %2</source>
         <location line="+24"/>
         <location line="+6"/>
         <source>Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプ</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Add Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプの追加</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>追加</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Remove Selected Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>選択されたオブジェクト・タイプを削除</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>インポート...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポート...</translation>
     </message>
 </context>
 <context>
@@ -1272,12 +1274,14 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+130"/>
         <source>%1: Property %2 = %3 does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>これでいいのかな？</translatorcomment>
+        <translation>%1 プロパティ %2 = %3 は意味をなしません。このプロパティを無視します。</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Layer %1 found in automapping rules.Did you mean %2_%1? Ignoring that layer!</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>これでいいのかな？automappin==自動マップというのもどうなんだろうか・・・</translatorcomment>
+        <translation>レイヤー%1を自動マップのルールで見つけました。これは%2_%1という意味でしょうか？このレイヤーは無視されます!</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -1305,44 +1309,45 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+98"/>
         <source>No map document found!</source>
-        <translation type="unfinished"></translation>
+        <translation>マップ・ドキュメントが見つかりません!</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>No set layer found!</source>
-        <translation type="unfinished">setレイヤーが見つかりません!</translation>
+        <translatorcomment>setレイヤでいいのかな？</translatorcomment>
+        <translation>setレイヤーが見つかりません!</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Apply AutoMap rules</source>
-        <translation type="unfinished">AutoMap rulesを適用</translation>
+        <translation>AutoMap rulesを適用</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>No rules file found at:
 %1</source>
-        <translation type="unfinished">rulesファイルが見つかりません:
+        <translation>rulesファイルが見つかりません:
 %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Error opening rules file:
 %1</source>
-        <translation type="unfinished">rulesファイルが開けませんでした:
+        <translation>rulesファイルが開けませんでした:
 %1</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>File not found:
 %1</source>
-        <translation type="unfinished">ファイルが見つかりません:
+        <translation>ファイルが見つかりません:
 %1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Opening rules map failed:
 %1</source>
-        <translation type="unfinished">rules mapを開くことができませんでした:
+        <translation>rules mapを開くことができませんでした:
 %1</translation>
     </message>
 </context>
@@ -1574,32 +1579,32 @@ Line %1, column %2</source>
     <message>
         <location line="-1"/>
         <source>Insert Object</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクトを追加</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Insert Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルを追加</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリゴンを追加</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Insert Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリラインを追加</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation>L</translation>
     </message>
     <message>
         <source>Insert Objects</source>
@@ -1621,40 +1626,40 @@ Line %1, column %2</source>
         <location filename="../src/tiled/editpolygontool.cpp" line="+130"/>
         <location line="+191"/>
         <source>Edit Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリゴンを編集</translation>
     </message>
     <message>
         <location line="-189"/>
         <location line="+190"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message numerus="yes">
         <location line="+210"/>
         <source>Move %n Point(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n ポイントを移動</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n ノードを削除</numerusform>
         </translation>
     </message>
     <message>
         <location line="-40"/>
         <location line="+215"/>
         <source>Join Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>ノードを結合</translation>
     </message>
     <message>
         <location line="-214"/>
         <location line="+250"/>
         <source>Split Segments</source>
-        <translation type="unfinished"></translation>
+        <translation>分割</translation>
     </message>
 </context>
 <context>
@@ -1774,7 +1779,7 @@ Line %1, column %2</source>
     <message>
         <location line="+23"/>
         <source>Random Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ランダムモード</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1805,17 +1810,17 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+Z</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+C</translation>
     </message>
     <message>
         <location line="+134"/>
@@ -1877,17 +1882,17 @@ Line %1, column %2</source>
     <message>
         <location line="+33"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>Automatic Mapping Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>自動マップの警告</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Automatic Mapping Error</source>
-        <translation type="unfinished"></translation>
+        <translation>自動マップのエラー</translation>
     </message>
     <message>
         <location line="+252"/>
@@ -2039,7 +2044,7 @@ Line %1, column %2</source>
     <message>
         <location line="+11"/>
         <source>F2</source>
-        <translation type="unfinished">F2</translation>
+        <translation>F2</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2102,7 +2107,7 @@ Line %1, column %2</source>
     <message>
         <location line="+61"/>
         <source>Re&amp;name Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤーの名前を変更(&amp;n)</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2145,7 +2150,7 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>%1 x %2 pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2 ピクセル</translation>
     </message>
 </context>
 <context>
@@ -2255,12 +2260,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/objecttypesmodel.cpp" line="+51"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>種類</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>色</translation>
     </message>
 </context>
 <context>
@@ -2274,28 +2279,28 @@ Line %1, column %2</source>
     <message>
         <location line="+69"/>
         <source>Import Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプをインポート</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+29"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプ ファイル (*.xml)</translation>
     </message>
     <message>
         <location line="-16"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプを読み込み中にエラー</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Export Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプをエクスポート</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト・タイプを書き込み中にエラー</translation>
     </message>
 </context>
 <context>
@@ -2381,18 +2386,18 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/tileselectiontool.cpp" line="+34"/>
         <location line="+81"/>
         <source>Rectangular Select</source>
-        <translation type="unfinished">選択範囲</translation>
+        <translation>選択範囲</translation>
     </message>
     <message>
         <location line="-78"/>
         <location line="+79"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <location line="-56"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
-        <translation type="unfinished">%1, %2 - 四角形: (%3 x %4)</translation>
+        <translation>%1, %2 - 四角形: (%3 x %4)</translation>
     </message>
 </context>
 <context>
@@ -2400,7 +2405,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+170"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>名前変更</translation>
     </message>
     <message>
         <location line="+287"/>
@@ -2425,37 +2430,37 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation type="unfinished">タイルセットをインポート(&amp;I)</translation>
+        <translation>タイルセットをインポート(&amp;I)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation type="unfinished">タイルセットを名前をつけてエクスポート(&amp;E)...</translation>
+        <translation>タイルセットを名前をつけてエクスポート(&amp;E)...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile&amp;set Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットのプロパティ(&amp;s)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットを削除(&amp;R)</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Tileset</source>
-        <translation type="unfinished">タイルセット</translation>
+        <translation>タイルセット</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Export Tileset</source>
-        <translation type="unfinished">タイルセットをエクスポート</translation>
+        <translation>タイルセットをエクスポート</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished">Tiledタイルセットファイル (*.tsx)</translation>
+        <translation>Tiledタイルセットファイル (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -2770,7 +2775,7 @@ Line %1, column %2</source>
     <message>
         <location line="+27"/>
         <source>Change Tileset name</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセット名を変更</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
@@ -2794,7 +2799,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/changepolygon.cpp" line="+39"/>
         <source>Change Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリゴンを変更</translation>
     </message>
 </context>
 <context>
