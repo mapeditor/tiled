@@ -21,8 +21,10 @@
 #include "newmapdialog.h"
 #include "ui_newmapdialog.h"
 
+#include "isometricrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "orthogonalrenderer.h"
 #include "preferences.h"
 #include "tilelayer.h"
 
@@ -34,6 +36,7 @@ static const char * const MAP_HEIGHT_KEY = "Map/Height";
 static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
 static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 NewMapDialog::NewMapDialog(QWidget *parent) :
@@ -68,6 +71,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     connect(mUi->mapHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
+    connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
     refreshPixelSize();
 }
 
@@ -106,8 +110,25 @@ MapDocument *NewMapDialog::createMap()
 
 void NewMapDialog::refreshPixelSize()
 {
-    const int width = mUi->mapWidth->value() * mUi->tileWidth->value();
-    const int height = mUi->mapHeight->value() * mUi->tileHeight->value();
+    const int orientation = mUi->orientation->currentIndex();
+    const Map map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
+                  mUi->mapWidth->value(),
+                  mUi->mapHeight->value(),
+                  mUi->tileWidth->value(),
+                  mUi->tileHeight->value());
 
-    mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels").arg(width).arg(height));
+    QSize size;
+
+    switch (map.orientation()) {
+    case Map::Isometric:
+        size = IsometricRenderer(&map).mapSize();
+        break;
+    default:
+        size = OrthogonalRenderer(&map).mapSize();
+        break;
+    }
+
+    mUi->pixelSizeLabel->setText(tr("%1 x %2 pixels")
+                                 .arg(size.width())
+                                 .arg(size.height()));
 }
