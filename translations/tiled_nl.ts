@@ -60,11 +60,11 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versie %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Auteursrecht 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(zie het AUTHORS bestand voor de lijst van bijdragers)&lt;/p&gt;
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versie %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Auteursrecht 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(zie het AUTHORS bestand voor de lijst van bijdragers)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;U kan dit programma verspreiden en/of wijzigen onder de bepalingen van de GPL (versie 2 of later). Een kopie van de GPL is te vinden in het meegeleverde bestand &apos;COPYING&apos;.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
- {2&quot;?} {1&lt;?} {2008-2011 ?} {2 ?}</translation>
+</translation>
     </message>
 </context>
 <context>
@@ -117,27 +117,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+44"/>
         <source>Flare map files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Flare map bestanden (*.txt)</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>No &quot;%1&quot; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen &quot;%1&quot; laag gevonden!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Multiple &quot;%1&quot; layers found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Meerdere &quot;%1&quot; lagen gevonden!</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>No map property &quot;%1&quot; found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen eigenschap &quot;%1&quot; gevonden!</translation>
     </message>
 </context>
 <context>
@@ -145,28 +145,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+43"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens het parsen van het bestand.</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens het schrijven van het bestand:
+%1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Json files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json bestanden (*.json)</translation>
     </message>
 </context>
 <context>
@@ -276,7 +277,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+3"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+29"/>
@@ -321,22 +322,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+12"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver&amp;wijderen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Highlight Current Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Huidige Laag Laten Opvallen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-360"/>
@@ -475,97 +476,97 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui_mainwindow.h" line="+167"/>
         <source>Tiled</source>
-        <translation type="unfinished">Tiled</translation>
+        <translation>Tiled</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished">&amp;Openen...</translation>
+        <translation>&amp;Openen...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opslaan...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished">&amp;Afsluiten</translation>
+        <translation>&amp;Afsluiten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">K&amp;opiëren</translation>
+        <translation>K&amp;opiëren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Plakken</translation>
+        <translation>&amp;Plakken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;About Tiled</source>
-        <translation type="unfinished">&amp;Over Tiled</translation>
+        <translation>&amp;Over Tiled</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>About Qt</source>
-        <translation type="unfinished">Over Qt</translation>
+        <translation>Over Qt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Resize</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Formaat Veranderen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eigenschappen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Recent Files</source>
-        <translation type="unfinished">&amp;Recente Bestanden</translation>
+        <translation>&amp;Recente Bestanden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show &amp;grid</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Raster Weergeven</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished">Ctrl+G</translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Bestand</translation>
+        <translation>&amp;Bestand</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">Be&amp;werken</translation>
+        <translation>Be&amp;werken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Help</translation>
+        <translation>&amp;Help</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Map</source>
-        <translation type="unfinished">&amp;Map</translation>
+        <translation>&amp;Map</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;View</source>
-        <translation type="unfinished">Beel&amp;d</translation>
+        <translation>Beel&amp;d</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Main toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoofd toolbalk</translation>
     </message>
 </context>
 <context>
@@ -669,7 +670,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+124"/>
         <source>Invalid points data for polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig formaat voor polygon node</translation>
     </message>
     <message>
         <location line="-217"/>
@@ -759,7 +760,7 @@ Regel %1, colom %2</translation>
         <location line="+26"/>
         <source> tiles</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> tiles</translation>
     </message>
     <message>
         <location line="-10"/>
@@ -777,7 +778,7 @@ Regel %1, colom %2</translation>
         <location line="+26"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -851,12 +852,12 @@ Regel %1, colom %2</translation>
         <location line="+20"/>
         <source> px</source>
         <extracomment>Remember starting with a space.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location line="-125"/>
         <source>The space at the edges of the tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>De ruimte aan de rand van de tileset.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -866,22 +867,22 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+83"/>
         <source>An offset applied when drawing the tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschuiving bij het tekenen van de tiles.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Drawing Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekenafstand</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Y:</source>
-        <translation type="unfinished">Y:</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location line="-157"/>
@@ -891,7 +892,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+94"/>
         <source>The space between the tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>De ruimte tussen de tiles.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -952,24 +953,24 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/objecttypes.cpp" line="+38"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Could not open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon bestand niet openen.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>File doesn&apos;t contain object types.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand bevat geen object types.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>%3
 
 Line %1, column %2</source>
-        <translation type="unfinished">%3
+        <translation>%3
 
 Regel %1, colom %2</translation>
     </message>
@@ -1048,7 +1049,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+13"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemeen</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1119,37 +1120,37 @@ Regel %1, colom %2</translation>
         <location line="+24"/>
         <location line="+6"/>
         <source>Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Add Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Type Toevoegen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Remove Selected Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Geselecteerde Typen Verwijderen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeren...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteren...</translation>
     </message>
 </context>
 <context>
@@ -1305,12 +1306,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+130"/>
         <source>%1: Property %2 = %3 does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: Eigenschap %2 = %3 klopt niet en wordt genegeerd.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Layer %1 found in automapping rules.Did you mean %2_%1? Ignoring that layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag %1 gevonden in de automapping regels. Bedoelde je %2_%1? Laag wordt genegeerd!</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -1338,43 +1339,44 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+98"/>
         <source>No map document found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen map document gevonden!</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>No set layer found!</source>
-        <translation type="unfinished">Geen set laag gevonden!</translation>
+        <translation>Geen set laag gevonden!</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Apply AutoMap rules</source>
-        <translation type="unfinished">AutoMap regels toepassen</translation>
+        <translation>AutoMap regels toepassen</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>No rules file found at:
 %1</source>
-        <translation type="unfinished">Hier geen regels bestand gevonden:
+        <translation>Hier geen regels bestand gevonden:
 %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Error opening rules file:
 %1</source>
-        <translation type="unfinished">Fout tijdens het openen van het regels bestand: %1</translation>
+        <translation>Fout tijdens het openen van het regels bestand:
+%1</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>File not found:
 %1</source>
-        <translation type="unfinished">Bestand niet gevonden:
+        <translation>Bestand niet gevonden:
 %1</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Opening rules map failed:
 %1</source>
-        <translation type="unfinished">Fout tijdens het openen van regels map:
+        <translation>Fout tijdens het openen van regels map:
 %1</translation>
     </message>
 </context>
@@ -1605,32 +1607,32 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-1"/>
         <source>Insert Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Toevoegen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Insert Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Toevoegen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygon Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Insert Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Polylijn Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Insert Objects</source>
@@ -1652,42 +1654,42 @@ Regel %1, colom %2</translation>
         <location filename="../src/tiled/editpolygontool.cpp" line="+130"/>
         <location line="+191"/>
         <source>Edit Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygonen Bewerken</translation>
     </message>
     <message>
         <location line="-189"/>
         <location line="+190"/>
         <source>E</source>
-        <translation type="unfinished">W</translation>
+        <translation></translation>
     </message>
     <message numerus="yes">
         <location line="+210"/>
         <source>Move %n Point(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Punt Verplaatsen</numerusform>
+            <numerusform>%n Punten Verplaatsen</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Punt Verwijderen</numerusform>
+            <numerusform>%n Punten Verwijderen</numerusform>
         </translation>
     </message>
     <message>
         <location line="-40"/>
         <location line="+215"/>
         <source>Join Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Punten Samenvoegen</translation>
     </message>
     <message>
         <location line="-214"/>
         <location line="+250"/>
         <source>Split Segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Segmenten Splitten</translation>
     </message>
 </context>
 <context>
@@ -1815,7 +1817,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+23"/>
         <source>Random Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige Modus</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1846,17 +1848,17 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+1"/>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+134"/>
@@ -1918,17 +1920,17 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+33"/>
         <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <location line="+143"/>
         <source>Automatic Mapping Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch Mappen Waarschuwing</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Automatic Mapping Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch Mappen Fout</translation>
     </message>
     <message>
         <location line="+252"/>
@@ -2084,7 +2086,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+11"/>
         <source>F2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2147,7 +2149,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+61"/>
         <source>Re&amp;name Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag Her&amp;noemen</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2194,7 +2196,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+18"/>
         <source>%1 x %2 pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2 pixels</translation>
     </message>
 </context>
 <context>
@@ -2309,12 +2311,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/objecttypesmodel.cpp" line="+51"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleur</translation>
     </message>
 </context>
 <context>
@@ -2328,28 +2330,28 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+69"/>
         <source>Import Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types Importeren</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+29"/>
         <source>Object Types files (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types bestanden (*.xml)</translation>
     </message>
     <message>
         <location line="-16"/>
         <source>Error Reading Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout Bij Object Types Lezen</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Export Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Object Types Exporteren</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error Writing Object Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout Bij Object Types Schrijven</translation>
     </message>
 </context>
 <context>
@@ -2439,18 +2441,18 @@ Moet het bestand vervangen worden?</translation>
         <location filename="../src/tiled/tileselectiontool.cpp" line="+34"/>
         <location line="+81"/>
         <source>Rectangular Select</source>
-        <translation type="unfinished">Rechthoekig Selecteren</translation>
+        <translation>Rechthoekig Selecteren</translation>
     </message>
     <message>
         <location line="-78"/>
         <location line="+79"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
     <message>
         <location line="-56"/>
         <source>%1, %2 - Rectangle: (%3 x %4)</source>
-        <translation type="unfinished">%1, %2 - Rechthoek: (%3 x %4)</translation>
+        <translation>%1, %2 - Rechthoek: (%3 x %4)</translation>
     </message>
 </context>
 <context>
@@ -2458,7 +2460,7 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+170"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Hernoemen</translation>
     </message>
     <message>
         <location line="+287"/>
@@ -2483,37 +2485,37 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Import Tileset</source>
-        <translation type="unfinished">Tileset &amp;Importeren</translation>
+        <translation>Tileset &amp;Importeren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation type="unfinished">Tileset E&amp;xporteren Als...</translation>
+        <translation>Tileset E&amp;xporteren Als...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile&amp;set Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile&amp;set Eigenschappen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Remove Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset &amp;Verwijderen</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Tileset</source>
-        <translation type="unfinished">Tileset</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Export Tileset</source>
-        <translation type="unfinished">Tileset Exporteren</translation>
+        <translation>Tileset Exporteren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished">Tiled tileset bestanden (*.tsx)</translation>
+        <translation>Tiled tileset bestanden (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -2836,7 +2838,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+27"/>
         <source>Change Tileset name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset Hernoemen</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+40"/>
@@ -2860,7 +2862,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/changepolygon.cpp" line="+39"/>
         <source>Change Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygon Veranderen</translation>
     </message>
 </context>
 <context>

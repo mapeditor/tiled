@@ -1550,7 +1550,7 @@ Zeile %1, Spalte %2</translation>
         <location line="+210"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Verschiebe %n Punkt</numerusform>
+            <numerusform>Verschiebe Punkt</numerusform>
             <numerusform>Verschiebe %n Punkte</numerusform>
         </translation>
     </message>
@@ -1559,8 +1559,8 @@ Zeile %1, Spalte %2</translation>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
+            <numerusform>Entferne Knoten</numerusform>
             <numerusform>Entferne %n Knoten</numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
