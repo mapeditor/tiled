@@ -71,6 +71,8 @@ private:
     Tiled::TileLayer *toTileLayer(const QVariantMap &variantMap);
     Tiled::ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
 
+    QPolygonF toPolygon(const QVariant &variant) const;
+
     Tiled::Map *mMap;
     QDir mMapDir;
     Tiled::GidMapper mGidMapper;

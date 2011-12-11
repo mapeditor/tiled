@@ -216,7 +216,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
 class PixelToTileCoordinates
 {
 public:
-    PixelToTileCoordinates(Map *map)
+    PixelToTileCoordinates(const Map *map)
     {
         if (map->orientation() == Map::Isometric) {
             // Isometric needs special handling, since the pixel values are
@@ -285,8 +285,32 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         object->setProperties(toProperties(objectVariantMap["properties"]));
         objectGroup->addObject(object);
 
-        // TODO: Add polygon/polyline support
+        const QVariant polylineVariant = objectVariantMap["polyline"];
+        const QVariant polygonVariant = objectVariantMap["polygon"];
+
+        if (polygonVariant.isValid()) {
+            object->setShape(MapObject::Polygon);
+            object->setPolygon(toPolygon(polygonVariant));
+        }
+        if (polylineVariant.isValid()) {
+            object->setShape(MapObject::Polyline);
+            object->setPolygon(toPolygon(polylineVariant));
+        }
     }
 
     return objectGroup;
+}
+
+QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
+{
+    const PixelToTileCoordinates toTile(mMap);
+
+    QPolygonF polygon;
+    foreach (const QVariant &pointVariant, variant.toList()) {
+        const QVariantMap pointVariantMap = pointVariant.toMap();
+        const int pointX = pointVariantMap["x"].toInt();
+        const int pointY = pointVariantMap["y"].toInt();
+        polygon.append(toTile(pointX, pointY));
+    }
+    return polygon;
 }

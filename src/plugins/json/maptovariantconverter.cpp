@@ -199,7 +199,30 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
         objectVariant["width"] = size.x();
         objectVariant["height"] = size.y();
 
-        // TODO: Add polygon/polyline support
+        /* Polygons are stored in this format:
+         *
+         *   "polygon/polyline": [
+         *       { "x": 0, "y": 0 },
+         *       { "x": 1, "y": 1 },
+         *       ...
+         *   ]
+         */
+        const QPolygonF &polygon = object->polygon();
+        if (!polygon.isEmpty()) {
+            QVariantList pointVariants;
+            foreach (const QPointF &point, polygon) {
+                const QPoint pixelCoordinates = toPixel(point.x(), point.y());
+                QVariantMap pointVariant;
+                pointVariant["x"] = pixelCoordinates.x();
+                pointVariant["y"] = pixelCoordinates.y();
+                pointVariants.append(pointVariant);
+            }
+
+            if (object->shape() == MapObject::Polygon)
+                objectVariant["polygon"] = pointVariants;
+            else
+                objectVariant["polyline"] = pointVariants;
+        }
 
         objectVariants << objectVariant;
     }
