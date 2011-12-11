@@ -198,11 +198,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
 
-    QToolButton *randomButton = new QToolButton(this);
-    randomButton->setToolTip(tr("Random Mode"));
-    randomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
-    randomButton->setCheckable(true);
-    mUi->mainToolBar->addWidget(randomButton);
+    mRandomButton = new QToolButton(this);
+    mRandomButton->setToolTip(tr("Random Mode"));
+    mRandomButton->setIcon(QIcon(QLatin1String(":images/24x24/dice.png")));
+    mRandomButton->setCheckable(true);
+    mUi->mainToolBar->addWidget(mRandomButton);
 
     mLayerMenu = new QMenu(tr("&Layer"), this);
     mLayerMenu->addAction(mActionHandler->actionAddTileLayer());
@@ -322,7 +322,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
 
-    connect(randomButton, SIGNAL(toggled(bool)),
+    connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
 
     ToolManager *toolManager = ToolManager::instance();
@@ -1359,6 +1359,7 @@ void MainWindow::retranslateUi()
 {
     updateWindowTitle();
 
+    mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mActionHandler->retranslateUi();
 }

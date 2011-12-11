@@ -31,6 +31,7 @@
 #include <QSettings>
 
 class QLabel;
+class QToolButton;
 
 namespace Ui {
 class MainWindow;
@@ -203,6 +204,7 @@ private:
     QLabel *mZoomLabel;
     QLabel *mStatusInfoLabel;
     QSettings mSettings;
+    QToolButton *mRandomButton;
     CommandButton *mCommandButton;
 
     StampBrush *mStampBrush;

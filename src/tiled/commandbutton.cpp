@@ -23,6 +23,7 @@
 #include "commanddialog.h"
 #include "utils.h"
 
+#include <QEvent>
 #include <QMenu>
 #include <QMessageBox>
 
@@ -36,8 +37,7 @@ CommandButton::CommandButton(QWidget *parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/system-run.png")));
     setThemeIcon(this, "system-run");
-    setToolTip(tr("Execute Command"));
-    setShortcut(QKeySequence(tr("F5")));
+    retranslateUi();
 
     setPopupMode(QToolButton::MenuButtonPopup);
     setMenu(mMenu);
@@ -112,4 +112,23 @@ void CommandButton::populateMenu()
     QAction *action = new QAction(tr("Edit Commands..."), this);
     connect(action, SIGNAL(triggered()), SLOT(showDialog()));
     mMenu->addAction(action);
+}
+
+void CommandButton::changeEvent(QEvent *event)
+{
+    QToolButton::changeEvent(event);
+
+    switch (event->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
+}
+
+void CommandButton::retranslateUi()
+{
+    setToolTip(tr("Execute Command"));
+    setShortcut(QKeySequence(tr("F5")));
 }

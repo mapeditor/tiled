@@ -38,12 +38,17 @@ class CommandButton : public QToolButton
 public:
     CommandButton(QWidget *parent);
 
+protected:
+    void changeEvent(QEvent *event);
+
 private slots:
     void runCommand();
     void showDialog();
     void populateMenu();
 
 private:
+    void retranslateUi();
+
     QMenu *mMenu;
 };
 
