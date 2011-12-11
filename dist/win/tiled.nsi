@@ -185,6 +185,7 @@ File ${QT_DIR}\bin\QtCore4.dll
 File ${QT_DIR}\bin\QtGui4.dll
 File ${QT_DIR}\bin\QtOpenGL4.dll
 File ${ROOT_DIR}\src\tiled\images\tiled-icon.ico
+File ${ROOT_DIR}\dist\win\qt.conf
 
 SetOutPath $INSTDIR\plugins\codecs
 File ${QT_DIR}\plugins\codecs\qcncodecs4.dll
@@ -202,15 +203,16 @@ File /r ${BUILD_DIR}\plugins\tiled\*.dll
 
 SetOutPath $INSTDIR\translations
 File  ${ROOT_DIR}\translations\*.qm
-;File  ${QT_DIR}\translations\qt_cs.qm
-;File  ${QT_DIR}\translations\qt_de.qm
-;File  ${QT_DIR}\translations\qt_es.qm
-;File  ${QT_DIR}\translations\qt_fr.qm
-;File  ${QT_DIR}\translations\qt_he.qm
-;File  ${QT_DIR}\translations\qt_ja.qm
-;File  ${QT_DIR}\translations\qt_pt.qm
-;File  ${QT_DIR}\translations\qt_zh_CN.qm
-;File  ${QT_DIR}\translations\qt_zh_TW.qm
+File  ${QT_DIR}\translations\qt_cs.qm
+File  ${QT_DIR}\translations\qt_de.qm
+File  ${QT_DIR}\translations\qt_es.qm
+File  ${QT_DIR}\translations\qt_fr.qm
+File  ${QT_DIR}\translations\qt_he.qm
+File  ${QT_DIR}\translations\qt_ja.qm
+File  ${QT_DIR}\translations\qt_pt.qm
+File  ${QT_DIR}\translations\qt_ru.qm
+File  ${QT_DIR}\translations\qt_zh_CN.qm
+File  ${QT_DIR}\translations\qt_zh_TW.qm
 
 SetOutPath $INSTDIR\examples
 File /r ${ROOT_DIR}\examples\*.*
