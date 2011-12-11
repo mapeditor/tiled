@@ -1,4 +1,4 @@
-0.8.0 (...)
+0.8.0 (11 December 2011)
 * Added support for polygon and polyline objects
 * Added support for tile rotation
 * Added support for defining the color of custom object types
@@ -19,7 +19,8 @@
 * Correctly handle changes in the width of a tileset image
 * Worked around a long standing crash bug
 * Added Russian translation
-* Updated the German, Japanese, Spanish, Chinese and Czech translations
+* Updated the German, Japanese, Spanish, Chinese, Czech, Dutch, French and
+  Brazilian Portuguese translations
 
 0.7.1 (27 September 2011)
 * Select stamp tool when selecting tiles in tileset view
