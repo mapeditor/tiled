@@ -75,8 +75,8 @@
 #include "zoomable.h"
 #include "commandbutton.h"
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_0
-#include "oslion.h"
+#ifdef Q_WS_MAC
+#include "macsupport.h"
 #endif
 
 #include <QCloseEvent>
@@ -114,8 +114,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     PluginManager::instance()->loadPlugins();
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_0
-    OSLion::addFullscreen(this);
+#ifdef Q_WS_MAC
+    MacSupport::addFullscreen(this);
 #endif
 
     Preferences *preferences = Preferences::instance();
