@@ -189,15 +189,16 @@ bool AutomappingManager::loadFile(const QString &filePath)
 
             Map *rules = mapReader.read(rulePath);
 
-            TilesetManager *tilesetManager = TilesetManager::instance();
-            tilesetManager->addReferences(rules->tilesets());
-
             if (!rules) {
                 mError += tr("Opening rules map failed:\n%1").arg(
                         mapReader.errorString()) + QLatin1Char('\n');
                 ret = false;
                 continue;
             }
+
+            TilesetManager *tilesetManager = TilesetManager::instance();
+            tilesetManager->addReferences(rules->tilesets());
+
             AutoMapper *autoMapper;
             autoMapper = new AutoMapper(mMapDocument, mSetLayer);
 
