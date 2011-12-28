@@ -17,6 +17,7 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
 
 macx {
     QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+    LIBS += -framework Foundation
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
@@ -214,7 +215,13 @@ HEADERS += aboutdialog.h \
     rangeset.h \
     objecttypes.h \
     objecttypesmodel.h \
-    commandlineparser.h
+    commandlineparser.h \
+    macsupport.h
+
+macx {
+    OBJECTIVE_SOURCES += macsupport.mm
+}
+
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \
