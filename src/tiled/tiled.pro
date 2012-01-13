@@ -39,201 +39,201 @@ RCC_DIR = .rcc
 OBJECTS_DIR = .obj
 
 SOURCES += aboutdialog.cpp \
+    abstractobjecttool.cpp \
+    abstracttiletool.cpp \
+    abstracttool.cpp \
+    addremovelayer.cpp \
+    addremovemapobject.cpp \
+    addremovetileset.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     brushitem.cpp \
+    bucketfilltool.cpp \
+    changemapobject.cpp \
+    changeobjectgroupproperties.cpp \
+    changepolygon.cpp \
+    changeproperties.cpp \
+    changetileselection.cpp \
+    clipboardmanager.cpp \
+    colorbutton.cpp \
+    commandbutton.cpp \
+    command.cpp \
+    commanddatamodel.cpp \
+    commanddialog.cpp \
+    commandlineparser.cpp \
+    createobjecttool.cpp \
     documentmanager.cpp \
+    editpolygontool.cpp \
+    eraser.cpp \
+    erasetiles.cpp \
     filesystemwatcher.cpp \
+    filltiles.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
     main.cpp \
     mainwindow.cpp \
-    mapdocument.cpp \
     mapdocumentactionhandler.cpp \
+    mapdocument.cpp \
     mapobjectitem.cpp \
     mapscene.cpp \
     mapview.cpp \
+    movelayer.cpp \
+    movemapobject.cpp \
+    movemapobjecttogroup.cpp \
+    movetileset.cpp \
+    newmapdialog.cpp \
+    newtilesetdialog.cpp \
+    objectgroupitem.cpp \
+    objectgrouppropertiesdialog.cpp \
+    objectpropertiesdialog.cpp \
+    objectselectiontool.cpp \
+    objecttypes.cpp \
+    objecttypesmodel.cpp \
+    offsetlayer.cpp \
+    offsetmapdialog.cpp \
     painttilelayer.cpp \
     pluginmanager.cpp \
-    preferencesdialog.cpp \
     preferences.cpp \
+    preferencesdialog.cpp \
     propertiesdialog.cpp \
     propertiesmodel.cpp \
-    resizehelper.cpp \
+    propertiesview.cpp \
+    quickstampmanager.cpp \
+    renamelayer.cpp \
     resizedialog.cpp \
+    resizehelper.cpp \
+    resizelayer.cpp \
+    resizemap.cpp \
+    resizemapobject.cpp \
+    saveasimagedialog.cpp \
+    selectionrectangle.cpp \
+    stampbrush.cpp \
+    tiledapplication.cpp \
+    tilelayeritem.cpp \
+    tilepainter.cpp \
     tileselectionitem.cpp \
+    tileselectiontool.cpp \
     tilesetdock.cpp \
     tilesetmanager.cpp \
     tilesetmodel.cpp \
     tilesetview.cpp \
-    tilelayeritem.cpp \
     tmxmapreader.cpp \
     tmxmapwriter.cpp \
-    changeproperties.cpp \
-    movelayer.cpp \
-    tilepainter.cpp \
-    newmapdialog.cpp \
-    newtilesetdialog.cpp \
-    objectgroupitem.cpp \
-    movemapobject.cpp \
-    movemapobjecttogroup.cpp \
-    resizemapobject.cpp \
-    addremovemapobject.cpp \
-    addremovelayer.cpp \
-    propertiesview.cpp \
-    renamelayer.cpp \
-    resizelayer.cpp \
-    resizemap.cpp \
-    objectpropertiesdialog.cpp \
-    changemapobject.cpp \
-    stampbrush.cpp \
     toolmanager.cpp \
-    eraser.cpp \
-    erasetiles.cpp \
-    saveasimagedialog.cpp \
-    utils.cpp \
-    colorbutton.cpp \
     undodock.cpp \
-    tileselectiontool.cpp \
-    abstracttiletool.cpp \
-    abstracttool.cpp \
-    changetileselection.cpp \
-    clipboardmanager.cpp \
-    offsetlayer.cpp \
-    offsetmapdialog.cpp \
-    bucketfilltool.cpp \
-    filltiles.cpp \
-    objectgrouppropertiesdialog.cpp \
-    changeobjectgroupproperties.cpp \
-    zoomable.cpp \
-    addremovetileset.cpp \
-    movetileset.cpp \
-    createobjecttool.cpp \
-    quickstampmanager.cpp \
-    objectselectiontool.cpp \
-    commandbutton.cpp \
-    commanddatamodel.cpp \
-    commanddialog.cpp \
-    tiledapplication.cpp \
-    command.cpp \
-    abstractobjecttool.cpp \
-    changepolygon.cpp \
-    editpolygontool.cpp \
-    selectionrectangle.cpp \
-    objecttypes.cpp \
-    objecttypesmodel.cpp \
-    commandlineparser.cpp
+    utils.cpp \
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
+    abstractobjecttool.h \
+    abstracttiletool.h \
+    abstracttool.h \
+    addremovelayer.h \
+    addremovemapobject.h \
+    addremovetileset.h \
     automapper.h \
     automapperwrapper.h \
     automappingmanager.h \
     brushitem.h \
+    bucketfilltool.h \
+    changemapobject.h \
+    changeobjectgroupproperties.h \
+    changepolygon.h \
+    changeproperties.h \
+    changetileselection.h \
+    clipboardmanager.h \
+    colorbutton.h \
+    commandbutton.h \
+    commanddatamodel.h \
+    commanddialog.h \
+    command.h \
+    commandlineparser.h \
+    createobjecttool.h \
     documentmanager.h \
+    editpolygontool.h \
+    eraser.h \
+    erasetiles.h \
     filesystemwatcher.h \
+    filltiles.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
+    macsupport.h \
     mainwindow.h \
-    mapreaderinterface.h \
-    mapwriterinterface.h \
-    mapdocument.h \
     mapdocumentactionhandler.h \
+    mapdocument.h \
     mapobjectitem.h \
+    mapreaderinterface.h \
     mapscene.h \
     mapview.h \
+    mapwriterinterface.h \
+    movelayer.h \
+    movemapobject.h \
+    movemapobjecttogroup.h \
+    movetileset.h \
+    newmapdialog.h \
+    newtilesetdialog.h \
+    objectgroupitem.h \
+    objectgrouppropertiesdialog.h \
+    objectpropertiesdialog.h \
+    objectselectiontool.h \
+    objecttypes.h \
+    objecttypesmodel.h \
+    offsetlayer.h \
+    offsetmapdialog.h \
     painttilelayer.h \
     pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
     propertiesdialog.h \
     propertiesmodel.h \
+    propertiesview.h \
+    quickstampmanager.h \
+    rangeset.h \
+    renamelayer.h \
     resizedialog.h \
     resizehelper.h \
+    resizelayer.h \
+    resizemap.h \
+    resizemapobject.h \
+    saveasimagedialog.h \
+    selectionrectangle.h \
+    stampbrush.h \
+    tiledapplication.h \
+    tilelayeritem.h \
+    tilepainter.h \
     tileselectionitem.h \
+    tileselectiontool.h \
     tilesetdock.h \
     tilesetmanager.h \
     tilesetmodel.h \
     tilesetview.h \
-    tilelayeritem.h \
     tmxmapreader.h \
     tmxmapwriter.h \
-    changeproperties.h \
-    movelayer.h \
-    tilepainter.h \
-    newmapdialog.h \
-    newtilesetdialog.h \
-    objectgroupitem.h \
-    movemapobject.h \
-    movemapobjecttogroup.h \
-    resizemapobject.h \
-    addremovemapobject.h \
-    addremovelayer.h \
-    propertiesview.h \
-    renamelayer.h \
-    resizelayer.h \
-    resizemap.h \
-    objectpropertiesdialog.h \
-    changemapobject.h \
-    abstracttool.h \
-    stampbrush.h \
     toolmanager.h \
-    eraser.h \
-    erasetiles.h \
-    saveasimagedialog.h \
-    utils.h \
-    colorbutton.h \
-    undodock.h \
-    tileselectiontool.h \
-    abstracttiletool.h \
-    changetileselection.h \
-    clipboardmanager.h \
     undocommands.h \
-    offsetlayer.h \
-    offsetmapdialog.h \
-    bucketfilltool.h \
-    filltiles.h \
-    objectgrouppropertiesdialog.h \
-    changeobjectgroupproperties.h \
-    zoomable.h \
-    addremovetileset.h \
-    movetileset.h \
-    createobjecttool.h \
-    quickstampmanager.h \
-    objectselectiontool.h \
-    commanddatamodel.h \
-    commanddialog.h \
-    commandbutton.h \
-    tiledapplication.h \
-    command.h \
-    abstractobjecttool.h \
-    changepolygon.h \
-    editpolygontool.h \
-    selectionrectangle.h \
-    rangeset.h \
-    objecttypes.h \
-    objecttypesmodel.h \
-    commandlineparser.h \
-    macsupport.h
+    undodock.h \
+    utils.h \
+    zoomable.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
 }
 
-
 FORMS += aboutdialog.ui \
+    commanddialog.ui \
     mainwindow.ui \
-    resizedialog.ui \
-    preferencesdialog.ui \
-    propertiesdialog.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
-    saveasimagedialog.ui \
-    offsetmapdialog.ui \
     objectpropertiesdialog.ui \
-    commanddialog.ui
+    offsetmapdialog.ui \
+    preferencesdialog.ui \
+    propertiesdialog.ui \
+    resizedialog.ui \
+    saveasimagedialog.ui
+
 RESOURCES += tiled.qrc
 macx {
     TARGET = Tiled
