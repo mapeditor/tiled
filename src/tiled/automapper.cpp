@@ -230,13 +230,13 @@ bool AutoMapper::setupRulesUsedCheck()
     TileLayer *setLayer = mMapWork->layerAt(mSetLayerIndex)->asTileLayer();
     QList<Tileset*> tilesetWork = setLayer->usedTilesets().toList();
     foreach (const TileLayer *tilelayer, mLayerRuleSets)
-        foreach (const Tileset *tileset, tilelayer->usedTilesets())
-            if (tileset->findSimilarTileset(tilesetWork))
+        foreach (Tileset *tileset, tilelayer->usedTilesets())
+            if (tileset->findSimilarTileset(tilesetWork) || tilesetWork.contains(tileset))
                 return true;
 
     foreach (const TileLayer *tilelayer, mLayerRuleNotSets)
-        foreach (const Tileset *tileset, tilelayer->usedTilesets())
-            if (tileset->findSimilarTileset(tilesetWork))
+        foreach (Tileset *tileset, tilelayer->usedTilesets())
+            if (tileset->findSimilarTileset(tilesetWork) || tilesetWork.contains(tileset))
                 return true;
 
     return false;
