@@ -31,6 +31,11 @@ namespace Tiled {
 namespace Utils {
 
 /**
+ * Returns the center of mass of the given \a region.
+ */
+QPoint getMidPoint(const QRegion &region);
+
+/**
  * Returns a file dialog filter that matches all readable image formats.
  */
 QString readableImageFormatsFilter();

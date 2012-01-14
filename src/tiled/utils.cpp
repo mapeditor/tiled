@@ -101,5 +101,24 @@ QList<QRegion> coherentRegions(const QRegion &region)
     return result;
 }
 
+QPoint getMidPoint(const QRegion &region)
+{
+    if (region.isEmpty())
+        return QPoint();
+
+    int resx = 0;
+    int resy = 0;
+    int allweight = 0;
+    foreach (QRect rect, region.rects()) {
+        int weight = rect.width() * rect.height();
+        allweight += weight;
+        int x = (rect.right() - rect.left()) / 2 + rect.left();
+        int y = (rect.top() - rect.bottom()) / 2 + rect.bottom();
+        resx += weight * x;
+        resy += weight * y;
+    }
+    return QPoint((int)(resx / allweight), (int)(resy / allweight));
+}
+
 } // namespace Utils
 } // namespace Tiled

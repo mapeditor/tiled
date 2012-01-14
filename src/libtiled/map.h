@@ -243,6 +243,15 @@ public:
 
     Map *clone() const;
 
+    /**
+     * Wraps a new Map around the \a layer. The size will be determined by the
+     * layers size.
+     * Orientation defaults to Unknown and mTileWidth, mTileHeight will
+     * default to zero. In case this map needs to be rendered, you need to set
+     * the correct orientation and mTileWidth, mTileHeight.
+     */
+    static Map *fromLayer(Layer *layer);
+
 private:
     void adoptLayer(Layer *layer);
 
