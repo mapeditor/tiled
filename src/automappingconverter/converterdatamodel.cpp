@@ -1,5 +1,5 @@
 /*
- * datamodel.cpp
+ * converterdatamodel.cpp
  * Copyright 2012, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of the AutomappingConverter, which converts old rulemaps
@@ -19,26 +19,28 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "datamodel.h"
-#include "control.h"
+#include "converterdatamodel.h"
+#include "convertercontrol.h"
+
 #include <QDebug>
 
-DataModel::DataModel(Control *control)
+ConverterDataModel::ConverterDataModel(ConverterControl *control, QObject *parent)
+    : QAbstractListModel(parent)
 {
     mControl = control;
 }
 
-int DataModel::rowCount(const QModelIndex &parent) const
+int ConverterDataModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mFileNames.count();
 }
 
-int DataModel::columnCount(const QModelIndex &parent) const
+int ConverterDataModel::columnCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : 2;
 }
 
-QVariant DataModel::data(const QModelIndex &index, int role) const
+QVariant ConverterDataModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -53,9 +55,9 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole: {
         const QString fileName = mFileNames.at(rowIndex);
         if (columnIndex == 0)
-            return mFileVersions[fileName];
-        else if (columnIndex == 1)
             return fileName;
+        else if (columnIndex == 1)
+            return mFileVersions[fileName];
         else
             return QVariant();
     }
@@ -64,7 +66,23 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
     }
 }
 
-void DataModel::insertFileNames(const QList<QString> fileNames)
+QVariant ConverterDataModel::headerData(int section, Qt::Orientation orientation,
+                                        int role) const
+{
+    if (role == Qt::DisplayRole) {
+        switch (section) {
+        case 0:
+            return tr("File");
+            break;
+        case 1:
+            return tr("Version");
+            break;
+        }
+    }
+    return QAbstractListModel::headerData(section, orientation, role);
+}
+
+void ConverterDataModel::insertFileNames(const QStringList &fileNames)
 {
     const int row = mFileNames.size();
     beginInsertRows(QModelIndex(), row, row + fileNames.count() - 1);
@@ -74,7 +92,7 @@ void DataModel::insertFileNames(const QList<QString> fileNames)
     endInsertRows();
 }
 
-void DataModel::updateVersions()
+void ConverterDataModel::updateVersions()
 {
     for (int i = 0; i < count(); ++i) {
         const QString fileName = mFileNames.at(i);

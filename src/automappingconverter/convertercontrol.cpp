@@ -1,5 +1,5 @@
 /*
- * control.cpp
+ * convertercontrol.cpp
  * Copyright 2012, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of the AutomappingConverter, which converts old rulemaps
@@ -19,7 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "control.h"
+#include "convertercontrol.h"
 
 #include "map.h"
 #include "layer.h"
@@ -32,11 +32,11 @@
 
 using namespace Tiled;
 
-Control::Control()
+ConverterControl::ConverterControl()
 {
 }
 
-QString Control::automappingRuleFileVersion(const QString &fileName)
+QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
 {
     Tiled::MapReader reader;
     Tiled::Map *map = reader.readMap(fileName);
@@ -82,12 +82,14 @@ QString Control::automappingRuleFileVersion(const QString &fileName)
     return versionUnknown();
 }
 
-void Control::convertV1toV2(const QString &fileName)
+void ConverterControl::convertV1toV2(const QString &fileName)
 {
     Tiled::MapReader reader;
     Tiled::Map *map = reader.readMap(fileName);
+
     if (!map) {
-        qWarning()<< QString("Error at conversion of") << fileName;
+        qWarning() << "Error at conversion of " << fileName << ":\n"
+                   << reader.errorString();
         return;
     }
 
@@ -114,4 +116,7 @@ void Control::convertV1toV2(const QString &fileName)
 
     writer.setLayerDataFormat(layerformat);
     writer.writeMap(map, fileName);
+
+    qDeleteAll(map->tilesets());
+    delete map;
 }

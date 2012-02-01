@@ -19,13 +19,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
  
-#include <QtGui/QApplication>
-#include "mainwindow.h"
+#include "converterwindow.h"
+
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    ConverterWindow w;
     w.show();
 
     return a.exec();

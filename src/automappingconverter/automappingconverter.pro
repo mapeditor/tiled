@@ -31,14 +31,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-           mainwindow.cpp \
-           layermodel.cpp \
-           datamodel.cpp \
-           control.cpp
+    converterdatamodel.cpp \
+    convertercontrol.cpp \
+    converterwindow.cpp
 
-HEADERS  += mainwindow.h \
-	        layermodel.h \
-            datamodel.h \
-            control.h
+HEADERS  += \
+    converterdatamodel.h \
+    convertercontrol.h \
+    converterwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    converterwindow.ui

@@ -1,6 +1,6 @@
 /*
- * mainwindow.h
- * Copyright 2011, 2012, Stefan Beller, stefanbeller@googlemail.com
+ * convertercontrol.h
+ * Copyright 2012, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of the AutomappingConverter, which converts old rulemaps
  * of Tiled to work with the latest version of Tiled.
@@ -19,37 +19,24 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef CONVERTERCONTROL_H
+#define CONVERTERCONTROL_H
 
-#include "datamodel.h"
-#include "control.h"
-
-#include <QMainWindow>
 #include <QString>
-#include <QList>
+#include <QObject>
 
-namespace Ui {
-    class MainWindow;
-}
-
-class MainWindow : public QMainWindow
+class ConverterControl
 {
-    Q_OBJECT
-
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    ConverterControl();
 
-public slots:
-    void addRule();
+    QString version1() const { return QObject::tr("v0.8 and before"); }
+    QString version2() const { return QObject::tr("v0.9 and later"); }
+    QString versionUnknown() const { return QObject::tr("unknown"); }
+    QString versionNotAMap() const { return QObject::tr("not a map"); }
 
-private:
-    Ui::MainWindow *ui;
-    QString getVersion(QString filename);
-
-    DataModel *mDataModel;
-    Control *mControl;
+    QString automappingRuleFileVersion(const QString &fileName);
+    void convertV1toV2(const QString &fileName);
 };
 
-#endif // MAINWINDOW_H
+#endif // CONVERTERCONTROL_H

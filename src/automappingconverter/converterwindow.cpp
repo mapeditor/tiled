@@ -1,5 +1,5 @@
 /*
- * mainwindow.cpp
+ * converterwindow.cpp
  * Copyright 2011, 2012, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of the AutomappingConverter, which converts old rulemaps
@@ -19,46 +19,46 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "converterwindow.h"
+#include "ui_converterwindow.h"
 
 #include <QFileDialog>
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent) :
+ConverterWindow::ConverterWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    mControl = new Control();
-    mDataModel = new DataModel(mControl);
+    mControl = new ConverterControl;
+    mDataModel = new ConverterDataModel(mControl, this);
 
     ui->setupUi(this);
     ui->saveButton->setText(tr("Save all as %1").arg(mControl->version2()));
 
-    connect(ui->addbutton,SIGNAL(clicked()), this, SLOT(addRule()));
-    connect(ui->saveButton,SIGNAL(clicked()), mDataModel, SLOT(updateVersions()));
+    connect(ui->addbutton, SIGNAL(clicked()), this, SLOT(addRule()));
+    connect(ui->saveButton, SIGNAL(clicked()),
+            mDataModel, SLOT(updateVersions()));
 
-    ui->tableView->setModel(mDataModel);
-    ui->tableView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-    ui->tableView->horizontalHeader()->hide();
-    ui->tableView->verticalHeader()->hide();
+    ui->treeView->setModel(mDataModel);
+    ui->treeView->header()->setResizeMode(0, QHeaderView::Stretch);
+    ui->treeView->header()->setResizeMode(1, QHeaderView::ResizeToContents);
 }
 
-MainWindow::~MainWindow()
+ConverterWindow::~ConverterWindow()
 {
     delete ui;
+    delete mControl;
 }
 
-void MainWindow::addRule()
+void ConverterWindow::addRule()
 {
     QString filter = tr("Tiled map files (*.tmx)");
 
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
-                                                    filter);
+                                                          filter);
     if (fileNames.isEmpty())
         return;
 
     mDataModel->insertFileNames(fileNames);
+    ui->saveButton->setEnabled(true);
 }
-
-

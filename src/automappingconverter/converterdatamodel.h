@@ -1,5 +1,5 @@
 /*
- * datamodel.h
+ * converterdatamodel.h
  * Copyright 2012, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of the AutomappingConverter, which converts old rulemaps
@@ -19,23 +19,23 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DATAMODEL_H
-#define DATAMODEL_H
+#ifndef CONVERTERDATAMODEL_H
+#define CONVERTERDATAMODEL_H
 
 #include <QAbstractListModel>
 #include <QList>
 #include <QMap>
 #include <QString>
+#include <QStringList>
 
-#include "control.h"
+class ConverterControl;
 
-class DataModel : public QAbstractListModel
+class ConverterDataModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-
-    DataModel(Control *control);
+    ConverterDataModel(ConverterControl *control, QObject *parent = 0);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -44,7 +44,10 @@ public:
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const;
 
-    void insertFileNames(const QList<QString> fileNames);
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const;
+
+    void insertFileNames(const QStringList &fileNames);
 
     int count() const { return mFileNames.count(); }
 
@@ -57,9 +60,9 @@ public slots:
     void updateVersions();
 
 private:
-    Control *mControl;
+    ConverterControl *mControl;
     QList<QString> mFileNames;
     QMap<QString, QString> mFileVersions;
 };
 
-#endif // DATAMODEL_H
+#endif // CONVERTERDATAMODEL_H
