@@ -73,6 +73,9 @@ public:
     QString lastPath(FileType fileType) const;
     void setLastPath(FileType fileType, const QString &path);
 
+    bool automappingDrawing() const { return mAutoMapDrawing; }
+    void setAutomappingDrawing(bool enabled);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -112,6 +115,8 @@ private:
     bool mReloadTilesetsOnChange;
     bool mUseOpenGL;
     ObjectTypes mObjectTypes;
+
+    bool mAutoMapDrawing;
 
     static Preferences *mInstance;
 };

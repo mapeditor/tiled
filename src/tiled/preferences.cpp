@@ -85,6 +85,11 @@ Preferences::Preferences()
     for (int i = 0; i < count; ++i)
         mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
 
+    mSettings->beginGroup(QLatin1String("Automapping"));
+    mAutoMapDrawing = mSettings->value(QLatin1String("WhileDrawing"),
+                                       false).toBool();
+    mSettings->endGroup();
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
 }
@@ -276,4 +281,10 @@ QString Preferences::lastPath(FileType fileType) const
 void Preferences::setLastPath(FileType fileType, const QString &path)
 {
     mSettings->setValue(lastPathKey(fileType), path);
+}
+
+void Preferences::setAutomappingDrawing(bool enabled)
+{
+    mAutoMapDrawing = enabled;
+    mSettings->setValue(QLatin1String("Automapping/WhileDrawing"), enabled);
 }

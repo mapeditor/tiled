@@ -85,24 +85,7 @@ signals:
     void warningsOccurred();
 
 public slots:
-    /**
-     * This sets up new AutoMapperWrappers, which trigger the automapping.
-     * The region 'where' describes where only the automapping takes place.
-     * This is a signal so it can directly be connected to the regionEdited
-     * signal of map documents.
-     */
-    void autoMap(QRegion where, Layer *layer);
-
-private slots:
-    /**
-     * connected to the QFileWatcher, which monitors all rules files for changes
-     */
-    void fileChanged(const QString &path);
-
-    /**
-     * This is connected to the timer, which fires once after the files changed.
-     */
-    void fileChangedTimeout();
+    void autoMap(QRegion where, Layer *touchedLayer);
 
 private:
     Q_DISABLE_COPY(AutomappingManager)
@@ -129,6 +112,15 @@ private:
     bool loadFile(const QString &filePath);
 
     /**
+     * Applies automapping to the Region \a where, considering only layer
+     * \a touchedLayer has changed.
+     * There will only those Automappers be used which have a rule layer
+     * touching the \a touchedLayer
+     * If layer is 0, all Automappers are used.
+     */
+    void autoMapInternal(QRegion where, Layer *touchedLayer);
+
+    /**
      * deletes all its data structures
      */
     void cleanUp();
@@ -151,26 +143,6 @@ private:
     bool mLoaded;
 
     /**
-     * All the used rulefiles are monitored by this object, so in case of
-     * external changes it will automatically reloaded.
-     */
-    QFileSystemWatcher *mWatcher;
-
-    /**
-     * All external changed files will be put in here, so these will be loaded
-     * altogether when the timer expires.
-     */
-    QSet<QString> mChangedFiles;
-
-    /**
-     * This timer is started when the first file was modified. The files are
-     * actually reloaded after this timer expires, so just in case the files
-     * get modified within short time delays (some editors do so), it will
-     * wait until all is over an reload everything at the timeout.
-     */
-    QTimer mChangedFilesTimer;
-
-    /**
      * Contains all errors which occurred until canceling.
      * If mError is not empty, no serious result can be expected.
      */
@@ -181,13 +153,6 @@ private:
      * behavior.
      */
     QString mWarning;
-
-    /**
-     * This stores the name of the layer, which is used in the working map to
-     * setup the automapper.
-     * Until this variable was introduced it was called "set" (hardcoded)
-     */
-    QString mSetLayer;
 };
 
 } // namespace Internal

@@ -28,15 +28,23 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument, QVector<AutoMapper*> autoMapper, QRegion *where)
+AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
+                                     QVector<AutoMapper*> autoMapper,
+                                     QRegion *where)
 {
     mMapDocument = mapDocument;
     Map *map = mMapDocument->map();
 
     QSet<QString> touchedLayers;
-    foreach (AutoMapper *a, autoMapper) {
-        a->prepareAutoMap();
-        touchedLayers|= a->getTouchedLayers();
+    int index = 0;
+    while (index < autoMapper.size()) {
+        AutoMapper *a = autoMapper.at(index);
+        if (a->prepareAutoMap()) {
+            touchedLayers|= a->getTouchedLayers();
+            index++;
+        } else {
+            autoMapper.remove(index);
+        }
     }
     foreach (const QString &layerName, touchedLayers) {
         const int layerindex = map->indexOfLayer(layerName);
