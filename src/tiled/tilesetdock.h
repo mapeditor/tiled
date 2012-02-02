@@ -2,6 +2,7 @@
  * tilesetdock.h
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
+ * Copyright 2012, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -26,10 +27,12 @@
 #include <QMap>
 
 class QStackedWidget;
-class QComboBox;
+class QTabBar;
 class QToolBar;
 class QAction;
+class QSignalMapper;
 class QToolButton;
+class QMenu;
 
 namespace Tiled {
 
@@ -101,15 +104,17 @@ private slots:
 
     void removeTileset();
     void removeTileset(int index);
+    void moveTileset(int from, int to);
 
     void editTilesetProperties();
     void importTileset();
     void exportTileset();
 
-    void startNameEdit();
-    void finishNameEdit();
+    void renameTileset();
 
     void documentCloseRequested(int index);
+
+    void refreshTilesetMenu();
 
 private:
     void setCurrentTile(Tile *tile);
@@ -120,21 +125,23 @@ private:
     TilesetView *tilesetViewAt(int index) const;
 
     MapDocument *mMapDocument;
-    QComboBox *mDropDown;
+    QTabBar *mTabBar;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;
     Tile *mCurrentTile;
     TileLayer *mCurrentTiles;
-    QToolButton *mRenameTileset;
 
     QAction *mImportTileset;
     QAction *mExportTileset;
     QAction *mPropertiesTileset;
     QAction *mDeleteTileset;
+    QAction *mRenameTileset;
 
     QMap<MapDocument *, QString> mCurrentTilesets;
 
-    QString mOldName;
+    QToolButton *mTilesetMenuButton;
+    QMenu *mTilesetMenu; //opens on click of mTilesetMenu
+    QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 };
 
 } // namespace Internal

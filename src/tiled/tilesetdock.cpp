@@ -2,6 +2,7 @@
  * tilesetdock.cpp
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
+ * Copyright 2012, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -41,16 +42,13 @@
 #include "utils.h"
 
 #include <QAction>
-#include <QEvent>
-#include <QComboBox>
 #include <QDropEvent>
-#include <QFileInfo>
 #include <QFileDialog>
 #include <QHBoxLayout>
-#include <QLineEdit>
-#include <QMap>
+#include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
-#include <QSortFilterProxyModel>
+#include <QSignalMapper>
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>
@@ -140,25 +138,41 @@ private:
 TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(parent),
     mMapDocument(0),
-    mDropDown(new QComboBox),
+    mTabBar(new QTabBar),
     mViewStack(new QStackedWidget),
     mToolBar(new QToolBar),
     mCurrentTile(0),
     mCurrentTiles(0),
-    mRenameTileset(new QToolButton),
     mImportTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
     mPropertiesTileset(new QAction(this)),
-    mDeleteTileset(new QAction(this))
+    mDeleteTileset(new QAction(this)),
+    mRenameTileset(new QAction(this)),
+    mTilesetMenuButton(new QToolButton(this)),
+    mTilesetMenu(new QMenu(this)),
+    mTilesetMenuMapper(0)
 {
     setObjectName(QLatin1String("TilesetDock"));
+
+    mTabBar->setTabsClosable(true);
+    mTabBar->setMovable(true);
+    mTabBar->setUsesScrollButtons(true);
+
+    connect(mTabBar, SIGNAL(currentChanged(int)),
+            SLOT(updateActions()));
+    connect(mTabBar, SIGNAL(currentChanged(int)),
+            mViewStack, SLOT(setCurrentIndex(int)));
+    connect(mTabBar, SIGNAL(tabCloseRequested(int)),
+            this, SLOT(removeTileset(int)));
+    connect(mTabBar, SIGNAL(tabMoved(int,int)),
+            this, SLOT(moveTileset(int,int)));
 
     QWidget *w = new QWidget(this);
 
     QHBoxLayout *horizontal = new QHBoxLayout();
     horizontal->setSpacing(5);
-    horizontal->addWidget(mDropDown);
-    horizontal->addWidget(mRenameTileset);
+    horizontal->addWidget(mTabBar);
+    horizontal->addWidget(mTilesetMenuButton);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setSpacing(5);
@@ -167,19 +181,17 @@ TilesetDock::TilesetDock(QWidget *parent):
     vertical->addWidget(mViewStack);
     vertical->addWidget(mToolBar);
 
-    mRenameTileset->setText(tr("Rename"));
-    connect(mRenameTileset, SIGNAL(clicked()),
-            SLOT(startNameEdit()));
-
     mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
     mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
     mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
+    mRenameTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-rename.png")));
 
     Utils::setThemeIcon(mImportTileset, "document-import");
     Utils::setThemeIcon(mExportTileset, "document-export");
     Utils::setThemeIcon(mPropertiesTileset, "document-properties");
     Utils::setThemeIcon(mDeleteTileset, "edit-delete");
+    Utils::setThemeIcon(mRenameTileset, "edit-rename");
 
     connect(mImportTileset, SIGNAL(triggered()),
             SLOT(importTileset()));
@@ -189,22 +201,16 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(editTilesetProperties()));
     connect(mDeleteTileset, SIGNAL(triggered()),
             SLOT(removeTileset()));
+    connect(mRenameTileset, SIGNAL(triggered()),
+            SLOT(renameTileset()));
 
     mToolBar->setIconSize(QSize(16, 16));
     mToolBar->addAction(mImportTileset);
     mToolBar->addAction(mExportTileset);
     mToolBar->addAction(mPropertiesTileset);
     mToolBar->addAction(mDeleteTileset);
+    mToolBar->addAction(mRenameTileset);
 
-    mDropDown->setEditable(false);
-    QSortFilterProxyModel *proxy = new QSortFilterProxyModel(mDropDown);
-    proxy->setSourceModel(mDropDown->model());
-    mDropDown->model()->setParent(proxy);
-    mDropDown->setModel(proxy);
-    mDropDown->setInsertPolicy(QComboBox::InsertAtCurrent);
-
-    connect(mDropDown, SIGNAL(currentIndexChanged(int)),
-            SLOT(updateActions()));
     connect(mViewStack, SIGNAL(currentChanged(int)),
             this, SLOT(updateCurrentTiles()));
 
@@ -213,6 +219,11 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
             SLOT(documentCloseRequested(int)));
+
+    mTilesetMenuButton->setMenu(mTilesetMenu);
+    mTilesetMenuButton->setPopupMode(QToolButton::InstantPopup);
+    mTilesetMenuButton->setAutoRaise(true);
+    connect(mTilesetMenu, SIGNAL(aboutToShow()), SLOT(refreshTilesetMenu()));
 
     setWidget(w);
     retranslateUi();
@@ -231,12 +242,12 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
         return;
 
     setCurrentTiles(0);
-
     if (mMapDocument)
-        mCurrentTilesets.insert(mMapDocument, mDropDown->currentText());
-
+        mCurrentTilesets.insert(mMapDocument,
+                                mTabBar->tabText(mTabBar->currentIndex()));
     // Clear previous content
-    mDropDown->clear();
+    while (mTabBar->count())
+        mTabBar->removeTab(0);
     while (mViewStack->currentWidget())
         delete mViewStack->currentWidget();
 
@@ -249,7 +260,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         Map *map = mMapDocument->map();
         foreach (Tileset *tileset, map->tilesets())
-            insertTilesetView(mDropDown->count(), tileset);
+            insertTilesetView(mTabBar->count(), tileset);
 
         connect(mMapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
                 SLOT(insertTilesetView(int,Tileset*)));
@@ -263,10 +274,14 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 SLOT(updateActions()));
 
         QString cacheName = mCurrentTilesets.take(mMapDocument);
-        int idx = mDropDown->findText(cacheName);
-        if (idx != -1)
-            mDropDown->setCurrentIndex(idx);
+        for (int i = 0; i < mTabBar->count(); ++i) {
+            if (mTabBar->tabText(i) == cacheName) {
+                mTabBar->setCurrentIndex(i);
+                break;
+            }
+        }
     }
+    updateActions();
 }
 
 void TilesetDock::changeEvent(QEvent *e)
@@ -311,20 +326,17 @@ void TilesetDock::insertTilesetView(int index, Tileset *tileset)
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(updateCurrentTiles()));
 
+    mTabBar->insertTab(index, tileset->name());
     mViewStack->insertWidget(index, view);
-    QVariant userdata = QVariant::fromValue(view);
-    mDropDown->addItem(tileset->name(), userdata);
-    mDropDown->model()->sort(0);
-    mDropDown->setCurrentIndex(mDropDown->findData(userdata));
 }
 
 void TilesetDock::updateActions()
 {
     bool external = false;
     TilesetView *view = 0;
-    const int index = mDropDown->currentIndex();
+    const int index = mTabBar->currentIndex();
     if (index > -1) {
-        view = mDropDown->itemData(index).value<TilesetView *>();
+        view = tilesetViewAt(index);
         if (view) {
             mViewStack->setCurrentWidget(view);
             external = view->tilesetModel()->tileset()->isExternal();
@@ -394,11 +406,10 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
 void TilesetDock::tilesetRemoved(Tileset *tileset)
 {
     // Delete the related tileset view
-    for (int i = 0; i < mDropDown->count(); ++i) {
-        TilesetView *view = mDropDown->itemData(i).value<TilesetView *>();
+    for (int i = 0; i < mViewStack->count(); ++i) {
+        TilesetView *view = tilesetViewAt(i);
         if (view->tilesetModel()->tileset() == tileset) {
-            mDropDown->removeItem(i);
-            mViewStack->removeWidget(view);
+            mTabBar->removeTab(i);
             delete view;
             break;
         }
@@ -422,13 +433,15 @@ void TilesetDock::tilesetMoved(int from, int to)
     QWidget *widget = mViewStack->widget(from);
     mViewStack->removeWidget(widget);
     mViewStack->insertWidget(to, widget);
+    mViewStack->setCurrentIndex(mTabBar->currentIndex());
 
-    for (int i = 0; i < mDropDown->count(); ++i) {
-        TilesetView *view = mDropDown->itemData(i).value<TilesetView *>();
-        if (widget == view) {
-            mDropDown->setCurrentIndex(i);
-            break;
-        }
+    // Update the titles of the affected tabs
+    const int start = qMin(from, to);
+    const int end = qMax(from, to);
+    for (int i = start; i <= end; ++i) {
+        const Tileset *tileset = tilesetViewAt(i)->tilesetModel()->tileset();
+        if (mTabBar->tabText(i) != tileset->name())
+            mTabBar->setTabText(i, tileset->name());
     }
 }
 
@@ -496,6 +509,12 @@ void TilesetDock::removeTileset(int index)
         undoStack->endMacro();
 }
 
+void TilesetDock::moveTileset(int from, int to)
+{
+    QUndoCommand *command = new MoveTileset(mMapDocument, from, to);
+    mMapDocument->undoStack()->push(command);
+}
+
 void TilesetDock::setCurrentTiles(TileLayer *tiles)
 {
     if (mCurrentTiles == tiles)
@@ -523,6 +542,7 @@ void TilesetDock::retranslateUi()
     mExportTileset->setText(tr("&Export Tileset As..."));
     mPropertiesTileset->setText(tr("Tile&set Properties"));
     mDeleteTileset->setText(tr("&Remove Tileset"));
+    mRenameTileset->setText(tr("Rena&me Tileset"));
 }
 
 Tileset *TilesetDock::currentTileset() const
@@ -591,43 +611,32 @@ void TilesetDock::importTileset()
     mMapDocument->undoStack()->push(command);
 }
 
-void TilesetDock::startNameEdit()
+void TilesetDock::renameTileset()
 {
-    mOldName = mDropDown->currentText();
-    mDropDown->setEditable(true);
-    connect(mDropDown->lineEdit(), SIGNAL(editingFinished()),
-            SLOT(finishNameEdit()));
-    mDropDown->setFocus();
-}
+    bool ok;
+    const QString oldText = mTabBar->tabText(mTabBar->currentIndex());
+    QString newText = QInputDialog::getText(this, tr("Rename Tileset"),
+                                         tr("New name:"), QLineEdit::Normal,
+                                         oldText, &ok);
 
-void TilesetDock::finishNameEdit()
-{
-    mDropDown->setEditable(false);
-
-    if (mOldName == mDropDown->currentText())
+    if (!ok || newText == oldText)
         return;
 
-    int index = mDropDown->currentIndex();
-    TilesetView *view = static_cast<TilesetView *>(mViewStack->currentWidget());
-
-    mDropDown->setItemData(index, QVariant::fromValue(view));
+    int index = mViewStack->currentIndex();
+    TilesetView *view = tilesetViewAt(index);
 
     RenameTileset *name = new RenameTileset(mMapDocument,
                                             view->tilesetModel()->tileset(),
-                                            mOldName,
-                                            mDropDown->currentText());
+                                            oldText, newText);
     mMapDocument->undoStack()->push(name);
 }
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)
 {
-    for (int i = 0; i < mDropDown->count(); i++)
-    {
-        TilesetView *view = mDropDown->itemData(i).value<TilesetView *>();
-        if (tileset == view->tilesetModel()->tileset())
-        {
-            mDropDown->setItemText(i, tileset->name());
-            mDropDown->model()->sort(0);
+    for (int i = 0; i < mTabBar->count(); i++) {
+        TilesetView *view = tilesetViewAt(i);
+        if (tileset == view->tilesetModel()->tileset()) {
+            mTabBar->setTabText(i, tileset->name());
             return;
         }
     }
@@ -637,4 +646,26 @@ void TilesetDock::documentCloseRequested(int index)
 {
     DocumentManager *documentManager = DocumentManager::instance();
     mCurrentTilesets.remove(documentManager->documents().at(index));
+}
+
+void TilesetDock::refreshTilesetMenu()
+{
+    mTilesetMenu->clear();
+
+    if (mTilesetMenuMapper) {
+        mTabBar->disconnect(mTilesetMenuMapper);
+        delete mTilesetMenuMapper;
+    }
+
+    mTilesetMenuMapper = new QSignalMapper(this);
+    connect(mTilesetMenuMapper, SIGNAL(mapped(int)),
+            mTabBar, SLOT(setCurrentIndex(int)));
+
+    for (int i = 0; i < mTabBar->count(); ++i) {
+        const QString name = mTabBar->tabText(i);
+        QAction *action = new QAction(name, this);
+        mTilesetMenu->addAction(action);
+        connect(action, SIGNAL(triggered()), mTilesetMenuMapper, SLOT(map()));
+        mTilesetMenuMapper->setMapping(action, i);
+    }
 }
