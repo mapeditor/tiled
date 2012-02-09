@@ -261,7 +261,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
     foreach (const QVariant &objectVariant, variantMap["objects"].toList()) {
         const QVariantMap objectVariantMap = objectVariant.toMap();
 
-        const quint32 uniqueID = objectVariantMap["uniqueID"].toInt();
+        quint32 uniqueID = objectVariantMap["uniqueID"].toInt();
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
 
@@ -274,6 +274,12 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QPointF pos = toTile(x, y);
         const QPointF size = toTile(width, height);
 
+        //If the uniqueID is 0, this must be an old map and this object
+        //has no UniqueID yet.  So we create it a UniqueID here.
+        if(uniqueID == 0)
+        {
+            uniqueID = mMap->createUniqueID();
+        }
         MapObject *object = new MapObject(uniqueID, name, type,
                                           pos,
                                           QSizeF(size.x(), size.y()));

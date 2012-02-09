@@ -78,6 +78,7 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
         mOverlayObjectGroup->setColor(highlight);
 
         //NOTE: This crashes
+        //There is no Map or Map Document pointer at this point so not I'm not sure what to do.
 
         //Set the unique id of the newly created object
         //const quint32 uniqueID = mOverlayObjectGroup->map()->createUniqueID();

@@ -37,7 +37,7 @@
 
 using namespace Tiled;
 
-const quint32 g_MapObject_MaxUniqueIDs = UINT_MAX-1;
+const quint32 g_MapObject_MaxUniqueIDs = 16384;
 
 Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
@@ -63,9 +63,10 @@ Map::Map(Orientation orientation,
         //Failed to allocate RAM.
     }
 
-    for(qint64 i=0; i<UINT_MAX; ++i)
+    for(qint64 i=0; i<g_MapObject_MaxUniqueIDs; ++i)
     {
-        mMapObject_UniqueID_FreeList[i] = i+1;
+        //This will make sure the IDs start at 1
+        mMapObject_UniqueID_FreeList[i] = g_MapObject_MaxUniqueIDs-i;
     }
 }
 

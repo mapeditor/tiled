@@ -37,7 +37,6 @@
 #include <QList>
 #include <QMargins>
 #include <QSize>
-#include <QMap>
 
 namespace Tiled {
 
@@ -282,7 +281,6 @@ private:
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
 
-    QMap<quint32, const MapObject*> mMapObject_UniqueIDToObjectMap;
     quint32 mMapObject_UniqueID_NumUsed;
     quint32 mMapObject_UniqueID_NumFree;
     quint32* mMapObject_UniqueID_UsedList;
