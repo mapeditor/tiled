@@ -189,11 +189,15 @@ void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects)
 
     QList<MapObject*> clones;
     foreach (const MapObject *mapObject, objects) {
-        MapObject *clone = mapObject->clone();
-        clones.append(clone);
+        MapObject *clonedObject = mapObject->clone();
+
+        const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
+        clonedObject->setUniqueID(uniqueID);
+
+        clones.append(clonedObject);
         undoStack->push(new AddMapObject(mapDocument(),
                                          mapObject->objectGroup(),
-                                         clone));
+                                         clonedObject));
     }
 
     undoStack->endMacro();

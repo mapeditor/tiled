@@ -90,7 +90,12 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
         // Create a new object group with clones of the selected objects
         ObjectGroup *objectGroup = new ObjectGroup;
         foreach (const MapObject *mapObject, selectedObjects)
-            objectGroup->addObject(mapObject->clone());
+        {
+            MapObject* clonedObject = mapObject->clone();
+            objectGroup->addObject(clonedObject);
+
+            //NOTE: Didn't create a new UniqueID because this is a copy of the entire map
+        }
         copyLayer = objectGroup;
     } else {
         return;

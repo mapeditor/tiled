@@ -74,14 +74,24 @@ public:
     /**
      * Constructor.
      */
-    MapObject(const QString &name, const QString &type,
+    MapObject(const quint32 uniqueID, const QString &name, const QString &type,
               const QPointF &pos,
               const QSizeF &size);
 
     /**
      * Destructor.
      */
-    ~MapObject() {}
+    ~MapObject();
+
+    /**
+     * Returns the unique id of this object.
+     */
+    quint32 uniqueID() const { return mUniqueID; }
+
+    /**
+     * Sets the unique id of this object.
+     */
+    void setUniqueID(quint32 id) { mUniqueID = id; }
 
     /**
      * Returns the name of this object. The name is usually just used for
@@ -229,6 +239,7 @@ public:
     MapObject *clone() const;
 
 private:
+
     QString mName;
     QString mType;
     QPointF mPos;
@@ -237,6 +248,7 @@ private:
     Shape mShape;
     Tile *mTile;
     ObjectGroup *mObjectGroup;
+    quint32 mUniqueID;
 };
 
 } // namespace Tiled

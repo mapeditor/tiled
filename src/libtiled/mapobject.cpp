@@ -35,11 +35,12 @@ MapObject::MapObject():
     mSize(0, 0),
     mShape(Rectangle),
     mTile(0),
-    mObjectGroup(0)
+    mObjectGroup(0),
+    mUniqueID(0)
 {
 }
 
-MapObject::MapObject(const QString &name, const QString &type,
+MapObject::MapObject(const quint32 uniqueID, const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
     mName(name),
@@ -48,16 +49,41 @@ MapObject::MapObject(const QString &name, const QString &type,
     mSize(size),
     mShape(Rectangle),
     mTile(0),
-    mObjectGroup(0)
-{
+    mObjectGroup(0),
+    mUniqueID(uniqueID)
+{   
 }
 
 MapObject *MapObject::clone() const
 {
-    MapObject *o = new MapObject(mName, mType, mPos, mSize);
+    //NOTE: calling clone alone will not give you a new unique ID and will
+    //cause you problems.  You can't create an ID here because you need
+    //a map's id-creating skills.
+
+    //For now, I have manually created and set a uniqueID for the clones
+    //Search for createUniqueID() to find insances where this happens.
+
+    MapObject *o = new MapObject(mUniqueID, mName, mType, mPos, mSize);
+    //TODO: NEEDS UNIQUEID BUT I CANT!
+
     o->setProperties(properties());
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setTile(mTile);
     return o;
 }
+
+
+MapObject::~MapObject()
+{
+    //NOTE: For now, when objects delete, I have no way of freeing up
+    //their ID.  The odds of using up all remaining IDs in one single
+    //session is incredibly small so I'm not sure this is worth
+    //worrying about yet.
+
+    //TODO: When MapObjects link up in a future update, you
+    //might want to clean up the links at this point.
+    //If you don't do this, you will have objects that link
+    //to an unintended object (probably the next one you make).
+}
+

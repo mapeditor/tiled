@@ -37,6 +37,8 @@
 
 using namespace Tiled;
 
+const quint32 g_MapObject_MaxUniqueIDs = UINT_MAX-1;
+
 Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
     mOrientation(orientation),
@@ -45,11 +47,41 @@ Map::Map(Orientation orientation,
     mTileWidth(tileWidth),
     mTileHeight(tileHeight)
 {
+    mMapObject_UniqueID_NumUsed = 0;
+
+    mMapObject_UniqueID_NumFree = g_MapObject_MaxUniqueIDs;
+
+    mMapObject_UniqueID_UsedList = new quint32[g_MapObject_MaxUniqueIDs];
+    if(mMapObject_UniqueID_UsedList == NULL)
+    {
+        //Failed to allocate RAM.
+    }
+
+    mMapObject_UniqueID_FreeList = new quint32[g_MapObject_MaxUniqueIDs];
+    if(mMapObject_UniqueID_FreeList == NULL)
+    {
+        //Failed to allocate RAM.
+    }
+
+    for(qint64 i=0; i<UINT_MAX; ++i)
+    {
+        mMapObject_UniqueID_FreeList[i] = i+1;
+    }
 }
 
 Map::~Map()
 {
     qDeleteAll(mLayers);
+
+    if(mMapObject_UniqueID_UsedList != NULL)
+    {
+        delete[] mMapObject_UniqueID_UsedList;
+    }
+
+    if(mMapObject_UniqueID_FreeList != NULL)
+    {
+        delete[] mMapObject_UniqueID_FreeList;
+    }
 }
 
 static QMargins maxMargins(const QMargins &a,
@@ -211,4 +243,59 @@ Map *Map::fromLayer(Layer *layer)
     Map *result = new Map(Unknown, layer->width(), layer->height(), 0, 0);
     result->addLayer(layer);
     return result;
+}
+
+quint32 Map::createUniqueID()
+{
+    if(mMapObject_UniqueID_NumUsed == g_MapObject_MaxUniqueIDs)
+    {
+        return 0;
+    }
+
+    if(mMapObject_UniqueID_NumFree == 0)
+    {
+        return 0;
+    }
+
+    const quint32 uniqueID = mMapObject_UniqueID_FreeList[mMapObject_UniqueID_NumFree-1];
+    --mMapObject_UniqueID_NumFree;
+
+    mMapObject_UniqueID_UsedList[mMapObject_UniqueID_NumUsed] = uniqueID;
+    ++mMapObject_UniqueID_NumUsed;
+
+    return uniqueID;
+}
+
+void Map::claimUniqueID(quint32 uniqueID)
+{
+    for(quint32 i=0; i<mMapObject_UniqueID_NumFree; ++i)
+    {
+        if(mMapObject_UniqueID_FreeList[i] == uniqueID)
+        {
+            mMapObject_UniqueID_FreeList[i] = mMapObject_UniqueID_FreeList[mMapObject_UniqueID_NumFree-1];
+            --mMapObject_UniqueID_NumFree;
+
+            mMapObject_UniqueID_UsedList[mMapObject_UniqueID_NumUsed] = uniqueID;
+            ++mMapObject_UniqueID_NumUsed;
+
+            return;
+        }
+    }
+}
+
+void Map::destroyUniqueID(quint32 uniqueID)
+{
+    for(quint32 i=0; i<mMapObject_UniqueID_NumUsed; ++i)
+    {
+        if(mMapObject_UniqueID_UsedList[i] == uniqueID)
+        {
+            mMapObject_UniqueID_UsedList[i] = mMapObject_UniqueID_UsedList[mMapObject_UniqueID_NumUsed-1];
+            --mMapObject_UniqueID_NumUsed;
+
+            mMapObject_UniqueID_FreeList[mMapObject_UniqueID_NumFree] = uniqueID;
+            ++mMapObject_UniqueID_NumFree;
+
+            return;
+        }
+    }
 }

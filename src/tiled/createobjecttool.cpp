@@ -76,6 +76,13 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
 
         QColor highlight = QApplication::palette().highlight().color();
         mOverlayObjectGroup->setColor(highlight);
+
+        //NOTE: This crashes
+
+        //Set the unique id of the newly created object
+        //const quint32 uniqueID = mOverlayObjectGroup->map()->createUniqueID();
+        //mOverlayPolygonObject->setUniqueID(uniqueID);
+
         break;
     }
     }
@@ -269,7 +276,12 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
         return;
 
     MapObject *newMapObject = new MapObject;
+
     newMapObject->setPosition(pos);
+
+    //Create the ID for the new map object
+    const qint32 uniqueID = mapDocument()->map()->createUniqueID();
+    newMapObject->setUniqueID(uniqueID);
 
     if (mMode == CreateTile)
         newMapObject->setTile(mTile);
@@ -294,6 +306,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     objectGroup->addObject(newMapObject);
 
+    //Set the unique id of the newly created object
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument());
     mapScene()->addItem(mNewMapObjectItem);
 }

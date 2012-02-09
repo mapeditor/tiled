@@ -261,8 +261,10 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
     foreach (const QVariant &objectVariant, variantMap["objects"].toList()) {
         const QVariantMap objectVariantMap = objectVariant.toMap();
 
+        const quint32 uniqueID = objectVariantMap["uniqueID"].toInt();
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
+
         const int gid = objectVariantMap["gid"].toInt();
         const int x = objectVariantMap["x"].toInt();
         const int y = objectVariantMap["y"].toInt();
@@ -272,9 +274,10 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QPointF pos = toTile(x, y);
         const QPointF size = toTile(width, height);
 
-        MapObject *object = new MapObject(name, type,
+        MapObject *object = new MapObject(uniqueID, name, type,
                                           pos,
                                           QSizeF(size.x(), size.y()));
+        mMap->claimUniqueID(uniqueID);
 
         if (gid) {
             bool ok;

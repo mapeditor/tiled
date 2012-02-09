@@ -897,6 +897,8 @@ void MainWindow::paste()
             undoStack->beginMacro(tr("Paste Objects"));
             foreach (const MapObject *mapObject, objectGroup->objects()) {
                 MapObject *objectClone = mapObject->clone();
+                const quint32 uniqueID = map->createUniqueID();
+                objectClone->setUniqueID(uniqueID);
                 objectClone->setPosition(objectClone->position() + offset);
                 pastedObjects.append(objectClone);
                 undoStack->push(new AddMapObject(mMapDocument,
