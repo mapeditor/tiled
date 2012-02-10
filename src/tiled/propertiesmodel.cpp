@@ -62,33 +62,36 @@ Qt::ItemFlags PropertiesModel::flags(const QModelIndex &index) const
     return f;
 }
 
-bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
+bool PropertiesModel::setData(const QModelIndex &index, const Property &value,
                               int role)
 {
     if (role != Qt::EditRole)
         return false;
 
-    if (index.column() == 0) { // Edit name
+    // Edit name
+    if (index.column() == 0) {
         QString text = value.toString();
         if (index.row() == mKeys.size()) {
             // Add a new property
             if (text.isEmpty())
                 return false;
-            mProperties.insert(text, QString());
+            mProperties.insert(text, Property::FromQString(Property::PropertyType_String,text));
         } else {
+            // Edit existing property
             const QString &key = mKeys.at(index.row());
-            const QString propertyValue = mProperties.value(key);
+            const Property existingProperty = mProperties.value(key);
             mProperties.remove(key);
-            mProperties.insert(text, propertyValue);
+            mProperties.insert(text, existingProperty);
         }
         // Have to request keys and reset because of possible reordering
         mKeys = mProperties.keys();
         reset();
         return true;
     }
-    else if (index.column() == 1) { // Edit value
+    // Edit value
+    else if (index.column() == 1) {
         const QString &key = mKeys.at(index.row());
-        mProperties.insert(key, value.toString());
+        mProperties.insert(key, value);
         emit dataChanged(index, index);
         return true;
     }
@@ -115,12 +118,14 @@ void PropertiesModel::deleteProperties(const QModelIndexList &indices)
 QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const
 {
+    //Object Properties
     static QString sectionHeaders[] = {
         tr("Name"),
-        tr("Value")
+        tr("Value"),
+        tr("Type")
     };
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal
-            && section < 2) {
+            && section < 3) {
         return sectionHeaders[section];
     }
     return QVariant();

@@ -67,13 +67,13 @@ public:
     /**
      * Returns the value of the object's \a name property.
      */
-    QString property(const QString &name) const
+    Property property(const QString &name) const
     { return mProperties.value(name); }
 
     /**
      * Sets the value of the object's \a name property to \a value.
      */
-    void setProperty(const QString &name, const QString &value)
+    void setProperty(const QString &name, const Property &value)
     { mProperties.insert(name, value); }
 
 private:
