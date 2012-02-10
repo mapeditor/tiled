@@ -693,7 +693,6 @@ void MapReaderPrivate::readProperty(Properties *properties)
     const QXmlStreamAttributes atts = xml.attributes();
     QString propertyName = atts.value(QLatin1String("name")).toString();
     QString propertyValue = atts.value(QLatin1String("value")).toString();
-    QString propertyType = atts.value(QLatin1String("type")).toString();
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
@@ -706,8 +705,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
         }
     }
 
-    //JAMTODO: might need to add some code in that while loop for propertyType?
-    properties->insert(propertyName, Property::FromQString(propertyType,propertyValue));
+    properties->insert(propertyName, propertyValue);
 }
 
 

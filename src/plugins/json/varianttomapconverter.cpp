@@ -85,10 +85,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &variant)
     QVariantMap::const_iterator it = variantMap.constBegin();
     QVariantMap::const_iterator it_end = variantMap.constEnd();
     for (; it != it_end; ++it)
-    {
-        //I think maps just need to have string properties
-        properties[it.key()] = Property::FromQString(Property::PropertyType_String,it.value().toString());
-    }
+        properties[it.key()] = it.value().toString();
 
     return properties;
 }

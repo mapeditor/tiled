@@ -1,6 +1,6 @@
 TEMPLATE  = subdirs
 CONFIG   += ordered
 
-SUBDIRS = libtiled tiled \
+SUBDIRS = libtiled tiled plugins \
     tmxviewer \
     automappingconverter

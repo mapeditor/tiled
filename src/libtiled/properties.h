@@ -33,41 +33,10 @@
 
 #include <QMap>
 #include <QString>
-#include <QVariant>
 
 namespace Tiled {
 
-class MapObject;
-
-class TILEDSHARED_EXPORT Property: public QVariant
-{
-public:
-    Property();
-    bool IsValid();
-
-    enum PropertyType
-    {
-        PropertyType_Invalid = -1,
-        PropertyType_Uint,
-        PropertyType_Int,
-        PropertyType_Float,
-        PropertyType_Link,
-        PropertyType_String,
-        PropertyType_FilePath,
-        PropertyType_Num
-    };
-
-    static QString PropertyTypeToQString(PropertyType type);
-    static Property FromQString(const QString& typeString, const QString& valueString);
-    static Property FromQString(PropertyType type, const QString& valueString);
-
-    QString ToQString() const;
-
- private:
-    PropertyType mType;
-};
-
-class TILEDSHARED_EXPORT Properties : public QMap<QString,Property>
+class TILEDSHARED_EXPORT Properties : public QMap<QString,QString>
 {
 public:
     void merge(const Properties &other);
