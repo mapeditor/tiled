@@ -30,9 +30,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
-
-#include <dirent.h>
-#include <unistd.h>
+#include <QDirIterator>
 
 using namespace Python;
 
@@ -45,56 +43,50 @@ extern bool python_supportsCb(const char *fn, void *p);
 
 PythonPlugin::PythonPlugin()
 {
-    DIR *dirp;
-    struct dirent *dirent;
-    struct stat filestat;
-    std::string filepath;
-		std::string sdir(getenv("HOME"));
-		sdir.append("/.tiled/");
+    std::string sdir(getenv("HOME"));
+    sdir.append("/.tiled/");
 
-    dirp = opendir(sdir.c_str());
-    if(dirp == NULL) {
+    if(!Py_IsInitialized()) {
+      Py_Initialize();
+    }
+
+    QDirIterator iterator(QString(sdir.c_str()), QDir::Files | QDir::Readable);
+    if(!iterator.hasNext()) {
       //QTextStream(&mError) << "Error " << errno << ": Unable to load python scripts from " << sdir;
-      mError = tr("Error %1: Unable to load python scripts from %2").arg(errno).arg(sdir.c_str());
+      mError = tr("Error: No scripts available at %1").arg(sdir.c_str());
       std::cerr << mError.toStdString() << std::endl;
       return;
+    } else {
+      std::cout << "Loading python scripts from " << sdir << std::endl;
     }
 
-		std::cout << "Loading python scripts from " << sdir << std::endl;
+    while (iterator.hasNext()) {
+      const QString &scriptFile = iterator.next();
+      const std::string path = scriptFile.toStdString();
 
-  	if(!Py_IsInitialized()) {
-  		Py_Initialize();
+      if(path.size() > 3 && path.compare(path.size()-3, 3, ".py") == 0) {
+        t_pyscript script = {0};	// init callback pointers
+        strcpy(script.filename, path.c_str());
+        script.interpreter = Py_NewInterpreter();
+        current_script = &script;
+        inittiled();
+
+        int ret = PyRun_SimpleFileEx(fopen(script.filename, "r"), script.filename, true);
+
+        if(ret == 0) {
+          std::cout << "Loaded " << path << std::endl;
+        } else {
+          if(PyErr_Occurred() != NULL) {
+            //PyerrorHandler();
+          }
+          Py_EndInterpreter(script.interpreter);
+          std::cerr << "Failed to load " << path << ", ret=" << ret << std::endl;
+          continue;
+        }
+
+        scripts.push_back(script);
+      }
     }
-
-    while((dirent = readdir(dirp))) {
-      filepath = sdir + "/" + dirent->d_name;
-      if(stat(filepath.c_str(), &filestat)) continue;
-      if(S_ISDIR(filestat.st_mode)) continue;
- 
-			if(filepath.size() > 3 && filepath.compare(filepath.size()-3, 3, ".py") == 0) {
-				t_pyscript script = {0};	// init callback pointers
-        strcpy(script.filename, filepath.c_str());
-				script.interpreter = Py_NewInterpreter();
-				current_script = &script;
-				inittiled();
-
-				int ret = PyRun_SimpleFileEx(fopen(script.filename, "r"), script.filename, true);
-
-				if(ret == 0) {
-					std::cout << "Loaded " << dirent->d_name << std::endl;
-				} else {
-					if(PyErr_Occurred() != NULL) {
-						//PyerrorHandler();
-					}
-					Py_EndInterpreter(script.interpreter);
-					std::cerr << "Failed to load " << filepath << ", ret=" << ret << std::endl;
-					continue;
-				}
-
-				scripts.push_back(script);
-			}
-    }
-    closedir(dirp);
 }
 /*
 PythonPlugin::~PythonPlugin()
@@ -108,7 +100,7 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
 {
   for (std::list<t_pyscript>::iterator itr = scripts.begin(); itr != scripts.end(); ++itr) {
     current_script = &(*itr);
-		PyThreadState_Swap(current_script->interpreter);
+    PyThreadState_Swap(current_script->interpreter);
     if(current_script->supports_cb != NULL && python_supportsCb(fileName.toStdString().c_str(), current_script->supports_cb)) {
       return python_readCb(fileName.toStdString().c_str(), current_script->read_cb);
     }
@@ -120,7 +112,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
   for (std::list<t_pyscript>::iterator itr = scripts.begin(); itr != scripts.end(); ++itr) {
     current_script = &(*itr);
-		PyThreadState_Swap(current_script->interpreter);
+    PyThreadState_Swap(current_script->interpreter);
     return python_writeCb(map, fileName.toStdString().c_str(), current_script->write_cb);
   }
   return false;
@@ -131,7 +123,7 @@ QString PythonPlugin::nameFilter() const
   std::string ret;
   for (std::list<t_pyscript>::iterator itr = scripts.begin(); itr != scripts.end(); ++itr) {
     current_script = &(*itr);
-		PyThreadState_Swap(current_script->interpreter);
+    PyThreadState_Swap(current_script->interpreter);
     ret.append(current_script->namefilt);
   }
   return tr(ret.c_str());
@@ -140,18 +132,18 @@ QString PythonPlugin::nameFilter() const
 void
 python_register_nameFilter(char *filt)
 {
-	sprintf(current_script->namefilt, "%s", filt);
+  sprintf(current_script->namefilt, "%s", filt);
 }
 
-void python_register_read_cb(void *f) {	current_script->read_cb = f; }
-void python_register_write_cb(void *f) {	current_script->write_cb = f; }
-void python_register_supports_cb(void *f) {	current_script->supports_cb = f; }
+void python_register_read_cb(void *f) { current_script->read_cb = f; }
+void python_register_write_cb(void *f) { current_script->write_cb = f; }
+void python_register_supports_cb(void *f) { current_script->supports_cb = f; }
 
 bool PythonPlugin::supportsFile(const QString &fileName) const
 {
   for (std::list<t_pyscript>::iterator itr = scripts.begin(); itr != scripts.end(); ++itr) {
     current_script = &(*itr);
-		PyThreadState_Swap(current_script->interpreter);
+    PyThreadState_Swap(current_script->interpreter);
     if(current_script->supports_cb != NULL && python_supportsCb(fileName.toStdString().c_str(), current_script->supports_cb)) return true;
   }
   return false;
