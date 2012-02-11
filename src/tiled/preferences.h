@@ -67,7 +67,8 @@ public:
     void setObjectTypes(const ObjectTypes &objectTypes);
 
     enum FileType {
-        ObjectTypesFile
+        ObjectTypesFile,
+        ImageFile
     };
 
     QString lastPath(FileType fileType) const;

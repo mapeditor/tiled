@@ -241,6 +241,9 @@ static QString lastPathKey(Preferences::FileType fileType)
     case Preferences::ObjectTypesFile:
         key.append(QLatin1String("ObjectTypes"));
         break;
+    case Preferences::ImageFile:
+        key.append(QLatin1String("Images"));
+        break;
     default:
         Q_ASSERT(false); // Getting here means invalid file type
     }

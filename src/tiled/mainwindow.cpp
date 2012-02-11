@@ -990,10 +990,11 @@ bool MainWindow::newTileset(const QString &path)
         return false;
 
     Map *map = mMapDocument->map();
+    Preferences *prefs = Preferences::instance();
 
-    QString startLocation = path.isEmpty()
-                            ? fileDialogStartLocation()
-                            : path;
+    const QString startLocation = path.isEmpty()
+            ? QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath()
+            : path;
 
     NewTilesetDialog newTileset(startLocation, this);
     newTileset.setTileWidth(map->tileWidth());
@@ -1001,6 +1002,7 @@ bool MainWindow::newTileset(const QString &path)
 
     if (Tileset *tileset = newTileset.createTileset()) {
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
+        prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
         return true;
     }
     return false;
