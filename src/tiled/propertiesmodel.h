@@ -67,7 +67,7 @@ public:
      * Sets the value of the data at the given <i>index</i>. This model
      * supports the Qt::EditRole for both columns.
      */
-    bool setData(const QModelIndex &index, const Property &value,
+    bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole);
 
     /**

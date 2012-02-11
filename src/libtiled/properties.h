@@ -62,6 +62,8 @@ public:
     static Property FromQString(PropertyType type, const QString& valueString);
 
     QString ToQString() const;
+    QString TypeAsQString() const;
+    PropertyType Type() const;
 
  private:
     PropertyType mType;

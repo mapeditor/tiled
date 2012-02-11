@@ -499,7 +499,7 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         }
 
         //Write the type
-        w.writeAttribute(QLatin1String("type"), valueString);
+        w.writeAttribute(QLatin1String("type"), value.TypeAsQString());
 
         w.writeEndElement();
     }

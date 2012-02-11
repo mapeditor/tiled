@@ -41,6 +41,11 @@ bool Property::IsValid()
     return mType != PropertyType_Invalid;
 }
 
+QString Property::TypeAsQString() const
+{
+    return Property::PropertyTypeToQString(mType);
+}
+
 QString Property::PropertyTypeToQString(PropertyType type)
 {
     switch(type)
@@ -76,6 +81,11 @@ QString Property::PropertyTypeToQString(PropertyType type)
     }
 }
 
+Property::PropertyType Property::Type() const
+{
+    return mType;
+}
+
 Property Property::FromQString(PropertyType type, const QString& valueString)
 {
     Property theProp;
@@ -97,15 +107,15 @@ Property Property::FromQString(const QString& typeString, const QString& valueSt
     Property theProp;
 
     //If the size is 0 then it's an old prop without a type
-    if(typeString.size() == 0 || typeString.compare(QString::fromUtf8("string")) == 0)
+    if(typeString.compare(QString::fromUtf8("string")) == 0)
     {
         theProp.setValue(valueString);
         theProp.mType = PropertyType_String;
     }
-    else if(typeString.compare(QString::fromUtf8("filepath")))
+    else if(typeString.compare(QString::fromUtf8("filepath")) == 0)
     {
-            theProp.setValue(valueString);
-            theProp.mType = PropertyType_FilePath;
+        theProp.setValue(valueString);
+        theProp.mType = PropertyType_FilePath;
     }
     else if(typeString.compare(QString::fromUtf8("uint")) == 0)
     {
@@ -127,6 +137,12 @@ Property Property::FromQString(const QString& typeString, const QString& valueSt
         //TODO: this link must be resolved
         theProp.setValue(valueString.toInt());
         theProp.mType = PropertyType_Link;
+    }
+    //Default is a string
+    else
+    {
+        theProp.setValue(valueString);
+        theProp.mType = PropertyType_String;
     }
 
     return theProp;

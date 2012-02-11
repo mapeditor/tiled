@@ -35,7 +35,7 @@ int PropertiesModel::rowCount(const QModelIndex &parent) const
 
 int PropertiesModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 2;
+    return parent.isValid() ? 0 : 3;
 }
 
 QVariant PropertiesModel::data(const QModelIndex &index, int role) const
@@ -46,6 +46,7 @@ QVariant PropertiesModel::data(const QModelIndex &index, int role) const
             switch (index.column()) {
                 case 0: return key;
                 case 1: return mProperties.value(key);
+                case 2: return mProperties.value(key).TypeAsQString();
             }
         } else if (index.column() == 0) {
             return (role == Qt::EditRole) ? QString() : tr("<new property>");
@@ -62,7 +63,7 @@ Qt::ItemFlags PropertiesModel::flags(const QModelIndex &index) const
     return f;
 }
 
-bool PropertiesModel::setData(const QModelIndex &index, const Property &value,
+bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
                               int role)
 {
     if (role != Qt::EditRole)
@@ -75,7 +76,7 @@ bool PropertiesModel::setData(const QModelIndex &index, const Property &value,
             // Add a new property
             if (text.isEmpty())
                 return false;
-            mProperties.insert(text, Property::FromQString(Property::PropertyType_String,text));
+            mProperties.insert(text, Property::FromQString(Property::PropertyType_String,QString::fromUtf8("")));
         } else {
             // Edit existing property
             const QString &key = mKeys.at(index.row());
@@ -88,14 +89,24 @@ bool PropertiesModel::setData(const QModelIndex &index, const Property &value,
         reset();
         return true;
     }
-    // Edit value
+    // Edit property
     else if (index.column() == 1) {
         const QString &key = mKeys.at(index.row());
-        mProperties.insert(key, value);
+        const Property existingProperty = mProperties.value(key);
+
+        mProperties.insert(key, Property::FromQString(existingProperty.Type(),value.toString()));
         emit dataChanged(index, index);
         return true;
     }
+    // Edit type
+    else if (index.column() == 2) {
+        const QString &key = mKeys.at(index.row());
+        const Property existingProperty = mProperties.value(key);
 
+        mProperties.insert(key, Property::FromQString(value.toString(),existingProperty.toString()));
+        emit dataChanged(index, index);
+        return true;
+    }
     return false;
 }
 
