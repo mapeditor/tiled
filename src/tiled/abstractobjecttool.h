@@ -72,7 +72,7 @@ private:
                          QPoint screenPos, QWidget *parent);
 
     void duplicateObjects(const QList<MapObject*> &objects, bool shouldCloneHierarchy);
-    void cloneHierarchy(MapObject* pParent, QList<MapObject*>& clones);
+    void cloneHierarchy(MapObject* pParent, QMap<quint32,quint32>& idMap, QList<MapObject*>& clones);
     void removeObjects(const QList<MapObject*> &objects);
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
