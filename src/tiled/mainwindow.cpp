@@ -899,6 +899,7 @@ void MainWindow::paste()
                 MapObject *objectClone = mapObject->clone();
                 const quint32 uniqueID = map->createUniqueID();
                 objectClone->setUniqueID(uniqueID);
+                map->addToQMap(objectClone);
                 objectClone->setPosition(objectClone->position() + offset);
                 pastedObjects.append(objectClone);
                 undoStack->push(new AddMapObject(mMapDocument,

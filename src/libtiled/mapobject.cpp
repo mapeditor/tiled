@@ -56,9 +56,10 @@ MapObject::MapObject(const quint32 uniqueID, const QString &name, const QString 
 
 MapObject *MapObject::clone() const
 {
-    //NOTE: calling clone alone will not give you a new unique ID and will
+    //NOTE: calling clone alone will not give you a new UniqueID and will
     //cause you problems.  You can't create an ID here because you need
-    //a map's id-creating skills.
+    //a map's UniqueID-creating skills.  It can also get crazy when you
+    //are copying and pasting an entire map.
 
     //For now, I have manually created and set a uniqueID for the clones
     //Search for createUniqueID() to find insances where this happens.

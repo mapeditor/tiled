@@ -610,6 +610,7 @@ MapObject *MapReaderPrivate::readObject()
     MapObject *object = new MapObject(uniqueID, name, type, pos, QSizeF(size.x(),
                                                               size.y()));
     mMap->claimUniqueID(uniqueID);
+    mMap->addToQMap(object);
 
     if (gid) {
         const Cell cell = cellForGid(gid);

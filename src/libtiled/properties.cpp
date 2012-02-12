@@ -134,8 +134,7 @@ Property Property::FromQString(const QString& typeString, const QString& valueSt
     }
     else if(typeString.compare(QString::fromUtf8("link")) == 0)
     {
-        //TODO: this link must be resolved
-        theProp.setValue(valueString.toInt());
+        theProp.setValue(valueString.toUInt());
         theProp.mType = PropertyType_Link;
     }
     //Default is a string
@@ -152,21 +151,6 @@ QString Property::ToQString() const
 {
     switch(mType)
     {
-        //If it's a link, we want to output the UniqueID
-        case PropertyType_Link:
-        {
-            MapObject* pMapObject = (MapObject*)toInt();
-            if(pMapObject != NULL)
-            {
-                //If the link is valid return the UniqueID
-                return QString::number(pMapObject->uniqueID());
-            }
-            else
-            {
-                //Else return an invalid UniqueID
-                return QString::number(0);
-            }
-        }
         //If it's anything else, just output the string
         default:
         {

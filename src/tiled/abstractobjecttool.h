@@ -71,7 +71,8 @@ private:
     void showContextMenu(MapObjectItem *clickedObject,
                          QPoint screenPos, QWidget *parent);
 
-    void duplicateObjects(const QList<MapObject*> &objects);
+    void duplicateObjects(const QList<MapObject*> &objects, bool shouldCloneHierarchy);
+    void cloneHierarchy(MapObject* pParent, QList<MapObject*>& clones);
     void removeObjects(const QList<MapObject*> &objects);
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);

@@ -246,6 +246,25 @@ Map *Map::fromLayer(Layer *layer)
     return result;
 }
 
+/**
+ * Adds the MapObject to the map's QMap
+ */
+void Map::addToQMap(MapObject* pMapObject)
+{
+    //Add this object to the QMap so that we can find it based on the UniqueID
+    mMapObjectMap.insert(pMapObject->uniqueID(),pMapObject);
+}
+
+MapObject* Map::getMapObjectFromQMap(quint32 uniqueID)
+{
+    if(uniqueID == 0)
+    {
+        return NULL;
+    }
+
+    return mMapObjectMap.value(uniqueID);
+}
+
 quint32 Map::createUniqueID()
 {
     if(mMapObject_UniqueID_NumUsed == g_MapObject_MaxUniqueIDs)
@@ -295,6 +314,9 @@ void Map::destroyUniqueID(quint32 uniqueID)
 
             mMapObject_UniqueID_FreeList[mMapObject_UniqueID_NumFree] = uniqueID;
             ++mMapObject_UniqueID_NumFree;
+
+            //Remove this MapObject from the QMap
+            mMapObjectMap.remove(uniqueID);
 
             return;
         }

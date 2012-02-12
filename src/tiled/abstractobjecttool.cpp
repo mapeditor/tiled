@@ -132,7 +132,9 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QString dupText = tr("Duplicate %n Object(s)", "", selectedObjects.size());
+    QString dupText2 = tr("Clone Hierarchy of %n Object(s)", "", selectedObjects.size());
     QString removeText = tr("Remove %n Object(s)", "", selectedObjects.size());
+    QAction *dupAction2 = menu.addAction(dupIcon, dupText2);
     QAction *dupAction = menu.addAction(dupIcon, dupText);
     QAction *removeAction = menu.addAction(delIcon, removeText);
 
@@ -161,7 +163,10 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QAction *selectedAction = menu.exec(screenPos);
 
     if (selectedAction == dupAction) {
-        duplicateObjects(selectedObjects);
+        duplicateObjects(selectedObjects,false);
+    }
+    else if (selectedAction == dupAction2) {
+        duplicateObjects(selectedObjects,true);
     }
     else if (selectedAction == removeAction) {
         removeObjects(selectedObjects);
@@ -182,7 +187,46 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     }
 }
 
-void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects)
+void AbstractObjectTool::cloneHierarchy(MapObject* pParent, QList<MapObject*>& clones)
+{
+    QUndoStack *undoStack = mapDocument()->undoStack();
+
+    //Clone all linked MapObjects
+    Properties::const_iterator it = pParent->properties().constBegin();
+    Properties::const_iterator it_end = pParent->properties().constEnd();
+    for (; it != it_end; ++it) {
+        const Property* value = &it.value();
+        if(value->Type() == Property::PropertyType_Link)
+        {
+            //Get the pointer to the linked MapObject
+            MapObject* pChild = mMapScene->mapDocument()->map()->getMapObjectFromQMap(value->toUInt());
+
+            //Only do something if we found the child (could be an invalid link)
+            if(pChild != NULL)
+            {
+                //Clone the child
+                MapObject *childClone = pChild->clone();
+
+                //Give the child a new UniqueID and add it to the QMap
+                const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
+                childClone->setUniqueID(uniqueID);
+                mMapScene->mapDocument()->map()->addToQMap(childClone);
+
+                //Add to undo
+                clones.append(childClone);
+                undoStack->push(new AddMapObject(mapDocument(),
+                                                 pParent->objectGroup(),
+                                                 childClone));
+
+                //Update the property to link to the new UniqueID
+                //TODO: sometimes passing in a number and not a QString is better ;)
+                pParent->setProperty(it.key(),Property::FromQString(Property::PropertyType_Link,QString::number(uniqueID)));
+            }
+        }
+    }
+}
+
+void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects, bool shouldCloneHierarchy)
 {
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
@@ -191,8 +235,15 @@ void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects)
     foreach (const MapObject *mapObject, objects) {
         MapObject *clonedObject = mapObject->clone();
 
+        if(shouldCloneHierarchy)
+        {
+            //Clone all linked MapObjects
+            cloneHierarchy(clonedObject,clones);
+        }
+
         const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
         clonedObject->setUniqueID(uniqueID);
+        mMapScene->mapDocument()->map()->addToQMap(clonedObject);
 
         clones.append(clonedObject);
         undoStack->push(new AddMapObject(mapDocument(),

@@ -37,6 +37,7 @@
 #include <QList>
 #include <QMargins>
 #include <QSize>
+#include <QMap>
 
 namespace Tiled {
 
@@ -269,6 +270,16 @@ public:
      */
     void claimUniqueID(quint32 uniqueID);
 
+    /**
+     * Adds the MapObject to the map's QMap
+     */
+    void addToQMap(MapObject* pMapObject);
+
+    /**
+     * Gets a MapObject in the QMap using the UniqueID
+     */
+    MapObject* getMapObjectFromQMap(quint32 uniqueID);
+
 private:
     void adoptLayer(Layer *layer);
 
@@ -285,6 +296,8 @@ private:
     quint32 mMapObject_UniqueID_NumFree;
     quint32* mMapObject_UniqueID_UsedList;
     quint32* mMapObject_UniqueID_FreeList;
+
+    QMap<quint32,MapObject*> mMapObjectMap;
 };
 
 /**

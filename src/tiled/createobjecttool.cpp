@@ -70,19 +70,13 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
             setIcon(QIcon(QLatin1String(":images/24x24/insert-polyline.png")));
 
         mOverlayPolygonObject = new MapObject;
+        //We don't need to create a UniqueID for this particular MapObject
 
         mOverlayObjectGroup = new ObjectGroup;
         mOverlayObjectGroup->addObject(mOverlayPolygonObject);
 
         QColor highlight = QApplication::palette().highlight().color();
         mOverlayObjectGroup->setColor(highlight);
-
-        //NOTE: This crashes
-        //There is no Map or Map Document pointer at this point so not I'm not sure what to do.
-
-        //Set the unique id of the newly created object
-        //const quint32 uniqueID = mOverlayObjectGroup->map()->createUniqueID();
-        //mOverlayPolygonObject->setUniqueID(uniqueID);
 
         break;
     }
@@ -283,6 +277,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     //Create the ID for the new map object
     const qint32 uniqueID = mapDocument()->map()->createUniqueID();
     newMapObject->setUniqueID(uniqueID);
+    mapDocument()->map()->addToQMap(newMapObject);
 
     if (mMode == CreateTile)
         newMapObject->setTile(mTile);
