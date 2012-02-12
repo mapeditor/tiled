@@ -191,7 +191,7 @@ void AbstractObjectTool::cloneHierarchy(MapObject* pParent, QList<MapObject*>& c
 {
     QUndoStack *undoStack = mapDocument()->undoStack();
 
-    //Clone all linked MapObjects
+     //Clone all linked MapObjects
     Properties::const_iterator it = pParent->properties().constBegin();
     Properties::const_iterator it_end = pParent->properties().constEnd();
     for (; it != it_end; ++it) {
@@ -212,15 +212,20 @@ void AbstractObjectTool::cloneHierarchy(MapObject* pParent, QList<MapObject*>& c
                 childClone->setUniqueID(uniqueID);
                 mMapScene->mapDocument()->map()->addToQMap(childClone);
 
+                //Update the property to link to the new UniqueID
+                //TODO: sometimes passing in a number and not a QString is better ;)
+                pParent->setProperty(it.key(),Property::FromQString(Property::PropertyType_Link,QString::number(uniqueID)));
+
                 //Add to undo
                 clones.append(childClone);
+
+                //After AddMapObject, the clone with have an ObjectGroup
                 undoStack->push(new AddMapObject(mapDocument(),
                                                  pParent->objectGroup(),
                                                  childClone));
 
-                //Update the property to link to the new UniqueID
-                //TODO: sometimes passing in a number and not a QString is better ;)
-                pParent->setProperty(it.key(),Property::FromQString(Property::PropertyType_Link,QString::number(uniqueID)));
+                //Recursively clone the hierarchy
+                cloneHierarchy(childClone, clones);
             }
         }
     }
@@ -235,20 +240,23 @@ void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects, boo
     foreach (const MapObject *mapObject, objects) {
         MapObject *clonedObject = mapObject->clone();
 
-        if(shouldCloneHierarchy)
-        {
-            //Clone all linked MapObjects
-            cloneHierarchy(clonedObject,clones);
-        }
-
         const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
         clonedObject->setUniqueID(uniqueID);
         mMapScene->mapDocument()->map()->addToQMap(clonedObject);
 
         clones.append(clonedObject);
+
+        //After AddMapObject, the clone with have an ObjectGroup
         undoStack->push(new AddMapObject(mapDocument(),
                                          mapObject->objectGroup(),
                                          clonedObject));
+
+        //Now clone the links
+        if(shouldCloneHierarchy)
+        {
+            //Clone all linked MapObjects
+            cloneHierarchy(clonedObject,clones);
+        }
     }
 
     undoStack->endMacro();

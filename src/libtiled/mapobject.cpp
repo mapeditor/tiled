@@ -65,7 +65,6 @@ MapObject *MapObject::clone() const
     //Search for createUniqueID() to find insances where this happens.
 
     MapObject *o = new MapObject(mUniqueID, mName, mType, mPos, mSize);
-    //TODO: NEEDS UNIQUEID BUT I CANT!
 
     o->setProperties(properties());
     o->setPolygon(mPolygon);
