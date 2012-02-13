@@ -77,8 +77,9 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
             if (rect.isNull()) {
                 boundingRect = rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
             } else {
+                const int idHeight = 15;
                 const int nameHeight = object->name().isEmpty() ? 0 : 15;
-                boundingRect = rect.adjusted(-2, -nameHeight - 2, 3, 3);
+                boundingRect = rect.adjusted(-2, -nameHeight-idHeight - 2, 3, 3);
             }
             break;
 
@@ -296,6 +297,29 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         pen.setColor(color);
         painter->setPen(pen);
         painter->drawRect(QRect(paintOrigin, img.size()));
+
+        //Draw the text
+        const QPen linePen(color, 2);
+        const QPen shadowPen(Qt::black, 2);
+
+        QColor brushColor = color;
+        brushColor.setAlpha(50);
+
+        const QString id = QString::fromUtf8("ID: ") + QString::number(object->uniqueID());
+
+        const int idHeight = -img.height()-5;
+
+        //shadow
+         painter->setPen(shadowPen);
+
+         if (!id.isEmpty())
+             painter->drawText(QPoint(1, idHeight + 1), id);
+        //normal
+         painter->setPen(linePen);
+
+        if (!id.isEmpty())
+            painter->drawText(QPoint(0, idHeight + 1), id);
+
     } else {
         const QPen linePen(color, 2);
         const QPen shadowPen(Qt::black, 2);
@@ -311,21 +335,40 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             if (rect.isNull())
                 rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
 
-            const QFontMetrics fm = painter->fontMetrics();
-            QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                         rect.width() + 2);
-
-            // Draw the shadow
+            //Draw the box
+            //shadow
             painter->setPen(shadowPen);
             painter->drawRect(rect.translated(QPointF(1, 1)));
-            if (!name.isEmpty())
-                painter->drawText(QPoint(1, -5 + 1), name);
 
+            //normal
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawRect(rect);
+
+            //Draw the text
+            const QString id = QString::fromUtf8("ID: ") + QString::number(object->uniqueID());
+            const QFontMetrics fm = painter->fontMetrics();
+            const QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                        rect.width() + 2);
+
+            const int nameHeight = -5;
+            const int idHeight = name.isEmpty()?nameHeight:-20;
+
+            //shadow
+             painter->setPen(shadowPen);
+             if (!name.isEmpty())
+                 painter->drawText(QPoint(1, nameHeight + 1), name);
+
+             if (!id.isEmpty())
+                 painter->drawText(QPoint(1, idHeight + 1), id);
+            //normal
+             painter->setPen(linePen);
+             painter->setBrush(fillBrush);
+
             if (!name.isEmpty())
-                painter->drawText(QPoint(0, -5), name);
+                painter->drawText(QPoint(0, nameHeight), name);
+            if (!id.isEmpty())
+                painter->drawText(QPoint(0, idHeight + 1), id);
 
             break;
         }
