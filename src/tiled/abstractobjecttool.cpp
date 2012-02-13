@@ -132,9 +132,9 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QString dupText = tr("Duplicate %n Object(s)", "", selectedObjects.size());
-    QString dupText2 = tr("Clone Hierarchy of %n Object(s)", "", selectedObjects.size());
+    QString cloneText = tr("Clone Hierarchy of %n Object(s)", "", selectedObjects.size());
     QString removeText = tr("Remove %n Object(s)", "", selectedObjects.size());
-    QAction *cloneHierarchyAction = selectedObjects.size() > 1 ? NULL : menu.addAction(dupIcon, dupText2);
+    QAction *cloneHierarchyAction =  menu.addAction(dupIcon, cloneText);
     QAction *dupAction = menu.addAction(dupIcon, dupText);
     QAction *removeAction = menu.addAction(delIcon, removeText);
 
@@ -251,34 +251,42 @@ void AbstractObjectTool::cloneHierarchy(MapObject* pParent, QMap<quint32,quint32
 
 void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects, bool shouldCloneHierarchy)
 {
+    QMap<quint32,quint32> idMap;
+
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
 
     QList<MapObject*> clones;
-    foreach (const MapObject *mapObject, objects) {
-        MapObject *clonedObject = mapObject->clone();
+    foreach (const MapObject *mapObject, objects)
+    {
+        //Check to see if the child is already in the id map
+        const quint32 cloneID = idMap.value(mapObject->uniqueID());
 
-        const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
-        clonedObject->setUniqueID(uniqueID);
-        mMapScene->mapDocument()->map()->addToQMap(clonedObject);
-
-        clones.append(clonedObject);
-
-        //After AddMapObject, the clone with have an ObjectGroup
-        undoStack->push(new AddMapObject(mapDocument(),
-                                         mapObject->objectGroup(),
-                                         clonedObject));
-
-        //Now clone the links
-        if(shouldCloneHierarchy)
+        //Only clone if we haven't cloned it already
+        if(cloneID == 0)
         {
-            QMap<quint32,quint32> idMap;
+            MapObject *clonedObject = mapObject->clone();
 
-            //Add parent to id map (maps old ID to new ID)
-            idMap.insert(clonedObject->uniqueID(),uniqueID);
+            const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
+            clonedObject->setUniqueID(uniqueID);
+            mMapScene->mapDocument()->map()->addToQMap(clonedObject);
 
-            //Clone all linked MapObjects
-            cloneHierarchy(clonedObject,idMap,clones);
+            clones.append(clonedObject);
+
+            //After AddMapObject, the clone with have an ObjectGroup
+            undoStack->push(new AddMapObject(mapDocument(),
+                                             mapObject->objectGroup(),
+                                             clonedObject));
+
+            //Add to id map (maps old ID to new ID)
+            idMap.insert(mapObject->uniqueID(),uniqueID);
+
+            //Now clone the links
+            if(shouldCloneHierarchy)
+            {
+                //Clone all linked MapObjects
+                cloneHierarchy(clonedObject,idMap,clones);
+            }
         }
     }
 
