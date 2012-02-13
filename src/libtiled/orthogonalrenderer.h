@@ -63,6 +63,8 @@ public:
                        const MapObject *object,
                        const QColor &color) const;
 
+    void drawNormals(QPainter *painter, const QPolygonF& polygon, bool closeTheLoop) const;
+
     QPointF pixelToTileCoords(qreal x, qreal y) const;
 
     using MapRenderer::tileToPixelCoords;

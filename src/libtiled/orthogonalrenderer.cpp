@@ -272,6 +272,53 @@ void OrthogonalRenderer::drawTileSelection(QPainter *painter,
     }
 }
 
+
+void OrthogonalRenderer::drawNormals(QPainter *painter, const QPolygonF& polygon, bool closeTheLoop) const
+{
+    const int size = polygon.size();
+
+    if(size == 1)
+    {
+        return;
+    }
+
+    const int end = closeTheLoop ? (size+1) : size;
+
+    //Draw normals
+    for(int i=1; i<end; ++i)
+    {
+        const int index1 = i-1;
+        const int index2 = i%size;
+
+        const QPointF* pPointA = &polygon[index1];
+        const QPointF* pPointB = &polygon[index2];
+
+        //Get direction vec from A to B
+        QPointF dirVec(pPointB->x()-pPointA->x(),pPointB->y()-pPointA->y());
+
+        //Normalize
+        const float dotProd = dirVec.x()*dirVec.x() + dirVec.y()*dirVec.y();
+        const float mag = sqrtf(dotProd);
+        if(mag > 0.0f)
+        {
+            dirVec /= mag;
+        }
+
+        //Orthogonal transform
+        float temp = dirVec.x();
+        dirVec.setX(dirVec.y());
+        dirVec.setY(-temp);
+
+        //Get midpoint
+        QPointF midPoint = (*pPointA + *pPointB) * 0.5f;
+
+        //Tip of normal
+        QPointF normalTip = midPoint + dirVec*8.0f;
+
+        painter->drawLine(midPoint,normalTip);
+    }
+}
+
 void OrthogonalRenderer::drawMapObject(QPainter *painter,
                                        const MapObject *object,
                                        const QColor &color) const
@@ -379,6 +426,9 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(shadowPen);
             painter->drawPolyline(screenPolygon.translated(1, 1));
 
+            //Draw normals
+            drawNormals(painter,screenPolygon,false);
+
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawPolyline(screenPolygon);
@@ -390,6 +440,9 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
             painter->setPen(shadowPen);
             painter->drawPolygon(screenPolygon.translated(1, 1));
+
+            //Draw normals
+            drawNormals(painter,screenPolygon,true);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
