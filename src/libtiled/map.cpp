@@ -255,7 +255,7 @@ void Map::addToQMap(MapObject* pMapObject)
     mMapObjectMap.insert(pMapObject->uniqueID(),pMapObject);
 }
 
-MapObject* Map::getMapObjectFromQMap(quint32 uniqueID)
+MapObject* Map::getMapObjectFromQMap(quint32 uniqueID) const
 {
     if(uniqueID == 0)
     {

@@ -278,7 +278,7 @@ public:
     /**
      * Gets a MapObject in the QMap using the UniqueID
      */
-    MapObject* getMapObjectFromQMap(quint32 uniqueID);
+    MapObject* getMapObjectFromQMap(quint32 uniqueID) const;
 
 private:
     void adoptLayer(Layer *layer);
