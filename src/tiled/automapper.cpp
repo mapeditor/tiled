@@ -270,6 +270,13 @@ bool AutoMapper::setupRuleMapTileLayers()
     return true;
 }
 
+static bool compareRuleRegion(const QRegion &r1, const QRegion &r2)
+{
+    const QPoint &p1 = r1.boundingRect().topLeft();
+    const QPoint &p2 = r2.boundingRect().topLeft();
+    return p1.y() < p2.y() || (p1.y() == p2.y() && p1.x() < p2.x());
+}
+
 bool AutoMapper::setupRuleList()
 {
     Q_ASSERT(mRulesInput.isEmpty());
@@ -280,6 +287,8 @@ bool AutoMapper::setupRuleList()
     QList<QRegion> combinedRegions = coherentRegions(
             mLayerInputRegions->region() +
             mLayerOutputRegions->region());
+
+    qSort(combinedRegions.begin(), combinedRegions.end(), compareRuleRegion);
 
     QList<QRegion> rulesInput = coherentRegions(
             mLayerInputRegions->region());
