@@ -52,10 +52,15 @@ ConverterWindow::~ConverterWindow()
 
 void ConverterWindow::addRule()
 {
-    QString filter = tr("Tiled map files (*.tmx)");
+    QString filter = tr("All Files (*)");
+    filter += QLatin1String(";;");
+
+    QString selectedFilter = tr("Tiled map files (*.tmx)");
+    filter += selectedFilter;
 
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
-                                                          filter);
+                                                          QString(), filter,
+                                                          &selectedFilter);
     if (fileNames.isEmpty())
         return;
 
