@@ -14,7 +14,7 @@ maps = []
 
 def readchunks(f):
   chunks = {}
-  with open(f) as fh:
+  with open(f, 'rb') as fh:
     fc = fmpchunk()
     fc.unpack(fh)
     filelen = fc.len - 16

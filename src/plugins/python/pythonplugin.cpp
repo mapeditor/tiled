@@ -27,6 +27,7 @@
 #include <string>
 #include <iostream>
 
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
@@ -43,21 +44,20 @@ extern bool python_supportsCb(const char *fn, void *p);
 
 PythonPlugin::PythonPlugin()
 {
-    std::string sdir(getenv("HOME"));
-    sdir.append("/.tiled/");
+    QString sdir(QDir::homePath() + "/.tiled");
 
     if(!Py_IsInitialized()) {
       Py_Initialize();
     }
 
-    QDirIterator iterator(QString(sdir.c_str()), QDir::Files | QDir::Readable);
+    QDirIterator iterator(sdir, QDir::Files | QDir::Readable);
     if(!iterator.hasNext()) {
       //QTextStream(&mError) << "Error " << errno << ": Unable to load python scripts from " << sdir;
-      mError = tr("Error: No scripts available at %1").arg(sdir.c_str());
+      mError = tr("Error: No scripts available at %1").arg(sdir);
       std::cerr << mError.toStdString() << std::endl;
       return;
     } else {
-      std::cout << "Loading python scripts from " << sdir << std::endl;
+      std::cout << "Loading python scripts from " << sdir.toStdString() << std::endl;
     }
 
     while (iterator.hasNext()) {
@@ -71,7 +71,9 @@ PythonPlugin::PythonPlugin()
         current_script = &script;
         inittiled();
 
-        int ret = PyRun_SimpleFileEx(fopen(script.filename, "r"), script.filename, true);
+        PyObject* pypath = PyFile_FromString((char*)path.c_str(), "r");
+        int ret = PyRun_SimpleFile(PyFile_AsFile(pypath), path.c_str());
+        Py_DECREF(pypath);
 
         if(ret == 0) {
           std::cout << "Loaded " << path << std::endl;
@@ -155,4 +157,3 @@ QString PythonPlugin::errorString() const
 }
 
 Q_EXPORT_PLUGIN2(Python, PythonPlugin)
-
