@@ -57,18 +57,29 @@ class CpySkeleton(struct.Struct):
 
   def pack(self):
     ret = ''
-    rf = re.sub('<?','',getattr(self, '__fstr'))
+
     for i,(f,n,a,v) in enumerate(self.formats):
       v = getattr(self, n)
       if issubclass(v.__class__, CpySkeleton):
         ret += v.pack()
-      elif a != '' and not a.isdigit():
-        c = getattr(self, a)
-        f = str(c)+'s' if fdict[f]=='c' else fdict[f]
-        ret += struct.pack(f, v)
+        continue
+
+      f = fdict[f]
+      if a != '':
+        # array (possibly varlength)
+        a = int(a) if a.isdigit() else getattr(self, a)
+        if f=='c':
+          # chararray as string
+          f = str(a)+'s'
+          a = ''
+
+      if a != '':
+        for j in range(a):
+          ret += struct.pack(f, v[j])
       else:
-        ret += struct.pack(rf[i], v)
-    #if type(self).__name__ == 'ZIPFILERECORD': print 'packed',len(ret), md5(ret).hexdigest()
+        # just an ordinary var
+        ret += struct.pack(f, v)
+
     return ret
 
   def unpack(self, dat):
@@ -80,15 +91,20 @@ class CpySkeleton(struct.Struct):
       buf = dat
 
     unpacked = list(struct.Struct.unpack(self, buf))
-
+    
     for i,(f,n,a,v) in enumerate(self.formats):
-      if a != '' and not a.isdigit(): break
+      if a != '' and not a.isdigit():
+        if i < len(self.formats)-1:
+          for b in self.formats[i:]:
+            if not b[2].isdigit():
+              raise Exception('Varlength arrays only supported as last elements in struct')
+        break
       arlen = int(a) if a.isdigit() and fdict[f] != 'c' else 0
 
       if arlen > 0:
         # set an array for number of elements requested
         v = unpacked[i:i+arlen]
-        del unpacked[i:i+arlen]
+        #del unpacked[i:i+arlen]
       else:
         v = unpacked[i]
 
