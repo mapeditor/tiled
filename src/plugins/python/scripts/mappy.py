@@ -34,24 +34,45 @@ def readchunks(f):
         chunks[fc.id] = fh.read(fc.len)
   return chunks
 
-def readtilegfx(img, hd, dat, cmap):
+
+def readtilegfx(hd, dat, cmap):
   n = 0
-  for i in range(hd.numblockgfx):
-    col,row = i%10, i/10
-    tx,ty = col*hd.blockwidth, row*hd.blockwidth
+  try:
+    img = QImage(hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10+hd.blockheight, QImage.Format_ARGB32)
 
-    for y in range(hd.blockheight):
-      for x in range(hd.blockwidth):
-        if hd.blockdepth == 8:
-          c = struct.unpack('B', dat[n])[0] * 3
-          r,g,b = struct.unpack('3B', cmap[c:c+3])
-        elif hd.blockdepth == 24:
-          c = n*3
-          r,g,b = struct.unpack('3B', dat[c:c+3])
+    #for i in range(len(cmap)/3):
+    #  cc = [ord(c) for c in cmap[i*3:i*3+3]]
+    #  if cc[0] > 250: print i,cc
 
-        #img[tx+x,ty+y] = (r,g,b)
-        img.point(tx+x, ty+y, bytearray([r,g,b,0xff]))
-        n+=1
+    for i in range(hd.numblockgfx):
+      col,row = i%10, i/10
+      tx,ty = col*hd.blockwidth, row*hd.blockheight
+ 
+      for y in range(hd.blockheight):
+        for x in range(hd.blockwidth):
+          if hd.blockdepth == 8:
+            c = struct.unpack('B', dat[n])[0] * 3
+            if c == 0:
+              rgb = QColor(0,0,0,0).rgba()
+            else:
+              r = struct.unpack('3B', cmap[c:c+3])
+              rgb = QColor(r[0],r[1],r[2]).rgb()
+          elif hd.blockdepth == 24:
+            c = n*3
+            rgb = QColor(struct.unpack('3B', dat[c:c+3]))
+ 
+          #img[tx+x,ty+y] = (r,g,b)
+          #img.point(tx+x, ty+y, bytearray([r,g,b,0xff]))
+          img.setPixel(tx+x, ty+y, rgb)
+          n+=1
+
+    print 'tset QImage',img.width(),img.height(),hd.trans8bit,[ord(c) for c in cmap[255*3:255*3+3]]
+    return img
+
+  except Exception as e:
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    print 'error @%i:' % exc_tb.tb_lineno, e
+
 
 def readlayer(hd, dat):
   #print len(dat),'vs',hd.mapheight*hd.mapwidth*2
@@ -98,15 +119,17 @@ def readmap(f):
       print 'Isometric maps not supported at the moment'
       return m
 
+    """
     if not os.path.exists(f+'.png'):
       print 'Creating',f+'.png','slowwwly (luckily this only happens once per map)'
       with open(f+'.png', 'wb') as fh:
         cn = PNGCanvas(hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10)
         readtilegfx(cn, hd, chunks['BGFX'], chunks['CMAP'])
         fh.write(cn.dump())
-
+    """
     tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
-    loadFromImage(tset, f+'.png')
+    #loadTilesetFromFile(tset, f+'.png')
+    tset.loadFromImage(readtilegfx(hd, chunks['BGFX'], chunks['CMAP']), "")
     maps.append(m)  # w/o live ref crashes in mapscene:createLayerItem setVisible
 
     blks = list(readblockdata(chunks['BKDT'], hd))

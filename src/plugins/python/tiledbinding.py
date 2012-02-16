@@ -88,8 +88,42 @@ mod.add_include('<QImage>')
 
 tiled = mod.add_cpp_namespace('Tiled')
 
+## QT classes, could just as well use PyQT but so far this is such a small subset..
+cls_qpointf = mod.add_class('QPointF')
+cls_qpointf.add_method('x', 'int', [])
+cls_qpointf.add_method('setX', None, [('int','x')])
+cls_qpointf.add_method('y', 'int', [])
+cls_qpointf.add_method('setY', None, [('int','y')])
+
+cls_sizef = mod.add_class('QSizeF')
+cls_sizef.add_method('width', 'int', [])
+cls_sizef.add_method('setWidth', None, [('int','w')])
+cls_sizef.add_method('height', 'int', [])
+cls_sizef.add_method('setHeight', None, [('int','h')])
+
+cls_qrgb = mod.add_class('QRgb')
+
+cls_color = mod.add_class('QColor')
+cls_color.add_constructor([('int','r'), ('int','g'), ('int','b')])
+cls_color.add_constructor([('int','r'), ('int','g'), ('int','b'),('int','a')])
+cls_color.add_method('rgb', 'QRgb', [])
+cls_color.add_method('rgba', 'QRgb', [])
+
+cls_qimage = mod.add_class('QImage')
+cls_qimage.add_enum('Format', ('Format_Invalid','Format_Mono','Format_MonoLSB','Format_Indexed8',
+  'Format_RGB32','Format_ARGB32','Format_ARGB32_Premultiplied','Format_RGB16',
+  'Format_ARGB8565_Premultiplied','Format_RGB666','Format_ARGB6666_Premultiplied',
+  'Format_RGB555','Format_ARGB8555_Premultiplied','Format_RGB888','Format_RGB444',
+  'Format_ARGB4444_Premultiplied'))
+cls_qimage.add_constructor([('int','w'), ('int','h'), ('Format','f')])
+cls_qimage.add_method('width', 'int', [])
+cls_qimage.add_method('height', 'int', [])
+cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),('unsigned int','color')])
+cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),('QRgb','color')])
+cls_qpixmap = mod.add_class('QPixmap')
+## /QT
+
 cls_tile = tiled.add_class('Tile')
-#cls_tile.add_constructor([param('QImage','image'), param('int','id'), param('Tileset*','ts')])
 cls_tile.add_method('id', 'int', [])
 #cls_tile.add_method('image', retval('QPixmap&'), [])
 #cls_tile.add_method('setImage', None, [('QPixmap&','image')])
@@ -109,13 +143,14 @@ cls_tileset.add_method('tileHeight', 'int', [])
 cls_tileset.add_method('tileSpacing', 'int', [])
 cls_tileset.add_method('margin', 'int', [])
 #cls_tileset.add_method('tileOffset', 'QPoint', [])
-#cls_tileset.add_method('loadFromImage', 'bool', [('QString','file')], is_pure_virtual=True)
+cls_tileset.add_method('loadFromImage', 'bool', [('const QImage&','img'),('QString','file')])
 cls_tileset.add_method('tileAt', retval('Tiled::Tile*',caller_owns_return=False), [('int','id')])
 cls_tileset.add_method('tileCount', 'int', [])
 cls_tileset.add_method('columnCount', 'int', [])
 cls_tileset.add_method('imageWidth', 'int', [])
 cls_tileset.add_method('imageHeight', 'int', [])
 
+cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'), param('Tileset*','ts',transfer_ownership=False)])
 cls_tile.add_method('tileset', retval('Tiled::Tileset*',caller_owns_return=False), [])
 
 cls_layer = tiled.add_class('Layer')
@@ -157,18 +192,6 @@ cls_tilelayer.add_method('isEmpty', 'bool', [])
 
 cls_map.add_method('addLayer', None, [param('TileLayer*','l',transfer_ownership=True)])
 cls_map.add_method('layerAt', retval('Tiled::Layer*',caller_owns_return=False,reference_existing_object=True), [('int','idx')])
-
-cls_qpointf = mod.add_class('QPointF')
-cls_qpointf.add_method('x', 'int', [])
-cls_qpointf.add_method('setX', None, [('int','x')])
-cls_qpointf.add_method('y', 'int', [])
-cls_qpointf.add_method('setY', None, [('int','y')])
-
-cls_sizef = mod.add_class('QSizeF')
-cls_sizef.add_method('width', 'int', [])
-cls_sizef.add_method('setWidth', None, [('int','w')])
-cls_sizef.add_method('height', 'int', [])
-cls_sizef.add_method('setHeight', None, [('int','h')])
 
 cls_object = tiled.add_class('Object')
 cls_object.add_method('property', 'QString', [('QString','prop')])
@@ -227,11 +250,11 @@ cls_layer.add_method('asObjectGroup', retval('Tiled::ObjectGroup*',caller_owns_r
 
 mod.add_function('python_register_nameFilter', 'void', [('char*','filt')], custom_name='NameFilter')
 
-mod.add_function('loadFromImage', 'bool', [param('Tileset*','ts',transfer_ownership=False),('QString','file')])
+mod.add_function('loadTilesetFromFile', 'bool', [param('Tileset*','ts',transfer_ownership=False),('QString','file')])
 
 mod.header.writeln("""Tiled::Map *python_readCb(const char *fn, void *p);""")
 mod.body.writeln("""
-bool loadFromImage(Tiled::Tileset *ts, QString file)
+bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
 {
   QImage img(file);
   return ts->loadFromImage(img, file);
