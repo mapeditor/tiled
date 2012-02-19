@@ -13,29 +13,26 @@ from os.path import dirname
 sys.path.append(dirname(__file__)+'/lib')
 from cpystruct import *
 from struct import pack,unpack
+import lbm
 
 NameFilter("Fury of the Furries (*.bin)")
 maps = []
 
-class TileData(CpyStruct('ushort len, BYTE d[len]')): pass
-class RleData(CpyStruct('BYTE rep, BYTE sig, BYTE val')): pass
+class TileData(CpyStruct('ushort len; BYTE d[len];')): pass
+class RleData(CpyStruct('BYTE rep, sig, val')): pass
 
 def unpacklvl(f):
   lvl = []
-
   with open(f) as fh:
     fh.read(4)  #skip sig
-    tdata = TileData(len=-1)
+    tdata = TileData()
     rdata = RleData()
-    while tdata.len != 0:
-      tdata.unpack(fh)
-      if tdata.len == 0: break
+    while tdata.unpack(fh) and tdata.len != 0:
       rdata.unpack(fh)
-      #if len(lvl) == 0: print tdata,rdata
       lvl += tdata.d
       lvl += [rdata.val for i in range(rdata.rep)]
   return lvl
- 
+
 def readmap(f):
   try:
     print 'Loading map at',f
@@ -49,7 +46,18 @@ def readmap(f):
     m = Tiled.Map(Tiled.Map.Orthogonal, w,h, 16,16)
     maps.append(m)
     t = Tiled.Tileset('DECOR', 16,16, 0, 0)
-    loadFromImage(t, dirname(f)+'/../DEC/DECOR01.LBM.gif')
+
+    #loadTilesetFromFile(t, dirname(f)+'/../DEC/DECOR01.LBM.gif')
+    lc = dict(lbm.parselbm(dirname(f)+'/../DEC/DECOR01.LBM'))
+    print lc['BMHD']
+    bd = list(lbm.readbody(lc['BODY'], lc['BMHD']))
+    img = QImage(lc['BMHD'].sz.w, lc['BMHD'].sz.h, QImage.Format_Indexed8)
+    img.setColorTable(lc['CMAP'])
+    for y in range(img.height()):
+      for x in range(img.width()):
+        img.setPixel(x, y, bd[y*img.width()+x])
+    t.loadFromImage(img, "")
+
     l = Tiled.TileLayer('Tiles',0,0,w,h)
 
     l.setMap(m)
@@ -57,7 +65,8 @@ def readmap(f):
       y = i/2/w
       x = i/2-(w*y)
       ti = t.tileAt(lvl[i+1]*20 + lvl[i])
-      l.setCell(x, y, Tiled.Cell(ti))
+      if ti != None:
+        l.setCell(x, y, Tiled.Cell(ti))
     #print t.fileName(),l.isEmpty(),l.referencesTileset(t)
     m.addTileset(t)
     m.addLayer(l)
