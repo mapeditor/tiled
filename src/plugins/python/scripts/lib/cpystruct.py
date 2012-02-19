@@ -1,6 +1,6 @@
 """
   CreepyStruct - Convenience class for (un)packing structured binaries
-  (c)2011, <samuli@tuomola.net>
+  (c)2011-2012, <samuli@tuomola.net>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ REARR = r'(?:\[(\w+)\])?(?:\s*=\s*([0-9a-fx]+))?'
 # skip C or python style comments to the end of line
 RECMT = r'\s*(?:#.*|//.*)?'
 # whole line with at least format/struct ref and attribute name
-REPCK = r'(%s|[\s\w]+)\s+(\w+)%s%s[,;]?%s' % (REFMT, RECMT, REARR, RECMT)
+REPCK = r'(%s|[\s\w]+|,)\s+(\w+)%s%s[;]?%s' % (REFMT, RECMT, REARR, RECMT)
 
 FORMATS = {
   'c':'char',
@@ -49,11 +49,13 @@ for f in FORMATS:
 class CpySkeleton(struct.Struct):
   """ Not to be used directly, use CpyStruct() to build a class """
 
-  def __init__(self, **kws):
+  def __init__(self, dat=None, **kws):
     """ Takes keyword arguments to initialize attributes """
     struct.Struct.__init__(self, getattr(self, '__fstr'))
     if kws != None:
       for k in kws: setattr(self, k, kws[k])
+    if dat != None:
+      self.unpack(dat)
 
   def pack(self):
     ret = ''
@@ -91,22 +93,26 @@ class CpySkeleton(struct.Struct):
       buf = dat
 
     unpacked = list(struct.Struct.unpack(self, buf))
-    
+    rawpos = 0  # position in binary
+    pos = 0  # if substruct handles multiple values
+
     for i,(f,n,a,v) in enumerate(self.formats):
-      if a != '' and not a.isdigit():
-        if i < len(self.formats)-1:
-          for b in self.formats[i:]:
-            if not b[2].isdigit():
-              raise Exception('Varlength arrays only supported as last elements in struct')
-        break
+      if a != '' and not a.isdigit() and i < len(self.formats):
+        for b in self.formats[i:]:
+          if a=='' or b[2].isdigit():
+            raise Exception('Varlength arrays only '+
+              'supported at end of struct: %s[%s]' % (n,a))
+
+    for i,(f,n,a,v) in enumerate(self.formats):
+      if a != '' and not a.isdigit(): break
+
       arlen = int(a) if a.isdigit() and fdict[f] != 'c' else 0
 
       if arlen > 0:
         # set an array for number of elements requested
-        v = unpacked[i:i+arlen]
-        #del unpacked[i:i+arlen]
+        v = unpacked[pos:pos+arlen]
       else:
-        v = unpacked[i]
+        v = unpacked[pos]
 
       if type(f) == type(struct.Struct):
         if hasattr(f, 'fromval'):
@@ -114,11 +120,20 @@ class CpySkeleton(struct.Struct):
             # set an array for number of elements requested
             setattr(self, n, [f.fromval(e) for e in v])
           else:
-            setattr(self, n, f.fromval(v))
+            # only suitable for single value
+            setattr(self, n, v)
+        elif hasattr(f, 'fromraw'): # for mixing endianness etc
+          sz = struct.calcsize(getattr(f, '__fstr'))
+          setattr(self, n, f.fromraw(buf[rawpos:rawpos+sz]))
         else:
-          raise Exception('please define %s.fromval classmethod' % self)
+          raise Exception('Define either fromval or fromraw classmethod')
+        pos += len(f.formats)
+
       else:
+        pos += 1
         setattr(self, n, v)
+
+      rawpos += getattr(self, "__fsz")[i]
 
     # variable-length members
     for f,n,a,v in self.formats:
@@ -126,7 +141,8 @@ class CpySkeleton(struct.Struct):
         c = getattr(self, a)
         f = str(c)+'s' if fdict[f]=='c' else str(c)+fdict[f]
         sz = struct.calcsize(f)
-        setattr(self, n, struct.unpack(f, dat.read(sz)))
+        val = struct.unpack(f, dat.read(sz))
+        setattr(self, n, val)
     return buf
 
   def __len__(self):
@@ -147,49 +163,64 @@ def peek(s, n):
 
 def parseformat(fmt, callscope=None):
   fstr = ''
+  sz = []
   for i,(f,n,a,v) in enumerate(fmt):
-    if a.isdigit():
-      fstr += a
-    #elif a != '':
-    #  fstr += '{'+a+'}'
+    if f == ',' and i > 0:
+      fmt[i] = (fmt[i-1][0],n,a,v)
+      f = fmt[i-1][0]
+    elif f == ',':
+      raise Exception('Unexpected comma at '+str(fmt[i]))
 
+    fs = ''
     if fdict.has_key(f):
       if a.isdigit():
-        fstr += 's' if fdict[f] == 'c' else fdict[f]
+        fs = 's' if fdict[f] == 'c' else fdict[f]
       elif a != '' and not a.isdigit():
         # varlength array, read separately
         pass
       else:
         # C type
-        fstr += fdict[f]
-    elif f[0] == ':':
-      # struct format uses colon as prefix for explicitness
-      fstr += f[1:]
-      fmt[i] = (f[1:],n,a,v)
+        fs = fdict[f]
+    elif type(f) is type(CpySkeleton):
+      # might have an alignment issue when mixing endians..
+      fs = re.sub('[<>]?','',f.__fstr)
     elif callscope.f_globals.has_key(f):
       # resolve references to other CpyStructs
       fmt[i] = (callscope.f_globals[f],n,a,v)
-      fstr += re.sub('<?','',fmt[i][0].__fstr)
+      fs = re.sub('[<>]?','',fmt[i][0].__fstr)
+    elif f[0] == ':':
+      # struct format uses colon as prefix for explicitness
+      fs = f[1:]
+      fmt[i] = (f[1:],n,a,v)
     else:
-      raise Exception('Unknown format: '+f)
-  return (fmt, fstr)
+      raise Exception('Unknown format at '+str(fmt[i]))
+
+    if a.isdigit():
+      fs = a + fs
+    #elif a != '':
+    #  fstr += '{'+a+'}'
+
+    sz.append(struct.calcsize(fs))
+    fstr += fs
+
+  return (fmt, fstr, sz)
 
 def CpyStruct(s, bigendian=False):
   """ Call with a string specifying
   C-like struct to get a Struct class """
   # f=format, n=name, a=arraydef, v=default value
   fmt = [(f.strip(),n,a,v) for f,n,a,v in re.findall(REPCK, s)]
-
   # peek into caller's namespace in case they refer to custom classes
   callscope = sys._getframe(1)
   try:
-    (fmt,fstr) = parseformat(fmt, callscope)
+    fmt, fstr, fsz = parseformat(fmt, callscope)
   finally:
     del callscope
 
   #print fmt,fstr
   d = {}
   d['__fstr'] = ('>' if bigendian else '<') + fstr
+  d['__fsz'] = fsz
   d['__slots__'] = [n for f,n,a,v in fmt]
   d['formats'] = fmt
 
