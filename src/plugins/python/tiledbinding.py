@@ -102,6 +102,7 @@ cls_sizef.add_method('height', 'int', [])
 cls_sizef.add_method('setHeight', None, [('int','h')])
 
 cls_qrgb = mod.add_class('QRgb')
+mod.add_container('QVector<QRgb>', retval('QRgb'), 'vector')
 
 cls_color = mod.add_class('QColor')
 cls_color.add_constructor([('int','r'), ('int','g'), ('int','b')])
@@ -120,6 +121,7 @@ cls_qimage.add_method('width', 'int', [])
 cls_qimage.add_method('height', 'int', [])
 cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),('unsigned int','color')])
 cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),('QRgb','color')])
+cls_qimage.add_method('setColorTable', None, [('QVector<QRgb>','colors')])
 cls_qpixmap = mod.add_class('QPixmap')
 ## /QT
 

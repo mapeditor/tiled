@@ -128,6 +128,24 @@ typedef struct {
 
 extern PyTypeObject PyQPixmap_Type;
 
+
+typedef struct {
+    PyObject_HEAD
+    QVector<QRgb> *obj;
+} PyQVector__lt__QRgb__gt__;
+
+
+typedef struct {
+    PyObject_HEAD
+    PyQVector__lt__QRgb__gt__ *container;
+    QVector<QRgb>::iterator *iterator;
+} PyQVector__lt__QRgb__gt__Iter;
+
+
+extern PyTypeObject PyQVector__lt__QRgb__gt___Type;
+extern PyTypeObject PyQVector__lt__QRgb__gt__Iter_Type;
+
+int _wrap_convert_py2c__QVector__lt___QRgb___gt__(PyObject *arg, QVector<QRgb> *container);
 /* --- forward declarations --- */
 
 
@@ -223,6 +241,9 @@ extern PyTypeObject PyTiledObjectGroup_Type;
 Tiled::Map *python_readCb(const char *fn, void *p);
 bool python_writeCb(const Tiled::Map *map, const char *fn, void *p);
 bool python_supportsCb(const char *fn, void *p);
+
+int _wrap_convert_py2c__QRgb(PyObject *value, QRgb *address);
+
 static PyMethodDef tiled_Tiled_functions[] = {
     {NULL, NULL, 0, NULL}
 };
@@ -3747,6 +3768,23 @@ _wrap_PyQImage_width(PyQImage *self)
 
 
 PyObject *
+_wrap_PyQImage_setColorTable(PyQImage *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    QVector<QRgb> colors_value;
+    const char *keywords[] = {"colors", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O&", (char **) keywords, _wrap_convert_py2c__QVector__lt___QRgb___gt__, &colors_value)) {
+        return NULL;
+    }
+    self->obj->setColorTable(colors_value);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyQImage_height(PyQImage *self)
 {
     PyObject *py_retval;
@@ -3760,6 +3798,7 @@ _wrap_PyQImage_height(PyQImage *self)
 static PyMethodDef PyQImage_methods[] = {
     {(char *) "setPixel", (PyCFunction) _wrap_PyQImage_setPixel, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "width", (PyCFunction) _wrap_PyQImage_width, METH_NOARGS, NULL },
+    {(char *) "setColorTable", (PyCFunction) _wrap_PyQImage_setColorTable, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "height", (PyCFunction) _wrap_PyQImage_height, METH_NOARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
@@ -3969,6 +4008,250 @@ PyTypeObject PyQPixmap_Type = {
 };
 
 
+/* --- containers --- */
+
+
+
+static void
+PyQVector__lt__QRgb__gt__Iter__tp_clear(PyQVector__lt__QRgb__gt__Iter *self)
+{
+    Py_CLEAR(self->container);
+    delete self->iterator;
+    self->iterator = NULL;
+
+}
+
+
+static int
+PyQVector__lt__QRgb__gt__Iter__tp_traverse(PyQVector__lt__QRgb__gt__Iter *self, visitproc visit, void *arg)
+{
+    Py_VISIT((PyObject *) self->container);
+    return 0;
+}
+
+
+static void
+_wrap_PyQVector__lt__QRgb__gt____tp_dealloc(PyQVector__lt__QRgb__gt__ *self)
+{
+    delete self->obj;
+    self->obj = NULL;
+
+    self->ob_type->tp_free((PyObject*)self);
+}
+
+
+static void
+_wrap_PyQVector__lt__QRgb__gt__Iter__tp_dealloc(PyQVector__lt__QRgb__gt__Iter *self)
+{
+    Py_CLEAR(self->container);
+    delete self->iterator;
+    self->iterator = NULL;
+
+    self->ob_type->tp_free((PyObject*)self);
+}
+
+
+static PyObject*
+_wrap_PyQVector__lt__QRgb__gt____tp_iter(PyQVector__lt__QRgb__gt__ *self)
+{
+    PyQVector__lt__QRgb__gt__Iter *iter = PyObject_GC_New(PyQVector__lt__QRgb__gt__Iter, &PyQVector__lt__QRgb__gt__Iter_Type);
+    Py_INCREF(self);
+    iter->container = self;
+    iter->iterator = new QVector<QRgb>::iterator(self->obj->begin());
+    return (PyObject*) iter;
+}
+
+
+static PyObject*
+_wrap_PyQVector__lt__QRgb__gt__Iter__tp_iter(PyQVector__lt__QRgb__gt__Iter *self)
+{
+    Py_INCREF(self);
+    return (PyObject*) self;
+}
+
+static PyObject* _wrap_PyQVector__lt__QRgb__gt__Iter__tp_iternext(PyQVector__lt__QRgb__gt__Iter *self)
+{
+    PyObject *py_retval;
+    QVector<QRgb>::iterator iter;
+    PyQRgb *py_QRgb;
+
+    iter = *self->iterator;
+    if (iter == self->container->obj->end()) {
+        PyErr_SetNone(PyExc_StopIteration);
+        return NULL;
+    }
+    ++(*self->iterator);
+    py_QRgb = PyObject_New(PyQRgb, &PyQRgb_Type);
+    py_QRgb->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_QRgb->obj = new QRgb((*iter));
+    py_retval = Py_BuildValue((char *) "N", py_QRgb);
+    return py_retval;
+}
+
+int _wrap_convert_py2c__QRgb(PyObject *value, QRgb *address)
+{
+    PyObject *py_retval;
+    PyQRgb *tmp_QRgb;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyQRgb_Type, &tmp_QRgb)) {
+        Py_DECREF(py_retval);
+        return 0;
+    }
+    *address = *tmp_QRgb->obj;
+    Py_DECREF(py_retval);
+    return 1;
+}
+
+
+int _wrap_convert_py2c__QVector__lt___QRgb___gt__(PyObject *arg, QVector<QRgb> *container)
+{
+    if (PyObject_IsInstance(arg, (PyObject*) &PyQVector__lt__QRgb__gt___Type)) {
+        *container = *((PyQVector__lt__QRgb__gt__*)arg)->obj;
+    } else if (PyList_Check(arg)) {
+        container->clear();
+        Py_ssize_t size = PyList_Size(arg);
+        for (Py_ssize_t i = 0; i < size; i++) {
+            QRgb item;
+            if (!_wrap_convert_py2c__QRgb(PyList_GET_ITEM(arg, i), &item)) {
+                return 0;
+            }
+            container->push_back(item);
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError, "parameter must be None, a QVector__lt__QRgb__gt__ instance, or a list of QRgb");
+        return 0;
+    }
+    return 1;
+}
+
+
+static int
+_wrap_PyQVector__lt__QRgb__gt____tp_init(PyQVector__lt__QRgb__gt__ *self, PyObject *args, PyObject *kwargs)
+{
+    const char *keywords[] = {"arg", NULL};
+    PyObject *arg = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "|O", (char **) keywords, &arg)) {
+        return -1;
+    }
+
+    self->obj = new QVector<QRgb>;
+
+    if (arg == NULL)
+        return 0;
+
+    if (!_wrap_convert_py2c__QVector__lt___QRgb___gt__(arg, self->obj)) {
+        delete self->obj;
+        self->obj = NULL;
+        return -1;
+    }
+    return 0;
+}
+
+PyTypeObject PyQVector__lt__QRgb__gt___Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,                                 /* ob_size */
+    (char *) "tiled.QVector__lt__QRgb__gt__",            /* tp_name */
+    sizeof(PyQVector__lt__QRgb__gt__),                  /* tp_basicsize */
+    0,                                 /* tp_itemsize */
+    /* methods */
+    (destructor)_wrap_PyQVector__lt__QRgb__gt____tp_dealloc,        /* tp_dealloc */
+    (printfunc)0,                      /* tp_print */
+    (getattrfunc)NULL,       /* tp_getattr */
+    (setattrfunc)NULL,       /* tp_setattr */
+    (cmpfunc)NULL,           /* tp_compare */
+    (reprfunc)NULL,             /* tp_repr */
+    (PyNumberMethods*)NULL,     /* tp_as_number */
+    (PySequenceMethods*)NULL, /* tp_as_sequence */
+    (PyMappingMethods*)NULL,   /* tp_as_mapping */
+    (hashfunc)NULL,             /* tp_hash */
+    (ternaryfunc)NULL,          /* tp_call */
+    (reprfunc)NULL,              /* tp_str */
+    (getattrofunc)NULL,     /* tp_getattro */
+    (setattrofunc)NULL,     /* tp_setattro */
+    (PyBufferProcs*)NULL,  /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,                      /* tp_flags */
+    NULL,                        /* Documentation string */
+    (traverseproc)NULL,     /* tp_traverse */
+    (inquiry)NULL,             /* tp_clear */
+    (richcmpfunc)NULL,   /* tp_richcompare */
+    0,             /* tp_weaklistoffset */
+    (getiterfunc)_wrap_PyQVector__lt__QRgb__gt____tp_iter,          /* tp_iter */
+    (iternextfunc)NULL,     /* tp_iternext */
+    (struct PyMethodDef*)NULL, /* tp_methods */
+    (struct PyMemberDef*)0,              /* tp_members */
+    NULL,                     /* tp_getset */
+    NULL,                              /* tp_base */
+    NULL,                              /* tp_dict */
+    (descrgetfunc)NULL,    /* tp_descr_get */
+    (descrsetfunc)NULL,    /* tp_descr_set */
+    0,                 /* tp_dictoffset */
+    (initproc)_wrap_PyQVector__lt__QRgb__gt____tp_init,             /* tp_init */
+    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
+    (newfunc)PyType_GenericNew,               /* tp_new */
+    (freefunc)0,             /* tp_free */
+    (inquiry)NULL,             /* tp_is_gc */
+    NULL,                              /* tp_bases */
+    NULL,                              /* tp_mro */
+    NULL,                              /* tp_cache */
+    NULL,                              /* tp_subclasses */
+    NULL,                              /* tp_weaklist */
+    (destructor) NULL                  /* tp_del */
+};
+
+PyTypeObject PyQVector__lt__QRgb__gt__Iter_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,                                 /* ob_size */
+    (char *) "tiled.QVector__lt__QRgb__gt__Iter",            /* tp_name */
+    sizeof(PyQVector__lt__QRgb__gt__Iter),                  /* tp_basicsize */
+    0,                                 /* tp_itemsize */
+    /* methods */
+    (destructor)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_dealloc,        /* tp_dealloc */
+    (printfunc)0,                      /* tp_print */
+    (getattrfunc)NULL,       /* tp_getattr */
+    (setattrfunc)NULL,       /* tp_setattr */
+    (cmpfunc)NULL,           /* tp_compare */
+    (reprfunc)NULL,             /* tp_repr */
+    (PyNumberMethods*)NULL,     /* tp_as_number */
+    (PySequenceMethods*)NULL, /* tp_as_sequence */
+    (PyMappingMethods*)NULL,   /* tp_as_mapping */
+    (hashfunc)NULL,             /* tp_hash */
+    (ternaryfunc)NULL,          /* tp_call */
+    (reprfunc)NULL,              /* tp_str */
+    (getattrofunc)NULL,     /* tp_getattro */
+    (setattrofunc)NULL,     /* tp_setattro */
+    (PyBufferProcs*)NULL,  /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,                      /* tp_flags */
+    NULL,                        /* Documentation string */
+    (traverseproc)PyQVector__lt__QRgb__gt__Iter__tp_traverse,     /* tp_traverse */
+    (inquiry)PyQVector__lt__QRgb__gt__Iter__tp_clear,             /* tp_clear */
+    (richcmpfunc)NULL,   /* tp_richcompare */
+    0,             /* tp_weaklistoffset */
+    (getiterfunc)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_iter,          /* tp_iter */
+    (iternextfunc)_wrap_PyQVector__lt__QRgb__gt__Iter__tp_iternext,     /* tp_iternext */
+    (struct PyMethodDef*)NULL, /* tp_methods */
+    (struct PyMemberDef*)0,              /* tp_members */
+    NULL,                     /* tp_getset */
+    NULL,                              /* tp_base */
+    NULL,                              /* tp_dict */
+    (descrgetfunc)NULL,    /* tp_descr_get */
+    (descrsetfunc)NULL,    /* tp_descr_set */
+    0,                 /* tp_dictoffset */
+    (initproc)NULL,             /* tp_init */
+    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
+    (newfunc)PyType_GenericNew,               /* tp_new */
+    (freefunc)0,             /* tp_free */
+    (inquiry)NULL,             /* tp_is_gc */
+    NULL,                              /* tp_bases */
+    NULL,                              /* tp_mro */
+    NULL,                              /* tp_cache */
+    NULL,                              /* tp_subclasses */
+    NULL,                              /* tp_weaklist */
+    (destructor) NULL                  /* tp_del */
+};
+
+
 /* --- enumerations --- */
 
 
@@ -4017,6 +4300,15 @@ inittiled(void)
         return;
     }
     PyModule_AddObject(m, (char *) "QPixmap", (PyObject *) &PyQPixmap_Type);
+    /* Register the 'QVector<QRgb>' class */
+    if (PyType_Ready(&PyQVector__lt__QRgb__gt___Type)) {
+        return;
+    }
+    if (PyType_Ready(&PyQVector__lt__QRgb__gt__Iter_Type)) {
+        return;
+    }
+    PyModule_AddObject(m, (char *) "QVector__lt__QRgb__gt__", (PyObject *) &PyQVector__lt__QRgb__gt___Type);
+    PyModule_AddObject(m, (char *) "QVector__lt__QRgb__gt__Iter", (PyObject *) &PyQVector__lt__QRgb__gt__Iter_Type);
     {
         PyObject *tmp_value;
          // QImage::Format_Invalid
