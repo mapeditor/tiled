@@ -317,6 +317,12 @@ bool AutoMapper::setupRuleList()
             }
         }
 
+    Q_ASSERT(mRulesInput.size() == mRulesOutput.size());
+    for (int i = 0; i < mRulesInput.size(); ++i) {
+        const QRegion checkCoherent = mRulesInput.at(i).united(mRulesOutput.at(i));
+        Q_ASSERT(coherentRegions(checkCoherent).length() == 1);
+    }
+
     return true;
 }
 
