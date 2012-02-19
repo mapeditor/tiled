@@ -1,11 +1,6 @@
 """
 Fury of the Furries level loader for Tiled
 2012, <samuli@tuomola.net>
-
-Because tiled doesn't support ILBM at the moment you can convert
-tileset images by installing imagemagic, netpmb and running following
-in the game directory on GNU/bash (windows users: good luck with PSP):
-for f in DEC/*LBM; do convert $f DEC/$(basename $f).gif; done
 """
 from tiled import *
 import sys
@@ -23,7 +18,7 @@ class RleData(CpyStruct('BYTE rep, sig, val')): pass
 
 def unpacklvl(f):
   lvl = []
-  with open(f) as fh:
+  with open(f, 'rb') as fh:
     fh.read(4)  #skip sig
     tdata = TileData()
     rdata = RleData()
@@ -94,7 +89,7 @@ def writemap(m, fn):
     print 'error @%i:' % exc_tb.tb_lineno, e
 
 def is_supported_file(f):
-	return open(f).read(4) == 'byt4'
+  return open(f).read(4) == 'byt4'
 
 
 Supports(is_supported_file)

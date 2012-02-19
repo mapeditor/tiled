@@ -7,7 +7,6 @@ import os, sys, struct
 from os.path import dirname
 sys.path.append(dirname(__file__)+'/lib')
 from mappy_types import *
-from pngc import PNGCanvas
 
 NameFilter("Mappy (*.fmp)")
 maps = []
@@ -113,17 +112,7 @@ def readmap(f):
       print 'Isometric maps not supported at the moment'
       return m
 
-    """
-    if not os.path.exists(f+'.png'):
-      print 'Creating',f+'.png','slowwwly (luckily this only happens once per map)'
-      with open(f+'.png', 'wb') as fh:
-        cn = PNGCanvas(hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10)
-        readtilegfx(cn, hd, chunks['BGFX'], chunks['CMAP'])
-        fh.write(cn.dump())
-    """
-
     tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
-    #loadTilesetFromFile(tset, f+'.png')
     cmap = list(readcmap(chunks['CMAP']))
     tset.loadFromImage(readtilegfx(hd, chunks['BGFX'], cmap), "")
     maps.append(m)  # w/o live ref crashes in mapscene:createLayerItem setVisible
