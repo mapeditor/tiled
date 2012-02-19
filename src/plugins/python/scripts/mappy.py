@@ -38,35 +38,24 @@ def readchunks(f):
 def readtilegfx(hd, dat, cmap):
   n = 0
   try:
-    img = QImage(hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10+hd.blockheight, QImage.Format_ARGB32)
-
-    #for i in range(len(cmap)/3):
-    #  cc = [ord(c) for c in cmap[i*3:i*3+3]]
-    #  if cc[0] > 250: print i,cc
+    w,h = hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10+hd.blockheight
+    fmt = QImage.Format_Indexed8 if hd.blockdepth==8 else QImage.Format_ARGB32
+    img = QImage(w, h, fmt)
+    img.setColorTable(cmap)
 
     for i in range(hd.numblockgfx):
       col,row = i%10, i/10
       tx,ty = col*hd.blockwidth, row*hd.blockheight
- 
+
       for y in range(hd.blockheight):
         for x in range(hd.blockwidth):
-          if hd.blockdepth == 8:
-            c = struct.unpack('B', dat[n])[0] * 3
-            if c == 0:
-              rgb = QColor(0,0,0,0).rgba()
-            else:
-              r = struct.unpack('3B', cmap[c:c+3])
-              rgb = QColor(r[0],r[1],r[2]).rgb()
-          elif hd.blockdepth == 24:
-            c = n*3
-            rgb = QColor(struct.unpack('3B', dat[c:c+3]))
- 
-          #img[tx+x,ty+y] = (r,g,b)
-          #img.point(tx+x, ty+y, bytearray([r,g,b,0xff]))
-          img.setPixel(tx+x, ty+y, rgb)
+          if hd.blockdepth==8:
+            c = struct.unpack('B', dat[n])[0]
+            img.setPixel(tx+x, ty+y, c)
+          else:
+            img.setPixel(tx+x, ty+y, cmap[c])
           n+=1
 
-    print 'tset QImage',img.width(),img.height(),hd.trans8bit,[ord(c) for c in cmap[255*3:255*3+3]]
     return img
 
   except Exception as e:
@@ -109,6 +98,11 @@ def readblockdata(chunk, hd):
         b.olay[i] /= mod
     yield b
 
+def readcmap(cmap):
+  for i in range(0,len(cmap),3):
+    r,g,b = struct.unpack('3B', cmap[i:i+3])
+    yield QColor(r,g,b).rgb()
+
 def readmap(f):
   try:
     print 'Loading map at',f
@@ -127,9 +121,11 @@ def readmap(f):
         readtilegfx(cn, hd, chunks['BGFX'], chunks['CMAP'])
         fh.write(cn.dump())
     """
+
     tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
     #loadTilesetFromFile(tset, f+'.png')
-    tset.loadFromImage(readtilegfx(hd, chunks['BGFX'], chunks['CMAP']), "")
+    cmap = list(readcmap(chunks['CMAP']))
+    tset.loadFromImage(readtilegfx(hd, chunks['BGFX'], cmap), "")
     maps.append(m)  # w/o live ref crashes in mapscene:createLayerItem setVisible
 
     blks = list(readblockdata(chunks['BKDT'], hd))
