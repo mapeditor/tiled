@@ -32,7 +32,10 @@
 
 namespace Tiled {
 
+class Layer;
 class Map;
+class MapObject;
+class ObjectGroup;
 class TileLayer;
 class Tileset;
 
@@ -60,7 +63,7 @@ public:
     QSet<QString> names; // all names
 };
 
-class RuleOutput : public QMap<TileLayer*, int>
+class RuleOutput : public QMap<Layer*, int>
 {
 public:
     QString index;
@@ -100,11 +103,11 @@ public:
     bool ruleLayerNameUsed(QString ruleLayerName) const;
 
     /**
-     * Call prepareLoad first! Returns a set of strings describing the layers,
-     * which could be touched considering the given layers of the
+     * Call prepareLoad first! Returns a set of strings describing the tile
+     * layers, which could be touched considering the given layers of the
      * rule map.
      */
-    QSet<QString> getTouchedLayers() const;
+    QSet<QString> getTouchedTileLayers() const;
 
     /**
      * This needs to be called directly before the autoMap call.
@@ -197,9 +200,22 @@ private:
      * so the maybe existing tile in dst will not be overwritten.
      *
      */
-    void copyRegion(TileLayer *src_lr, int src_x, int src_y,
-                    int width, int height, TileLayer *dst_lr,
-                    int dst_x, int dst_y);
+    void copyTileRegion(TileLayer *src_lr, int src_x, int src_y,
+                        int width, int height, TileLayer *dst_lr,
+                        int dst_x, int dst_y);
+
+    /**
+     * This copies all objects from the \a src_lr ObjectGroup to the \a dst_lr
+     * in the given rectangle.
+     *
+     * The rectangle is described by the upper left corner \a src_x \a src_y
+     * and its \a width and \a height. The parameter \a dst_x and \a dst_y
+     * offset the copied objects in the destination object group.
+     */
+    void copyObjectRegion(ObjectGroup *src_lr, int src_x, int src_y,
+                          int width, int height, ObjectGroup *dst_lr,
+                          int dst_x, int dst_y);
+
 
     /**
      * This copies multiple TileLayers from one map to another.
@@ -244,6 +260,10 @@ private:
      * by comparing the used tilesets of the set layers and ruleset layer.
      */
     bool setupRulesUsedCheck();
+
+    const QList<MapObject*> objectsInRegion(ObjectGroup *layer, const QRegion &where) const;
+    void eraseRegionObjectGroup(ObjectGroup *layer, const QRegion &where);
+    QRegion tileRegionOfObjectGroup(ObjectGroup *layer);
 
     /**
      * where to work in
@@ -344,7 +364,9 @@ private:
      */
     bool mNoOverlappingRules;
 
-    QSet<QString> mTouchedLayers;
+    QSet<QString> mTouchedTileLayers;
+
+    QSet<QString> mTouchedObjectGroups;
 
     QString mError;
 

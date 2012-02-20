@@ -84,6 +84,11 @@ QRectF ObjectGroup::objectsBoundingRect() const
     return boundingRect;
 }
 
+bool ObjectGroup::isEmpty() const
+{
+    return mObjects.isEmpty();
+}
+
 QSet<Tileset*> ObjectGroup::usedTilesets() const
 {
     QSet<Tileset*> tilesets;

@@ -99,6 +99,11 @@ public:
     QRectF objectsBoundingRect() const;
 
     /**
+     * Returns whether this object group contains any objects.
+     */
+    bool isEmpty() const;
+
+    /**
      * Computes and returns the set of tilesets used by this object group.
      */
     QSet<Tileset*> usedTilesets() const;

@@ -155,6 +155,8 @@ public:
      */
     QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
 
+    virtual bool isEmpty() const = 0;
+
     /**
      * Computes and returns the set of tilesets used by this layer.
      */
