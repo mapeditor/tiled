@@ -51,10 +51,21 @@ class Tileset;
 class TILEDSHARED_EXPORT Layer : public Object
 {
 public:
+    enum Type {
+        TileLayerType,
+        ObjectGroupType
+    };
+
     /**
      * Constructor.
      */
-    Layer(const QString &name, int x, int y, int width, int height);
+    Layer(Type type, const QString &name, int x, int y,
+          int width, int height);
+
+    /**
+     * Returns the type of this layer.
+     */
+    Type type() const { return mType; }
 
     /**
      * Returns the name of this layer.
@@ -194,13 +205,18 @@ public:
 
     // These functions allow checking whether this Layer is an instance of the
     // given subclass without relying on a dynamic_cast.
-    virtual TileLayer *asTileLayer() { return 0; }
-    virtual ObjectGroup *asObjectGroup() { return 0; }
+    bool isTileLayer() const { return mType == TileLayerType; }
+    bool isObjectGroup() const { return mType == ObjectGroupType; }
+
+    // These actually return this layer cast to one of its subclasses.
+    TileLayer *asTileLayer();
+    ObjectGroup *asObjectGroup();
 
 protected:
     Layer *initializeClone(Layer *clone) const;
 
     QString mName;
+    Type mType;
     int mX;
     int mY;
     int mWidth;

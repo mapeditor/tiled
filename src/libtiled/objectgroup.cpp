@@ -30,6 +30,7 @@
 
 #include "objectgroup.h"
 
+#include "layer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "tile.h"
@@ -38,13 +39,13 @@
 using namespace Tiled;
 
 ObjectGroup::ObjectGroup()
-    : Layer(QString(), 0, 0, 0, 0)
+    : Layer(ObjectGroupType, QString(), 0, 0, 0, 0)
 {
 }
 
 ObjectGroup::ObjectGroup(const QString &name,
                          int x, int y, int width, int height)
-    : Layer(name, x, y, width, height)
+    : Layer(ObjectGroupType, name, x, y, width, height)
 {
 }
 

@@ -77,7 +77,7 @@ int Map::tileLayerCount() const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)
-       if (layer->asTileLayer())
+       if (layer->isTileLayer())
            count++;
     return count;
 }
@@ -86,7 +86,7 @@ int Map::objectGroupCount() const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)
-        if (layer->asObjectGroup())
+        if (layer->isObjectGroup())
            count++;
     return count;
 }

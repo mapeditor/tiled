@@ -235,13 +235,13 @@ void MapDocumentActionHandler::cropToSelection()
 void MapDocumentActionHandler::addTileLayer()
 {
     if (mMapDocument)
-        mMapDocument->addLayer(MapDocument::TileLayerType);
+        mMapDocument->addLayer(Layer::TileLayerType);
 }
 
 void MapDocumentActionHandler::addObjectGroup()
 {
     if (mMapDocument)
-        mMapDocument->addLayer(MapDocument::ObjectGroupType);
+        mMapDocument->addLayer(Layer::ObjectGroupType);
 }
 
 void MapDocumentActionHandler::duplicateLayer()
