@@ -52,8 +52,9 @@ class TILEDSHARED_EXPORT Layer : public Object
 {
 public:
     enum Type {
-        TileLayerType,
-        ObjectGroupType
+        TileLayerType   = 0x01,
+        ObjectGroupType = 0x02,
+        AnyLayerType    = 0xFF
     };
 
     /**

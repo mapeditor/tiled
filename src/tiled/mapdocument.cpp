@@ -235,6 +235,8 @@ void MapDocument::addLayer(Layer::Type layerType)
         name = tr("Object Layer %1").arg(mMap->objectGroupCount() + 1);
         layer = new ObjectGroup(name, 0, 0, mMap->width(), mMap->height());
         break;
+    case Layer::AnyLayerType:
+        break; // Q_ASSERT below will fail.
     }
     Q_ASSERT(layer);
 
