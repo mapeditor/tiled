@@ -1,6 +1,6 @@
 /*
  * automapper.cpp
- * Copyright 2010-2011, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2010-2012, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
  *
@@ -23,6 +23,7 @@
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
+#include "automappingutils.h"
 #include "changeproperties.h"
 #include "layermodel.h"
 #include "map.h"
@@ -499,7 +500,9 @@ void AutoMapper::autoMap(QRegion *where)
                 if (dstTileLayer)
                     dstTileLayer->erase(region);
                 else
-                    eraseRegionObjectGroup(dstLayer->asObjectGroup(), region);
+                    eraseRegionObjectGroup(mMapDocument,
+                                           dstLayer->asObjectGroup(),
+                                           region);
             }
         }
     }
@@ -956,44 +959,3 @@ void AutoMapper::cleanUpRuleMapLayers()
     mLayerOutputRegions = 0;
     mInputRules.clear();
 }
-
-void AutoMapper::eraseRegionObjectGroup(ObjectGroup *layer, const QRegion &where)
-{
-    QUndoStack *undo = mMapDocument->undoStack();
-
-    foreach (MapObject *obj, layer->objects()) {
-        // TODO: we are checking bounds, which is only correct for rectangles and
-        // tile objects. polygons and polylines are not covered correctly by this
-        // erase method (we are in fact deleting too many objects)
-        // TODO2: toAlignedRect may even break rects.
-        if (where.intersects(obj->bounds().toAlignedRect()))
-            undo->push(new RemoveMapObject(mMapDocument, obj));
-    }
-}
-
-QRegion AutoMapper::tileRegionOfObjectGroup(ObjectGroup *layer)
-{
-    QRegion ret;
-    foreach (MapObject *obj, layer->objects()) {
-        // TODO: we are using bounds, which is only correct for rectangles and
-        // tile objects. polygons and polylines are not probably covering less
-        // tiles.
-        ret += obj->bounds().toAlignedRect();
-    }
-    return ret;
-}
-
-const QList<MapObject*> AutoMapper::objectsInRegion(ObjectGroup *layer, const QRegion &where) const
-{
-    QList<MapObject*> ret;
-    foreach (MapObject *obj, layer->objects()) {
-        // TODO: we are checking bounds, which is only correct for rectangles and
-        // tile objects. polygons and polylines are not covered correctly by this
-        // erase method (we are in fact deleting too many objects)
-        // TODO2: toAlignedRect may even break rects.
-        if (where.intersects(obj->bounds().toAlignedRect()))
-            ret += obj;
-    }
-    return ret;
-}
-

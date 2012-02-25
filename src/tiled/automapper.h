@@ -1,6 +1,6 @@
 /*
  * automapper.h
- * Copyright 2010-2011, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2010-2012, Stefan Beller, stefanbeller@googlemail.com
  *
  * This file is part of Tiled.
  *
@@ -260,10 +260,6 @@ private:
      * by comparing the used tilesets of the set layers and ruleset layer.
      */
     bool setupRulesUsedCheck();
-
-    const QList<MapObject*> objectsInRegion(ObjectGroup *layer, const QRegion &where) const;
-    void eraseRegionObjectGroup(ObjectGroup *layer, const QRegion &where);
-    QRegion tileRegionOfObjectGroup(ObjectGroup *layer);
 
     /**
      * where to work in
