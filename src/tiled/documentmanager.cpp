@@ -56,6 +56,7 @@ DocumentManager::DocumentManager(QObject *parent)
 {
     mTabWidget->setDocumentMode(true);
     mTabWidget->setTabsClosable(true);
+    mTabWidget->setMovable(true);
 
     connect(mTabWidget, SIGNAL(currentChanged(int)),
             SLOT(currentIndexChanged()));
