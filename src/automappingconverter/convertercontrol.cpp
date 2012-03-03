@@ -23,6 +23,7 @@
 
 #include "map.h"
 #include "layer.h"
+#include "tileset.h"
 
 #include "mapreader.h"
 #include "mapwriter.h"
