@@ -76,6 +76,11 @@ public:
     bool isGridVisible() const { return mGridVisible; }
 
     /**
+     * Returns whether the object angle arrow is drawn.
+     */
+    bool showAngleArrows() const;
+
+    /**
      * Returns the set of selected map object items.
      */
     const QSet<MapObjectItem*> &selectedObjectItems() const
@@ -113,6 +118,11 @@ public slots:
      * Sets whether the tile grid is visible.
      */
     void setGridVisible(bool visible);
+
+    /**
+     * Sets whether the angle arrow of objects is visible.
+     */
+    void setShowAngleArrows(bool showAngleArrows);
 
     /**
      * Sets whether the current layer should be highlighted.

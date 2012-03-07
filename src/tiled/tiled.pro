@@ -124,7 +124,8 @@ SOURCES += aboutdialog.cpp \
     selectionrectangle.cpp \
     objecttypes.cpp \
     objecttypesmodel.cpp \
-    commandlineparser.cpp
+    commandlineparser.cpp \
+    rotatemapobject.cpp
 
 HEADERS += aboutdialog.h \
     automapper.h \
@@ -216,7 +217,8 @@ HEADERS += aboutdialog.h \
     objecttypes.h \
     objecttypesmodel.h \
     commandlineparser.h \
-    macsupport.h
+    macsupport.h \
+    rotatemapobject.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

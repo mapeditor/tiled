@@ -66,6 +66,11 @@ public:
                        const MapObject *object,
                        const QColor &color) const;
 
+    virtual void drawMapObjectAngleArrow(QPainter *painter,
+                                   const MapObject *object,
+                                   const QColor &color,
+                                   qreal arrowLength) const;
+
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;
 

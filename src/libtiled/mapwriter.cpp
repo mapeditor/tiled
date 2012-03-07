@@ -448,6 +448,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (size.y() != 0)
         w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
 
+    const qreal angle = mapObject->angle();
+    if (angle != 0.0)
+        w.writeAttribute(QLatin1String("angle"), QString::number(angle));
+
+
     writeProperties(w, mapObject->properties());
 
     const QPolygonF &polygon = mapObject->polygon();

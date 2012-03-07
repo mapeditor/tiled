@@ -177,6 +177,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
+    mUi->actionShowAngleArrows->setChecked(preferences->showAngleArrows());
 
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
@@ -256,6 +257,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             preferences, SLOT(setSnapToGrid(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
             preferences, SLOT(setHighlightCurrentLayer(bool)));
+    connect(mUi->actionShowAngleArrows, SIGNAL(toggled(bool)),
+            preferences, SLOT(setShowAngleArrows(bool)));
     connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
     connect(mUi->actionZoomOut, SIGNAL(triggered()), SLOT(zoomOut()));
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
@@ -1355,6 +1358,9 @@ void MainWindow::addMapDocument(MapDocument *mapDocument)
     mapScene->setGridVisible(prefs->showGrid());
     connect(prefs, SIGNAL(showGridChanged(bool)),
             mapScene, SLOT(setGridVisible(bool)));
+    mapScene->setShowAngleArrows(prefs->showAngleArrows());
+    connect(prefs, SIGNAL(showAngleArrowsChanged(bool)),
+            mapScene, SLOT(setShowAngleArrows(bool)));
 }
 
 void MainWindow::aboutTiled()

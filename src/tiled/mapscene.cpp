@@ -426,6 +426,20 @@ void MapScene::setGridVisible(bool visible)
     update();
 }
 
+void MapScene::setShowAngleArrows(bool showAngleArrow)
+{
+    if (mMapDocument->renderer()->showAngleArrows() == showAngleArrow)
+        return;
+
+    mMapDocument->renderer()->setShowAngleArrows(showAngleArrow);
+    update();
+}
+
+bool MapScene::showAngleArrows() const
+{
+    return mMapDocument->renderer()->showAngleArrows();
+}
+
 void MapScene::setHighlightCurrentLayer(bool highlightCurrentLayer)
 {
     if (mHighlightCurrentLayer == highlightCurrentLayer)

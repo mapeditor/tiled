@@ -68,6 +68,7 @@ Preferences::Preferences()
                                               false).toBool();
     mShowTilesetGrid = mSettings->value(QLatin1String("ShowTilesetGrid"),
                                         true).toBool();
+    mShowAngleArrows = mSettings->value(QLatin1String("ShowAngleArrow"), false).toBool();
     mLanguage = mSettings->value(QLatin1String("Language"),
                                  QString()).toString();
     mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
@@ -139,6 +140,16 @@ void Preferences::setShowTilesetGrid(bool showTilesetGrid)
     mSettings->setValue(QLatin1String("Interface/ShowTilesetGrid"),
                         mShowTilesetGrid);
     emit showTilesetGridChanged(mShowTilesetGrid);
+}
+
+void Preferences::setShowAngleArrows(bool showAngleArrow)
+{
+    if (mShowAngleArrows == showAngleArrow)
+        return;
+
+    mShowAngleArrows = showAngleArrow;
+    mSettings->setValue(QLatin1String("Interface/ShowAngleArrow"), mShowAngleArrows);
+    emit showAngleArrowsChanged(mShowAngleArrows);
 }
 
 MapWriter::LayerDataFormat Preferences::layerDataFormat() const

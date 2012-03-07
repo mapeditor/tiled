@@ -198,6 +198,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
         objectVariant["y"] = pos.y();
         objectVariant["width"] = size.x();
         objectVariant["height"] = size.y();
+        objectVariant["angle"] = object->angle();
 
         /* Polygons are stored in this format:
          *

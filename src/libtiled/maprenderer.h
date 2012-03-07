@@ -48,7 +48,7 @@ class TileLayer;
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
-    MapRenderer(const Map *map) : mMap(map) {}
+    MapRenderer(const Map *map) : mShowAngleArrows(false), mMap(map) {}
     virtual ~MapRenderer() {}
 
     /**
@@ -112,6 +112,15 @@ public:
                                const QColor &color) const = 0;
 
     /**
+     * Draws the arrow showing the angle of the \a object in the given \a color
+     * using the \a painter.
+     */
+    virtual void drawMapObjectAngleArrow(QPainter *painter,
+                                   const MapObject *object,
+                                   const QColor &color,
+                                   qreal arrowLength) const = 0;
+
+    /**
      * Returns the tile coordinates matching the given pixel position.
      */
     virtual QPointF pixelToTileCoords(qreal x, qreal y) const = 0;
@@ -137,11 +146,23 @@ public:
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
+    /**
+     * Returns whether the object angle arrow is drawn.
+     */
+    bool showAngleArrows() const { return mShowAngleArrows; }
+
+    /**
+     * Sets if the object angle arrow should be drawn.
+     */
+    void setShowAngleArrows(bool showAngleArrows) { mShowAngleArrows = showAngleArrows; }
+
 protected:
     /**
      * Returns the map this renderer is associated with.
      */
     const Map *map() const { return mMap; }
+
+    bool mShowAngleArrows;
 
 private:
     const Map *mMap;

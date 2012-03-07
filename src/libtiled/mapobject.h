@@ -228,6 +228,16 @@ public:
      */
     MapObject *clone() const;
 
+    /**
+     * Sets the angle of the object
+     */
+    void setAngle(qreal angle) { mAngle = angle; }
+
+    /**
+     * Returns the angle of the object.
+     */
+    qreal angle() const { return mAngle; }
+
 private:
     QString mName;
     QString mType;
@@ -237,6 +247,7 @@ private:
     Shape mShape;
     Tile *mTile;
     ObjectGroup *mObjectGroup;
+    qreal mAngle;
 };
 
 } // namespace Tiled

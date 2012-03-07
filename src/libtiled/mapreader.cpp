@@ -602,6 +602,14 @@ MapObject *MapReaderPrivate::readObject()
     MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
                                                               size.y()));
 
+
+    // read the angle
+    bool angleOk;
+    const qreal angle = atts.value(QLatin1String("angle")).toString().toDouble(&angleOk);
+    if (angleOk) {
+        object->setAngle(angle);
+    }
+
     if (gid) {
         const Cell cell = cellForGid(gid);
         object->setTile(cell.tile);
