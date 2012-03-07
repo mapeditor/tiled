@@ -73,6 +73,8 @@ MapScene::MapScene(QObject *parent):
     connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
     connect(prefs, SIGNAL(showTileObjectOutlinesChanged(bool)),
             SLOT(setShowTileObjectOutlines(bool)));
+    connect(prefs, SIGNAL(showAngleArrowsChanged(bool)),
+            SLOT(setShowAngleArrows(bool)));
     connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
     connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
             SLOT(setHighlightCurrentLayer(bool)));
@@ -85,6 +87,7 @@ MapScene::MapScene(QObject *parent):
 
     mGridVisible = prefs->showGrid();
     mShowTileObjectOutlines = prefs->showTileObjectOutlines();
+    mShowAngleArrows = prefs->showAngleArrows();
     mHighlightCurrentLayer = prefs->highlightCurrentLayer();
 
     // Install an event filter so that we can get key events on behalf of the
@@ -107,8 +110,9 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     refreshScene();
 
     if (mMapDocument) {
-        mMapDocument->renderer()->setFlag(ShowTileObjectOutlines,
-                                          mShowTileObjectOutlines);
+        MapRenderer *renderer = mMapDocument->renderer();
+        renderer->setFlag(ShowTileObjectOutlines, mShowTileObjectOutlines);
+        renderer->setShowAngleArrows(mShowAngleArrows);
 
         connect(mMapDocument, SIGNAL(mapChanged()),
                 this, SLOT(mapChanged()));
@@ -459,6 +463,20 @@ void MapScene::setShowTileObjectOutlines(bool enabled)
 
     if (mMapDocument) {
         mMapDocument->renderer()->setFlag(ShowTileObjectOutlines, enabled);
+        if (!mObjectItems.isEmpty())
+            update();
+    }
+}
+
+void MapScene::setShowAngleArrows(bool showAngleArrow)
+{
+    if (mShowAngleArrows == showAngleArrow)
+        return;
+
+    mShowAngleArrows = showAngleArrow;
+
+    if (mMapDocument) {
+        mMapDocument->renderer()->setShowAngleArrows(showAngleArrow);
         if (!mObjectItems.isEmpty())
             update();
     }

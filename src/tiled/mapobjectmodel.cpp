@@ -448,6 +448,12 @@ void MapObjectModel::setObjectSize(MapObject *o, const QSizeF &size)
     emit objectsChanged(QList<MapObject*>() << o);
 }
 
+void MapObjectModel::setObjectAngle(MapObject *o, qreal angle)
+{
+    o->setAngle(angle);
+    emit objectsChanged(QList<MapObject*>() << o);
+}
+
 void MapObjectModel::setObjectVisible(MapObject *o, bool visible)
 {
     o->setVisible(visible);

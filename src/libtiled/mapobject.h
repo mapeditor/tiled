@@ -224,13 +224,23 @@ public:
     { mObjectGroup = objectGroup; }
 
     /**
+     * Sets the angle of the object
+     */
+    void setAngle(qreal angle) { mAngle = angle; }
+
+    /**
+     * Returns the angle of the object.
+     */
+    qreal angle() const { return mAngle; }
+
+    bool isVisible() const { return mVisible; }
+    void setVisible(bool visible) { mVisible = visible; }
+
+    /**
      * Returns a duplicate of this object. The caller is responsible for the
      * ownership of this newly created object.
      */
     MapObject *clone() const;
-
-    bool isVisible() const { return mVisible; }
-    void setVisible(bool visible) { mVisible = visible; }
 
 private:
     QString mName;
@@ -241,6 +251,7 @@ private:
     Shape mShape;
     Tile *mTile;
     ObjectGroup *mObjectGroup;
+    qreal mAngle;
     bool mVisible;
 };
 

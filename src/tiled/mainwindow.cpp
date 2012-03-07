@@ -202,6 +202,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
+    mUi->actionShowAngleArrows->setChecked(preferences->showAngleArrows());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
 
@@ -286,6 +287,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, SLOT(setShowGrid(bool)));
     connect(mUi->actionShowTileObjectOutlines, SIGNAL(toggled(bool)),
             preferences, SLOT(setShowTileObjectOutlines(bool)));
+    connect(mUi->actionShowAngleArrows, SIGNAL(toggled(bool)),
+            preferences, SLOT(setShowAngleArrows(bool)));
     connect(mUi->actionSnapToGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setSnapToGrid(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),

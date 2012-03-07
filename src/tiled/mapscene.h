@@ -135,6 +135,11 @@ private slots:
     void setShowTileObjectOutlines(bool enabled);
 
     /**
+     * Sets whether the angle arrow of objects is visible.
+     */
+    void setShowAngleArrows(bool showAngleArrows);
+
+    /**
      * Sets whether the current layer should be highlighted.
      */
     void setHighlightCurrentLayer(bool highlightCurrentLayer);
@@ -177,6 +182,7 @@ private:
     AbstractTool *mActiveTool;
     bool mGridVisible;
     bool mShowTileObjectOutlines;
+    bool mShowAngleArrows;
     bool mHighlightCurrentLayer;
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;

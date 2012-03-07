@@ -270,6 +270,17 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
     // TODO
 }
 
+void StaggeredRenderer::drawMapObjectAngleArrow(QPainter *painter,
+                                                const MapObject *object,
+                                                const QColor &color,
+                                                qreal arrowLength) const
+{
+    Q_UNUSED(painter)
+    Q_UNUSED(object)
+    Q_UNUSED(color)
+    Q_UNUSED(arrowLength)
+}
+
 /**
  * Converts pixel to tile coordinates. Sub-tile return values are not
  * supported by this renderer.

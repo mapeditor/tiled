@@ -777,12 +777,17 @@ MapObject *MapReaderPrivate::readObject()
 
     MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
                                                               size.y()));
+
+    bool ok;
+    const qreal angle = atts.value(QLatin1String("angle")).toString().toDouble(&ok);
+    if (ok)
+        object->setAngle(angle);
+
     if (gid) {
         const Cell cell = cellForGid(gid);
         object->setTile(cell.tile);
     }
 
-    bool ok;
     const int visible = visibleRef.toString().toInt(&ok);
     if (ok)
         object->setVisible(visible);
