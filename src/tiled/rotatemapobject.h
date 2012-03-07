@@ -1,6 +1,6 @@
 /*
- * resizemapobject.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * rotatemapobject.h
+ * Copyright 2011, Przemysław Grzywacz <nexather@gmail.com>
  *
  * This file is part of Tiled.
  *
