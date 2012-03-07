@@ -112,6 +112,15 @@ public:
                                const QColor &color) const = 0;
 
     /**
+     * Draws the arrow showing the angle of the \a object in the given \a color
+     * using the \a painter.
+     */
+    virtual void drawMapObjectRotationArrow(QPainter *painter,
+                                   const MapObject *object,
+                                   const QColor &color,
+                                   qreal arrowLength) const = 0;
+
+    /**
      * Returns the tile coordinates matching the given pixel position.
      */
     virtual QPointF pixelToTileCoords(qreal x, qreal y) const = 0;

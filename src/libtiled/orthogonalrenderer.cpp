@@ -357,7 +357,63 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     }
 
     painter->restore();
+
+    drawMapObjectRotationArrow(painter, object, color, 32);
 }
+
+void OrthogonalRenderer::drawMapObjectRotationArrow(QPainter *painter,
+                               const MapObject *object,
+                               const QColor &color,
+                               qreal arrowLength) const {
+    painter->save();
+
+    const QRectF bounds = object->bounds();
+    QRectF rect(tileToPixelCoords(bounds.topLeft()),
+                tileToPixelCoords(bounds.bottomRight()));
+
+    painter->translate(rect.topLeft());
+    rect.moveTopLeft(QPointF(0, 0));
+
+    const QPen linePen(color, 2);
+    const QPen shadowPen(Qt::black, 2);
+
+    // calculate arrow
+    const QPointF center = rect.center();
+    const qreal arrowArmStart = arrowLength - 4;
+    const qreal arrowArmAngle = 12 * M_PI / 180;
+    const qreal angleRad = object->angle() * M_PI / 180;
+    const qreal angleCos = cos(angleRad);
+    const qreal angleSin = sin(angleRad);
+    const QPointF arrowEnd = QPointF(
+                    center.x() + arrowLength * angleCos,
+                    center.y() + arrowLength * angleSin
+                );
+    const QPointF arrowLeft = QPointF(
+                    center.x() + arrowArmStart * cos(angleRad + arrowArmAngle),
+                    center.y() + arrowArmStart * sin(angleRad + arrowArmAngle)
+                );
+    const QPointF arrowRight = QPointF(
+                    center.x() + arrowArmStart * cos(angleRad - arrowArmAngle),
+                    center.y() + arrowArmStart * sin(angleRad - arrowArmAngle)
+                );
+    // draw arror
+    const QLineF lineCenter = QLineF(center, arrowEnd);
+    const QLineF lineLeft = QLineF(arrowLeft, arrowEnd);
+    const QLineF lineRight = QLineF(arrowRight, arrowEnd);
+
+    painter->setPen(shadowPen);
+    painter->drawLine(lineCenter.translated(1, 1));
+    painter->drawLine(lineLeft.translated(1, 1));
+    painter->drawLine(lineRight.translated(1, 1));
+
+    painter->setPen(linePen);
+    painter->drawLine(lineCenter);
+    painter->drawLine(lineLeft);
+    painter->drawLine(lineRight);
+
+    painter->restore();
+}
+
 
 QPointF OrthogonalRenderer::pixelToTileCoords(qreal x, qreal y) const
 {

@@ -35,7 +35,8 @@ MapObject::MapObject():
     mSize(0, 0),
     mShape(Rectangle),
     mTile(0),
-    mObjectGroup(0)
+    mObjectGroup(0),
+    mAngle(0.0f)
 {
 }
 
@@ -48,7 +49,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mSize(size),
     mShape(Rectangle),
     mTile(0),
-    mObjectGroup(0)
+    mObjectGroup(0),
+    mAngle(0.0f)
 {
 }
 
@@ -59,5 +61,6 @@ MapObject *MapObject::clone() const
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setTile(mTile);
+    o->setAngle(mAngle);
     return o;
 }

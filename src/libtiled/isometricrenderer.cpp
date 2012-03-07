@@ -376,6 +376,14 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     painter->restore();
 }
 
+void IsometricRenderer::drawMapObjectRotationArrow(QPainter *painter,
+                               const MapObject *object,
+                               const QColor &color,
+                               qreal arrowLength) const
+{
+
+}
+
 QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();

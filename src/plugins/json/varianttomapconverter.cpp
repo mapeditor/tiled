@@ -268,6 +268,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const int y = objectVariantMap["y"].toInt();
         const int width = objectVariantMap["width"].toInt();
         const int height = objectVariantMap["height"].toInt();
+        const qreal angle = objectVariantMap["angle"].toReal();
 
         const QPointF pos = toTile(x, y);
         const QPointF size = toTile(width, height);
@@ -275,6 +276,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         MapObject *object = new MapObject(name, type,
                                           pos,
                                           QSizeF(size.x(), size.y()));
+        object->setAngle(angle);
 
         if (gid) {
             bool ok;
