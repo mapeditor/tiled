@@ -75,10 +75,31 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
         switch (object->shape()) {
         case MapObject::Rectangle:
             if (rect.isNull()) {
-                boundingRect = rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
+                // 32 is the size of the angle arrow - this should be configurable
+                boundingRect = rect.adjusted(-32 - 2, -32 - 2, 32 + 3, 32 + 3);
             } else {
+                // 64 is 2x32, the size of the angle arrow
                 const int nameHeight = object->name().isEmpty() ? 0 : 15;
-                boundingRect = rect.adjusted(-2, -nameHeight - 2, 3, 3);
+                boundingRect = rect;
+                if (boundingRect.width() < 64) {
+                    const qreal missing = (64 - boundingRect.width()) / 2;
+                    boundingRect.setLeft(boundingRect.left() - missing);
+                    boundingRect.setRight(boundingRect.right() + missing);
+                }
+                if (boundingRect.height() < 64) {
+                    const qreal missing = (64 - boundingRect.height()) / 2;
+                    boundingRect.setBottom(boundingRect.bottom() + missing);
+                    if (missing < nameHeight) {
+                        boundingRect.setTop(boundingRect.top() - nameHeight);
+                    } else {
+                        boundingRect.setTop(boundingRect.top() - missing);
+                    }
+                } else {
+                    boundingRect.setTop(boundingRect.top() - nameHeight);
+                }
+
+                //boundingRect = rect.adjusted(-2, -nameHeight - 2, 3, 3);
+                boundingRect.adjust(-2, - 2, 3, 3);
             }
             break;
 
