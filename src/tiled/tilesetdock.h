@@ -24,6 +24,7 @@
 
 #include <QDockWidget>
 #include <QMap>
+#include <sstream>
 
 class QStackedWidget;
 class QComboBox;
