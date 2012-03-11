@@ -29,6 +29,7 @@
 
 #include "tilelayer.h"
 
+#include "layer.h"
 #include "map.h"
 #include "tile.h"
 #include "tileset.h"
@@ -36,7 +37,7 @@
 using namespace Tiled;
 
 TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
-    Layer(name, x, y, width, height),
+    Layer(TileLayerType, name, x, y, width, height),
     mMaxTileSize(0, 0),
     mGrid(width * height)
 {

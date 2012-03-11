@@ -96,7 +96,7 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
     using namespace Tiled;
 
     // Check layer count and type
-    if (map->layerCount() != 1 || !map->layerAt(0)->asTileLayer()) {
+    if (map->layerCount() != 1 || !map->layerAt(0)->isTileLayer()) {
         mError = tr("The map needs to have exactly one tile layer!");
         return false;
     }

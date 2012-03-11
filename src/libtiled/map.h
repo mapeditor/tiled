@@ -31,6 +31,7 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include "layer.h"
 #include "object.h"
 
 #include <QList>
@@ -39,7 +40,6 @@
 
 namespace Tiled {
 
-class Layer;
 class Tile;
 class Tileset;
 class ObjectGroup;
@@ -179,8 +179,12 @@ public:
     /**
      * Returns the index of the layer given by \a layerName, or -1 if no
      * layer with that name is found.
+     *
+     * The second optional parameter specifies the layer types which are
+     * searched.
      */
-    int indexOfLayer(const QString &layerName) const;
+    int indexOfLayer(const QString &layerName,
+                     uint layerTypes = Layer::AnyLayerType) const;
 
     /**
      * Adds a layer to this map, inserting it at the given index.

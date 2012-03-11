@@ -12,19 +12,4 @@
    eJztlUEOwCAIBLH+/8/eDSBQ1jTNHuZiDKOGxSEigxDyCWYRtPsx6HBH74hyn2r9zT2T7uj+jPemW+sfrRai16K1ut1ebtEZ8+aFdxaU27qj5a7O1FOfRd1v86XlZc+T9RZVt3aG6FrX/0UIIVkWa5oFDA==
   </data>
  </layer>
- <layer name="Ground" width="31" height="31">
-  <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAMCHAQ8EAAE=
-  </data>
- </layer>
- <layer name="Over" width="31" height="31">
-  <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAMCHAQ8EAAE=
-  </data>
- </layer>
- <layer name="Over2" width="31" height="31">
-  <data encoding="base64" compression="zlib">
-   eJztwQEBAAAAgiD/r25IQAEAAMCHAQ8EAAE=
-  </data>
- </layer>
 </map>

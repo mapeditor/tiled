@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
 <map version="1.0" orientation="orthogonal" width="7" height="3" tilewidth="24" tileheight="24">
  <properties>
   <property name="AutomappingRadius" value="3"/>
@@ -35,4 +36,13 @@
    eJxjYKA+AAAAVAAB
   </data>
  </layer>
+ <objectgroup name="Output_Effect" width="7" height="3">
+  <object name="StinkingAcid" type="DMG" x="80" y="34">
+   <properties>
+    <property name="DamagePerSecond" value="1"/>
+    <property name="anotherValue" value=""/>
+   </properties>
+   <polygon points="0,0 8,-6 9,9 2,8"/>
+  </object>
+ </objectgroup>
 </map>

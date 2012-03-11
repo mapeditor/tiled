@@ -29,10 +29,15 @@
 
 #include "layer.h"
 
+#include "objectgroup.h"
+#include "tilelayer.h"
+
 using namespace Tiled;
 
-Layer::Layer(const QString &name, int x, int y, int width, int height):
+Layer::Layer(Type type, const QString &name, int x, int y,
+             int width, int height) :
     mName(name),
+    mType(type),
     mX(x),
     mY(y),
     mWidth(width),
@@ -67,4 +72,14 @@ Layer *Layer::initializeClone(Layer *clone) const
     clone->mMap = mMap;
     clone->setProperties(properties());
     return clone;
+}
+
+TileLayer *Layer::asTileLayer()
+{
+    return isTileLayer() ? static_cast<TileLayer*>(this) : 0;
+}
+
+ObjectGroup *Layer::asObjectGroup()
+{
+    return isObjectGroup() ? static_cast<ObjectGroup*>(this) : 0;
 }

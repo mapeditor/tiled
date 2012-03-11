@@ -99,6 +99,11 @@ public:
     QRectF objectsBoundingRect() const;
 
     /**
+     * Returns whether this object group contains any objects.
+     */
+    bool isEmpty() const;
+
+    /**
      * Computes and returns the set of tilesets used by this object group.
      */
     QSet<Tileset*> usedTilesets() const;
@@ -148,8 +153,6 @@ public:
     void setColor(const QColor &color) {  mColor = color; }
 
     Layer *clone() const;
-
-    virtual ObjectGroup *asObjectGroup() { return this; }
 
 protected:
     ObjectGroup *initializeClone(ObjectGroup *clone) const;

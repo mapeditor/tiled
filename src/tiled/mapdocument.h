@@ -28,6 +28,8 @@
 #include <QRegion>
 #include <QString>
 
+#include "layer.h"
+
 class QPoint;
 class QRect;
 class QSize;
@@ -35,7 +37,6 @@ class QUndoStack;
 
 namespace Tiled {
 
-class Layer;
 class Map;
 class MapObject;
 class MapRenderer;
@@ -133,11 +134,7 @@ public:
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
 
-    enum LayerType {
-        TileLayerType,
-        ObjectGroupType
-    };
-    void addLayer(LayerType layerType);
+    void addLayer(Layer::Type layerType);
     void duplicateLayer();
     void mergeLayerDown();
     void moveLayerUp(int index);

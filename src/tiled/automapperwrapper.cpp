@@ -40,7 +40,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     while (index < autoMapper.size()) {
         AutoMapper *a = autoMapper.at(index);
         if (a->prepareAutoMap()) {
-            touchedLayers|= a->getTouchedLayers();
+            touchedLayers|= a->getTouchedTileLayers();
             index++;
         } else {
             autoMapper.remove(index);

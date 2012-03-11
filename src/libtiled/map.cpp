@@ -77,7 +77,7 @@ int Map::tileLayerCount() const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)
-       if (layer->asTileLayer())
+       if (layer->isTileLayer())
            count++;
     return count;
 }
@@ -86,7 +86,7 @@ int Map::objectGroupCount() const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)
-        if (layer->asObjectGroup())
+        if (layer->isObjectGroup())
            count++;
     return count;
 }
@@ -97,10 +97,11 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName) const
+int Map::indexOfLayer(const QString &layerName, uint layertypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
-        if (layerAt(index)->name() == layerName)
+        if (layerAt(index)->name() == layerName
+                && (layertypes & layerAt(index)->type()))
             return index;
 
     return -1;
