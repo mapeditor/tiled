@@ -111,7 +111,22 @@ public:
      * Returns all currently available tilesets.
      */
     QList<Tileset*> tilesets() const;
-
+    
+    /**
+     * Forces a tileset to reload.
+     */
+    void forceTilesetReload( Tileset *tileset );
+    
+    /**
+     * Forces a tileset reload by name.
+     */
+    void forceTilesetReloadByName( const QString &name );
+    
+    /**
+     * Forces a tileset reload by path.
+     */
+    void forcceTilesetReloadBySource( const QString &source );
+    
     /**
      * Sets whether tilesets are automatically reloaded when their tileset
      * image changes.

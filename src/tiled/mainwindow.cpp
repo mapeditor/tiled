@@ -177,7 +177,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
-
+    
+    QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
+    connect(reloadTilesetsShortcut, SIGNAL(activated()),
+            this, SLOT(reloadTilesets()));
+    
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
     keys += QKeySequence(tr("Ctrl+="));
@@ -277,7 +281,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
             SLOT(newTilesets(QStringList)));
-
+            
+            
+    
     // Add recent file actions to the recent files menu
     for (int i = 0; i < MaxRecentFiles; ++i)
     {
@@ -991,6 +997,18 @@ void MainWindow::newTilesets(const QStringList &paths)
     foreach (const QString &path, paths)
         if (!newTileset(path))
             return;
+}
+
+void MainWindow::reloadTilesets()
+{
+    Map* map = mMapDocument->map();
+    if( !map )
+        return;
+     
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    foreach( Tileset *tileset, map->tilesets() ) {
+        tilesetManager->forceTilesetReload(tileset);
+    }
 }
 
 void MainWindow::addExternalTileset()
