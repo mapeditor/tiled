@@ -524,6 +524,7 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     mCurrentTiles = tiles;
 
     emit currentTilesChanged(mCurrentTiles);
+    retranslateUi();
 }
 
 void TilesetDock::setCurrentTile(Tile *tile)
@@ -533,11 +534,17 @@ void TilesetDock::setCurrentTile(Tile *tile)
 
     mCurrentTile = tile;
     emit currentTileChanged(mCurrentTile);
+    retranslateUi();
 }
 
 void TilesetDock::retranslateUi()
 {
-    setWindowTitle(tr("Tilesets"));
+    std::stringstream ss;
+    ss << "Tilesets ";
+    if(currentTile())
+    	ss << "Local ID: " <<currentTile()->id();
+
+    setWindowTitle(tr(ss.str().c_str()));
     mImportTileset->setText(tr("&Import Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
     mPropertiesTileset->setText(tr("Tile&set Properties"));
