@@ -208,6 +208,13 @@ Map *Map::clone() const
         o->addLayer(layer->clone());
     o->mTilesets = mTilesets;
     o->setProperties(properties());
+
+    memcpy(o->mMapObject_UniqueID_UsedList,mMapObject_UniqueID_UsedList,g_MapObject_MaxUniqueIDs*sizeof(quint32));
+    memcpy(o->mMapObject_UniqueID_FreeList,mMapObject_UniqueID_FreeList,g_MapObject_MaxUniqueIDs*sizeof(quint32));
+
+    o->mMapObject_UniqueID_NumUsed = mMapObject_UniqueID_NumUsed;
+    o->mMapObject_UniqueID_NumFree = mMapObject_UniqueID_NumFree;
+
     return o;
 }
 

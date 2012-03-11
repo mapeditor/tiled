@@ -897,7 +897,8 @@ void MainWindow::paste()
             undoStack->beginMacro(tr("Paste Objects"));
             foreach (const MapObject *mapObject, objectGroup->objects()) {
                 MapObject *objectClone = mapObject->clone();
-                const quint32 uniqueID = map->createUniqueID();
+                //JAMTODO: somehow this map is a blank map!
+                const quint32 uniqueID = mMapDocument->map()->createUniqueID();
                 objectClone->setUniqueID(uniqueID);
                 map->addToQMap(objectClone);
                 objectClone->setPosition(objectClone->position() + offset);
