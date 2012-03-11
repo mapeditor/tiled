@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>data/mapobject.tmx</file>
+ </qresource>
+ </RCC>

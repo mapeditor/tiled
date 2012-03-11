@@ -22,4 +22,5 @@ tmxviewer.exe
 *.exp
 *.intermediate.manifest
 
-tests/test_mapreader
+tests/test_mapreader/test_mapreader
+tests/test_properties/test_properties
