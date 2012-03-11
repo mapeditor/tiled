@@ -113,6 +113,11 @@ public:
     QList<Tileset*> tilesets() const;
 
     /**
+     * Forces a tileset to reload.
+     */
+    void forceTilesetReload(Tileset *tileset);
+
+    /**
      * Sets whether tilesets are automatically reloaded when their tileset
      * image changes.
      */

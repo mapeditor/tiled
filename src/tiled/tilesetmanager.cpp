@@ -133,6 +133,16 @@ QList<Tileset*> TilesetManager::tilesets() const
     return mTilesets.keys();
 }
 
+void TilesetManager::forceTilesetReload(Tileset *tileset)
+{
+    if (!mTilesets.contains(tileset))
+        return;
+
+    QString fileName = tileset->imageSource();
+    if (tileset->loadFromImage(QImage(fileName), fileName))
+        emit tilesetChanged(tileset);
+}
+
 void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 {
     mReloadTilesetsOnChange = enabled;
