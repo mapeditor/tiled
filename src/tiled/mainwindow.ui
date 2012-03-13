@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -100,6 +100,7 @@
     <addaction name="actionShowGrid"/>
     <addaction name="actionSnapToGrid"/>
     <addaction name="actionHighlightCurrentLayer"/>
+    <addaction name="actionShowAngleArrow"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -402,6 +403,14 @@
    </property>
    <property name="shortcut">
     <string>H</string>
+   </property>
+  </action>
+  <action name="actionShowAngleArrow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;Angle Arrow</string>
    </property>
   </action>
  </widget>

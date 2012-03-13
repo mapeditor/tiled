@@ -57,6 +57,7 @@ MapScene::MapScene(QObject *parent):
     mSelectedTool(0),
     mActiveTool(0),
     mGridVisible(true),
+    mShowAngleArrow(true),
     mUnderMouse(false),
     mCurrentModifiers(Qt::NoModifier),
     mDarkRectangle(new QGraphicsRectItem)
@@ -423,6 +424,15 @@ void MapScene::setGridVisible(bool visible)
         return;
 
     mGridVisible = visible;
+    update();
+}
+
+void MapScene::setShowAngleArrow(bool showAngleArrow) {
+    if (mShowAngleArrow == showAngleArrow)
+        return;
+
+    mShowAngleArrow = showAngleArrow;
+    mMapDocument->renderer()->setShowAngleArrow(mShowAngleArrow);
     update();
 }
 

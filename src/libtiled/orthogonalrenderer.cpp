@@ -379,13 +379,18 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     painter->restore();
 
-    drawMapObjectRotationArrow(painter, object, color, 32);
+    if (mShowAngleArrow)
+        drawMapObjectAngleArrow(painter, object, color, 32);
 }
 
-void OrthogonalRenderer::drawMapObjectRotationArrow(QPainter *painter,
+void OrthogonalRenderer::drawMapObjectAngleArrow(QPainter *painter,
                                const MapObject *object,
                                const QColor &color,
                                qreal arrowLength) const {
+
+    if (object->shape() == MapObject::Polyline)
+        return;
+
     painter->save();
 
     const QRectF bounds = object->bounds();

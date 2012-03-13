@@ -63,7 +63,7 @@ public:
                        const MapObject *object,
                        const QColor &color) const;
 
-    virtual void drawMapObjectRotationArrow(QPainter *painter,
+    virtual void drawMapObjectAngleArrow(QPainter *painter,
                                    const MapObject *object,
                                    const QColor &color,
                                    qreal arrowLength) const;

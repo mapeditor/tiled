@@ -376,7 +376,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     painter->restore();
 }
 
-void IsometricRenderer::drawMapObjectRotationArrow(QPainter *painter,
+void IsometricRenderer::drawMapObjectAngleArrow(QPainter *painter,
                                const MapObject *object,
                                const QColor &color,
                                qreal arrowLength) const
