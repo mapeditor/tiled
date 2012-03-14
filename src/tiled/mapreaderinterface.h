@@ -53,7 +53,7 @@ public:
     virtual QString nameFilter() const { return QString(); }
 
     /**
-     * Returns name filters of this map writer, for multiple formats.
+     * Returns name filters of this map reader, for multiple formats.
      */
     virtual QStringList nameFilters() const { return QStringList(nameFilter()); }
 
