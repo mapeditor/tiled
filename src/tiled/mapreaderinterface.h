@@ -22,6 +22,7 @@
 #define MAPREADERINTERFACE_H
 
 #include <QtPlugin>
+#include <QStringList>
 
 class QString;
 
@@ -49,7 +50,12 @@ public:
     /**
      * Returns the name filter of this map reader.
      */
-    virtual QString nameFilter() const = 0;
+    virtual QString nameFilter() const { return QString(); }
+
+    /**
+     * Returns name filters of this map writer, for multiple formats.
+     */
+    virtual QStringList nameFilters() const { return QStringList(nameFilter()); }
 
     /**
      * Returns whether this map reader supports reading the given file.

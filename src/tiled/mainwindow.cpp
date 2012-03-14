@@ -611,8 +611,10 @@ void MainWindow::openFile()
     const PluginManager *pm = PluginManager::instance();
     QList<MapReaderInterface*> readers = pm->interfaces<MapReaderInterface>();
     foreach (const MapReaderInterface *reader, readers) {
-        filter += QLatin1String(";;");
-        filter += reader->nameFilter();
+        foreach (const QString &str, reader->nameFilters()) {
+            filter += QLatin1String(";;");
+            filter += str;
+        }
     }
 
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
@@ -624,7 +626,7 @@ void MainWindow::openFile()
     // When a particular filter was selected, use the associated reader
     MapReaderInterface *mapReader = 0;
     foreach (MapReaderInterface *reader, readers) {
-        if (selectedFilter == reader->nameFilter())
+        if (reader->nameFilters().contains(selectedFilter))
             mapReader = reader;
     }
 
@@ -736,8 +738,10 @@ void MainWindow::exportAs()
     QList<MapWriterInterface*> writers = pm->interfaces<MapWriterInterface>();
     QString filter = tr("All Files (*)");
     foreach (const MapWriterInterface *writer, writers) {
-        filter += QLatin1String(";;");
-        filter += writer->nameFilter();
+        foreach (const QString &str, writer->nameFilters()) {
+            filter += QLatin1String(";;");
+            filter += str;
+        }
     }
 
     QString selectedFilter =
@@ -760,9 +764,12 @@ void MainWindow::exportAs()
     QString suffix = QFileInfo(fileName).completeSuffix();
     if (!chosenWriter && !suffix.isEmpty()) {
         suffix.prepend(QLatin1String("*."));
-        foreach (MapWriterInterface *writer, writers)
-            if (writer->nameFilter().contains(suffix, Qt::CaseInsensitive))
+        foreach (MapWriterInterface *writer, writers) {
+            if (!writer->nameFilters().filter(suffix,
+                                              Qt::CaseInsensitive).isEmpty()) {
                 chosenWriter = writer;
+            }
+        }
     }
 
     // Also support exporting to the TMX map format when requested

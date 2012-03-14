@@ -22,6 +22,7 @@
 #define MAPWRITERINTERFACE_H
 
 #include <QtPlugin>
+#include <QStringList>
 
 class QString;
 
@@ -52,7 +53,12 @@ public:
     /**
      * Returns the name filter of this map writer.
      */
-    virtual QString nameFilter() const = 0;
+    virtual QString nameFilter() const { return QString(); }
+
+    /**
+     * Returns name filters of this map writer, for multiple formats.
+     */
+    virtual QStringList nameFilters() const { return QStringList(nameFilter()); }
 
     /**
      * Returns the error to be shown to the user if an error occured while
