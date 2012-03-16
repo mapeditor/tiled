@@ -612,8 +612,10 @@ void MainWindow::openFile()
     QList<MapReaderInterface*> readers = pm->interfaces<MapReaderInterface>();
     foreach (const MapReaderInterface *reader, readers) {
         foreach (const QString &str, reader->nameFilters()) {
-            filter += QLatin1String(";;");
-            filter += str;
+            if (!str.isEmpty()) {
+                filter += QLatin1String(";;");
+                filter += str;
+            }
         }
     }
 
@@ -739,8 +741,10 @@ void MainWindow::exportAs()
     QString filter = tr("All Files (*)");
     foreach (const MapWriterInterface *writer, writers) {
         foreach (const QString &str, writer->nameFilters()) {
-            filter += QLatin1String(";;");
-            filter += str;
+            if (!str.isEmpty()) {
+                filter += QLatin1String(";;");
+                filter += str;
+            }
         }
     }
 
@@ -764,10 +768,19 @@ void MainWindow::exportAs()
     QString suffix = QFileInfo(fileName).completeSuffix();
     if (!chosenWriter && !suffix.isEmpty()) {
         suffix.prepend(QLatin1String("*."));
+
         foreach (MapWriterInterface *writer, writers) {
             if (!writer->nameFilters().filter(suffix,
                                               Qt::CaseInsensitive).isEmpty()) {
-                chosenWriter = writer;
+                if (chosenWriter) {
+                    QMessageBox::warning(this, tr("Non-unique file extension"),
+                                         tr("Non-unique file extension.\n"
+                                            "Please select specific format."));
+                    exportAs();
+                    return;
+                } else {
+                    chosenWriter = writer;
+                }
             }
         }
     }
