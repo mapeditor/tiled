@@ -761,7 +761,7 @@ void MainWindow::exportAs()
 
     // If a specific filter was selected, use that writer
     foreach (MapWriterInterface *writer, writers)
-        if (writer->nameFilter() == selectedFilter)
+        if (writer->nameFilters().contains(selectedFilter))
             chosenWriter = writer;
 
     // If not, try to find the file extension among the name filters
