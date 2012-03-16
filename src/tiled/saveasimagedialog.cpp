@@ -25,6 +25,7 @@
 #include "mapdocument.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "imagelayer.h"
 #include "objectgroup.h"
 #include "preferences.h"
 #include "tilelayer.h"
@@ -150,6 +151,7 @@ void SaveAsImageDialog::accept()
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
+        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
 
         if (tileLayer) {
             renderer->drawTileLayer(&painter, tileLayer);
@@ -158,6 +160,8 @@ void SaveAsImageDialog::accept()
                 const QColor color = MapObjectItem::objectColor(object);
                 renderer->drawMapObject(&painter, object, color);
             }
+        } else if (imageLayer) {
+            renderer->drawImageLayer(&painter, imageLayer);
         }
     }
 

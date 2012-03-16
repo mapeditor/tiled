@@ -26,8 +26,6 @@
 #include "renamelayer.h"
 #include "tilelayer.h"
 
-#include <cstdio>
-
 
 using namespace Tiled;
 using namespace Tiled::Internal;
