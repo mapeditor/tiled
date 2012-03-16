@@ -26,7 +26,8 @@ class PyCallbackParam(Parameter):
   CTYPES = ['PyCallback']
   CALLBACK = None
 
-  def __init__(self, ctype, name, direction=Parameter.DIRECTION_IN, is_const=False, default_value=None, callback=None):
+  def __init__(self, ctype, name, direction=Parameter.DIRECTION_IN, is_const=False,
+               default_value=None, callback=None):
     self.CALLBACK = callback
     super(PyCallbackParam, self).__init__(ctype, name, direction, is_const, default_value)
 
@@ -111,16 +112,20 @@ cls_color.add_method('rgb', 'QRgb', [])
 cls_color.add_method('rgba', 'QRgb', [])
 
 cls_qimage = mod.add_class('QImage')
-cls_qimage.add_enum('Format', ('Format_Invalid','Format_Mono','Format_MonoLSB','Format_Indexed8',
-  'Format_RGB32','Format_ARGB32','Format_ARGB32_Premultiplied','Format_RGB16',
-  'Format_ARGB8565_Premultiplied','Format_RGB666','Format_ARGB6666_Premultiplied',
-  'Format_RGB555','Format_ARGB8555_Premultiplied','Format_RGB888','Format_RGB444',
+cls_qimage.add_enum('Format', ('Format_Invalid','Format_Mono','Format_MonoLSB',
+  'Format_Indexed8','Format_RGB32','Format_ARGB32',
+  'Format_ARGB32_Premultiplied','Format_RGB16',
+  'Format_ARGB8565_Premultiplied','Format_RGB666',
+  'Format_ARGB6666_Premultiplied','Format_RGB555',
+  'Format_ARGB8555_Premultiplied','Format_RGB888','Format_RGB444',
   'Format_ARGB4444_Premultiplied'))
 cls_qimage.add_constructor([('int','w'), ('int','h'), ('Format','f')])
 cls_qimage.add_method('width', 'int', [])
 cls_qimage.add_method('height', 'int', [])
-cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),('unsigned int','color')])
-cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),('QRgb','color')])
+cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),
+  ('unsigned int','color')])
+cls_qimage.add_method('setPixel', None, [('int','x'),('int','y'),
+  ('QRgb','color')])
 cls_qimage.add_method('setColorTable', None, [('QVector<QRgb>','colors')])
 cls_qpixmap = mod.add_class('QPixmap')
 ## /QT
@@ -134,7 +139,8 @@ cls_tile.add_method('height', 'int', [])
 #cls_tile.add_method('size', 'QSize', [])
 
 cls_tileset = tiled.add_class('Tileset')
-cls_tileset.add_constructor([('QString','name'), ('int','tw'), ('int','th'), ('int','ts'), ('int','margin')])
+cls_tileset.add_constructor([('QString','name'), ('int','tw'), ('int','th'), 
+  ('int','ts'), ('int','margin')])
 cls_tileset.add_method('name', 'QString', [])
 cls_tileset.add_method('setName', None, [('QString','name')])
 cls_tileset.add_method('fileName', 'QString', [])
@@ -145,15 +151,19 @@ cls_tileset.add_method('tileHeight', 'int', [])
 cls_tileset.add_method('tileSpacing', 'int', [])
 cls_tileset.add_method('margin', 'int', [])
 #cls_tileset.add_method('tileOffset', 'QPoint', [])
-cls_tileset.add_method('loadFromImage', 'bool', [('const QImage&','img'),('QString','file')])
-cls_tileset.add_method('tileAt', retval('Tiled::Tile*',caller_owns_return=False), [('int','id')])
+cls_tileset.add_method('loadFromImage', 'bool', 
+  [('const QImage&','img'),('QString','file')])
+cls_tileset.add_method('tileAt', 
+  retval('Tiled::Tile*',caller_owns_return=False), [('int','id')])
 cls_tileset.add_method('tileCount', 'int', [])
 cls_tileset.add_method('columnCount', 'int', [])
 cls_tileset.add_method('imageWidth', 'int', [])
 cls_tileset.add_method('imageHeight', 'int', [])
 
-cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'), param('Tileset*','ts',transfer_ownership=False)])
-cls_tile.add_method('tileset', retval('Tiled::Tileset*',caller_owns_return=False), [])
+cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'), 
+  param('Tileset*','ts',transfer_ownership=False)])
+cls_tile.add_method('tileset', 
+  retval('Tiled::Tileset*',caller_owns_return=False), [])
 
 cls_layer = tiled.add_class('Layer')
 
@@ -162,7 +172,8 @@ cls_layer = tiled.add_class('Layer')
 cls_map = tiled.add_class('Map')
 cls_map.add_enum('Orientation', ('Unknown','Orthogonal','Isometric'))
 cls_map.add_copy_constructor()
-cls_map.add_constructor([('Orientation','orient'), ('int','w'), ('int','h'), ('int','tileW'), ('int','tileH')])
+cls_map.add_constructor([('Orientation','orient'), ('int','w'), ('int','h'), 
+  ('int','tileW'), ('int','tileH')])
 cls_map.add_method('setOrientation', None, [('Orientation','o')])
 cls_map.add_method('width', 'int', [])
 cls_map.add_method('setWidth', None, [('int','w')])
@@ -173,35 +184,51 @@ cls_map.add_method('tileHeight', 'int', [])
 cls_map.add_method('layerCount', 'int', [])
 cls_map.add_method('tileLayerCount', 'int', [])
 cls_map.add_method('objectGroupCount', 'int', [])
-cls_map.add_method('addTileset', None, [param('Tileset*','ts',transfer_ownership=True)])
-cls_map.add_method('insertTileset', None, [('int','pos'),param('Tileset*','ts',transfer_ownership=True)])
-cls_map.add_method('indexOfTileset', 'int', [param('Tileset*','ts',transfer_ownership=True)])
+cls_map.add_method('addTileset', None, 
+  [param('Tileset*','ts',transfer_ownership=True)])
+cls_map.add_method('insertTileset', None, 
+  [('int','pos'),param('Tileset*','ts',transfer_ownership=True)])
+cls_map.add_method('indexOfTileset', 'int', 
+  [param('Tileset*','ts',transfer_ownership=True)])
 cls_map.add_method('removeTilesetAt', None, [('int','pos')])
-cls_map.add_method('replaceTileset', None, [param('Tileset*','oldts',transfer_ownership=True),param('Tileset*','newts',transfer_ownership=True)])
+cls_map.add_method('replaceTileset', None, 
+  [param('Tileset*','oldts',transfer_ownership=True),
+  param('Tileset*','newts',transfer_ownership=True)])
 #cls_map.add_method('tilesets', 'std::list<Tileset>', [])
 #cls_map.add_method('tilesets', retval('std::list<Tileset>'), [])
-cls_map.add_method('isTilesetUsed', 'bool', [param('Tileset*','ts',transfer_ownership=True)])
+cls_map.add_method('isTilesetUsed', 'bool', 
+  [param('Tileset*','ts',transfer_ownership=True)])
 
 cls_cell = tiled.add_class('Cell')
-cls_cell.add_constructor([param('Tiled::Tile*','tile',transfer_ownership=True)]) # ok
+cls_cell.add_constructor([param('Tiled::Tile*','tile',
+  transfer_ownership=True)]) # ok
 
 cls_tilelayer = tiled.add_class('TileLayer', cls_layer)
-cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'), ('int','w'), ('int','h')])
-cls_tilelayer.add_method('cellAt', retval('Tiled::Cell'), [('int','x'),('int','y')])
-cls_tilelayer.add_method('setCell', None, [('int','x'),('int','y'),('Cell','c')])
-cls_tilelayer.add_method('referencesTileset', 'bool', [param('Tileset*','ts',transfer_ownership=False)])
+cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
+  ('int','w'), ('int','h')])
+cls_tilelayer.add_method('cellAt', retval('Tiled::Cell'),
+  [('int','x'),('int','y')])
+cls_tilelayer.add_method('setCell', None, [('int','x'),('int','y'),
+  ('Cell','c')])
+cls_tilelayer.add_method('referencesTileset', 'bool',
+  [param('Tileset*','ts',transfer_ownership=False)])
 cls_tilelayer.add_method('isEmpty', 'bool', [])
 
-cls_map.add_method('addLayer', None, [param('TileLayer*','l',transfer_ownership=True)])
-cls_map.add_method('layerAt', retval('Tiled::Layer*',caller_owns_return=False,reference_existing_object=True), [('int','idx')])
+cls_map.add_method('addLayer', None,
+  [param('TileLayer*','l',transfer_ownership=True)])
+cls_map.add_method('layerAt',
+  retval('Tiled::Layer*',caller_owns_return=False,reference_existing_object=True),
+  [('int','idx')])
 
 cls_object = tiled.add_class('Object')
 cls_object.add_method('property', 'QString', [('QString','prop')])
-cls_object.add_method('setProperty', None, [('QString','prop'),('QString','val')])
+cls_object.add_method('setProperty', None,
+  [('QString','prop'),('QString','val')])
 
 cls_mapobject = tiled.add_class('MapObject', cls_object)
 cls_mapobject.add_constructor([])
-cls_mapobject.add_constructor([('QString','name'), ('QString','type'), ('QPointF','pos'), ('QSizeF','size') ])
+cls_mapobject.add_constructor([('QString','name'), ('QString','type'),
+  ('QPointF','pos'), ('QSizeF','size') ])
 cls_mapobject.add_enum('Shape', ('Rectangle','Polygon','Polyline'))
 cls_mapobject.add_method('setPosition', None, [('QPointF','pos')])
 cls_mapobject.add_method('x', 'int', [])
@@ -218,19 +245,26 @@ cls_mapobject.add_method('setHeight', None, [('int','h')])
 cls_mapobject.add_method('setShape', None, [param('Shape','s')])
 cls_mapobject.add_method('shape', 'Shape', [])
 #cls_mapobject.add_method('bounds', 'QRectF', [])
-cls_mapobject.add_method('setTile', None, [param('Tiled::Tile*','t',transfer_ownership=False)])
-cls_mapobject.add_method('tile', retval('Tiled::Tile*',caller_owns_return=False), [])
+cls_mapobject.add_method('setTile', None, 
+  [param('Tiled::Tile*','t',transfer_ownership=False)])
+cls_mapobject.add_method('tile', 
+  retval('Tiled::Tile*',caller_owns_return=False), [])
 #cls_mapobject.add_method('setObjectGroup', 'ObjectGroup*', [])
 #cls_mapobject.add_method('objectGroup', 'ObjectGroup*', [])
 
 cls_objectgroup = tiled.add_class('ObjectGroup', cls_layer)
-cls_objectgroup.add_constructor([('QString','name'), ('int','x'), ('int','y'), ('int','w'), ('int','h')])
-cls_objectgroup.add_method('addObject', None, [param('MapObject*','mo',transfer_ownership=False)])
-cls_objectgroup.add_method('insertObject', None, [('int','idx'),param('MapObject*','mo',transfer_ownership=False)])
-cls_objectgroup.add_method('removeObject', 'int', [param('MapObject*','mo',transfer_ownership=False)])
+cls_objectgroup.add_constructor([('QString','name'), 
+  ('int','x'), ('int','y'), ('int','w'), ('int','h')])
+cls_objectgroup.add_method('addObject', None, 
+  [param('MapObject*','mo',transfer_ownership=False)])
+cls_objectgroup.add_method('insertObject', None, 
+  [('int','idx'),param('MapObject*','mo',transfer_ownership=False)])
+cls_objectgroup.add_method('removeObject', 'int', 
+  [param('MapObject*','mo',transfer_ownership=False)])
 #cls_objectgroup.add_method('objectsBoundingRect', 'QRectF', [])
 #cls_objectgroup.add_method('usedTilesets', 'QSet<Tileset*>', [])
-cls_objectgroup.add_method('referencesTileset', 'bool', [param('Tileset*','ts',transfer_ownership=False)])
+cls_objectgroup.add_method('referencesTileset', 'bool',
+  [param('Tileset*','ts',transfer_ownership=False)])
 
 cls_layer.add_method('name', 'QString', [])
 cls_layer.add_method('setName', None, [('QString','name')])
@@ -239,7 +273,8 @@ cls_layer.add_method('setOpacity', None, [('float','opacity')])
 cls_layer.add_method('isVisible', 'bool', [])
 cls_layer.add_method('setVisible', None, [('bool','visible')])
 cls_layer.add_method('map', retval('Tiled::Map*',caller_owns_return=False), [])
-cls_layer.add_method('setMap', None, [param('Tiled::Map*','map',transfer_ownership=False)])
+cls_layer.add_method('setMap', None,
+  [param('Tiled::Map*','map',transfer_ownership=False)])
 cls_layer.add_method('x', 'int', [])
 cls_layer.add_method('setX', None, [('int','x')])
 cls_layer.add_method('y', 'int', [])
@@ -247,75 +282,43 @@ cls_layer.add_method('setY', None, [('int','y')])
 cls_layer.add_method('setPosition', None, [('int','x'),('int','y')])
 cls_layer.add_method('width', 'int', [])
 cls_layer.add_method('height', 'int', [])
-cls_layer.add_method('asTileLayer', retval('Tiled::TileLayer*',caller_owns_return=False), [], is_virtual=True)
-cls_layer.add_method('asObjectGroup', retval('Tiled::ObjectGroup*',caller_owns_return=False), [], is_virtual=True)
+cls_layer.add_method('asTileLayer',
+  retval('Tiled::TileLayer*',caller_owns_return=False), [], is_virtual=True)
+cls_layer.add_method('asObjectGroup', 
+  retval('Tiled::ObjectGroup*',caller_owns_return=False), [], is_virtual=True)
 
-mod.add_function('python_register_nameFilter', 'void', [('char*','filt')], custom_name='NameFilter')
+mod.add_function('loadTilesetFromFile', 'bool', 
+  [param('Tileset*','ts',transfer_ownership=False),('QString','file')])
 
-mod.add_function('loadTilesetFromFile', 'bool', [param('Tileset*','ts',transfer_ownership=False),('QString','file')])
-
-mod.header.writeln("""Tiled::Map *python_readCb(const char *fn, void *p);""")
 mod.body.writeln("""
 bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
 {
   QImage img(file);
   return ts->loadFromImage(img, file);
 }
+""")
 
-// how to generate this without a container?
-int _wrap_convert_py2c__Tiled__Map(PyObject *value, Tiled::Map *address)
-{
-    PyObject *py_retval;
-    PyTiledMap *tmp_Map;
-
-    py_retval = Py_BuildValue((char *) "(O)", value);
-    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
-        Py_DECREF(py_retval);
-        return 0;
-    }
-    *address = *tmp_Map->obj;
-    Py_DECREF(py_retval);
-    return 1;
-}
-
-Tiled::Map *python_readCb(const char *fn, void *p) {
-  PyObject *callback = (PyObject*) p;
-  PyObject *ret = PyObject_CallFunction(callback, (char*) "s", fn);
-  Tiled::Map *m = new Tiled::Map(Tiled::Map::Orthogonal, 10,10, 16,16);
-  _wrap_convert_py2c__Tiled__Map(ret, m);
-  Py_DECREF(ret);
-  return m;
-}""")
-mod.add_function("python_register_read_cb", None, [Parameter.new("PyCallback", "cb")], custom_name='Read')
-
-mod.header.writeln("""bool python_writeCb(const Tiled::Map *map, const char *fn, void *p);""")
-mod.body.writeln("""bool python_writeCb(const Tiled::Map *map, const char *fn, void *p) {
-  PyObject *callback = (PyObject*) p;
-  Tiled::Map *ncmap = map->clone(); // shouldn't have to do this, figure something out
-  PyTiledMap *py_TiledMap;
-  py_TiledMap = PyObject_New(PyTiledMap, &PyTiledMap_Type);
-  py_TiledMap->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-  py_TiledMap->obj = ncmap;
-  PyObject *result = PyObject_CallFunction(callback, (char*) "Os", py_TiledMap, fn);
-  if (result == NULL) return false;
-  bool ret = PyObject_IsTrue(result);
-  Py_DECREF(result);
-  return ret;
-}""")
-mod.add_function("python_register_write_cb", None,  [Parameter.new("PyCallback", "cb")], custom_name='Write')
-
-mod.header.writeln("""bool python_supportsCb(const char *fn, void *p);""")
-mod.body.writeln("""bool python_supportsCb(const char *fn, void *p) {
-  PyObject *callback = (PyObject*) p;
-  PyObject *result = PyObject_CallFunction(callback, (char*) "s", fn);
-  if (result == NULL) return false;
-  bool ret = PyObject_IsTrue(result);
-  Py_DECREF(result);
-  return ret;
-}""")
-mod.add_function("python_register_supports_cb", None,  [Parameter.new("PyCallback", "cb")], custom_name='Supports')
-
+cls_pp = mod.add_class('PythonScript',
+  allow_subclassing=True,
+  foreign_cpp_namespace='Python',
+  custom_name='Plugin')
+#cls_pp.add_method('nameFilter', 'QString', [])
+#cls_pp.add_method('supportsFile', 'bool', [('const QString','fileName')])
+#cls_pp.add_method('read', retval('Tiled::Map'), [('const QString','fileName')])
+#cls_pp.add_method('write', 'bool',
+#  [param('const Tiled::Map*','map',transfer_ownership=False),
+#  ('const QString','fileName')])
 
 with open('pythonbind.cpp','w') as fh:
   mod.generate(fh)
+
+  import pybindgen.typehandlers.codesink as cs
+  sink = cs.MemoryCodeSink()
+  mod.generate_python_to_c_type_converter(
+    utils.eval_retval("Tiled::Map"),
+    sink)
+  mod.generate_c_to_python_type_converter(
+    utils.eval_retval("const Tiled::Map"),
+    sink)
+  print >>fh, sink.flush()
 

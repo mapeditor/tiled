@@ -2,97 +2,130 @@
 Fury of the Furries level loader for Tiled
 2012, <samuli@tuomola.net>
 """
+
+import sys, re
 from tiled import *
-import sys
 from os.path import dirname
-sys.path.append(dirname(__file__)+'/lib')
-from cpystruct import *
+from lib import cpystruct, lbm
 from struct import pack,unpack
-import lbm
+from collections import namedtuple
 
-NameFilter("Fury of the Furries (*.bin)")
-maps = []
+maps = {}
+tilesets = {}
 
-class TileData(CpyStruct('ushort len; BYTE d[len];')): pass
-class RleData(CpyStruct('BYTE rep, sig, val')): pass
+MetaData = namedtuple(
+  'MetaData', 'startX, startY, lType,'+
+  'fin1X, fin1Y, u1, fin2X, fin2Y, lvl'
+  )
 
-def unpacklvl(f):
-  lvl = []
-  with open(f, 'rb') as fh:
-    fh.read(4)  #skip sig
-    tdata = TileData()
-    rdata = RleData()
-    while tdata.unpack(fh) and tdata.len != 0:
-      rdata.unpack(fh)
-      lvl += tdata.d
-      lvl += [rdata.val for i in range(rdata.rep)]
-  return lvl
+class Fury(Plugin):
+  @classmethod
+  def nameFilter(cls):
+    return "Fury of the Furries (*.bin)"
 
-def readmap(f):
-  try:
+  @classmethod
+  def supportsFile(cls, f):
+    return open(f).read(4) == 'byt4'
+
+  @classmethod
+  def read(cls, f):
     print 'Loading map at',f
-    lvl = unpacklvl(f)
-    # sometimes the two ints are split so can't unpack before
-    # tiledata, and have to repack in case they're >255 
-    w,h = unpack("<2H",pack("<4b",*lvl[:4]))
-    del lvl[:4]
-    #print len(lvl),lvl[:32]
+    fr = Fury(f)
 
-    m = Tiled.Map(Tiled.Map.Orthogonal, w,h, 16,16)
-    maps.append(m)
+    m = Tiled.Map(Tiled.Map.Orthogonal, fr.w, fr.h, 16, 16)
+    maps[f] = m
+
+    # probable defined explicitly somewhere in the data
+    decs = [1,3,4,2,8,6,7,9,10,5]
+    decnum = (int(re.findall('[0-9]+', f).pop())-1)/10
+    if decnum >= len(decs): decnum %= len(decs)
+    gfxf = dirname(f)+'/../DEC/DECOR%02i.LBM' % decs[decnum]
+    # tileset.clone() would be nice
+    #if tilesets.has_key(gfxf):
+    #  t = tilesets[gfxf].clone()
+    #else:
     t = Tiled.Tileset('DECOR', 16,16, 0, 0)
+    t.loadFromImage(fr.readtilegfx(gfxf), '')
+    #tilesets[gfxf] = t
 
-    #loadTilesetFromFile(t, dirname(f)+'/../DEC/DECOR01.LBM.gif')
-    lc = dict(lbm.parselbm(dirname(f)+'/../DEC/DECOR01.LBM'))
-    print lc['BMHD']
+    l = Tiled.TileLayer('Tiles',0,0, fr.w, fr.h)
+    l.setMap(m)
+    fr.populatetiles(l, t)
+    # have to pass ownership so can't add tileset before populating layer
+    m.addTileset(t)
+    m.addLayer(l)
+
+    #if not f.endswith('DATA19.BIN'):
+    #  del fr.lvl[:21*2] # skip some zeros, todo: more deterministic
+    print len(fr.lvl), unpack('<40h', str(fr.lvl[:80]))
+    print MetaData(*unpack('<9h', str(fr.lvl[:18])))
+
+    return m
+
+  def write(m, fn):
+    try:
+      print "Writing map(%i,%i) to" % (m.width(),m.height()), fn
+      l = m.layerAt(0)
+      lvl = []
+      """have to do something for layerAt to give the correct type 
+      for x in range(l.width()):
+        for y in range(l.height()):
+##       lvl += l.cellAt(x, y)
+          print l.cellAt(x, y).tile.id()
+      print lvl
+      """
+      return True
+    except Exception as e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      print 'error @%i:' % exc_tb.tb_lineno, e
+
+  def __init__(self, f):
+    dat = bytearray()
+    with open(f, 'rb') as fh:
+      fh.read(4)  #skip sig
+      ldata = LevelData()
+      rdata = RleData()
+      while ldata.unpack(fh) and ldata.len != 0 :
+        if len(ldata.d)==1 and ldata.d[0] == 0: break
+        rdata.unpack(fh)
+        dat.extend(ldata.d)
+        dat.extend([rdata.val for i in range(rdata.rep)])
+
+    print 'le',len(dat)
+    self.w, self.h = unpack("<2H", str(dat[:4]))
+    del dat[:4]
+    self.lvl = dat
+
+  def readtilegfx(self, fn):
+    lc = dict(lbm.parselbm(fn))
+    #print lc['BMHD']
     bd = list(lbm.readbody(lc['BODY'], lc['BMHD']))
     img = QImage(lc['BMHD'].sz.w, lc['BMHD'].sz.h, QImage.Format_Indexed8)
     img.setColorTable(lc['CMAP'])
+
+    # there should be a faster alternative
     for y in range(img.height()):
       for x in range(img.width()):
         img.setPixel(x, y, bd[y*img.width()+x])
-    t.loadFromImage(img, "")
 
-    l = Tiled.TileLayer('Tiles',0,0,w,h)
+    return img
 
-    l.setMap(m)
-    for i in range(0, w*h*2, 2):
-      y = i/2/w
-      x = i/2-(w*y)
-      ti = t.tileAt(lvl[i+1]*20 + lvl[i])
-      if ti != None:
-        l.setCell(x, y, Tiled.Cell(ti))
-    #print t.fileName(),l.isEmpty(),l.referencesTileset(t)
-    m.addTileset(t)
-    m.addLayer(l)
-    return m
+  def populatetiles(self, l, t):
+    i = 0
+    for y in range(self.h):
+      for x in range(self.w):
+        tpos = self.lvl[i+1]*t.columnCount() + self.lvl[i]
+        if tpos < t.tileCount():
+          ti = t.tileAt(tpos)
+          if ti != None:
+            l.setCell(x, y, Tiled.Cell(ti))
+        i += 2
+      if self.w < 78: # padded to width of 78 tiles
+        i += (78-self.w)*2
 
-  except Exception as e:
-    exc_type, exc_obj, exc_tb = sys.exc_info()
-    print 'error @%i:' % exc_tb.tb_lineno, e
+    del self.lvl[:self.w*self.h*2]
 
-def writemap(m, fn):
-  try:
-    print "Writing map(%i,%i) to" % (m.width(),m.height()), fn
-    l = m.layerAt(0)
-    lvl = []
-    """have to do something for layerAt to give the correct type 
-    for x in range(l.width()):
-      for y in range(l.height()):
-#      lvl += l.cellAt(x, y)
-        print l.cellAt(x, y).tile.id()
-    print lvl
-    """
-    return True
-  except Exception as e:
-    exc_type, exc_obj, exc_tb = sys.exc_info()
-    print 'error @%i:' % exc_tb.tb_lineno, e
+class LevelData(cpystruct.CpyStruct('ushort len; BYTE d[len];')): pass
 
-def is_supported_file(f):
-  return open(f).read(4) == 'byt4'
-
-
-Supports(is_supported_file)
-Read(readmap)
-Write(writemap)
+class RleData(cpystruct.CpyStruct('BYTE rep, sig, val')): pass
 

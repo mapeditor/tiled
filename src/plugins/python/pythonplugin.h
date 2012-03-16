@@ -54,26 +54,29 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName);
 
     // Both interfaces
-    QString nameFilter() const;
+    QStringList nameFilters() const;
     QString errorString() const;
 
 private:
+    void reloadModules();
     QString mError;
+    uint lastReload;
+};
+
+// Class exposed for python scripts to extend
+class PythonScript {
+public:
+    // perhaps provide default that throws NotImplementedError
+    Tiled::Map *read(const QString &fileName);
+    bool supportsFile(const QString &fileName) const;
+    bool write(const Tiled::Map *map, const QString &fileName);
+    QString nameFilter() const;
 };
 
 } // namespace Python
 
-typedef struct t_pyscript {
-	char filename[FILENAME_MAX];
-	PyThreadState *interpreter;
-  char namefilt[FILENAME_MAX];
-  void *supports_cb, *read_cb, *write_cb;
-} t_pyscript;
-
 PyMODINIT_FUNC inittiled(void);
-extern void python_register_nameFilter(char *filt);
-extern void python_register_read_cb(void *f);
-extern void python_register_write_cb(void *f);
-extern void python_register_supports_cb(void *f);
+extern int _wrap_convert_py2c__Tiled__Map(PyObject *obj, Tiled::Map *map);
+extern PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue);
 
 #endif // PYTHONPLUGIN_H

@@ -4,12 +4,53 @@ Mappy support for Tiled
 """
 from tiled import *
 import os, sys, struct
-from os.path import dirname
-sys.path.append(dirname(__file__)+'/lib')
-from mappy_types import *
+from lib.mappy_types import BLKSTR, MPHD, fmpchunk
 
-NameFilter("Mappy (*.fmp)")
 maps = []
+
+class Mappy(Plugin):
+  @classmethod
+  def nameFilter(cls):
+    return "Mappy (*.fmp)"
+
+  @classmethod
+  def supportsFile(cls, f):
+    return open(f).read(4) == 'FORM'
+
+  @classmethod
+  def read(cls, f):
+    print 'Loading map at',f
+    chunks = readchunks(f)
+    hd = chunks['MPHD']
+    m = Tiled.Map(Tiled.Map.Orthogonal, hd.mapwidth, hd.mapheight, hd.blockwidth, hd.blockheight)
+    if hd.type == 2:
+      print 'Isometric maps not supported at the moment'
+      return m
+
+    tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
+    cmap = list(readcmap(chunks['CMAP']))
+    tset.loadFromImage(readtilegfx(hd, chunks['BGFX'], cmap), "")
+    maps.append(m)  # w/o live ref crashes in mapscene:createLayerItem setVisible
+
+    blks = list(readblockdata(chunks['BKDT'], hd))
+
+    for c in ['LYR'+str(i) for i in range(7,0,-1)]+['BODY']:
+      if not chunks.has_key(c): continue
+      print 'populating',c
+      lay = Tiled.TileLayer(c,0,0,hd.mapwidth, hd.mapheight)
+      lvl = list(readlayer(hd, chunks[c]))
+      for o in range(4):
+        poplayer(lay, o, blks, tset, hd, lvl)
+      lay.setMap(m)  # w/o this crashes in mapscene:createLayerItem dynamic_cast
+      m.addLayer(lay)
+    m.addTileset(tset)
+
+    return m
+
+  @classmethod
+  def write(cls, m, fn):
+    return False
+
 
 def readchunks(f):
   chunks = {}
@@ -36,30 +77,25 @@ def readchunks(f):
 
 def readtilegfx(hd, dat, cmap):
   n = 0
-  try:
-    w,h = hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10+hd.blockheight
-    fmt = QImage.Format_Indexed8 if hd.blockdepth==8 else QImage.Format_ARGB32
-    img = QImage(w, h, fmt)
-    img.setColorTable(cmap)
+  w,h = hd.blockwidth*10, hd.blockheight*hd.numblockgfx/10+hd.blockheight
+  fmt = QImage.Format_Indexed8 if hd.blockdepth==8 else QImage.Format_ARGB32
+  img = QImage(w, h, fmt)
+  img.setColorTable(cmap)
 
-    for i in range(hd.numblockgfx):
-      col,row = i%10, i/10
-      tx,ty = col*hd.blockwidth, row*hd.blockheight
+  for i in range(hd.numblockgfx):
+    col,row = i%10, i/10
+    tx,ty = col*hd.blockwidth, row*hd.blockheight
 
-      for y in range(hd.blockheight):
-        for x in range(hd.blockwidth):
-          if hd.blockdepth==8:
-            c = struct.unpack('B', dat[n])[0]
-            img.setPixel(tx+x, ty+y, c)
-          else:
-            img.setPixel(tx+x, ty+y, cmap[c])
-          n+=1
+    for y in range(hd.blockheight):
+      for x in range(hd.blockwidth):
+        if hd.blockdepth==8:
+          c = struct.unpack('B', dat[n])[0]
+          img.setPixel(tx+x, ty+y, c)
+        else:
+          img.setPixel(tx+x, ty+y, cmap[c])
+        n+=1
 
-    return img
-
-  except Exception as e:
-    exc_type, exc_obj, exc_tb = sys.exc_info()
-    print 'error @%i:' % exc_tb.tb_lineno, e
+  return img
 
 
 def readlayer(hd, dat):
@@ -101,47 +137,4 @@ def readcmap(cmap):
   for i in range(0,len(cmap),3):
     r,g,b = struct.unpack('3B', cmap[i:i+3])
     yield QColor(r,g,b).rgb()
-
-def readmap(f):
-  try:
-    print 'Loading map at',f
-    chunks = readchunks(f)
-    hd = chunks['MPHD']
-    m = Tiled.Map(Tiled.Map.Orthogonal, hd.mapwidth, hd.mapheight, hd.blockwidth, hd.blockheight)
-    if hd.type == 2:
-      print 'Isometric maps not supported at the moment'
-      return m
-
-    tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
-    cmap = list(readcmap(chunks['CMAP']))
-    tset.loadFromImage(readtilegfx(hd, chunks['BGFX'], cmap), "")
-    maps.append(m)  # w/o live ref crashes in mapscene:createLayerItem setVisible
-
-    blks = list(readblockdata(chunks['BKDT'], hd))
-
-    for c in ['LYR'+str(i) for i in range(7,0,-1)]+['BODY']:
-      if not chunks.has_key(c): continue
-      print 'populating',c
-      lay = Tiled.TileLayer(c,0,0,hd.mapwidth, hd.mapheight)
-      lvl = list(readlayer(hd, chunks[c]))
-      for o in range(4):
-        poplayer(lay, o, blks, tset, hd, lvl)
-      lay.setMap(m)  # w/o this crashes in mapscene:createLayerItem dynamic_cast
-      m.addLayer(lay)
-    m.addTileset(tset)
-
-    return m
-  except Exception as e:
-    exc_type, exc_obj, exc_tb = sys.exc_info()
-    print 'error @%i:' % exc_tb.tb_lineno, e
-
-def writemap(m, fn):
-  return False
-
-def is_supported_file(f):
-  return open(f).read(4) == 'FORM'
-
-Supports(is_supported_file)
-Read(readmap)
-Write(writemap)
 

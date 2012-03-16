@@ -131,6 +131,17 @@ extern PyTypeObject PyQPixmap_Type;
 
 typedef struct {
     PyObject_HEAD
+    Python::PythonScript *obj;
+    PyObject *inst_dict;
+    PyBindGenWrapperFlags flags:8;
+} PyPythonPythonScript;
+
+
+extern PyTypeObject PyPythonPythonScript_Type;
+
+
+typedef struct {
+    PyObject_HEAD
     QVector<QRgb> *obj;
 } PyQVector__lt__QRgb__gt__;
 
@@ -238,9 +249,6 @@ typedef struct {
 
 extern PyTypeObject PyTiledObjectGroup_Type;
 
-Tiled::Map *python_readCb(const char *fn, void *p);
-bool python_writeCb(const Tiled::Map *map, const char *fn, void *p);
-bool python_supportsCb(const char *fn, void *p);
 
 int _wrap_convert_py2c__QRgb(PyObject *value, QRgb *address);
 
@@ -2753,51 +2761,6 @@ bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
   return ts->loadFromImage(img, file);
 }
 
-// how to generate this without a container?
-int _wrap_convert_py2c__Tiled__Map(PyObject *value, Tiled::Map *address)
-{
-    PyObject *py_retval;
-    PyTiledMap *tmp_Map;
-
-    py_retval = Py_BuildValue((char *) "(O)", value);
-    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
-        Py_DECREF(py_retval);
-        return 0;
-    }
-    *address = *tmp_Map->obj;
-    Py_DECREF(py_retval);
-    return 1;
-}
-
-Tiled::Map *python_readCb(const char *fn, void *p) {
-  PyObject *callback = (PyObject*) p;
-  PyObject *ret = PyObject_CallFunction(callback, (char*) "s", fn);
-  Tiled::Map *m = new Tiled::Map(Tiled::Map::Orthogonal, 10,10, 16,16);
-  _wrap_convert_py2c__Tiled__Map(ret, m);
-  Py_DECREF(ret);
-  return m;
-}
-bool python_writeCb(const Tiled::Map *map, const char *fn, void *p) {
-  PyObject *callback = (PyObject*) p;
-  Tiled::Map *ncmap = map->clone(); // shouldn't have to do this, figure something out
-  PyTiledMap *py_TiledMap;
-  py_TiledMap = PyObject_New(PyTiledMap, &PyTiledMap_Type);
-  py_TiledMap->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-  py_TiledMap->obj = ncmap;
-  PyObject *result = PyObject_CallFunction(callback, (char*) "Os", py_TiledMap, fn);
-  if (result == NULL) return false;
-  bool ret = PyObject_IsTrue(result);
-  Py_DECREF(result);
-  return ret;
-}
-bool python_supportsCb(const char *fn, void *p) {
-  PyObject *callback = (PyObject*) p;
-  PyObject *result = PyObject_CallFunction(callback, (char*) "s", fn);
-  if (result == NULL) return false;
-  bool ret = PyObject_IsTrue(result);
-  Py_DECREF(result);
-  return ret;
-}
 
 static PyObject *
 inittiled_Tiled(void)
@@ -2891,30 +2854,6 @@ inittiled_Tiled(void)
 
 
 PyObject *
-_wrap_tiledpython_register_read_cb(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    PyObject *cb;
-    const char *keywords[] = {"cb", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O", (char **) keywords, &cb)) {
-        return NULL;
-    }
-    if (!PyCallable_Check(cb)) {
-        PyErr_SetString(PyExc_TypeError, "visitor parameter must be callable");
-        return NULL;
-    }
-    Py_INCREF(cb);
-    python_register_read_cb(cb);
-    Py_INCREF(Py_None);
-    py_retval = Py_None;
-    Py_DECREF(cb);
-    return py_retval;
-}
-PyObject * _wrap_tiledpython_register_read_cb(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
-
-
-PyObject *
 _wrap_tiledloadTilesetFromFile(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -2934,78 +2873,8 @@ _wrap_tiledloadTilesetFromFile(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *arg
 }
 PyObject * _wrap_tiledloadTilesetFromFile(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
 
-
-PyObject *
-_wrap_tiledpython_register_write_cb(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    PyObject *cb;
-    const char *keywords[] = {"cb", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O", (char **) keywords, &cb)) {
-        return NULL;
-    }
-    if (!PyCallable_Check(cb)) {
-        PyErr_SetString(PyExc_TypeError, "visitor parameter must be callable");
-        return NULL;
-    }
-    Py_INCREF(cb);
-    python_register_write_cb(cb);
-    Py_INCREF(Py_None);
-    py_retval = Py_None;
-    Py_DECREF(cb);
-    return py_retval;
-}
-PyObject * _wrap_tiledpython_register_write_cb(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
-
-
-PyObject *
-_wrap_tiledpython_register_supports_cb(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    PyObject *cb;
-    const char *keywords[] = {"cb", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O", (char **) keywords, &cb)) {
-        return NULL;
-    }
-    if (!PyCallable_Check(cb)) {
-        PyErr_SetString(PyExc_TypeError, "visitor parameter must be callable");
-        return NULL;
-    }
-    Py_INCREF(cb);
-    python_register_supports_cb(cb);
-    Py_INCREF(Py_None);
-    py_retval = Py_None;
-    Py_DECREF(cb);
-    return py_retval;
-}
-PyObject * _wrap_tiledpython_register_supports_cb(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
-
-
-PyObject *
-_wrap_tiledpython_register_nameFilter(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    char *filt;
-    const char *keywords[] = {"filt", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s", (char **) keywords, &filt)) {
-        return NULL;
-    }
-    python_register_nameFilter(filt);
-    Py_INCREF(Py_None);
-    py_retval = Py_None;
-    return py_retval;
-}
-PyObject * _wrap_tiledpython_register_nameFilter(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *args, PyObject *kwargs);
-
 static PyMethodDef tiled_functions[] = {
-    {(char *) "Read", (PyCFunction) _wrap_tiledpython_register_read_cb, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "loadTilesetFromFile", (PyCFunction) _wrap_tiledloadTilesetFromFile, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "Write", (PyCFunction) _wrap_tiledpython_register_write_cb, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "Supports", (PyCFunction) _wrap_tiledpython_register_supports_cb, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "NameFilter", (PyCFunction) _wrap_tiledpython_register_nameFilter, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
 /* --- classes --- */
@@ -4008,6 +3877,132 @@ PyTypeObject PyQPixmap_Type = {
 };
 
 
+
+
+static int
+_wrap_PyPythonPythonScript__tp_init(void)
+{
+    PyErr_SetString(PyExc_TypeError, "class 'PythonScript' cannot be constructed ()");
+    return -1;
+}
+
+static PyMethodDef PyPythonPythonScript_methods[] = {
+    {NULL, NULL, 0, NULL}
+};
+
+static void
+PyPythonPythonScript__tp_clear(PyPythonPythonScript *self)
+{
+    Py_CLEAR(self->inst_dict);
+        Python::PythonScript *tmp = self->obj;
+    self->obj = NULL;
+    if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
+        delete tmp;
+    }
+}
+
+
+static int
+PyPythonPythonScript__tp_traverse(PyPythonPythonScript *self, visitproc visit, void *arg)
+{
+    Py_VISIT(self->inst_dict);
+
+    return 0;
+}
+
+
+static void
+_wrap_PyPythonPythonScript__tp_dealloc(PyPythonPythonScript *self)
+{
+    PyPythonPythonScript__tp_clear(self);
+    self->ob_type->tp_free((PyObject*)self);
+}
+
+static PyObject*
+_wrap_PyPythonPythonScript__tp_richcompare (PyPythonPythonScript *PYBINDGEN_UNUSED(self), PyPythonPythonScript *other, int opid)
+{
+
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyPythonPythonScript_Type)) {
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    }
+    switch (opid)
+    {
+    case Py_LT:
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    case Py_LE:
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    case Py_EQ:
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    case Py_NE:
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    case Py_GE:
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    case Py_GT:
+        Py_INCREF(Py_NotImplemented);
+        return Py_NotImplemented;
+    } /* closes switch (opid) */
+    Py_INCREF(Py_NotImplemented);
+    return Py_NotImplemented;
+}
+
+PyTypeObject PyPythonPythonScript_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,                                 /* ob_size */
+    (char *) "tiled.PythonScript",            /* tp_name */
+    sizeof(PyPythonPythonScript),                  /* tp_basicsize */
+    0,                                 /* tp_itemsize */
+    /* methods */
+    (destructor)_wrap_PyPythonPythonScript__tp_dealloc,        /* tp_dealloc */
+    (printfunc)0,                      /* tp_print */
+    (getattrfunc)NULL,       /* tp_getattr */
+    (setattrfunc)NULL,       /* tp_setattr */
+    (cmpfunc)NULL,           /* tp_compare */
+    (reprfunc)NULL,             /* tp_repr */
+    (PyNumberMethods*)NULL,     /* tp_as_number */
+    (PySequenceMethods*)NULL, /* tp_as_sequence */
+    (PyMappingMethods*)NULL,   /* tp_as_mapping */
+    (hashfunc)NULL,             /* tp_hash */
+    (ternaryfunc)NULL,          /* tp_call */
+    (reprfunc)NULL,              /* tp_str */
+    (getattrofunc)NULL,     /* tp_getattro */
+    (setattrofunc)NULL,     /* tp_setattro */
+    (PyBufferProcs*)NULL,  /* tp_as_buffer */
+    Py_TPFLAGS_BASETYPE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC,                      /* tp_flags */
+    NULL,                        /* Documentation string */
+    (traverseproc)PyPythonPythonScript__tp_traverse,     /* tp_traverse */
+    (inquiry)PyPythonPythonScript__tp_clear,             /* tp_clear */
+    (richcmpfunc)_wrap_PyPythonPythonScript__tp_richcompare,   /* tp_richcompare */
+    0,             /* tp_weaklistoffset */
+    (getiterfunc)NULL,          /* tp_iter */
+    (iternextfunc)NULL,     /* tp_iternext */
+    (struct PyMethodDef*)PyPythonPythonScript_methods, /* tp_methods */
+    (struct PyMemberDef*)0,              /* tp_members */
+    0,                     /* tp_getset */
+    NULL,                              /* tp_base */
+    NULL,                              /* tp_dict */
+    (descrgetfunc)NULL,    /* tp_descr_get */
+    (descrsetfunc)NULL,    /* tp_descr_set */
+    offsetof(PyPythonPythonScript, inst_dict),                 /* tp_dictoffset */
+    (initproc)_wrap_PyPythonPythonScript__tp_init,             /* tp_init */
+    (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
+    (newfunc)PyType_GenericNew,               /* tp_new */
+    (freefunc)0,             /* tp_free */
+    (inquiry)NULL,             /* tp_is_gc */
+    NULL,                              /* tp_bases */
+    NULL,                              /* tp_mro */
+    NULL,                              /* tp_cache */
+    NULL,                              /* tp_subclasses */
+    NULL,                              /* tp_weaklist */
+    (destructor) NULL                  /* tp_del */
+};
+
+
 /* --- containers --- */
 
 
@@ -4300,6 +4295,11 @@ inittiled(void)
         return;
     }
     PyModule_AddObject(m, (char *) "QPixmap", (PyObject *) &PyQPixmap_Type);
+    /* Register the 'Python::PythonScript' class */
+    if (PyType_Ready(&PyPythonPythonScript_Type)) {
+        return;
+    }
+    PyModule_AddObject(m, (char *) "Plugin", (PyObject *) &PyPythonPythonScript_Type);
     /* Register the 'QVector<QRgb>' class */
     if (PyType_Ready(&PyQVector__lt__QRgb__gt___Type)) {
         return;
@@ -4383,3 +4383,33 @@ inittiled(void)
     Py_INCREF(submodule);
     PyModule_AddObject(m, (char *) "Tiled", submodule);
 }
+
+int _wrap_convert_py2c__Tiled__Map(PyObject *value, Tiled::Map *address)
+{
+    PyObject *py_retval;
+    PyTiledMap *tmp_Map;
+    
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
+        Py_DECREF(py_retval);
+        return 0;
+    }
+    *address = *tmp_Map->obj;
+    Py_DECREF(py_retval);
+    return 1;
+}
+
+
+PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue)
+{
+    PyObject *py_retval;
+    PyTiledMap *py_Map;
+    
+    py_Map = PyObject_New(PyTiledMap, &PyTiledMap_Type);
+    py_Map->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_Map->obj = new Tiled::Map(*cvalue);
+    py_retval = Py_BuildValue((char *) "N", py_Map);
+    return py_retval;
+}
+
+

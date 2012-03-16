@@ -52,8 +52,9 @@ class CpySkeleton(struct.Struct):
   def __init__(self, dat=None, **kws):
     """ Takes keyword arguments to initialize attributes """
     struct.Struct.__init__(self, getattr(self, '__fstr'))
-    if kws != None:
-      for k in kws: setattr(self, k, kws[k])
+    if len(kws) > 0:
+      for k in kws:
+        setattr(self, k, kws[k])
     if dat != None:
       self.unpack(dat)
 
@@ -139,10 +140,16 @@ class CpySkeleton(struct.Struct):
     for f,n,a,v in self.formats:
       if a != '' and not a.isdigit():
         c = getattr(self, a)
-        f = str(c)+'s' if fdict[f]=='c' else str(c)+fdict[f]
-        sz = struct.calcsize(f)
-        val = struct.unpack(f, dat.read(sz))
-        setattr(self, n, val)
+        if type(f) == type(struct.Struct):
+          sz = struct.calcsize(getattr(f, '__fstr'))
+          setattr(self, n, f(buf[rawpos:rawpos+sz]))
+          rawpos += sz
+        else:
+          f = str(c)+'s' if fdict[f]=='c' else str(c)+fdict[f]
+          sz = struct.calcsize(f)
+          val = struct.unpack(f, dat.read(sz))
+          setattr(self, n, val)
+
     return buf
 
   def __len__(self):
@@ -151,7 +158,7 @@ class CpySkeleton(struct.Struct):
   def __str__(self):
     ret = self.__class__.__name__+'['
     for f,n,a,v in self.formats:
-      ret += '%s=%s,' % (n,getattr(self, n))
+      ret += '%s=%s,' % (n,getattr(self, n, ''))
     return ret[:-1]+']'
 
 
