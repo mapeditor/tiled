@@ -422,7 +422,7 @@ void OrthogonalRenderer::drawMapObjectAngleArrow(QPainter *painter,
                     center.x() + arrowArmStart * cos(angleRad - arrowArmAngle),
                     center.y() + arrowArmStart * sin(angleRad - arrowArmAngle)
                 );
-    // draw arror
+    // draw arrow
     const QLineF lineCenter = QLineF(center, arrowEnd);
     const QLineF lineLeft = QLineF(arrowLeft, arrowEnd);
     const QLineF lineRight = QLineF(arrowRight, arrowEnd);
