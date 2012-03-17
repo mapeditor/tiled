@@ -1,6 +1,6 @@
 /*
  * rotatemapobject.h
- * Copyright 2011, Przemysław Grzywacz <nexather@gmail.com>
+ * Copyright 2012, Przemysław Grzywacz <nexather@gmail.com>
  *
  * This file is part of Tiled.
  *

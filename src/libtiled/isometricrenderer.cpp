@@ -381,7 +381,10 @@ void IsometricRenderer::drawMapObjectAngleArrow(QPainter *painter,
                                const QColor &color,
                                qreal arrowLength) const
 {
-
+    Q_UNUSED(painter);
+    Q_UNUSED(object);
+    Q_UNUSED(color);
+    Q_UNUSED(arrowLength);
 }
 
 QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
