@@ -70,6 +70,14 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                               bottomLeft.y() - img.height(),
                               img.width(),
                               img.height()).adjusted(-1, -1, 1, 1);
+        qreal wdiff = 1, hdiff = 1;
+        if (boundingRect.width() < 66) {
+            wdiff = (66 - boundingRect.width()) / 2;
+        }
+        if (boundingRect.height() < 66) {
+            hdiff = (66 - boundingRect.height()) / 2;
+        }
+        boundingRect = boundingRect.adjusted(-wdiff, -hdiff, wdiff, hdiff);
     } else {
         // The -2 and +3 are to account for the pen width and shadow
         switch (object->shape()) {
@@ -388,7 +396,7 @@ void OrthogonalRenderer::drawMapObjectAngleArrow(QPainter *painter,
                                const QColor &color,
                                qreal arrowLength) const {
 
-    if (object->shape() == MapObject::Polyline)
+    if (object->shape() == MapObject::Polyline || object->shape() == MapObject::Polygon)
         return;
 
     painter->save();
@@ -404,7 +412,13 @@ void OrthogonalRenderer::drawMapObjectAngleArrow(QPainter *painter,
     const QPen shadowPen(Qt::black, 2);
 
     // calculate arrow
-    const QPointF center = rect.center();
+    QPointF center;
+    if (object->tile()) {
+        const QPixmap &img = object->tile()->image();
+        center = QPointF(rect.x() + img.width() / 2, rect.y() - img.height() / 2);
+    } else {
+        center = rect.center();
+    }
     const qreal arrowArmStart = arrowLength - 4;
     const qreal arrowArmAngle = 12 * M_PI / 180;
     const qreal angleRad = object->angle() * M_PI / 180;
