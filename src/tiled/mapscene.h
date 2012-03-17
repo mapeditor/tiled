@@ -78,7 +78,7 @@ public:
     /**
      * Returns whether the object angle arrow is drawn.
      */
-    bool showAngleArrow() const { return mShowAngleArrow; }
+    bool showAngleArrows() const;
 
     /**
      * Returns the set of selected map object items.
@@ -122,7 +122,7 @@ public slots:
     /**
      * Sets whether the angle arrow of objects is visible.
      */
-    void setShowAngleArrow(bool showAngleArrow);
+    void setShowAngleArrows(bool showAngleArrows);
 
     /**
      * Sets whether the current layer should be highlighted.
@@ -184,7 +184,6 @@ private:
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;
-    bool mShowAngleArrow;
     bool mHighlightCurrentLayer;
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;

@@ -100,7 +100,7 @@
     <addaction name="actionShowGrid"/>
     <addaction name="actionSnapToGrid"/>
     <addaction name="actionHighlightCurrentLayer"/>
-    <addaction name="actionShowAngleArrow"/>
+    <addaction name="actionShowAngleArrows"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -405,12 +405,12 @@
     <string>H</string>
    </property>
   </action>
-  <action name="actionShowAngleArrow">
+  <action name="actionShowAngleArrows">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show &amp;Angle Arrow</string>
+    <string>Show &amp;Angle Arrows</string>
    </property>
   </action>
  </widget>

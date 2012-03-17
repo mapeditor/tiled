@@ -379,7 +379,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     painter->restore();
 
-    if (mShowAngleArrow)
+    if (mShowAngleArrows)
         drawMapObjectAngleArrow(painter, object, color, 32);
 }
 

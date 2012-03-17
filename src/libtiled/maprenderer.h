@@ -48,7 +48,7 @@ class TileLayer;
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
-    MapRenderer(const Map *map) : mShowAngleArrow(false), mMap(map) {}
+    MapRenderer(const Map *map) : mShowAngleArrows(false), mMap(map) {}
     virtual ~MapRenderer() {}
 
     /**
@@ -149,12 +149,12 @@ public:
     /**
      * Returns whether the object angle arrow is drawn.
      */
-    bool showAngleArrow() const { return mShowAngleArrow; }
+    bool showAngleArrows() const { return mShowAngleArrows; }
 
     /**
      * Sets if the object angle arrow should be drawn.
      */
-    void setShowAngleArrow(bool showAngleArrow) { mShowAngleArrow = showAngleArrow; }
+    void setShowAngleArrows(bool showAngleArrows) { mShowAngleArrows = showAngleArrows; }
 
 protected:
     /**
@@ -162,7 +162,7 @@ protected:
      */
     const Map *map() const { return mMap; }
 
-    bool mShowAngleArrow;
+    bool mShowAngleArrows;
 
 private:
     const Map *mMap;

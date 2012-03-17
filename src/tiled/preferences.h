@@ -47,7 +47,7 @@ public:
     bool snapToGrid() const { return mSnapToGrid; }
     bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
-    bool showAngleArrow() const { return mShowAngleArrow; }
+    bool showAngleArrows() const { return mShowAngleArrows; }
 
     MapWriter::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
@@ -88,14 +88,14 @@ public slots:
     void setSnapToGrid(bool snapToGrid);
     void setHighlightCurrentLayer(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
-    void setShowAngleArrow(bool showAngleArrow);
+    void setShowAngleArrows(bool showAngleArrows);
 
 signals:
     void showGridChanged(bool showGrid);
     void snapToGridChanged(bool snapToGrid);
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
-    void showAngleArrowChanged(bool showAngleArrow);
+    void showAngleArrowsChanged(bool showAngleArrows);
 
     void useOpenGLChanged(bool useOpenGL);
 
@@ -111,7 +111,7 @@ private:
     bool mSnapToGrid;
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
-    bool mShowAngleArrow;
+    bool mShowAngleArrows;
 
     MapWriter::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
