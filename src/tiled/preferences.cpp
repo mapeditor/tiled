@@ -142,7 +142,8 @@ void Preferences::setShowTilesetGrid(bool showTilesetGrid)
     emit showTilesetGridChanged(mShowTilesetGrid);
 }
 
-void Preferences::setShowAngleArrow(bool showAngleArrow) {
+void Preferences::setShowAngleArrow(bool showAngleArrow)
+{
     if (mShowAngleArrow == showAngleArrow)
         return;
 

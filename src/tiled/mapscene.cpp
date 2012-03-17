@@ -427,7 +427,8 @@ void MapScene::setGridVisible(bool visible)
     update();
 }
 
-void MapScene::setShowAngleArrow(bool showAngleArrow) {
+void MapScene::setShowAngleArrow(bool showAngleArrow)
+{
     if (mShowAngleArrow == showAngleArrow)
         return;
 
