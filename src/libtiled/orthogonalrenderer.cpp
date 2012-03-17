@@ -139,7 +139,8 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
     return path;
 }
 
-void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
+void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
+                                  QColor gridColor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -154,7 +155,6 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     const int endY = qMin((int) std::ceil(rect.bottom()),
                           map()->height() * tileHeight + 1);
 
-    QColor gridColor(Qt::black);
     gridColor.setAlpha(128);
 
     QPen gridPen(gridColor);

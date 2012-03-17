@@ -165,8 +165,11 @@ void SaveAsImageDialog::accept()
         }
     }
 
-    if (drawTileGrid)
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()));
+    if (drawTileGrid) {
+        Preferences *prefs = Preferences::instance();
+        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
+                           prefs->gridColor());
+    }
 
     image.save(fileName);
     mPath = QFileInfo(fileName).path();

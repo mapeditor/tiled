@@ -117,7 +117,8 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
     return path;
 }
 
-void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
+void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
+                                 QColor gridColor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -133,7 +134,6 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     const int endY = qMin(qreal(map()->height()),
                           pixelToTileCoords(r.bottomLeft()).y());
 
-    QColor gridColor(Qt::black);
     gridColor.setAlpha(128);
 
     QPen gridPen(gridColor);

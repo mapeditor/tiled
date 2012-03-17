@@ -134,6 +134,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
     connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
+    connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
+            Preferences::instance(), SLOT(setGridColor(QColor)));
 
     connect(mUi->objectTypesTable->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -319,6 +321,7 @@ void PreferencesDialog::fromPreferences()
     if (languageIndex == -1)
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
+    mUi->gridColor->setColor(prefs->gridColor());
     mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }
