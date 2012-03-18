@@ -89,6 +89,7 @@
 #include <QUndoStack>
 #include <QUndoView>
 #include <QImageReader>
+#include <QRegExp>
 #include <QSignalMapper>
 #include <QShortcut>
 #include <QToolButton>
@@ -755,11 +756,27 @@ void MainWindow::exportAs()
     QString selectedFilter =
             mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
 
+    QFileInfo baseNameInfo = QFileInfo(mMapDocument->fileName());
+    QString baseName = baseNameInfo.baseName();
+
+    QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+    extensionFinder.indexIn(selectedFilter);
+    const QString extension = extensionFinder.cap(1);
+
+    Preferences *pref = Preferences::instance();
+    QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+
+    QString suggestedFilename = lastExportedFilePath
+                                + QLatin1String("/") + baseName
+                                + QLatin1Char('.') + extension;
+
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
-                                                    fileDialogStartLocation(),
+                                                    suggestedFilename,
                                                     filter, &selectedFilter);
     if (fileName.isEmpty())
         return;
+
+    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
 
     MapWriterInterface *chosenWriter = 0;
 
