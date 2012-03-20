@@ -67,21 +67,40 @@ class CpySkeleton(struct.Struct):
         ret += v.pack()
         continue
 
-      f = fdict[f]
+      if type(f) != type(struct.Struct):
+        f = fdict[f]
+
       if a != '':
         # array (possibly varlength)
         a = int(a) if a.isdigit() else getattr(self, a)
         if f=='c':
           # chararray as string
           f = str(a)+'s'
-          a = ''
+          a = 0
 
-      if a != '':
-        for j in range(a):
-          ret += struct.pack(f, v[j])
+      if type(f) == type(struct.Struct):
+        fstr = getattr(f, '__fstr')
+        # temp hack because of qmap<str,str> limitations in tiled map props
+        sz = struct.calcsize(fstr)
+        m = re.match('<[0-9]*[sc]',fstr)
+        if a > 0 and (m is None or m.group(0) != fstr):
+          print 'stru arr',a,fstr
+          for j in range(len(v)): #a):
+            v2 = f(v[j].ljust(sz,'\0'))
+            ret += v2.pack()
+        elif type(v) == list:
+          print n,a,v
+        else:
+          v = f(v.ljust(sz,'\0'))
+          ret += f.pack(v)
       else:
-        # just an ordinary var
-        ret += struct.pack(f, v)
+        print f,v
+        if a > 0:
+          for j in range(len(v)):
+            ret += struct.pack(f, int(v[j]) if v[j].isdigit() else v)
+        else:
+          # just an ordinary var
+          ret += struct.pack(f, int(v) if v.isdigit() else v)
 
     return ret
 
@@ -141,10 +160,21 @@ class CpySkeleton(struct.Struct):
       if a != '' and not a.isdigit():
         c = getattr(self, a)
         if type(f) == type(struct.Struct):
+          # custom types
           sz = struct.calcsize(getattr(f, '__fstr'))
-          setattr(self, n, f(buf[rawpos:rawpos+sz]))
-          rawpos += sz
+          arr = []
+          for i in range(c):
+            # unless constructor has been overridden to do something
+            # else, this call comes back to this function, should check
+            # for looping
+            dat.seek(rawpos)
+            da = dat.read(sz)
+            #print '@',rawpos,sz, str(da)
+            arr.append( f(da) )
+            rawpos += sz
+          setattr(self, n, arr)
         else:
+          # primitives
           f = str(c)+'s' if fdict[f]=='c' else str(c)+fdict[f]
           sz = struct.calcsize(f)
           val = struct.unpack(f, dat.read(sz))
