@@ -205,6 +205,7 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
     handleError();
 
     Py_DECREF(pread);
+    ret->setProperty("__script__", it.key());
     return ret->clone();
   }
   return NULL;
@@ -213,28 +214,35 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
 bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
   reloadModules();
+  mError = "";
 
   QMapIterator<QString, PyObject*> it(knownExtClasses);
   while (it.hasNext()) {
     it.next();
-    if(!checkFileSupport(it.value(), fileName.toUtf8().data())) continue;
-    cout << "-- " << it.key() << " supports " << fileName << endl << flush;
+    if(map->property("__script__") != it.key()) continue;
+    cout << "-- Script used for exporting: " << it.key() << endl << flush;
 
+    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map->clone());
+    if(!pmap) return false;
     PyObject *pwrite = checkFunction(it.value(), "write");
-    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map);
+    if(!pwrite) return false;
     PyObject *pinst = PyEval_CallFunction(pwrite, "(Ns)", pmap, fileName.toUtf8().data());
-    Py_DECREF(pmap);
+    Py_DECREF(pwrite);
 
     if(!pinst) {
       cerr << "** Uncaught exception in script **" << endl << flush;
+      mError = "Uncaught exception in script. Please check console.";
     } else {
+      bool ret = PyObject_IsTrue(pinst);
       Py_DECREF(pinst);
+      if(!ret) mError = "Script returned false. Please check console.";
+      return ret;
     }
     handleError();
-
-    Py_DECREF(pwrite);
-    return true;
+    return false;
   }
+  cout << "-- Export aborted. Map property \"__script__\" undefined or script missing" << endl << flush;
+  mError = "Export aborted. Map property \"__script__\" undefined or script missing";
   return false;
 }
 
@@ -245,22 +253,24 @@ QStringList PythonPlugin::nameFilters() const
   QMapIterator<QString, PyObject*> it(knownExtClasses);
   while (it.hasNext()) {
     it.next();
+
     // find fun
     PyObject *pfun = PyObject_GetAttrString(it.value(), "nameFilter");
     if(!pfun || !PyCallable_Check(pfun)) {
       cerr << "Plugin extension doesn't define \"nameFilter\"" << endl << flush;
       continue;
     }
+
     // have fun
     PyObject *pinst = PyEval_CallFunction(pfun, "()");
     if(!pinst) {
       cerr << "** Uncaught exception in script **" << endl << flush;
-      PyErr_Print();
-      PyErr_Clear();
     } else {
       ret += PyString_AsString(pinst);
       Py_DECREF(pinst);
     }
+    handleError();
+
     Py_DECREF(pfun);
   }
 
