@@ -24,7 +24,7 @@ class PK2(Plugin):
     lvl = PK2MAP()
     lay1 = 0
     lay2 = 0
-    with open(f) as fh:
+    with open(f, 'rb') as fh:
       lvl.unpack(fh)
       lay1 = PK2MAPLAYER(fh)
       lay2 = PK2MAPLAYER(fh)
@@ -71,7 +71,7 @@ class PK2(Plugin):
 
     setattr(out, "sprites", ['pla'])
 
-    with open(fn, 'w') as fh:
+    with open(fn, 'wb') as fh:
       print >>fh, out.pack()
 
       for i in range(m.layerCount()):

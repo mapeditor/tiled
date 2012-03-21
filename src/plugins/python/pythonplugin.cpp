@@ -34,6 +34,12 @@
 #include <QMap>
 #include <QTextStream>
 #include <QDirIterator>
+#if defined WIN32 || defined WIN64
+#include <tchar.h>
+#include <fcntl.h>
+#include <io.h>
+#include <windows.h>
+#endif
 
 using namespace Python;
 
@@ -53,6 +59,14 @@ void handleError() {
 
 PythonPlugin::PythonPlugin()
 {
+  #if defined WIN32 || defined WIN64
+    AllocConsole();
+
+    *stdout = *_tfdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE), _O_WRONLY), "a");
+    *stderr = *_tfdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_ERROR_HANDLE), _O_WRONLY), "a");
+    *stdin = *_tfdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_INPUT_HANDLE), _O_WRONLY),"r");
+  #endif
+
   if(!Py_IsInitialized()) {
     Py_Initialize();
     inittiled();
