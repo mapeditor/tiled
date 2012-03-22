@@ -176,10 +176,13 @@ static QVector<QPoint> calculateLine(int x0, int y0, int x1, int y1)
 
 void StampBrush::tilePositionChanged(const QPoint &)
 {
+    const int x = mStampX;
+    const int y = mStampY;
     updatePosition();
     switch (mBrushBehavior) {
     case Paint:
-        doPaint(true, mStampX, mStampY);
+        foreach (const QPoint &p, calculateLine(x, y, mStampX, mStampY))
+            doPaint(true, p.x(), p.y());
         break;
     case LineStartSet:
         configureBrush(calculateLine(mStampReferenceX, mStampReferenceY,
