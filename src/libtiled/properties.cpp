@@ -27,8 +27,137 @@
  */
 
 #include "properties.h"
+#include "mapobject.h"
 
 using namespace Tiled;
+
+Property::Property()
+{
+    mType = PropertyType_Invalid;
+}
+
+bool Property::IsValid()
+{
+    return mType != PropertyType_Invalid;
+}
+
+QString Property::TypeAsQString() const
+{
+    return Property::PropertyTypeToQString(mType);
+}
+
+QString Property::PropertyTypeToQString(PropertyType type)
+{
+    switch(type)
+    {
+        case PropertyType_Uint:
+        {
+            return QString::fromUtf8("uint");
+        }
+        case PropertyType_Int:
+        {
+            return QString::fromUtf8("int");
+        }
+        case PropertyType_Float:
+        {
+            return QString::fromUtf8("float");
+        }
+        case PropertyType_Link:
+        {
+            return QString::fromUtf8("link");
+        }
+        case PropertyType_String:
+        {
+            return QString::fromUtf8("string");
+        }
+        case PropertyType_FilePath:
+        {
+            return QString::fromUtf8("filepath");
+        }
+        default:
+        {
+            return QString::fromUtf8("invalid");
+        }
+    }
+}
+
+Property::PropertyType Property::Type() const
+{
+    return mType;
+}
+
+Property Property::FromQString(PropertyType type, const QString& valueString)
+{
+    Property theProp;
+    theProp.mType = type;
+
+    switch(type)
+    {
+        //Add cases if you need to handle something weird
+        default:
+        {
+            theProp.setValue(valueString);
+            return theProp;
+        }
+    }
+}
+
+Property Property::FromQString(const QString& typeString, const QString& valueString)
+{
+    Property theProp;
+
+    //If the size is 0 then it's an old prop without a type
+    if(typeString.compare(QString::fromUtf8("string")) == 0)
+    {
+        theProp.setValue(valueString);
+        theProp.mType = PropertyType_String;
+    }
+    else if(typeString.compare(QString::fromUtf8("filepath")) == 0)
+    {
+        theProp.setValue(valueString);
+        theProp.mType = PropertyType_FilePath;
+    }
+    else if(typeString.compare(QString::fromUtf8("uint")) == 0)
+    {
+        theProp.setValue(valueString.toUInt());
+        theProp.mType = PropertyType_Uint;
+    }
+    else if(typeString.compare(QString::fromUtf8("int")) == 0)
+    {
+        theProp.setValue(valueString.toInt());
+        theProp.mType = PropertyType_Int;
+    }
+    else if(typeString.compare(QString::fromUtf8("float")) == 0)
+    {
+        theProp.setValue(valueString.toFloat());
+        theProp.mType = PropertyType_Float;
+    }
+    else if(typeString.compare(QString::fromUtf8("link")) == 0)
+    {
+        theProp.setValue(valueString.toUInt());
+        theProp.mType = PropertyType_Link;
+    }
+    //Default is a string
+    else
+    {
+        theProp.setValue(valueString);
+        theProp.mType = PropertyType_String;
+    }
+
+    return theProp;
+}
+
+QString Property::ToQString() const
+{
+    switch(mType)
+    {
+        //If it's anything else, just output the string
+        default:
+        {
+            return toString();
+        }
+    }
+}
 
 void Properties::merge(const Properties &other)
 {

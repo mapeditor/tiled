@@ -33,10 +33,12 @@
 
 #include "layer.h"
 #include "object.h"
+#include "mapobject.h"
 
 #include <QList>
 #include <QMargins>
 #include <QSize>
+#include <QMap>
 
 namespace Tiled {
 
@@ -258,6 +260,31 @@ public:
      */
     static Map *fromLayer(Layer *layer);
 
+    /**
+     * Returns a UniqueID id for a MapObject.
+     */
+    quint32 createUniqueID();
+
+    /**
+     * Puts the UniqueID back into the bool so that new objects can use the ID
+     */
+    void destroyUniqueID(quint32 uniqueID);
+
+    /**
+     * Claims a UniqueID as being used (useful for when you are loading objects from the file)
+     */
+    void claimUniqueID(quint32 uniqueID);
+
+    /**
+     * Adds the MapObject to the map's QMap
+     */
+    void addToQMap(MapObject* pMapObject);
+
+    /**
+     * Gets a MapObject in the QMap using the UniqueID
+     */
+    MapObject* getMapObjectFromQMap(quint32 uniqueID) const;
+
 private:
     void adoptLayer(Layer *layer);
 
@@ -269,6 +296,13 @@ private:
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
+
+    quint32 mMapObject_UniqueID_NumUsed;
+    quint32 mMapObject_UniqueID_NumFree;
+    quint32* mMapObject_UniqueID_UsedList;
+    quint32* mMapObject_UniqueID_FreeList;
+
+    QMap<quint32,MapObject*> mMapObjectMap;
 };
 
 /**

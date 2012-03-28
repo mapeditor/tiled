@@ -421,6 +421,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                                    const MapObject *mapObject)
 {
     w.writeStartElement(QLatin1String("object"));
+    w.writeAttribute(QLatin1String("uniqueID"), QString::number(mapObject->uniqueID()));
     const QString &name = mapObject->name();
     const QString &type = mapObject->type();
     if (!name.isEmpty())
@@ -487,12 +488,19 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QLatin1String("property"));
         w.writeAttribute(QLatin1String("name"), it.key());
 
-        const QString &value = it.value();
-        if (value.contains(QLatin1Char('\n'))) {
-            w.writeCharacters(value);
+        const Property &value = it.value();
+        const QString valueString = value.ToQString();
+
+        //Write the value
+        if (valueString.contains(QLatin1Char('\n'))) {
+            w.writeCharacters(valueString);
         } else {
-            w.writeAttribute(QLatin1String("value"), it.value());
+            w.writeAttribute(QLatin1String("value"), valueString);
         }
+
+        //Write the type
+        w.writeAttribute(QLatin1String("type"), value.TypeAsQString());
+
         w.writeEndElement();
     }
 

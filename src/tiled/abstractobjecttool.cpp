@@ -132,7 +132,9 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QIcon delIcon(QLatin1String(":images/16x16/edit-delete.png"));
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     QString dupText = tr("Duplicate %n Object(s)", "", selectedObjects.size());
+    QString cloneText = tr("Clone Hierarchy of %n Object(s)", "", selectedObjects.size());
     QString removeText = tr("Remove %n Object(s)", "", selectedObjects.size());
+    QAction *cloneHierarchyAction =  menu.addAction(dupIcon, cloneText);
     QAction *dupAction = menu.addAction(dupIcon, dupText);
     QAction *removeAction = menu.addAction(delIcon, removeText);
 
@@ -161,7 +163,10 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QAction *selectedAction = menu.exec(screenPos);
 
     if (selectedAction == dupAction) {
-        duplicateObjects(selectedObjects);
+        duplicateObjects(selectedObjects,false);
+    }
+    else if (selectedAction == cloneHierarchyAction) {
+        duplicateObjects(selectedObjects,true);
     }
     else if (selectedAction == removeAction) {
         removeObjects(selectedObjects);
@@ -182,18 +187,107 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     }
 }
 
-void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects)
+void AbstractObjectTool::cloneHierarchy(MapObject* pParent, QMap<quint32,quint32>& idMap, QList<MapObject*>& clones)
 {
+    QUndoStack *undoStack = mapDocument()->undoStack();
+
+     //Clone all linked MapObjects
+    Properties::const_iterator it = pParent->properties().constBegin();
+    Properties::const_iterator it_end = pParent->properties().constEnd();
+    for (; it != it_end; ++it) {
+        const Property* value = &it.value();
+        if(value->Type() == Property::PropertyType_Link)
+        {
+            //Get the pointer to the linked MapObject
+            MapObject* pChild = mMapScene->mapDocument()->map()->getMapObjectFromQMap(value->toUInt());
+
+            //Only do something if we found the child (could be an invalid link)
+            if(pChild != NULL)
+            {
+                //Check to see if the child is already in the id map
+                const quint32 cloneID = idMap.value(pChild->uniqueID());
+
+                //If the ID was found, then we've already spawned the clone so just
+                //link to the ID of the clone
+                if(cloneID != 0)
+                {
+                    //Update the property to link to the new UniqueID
+                    //TODO: sometimes passing in a number and not a QString is better ;)
+                    pParent->setProperty(it.key(),Property::FromQString(Property::PropertyType_Link,QString::number(cloneID)));
+                }
+                //If it was not in the map, then we need to clone and clone the hierarchy
+                else
+                {
+                    //Clone the child
+                    MapObject *childClone = pChild->clone();
+
+                    //Give the child a new UniqueID and add it to the QMap
+                    const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
+                    childClone->setUniqueID(uniqueID);
+                    mMapScene->mapDocument()->map()->addToQMap(childClone);
+
+                    //Update the property to link to the new UniqueID
+                    //TODO: sometimes passing in a number and not a QString is better ;)
+                    pParent->setProperty(it.key(),Property::FromQString(Property::PropertyType_Link,QString::number(uniqueID)));
+
+                    //Add to undo
+                    clones.append(childClone);
+
+                    //After AddMapObject, the clone with have an ObjectGroup
+                    undoStack->push(new AddMapObject(mapDocument(),
+                                                     pParent->objectGroup(),
+                                                     childClone));
+
+                    //Add to id map (maps old ID to new ID)
+                    idMap.insert(pChild->uniqueID(),uniqueID);
+
+                    //Recursively clone the hierarchy
+                    cloneHierarchy(childClone, idMap, clones);
+                }
+            }
+        }
+    }
+}
+
+void AbstractObjectTool::duplicateObjects(const QList<MapObject *> &objects, bool shouldCloneHierarchy)
+{
+    QMap<quint32,quint32> idMap;
+
     QUndoStack *undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
 
     QList<MapObject*> clones;
-    foreach (const MapObject *mapObject, objects) {
-        MapObject *clone = mapObject->clone();
-        clones.append(clone);
-        undoStack->push(new AddMapObject(mapDocument(),
-                                         mapObject->objectGroup(),
-                                         clone));
+    foreach (const MapObject *mapObject, objects)
+    {
+        //Check to see if the child is already in the id map
+        const quint32 cloneID = idMap.value(mapObject->uniqueID());
+
+        //Only clone if we haven't cloned it already
+        if(cloneID == 0)
+        {
+            MapObject *clonedObject = mapObject->clone();
+
+            const quint32 uniqueID = mMapScene->mapDocument()->map()->createUniqueID();
+            clonedObject->setUniqueID(uniqueID);
+            mMapScene->mapDocument()->map()->addToQMap(clonedObject);
+
+            clones.append(clonedObject);
+
+            //After AddMapObject, the clone with have an ObjectGroup
+            undoStack->push(new AddMapObject(mapDocument(),
+                                             mapObject->objectGroup(),
+                                             clonedObject));
+
+            //Add to id map (maps old ID to new ID)
+            idMap.insert(mapObject->uniqueID(),uniqueID);
+
+            //Now clone the links
+            if(shouldCloneHierarchy)
+            {
+                //Clone all linked MapObjects
+                cloneHierarchy(clonedObject,idMap,clones);
+            }
+        }
     }
 
     undoStack->endMacro();

@@ -588,6 +588,7 @@ MapObject *MapReaderPrivate::readObject()
     Q_ASSERT(xml.isStartElement() && xml.name() == "object");
 
     const QXmlStreamAttributes atts = xml.attributes();
+    quint32 uniqueID = atts.value(QLatin1String("uniqueID")).toString().toUInt();
     const QString name = atts.value(QLatin1String("name")).toString();
     const uint gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const int x = atts.value(QLatin1String("x")).toString().toInt();
@@ -599,8 +600,17 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos = pixelToTileCoordinates(mMap, x, y);
     const QPointF size = pixelToTileCoordinates(mMap, width, height);
 
-    MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
+    //If the uniqueID is 0, this must be an old map and this object
+    //has no UniqueID yet.  So we create it a UniqueID here.
+    if(uniqueID == 0)
+    {
+        uniqueID = mMap->createUniqueID();
+    }
+
+    MapObject *object = new MapObject(uniqueID, name, type, pos, QSizeF(size.x(),
                                                               size.y()));
+    mMap->claimUniqueID(uniqueID);
+    mMap->addToQMap(object);
 
     if (gid) {
         const Cell cell = cellForGid(gid);
@@ -684,6 +694,7 @@ void MapReaderPrivate::readProperty(Properties *properties)
     const QXmlStreamAttributes atts = xml.attributes();
     QString propertyName = atts.value(QLatin1String("name")).toString();
     QString propertyValue = atts.value(QLatin1String("value")).toString();
+    QString propertyType = atts.value(QLatin1String("type")).toString();
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
@@ -696,7 +707,8 @@ void MapReaderPrivate::readProperty(Properties *properties)
         }
     }
 
-    properties->insert(propertyName, propertyValue);
+    //JAMTODO: might need to add some code in that while loop for propertyType?
+    properties->insert(propertyName, Property::FromQString(propertyType,propertyValue));
 }
 
 

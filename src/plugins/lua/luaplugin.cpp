@@ -255,6 +255,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
                                const Tiled::MapObject *mapObject)
 {
     writer.writeStartTable();
+    writer.writeKeyAndValue("uniqueID", mapObject->uniqueID());
     writer.writeKeyAndValue("name", mapObject->name());
     writer.writeKeyAndValue("type", mapObject->type());
 

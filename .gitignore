@@ -22,4 +22,11 @@ tmxviewer.exe
 *.exp
 *.intermediate.manifest
 
+# Build artifacts on Mac
+*.dylib
+*.lproj
+*.plist
+*.DS_Store
+*.app
+
 tests/test_mapreader

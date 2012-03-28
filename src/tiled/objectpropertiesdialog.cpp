@@ -61,6 +61,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     mUi->y->setValue(mMapObject->y());
     mUi->width->setValue(mMapObject->width());
     mUi->height->setValue(mMapObject->height());
+    mUi->uniqueID->setNum((qint32)mMapObject->uniqueID());  //There is no SetNum with an unsigned int as a parameter :(
 
     qobject_cast<QBoxLayout*>(layout())->insertWidget(0, widget);
 

@@ -85,7 +85,10 @@ Properties VariantToMapConverter::toProperties(const QVariant &variant)
     QVariantMap::const_iterator it = variantMap.constBegin();
     QVariantMap::const_iterator it_end = variantMap.constEnd();
     for (; it != it_end; ++it)
-        properties[it.key()] = it.value().toString();
+    {
+        //I think maps just need to have string properties
+        properties[it.key()] = Property::FromQString(Property::PropertyType_String,it.value().toString());
+    }
 
     return properties;
 }
@@ -261,8 +264,10 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
     foreach (const QVariant &objectVariant, variantMap["objects"].toList()) {
         const QVariantMap objectVariantMap = objectVariant.toMap();
 
+        quint32 uniqueID = objectVariantMap["uniqueID"].toInt();
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
+
         const int gid = objectVariantMap["gid"].toInt();
         const int x = objectVariantMap["x"].toInt();
         const int y = objectVariantMap["y"].toInt();
@@ -272,9 +277,16 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QPointF pos = toTile(x, y);
         const QPointF size = toTile(width, height);
 
-        MapObject *object = new MapObject(name, type,
+        //If the uniqueID is 0, this must be an old map and this object
+        //has no UniqueID yet.  So we create it a UniqueID here.
+        if(uniqueID == 0)
+        {
+            uniqueID = mMap->createUniqueID();
+        }
+        MapObject *object = new MapObject(uniqueID, name, type,
                                           pos,
                                           QSizeF(size.x(), size.y()));
+        mMap->claimUniqueID(uniqueID);
 
         if (gid) {
             bool ok;

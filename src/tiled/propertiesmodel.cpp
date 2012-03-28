@@ -35,7 +35,7 @@ int PropertiesModel::rowCount(const QModelIndex &parent) const
 
 int PropertiesModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 2;
+    return parent.isValid() ? 0 : 3;
 }
 
 QVariant PropertiesModel::data(const QModelIndex &index, int role) const
@@ -46,6 +46,7 @@ QVariant PropertiesModel::data(const QModelIndex &index, int role) const
             switch (index.column()) {
                 case 0: return key;
                 case 1: return mProperties.value(key);
+                case 2: return mProperties.value(key).TypeAsQString();
             }
         } else if (index.column() == 0) {
             return (role == Qt::EditRole) ? QString() : tr("<new property>");
@@ -68,31 +69,44 @@ bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
     if (role != Qt::EditRole)
         return false;
 
-    if (index.column() == 0) { // Edit name
+    // Edit name
+    if (index.column() == 0) {
         QString text = value.toString();
         if (index.row() == mKeys.size()) {
             // Add a new property
             if (text.isEmpty())
                 return false;
-            mProperties.insert(text, QString());
+            mProperties.insert(text, Property::FromQString(Property::PropertyType_String,QString::fromUtf8("")));
         } else {
+            // Edit existing property
             const QString &key = mKeys.at(index.row());
-            const QString propertyValue = mProperties.value(key);
+            const Property existingProperty = mProperties.value(key);
             mProperties.remove(key);
-            mProperties.insert(text, propertyValue);
+            mProperties.insert(text, existingProperty);
         }
         // Have to request keys and reset because of possible reordering
         mKeys = mProperties.keys();
         reset();
         return true;
     }
-    else if (index.column() == 1) { // Edit value
+    // Edit property
+    else if (index.column() == 1) {
         const QString &key = mKeys.at(index.row());
-        mProperties.insert(key, value.toString());
+        const Property existingProperty = mProperties.value(key);
+
+        mProperties.insert(key, Property::FromQString(existingProperty.Type(),value.toString()));
         emit dataChanged(index, index);
         return true;
     }
+    // Edit type
+    else if (index.column() == 2) {
+        const QString &key = mKeys.at(index.row());
+        const Property existingProperty = mProperties.value(key);
 
+        mProperties.insert(key, Property::FromQString(value.toString(),existingProperty.toString()));
+        emit dataChanged(index, index);
+        return true;
+    }
     return false;
 }
 
@@ -115,12 +129,14 @@ void PropertiesModel::deleteProperties(const QModelIndexList &indices)
 QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const
 {
+    //Object Properties
     static QString sectionHeaders[] = {
         tr("Name"),
-        tr("Value")
+        tr("Value"),
+        tr("Type")
     };
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal
-            && section < 2) {
+            && section < 3) {
         return sectionHeaders[section];
     }
     return QVariant();
