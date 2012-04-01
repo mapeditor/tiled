@@ -58,34 +58,16 @@ public:
      */
     ~ImageLayer();
 
-    /**
-     * Computes and returns the set of tilesets used by this layer.
-     */
     QSet<Tileset*> usedTilesets() const { return QSet<Tileset*>(); }
+    bool referencesTileset(const Tileset *) const { return false; }
+    void replaceReferencesToTileset(Tileset *, Tileset *) {}
 
-    /**
-     * Returns whether this layer is referencing the given tileset.
-     */
-    bool referencesTileset(const Tileset */*tileset*/) const { return false; }
+    void offset(const QPoint &/*offset*/, const QRect &/*bounds*/,
+                bool /*wrapX*/, bool /*wrapY*/)
+    {}
 
-    /**
-     * Replaces all references to tiles from \a oldTileset with tiles from
-     * \a newTileset.
-     */
-    void replaceReferencesToTileset(Tileset */*oldTileset*/,
-                                    Tileset */*newTileset*/) {};
-    /**
-     * Offset this layer using default layer mechanic.
-     */
-    virtual void offset(const QPoint &/*offset*/, const QRect &/*bounds*/, bool /*wrapX*/, bool /*wrapY*/) {}
-
-    bool canMergeWith(Layer *other) const { return false; }
-    Layer *mergedWith(Layer *other) const { return false; };
-
-    /**
-     * Returns the color of the object group, or an invalid color if no color
-     * is set.
-     */
+    bool canMergeWith(Layer *) const { return false; }
+    Layer *mergedWith(Layer *) const { return false; }
 
     /**
      * Returns the transparent color, or an invalid color if no transparent

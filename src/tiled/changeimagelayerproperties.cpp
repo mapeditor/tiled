@@ -31,13 +31,13 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ChangeImageLayerProperties::ChangeImageLayerProperties(
-    MapDocument *mapDocument,
-    ImageLayer *imageLayer,
-    const QColor &color,
-    const QString &path)
+        MapDocument *mapDocument,
+        ImageLayer *imageLayer,
+        const QColor &color,
+        const QString &path)
     : QUndoCommand(
-        QCoreApplication::translate(
-            "Undo Commands", "Change Image Layer Properties"))
+          QCoreApplication::translate(
+              "Undo Commands", "Change Image Layer Properties"))
     , mMapDocument(mapDocument)
     , mImageLayer(imageLayer)
     , mUndoColor(imageLayer->transparentColor())

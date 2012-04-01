@@ -113,7 +113,7 @@ public:
                                const QColor &color) const = 0;
 
     /**
-     * Draws the given \a layer using the given
+     * Draws the given image \a layer using the given \a painter.
      */
     virtual void drawImageLayer(QPainter *painter,
                                 const ImageLayer *layer,

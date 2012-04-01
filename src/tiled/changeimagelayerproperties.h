@@ -23,7 +23,6 @@
 #ifndef CHANGEIMAGELAYERPROPERTIES_H
 #define CHANGEIMAGELAYERPROPERTIES_H
 
-#include <QMap>
 #include <QColor>
 #include <QString>
 #include <QUndoCommand>
@@ -42,10 +41,10 @@ public:
     /**
      * Constructs a new 'Change Image Layer Properties' command.
      *
-     * @param objectGroup     the image layer in to modify
-     * @param newProperties   the new properties to apply
-     * @param newColor        the new transparent color to apply
-     * @param newPath		 the new image source to apply
+     * @param mapDocument   the map document of the layer's map
+     * @param imageLayer    the image layer to modify
+     * @param newColor      the new transparent color to apply
+     * @param newPath       the new image source to apply
      */
     ChangeImageLayerProperties(MapDocument *mapDocument,
                                ImageLayer *imageLayer,

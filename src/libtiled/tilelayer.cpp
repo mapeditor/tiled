@@ -191,7 +191,7 @@ void TileLayer::flip(FlipDirection direction)
                 const Cell &source = cellAt(x, mHeight - y - 1);
                 dest = source;
                 dest.flippedVertically = !source.flippedVertically;
-            }	
+            }
         }
     }
 

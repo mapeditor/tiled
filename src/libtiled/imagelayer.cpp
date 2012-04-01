@@ -46,7 +46,7 @@ ImageLayer::~ImageLayer()
 void ImageLayer::resetImage()
 {
     mImage = QPixmap();
-    mImageSource = QString();
+    mImageSource.clear();
 }
 
 bool ImageLayer::loadFromImage(const QImage &image, const QString &fileName)
@@ -68,9 +68,7 @@ bool ImageLayer::loadFromImage(const QImage &image, const QString &fileName)
 
 bool ImageLayer::isEmpty() const
 {
-    if (mImage.isNull())
-        return true;
-    return false;
+    return mImage.isNull();
 }
 
 Layer *ImageLayer::clone() const

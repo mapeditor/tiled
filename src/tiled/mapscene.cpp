@@ -182,9 +182,9 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 {
     QGraphicsItem *layerItem = 0;
 
-    if (TileLayer *tl = dynamic_cast<TileLayer*>(layer)) {
+    if (TileLayer *tl = layer->asTileLayer()) {
         layerItem = new TileLayerItem(tl, mMapDocument->renderer());
-    } else if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer)) {
+    } else if (ObjectGroup *og = layer->asObjectGroup()) {
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
         foreach (MapObject *object, og->objects()) {
             MapObjectItem *item = new MapObjectItem(object, mMapDocument,
@@ -192,9 +192,9 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
             mObjectItems.insert(object, item);
         }
         layerItem = ogItem;
-	} else if (ImageLayer *il = dynamic_cast<ImageLayer*>(layer)) {
-		layerItem = new ImageLayerItem(il, mMapDocument->renderer());
-	}
+    } else if (ImageLayer *il = layer->asImageLayer()) {
+        layerItem = new ImageLayerItem(il, mMapDocument->renderer());
+    }
 
     Q_ASSERT(layerItem);
 

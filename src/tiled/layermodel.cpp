@@ -65,7 +65,7 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
         else if (layer->isImageLayer())
             return mImageLayerIcon;
         else
-            Q_ASSERT();
+            Q_ASSERT(false);
     case Qt::CheckStateRole:
         return layer->isVisible() ? Qt::Checked : Qt::Unchecked;
     case OpacityRole:

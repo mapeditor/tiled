@@ -150,21 +150,18 @@ public:
 
     /**
      * Convenience function that returns the number of layers of this map that
-     * are tile layers.
+     * match the given \a type.
      */
-    int tileLayerCount() const;
+    int layerCount(Layer::Type type) const;
 
-    /**
-     * Convenience function that returns the number of layers of this map that
-     * are object groups.
-     */
-    int objectGroupCount() const;
+    int tileLayerCount() const
+    { return layerCount(Layer::TileLayerType); }
 
-    /**
-     * Convenience function that returns the number of layers of this map that
-     * are image layers.
-     */
-    int imageLayerCount() const;
+    int objectGroupCount() const
+    { return layerCount(Layer::ObjectGroupType); }
+
+    int imageLayerCount() const
+    { return layerCount(Layer::ImageLayerType); }
 
     /**
      * Returns the layer at the specified index.

@@ -22,7 +22,6 @@
 #include "imagelayeritem.h"
 
 #include "imagelayer.h"
-#include "map.h"
 #include "maprenderer.h"
 
 #include <QPainter>
@@ -59,4 +58,3 @@ void ImageLayerItem::paint(QPainter *painter,
     // TODO: Display a border around the layer when selected
     mRenderer->drawImageLayer(painter, mLayer, option->exposedRect);
 }
-

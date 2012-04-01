@@ -22,7 +22,6 @@
 #ifndef CHANGEOBJECTGROUPPROPERTIES_H
 #define CHANGEOBJECTGROUPPROPERTIES_H
 
-#include <QMap>
 #include <QColor>
 #include <QString>
 #include <QUndoCommand>
@@ -41,8 +40,8 @@ public:
     /**
      * Constructs a new 'Change Object Layer Properties' command.
      *
+     * @param mapDocument     the map document of the object group's map
      * @param objectGroup     the object group in to modify
-     * @param newProperties   the new properties to apply
      * @param newColor        the new color to apply
      */
     ChangeObjectGroupProperties(MapDocument *mapDocument,

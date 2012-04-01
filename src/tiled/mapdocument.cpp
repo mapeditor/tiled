@@ -33,7 +33,6 @@
 #include "mapobject.h"
 #include "movelayer.h"
 #include "objectgroup.h"
-#include "imagelayer.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"

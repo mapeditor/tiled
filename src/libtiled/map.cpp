@@ -73,31 +73,13 @@ void Map::adjustDrawMargins(const QMargins &margins)
                               mDrawMargins);
 }
 
-int Map::tileLayerCount() const
+int Map::layerCount(Layer::Type type) const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)
-       if (layer->isTileLayer())
+       if (layer->type() == type)
            count++;
     return count;
-}
-
-int Map::objectGroupCount() const
-{
-    int count = 0;
-    foreach (Layer *layer, mLayers)
-        if (layer->isObjectGroup())
-           count++;
-    return count;
-}
-
-int Map::imageLayerCount() const
-{
-	int count = 0;
-	foreach (Layer *layer, mLayers)
-		if (layer->asImageLayer())
-		   count++;
-	return count;
 }
 
 void Map::addLayer(Layer *layer)

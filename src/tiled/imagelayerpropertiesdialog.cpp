@@ -114,7 +114,8 @@ void ImageLayerPropertiesDialog::accept()
         : QColor();
 
     const QString newPath = mImage->text();
-    const bool localChanges = newColor != mImageLayer->transparentColor() || newPath != mImageLayer->imageSource();
+    const bool localChanges = newColor != mImageLayer->transparentColor() ||
+            newPath != mImageLayer->imageSource();
 
     if (localChanges) {
         undoStack->beginMacro(QCoreApplication::translate(
@@ -133,4 +134,3 @@ void ImageLayerPropertiesDialog::accept()
     if (localChanges)
         undoStack->endMacro();
 }
-

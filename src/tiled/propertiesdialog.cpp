@@ -23,15 +23,12 @@
 #include "ui_propertiesdialog.h"
 
 #include "changeproperties.h"
-#include "propertiesmodel.h"
-
-#include "objectgroup.h"
-#include "objectgrouppropertiesdialog.h"
-
 #include "imagelayer.h"
 #include "imagelayerpropertiesdialog.h"
-
 #include "mapdocument.h"
+#include "objectgroup.h"
+#include "objectgrouppropertiesdialog.h"
+#include "propertiesmodel.h"
 
 #include <QShortcut>
 #include <QUndoStack>
@@ -99,16 +96,16 @@ void PropertiesDialog::showDialogFor(Layer *layer,
                                      MapDocument *mapDocument,
                                      QWidget *parent)
 {
-    ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(layer);
-	ImageLayer *imageLayer = dynamic_cast<ImageLayer*>(layer);
     PropertiesDialog *dialog;
 
-    if (objectGroup) {
+    if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         dialog = new ObjectGroupPropertiesDialog(mapDocument,
                                                  objectGroup,
                                                  parent);
-    } else if (imageLayer) {
-        dialog = new ImageLayerPropertiesDialog(mapDocument, imageLayer, parent );
+    } else if (ImageLayer *imageLayer = layer->asImageLayer()) {
+        dialog = new ImageLayerPropertiesDialog(mapDocument,
+                                                imageLayer,
+                                                parent);
     } else {
         dialog = new PropertiesDialog(tr("Layer"),
                                       layer,

@@ -267,8 +267,12 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
     // TODO
 }
 
-void StaggeredRenderer::drawImageLayer(QPainter *painter, const ImageLayer *imageLayer, const QRectF &/*exposed*/) const
+void StaggeredRenderer::drawImageLayer(QPainter *painter,
+                                       const ImageLayer *imageLayer,
+                                       const QRectF &exposed) const
 {
+    Q_UNUSED(exposed)
+
     const QPixmap &img = imageLayer->image();
     QPointF paintOrigin(-img.width() / 2, -img.height());
 

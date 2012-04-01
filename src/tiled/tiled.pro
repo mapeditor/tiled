@@ -259,4 +259,3 @@ contains(CONFIG, static) {
         qjpeg \
         qtiff
 }
-

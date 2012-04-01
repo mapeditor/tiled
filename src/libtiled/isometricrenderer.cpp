@@ -377,8 +377,12 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     painter->restore();
 }
 
-void IsometricRenderer::drawImageLayer(QPainter *painter, const ImageLayer *imageLayer, const QRectF &/*exposed*/) const
+void IsometricRenderer::drawImageLayer(QPainter *painter,
+                                       const ImageLayer *imageLayer,
+                                       const QRectF &exposed) const
 {
+    Q_UNUSED(exposed)
+
     const QPixmap &img = imageLayer->image();
     QPointF paintOrigin(-img.width() / 2, -img.height());
 

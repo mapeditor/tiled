@@ -175,8 +175,12 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect) const
     }
 }
 
-void OrthogonalRenderer::drawImageLayer(QPainter *painter, const ImageLayer *imageLayer, const QRectF &/*exposed*/) const
+void OrthogonalRenderer::drawImageLayer(QPainter *painter,
+                                        const ImageLayer *imageLayer,
+                                        const QRectF &exposed) const
 {
+    Q_UNUSED(exposed)
+
     const QPointF layerPos(imageLayer->x() * map()->tileWidth(), imageLayer->y() * map()->tileHeight());
     const QPixmap &img = imageLayer->image();
 

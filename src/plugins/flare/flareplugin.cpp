@@ -83,7 +83,6 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
         out << it.key() << "=" << it.value() << "\n";
     }
     out << "\n";
-	
 
     GidMapper gidMapper(map->tilesets());
 
