@@ -1,12 +1,16 @@
 """
 Pekka Kana 2 map support for Tiled
 2012, <samuli@tuomola.net>
+
+Notes:
+- should make PK2 classes mixins with Tiled ones
 """
-import sys, re, string
+import os, sys, re, string
 from tiled import *
-from os.path import dirname
 from lib import cpystruct
+from os.path import dirname, exists
 from struct import pack,unpack,Struct
+from base64 import b64encode, b64decode
 
 maps = []
 
@@ -22,44 +26,88 @@ class PK2(Plugin):
   @classmethod
   def read(cls, f):
     lvl = PK2MAP()
-    lay1 = 0
-    lay2 = 0
-    with open(f, 'rb') as fh:
+    with open(f) as fh:
       lvl.unpack(fh)
+      # spriteCount is +1
+      fh.seek(-len(lvl.sprites[0]), 1)
       lay1 = PK2MAPLAYER(fh)
       lay2 = PK2MAPLAYER(fh)
-      print lvl, lay1, lay2
+      lay3 = PK2MAPLAYER(fh)
+      print lvl
 
     m = Tiled.Map(Tiled.Map.Orthogonal, 0,0, 32,32)
     maps.append(m)
 
+    # -- tileset
     img = QImage()
-    img.load(dirname(f)+'/../../gfx/tiles/'+lvl.tileFile,'BMP')
+    img.load(dirname(f)+'/../../gfx/tiles/'+str(lvl.tileFile), 'BMP')
     t = Tiled.Tileset('Tiles', 32,32, 0, 0)
     t.setTransparentColor(QColor(img.color(255)))
-    t.loadFromImage(img,'script')
-    #loadTilesetFromFile(t, dirname(f)+'/../../gfx/tiles/'+lvl.tileFile)
+    t.loadFromImage(img, 'script')
 
-    maxw, maxh = PK2MAPLAYER.MAXW, PK2MAPLAYER.MAXH
+    # find common bounding box for the layers
+    bb = ['','',10,10]
+    for l in [lay1,lay2,lay3]:
+      print l
+      bb[0] = min([bb[0], l.lx.num])
+      bb[1] = min([bb[1], l.ly.num])
+      bb[2] = max([bb[2], l.width()])
+      bb[3] = max([bb[3], l.height()])
 
-    la1 = Tiled.TileLayer('Back', 0,0, maxw, maxh)
+    print 'bounds', bb
+
+    # -- background image
+    lai = Tiled.ImageLayer('Scenery', 0,0, bb[2], bb[3])
+    img = QImage()
+    img.load(dirname(f)+'/../../gfx/scenery/'+str(lvl.fieldFile), 'BMP')
+    lai.loadFromImage(img, 'script')
+
+    # -- layers
+    la1 = Tiled.TileLayer('Back', 0,0, bb[2], bb[3])
     la1.setMap(m)
-    lay1.doTiles(t, la1)
+    lay1.doTiles(t, la1, bb)
 
-    la2 = Tiled.TileLayer('Front', 0,0, maxw, maxh)
+    la2 = Tiled.TileLayer('Front', 0,0, bb[2], bb[3])
     la2.setMap(m)
-    lay2.doTiles(t, la2)
+    lay2.doTiles(t, la2, bb)
 
+    sprgfx = {}
+    sprdir = dirname(f)+'/../../sprites/'
+
+    for s in lvl.sprites:
+      # spriteCount is +1
+      if not exists(sprdir+str(s)): break
+
+      spr = PK2SPR(sprdir+str(s), m)
+
+      sprfile = find_case_insensitive_filename(sprdir, str(spr.kuvatiedosto))
+      if not sprgfx.has_key(sprfile):
+        img = QImage()
+        img.load(sprdir+sprfile, 'BMP')
+        print 'loading', sprdir+sprfile
+        sprts = Tiled.Tileset(sprfile, 32,32, 0, 0)
+        sprts.loadFromImage(img, 'script')
+        m.addTileset(sprts)
+        sprgfx[sprfile] = sprts
+
+      #sprgfx[(str(spr.kuvatiedosto]
+
+      print spr
+
+    la3 = Tiled.ObjectGroup('Sprites', 0,0, bb[2], bb[3])
+    la3.setMap(m)
+    lay3.doSprites(t, la3, bb)
+
+    m.addLayer(lai)
     m.addTileset(t)
     m.addLayer(la1)
     m.addLayer(la2)
+    m.addLayer(la3)
+
     for f in lvl.__slots__:
-      val = getattr(lvl, f)
-      if type(val) == int or type(val) == str:
-        val = re.search('[\w\._]+', str(val)).group(0)
-        m.setProperty(f, val)
-      else:
-        print 'nope',f
+      val = repr(getattr(lvl, f))
+      m.setProperty(f, b64encode(val))
+
     return m
 
   @classmethod
@@ -67,11 +115,12 @@ class PK2(Plugin):
     out = PK2MAP()
 
     for f in m.properties().keys():
-      setattr(out, f, m.property(f))
+      if not f.startswith('__'):
+        setattr(out, f, b64decode(m.property(f)))
 
-    setattr(out, "sprites", ['pla'])
+    #setattr(out, "sprites", ['pla'])
 
-    with open(fn, 'wb') as fh:
+    with open(fn, 'w') as fh:
       print >>fh, out.pack()
 
       for i in range(m.layerCount()):
@@ -93,70 +142,172 @@ class PK2(Plugin):
 
     return True
 
+def find_case_insensitive_filename(path, fn):
+  for f in os.listdir(path):
+    if f.lower() == fn.lower():
+      return f
+
+class asciilongfile(cpystruct.CpyStruct("char filename[100]")):
+  @classmethod
+  def fromraw(cls, v):
+    return re.search('[\w\.]*', v, re.U).group(0)
+  def __repr__(self):
+    return str(self)
+  def __str__(self):
+    return self.filename
+
 class asciifile(cpystruct.CpyStruct("char filename[13]")):
   @classmethod
   def fromraw(cls, v):
-    #return re.search('[^\w\.]*', v, re.U).group(0)
-    return ''.join(re.findall('[\w\.]*', v, re.U))
-  def __repr__(self): return self.filename
+    return re.search('[\w\.]*', v, re.U).group(0)
+  def __repr__(self):
+    return str(self)
+  def __str__(self):
+    return self.filename
 
 class asciitxt(cpystruct.CpyStruct("char txt[40]")):
   @classmethod
   def fromraw(cls, v):
-    return ''.join(re.findall('[\w\.]', v, re.U))
+    return re.search('[\w\. ]', v, re.U).group(0)
 
-class asciinum(cpystruct.CpyStruct("char numeric[8]")):
+class asciinum(cpystruct.CpyStruct("char num[8]")):
   @classmethod
   def fromraw(cls, v):
+    #v = ''.join(re.findall('[0-9]', v))
     v = re.sub('[^0-9]','',v)
-    return 0 if v is '' else int(v)
+    return 0 if not v.strip().isdigit() else int(v)
 
 class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
   MAXW = 256
   MAXH = 224
   MAXSZ = MAXW*MAXH
+
+  def width(self):
+    return self.w.num + 1
+  def height(self):
+    return self.h.num + 1
+
   def __init__(self, dat):
     # should make cpystruct support this usecase better
     super(self.__class__, self).__init__(dat)
-
-    self.w += 1
-    self.h += 1
 
     #print str(cpystruct.peek(dat, 128))
 
     self.layer = bytearray(self.MAXSZ)
     for i in range(len(self.layer)): self.layer[i] = 0xff
 
-    for y in range(self.ly, self.ly+self.h):
-      for x in range(self.lx, self.lx+self.w):
+    for y in range(self.ly.num, self.ly.num+self.height()):
+      for x in range(self.lx.num, self.lx.num+self.width()):
         self.layer[x+y*self.MAXW] = dat.read(1)
 
-  def findsize(self):
-    "find layer size by checking for used tiles"
-    width = 0
-    height = 0
+  def findBounds(self):
+    "find bounding box for coords that have tiles"
+    mx,my,mw,mh = None,None,10,10
 
-    for y in range(self.MAXH):
-      for x in range(self.MAXW):
-        if self.layer[self.lx + x + (self.ly + y) * self.w] != 255:
-          if x > width: width = x
-          if y > height: height = y
+    for y in range(self.ly, self.ly+self.height()):
+      for x in range(self.lx, self.lx+self.width()):
+        if self.layer[x + y * self.MAXW] != 255:
+          if not my: my = y
+          if not mx or x < mx: mx = x
+          if x > mw: mw = x
+          if y > mh: mh = y
 
-    return width, height
+    if not mx: mx = 0
+    if not my: my = 0
+    return mx, my, mw, mh
 
-  def doTiles(self, ts, la):
-    for y in range(self.h):
-      for x in range(self.w):
-        tile = self.layer[self.lx + x + (self.ly+y) * self.MAXW]
+  def doSprites(self, ts, la, bb):
+    for y in range(self.height()):
+      for x in range(self.width()):
+        sprite = self.layer[self.lx.num + x + (self.ly.num + y) * self.MAXW]
+        if sprite != 255:
+          rx = self.lx.num + x - bb[0]
+          ry = self.ly.num + y - bb[1]
+
+  def doTiles(self, ts, la, bb):
+    for y in range(self.height()):
+      for x in range(self.width()):
+        tile = self.layer[self.lx.num + x + (self.ly.num + y) * self.MAXW]
         if tile != 255:
-          if tile == 149: print 'start @',x,y
-          if tile == 150: print 'end @',x,y
+          rx = self.lx.num + x - bb[0]
+          ry = self.ly.num + y - bb[1]
+          if tile == 149: print 'start @',rx,ry
+          if tile == 150: print 'end @',rx,ry
           ti = ts.tileAt(tile)
           if ti != None:
             # app should check that coords are within layer
-            la.setCell(self.lx+x, self.ly+y, Tiled.Cell(ti))
+            #print rx,ry,self.ly,y
+            la.setCell(rx, ry, Tiled.Cell(ti))
 
-class PK2SPR(cpystruct.CpyStruct("BYTE dat[13];")): pass
+class PK2SPR_ANIM(cpystruct.CpyStruct("""
+  uchar   seq[10];
+  uchar   frames;
+  bool    loop;
+""")):
+  def __repr__(self):
+    return str(self)
+
+class PK2SPR(cpystruct.CpyStruct("""
+asciinum  tyyppi;
+asciilongfile  kuvatiedosto;
+asciilongfile  aanitiedostot[7];
+int     aanet[7];
+uchar   frameja;
+PK2SPR_ANIM animaatiot[20];
+uchar   animaatioita;
+uchar   frame_rate;
+int     kuva_x;
+int     kuva_y;
+int     kuva_frame_leveys;
+int     kuva_frame_korkeus;
+int     kuva_frame_vali;
+char    nimi[30];
+int     width, height;
+double  paino;
+bool    vihollinen;
+int     energia;
+int     vahinko;
+uchar   vahinko_tyyppi;
+uchar   suojaus;
+int     pisteet;
+int     AI[10];
+uchar   max_hyppy;
+double  max_nopeus;
+int     latausaika;
+uchar   vari;
+bool    este;
+int     tuhoutuminen;
+bool    avain;
+bool    tarisee;
+uchar   bonusten_lkm;
+int     hyokkays1_aika;
+int     hyokkays2_aika;
+int     pallarx_kerroin;
+char    muutos_sprite[100];
+char    bonus_sprite[100];
+char    ammus1_sprite[100];
+char    ammus2_sprite[100];
+
+bool    tiletarkistus;
+DWORD   aani_frq;
+bool    random_frq;
+
+bool    este_ylos;
+bool    este_alas;
+bool    este_oikealle;
+bool    este_vasemmalle;
+
+uchar   lapinakyvyys;
+bool    hehkuu;
+int     tulitauko;
+bool    liitokyky;
+bool    boss;
+bool    bonus_aina;
+bool    osaa_uida;
+""")):
+  def __init__(self, f, m):
+    with open(f) as fh:
+      super(self.__class__, self).__init__(fh)
 
 class PK2MAP(cpystruct.CpyStruct("""
   char ver[4];
