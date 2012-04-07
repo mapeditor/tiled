@@ -86,6 +86,7 @@ mod.add_include('"map.h"')
 mod.add_include('"layer.h"')
 mod.add_include('"tile.h"')
 mod.add_include('"mapobject.h"')
+mod.add_include('"imagelayer.h"')
 mod.add_include('"tilelayer.h"')
 mod.add_include('"objectgroup.h"')
 mod.add_include('"tileset.h"')
@@ -240,12 +241,13 @@ cls_tilelayer.add_method('referencesTileset', 'bool',
   [param('Tileset*','ts',transfer_ownership=False)])
 cls_tilelayer.add_method('isEmpty', 'bool', [])
 
-cls_map.add_method('addLayer', None,
-  [param('TileLayer*','l',transfer_ownership=True)])
-
-cls_map.add_method('layerAt',
-  retval('Tiled::Layer*',caller_owns_return=False,
-          reference_existing_object=True), [('int','idx')])
+cls_imagelayer = tiled.add_class('ImageLayer')
+cls_imagelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
+  ('int','w'), ('int','h')])
+cls_imagelayer.add_method('loadFromImage', 'bool',
+  [('const QImage&','img'),('QString','file')])
+cls_imagelayer.add_method('image', retval('const QPixmap&'), [])
+cls_imagelayer.add_method('setImage', None, [('const QPixmap&','image')])
 
 cls_object = tiled.add_class('Object')
 cls_object.add_method('property', 'QString', [('QString','prop')])
@@ -293,6 +295,17 @@ cls_objectgroup.add_method('removeObject', 'int',
 cls_objectgroup.add_method('referencesTileset', 'bool',
   [param('Tileset*','ts',transfer_ownership=False)])
 
+cls_map.add_method('addLayer', None,
+  [param('ImageLayer*','l',transfer_ownership=True)])
+cls_map.add_method('addLayer', None,
+  [param('TileLayer*','l',transfer_ownership=True)])
+cls_map.add_method('addLayer', None,
+  [param('ObjectGroup*','l',transfer_ownership=True)])
+
+cls_map.add_method('layerAt',
+  retval('Tiled::Layer*',caller_owns_return=False,
+          reference_existing_object=True), [('int','idx')])
+
 cls_layer.add_method('name', 'QString', [])
 cls_layer.add_method('setName', None, [('QString','name')])
 cls_layer.add_method('opacity', 'float', [])
@@ -316,11 +329,17 @@ cls_layer.add_method('asObjectGroup',
 
 
 mod.body.writeln("""
+bool isImageLayerAt(Tiled::Map *map, int idx) {
+  return (dynamic_cast<const Tiled::ImageLayer*>(map->layerAt(idx)) != 0);
+}
 bool isTileLayerAt(Tiled::Map *map, int idx) {
   return (dynamic_cast<const Tiled::TileLayer*>(map->layerAt(idx)) != 0);
 }
 bool isObjectGroupAt(Tiled::Map *map, int idx) {
   return (dynamic_cast<const Tiled::ObjectGroup*>(map->layerAt(idx)) != 0);
+}
+Tiled::ImageLayer* imageLayerAt(Tiled::Map *map, int idx) {
+  return static_cast<Tiled::ImageLayer*>(map->layerAt(idx));
 }
 Tiled::TileLayer* tileLayerAt(Tiled::Map *map, int idx) {
   return static_cast<Tiled::TileLayer*>(map->layerAt(idx));
