@@ -52,13 +52,28 @@ class CpySkeleton(struct.Struct):
   def __init__(self, dat=None, **kws):
     """ Takes keyword arguments to initialize attributes """
     struct.Struct.__init__(self, getattr(self, '__fstr'))
+
+    self.validate()
+
     if len(kws) > 0:
       for k in kws:
         setattr(self, k, kws[k])
+
     if dat != None:
       self.unpack(dat)
 
+  def validate(self):
+    "check that the extending classes specify valid struct"
+
+    for i,(f,n,a,v) in enumerate(self.formats):
+      if a != '' and not a.isdigit() and i < len(self.formats):
+        for b in self.formats[i:]:
+          if a=='' or b[2].isdigit():
+            raise Exception('Varlength arrays only '+
+              'supported at end of struct: %s[%s]' % (n,a))
+
   def pack(self):
+    "convert member values to binary"
     ret = ''
 
     for i,(f,n,a,v) in enumerate(self.formats):
@@ -83,94 +98,108 @@ class CpySkeleton(struct.Struct):
         # temp hack because of qmap<str,str> limitations in tiled map props
         sz = struct.calcsize(fstr)
         m = re.match('<[0-9]*[sc]',fstr)
-        if a > 0 and (m is None or m.group(0) != fstr):
-          print 'stru arr',a,fstr
+        if a != '' and a > 0 and (m is None or m.group(0) != fstr):
           for j in range(len(v)): #a):
             v2 = f(v[j].ljust(sz,'\0'))
             ret += v2.pack()
         elif type(v) == list:
-          print n,a,v
+          print 'pack list' # todo
         else:
-          v = f(v.ljust(sz,'\0'))
-          ret += f.pack(v)
+          #v = f(v.ljust(sz,'\0'))
+          ret += struct.pack(getattr(f, '__fstr'), v)
       else:
-        print f,v
-        if a > 0:
-          for j in range(len(v)):
-            ret += struct.pack(f, int(v[j]) if v[j].isdigit() else v)
+        if type(v) is list:
+          for x in v:
+            ret += struct.pack(f, x)
         else:
           # just an ordinary var
-          ret += struct.pack(f, int(v) if v.isdigit() else v)
+          ret += struct.pack(f, v)
 
     return ret
 
   def unpack(self, dat):
-    """ buf can be a string, file, mmap or StringIO instance
-    atm returns read binary for testing purposes """
+    """
+    Takes a string, file, mmap or StringIO instance
+    """
+    rawpos = 0  # position in binary for custom types
+    pos = 0  # in case substruct handles multiple values
+
     if dat.__class__.__name__ in ('file','mmap', 'StringIO'):
+      # this doesn't cover varlen members, for that dat is read directly
       buf = dat.read(len(self))
     else:
       buf = dat
 
-    unpacked = list(struct.Struct.unpack(self, buf))
-    rawpos = 0  # position in binary
-    pos = 0  # if substruct handles multiple values
+    unpacked = None
 
-    for i,(f,n,a,v) in enumerate(self.formats):
-      if a != '' and not a.isdigit() and i < len(self.formats):
-        for b in self.formats[i:]:
-          if a=='' or b[2].isdigit():
-            raise Exception('Varlength arrays only '+
-              'supported at end of struct: %s[%s]' % (n,a))
+    if hasattr(self, 'fromraw'):
+      sz = struct.calcsize(getattr(self, '__fstr'))
+      unpacked = self.fromraw(buf[:sz])
+
+    if unpacked is None:
+      unpacked = list(struct.Struct.unpack(self, buf))
+
+    if hasattr(self, 'fromval'):
+      unpacked = self.fromval(unpacked)
+
+    if not hasattr(unpacked, '__iter__'):
+      unpacked = [unpacked]
+
+    #if len(self.formats) != len(unpacked):
+    #  print unpacked
+    #  raise LookupError('Unmatched number of unpacked variables: %i != %i'
+    #    % (len(self.formats),len(unpacked)))
 
     for i,(f,n,a,v) in enumerate(self.formats):
       if a != '' and not a.isdigit(): break
 
-      arlen = int(a) if a.isdigit() and fdict[f] != 'c' else 0
+      arlen = 0
+      if a.isdigit() and (type(f) is type or fdict[f] != 'c'):
+        arlen = int(a)
 
-      if arlen > 0:
-        # set an array for number of elements requested
-        v = unpacked[pos:pos+arlen]
-      else:
-        v = unpacked[pos]
+      v = unpacked[pos]
 
       if type(f) == type(struct.Struct):
-        if hasattr(f, 'fromval'):
-          if arlen > 0:
-            # set an array for number of elements requested
-            setattr(self, n, [f.fromval(e) for e in v])
-          else:
-            # only suitable for single value
-            setattr(self, n, v)
-        elif hasattr(f, 'fromraw'): # for mixing endianness etc
-          sz = struct.calcsize(getattr(f, '__fstr'))
-          setattr(self, n, f.fromraw(buf[rawpos:rawpos+sz]))
+        sz = struct.calcsize(getattr(f, '__fstr'))
+        if arlen > 0:
+          arr = []
+          for i in range(arlen):
+            arr.append( f(buf[rawpos:rawpos+sz]) )
+            rawpos += sz
+            pos += len(f.formats)
+          setattr(self, n, arr)
         else:
-          raise Exception('Define either fromval or fromraw classmethod')
-        pos += len(f.formats)
+          setattr(self, n, f(buf[rawpos:rawpos+sz]))
+          rawpos += sz
+          pos += len(f.formats)
 
       else:
-        pos += 1
-        setattr(self, n, v)
+        if arlen > 0:
+          setattr(self, n, unpacked[pos:pos+arlen])
+          pos += arlen
+        else:
+          setattr(self, n, v)
+          pos += 1
 
-      rawpos += getattr(self, "__fsz")[i]
+        rawpos += getattr(self, "__fsz")[i]
 
     # variable-length members
     for f,n,a,v in self.formats:
       if a != '' and not a.isdigit():
         c = getattr(self, a)
+
+        # one level of custom varlen types should be enough for everyone
+        if isinstance(c, struct.Struct):
+          # would it be better to delegate this to the custom class?
+          c = getattr(c, c.__slots__[0])
+
+        #dat.seek(rawpos)
         if type(f) == type(struct.Struct):
           # custom types
           sz = struct.calcsize(getattr(f, '__fstr'))
           arr = []
           for i in range(c):
-            # unless constructor has been overridden to do something
-            # else, this call comes back to this function, should check
-            # for looping
-            dat.seek(rawpos)
-            da = dat.read(sz)
-            #print '@',rawpos,sz, str(da)
-            arr.append( f(da) )
+            arr.append( f(dat.read(sz)) )
             rawpos += sz
           setattr(self, n, arr)
         else:
@@ -178,6 +207,8 @@ class CpySkeleton(struct.Struct):
           f = str(c)+'s' if fdict[f]=='c' else str(c)+fdict[f]
           sz = struct.calcsize(f)
           val = struct.unpack(f, dat.read(sz))
+          #if len(val) == 1: val = val[0]
+          rawpos += sz
           setattr(self, n, val)
 
     return buf
@@ -233,7 +264,11 @@ def parseformat(fmt, callscope=None):
       raise Exception('Unknown format at '+str(fmt[i]))
 
     if a.isdigit():
-      fs = a + fs
+      # in case it's e.g. custom type of a string
+      if fs[0].isdigit():
+        fs *= int(a)
+      else:
+        fs = a + fs
     #elif a != '':
     #  fstr += '{'+a+'}'
 

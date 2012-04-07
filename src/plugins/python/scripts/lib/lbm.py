@@ -42,8 +42,7 @@ class IFFchunk(CpyStruct(":4s id; :I len;", True)):
 class BMHDsize(CpyStruct("short w, h", True)):
   @classmethod
   def fromraw(cls, v):
-    w,h = struct.unpack(getattr(cls,'__fstr'), v)
-    return cls(w=w,h=h)
+    return struct.unpack(getattr(cls,'__fstr'), v)
 
 class BMHD(CpyStruct("""
   BMHDsize sz; short x, y;
