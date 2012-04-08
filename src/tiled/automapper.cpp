@@ -857,12 +857,21 @@ void AutoMapper::copyTileRegion(TileLayer *srcLayer, int srcX, int srcY,
                                 int width, int height,
                                 TileLayer *dstLayer, int dstX, int dstY)
 {
-    for (int x = 0; x < width; ++x) {
-        for (int y = 0; y < height; ++y) {
-            const Cell &cell = srcLayer->cellAt(srcX + x, srcY + y);
+    const int startX = qMax(dstX, 0);
+    const int startY = qMax(dstY, 0);
+
+    const int endX = qMin(dstX + width, dstLayer->width());
+    const int endY = qMin(dstY + height, dstLayer->height());
+
+    const int offsetX = srcX - dstX;
+    const int offsetY = srcY - dstY;
+
+    for (int x = startX; x < endX; ++x) {
+        for (int y = startY; y < endY; ++y) {
+            const Cell &cell = srcLayer->cellAt(x + offsetX, y + offsetY);
             if (!cell.isEmpty()) {
                 // this is without graphics update, it's done afterwards for all
-                dstLayer->setCell(dstX + x, dstY + y, cell);
+                dstLayer->setCell(x, y, cell);
             }
         }
     }
