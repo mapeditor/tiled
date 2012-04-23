@@ -21,15 +21,15 @@ class PK2(Plugin):
 
   @classmethod
   def supportsFile(cls, f):
-    return open(f).read(4) == '1.3\0'
+    return open(f, 'rb').read(4) == '1.3\0'
 
   @classmethod
   def read(cls, f):
     lvl = PK2MAP()
-    with open(f) as fh:
+    with open(f, 'rb') as fh:
       lvl.unpack(fh)
       # spriteCount is +1
-      fh.seek(-len(lvl.sprites[0]), 1)
+      fh.seek(-len(lvl.spriteFiles[0]), 1)
       lay1 = PK2MAPLAYER(fh)
       lay2 = PK2MAPLAYER(fh)
       lay3 = PK2MAPLAYER(fh)
@@ -71,35 +71,39 @@ class PK2(Plugin):
     la2.setMap(m)
     lay2.doTiles(t, la2, bb)
 
-    sprgfx = {}
     sprdir = dirname(f)+'/../../sprites/'
+    lay3.sprites = [0]
+    lay3.spriteGfx = {}
 
-    for s in lvl.sprites:
+    for s in lvl.spriteFiles:
       # spriteCount is +1
       if not exists(sprdir+str(s)): break
 
       spr = PK2SPR(sprdir+str(s), m)
 
-      sprfile = find_case_insensitive_filename(sprdir, str(spr.kuvatiedosto))
-      if not sprgfx.has_key(sprfile):
+      if not lay3.spriteGfx.has_key(str(spr.kuvatiedosto)):
+        sprfile = find_case_insensitive_filename(sprdir, str(spr.kuvatiedosto))
         img = QImage()
         img.load(sprdir+sprfile, 'BMP')
         print 'loading', sprdir+sprfile
         sprts = Tiled.Tileset(sprfile, 32,32, 0, 0)
+        sprts.setTransparentColor(QColor(img.color(255)))
         sprts.loadFromImage(img, 'script')
-        m.addTileset(sprts)
-        sprgfx[sprfile] = sprts
+        lay3.spriteGfx[str(spr.kuvatiedosto)] = sprts
 
       #sprgfx[(str(spr.kuvatiedosto]
+      lay3.sprites.append(spr)
 
-      print spr
+      #print spr
 
     la3 = Tiled.ObjectGroup('Sprites', 0,0, bb[2], bb[3])
     la3.setMap(m)
-    lay3.doSprites(t, la3, bb)
+    lay3.doSprites(la3, bb)
 
     m.addLayer(lai)
     m.addTileset(t)
+    for sprts in lay3.spriteGfx.values():
+      m.addTileset(sprts)
     m.addLayer(la1)
     m.addLayer(la2)
     m.addLayer(la3)
@@ -120,7 +124,7 @@ class PK2(Plugin):
 
     #setattr(out, "sprites", ['pla'])
 
-    with open(fn, 'w') as fh:
+    with open(fn, 'wb') as fh:
       print >>fh, out.pack()
 
       for i in range(m.layerCount()):
@@ -216,13 +220,21 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
     if not my: my = 0
     return mx, my, mw, mh
 
-  def doSprites(self, ts, la, bb):
+  def doSprites(self, la, bb):
     for y in range(self.height()):
       for x in range(self.width()):
         sprite = self.layer[self.lx.num + x + (self.ly.num + y) * self.MAXW]
         if sprite != 255:
+          #if sprite > len(self.sprites):
+          #  print 'invalid spr',sprite
+          #  continue
           rx = self.lx.num + x - bb[0]
-          ry = self.ly.num + y - bb[1]
+          ry = self.ly.num + y - bb[1] + 1
+          spr = self.sprites[sprite]
+          obj = Tiled.MapObject(str(spr.kuvatiedosto), '', QPointF(rx, ry), QSizeF(1, 1)) #spr.width, spr.height))
+          # 0 should point to the actual sprite but how?
+          obj.setTile(self.spriteGfx[str(spr.kuvatiedosto)].tileAt(0))
+          la.addObject(obj)
 
   def doTiles(self, ts, la, bb):
     for y in range(self.height()):
@@ -234,10 +246,12 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
           if tile == 149: print 'start @',rx,ry
           if tile == 150: print 'end @',rx,ry
           ti = ts.tileAt(tile)
-          if ti != None:
+          if ti != None and rx < bb[2] and ry < bb[3]:
             # app should check that coords are within layer
             #print rx,ry,self.ly,y
             la.setCell(rx, ry, Tiled.Cell(ti))
+          else:
+            print 'invalid',rx,ry
 
 class PK2SPR_ANIM(cpystruct.CpyStruct("""
   uchar   seq[10];
@@ -306,7 +320,7 @@ bool    bonus_aina;
 bool    osaa_uida;
 """)):
   def __init__(self, f, m):
-    with open(f) as fh:
+    with open(f, 'rb') as fh:
       super(self.__class__, self).__init__(fh)
 
 class PK2MAP(cpystruct.CpyStruct("""
@@ -318,6 +332,6 @@ class PK2MAP(cpystruct.CpyStruct("""
   asciinum playTime, v1, background, plrSpr;
   asciinum lvlX, lvlY, icon;
   asciinum spriteCount;
-  asciifile sprites[spriteCount];
+  asciifile spriteFiles[spriteCount];
 """)): pass
 
