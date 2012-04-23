@@ -2971,6 +2971,9 @@ _wrap_PyTiledMapObject_setTile(PyTiledMapObject *self, PyObject *args, PyObject 
     }
     t_ptr = (t ? t->obj : NULL);
     self->obj->setTile(t_ptr);
+    if (t) {
+        t->obj = NULL;
+    }
     Py_INCREF(Py_None);
     py_retval = Py_None;
     return py_retval;
@@ -3174,6 +3177,9 @@ _wrap_PyTiledObjectGroup_addObject(PyTiledObjectGroup *self, PyObject *args, PyO
     }
     mo_ptr = (mo ? mo->obj : NULL);
     self->obj->addObject(mo_ptr);
+    if (mo) {
+        mo->obj = NULL;
+    }
     Py_INCREF(Py_None);
     py_retval = Py_None;
     return py_retval;
@@ -3609,10 +3615,17 @@ static PyMethodDef tiled_functions[] = {
 
 
 static int
-_wrap_PyQPointF__tp_init(void)
+_wrap_PyQPointF__tp_init(PyQPointF *self, PyObject *args, PyObject *kwargs)
 {
-    PyErr_SetString(PyExc_TypeError, "class 'QPointF' cannot be constructed ()");
-    return -1;
+    float x;
+    float y;
+    const char *keywords[] = {"x", "y", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ff", (char **) keywords, &x, &y)) {
+        return -1;
+    }
+    self->obj = new QPointF(x, y);
+    return 0;
 }
 
 
@@ -3780,10 +3793,17 @@ PyTypeObject PyQPointF_Type = {
 
 
 static int
-_wrap_PyQSizeF__tp_init(void)
+_wrap_PyQSizeF__tp_init(PyQSizeF *self, PyObject *args, PyObject *kwargs)
 {
-    PyErr_SetString(PyExc_TypeError, "class 'QSizeF' cannot be constructed ()");
-    return -1;
+    float w;
+    float h;
+    const char *keywords[] = {"w", "h", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ff", (char **) keywords, &w, &h)) {
+        return -1;
+    }
+    self->obj = new QSizeF(w, h);
+    return 0;
 }
 
 
@@ -4692,6 +4712,18 @@ _wrap_PyQPixmap_convertFromImage(PyQPixmap *self, PyObject *args, PyObject *kwar
 
 
 PyObject *
+_wrap_PyQPixmap_width(PyQPixmap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->width();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyQPixmap_toImage(PyQPixmap *self)
 {
     PyObject *py_retval;
@@ -4722,10 +4754,24 @@ _wrap_PyQPixmap_fromImage(PyQPixmap *self, PyObject *args, PyObject *kwargs)
     return py_retval;
 }
 
+
+PyObject *
+_wrap_PyQPixmap_height(PyQPixmap *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->height();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
 static PyMethodDef PyQPixmap_methods[] = {
     {(char *) "convertFromImage", (PyCFunction) _wrap_PyQPixmap_convertFromImage, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "width", (PyCFunction) _wrap_PyQPixmap_width, METH_NOARGS, NULL },
     {(char *) "toImage", (PyCFunction) _wrap_PyQPixmap_toImage, METH_NOARGS, NULL },
     {(char *) "fromImage", (PyCFunction) _wrap_PyQPixmap_fromImage, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "height", (PyCFunction) _wrap_PyQPixmap_height, METH_NOARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
 

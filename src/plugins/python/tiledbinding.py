@@ -96,12 +96,14 @@ tiled = mod.add_cpp_namespace('Tiled')
 
 ## QT classes, could just as well use PyQT but so far this is such a small subset..
 cls_qpointf = mod.add_class('QPointF')
+cls_qpointf.add_constructor([('float','x'),('float','y')])
 cls_qpointf.add_method('x', 'int', [])
 cls_qpointf.add_method('setX', None, [('int','x')])
 cls_qpointf.add_method('y', 'int', [])
 cls_qpointf.add_method('setY', None, [('int','y')])
 
 cls_sizef = mod.add_class('QSizeF')
+cls_sizef.add_constructor([('float','w'),('float','h')])
 cls_sizef.add_method('width', 'int', [])
 cls_sizef.add_method('setWidth', None, [('int','w')])
 cls_sizef.add_method('height', 'int', [])
@@ -143,6 +145,8 @@ cls_qpixmap = mod.add_class('QPixmap')
 cls_qpixmap.add_method('toImage', retval('const QImage&'), [])
 cls_qpixmap.add_method('fromImage', None, [('const QImage&','image')])
 cls_qpixmap.add_method('convertFromImage', None, [('const QImage&','image')])
+cls_qpixmap.add_method('width', 'int', [])
+cls_qpixmap.add_method('height', 'int', [])
 ## /QT
 
 cls_tile = tiled.add_class('Tile')
@@ -275,7 +279,7 @@ cls_mapobject.add_method('setShape', None, [param('Shape','s')])
 cls_mapobject.add_method('shape', 'Shape', [])
 #cls_mapobject.add_method('bounds', 'QRectF', [])
 cls_mapobject.add_method('setTile', None,
-  [param('Tiled::Tile*','t',transfer_ownership=False)])
+  [param('Tiled::Tile*','t',transfer_ownership=True)])
 cls_mapobject.add_method('tile',
   retval('Tiled::Tile*',caller_owns_return=False), [])
 #cls_mapobject.add_method('setObjectGroup', 'ObjectGroup*', [])
@@ -285,7 +289,7 @@ cls_objectgroup = tiled.add_class('ObjectGroup', cls_layer)
 cls_objectgroup.add_constructor([('QString','name'),
   ('int','x'), ('int','y'), ('int','w'), ('int','h')])
 cls_objectgroup.add_method('addObject', None,
-  [param('MapObject*','mo',transfer_ownership=False)])
+  [param('MapObject*','mo',transfer_ownership=True)])
 cls_objectgroup.add_method('insertObject', None,
   [('int','idx'),param('MapObject*','mo',transfer_ownership=False)])
 cls_objectgroup.add_method('removeObject', 'int',
