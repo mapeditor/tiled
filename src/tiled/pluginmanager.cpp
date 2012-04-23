@@ -51,6 +51,9 @@ PluginManager *PluginManager::instance()
 
 void PluginManager::deleteInstance()
 {
+    while(!mInstance->mPlugins.empty())
+        delete mInstance->mPlugins.takeFirst().instance;
+
     delete mInstance;
     mInstance = 0;
 }
