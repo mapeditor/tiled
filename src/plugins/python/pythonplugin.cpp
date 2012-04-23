@@ -34,11 +34,14 @@
 #include <QMap>
 #include <QTextStream>
 #include <QDirIterator>
-#if defined WIN32 || defined WIN64
+
+#ifdef MS_WINDOWS
+#define _WIN32_WINNT 0x0500 // for GetConsoleWindow
+#include <windows.h>
 #include <tchar.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <io.h>
-#include <windows.h>
 #endif
 
 using namespace Python;
@@ -50,35 +53,55 @@ QTextStream cout(stdout, QIODevice::WriteOnly);
 QTextStream cerr(stderr, QIODevice::WriteOnly);
 PyObject *pTiledCls;
 
-void handleError() {
-  if(PyErr_Occurred() != NULL) {
-    PyErr_Print();
-    PyErr_Clear();
-  }
+PythonPlugin::~PythonPlugin() {
+  #ifdef MS_WINDOWS
+  FreeConsole();
+  #endif
+
+  Py_Finalize();
 }
 
 PythonPlugin::PythonPlugin()
 {
-  #if defined WIN32 || defined WIN64
-    AllocConsole();
-
-    *stdout = *_tfdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_OUTPUT_HANDLE), _O_WRONLY), "a");
-    *stderr = *_tfdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_ERROR_HANDLE), _O_WRONLY), "a");
-    *stdin = *_tfdopen(_open_osfhandle((intptr_t) GetStdHandle(STD_INPUT_HANDLE), _O_WRONLY),"r");
-  #endif
-
   if(!Py_IsInitialized()) {
     Py_Initialize();
     inittiled();
+
+#ifdef MS_WINDOWS
+    AllocConsole();
+    SetConsoleTitle(L"Tiled Python Debug Console");
+
+    // disable close button
+    HWND hConsole = GetConsoleWindow();
+    HMENU hm = (HMENU)GetSystemMenu(hConsole,false);
+    DeleteMenu(hm, SC_CLOSE, MF_BYCOMMAND);
+    // disable ctrl-c
+    SetConsoleCtrlHandler(NULL, TRUE);
+
+    // more scroll buffer
+    CONSOLE_SCREEN_BUFFER_INFO coninfo;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+    coninfo.dwSize.Y = 9999;
+    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+
+    freopen("CON", "wt", stdout);
+    freopen("CON", "wt", stderr);
+    freopen("CON", "rt", stdin);
+
+    // oddly CONERR$ won't point to the console
+    PyRun_SimpleString("import sys\n"
+                       "sys.stdout = open(\"CONOUT$\", \"w\", 0)\n"
+                       "sys.stderr = sys.stdout\n");
+#endif
 
     // get reference to base class to find it's extensions later on
     PyObject *pmod = PyImport_ImportModule("tiled");
     pTiledCls = PyObject_GetAttrString(pmod, "Plugin");
     if(!pTiledCls || !PyCallable_Check(pTiledCls)) {
-      cerr << "Can't find tiled.Plugin baseclass" << endl << flush;
+      cerr << "Can't find tiled.Plugin baseclass" << endl;
       Py_XDECREF(pTiledCls);
       handleError();
-      //exception?
+      return;
     }
     Py_XDECREF(pmod);
 
@@ -92,10 +115,20 @@ PythonPlugin::PythonPlugin()
 }
 
 /**
- * Finds the first python class that extends tiled.Plugin in
- * the current execution frame
+ * Call whenever there might be an error (if error state is not
+ * cleared it leaks to next PyErr_Occurred check and reports error
+ * in wrong place causing confusion)
  */
-PyObject *findPluginSubclass(PyObject *pmod) {
+void PythonPlugin::handleError() const {
+  if(PyErr_Occurred() != NULL) {
+    PyErr_Print();
+  }
+}
+
+/**
+ * Finds the first python class that extends tiled.Plugin
+ */
+PyObject *PythonPlugin::findPluginSubclass(PyObject *pmod) {
   int i;
   PyObject *pdir = PyObject_Dir(pmod);
   for(i=0; i<PyList_Size(pdir); i++) {
@@ -122,16 +155,20 @@ PyObject *findPluginSubclass(PyObject *pmod) {
 /**
  * Gets a function from python class and does some validation
  */
-PyObject *checkFunction(PyObject *pcls, const char *fun) {
+PyObject *PythonPlugin::checkFunction(PyObject *pcls, const char *fun) const {
   PyObject *pfun = PyObject_GetAttrString(pcls, fun);
   if(!pfun || !PyCallable_Check(pfun)) {
-    cerr << "No such function defined: " << fun << endl << flush;
+    cerr << "No such function defined: " << fun << endl;
     return NULL;
   }
   return pfun;
 }
 
-bool checkFileSupport(PyObject* cls, char *file) {
+/**
+ * Calls supportsFile python function in the given class with
+ * a filename to see if the class is willing to handle it
+ */
+bool PythonPlugin::checkFileSupport(PyObject* cls, char *file) const {
   PyObject *psupports = checkFunction(cls, "supportsFile");
   if (!psupports) return false;
 
@@ -164,20 +201,20 @@ void PythonPlugin::reloadModules() {
     PyObject *pmod;
 
     if (knownExtModules.contains(name)) {
-      cout << "-- Reloading " << name << endl << flush;
+      cout << "-- Reloading " << name << endl;
       Py_XDECREF(knownExtClasses[name]);
       knownExtClasses.remove(name);
 
       pmod = PyImport_ReloadModule(knownExtModules[name]);
 
     } else {
-      cout << "-- Loading " << name << endl << flush;
+      cout << "-- Loading " << name << endl;
       pmod = PyImport_ImportModule(name.toUtf8().data());
       knownExtModules[name] = pmod;
     }
 
     if(pmod == NULL) {
-      cerr << "** Parse exception **" << endl << flush;
+      cerr << "** Parse exception **" << endl;
       PyErr_Print();
       PyErr_Clear();
       Py_XDECREF(knownExtModules[name]);
@@ -187,7 +224,7 @@ void PythonPlugin::reloadModules() {
 
     PyObject *pcls = findPluginSubclass(pmod);
     if(!pcls || !PyCallable_Check(pcls)) {
-      cerr << "Extension of tiled.Plugin not defined in script: " << name << endl << flush;
+      cerr << "Extension of tiled.Plugin not defined in script: " << name << endl;
       Py_XDECREF(knownExtModules[name]);
       knownExtModules.remove(name);
       continue;
@@ -196,6 +233,9 @@ void PythonPlugin::reloadModules() {
   }
 }
 
+/**
+ * Implements Tiled::MapReaderInterface
+ */
 Tiled::Map *PythonPlugin::read(const QString &fileName)
 {
   reloadModules();
@@ -204,14 +244,14 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
   while (it.hasNext()) {
     it.next();
     if(!checkFileSupport(it.value(), fileName.toUtf8().data())) continue;
-    cout << "-- " << it.key() << " supports " << fileName << endl << flush;
+    cout << "-- " << it.key() << " supports " << fileName << endl;
 
     PyObject *pread = checkFunction(it.value(), "read");
     PyObject *pinst = PyEval_CallFunction(pread, "(s)", fileName.toUtf8().data());
 
     Tiled::Map *ret = new Tiled::Map(Tiled::Map::Orthogonal, 10,10, 16,16);
     if(!pinst) {
-      cerr << "** Uncaught exception in script **" << endl << flush;
+      cerr << "** Uncaught exception in script **" << endl;
     } else {
       _wrap_convert_py2c__Tiled__Map(pinst, ret);
       Py_DECREF(pinst);
@@ -225,6 +265,9 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
   return NULL;
 }
 
+/**
+ * Implements Tiled::MapWriterInterface
+ */
 bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
   reloadModules();
@@ -234,7 +277,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
   while (it.hasNext()) {
     it.next();
     if(map->property("__script__") != it.key()) continue;
-    cout << "-- Script used for exporting: " << it.key() << endl << flush;
+    cout << "-- Script used for exporting: " << it.key() << endl;
 
     PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map->clone());
     if(!pmap) return false;
@@ -244,7 +287,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
     Py_DECREF(pwrite);
 
     if(!pinst) {
-      cerr << "** Uncaught exception in script **" << endl << flush;
+      cerr << "** Uncaught exception in script **" << endl;
       mError = "Uncaught exception in script. Please check console.";
     } else {
       bool ret = PyObject_IsTrue(pinst);
@@ -255,11 +298,14 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
     handleError();
     return false;
   }
-  cout << "-- Export aborted. Map property \"__script__\" undefined or script missing" << endl << flush;
   mError = "Export aborted. Map property \"__script__\" undefined or script missing";
+  cout << "-- " << mError << endl;
   return false;
 }
 
+/**
+ * Implements Tiled::MapReaderInterface and Tiled::MapWriterInterface
+ */
 QStringList PythonPlugin::nameFilters() const
 {
   QStringList ret;
@@ -271,14 +317,14 @@ QStringList PythonPlugin::nameFilters() const
     // find fun
     PyObject *pfun = PyObject_GetAttrString(it.value(), "nameFilter");
     if(!pfun || !PyCallable_Check(pfun)) {
-      cerr << "Plugin extension doesn't define \"nameFilter\"" << endl << flush;
+      cerr << "Plugin extension doesn't define \"nameFilter\"" << endl;
       continue;
     }
 
     // have fun
     PyObject *pinst = PyEval_CallFunction(pfun, "()");
     if(!pinst) {
-      cerr << "** Uncaught exception in script **" << endl << flush;
+      cerr << "** Uncaught exception in script **" << endl;
     } else {
       ret += PyString_AsString(pinst);
       Py_DECREF(pinst);
@@ -291,6 +337,9 @@ QStringList PythonPlugin::nameFilters() const
   return ret;
 }
 
+/**
+ * Implements Tiled::MapReaderInterface
+ */
 bool PythonPlugin::supportsFile(const QString &fileName) const
 {
   QMapIterator<QString, PyObject*> it(knownExtClasses);
@@ -303,6 +352,9 @@ bool PythonPlugin::supportsFile(const QString &fileName) const
   return false;
 }
 
+/**
+ * Implements Tiled::MapReaderInterface and Tiled::MapWriterInterface
+ */
 QString PythonPlugin::errorString() const
 {
     return mError;

@@ -45,6 +45,7 @@ class Q_DECL_EXPORT PythonPlugin
 
 public:
     PythonPlugin();
+    ~PythonPlugin();
 
     // MapReaderInterface
     Tiled::Map *read(const QString &fileName);
@@ -58,6 +59,10 @@ public:
     QString errorString() const;
 
 private:
+    void handleError() const;
+    PyObject *findPluginSubclass(PyObject *pmod);
+    PyObject *checkFunction(PyObject *pcls, const char *fun) const;
+    bool checkFileSupport(PyObject* cls, char *file) const;
     void reloadModules();
     QString mError;
     uint lastReload;
