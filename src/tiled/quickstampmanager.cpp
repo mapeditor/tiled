@@ -89,6 +89,9 @@ void QuickStampManager::saveQuickStamp(int index)
                                                     -tileLayer->y()));
     }
 
+    if (!copy)
+        return;
+
     Map *copyMap = new Map(map->orientation(),
                            copy->width(), copy->height(),
                            map->tileWidth(), map->tileHeight());
