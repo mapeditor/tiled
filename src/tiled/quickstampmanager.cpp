@@ -21,6 +21,7 @@
 #include "quickstampmanager.h"
 
 #include "abstracttool.h"
+#include "bucketfilltool.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "stampbrush.h"
@@ -75,7 +76,7 @@ void QuickStampManager::saveQuickStamp(int index)
             return;
 
         copy = static_cast<TileLayer*>(stamp->clone());
-    } else if (dynamic_cast<TileSelectionTool*>(selectedTool)){
+    } else if (dynamic_cast<TileSelectionTool*>(selectedTool)) {
         const TileLayer *tileLayer =
                 dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
         if (!tileLayer)
@@ -87,6 +88,12 @@ void QuickStampManager::saveQuickStamp(int index)
 
         copy = tileLayer->copy(selection.translated(-tileLayer->x(),
                                                     -tileLayer->y()));
+    } else if (dynamic_cast<BucketFillTool*>(selectedTool)) {
+        TileLayer *stamp = (dynamic_cast<BucketFillTool*>(selectedTool))->stamp();
+        if (!stamp)
+            return;
+
+        copy = static_cast<TileLayer*>(stamp->clone());
     }
 
     if (!copy)
