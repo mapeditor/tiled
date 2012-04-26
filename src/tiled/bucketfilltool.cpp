@@ -192,6 +192,8 @@ void BucketFillTool::setStamp(TileLayer *stamp)
 
     delete mStamp;
     mStamp = stamp;
+
+    tilePositionChanged(tilePosition());
 }
 
 void BucketFillTool::clearOverlay()
