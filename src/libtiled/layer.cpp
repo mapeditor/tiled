@@ -64,7 +64,6 @@ Layer *Layer::initializeClone(Layer *clone) const
 {
     clone->mOpacity = mOpacity;
     clone->mVisible = mVisible;
-    clone->mMap = mMap;
     clone->setProperties(properties());
     return clone;
 }
