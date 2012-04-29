@@ -66,7 +66,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
 bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }

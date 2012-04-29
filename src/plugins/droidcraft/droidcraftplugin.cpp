@@ -104,7 +104,7 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
     TileLayer *mapLayer = map->layerAt(0)->asTileLayer();
 
     // Check layer size
-    if (mapLayer->width() != 48 || mapLayer->height() != 48){
+    if (mapLayer->width() != 48 || mapLayer->height() != 48) {
         mError = tr("The layer must have a size of 48 x 48 tiles!");
         return false;
     }

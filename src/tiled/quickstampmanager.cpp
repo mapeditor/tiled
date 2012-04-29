@@ -71,7 +71,7 @@ void QuickStampManager::saveQuickStamp(int index)
     AbstractTool *selectedTool = ToolManager::instance()->selectedTool();
     TileLayer *copy = 0;
     if (dynamic_cast<StampBrush*>(selectedTool)) {
-        TileLayer *stamp = (dynamic_cast<StampBrush*>(selectedTool))->stamp();
+        TileLayer *stamp = (static_cast<StampBrush*>(selectedTool))->stamp();
         if (!stamp)
             return;
 
@@ -89,7 +89,7 @@ void QuickStampManager::saveQuickStamp(int index)
         copy = tileLayer->copy(selection.translated(-tileLayer->x(),
                                                     -tileLayer->y()));
     } else if (dynamic_cast<BucketFillTool*>(selectedTool)) {
-        TileLayer *stamp = (dynamic_cast<BucketFillTool*>(selectedTool))->stamp();
+        TileLayer *stamp = (static_cast<BucketFillTool*>(selectedTool))->stamp();
         if (!stamp)
             return;
 
