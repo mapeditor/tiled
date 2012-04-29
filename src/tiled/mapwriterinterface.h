@@ -51,11 +51,6 @@ public:
     virtual bool write(const Map *map, const QString &fileName) = 0;
 
     /**
-     * Returns the name filter of this map writer.
-     */
-    virtual QString nameFilter() const { return QString(); }
-
-    /**
      * Returns name filters of this map writer, for multiple formats.
      */
     virtual QStringList nameFilters() const { return QStringList(nameFilter()); }
@@ -65,6 +60,17 @@ public:
      * trying to write a map.
      */
     virtual QString errorString() const = 0;
+
+protected:
+    /**
+     * Returns the name filter of this map writer.
+     *
+     * Protected because it should not be used outside the plugin since
+     * plugins may expose multiple name filters. This thing exists only for
+     * convenience for plugin writers since most plugins will have only one
+     * name filter.
+     */
+    virtual QString nameFilter() const { return QString(); }
 };
 
 } // namespace Tiled
