@@ -276,7 +276,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         for (int x = 0; x < width; ++x) {
             out << itemStart << asciiMap[x + (y * width)] << itemStop << seperator;
         }
-        if (y == height - 1){
+        if (y == height - 1) {
             out << lineStop << returnStop;
         } else {
             out << lineStop << endl;

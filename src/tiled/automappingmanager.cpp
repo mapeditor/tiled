@@ -172,7 +172,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
             ret = false;
             continue;
         }
-        if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)){
+        if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
             TmxMapReader mapReader;
 
             Map *rules = mapReader.read(rulePath);
@@ -199,7 +199,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
                 delete autoMapper;
             }
         }
-        if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)){
+        if (rulePath.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive)) {
             if (!loadFile(rulePath))
                 ret = false;
         }
