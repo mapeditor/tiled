@@ -1,3 +1,12 @@
+0.8.1 (...)
+* Added MacOS X Lion full screen support
+* Fixed crash that could happen when painting with a pasted stamp
+* Fixed issues when using quickstamps in combination with the fill tool
+* Fixed stamp tool not to miss tiles when drawing fast
+* Fixed automapping to work with external tilesets
+* Fixed crash in automapping when dealing with broken rule files
+* Updated Italian and Hebrew translations
+
 0.8.0 (11 December 2011)
 * Added support for polygon and polyline objects
 * Added support for tile rotation

@@ -25,9 +25,9 @@ correct paths of their respective packages. If VERSION is not set it will try
 to read the content of a file "version.txt" located in the root directory of
 tiled into that variable. The commands to set those may look like the
 following:
-set QTDIR="C:\Qt\4.7.4"
+set QTDIR="C:\Qt\4.8.1"
 set MINGW="C:\MinGW"
-set VERSION="0.8.0"
+set VERSION="0.8.1"
 
 Optionally you can also set the program architecture which is then used to
 deduce the resulting installer filename. It can either be 32 or 64 and defaults
