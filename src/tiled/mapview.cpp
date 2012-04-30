@@ -152,10 +152,7 @@ void MapView::wheelEvent(QWheelEvent *event)
         && event->orientation() == Qt::Vertical)
     {
         setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-        if (event->delta() > 0)
-            mZoomable->zoomIn();
-        else
-            mZoomable->zoomOut();
+        mZoomable->handleWheelDelta(event->delta());
         setTransformationAnchor(QGraphicsView::AnchorViewCenter);
         return;
     }
