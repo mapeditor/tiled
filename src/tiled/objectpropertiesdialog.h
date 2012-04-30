@@ -23,9 +23,12 @@
 #define OBJECTPROPERTIESDIALOG_H
 
 #include "propertiesdialog.h"
-#include "ui_objectpropertiesdialog.h"
 
 class QLineEdit;
+
+namespace Ui {
+class ObjectPropertiesDialog;
+}
 
 namespace Tiled {
 

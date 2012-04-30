@@ -20,6 +20,7 @@
  */
 
 #include "objectpropertiesdialog.h"
+#include "ui_objectpropertiesdialog.h"
 
 #include "changemapobject.h"
 #include "mapdocument.h"
