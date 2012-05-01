@@ -356,7 +356,7 @@ public class TMXMapWriter
                     ((GZIPOutputStream)out).finish();
                 }
 
-                w.writeCDATA(new String(Base64.encode(baos.toByteArray())));
+                w.writeCDATA(Base64.encodeToString(baos.toByteArray(), true));
             } else {
                 for (int y = 0; y < l.getHeight(); y++) {
                     for (int x = 0; x < l.getWidth(); x++) {
