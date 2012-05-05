@@ -201,6 +201,7 @@ private:
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
     TilesetDock *mTilesetDock;
+    QLabel *mCurrentLayerLabel;
     QLabel *mZoomLabel;
     QLabel *mStatusInfoLabel;
     QSettings mSettings;
