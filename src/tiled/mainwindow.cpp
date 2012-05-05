@@ -1217,7 +1217,7 @@ void MainWindow::updateActions()
     updateZoomLabel(); // for the zoom actions
 
     Layer *layer = mMapDocument ? mMapDocument->currentLayer() : 0;
-    mCurrentLayerLabel->setText(QString(QLatin1String("    Current layer: %1")).arg(layer ? layer->name() : QLatin1String("<none>")));
+    mCurrentLayerLabel->setText(QString(tr("Current layer: %1")).arg(layer ? layer->name() : tr("<none>")));
 }
 
 void MainWindow::updateZoomLabel()
