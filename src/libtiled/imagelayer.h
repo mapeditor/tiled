@@ -67,7 +67,7 @@ public:
     {}
 
     bool canMergeWith(Layer *) const { return false; }
-    Layer *mergedWith(Layer *) const { return false; }
+    Layer *mergedWith(Layer *) const { return 0; }
 
     /**
      * Returns the transparent color, or an invalid color if no transparent
