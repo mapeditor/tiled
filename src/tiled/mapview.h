@@ -68,6 +68,7 @@ private slots:
 
 private:
     QPoint mLastMousePos;
+    QPointF mLastMouseScenePos;
     bool mHandScrolling;
     Zoomable *mZoomable;
 };

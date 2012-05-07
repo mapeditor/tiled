@@ -151,8 +151,19 @@ void MapView::wheelEvent(QWheelEvent *event)
     if (event->modifiers() & Qt::ControlModifier
         && event->orientation() == Qt::Vertical)
     {
-        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        // No automatic anchoring since we'll do it manually
+        setTransformationAnchor(QGraphicsView::NoAnchor);
+
         mZoomable->handleWheelDelta(event->delta());
+
+        // Place the last known mouse scene pos below the mouse again
+        QWidget *view = viewport();
+        QPointF viewCenterScenePos = mapToScene(view->rect().center());
+        QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mLastMousePos));
+        QPointF diff = viewCenterScenePos - mouseScenePos;
+        centerOn(mLastMouseScenePos + diff);
+
+        // Restore the centering anchor
         setTransformationAnchor(QGraphicsView::AnchorViewCenter);
         return;
     }
@@ -204,4 +215,5 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
 
     QGraphicsView::mouseMoveEvent(event);
     mLastMousePos = event->globalPos();
+    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
 }
