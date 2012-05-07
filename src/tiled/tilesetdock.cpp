@@ -328,6 +328,7 @@ void TilesetDock::insertTilesetView(int index, Tileset *tileset)
 
     mTabBar->insertTab(index, tileset->name());
     mViewStack->insertWidget(index, view);
+    updateActions();
 }
 
 void TilesetDock::updateActions()
