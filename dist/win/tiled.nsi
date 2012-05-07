@@ -172,12 +172,11 @@ File /oname=README.txt ${ROOT_DIR}\README.md
 File /oname=NEWS.txt ${ROOT_DIR}\NEWS
 File /oname=LICENSE.BSD.txt ${ROOT_DIR}\LICENSE.BSD
 File /oname=LICENSE.GPL.txt ${ROOT_DIR}\LICENSE.GPL
-File /oname=LICENSE.LGPL.txt ${ROOT_DIR}\LICENSE.LGPL
 File ${BUILD_DIR}\${P_NORM}.dll
 File ${BUILD_DIR}\${P_NORM}.exe
 File ${BUILD_DIR}\tmxviewer.exe
-File ${QT_DIR}\bin\mingwm10.dll
-File ${QT_DIR}\bin\libgcc_s_dw2-1.dll
+File ${MINGW_DIR}\bin\mingwm10.dll
+File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
 File ${MINGW_DIR}\bin\libstdc++-6.dll
 File ${QT_DIR}\bin\QtCore4.dll
 File ${QT_DIR}\bin\QtGui4.dll
