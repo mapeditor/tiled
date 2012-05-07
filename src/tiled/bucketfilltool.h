@@ -60,6 +60,12 @@ public:
      */
     void setStamp(TileLayer *stamp);
 
+    /**
+     * This returns the actual tile layer which is used to define the current
+     * state.
+     */
+    TileLayer *stamp() const { return mStamp; }
+
 public slots:
     void setRandom(bool value);
 

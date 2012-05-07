@@ -7,8 +7,8 @@ Software        Directory                 License
 Tiled           src/tiled                 GPL
 libtiled        src/libtiled              Simplified BSD license
 tmxviewer       src/tmxviewer             Simplified BSD license
-libtiled-java   util/java/libtiled-java   LGPL
+libtiled-java   util/java/libtiled-java   Simplified BSD license
 tmxviewer-java  util/java/tmxviewer-java  Simplified BSD license
 
-The full text of each license is provided in the files LICENSE.GPL,
-LICENSE.LGPL and LICENSE.BSD.
+The full text of each license is provided in the files LICENSE.GPL
+and LICENSE.BSD.

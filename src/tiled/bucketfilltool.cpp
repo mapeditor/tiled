@@ -220,6 +220,8 @@ void BucketFillTool::setStamp(TileLayer *stamp)
 
     if (mIsRandom)
         updateRandomList();
+
+    tilePositionChanged(tilePosition());
 }
 
 void BucketFillTool::clearOverlay()

@@ -195,7 +195,7 @@ public:
 
     /**
      * Flip this tile layer in the given \a direction. Direction must be
-     * horizontal or vertical.  This doesn't change the dimensions of the 
+     * horizontal or vertical. This doesn't change the dimensions of the
      * tile layer.
      */
     void flip(FlipDirection direction);

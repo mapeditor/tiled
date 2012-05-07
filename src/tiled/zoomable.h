@@ -47,6 +47,15 @@ public:
     bool canZoomOut() const;
 
     /**
+     * Changes the current scale based on the given mouse wheel \a delta.
+     *
+     * For convenience, the delta is assumed to be in the same units as
+     * QWheelEvent::delta, which is the distance that the wheel is rotated,
+     * in eighths of a degree.
+     */
+    void handleWheelDelta(int delta);
+
+    /**
      * Returns whether images should be smoothly transformed when drawn at the
      * current scale. This is the case when the scale is not a whole number.
      */

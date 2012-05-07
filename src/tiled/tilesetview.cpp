@@ -151,10 +151,7 @@ void TilesetView::wheelEvent(QWheelEvent *event)
     if (event->modifiers() & Qt::ControlModifier
         && event->orientation() == Qt::Vertical)
     {
-        if (event->delta() > 0)
-            mZoomable->zoomIn();
-        else
-            mZoomable->zoomOut();
+        mZoomable->handleWheelDelta(event->delta());
         return;
     }
 

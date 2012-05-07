@@ -1,4 +1,4 @@
-/*
+/* 
  * tilelayer.cpp
  * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jksb@member.fsf.org>

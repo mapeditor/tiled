@@ -5,10 +5,7 @@
 This is a small library meant to make it easy to use Tiled maps in your Java
 project. It is based on the Java version of Tiled.
 
-This small library is LGPL licensed (meaning you can use libtiled-java as-is
-in proprietary software, but if you change libtiled-java itself and distribute
-it you have to share the source as required by the LGPL). See the COPYING file
-for details.
+This small library is BSD licensed. See the LICENSE.BSD file for details.
 
 ---------
  Authors
@@ -16,5 +13,8 @@ for details.
 
 Adam Turk <aturk@biggeruniverse.com>
 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+
+This library includes MiGBase64, a BSD licensed base64 encoder & decoder
+by Mikael Grev. See src/tiled/util/Base64.java for licensing details.
 
 http://www.mapeditor.org/

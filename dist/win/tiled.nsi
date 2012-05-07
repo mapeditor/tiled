@@ -137,22 +137,20 @@ Function checkAlreadyInstalled
 	StrCmp $R0 "" 0 +2
 	Return
 	MessageBox MB_YESNO|MB_ICONQUESTION "${P} version $R0 seems \
-	to be already installed on your system.$\nWould you like to \
-	proceed with the installation of version ${V}?$\n Beware! This \
-	will uninstall the already installed instance first." IDYES UnInstall
-	MessageBox MB_OK|MB_ICONEXCLAMATION "Installation Canceled!"
-	Quit
+	to be installed on your system.$\nWould you like to \
+	uninstall that version first?" IDYES UnInstall
+	Return
 	UnInstall:
         ClearErrors
         ReadRegStr $R0 HKLM "${ADD_REMOVE}" "UninstallString"
-		DetailPrint "Uninstalling already installed instance first!"
+		DetailPrint "Uninstalling previously installed version"
         ExecWait '$R0 _?=$INSTDIR'
 		IfErrors OnError 0
 		Return
 	OnError:
-		MessageBox MB_OK|MB_ICONSTOP "Error While Uinstalling already \
-		installed Software. Please uninstall it manually and start the \
-		installer again."
+		MessageBox MB_OK|MB_ICONSTOP "Error while uninstalling \
+		previously installed version. Please uninstall it manually \
+		and start the installer again."
 		Quit
 FunctionEnd
 
@@ -174,13 +172,12 @@ File /oname=README.txt ${ROOT_DIR}\README.md
 File /oname=NEWS.txt ${ROOT_DIR}\NEWS
 File /oname=LICENSE.BSD.txt ${ROOT_DIR}\LICENSE.BSD
 File /oname=LICENSE.GPL.txt ${ROOT_DIR}\LICENSE.GPL
-File /oname=LICENSE.LGPL.txt ${ROOT_DIR}\LICENSE.LGPL
 File ${BUILD_DIR}\${P_NORM}.dll
 File ${BUILD_DIR}\${P_NORM}.exe
 File ${BUILD_DIR}\tmxviewer.exe
 File ${BUILD_DIR}\automappingconverter.exe
-File ${QT_DIR}\bin\mingwm10.dll
-File ${QT_DIR}\bin\libgcc_s_dw2-1.dll
+File ${MINGW_DIR}\bin\mingwm10.dll
+File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
 File ${MINGW_DIR}\bin\libstdc++-6.dll
 File ${QT_DIR}\bin\QtCore4.dll
 File ${QT_DIR}\bin\QtGui4.dll
