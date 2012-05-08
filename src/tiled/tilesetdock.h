@@ -26,6 +26,7 @@
 #include <QDockWidget>
 #include <QMap>
 
+class QComboBox;
 class QStackedWidget;
 class QTabBar;
 class QToolBar;
@@ -44,6 +45,7 @@ namespace Internal {
 
 class MapDocument;
 class TilesetView;
+class Zoomable;
 
 /**
  * The dock widget that displays the tilesets. Also keeps track of the
@@ -142,6 +144,9 @@ private:
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
     QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
+
+    Zoomable *mZoomable;
+    QComboBox *mZoomComboBox;
 };
 
 } // namespace Internal

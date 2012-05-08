@@ -39,7 +39,7 @@ class TilesetView : public QTableView
     Q_OBJECT
 
 public:
-    TilesetView(MapDocument *mapDocument, QWidget *parent = 0);
+    TilesetView(MapDocument *mapDocument, Zoomable *zoomable, QWidget *parent = 0);
 
     QSize sizeHint() const;
 
