@@ -30,6 +30,7 @@
 #include <QSessionManager>
 #include <QSettings>
 
+class QComboBox;
 class QLabel;
 class QToolButton;
 
@@ -54,6 +55,7 @@ class BucketFillTool;
 class TilesetDock;
 class MapView;
 class CommandButton;
+class Zoomable;
 
 /**
  * The main editor window.
@@ -202,7 +204,8 @@ private:
     LayerDock *mLayerDock;
     TilesetDock *mTilesetDock;
     QLabel *mCurrentLayerLabel;
-    QLabel *mZoomLabel;
+    Zoomable *mZoomable;
+    QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
     QSettings mSettings;
     QToolButton *mRandomButton;

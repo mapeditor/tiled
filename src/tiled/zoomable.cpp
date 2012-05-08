@@ -20,6 +20,10 @@
 
 #include "zoomable.h"
 
+#include <QComboBox>
+#include <QLineEdit>
+#include <QValidator>
+
 #include <cmath>
 
 using namespace Tiled::Internal;
@@ -42,7 +46,12 @@ const int zoomFactorCount = sizeof(zoomFactors) / sizeof(zoomFactors[0]);
 Zoomable::Zoomable(QObject *parent)
     : QObject(parent)
     , mScale(1)
+    , mComboBox(0)
+    , mComboRegExp(QLatin1String("^\\s*(\\d+)\\s*%?\\s*$"))
+    , mComboValidator(0)
 {
+    for (int i = 0; i < zoomFactorCount; i++)
+        mZoomFactors << zoomFactors[i];
 }
 
 void Zoomable::setScale(qreal scale)
@@ -51,17 +60,20 @@ void Zoomable::setScale(qreal scale)
         return;
 
     mScale = scale;
+
+    synchComboBox();
+
     emit scaleChanged(mScale);
 }
 
 bool Zoomable::canZoomIn() const
 {
-    return mScale < zoomFactors[zoomFactorCount - 1];
+    return mScale < mZoomFactors.back();
 }
 
 bool Zoomable::canZoomOut() const
 {
-    return mScale > zoomFactors[0];
+    return mScale > mZoomFactors.first();
 }
 
 void Zoomable::handleWheelDelta(int delta)
@@ -77,9 +89,9 @@ void Zoomable::handleWheelDelta(int delta)
         if (delta < 0)
             factor = 1 / factor;
 
-        qreal scale = qBound(zoomFactors[0],
+        qreal scale = qBound(mZoomFactors.first(),
                              mScale * factor,
-                             zoomFactors[zoomFactorCount - 1]);
+                             mZoomFactors.back());
 
         // Round to at most four digits after the decimal point
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
@@ -88,9 +100,9 @@ void Zoomable::handleWheelDelta(int delta)
 
 void Zoomable::zoomIn()
 {
-    for (int i = 0; i < zoomFactorCount; ++i) {
-        if (zoomFactors[i] > mScale) {
-            setScale(zoomFactors[i]);
+    foreach (qreal scale, mZoomFactors) {
+        if (scale > mScale) {
+            setScale(scale);
             break;
         }
     }
@@ -98,9 +110,9 @@ void Zoomable::zoomIn()
 
 void Zoomable::zoomOut()
 {
-    for (int i = zoomFactorCount - 1; i >= 0; --i) {
-        if (zoomFactors[i] < mScale) {
-            setScale(zoomFactors[i]);
+    for (int i = mZoomFactors.count() - 1; i >= 0; --i) {
+        if (mZoomFactors[i] < mScale) {
+            setScale(mZoomFactors[i]);
             break;
         }
     }
@@ -109,4 +121,66 @@ void Zoomable::zoomOut()
 void Zoomable::resetZoom()
 {
     setScale(1);
+}
+
+void Zoomable::setZoomFactors(const QVector<qreal>& factors)
+{
+    mZoomFactors = factors;
+}
+
+void Zoomable::connectToComboBox(QComboBox *comboBox)
+{
+    if (mComboBox) {
+        mComboBox->disconnect(this);
+        if (mComboBox->lineEdit())
+            mComboBox->lineEdit()->disconnect(this);
+        mComboBox->setValidator(0);
+    }
+
+    mComboBox = comboBox;
+
+    if (mComboBox) {
+        mComboBox->clear();
+        foreach (qreal scale, mZoomFactors)
+            mComboBox->addItem(QString(QLatin1String("%1 %")).arg(int(scale * 100)), scale);
+        synchComboBox();
+        connect(mComboBox, SIGNAL(activated(int)), this, SLOT(comboActivated(int)));
+
+        mComboBox->setEditable(true);
+        mComboBox->setInsertPolicy(QComboBox::NoInsert);
+        connect(mComboBox->lineEdit(), SIGNAL(editingFinished()), this, SLOT(comboEdited()));
+
+        if (!mComboValidator)
+            mComboValidator = new QRegExpValidator(mComboRegExp, this);
+        mComboBox->setValidator(mComboValidator);
+    }
+}
+
+void Zoomable::comboActivated(int index)
+{
+    QVariant data = mComboBox->itemData(index);
+    qreal scale = data.toReal();
+    setScale(scale);
+}
+
+void Zoomable::comboEdited()
+{
+    int pos = mComboRegExp.indexIn(mComboBox->lineEdit()->text());
+    Q_ASSERT(pos != -1);
+
+    qreal scale = qBound(mZoomFactors.first(),
+                         qreal(mComboRegExp.cap(1).toFloat() / 100.f),
+                         mZoomFactors.back());
+
+    setScale(scale);
+}
+
+void Zoomable::synchComboBox()
+{
+    if (mComboBox) {
+        int index = mComboBox->findData(mScale);
+        // For a custom scale, the current index must be set to -1
+        mComboBox->setCurrentIndex(index);
+        mComboBox->setEditText(QString(QLatin1String("%1 %")).arg(int(mScale * 100)));
+    }
 }

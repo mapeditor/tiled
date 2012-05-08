@@ -106,9 +106,9 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 
 } // anonymous namespace
 
-TilesetView::TilesetView(MapDocument *mapDocument, QWidget *parent)
+TilesetView::TilesetView(MapDocument *mapDocument, Zoomable *zoomable, QWidget *parent)
     : QTableView(parent)
-    , mZoomable(new Zoomable(this))
+    , mZoomable(zoomable)
     , mMapDocument(mapDocument)
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
