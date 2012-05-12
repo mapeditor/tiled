@@ -41,7 +41,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         mError = tr("Could not open file for reading.");
-        return false;
+        return 0;
     }
 
     JsonReader reader;
