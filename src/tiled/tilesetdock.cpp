@@ -154,7 +154,6 @@ TilesetDock::TilesetDock(QWidget *parent):
 {
     setObjectName(QLatin1String("TilesetDock"));
 
-    mTabBar->setTabsClosable(true);
     mTabBar->setMovable(true);
     mTabBar->setUsesScrollButtons(true);
 
@@ -162,8 +161,6 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(updateActions()));
     connect(mTabBar, SIGNAL(currentChanged(int)),
             mViewStack, SLOT(setCurrentIndex(int)));
-    connect(mTabBar, SIGNAL(tabCloseRequested(int)),
-            this, SLOT(removeTileset(int)));
     connect(mTabBar, SIGNAL(tabMoved(int,int)),
             this, SLOT(moveTileset(int,int)));
 
