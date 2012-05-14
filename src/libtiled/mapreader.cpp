@@ -213,6 +213,10 @@ Map *MapReaderPrivate::readMap()
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
 
+    QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
+    if (!bgColorString.isEmpty())
+        mMap->setBackgroundColor(QColor(bgColorString.toString()));
+
     while (xml.readNextStartElement()) {
         if (xml.name() == "properties")
             mMap->mergeProperties(readProperties());

@@ -52,6 +52,7 @@ SOURCES += aboutdialog.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     changemapobject.cpp \
+    changemapproperties.cpp \
     changeimagelayerproperties.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
@@ -82,6 +83,7 @@ SOURCES += aboutdialog.cpp \
     mapdocument.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
+    mappropertiesdialog.cpp \
     mapscene.cpp \
     mapview.cpp \
     movelayer.cpp \
@@ -146,6 +148,7 @@ HEADERS += aboutdialog.h \
     brushitem.h \
     bucketfilltool.h \
     changemapobject.h \
+    changemapproperties.h \
     changeimagelayerproperties.h\
     changeobjectgroupproperties.h \
     changepolygon.h \
@@ -176,6 +179,7 @@ HEADERS += aboutdialog.h \
     mapdocument.h \
     mapobjectitem.h \
     mapobjectmodel.h \
+    mappropertiesdialog.h \
     mapreaderinterface.h \
     mapscene.h \
     mapview.h \

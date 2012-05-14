@@ -34,6 +34,7 @@
 #include "layer.h"
 #include "object.h"
 
+#include <QColor>
 #include <QList>
 #include <QMargins>
 #include <QSize>
@@ -248,6 +249,16 @@ public:
     const QList<Tileset*> &tilesets() const { return mTilesets; }
 
     /**
+     * Returns the background color of this map.
+     */
+    const QColor &backgroundColor() const { return mBackgroundColor; }
+
+    /**
+     * Sets the background color of this map.
+     */
+    void setBackgroundColor(QColor color) { mBackgroundColor = color; }
+
+    /**
      * Returns whether the given \a tileset is used by any tile layer of this
      * map.
      */
@@ -273,6 +284,7 @@ private:
     int mHeight;
     int mTileWidth;
     int mTileHeight;
+    QColor mBackgroundColor;
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
