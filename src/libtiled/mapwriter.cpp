@@ -170,6 +170,16 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     w.writeAttribute(QLatin1String("tileheight"),
                      QString::number(map->tileHeight()));
 
+    if (map->backgroundColor().isValid())
+    {
+        QString red = QString::number(map->backgroundColor().red());
+        QString green = QString::number(map->backgroundColor().green());
+        QString blue = QString::number(map->backgroundColor().blue());
+        QString rgb(red + tr(",") + green + tr(",") + blue);
+
+        w.writeAttribute(QLatin1String("backgroundcolor"), rgb);
+    }
+
     writeProperties(w, map->properties());
 
     mGidMapper.clear();

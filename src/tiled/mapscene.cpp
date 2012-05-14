@@ -61,9 +61,10 @@ MapScene::MapScene(QObject *parent):
     mGridVisible(true),
     mUnderMouse(false),
     mCurrentModifiers(Qt::NoModifier),
-    mDarkRectangle(new QGraphicsRectItem)
+    mDarkRectangle(new QGraphicsRectItem),
+    mDefaultBackgroundColor(QColor(Qt::gray))
 {
-    setBackgroundBrush(Qt::darkGray);
+    setBackgroundBrush(mDefaultBackgroundColor);
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     connect(tilesetManager, SIGNAL(tilesetChanged(Tileset*)),
@@ -161,6 +162,9 @@ void MapScene::refreshScene()
 
     const Map *map = mMapDocument->map();
     mLayerItems.resize(map->layerCount());
+
+    if (map->backgroundColor().isValid())
+        setBackgroundBrush(map->backgroundColor());
 
     int layerIndex = 0;
     foreach (Layer *layer, map->layers()) {
@@ -293,6 +297,9 @@ void MapScene::mapChanged()
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
     }
+
+    QColor bgColor = mMapDocument->map()->backgroundColor();
+    setBackgroundBrush(bgColor.isValid() ? bgColor : mDefaultBackgroundColor);
 }
 
 void MapScene::tilesetChanged(Tileset *tileset)
