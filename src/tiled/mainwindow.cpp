@@ -62,6 +62,7 @@
 #include "quickstampmanager.h"
 #include "saveasimagedialog.h"
 #include "stampbrush.h"
+#include "terrainbrush.h"
 #include "tilelayer.h"
 #include "tileselectiontool.h"
 #include "tileset.h"
@@ -317,6 +318,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mStampBrush = new StampBrush(this);
+    mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateTile, this);
@@ -341,6 +343,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
+    toolManager->registerTool(mTerrainBrush);
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new TileSelectionTool(this));

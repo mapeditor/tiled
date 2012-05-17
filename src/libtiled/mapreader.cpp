@@ -78,6 +78,7 @@ private:
     Tileset *readTileset();
     void readTilesetTile(Tileset *tileset);
     void readTilesetImage(Tileset *tileset);
+    void readTilesetTerrainTypes(Tileset *tileset);
 
     TileLayer *readLayer();
     void readLayerData(TileLayer *tileLayer);
@@ -284,6 +285,8 @@ Tileset *MapReaderPrivate::readTileset()
                     tileset->mergeProperties(readProperties());
                 } else if (xml.name() == "image") {
                     readTilesetImage(tileset);
+                } else if (xml.name() == "terraintypes") {
+                    readTilesetTerrainTypes(tileset);
                 } else {
                     readUnknownElement();
                 }
@@ -322,6 +325,19 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
 
     // TODO: Add support for individual tiles (then it needs to be added here)
 
+    // Read tile quadrant terrain ids
+    QString terrain = atts.value(QLatin1String("terrain")).toString();
+    if (!terrain.isEmpty()) {
+        Tile *tile = tileset->tileAt(id);
+        QStringList quadrants = terrain.split(QLatin1String(","));
+        if (quadrants.size() == 4) {
+            for (int i = 0; i < 4; ++i) {
+                int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
+                tile->setCornerTerrainType(i, t);
+            }
+        }
+    }
+
     while (xml.readNextStartElement()) {
         if (xml.name() == "properties") {
             Tile *tile = tileset->tileAt(id);
@@ -357,6 +373,25 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
 
     xml.skipCurrentElement();
+}
+
+void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "terraintypes");
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == "terrain") {
+            const QXmlStreamAttributes atts = xml.attributes();
+            QString name = atts.value(QLatin1String("name")).toString();
+            int tile = atts.value(QLatin1String("tile")).toString().toInt();
+
+            tileset->addTerrainType(name, tile);
+
+            xml.skipCurrentElement();
+        }
+        else
+            readUnknownElement();
+    }
 }
 
 static void readLayerAttributes(Layer *layer,

@@ -51,6 +51,7 @@ class MapDocumentActionHandler;
 class MapScene;
 class StampBrush;
 class BucketFillTool;
+class TerrainBrush;
 class TilesetDock;
 class MapView;
 class CommandButton;
@@ -210,6 +211,7 @@ private:
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
+    TerrainBrush *mTerrainBrush;
 
     ClipboardManager *mClipboardManager;
 
