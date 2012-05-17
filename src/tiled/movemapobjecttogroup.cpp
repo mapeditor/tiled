@@ -23,6 +23,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
@@ -43,18 +44,12 @@ MoveMapObjectToGroup::MoveMapObjectToGroup(MapDocument *mapDocument,
 
 void MoveMapObjectToGroup::undo()
 {
-    mNewObjectGroup->removeObject(mMapObject);
-    mMapDocument->emitObjectRemoved(mMapObject);
-
-    mOldObjectGroup->addObject(mMapObject);
-    mMapDocument->emitObjectAdded(mMapObject);
+    mMapDocument->mapObjectModel()->removeObject(mNewObjectGroup, mMapObject);
+    mMapDocument->mapObjectModel()->insertObject(mOldObjectGroup, -1, mMapObject);
 }
 
 void MoveMapObjectToGroup::redo()
 {
-    mOldObjectGroup->removeObject(mMapObject);
-    mMapDocument->emitObjectRemoved(mMapObject);
-
-    mNewObjectGroup->addObject(mMapObject);
-    mMapDocument->emitObjectAdded(mMapObject);
+    mMapDocument->mapObjectModel()->removeObject(mOldObjectGroup, mMapObject);
+    mMapDocument->mapObjectModel()->insertObject(mNewObjectGroup, -1, mMapObject);
 }

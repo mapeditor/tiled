@@ -22,6 +22,7 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
@@ -41,12 +42,10 @@ ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
 
 void ResizeMapObject::undo()
 {
-    mMapObject->setSize(mOldSize);
-    mMapDocument->emitObjectChanged(mMapObject);
+    mMapDocument->mapObjectModel()->setObjectSize(mMapObject, mOldSize);
 }
 
 void ResizeMapObject::redo()
 {
-    mMapObject->setSize(mNewSize);
-    mMapDocument->emitObjectChanged(mMapObject);
+    mMapDocument->mapObjectModel()->setObjectSize(mMapObject, mNewSize);
 }

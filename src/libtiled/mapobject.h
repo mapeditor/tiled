@@ -228,6 +228,9 @@ public:
      */
     MapObject *clone() const;
 
+    bool isVisible() const { return mVisible; }
+    void setVisible(bool visible) { mVisible = visible; }
+
 private:
     QString mName;
     QString mType;
@@ -237,6 +240,7 @@ private:
     Shape mShape;
     Tile *mTile;
     ObjectGroup *mObjectGroup;
+    bool mVisible;
 };
 
 } // namespace Tiled

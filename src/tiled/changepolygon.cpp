@@ -22,6 +22,7 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
@@ -41,12 +42,10 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
 
 void ChangePolygon::undo()
 {
-    mMapObject->setPolygon(mOldPolygon);
-    mMapDocument->emitObjectChanged(mMapObject);
+    mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mOldPolygon);
 }
 
 void ChangePolygon::redo()
 {
-    mMapObject->setPolygon(mNewPolygon);
-    mMapDocument->emitObjectChanged(mMapObject);
+    mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mNewPolygon);
 }

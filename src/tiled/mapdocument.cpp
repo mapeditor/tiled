@@ -29,6 +29,7 @@
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
+#include "mapobjectmodel.h"
 #include "map.h"
 #include "mapobject.h"
 #include "movelayer.h"
@@ -56,6 +57,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mFileName(fileName),
     mMap(map),
     mLayerModel(new LayerModel(this)),
+    mMapObjectModel(new MapObjectModel(this)),
     mUndoStack(new QUndoStack(this))
 {
     switch (map->orientation()) {
@@ -80,6 +82,11 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     connect(mLayerModel, SIGNAL(layerRemoved(int)), SLOT(onLayerRemoved(int)));
     connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
 
+    mMapObjectModel->setMapDocument(this);
+    connect(mMapObjectModel, SIGNAL(objectsAdded(QList<MapObject*>)), SLOT(onObjectsAdded(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsChanged(QList<MapObject*>)), SLOT(onObjectsChanged(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsAboutToBeRemoved(QList<MapObject*>)), SLOT(onObjectsAboutToBeRemoved(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)), SLOT(onObjectsRemoved(QList<MapObject*>)));
     connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
 
     // Register tileset references
@@ -476,6 +483,11 @@ void MapDocument::emitObjectsAdded(const QList<MapObject*> &objects)
     emit objectsAdded(objects);
 }
 
+void MapDocument::emitObjectsAboutToBeRemoved(const QList<MapObject*> &objects)
+{
+    emit objectsAboutToBeRemoved(objects);
+}
+
 /**
  * Emits the objects removed signal with the specified list of objects.
  * This will cause the scene to remove the related items.
@@ -499,6 +511,26 @@ void MapDocument::emitObjectsChanged(const QList<MapObject*> &objects)
     emit objectsChanged(objects);
 }
 
+void MapDocument::onObjectsAdded(const QList<MapObject*> &objects)
+{
+    emitObjectsAdded(objects);
+}
+
+void MapDocument::onObjectsChanged(const QList<MapObject*> &objects)
+{
+    emitObjectsChanged(objects);
+}
+
+void MapDocument::onObjectsAboutToBeRemoved(const QList<MapObject*> &objects)
+{
+    emitObjectsAboutToBeRemoved(objects);
+}
+
+void MapDocument::onObjectsRemoved(const QList<MapObject*> &objects)
+{
+    emitObjectsRemoved(objects);
+}
+
 void MapDocument::onLayerAdded(int index)
 {
     emit layerAdded(index);
@@ -513,6 +545,7 @@ void MapDocument::onLayerAboutToBeRemoved(int index)
     // Deselect any objects on this layer when necessary
     if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(mMap->layerAt(index)))
         deselectObjects(og->objects());
+    emit layerAboutToBeRemoved(index);
 }
 
 void MapDocument::onLayerRemoved(int index)

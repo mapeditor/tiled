@@ -31,6 +31,7 @@
 #include "map.h"
 
 #include "layer.h"
+#include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -82,6 +83,32 @@ int Map::layerCount(Layer::Type type) const
     return count;
 }
 
+QList<Layer*> Map::layers(Layer::Type type) const
+{
+    QList<Layer*> layers;
+    foreach (Layer *layer, mLayers)
+        if (layer->type() == type)
+            layers.append(layer);
+    return layers;
+}
+
+QList<ObjectGroup*> Map::objectGroups() const
+{
+    QList<ObjectGroup*> layers;
+    foreach (Layer *layer, mLayers)
+        if (ObjectGroup *og = layer->asObjectGroup())
+            layers.append(og);
+    return layers;
+}
+
+QList<TileLayer*> Map::tileLayers() const
+{
+    QList<TileLayer*> layers;
+    foreach (Layer *layer, mLayers)
+        if (TileLayer *tl = layer->asTileLayer())
+            layers.append(tl);
+    return layers;
+}
 void Map::addLayer(Layer *layer)
 {
     adoptLayer(layer);

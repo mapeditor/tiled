@@ -22,6 +22,7 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
@@ -56,9 +57,8 @@ void ChangeMapObject::swap()
     const QString name = mMapObject->name();
     const QString type = mMapObject->type();
 
-    mMapObject->setName(mName);
-    mMapObject->setType(mType);
-    mMapDocument->emitObjectChanged(mMapObject);
+    mMapDocument->mapObjectModel()->setObjectName(mMapObject, mName);
+    mMapDocument->mapObjectModel()->setObjectType(mMapObject, mType);
 
     mName = name;
     mType = type;

@@ -55,6 +55,7 @@ class BucketFillTool;
 class TilesetDock;
 class MapView;
 class CommandButton;
+class ObjectsDock;
 class Zoomable;
 
 /**
@@ -202,6 +203,7 @@ private:
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
+    ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
