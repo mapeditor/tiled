@@ -44,7 +44,8 @@ public:
     Tile(const QPixmap &image, int id, Tileset *tileset):
         mId(id),
         mTileset(tileset),
-        mImage(image)
+        mImage(image),
+		mTerrain(-1)
     {}
 
     /**
@@ -82,10 +83,29 @@ public:
      */
     QSize size() const { return mImage.size(); }
 
+	/**
+	 * Terrain type related stuff (this shoudl be the only bit-twiddley stuff there is)
+	 */
+	int cornerTerrain(int corner) { return (char)((mTerrain >> (3 - corner)*8) & 0xFF); }
+	void setCornerTerrain(int corner, int terrain)
+	{
+		unsigned int mask = 0xFF << (3 - corner)*8;
+		unsigned int insert = terrain << (3 - corner)*8;
+		mTerrain = (mTerrain & ~mask) | (insert & mask);
+	}
+
+	// returns the terrain terrain id for edges, and the whole tile which can be compared against other tiles
+	unsigned short topEdge() { return mTerrain >> 16; }
+	unsigned short bottomEdge() { return mTerrain & 0xFFFF; }
+	unsigned short leftEdge() { return((mTerrain >> 16) & 0xFF00) | ((mTerrain >> 8) & 0xFF); }
+	unsigned short rightEdge() { return ((mTerrain >> 8) & 0xFF00) | (mTerrain & 0xFF); }
+	unsigned int terrain() { return mTerrain; }
+
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
+	unsigned int mTerrain;
 };
 
 } // namespace Tiled

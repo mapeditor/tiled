@@ -43,6 +43,29 @@ namespace Tiled {
 
 class Tile;
 
+class TerrainType
+{
+public:
+	TerrainType(int id, QString name, Tile *pPaletteImage):
+		mId(id),
+		mName(name),
+		mpPaletteImage(pPaletteImage)
+	{
+		mColor;
+	}
+
+	int id() { return mId; }
+	QString name() { return mName; }
+	QColor color() { return mColor; }
+	Tile *paletteImage() { return mpPaletteImage; }
+
+private:
+	int mId;
+	QString mName;
+	QColor mColor;
+	Tile *mpPaletteImage;
+};
+
 /**
  * A tileset, representing a set of tiles.
  *
@@ -213,6 +236,18 @@ public:
      */
     int columnCountForWidth(int width) const;
 
+	/**
+	 * Terrain related stuff.
+	 */
+	int terrainTypeCount() { return mTerrainTypes.size(); }
+
+	TerrainType* terrainType(int terrain) { return mTerrainTypes[terrain]; }
+
+	void addTerrainType(QString name, Tile *pPaletteImage)
+	{
+		mTerrainTypes.push_back(new TerrainType(mTerrainTypes.size(), mName, pPaletteImage));
+	}
+
 private:
     QString mName;
     QString mFileName;
@@ -227,6 +262,7 @@ private:
     int mImageHeight;
     int mColumnCount;
     QList<Tile*> mTiles;
+	QList<TerrainType*> mTerrainTypes;
 };
 
 } // namespace Tiled
