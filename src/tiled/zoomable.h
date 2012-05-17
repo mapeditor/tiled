@@ -83,14 +83,14 @@ signals:
     void scaleChanged(qreal scale);
 
 private:
-    void synchComboBox();
+    void syncComboBox();
 
 private:
     qreal mScale;
     QVector<qreal> mZoomFactors;
     QComboBox *mComboBox;
     QRegExp mComboRegExp;
-    QRegExpValidator* mComboValidator;
+    QRegExpValidator *mComboValidator;
 };
 
 } // namespace Internal

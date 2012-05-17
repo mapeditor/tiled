@@ -107,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mLayerDock(new LayerDock(this))
     , mTilesetDock(new TilesetDock(this))
     , mCurrentLayerLabel(new QLabel)
+    , mZoomable(0)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
     , mClipboardManager(new ClipboardManager(this))
@@ -162,7 +163,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     tabifyDockWidget(undoDock, mLayerDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
 
-    mZoomable = 0;
     statusBar()->addPermanentWidget(mZoomComboBox);
 
     mUi->actionNew->setShortcuts(QKeySequence::New);
@@ -1455,8 +1455,8 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
                 SLOT(updateActions()));
 
         if (MapView *mapView = mDocumentManager->currentMapView()) {
-            if ((mZoomable = mapView->zoomable()))
-                mZoomable->connectToComboBox(mZoomComboBox);
+            mZoomable = mapView->zoomable();
+            mZoomable->connectToComboBox(mZoomComboBox);
         }
     }
 
