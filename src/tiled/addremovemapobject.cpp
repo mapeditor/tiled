@@ -23,6 +23,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
@@ -51,19 +52,13 @@ AddRemoveMapObject::~AddRemoveMapObject()
 
 void AddRemoveMapObject::addObject()
 {
-    if (mIndex == -1)
-        mObjectGroup->addObject(mMapObject);
-    else
-        mObjectGroup->insertObject(mIndex, mMapObject);
-
-    mMapDocument->emitObjectAdded(mMapObject);
+    mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex, mMapObject);
     mOwnsObject = false;
 }
 
 void AddRemoveMapObject::removeObject()
 {
-    mIndex = mObjectGroup->removeObject(mMapObject);
-    mMapDocument->emitObjectRemoved(mMapObject);
+    mIndex = mMapDocument->mapObjectModel()->removeObject(mObjectGroup, mMapObject);
     mOwnsObject = true;
 }
 

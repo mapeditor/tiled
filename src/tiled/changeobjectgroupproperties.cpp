@@ -23,6 +23,7 @@
 
 #include "mapdocument.h"
 #include "objectgroup.h"
+#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
@@ -46,11 +47,12 @@ ChangeObjectGroupProperties::ChangeObjectGroupProperties(
 void ChangeObjectGroupProperties::redo()
 {
     mObjectGroup->setColor(mRedoColor);
-    mMapDocument->emitObjectsChanged(mObjectGroup->objects());
+    mMapDocument->mapObjectModel()->emitObjectsChanged(mObjectGroup->objects());
+
 }
 
 void ChangeObjectGroupProperties::undo()
 {
     mObjectGroup->setColor(mUndoColor);
-    mMapDocument->emitObjectsChanged(mObjectGroup->objects());
+    mMapDocument->mapObjectModel()->emitObjectsChanged(mObjectGroup->objects());
 }

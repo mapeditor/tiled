@@ -22,6 +22,7 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 
 #include <QCoreApplication>
 
@@ -41,12 +42,10 @@ MoveMapObject::MoveMapObject(MapDocument *mapDocument,
 
 void MoveMapObject::undo()
 {
-    mMapObject->setPosition(mOldPos);
-    mMapDocument->emitObjectChanged(mMapObject);
+    mMapDocument->mapObjectModel()->setObjectPosition(mMapObject, mOldPos);
 }
 
 void MoveMapObject::redo()
 {
-    mMapObject->setPosition(mNewPos);
-    mMapDocument->emitObjectChanged(mMapObject);
+    mMapDocument->mapObjectModel()->setObjectPosition(mMapObject, mNewPos);
 }

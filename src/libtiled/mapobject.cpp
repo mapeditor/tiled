@@ -35,7 +35,8 @@ MapObject::MapObject():
     mSize(0, 0),
     mShape(Rectangle),
     mTile(0),
-    mObjectGroup(0)
+    mObjectGroup(0),
+    mVisible(true)
 {
 }
 
@@ -48,7 +49,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mSize(size),
     mShape(Rectangle),
     mTile(0),
-    mObjectGroup(0)
+    mObjectGroup(0),
+    mVisible(true)
 {
 }
 

@@ -46,6 +46,7 @@ namespace Internal {
 
 class LayerModel;
 class TileSelectionModel;
+class MapObjectModel;
 
 /**
  * Represents an editable map. The purpose of this class is to make sure that
@@ -155,6 +156,8 @@ public:
      */
     LayerModel *layerModel() const { return mLayerModel; }
 
+    MapObjectModel *mapObjectModel() const { return mMapObjectModel; }
+
     /**
      * Returns the map renderer.
      */
@@ -217,6 +220,7 @@ public:
     void emitRegionEdited(const QRegion &region, Layer *layer);
 
     void emitObjectsAdded(const QList<MapObject*> &objects);
+    void emitObjectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void emitObjectsRemoved(const QList<MapObject*> &objects);
     void emitObjectsChanged(const QList<MapObject*> &objects);
 
@@ -257,6 +261,8 @@ signals:
     void mapChanged();
 
     void layerAdded(int index);
+    void layerAboutToBeRemoved(int index);
+    void layerRenamed(int index);
     void layerRemoved(int index);
     void layerChanged(int index);
 
@@ -291,10 +297,16 @@ signals:
     void tilesetNameChanged(Tileset *tileset);
 
     void objectsAdded(const QList<MapObject*> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
 
 private slots:
+    void onObjectsAdded(const QList<MapObject*> &objects);
+    void onObjectsChanged(const QList<MapObject*> &objects);
+    void onObjectsAboutToBeRemoved(const QList<MapObject*> &objects);
+    void onObjectsRemoved(const QList<MapObject*> &objects);
+
     void onLayerAdded(int index);
     void onLayerAboutToBeRemoved(int index);
     void onLayerRemoved(int index);
@@ -309,6 +321,7 @@ private:
     QList<MapObject*> mSelectedObjects;
     MapRenderer *mRenderer;
     int mCurrentLayerIndex;
+    MapObjectModel *mMapObjectModel;
     QUndoStack *mUndoStack;
 };
 

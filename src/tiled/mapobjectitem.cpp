@@ -226,6 +226,8 @@ void MapObjectItem::syncWithMapObject()
     }
 
     mSyncing = false;
+
+    setVisible(mObject->isVisible());
 }
 
 void MapObjectItem::setEditable(bool editable)
