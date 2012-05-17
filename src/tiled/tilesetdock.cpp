@@ -40,9 +40,11 @@
 #include "tilesetmanager.h"
 #include "tmxmapwriter.h"
 #include "utils.h"
+#include "zoomable.h"
 
 #include <QAction>
 #include <QDropEvent>
+#include <QComboBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -176,7 +178,11 @@ TilesetDock::TilesetDock(QWidget *parent):
     vertical->setMargin(5);
     vertical->addLayout(horizontal);
     vertical->addWidget(mViewStack);
-    vertical->addWidget(mToolBar);
+
+    horizontal = new QHBoxLayout();
+    horizontal->setSpacing(5);
+    horizontal->addWidget(mToolBar, 1);
+    vertical->addLayout(horizontal);
 
     mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
@@ -207,6 +213,13 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->addAction(mPropertiesTileset);
     mToolBar->addAction(mDeleteTileset);
     mToolBar->addAction(mRenameTileset);
+
+    mZoomable = new Zoomable(this);
+    mZoomable->setZoomFactors(QVector<qreal>() << 0.25 << 0.5 << 0.75 << 1.0 << 1.25 << 1.5 << 1.75 << 2.0);
+    mToolBar->addSeparator();
+    mZoomComboBox = new QComboBox;
+    mZoomable->connectToComboBox(mZoomComboBox);
+    horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, SIGNAL(currentChanged(int)),
             this, SLOT(updateCurrentTiles()));
@@ -316,7 +329,7 @@ void TilesetDock::dropEvent(QDropEvent *e)
 
 void TilesetDock::insertTilesetView(int index, Tileset *tileset)
 {
-    TilesetView *view = new TilesetView(mMapDocument);
+    TilesetView *view = new TilesetView(mMapDocument, mZoomable);
     view->setModel(new TilesetModel(tileset, view));
 
     connect(view->selectionModel(),
