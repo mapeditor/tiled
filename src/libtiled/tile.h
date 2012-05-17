@@ -86,7 +86,7 @@ public:
 	/**
 	 * Terrain type related stuff (this shoudl be the only bit-twiddley stuff there is)
 	 */
-	int cornerTerrain(int corner) { return (char)((mTerrain >> (3 - corner)*8) & 0xFF); }
+	int cornerTerrain(int corner) const { unsigned int t = (mTerrain >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
 	void setCornerTerrain(int corner, int terrain)
 	{
 		unsigned int mask = 0xFF << (3 - corner)*8;
@@ -95,11 +95,11 @@ public:
 	}
 
 	// returns the terrain terrain id for edges, and the whole tile which can be compared against other tiles
-	unsigned short topEdge() { return mTerrain >> 16; }
-	unsigned short bottomEdge() { return mTerrain & 0xFFFF; }
-	unsigned short leftEdge() { return((mTerrain >> 16) & 0xFF00) | ((mTerrain >> 8) & 0xFF); }
-	unsigned short rightEdge() { return ((mTerrain >> 8) & 0xFF00) | (mTerrain & 0xFF); }
-	unsigned int terrain() { return mTerrain; }
+	unsigned short topEdge() const { return mTerrain >> 16; }
+	unsigned short bottomEdge() const { return mTerrain & 0xFFFF; }
+	unsigned short leftEdge() const { return((mTerrain >> 16) & 0xFF00) | ((mTerrain >> 8) & 0xFF); }
+	unsigned short rightEdge() const { return ((mTerrain >> 8) & 0xFF00) | (mTerrain & 0xFF); }
+	unsigned int terrain() const { return mTerrain; }
 
 private:
     int mId;

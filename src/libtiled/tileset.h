@@ -46,24 +46,27 @@ class Tile;
 class TerrainType
 {
 public:
-	TerrainType(int id, QString name, Tile *pPaletteImage):
+	TerrainType(int id, QString name, int imageTile):
 		mId(id),
 		mName(name),
-		mpPaletteImage(pPaletteImage)
+		mImageTile(imageTile)
+//		mpPaletteImage(pPaletteImage)
 	{
 		mColor;
 	}
 
-	int id() { return mId; }
-	QString name() { return mName; }
-	QColor color() { return mColor; }
-	Tile *paletteImage() { return mpPaletteImage; }
+	int id() const { return mId; }
+	QString name() const { return mName; }
+	QColor color() const { return mColor; }
+	int paletteImageTile() const { return mImageTile; }
+//	Tile *paletteImage() const { return mpPaletteImage; }
 
 private:
 	int mId;
 	QString mName;
 	QColor mColor;
-	Tile *mpPaletteImage;
+	int mImageTile;
+//	Tile *mpPaletteImage;
 };
 
 /**
@@ -239,13 +242,13 @@ public:
 	/**
 	 * Terrain related stuff.
 	 */
-	int terrainTypeCount() { return mTerrainTypes.size(); }
+	int terrainTypeCount() const { return mTerrainTypes.size(); }
 
-	TerrainType* terrainType(int terrain) { return mTerrainTypes[terrain]; }
+	TerrainType* terrainType(int terrain) const { return mTerrainTypes[terrain]; }
 
-	void addTerrainType(QString name, Tile *pPaletteImage)
+	void addTerrainType(QString name, int imageTile)
 	{
-		mTerrainTypes.push_back(new TerrainType(mTerrainTypes.size(), mName, pPaletteImage));
+		mTerrainTypes.push_back(new TerrainType(mTerrainTypes.size(), name, imageTile));
 	}
 
 private:
