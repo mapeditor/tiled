@@ -96,7 +96,7 @@ private:
     /**
      * updates the brush given new coordinates.
      */
-    void updateBrush(const QPoint &cursorPos);
+    void updateBrush(const QPoint &cursorPos, const QVector<QPoint> *list = NULL);
 
     /**
      * mTerrain is the terrain we are currently painting
@@ -104,16 +104,6 @@ private:
 	TerrainType *mTerrain;
     int mPaintX, mPaintY;
     int mOffsetX, mOffsetY;
-
-    /**
-     * This updates the brush item.
-     * It tries to put at all given points a stamp of the current stamp at the
-     * corresponding position.
-     * It also takes care, that no overlaps appear.
-     * So it will check for every point if it can place a stamp there without
-     * overlap.
-     */
-    void configureBrush(const QVector<QPoint> &list);
 
     /**
      * There are several options how the stamp utility can be used.
