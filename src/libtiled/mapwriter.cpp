@@ -199,7 +199,7 @@ static QString makeTerrainAttribute(const Tile *tile)
 	for (int i = 0; i < 4; ++i ) {
 		if (i > 0)
 			terrain += QLatin1String(",");
-		int t = tile->cornerTerrain(i);
+		int t = tile->cornerTerrainType(i);
 		if (t > -1)
 			terrain += QString::number(t);
 	}

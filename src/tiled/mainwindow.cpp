@@ -318,8 +318,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mStampBrush = new StampBrush(this);
-    mBucketFillTool = new BucketFillTool(this);
     mTerrainBrush = new TerrainBrush(this);
+    mBucketFillTool = new BucketFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateTile, this);
     CreateObjectTool *areaObjectsTool = new CreateObjectTool(
@@ -343,8 +343,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
-    toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(mTerrainBrush);
+    toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new TileSelectionTool(this));
     toolManager->addSeparator();

@@ -28,11 +28,11 @@
 namespace Tiled {
 
 class Tile;
+class TerrainType;
 
 namespace Internal {
 
 class MapDocument;
-class TerrainType;
 
 /**
  * Implements a tile brush that paints terrain with automatic transitions.
@@ -89,23 +89,21 @@ private:
      */
     void doPaint(bool mergeable, int whereX, int whereY);
 
-    void beginCapture();
-    void endCapture();
-    QRect capturedArea() const;
+    void capture();
+
+	Tile *findBestTile(unsigned int terrain, unsigned int considerationMask);
 
     /**
-     * updates the variables mStampX and mStampY depending on the mouse pointers
-     * position.
+     * updates the brush given new coordinates.
      */
-    void updatePosition();
+    void updateBrush(const QPoint &cursorPos);
 
     /**
      * mTerrain is the terrain we are currently painting
      */
 	TerrainType *mTerrain;
-
-    QPoint mCaptureStart;
     int mPaintX, mPaintY;
+    int mOffsetX, mOffsetY;
 
     /**
      * This updates the brush item.
@@ -125,7 +123,6 @@ private:
         Free,           // nothing special: you can move the mouse,
                         // preview of the selection
         Paint,          // left mouse pressed: free painting
-        Capture,        // right mouse pressed: capture a rectangle
         Line,           // hold shift: a line
         LineStartSet    // when you have defined a starting point,
                         // cancel with right click
@@ -141,7 +138,7 @@ private:
      * When drawing lines, this point will be one end.
      * When drawing circles this will be the midpoint.
      */
-    int mStampReferenceX, mStampReferenceY;
+    int mLineReferenceX, mLineReferenceY;
 };
 
 } // namespace Internal

@@ -27,6 +27,8 @@
 #include "mapscene.h"
 #include "painttilelayer.h"
 #include "tilelayer.h"
+#include "tileset.h"
+#include "tile.h"
 
 #include <math.h>
 #include <QVector>
@@ -42,9 +44,10 @@ TerrainBrush::TerrainBrush(QObject *parent)
                        parent)
     , mTerrain(NULL)
     , mPaintX(0), mPaintY(0)
+    , mOffsetX(0), mOffsetY(0)
     , mBrushBehavior(Free)
-    , mStampReferenceX(0)
-    , mStampReferenceY(0)
+    , mLineReferenceX(0)
+    , mLineReferenceY(0)
 {
 }
 
@@ -99,26 +102,30 @@ static QVector<QPoint> calculateLine(int x0, int y0, int x1, int y1)
     return ret;
 }
 
-void TerrainBrush::tilePositionChanged(const QPoint &)
+void TerrainBrush::tilePositionChanged(const QPoint &pos)
 {
-    const int x = mPaintX;
-    const int y = mPaintY;
-    updatePosition();
+
     switch (mBrushBehavior) {
     case Paint:
-        foreach (const QPoint &p, calculateLine(x, y, mPaintX, mPaintY))
+	{
+	    int x = mPaintX;
+	    int y = mPaintY;
+        foreach (const QPoint &p, calculateLine(x, y, pos.x(), pos.y()))
+		{
+		    updateBrush(p);
             doPaint(true, p.x(), p.y());
+		}
+		// HACK: because the line may traverse in the reverse direction, updateBrush() leaves these at the line start point
+	    mPaintX = pos.x();
+	    mPaintY = pos.y();
         break;
+	}
     case LineStartSet:
-        configureBrush(calculateLine(mStampReferenceX, mStampReferenceY,
-                                     mPaintX, mPaintY));
-        break;
-    case Capture:
-        brushItem()->setTileRegion(capturedArea());
+        configureBrush(calculateLine(mLineReferenceX, mLineReferenceY, pos.x(), pos.y()));
         break;
     case Line:
     case Free:
-        updatePosition();
+        updateBrush(pos);
         break;
     }
 }
@@ -131,14 +138,14 @@ void TerrainBrush::mousePressed(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         switch (mBrushBehavior) {
         case Line:
-            mStampReferenceX = mPaintX;
-            mStampReferenceY = mPaintY;
+            mLineReferenceX = mPaintX;
+            mLineReferenceY = mPaintY;
             mBrushBehavior = LineStartSet;
             break;
         case LineStartSet:
             doPaint(false, 0, 0);
-            mStampReferenceX = mPaintX;
-            mStampReferenceY = mPaintY;
+            mLineReferenceX = mPaintX;
+            mLineReferenceY = mPaintY;
             break;
         case Paint:
             beginPaint();
@@ -147,24 +154,16 @@ void TerrainBrush::mousePressed(QGraphicsSceneMouseEvent *event)
             beginPaint();
             mBrushBehavior = Paint;
             break;
-        case Capture:
-            break;
         }
     } else {
         if (event->button() == Qt::RightButton)
-            beginCapture();
+            capture();
     }
 }
 
 void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     switch (mBrushBehavior) {
-    case Capture:
-        if (event->button() == Qt::RightButton) {
-            endCapture();
-            mBrushBehavior = Free;
-        }
-        break;
     case Paint:
         if (event->button() == Qt::LeftButton)
             mBrushBehavior = Free;
@@ -176,8 +175,6 @@ void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void TerrainBrush::configureBrush(const QVector<QPoint> &list)
 {
-    if (!mTerrain)
-        return;
 /*
     QRegion reg;
     QRegion stampRegion;
@@ -213,19 +210,13 @@ void TerrainBrush::configureBrush(const QVector<QPoint> &list)
 
 void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if (!mTerrain)
-        return;
-
     if (modifiers & Qt::ShiftModifier) {
         mBrushBehavior = Line;
     } else {
         mBrushBehavior = Free;
     }
 
-/*
-    brushItem()->setTileLayer(mTerrain);
-*/
-    updatePosition();
+    updateBrush(tilePosition());
 }
 
 void TerrainBrush::languageChanged()
@@ -242,6 +233,10 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
     // Reset the brush, since it probably became invalid
     brushItem()->setTileRegion(QRegion());
     setTerrain(NULL);
+
+	// hack
+	Tileset *t = newDocument->map()->tilesets().at(0);
+	setTerrain(t->terrainType(2));
 }
 
 void TerrainBrush::setTerrain(TerrainType *terrain)
@@ -250,10 +245,8 @@ void TerrainBrush::setTerrain(TerrainType *terrain)
         return;
 
     mTerrain = terrain;
-/*
-    brushItem()->setTileLayer(mStamp);
-*/
-    updatePosition();
+
+	updateBrush(tilePosition());
 }
 
 void TerrainBrush::beginPaint()
@@ -265,52 +258,16 @@ void TerrainBrush::beginPaint()
     doPaint(false, mPaintX, mPaintY);
 }
 
-void TerrainBrush::beginCapture()
+void TerrainBrush::capture()
 {
-    if (mBrushBehavior != Free)
-        return;
-
-    mBrushBehavior = Capture;
-
-    mCaptureStart = tilePosition();
-
-    setTerrain(NULL);
-}
-
-void TerrainBrush::endCapture()
-{
-    if (mBrushBehavior != Capture)
-        return;
-
-    mBrushBehavior = Free;
-
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
-    // Intersect with the layer and translate to layer coordinates
-    QRect captured = capturedArea();
-    captured.intersect(QRect(tileLayer->x(), tileLayer->y(),
-                             tileLayer->width(), tileLayer->height()));
+	// TODO: we need to know which corner the mouse is closest to...
 
-    if (captured.isValid()) {
-        captured.translate(-tileLayer->x(), -tileLayer->y());
-        TileLayer *capture = tileLayer->copy(captured);
-        emit currentTilesChanged(capture);
-        // A copy will have been created, so delete this version
-        delete capture;
-    } else {
-        updatePosition();
-    }
-}
-
-QRect TerrainBrush::capturedArea() const
-{
-    QRect captured = QRect(mCaptureStart, tilePosition()).normalized();
-    if (captured.width() == 0)
-        captured.adjust(-1, 0, 1, 0);
-    if (captured.height() == 0)
-        captured.adjust(0, -1, 0, 1);
-    return captured;
+	const Cell &cell = tileLayer->cellAt(tilePosition());
+	TerrainType *t = cell.tile->cornerTerrain(0);
+    setTerrain(t);
 }
 
 void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
@@ -324,32 +281,205 @@ void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
-    if (!tileLayer->bounds().intersects(QRect(whereX, whereY,
-                                              stamp->width(),
-                                              stamp->height())))
+	whereX -= mOffsetX;
+	whereY -= mOffsetY;
+
+    if (!tileLayer->bounds().intersects(QRect(whereX, whereY, stamp->width(), stamp->height())))
         return;
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
-                            whereX, whereY, stamp);
+    PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer, whereX, whereY, stamp);
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
     mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
-/**
- * Updates the position of the brush item.
- */
-void TerrainBrush::updatePosition()
+static inline unsigned int makeTerrain(int t)
 {
+	t &= 0xFF;
+	return t << 24 | t << 16 | t << 8 | t;
+}
+
+static inline unsigned int makeTerrain(int tl, int tr, int bl, int br)
+{
+	return (tl & 0xFF) << 24 | (tr & 0xFF) << 16 | (bl & 0xFF) << 8 | (br & 0xFF);
+}
+
+Tile *TerrainBrush::findBestTile(unsigned int terrain, unsigned int considerationMask)
+{
+	// if all quadrants are set to 'no terrain', then the 'empty' tile is the only choice we can deduce
+	if (terrain == 0xFFFFFFFF)
+		return NULL;
+
+	QList<Tile*> matches;
+	int confidence = 0;
+
+	// TODO: should we scan each tileset? we really need to use gId's for terrains aswell as tiles i guess...
+	Tileset *tileset = mapDocument()->map()->tilesets().at(0);
+
+	int tileCount = tileset->tileCount();
+	for (int i = 0; i < tileCount; ++i) {
+		Tile *t = tileset->tileAt(i);
+		if ((t->terrain() & considerationMask) == (terrain & considerationMask)) {
+			// prefer tiles with the most possible matches to the requested terrain
+			int matchingQuadrants = 0;
+			if ((t->terrain() & 0xFF000000) == (terrain & 0xFF000000))
+				++matchingQuadrants;
+			if ((t->terrain() & 0xFF0000) == (terrain & 0xFF0000))
+				++matchingQuadrants;
+			if ((t->terrain() & 0xFF00) == (terrain & 0xFF00))
+				++matchingQuadrants;
+			if ((t->terrain() & 0xFF) == (terrain & 0xFF))
+				++matchingQuadrants;
+
+			if (matchingQuadrants >= confidence) {
+				if (matchingQuadrants > confidence)
+					matches.clear();
+				confidence = matchingQuadrants;
+
+				matches.push_back(t);
+			}
+		}
+	}
+
+	// choose a candidate at random, with consideration for terrain probability
+	if (!matches.isEmpty())
+		return matches[0];
+
+	return NULL;
+}
+
+void TerrainBrush::updateBrush(const QPoint &cursorPos)
+{
+	// get the current tile layer (TODO: what if the current layer isn't a tile layer?)
+    TileLayer *currentLayer = currentTileLayer();
+    Q_ASSERT(currentLayer);
+
+	int layerWidth = currentLayer->width();
+	int layerHeight = currentLayer->height();
+	int numTiles = layerWidth * layerHeight;
+
+	if (!currentLayer->bounds().contains(cursorPos))
+		return;
+
+	// allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
+	Tile **newTerrain = new Tile*[numTiles];
+
+	// allocate a buffer of flags for each tile that may be considered (TODO: this could be retained per layer to save regular allocation)
+	char *checked = new char[numTiles];
+	memset(checked, 0, numTiles);
+
+	// create a consideration list, and push the starting point
+	QList<QPoint> transitionList;
+	transitionList.push_back(cursorPos);
+	bool first = true;
+
+	QRect brushRect(cursorPos, cursorPos);
+
+	// produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
+	while (!transitionList.isEmpty()) {
+		// get the next point in the consideration list
+		QPoint p = transitionList.front();
+		transitionList.pop_front();
+		int x = p.x(), y = p.y();
+
+		// if we have already considered this point, skip to the next
+		if (checked[y*layerWidth + x])
+			continue;
+
+		// get the relevant tiles
+		const Tile *tile = currentLayer->cellAt(p).tile;
+		Tile *paste = NULL;
+
+		// find a tile that best suits this position
+		if (first) {
+			// the first tile is special, we will just paste the selected terrain and add the surroundings for consideration
+
+			// TODO: if we're painting quadrants rather than full tiles, we need to set the appropriate mask
+			paste = mTerrain ? findBestTile(makeTerrain(mTerrain->id()), 0xFFFFFFFF) : NULL;
+			newTerrain[y*layerWidth + x] = paste;
+			first = false;
+		} else {
+			// following tiles each need consideration against their surroundings
+			unsigned int preferredTerrain = tile->terrain();
+			unsigned int mask = 0;
+
+			// depending which connections have been set, we update the preferred terrain of the tile accordingly
+			if (y > 0 && checked[(y-1)*layerWidth + x]) {
+				preferredTerrain = (newTerrain[(y-1)*layerWidth + x]->terrain() << 16) | (preferredTerrain & 0x0000FFFF);
+				mask |= 0xFFFF0000;
+			}
+			if (y < layerHeight - 1 && checked[(y+1)*layerWidth + x]) {
+				preferredTerrain = (newTerrain[(y+1)*layerWidth + x]->terrain() >> 16) | (preferredTerrain & 0xFFFF0000);
+				mask |= 0x0000FFFF;
+			}
+			if (x > 0 && checked[y*layerWidth + x - 1]) {
+				preferredTerrain = ((newTerrain[y*layerWidth + x - 1]->terrain() << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
+				mask |= 0xFF00FF00;
+			}
+			if (x < layerWidth - 1 && checked[y*layerWidth + x + 1]) {
+				preferredTerrain = ((newTerrain[y*layerWidth + x + 1]->terrain() >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
+				mask |= 0x00FF00FF;
+			}
+
+			paste = findBestTile(preferredTerrain, mask);
+			newTerrain[y*layerWidth + x] = paste;
+		}
+
+		// update the brush rect and consideration map
+		brushRect |= QRect(p, p);
+		checked[y*layerWidth + x] = true;
+
+		// consider surrounding tiles
+		if (y > 0) {
+			const Tile *above = currentLayer->cellAt(x, y - 1).tile;
+			if (paste->topEdge() != above->bottomEdge() && !checked[(y-1)*layerWidth + x])
+				transitionList.push_back(QPoint(x, y - 1));
+		}
+		if (y < layerHeight - 1) {
+			const Tile *below = currentLayer->cellAt(x, y + 1).tile;
+			if (paste->bottomEdge() != below->topEdge() && !checked[(y+1)*layerWidth + x])
+				transitionList.push_back(QPoint(x, y + 1));
+		}
+		if (x > 0) {
+			const Tile *left = currentLayer->cellAt(x - 1, y).tile;
+			if (paste->leftEdge() != left->rightEdge() && !checked[y*layerWidth + x - 1])
+				transitionList.push_back(QPoint(x - 1, y));
+		}
+		if (x < layerWidth - 1) {
+			const Tile *right = currentLayer->cellAt(x + 1, y).tile;
+			if (paste->rightEdge() != right->leftEdge() && !checked[y*layerWidth + x + 1])
+				transitionList.push_back(QPoint(x + 1, y));
+		}
+	}
+
+	// create a stamp for the terrain block
+	TileLayer *stamp = new TileLayer(QString(), 0, 0, brushRect.width(), brushRect.height());
+
+	for (int y = brushRect.top(); y <= brushRect.bottom(); ++y) {
+		for (int x = brushRect.left(); x <= brushRect.right(); ++x) {
+			if (!checked[y*layerWidth + x])
+				continue;
+			stamp->setCell(x - brushRect.left(), y - brushRect.top(), Cell(newTerrain[y*layerWidth + x]));
+		}
+	}
+
+    brushItem()->setTileLayer(stamp);
+
+	delete[] checked;
+	delete[] newTerrain;
+
+/*
     const QPoint tilePos = tilePosition();
 
-    if (!brushItem()->tileLayer()) {
+	if (!brushItem()->tileLayer()) {
         brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
-        mPaintX = tilePos.x();
-        mPaintY = tilePos.y();
     }
+*/
 
-    mPaintX = tilePos.x();
-    mPaintY = tilePos.y();
-    brushItem()->setTileLayerPosition(QPoint(mPaintX, mPaintY));
+	brushItem()->setTileLayerPosition(QPoint(brushRect.left(), brushRect.top()));
+
+	mPaintX = cursorPos.x();
+	mPaintY = cursorPos.y();
+	mOffsetX = cursorPos.x() - brushRect.left();
+	mOffsetY = cursorPos.y() - brushRect.top();
 }

@@ -333,7 +333,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
 		if (quadrants.size() == 4) {
 			for (int i = 0; i < 4; ++i) {
 				int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
-				tile->setCornerTerrain(i, t);
+				tile->setCornerTerrainType(i, t);
 			}
 		}
 	}
