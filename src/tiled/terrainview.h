@@ -23,7 +23,7 @@
 
 #include "terrainmodel.h"
 
-#include <QTableView>
+#include <QListView>
 
 namespace Tiled {
 namespace Internal {
@@ -34,7 +34,7 @@ class Zoomable;
 /**
  * The tileset view. May only be used with the TilesetModel.
  */
-class TerrainView : public QTableView
+class TerrainView : public QListView
 {
     Q_OBJECT
 

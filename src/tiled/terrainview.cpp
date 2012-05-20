@@ -107,24 +107,17 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 } // anonymous namespace
 
 TerrainView::TerrainView(MapDocument *mapDocument, QWidget *parent)
-    : QTableView(parent)
+    : QListView(parent)
     , mZoomable(new Zoomable(this))
     , mMapDocument(mapDocument)
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this, this));
-    setShowGrid(false);
 
-    QHeaderView *header = horizontalHeader();
-    header->hide();
-    header->setResizeMode(QHeaderView::ResizeToContents);
-    header->setMinimumSectionSize(1);
-
-    header = verticalHeader();
-    header->hide();
-    header->setResizeMode(QHeaderView::ResizeToContents);
-    header->setMinimumSectionSize(1);
+    setFlow(QListView::LeftToRight);
+    setResizeMode(QListView::Adjust);
+    setWrapping(true);
 
     // Hardcode this view on 'left to right' since it doesn't work properly
     // for 'right to left' languages.
@@ -155,7 +148,7 @@ void TerrainView::wheelEvent(QWheelEvent *event)
         return;
     }
 
-    QTableView::wheelEvent(event);
+    QListView::wheelEvent(event);
 }
 
 /**

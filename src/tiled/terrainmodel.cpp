@@ -40,24 +40,12 @@ int TerrainModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    const int terrains = mTileset->terrainTypeCount() + 1;
-    const int columns = 8;
-
-    int rows = 1;
-    if (columns > 0) {
-        rows = terrains / columns;
-        if (terrains % columns > 0)
-            ++rows;
-    }
-
-    return rows;
+    return mTileset->terrainTypeCount() + 1;
 }
 
 int TerrainModel::columnCount(const QModelIndex &parent) const
 {
-    int terrains = mTileset->terrainTypeCount() + 1;
-    int columns = terrains < 8 ? terrains : 8;
-    return parent.isValid() ? 0 : columns;
+    return parent.isValid() ? 0 : 1;
 }
 
 QVariant TerrainModel::data(const QModelIndex &index, int role) const
