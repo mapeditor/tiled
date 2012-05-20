@@ -68,6 +68,7 @@
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
+#include "terraindock.h"
 #include "toolmanager.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
@@ -106,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mLayerDock(new LayerDock(this))
     , mTilesetDock(new TilesetDock(this))
+    , mTerrainDock(new TerrainDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomLabel(new QLabel)
     , mStatusInfoLabel(new QLabel)
@@ -160,6 +162,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::RightDockWidgetArea, undoDock);
     tabifyDockWidget(undoDock, mLayerDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
 
     statusBar()->addPermanentWidget(mZoomLabel);
@@ -336,6 +339,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
 
+    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const TerrainType*)),
+            this, SLOT(setTerrainBrush(const TerrainType*)));
+
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
     connect(mRandomButton, SIGNAL(toggled(bool)),
@@ -364,6 +370,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mUi->menuView->addSeparator();
     mUi->menuView->addAction(mTilesetDock->toggleViewAction());
+    mUi->menuView->addAction(mTerrainDock->toggleViewAction());
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
     mUi->menuView->addAction(undoDock->toggleViewAction());
 
@@ -1324,6 +1331,20 @@ void MainWindow::setStampBrush(const TileLayer *tiles)
         m->selectTool(mStampBrush);
 }
 
+/**
+ * Sets the terrain brush.
+ */
+void MainWindow::setTerrainBrush(const TerrainType *terrain)
+{
+    mTerrainBrush->setTerrain(terrain);
+
+    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
+    ToolManager *m = ToolManager::instance();
+    AbstractTool *selectedTool = m->selectedTool();
+    if (selectedTool != mTerrainBrush)
+        m->selectTool(mTerrainBrush);
+}
+
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 {
     mStatusInfoLabel->setText(statusInfo);
@@ -1434,6 +1455,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mActionHandler->setMapDocument(mMapDocument);
     mLayerDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
+    mTerrainDock->setMapDocument(mMapDocument);
     AutomappingManager::instance()->setMapDocument(mMapDocument);
     QuickStampManager::instance()->setMapDocument(mMapDocument);
 

@@ -39,7 +39,7 @@ using namespace Tiled::Internal;
 TerrainBrush::TerrainBrush(QObject *parent)
     : AbstractTileTool(tr("Terrain Brush"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-clone.png")),
+                               ":images/24x24/terrain-edit.png")),
                        QKeySequence(tr("T")),
                        parent)
     , mTerrain(NULL)
@@ -199,10 +199,16 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
 
     // Reset the brush, since it probably became invalid
     brushItem()->setTileRegion(QRegion());
-    setTerrain(NULL);
+
+    // if the new document has any terrains defined, choose the first rather than the 'none' terrain
+    Tileset *tileset = newDocument->map()->tilesets().at(0);
+    if (tileset && tileset->terrainTypeCount() > 0)
+        setTerrain(tileset->terrainType(0));
+    else
+        setTerrain(NULL);
 }
 
-void TerrainBrush::setTerrain(TerrainType *terrain)
+void TerrainBrush::setTerrain(const TerrainType *terrain)
 {
     if (mTerrain == terrain)
         return;

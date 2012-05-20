@@ -59,7 +59,8 @@ HEADERS += compression.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
-    gidmapper.h
+    gidmapper.h \
+    terraintype.h
 macx {
     contains(QT_CONFIG, ppc):CONFIG += x86 \
         ppc
