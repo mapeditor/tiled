@@ -56,13 +56,13 @@ public:
      * Sets the stamp that is drawn when painting. The stamp brush takes
      * ownership over the stamp layer.
      */
-    void setTerrain(TerrainType *terrain);
+    void setTerrain(const TerrainType *terrain);
 
     /**
      * This returns the actual tile layer which is used to define the current
      * state.
      */
-    TerrainType *terrain() const { return mTerrain; }
+    const TerrainType *terrain() const { return mTerrain; }
 
 signals:
     /**
@@ -101,7 +101,7 @@ private:
     /**
      * mTerrain is the terrain we are currently painting
      */
-    TerrainType *mTerrain;
+    const TerrainType *mTerrain;
     int mPaintX, mPaintY;
     int mOffsetX, mOffsetY;
 

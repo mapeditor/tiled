@@ -202,7 +202,7 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
     setTerrain(NULL);
 }
 
-void TerrainBrush::setTerrain(TerrainType *terrain)
+void TerrainBrush::setTerrain(const TerrainType *terrain)
 {
     if (mTerrain == terrain)
         return;

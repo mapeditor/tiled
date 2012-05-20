@@ -76,7 +76,7 @@ signals:
     /**
      * Emitted when the current tile changed.
      */
-    void currentTerrainChanged(TerrainType *terrain);
+    void currentTerrainChanged(const TerrainType *terrain);
 
     /**
      * Emitted when files are dropped at the tileset dock.

@@ -339,6 +339,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
 
+    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const TerrainType*)),
+            this, SLOT(setTerrainBrush(const TerrainType*)));
+
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
     connect(mRandomButton, SIGNAL(toggled(bool)),
@@ -1326,6 +1329,20 @@ void MainWindow::setStampBrush(const TileLayer *tiles)
     AbstractTool *selectedTool = m->selectedTool();
     if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
         m->selectTool(mStampBrush);
+}
+
+/**
+ * Sets the terrain brush.
+ */
+void MainWindow::setTerrainBrush(const TerrainType *terrain)
+{
+    mTerrainBrush->setTerrain(terrain);
+
+    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
+    ToolManager *m = ToolManager::instance();
+    AbstractTool *selectedTool = m->selectedTool();
+    if (selectedTool != mTerrainBrush)
+        m->selectTool(mTerrainBrush);
 }
 
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)

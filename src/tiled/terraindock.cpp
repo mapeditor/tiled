@@ -242,31 +242,11 @@ void TerrainDock::updateCurrentTiles()
         return;
 
     const QModelIndex &first = indexes.first();
-    int minX = first.column();
-    int maxX = first.column();
-    int minY = first.row();
-    int maxY = first.row();
-
-    foreach (const QModelIndex &index, indexes) {
-        if (minX > index.column()) minX = index.column();
-        if (maxX < index.column()) maxX = index.column();
-        if (minY > index.row()) minY = index.row();
-        if (maxY < index.row()) maxY = index.row();
-    }
-
-    // Create a tile layer from the current selection
-    TileLayer *tileLayer = new TileLayer(QString(), 0, 0,
-                                         maxX - minX + 1,
-                                         maxY - minY + 1);
 
     const TerrainModel *model = static_cast<const TerrainModel*>(s->model());
-    foreach (const QModelIndex &index, indexes) {
-        TerrainType *terrain = model->terrainAt(index);
-        tileLayer->setCell(index.column() - minX, index.row() - minY, Cell(terrain ? model->tileset()->tileAt(terrain->paletteImageTile()) : NULL));
-    }
+    TerrainType *terraion = model->terrainAt(first);
 
-//    setCurrentTiles(tileLayer);
-//    setCurrentTerrain(model->tileAt(s->currentIndex()));
+    setCurrentTerrain(terraion);
 }
 
 void TerrainDock::tilesetChanged(Tileset *tileset)
