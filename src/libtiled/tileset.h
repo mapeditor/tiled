@@ -31,6 +31,7 @@
 #define TILESET_H
 
 #include "object.h"
+#include "terraintype.h"
 
 #include <QColor>
 #include <QList>
@@ -43,40 +44,6 @@ class QImage;
 namespace Tiled {
 
 class Tile;
-class Tileset;
-
-class TerrainType
-{
-public:
-    TerrainType(int id, Tileset *tileset, QString name, int imageTile):
-      mId(id),
-      mTileset(tileset),
-      mName(name),
-      mImageTile(imageTile)
-      {
-//          mColor;
-      }
-
-      int id() const { return mId; }
-      Tileset *tileset() const { return mTileset; }
-      QString name() const { return mName; }
-//      QColor color() const { return mColor; }
-      int paletteImageTile() const { return mImageTile; }
-//      Tile *paletteImage() const { return mTileset->tileAt(mImageTile); }
-      bool hasTransitionDistances() const { return !mTransitionDistance.isEmpty(); }
-      int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
-      void setTransitionDistance(int targetTerrainType, int distance) { mTransitionDistance[targetTerrainType + 1] = distance; }
-
-      void setTransitionDistances(QVector<int> &transitionDistances) { mTransitionDistance = transitionDistances; }
-
-private:
-    int mId;
-    Tileset *mTileset;
-    QString mName;
-//    QColor mColor;
-    int mImageTile;
-    QVector<int> mTransitionDistance;
-};
 
 /**
  * A tileset, representing a set of tiles.

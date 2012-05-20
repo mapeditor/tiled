@@ -53,6 +53,7 @@ class StampBrush;
 class BucketFillTool;
 class TerrainBrush;
 class TilesetDock;
+class TerrainDock;
 class MapView;
 class CommandButton;
 
@@ -202,6 +203,7 @@ private:
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
     TilesetDock *mTilesetDock;
+    TerrainDock *mTerrainDock;
     QLabel *mCurrentLayerLabel;
     QLabel *mZoomLabel;
     QLabel *mStatusInfoLabel;

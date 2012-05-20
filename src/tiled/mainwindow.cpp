@@ -68,6 +68,7 @@
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
+#include "terraindock.h"
 #include "toolmanager.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
@@ -106,6 +107,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mLayerDock(new LayerDock(this))
     , mTilesetDock(new TilesetDock(this))
+    , mTerrainDock(new TerrainDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomLabel(new QLabel)
     , mStatusInfoLabel(new QLabel)
@@ -160,6 +162,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::RightDockWidgetArea, undoDock);
     tabifyDockWidget(undoDock, mLayerDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
 
     statusBar()->addPermanentWidget(mZoomLabel);
@@ -364,6 +367,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mUi->menuView->addSeparator();
     mUi->menuView->addAction(mTilesetDock->toggleViewAction());
+    mUi->menuView->addAction(mTerrainDock->toggleViewAction());
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
     mUi->menuView->addAction(undoDock->toggleViewAction());
 
@@ -1434,6 +1438,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mActionHandler->setMapDocument(mMapDocument);
     mLayerDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
+    mTerrainDock->setMapDocument(mMapDocument);
     AutomappingManager::instance()->setMapDocument(mMapDocument);
     QuickStampManager::instance()->setMapDocument(mMapDocument);
 
