@@ -53,17 +53,16 @@ public:
       mTileset(tileset),
       mName(name),
       mImageTile(imageTile)
-//		mpPaletteImage(pPaletteImage)
       {
-          mColor;
+//          mColor;
       }
 
       int id() const { return mId; }
       Tileset *tileset() const { return mTileset; }
       QString name() const { return mName; }
-      QColor color() const { return mColor; }
+//      QColor color() const { return mColor; }
       int paletteImageTile() const { return mImageTile; }
-//      Tile *paletteImage() const { return mpPaletteImage; }
+//      Tile *paletteImage() const { return mTileset->tileAt(mImageTile); }
       bool hasTransitionDistances() const { return !mTransitionDistance.isEmpty(); }
       int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
       void setTransitionDistance(int targetTerrainType, int distance) { mTransitionDistance[targetTerrainType + 1] = distance; }
@@ -74,9 +73,8 @@ private:
     int mId;
     Tileset *mTileset;
     QString mName;
-    QColor mColor;
+//    QColor mColor;
     int mImageTile;
-//	Tile *mpPaletteImage;
     QVector<int> mTransitionDistance;
 };
 

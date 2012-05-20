@@ -120,8 +120,11 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
             break;
         }
     case LineStartSet:
-        updateBrush(pos, &calculateLine(mLineReferenceX, mLineReferenceY, pos.x(), pos.y()));
-        break;
+        {
+            QVector<QPoint> lineList = calculateLine(mLineReferenceX, mLineReferenceY, pos.x(), pos.y());
+            updateBrush(pos, &lineList);
+            break;
+        }
     case Line:
     case Free:
         updateBrush(pos);
