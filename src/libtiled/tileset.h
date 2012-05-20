@@ -34,6 +34,7 @@
 
 #include <QColor>
 #include <QList>
+#include <QVector>
 #include <QPoint>
 #include <QString>
 
@@ -42,31 +43,41 @@ class QImage;
 namespace Tiled {
 
 class Tile;
+class Tileset;
 
 class TerrainType
 {
 public:
-	TerrainType(int id, QString name, int imageTile):
-		mId(id),
-		mName(name),
-		mImageTile(imageTile)
+    TerrainType(int id, Tileset *tileset, QString name, int imageTile):
+      mId(id),
+      mTileset(tileset),
+      mName(name),
+      mImageTile(imageTile)
 //		mpPaletteImage(pPaletteImage)
-	{
-		mColor;
-	}
+      {
+          mColor;
+      }
 
-	int id() const { return mId; }
-	QString name() const { return mName; }
-	QColor color() const { return mColor; }
-	int paletteImageTile() const { return mImageTile; }
-//	Tile *paletteImage() const { return mpPaletteImage; }
+      int id() const { return mId; }
+      Tileset *tileset() const { return mTileset; }
+      QString name() const { return mName; }
+      QColor color() const { return mColor; }
+      int paletteImageTile() const { return mImageTile; }
+//      Tile *paletteImage() const { return mpPaletteImage; }
+      bool hasTransitionDistances() const { return !mTransitionDistance.isEmpty(); }
+      int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
+      void setTransitionDistance(int targetTerrainType, int distance) { mTransitionDistance[targetTerrainType + 1] = distance; }
+
+      void setTransitionDistances(QVector<int> &transitionDistances) { mTransitionDistance = transitionDistances; }
 
 private:
-	int mId;
-	QString mName;
-	QColor mColor;
-	int mImageTile;
+    int mId;
+    Tileset *mTileset;
+    QString mName;
+    QColor mColor;
+    int mImageTile;
 //	Tile *mpPaletteImage;
+    QVector<int> mTransitionDistance;
 };
 
 /**
@@ -242,14 +253,14 @@ public:
 	/**
 	 * Terrain related stuff.
 	 */
-	int terrainTypeCount() const { return mTerrainTypes.size(); }
+    int terrainTypeCount() const { return mTerrainTypes.size(); }
 
-	TerrainType* terrainType(int terrain) const { return mTerrainTypes[terrain]; }
+    TerrainType *terrainType(int terrain) const { return mTerrainTypes[terrain]; }
+    int terrainTransitionPenalty(int terrainType0, int terrainType1);
 
-	void addTerrainType(QString name, int imageTile)
-	{
-		mTerrainTypes.push_back(new TerrainType(mTerrainTypes.size(), name, imageTile));
-	}
+    void addTerrainType(QString name, int imageTile, QString distances);
+
+    void calculateTerrainDistances();
 
 private:
     QString mName;
@@ -265,7 +276,7 @@ private:
     int mImageHeight;
     int mColumnCount;
     QList<Tile*> mTiles;
-	QList<TerrainType*> mTerrainTypes;
+    QList<TerrainType*> mTerrainTypes;
 };
 
 } // namespace Tiled

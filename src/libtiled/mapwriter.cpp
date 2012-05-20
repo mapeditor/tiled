@@ -195,15 +195,28 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
 
 static QString makeTerrainAttribute(const Tile *tile)
 {
-	QString terrain;
-	for (int i = 0; i < 4; ++i ) {
-		if (i > 0)
-			terrain += QLatin1String(",");
-		int t = tile->cornerTerrainType(i);
-		if (t > -1)
-			terrain += QString::number(t);
-	}
-	return terrain;
+    QString terrain;
+    for (int i = 0; i < 4; ++i ) {
+        if (i > 0)
+            terrain += QLatin1String(",");
+        int t = tile->cornerTerrainType(i);
+        if (t > -1)
+            terrain += QString::number(t);
+    }
+    return terrain;
+}
+
+static QString makeTransitionDistanceAttribute(const TerrainType *t, int numTerains)
+{
+    QString distance;
+    for (int i = -1; i < numTerains; ++i ) {
+        if (i > -1)
+            distance += QLatin1String(",");
+        int d = t->transitionDistance(i);
+        if (d > -1)
+            distance += QString::number(d);
+    }
+    return distance;
 }
 
 void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
@@ -273,31 +286,33 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     }
 
     // Write the terrain types
-	if (tileset->terrainTypeCount() > 0) {
+    if (tileset->terrainTypeCount() > 0) {
         w.writeStartElement(QLatin1String("terraintypes"));
-		for (int i = 0; i < tileset->terrainTypeCount(); ++i) {
-			TerrainType* tt = tileset->terrainType(i);
-			w.writeStartElement(QLatin1String("terrain"));
+        for (int i = 0; i < tileset->terrainTypeCount(); ++i) {
+            TerrainType* tt = tileset->terrainType(i);
+            w.writeStartElement(QLatin1String("terrain"));
             w.writeAttribute(QLatin1String("name"), tt->name());
 //            w.writeAttribute(QLatin1String("color"), tt->color());
             w.writeAttribute(QLatin1String("tile"), QString::number(tt->paletteImageTile()));
-			w.writeEndElement();
-		}
+            if (tt->hasTransitionDistances())
+                w.writeAttribute(QLatin1String("distances"), makeTransitionDistanceAttribute(tt, tileset->terrainTypeCount()));
+            w.writeEndElement();
+        }
         w.writeEndElement();
-	}
+    }
 
     // Write the properties for those tiles that have them
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
         const Properties properties = tile->properties();
-		unsigned int terrain = tile->terrain();
+        unsigned int terrain = tile->terrain();
         if (!properties.isEmpty() || terrain != 0xFFFFFFFF) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(i));
-			if (terrain != 0xFFFFFFFF)
-	            w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
-			if (!properties.isEmpty())
-	            writeProperties(w, properties);
+            if (terrain != 0xFFFFFFFF)
+                w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
+            if (!properties.isEmpty())
+                writeProperties(w, properties);
             w.writeEndElement();
         }
     }

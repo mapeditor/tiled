@@ -91,7 +91,7 @@ private:
 
     void capture();
 
-	Tile *findBestTile(unsigned int terrain, unsigned int considerationMask);
+    Tile *findBestTile(Tileset *tileset, unsigned int terrain, unsigned int considerationMask);
 
     /**
      * updates the brush given new coordinates.
@@ -101,7 +101,7 @@ private:
     /**
      * mTerrain is the terrain we are currently painting
      */
-	TerrainType *mTerrain;
+    TerrainType *mTerrain;
     int mPaintX, mPaintY;
     int mOffsetX, mOffsetY;
 

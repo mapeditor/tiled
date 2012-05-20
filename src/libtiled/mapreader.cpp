@@ -41,6 +41,7 @@
 #include "tileset.h"
 
 #include <QCoreApplication>
+#include <QVector>
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
@@ -308,6 +309,9 @@ Tileset *MapReaderPrivate::readTileset()
     if (tileset && !mReadingExternalTileset)
         mGidMapper.insert(firstGid, tileset);
 
+    if (tileset)
+        tileset->calculateTerrainDistances();
+
     return tileset;
 }
 
@@ -325,18 +329,18 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
 
     // TODO: Add support for individual tiles (then it needs to be added here)
 
-	// Read tile quadrant terrain ids
-	QString terrain = atts.value(QLatin1String("terrain")).toString();
-	if (!terrain.isEmpty()) {
+    // Read tile quadrant terrain ids
+    QString terrain = atts.value(QLatin1String("terrain")).toString();
+    if (!terrain.isEmpty()) {
         Tile *tile = tileset->tileAt(id);
-		QStringList quadrants = terrain.split(QLatin1String(","));
-		if (quadrants.size() == 4) {
-			for (int i = 0; i < 4; ++i) {
-				int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
-				tile->setCornerTerrainType(i, t);
-			}
-		}
-	}
+        QStringList quadrants = terrain.split(QLatin1String(","));
+        if (quadrants.size() == 4) {
+            for (int i = 0; i < 4; ++i) {
+                int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
+                tile->setCornerTerrainType(i, t);
+            }
+        }
+    }
 
     while (xml.readNextStartElement()) {
         if (xml.name() == "properties") {
@@ -381,17 +385,19 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
 
     while (xml.readNextStartElement()) {
         if (xml.name() == "terrain") {
-			const QXmlStreamAttributes atts = xml.attributes();
-			QString name = atts.value(QLatin1String("name")).toString();
-			int tile = atts.value(QLatin1String("tile")).toString().toInt();
+            const QXmlStreamAttributes atts = xml.attributes();
+            QString name = atts.value(QLatin1String("name")).toString();
+            int tile = atts.value(QLatin1String("tile")).toString().toInt();
+//            int tile = atts.value(QLatin1String("color")).toString().toInt();
+            QString distances = atts.value(QLatin1String("distances")).toString();
 
-			tileset->addTerrainType(name, tile);
+            tileset->addTerrainType(name, tile, distances);
 
-			xml.skipCurrentElement();
-		}
+            xml.skipCurrentElement();
+        }
         else
             readUnknownElement();
-	}
+    }
 }
 
 static void readLayerAttributes(Layer *layer,

@@ -82,31 +82,31 @@ public:
      */
     QSize size() const { return mImage.size(); }
 
-	/**
-	 * Terrain type related stuff (this shoudl be the only bit-twiddley stuff there is)
-	 */
-	TerrainType *cornerTerrain(int corner) const { int t = cornerTerrainType(corner); return t >= 0 ? mTileset->terrainType(t) : NULL; }
+    /**
+     * Terrain type related stuff (this shoudl be the only bit-twiddley stuff there is)
+     */
+    TerrainType *cornerTerrain(int corner) const { int t = cornerTerrainType(corner); return t >= 0 ? mTileset->terrainType(t) : NULL; }
 
-	int cornerTerrainType(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
-	void setCornerTerrainType(int corner, int terrain)
-	{
-		unsigned int mask = 0xFF << (3 - corner)*8;
-		unsigned int insert = terrain << (3 - corner)*8;
-		mTerrain = (mTerrain & ~mask) | (insert & mask);
-	}
+    int cornerTerrainType(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+    void setCornerTerrainType(int corner, int terrain)
+    {
+        unsigned int mask = 0xFF << (3 - corner)*8;
+        unsigned int insert = terrain << (3 - corner)*8;
+        mTerrain = (mTerrain & ~mask) | (insert & mask);
+    }
 
-	// returns the terrain terrain id for edges, and the whole tile which can be compared against other tiles
-	unsigned short topEdge() const { return terrain() >> 16; }
-	unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
-	unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
-	unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
-	unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; }
+    // returns the terrain terrain id for edges, and the whole tile which can be compared against other tiles
+    unsigned short topEdge() const { return terrain() >> 16; }
+    unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
+    unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
+    unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
+    unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; }
 
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-	unsigned int mTerrain;
+    unsigned int mTerrain;
 };
 
 } // namespace Tiled
