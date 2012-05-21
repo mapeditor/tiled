@@ -111,7 +111,6 @@ TerrainView::TerrainView(MapDocument *mapDocument, QWidget *parent)
     , mZoomable(new Zoomable(this))
     , mMapDocument(mapDocument)
 {
-    setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this, this));
 
@@ -119,10 +118,6 @@ TerrainView::TerrainView(MapDocument *mapDocument, QWidget *parent)
     setResizeMode(QListView::Adjust);
     setWrapping(true);
 
-    // Hardcode this view on 'left to right' since it doesn't work properly
-    // for 'right to left' languages.
-    setLayoutDirection(Qt::LeftToRight);
-    
     Preferences *prefs = Preferences::instance();
     mDrawGrid = prefs->showTilesetGrid();
 
