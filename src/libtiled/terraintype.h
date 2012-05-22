@@ -31,6 +31,7 @@
 #define TERRAINTYPE_H
 
 #include "object.h"
+#include "tileset.h"
 
 #include <QColor>
 #include <QVector>
@@ -39,7 +40,6 @@
 namespace Tiled {
 
 class Tile;
-class Tileset;
 
 /**
  * A terraintype, representing a terrain type.
@@ -52,21 +52,59 @@ public:
       mTileset(tileset),
       mName(name),
       mImageTile(imageTile)
-      {
+    {
 //          mColor;
-      }
+    }
 
-      int id() const { return mId; }
-      Tileset *tileset() const { return mTileset; }
-      QString name() const { return mName; }
-//      QColor color() const { return mColor; }
-      int paletteImageTile() const { return mImageTile; }
-//      Tile *paletteImage() const { return mTileset->tileAt(mImageTile); }
-      bool hasTransitionDistances() const { return !mTransitionDistance.isEmpty(); }
-      int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
-      void setTransitionDistance(int targetTerrainType, int distance) { mTransitionDistance[targetTerrainType + 1] = distance; }
+    /**
+     * Returns ID of this tile terrain type.
+     */
+    int id() const { return mId; }
 
-      void setTransitionDistances(QVector<int> &transitionDistances) { mTransitionDistance = transitionDistances; }
+    /**
+     * Returns the tileset this terrain type belongs to.
+     */
+    Tileset *tileset() const { return mTileset; }
+
+    /**
+     * Returns the name of this terrain type.
+     */
+    QString name() const { return mName; }
+
+    /**
+     * Returns a colour representing this terrain type.
+     */
+//    QColor color() const { return mColor; }
+
+    /**
+     * Returns a tile index that represents this terrain type in the terrain palette.
+     */
+    int paletteImageTile() const { return mImageTile; }
+
+    /**
+     * Returns a Tile that represents this terrain type in the terrain palette.
+     */
+    Tile *paletteImage() const { return mTileset->tileAt(mImageTile); }
+
+    /**
+     * Returns true if this terrain type already has transition distances calculated.
+     */
+    bool hasTransitionDistances() const { return !mTransitionDistance.isEmpty(); }
+
+    /**
+     * Returns the transition penalty(/distance) from this terrain type to another terrain type.
+     */
+    int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
+
+    /**
+     * Sets the transition penalty(/distance) from this terrain type to another terrain type.
+     */
+    void setTransitionDistance(int targetTerrainType, int distance) { mTransitionDistance[targetTerrainType + 1] = distance; }
+
+    /**
+     * Returns the array of terrain penalties(/distances).
+     */
+    void setTransitionDistances(QVector<int> &transitionDistances) { mTransitionDistance = transitionDistances; }
 
 private:
     int mId;

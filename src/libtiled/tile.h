@@ -84,11 +84,18 @@ public:
     QSize size() const { return mImage.size(); }
 
     /**
-     * Terrain type related stuff (this shoudl be the only bit-twiddley stuff there is)
+     * Returns the TerrainType of a given corner.
      */
-    TerrainType *cornerTerrain(int corner) const { int t = cornerTerrainType(corner); return t >= 0 ? mTileset->terrainType(t) : NULL; }
+    TerrainType *cornerTerrain(int corner) const { return mTileset->terrainType(cornerTerrainType(corner)); }
 
+    /**
+     * Returns the terrain at a given corner.
+     */
     int cornerTerrainType(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+
+    /**
+     * Set the terrain type of a given corner.
+     */
     void setCornerTerrainType(int corner, int terrain)
     {
         unsigned int mask = 0xFF << (3 - corner)*8;
@@ -96,14 +103,23 @@ public:
         mTerrain = (mTerrain & ~mask) | (insert & mask);
     }
 
-    // returns the terrain terrain id for edges, and the whole tile which can be compared against other tiles
+    /**
+     * Functions to get various terrain type information from tiles.
+     */
     unsigned short topEdge() const { return terrain() >> 16; }
     unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
     unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
     unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
-    unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; }
+    unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; } // HACK: NULL Tile has 'none' terrain type.
 
+    /**
+     * Returns the probability of this terrain type appearing while painting (0-100%).
+     */
     float terrainProbability() const { return mTerrainProbability; }
+
+    /**
+     * Set the probability of this terrain type appearing while painting (0-100%).
+     */
     void setTerrainProbability(float probability) { mTerrainProbability = probability; }
 
 private:

@@ -39,6 +39,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "terraintype.h"
 
 #include <QCoreApplication>
 #include <QVector>

@@ -29,6 +29,7 @@
 
 #include "tileset.h"
 #include "tile.h"
+#include "terraintype.h"
 
 #include <QBitmap>
 
@@ -226,6 +227,6 @@ void Tileset::calculateTerrainDistances()
             }
         }
 
-        // Repeat while we are still making new connections (could take a number of iterations for distant terrains to connect)
+        // Repeat while we are still making new connections (could take a number of iterations for distant terrain types to connect)
     } while (bNewConnections);
 }

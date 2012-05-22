@@ -27,6 +27,7 @@
 #include "tmxmapwriter.h"
 #include "tile.h"
 #include "tileset.h"
+#include "terraintype.h"
 #include "terrainmodel.h"
 #include "utils.h"
 #include "zoomable.h"
