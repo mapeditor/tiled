@@ -31,7 +31,6 @@
 #define TILESET_H
 
 #include "object.h"
-#include "terraintype.h"
 
 #include <QColor>
 #include <QList>
@@ -44,6 +43,7 @@ class QImage;
 namespace Tiled {
 
 class Tile;
+class TerrainType;
 
 /**
  * A tileset, representing a set of tiles.
@@ -216,16 +216,29 @@ public:
     int columnCountForWidth(int width) const;
 
 	/**
-	 * Terrain related stuff.
+	 * Returns the number of terrain types in this tileset.
 	 */
     int terrainTypeCount() const { return mTerrainTypes.size(); }
 
-    TerrainType *terrainType(int terrain) const { return mTerrainTypes[terrain]; }
-    int terrainTransitionPenalty(int terrainType0, int terrainType1);
+    /**
+     * Returns the number of tiles in this tileset.
+     */
+    TerrainType *terrainType(int terrain) const { return terrain >= 0 ? mTerrainTypes[terrain] : NULL; }
 
+    /**
+     * Add a new terrain type.
+     */
     void addTerrainType(QString name, int imageTile, QString distances);
 
+    /**
+     * Calculates the transition distance matrix for all terrain types.
+     */
     void calculateTerrainDistances();
+
+    /**
+     * Returns the transition penalty(/distance) between 2 terrains. -1 if no transition is possible.
+     */
+    int terrainTransitionPenalty(int terrainType0, int terrainType1);
 
 private:
     QString mName;
