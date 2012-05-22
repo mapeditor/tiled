@@ -50,6 +50,7 @@ TerrainBrush::TerrainBrush(QObject *parent)
     , mLineReferenceX(0)
     , mLineReferenceY(0)
 {
+    setBrushMode(PaintTile);
 }
 
 TerrainBrush::~TerrainBrush()
@@ -345,7 +346,7 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
     return NULL;
 }
 
-void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *list)
+void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 {
     // get the current tile layer
     TileLayer *currentLayer = currentTileLayer();
@@ -354,12 +355,26 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
     int layerWidth = currentLayer->width();
     int layerHeight = currentLayer->height();
     int numTiles = layerWidth * layerHeight;
+    int paintCorner = 0;
 
+    // if we are in vertex paint mode, the bottom right corner on the map will appear as an invalid tile offset...
+    if (mBrushMode == PaintVertex) {
+        if (cursorPos.x() == layerWidth) {
+            cursorPos.setX(cursorPos.x() - 1);
+            paintCorner |= 1;
+        }
+        if (cursorPos.y() == layerHeight) {
+            cursorPos.setY(cursorPos.y() - 1);
+            paintCorner |= 2;
+        }
+    }
+
+    // if the cursor is outside of the map, bail out
     if (!currentLayer->bounds().contains(cursorPos))
         return;
 
     // TODO: this seems like a problem... there's nothing to say that 2 adjacent tiles are from the same tileset, or have any relation to eachother...
-    Tileset *tileset = mTerrain ? mTerrain->tileset() : NULL;
+    Tileset *terrainTileset = mTerrain ? mTerrain->tileset() : NULL;
 
     // allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
     Tile **newTerrain = new Tile*[numTiles];
@@ -394,12 +409,17 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
         int i = y*layerWidth + x;
 
         // if we have already considered this point, skip to the next
+        // TODO: we might want to allow re-consideration if prior tiles... but not for now, this would risk infinite loops
         if (checked[i])
             continue;
 
-        // TODO: get the relevant tile (RECONSIDER THIS APPROACH)
         const Tile *tile = currentLayer->cellAt(p).tile;
-        if (!tileset && tile)
+
+        // get the tileset for this tile
+        Tileset *tileset = NULL;
+        if (terrainTileset) // if we are painting a terrain, then we'll use the terrains tileset
+            tileset = terrainTileset;
+        else if(tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
             tileset = tile->tileset();
 
         // calculate the ideal tile for this position
@@ -407,15 +427,28 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
         Tile *paste = NULL;
 
         if (initialTiles) {
-            // the first tiles are special, we will just paste the selected terrain and add the surroundings for consideration
-    
-            // TODO: if we're painting quadrants rather than full tiles, we need to set the appropriate mask
-            preferredTerrain = makeTerrain(mTerrain->id());
-            mask = 0xFFFFFFFF;
+            // for the initial tiles, we will insert the selected terrain and add the surroundings for consideration
+            unsigned int currentTerrain = tile->terrain();
+
+            if (mBrushMode == PaintTile) {
+                // set the whole tile to the selected terrain
+                preferredTerrain = makeTerrain(mTerrain->id());
+                mask = 0xFFFFFFFF;
+            } else {
+                // calculate the corner mask
+                mask = 0xFF << (3 - paintCorner)*8;
+
+                // mask in the selected terrain
+                preferredTerrain = (currentTerrain & ~mask) | (mTerrain->id() << (3 - paintCorner)*8);
+            }
 
             --initialTiles;
+
+            // if there's nothing to paint... skip this tile
+            if (preferredTerrain == currentTerrain)
+                continue;
         } else {
-            // tiles each need consideration against their surroundings
+            // following tiles each need consideration against their surroundings
             preferredTerrain = tile->terrain();
             mask = 0;
 

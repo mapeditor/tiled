@@ -59,7 +59,7 @@ public:
     /**
      * Returns ID of this tile terrain type.
      */
-    int id() const { return mId; }
+    int id() const { return this != NULL ? mId : -1; }
 
     /**
      * Returns the tileset this terrain type belongs to.
