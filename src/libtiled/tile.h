@@ -31,12 +31,11 @@
 #define TILE_H
 
 #include "object.h"
+#include "tileset.h"
 
 #include <QPixmap>
 
 namespace Tiled {
-
-class Tileset;
 
 class TILEDSHARED_EXPORT Tile : public Object
 {
@@ -44,7 +43,9 @@ public:
     Tile(const QPixmap &image, int id, Tileset *tileset):
         mId(id),
         mTileset(tileset),
-        mImage(image)
+        mImage(image),
+		mTerrain(-1),
+        mTerrainProbability(-1.f)
     {}
 
     /**
@@ -82,10 +83,51 @@ public:
      */
     QSize size() const { return mImage.size(); }
 
+    /**
+     * Returns the Terrain of a given corner.
+     */
+    Terrain *terrainAtCorner(int corner) const { return mTileset->terrain(cornerTerrainId(corner)); }
+
+    /**
+     * Returns the terrain id at a given corner.
+     */
+    int cornerTerrainId(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+
+    /**
+     * Set the terrain type of a given corner.
+     */
+    void setCornerTerrain(int corner, int terrainId)
+    {
+        unsigned int mask = 0xFF << (3 - corner)*8;
+        unsigned int insert = terrainId << (3 - corner)*8;
+        mTerrain = (mTerrain & ~mask) | (insert & mask);
+    }
+
+    /**
+     * Functions to get various terrain type information from tiles.
+     */
+    unsigned short topEdge() const { return terrain() >> 16; }
+    unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
+    unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
+    unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
+    unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; } // HACK: NULL Tile has 'none' terrain type.
+
+    /**
+     * Returns the probability of this terrain type appearing while painting (0-100%).
+     */
+    float terrainProbability() const { return mTerrainProbability; }
+
+    /**
+     * Set the probability of this terrain type appearing while painting (0-100%).
+     */
+    void setTerrainProbability(float probability) { mTerrainProbability = probability; }
+
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
+    unsigned int mTerrain;
+    float mTerrainProbability;
 };
 
 } // namespace Tiled

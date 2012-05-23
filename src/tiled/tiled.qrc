@@ -68,5 +68,6 @@
         <file>images/24x24/system-run.png</file>
         <file>images/16x16/show_hide_others.png</file>
         <file>images/24x24/dice.png</file>
+        <file>images/24x24/terrain-edit.png</file>
     </qresource>
 </RCC>
