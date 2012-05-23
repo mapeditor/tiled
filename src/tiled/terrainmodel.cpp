@@ -40,7 +40,7 @@ int TerrainModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return mTileset->terrainTypeCount() + 1;
+    return mTileset->terrainCount() + 1;
 }
 
 int TerrainModel::columnCount(const QModelIndex &parent) const
@@ -51,7 +51,7 @@ int TerrainModel::columnCount(const QModelIndex &parent) const
 QVariant TerrainModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole) {
-        if (TerrainType *terrain = terrainAt(index))
+        if (Terrain *terrain = terrainAt(index))
             if (terrain)
                 return terrain->paletteImage()->image();
     }
@@ -68,13 +68,13 @@ QVariant TerrainModel::headerData(int /* section */,
     return QVariant();
 }
 
-TerrainType *TerrainModel::terrainAt(const QModelIndex &index) const
+Terrain *TerrainModel::terrainAt(const QModelIndex &index) const
 {
     if (!index.isValid())
         return 0;
 
     const int i = index.column() + index.row() * columnCount() - 1;
-    return i == -1 || i >= mTileset->terrainTypeCount() ? NULL : mTileset->terrainType(i);
+    return i == -1 || i >= mTileset->terrainCount() ? NULL : mTileset->terrain(i);
 }
 
 void TerrainModel::setTileset(Tileset *tileset)

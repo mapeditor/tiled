@@ -154,7 +154,7 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
 {
     const QModelIndex index = indexAt(event->pos());
     const TerrainModel *m = terrainModel();
-    TerrainType *terrain = m->terrainAt(index);
+    Terrain *terrain = m->terrainAt(index);
 
     const bool isExternal = m->tileset()->isExternal();
     QMenu menu;
@@ -194,7 +194,7 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
 void TerrainView::editTerrainProperties()
 {
     const TerrainModel *m = terrainModel();
-    TerrainType *terrain = m->terrainAt(selectionModel()->currentIndex());
+    Terrain *terrain = m->terrainAt(selectionModel()->currentIndex());
     if (!terrain)
         return;
 

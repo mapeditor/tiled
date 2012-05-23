@@ -44,14 +44,20 @@ class Tile;
 /**
  * A terraintype, representing a terrain type.
  */
-class TILEDSHARED_EXPORT TerrainType : public Object
+class TILEDSHARED_EXPORT Terrain : public Object
 {
 public:
-    TerrainType(int id, Tileset *tileset, QString name, int imageTile):
+    enum TerrainType {
+        MatchQuadrants,
+        MatchAdjacency
+    };
+
+    Terrain(int id, Tileset *tileset, QString name, int imageTile, TerrainType type):
       mId(id),
       mTileset(tileset),
       mName(name),
-      mImageTile(imageTile)
+      mImageTile(imageTile),
+      mType(type)
     {
 //          mColor;
     }
@@ -75,6 +81,11 @@ public:
      * Returns a colour representing this terrain type.
      */
 //    QColor color() const { return mColor; }
+
+    /**
+     * Returns the type of this Terrain.
+     */
+    TerrainType type() const { return mType; }
 
     /**
      * Returns a tile index that represents this terrain type in the terrain palette.
@@ -112,6 +123,7 @@ private:
     QString mName;
 //    QColor mColor;
     int mImageTile;
+    TerrainType mType;
     QVector<int> mTransitionDistance;
 };
 

@@ -39,7 +39,7 @@ namespace Tiled {
 class Tile;
 class TileLayer;
 class Tileset;
-class TerrainType;
+class Terrain;
 
 namespace Internal {
 
@@ -70,13 +70,13 @@ public:
     /**
      * Returns the currently selected tile.
      */
-    TerrainType *currentTerrain() const { return mCurrentTerrain; }
+    Terrain *currentTerrain() const { return mCurrentTerrain; }
 
 signals:
     /**
      * Emitted when the current tile changed.
      */
-    void currentTerrainChanged(const TerrainType *terrain);
+    void currentTerrainChanged(const Terrain *terrain);
 
     /**
      * Emitted when files are dropped at the tileset dock.
@@ -106,7 +106,7 @@ private slots:
     void refreshTerrainMenu();
 
 private:
-    void setCurrentTerrain(TerrainType *terrain);
+    void setCurrentTerrain(Terrain *terrain);
     void retranslateUi();
 
     Tileset *currentTileset() const;
@@ -115,7 +115,7 @@ private:
     MapDocument *mMapDocument;
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
-    TerrainType *mCurrentTerrain;
+    Terrain *mCurrentTerrain;
 
     QMap<MapDocument *, QString> mCurrentTilesets;
 

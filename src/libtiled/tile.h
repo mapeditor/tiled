@@ -84,22 +84,22 @@ public:
     QSize size() const { return mImage.size(); }
 
     /**
-     * Returns the TerrainType of a given corner.
+     * Returns the Terrain of a given corner.
      */
-    TerrainType *cornerTerrain(int corner) const { return mTileset->terrainType(cornerTerrainType(corner)); }
+    Terrain *terrainAtCorner(int corner) const { return mTileset->terrain(cornerTerrainId(corner)); }
 
     /**
-     * Returns the terrain at a given corner.
+     * Returns the terrain id at a given corner.
      */
-    int cornerTerrainType(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+    int cornerTerrainId(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
 
     /**
      * Set the terrain type of a given corner.
      */
-    void setCornerTerrainType(int corner, int terrain)
+    void setCornerTerrain(int corner, int terrainId)
     {
         unsigned int mask = 0xFF << (3 - corner)*8;
-        unsigned int insert = terrain << (3 - corner)*8;
+        unsigned int insert = terrainId << (3 - corner)*8;
         mTerrain = (mTerrain & ~mask) | (insert & mask);
     }
 

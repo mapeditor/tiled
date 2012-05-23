@@ -204,13 +204,13 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
 
     // if the new document has any terrains defined, choose the first rather than the 'none' terrain
     Tileset *tileset = newDocument->map()->tilesets().at(0);
-    if (tileset && tileset->terrainTypeCount() > 0)
-        setTerrain(tileset->terrainType(0));
+    if (tileset && tileset->terrainCount() > 0)
+        setTerrain(tileset->terrain(0));
     else
         setTerrain(NULL);
 }
 
-void TerrainBrush::setTerrain(const TerrainType *terrain)
+void TerrainBrush::setTerrain(const Terrain *terrain)
 {
     if (mTerrain == terrain)
         return;
@@ -237,7 +237,7 @@ void TerrainBrush::capture()
     // TODO: we need to know which corner the mouse is closest to...
 
     const Cell &cell = tileLayer->cellAt(tilePosition());
-    TerrainType *t = cell.tile->cornerTerrain(0);
+    Terrain *t = cell.tile->terrainAtCorner(0);
     setTerrain(t);
 }
 
@@ -409,7 +409,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         int i = y*layerWidth + x;
 
         // if we have already considered this point, skip to the next
-        // TODO: we might want to allow re-consideration if prior tiles... but not for now, this would risk infinite loops
+        // TODO: we might want to allow re-consideration if prior tiles... but not for now, this could risk infinite loops
         if (checked[i])
             continue;
 
@@ -419,7 +419,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         Tileset *tileset = NULL;
         if (terrainTileset) // if we are painting a terrain, then we'll use the terrains tileset
             tileset = terrainTileset;
-        else if(tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
+        else if (tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
             tileset = tile->tileset();
 
         // calculate the ideal tile for this position

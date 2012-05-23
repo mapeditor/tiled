@@ -200,14 +200,14 @@ static QString makeTerrainAttribute(const Tile *tile)
     for (int i = 0; i < 4; ++i ) {
         if (i > 0)
             terrain += QLatin1String(",");
-        int t = tile->cornerTerrainType(i);
+        int t = tile->cornerTerrainId(i);
         if (t > -1)
             terrain += QString::number(t);
     }
     return terrain;
 }
 
-static QString makeTransitionDistanceAttribute(const TerrainType *t, int numTerains)
+static QString makeTransitionDistanceAttribute(const Terrain *t, int numTerains)
 {
     QString distance;
     for (int i = -1; i < numTerains; ++i ) {
@@ -287,16 +287,18 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     }
 
     // Write the terrain types
-    if (tileset->terrainTypeCount() > 0) {
+    if (tileset->terrainCount() > 0) {
         w.writeStartElement(QLatin1String("terraintypes"));
-        for (int i = 0; i < tileset->terrainTypeCount(); ++i) {
-            TerrainType* tt = tileset->terrainType(i);
+        for (int i = 0; i < tileset->terrainCount(); ++i) {
+            Terrain* t = tileset->terrain(i);
             w.writeStartElement(QLatin1String("terrain"));
-            w.writeAttribute(QLatin1String("name"), tt->name());
+            w.writeAttribute(QLatin1String("name"), t->name());
+            if (t->type() == Terrain::MatchAdjacency)
+                w.writeAttribute(QLatin1String("type"), QLatin1String("adjacency"));
 //            w.writeAttribute(QLatin1String("color"), tt->color());
-            w.writeAttribute(QLatin1String("tile"), QString::number(tt->paletteImageTile()));
-            if (tt->hasTransitionDistances())
-                w.writeAttribute(QLatin1String("distances"), makeTransitionDistanceAttribute(tt, tileset->terrainTypeCount()));
+            w.writeAttribute(QLatin1String("tile"), QString::number(t->paletteImageTile()));
+            if (t->hasTransitionDistances())
+                w.writeAttribute(QLatin1String("distances"), makeTransitionDistanceAttribute(t, tileset->terrainCount()));
             w.writeEndElement();
         }
         w.writeEndElement();
