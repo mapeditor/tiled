@@ -43,7 +43,7 @@ class QImage;
 namespace Tiled {
 
 class Tile;
-class TerrainType;
+class Terrain;
 
 /**
  * A tileset, representing a set of tiles.
@@ -218,17 +218,17 @@ public:
 	/**
 	 * Returns the number of terrain types in this tileset.
 	 */
-    int terrainTypeCount() const { return mTerrainTypes.size(); }
+    int terrainCount() const { return mTerrainTypes.size(); }
 
     /**
      * Returns the number of tiles in this tileset.
      */
-    TerrainType *terrainType(int terrain) const { return terrain >= 0 ? mTerrainTypes[terrain] : NULL; }
+    Terrain *terrain(int terrain) const { return terrain >= 0 ? mTerrainTypes[terrain] : NULL; }
 
     /**
      * Add a new terrain type.
      */
-    void addTerrainType(QString name, int imageTile, QString distances);
+    void addTerrain(Terrain *terrain);
 
     /**
      * Calculates the transition distance matrix for all terrain types.
@@ -254,7 +254,7 @@ private:
     int mImageHeight;
     int mColumnCount;
     QList<Tile*> mTiles;
-    QList<TerrainType*> mTerrainTypes;
+    QList<Terrain*> mTerrainTypes;
 };
 
 } // namespace Tiled

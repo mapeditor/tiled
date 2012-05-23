@@ -40,7 +40,7 @@ class MainWindow;
 namespace Tiled {
 
 class TileLayer;
-class TerrainType;
+class Terrain;
 class MapReaderInterface;
 
 namespace Internal {
@@ -147,7 +147,7 @@ public slots:
     void rotateStampRight();
 
     void setStampBrush(const TileLayer *tiles);
-    void setTerrainBrush(const TerrainType *terrain);
+    void setTerrainBrush(const Terrain *terrain);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);

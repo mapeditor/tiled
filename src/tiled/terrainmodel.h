@@ -27,7 +27,7 @@
 namespace Tiled {
 
 class Tileset;
-class TerrainType;
+class Terrain;
 
 namespace Internal {
 
@@ -71,7 +71,7 @@ public:
     /**
      * Returns the tile at the given index.
      */
-    TerrainType *terrainAt(const QModelIndex &index) const;
+    Terrain *terrainAt(const QModelIndex &index) const;
 
     /**
      * Returns the tileset associated with this model.

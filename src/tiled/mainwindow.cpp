@@ -339,8 +339,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
 
-    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const TerrainType*)),
-            this, SLOT(setTerrainBrush(const TerrainType*)));
+    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
+            this, SLOT(setTerrainBrush(const Terrain*)));
 
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
@@ -1334,7 +1334,7 @@ void MainWindow::setStampBrush(const TileLayer *tiles)
 /**
  * Sets the terrain brush.
  */
-void MainWindow::setTerrainBrush(const TerrainType *terrain)
+void MainWindow::setTerrainBrush(const Terrain *terrain)
 {
     mTerrainBrush->setTerrain(terrain);
 

@@ -28,7 +28,7 @@
 namespace Tiled {
 
 class Tile;
-class TerrainType;
+class Terrain;
 
 namespace Internal {
 
@@ -61,13 +61,13 @@ public:
      * Sets the stamp that is drawn when painting. The stamp brush takes
      * ownership over the stamp layer.
      */
-    void setTerrain(const TerrainType *terrain);
+    void setTerrain(const Terrain *terrain);
 
     /**
      * This returns the actual tile layer which is used to define the current
      * state.
      */
-    const TerrainType *terrain() const { return mTerrain; }
+    const Terrain *terrain() const { return mTerrain; }
 
     /**
      * Set the brush mode.
@@ -111,7 +111,7 @@ private:
     /**
      * mTerrain is the terrain we are currently painting
      */
-    const TerrainType *mTerrain;
+    const Terrain *mTerrain;
     int mPaintX, mPaintY;
     int mOffsetX, mOffsetY;
 

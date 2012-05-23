@@ -244,7 +244,7 @@ void TerrainDock::updateCurrentTiles()
     const QModelIndex &first = indexes.first();
 
     const TerrainModel *model = static_cast<const TerrainModel*>(s->model());
-    TerrainType *terraion = model->terrainAt(first);
+    Terrain *terraion = model->terrainAt(first);
 
     setCurrentTerrain(terraion);
 }
@@ -365,7 +365,7 @@ void TerrainDock::moveTileset(int from, int to)
     mMapDocument->undoStack()->push(command);
 }
 
-void TerrainDock::setCurrentTerrain(TerrainType *terrain)
+void TerrainDock::setCurrentTerrain(Terrain *terrain)
 {
     if (mCurrentTerrain == terrain)
         return;
