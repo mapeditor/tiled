@@ -82,11 +82,17 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     connect(mLayerModel, SIGNAL(layerRemoved(int)), SLOT(onLayerRemoved(int)));
     connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
 
+    // Forward signals emitted from the map object model
     mMapObjectModel->setMapDocument(this);
-    connect(mMapObjectModel, SIGNAL(objectsAdded(QList<MapObject*>)), SLOT(onObjectsAdded(QList<MapObject*>)));
-    connect(mMapObjectModel, SIGNAL(objectsChanged(QList<MapObject*>)), SLOT(onObjectsChanged(QList<MapObject*>)));
-    connect(mMapObjectModel, SIGNAL(objectsAboutToBeRemoved(QList<MapObject*>)), SLOT(onObjectsAboutToBeRemoved(QList<MapObject*>)));
-    connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)), SLOT(onObjectsRemoved(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsAdded(QList<MapObject*>)),
+            SIGNAL(objectsAdded(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsChanged(QList<MapObject*>)),
+            SIGNAL(objectsChanged(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsAboutToBeRemoved(QList<MapObject*>)),
+            SIGNAL(objectsAboutToBeRemoved(QList<MapObject*>)));
+    connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)),
+            SLOT(onObjectsRemoved(QList<MapObject*>)));
+
     connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
 
     // Register tileset references
@@ -475,60 +481,14 @@ void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
 }
 
 /**
- * Emits the objects added signal with the specified list of objects.
- * This will cause the scene to insert the related items.
- */
-void MapDocument::emitObjectsAdded(const QList<MapObject*> &objects)
-{
-    emit objectsAdded(objects);
-}
-
-void MapDocument::emitObjectsAboutToBeRemoved(const QList<MapObject*> &objects)
-{
-    emit objectsAboutToBeRemoved(objects);
-}
-
-/**
- * Emits the objects removed signal with the specified list of objects.
- * This will cause the scene to remove the related items.
- *
- * Before emitting the signal, the objects are also removed from the list of
+ * Before forwarding the signal, the objects are removed from the list of
  * selected objects, triggering a selectedObjectsChanged signal when
  * appropriate.
  */
-void MapDocument::emitObjectsRemoved(const QList<MapObject*> &objects)
+void MapDocument::onObjectsRemoved(const QList<MapObject*> &objects)
 {
     deselectObjects(objects);
     emit objectsRemoved(objects);
-}
-
-/**
- * Emits the objects changed signal with the specified list of objects.
- * This will cause the scene to update the related items.
- */
-void MapDocument::emitObjectsChanged(const QList<MapObject*> &objects)
-{
-    emit objectsChanged(objects);
-}
-
-void MapDocument::onObjectsAdded(const QList<MapObject*> &objects)
-{
-    emitObjectsAdded(objects);
-}
-
-void MapDocument::onObjectsChanged(const QList<MapObject*> &objects)
-{
-    emitObjectsChanged(objects);
-}
-
-void MapDocument::onObjectsAboutToBeRemoved(const QList<MapObject*> &objects)
-{
-    emitObjectsAboutToBeRemoved(objects);
-}
-
-void MapDocument::onObjectsRemoved(const QList<MapObject*> &objects)
-{
-    emitObjectsRemoved(objects);
 }
 
 void MapDocument::onLayerAdded(int index)

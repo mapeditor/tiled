@@ -219,20 +219,6 @@ public:
      */
     void emitRegionEdited(const QRegion &region, Layer *layer);
 
-    void emitObjectsAdded(const QList<MapObject*> &objects);
-    void emitObjectsAboutToBeRemoved(const QList<MapObject*> &objects);
-    void emitObjectsRemoved(const QList<MapObject*> &objects);
-    void emitObjectsChanged(const QList<MapObject*> &objects);
-
-    inline void emitObjectAdded(MapObject *object)
-    { emitObjectsAdded(QList<MapObject*>() << object); }
-
-    inline void emitObjectRemoved(MapObject *object)
-    { emitObjectsRemoved(QList<MapObject*>() << object); }
-
-    inline void emitObjectChanged(MapObject *object)
-    { emitObjectsChanged(QList<MapObject*>() << object); }
-
     /**
      * Emits the editLayerNameRequested signal, to get renamed.
      */
@@ -302,9 +288,6 @@ signals:
     void objectsChanged(const QList<MapObject*> &objects);
 
 private slots:
-    void onObjectsAdded(const QList<MapObject*> &objects);
-    void onObjectsChanged(const QList<MapObject*> &objects);
-    void onObjectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void onObjectsRemoved(const QList<MapObject*> &objects);
 
     void onLayerAdded(int index);

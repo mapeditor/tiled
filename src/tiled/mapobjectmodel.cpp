@@ -41,20 +41,25 @@ MapObjectModel::MapObjectModel(QObject *parent):
 {
 }
 
-QModelIndex MapObjectModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex MapObjectModel::index(int row, int column,
+                                  const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        if (row < mObjectGroups.count()) {
+        if (row < mObjectGroups.count())
             return createIndex(row, column, mGroups[mObjectGroups.at(row)]);
-        }
         return QModelIndex();
     }
 
     ObjectGroup *og = toObjectGroup(parent);
-    if (row >= og->objects().count())
-        return QModelIndex(); // happens when deleting the last item in a parent
+
+    // happens when deleting the last item in a parent
+    if (row >= og->objectCount())
+        return QModelIndex();
+
+    // Paranoia: sometimes "fake" objects are in use (see createobjecttool)
     if (!mObjects.contains(og->objects().at(row)))
-        return QModelIndex(); // Paranoia: sometimes "fake" objects are in use (see createobjecttool)
+        return QModelIndex();
+
     return createIndex(row, column, mObjects[og->objects()[row]]);
 }
 
@@ -62,7 +67,7 @@ QModelIndex MapObjectModel::parent(const QModelIndex &index) const
 {
     MapObject *mapObject = toMapObject(index);
     if (mapObject)
-        return this->index(mapObject->objectGroup()); // createIndex(mObjectGroups.indexOf(mapObject->objectGroup()), 0, mGroups[mapObject->objectGroup()]);
+        return this->index(mapObject->objectGroup());
     return QModelIndex();
 }
 
@@ -71,7 +76,7 @@ int MapObjectModel::rowCount(const QModelIndex &parent) const
     if (!mMapDocument)
         return 0;
     if (!parent.isValid())
-        return mMap->objectGroupCount();
+        return mObjectGroups.size();
     if (ObjectGroup *og = toObjectGroup(parent))
         return og->objectCount();
     return 0;
@@ -123,58 +128,57 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
 }
 
 bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
-                         int role)
+                             int role)
 {
     if (MapObject *mapObject = toMapObject(index)) {
         switch (role) {
-        case Qt::CheckStateRole:
-            {
+        case Qt::CheckStateRole: {
             Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
             mapObject->setVisible(c == Qt::Checked);
             emit dataChanged(index, index);
             emit objectsChanged(QList<MapObject*>() << mapObject);
             return true;
+        }
+        case Qt::EditRole: {
+            const QString s = value.toString();
+            if (index.column() == 0 && s != mapObject->name()) {
+                QUndoStack *undo = mMapDocument->undoStack();
+                undo->beginMacro(tr("Change Object Name"));
+                undo->push(new ChangeMapObject(mMapDocument, mapObject,
+                                               s, mapObject->type()));
+                undo->endMacro();
             }
-        case Qt::EditRole:
-            {
-                const QString s = value.toString();
-                if (index.column() == 0 && s != mapObject->name()) {
-                    QUndoStack *undo = mMapDocument->undoStack();
-                    undo->beginMacro(tr("Change Object Name"));
-                    undo->push(new ChangeMapObject(mMapDocument, mapObject, s, mapObject->type()));
-                    undo->endMacro();
-                }
-                if (index.column() == 1 && s != mapObject->type()) {
-                    QUndoStack *undo = mMapDocument->undoStack();
-                    undo->beginMacro(tr("Change Object Type"));
-                    undo->push(new ChangeMapObject(mMapDocument, mapObject, mapObject->name(), s));
-                    undo->endMacro();
-                }
-                return true;
+            if (index.column() == 1 && s != mapObject->type()) {
+                QUndoStack *undo = mMapDocument->undoStack();
+                undo->beginMacro(tr("Change Object Type"));
+                undo->push(new ChangeMapObject(mMapDocument, mapObject,
+                                               mapObject->name(), s));
+                undo->endMacro();
             }
+            return true;
+        }
         }
         return false;
     }
     if (ObjectGroup *objectGroup = toObjectGroup(index)) {
         switch (role) {
-        case Qt::CheckStateRole:
-            {
+        case Qt::CheckStateRole: {
             LayerModel *layerModel = mMapDocument->layerModel();
             const int layerIndex = mMap->layers().indexOf(objectGroup);
             const int row = layerModel->layerIndexToRow(layerIndex);
             layerModel->setData(layerModel->index(row), value, role);
             return true;
+        }
+        case Qt::EditRole: {
+            const QString newName = value.toString();
+            if (objectGroup->name() != newName) {
+                const int layerIndex = mMap->layers().indexOf(objectGroup);
+                RenameLayer *rename = new RenameLayer(mMapDocument, layerIndex,
+                                                      newName);
+                mMapDocument->undoStack()->push(rename);
             }
-        case Qt::EditRole:
-            {
-                const QString newName = value.toString();
-                if (objectGroup->name() != newName) {
-                    const int layerIndex = mMap->layers().indexOf(objectGroup);
-                    RenameLayer *rename = new RenameLayer(mMapDocument, layerIndex, newName);
-                    mMapDocument->undoStack()->push(rename);
-                }
-                return true;
-            }
+            return true;
+        }
         }
         return false;
     }
@@ -192,7 +196,7 @@ Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
 }
 
 QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
-                                int role) const
+                                    int role) const
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
@@ -219,33 +223,31 @@ QModelIndex MapObjectModel::index(MapObject *o, int column) const
 
 ObjectGroup *MapObjectModel::toObjectGroup(const QModelIndex &index) const
 {
-    if (index.isValid()) {
-        ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
-        return oog->mGroup;
-    }
-    return 0;
+    if (!index.isValid())
+        return 0;
+
+    ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
+    return oog->mGroup;
 }
 
 MapObject *MapObjectModel::toMapObject(const QModelIndex &index) const
 {
-    if (index.isValid()) {
-        ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
-        return oog->mObject;
-    }
-    return 0;
+    if (!index.isValid())
+        return 0;
+
+    ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
+    return oog->mObject;
 }
 
 ObjectGroup *MapObjectModel::toLayer(const QModelIndex &index) const
 {
-    if (index.isValid()) {
-        ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
-        return oog->mGroup ? oog->mGroup : oog->mObject->objectGroup();
-    }
-    return 0;
+    if (!index.isValid())
+        return 0;
+
+    ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
+    return oog->mGroup ? oog->mGroup : oog->mObject->objectGroup();
 }
 
-// FIXME: Each MapDocument has its own persistent MapObjectModel, so this only does anything useful
-// one time.
 void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
@@ -319,10 +321,8 @@ void MapObjectModel::layerChanged(int index)
 {
     Layer *layer = mMap->layerAt(index);
     if (ObjectGroup *og = layer->asObjectGroup()) {
-        if (mGroups.contains(og)) {
-            QModelIndex index = this->index(og);
-            emit dataChanged(index, index);
-        }
+        QModelIndex index = this->index(og);
+        emit dataChanged(index, index);
     }
 }
 
@@ -330,31 +330,22 @@ void MapObjectModel::layerAboutToBeRemoved(int index)
 {
     Layer *layer = mMap->layerAt(index);
     if (ObjectGroup *og = layer->asObjectGroup()) {
-        if (mGroups.contains(og)) {
-            const int row = mObjectGroups.indexOf(og);
-            beginRemoveRows(QModelIndex(), row, row);
-            mObjectGroups.removeOne(og);
-            delete mGroups[og];
-            mGroups.remove(og);
-            foreach (MapObject *o, og->objects()) {
-                if (mObjects.contains(o)) {
-                    delete mObjects[0];
-                    mObjects.remove(o);
-                }
-            }
-            endRemoveRows();
-        }
+        const int row = mObjectGroups.indexOf(og);
+        beginRemoveRows(QModelIndex(), row, row);
+        mObjectGroups.removeAt(row);
+        delete mGroups.take(og);
+        foreach (MapObject *o, og->objects())
+            delete mObjects.take(o);
+
+        endRemoveRows();
     }
 }
 
 void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
 {
-    const int row = (index >= 0) ? index : og->objects().count();
+    const int row = (index >= 0) ? index : og->objectCount();
     beginInsertRows(this->index(og), row, row);
-    if (index < 0)
-        og->addObject(o);
-    else
-        og->insertObject(index, o);
+    og->insertObject(row, o);
     mObjects.insert(o, new ObjectOrGroup(o));
     endInsertRows();
     emit objectsAdded(QList<MapObject*>() << o);
@@ -365,12 +356,11 @@ int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)
     emit objectsAboutToBeRemoved(QList<MapObject*>() << o);
     const int row = og->objects().indexOf(o);
     beginRemoveRows(index(og), row, row);
-    int index = og->removeObject(o);
-    delete mObjects[o];
-    mObjects.remove(o);
+    og->removeObjectAt(row);
+    delete mObjects.take(o);
     endRemoveRows();
     emit objectsRemoved(QList<MapObject*>() << o);
-    return index;
+    return row;
 }
 
 // ObjectGroup color changed

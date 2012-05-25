@@ -35,8 +35,9 @@
 
 #include "layer.h"
 
-#include <QList>
 #include <QColor>
+#include <QList>
+#include <QMetaType>
 
 namespace Tiled {
 
@@ -92,6 +93,16 @@ public:
      * @return the index at which the specified object was removed
      */
     int removeObject(MapObject *object);
+
+    /**
+     * Removes the object at the given index. Ownership of the object is
+     * transferred to the caller.
+     *
+     * This is faster than removeObject when you've already got the index.
+     *
+     * @param index the index at which to remove an object
+     */
+    void removeObjectAt(int index);
 
     /**
      * Returns the bounding rect around all objects in this object group.
@@ -163,5 +174,7 @@ private:
 };
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::ObjectGroup*)
 
 #endif // OBJECTGROUP_H

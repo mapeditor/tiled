@@ -76,6 +76,12 @@ int ObjectGroup::removeObject(MapObject *object)
     return index;
 }
 
+void ObjectGroup::removeObjectAt(int index)
+{
+    MapObject *object = mObjects.takeAt(index);
+    object->setObjectGroup(0);
+}
+
 QRectF ObjectGroup::objectsBoundingRect() const
 {
     QRectF boundingRect;

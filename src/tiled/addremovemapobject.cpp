@@ -52,13 +52,15 @@ AddRemoveMapObject::~AddRemoveMapObject()
 
 void AddRemoveMapObject::addObject()
 {
-    mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex, mMapObject);
+    mMapDocument->mapObjectModel()->insertObject(mObjectGroup, mIndex,
+                                                 mMapObject);
     mOwnsObject = false;
 }
 
 void AddRemoveMapObject::removeObject()
 {
-    mIndex = mMapDocument->mapObjectModel()->removeObject(mObjectGroup, mMapObject);
+    mIndex = mMapDocument->mapObjectModel()->removeObject(mObjectGroup,
+                                                          mMapObject);
     mOwnsObject = true;
 }
 

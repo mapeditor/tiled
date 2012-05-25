@@ -66,6 +66,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
     mActionObjectProperties->setToolTip(tr("Object Propertes"));
 
+    Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
+    Utils::setThemeIcon(mActionObjectProperties, "document-properties");
+
     connect(mActionDuplicateObjects, SIGNAL(triggered()), SLOT(duplicateObjects()));
     connect(mActionRemoveObjects, SIGNAL(triggered()), SLOT(removeObjects()));
     connect(mActionObjectProperties, SIGNAL(triggered()), SLOT(objectProperties()));
@@ -80,7 +83,8 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     QAction *newLayerAction = new QAction(this);
     newLayerAction->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
     newLayerAction->setToolTip(tr("Add Object Layer"));
-    connect(newLayerAction, SIGNAL(triggered()), handler->actionAddObjectGroup(), SIGNAL(triggered()));
+    connect(newLayerAction, SIGNAL(triggered()),
+            handler->actionAddObjectGroup(), SIGNAL(triggered()));
 
     mActionMoveToLayer = new QAction(this);
     mActionMoveToLayer->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
@@ -102,7 +106,8 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     button->setPopupMode(QToolButton::InstantPopup);
     button->setMenu(mMoveToMenu);
     connect(mMoveToMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowMoveToMenu()));
-    connect(mMoveToMenu, SIGNAL(triggered(QAction*)), SLOT(triggeredMoveToMenu(QAction*)));
+    connect(mMoveToMenu, SIGNAL(triggered(QAction*)),
+            SLOT(triggeredMoveToMenu(QAction*)));
 
     toolbar->addAction(mActionObjectProperties);
 
@@ -134,7 +139,8 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
 
     if (mMapDocument) {
         restoreExpandedGroups(mMapDocument);
-        connect(mMapDocument, SIGNAL(selectedObjectsChanged()), this, SLOT(updateActions()));
+        connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
+                this, SLOT(updateActions()));
     }
 
     updateActions();
@@ -181,14 +187,15 @@ void ObjectsDock::aboutToShowMoveToMenu()
 {
     mMoveToMenu->clear();
 
-    foreach (ObjectGroup *objectGroup, mMapDocument->map()->objectGroups())
-        mMoveToMenu->addAction(objectGroup->name());
+    foreach (ObjectGroup *objectGroup, mMapDocument->map()->objectGroups()) {
+        QAction *action = mMoveToMenu->addAction(objectGroup->name());
+        action->setData(QVariant::fromValue(objectGroup));
+    }
 }
 
 void ObjectsDock::triggeredMoveToMenu(QAction *action)
 {
-    int actionIndex = mMoveToMenu->actions().indexOf(action);
-    ObjectGroup *objectGroup = mMapDocument->map()->objectGroups().at(actionIndex);
+    ObjectGroup *objectGroup = action->data().value<ObjectGroup*>();
 
     const QList<MapObject *> &objects = mMapDocument->selectedObjects();
 
@@ -314,9 +321,8 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     if (mapDoc == mMapDocument)
         return;
 
-    if (mMapDocument) {
+    if (mMapDocument)
         mMapDocument->disconnect(this);
-    }
 
     mMapDocument = mapDoc;
 
@@ -326,7 +332,8 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         model()->setMapDocument(mapDoc);
         header()->setResizeMode(0, QHeaderView::Stretch); // 2 equal-sized columns, user can't adjust
 
-        connect(mMapDocument, SIGNAL(selectedObjectsChanged()), this, SLOT(selectedObjectsChanged()));
+        connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
+                this, SLOT(selectedObjectsChanged()));
     } else {
         if (model())
             model()->setMapDocument(0);
@@ -341,7 +348,8 @@ void ObjectsView::onActivated(const QModelIndex &index)
     // show object properties, center in view
 }
 
-void ObjectsView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+void ObjectsView::selectionChanged(const QItemSelection &selected,
+                                   const QItemSelection &deselected)
 {
     QTreeView::selectionChanged(selected, deselected);
 
@@ -360,9 +368,8 @@ void ObjectsView::selectionChanged(const QItemSelection &selected, const QItemSe
             else if (currentLayerIndex != index)
                 currentLayerIndex = -2;
         }
-        if (MapObject *o = model()->toMapObject(index)) {
+        if (MapObject *o = model()->toMapObject(index))
             selectedObjects.append(o);
-        }
     }
 
     // Switch the current object layer if only one object layer (and/or its objects)
@@ -376,7 +383,8 @@ void ObjectsView::selectionChanged(const QItemSelection &selected, const QItemSe
             MapObject *o = selectedObjects.first();
             QPoint pos = o->position().toPoint();
             QSize size = o->size().toSize();
-            DocumentManager::instance()->centerViewOn(pos.x() + size.width() / 2, pos.y() + size.height() / 2);
+            DocumentManager::instance()->centerViewOn(pos.x() + size.width() / 2,
+                                                      pos.y() + size.height() / 2);
         }
         mMapDocument->setSelectedObjects(selectedObjects);
         mSynching = false;
@@ -385,9 +393,8 @@ void ObjectsView::selectionChanged(const QItemSelection &selected, const QItemSe
 
 void ObjectsView::selectedObjectsChanged()
 {
-    if (mSynching) {
+    if (mSynching)
         return;
-    }
 
     if (!mMapDocument)
         return;

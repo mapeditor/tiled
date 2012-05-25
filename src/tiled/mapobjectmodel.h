@@ -112,8 +112,8 @@ private:
     MapDocument *mMapDocument;
     Map *mMap;
     QList<ObjectGroup*> mObjectGroups;
-    QMap<MapObject*,ObjectOrGroup*> mObjects;
-    QMap<ObjectGroup*,ObjectOrGroup*> mGroups;
+    QMap<MapObject*, ObjectOrGroup*> mObjects;
+    QMap<ObjectGroup*, ObjectOrGroup*> mGroups;
 
     QIcon mObjectGroupIcon;
 };

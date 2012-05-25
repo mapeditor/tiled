@@ -109,6 +109,7 @@ QList<TileLayer*> Map::tileLayers() const
             layers.append(tl);
     return layers;
 }
+
 void Map::addLayer(Layer *layer)
 {
     adoptLayer(layer);

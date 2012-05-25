@@ -70,7 +70,7 @@ private:
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
-    QMap<MapDocument*,QList<ObjectGroup*> > mExpandedGroups;
+    QMap<MapDocument*, QList<ObjectGroup*> > mExpandedGroups;
     QMenu *mMoveToMenu;
 };
 
@@ -87,7 +87,8 @@ public:
     MapObjectModel *model() const { return mMapObjectModel; }
 
 protected slots:
-    virtual void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    virtual void selectionChanged(const QItemSelection &selected,
+                                  const QItemSelection &deselected);
 
 private slots:
     void onActivated(const QModelIndex &index);
