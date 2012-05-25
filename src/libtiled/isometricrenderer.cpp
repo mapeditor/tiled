@@ -82,7 +82,14 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
         const QRectF base = tileRectToPolygon(object->bounds()).boundingRect();
-        return base.adjusted(-2, -3, 2, 2);
+
+        int nameHeight = 0;
+        if(object->shape() == MapObject::Rectangle && !object->name().isEmpty())
+        {
+            nameHeight = 15;
+        }
+
+        return base.adjusted(-2, -3 - nameHeight, 2, 2);
     }
 }
 
@@ -331,8 +338,24 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
         switch (object->shape()) {
         case MapObject::Rectangle: {
+
+            QPointF topLeft(tileToPixelCoords(object->bounds().topLeft()));
+            QPointF bottomLeft(tileToPixelCoords(object->bounds().bottomLeft()));
+            QPointF topRight(tileToPixelCoords(object->bounds().topRight()));
+
+            const qreal headerX = bottomLeft.x();
+            const qreal headerY = topLeft.y();
+
+            QRectF rect(bottomLeft, topRight);
+
+            const QFontMetrics fm = painter->fontMetrics();
+            QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                         rect.width() + 2);
+
             QPolygonF polygon = tileRectToPolygon(object->bounds());
             painter->drawPolygon(polygon);
+            if (!name.isEmpty())
+                painter->drawText(QPoint(headerX, headerY - 5 + 1), name);
 
             pen.setColor(color);
             painter->setPen(pen);
@@ -340,6 +363,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             polygon.translate(0, -1);
 
             painter->drawPolygon(polygon);
+            if (!name.isEmpty())
+                painter->drawText(QPoint(headerX, headerY - 5), name);
             break;
         }
         case MapObject::Polygon: {
