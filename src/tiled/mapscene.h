@@ -24,6 +24,7 @@
 #ifndef MAPSCENE_H
 #define MAPSCENE_H
 
+#include <QColor>
 #include <QGraphicsScene>
 #include <QMap>
 #include <QSet>
@@ -180,6 +181,7 @@ private:
     QPointF mLastMousePos;
     QVector<QGraphicsItem*> mLayerItems;
     QGraphicsRectItem *mDarkRectangle;
+    QColor mDefaultBackgroundColor;
 
     typedef QMap<MapObject*, MapObjectItem*> ObjectItems;
     ObjectItems mObjectItems;

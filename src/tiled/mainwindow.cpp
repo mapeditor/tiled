@@ -46,6 +46,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+#include "mappropertiesdialog.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
@@ -1108,11 +1109,10 @@ void MainWindow::editMapProperties()
 {
     if (!mMapDocument)
         return;
-    PropertiesDialog propertiesDialog(tr("Map"),
-                                      mMapDocument->map(),
-                                      mMapDocument->undoStack(),
-                                      this);
-    propertiesDialog.exec();
+
+    MapPropertiesDialog mapPropertiesDialog(mMapDocument, this);
+
+    mapPropertiesDialog.exec();
 }
 
 void MainWindow::autoMap()
