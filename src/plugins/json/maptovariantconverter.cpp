@@ -199,6 +199,8 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
         objectVariant["width"] = size.x();
         objectVariant["height"] = size.y();
 
+        objectVariant["visible"] = object->isVisible();
+
         /* Polygons are stored in this format:
          *
          *   "polygon/polyline": [

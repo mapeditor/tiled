@@ -650,17 +650,22 @@ MapObject *MapReaderPrivate::readObject()
     const int width = atts.value(QLatin1String("width")).toString().toInt();
     const int height = atts.value(QLatin1String("height")).toString().toInt();
     const QString type = atts.value(QLatin1String("type")).toString();
+    const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
     const QPointF pos = pixelToTileCoordinates(mMap, x, y);
     const QPointF size = pixelToTileCoordinates(mMap, width, height);
 
     MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
                                                               size.y()));
-
     if (gid) {
         const Cell cell = cellForGid(gid);
         object->setTile(cell.tile);
     }
+
+    bool ok;
+    const int visible = visibleRef.toString().toInt(&ok);
+    if (ok)
+        object->setVisible(visible);
 
     while (xml.readNextStartElement()) {
         if (xml.name() == "properties") {

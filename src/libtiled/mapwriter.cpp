@@ -453,6 +453,9 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (size.y() != 0)
         w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
 
+    if (!mapObject->isVisible())
+        w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
+
     writeProperties(w, mapObject->properties());
 
     const QPolygonF &polygon = mapObject->polygon();

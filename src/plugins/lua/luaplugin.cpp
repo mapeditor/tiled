@@ -272,6 +272,8 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     if (Tile *tile = mapObject->tile())
         writer.writeKeyAndValue("gid", mGidMapper.cellToGid(Cell(tile)));
 
+    writer.writeKeyAndValue("visible", mapObject->isVisible());
+
     const QPolygonF &polygon = mapObject->polygon();
     if (!polygon.isEmpty()) {
         if (mapObject->shape() == MapObject::Polygon)

@@ -282,6 +282,9 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
             object->setTile(cell.tile);
         }
 
+        if (objectVariantMap.contains("visible"))
+            object->setVisible(objectVariantMap["visible"].toBool());
+
         object->setProperties(toProperties(objectVariantMap["properties"]));
         objectGroup->addObject(object);
 
