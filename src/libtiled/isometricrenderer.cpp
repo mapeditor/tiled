@@ -66,28 +66,24 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
+    const int nameHeight = object->name().isEmpty() ? 0 : 15;
+
     if (object->tile()) {
         const QPointF bottomCenter = tileToPixelCoords(object->position());
         const QPixmap &img = object->tile()->image();
         return QRectF(bottomCenter.x() - img.width() / 2,
                       bottomCenter.y() - img.height(),
                       img.width(),
-                      img.height()).adjusted(-1, -1, 1, 1);
+                      img.height()).adjusted(-1, -1 - nameHeight, 1, 1);
     } else if (!object->polygon().isEmpty()) {
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
         const QPolygonF screenPolygon = tileToPixelCoords(polygon);
-        return screenPolygon.boundingRect().adjusted(-2, -2, 3, 3);
+        return screenPolygon.boundingRect().adjusted(-2, -2 - nameHeight, 3, 3);
     } else {
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
         const QRectF base = tileRectToPolygon(object->bounds()).boundingRect();
-
-        int nameHeight = 0;
-        if(object->shape() == MapObject::Rectangle && !object->name().isEmpty())
-        {
-            nameHeight = 15;
-        }
 
         return base.adjusted(-2, -3 - nameHeight, 2, 2);
     }
@@ -314,6 +310,12 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         paintOrigin += tileToPixelCoords(object->position()).toPoint();
         painter->drawPixmap(paintOrigin, img);
 
+        const QFontMetrics fm = painter->fontMetrics();
+        QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                     img.width() + 2);
+        if (!name.isEmpty())
+            painter->drawText(QPoint(paintOrigin.x(), paintOrigin.y() - 5 + 1), name);
+
         pen.setStyle(Qt::SolidLine);
         painter->setPen(pen);
         painter->drawRect(QRectF(paintOrigin, img.size()));
@@ -321,6 +323,10 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         pen.setColor(color);
         painter->setPen(pen);
         painter->drawRect(QRectF(paintOrigin, img.size()));
+
+        if (!name.isEmpty())
+            painter->drawText(QPoint(paintOrigin.x(), paintOrigin.y() - 5), name);
+
     } else {
         QColor brushColor = color;
         brushColor.setAlpha(50);
@@ -372,6 +378,15 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = tileToPixelCoords(polygon);
 
+            const QFontMetrics fm = painter->fontMetrics();
+            QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                         screenPolygon.boundingRect().width() + 2);
+
+            if (!name.isEmpty())
+            {
+                painter->drawText(QPoint(screenPolygon.boundingRect().left(), screenPolygon.boundingRect().top() - 5 + 1), name);
+            }
+
             painter->drawPolygon(screenPolygon);
 
             pen.setColor(color);
@@ -380,6 +395,11 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             screenPolygon.translate(0, -1);
 
             painter->drawPolygon(screenPolygon);
+
+            if (!name.isEmpty())
+            {
+                painter->drawText(QPoint(screenPolygon.boundingRect().left(), screenPolygon.boundingRect().top() - 5), name);
+            }
             break;
         }
         case MapObject::Polyline: {
