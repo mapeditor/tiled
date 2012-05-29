@@ -102,9 +102,6 @@ void AutomappingManager::autoMapInternal(QRegion where, Layer *touchedLayer)
         }
     }
 
-    Map *map = mMapDocument->map();
-    QString layer = map->layerAt(mMapDocument->currentLayerIndex())->name();
-
     // use a pointer to the region, so each automapper can manipulate it and the
     // following automappers do see the impact
     QRegion *passedRegion = new QRegion(where);
@@ -132,7 +129,6 @@ void AutomappingManager::autoMapInternal(QRegion where, Layer *touchedLayer)
 
     mMapDocument->emitRegionChanged(*passedRegion);
     delete passedRegion;
-    mMapDocument->setCurrentLayerIndex(map->indexOfLayer(layer));
 
     if (!mWarning.isEmpty())
         emit warningsOccurred();
