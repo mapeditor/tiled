@@ -172,12 +172,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
 
     if (map->backgroundColor().isValid())
     {
-        QString red = QString::number(map->backgroundColor().red());
-        QString green = QString::number(map->backgroundColor().green());
-        QString blue = QString::number(map->backgroundColor().blue());
-        QString rgb(red + tr(",") + green + tr(",") + blue);
-
-        w.writeAttribute(QLatin1String("backgroundcolor"), rgb);
+        w.writeAttribute(QLatin1String("backgroundcolor"), map->backgroundColor().name());
     }
 
     writeProperties(w, map->properties());

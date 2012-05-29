@@ -217,11 +217,7 @@ Map *MapReaderPrivate::readMap()
     QString bgColorString = atts.value(QLatin1String("backgroundcolor")).toString();
     if (!bgColorString.isEmpty())
     {
-        QString delim(tr(","));
-        int r = bgColorString.section(delim, 0, 0).toInt();
-        int g = bgColorString.section(delim, 1, 1).toInt();
-        int b = bgColorString.section(delim, 2, 2).toInt();
-        mMap->setBackgroundColor(QColor(r, g, b));
+        mMap->setBackgroundColor(QColor(bgColorString));
     }
 
     while (xml.readNextStartElement()) {
