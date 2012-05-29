@@ -44,7 +44,8 @@ public:
         mId(id),
         mTileset(tileset),
         mImage(image),
-        mTerrain(-1)
+        mTerrain(-1),
+        mTerrainProbability(-1.f)
     {}
 
     /**
@@ -111,11 +112,22 @@ public:
     unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
     unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; } // HACK: NULL Tile has 'none' terrain type.
 
+    /**
+     * Returns the probability of this terrain type appearing while painting (0-100%).
+     */
+    float terrainProbability() const { return mTerrainProbability; }
+
+    /**
+     * Set the probability of this terrain type appearing while painting (0-100%).
+     */
+    void setTerrainProbability(float probability) { mTerrainProbability = probability; }
+
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
     unsigned int mTerrain;
+    float mTerrainProbability;
 };
 
 } // namespace Tiled

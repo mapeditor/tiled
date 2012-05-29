@@ -307,11 +307,15 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         const Tile *tile = tileset->tileAt(i);
         const Properties properties = tile->properties();
         unsigned int terrain = tile->terrain();
-        if (!properties.isEmpty() || terrain != 0xFFFFFFFF) {
+        int probability = tile->terrainProbability();
+
+        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(i));
             if (terrain != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
+            if (probability != -1)
+                w.writeAttribute(QLatin1String("probability"), QString::number(probability));
             if (!properties.isEmpty())
                 writeProperties(w, properties);
             w.writeEndElement();

@@ -327,13 +327,13 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
         xml.raiseError(tr("Invalid tile ID: %1").arg(id));
         return;
     }
+    Tile *tile = tileset->tileAt(id);
 
     // TODO: Add support for individual tiles (then it needs to be added here)
 
     // Read tile quadrant terrain ids
     QString terrain = atts.value(QLatin1String("terrain")).toString();
     if (!terrain.isEmpty()) {
-        Tile *tile = tileset->tileAt(id);
         QStringList quadrants = terrain.split(QLatin1String(","));
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
@@ -343,9 +343,14 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
         }
     }
 
+    // Read tile probability
+    QString probability = atts.value(QLatin1String("probability")).toString();
+    if (!probability.isEmpty()) {
+        tile->setTerrainProbability(probability.toFloat());
+    }
+
     while (xml.readNextStartElement()) {
         if (xml.name() == "properties") {
-            Tile *tile = tileset->tileAt(id);
             tile->mergeProperties(readProperties());
         } else {
             readUnknownElement();
