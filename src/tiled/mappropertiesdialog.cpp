@@ -21,7 +21,7 @@ MapPropertiesDialog::MapPropertiesDialog(MapDocument *mapDocument, QWidget *pare
     , mColorButton(new ColorButton)
 {
     QGridLayout *grid = new QGridLayout;
-    grid->addWidget(new QLabel(tr("Background Color:")), 0, 0);
+    grid->addWidget(new QLabel(tr("Background color:")), 0, 0);
     grid->addWidget(mColorButton, 0, 1);
 
     QColor bgColor = mapDocument->map()->backgroundColor();
