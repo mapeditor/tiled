@@ -44,6 +44,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include <QVector>
 #include <QXmlStreamReader>
 
 using namespace Tiled;
@@ -308,6 +309,9 @@ Tileset *MapReaderPrivate::readTileset()
     if (tileset && !mReadingExternalTileset)
         mGidMapper.insert(firstGid, tileset);
 
+    if (tileset)
+        tileset->calculateTerrainDistances();
+
     return tileset;
 }
 
@@ -384,8 +388,10 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
             const QXmlStreamAttributes atts = xml.attributes();
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toString().toInt();
+//            int tile = atts.value(QLatin1String("color")).toString().toInt();
+            QString distances = atts.value(QLatin1String("distances")).toString();
 
-            tileset->addTerrainType(name, tile);
+            tileset->addTerrainType(name, tile, distances);
 
             xml.skipCurrentElement();
         }

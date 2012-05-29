@@ -200,10 +200,6 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
     // Reset the brush, since it probably became invalid
     brushItem()->setTileRegion(QRegion());
     setTerrain(NULL);
-
-    // hack
-    Tileset *t = newDocument->map()->tilesets().at(0);
-    setTerrain(t->terrainType(2));
 }
 
 void TerrainBrush::setTerrain(TerrainType *terrain)
@@ -271,17 +267,14 @@ static inline unsigned int makeTerrain(int tl, int tr, int bl, int br)
     return (tl & 0xFF) << 24 | (tr & 0xFF) << 16 | (bl & 0xFF) << 8 | (br & 0xFF);
 }
 
-Tile *TerrainBrush::findBestTile(unsigned int terrain, unsigned int considerationMask)
+Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigned int considerationMask)
 {
     // if all quadrants are set to 'no terrain', then the 'empty' tile is the only choice we can deduce
     if (terrain == 0xFFFFFFFF)
         return NULL;
 
     QList<Tile*> matches;
-    int confidence = 0;
-
-    // TODO: should we scan each tileset? we really need to use gId's for terrains aswell as tiles i guess...
-    Tileset *tileset = mapDocument()->map()->tilesets().at(0);
+    int penalty = INT_MAX;
 
     int tileCount = tileset->tileCount();
     for (int i = 0; i < tileCount; ++i) {
@@ -289,21 +282,16 @@ Tile *TerrainBrush::findBestTile(unsigned int terrain, unsigned int consideratio
         if ((t->terrain() & considerationMask) != (terrain & considerationMask))
             continue;
 
-        // prefer tiles with the most possible matches to the requested terrain
-        int matchingQuadrants = 0;
-        if ((t->terrain() & 0xFF000000) == (terrain & 0xFF000000))
-            ++matchingQuadrants;
-        if ((t->terrain() & 0xFF0000) == (terrain & 0xFF0000))
-            ++matchingQuadrants;
-        if ((t->terrain() & 0xFF00) == (terrain & 0xFF00))
-            ++matchingQuadrants;
-        if ((t->terrain() & 0xFF) == (terrain & 0xFF))
-            ++matchingQuadrants;
+        // calculate the tile transition penalty
+        int transitionPenalty = tileset->terrainTransitionPenalty(t->terrain() >> 24, terrain >> 24);
+        transitionPenalty += tileset->terrainTransitionPenalty((t->terrain() >> 16) & 0xFF, (terrain >> 16) & 0xFF);
+        transitionPenalty += tileset->terrainTransitionPenalty((t->terrain() >> 8) & 0xFF, (terrain >> 8) & 0xFF);
+        transitionPenalty += tileset->terrainTransitionPenalty(t->terrain() & 0xFF, terrain & 0xFF);
 
-        if (matchingQuadrants >= confidence) {
-            if (matchingQuadrants > confidence)
+        if (transitionPenalty <= penalty) {
+            if (transitionPenalty < penalty)
                 matches.clear();
-            confidence = matchingQuadrants;
+            penalty = transitionPenalty;
 
             matches.push_back(t);
         }
@@ -318,7 +306,7 @@ Tile *TerrainBrush::findBestTile(unsigned int terrain, unsigned int consideratio
 
 void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *list)
 {
-    // get the current tile layer (TODO: what if the current layer isn't a tile layer?)
+    // get the current tile layer
     TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
 
@@ -328,6 +316,9 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
 
     if (!currentLayer->bounds().contains(cursorPos))
         return;
+
+    // TODO: this seems like a problem... there's nothing to say that 2 adjacent tiles are from the same tileset, or have any relation to eachother...
+    Tileset *tileset = mTerrain ? mTerrain->tileset() : NULL;
 
     // allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
     Tile **newTerrain = new Tile*[numTiles];
@@ -367,6 +358,9 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
 
         // get the relevant tiles
         const Tile *tile = currentLayer->cellAt(p).tile;
+        if (!tileset && tile)
+            tileset = tile->tileset();
+
         Tile *paste = NULL;
 
         // find a tile that best suits this position
@@ -374,7 +368,7 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
             // the first tiles are special, we will just paste the selected terrain and add the surroundings for consideration
 
             // TODO: if we're painting quadrants rather than full tiles, we need to set the appropriate mask
-            paste = mTerrain ? findBestTile(makeTerrain(mTerrain->id()), 0xFFFFFFFF) : NULL;
+            paste = mTerrain ? findBestTile(tileset, makeTerrain(mTerrain->id()), 0xFFFFFFFF) : NULL;
             --initialTiles;
         } else {
             // following tiles each need consideration against their surroundings
@@ -399,7 +393,9 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
                 mask |= 0x00FF00FF;
             }
 
-            paste = findBestTile(preferredTerrain, mask);
+            paste = findBestTile(tileset, preferredTerrain, mask);
+            if (!paste)
+                continue;
         }
 
         // add tile to the brush

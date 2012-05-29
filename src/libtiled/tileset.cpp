@@ -112,3 +112,121 @@ int Tileset::columnCountForWidth(int width) const
     Q_ASSERT(mTileWidth > 0);
     return (width - mMargin + mTileSpacing) / (mTileWidth + mTileSpacing);
 }
+
+void Tileset::addTerrainType(QString name, int imageTile, QString distances)
+{
+    TerrainType *tt = new TerrainType(mTerrainTypes.size(), this, name, imageTile);
+
+    if (!distances.isEmpty()) {
+        QStringList distStrings = distances.split(QLatin1Char(','));
+        QVector<int> dist(distStrings.size(), -1);
+        for (int i = 0; i < distStrings.size(); ++i) {
+            if (!distStrings[i].isEmpty())
+                dist[i] = distStrings[i].toInt();
+        }
+        tt->setTransitionDistances(dist);
+    }
+
+    mTerrainTypes.push_back(tt);
+}
+
+int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1)
+{
+    terrainType0 = terrainType0 == 255 ? -1 : terrainType0;
+    terrainType1 = terrainType1 == 255 ? -1 : terrainType1;
+
+    // Do some magic, since we don't have a transition array for no-terrain
+    if (terrainType0 == -1 && terrainType1 == -1)
+        return 0;
+    if (terrainType0 == -1)
+        return mTerrainTypes[terrainType1]->transitionDistance(terrainType0);
+    return mTerrainTypes[terrainType0]->transitionDistance(terrainType1);
+}
+
+void Tileset::calculateTerrainDistances()
+{
+    // some fancy macros which can search for a value in each byte of a word simultaneously
+    #define hasZeroByte(dword) (((dword) - 0x01010101UL) & ~(dword) & 0x80808080UL)
+    #define hasByteEqualTo(dword, value) (hasZeroByte((dword) ^ (~0UL/255 * (value))))
+
+    // Calculate terrain distances if they are not already present...
+    // Terrain distances are the number of transitions required before one terrain may meet another
+    // Terrains that have no transition path have a distance of -1
+
+    for (int i = 0; i < terrainTypeCount(); ++i) {
+        TerrainType *type = terrainType(i);
+        if (type->hasTransitionDistances())
+            continue;
+
+        QVector<int> distance(terrainTypeCount() + 1, -1);
+
+        // Check all tiles for transitions to other terrain types
+        for (int j = 0; j < tileCount(); ++j) {
+            Tile *t = tileAt(j);
+
+            if (!hasByteEqualTo(t->terrain(), i))
+                continue;
+
+            // This tile has transitions, add the transitions as neightbours (distance 1)
+            int tl = t->cornerTerrainType(0);
+            int tr = t->cornerTerrainType(1);
+            int bl = t->cornerTerrainType(2);
+            int br = t->cornerTerrainType(3);
+
+            // Terrain on diagonally opposite corners are not actually a neighbour
+            if (tl == i || br == i) {
+                distance[tr + 1] = 1;
+                distance[bl + 1] = 1;
+            }
+            if (tr == i || bl == i) {
+                distance[tl + 1] = 1;
+                distance[br + 1] = 1;
+            }
+
+            // terrain has at least one tile of its own type
+            distance[i + 1] = 0;
+        }
+
+        type->setTransitionDistances(distance);
+    }
+
+    // Calculate indirect transition distances
+    bool bNewConnections;
+    do {
+        bNewConnections = false;
+
+        // For each combination of terrain types
+        for (int i = 0; i < terrainTypeCount(); ++i) {
+            TerrainType *t0 = terrainType(i);
+            for (int j = 0; j < terrainTypeCount(); ++j) {
+                if (i == j)
+                    continue;
+                TerrainType *t1 = terrainType(j);
+
+                // Scan through each terrain type, and see if we have any in common
+                for (int t = -1; t < terrainTypeCount(); ++t) {
+                    int d0 = t0->transitionDistance(t);
+                    int d1 = t1->transitionDistance(t);
+                    if (d0 == -1 || d1 == -1)
+                        continue;
+
+                    // We have cound a common connection
+                    int d = t0->transitionDistance(j);
+                    Q_ASSERT(t1->transitionDistance(i) == d);
+
+                    // If the new path is shorter, record the new distance
+                    if (d == -1 || d0 + d1 < d) {
+                        d = d0 + d1;
+                        t0->setTransitionDistance(j, d);
+                        t1->setTransitionDistance(i, d);
+
+                        // We're making progress, flag for another iteration...
+                        bNewConnections = true;
+                    }
+                }
+            }
+        }
+
+        // Repeat while we are still making new connections (could take a number of iterations for distant terrains to connect)
+    } while (bNewConnections);
+}
