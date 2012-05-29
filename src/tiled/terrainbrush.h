@@ -43,6 +43,11 @@ class TerrainBrush : public AbstractTileTool
     Q_OBJECT
 
 public:
+    enum BrushMode {
+        PaintTile,           // paint terrain to whole tiles
+        PaintVertex          // paint terrain to map vertices
+    };
+
     TerrainBrush(QObject *parent = 0);
     ~TerrainBrush();
 
@@ -64,6 +69,11 @@ public:
      * state.
      */
     const Terrain *terrain() const { return mTerrain; }
+
+    /**
+     * Set the brush mode.
+     */
+    void setBrushMode(BrushMode mode) { mBrushMode = mode; setTilePositionMethod(mode == PaintTile ? OnTiles : BetweenTiles); }
 
 signals:
     /**
@@ -97,7 +107,7 @@ private:
     /**
      * updates the brush given new coordinates.
      */
-    void updateBrush(const QPoint &cursorPos, const QVector<QPoint> *list = NULL);
+    void updateBrush(QPoint cursorPos, const QVector<QPoint> *list = NULL);
 
     /**
      * mTerrain is the terrain we are currently painting
@@ -123,6 +133,7 @@ private:
      * This stores the current behavior.
      */
     BrushBehavior mBrushBehavior;
+    BrushMode mBrushMode;
 
     /**
      * The starting position needed for drawing lines and circles.
