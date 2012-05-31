@@ -39,6 +39,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "terrain.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -337,7 +338,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
                 int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
-                tile->setCornerTerrainType(i, t);
+                tile->setCornerTerrain(i, t);
             }
         }
     }
@@ -389,9 +390,21 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toString().toInt();
 //            int tile = atts.value(QLatin1String("color")).toString().toInt();
-            QString distances = atts.value(QLatin1String("distances")).toString();
 
-            tileset->addTerrainType(name, tile, distances);
+            Terrain *terrain = new Terrain(tileset->terrainCount(), tileset, name, tile);
+
+            QString distances = atts.value(QLatin1String("distances")).toString();
+            if (!distances.isEmpty()) {
+                QStringList distStrings = distances.split(QLatin1Char(','));
+                QVector<int> dist(distStrings.size(), -1);
+                for (int i = 0; i < distStrings.size(); ++i) {
+                    if (!distStrings[i].isEmpty())
+                        dist[i] = distStrings[i].toInt();
+                }
+                terrain->setTransitionDistances(dist);
+            }
+
+            tileset->addTerrain(terrain);
 
             xml.skipCurrentElement();
         }

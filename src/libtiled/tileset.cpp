@@ -29,6 +29,7 @@
 
 #include "tileset.h"
 #include "tile.h"
+#include "terrain.h"
 
 #include <QBitmap>
 
@@ -113,21 +114,9 @@ int Tileset::columnCountForWidth(int width) const
     return (width - mMargin + mTileSpacing) / (mTileWidth + mTileSpacing);
 }
 
-void Tileset::addTerrainType(QString name, int imageTile, QString distances)
+void Tileset::addTerrain(Terrain *terrain)
 {
-    TerrainType *tt = new TerrainType(mTerrainTypes.size(), this, name, imageTile);
-
-    if (!distances.isEmpty()) {
-        QStringList distStrings = distances.split(QLatin1Char(','));
-        QVector<int> dist(distStrings.size(), -1);
-        for (int i = 0; i < distStrings.size(); ++i) {
-            if (!distStrings[i].isEmpty())
-                dist[i] = distStrings[i].toInt();
-        }
-        tt->setTransitionDistances(dist);
-    }
-
-    mTerrainTypes.push_back(tt);
+    mTerrainTypes.push_back(terrain);
 }
 
 int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1)
@@ -153,12 +142,12 @@ void Tileset::calculateTerrainDistances()
     // Terrain distances are the number of transitions required before one terrain may meet another
     // Terrains that have no transition path have a distance of -1
 
-    for (int i = 0; i < terrainTypeCount(); ++i) {
-        TerrainType *type = terrainType(i);
+    for (int i = 0; i < terrainCount(); ++i) {
+        Terrain *type = terrain(i);
         if (type->hasTransitionDistances())
             continue;
 
-        QVector<int> distance(terrainTypeCount() + 1, -1);
+        QVector<int> distance(terrainCount() + 1, -1);
 
         // Check all tiles for transitions to other terrain types
         for (int j = 0; j < tileCount(); ++j) {
@@ -168,10 +157,10 @@ void Tileset::calculateTerrainDistances()
                 continue;
 
             // This tile has transitions, add the transitions as neightbours (distance 1)
-            int tl = t->cornerTerrainType(0);
-            int tr = t->cornerTerrainType(1);
-            int bl = t->cornerTerrainType(2);
-            int br = t->cornerTerrainType(3);
+            int tl = t->cornerTerrainId(0);
+            int tr = t->cornerTerrainId(1);
+            int bl = t->cornerTerrainId(2);
+            int br = t->cornerTerrainId(3);
 
             // Terrain on diagonally opposite corners are not actually a neighbour
             if (tl == i || br == i) {
@@ -196,15 +185,15 @@ void Tileset::calculateTerrainDistances()
         bNewConnections = false;
 
         // For each combination of terrain types
-        for (int i = 0; i < terrainTypeCount(); ++i) {
-            TerrainType *t0 = terrainType(i);
-            for (int j = 0; j < terrainTypeCount(); ++j) {
+        for (int i = 0; i < terrainCount(); ++i) {
+            Terrain *t0 = terrain(i);
+            for (int j = 0; j < terrainCount(); ++j) {
                 if (i == j)
                     continue;
-                TerrainType *t1 = terrainType(j);
+                Terrain *t1 = terrain(j);
 
                 // Scan through each terrain type, and see if we have any in common
-                for (int t = -1; t < terrainTypeCount(); ++t) {
+                for (int t = -1; t < terrainCount(); ++t) {
                     int d0 = t0->transitionDistance(t);
                     int d1 = t1->transitionDistance(t);
                     if (d0 == -1 || d1 == -1)
@@ -227,6 +216,6 @@ void Tileset::calculateTerrainDistances()
             }
         }
 
-        // Repeat while we are still making new connections (could take a number of iterations for distant terrains to connect)
+        // Repeat while we are still making new connections (could take a number of iterations for distant terrain types to connect)
     } while (bNewConnections);
 }

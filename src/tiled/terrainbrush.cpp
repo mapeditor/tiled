@@ -30,6 +30,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tile.h"
+#include "terrain.h"
 
 #include <math.h>
 #include <QVector>
@@ -40,7 +41,7 @@ using namespace Tiled::Internal;
 TerrainBrush::TerrainBrush(QObject *parent)
     : AbstractTileTool(tr("Terrain Brush"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-clone.png")),
+                               ":images/24x24/terrain-edit.png")),
                        QKeySequence(tr("T")),
                        parent)
     , mTerrain(NULL)
@@ -199,10 +200,20 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
 
     // Reset the brush, since it probably became invalid
     brushItem()->setTileRegion(QRegion());
-    setTerrain(NULL);
+
+    // if the new document has any terrains defined, choose the first rather than the 'none' terrain
+    if (newDocument) {
+        Tileset *tileset = newDocument->map()->tilesets().at(0);
+        if (tileset && tileset->terrainCount() > 0)
+            setTerrain(tileset->terrain(0));
+        else
+            setTerrain(NULL);
+    } else {
+        mTerrain = NULL;
+    }
 }
 
-void TerrainBrush::setTerrain(TerrainType *terrain)
+void TerrainBrush::setTerrain(const Terrain *terrain)
 {
     if (mTerrain == terrain)
         return;
@@ -229,7 +240,7 @@ void TerrainBrush::capture()
     // TODO: we need to know which corner the mouse is closest to...
 
     const Cell &cell = tileLayer->cellAt(tilePosition());
-    TerrainType *t = cell.tile->cornerTerrain(0);
+    Terrain *t = cell.tile->terrainAtCorner(0);
     setTerrain(t);
 }
 
@@ -269,6 +280,9 @@ static inline unsigned int makeTerrain(int tl, int tr, int bl, int br)
 
 Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigned int considerationMask)
 {
+    // we should have hooked 0xFFFFFFFF terrains outside this function
+    Q_ASSERT(terrain != 0xFFFFFFFF);
+
     // if all quadrants are set to 'no terrain', then the 'empty' tile is the only choice we can deduce
     if (terrain == 0xFFFFFFFF)
         return NULL;
@@ -356,24 +370,27 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
         if (checked[i])
             continue;
 
-        // get the relevant tiles
+        // TODO: get the relevant tile (RECONSIDER THIS APPROACH)
         const Tile *tile = currentLayer->cellAt(p).tile;
         if (!tileset && tile)
             tileset = tile->tileset();
 
+        // calculate the ideal tile for this position
+        unsigned int preferredTerrain, mask;
         Tile *paste = NULL;
 
-        // find a tile that best suits this position
         if (initialTiles) {
             // the first tiles are special, we will just paste the selected terrain and add the surroundings for consideration
 
             // TODO: if we're painting quadrants rather than full tiles, we need to set the appropriate mask
-            paste = mTerrain ? findBestTile(tileset, makeTerrain(mTerrain->id()), 0xFFFFFFFF) : NULL;
+            preferredTerrain = makeTerrain(mTerrain->id());
+            mask = 0xFFFFFFFF;
+
             --initialTiles;
         } else {
             // following tiles each need consideration against their surroundings
-            unsigned int preferredTerrain = tile->terrain();
-            unsigned int mask = 0;
+            preferredTerrain = tile->terrain();
+            mask = 0;
 
             // depending which connections have been set, we update the preferred terrain of the tile accordingly
             if (y > 0 && checked[i - layerWidth]) {
@@ -392,7 +409,10 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
                 preferredTerrain = ((newTerrain[i + 1]->terrain() >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
                 mask |= 0x00FF00FF;
             }
+        }
 
+        // find the most appropriate tile in the tileset
+        if (preferredTerrain != 0xFFFFFFFF) {
             paste = findBestTile(tileset, preferredTerrain, mask);
             if (!paste)
                 continue;
@@ -405,7 +425,7 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *l
         // expand the brush rect to fit the edit set
         brushRect |= QRect(p, p);
 
-        // consider surrounding tiles
+        // consider surrounding tiles if terrain constraints were not satisfied
         if (y > 0 && !checked[i - layerWidth]) {
             const Tile *above = currentLayer->cellAt(x, y - 1).tile;
             if (paste->topEdge() != above->bottomEdge())

@@ -43,71 +43,7 @@ class QImage;
 namespace Tiled {
 
 class Tile;
-class Tileset;
-
-class TerrainType
-{
-public:
-    TerrainType(int id, Tileset *tileset, QString name, int imageTile):
-        mId(id),
-        mTileset(tileset),
-        mName(name),
-        mImageTile(imageTile)
-    {
-    }
-
-    /**
-     * Returns ID of this tile terrain type.
-     */
-    int id() const { return mId; }
-
-    /**
-     * Returns the tileset this terrain type belongs to.
-     */
-    Tileset *tileset() const { return mTileset; }
-
-    /**
-     * Returns the name of this terrain type.
-     */
-    QString name() const { return mName; }
-
-    /**
-     * Returns a tile index that represents this terrain type in the terrain palette.
-     */
-    int paletteImageTile() const { return mImageTile; }
-
-    /**
-     * Returns a Tile that represents this terrain type in the terrain palette.
-     */
-//    Tile *paletteImage() const { return mTileset->tileAt(mImageTile); }
-
-    /**
-     * Returns true if this terrain type already has transition distances calculated.
-     */
-    bool hasTransitionDistances() const { return !mTransitionDistance.isEmpty(); }
-
-    /**
-     * Returns the transition penalty(/distance) from this terrain type to another terrain type.
-     */
-    int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
-
-    /**
-     * Sets the transition penalty(/distance) from this terrain type to another terrain type.
-     */
-    void setTransitionDistance(int targetTerrainType, int distance) { mTransitionDistance[targetTerrainType + 1] = distance; }
-
-    /**
-     * Returns the array of terrain penalties(/distances).
-     */
-    void setTransitionDistances(QVector<int> &transitionDistances) { mTransitionDistance = transitionDistances; }
-
-private:
-    int mId;
-    Tileset *mTileset;
-    QString mName;
-    int mImageTile;
-    QVector<int> mTransitionDistance;
-};
+class Terrain;
 
 /**
  * A tileset, representing a set of tiles.
@@ -282,17 +218,17 @@ public:
     /**
      * Returns the number of terrain types in this tileset.
      */
-    int terrainTypeCount() const { return mTerrainTypes.size(); }
+    int terrainCount() const { return mTerrainTypes.size(); }
 
     /**
      * Returns the number of tiles in this tileset.
      */
-    TerrainType *terrainType(int terrain) const { return terrain >= 0 ? mTerrainTypes[terrain] : NULL; }
+    Terrain *terrain(int terrain) const { return terrain >= 0 ? mTerrainTypes[terrain] : NULL; }
 
     /**
      * Add a new terrain type.
      */
-    void addTerrainType(QString name, int imageTile, QString distances);
+    void addTerrain(Terrain *terrain);
 
     /**
      * Calculates the transition distance matrix for all terrain types.
@@ -318,7 +254,7 @@ private:
     int mImageHeight;
     int mColumnCount;
     QList<Tile*> mTiles;
-    QList<TerrainType*> mTerrainTypes;
+    QList<Terrain*> mTerrainTypes;
 };
 
 } // namespace Tiled

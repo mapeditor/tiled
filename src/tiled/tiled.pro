@@ -129,7 +129,10 @@ SOURCES += aboutdialog.cpp \
     undodock.cpp \
     utils.cpp \
     zoomable.cpp \
-    terrainbrush.cpp
+    terrainbrush.cpp \
+    terraindock.cpp \
+    terrainview.cpp \
+    terrainmodel.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -226,7 +229,10 @@ HEADERS += aboutdialog.h \
     undodock.h \
     utils.h \
     zoomable.h \
-    terrainbrush.h
+    terrainbrush.h \
+    terraindock.h \
+    terrainview.h \
+    terrainmodel.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
