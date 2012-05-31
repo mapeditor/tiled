@@ -97,7 +97,7 @@ private:
     /**
      * updates the brush given new coordinates.
      */
-    void updateBrush(const QPoint &cursorPos);
+    void updateBrush(const QPoint &cursorPos, const QVector<QPoint> *list = NULL);
 
     /**
      * mTerrain is the terrain we are currently painting

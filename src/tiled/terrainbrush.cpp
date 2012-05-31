@@ -120,9 +120,11 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
         break;
     }
     case LineStartSet:
-        // TODO...
-//        calculateLine(mLineReferenceX, mLineReferenceY, pos.x(), pos.y())
+    {
+        QVector<QPoint> lineList = calculateLine(mLineReferenceX, mLineReferenceY, pos.x(), pos.y());
+        updateBrush(pos, &lineList);
         break;
+    }
     case Line:
     case Free:
         updateBrush(pos);
@@ -314,7 +316,7 @@ Tile *TerrainBrush::findBestTile(unsigned int terrain, unsigned int consideratio
     return NULL;
 }
 
-void TerrainBrush::updateBrush(const QPoint &cursorPos)
+void TerrainBrush::updateBrush(const QPoint &cursorPos, const QVector<QPoint> *list)
 {
     // get the current tile layer (TODO: what if the current layer isn't a tile layer?)
     TileLayer *currentLayer = currentTileLayer();
@@ -334,10 +336,20 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos)
     char *checked = new char[numTiles];
     memset(checked, 0, numTiles);
 
-    // create a consideration list, and push the starting point
+    // create a consideration list, and push the start points
     QList<QPoint> transitionList;
-    transitionList.push_back(cursorPos);
-    bool first = true;
+    int initialTiles = 0;
+
+    if (list) {
+        // if we were supplied a list of start points
+        foreach (const QPoint &p, *list) {
+            transitionList.push_back(p);
+            ++initialTiles;
+        }
+    } else {
+        transitionList.push_back(cursorPos);
+        initialTiles = 1;
+    }
 
     QRect brushRect(cursorPos, cursorPos);
 
@@ -358,13 +370,12 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos)
         Tile *paste = NULL;
 
         // find a tile that best suits this position
-        if (first) {
-            // the first tile is special, we will just paste the selected terrain and add the surroundings for consideration
+        if (initialTiles) {
+            // the first tiles are special, we will just paste the selected terrain and add the surroundings for consideration
 
             // TODO: if we're painting quadrants rather than full tiles, we need to set the appropriate mask
             paste = mTerrain ? findBestTile(makeTerrain(mTerrain->id()), 0xFFFFFFFF) : NULL;
-            newTerrain[y*layerWidth + x] = paste;
-            first = false;
+            --initialTiles;
         } else {
             // following tiles each need consideration against their surroundings
             unsigned int preferredTerrain = tile->terrain();
@@ -389,12 +400,14 @@ void TerrainBrush::updateBrush(const QPoint &cursorPos)
             }
 
             paste = findBestTile(preferredTerrain, mask);
-            newTerrain[i] = paste;
         }
 
-        // update the brush rect and consideration map
-        brushRect |= QRect(p, p);
+        // add tile to the brush
+        newTerrain[i] = paste;
         checked[i] = true;
+
+        // expand the brush rect to fit the edit set
+        brushRect |= QRect(p, p);
 
         // consider surrounding tiles
         if (y > 0 && !checked[i - layerWidth]) {
