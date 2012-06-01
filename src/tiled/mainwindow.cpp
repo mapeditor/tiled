@@ -63,11 +63,13 @@
 #include "quickstampmanager.h"
 #include "saveasimagedialog.h"
 #include "stampbrush.h"
+#include "terrainbrush.h"
 #include "tilelayer.h"
 #include "tileselectiontool.h"
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
+#include "terraindock.h"
 #include "toolmanager.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
@@ -109,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mLayerDock(new LayerDock(this))
     , mObjectsDock(new ObjectsDock())
     , mTilesetDock(new TilesetDock(this))
+    , mTerrainDock(new TerrainDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -166,6 +169,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     tabifyDockWidget(undoDock, mLayerDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     tabifyDockWidget(mLayerDock, mObjectsDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
@@ -324,6 +328,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mStampBrush = new StampBrush(this);
+    mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateTile, this);
@@ -341,6 +346,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
 
+    connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
+            this, SLOT(setTerrainBrush(const Terrain*)));
+
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
     connect(mRandomButton, SIGNAL(toggled(bool)),
@@ -348,6 +356,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     ToolManager *toolManager = ToolManager::instance();
     toolManager->registerTool(mStampBrush);
+    toolManager->registerTool(mTerrainBrush);
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new TileSelectionTool(this));
@@ -368,6 +377,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     mUi->menuView->addSeparator();
     mUi->menuView->addAction(mTilesetDock->toggleViewAction());
+    mUi->menuView->addAction(mTerrainDock->toggleViewAction());
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
     mUi->menuView->addAction(undoDock->toggleViewAction());
     mUi->menuView->addAction(mObjectsDock->toggleViewAction());
@@ -1332,6 +1342,20 @@ void MainWindow::setStampBrush(const TileLayer *tiles)
         m->selectTool(mStampBrush);
 }
 
+/**
+ * Sets the terrain brush.
+ */
+void MainWindow::setTerrainBrush(const Terrain *terrain)
+{
+    mTerrainBrush->setTerrain(terrain);
+
+    // When selecting a new terrain, it makes sense to switch to a terrain brush tool
+    ToolManager *m = ToolManager::instance();
+    AbstractTool *selectedTool = m->selectedTool();
+    if (selectedTool != mTerrainBrush)
+        m->selectTool(mTerrainBrush);
+}
+
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 {
     mStatusInfoLabel->setText(statusInfo);
@@ -1447,6 +1471,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mLayerDock->setMapDocument(mMapDocument);
     mObjectsDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
+    mTerrainDock->setMapDocument(mMapDocument);
     AutomappingManager::instance()->setMapDocument(mMapDocument);
     QuickStampManager::instance()->setMapDocument(mMapDocument);
 

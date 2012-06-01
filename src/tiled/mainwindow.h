@@ -41,6 +41,7 @@ class MainWindow;
 namespace Tiled {
 
 class TileLayer;
+class Terrain;
 class MapReaderInterface;
 
 namespace Internal {
@@ -52,7 +53,9 @@ class MapDocumentActionHandler;
 class MapScene;
 class StampBrush;
 class BucketFillTool;
+class TerrainBrush;
 class TilesetDock;
+class TerrainDock;
 class MapView;
 class CommandButton;
 class ObjectsDock;
@@ -147,6 +150,7 @@ public slots:
     void rotateStampRight();
 
     void setStampBrush(const TileLayer *tiles);
+    void setTerrainBrush(const Terrain *terrain);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
@@ -205,6 +209,7 @@ private:
     LayerDock *mLayerDock;
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
+    TerrainDock *mTerrainDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
@@ -215,6 +220,7 @@ private:
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
+    TerrainBrush *mTerrainBrush;
 
     ClipboardManager *mClipboardManager;
 

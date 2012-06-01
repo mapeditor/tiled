@@ -39,6 +39,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "terrain.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -198,6 +199,32 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     w.writeEndElement();
 }
 
+static QString makeTerrainAttribute(const Tile *tile)
+{
+    QString terrain;
+    for (int i = 0; i < 4; ++i ) {
+        if (i > 0)
+            terrain += QLatin1String(",");
+        int t = tile->cornerTerrainId(i);
+        if (t > -1)
+            terrain += QString::number(t);
+    }
+    return terrain;
+}
+
+static QString makeTransitionDistanceAttribute(const Terrain *t, int numTerains)
+{
+    QString distance;
+    for (int i = -1; i < numTerains; ++i ) {
+        if (i > -1)
+            distance += QLatin1String(",");
+        int d = t->transitionDistance(i);
+        if (d > -1)
+            distance += QString::number(d);
+    }
+    return distance;
+}
+
 void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                                     uint firstGid)
 {
@@ -264,14 +291,38 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         w.writeEndElement();
     }
 
+    // Write the terrain types
+    if (tileset->terrainCount() > 0) {
+        w.writeStartElement(QLatin1String("terraintypes"));
+        for (int i = 0; i < tileset->terrainCount(); ++i) {
+            Terrain* t = tileset->terrain(i);
+            w.writeStartElement(QLatin1String("terrain"));
+            w.writeAttribute(QLatin1String("name"), t->name());
+//            w.writeAttribute(QLatin1String("color"), tt->color());
+            w.writeAttribute(QLatin1String("tile"), QString::number(t->paletteImageTile()));
+            if (t->hasTransitionDistances())
+                w.writeAttribute(QLatin1String("distances"), makeTransitionDistanceAttribute(t, tileset->terrainCount()));
+            w.writeEndElement();
+        }
+        w.writeEndElement();
+    }
+
     // Write the properties for those tiles that have them
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
         const Properties properties = tile->properties();
-        if (!properties.isEmpty()) {
+        unsigned int terrain = tile->terrain();
+        int probability = tile->terrainProbability();
+
+        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(i));
-            writeProperties(w, properties);
+            if (terrain != 0xFFFFFFFF)
+                w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
+            if (probability != -1)
+                w.writeAttribute(QLatin1String("probability"), QString::number(probability));
+            if (!properties.isEmpty())
+                writeProperties(w, properties);
             w.writeEndElement();
         }
     }

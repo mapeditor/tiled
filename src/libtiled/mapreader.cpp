@@ -39,11 +39,13 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "terrain.h"
 
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include <QVector>
 #include <QXmlStreamReader>
 
 using namespace Tiled;
@@ -78,6 +80,7 @@ private:
     Tileset *readTileset();
     void readTilesetTile(Tileset *tileset);
     void readTilesetImage(Tileset *tileset);
+    void readTilesetTerrainTypes(Tileset *tileset);
 
     TileLayer *readLayer();
     void readLayerData(TileLayer *tileLayer);
@@ -288,6 +291,8 @@ Tileset *MapReaderPrivate::readTileset()
                     tileset->mergeProperties(readProperties());
                 } else if (xml.name() == "image") {
                     readTilesetImage(tileset);
+                } else if (xml.name() == "terraintypes") {
+                    readTilesetTerrainTypes(tileset);
                 } else {
                     readUnknownElement();
                 }
@@ -309,6 +314,9 @@ Tileset *MapReaderPrivate::readTileset()
     if (tileset && !mReadingExternalTileset)
         mGidMapper.insert(firstGid, tileset);
 
+    if (tileset)
+        tileset->calculateTerrainDistances();
+
     return tileset;
 }
 
@@ -323,12 +331,30 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
         xml.raiseError(tr("Invalid tile ID: %1").arg(id));
         return;
     }
+    Tile *tile = tileset->tileAt(id);
 
     // TODO: Add support for individual tiles (then it needs to be added here)
 
+    // Read tile quadrant terrain ids
+    QString terrain = atts.value(QLatin1String("terrain")).toString();
+    if (!terrain.isEmpty()) {
+        QStringList quadrants = terrain.split(QLatin1String(","));
+        if (quadrants.size() == 4) {
+            for (int i = 0; i < 4; ++i) {
+                int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
+                tile->setCornerTerrain(i, t);
+            }
+        }
+    }
+
+    // Read tile probability
+    QString probability = atts.value(QLatin1String("probability")).toString();
+    if (!probability.isEmpty()) {
+        tile->setTerrainProbability(probability.toFloat());
+    }
+
     while (xml.readNextStartElement()) {
         if (xml.name() == "properties") {
-            Tile *tile = tileset->tileAt(id);
             tile->mergeProperties(readProperties());
         } else {
             readUnknownElement();
@@ -361,6 +387,39 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
 
     xml.skipCurrentElement();
+}
+
+void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "terraintypes");
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == "terrain") {
+            const QXmlStreamAttributes atts = xml.attributes();
+            QString name = atts.value(QLatin1String("name")).toString();
+            int tile = atts.value(QLatin1String("tile")).toString().toInt();
+//            int tile = atts.value(QLatin1String("color")).toString().toInt();
+
+            Terrain *terrain = new Terrain(tileset->terrainCount(), tileset, name, tile);
+
+            QString distances = atts.value(QLatin1String("distances")).toString();
+            if (!distances.isEmpty()) {
+                QStringList distStrings = distances.split(QLatin1Char(','));
+                QVector<int> dist(distStrings.size(), -1);
+                for (int i = 0; i < distStrings.size(); ++i) {
+                    if (!distStrings[i].isEmpty())
+                        dist[i] = distStrings[i].toInt();
+                }
+                terrain->setTransitionDistances(dist);
+            }
+
+            tileset->addTerrain(terrain);
+
+            xml.skipCurrentElement();
+        }
+        else
+            readUnknownElement();
+    }
 }
 
 static void readLayerAttributes(Layer *layer,

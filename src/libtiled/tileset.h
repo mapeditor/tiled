@@ -34,6 +34,7 @@
 
 #include <QColor>
 #include <QList>
+#include <QVector>
 #include <QPoint>
 #include <QString>
 
@@ -42,6 +43,7 @@ class QImage;
 namespace Tiled {
 
 class Tile;
+class Terrain;
 
 /**
  * A tileset, representing a set of tiles.
@@ -213,6 +215,31 @@ public:
      */
     int columnCountForWidth(int width) const;
 
+    /**
+     * Returns the number of terrain types in this tileset.
+     */
+    int terrainCount() const { return mTerrainTypes.size(); }
+
+    /**
+     * Returns the number of tiles in this tileset.
+     */
+    Terrain *terrain(int terrain) const { return terrain >= 0 ? mTerrainTypes[terrain] : NULL; }
+
+    /**
+     * Add a new terrain type.
+     */
+    void addTerrain(Terrain *terrain);
+
+    /**
+     * Calculates the transition distance matrix for all terrain types.
+     */
+    void calculateTerrainDistances();
+
+    /**
+     * Returns the transition penalty(/distance) between 2 terrains. -1 if no transition is possible.
+     */
+    int terrainTransitionPenalty(int terrainType0, int terrainType1);
+
 private:
     QString mName;
     QString mFileName;
@@ -227,6 +254,7 @@ private:
     int mImageHeight;
     int mColumnCount;
     QList<Tile*> mTiles;
+    QList<Terrain*> mTerrainTypes;
 };
 
 } // namespace Tiled
