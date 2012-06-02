@@ -116,6 +116,11 @@ public slots:
     void setGridVisible(bool visible);
 
     /**
+     * Sets whether the secondary tile grid is visible.
+     */
+    void setSecondaryGridVisible(bool visible);
+
+    /**
      * Sets whether the current layer should be highlighted.
      */
     void setHighlightCurrentLayer(bool highlightCurrentLayer);
@@ -175,6 +180,7 @@ private:
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;
+    bool mSecondaryGridVisible;
     bool mHighlightCurrentLayer;
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;

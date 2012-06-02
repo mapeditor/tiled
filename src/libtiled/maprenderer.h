@@ -85,6 +85,13 @@ public:
      */
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
                           QColor gridColor = Qt::black) const = 0;
+    /**
+     * Draws the tile grid in the specified \a rect using the given
+     * \a painter and tile size.
+     */
+    virtual void drawGrid(QPainter *painter, const QRectF &rect,
+                          QColor gridColor, bool dashed,
+                          int tileWidth, int tileHeight) const = 0;
 
     /**
      * Draws the given \a layer using the given \a painter.

@@ -123,31 +123,51 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    QRect r = rect.toAlignedRect();
-    r.adjust(-tileWidth / 2, -tileHeight / 2,
-             tileWidth / 2, tileHeight / 2);
+    drawGrid(painter, rect, gridColor, true, tileWidth, tileHeight);
+}
 
-    const int startX = qMax(qreal(0), pixelToTileCoords(r.topLeft()).x());
-    const int startY = qMax(qreal(0), pixelToTileCoords(r.topRight()).y());
-    const int endX = qMin(qreal(map()->width()),
-                          pixelToTileCoords(r.bottomRight()).x());
-    const int endY = qMin(qreal(map()->height()),
-                          pixelToTileCoords(r.bottomLeft()).y());
+void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
+                                 QColor gridColor, bool dashed,
+                                 int tileWidth, int tileHeight) const
+{
+    const int mapTileWidth = map()->tileWidth();
+    const int mapTileHeight = map()->tileHeight();
+
+    const qreal tileScaleX = (qreal) tileWidth / mapTileWidth;
+    const qreal tileScaleY = (qreal) tileHeight / mapTileHeight;
+
+    QRect r = rect.toAlignedRect();
+    r.adjust(-mapTileWidth / 2, -mapTileHeight / 2,
+             mapTileWidth / 2, mapTileHeight / 2);
+
+    const int startX = qMax(qreal(0),
+                           pixelToTileCoords(r.topLeft().x(), r.topLeft().y(),
+                           tileWidth, tileHeight).x());
+    const int startY = qMax(qreal(0),
+                            pixelToTileCoords(r.topRight().x(), r.topRight().y(),
+                            tileWidth, tileHeight).y());
+    const int endX = qMin(qreal(map()->width()) / tileScaleX,
+                          pixelToTileCoords(r.bottomRight().x(), r.bottomRight().y(),
+                           tileWidth, tileHeight).x());
+    const int endY = qMin(qreal(map()->height()) / tileScaleY,
+                          pixelToTileCoords(r.bottomLeft().x(), r.bottomLeft().y(),
+                           tileWidth, tileHeight).y());
 
     gridColor.setAlpha(128);
 
     QPen gridPen(gridColor);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    if (dashed)
+        gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
     painter->setPen(gridPen);
 
     for (int y = startY; y <= endY; ++y) {
-        const QPointF start = tileToPixelCoords(startX, y);
-        const QPointF end = tileToPixelCoords(endX, y);
+        const QPointF start = tileToPixelCoords(startX, y, tileWidth, tileHeight);
+        const QPointF end = tileToPixelCoords(endX, y, tileWidth, tileHeight);
         painter->drawLine(start, end);
     }
     for (int x = startX; x <= endX; ++x) {
-        const QPointF start = tileToPixelCoords(x, startY);
-        const QPointF end = tileToPixelCoords(x, endY);
+        const QPointF start = tileToPixelCoords(x, startY, tileWidth, tileHeight);
+        const QPointF end = tileToPixelCoords(x, endY, tileWidth, tileHeight);
         painter->drawLine(start, end);
     }
 }
@@ -395,9 +415,16 @@ QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+
+    return pixelToTileCoords(x, y, tileWidth, tileHeight);
+}
+
+QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y,
+                                       int tileWidth, int tileHeight) const
+{
     const qreal ratio = (qreal) tileWidth / tileHeight;
 
-    x -= map()->height() * tileWidth / 2;
+    x -= map()->height() * map()->tileWidth() / 2;
     const qreal mx = y + (x / ratio);
     const qreal my = y - (x / ratio);
 
@@ -409,7 +436,13 @@ QPointF IsometricRenderer::tileToPixelCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
-    const int originX = map()->height() * tileWidth / 2;
+    return tileToPixelCoords(x, y, tileWidth, tileHeight);
+}
+
+QPointF IsometricRenderer::tileToPixelCoords(qreal x, qreal y,
+                                       int tileWidth, int tileHeight) const
+{
+    const int originX = map()->height() * map()->tileWidth() / 2;
 
     return QPointF((x - y) * tileWidth / 2 + originX,
                    (x + y) * tileHeight / 2);

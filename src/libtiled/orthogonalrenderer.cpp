@@ -145,20 +145,31 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    if (tileWidth <= 0 || tileHeight <= 0)
+    drawGrid(painter, rect, gridColor, true, tileWidth, tileHeight);
+}
+
+void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
+                                  QColor gridColor, bool dashed,
+                                  int tileWidth, int tileHeight) const
+{
+    const int mapTileWidth = map()->tileWidth();
+    const int mapTileHeight = map()->tileHeight();
+    if (tileWidth <= 0 || tileHeight <= 0 ||
+            mapTileWidth <= 0 || mapTileHeight <= 0)
         return;
 
     const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
     const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
     const int endX = qMin((int) std::ceil(rect.right()),
-                          map()->width() * tileWidth + 1);
+                          map()->width() * mapTileWidth + 1);
     const int endY = qMin((int) std::ceil(rect.bottom()),
-                          map()->height() * tileHeight + 1);
+                          map()->height() * map()->tileHeight() + 1);
 
     gridColor.setAlpha(128);
 
     QPen gridPen(gridColor);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    if (dashed)
+        gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
 
     if (startY < endY) {
         gridPen.setDashOffset(startY);

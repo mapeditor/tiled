@@ -52,6 +52,10 @@ public:
     void drawGrid(QPainter *painter, const QRectF &rect,
                   QColor gridColor) const;
 
+    void drawGrid(QPainter *painter, const QRectF &rect,
+                  QColor gridColor, bool dashed,
+                  int tileWidth, int tileHeight) const;
+
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF()) const;
 

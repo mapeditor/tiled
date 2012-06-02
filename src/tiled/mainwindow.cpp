@@ -188,6 +188,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     redoAction->setShortcuts(QKeySequence::Redo);
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
+    mUi->actionShowSecondaryGrid->setChecked(preferences->showSecondaryGrid());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
 
@@ -267,6 +268,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setShowGrid(bool)));
+    connect(mUi->actionShowSecondaryGrid, SIGNAL(toggled(bool)),
+            preferences, SLOT(setShowSecondaryGrid(bool)));
     connect(mUi->actionSnapToGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setSnapToGrid(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
@@ -1439,6 +1442,9 @@ void MainWindow::addMapDocument(MapDocument *mapDocument)
     mapScene->setGridVisible(prefs->showGrid());
     connect(prefs, SIGNAL(showGridChanged(bool)),
             mapScene, SLOT(setGridVisible(bool)));
+    mapScene->setSecondaryGridVisible(prefs->showSecondaryGrid());
+    connect(prefs, SIGNAL(showSecondaryGridChanged(bool)),
+            mapScene, SLOT(setSecondaryGridVisible(bool)));
 }
 
 void MainWindow::aboutTiled()
