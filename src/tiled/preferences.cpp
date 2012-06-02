@@ -64,8 +64,13 @@ Preferences::Preferences()
     mShowGrid = mSettings->value(QLatin1String("ShowGrid"), false).toBool();
     mSnapToGrid = mSettings->value(QLatin1String("SnapToGrid"),
                                    false).toBool();
+    mShowSecondaryGrid = mSettings->value(QLatin1String("ShowSecondaryGrid"), false).toBool();
     mGridColor = QColor(mSettings->value(QLatin1String("GridColor"),
                                   QColor(Qt::black).name()).toString());
+    mSecondaryGridColor = QColor(mSettings->value(QLatin1String("SecondaryGridColor"),
+                                                  QColor(Qt::red).name()).toString());
+    mSecondaryGridWidth = mSettings->value(QLatin1String("SecondaryGridWidth"), 0).toInt();
+    mSecondaryGridHeight = mSettings->value(QLatin1String("SecondaryGridHeight"), 0).toInt();
     mHighlightCurrentLayer = mSettings->value(QLatin1String("HighlightCurrentLayer"),
                                               false).toBool();
     mShowTilesetGrid = mSettings->value(QLatin1String("ShowTilesetGrid"),
@@ -121,6 +126,16 @@ void Preferences::setSnapToGrid(bool snapToGrid)
     emit snapToGridChanged(mSnapToGrid);
 }
 
+void Preferences::setShowSecondaryGrid(bool showGrid)
+{
+    if (mShowSecondaryGrid == showGrid)
+        return;
+
+    mShowSecondaryGrid = showGrid;
+    mSettings->setValue(QLatin1String("Interface/ShowSecondaryGrid"), mShowSecondaryGrid);
+    emit showSecondaryGridChanged(mShowSecondaryGrid);
+}
+
 void Preferences::setGridColor(QColor gridColor)
 {
     if (mGridColor == gridColor)
@@ -129,6 +144,38 @@ void Preferences::setGridColor(QColor gridColor)
     mGridColor = gridColor;
     mSettings->setValue(QLatin1String("Interface/GridColor"), mGridColor.name());
     emit gridColorChanged(mGridColor);
+}
+
+void Preferences::setSecondaryGridColor(QColor gridColor)
+{
+    if (mSecondaryGridColor == gridColor)
+        return;
+
+    mSecondaryGridColor = gridColor;
+    mSettings->setValue(QLatin1String("Interface/SecondaryGridColor"), mSecondaryGridColor.name());
+    emit secondaryGridColorChanged(mSecondaryGridColor);
+}
+
+void Preferences::setSecondaryGridWidth(int width)
+{
+    if (mSecondaryGridWidth == width)
+        return;
+
+    mSecondaryGridWidth = width;
+    mSettings->setValue(QLatin1String("Interface/SecondaryGridWidth"), mSecondaryGridWidth);
+    emit secondaryGridWidthChanged(mSecondaryGridWidth);
+}
+
+void Preferences::setSecondaryGridHeight(int height)
+{
+    {
+        if (mSecondaryGridHeight == height)
+            return;
+
+        mSecondaryGridHeight = height;
+        mSettings->setValue(QLatin1String("Interface/SecondaryGridHeight"), mSecondaryGridHeight);
+        emit secondaryGridHeightChanged(mSecondaryGridHeight);
+    }
 }
 
 void Preferences::setHighlightCurrentLayer(bool highlight)

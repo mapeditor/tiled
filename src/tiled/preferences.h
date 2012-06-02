@@ -45,8 +45,12 @@ public:
     static void deleteInstance();
 
     bool showGrid() const { return mShowGrid; }
+    bool showSecondaryGrid() const { return mShowSecondaryGrid; }
     bool snapToGrid() const { return mSnapToGrid; }
     QColor gridColor() const { return mGridColor; }
+    QColor secondaryGridColor() const { return mSecondaryGridColor; }
+    int secondaryGridWidth() const { return mSecondaryGridWidth; }
+    int secondaryGridHeight() const { return mSecondaryGridHeight; }
 
     bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
@@ -89,15 +93,23 @@ public:
 
 public slots:
     void setShowGrid(bool showGrid);
+    void setShowSecondaryGrid(bool showGrid);
     void setSnapToGrid(bool snapToGrid);
     void setGridColor(QColor gridColor);
+    void setSecondaryGridColor(QColor gridColor);
+    void setSecondaryGridWidth(int width);
+    void setSecondaryGridHeight(int height);
     void setHighlightCurrentLayer(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
 
 signals:
     void showGridChanged(bool showGrid);
+    void showSecondaryGridChanged(bool showSecondaryGrid);
     void snapToGridChanged(bool snapToGrid);
     void gridColorChanged(QColor gridColor);
+    void secondaryGridColorChanged(QColor gridColor);
+    void secondaryGridWidthChanged(int width);
+    void secondaryGridHeightChanged(int height);
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
 
@@ -112,8 +124,12 @@ private:
     QSettings *mSettings;
 
     bool mShowGrid;
+    bool mShowSecondaryGrid;
     bool mSnapToGrid;
     QColor mGridColor;
+    QColor mSecondaryGridColor;
+    int mSecondaryGridWidth;
+    int mSecondaryGridHeight;
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
 

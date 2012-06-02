@@ -137,6 +137,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
             Preferences::instance(), SLOT(setGridColor(QColor)));
 
+    connect(mUi->secondaryGridColor, SIGNAL(colorChanged(QColor)),
+            Preferences::instance(), SLOT(setSecondaryGridColor(QColor)));
+    connect(mUi->secondaryGridWidth, SIGNAL(valueChanged(int)),
+            Preferences::instance(), SLOT(setSecondaryGridWidth(int)));
+    connect(mUi->secondaryGridHeight, SIGNAL(valueChanged(int)),
+            Preferences::instance(), SLOT(setSecondaryGridHeight(int)));
+
     connect(mUi->objectTypesTable->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(selectedObjectTypesChanged()));
@@ -322,6 +329,9 @@ void PreferencesDialog::fromPreferences()
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
+    mUi->secondaryGridColor->setColor(prefs->secondaryGridColor());
+    mUi->secondaryGridWidth->setValue(prefs->secondaryGridWidth());
+    mUi->secondaryGridHeight->setValue(prefs->secondaryGridHeight());
     mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }
