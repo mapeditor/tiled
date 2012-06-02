@@ -378,14 +378,14 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = tileToPixelCoords(polygon);
 
+            const QRectF polygonBoundingRect = screenPolygon.boundingRect();
+
             const QFontMetrics fm = painter->fontMetrics();
             QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                         screenPolygon.boundingRect().width() + 2);
+                                         polygonBoundingRect.width() + 2);
 
             if (!name.isEmpty())
-            {
-                painter->drawText(QPoint(screenPolygon.boundingRect().left(), screenPolygon.boundingRect().top() - 5 + 1), name);
-            }
+                painter->drawText(QPoint(polygonBoundingRect.left(), polygonBoundingRect.top() - 5 + 1), name);
 
             painter->drawPolygon(screenPolygon);
 
@@ -397,9 +397,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawPolygon(screenPolygon);
 
             if (!name.isEmpty())
-            {
-                painter->drawText(QPoint(screenPolygon.boundingRect().left(), screenPolygon.boundingRect().top() - 5), name);
-            }
+                painter->drawText(QPoint(polygonBoundingRect.left(), polygonBoundingRect.top() - 5), name);
+
             break;
         }
         case MapObject::Polyline: {
