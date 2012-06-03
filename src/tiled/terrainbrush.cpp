@@ -34,6 +34,7 @@
 
 #include <math.h>
 #include <QVector>
+#include <climits>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
