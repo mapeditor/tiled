@@ -97,6 +97,7 @@ private slots:
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
+    void tilesetNameChanged(Tileset *tileset);
 
     void removeTileset();
     void removeTileset(int index);

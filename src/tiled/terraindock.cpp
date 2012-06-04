@@ -218,15 +218,12 @@ void TerrainDock::insertTilesetView(int index, Tileset *tileset)
 
 void TerrainDock::updateActions()
 {
-    bool external = false;
     TerrainView *view = 0;
     const int index = mTabBar->currentIndex();
     if (index > -1) {
         view = terrainViewAt(index);
-        if (view) {
+        if (view)
             mViewStack->setCurrentWidget(view);
-            external = view->terrainModel()->tileset()->isExternal();
-        }
     }
 }
 
@@ -293,6 +290,17 @@ void TerrainDock::tilesetMoved(int from, int to)
         const Tileset *tileset = terrainViewAt(i)->terrainModel()->tileset();
         if (mTabBar->tabText(i) != tileset->name())
             mTabBar->setTabText(i, tileset->name());
+    }
+}
+
+void TerrainDock::tilesetNameChanged(Tileset *tileset)
+{
+    for (int i = 0; i < mTabBar->count(); i++) {
+        TerrainView *view = terrainViewAt(i);
+        if (tileset == view->terrainModel()->tileset()) {
+            mTabBar->setTabText(i, tileset->name());
+            return;
+        }
     }
 }
 
