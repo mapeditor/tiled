@@ -195,24 +195,27 @@ void TerrainBrush::languageChanged()
     setShortcut(QKeySequence(tr("T")));
 }
 
+static Terrain *firstTerrain(MapDocument *mapDocument)
+{
+    if (!mapDocument)
+        return 0;
+
+    foreach (Tileset *tileset, mapDocument->map()->tilesets())
+        if (tileset->terrainCount() > 0)
+            return tileset->terrain(0);
+
+    return 0;
+}
+
 void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
-                                    MapDocument *newDocument)
+                                      MapDocument *newDocument)
 {
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     // Reset the brush, since it probably became invalid
     brushItem()->setTileRegion(QRegion());
 
-    // if the new document has any terrains defined, choose the first rather than the 'none' terrain
-    if (newDocument) {
-        Tileset *tileset = newDocument->map()->tilesets().at(0);
-        if (tileset && tileset->terrainCount() > 0)
-            setTerrain(tileset->terrain(0));
-        else
-            setTerrain(NULL);
-    } else {
-        mTerrain = NULL;
-    }
+    setTerrain(firstTerrain(newDocument));
 }
 
 void TerrainBrush::setTerrain(const Terrain *terrain)
