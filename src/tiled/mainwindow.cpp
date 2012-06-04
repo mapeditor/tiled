@@ -166,11 +166,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::RightDockWidgetArea, undoDock);
-    tabifyDockWidget(undoDock, mLayerDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
-    tabifyDockWidget(mLayerDock, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
+    tabifyDockWidget(undoDock, mObjectsDock);
+    tabifyDockWidget(mObjectsDock, mLayerDock);
+    tabifyDockWidget(mTerrainDock, mTilesetDock);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 

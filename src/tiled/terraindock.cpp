@@ -70,7 +70,7 @@ TerrainDock::TerrainDock(QWidget *parent):
     mTerrainMenu(new QMenu(this)),
     mTerrainMenuMapper(0)
 {
-    setObjectName(QLatin1String("TilesetDock"));
+    setObjectName(QLatin1String("TerrainDock"));
 
     mTabBar->setMovable(true);
     mTabBar->setUsesScrollButtons(true);
@@ -385,7 +385,7 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
 
 void TerrainDock::retranslateUi()
 {
-    setWindowTitle(tr("Terrain Types"));
+    setWindowTitle(tr("Terrains"));
 }
 
 Tileset *TerrainDock::currentTileset() const
