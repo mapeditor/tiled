@@ -213,9 +213,10 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     // Reset the brush, since it probably became invalid
-    brushItem()->setTileRegion(QRegion());
+    brushItem()->setTileLayer(0);
 
-    setTerrain(firstTerrain(newDocument));
+    // Don't use setTerrain since we do not want to update the brush right now
+    mTerrain = firstTerrain(newDocument);
 }
 
 void TerrainBrush::setTerrain(const Terrain *terrain)
