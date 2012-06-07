@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
-<map version="1.0" orientation="orthogonal" width="7" height="3" tilewidth="24" tileheight="24">
+<map version="1.0" orientation="orthogonal" width="4" height="3" tilewidth="24" tileheight="24">
  <properties>
-  <property name="AutomappingRadius" value="3"/>
-  <property name="DeleteTiles" value="yes"/>
+  <property name="NoOverlappingRules" value="1"/>
  </properties>
  <tileset firstgid="1" name="sewer_tileset" tilewidth="24" tileheight="24">
   <image source="../sewer_tileset.png" trans="ff00ff" width="192" height="217"/>
@@ -11,19 +10,21 @@
  <tileset firstgid="73" name="rules_sewers" tilewidth="24" tileheight="24">
   <image source="rules_sewers.png" width="72" height="48"/>
  </tileset>
- <layer name="Regions" width="7" height="3">
+ <layer name="regions" width="4" height="3">
   <data encoding="base64" compression="zlib">
-   eJxjYMAPPHHQ+AAAJfgA3A==
+   eJxjYMAEPlCMDQAAD6AAmQ==
   </data>
  </layer>
- <layer name="Input_set" width="7" height="3">
+ <layer name="input_Ground" width="4" height="3">
   <data encoding="base64" compression="zlib">
-   eJxjYMAPPKG0F5T2JqAeBAAmbADf
+   eJxjYMAESkCshUUcBAAH2ABN
   </data>
  </layer>
- <layer name="Output_Ground" width="7" height="3">
-  <data encoding="base64" compression="zlib">
-   eJxjYMAPeKG0DJRWIqAeBAAMkABM
-  </data>
- </layer>
+ <objectgroup name="output_GroundEffects" width="4" height="3">
+  <object name="2" type="Trigger" x="48" y="24" width="24" height="24">
+   <properties>
+    <property name="triggering" value="trigger42"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
