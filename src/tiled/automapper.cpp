@@ -332,9 +332,6 @@ bool AutoMapper::prepareAutoMap()
     mError.clear();
     mWarning.clear();
 
-    if (!setupRulesUsedCheck())
-        return false;
-
     if (!setupMissingLayers())
         return false;
 
@@ -345,34 +342,6 @@ bool AutoMapper::prepareAutoMap()
         return false;
 
     return true;
-}
-
-bool AutoMapper::setupRulesUsedCheck()
-{
-    foreach (const QString &index, mInputRules.indexes) {
-        foreach (const QString &name, mInputRules[index].names) {
-            const InputIndex &ii = mInputRules[index];
-            const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
-            if (i == -1)
-                continue;
-
-            const TileLayer *setLayer = mMapWork->layerAt(i)->asTileLayer();
-            QList<Tileset*> tilesetWork = setLayer->usedTilesets().toList();
-
-            foreach (const TileLayer *tilelayer, ii[name].listYes)
-                foreach (Tileset *tileset, tilelayer->usedTilesets())
-                    if (tileset->findSimilarTileset(tilesetWork)
-                            || tilesetWork.contains(tileset))
-                        return true;
-
-            foreach (const TileLayer *tilelayer, ii[name].listNo)
-                foreach (Tileset *tileset, tilelayer->usedTilesets())
-                    if (tileset->findSimilarTileset(tilesetWork)
-                            || tilesetWork.contains(tileset))
-                        return true;
-        }
-    }
-    return false;
 }
 
 bool AutoMapper::setupMissingLayers()
