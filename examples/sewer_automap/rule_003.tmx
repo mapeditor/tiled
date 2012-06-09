@@ -27,13 +27,4 @@
    eJxjYCAesBKQ5yXBLGoBAAmIABM=
   </data>
  </layer>
- <objectgroup name="Output_Effect" width="8" height="6">
-  <object name="NearRightWall" type="INFORMATION" x="120" y="24" width="24" height="24">
-   <properties>
-    <property name="anotherValue" value=""/>
-    <property name="informationType" value="useless"/>
-    <property name="predefinedValue" value=""/>
-   </properties>
-  </object>
- </objectgroup>
 </map>

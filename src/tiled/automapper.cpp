@@ -331,9 +331,6 @@ bool AutoMapper::prepareAutoMap()
     mError.clear();
     mWarning.clear();
 
-    if (!setupRulesUsedCheck())
-        return false;
-
     if (!setupMissingLayers())
         return false;
 
@@ -344,34 +341,6 @@ bool AutoMapper::prepareAutoMap()
         return false;
 
     return true;
-}
-
-bool AutoMapper::setupRulesUsedCheck()
-{
-    foreach (const QString &index, mInputRules.indexes) {
-        foreach (const QString &name, mInputRules[index].names) {
-            const InputIndex &ii = mInputRules[index];
-            const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
-            if (i == -1)
-                continue;
-
-            const TileLayer *setLayer = mMapWork->layerAt(i)->asTileLayer();
-            QList<Tileset*> tilesetWork = setLayer->usedTilesets().toList();
-
-            foreach (const TileLayer *tilelayer, ii[name].listYes)
-                foreach (Tileset *tileset, tilelayer->usedTilesets())
-                    if (tileset->findSimilarTileset(tilesetWork)
-                            || tilesetWork.contains(tileset))
-                        return true;
-
-            foreach (const TileLayer *tilelayer, ii[name].listNo)
-                foreach (Tileset *tileset, tilelayer->usedTilesets())
-                    if (tileset->findSimilarTileset(tilesetWork)
-                            || tilesetWork.contains(tileset))
-                        return true;
-        }
-    }
-    return false;
 }
 
 bool AutoMapper::setupMissingLayers()
@@ -574,14 +543,18 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
             const InputIndex &ii = mInputRules[index];
 
             bool allLayerNamesMatch = true;
-            foreach (const QString &name, mInputRules[index].names) {
-                const int index = mMapWork->indexOfLayer(name,
-                                                         Layer::TileLayerType);
-                const TileLayer *setLayer = mMapWork->layerAt(index)->asTileLayer();
-                allLayerNamesMatch &= compareLayerTo(setLayer,
-                                                     ii[name].listYes,
-                                                     ii[name].listNo,
-                                                     ruleInput, QPoint(x, y));
+            foreach (const QString &name, ii.names) {
+                const int i = mMapWork->indexOfLayer(name, Layer::TileLayerType);
+                if (i == -1) {
+                    allLayerNamesMatch = false;
+                } else {
+                    const TileLayer *setLayer = mMapWork->layerAt(i)->asTileLayer();
+                    allLayerNamesMatch &= compareLayerTo(setLayer,
+                                                         ii[name].listYes,
+                                                         ii[name].listNo,
+                                                         ruleInput,
+                                                         QPoint(x, y));
+                }
             }
             if (allLayerNamesMatch) {
                 anymatch = true;
