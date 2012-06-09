@@ -25,6 +25,7 @@
 #include "addremovetileset.h"
 #include "automappingutils.h"
 #include "changeproperties.h"
+#include "geometry.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -35,13 +36,11 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
-#include "utils.h"
 
 #include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-using namespace Tiled::Utils;
 
 /*
  * About the order of the methods in this file.

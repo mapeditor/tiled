@@ -110,7 +110,7 @@ private:
     void updateBrush(QPoint cursorPos, const QVector<QPoint> *list = NULL);
 
     /**
-     * mTerrain is the terrain we are currently painting
+     * The terrain we are currently painting.
      */
     const Terrain *mTerrain;
     int mPaintX, mPaintY;

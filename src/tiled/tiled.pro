@@ -72,6 +72,7 @@ SOURCES += aboutdialog.cpp \
     erasetiles.cpp \
     filesystemwatcher.cpp \
     filltiles.cpp \
+    geometry.cpp \
     imagelayeritem.cpp \
     imagelayerpropertiesdialog.cpp \
     languagemanager.cpp \
@@ -172,6 +173,7 @@ HEADERS += aboutdialog.h \
     erasetiles.h \
     filesystemwatcher.h \
     filltiles.h \
+    geometry.h \
     imagelayeritem.h \
     imagelayerpropertiesdialog.h \
     languagemanager.h \

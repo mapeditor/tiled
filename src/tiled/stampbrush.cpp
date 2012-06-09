@@ -22,6 +22,7 @@
 #include "stampbrush.h"
 
 #include "brushitem.h"
+#include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -54,126 +55,6 @@ StampBrush::~StampBrush()
     delete mStamp;
 }
 
-
-/**
- * Returns a lists of points on an ellipse.
- * (x0,y0) is the midpoint
- * (x1,y1) to determines the radius.
- * It is adapted from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
- * here is the orginal: http://homepage.smc.edu/kennedy_john/belipse.pdf
- */
-static QVector<QPoint> rasterEllipse(int x0, int y0, int x1, int y1)
-{
-    QVector<QPoint> ret;
-    int x, y;
-    int xChange, yChange;
-    int ellipseError;
-    int twoXSquare, twoYSquare;
-    int stoppingX, stoppingY;
-    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
-    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
-
-    if (radiusX == 0 && radiusY == 0)
-        return ret;
-
-    twoXSquare = 2 * radiusX * radiusX;
-    twoYSquare = 2 * radiusY * radiusY;
-    x = radiusX;
-    y = 0;
-    xChange = radiusY * radiusY * (1 - 2 * radiusX);
-    yChange = radiusX * radiusX;
-    ellipseError = 0;
-    stoppingX = twoYSquare*radiusX;
-    stoppingY = 0;
-    while ( stoppingX >= stoppingY ) {
-        ret += QPoint(x0 + x, y0 + y);
-        ret += QPoint(x0 - x, y0 + y);
-        ret += QPoint(x0 + x, y0 - y);
-        ret += QPoint(x0 - x, y0 - y);
-        y++;
-        stoppingY += twoXSquare;
-        ellipseError += yChange;
-        yChange += twoXSquare;
-        if ((2 * ellipseError + xChange) > 0 ) {
-            x--;
-            stoppingX -= twoYSquare;
-            ellipseError += xChange;
-            xChange += twoYSquare;
-        }
-    }
-    x = 0;
-    y = radiusY;
-    xChange = radiusY * radiusY;
-    yChange = radiusX * radiusX * (1 - 2 * radiusY);
-    ellipseError = 0;
-    stoppingX = 0;
-    stoppingY = twoXSquare * radiusY;
-    while ( stoppingX <= stoppingY ) {
-        ret += QPoint(x0 + x, y0 + y);
-        ret += QPoint(x0 - x, y0 + y);
-        ret += QPoint(x0 + x, y0 - y);
-        ret += QPoint(x0 - x, y0 - y);
-        x++;
-        stoppingX += twoYSquare;
-        ellipseError += xChange;
-        xChange += twoYSquare;
-        if ((2 * ellipseError + yChange) > 0 ) {
-            y--;
-            stoppingY -= twoXSquare;
-            ellipseError += yChange;
-            yChange += twoXSquare;
-        }
-    }
-
-    return ret;
-}
-
-/**
- * Returns the lists of points on a line from (x0,y0) to (x1,y1).
- *
- * This is an implementation of bresenhams line algorithm, initially copied
- * from http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Optimization
- * changed to C++ syntax.
- */
-static QVector<QPoint> calculateLine(int x0, int y0, int x1, int y1)
-{
-    QVector<QPoint> ret;
-
-    bool steep = qAbs(y1 - y0) > qAbs(x1 - x0);
-    if (steep) {
-        qSwap(x0, y0);
-        qSwap(x1, y1);
-    }
-    if (x0 > x1) {
-        qSwap(x0, x1);
-        qSwap(y0, y1);
-    }
-    const int deltax = x1 - x0;
-    const int deltay = qAbs(y1 - y0);
-    int error = deltax / 2;
-    int ystep;
-    int y = y0;
-
-    if (y0 < y1)
-        ystep = 1;
-    else
-        ystep = -1;
-
-    for (int x = x0; x < x1 + 1 ; x++) {
-        if (steep)
-            ret += QPoint(y, x);
-        else
-            ret += QPoint(x, y);
-        error = error - deltay;
-        if (error < 0) {
-             y = y + ystep;
-             error = error + deltax;
-        }
-    }
-
-    return ret;
-}
-
 void StampBrush::tilePositionChanged(const QPoint &)
 {
     const int x = mStampX;
@@ -181,16 +62,16 @@ void StampBrush::tilePositionChanged(const QPoint &)
     updatePosition();
     switch (mBrushBehavior) {
     case Paint:
-        foreach (const QPoint &p, calculateLine(x, y, mStampX, mStampY))
+        foreach (const QPoint &p, pointsOnLine(x, y, mStampX, mStampY))
             doPaint(true, p.x(), p.y());
         break;
     case LineStartSet:
-        configureBrush(calculateLine(mStampReferenceX, mStampReferenceY,
-                                     mStampX, mStampY));
+        configureBrush(pointsOnLine(mStampReferenceX, mStampReferenceY,
+                                    mStampX, mStampY));
         break;
     case CircleMidSet:
-        configureBrush(rasterEllipse(mStampReferenceX, mStampReferenceY,
-                                     mStampX, mStampY));
+        configureBrush(pointsOnEllipse(mStampReferenceX, mStampReferenceY,
+                                       mStampX, mStampY));
         break;
     case Capture:
         brushItem()->setTileRegion(capturedArea());
