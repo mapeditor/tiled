@@ -31,7 +31,7 @@
 # to trigger the specific rule.
 # The layers Rule_Ground, Rule_Over and Rule_Over2 define the output of the rules.
 #
-# Which tiles should I use in RuleRegions?
+# Which tiles should I use in the regions layer?
 # Actually there can be any tiles, but it should be the same tiles for one rule.
 # So use whatever you want, maybe a colorful tile so you can see easily that these
 # tiles are used for defining the rule region.
@@ -44,13 +44,15 @@
 #                                   That is useful, when not all layers are covered
 #                                   at all places. (Check the Over and Over2 layer!)
 # "AutoMappingRadius" = 0,1,2...  - This property determines which regions are
-#                                   automatically remapped.
-#                                   When you draw directly into the "set" layer,
+#                                   automatically remapped at live Automapping.
+#                                   When you draw directly into the map,
 #                                   not the whole map is remapped, but only a little
 #                                   place around. Here you can specify how many
 #                                   tiles at least should be remapped.
 
 ./rule_001.tmx
+
+
 
 
 # Setup the right transition tiles at the border of light blue stone tiles
@@ -62,15 +64,19 @@
 ./rule_002.tmx
 
 
+
+
 # Now put straight walls
 #
-# Note: Compare the RuleRegions and the RuleSet layer!
-# Not at all places where a rule is defined, there is a tile in the ruleset layer.
+# Note: Compare the regions and the set layer!
+# Not at all places where a rule is defined, there is a tile in the input_set layer.
 # This means that there can be any tiles except those used by the rule.
-# So there are no black tiles allowed, when there are no tiles in the ruleset
+# So there are no black tiles allowed, when there are no tiles in the input_set
 # layer.
 
 ./rule_003.tmx
+
+
 
 
 # Now we add inner corners for walls
@@ -80,6 +86,8 @@
 ./rule_004.tmx
 
 
+
+
 # Now we add the corners for walls
 #
 # (No new features introduced)
@@ -87,23 +95,48 @@
 ./rule_005.tmx
 
 
+
+
 # Correct the error we got in the two previous rulefiles (overwrite it once more)
 #
-# Here we can see the use of RuleSet and RuleNotSet
-# With the RuleNotSet we can define which tiles must not be used at certain places
+# Here we can see the use of input_set and input_NotSet
+# With the input_NotSet we can define which tiles must not be used at certain places
 # Important sideeffect: the empty regions in ruleSet can be anything now, including
 # black tiles as used here!
 #
-# So when you use both RuleSet and RuleNotSet, you need to specify exactly what
+# So when you use both input_Set and input_NotSet, you need to specify exactly what
 # is allowed at which places.
 
 ./rule_006.tmx
 
 
+
+
 # Setup the corner stones for light blue stone tiles
 #
-# Hey, there are multiple layers called RuleNotSet!
+# Hey, there are multiple layers called input_NotSet!
 # Yes, when you need to specify multiple allowed or disallowed tiles per
-# position, you can use multiple layers of RuleSet and RuleNotSet
+# position, you can use multiple layers of input_Set and input_NotSet
 
 ./rule_007.tmx
+
+
+
+
+
+# Setup objects now
+# The objects '1' will be placed. They will be placed based on the
+# Over layer, which was created by previous rules.
+# The placement of objects is done in south-east corners.
+
+./rule_008.tmx
+
+
+
+
+# Setup another object.
+# This object is based on input from the Ground layer.
+# It will put objects to borderstones which are near an end of that borderline.
+#
+
+./rule_009.tmx

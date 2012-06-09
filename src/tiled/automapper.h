@@ -256,12 +256,6 @@ private:
     void cleanTileLayers();
 
     /**
-     * Checks if this the rules from the given rules map could be used anyway
-     * by comparing the used tilesets of the set layers and ruleset layer.
-     */
-    bool setupRulesUsedCheck();
-
-    /**
      * where to work in
      */
     MapDocument *mMapDocument;
