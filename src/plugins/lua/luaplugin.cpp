@@ -139,24 +139,27 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     if (!tileset->fileName().isEmpty()) {
         const QString rel = mMapDir.relativeFilePath(tileset->fileName());
         writer.writeKeyAndValue("filename", rel);
-    } else {
-        writer.writeKeyAndValue("tilewidth", tileset->tileWidth());
-        writer.writeKeyAndValue("tileheight", tileset->tileHeight());
-        writer.writeKeyAndValue("spacing", tileset->tileSpacing());
-        writer.writeKeyAndValue("margin", tileset->margin());
-
-        const QString rel = mMapDir.relativeFilePath(tileset->imageSource());
-        writer.writeKeyAndValue("image", rel);
-        writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
-        writer.writeKeyAndValue("imageheight", tileset->imageHeight());
-
-        if (tileset->transparentColor().isValid()) {
-            writer.writeKeyAndValue("transparentColor",
-                                    tileset->transparentColor().name());
-        }
-
-        writeProperties(writer, tileset->properties());
     }
+
+    /* Include all tileset information even for external tilesets, since the
+     * external reference is generally a .tsx file (in XML format).
+     */
+    writer.writeKeyAndValue("tilewidth", tileset->tileWidth());
+    writer.writeKeyAndValue("tileheight", tileset->tileHeight());
+    writer.writeKeyAndValue("spacing", tileset->tileSpacing());
+    writer.writeKeyAndValue("margin", tileset->margin());
+
+    const QString rel = mMapDir.relativeFilePath(tileset->imageSource());
+    writer.writeKeyAndValue("image", rel);
+    writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
+    writer.writeKeyAndValue("imageheight", tileset->imageHeight());
+
+    if (tileset->transparentColor().isValid()) {
+        writer.writeKeyAndValue("transparentColor",
+                                tileset->transparentColor().name());
+    }
+
+    writeProperties(writer, tileset->properties());
 
     writer.writeStartTable("tiles");
     for (int i = 0; i < tileset->tileCount(); ++i) {
