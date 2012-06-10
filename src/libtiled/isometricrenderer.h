@@ -54,6 +54,10 @@ public:
 
     void drawGrid(QPainter *painter, const QRectF &rect, QColor grid) const;
 
+    void drawGrid(QPainter *painter, const QRectF &rect,
+                       QColor grid, bool dashed,
+                       int tileWidth, int tileHeight) const;
+
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF()) const;
 
@@ -73,8 +77,14 @@ public:
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;
 
+    QPointF pixelToTileCoords(qreal x, qreal y,
+                        int tileWidth, int tileHeight) const;
+
     using MapRenderer::tileToPixelCoords;
     QPointF tileToPixelCoords(qreal x, qreal y) const;
+
+    QPointF tileToPixelCoords(qreal x, qreal y,
+                        int tileWidth, int tileHeight) const;
 
 private:
     QPolygonF tileRectToPolygon(const QRect &rect) const;

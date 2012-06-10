@@ -83,20 +83,34 @@ void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
+    drawGrid(painter, rect, gridColor, true, tileWidth, tileHeight);
+}
+
+void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
+                                 QColor gridColor, bool dashed,
+                                 int tileWidth, int tileHeight) const
+{
+
     int startX = 0;
     int startY = 0;
     int endX = map()->width();
     int endY = (map()->height() + 1) / 2;
 
-    startX = qMax((int) rect.x() / tileWidth, 0);
-    startY = qMax((int) rect.y() / tileHeight, 0);
-    endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
-    endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
+    const int mapTileWidth = map()->tileWidth();
+    const int mapTileHeight = map()->tileHeight();
+    const qreal tileScaleX = (qreal) tileWidth / mapTileWidth;
+    const qreal tileScaleY = (qreal) tileHeight / mapTileHeight;
+
+    startX = qMax((int) rect.x() / mapTileWidth, 0) / tileScaleX;
+    startY = qMax((int) rect.y() / mapTileHeight, 0) / tileScaleY;
+    endX = qMin((int) std::ceil(rect.right()) / mapTileWidth + 1, endX) / tileScaleX;
+    endY = qMin((int) std::ceil(rect.bottom()) / mapTileHeight + 1, endY) / tileScaleY;
 
     gridColor.setAlpha(128);
 
     QPen gridPen(gridColor);
-    gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
+    if (dashed)
+        gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
     painter->setPen(gridPen);
 
     for (int y = startY; y < endY; ++y) {
@@ -119,8 +133,6 @@ void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
             painter->drawPolyline(line);
         }
     }
-
-
 }
 
 void StaggeredRenderer::drawTileLayer(QPainter *painter,

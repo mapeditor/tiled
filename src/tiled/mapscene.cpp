@@ -443,6 +443,15 @@ void MapScene::setGridVisible(bool visible)
     update();
 }
 
+void MapScene::setSecondaryGridVisible(bool visible)
+{
+    if (mSecondaryGridVisible == visible)
+        return;
+
+    mSecondaryGridVisible = visible;
+    update();
+}
+
 void MapScene::setHighlightCurrentLayer(bool highlightCurrentLayer)
 {
     if (mHighlightCurrentLayer == highlightCurrentLayer)
@@ -454,11 +463,19 @@ void MapScene::setHighlightCurrentLayer(bool highlightCurrentLayer)
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (!mMapDocument || !mGridVisible)
+    if (!mMapDocument || (!mGridVisible && !mSecondaryGridVisible))
         return;
 
     Preferences *prefs = Preferences::instance();
-    mMapDocument->renderer()->drawGrid(painter, rect, prefs->gridColor());
+    if (mGridVisible)
+        mMapDocument->renderer()->drawGrid(painter, rect, prefs->gridColor());
+    if (mSecondaryGridVisible)
+        mMapDocument->renderer()->drawGrid(painter,
+                                       rect,
+                                       prefs->secondaryGridColor(),
+                                       false,
+                                       prefs->secondaryGridWidth(),
+                                       prefs->secondaryGridHeight());
 }
 
 bool MapScene::event(QEvent *event)
