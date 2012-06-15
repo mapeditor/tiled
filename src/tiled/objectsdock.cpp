@@ -350,8 +350,10 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
 void ObjectsView::onActivated(const QModelIndex &index)
 {
-    Q_UNUSED(index)
-    // show object properties, center in view
+    if (MapObject *o = model()->toMapObject(index)) {
+        ObjectPropertiesDialog propertiesDialog(mMapDocument, o, 0);
+        propertiesDialog.exec();
+    }
 }
 
 void ObjectsView::selectionChanged(const QItemSelection &selected,
