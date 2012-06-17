@@ -74,6 +74,7 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
     } else {
         // The -2 and +3 are to account for the pen width and shadow
         switch (object->shape()) {
+        case MapObject::Ellipse:
         case MapObject::Rectangle:
             if (rect.isNull()) {
                 boundingRect = rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
@@ -130,6 +131,18 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
                                                   screenPolygon[i]));
                 }
                 path.setFillRule(Qt::WindingFill);
+            }
+            break;
+        }
+        case MapObject::Ellipse: {
+            const QRectF bounds = object->bounds();
+            const QRectF rect(tileToPixelCoords(bounds.topLeft()),
+                              tileToPixelCoords(bounds.bottomRight()));
+
+            if (rect.isNull()) {
+                path.addEllipse(rect.topLeft(), 2, 2);
+            } else {
+                path.addEllipse(rect);
             }
             break;
         }
@@ -364,6 +377,29 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawPolygon(screenPolygon);
+            break;
+        }
+
+        case MapObject::Ellipse: {
+            if (rect.isNull())
+                rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
+
+            const QFontMetrics fm = painter->fontMetrics();
+            QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                         rect.width() + 2);
+
+            // Draw the shadow
+            painter->setPen(shadowPen);
+            painter->drawEllipse(rect.translated(QPointF(1, 1)));
+            if (!name.isEmpty())
+                painter->drawText(QPoint(1, -5 + 1), name);
+
+            painter->setPen(linePen);
+            painter->setBrush(fillBrush);
+            painter->drawEllipse(rect);
+            if (!name.isEmpty())
+                painter->drawText(QPoint(0, -5), name);
+
             break;
         }
         }

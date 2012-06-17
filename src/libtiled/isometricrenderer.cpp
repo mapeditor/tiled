@@ -96,6 +96,7 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
+        case MapObject::Ellipse:
         case MapObject::Rectangle:
             path.addPolygon(tileRectToPolygon(object->bounds()));
             break;
@@ -343,6 +344,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
+        case MapObject::Ellipse:
         case MapObject::Rectangle: {
 
             QPointF topLeft(tileToPixelCoords(object->bounds().topLeft()));

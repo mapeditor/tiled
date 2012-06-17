@@ -63,7 +63,8 @@ public:
     enum Shape {
         Rectangle,
         Polygon,
-        Polyline
+        Polyline,
+        Ellipse
     };
 
     /**

@@ -78,6 +78,14 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
         mOverlayObjectGroup->setColor(highlight);
         break;
     }
+    case CreateEllipse:
+        setIcon(QIcon(QLatin1String(":images/24x24/insert-ellipse.png")));
+        Utils::setThemeIcon(this, "insert-ellipse");
+        break;
+    case CreateCircle:
+        setIcon(QIcon(QLatin1String(":images/24x24/insert-circle.png")));
+        Utils::setThemeIcon(this, "insert-circle");
+        break;
     }
 
     languageChanged();
@@ -115,7 +123,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         snapToGrid = !snapToGrid;
 
     switch (mMode) {
-    case CreateArea: {
+    case CreateArea:
+    case CreateEllipse: {
         const QPointF tileCoords = renderer->pixelToTileCoords(pos);
 
         // Update the size of the new map object
@@ -125,6 +134,24 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 
         if (snapToGrid)
             newSize = newSize.toSize();
+
+        mNewMapObjectItem->resize(newSize);
+        break;
+    }
+    case CreateCircle: {
+        const QPointF tileCoords = renderer->pixelToTileCoords(pos);
+
+        // Update the size of the new map object
+        const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
+        QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
+                       qMax(qreal(0), tileCoords.y() - objectPos.y()));
+
+        if (snapToGrid)
+            newSize = newSize.toSize();
+
+        float maxCoord = qMax(newSize.width(), newSize.height());
+        newSize.setWidth(maxCoord);
+        newSize.setHeight(maxCoord);
 
         mNewMapObjectItem->resize(newSize);
         break;
@@ -165,6 +192,8 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         switch (mMode) {
         case CreateArea:
         case CreateTile:
+        case CreateEllipse:
+        case CreateCircle:
             if (event->button() == Qt::RightButton)
                 cancelNewMapObject();
             break;
@@ -233,7 +262,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
-        if (mMode == CreateArea || mMode == CreateTile)
+        if (mMode == CreateArea || mMode == CreateTile || mMode == CreateEllipse || mMode == CreateCircle)
             finishNewMapObject();
     }
 }
@@ -244,6 +273,14 @@ void CreateObjectTool::languageChanged()
     case CreateArea:
         setName(tr("Insert Object"));
         setShortcut(QKeySequence(tr("O")));
+        break;
+    case CreateCircle:
+        setName(tr("Insert Circle"));
+        setShortcut(QKeySequence(tr("C")));
+        break;
+    case CreateEllipse:
+        setName(tr("Insert Ellipse"));
+        setShortcut(QKeySequence(tr("E")));
         break;
     case CreateTile:
         setName(tr("Insert Tile"));
@@ -291,6 +328,9 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
                                                 mapDocument());
         mapScene()->addItem(mOverlayPolygonItem);
     }
+
+    if(mMode == CreateEllipse || mMode == CreateCircle)
+        newMapObject->setShape(MapObject::Ellipse);
 
     objectGroup->addObject(newMapObject);
 
