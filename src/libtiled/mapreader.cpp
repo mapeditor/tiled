@@ -186,7 +186,9 @@ bool MapReaderPrivate::openFile(QFile *file)
 
 void MapReaderPrivate::readUnknownElement()
 {
-    qDebug() << "Unknown element (fixme):" << xml.name();
+    qDebug() << "Unknown element (fixme):" << xml.name()
+             << " at line " << xml.lineNumber()
+             << ", column " << xml.columnNumber();
     xml.skipCurrentElement();
 }
 
@@ -739,6 +741,9 @@ MapObject *MapReaderPrivate::readObject()
         } else if (xml.name() == "polyline") {
             object->setPolygon(readPolygon());
             object->setShape(MapObject::Polyline);
+        } else if (xml.name() == "ellipse") {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Ellipse);
         } else {
             readUnknownElement();
         }

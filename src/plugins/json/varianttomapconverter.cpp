@@ -303,6 +303,8 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
             object->setShape(MapObject::Polyline);
             object->setPolygon(toPolygon(polylineVariant));
         }
+        if (objectVariantMap.contains("ellipse"))
+            object->setShape(MapObject::Ellipse);
     }
 
     return objectGroup;
