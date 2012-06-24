@@ -110,11 +110,11 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
             foreach (const MapObject *o, group->objects()) {
-                if (o->type().isEmpty()) {
+                if ((!o->type().isEmpty())) {
                     out << "[" << group->name() << "]\n";
 
                     // display object name as comment
-                    if (o->name().isEmpty()) {
+                    if (!(o->name().isEmpty())) {
                         out << "# " << o->name() << "\n";
                     }
 
