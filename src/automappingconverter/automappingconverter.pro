@@ -24,7 +24,7 @@ macx {
     QMAKE_RPATHDIR =
 }
 
-QT       += core gui
+QT       += core gui widgets
 
 TARGET = automappingconverter
 TEMPLATE = app

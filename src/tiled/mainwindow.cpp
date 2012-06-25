@@ -84,6 +84,7 @@
 #include "macsupport.h"
 #endif
 
+#include <QMimeData>
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QFileDialog>
