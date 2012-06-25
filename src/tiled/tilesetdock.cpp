@@ -42,6 +42,7 @@
 #include "utils.h"
 #include "zoomable.h"
 
+#include <QMimeData>
 #include <QAction>
 #include <QDropEvent>
 #include <QComboBox>

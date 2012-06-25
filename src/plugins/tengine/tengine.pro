@@ -5,3 +5,4 @@ DEFINES += TENGINE_LIBRARY
 SOURCES += tengineplugin.cpp
 HEADERS += tengineplugin.h\
         tengine_global.h
+QT +=  widgets

@@ -6,6 +6,8 @@ TARGET = tmxviewer
 target.path = $${PREFIX}/bin
 INSTALLS += target
 TEMPLATE = app
+QT       += core gui widgets
+
 win32 {
     DESTDIR = ../..
 } else {

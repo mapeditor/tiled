@@ -43,6 +43,7 @@
 #include "tmxmapwriter.h"
 #include "utils.h"
 
+#include <QMimeData>
 #include <QAction>
 #include <QDropEvent>
 #include <QFileDialog>
