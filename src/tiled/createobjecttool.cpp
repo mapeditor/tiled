@@ -329,7 +329,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
         mapScene()->addItem(mOverlayPolygonItem);
     }
 
-    if(mMode == CreateEllipse || mMode == CreateCircle)
+    if (mMode == CreateEllipse || mMode == CreateCircle)
         newMapObject->setShape(MapObject::Ellipse);
 
     objectGroup->addObject(newMapObject);

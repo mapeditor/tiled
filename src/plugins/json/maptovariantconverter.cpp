@@ -226,7 +226,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
                 objectVariant["polyline"] = pointVariants;
         }
 
-        if(object->shape() == MapObject::Ellipse)
+        if (object->shape() == MapObject::Ellipse)
             objectVariant["ellipse"] = true;
 
         objectVariants << objectVariant;
