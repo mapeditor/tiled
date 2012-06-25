@@ -10,6 +10,7 @@ win32 {
 } else {
     DESTDIR = ../../bin
 }
+QT+= gui widgets
 contains(QT_CONFIG, opengl): QT += opengl
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
