@@ -335,8 +335,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             CreateObjectTool::CreateTile, this);
     CreateObjectTool *areaObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateArea, this);
-    CreateObjectTool *circleObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateCircle, this);
     CreateObjectTool *ellipseObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateEllipse, this);
     CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
@@ -369,7 +367,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(new EditPolygonTool(this));
     toolManager->registerTool(areaObjectsTool);
-    toolManager->registerTool(circleObjectsTool);
     toolManager->registerTool(ellipseObjectsTool);
     toolManager->registerTool(tileObjectsTool);
     toolManager->registerTool(polygonObjectsTool);
