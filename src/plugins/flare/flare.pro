@@ -4,8 +4,6 @@ DEFINES += FLARE_LIBRARY
 
 contains(QT_VERSION, ^5\\..*) {    
 OTHER_FILES = plugin.json
-} else {
-DEFINES -= FLARE_LIBRARY
 }
 
 HEADERS += \
