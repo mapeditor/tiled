@@ -37,6 +37,7 @@ class Map;
  * Tiled provides a writer for its own .tmx map format through the
  * TmxMapWriter. Other writers can be provided by plugins.
  */
+ 
 class MapWriterInterface
 {
 public:
