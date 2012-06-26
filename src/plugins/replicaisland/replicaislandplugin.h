@@ -48,8 +48,13 @@ class REPLICAISLANDSHARED_EXPORT ReplicaIslandPlugin :
         public Tiled::MapReaderInterface
 {
     Q_OBJECT
+#if QT_VERSION  < 0x050000
     Q_INTERFACES(Tiled::MapReaderInterface)
     Q_INTERFACES(Tiled::MapWriterInterface)
+#else
+	Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
+	Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
+#endif
 
 public:
     /**
