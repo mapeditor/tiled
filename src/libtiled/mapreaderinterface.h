@@ -31,7 +31,7 @@
 
 #include <QtPlugin>
 #include <QStringList>
-
+#include <qfactoryinterface.h>
 class QString;
 
 namespace Tiled {
@@ -86,8 +86,9 @@ protected:
 };
 
 } // namespace Tiled
-
+#define MapReaderInterface_iid \
+	"org.mapeditor.MapReaderInterface"
 Q_DECLARE_INTERFACE(Tiled::MapReaderInterface,
-                    "org.mapeditor.MapReaderInterface")
+                    MapReaderInterface_iid)
 
 #endif // MAPREADERINTERFACE_H
