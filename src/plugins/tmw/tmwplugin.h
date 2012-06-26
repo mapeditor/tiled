@@ -34,6 +34,9 @@ class TMWSHARED_EXPORT TmwPlugin : public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapWriterInterface)
+#if 0x050000 <= QT_VERSION 
+	Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
+#endif
 
 public:
     TmwPlugin();

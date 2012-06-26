@@ -25,6 +25,9 @@ macx {
 }
 
 QT       += core gui
+contains(QT_VERSION, ^5\\..*) {
+	QT       += widgets
+}
 
 TARGET = automappingconverter
 TEMPLATE = app

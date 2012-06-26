@@ -21,7 +21,7 @@
 #ifndef NEWTILESETDIALOG_H
 #define NEWTILESETDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 
 namespace Ui {
 class NewTilesetDialog;
