@@ -109,5 +109,6 @@ QString JsonPlugin::errorString() const
 {
     return mError;
 }
-
+#if QT_VERSION  < 0x050000
 Q_EXPORT_PLUGIN2(Json, JsonPlugin)
+#endif

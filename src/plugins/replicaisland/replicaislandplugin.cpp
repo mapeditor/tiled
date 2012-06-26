@@ -321,4 +321,6 @@ bool ReplicaIslandPlugin::writeLayer(QDataStream &out, Tiled::TileLayer *layer)
     return true;
 }
 
+#if QT_VERSION  < 0x050000
 Q_EXPORT_PLUGIN2(ReplicaIsland, ReplicaIslandPlugin)
+#endif

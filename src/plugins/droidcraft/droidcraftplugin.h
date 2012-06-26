@@ -39,6 +39,10 @@ class DROIDCRAFTSHARED_EXPORT DroidcraftPlugin :
     Q_OBJECT
     Q_INTERFACES(Tiled::MapReaderInterface)
     Q_INTERFACES(Tiled::MapWriterInterface)
+#if 0x050000 <= QT_VERSION
+	Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
+	Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
+#endif
 
 public:
     DroidcraftPlugin();
