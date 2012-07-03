@@ -51,6 +51,9 @@ public:
 
     void accept();
 
+private Q_SLOTS:
+    void browse();
+
 private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;

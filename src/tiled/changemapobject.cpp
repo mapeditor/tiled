@@ -32,13 +32,15 @@ using namespace Tiled::Internal;
 ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
                                  MapObject *mapObject,
                                  const QString &name,
-                                 const QString &type)
+                                 const QString &type,
+                                 const QString &imageSource)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Object"))
     , mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mName(name)
     , mType(type)
+    , mImageSource(imageSource)
 {
 }
 
@@ -56,10 +58,13 @@ void ChangeMapObject::swap()
 {
     const QString name = mMapObject->name();
     const QString type = mMapObject->type();
+    const QString imageSource = mMapObject->imageSource();
 
     mMapDocument->mapObjectModel()->setObjectName(mMapObject, mName);
     mMapDocument->mapObjectModel()->setObjectType(mMapObject, mType);
+    mMapDocument->mapObjectModel()->setObjectImageSource(mMapObject, mImageSource);
 
     mName = name;
     mType = type;
+    mImageSource = imageSource;
 }

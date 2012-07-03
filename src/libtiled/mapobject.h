@@ -37,6 +37,7 @@
 #include <QSizeF>
 #include <QString>
 #include <QRectF>
+#include <QPixmap>
 
 namespace Tiled {
 
@@ -63,7 +64,8 @@ public:
     enum Shape {
         Rectangle,
         Polygon,
-        Polyline
+        Polyline,
+        Ellipse
     };
 
     /**
@@ -231,14 +233,27 @@ public:
     bool isVisible() const { return mVisible; }
     void setVisible(bool visible) { mVisible = visible; }
 
+    const QPixmap image() const;
+
+    /**
+      * Returns the image filename.
+      */
+    const QString &imageSource() const { return mImageSource; }
+
+    /**
+      * Set image filename.
+      */
+    void setImageSource(const QString &fileName) { mImageSource = fileName; };
+
 private:
     QString mName;
     QString mType;
     QPointF mPos;
     QSizeF mSize;
     QPolygonF mPolygon;
+    QString mImageSource;
     Shape mShape;
-    Tile *mTile;
+    Tile *mTile;    
     ObjectGroup *mObjectGroup;
     bool mVisible;
 };

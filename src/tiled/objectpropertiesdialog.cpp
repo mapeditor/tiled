@@ -28,11 +28,13 @@
 #include "movemapobject.h"
 #include "objecttypesmodel.h"
 #include "resizemapobject.h"
+#include "utils.h"
 
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QUndoStack>
+#include <QFileDialog>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -50,6 +52,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
 {
     QWidget *widget = new QWidget;
     mUi->setupUi(widget);
+
+    connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
 
     ObjectTypesModel *objectTypesModel = new ObjectTypesModel(this);
     objectTypesModel->setObjectTypes(Preferences::instance()->objectTypes());
@@ -82,6 +86,7 @@ void ObjectPropertiesDialog::accept()
 {
     const QString newName = mUi->name->text();
     const QString newType = mUi->type->currentText();
+    const QString newImageSource = mUi->imageSource->text();
 
     const qreal newPosX = mUi->x->value();
     const qreal newPosY = mUi->y->value();
@@ -91,6 +96,7 @@ void ObjectPropertiesDialog::accept()
     bool changed = false;
     changed |= mMapObject->name() != newName;
     changed |= mMapObject->type() != newType;
+    changed |= mMapObject->imageSource() != newImageSource;
     changed |= mMapObject->x() != newPosX;
     changed |= mMapObject->y() != newPosY;
     changed |= mMapObject->width() != newWidth;
@@ -100,7 +106,7 @@ void ObjectPropertiesDialog::accept()
         QUndoStack *undo = mMapDocument->undoStack();
         undo->beginMacro(tr("Change Object"));
         undo->push(new ChangeMapObject(mMapDocument, mMapObject,
-                                       newName, newType));
+                                       newName, newType, newImageSource));
 
         const QPointF oldPos = mMapObject->position();
         mMapObject->setX(newPosX);
@@ -117,4 +123,14 @@ void ObjectPropertiesDialog::accept()
     } else {
         PropertiesDialog::accept();
     }
+}
+
+void ObjectPropertiesDialog::browse()
+{
+    QString path = mUi->imageSource->text();
+    const QString filter = Utils::readableImageFormatsFilter();
+    QString f = QFileDialog::getOpenFileName(this, tr("Object Image"), path, filter);
+
+    if (!f.isEmpty())
+        mUi->imageSource->setText(f);
 }
