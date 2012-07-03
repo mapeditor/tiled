@@ -145,14 +145,21 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
                 QUndoStack *undo = mMapDocument->undoStack();
                 undo->beginMacro(tr("Change Object Name"));
                 undo->push(new ChangeMapObject(mMapDocument, mapObject,
-                                               s, mapObject->type()));
+                                               s, mapObject->type(), mapObject->imageSource()));
                 undo->endMacro();
             }
             if (index.column() == 1 && s != mapObject->type()) {
                 QUndoStack *undo = mMapDocument->undoStack();
                 undo->beginMacro(tr("Change Object Type"));
                 undo->push(new ChangeMapObject(mMapDocument, mapObject,
-                                               mapObject->name(), s));
+                                               mapObject->name(), s, mapObject->imageSource()));
+                undo->endMacro();
+            }
+            if (index.column() == 2 && s != mapObject->imageSource()) {
+                QUndoStack *undo = mMapDocument->undoStack();
+                undo->beginMacro(tr("Change Object Image Source"));
+                undo->push(new ChangeMapObject(mMapDocument, mapObject,
+                                               mapObject->name(), mapObject->type(), s));
                 undo->endMacro();
             }
             return true;
@@ -381,6 +388,14 @@ void MapObjectModel::setObjectName(MapObject *o, const QString &name)
 void MapObjectModel::setObjectType(MapObject *o, const QString &type)
 {
     o->setType(type);
+    QModelIndex index = this->index(o, 1);
+    emit dataChanged(index, index);
+    emit objectsChanged(QList<MapObject*>() << o);
+}
+
+void MapObjectModel::setObjectImageSource(MapObject *o, const QString &imageSource)
+{
+    o->setImageSource(imageSource);
     QModelIndex index = this->index(o, 1);
     emit dataChanged(index, index);
     emit objectsChanged(QList<MapObject*>() << o);

@@ -307,6 +307,14 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     QRectF rect(tileToPixelCoords(bounds.topLeft()),
                 tileToPixelCoords(bounds.bottomRight()));
 
+    QPixmap image = object->image();
+    if(!image.isNull()) {
+        QBrush brush(image);
+        qreal sx = rect.width() / qreal(image.width());
+        qreal sy = rect.height() / qreal(image.height());
+        brush.setTransform(QTransform::fromScale(sx, sy));
+        painter->setBrush(brush);
+    }
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
 

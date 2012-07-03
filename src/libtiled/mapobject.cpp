@@ -28,6 +28,7 @@
  */
 
 #include "mapobject.h"
+#include <QPixmapCache>
 
 using namespace Tiled;
 
@@ -62,4 +63,14 @@ MapObject *MapObject::clone() const
     o->setShape(mShape);
     o->setTile(mTile);
     return o;
+}
+
+const QPixmap MapObject::image() const
+{
+    QPixmap pixmap;
+    if(!QPixmapCache::find(mImageSource, pixmap))
+    {
+        pixmap.load(mImageSource);
+    }
+    return pixmap;
 }
