@@ -22,6 +22,7 @@
 
 #include "documentmanager.h"
 #include "languagemanager.h"
+#include "pixmapcache.h"
 #include "tilesetmanager.h"
 
 #include <QDesktopServices>
@@ -73,6 +74,8 @@ Preferences::Preferences()
     mLanguage = mSettings->value(QLatin1String("Language"),
                                  QString()).toString();
     mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
+    mPixmapCacheSize = mSettings->value(QLatin1String("PixmapCacheSize"), 64 * 1024 * 1024).toInt();
+    PixmapCache::instance()->setCacheLimit(mPixmapCacheSize);
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -224,6 +227,16 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     mSettings->setValue(QLatin1String("Interface/OpenGL"), mUseOpenGL);
 
     emit useOpenGLChanged(mUseOpenGL);
+}
+
+void Preferences::setPixmapCacheSize(int pixmapCacheSize) {
+    if(mPixmapCacheSize == pixmapCacheSize)
+        return;
+
+    mPixmapCacheSize = pixmapCacheSize;
+    mSettings->setValue(QLatin1String("Interface/PixmapCacheSize"), mPixmapCacheSize);
+
+    PixmapCache::instance()->setCacheLimit(mPixmapCacheSize);
 }
 
 void Preferences::setObjectTypes(const ObjectTypes &objectTypes)

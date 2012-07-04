@@ -58,6 +58,7 @@
 #include "objectselectiontool.h"
 #include "objectgroup.h"
 #include "offsetmapdialog.h"
+#include "pixmapcache.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "quickstampmanager.h"
@@ -435,6 +436,7 @@ MainWindow::~MainWindow()
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
+    PixmapCache::deleteInstance();
 
     delete mUi;
 }

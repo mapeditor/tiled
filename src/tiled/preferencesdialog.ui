@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>462</width>
-    <height>392</height>
+    <height>405</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,13 +98,6 @@
           <string>Interface</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="3" column="0" colspan="4">
-           <widget class="QCheckBox" name="openGL">
-            <property name="text">
-             <string>Hardware &amp;accelerated drawing (OpenGL)</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -141,7 +134,31 @@
           <item row="0" column="3">
            <widget class="QComboBox" name="languageCombo"/>
           </item>
+          <item row="4" column="3" colspan="2">
+           <widget class="QSpinBox" name="pixmapCacheSize">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>2147483647</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Pixmap cache size:</string>
+            </property>
+           </widget>
+          </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="openGL">
+         <property name="text">
+          <string>Hardware &amp;accelerated drawing (OpenGL)</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -185,6 +202,15 @@
              <bool>false</bool>
             </attribute>
             <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderHighlightSections">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderHighlightSections">
              <bool>false</bool>
             </attribute>
             <attribute name="verticalHeaderHighlightSections">
@@ -323,7 +349,6 @@
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>languageCombo</tabstop>
   <tabstop>gridColor</tabstop>
-  <tabstop>openGL</tabstop>
   <tabstop>objectTypesTable</tabstop>
   <tabstop>addObjectTypeButton</tabstop>
   <tabstop>removeObjectTypeButton</tabstop>

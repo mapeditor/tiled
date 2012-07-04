@@ -94,7 +94,16 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         switch (role) {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            return index.column() ? mapObject->type() : mapObject->name();
+            switch(index.column())
+            {
+            case 0:
+                return mapObject->name();
+            case 1:
+                mapObject->type();
+            case 2:
+                mapObject->imageSource();
+            }
+            return QVariant();
         case Qt::DecorationRole:
             return QVariant(); // no icon -> maybe the color?
         case Qt::CheckStateRole:
@@ -198,7 +207,7 @@ Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     else if (index.parent().isValid())
-        rc |= Qt::ItemIsEditable; // MapObject type
+        rc |= Qt::ItemIsEditable; // MapObject type or image source
     return rc;
 }
 
@@ -209,6 +218,7 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
         switch (section) {
         case 0: return tr("Name");
         case 1: return tr("Type");
+        case 2: return tr("Source");
         }
     }
     return QVariant();
@@ -396,7 +406,7 @@ void MapObjectModel::setObjectType(MapObject *o, const QString &type)
 void MapObjectModel::setObjectImageSource(MapObject *o, const QString &imageSource)
 {
     o->setImageSource(imageSource);
-    QModelIndex index = this->index(o, 1);
+    QModelIndex index = this->index(o, 2);
     emit dataChanged(index, index);
     emit objectsChanged(QList<MapObject*>() << o);
 }

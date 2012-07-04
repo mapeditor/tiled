@@ -714,11 +714,14 @@ MapObject *MapReaderPrivate::readObject()
     const int height = atts.value(QLatin1String("height")).toString().toInt();
     const QString type = atts.value(QLatin1String("type")).toString();
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
+    QString imageSource = atts.value(QLatin1String("image")).toString();
+    if(!imageSource.isEmpty())
+      imageSource = p->resolveReference(imageSource, mPath);
 
     const QPointF pos = pixelToTileCoordinates(mMap, x, y);
     const QPointF size = pixelToTileCoordinates(mMap, width, height);
 
-    MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
+    MapObject *object = new MapObject(name, type, imageSource, pos, QSizeF(size.x(),
                                                               size.y()));
     if (gid) {
         const Cell cell = cellForGid(gid);

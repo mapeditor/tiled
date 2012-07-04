@@ -484,10 +484,17 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     w.writeStartElement(QLatin1String("object"));
     const QString &name = mapObject->name();
     const QString &type = mapObject->type();
+    QString imageSource = mapObject->imageSource();
     if (!name.isEmpty())
         w.writeAttribute(QLatin1String("name"), name);
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
+    if (!imageSource.isEmpty())
+    {
+        if (!mUseAbsolutePaths)
+            imageSource = mMapDir.relativeFilePath(imageSource);
+        w.writeAttribute(QLatin1String("image"), imageSource);
+    }
 
     if (mapObject->tile()) {
         const uint gid = mGidMapper.cellToGid(Cell(mapObject->tile()));

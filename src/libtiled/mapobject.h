@@ -37,7 +37,6 @@
 #include <QSizeF>
 #include <QString>
 #include <QRectF>
-#include <QPixmap>
 
 namespace Tiled {
 
@@ -76,6 +75,7 @@ public:
      * Constructor.
      */
     MapObject(const QString &name, const QString &type,
+              const QString& imageSource,
               const QPointF &pos,
               const QSizeF &size);
 
@@ -231,8 +231,6 @@ public:
 
     bool isVisible() const { return mVisible; }
     void setVisible(bool visible) { mVisible = visible; }
-
-    const QPixmap image() const;
 
     /**
       * Returns the image filename.

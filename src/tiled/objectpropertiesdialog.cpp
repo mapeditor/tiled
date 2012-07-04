@@ -64,6 +64,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     // Initialize UI with values from the map-object
     mUi->name->setText(mMapObject->name());
     mUi->type->setEditText(mMapObject->type());
+    mUi->imageSource->setText(mMapObject->imageSource());
     mUi->x->setValue(mMapObject->x());
     mUi->y->setValue(mMapObject->y());
     mUi->width->setValue(mMapObject->width());

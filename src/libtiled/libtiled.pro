@@ -36,6 +36,7 @@ SOURCES += compression.cpp \
     mapwriter.cpp \
     objectgroup.cpp \
     orthogonalrenderer.cpp \
+    pixmapcache.cpp \
     properties.cpp \
     staggeredrenderer.cpp \
     tilelayer.cpp \
@@ -53,6 +54,7 @@ HEADERS += compression.h \
     object.h \
     objectgroup.h \
     orthogonalrenderer.h \
+    pixmapcache.h \
     properties.h \
     staggeredrenderer.h \
     tile.h \

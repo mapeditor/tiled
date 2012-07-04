@@ -34,6 +34,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 #include "imagelayer.h"
+#include "pixmapcache.h"
 
 #include <cmath>
 
@@ -294,7 +295,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     QRectF rect(tileToPixelCoords(bounds.topLeft()),
                 tileToPixelCoords(bounds.bottomRight()));
 
-    QPixmap image = object->image();
+    QPixmap image = PixmapCache::instance()->pixmap(object->imageSource());
     if(!image.isNull()) {
         QBrush brush(image);
         qreal sx = rect.width() / qreal(image.width());

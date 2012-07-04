@@ -134,6 +134,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
     connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
+    connect(mUi->pixmapCacheSize, SIGNAL(valueChanged(int)), Preferences::instance(), SLOT(setPixmapCacheSize(int)));
     connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
             Preferences::instance(), SLOT(setGridColor(QColor)));
 
@@ -294,6 +295,7 @@ void PreferencesDialog::fromPreferences()
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
+    mUi->pixmapCacheSize->setValue(prefs->pixmapCacheSize());
 
     int formatIndex = 0;
     switch (prefs->layerDataFormat()) {
