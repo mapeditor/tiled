@@ -81,6 +81,9 @@ public:
     bool automappingDrawing() const { return mAutoMapDrawing; }
     void setAutomappingDrawing(bool enabled);
 
+    QString mapsDirectory() const;
+    void setMapsDirectory(const QString &path);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -105,6 +108,8 @@ signals:
 
     void objectTypesChanged();
 
+    void mapsDirectoryChanged();
+
 private:
     Preferences();
     ~Preferences();
@@ -125,6 +130,8 @@ private:
     ObjectTypes mObjectTypes;
 
     bool mAutoMapDrawing;
+
+    QString mMapsDirectory;
 
     static Preferences *mInstance;
 };

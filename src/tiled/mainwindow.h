@@ -50,6 +50,7 @@ class ClipboardManager;
 class DocumentManager;
 class LayerDock;
 class MapDocumentActionHandler;
+class MapsDock;
 class MapScene;
 class StampBrush;
 class BucketFillTool;
@@ -207,6 +208,7 @@ private:
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
+    MapsDock *mMapsDock;
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;

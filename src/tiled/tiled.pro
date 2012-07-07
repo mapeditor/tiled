@@ -85,6 +85,7 @@ SOURCES += aboutdialog.cpp \
     mapobjectmodel.cpp \
     mappropertiesdialog.cpp \
     mapscene.cpp \
+    mapsdock.cpp \
     mapview.cpp \
     movelayer.cpp \
     movemapobject.cpp \
@@ -186,6 +187,7 @@ HEADERS += aboutdialog.h \
     mappropertiesdialog.h \
     mapreaderinterface.h \
     mapscene.h \
+    mapsdock.h \
     mapview.h \
     mapwriterinterface.h \
     movelayer.h \
