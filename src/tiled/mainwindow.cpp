@@ -49,6 +49,7 @@
 #include "mapobject.h"
 #include "mappropertiesdialog.h"
 #include "maprenderer.h"
+#include "mapsdock.h"
 #include "mapscene.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
@@ -109,6 +110,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mMapDocument(0)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mLayerDock(new LayerDock(this))
+    , mMapsDock(new MapsDock(this))
     , mObjectsDock(new ObjectsDock())
     , mTilesetDock(new TilesetDock(this))
     , mTerrainDock(new TerrainDock(this))
@@ -166,11 +168,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::RightDockWidgetArea, undoDock);
+    addDockWidget(Qt::RightDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     tabifyDockWidget(undoDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
+    tabifyDockWidget(mLayerDock, mMapsDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
 
     statusBar()->addPermanentWidget(mZoomComboBox);

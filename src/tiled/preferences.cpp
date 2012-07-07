@@ -92,6 +92,10 @@ Preferences::Preferences()
                                        false).toBool();
     mSettings->endGroup();
 
+    mSettings->beginGroup(QLatin1String("MapsDirectory"));
+    mMapsDirectory = mSettings->value(QLatin1String("Current"), QString()).toString();
+    mSettings->endGroup();
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
 }
@@ -305,4 +309,19 @@ void Preferences::setAutomappingDrawing(bool enabled)
 {
     mAutoMapDrawing = enabled;
     mSettings->setValue(QLatin1String("Automapping/WhileDrawing"), enabled);
+}
+
+QString Preferences::mapsDirectory() const
+{
+    return mMapsDirectory;
+}
+
+void Preferences::setMapsDirectory(const QString &path)
+{
+    if (mMapsDirectory == path)
+        return;
+    mMapsDirectory = path;
+    mSettings->setValue(QLatin1String("MapsDirectory/Current"), path);
+
+    emit mapsDirectoryChanged();
 }
