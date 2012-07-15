@@ -304,19 +304,29 @@ int main(int argc, char *argv[])
                     terrainToTile.insert(TileTerrainNames(tile), tile);
 
     // Set up the list of all terrains, mapped by name.
-    // Also, assign terrain priority based on the order in which we encounter
-    // them (this will determine drawing order).
     QMap<QString, Terrain*> terrains;
+    foreach (Tileset *tileset, sources)
+        foreach (Terrain *terrain, tileset->terrains())
+            if (!terrains.contains(terrain->name()))
+                terrains.insert(terrain->name(), terrain);
+
+    // Assign terrain priority based on the order in which we encounter
+    // them (this will determine drawing order).
+    QStringList terrainOrder;
+    terrainOrder << "LavaRock";
+    terrainOrder << "Dirt2";
+    terrainOrder << "Dirt";
+    terrainOrder << "Sand";
+    terrainOrder << "Water";
+    terrainOrder << "Hole";
+    terrainOrder << "Grass";
+    terrainOrder << "PlowedSoil";
+    terrainOrder << "Lava";
     TerrainLessThan lessThan;
     int priority = 0;
-    foreach (Tileset *tileset, sources) {
-        foreach (Terrain *terrain, tileset->terrains()) {
-            if (!terrains.contains(terrain->name())) {
-                terrains.insert(terrain->name(), terrain);
-                lessThan.terrainPriority.insert(terrain->name(), priority);
-                ++priority;
-            }
-        }
+    foreach (const QString &terrainName, terrainOrder) {
+        lessThan.terrainPriority.insert(terrainName, priority);
+        ++priority;
     }
 
     qDebug() << "Terrains found:" << terrains.keys();
@@ -399,10 +409,44 @@ int main(int argc, char *argv[])
         }
     }
 
+
+
+    terrainList.clear();
+    terrainList.append(terrains["PlowedSoil"]);
+    terrainList.append(terrains["Grass"]);
+    foreach (Terrain *topLeft, terrainList) {
+        foreach (Terrain *topRight, terrainList) {
+            foreach (Terrain *bottomLeft, terrainList) {
+                foreach (Terrain *bottomRight, terrainList) {
+                    process.append(TileTerrainNames(topLeft->name(),
+                                                    topRight->name(),
+                                                    bottomLeft->name(),
+                                                    bottomRight->name()));
+                }
+            }
+        }
+    }
+
+    terrainList.clear();
+    terrainList.append(terrains["Dirt"]);
+    terrainList.append(terrains["Hole"]);
+    terrainList.append(terrains["Grass"]);
+    foreach (Terrain *topLeft, terrainList) {
+        foreach (Terrain *topRight, terrainList) {
+            foreach (Terrain *bottomLeft, terrainList) {
+                foreach (Terrain *bottomRight, terrainList) {
+                    process.append(TileTerrainNames(topLeft->name(),
+                                                    topRight->name(),
+                                                    bottomLeft->name(),
+                                                    bottomRight->name()));
+                }
+            }
+        }
+    }
+
     terrainList.clear();
     terrainList.append(terrains["Sand"]);
     terrainList.append(terrains["Water"]);
-    terrainList.append(terrains["Grass"]);
     foreach (Terrain *topLeft, terrainList) {
         foreach (Terrain *topRight, terrainList) {
             foreach (Terrain *bottomLeft, terrainList) {
