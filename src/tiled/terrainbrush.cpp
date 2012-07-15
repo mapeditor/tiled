@@ -141,6 +141,7 @@ void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
         mBrushBehavior = Free;
     }
 
+    setBrushMode((modifiers & Qt::ControlModifier) ? PaintVertex : PaintTile);
     updateBrush(tilePosition());
 }
 
