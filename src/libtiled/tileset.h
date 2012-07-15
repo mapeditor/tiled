@@ -39,6 +39,7 @@
 #include <QString>
 
 class QImage;
+class QPixmap;
 
 namespace Tiled {
 
@@ -141,6 +142,11 @@ public:
     void setTileOffset(QPoint offset) { mTileOffset = offset; }
 
     /**
+     * Returns a const reference to the list of tiles in this tileset.
+     */
+    const QList<Tile*> &tiles() const { return mTiles; }
+
+    /**
      * Returns the tile for the given tile ID.
      * The tile ID is local to this tileset, which means the IDs are in range
      * [0, tileCount() - 1].
@@ -151,6 +157,18 @@ public:
      * Returns the number of tiles in this tileset.
      */
     int tileCount() const { return mTiles.size(); }
+
+    /**
+     * Adds a tile to this tileset with the given image.
+     *
+     * @return the created Tile instance.
+     */
+    Tile *addTile(const QPixmap &image);
+
+    /**
+     * Removes (and deletes) the last tile from this set.
+     */
+    void removeLastTile();
 
     /**
      * Returns the number of tile columns in the tileset image.
@@ -209,11 +227,21 @@ public:
     const QString &imageSource() const { return mImageSource; }
 
     /**
+     * Sets the image source of this tileset. Does not reload any tiles!
+     */
+    void setImageSource(const QString &imageSource);
+
+    /**
      * Returns the column count that this tileset would have if the tileset
      * image would have the given \a width. This takes into account the tile
      * size, margin and spacing.
      */
     int columnCountForWidth(int width) const;
+
+    /**
+     * Returns a const reference to the list of terrains in this tileset.
+     */
+    const QList<Terrain*> &terrains() const { return mTerrainTypes; }
 
     /**
      * Returns the number of terrain types in this tileset.

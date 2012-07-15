@@ -70,12 +70,14 @@ public:
     QString name() const { return mName; }
 
     /**
-     * Returns a tile index that represents this terrain type in the terrain palette.
+     * Returns the index of the tile that represents this terrain type in the
+     * terrain palette.
      */
     int paletteImageTile() const { return mImageTile; }
 
     /**
-     * Returns a Tile that represents this terrain type in the terrain palette.
+     * Returns the tile that represents this terrain type in the terrain
+     * palette.
      */
     Tile *paletteImage() const { return mTileset->tileAt(mImageTile); }
 
@@ -87,7 +89,12 @@ public:
     /**
      * Returns the transition penalty(/distance) from this terrain type to another terrain type.
      */
-    int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
+    int transitionDistance(int targetTerrainType) const
+    {
+        if (targetTerrainType + 1 < mTransitionDistance.size())
+            return mTransitionDistance[targetTerrainType + 1];
+        return -1;
+    }
 
     /**
      * Sets the transition penalty(/distance) from this terrain type to another terrain type.

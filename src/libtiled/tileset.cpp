@@ -45,6 +45,18 @@ Tile *Tileset::tileAt(int id) const
     return (id < mTiles.size()) ? mTiles.at(id) : 0;
 }
 
+Tile *Tileset::addTile(const QPixmap &image)
+{
+    Tile *tile = new Tile(image, mTiles.size(), this);
+    mTiles.append(tile);
+    return tile;
+}
+
+void Tileset::removeLastTile()
+{
+    delete mTiles.takeLast();
+}
+
 bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
 {
     Q_ASSERT(mTileWidth > 0 && mTileHeight > 0);
@@ -108,6 +120,11 @@ Tileset *Tileset::findSimilarTileset(const QList<Tileset*> &tilesets) const
     return 0;
 }
 
+void Tileset::setImageSource(const QString &imageSource)
+{
+    mImageSource = imageSource;
+}
+
 int Tileset::columnCountForWidth(int width) const
 {
     Q_ASSERT(mTileWidth > 0);
@@ -116,6 +133,9 @@ int Tileset::columnCountForWidth(int width) const
 
 void Tileset::addTerrain(Terrain *terrain)
 {
+    Q_ASSERT(terrain->tileset() == this);
+    Q_ASSERT(terrain->id() == mTerrainTypes.size());
+
     mTerrainTypes.push_back(terrain);
 }
 

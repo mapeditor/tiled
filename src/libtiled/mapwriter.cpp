@@ -215,7 +215,7 @@ static QString makeTerrainAttribute(const Tile *tile)
 static QString makeTransitionDistanceAttribute(const Terrain *t, int numTerains)
 {
     QString distance;
-    for (int i = -1; i < numTerains; ++i ) {
+    for (int i = -1; i < numTerains; ++i) {
         if (i > -1)
             distance += QLatin1String(",");
         int d = t->transitionDistance(i);

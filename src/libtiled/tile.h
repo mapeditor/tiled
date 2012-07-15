@@ -37,6 +37,30 @@
 
 namespace Tiled {
 
+/**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int id)
+{
+    id &= 0xFF;
+    return id << 24 | id << 16 | id << 8 | id;
+}
+
+/**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int topLeft,
+                            int topRight,
+                            int bottomLeft,
+                            int bottomRight)
+{
+    return (topLeft & 0xFF) << 24 |
+           (topRight & 0xFF) << 16 |
+           (bottomLeft & 0xFF) << 8 |
+           (bottomRight & 0xFF);
+}
+
+
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
@@ -111,6 +135,11 @@ public:
     unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
     unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
     unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; } // HACK: NULL Tile has 'none' terrain type.
+
+    /**
+     * Sets the terrain information of this tile.
+     */
+    void setTerrain(unsigned terrain) { mTerrain = terrain; }
 
     /**
      * Returns the probability of this terrain type appearing while painting (0-100%).
