@@ -29,6 +29,7 @@
 #include <QString>
 
 #include "layer.h"
+#include "mapwriter.h"
 
 class QPoint;
 class QRect;
@@ -225,6 +226,11 @@ public:
     inline void emitEditLayerNameRequested()
     { emit editLayerNameRequested(); }
 
+    MapWriter::LayerDataFormat getLayerDataFormat()
+    { return mLayerDataFormat; }
+    void setLayerDataFormat(MapWriter::LayerDataFormat format)
+    { mLayerDataFormat = format; }
+
 signals:
     void fileNameChanged();
     void modifiedChanged();
@@ -306,6 +312,7 @@ private:
     int mCurrentLayerIndex;
     MapObjectModel *mMapObjectModel;
     QUndoStack *mUndoStack;
+    MapWriter::LayerDataFormat mLayerDataFormat;
 };
 
 } // namespace Internal
