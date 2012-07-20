@@ -32,6 +32,7 @@
 #define MAP_H
 
 #include "layer.h"
+#include "mapwriter.h"
 #include "object.h"
 
 #include <QColor>
@@ -276,6 +277,11 @@ public:
      */
     static Map *fromLayer(Layer *layer);
 
+    MapWriter::LayerDataFormat layerDataFormat() const
+    { return mLayerDataFormat; }
+    void setLayerDataFormat(MapWriter::LayerDataFormat format)
+    { mLayerDataFormat = format; }
+
 private:
     void adoptLayer(Layer *layer);
 
@@ -288,6 +294,7 @@ private:
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
+    MapWriter::LayerDataFormat mLayerDataFormat;
 };
 
 /**

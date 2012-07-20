@@ -59,8 +59,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mMap(map),
     mLayerModel(new LayerModel(this)),
     mMapObjectModel(new MapObjectModel(this)),
-    mUndoStack(new QUndoStack(this)),
-    mLayerDataFormat(MapWriter::Default)
+    mUndoStack(new QUndoStack(this))
 {
     switch (map->orientation()) {
     case Map::Isometric:
@@ -124,7 +123,7 @@ bool MapDocument::save(const QString &fileName, QString *error)
     Preferences *prefs = Preferences::instance();
     // TODO allow overriding on a per-map basis
 
-    MapWriter::LayerDataFormat format = getLayerDataFormat();
+    MapWriter::LayerDataFormat format = map()->layerDataFormat();
     if (format == MapWriter::Default)
         format = prefs->layerDataFormat();
     bool dtd = prefs->dtdEnabled();

@@ -36,6 +36,7 @@
 #include "objectgroup.h"
 #include "map.h"
 #include "mapobject.h"
+#include "mapwriter.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -473,6 +474,23 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
     const QXmlStreamAttributes atts = xml.attributes();
     QStringRef encoding = atts.value(QLatin1String("encoding"));
     QStringRef compression = atts.value(QLatin1String("compression"));
+
+    bool respect = true; // TODO: init from preferences
+    if (respect) {
+        if (encoding.isEmpty())
+            mMap->setLayerDataFormat(MapWriter::XML);
+        else if (encoding == QLatin1String("csv"))
+            mMap->setLayerDataFormat(MapWriter::CSV);
+        else if (encoding == QLatin1String("base64")) {
+            if (compression.isEmpty())
+                mMap->setLayerDataFormat(MapWriter::Base64);
+            else if (compression == QLatin1String("gzip"))
+                mMap->setLayerDataFormat(MapWriter::Base64Gzip);
+            else if (compression == QLatin1String("zlib"))
+                mMap->setLayerDataFormat(MapWriter::Base64Zlib);
+        }
+        // else, error handled below
+    }
 
     int x = 0;
     int y = 0;

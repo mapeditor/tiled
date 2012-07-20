@@ -57,7 +57,7 @@ MapPropertiesDialog::MapPropertiesDialog(MapDocument *mapDocument,
     mLayerDataCombo->addItem(QLatin1String("Base64 (gzip compressed)"));
     mLayerDataCombo->addItem(QLatin1String("Base64 (zlib compressed)"));
     mLayerDataCombo->addItem(QLatin1String("CSV"));
-    mLayerDataCombo->setCurrentIndex(mMapDocument->getLayerDataFormat() + 1);
+    mLayerDataCombo->setCurrentIndex(mMapDocument->map()->layerDataFormat() + 1);
     grid->addWidget(mLayerDataCombo);
 
     QColor bgColor = mapDocument->map()->backgroundColor();
@@ -73,7 +73,7 @@ void MapPropertiesDialog::accept()
         // this shouldn't happen!
         format = 0;
     }
-    mMapDocument->setLayerDataFormat((MapWriter::LayerDataFormat)(format - 1));
+    mMapDocument->map()->setLayerDataFormat((MapWriter::LayerDataFormat)(format - 1));
 
     QUndoStack *undoStack = mMapDocument->undoStack();
 
