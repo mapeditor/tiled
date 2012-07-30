@@ -83,6 +83,14 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset, int firstGid)
     tilesetVariant["margin"] = tileset->margin();
     tilesetVariant["properties"] = toVariant(tileset->properties());
 
+    const QPoint offset = tileset->tileOffset();
+    if (!offset.isNull()) {
+        QVariantMap tileOffset;
+        tileOffset["x"] = offset.x();
+        tileOffset["y"] = offset.y();
+        tilesetVariant["tileoffset"] = tileOffset;
+    }
+
     // Write the image element
     const QString &imageSource = tileset->imageSource();
     if (!imageSource.isEmpty()) {
