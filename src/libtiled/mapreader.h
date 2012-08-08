@@ -99,9 +99,12 @@ protected:
     /**
      * Called for each \a reference to an external file. Should return the path
      * to be used when loading this file. \a mapPath contains the path to the
-     * map or tileset that is currently being loaded.
+     * map or tileset that is currently being loaded. \a relative can be used to
+     * force an absolute ("false") or relative ("true") reference. Default
+     * behaviour is autodetection ("auto").
      */
     virtual QString resolveReference(const QString &reference,
+                                     const QStringRef &relative,
                                      const QString &mapPath);
 
     /**

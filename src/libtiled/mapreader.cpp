@@ -253,6 +253,7 @@ Tileset *MapReaderPrivate::readTileset()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString source = atts.value(QLatin1String("source")).toString();
+    const QStringRef relative = atts.value(QLatin1String("relative"));
     const uint firstGid =
             atts.value(QLatin1String("firstgid")).toString().toUInt();
 
@@ -299,7 +300,8 @@ Tileset *MapReaderPrivate::readTileset()
             }
         }
     } else { // External tileset
-        const QString absoluteSource = p->resolveReference(source, mPath);
+        const QString absoluteSource =
+                p->resolveReference(source, relative, mPath);
         QString error;
         tileset = p->readExternalTileset(absoluteSource, &error);
 
@@ -368,6 +370,7 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString source = atts.value(QLatin1String("source")).toString();
+    const QStringRef relative = atts.value(QLatin1String("relative"));
     QString trans = atts.value(QLatin1String("trans")).toString();
 
     if (!trans.isEmpty()) {
@@ -376,7 +379,7 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
         tileset->setTransparentColor(QColor(trans));
     }
 
-    source = p->resolveReference(source, mPath);
+    source = p->resolveReference(source, relative, mPath);
 
     // Set the width that the tileset had when the map was saved
     const int width = atts.value(QLatin1String("width")).toString().toInt();
@@ -668,6 +671,7 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer *imageLayer)
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString source = atts.value(QLatin1String("source")).toString();
+    const QStringRef relative = atts.value(QLatin1String("relative"));
     QString trans = atts.value(QLatin1String("trans")).toString();
 
     if (!trans.isEmpty()) {
@@ -676,7 +680,7 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer *imageLayer)
         imageLayer->setTransparentColor(QColor(trans));
     }
 
-    source = p->resolveReference(source, mPath);
+    source = p->resolveReference(source, relative, mPath);
 
     const QImage imageLayerImage = p->readExternalImage(source);
     if (!imageLayer->loadFromImage(imageLayerImage, source))
@@ -871,9 +875,12 @@ QString MapReader::errorString() const
 }
 
 QString MapReader::resolveReference(const QString &reference,
+                                    const QStringRef &relative,
                                     const QString &mapPath)
 {
-    if (QDir::isRelativePath(reference))
+    if ((relative == "true")
+            || ((relative != "false")
+                && QDir::isRelativePath(reference)))
         return mapPath + QLatin1Char('/') + reference;
     else
         return reference;
