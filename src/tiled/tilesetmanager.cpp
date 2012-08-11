@@ -133,6 +133,40 @@ QList<Tileset*> TilesetManager::tilesets() const
     return mTilesets.keys();
 }
 
+void TilesetManager::forceTilesetReload( Tileset *tileset )
+{
+    if( tilesets().indexOf(tileset) == -1 )
+        return;
+    
+    QString fileName = tileset->imageSource();
+    if (tileset->loadFromImage(QImage(fileName), fileName))
+        emit tilesetChanged(tileset);
+}
+
+void TilesetManager::forceTilesetReloadByName( const QString &name )
+{
+    // There could be tilesets with the same name
+    foreach (Tileset *tileset, tilesets()) {
+        QString tilesetName = tileset->name();
+        if ( tilesetName != name )
+            continue;
+        
+        forceTilesetReload(tileset);
+    }
+}
+
+void TilesetManager::forcceTilesetReloadBySource( const QString &path )
+{
+    // There could be tilesets with the same image source
+    foreach (Tileset *tileset, tilesets()) {
+        QString tilesetImageSource = tileset->imageSource();
+        if ( tilesetImageSource != path )
+            continue;
+        
+        forceTilesetReload(tileset);
+    }
+}
+
 void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 {
     mReloadTilesetsOnChange = enabled;
