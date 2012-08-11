@@ -187,11 +187,9 @@ HEADERS += aboutdialog.h \
     mapobjectitem.h \
     mapobjectmodel.h \
     mappropertiesdialog.h \
-    mapreaderinterface.h \
     mapscene.h \
     mapsdock.h \
     mapview.h \
-    mapwriterinterface.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \

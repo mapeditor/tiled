@@ -5,8 +5,6 @@ isEmpty(TARGET) {
 TEMPLATE = lib
 CONFIG += plugin
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
-INCLUDEPATH += $$PWD/../tiled
-DEPENDPATH += $$PWD/../tiled
 win32 {
     DESTDIR = $$OUT_PWD/../../../plugins/tiled
 } else:macx {
