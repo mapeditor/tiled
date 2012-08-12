@@ -138,32 +138,39 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     setDefaultDropAction(Qt::MoveAction);
 
     Preferences *prefs = Preferences::instance();
-    connect(prefs, SIGNAL(mapsDirectoryChanged()), this, SLOT(onMapsDirectoryChanged()));
+    connect(prefs, SIGNAL(mapsDirectoryChanged()),
+            SLOT(onMapsDirectoryChanged()));
 
     QDir mapsDir(prefs->mapsDirectory());
     if (!mapsDir.exists())
         mapsDir.setPath(QDir::currentPath());
 
-    QFileSystemModel *model = mFSModel = new QFileSystemModel;
-    model->setRootPath(mapsDir.absolutePath());
+    mFSModel = new QFileSystemModel;
+    mFSModel->setRootPath(mapsDir.absolutePath());
 
-    model->setFilter(QDir::AllDirs | QDir::NoDot | QDir::Files);
-    model->setNameFilters(QStringList(QLatin1String("*.tmx")));
-    model->setNameFilterDisables(false); // hide filtered files
+    QDir::Filters filters = QDir::AllDirs | QDir::Files;
+#if QT_VERSION >= 0x040700
+    filters |= QDir::NoDot;
+#endif
 
-    setModel(model);
+    mFSModel->setFilter(filters);
+    mFSModel->setNameFilters(QStringList(QLatin1String("*.tmx")));
+    mFSModel->setNameFilterDisables(false); // hide filtered files
 
-    QHeaderView* hHeader = header();
-    hHeader->hideSection(1); // Size column
-    hHeader->hideSection(2);
-    hHeader->hideSection(3);
+    setModel(mFSModel);
 
-    setRootIndex(model->index(mapsDir.absolutePath()));
+    QHeaderView *headerView = header();
+    headerView->hideSection(1); // Size column
+    headerView->hideSection(2);
+    headerView->hideSection(3);
+
+    setRootIndex(mFSModel->index(mapsDir.absolutePath()));
     
     header()->setStretchLastSection(false);
     header()->setResizeMode(0, QHeaderView::Stretch);
 
-    connect(this, SIGNAL(activated(QModelIndex)), SLOT(onActivated(QModelIndex)));
+    connect(this, SIGNAL(activated(QModelIndex)),
+            SLOT(onActivated(QModelIndex)));
 }
 
 QSize MapsView::sizeHint() const

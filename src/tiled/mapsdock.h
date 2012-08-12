@@ -59,8 +59,7 @@ private:
 };
 
 /**
- * This view makes sure the size hint makes sense and implements the context
- * menu.
+ * Shows the list of files and directories.
  */
 class MapsView : public QTreeView
 {
@@ -69,6 +68,9 @@ class MapsView : public QTreeView
 public:
     MapsView(MainWindow *mainWindow, QWidget *parent = 0);
 
+    /**
+     * Returns a sensible size hint.
+     */
     QSize sizeHint() const;
 
     void mousePressEvent(QMouseEvent *event);
