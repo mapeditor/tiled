@@ -40,7 +40,8 @@ public:
         CreateArea,
         CreateTile,
         CreatePolygon,
-        CreatePolyline
+        CreatePolyline,
+        CreateEllipse
     };
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
