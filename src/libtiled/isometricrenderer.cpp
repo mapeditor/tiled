@@ -344,7 +344,59 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
-        case MapObject::Ellipse:
+        case MapObject::Ellipse: {
+            QPointF topLeft(tileToPixelCoords(object->bounds().topLeft()));
+            QPointF bottomLeft(tileToPixelCoords(object->bounds().bottomLeft()));
+            QPointF topRight(tileToPixelCoords(object->bounds().topRight()));
+
+
+            const qreal headerX = bottomLeft.x();
+            const qreal headerY = topLeft.y();
+
+            QRectF rect(bottomLeft, topRight);
+
+            const QFontMetrics fm = painter->fontMetrics();
+            QString name = fm.elidedText(object->name(), Qt::ElideRight,
+                                         rect.width() + 2);
+
+            QPolygonF polygon = tileRectToPolygon(object->bounds());
+
+
+            QPointF l1 = polygon.at(1) - polygon.at(0);
+            QPointF l2 = polygon.at(3) - polygon.at(0);
+            float ll1 = l1.manhattanLength();
+            float ll2 = l2.manhattanLength();
+            ll1 =  sqrt(ll1*0.5*ll1*0.5*2);
+            ll2 =  sqrt(ll2*0.5*ll2*0.5*2);
+
+            painter->save();
+            painter->translate(polygon.at(0));
+            painter->rotate(45);
+            painter->drawEllipse(0, 0, ll1, ll2);
+            painter->restore();
+
+            painter->drawPolygon(polygon);
+
+            if (!name.isEmpty())
+                painter->drawText(QPoint(headerX, headerY - 5 + 1), name);
+
+            pen.setColor(color);
+            painter->setPen(pen);
+            painter->setBrush(brush);
+            polygon.translate(0, -1);
+
+            painter->drawPolygon(polygon);
+
+            painter->save();
+            painter->translate(polygon.at(0)+QPointF(0,-1));
+            painter->rotate(45);
+            painter->drawEllipse(0, 0, ll1, ll2);
+            painter->restore();
+
+            if (!name.isEmpty())
+                painter->drawText(QPoint(headerX, headerY - 5), name);
+            break;
+        }
         case MapObject::Rectangle: {
 
             QPointF topLeft(tileToPixelCoords(object->bounds().topLeft()));
