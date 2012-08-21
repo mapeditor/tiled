@@ -25,6 +25,7 @@
 #include "flare_global.h"
 
 #include "mapwriterinterface.h"
+#include "mapreaderinterface.h"
 
 #include <QObject>
 #include <QMap>
@@ -34,15 +35,22 @@ namespace Flare {
 class FLARESHARED_EXPORT FlarePlugin
         : public QObject
         , public Tiled::MapWriterInterface
+        , public Tiled::MapReaderInterface
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapWriterInterface)
+    Q_INTERFACES(Tiled::MapReaderInterface)
+
 #if QT_VERSION >= 0x050000
     Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
 #endif
 
 public:
     FlarePlugin();
+
+    // MapReaderInterface
+    Tiled::Map *read(const QString &fileName);
+    bool supportsFile(const QString &fileName) const;
 
     // MapWriterInterface
     bool write(const Tiled::Map *map, const QString &fileName);
