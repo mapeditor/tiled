@@ -125,9 +125,19 @@ public:
     int tileWidth() const { return mTileWidth; }
 
     /**
+     * Sets the width of one tile.
+     */
+    void setTileWidth(int width) { mTileWidth = width; }
+
+    /**
      * Returns the tile height used by this map.
      */
     int tileHeight() const { return mTileHeight; }
+
+    /**
+     * Sets the height of one tile.
+     */
+    void setTileHeight(int height) { mTileHeight = height; }
 
     /**
      * Adjusts the draw margins to be at least as big as the given margins.
