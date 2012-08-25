@@ -254,12 +254,28 @@ private:
     int mMultiplierY;
 };
 
+static const char *toString(MapObject::Shape shape)
+{
+    switch (shape) {
+    case MapObject::Rectangle:
+        return "rectangle";
+    case MapObject::Polygon:
+        return "polygon";
+    case MapObject::Polyline:
+        return "polyline";
+    case MapObject::Ellipse:
+        return "ellipse";
+    }
+    return "unknown";
+}
+
 void LuaPlugin::writeMapObject(LuaTableWriter &writer,
                                const Tiled::MapObject *mapObject)
 {
     writer.writeStartTable();
     writer.writeKeyAndValue("name", mapObject->name());
     writer.writeKeyAndValue("type", mapObject->type());
+    writer.writeKeyAndValue("shape", toString(mapObject->shape()));
 
     const ObjectGroup *objectGroup = mapObject->objectGroup();
     const TileToPixelCoordinates toPixel(objectGroup->map());
