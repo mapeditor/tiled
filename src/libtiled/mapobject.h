@@ -76,6 +76,7 @@ public:
      * Constructor.
      */
     MapObject(const QString &name, const QString &type,
+              const QString& imageSource,
               const QPointF &pos,
               const QSizeF &size);
 
@@ -232,14 +233,25 @@ public:
     bool isVisible() const { return mVisible; }
     void setVisible(bool visible) { mVisible = visible; }
 
+    /**
+      * Returns the image filename.
+      */
+    const QString &imageSource() const { return mImageSource; }
+
+    /**
+      * Set image filename.
+      */
+    void setImageSource(const QString &fileName) { mImageSource = fileName; };
+
 private:
     QString mName;
     QString mType;
     QPointF mPos;
     QSizeF mSize;
     QPolygonF mPolygon;
+    QString mImageSource;
     Shape mShape;
-    Tile *mTile;
+    Tile *mTile;    
     ObjectGroup *mObjectGroup;
     bool mVisible;
 };

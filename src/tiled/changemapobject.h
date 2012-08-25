@@ -41,7 +41,8 @@ public:
     ChangeMapObject(MapDocument *mapDocument,
                     MapObject *object,
                     const QString &name,
-                    const QString &type);
+                    const QString &type,
+                    const QString &imageSource);
 
     void undo();
     void redo();
@@ -53,6 +54,7 @@ private:
     MapObject *mMapObject;
     QString mName;
     QString mType;
+    QString mImageSource;
 };
 
 } // namespace Internal

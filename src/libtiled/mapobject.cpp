@@ -41,12 +41,14 @@ MapObject::MapObject():
 }
 
 MapObject::MapObject(const QString &name, const QString &type,
+                     const QString& imageSource,
                      const QPointF &pos,
                      const QSizeF &size):
     mName(name),
     mType(type),
     mPos(pos),
     mSize(size),
+    mImageSource(imageSource),
     mShape(Rectangle),
     mTile(0),
     mObjectGroup(0),
@@ -56,10 +58,11 @@ MapObject::MapObject(const QString &name, const QString &type,
 
 MapObject *MapObject::clone() const
 {
-    MapObject *o = new MapObject(mName, mType, mPos, mSize);
+    MapObject *o = new MapObject(mName, mType, mImageSource, mPos, mSize);
     o->setProperties(properties());
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setTile(mTile);
     return o;
 }
+

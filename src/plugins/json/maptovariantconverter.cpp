@@ -190,10 +190,12 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
         QVariantMap objectVariant;
         const QString &name = object->name();
         const QString &type = object->type();
+        const QString &imageSource = object->imageSource();
 
         objectVariant["properties"] = toVariant(object->properties());
         objectVariant["name"] = name;
         objectVariant["type"] = type;
+        objectVariant["image"] = imageSource;
         if (object->tile())
             objectVariant["gid"] = mGidMapper.cellToGid(Cell(object->tile()));
 

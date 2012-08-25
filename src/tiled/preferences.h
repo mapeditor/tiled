@@ -66,6 +66,8 @@ public:
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
+    int pixmapCacheSize() const { return mPixmapCacheSize; }
+
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
     void setObjectTypes(const ObjectTypes &objectTypes);
 
@@ -96,6 +98,7 @@ public slots:
     void setGridColor(QColor gridColor);
     void setHighlightCurrentLayer(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
+    void setPixmapCacheSize(int);
 
 signals:
     void showGridChanged(bool showGrid);
@@ -130,6 +133,7 @@ private:
     ObjectTypes mObjectTypes;
 
     bool mAutoMapDrawing;
+    int mPixmapCacheSize;
 
     QString mMapsDirectory;
 

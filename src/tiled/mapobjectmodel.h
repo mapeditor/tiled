@@ -93,6 +93,7 @@ public:
 
     void setObjectName(MapObject *o, const QString &name);
     void setObjectType(MapObject *o, const QString &type);
+    void setObjectImageSource(MapObject *o, const QString &imageSource);
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);

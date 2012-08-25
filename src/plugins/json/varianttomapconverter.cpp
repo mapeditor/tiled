@@ -267,6 +267,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
+        const QString imageSource = objectVariantMap["image"].toString();
         const int gid = objectVariantMap["gid"].toInt();
         const int x = objectVariantMap["x"].toInt();
         const int y = objectVariantMap["y"].toInt();
@@ -276,7 +277,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QPointF pos = toTile(x, y);
         const QPointF size = toTile(width, height);
 
-        MapObject *object = new MapObject(name, type,
+        MapObject *object = new MapObject(name, type, imageSource,
                                           pos,
                                           QSizeF(size.x(), size.y()));
 
