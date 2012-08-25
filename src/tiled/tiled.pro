@@ -11,9 +11,8 @@ win32 {
     DESTDIR = ../../bin
 }
 
-QT+= gui 
-contains(QT_VERSION, ^5\\..*) {
-	QT       += widgets
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
 }
 contains(QT_CONFIG, opengl): QT += opengl
 
@@ -21,12 +20,12 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 
 macx {
-    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
     LIBS += -framework Foundation
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
-    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../lib
+    QMAKE_LIBDIR += $$OUT_PWD/../../lib
 }
 
 # Make sure the Tiled executable can find libtiled

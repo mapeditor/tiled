@@ -6,9 +6,9 @@ TARGET = tmxviewer
 target.path = $${PREFIX}/bin
 INSTALLS += target
 TEMPLATE = app
-QT       += core gui
-contains(QT_VERSION, ^5\\..*) {
-	QT       += widgets
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
 }
 
 win32 {
@@ -18,11 +18,11 @@ win32 {
 }
 
 macx {
-    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
-    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../lib
+    QMAKE_LIBDIR += $$OUT_PWD/../../lib
 }
 
 # Make sure the executable can find libtiled

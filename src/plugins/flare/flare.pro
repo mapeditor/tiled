@@ -2,8 +2,8 @@ include(../plugin.pri)
 
 DEFINES += FLARE_LIBRARY
 
-contains(QT_VERSION, ^5\\..*) {    
-OTHER_FILES = plugin.json
+greaterThan(QT_MAJOR_VERSION, 4) {
+    OTHER_FILES = plugin.json
 }
 
 HEADERS += \

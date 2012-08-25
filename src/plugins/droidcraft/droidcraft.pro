@@ -1,8 +1,9 @@
 include(../plugin.pri)
 
 DEFINES += DROIDCRAFT_LIBRARY
-contains(QT_VERSION, ^5\\..*) {    
-OTHER_FILES = plugin.json
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    OTHER_FILES = plugin.json
 }
 
 SOURCES += droidcraftplugin.cpp
