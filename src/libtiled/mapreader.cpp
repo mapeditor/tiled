@@ -251,7 +251,7 @@ Map *MapReaderPrivate::readMap()
 
 Tileset *MapReaderPrivate::readTileset()
 {
-    Q_ASSERT(xml.isStartElement() && xml.name() == "tileset");
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tileset"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString source = atts.value(QLatin1String("source")).toString();
@@ -442,7 +442,7 @@ static void readLayerAttributes(Layer *layer,
 
 TileLayer *MapReaderPrivate::readLayer()
 {
-    Q_ASSERT(xml.isStartElement() && xml.name() == "layer");
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("layer"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
@@ -640,7 +640,7 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
 
 ImageLayer *MapReaderPrivate::readImageLayer()
 {
-    Q_ASSERT(xml.isStartElement() && xml.name() == "imagelayer");
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("imagelayer"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
@@ -807,7 +807,7 @@ Properties MapReaderPrivate::readProperties()
 
 void MapReaderPrivate::readProperty(Properties *properties)
 {
-    Q_ASSERT(xml.isStartElement() && xml.name() == "property");
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString propertyName = atts.value(QLatin1String("name")).toString();
