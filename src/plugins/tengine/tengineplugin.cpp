@@ -33,7 +33,6 @@
 #include <QTextStream>
 #include <QHash>
 #include <QList>
-#include <QMessageBox>
 
 using namespace Tengine;
 
