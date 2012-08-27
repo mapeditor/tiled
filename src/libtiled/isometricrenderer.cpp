@@ -376,15 +376,14 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QTransform iTrans = trans.inverted();
             QPointF l1x = iTrans.map(l1);
             QPointF l2x = iTrans.map(l2);
-            QPointF center = l1x*0.5 + l2x*0.5;
-            QPointF ellipseSize = QPointF(l1x.manhattanLength()*0.5, l2x.manhattanLength()*0.5);
+            QSizeF ellipseSize(l1x.manhattanLength(), l2x.manhattanLength());
 
             painter->save();
             painter->setPen(pen);
             painter->translate(polygon.at(0));
             painter->scale(transformScale.x(), transformScale.y());
             painter->rotate(45);
-            painter->drawEllipse(center, ellipseSize.x(), ellipseSize.y());
+            painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
             painter->restore();
 
             painter->setBrush(Qt::NoBrush);
@@ -404,7 +403,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->translate(polygon.at(0));
             painter->scale(transformScale.x(), transformScale.y());
             painter->rotate(45);
-            painter->drawEllipse(center, ellipseSize.x(), ellipseSize.y());
+            painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
             painter->restore();
 
             if (!name.isEmpty())
