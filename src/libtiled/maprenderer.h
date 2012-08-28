@@ -49,7 +49,7 @@ class ImageLayer;
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
-    MapRenderer(const Map *map) : mMap(map) {}
+    MapRenderer(const Map *map) : mMap(map) {  objectBorder=true;  }
     virtual ~MapRenderer() {}
 
     /**
@@ -145,6 +145,12 @@ public:
     }
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
+    
+    inline void setObjectBorder(const bool &objectBorder)
+    { this->objectBorder=objectBorder; }
+    
+    inline bool getObjectBorder() const
+    { return objectBorder; }
 
 protected:
     /**
@@ -154,6 +160,7 @@ protected:
 
 private:
     const Map *mMap;
+    bool objectBorder;
 };
 
 } // namespace Tiled
