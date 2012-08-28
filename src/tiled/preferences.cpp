@@ -54,25 +54,20 @@ Preferences::Preferences()
     mLayerDataFormat = (MapWriter::LayerDataFormat)
                        mSettings->value(QLatin1String("LayerDataFormat"),
                                         MapWriter::Base64Zlib).toInt();
-    mDtdEnabled = mSettings->value(QLatin1String("DtdEnabled")).toBool();
-    mReloadTilesetsOnChange =
-            mSettings->value(QLatin1String("ReloadTilesets"), true).toBool();
+    mDtdEnabled = boolValue("DtdEnabled");
+    mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mSettings->endGroup();
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
-    mShowGrid = mSettings->value(QLatin1String("ShowGrid"), false).toBool();
-    mSnapToGrid = mSettings->value(QLatin1String("SnapToGrid"),
-                                   false).toBool();
-    mGridColor = QColor(mSettings->value(QLatin1String("GridColor"),
-                                  QColor(Qt::black).name()).toString());
-    mHighlightCurrentLayer = mSettings->value(QLatin1String("HighlightCurrentLayer"),
-                                              false).toBool();
-    mShowTilesetGrid = mSettings->value(QLatin1String("ShowTilesetGrid"),
-                                        true).toBool();
-    mLanguage = mSettings->value(QLatin1String("Language"),
-                                 QString()).toString();
-    mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
+    mShowGrid = boolValue("ShowGrid");
+    mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
+    mSnapToGrid = boolValue("SnapToGrid");
+    mGridColor = colorValue("GridColor", Qt::black);
+    mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
+    mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
+    mLanguage = stringValue("Language");
+    mUseOpenGL = boolValue("OpenGL");
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -88,12 +83,11 @@ Preferences::Preferences()
         mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
 
     mSettings->beginGroup(QLatin1String("Automapping"));
-    mAutoMapDrawing = mSettings->value(QLatin1String("WhileDrawing"),
-                                       false).toBool();
+    mAutoMapDrawing = boolValue("WhileDrawing");
     mSettings->endGroup();
 
     mSettings->beginGroup(QLatin1String("MapsDirectory"));
-    mMapsDirectory = mSettings->value(QLatin1String("Current"), QString()).toString();
+    mMapsDirectory = stringValue("Current");
     mSettings->endGroup();
 
     TilesetManager *tilesetManager = TilesetManager::instance();
@@ -113,6 +107,17 @@ void Preferences::setShowGrid(bool showGrid)
     mShowGrid = showGrid;
     mSettings->setValue(QLatin1String("Interface/ShowGrid"), mShowGrid);
     emit showGridChanged(mShowGrid);
+}
+
+void Preferences::setShowTileObjectOutlines(bool enabled)
+{
+    if (mShowTileObjectOutlines == enabled)
+        return;
+
+    mShowTileObjectOutlines = enabled;
+    mSettings->setValue(QLatin1String("Interface/ShowTileObjectOutlines"),
+                        mShowTileObjectOutlines);
+    emit showTileObjectOutlinesChanged(mShowTileObjectOutlines);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)
@@ -324,4 +329,26 @@ void Preferences::setMapsDirectory(const QString &path)
     mSettings->setValue(QLatin1String("MapsDirectory/Current"), path);
 
     emit mapsDirectoryChanged();
+}
+
+bool Preferences::boolValue(const char *key, bool defaultValue) const
+{
+    return mSettings->value(QLatin1String(key), defaultValue).toBool();
+}
+
+QColor Preferences::colorValue(const char *key, const QColor &def) const
+{
+    const QString name = mSettings->value(QLatin1String(key),
+                                          def.name()).toString();
+#if QT_VERSION >= 0x040700
+    if (!QColor::isValidColor(name))
+        return QColor();
+#endif
+
+    return QColor(name);
+}
+
+QString Preferences::stringValue(const char *key, const QString &def) const
+{
+    return mSettings->value(QLatin1String(key), def).toString();
 }

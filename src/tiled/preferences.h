@@ -45,6 +45,7 @@ public:
     static void deleteInstance();
 
     bool showGrid() const { return mShowGrid; }
+    bool showTileObjectOutlines() const { return mShowTileObjectOutlines; }
     bool snapToGrid() const { return mSnapToGrid; }
     QColor gridColor() const { return mGridColor; }
 
@@ -92,6 +93,7 @@ public:
 
 public slots:
     void setShowGrid(bool showGrid);
+    void setShowTileObjectOutlines(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setGridColor(QColor gridColor);
     void setHighlightCurrentLayer(bool highlight);
@@ -99,6 +101,7 @@ public slots:
 
 signals:
     void showGridChanged(bool showGrid);
+    void showTileObjectOutlinesChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void gridColorChanged(QColor gridColor);
     void highlightCurrentLayerChanged(bool highlight);
@@ -114,9 +117,14 @@ private:
     Preferences();
     ~Preferences();
 
+    bool boolValue(const char *key, bool def = false) const;
+    QColor colorValue(const char *key, const QColor &def = QColor()) const;
+    QString stringValue(const char *key, const QString &def = QString()) const;
+
     QSettings *mSettings;
 
     bool mShowGrid;
+    bool mShowTileObjectOutlines;
     bool mSnapToGrid;
     QColor mGridColor;
     bool mHighlightCurrentLayer;

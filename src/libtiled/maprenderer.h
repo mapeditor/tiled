@@ -41,6 +41,12 @@ class MapObject;
 class TileLayer;
 class ImageLayer;
 
+enum RenderFlag {
+    ShowTileObjectOutlines = 0x1
+};
+
+Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
+
 /**
  * This interface is used for rendering tile layers and retrieving associated
  * metrics. The different implementations deal with different map
@@ -144,6 +150,13 @@ public:
         return screenPolygon;
     }
 
+    void setFlag(RenderFlag flag, bool enabled = true);
+    bool testFlag(RenderFlag flag) const
+    { return mFlags.testFlag(flag); }
+
+    RenderFlags flags() const { return mFlags; }
+    void setFlags(RenderFlags flags) { mFlags = flags; }
+
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
 protected:
@@ -154,8 +167,12 @@ protected:
 
 private:
     const Map *mMap;
+
+    RenderFlags mFlags;
 };
 
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::RenderFlags)
 
 #endif // MAPRENDERER_H

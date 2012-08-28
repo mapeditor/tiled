@@ -32,6 +32,14 @@
 
 using namespace Tiled;
 
+void MapRenderer::setFlag(RenderFlag flag, bool enabled)
+{
+    if (enabled)
+        mFlags |= flag;
+    else
+        mFlags &= ~flag;
+}
+
 /**
  * Converts a line running from \a start to \a end to a polygon which
  * extends 5 pixels from the line in all directions.

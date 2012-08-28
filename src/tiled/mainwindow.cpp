@@ -194,6 +194,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     redoAction->setShortcuts(QKeySequence::Redo);
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
+    mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
 
@@ -277,6 +278,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setShowGrid(bool)));
+    connect(mUi->actionShowTileObjectOutlines, SIGNAL(toggled(bool)),
+            preferences, SLOT(setShowTileObjectOutlines(bool)));
     connect(mUi->actionSnapToGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setSnapToGrid(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
@@ -1456,13 +1459,6 @@ void MainWindow::addMapDocument(MapDocument *mapDocument)
     MapView *mapView = mDocumentManager->currentMapView();
     connect(mapView->zoomable(), SIGNAL(scaleChanged(qreal)),
             this, SLOT(updateZoomLabel()));
-
-    Preferences *prefs = Preferences::instance();
-
-    MapScene *mapScene = mapView->mapScene();
-    mapScene->setGridVisible(prefs->showGrid());
-    connect(prefs, SIGNAL(showGridChanged(bool)),
-            mapScene, SLOT(setGridVisible(bool)));
 }
 
 void MainWindow::aboutTiled()

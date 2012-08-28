@@ -58,7 +58,6 @@ MapScene::MapScene(QObject *parent):
     mMapDocument(0),
     mSelectedTool(0),
     mActiveTool(0),
-    mGridVisible(true),
     mUnderMouse(false),
     mCurrentModifiers(Qt::NoModifier),
     mDarkRectangle(new QGraphicsRectItem),
@@ -71,6 +70,9 @@ MapScene::MapScene(QObject *parent):
             this, SLOT(tilesetChanged(Tileset*)));
 
     Preferences *prefs = Preferences::instance();
+    connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
+    connect(prefs, SIGNAL(showTileObjectOutlinesChanged(bool)),
+            SLOT(setShowTileObjectOutlines(bool)));
     connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
     connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
             SLOT(setHighlightCurrentLayer(bool)));
@@ -81,6 +83,8 @@ MapScene::MapScene(QObject *parent):
     mDarkRectangle->setOpacity(darkeningFactor);
     addItem(mDarkRectangle);
 
+    mGridVisible = prefs->showGrid();
+    mShowTileObjectOutlines = prefs->showTileObjectOutlines();
     mHighlightCurrentLayer = prefs->highlightCurrentLayer();
 
     // Install an event filter so that we can get key events on behalf of the
@@ -103,6 +107,9 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     refreshScene();
 
     if (mMapDocument) {
+        mMapDocument->renderer()->setFlag(ShowTileObjectOutlines,
+                                          mShowTileObjectOutlines);
+
         connect(mMapDocument, SIGNAL(mapChanged()),
                 this, SLOT(mapChanged()));
         connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
@@ -441,6 +448,20 @@ void MapScene::setGridVisible(bool visible)
 
     mGridVisible = visible;
     update();
+}
+
+void MapScene::setShowTileObjectOutlines(bool enabled)
+{
+    if (mShowTileObjectOutlines == enabled)
+        return;
+
+    mShowTileObjectOutlines = enabled;
+
+    if (mMapDocument) {
+        mMapDocument->renderer()->setFlag(ShowTileObjectOutlines, enabled);
+        if (!mObjectItems.isEmpty())
+            update();
+    }
 }
 
 void MapScene::setHighlightCurrentLayer(bool highlightCurrentLayer)

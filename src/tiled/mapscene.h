@@ -109,17 +109,6 @@ public:
 signals:
     void selectedObjectItemsChanged();
 
-public slots:
-    /**
-     * Sets whether the tile grid is visible.
-     */
-    void setGridVisible(bool visible);
-
-    /**
-     * Sets whether the current layer should be highlighted.
-     */
-    void setHighlightCurrentLayer(bool highlightCurrentLayer);
-
 protected:
     /**
      * QGraphicsScene::drawForeground override that draws the tile grid.
@@ -138,6 +127,18 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
 
 private slots:
+    /**
+     * Sets whether the tile grid is visible.
+     */
+    void setGridVisible(bool visible);
+
+    void setShowTileObjectOutlines(bool enabled);
+
+    /**
+     * Sets whether the current layer should be highlighted.
+     */
+    void setHighlightCurrentLayer(bool highlightCurrentLayer);
+
     /**
      * Refreshes the map scene.
      */
@@ -175,6 +176,7 @@ private:
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;
+    bool mShowTileObjectOutlines;
     bool mHighlightCurrentLayer;
     bool mUnderMouse;
     Qt::KeyboardModifiers mCurrentModifiers;
