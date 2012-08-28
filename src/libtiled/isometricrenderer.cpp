@@ -317,16 +317,20 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         if (!name.isEmpty())
             painter->drawText(QPoint(paintOrigin.x(), paintOrigin.y() - 5 + 1), name);
 
-        pen.setStyle(Qt::SolidLine);
-        painter->setPen(pen);
-        painter->drawRect(QRectF(paintOrigin, img.size()));
-        pen.setStyle(Qt::DotLine);
-        pen.setColor(color);
-        painter->setPen(pen);
-        painter->drawRect(QRectF(paintOrigin, img.size()));
+        if (testFlag(ShowTileObjectOutlines)) {
+            pen.setStyle(Qt::SolidLine);
+            painter->setPen(pen);
+            painter->drawRect(QRectF(paintOrigin, img.size()));
+            pen.setStyle(Qt::DotLine);
+            pen.setColor(color);
+            painter->setPen(pen);
+            painter->drawRect(QRectF(paintOrigin, img.size()));
+        }
 
-        if (!name.isEmpty())
+        if (!name.isEmpty()) {
+            painter->setPen(color);
             painter->drawText(QPoint(paintOrigin.x(), paintOrigin.y() - 5), name);
+        }
 
     } else {
         QColor brushColor = color;

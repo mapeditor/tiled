@@ -127,8 +127,13 @@ void SaveAsImageDialog::accept()
     const bool drawTileGrid = mUi->drawTileGrid->isChecked();
 
     MapRenderer *renderer = mMapDocument->renderer();
-    QSize mapSize = renderer->mapSize();
 
+    // Remember the current render flags
+    const Tiled::RenderFlags renderFlags = renderer->flags();
+
+    renderer->setFlag(ShowTileObjectOutlines, false);
+
+    QSize mapSize = renderer->mapSize();
     if (useCurrentScale)
         mapSize *= mCurrentScale;
 
@@ -170,6 +175,9 @@ void SaveAsImageDialog::accept()
         renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
                            prefs->gridColor());
     }
+
+    // Restore the previous render flags
+    renderer->setFlags(renderFlags);
 
     image.save(fileName);
     mPath = QFileInfo(fileName).path();
