@@ -219,3 +219,16 @@ void Tileset::calculateTerrainDistances()
         // Repeat while we are still making new connections (could take a number of iterations for distant terrain types to connect)
     } while (bNewConnections);
 }
+
+void Tileset::addTile(const QPixmap &image)
+{
+    detachExternalImage();
+    Tile *newTile = new Tile(image, tileCount(), this);
+    mTiles.append(newTile);
+}
+
+void Tileset::detachExternalImage()
+{
+    mFileName = QString();
+    mImageSource = QString();
+}
