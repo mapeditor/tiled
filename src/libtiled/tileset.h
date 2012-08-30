@@ -240,7 +240,18 @@ public:
      */
     int terrainTransitionPenalty(int terrainType0, int terrainType1);
 
+    /**
+     * Add a new tile to the end of the tileset
+     */
+    void addTile(const QPixmap &image);
+
 private:
+    /**
+     * Detaches from the external image. Should be called everytime the tileset
+     * is changed.
+     */
+    void detachExternalImage();
+
     QString mName;
     QString mFileName;
     QString mImageSource;
