@@ -28,7 +28,7 @@
 #include "mapreader.h"
 
 #include <QBuffer>
-#include <QFileInfo>
+#include <QDir>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -39,16 +39,12 @@ class EditorMapReader : public MapReader
 {
 protected:
     /**
-     * Overridden to make sure the resolved reference is canonical.
+     * Overridden to make sure the resolved reference is a clean path.
      */
     QString resolveReference(const QString &reference, const QString &mapPath)
     {
         QString resolved = MapReader::resolveReference(reference, mapPath);
-        QString canonical = QFileInfo(resolved).canonicalFilePath();
-
-        // Make sure that we're not returning an empty string when the file is
-        // not found.
-        return canonical.isEmpty() ? resolved : canonical;
+        return QDir::cleanPath(resolved);
     }
 
     /**
