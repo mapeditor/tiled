@@ -40,7 +40,7 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     const int tiles = mTileset->tileCount();
-    const int columns = mTileset->columnCount();
+    const int columns = columnCount();
 
     int rows = 1;
     if (columns > 0) {
@@ -54,7 +54,13 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
 
 int TilesetModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mTileset->columnCount();
+    if (parent.isValid())
+        return 0;
+    if (mTileset->columnCount())
+        return mTileset->columnCount();
+    // TODO: Non-table tilesets should use a different model.
+    // For now use an arbitrary number of columns.
+    return 5;
 }
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
@@ -81,7 +87,7 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    const int i = index.column() + index.row() * mTileset->columnCount();
+    const int i = index.column() + index.row() * columnCount();
     return mTileset->tileAt(i);
 }
 

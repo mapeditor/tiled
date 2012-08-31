@@ -219,3 +219,59 @@ void Tileset::calculateTerrainDistances()
         // Repeat while we are still making new connections (could take a number of iterations for distant terrain types to connect)
     } while (bNewConnections);
 }
+
+void Tileset::addTile(const QPixmap &image)
+{
+    detachExternalImage();
+    Tile *newTile = new Tile(image, tileCount(), this);
+    mTiles.append(newTile);
+    if (mTileHeight < image.height())
+        mTileHeight = image.height();
+    if (mTileWidth < image.width())
+        mTileWidth = image.width();
+}
+
+void Tileset::setTileImage(int index, const QPixmap &image)
+{
+    detachExternalImage();
+    Tile *tile = tileAt(index);
+    if (tile) {
+        QPixmap previousImage = tile->image();
+        tile->setImage(image);
+        if (previousImage.height() != image.height() ||
+                previousImage.width() != image.width()) {
+            // Update our max. tile size
+            if (previousImage.height() == mTileHeight ||
+                    previousImage.width() == mTileWidth) {
+                // This used to be the max image; we have to recompute
+                updateTileSize();
+            } else {
+                // Check if we have a new maximum
+                if (mTileHeight < image.height())
+                    mTileHeight = image.height();
+                if (mTileWidth < image.width())
+                    mTileWidth = image.width();
+            }
+        }
+    }
+}
+
+void Tileset::detachExternalImage()
+{
+    mFileName = QString();
+    mImageSource = QString();
+}
+
+void Tileset::updateTileSize()
+{
+    int maxWidth = 0;
+    int maxHeight = 0;
+    foreach (Tile *tile, mTiles) {
+        if (maxWidth < tile->width())
+            maxWidth = tile->width();
+        if (maxHeight < tile->height())
+            maxHeight = tile->height();
+    }
+    mTileWidth = maxWidth;
+    mTileHeight = maxHeight;
+}

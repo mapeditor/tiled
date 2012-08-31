@@ -81,6 +81,7 @@ private:
     void readTilesetTile(Tileset *tileset);
     void readTilesetImage(Tileset *tileset);
     void readTilesetTerrainTypes(Tileset *tileset);
+    QImage readImage();
 
     TileLayer *readLayer();
     void readLayerData(TileLayer *tileLayer);
@@ -272,7 +273,7 @@ Tileset *MapReaderPrivate::readTileset()
         const int margin =
                 atts.value(QLatin1String("margin")).toString().toInt();
 
-        if (tileWidth <= 0 || tileHeight <= 0
+        if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
             xml.raiseError(tr("Invalid tileset parameters for tileset"
                               " '%1'").arg(name));
@@ -292,6 +293,10 @@ Tileset *MapReaderPrivate::readTileset()
                 } else if (xml.name() == QLatin1String("properties")) {
                     tileset->mergeProperties(readProperties());
                 } else if (xml.name() == QLatin1String("image")) {
+                    if (tileWidth == 0 || tileHeight == 0) {
+                        xml.raiseError(tr("Invalid tileset parameters for tileset"
+                                          " '%1'").arg(name));
+                    }
                     readTilesetImage(tileset);
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(tileset);
@@ -329,13 +334,16 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     const QXmlStreamAttributes atts = xml.attributes();
     const int id = atts.value(QLatin1String("id")).toString().toInt();
 
-    if (id < 0 || id >= tileset->tileCount()) {
+    if (id < 0) {
         xml.raiseError(tr("Invalid tile ID: %1").arg(id));
+        return;
+    } else if (id == tileset->tileCount()) {
+        tileset->addTile(QPixmap());
+    } else if (id > tileset->tileCount()) {
+        xml.raiseError(tr("Invalid (nonconsecutive) tile ID: %1").arg(id));
         return;
     }
     Tile *tile = tileset->tileAt(id);
-
-    // TODO: Add support for individual tiles (then it needs to be added here)
 
     // Read tile quadrant terrain ids
     QString terrain = atts.value(QLatin1String("terrain")).toString();
@@ -358,6 +366,8 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());
+        } else if (xml.name() == QLatin1String("image")) {
+            tileset->setTileImage(id, QPixmap::fromImage(readImage()));
         } else {
             readUnknownElement();
         }
@@ -384,11 +394,44 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
     const int width = atts.value(QLatin1String("width")).toString().toInt();
     mGidMapper.setTilesetWidth(tileset, width);
 
-    const QImage tilesetImage = p->readExternalImage(source);
-    if (!tileset->loadFromImage(tilesetImage, source))
+    if (!tileset->loadFromImage(readImage(), source))
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
+}
 
-    xml.skipCurrentElement();
+QImage MapReaderPrivate::readImage()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "image");
+
+    const QXmlStreamAttributes atts = xml.attributes();
+    QString source = atts.value(QLatin1String("source")).toString();
+    QString format = atts.value(QLatin1String("format")).toString();
+
+    if (source.isEmpty()) {
+        while (xml.readNextStartElement()) {
+            if (xml.name() == "data") {
+                const QXmlStreamAttributes atts = xml.attributes();
+                QString encoding = atts.value(QLatin1String("encoding"))
+                    .toString();
+                QByteArray data = xml.readElementText().toLatin1();
+                if (encoding == QLatin1String("base64")) {
+                    data = QByteArray::fromBase64(data);
+                }
+                xml.skipCurrentElement();
+                return QImage::fromData(data, format.toLatin1());
+            } else {
+                readUnknownElement();
+            }
+        }
+    } else {
+        xml.skipCurrentElement();
+
+        source = p->resolveReference(source, mPath);
+        QImage image = p->readExternalImage(source);
+        if (image.isNull())
+            xml.raiseError(tr("Error loading image:\n'%1'").arg(source));
+        return image;
+    }
+    return QImage();
 }
 
 void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)

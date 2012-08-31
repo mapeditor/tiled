@@ -70,22 +70,26 @@ void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
                          const QModelIndex &index) const
 {
-    // Draw the tile image
     const QVariant display = index.model()->data(index, Qt::DisplayRole);
     const QPixmap tileImage = display.value<QPixmap>();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
+    // Compute rectangle to draw the image in: bottom- and left-aligned
+    QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
+    targetRect.setTop(targetRect.top() + targetRect.height() - tileImage.height());
+    targetRect.setRight(targetRect.right() - targetRect.width() + tileImage.width());
+
+    // Draw the tile image
     if (mTilesetView->zoomable()->smoothTransform())
         painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->drawPixmap(option.rect.adjusted(0, 0, -extra, -extra), tileImage);
+    painter->drawPixmap(targetRect, tileImage);
 
     // Overlay with highlight color when selected
     if (option.state & QStyle::State_Selected) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.5);
-        painter->fillRect(option.rect.adjusted(0, 0, -extra, -extra),
-                          option.palette.highlight());
+        painter->fillRect(targetRect, option.palette.highlight());
         painter->setOpacity(opacity);
     }
 }
@@ -129,7 +133,7 @@ TilesetView::TilesetView(MapDocument *mapDocument, Zoomable *zoomable, QWidget *
     // Hardcode this view on 'left to right' since it doesn't work properly
     // for 'right to left' languages.
     setLayoutDirection(Qt::LeftToRight);
-    
+
     Preferences *prefs = Preferences::instance();
     mDrawGrid = prefs->showTilesetGrid();
 
