@@ -400,7 +400,7 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
 
 QImage MapReaderPrivate::readImage()
 {
-    Q_ASSERT(xml.isStartElement() && xml.name() == "image");
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString source = atts.value(QLatin1String("source")).toString();
@@ -408,7 +408,7 @@ QImage MapReaderPrivate::readImage()
 
     if (source.isEmpty()) {
         while (xml.readNextStartElement()) {
-            if (xml.name() == "data") {
+            if (xml.name() == QLatin1String("data")) {
                 const QXmlStreamAttributes atts = xml.attributes();
                 QString encoding = atts.value(QLatin1String("encoding"))
                     .toString();
