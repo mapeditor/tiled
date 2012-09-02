@@ -48,11 +48,11 @@ You can now simply run Tiled using bin/tiled.
 Installing
 -------------------------------------------------------------------------------
 
-For installing Tiled you can run 'make install'. By default Tiled will install
-to /usr/local. You can change this prefix when running qmake, and/or you can
+For installing Tiled you can run `make install`. By default Tiled will install
+to `/usr/local`. You can change this prefix when running qmake, and/or you can
 change the install root when running make install, as follows:
 
-Use /usr instead of /usr/local:
+Use `/usr` instead of `/usr/local`:
 
     $ qmake -r PREFIX=/usr
 
@@ -63,3 +63,7 @@ Install to some packaging directory:
 
     $ make install INSTALL_ROOT=/tmp/tiled-pkg
 
+By default, Tiled and its plugins are compiled with an Rpath so that they can
+find the shared libtiled library when running it straight after compile. When
+packaging for a distribution, this Rpath should generally be disabled by
+appending `RPATH=no` to the qmake command.
