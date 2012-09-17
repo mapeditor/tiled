@@ -48,4 +48,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // NAVIGATORDOCK_H
+#endif // NAVIGATORDOCK_H 
