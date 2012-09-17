@@ -238,63 +238,24 @@ void NavigatorFrame::wheelEvent(QWheelEvent *event)
 {
     MapView* mapView = DocumentManager::instance()->currentMapView();
 
-
     if (mapView &&
         event->orientation() == Qt::Vertical)
     {
-
-
-
+        // cursor position on map
         QPoint frameCenter = QPoint(size().width(), size().height())*0.5;
         frameCenter -= QPoint(imageContentRect.size().width()+2, imageContentRect.size().height()+2)*0.5;
-        QPoint cursorPos = event->pos() - frameCenter;
+        QPointF cursorPos = event->pos() - frameCenter;
 
         // viewRect => the size of the entire scene in pixel
         QRectF mapContentRect = mapView->sceneRect();
-        QRectF visibleRect = mapView->mapToScene(mapView->viewport()->geometry()).boundingRect();
-
-        QRectF drawRect = QRectF(
-                    visibleRect.x() / mapContentRect.width()* imageContentRect.width(),
-                    visibleRect.y() / mapContentRect.height() * imageContentRect.height(),
-                    visibleRect.width() / mapContentRect.width() * imageContentRect.width(),
-                    visibleRect.height() / mapContentRect.height() * imageContentRect.height());
-
-        if (cursorPos.x() >= 0)
-            qWarning() << "wheel baby";
-
         mapView->setTransformationAnchor(QGraphicsView::NoAnchor);
         mapView->zoomable()->handleWheelDelta(event->delta());
-
-        /*
-        QPointF center = drawRect.topLeft();
-        center.setX(center.x() + drawRect.width()*0.5);
-        center.setY(center.y() + drawRect.height()*0.5);
-        */
-
-        QPointF center = mapView->sceneRect().center();
-
-        mapView->centerOn(center);
-
+        cursorPos.setX(cursorPos.x() / imageContentRect.width() * mapContentRect.width());
+        cursorPos.setY(cursorPos.y() / imageContentRect.height() * mapContentRect.height());
+        mapView->centerOn(cursorPos);
         mapView->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 
         update();
-        /*
-        // No automatic anchoring since we'll do it manually
-        setTransformationAnchor(QGraphicsView::NoAnchor);
-
-        mZoomable->handleWheelDelta(event->delta());
-
-        // Place the last known mouse scene pos below the mouse again
-        QWidget *view = viewport();
-        QPointF viewCenterScenePos = mapToScene(view->rect().center());
-        QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mLastMousePos));
-        QPointF diff = viewCenterScenePos - mouseScenePos;
-        centerOn(mLastMouseScenePos + diff);
-
-        // Restore the centering anchor
-        setTransformationAnchor(QGraphicsView::AnchorViewCenter);
-        */
-
         return;
     }
 
