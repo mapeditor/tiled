@@ -38,7 +38,7 @@ NavigatorDock::NavigatorDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 }
-
+ 
 void NavigatorDock::setMapDocument(MapDocument *map)
 {
     mMapDocument = map;

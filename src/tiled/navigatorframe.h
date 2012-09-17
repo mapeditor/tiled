@@ -22,7 +22,7 @@ public:
     void setMapDocument(MapDocument*);
     /** just updates the content. Map is unchanged */
     void redrawFrame();
-    /** redraws the minimap image and the scroll rectanlge */
+    /** redraws the minimap image and the scroll rectanlge  */
     void redrawMapAndFrame();
 
 protected:

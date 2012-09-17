@@ -313,4 +313,3 @@ void NavigatorFrame::mouseMoveEvent(QMouseEvent *event)
 {
 }
 
-
