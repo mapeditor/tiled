@@ -19,35 +19,66 @@
 """
 
 from pybindgen import *
-from pybindgen.typehandlers.base import ForwardWrapperBase
+import pybindgen.typehandlers.base as typehandlers
+from pybindgen.typehandlers.base import ForwardWrapperBase, PointerParameter
+import re
 
-class PyCallbackParam(Parameter):
+"""
+class QFlagsTransformation(typehandlers.TypeTransformation):
+  def __init__(self):
+    self.rx = re.compile(r'(?:::)?QFlags<\s*(\w+)\s*>')
+
+  def get_untransformed_name(self, name):
+    m = self.rx.match(name)
+    if m is None:
+      return None
+    else:
+      return m.group(1)+' *'
+
+  def create_type_handler(self, type_handler, *args, **kwargs):
+    ctype = self.get_untransformed_name(args[0])
+    handler = type_handler(ctype, *args[1:], **kwargs)
+    handler.has_been_transformed = True
+    return handler
+
+typehandlers.param_type_matcher.register_transformation(QFlagsTransformation())
+"""
+
+class QFlagsOptionParam(Parameter):
   DIRECTIONS = [Parameter.DIRECTION_IN]
-  CTYPES = ['PyCallback']
-  CALLBACK = None
+  CTYPES = ['QFlags<QFileDialog::Option>']
 
-  def __init__(self, ctype, name, direction=Parameter.DIRECTION_IN, is_const=False,
-               default_value=None, callback=None):
-    self.CALLBACK = callback
-    super(PyCallbackParam, self).__init__(ctype, name, direction, is_const, default_value)
-
-  def convert_python_to_c(self, wrapper):
-    assert isinstance(wrapper, ForwardWrapperBase)
-    #assert self.CALLBACK != None
-
-    py_cb = wrapper.declarations.declare_variable("PyObject*", self.name)
-    wrapper.parse_params.add_parameter('O', ['&'+py_cb], self.name)
-
-    wrapper.before_call.write_error_check("!PyCallable_Check(%s)" % py_cb,
-            """PyErr_SetString(PyExc_TypeError, "visitor parameter must be callable");""")
-    if self.CALLBACK != None:
-            wrapper.call_params.append(self.CALLBACK)
-    wrapper.before_call.write_code("Py_INCREF(%s);" % py_cb)
-    wrapper.before_call.add_cleanup_code("Py_DECREF(%s);" % py_cb)
-    wrapper.call_params.append(py_cb)
+  def get_c_error_return(self):
+    return "return QFlags(0);"
 
   def convert_c_to_python(self, wrapper):
     raise NotImplementedError
+    #wrapper.build_params.add_parameter("s", ['%s.toUtf8().data()' % self.value], prepend=True)
+
+  def convert_python_to_c(self, wrapper):
+    name = wrapper.declarations.declare_variable("QFileDialog::Option", self.name)
+    wrapper.parse_params.add_parameter('i', ['&'+name], self.value, optional=bool(self.default_value))
+    if self.default_value is None:
+      wrapper.call_params.append('(QFlags<QFileDialog::Option>)%s' % name)
+    else:
+      wrapper.call_params.append(self.default_value)
+
+class QStringPtrParam(PointerParameter):
+  DIRECTIONS = [Parameter.DIRECTION_IN]	# could be out as well
+  CTYPES = ['QString*']
+
+  def convert_c_to_python(self, wrapper):
+    raise NotImplementedError
+
+  def convert_python_to_c(self, wrapper):
+    name = wrapper.declarations.declare_variable("const char *", self.name)
+    if self.default_value is None:
+      name_qst = wrapper.declarations.declare_variable("QString*", self.name + '_qst',
+        'new QString(%s)' % name)
+      wrapper.call_params.append('%s' % name_qst)
+    else:
+      wrapper.call_params.append(self.default_value)
+    wrapper.parse_params.add_parameter('s', ['&'+name], self.value, optional=bool(self.default_value))
 
 class QStringParam(Parameter):
   DIRECTIONS = [Parameter.DIRECTION_IN]
@@ -91,6 +122,9 @@ mod.add_include('"tilelayer.h"')
 mod.add_include('"objectgroup.h"')
 mod.add_include('"tileset.h"')
 mod.add_include('<QImage>')
+mod.add_include('<QFileDialog>')
+mod.add_include('<QWidget>')
+mod.add_include('<QFlags>')
 
 tiled = mod.add_cpp_namespace('Tiled')
 
@@ -147,6 +181,19 @@ cls_qpixmap.add_method('fromImage', None, [('const QImage&','image')])
 cls_qpixmap.add_method('convertFromImage', None, [('const QImage&','image')])
 cls_qpixmap.add_method('width', 'int', [])
 cls_qpixmap.add_method('height', 'int', [])
+
+cls_qwidget = mod.add_class('QWidget')
+cls_qfiledialog = mod.add_class('QFileDialog')
+cls_qfiledialog.add_enum('Option', ('ShowDirsOnly','DontResolveSymlinks','DontConfirmOverwrite','DontUseNativeDialog',
+  'ReadOnly','HideNameFilterDetails','DontUseSheet'))
+cls_qfiledialog.add_method('getOpenFileName', 'QString', [
+  param('QWidget*','parent',transfer_ownership=False,null_ok=True),
+  ('const QString','caption'),('const QString','dir'),('const QString','filter'),
+  param('QString*','selectedFilter',default_value='new QString("")'),
+  param('QFlags<QFileDialog::Option>','options', direction=Parameter.DIRECTION_IN, default_value='0')
+  ], is_static=True)
+
+mod.add_container('QList<QString>', retval('QString'), 'list')
 ## /QT
 
 cls_tile = tiled.add_class('Tile')
@@ -190,7 +237,6 @@ cls_layer = tiled.add_class('Layer')
 
 #mod.add_container('QList<Tileset>', retval('Tileset'), 'list')
 
-mod.add_container('QList<QString>', retval('QString'), 'list')
 cls_props = tiled.add_class('Properties')
 cls_props.add_method('keys', 'QList<QString>', [])
 #cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_props)
