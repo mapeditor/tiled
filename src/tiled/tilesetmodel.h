@@ -45,7 +45,7 @@ public:
     TilesetModel(Tileset *tileset, QObject *parent = 0);
 
     /**
-     * Returns the number of rows. This is equal to the number of tiles.
+     * Returns the number of rows.
      */
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
