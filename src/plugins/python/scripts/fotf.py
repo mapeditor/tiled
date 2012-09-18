@@ -5,6 +5,7 @@ Fury of the Furries level loader for Tiled
 
 import sys, re
 from tiled import *
+from tiled.qt import *
 from os.path import dirname
 from lib import cpystruct, lbm
 from struct import pack,unpack
@@ -35,18 +36,13 @@ class Fury(Plugin):
     m = Tiled.Map(Tiled.Map.Orthogonal, fr.w, fr.h, 16, 16)
     maps[f] = m
 
-    # probable defined explicitly somewhere in the data
+    # probably defined explicitly somewhere in the data
     decs = [1,3,4,2,8,6,7,9,10,5]
     decnum = (int(re.findall('[0-9]+', f).pop())-1)/10
     if decnum >= len(decs): decnum %= len(decs)
     gfxf = dirname(f)+'/../DEC/DECOR%02i.LBM' % decs[decnum]
-    # tileset.clone() would be nice
-    #if tilesets.has_key(gfxf):
-    #  t = tilesets[gfxf].clone()
-    #else:
     t = Tiled.Tileset('DECOR', 16,16, 0, 0)
     t.loadFromImage(fr.readtilegfx(gfxf), '')
-    #tilesets[gfxf] = t
 
     l = Tiled.TileLayer('Tiles',0,0, fr.w, fr.h)
     l.setMap(m)
@@ -62,22 +58,31 @@ class Fury(Plugin):
 
     return m
 
-  def write(m, fn):
-    try:
-      print "Writing map(%i,%i) to" % (m.width(),m.height()), fn
-      l = m.layerAt(0)
-      lvl = []
-      """have to do something for layerAt to give the correct type 
-      for x in range(l.width()):
-        for y in range(l.height()):
-##       lvl += l.cellAt(x, y)
-          print l.cellAt(x, y).tile.id()
-      print lvl
-      """
-      return True
-    except Exception as e:
-      exc_type, exc_obj, exc_tb = sys.exc_info()
-      print 'error @%i:' % exc_tb.tb_lineno, e
+  @classmethod
+  def write(cls, m, fn):
+    print "-- script doesn't support writing yet"
+    fn += '.testing'
+    print ".. map(%i,%i) to" % (m.width(),m.height()), fn
+    lvl = []
+
+    with open(fn, 'w') as fh:
+      for i in range(m.layerCount()):
+        tiles = []
+        l = 0
+        if isTileLayerAt(m, i):
+          l = tileLayerAt(m, i)
+          print l
+        elif isObjectGroupAt(m, i):
+          #l = objectGroupAt(m, i)
+          continue
+
+        for x in range(l.width()):
+          for y in range(l.height()):
+            tiles.append( l.cellAt(x, y).tile.id() )
+
+        print >>fh, tiles
+
+    return False
 
   def __init__(self, f):
     dat = bytearray()

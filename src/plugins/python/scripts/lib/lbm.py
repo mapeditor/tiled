@@ -15,7 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from tiled import *
+from tiled.qt import *
 from cpystruct import *
 #from PyQt4.Qt import QColor  # to test outside tiled
 import struct

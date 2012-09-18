@@ -3,6 +3,7 @@ Mappy support for Tiled
 2012, <samuli@tuomola.net>
 """
 from tiled import *
+from tiled.qt import *
 import os, sys, struct
 from lib.mappy_types import BLKSTR, MPHD, fmpchunk
 

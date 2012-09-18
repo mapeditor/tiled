@@ -9,6 +9,7 @@ http://snesemu.black-ship.net/misc/techdocs/snesdoc.html#GraphicsFormat
 """
 import sys, re, string
 from tiled import *
+from tiled.qt import *
 from os.path import dirname
 from struct import pack,unpack,Struct
 from collections import namedtuple
