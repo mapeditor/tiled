@@ -29,6 +29,7 @@
 #include <QMainWindow>
 #include <QSessionManager>
 #include <QSettings>
+#include <QTimer>
 
 class QComboBox;
 class QLabel;
@@ -61,6 +62,7 @@ class MapView;
 class CommandButton;
 class ObjectsDock;
 class Zoomable;
+class NavigatorDock;
 
 /**
  * The main editor window.
@@ -109,6 +111,9 @@ protected:
     void dropEvent(QDropEvent *);
 
 public slots:
+
+    void undoGroupIndexChanged(int idx);
+
     void newMap();
     void openFile();
     bool saveFile();
@@ -220,6 +225,7 @@ private:
     QSettings mSettings;
     QToolButton *mRandomButton;
     CommandButton *mCommandButton;
+    NavigatorDock* mNavigatorDock;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
