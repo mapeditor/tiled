@@ -18,12 +18,25 @@ class NavigatorFrame: public QFrame
 
 public:
 
+    enum NavigatorRenderFlag
+    {
+        DrawObjects             = 0x0001,
+        DrawTiles               = 0x0002,
+        DrawImages              = 0x0004,
+        IgnoreInvisbleLayer     = 0x0008,
+        DrawGrid                = 0x0010
+    };
+    Q_DECLARE_FLAGS(NavigatorRenderFlags, NavigatorRenderFlag)
+
     NavigatorFrame(QWidget*);
     void setMapDocument(MapDocument*);
     /** just updates the content. Map is unchanged */
     void redrawFrame();
     /** redraws the minimap image and the scroll rectanlge  */
     void redrawMapAndFrame();
+
+    NavigatorRenderFlags renderFlags() const { return mRenderFlags; }
+    void setRenderFlags(NavigatorRenderFlags flags) { mRenderFlags = flags; }
 
 protected:
 
@@ -36,6 +49,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
 private:
 
     MapDocument *mMapDocument;
@@ -43,10 +59,16 @@ private:
     QRect imageContentRect;
     QScrollBar* mScrollX;
     QScrollBar* mScrollY;
+    bool mDragging;
+    QPointF mDragOffset;
+    bool mMouseMoveCursorState;
+    NavigatorRenderFlags mRenderFlags;
 
+    QRectF getViewportRect();
     void recreateMapImage();
     void renderMapToImage();
     void resizeImage(const QSize &newSize);
+    void centerViewOnLocalPixel(QPointF centerPos, int delta=0);
 
 
 public slots:
