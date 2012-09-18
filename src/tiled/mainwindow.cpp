@@ -406,11 +406,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
-    connect(&_chstest_timer, SIGNAL(timeout()),
-            SLOT(_chstest_timout()));
-
     connect(undoGroup,  SIGNAL(indexChanged(int)),
-            SLOT(_chstest_undogroup_indexChanged(int)));
+            SLOT(undoGroupIndexChanged(int)));
 
     connect(mDocumentManager, SIGNAL(currentDocumentChanged(MapDocument*)),
             SLOT(mapDocumentChanged(MapDocument*)));
@@ -430,9 +427,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QShortcut *switchToRightDocument1 = new QShortcut(tr("Ctrl+Tab"), this);
     connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
-
-
-
 
 
     new QShortcut(tr("X"), this, SLOT(flipStampHorizontally()));
@@ -529,30 +523,9 @@ void MainWindow::dropEvent(QDropEvent *e)
         openFile(url.toLocalFile());
 }
 
-void MainWindow::_chstest_undogroup_indexChanged(int idx)
+void MainWindow::undoGroupIndexChanged(int idx)
 {
-    // TODO
-
-    /*
-    static int lastIndex = idx;
-    if (lastIndex != idx)
-    {
-        // notify map model change
-        this->mNavigatorDock->mapModelChanged();
-        lastIndex = idx;
-    }
-    else
-    {
-
-    }*/
-
-    _chstest_timer.start(100);
-}
-
-void MainWindow::_chstest_timout()
-{
-    this->mNavigatorDock->mapModelChanged();
-    _chstest_timer.stop();
+    this->mNavigatorDock->mapModelChanged(true);
 }
 
 void MainWindow::newMap()

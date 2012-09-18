@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QGraphicsView>
+#include <QTimer>
 
 #include "navigatorframe.h"
 #include "mapdocument.h"
@@ -17,23 +18,15 @@ NavigatorDock::NavigatorDock(QWidget *parent)
 {
     setObjectName(QLatin1String("navigatorDock"));
 
-//    QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
-//    mUndoView->setCleanIcon(cleanIcon);
- //   mUndoView->setUniformItemSizes(true);
-  //  mUndoView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(0);
 
-
     mDrawFrame = new NavigatorFrame(this);
-
     layout->addWidget(mDrawFrame);
 
-    //QPushButton* bb = new QPushButton();
-    //bb->setText(QLatin1String("yay"));
-    //layout->addWidget(bb);
+    connect(&mUpdateSuspendTimer, SIGNAL(timeout()),
+            SLOT(redrawTimeout()));
 
     setWidget(widget);
     retranslateUi();
@@ -50,9 +43,12 @@ void NavigatorDock::mapViewChanged()
     mDrawFrame->redrawFrame();
 }
 
-void NavigatorDock::mapModelChanged()
+void NavigatorDock::mapModelChanged(bool buffered)
 {
-    mDrawFrame->redrawMapAndFrame();
+    if (buffered)
+        mUpdateSuspendTimer.start(100);
+    else
+        mDrawFrame->redrawMapAndFrame();
 }
 
 void NavigatorDock::changeEvent(QEvent *e)
@@ -69,6 +65,11 @@ void NavigatorDock::changeEvent(QEvent *e)
 
 void NavigatorDock::retranslateUi()
 {
-    setWindowTitle(tr("NavigatorDock"));
-    //mUndoView->setEmptyLabel(tr("<empty>"));
+    setWindowTitle(tr("Navigator"));
+}
+
+void NavigatorDock::redrawTimeout()
+{
+    mDrawFrame->redrawMapAndFrame();
+    mUpdateSuspendTimer.stop();
 }

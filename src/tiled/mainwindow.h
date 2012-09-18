@@ -110,13 +110,9 @@ protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 
-
-    QTimer _chstest_timer;
-
 public slots:
 
-    void _chstest_undogroup_indexChanged(int idx);
-    void _chstest_timout();
+    void undoGroupIndexChanged(int idx);
 
     void newMap();
     void openFile();
