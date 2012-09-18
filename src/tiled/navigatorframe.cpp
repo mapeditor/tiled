@@ -1,6 +1,4 @@
 #include "navigatorframe.h"
-
-#include "NavigatorFrame.h"
 #include "maprenderer.h"
 #include <QPainter>
 #include "objectgroup.h"
@@ -41,7 +39,6 @@ NavigatorFrame::NavigatorFrame(QWidget *parent)
 
 void NavigatorFrame::setMapDocument(MapDocument *map)
 {
-
     if (mScrollX)
         disconnect(mScrollX, SIGNAL(valueChanged(int)), this, SLOT(scrollbarChanged(int)));
     if (mScrollY)
