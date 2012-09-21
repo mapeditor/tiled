@@ -73,11 +73,12 @@ void TileDelegate::paint(QPainter *painter,
     const QVariant display = index.model()->data(index, Qt::DisplayRole);
     const QPixmap tileImage = display.value<QPixmap>();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
+    const qreal zoom = mTilesetView->zoomable()->scale();
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
-    targetRect.setTop(targetRect.top() + targetRect.height() - tileImage.height());
-    targetRect.setRight(targetRect.right() - targetRect.width() + tileImage.width());
+    targetRect.setTop(targetRect.top() + targetRect.height() - tileImage.height() * zoom);
+    targetRect.setRight(targetRect.right() - targetRect.width() + tileImage.width() * zoom);
 
     // Draw the tile image
     if (mTilesetView->zoomable()->smoothTransform())
