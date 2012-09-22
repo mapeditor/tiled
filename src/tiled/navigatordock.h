@@ -1,6 +1,25 @@
+/*
+* navigatordock.h
+* Copyright 2009-2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+*
+* This file is part of Tiled.
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the Free
+* Software Foundation; either version 2 of the License, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef NAVIGATORDOCK_H
 #define NAVIGATORDOCK_H
-
 
 #include <QDockWidget>
 #include <QTimer>
@@ -25,11 +44,7 @@ public:
     void setMapDocument(MapDocument*);
     /** should be notified whenever zoom/scrollpos has changed */
     void mapViewChanged();
-    /**
-     * Should be notified whenever the content of the map has changed.
-     *
-     * @param buffered true: function uses a timer to prevent high frequent redrawing
-     */
+    /** Should be notified whenever the content of the map has changed */
     void mapModelChanged(bool buffered);
 
 protected:
@@ -42,14 +57,10 @@ private slots:
 
 private:
 
-    /** update ui */
     void retranslateUi();    
 
-    /** ui object for rnedering */
-    NavigatorFrame* mDrawFrame;
-    /** link to the current map */
-    MapDocument* mMapDocument;
-    /** to prevent redraw peeks */
+    NavigatorFrame *mDrawFrame;
+    MapDocument *mMapDocument;
     QTimer mUpdateSuspendTimer;
 
 };

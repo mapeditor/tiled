@@ -1,6 +1,25 @@
+/*
+* navigatorframe.h
+* Copyright 2009-2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+*
+* This file is part of Tiled.
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the Free
+* Software Foundation; either version 2 of the License, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef NAVIGATORFRAME_H
 #define NAVIGATORFRAME_H
-
 
 #include <QFrame>
 #include <QImage>
@@ -10,7 +29,6 @@ namespace Tiled {
 namespace Internal {
 
 class MapDocument;
-
 
 class NavigatorFrame: public QFrame
 {
@@ -30,13 +48,12 @@ public:
 
     NavigatorFrame(QWidget*);
     void setMapDocument(MapDocument*);
-    /** just updates the content. Map is unchanged */
+    /** redaws the scroll rectangle only. minimap image stays unchanged */
     void redrawFrame();
     /** redraws the minimap image and the scroll rectanlge  */
     void redrawMapAndFrame();
-
-    NavigatorRenderFlags renderFlags() const { return mRenderFlags; }
-    void setRenderFlags(NavigatorRenderFlags flags) { mRenderFlags = flags; }
+    NavigatorRenderFlags renderFlags() const;
+    void setRenderFlags(NavigatorRenderFlags flags);
 
 protected:
 
@@ -51,10 +68,10 @@ protected:
 private:
 
     MapDocument *mMapDocument;
-    QImage* mMapImage;
+    QImage mMapImage;
     QRect imageContentRect;
-    QScrollBar* mScrollX;
-    QScrollBar* mScrollY;
+    QScrollBar *mHScrollBar;
+    QScrollBar *mVScrollBar;
     bool mDragging;
     QPointF mDragOffset;
     bool mMouseMoveCursorState;
@@ -64,12 +81,12 @@ private:
     void recreateMapImage();
     void renderMapToImage();
     void resizeImage(const QSize &newSize);
-    void centerViewOnLocalPixel(QPointF centerPos, int delta=0);
+    void centerViewOnLocalPixel(const QPointF &centerPos, int delta=0);
 
 
 public slots:
 
-    void scrollbarChanged(int xx);
+    void scrollbarChanged();
 
 
 };

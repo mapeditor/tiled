@@ -29,7 +29,6 @@
 #include <QMainWindow>
 #include <QSessionManager>
 #include <QSettings>
-#include <QTimer>
 
 class QComboBox;
 class QLabel;

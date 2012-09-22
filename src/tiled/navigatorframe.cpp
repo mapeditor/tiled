@@ -1,8 +1,25 @@
-#include "navigatorframe.h"
+/*
+* navigatorframe.cpp
+* Copyright 2009-2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+*
+* This file is part of Tiled.
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the Free
+* Software Foundation; either version 2 of the License, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
-#include "NavigatorFrame.h"
+#include "navigatorframe.h"
 #include "maprenderer.h"
-#include <QPainter>
 #include "objectgroup.h"
 #include "mapdocument.h"
 #include "map.h"
@@ -10,14 +27,16 @@
 #include "imagelayer.h"
 #include "mapobjectitem.h"
 #include "mapview.h"
-#include <QResizeEvent>
 #include "documentmanager.h"
+#include "zoomable.h"
+#include "preferences.h"
+
+#include <QResizeEvent>
+#include <QPainter>
 #include <QDebug>
 #include <QScrollBar>
-#include "zoomable.h"
 #include <QApplication>
 #include <QCursor>
-#include "preferences.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -25,14 +44,13 @@ using namespace Tiled::Internal;
 
 NavigatorFrame::NavigatorFrame(QWidget *parent)
     : QFrame(parent)
-    , mMapImage(NULL)
-    , mMapDocument(NULL)
-    , mScrollX(NULL)
-    , mScrollY(NULL)
+    , mMapDocument(0)
+    , mHScrollBar(0)
+    , mVScrollBar(0)
     , mDragging(false)
     , mMouseMoveCursorState(false)
 {
-    setFrameStyle( QFrame::NoFrame );
+    setFrameStyle(QFrame::NoFrame);
     mRenderFlags = NavigatorRenderFlags(DrawTiles | DrawObjects | DrawImages | IgnoreInvisbleLayer);
 
     // for cursor changes
@@ -41,20 +59,18 @@ NavigatorFrame::NavigatorFrame(QWidget *parent)
 
 void NavigatorFrame::setMapDocument(MapDocument *map)
 {
+    if (mHScrollBar)
+        disconnect(mHScrollBar, SIGNAL(valueChanged(int)), this, SLOT(scrollbarChanged()));
+    if (mVScrollBar)
+        disconnect(mVScrollBar, SIGNAL(valueChanged(int)), this, SLOT(scrollbarChanged()));
 
-    if (mScrollX)
-        disconnect(mScrollX, SIGNAL(valueChanged(int)), this, SLOT(scrollbarChanged(int)));
-    if (mScrollY)
-        disconnect(mScrollY, SIGNAL(valueChanged(int)), this, SLOT(scrollbarChanged(int)));
+    MapView *mapView = DocumentManager::instance()->currentMapView();
+    if (mapView) {
+        mHScrollBar = mapView->horizontalScrollBar();
+        mVScrollBar = mapView->verticalScrollBar();
 
-    MapView* mapView = DocumentManager::instance()->currentMapView();
-    if (mapView)
-    {
-        mScrollX = mapView->horizontalScrollBar();
-        mScrollY = mapView->verticalScrollBar();
-
-        connect(mScrollX, SIGNAL(valueChanged(int)), SLOT(scrollbarChanged(int)));
-        connect(mScrollY, SIGNAL(valueChanged(int)), SLOT(scrollbarChanged(int)));
+        connect(mHScrollBar, SIGNAL(valueChanged(int)), SLOT(scrollbarChanged()));
+        connect(mVScrollBar, SIGNAL(valueChanged(int)), SLOT(scrollbarChanged()));
     }
 
     mMapDocument = map;
@@ -72,10 +88,20 @@ void NavigatorFrame::redrawMapAndFrame()
     update();
 }
 
+NavigatorFrame::NavigatorRenderFlags NavigatorFrame::renderFlags() const
+{
+    return mRenderFlags;
+}
+
+void NavigatorFrame::setRenderFlags(NavigatorFrame::NavigatorRenderFlags flags)
+{
+    mRenderFlags = flags;
+}
+
 void NavigatorFrame::paintEvent(QPaintEvent *pe)
 {
-    QFrame::paintEvent( pe );
-    QPainter p( this );
+    QFrame::paintEvent(pe);
+    QPainter p(this);
 
     QPoint frameCenter = QPoint(size().width(), size().height())*0.5;
     frameCenter -= QPoint(imageContentRect.size().width()+2, imageContentRect.size().height()+2)*0.5;
@@ -89,8 +115,8 @@ void NavigatorFrame::paintEvent(QPaintEvent *pe)
                imageContentRect.width() + 1,
                imageContentRect.height() + 1);
 
-    if (mMapImage)
-        p.drawImage(1, 1, *mMapImage);
+    if (!mMapImage.isNull())
+        p.drawImage(1, 1, mMapImage);
 
     p.setBrush(Qt::NoBrush);
     p.setPen(QPen(QColor(0, 0, 0)));
@@ -99,10 +125,8 @@ void NavigatorFrame::paintEvent(QPaintEvent *pe)
                imageContentRect.width() + 1,
                imageContentRect.height() + 1);
 
-
-    MapView* mapView = DocumentManager::instance()->currentMapView();
-    if (mapView)
-    {
+    MapView *mapView = DocumentManager::instance()->currentMapView();
+    if (mapView) {
         QRectF drawRect = getViewportRect();
         p.setPen(QColor(0,0,0));
         p.translate(0, 1.5);
@@ -111,7 +135,6 @@ void NavigatorFrame::paintEvent(QPaintEvent *pe)
         p.translate(0, -1.5);
         p.setPen(QPen(QBrush(QColor(255, 0, 0)), 2));
         p.drawRect(drawRect);
-
     }
 }
 
@@ -120,23 +143,18 @@ void NavigatorFrame::resizeEvent(QResizeEvent *event)
     recreateMapImage();
 }
 
-
-
 void NavigatorFrame::recreateMapImage()
 {
-
-
     QSize newImageSize = size();
     if (size().width() < 50 ||
         size().height() < 50)
         newImageSize = QSize(50, 50);
 
-    if (mMapImage == NULL)
-        mMapImage = new QImage(newImageSize, QImage::Format_ARGB32);
-    else if (mMapImage->size().width() < newImageSize.width() ||
-             mMapImage->size().height() < newImageSize.height())
+    if (mMapImage.isNull())
+        mMapImage = QImage(newImageSize, QImage::Format_ARGB32);
+    else if (mMapImage.size().width() < newImageSize.width() ||
+             mMapImage.size().height() < newImageSize.height())
         resizeImage(newImageSize);
-
 
     if (mMapDocument)
         renderMapToImage();
@@ -144,7 +162,6 @@ void NavigatorFrame::recreateMapImage()
 
 void NavigatorFrame::renderMapToImage()
 {
-
     if (size().width() < 2 ||
         size().height() < 2 ||
         !isVisible())
@@ -152,22 +169,18 @@ void NavigatorFrame::renderMapToImage()
 
     MapRenderer *renderer = mMapDocument->renderer();
 
-
     bool drawObjects = mRenderFlags.testFlag(DrawObjects);
     bool drawTiles = mRenderFlags.testFlag(DrawTiles);
     bool drawImages = mRenderFlags.testFlag(DrawImages);
     bool drawTileGrid = mRenderFlags.testFlag(DrawGrid);
     bool visibleLayersOnly = mRenderFlags.testFlag(IgnoreInvisbleLayer);
 
-
     // Remember the current render flags
     const Tiled::RenderFlags renderFlags = renderer->flags();
     renderer->setFlag(ShowTileObjectOutlines, false);
 
-    mMapImage->fill(Qt::transparent);
-    QPainter painter(mMapImage);
-
-
+    mMapImage.fill(Qt::transparent);
+    QPainter painter(&mMapImage);
     QTransform trans;
     QSizeF mapSize = renderer->mapSize();
     QSizeF frameSize = size() - QSizeF(2, 2);
@@ -176,19 +189,15 @@ void NavigatorFrame::renderMapToImage()
     int tx = mapSize.width() * xScale;
     int ty = mapSize.height() * xScale;
     if (tx <= frameSize.width() &&
-        ty <= frameSize.height())
-    {
+        ty <= frameSize.height()) {
         imageContentRect.setSize(QSize(tx,ty));
         trans.scale(xScale, xScale);
     }
-    else
-    {
+    else {
         imageContentRect.setSize(QSize(mapSize.width() * yScale, mapSize.height() * yScale));
         trans.scale(yScale, yScale);
     }
     painter.setTransform(trans);
-
-
 
     foreach (const Layer *layer, mMapDocument->map()->layers()) {
         if (visibleLayersOnly && !layer->isVisible())
@@ -221,23 +230,21 @@ void NavigatorFrame::renderMapToImage()
                           prefs->gridColor());
     }
 
-    // Restore the previous render flags
     renderer->setFlags(renderFlags);
 
 }
 
 void NavigatorFrame::resizeImage(const QSize &newSize)
 {
-    if (mMapImage->size() == newSize)
+    if (mMapImage.size() == newSize)
         return;
 
-    delete mMapImage;
-    mMapImage = new QImage(newSize, QImage::Format_ARGB32);
+    mMapImage = QImage(newSize, QImage::Format_ARGB32);
 }
 
-void NavigatorFrame::centerViewOnLocalPixel(QPointF centerPos, int delta)
+void NavigatorFrame::centerViewOnLocalPixel(const QPointF &centerPos, int delta)
 {
-    MapView* mapView = DocumentManager::instance()->currentMapView();
+    MapView *mapView = DocumentManager::instance()->currentMapView();
     if (!mapView)
         return;
 
@@ -246,21 +253,21 @@ void NavigatorFrame::centerViewOnLocalPixel(QPointF centerPos, int delta)
     mapView->setTransformationAnchor(QGraphicsView::NoAnchor);
     if (delta != 0)
         mapView->zoomable()->handleWheelDelta(delta);
-    centerPos.setX(centerPos.x() / imageContentRect.width() * mapContentRect.width());
-    centerPos.setY(centerPos.y() / imageContentRect.height() * mapContentRect.height());
-    mapView->centerOn(centerPos);
+    QPointF viewCenterPos(
+                centerPos.x() / imageContentRect.width() * mapContentRect.width(),
+                centerPos.y() / imageContentRect.height() * mapContentRect.height());
+    mapView->centerOn(viewCenterPos);
     mapView->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 }
 
-void NavigatorFrame::scrollbarChanged(int xx)
+void NavigatorFrame::scrollbarChanged()
 {
     update();
 }
 
 void NavigatorFrame::wheelEvent(QWheelEvent *event)
 {    
-    if (event->orientation() == Qt::Vertical)
-    {
+    if (event->orientation() == Qt::Vertical) {
         // cursor position on map
         QPoint frameCenter = QPoint(size().width(), size().height())*0.5;
         frameCenter -= QPoint(imageContentRect.size().width()+2, imageContentRect.size().height()+2)*0.5;
@@ -276,9 +283,7 @@ void NavigatorFrame::wheelEvent(QWheelEvent *event)
 
 void NavigatorFrame::mousePressEvent(QMouseEvent *event)
 {       
-
-    if (event->button() == Qt::LeftButton)
-    {
+    if (event->button() == Qt::LeftButton) {
         // cursor position on map
         QPoint frameCenter = QPoint(size().width(), size().height())*0.5;
         frameCenter -= QPoint(imageContentRect.size().width()+2, imageContentRect.size().height()+2)*0.5;
@@ -287,12 +292,10 @@ void NavigatorFrame::mousePressEvent(QMouseEvent *event)
         if (cursorPos.x() >=0 &&
             cursorPos.y() >=0 &&
             cursorPos.x() < imageContentRect.width() &&
-            cursorPos.y() < imageContentRect.height())
-        {
+            cursorPos.y() < imageContentRect.height()) {
 
             QRectF viewPort = getViewportRect();
-            if (viewPort.contains(cursorPos))
-            {
+            if (viewPort.contains(cursorPos)) {
                 mDragOffset = viewPort.center() - cursorPos;
                 cursorPos += mDragOffset;
                 centerViewOnLocalPixel(cursorPos);
@@ -300,8 +303,7 @@ void NavigatorFrame::mousePressEvent(QMouseEvent *event)
 
                 QApplication::setOverrideCursor(QCursor(Qt::ClosedHandCursor));
             }
-            else
-            {
+            else {
                 centerViewOnLocalPixel(cursorPos);
             }
         }
@@ -310,10 +312,8 @@ void NavigatorFrame::mousePressEvent(QMouseEvent *event)
 
 void NavigatorFrame::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
-    {
-        if (mDragging)
-        {
+    if (event->button() == Qt::LeftButton) {
+        if (mDragging) {
             mDragging = false;
             QApplication::restoreOverrideCursor();
         }
@@ -327,32 +327,25 @@ void NavigatorFrame::mouseMoveEvent(QMouseEvent *event)
     frameCenter -= QPoint(imageContentRect.size().width()+2, imageContentRect.size().height()+2)*0.5;
     QPointF cursorPos = event->pos() - frameCenter;
 
-    if (mDragging)
-    {
+    if (mDragging) {
         cursorPos += mDragOffset;
         centerViewOnLocalPixel(cursorPos);
     }
-    else
-    {
+    else {
         if (cursorPos.x() >=0 &&
             cursorPos.y() >=0 &&
             cursorPos.x() < imageContentRect.width() &&
-            cursorPos.y() < imageContentRect.height())
-        {
+            cursorPos.y() < imageContentRect.height()) {
 
             QRectF viewPort = getViewportRect();
-            if (viewPort.contains(cursorPos))
-            {
-                if (!mMouseMoveCursorState)
-                {
+            if (viewPort.contains(cursorPos)) {
+                if (!mMouseMoveCursorState) {
                     QApplication::setOverrideCursor(QCursor(Qt::OpenHandCursor));
                     mMouseMoveCursorState = true;
                 }
             }
-            else
-            {
-                if (mMouseMoveCursorState)
-                {
+            else {
+                if (mMouseMoveCursorState) {
                     QApplication::restoreOverrideCursor();
                     mMouseMoveCursorState = false;
                 }
@@ -364,8 +357,7 @@ void NavigatorFrame::mouseMoveEvent(QMouseEvent *event)
 void NavigatorFrame::leaveEvent(QEvent *e)
 {
     QFrame::leaveEvent(e);
-    if (mMouseMoveCursorState)
-    {
+    if (mMouseMoveCursorState) {
         QApplication::restoreOverrideCursor();
         mMouseMoveCursorState = false;
     }
@@ -373,7 +365,7 @@ void NavigatorFrame::leaveEvent(QEvent *e)
 
 QRectF NavigatorFrame::getViewportRect()
 {
-    MapView* mapView = DocumentManager::instance()->currentMapView();
+    MapView *mapView = DocumentManager::instance()->currentMapView();
     if (!mapView)
         return QRectF(0,0, 1, 1);
 
