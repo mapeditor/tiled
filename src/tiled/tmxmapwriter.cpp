@@ -31,10 +31,14 @@ using namespace Tiled::Internal;
 bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
+    return this->writeFormat(map, fileName, prefs->layerDataFormat(), prefs->dtdEnabled());
+}
 
+bool TmxMapWriter::writeFormat(const Map *map, const QString &fileName, MapWriter::LayerDataFormat format, bool dtd)
+{
     MapWriter writer;
-    writer.setLayerDataFormat(prefs->layerDataFormat());
-    writer.setDtdEnabled(prefs->dtdEnabled());
+    writer.setLayerDataFormat(format);
+    writer.setDtdEnabled(dtd);
 
     bool result = writer.writeMap(map, fileName);
     if (!result)

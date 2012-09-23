@@ -22,6 +22,7 @@
 #define TMXMAPWRITER_H
 
 #include "mapwriterinterface.h"
+#include "mapwriter.h"
 
 #include <QCoreApplication>
 #include <QString>
@@ -41,6 +42,7 @@ class TmxMapWriter : public MapWriterInterface
 
 public:
     bool write(const Map *map, const QString &fileName);
+    bool writeFormat(const Map *map, const QString &fileName, MapWriter::LayerDataFormat format, bool dtd);
 
     bool writeTileset(const Tileset *tileset, const QString &fileName);
 

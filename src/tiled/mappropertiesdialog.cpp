@@ -30,6 +30,7 @@
 #include <QUndoStack>
 #include <QGridLayout>
 #include <QCoreApplication>
+#include <QComboBox>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -42,10 +43,22 @@ MapPropertiesDialog::MapPropertiesDialog(MapDocument *mapDocument,
                        parent)
     , mMapDocument(mapDocument)
     , mColorButton(new ColorButton)
+    , mLayerDataCombo(new QComboBox)
 {
     QGridLayout *grid = new QGridLayout;
     grid->addWidget(new QLabel(tr("Background color:")), 0, 0);
     grid->addWidget(mColorButton, 0, 1);
+
+    grid->addWidget(new QLabel(tr("Layer format:")), 1, 0);
+    // fixme: is it possible to reuse the one from the main preferences?
+    mLayerDataCombo->addItem(QLatin1String("Default"));
+    mLayerDataCombo->addItem(QLatin1String("XML"));
+    mLayerDataCombo->addItem(QLatin1String("Base64 (uncompressed)"));
+    mLayerDataCombo->addItem(QLatin1String("Base64 (gzip compressed)"));
+    mLayerDataCombo->addItem(QLatin1String("Base64 (zlib compressed)"));
+    mLayerDataCombo->addItem(QLatin1String("CSV"));
+    mLayerDataCombo->setCurrentIndex(mMapDocument->map()->layerDataFormat() + 1);
+    grid->addWidget(mLayerDataCombo);
 
     QColor bgColor = mapDocument->map()->backgroundColor();
     mColorButton->setColor(bgColor.isValid() ? bgColor : Qt::darkGray);
@@ -55,6 +68,13 @@ MapPropertiesDialog::MapPropertiesDialog(MapDocument *mapDocument,
 
 void MapPropertiesDialog::accept()
 {
+    int format = mLayerDataCombo->currentIndex();
+    if (format == -1) {
+        // this shouldn't happen!
+        format = 0;
+    }
+    mMapDocument->map()->setLayerDataFormat((MapWriter::LayerDataFormat)(format - 1));
+
     QUndoStack *undoStack = mMapDocument->undoStack();
 
     QColor newColor = mColorButton->color();

@@ -101,6 +101,7 @@ public:
      * The different formats in which the tile layer data can be stored.
      */
     enum LayerDataFormat {
+        Default    = -1,
         XML        = 0,
         Base64     = 1,
         Base64Gzip = 2,
