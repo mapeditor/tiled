@@ -20,6 +20,8 @@
 
 #include "pluginmanager.h"
 
+#include "mapwriterinterface.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -86,4 +88,24 @@ void PluginManager::loadPlugins()
 
         mPlugins.append(Plugin(pluginFile, instance));
     }
+}
+
+const Plugin *PluginManager::getPluginByFileName(QString pluginFileName) const
+{
+    foreach (const Plugin &plugin, mPlugins)
+        if (pluginFileName == plugin.fileName)
+            return &plugin;
+
+    return 0;
+}
+
+const Plugin *PluginManager::getPluginByNameFilter(QString pluginFilter) const
+{
+    foreach (const Plugin &plugin, mPlugins)
+        if (MapWriterInterface *result =
+                qobject_cast<MapWriterInterface*>(plugin.instance))
+            if (result->nameFilters().contains(pluginFilter))
+                return &plugin;
+
+    return 0;
 }

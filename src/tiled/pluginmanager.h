@@ -77,6 +77,24 @@ public:
         return results;
     }
 
+    const Plugin *getPluginByFileName(QString pluginFileName) const;
+
+    const Plugin *getPluginByNameFilter(QString pluginFilter) const;
+
+    /**
+     * Returns the plugin, which implements the given interface.
+     * This must be done via searching the plugins for the right plugins,
+     * since casting doesn't work, an interface is not a plugin.
+     */
+    template<typename T> const Plugin *asPlugin(T *interface) const
+    {
+        foreach (const Plugin &plugin, mPlugins)
+            if (T *result = qobject_cast<T*>(plugin.instance))
+                if (result == interface)
+                    return &plugin;
+        return 0;
+    }
+
 private:
     Q_DISABLE_COPY(PluginManager)
 

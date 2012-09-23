@@ -553,8 +553,17 @@ bool MainWindow::openFile(const QString &fileName,
         }
     }
 
-    if (!mapReader)
+    // check if we can save in that format as well
+    QString writerPluginFileName;
+    PluginManager *pm = PluginManager::instance();
+    if (mapReader) {
+        if (dynamic_cast<MapWriterInterface*>(mapReader)) {
+            if (const Plugin *plugin = pm->asPlugin(mapReader))
+                writerPluginFileName = plugin->fileName;
+        }
+    } else {
         mapReader = &tmxMapReader;
+    }
 
     Map *map = mapReader->read(fileName);
     if (!map) {
@@ -562,8 +571,9 @@ bool MainWindow::openFile(const QString &fileName,
                               mapReader->errorString());
         return false;
     }
-
-    addMapDocument(new MapDocument(map, fileName));
+    MapDocument *mapDocument = new MapDocument(map, fileName);
+    mapDocument->setWriterPluginFileName(writerPluginFileName);
+    addMapDocument(mapDocument);
     setRecentFile(fileName);
     return true;
 }
@@ -700,21 +710,45 @@ bool MainWindow::saveFile()
 
     const QString currentFileName = mMapDocument->fileName();
 
-    if (currentFileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive))
-        return saveFile(currentFileName);
-    else
+    if (!saveFile(currentFileName))
         return saveFileAs();
+
+    return true;
 }
 
 bool MainWindow::saveFileAs()
 {
+    const QString tmxfilter = tr("Tiled map files (*.tmx)");
+    QString filter = QString(tmxfilter);
+    PluginManager *pm = PluginManager::instance();
+    foreach (const Plugin &plugin, pm->plugins()) {
+        const MapWriterInterface *writer = qobject_cast<MapWriterInterface*>
+                (plugin.instance);
+        const MapReaderInterface *reader = qobject_cast<MapReaderInterface*>
+                (plugin.instance);
+        if (writer && reader) {
+            foreach (const QString &str, writer->nameFilters()) {
+                if (!str.isEmpty()) {
+                    filter += QLatin1String(";;");
+                    filter += str;
+                }
+            }
+        }
+    }
+
+    QString selectedFilter;
+    if (mMapDocument)
+        selectedFilter = mMapDocument->writerPluginFileName();
+
+    if (selectedFilter.isEmpty())
+        selectedFilter = tmxfilter;
+
     QString suggestedFileName;
     if (mMapDocument && !mMapDocument->fileName().isEmpty()) {
         const QFileInfo fileInfo(mMapDocument->fileName());
         suggestedFileName = fileInfo.path();
         suggestedFileName += QLatin1Char('/');
-        suggestedFileName += fileInfo.completeBaseName();
-        suggestedFileName += QLatin1String(".tmx");
+        suggestedFileName += fileInfo.fileName();
     } else {
         suggestedFileName = fileDialogStartLocation();
         suggestedFileName += QLatin1Char('/');
@@ -723,7 +757,14 @@ bool MainWindow::saveFileAs()
 
     const QString fileName =
             QFileDialog::getSaveFileName(this, QString(), suggestedFileName,
-                                         tr("Tiled map files (*.tmx)"));
+                                         filter, &selectedFilter);
+
+    QString writerPluginFilename;
+    if (const Plugin *p = pm->getPluginByNameFilter(selectedFilter))
+        writerPluginFilename = p->fileName;
+
+    mMapDocument->setWriterPluginFileName(writerPluginFilename);
+
     if (!fileName.isEmpty())
         return saveFile(fileName);
     return false;
