@@ -29,7 +29,6 @@
 
 #include "tilelayer.h"
 
-#include "layer.h"
 #include "map.h"
 #include "tile.h"
 #include "tileset.h"
