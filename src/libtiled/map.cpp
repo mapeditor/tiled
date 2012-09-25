@@ -44,7 +44,8 @@ Map::Map(Orientation orientation,
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
-    mTileHeight(tileHeight)
+    mTileHeight(tileHeight),
+    mLayerDataFormat(MapWriter::Default)
 {
 }
 

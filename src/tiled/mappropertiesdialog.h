@@ -23,6 +23,8 @@
 
 #include "propertiesdialog.h"
 
+class QComboBox;
+
 namespace Tiled {
 
 namespace Internal {
@@ -41,6 +43,7 @@ public:
 private:
     MapDocument *mMapDocument;
     ColorButton *mColorButton;
+    QComboBox *mLayerDataCombo;
 };
 
 } // namespace Internal

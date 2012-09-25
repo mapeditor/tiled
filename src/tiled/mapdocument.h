@@ -29,6 +29,7 @@
 #include <QString>
 
 #include "layer.h"
+#include "mapwriter.h"
 
 class QPoint;
 class QRect;
