@@ -20,6 +20,7 @@
 
 #include "tmxmapwriter.h"
 
+#include "map.h"
 #include "mapwriter.h"
 #include "preferences.h"
 
@@ -31,14 +32,14 @@ using namespace Tiled::Internal;
 bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
-    return this->writeFormat(map, fileName, prefs->layerDataFormat(), prefs->dtdEnabled());
-}
 
-bool TmxMapWriter::writeFormat(const Map *map, const QString &fileName, MapWriter::LayerDataFormat format, bool dtd)
-{
+    MapWriter::LayerDataFormat format = map->layerDataFormat();
+    if (format == MapWriter::Default)
+        format = prefs->layerDataFormat();
+
     MapWriter writer;
     writer.setLayerDataFormat(format);
-    writer.setDtdEnabled(dtd);
+    writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeMap(map, fileName);
     if (!result)

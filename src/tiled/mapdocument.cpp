@@ -37,7 +37,6 @@
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
-#include "preferences.h"
 #include "resizelayer.h"
 #include "resizemap.h"
 #include "staggeredrenderer.h"
@@ -120,15 +119,7 @@ bool MapDocument::save(const QString &fileName, QString *error)
 {
     TmxMapWriter mapWriter;
 
-    Preferences *prefs = Preferences::instance();
-    // TODO allow overriding on a per-map basis
-
-    MapWriter::LayerDataFormat format = map()->layerDataFormat();
-    if (format == MapWriter::Default)
-        format = prefs->layerDataFormat();
-    bool dtd = prefs->dtdEnabled();
-
-    if (!mapWriter.writeFormat(map(), fileName, format, dtd)) {
+    if (!mapWriter.write(map(), fileName)) {
         if (error)
             *error = mapWriter.errorString();
         return false;
