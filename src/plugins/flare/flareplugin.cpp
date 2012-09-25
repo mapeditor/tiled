@@ -186,6 +186,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                 if (map->indexOfLayer(sectionName) == -1) {
                     objectgroup = new ObjectGroup(sectionName, 0,0,map->width(), map->height());
                     map->addLayer(objectgroup);
+                } else {
+                    objectgroup = dynamic_cast<ObjectGroup*>(map->layerAt(map->indexOfLayer(sectionName)));
                 }
                 mapobject = new MapObject();
                 objectgroup->addObject(mapobject);
