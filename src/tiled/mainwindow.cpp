@@ -79,6 +79,7 @@
 #include "zoomable.h"
 #include "commandbutton.h"
 #include "objectsdock.h"
+#include "navigatordock.h"
 
 #ifdef Q_WS_MAC
 #include "macsupport.h"
@@ -115,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mObjectsDock(new ObjectsDock())
     , mTilesetDock(new TilesetDock(this))
     , mTerrainDock(new TerrainDock(this))
+    , mNavigatorDock(new NavigatorDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -172,7 +174,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
-    addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);    
+    addDockWidget(Qt::RightDockWidgetArea, mNavigatorDock);
+
+
     tabifyDockWidget(undoDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
     tabifyDockWidget(mLayerDock, mMapsDock);
@@ -397,8 +402,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
     mUi->menuView->addAction(undoDock->toggleViewAction());
     mUi->menuView->addAction(mObjectsDock->toggleViewAction());
+    mUi->menuView->addAction(mNavigatorDock->toggleViewAction());
 
     connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
+
+    connect(undoGroup,  SIGNAL(indexChanged(int)),
+            SLOT(undoGroupIndexChanged(int)));
 
     connect(mDocumentManager, SIGNAL(currentDocumentChanged(MapDocument*)),
             SLOT(mapDocumentChanged(MapDocument*)));
@@ -418,6 +427,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     QShortcut *switchToRightDocument1 = new QShortcut(tr("Ctrl+Tab"), this);
     connect(switchToRightDocument1, SIGNAL(activated()),
             mDocumentManager, SLOT(switchToRightDocument()));
+
 
     new QShortcut(tr("X"), this, SLOT(flipStampHorizontally()));
     new QShortcut(tr("Y"), this, SLOT(flipStampVertically()));
@@ -511,6 +521,11 @@ void MainWindow::dropEvent(QDropEvent *e)
 {
     foreach (const QUrl &url, e->mimeData()->urls())
         openFile(url.toLocalFile());
+}
+
+void MainWindow::undoGroupIndexChanged(int idx)
+{
+    this->mNavigatorDock->mapModelChanged(true);
 }
 
 void MainWindow::newMap()
@@ -1531,6 +1546,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mObjectsDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
     mTerrainDock->setMapDocument(mMapDocument);
+    mNavigatorDock->setMapDocument(mMapDocument);
     AutomappingManager::instance()->setMapDocument(mMapDocument);
     QuickStampManager::instance()->setMapDocument(mMapDocument);
 
