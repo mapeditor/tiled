@@ -110,8 +110,7 @@ protected:
     void dropEvent(QDropEvent *);
 
 public slots:
-
-    void undoGroupIndexChanged(int idx);
+    void undoGroupIndexChanged();
 
     void newMap();
     void openFile();
@@ -164,6 +163,7 @@ public slots:
 
     void autoMappingError();
     void autoMappingWarning();
+
 private:
     /**
       * Asks the user whether the current map should be saved when necessary.
@@ -217,6 +217,7 @@ private:
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
+    NavigatorDock* mNavigatorDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
@@ -224,7 +225,6 @@ private:
     QSettings mSettings;
     QToolButton *mRandomButton;
     CommandButton *mCommandButton;
-    NavigatorDock* mNavigatorDock;
 
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;

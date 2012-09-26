@@ -138,7 +138,7 @@ void NavigatorFrame::paintEvent(QPaintEvent *pe)
     }
 }
 
-void NavigatorFrame::resizeEvent(QResizeEvent *event)
+void NavigatorFrame::resizeEvent(QResizeEvent *)
 {
     recreateMapImage();
 }
