@@ -4,5 +4,6 @@ compiler:
   - clang
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libqt4-dev libqt4-opengl-dev zlib1g-dev
+  - sudo apt-get install -qq libqt4-dev libqt4-opengl-dev zlib1g-dev cppcheck
 script: qmake && make
+after_script: cppcheck --enable=all -q --std=c++03 -Isrc/libtiled `git ls-files src/\*.cpp`
