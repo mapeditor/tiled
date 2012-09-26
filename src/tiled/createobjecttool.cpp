@@ -255,8 +255,8 @@ void CreateObjectTool::languageChanged()
 {
     switch (mMode) {
     case CreateArea:
-        setName(tr("Insert Object"));
-        setShortcut(QKeySequence(tr("O")));
+        setName(tr("Insert Rectangle"));
+        setShortcut(QKeySequence(tr("R")));
         break;
     case CreateEllipse:
         setName(tr("Insert Ellipse"));
