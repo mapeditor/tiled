@@ -31,7 +31,14 @@
 
 #include "properties.h"
 
+#include <QSharedData>
+
 namespace Tiled {
+
+struct TILEDSHARED_EXPORT ObjectData : public QSharedData
+{
+    Properties mProperties;
+};
 
 /**
  * The base class for anything that can hold properties.
@@ -39,6 +46,8 @@ namespace Tiled {
 class TILEDSHARED_EXPORT Object
 {
 public:
+    Object() : d(new ObjectData) {}
+
     /**
      * Virtual destructor.
      */
@@ -47,13 +56,13 @@ public:
     /**
      * Returns the properties of this object.
      */
-    const Properties &properties() const { return mProperties; }
+    const Properties &properties() const { return d->mProperties; }
 
     /**
      * Replaces all existing properties with a new set of properties.
      */
     void setProperties(const Properties &properties)
-    { mProperties = properties; }
+    { d->mProperties = properties; }
 
     /**
      * Merges \a properties with the existing properties. Properties with the
@@ -62,22 +71,22 @@ public:
      * \sa Properties::merge
      */
     void mergeProperties(const Properties &properties)
-    { mProperties.merge(properties); }
+    { d->mProperties.merge(properties); }
 
     /**
      * Returns the value of the object's \a name property.
      */
     QString property(const QString &name) const
-    { return mProperties.value(name); }
+    { return d->mProperties.value(name); }
 
     /**
      * Sets the value of the object's \a name property to \a value.
      */
     void setProperty(const QString &name, const QString &value)
-    { mProperties.insert(name, value); }
+    { d->mProperties.insert(name, value); }
 
 private:
-    Properties mProperties;
+    QSharedDataPointer<ObjectData> d;
 };
 
 } // namespace Tiled
