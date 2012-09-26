@@ -32,39 +32,36 @@ class MapDocument;
 class MapView;
 
 /**
- *
+ * Shows a minimap.
  */
-class NavigatorDock: public QDockWidget
+class NavigatorDock : public QDockWidget
 {
     Q_OBJECT
 
 public:
+    NavigatorDock(QWidget *parent = 0);
 
-    NavigatorDock(QWidget* parent=0);
-    void setMapDocument(MapDocument*);
-    /** should be notified whenever zoom/scrollpos has changed */
+    void setMapDocument(MapDocument *);
+
+    /** Should be notified whenever zoom/scrollpos has changed. */
     void mapViewChanged();
-    /** Should be notified whenever the content of the map has changed */
+
+    /** Should be notified whenever the content of the map has changed. */
     void mapModelChanged(bool buffered);
 
 protected:
-
     void changeEvent(QEvent *e);
 
 private slots:
-
     void redrawTimeout();
 
 private:
-
     void retranslateUi();    
 
     NavigatorFrame *mDrawFrame;
     MapDocument *mMapDocument;
     QTimer mUpdateSuspendTimer;
-
 };
-
 
 } // namespace Internal
 } // namespace Tiled

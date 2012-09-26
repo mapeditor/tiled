@@ -35,28 +35,30 @@ class NavigatorFrame: public QFrame
     Q_OBJECT
 
 public:
-
     enum NavigatorRenderFlag
     {
         DrawObjects             = 0x0001,
         DrawTiles               = 0x0002,
         DrawImages              = 0x0004,
-        IgnoreInvisbleLayer     = 0x0008,
+        IgnoreInvisibleLayer    = 0x0008,
         DrawGrid                = 0x0010
     };
     Q_DECLARE_FLAGS(NavigatorRenderFlags, NavigatorRenderFlag)
 
-    NavigatorFrame(QWidget*);
+    NavigatorFrame(QWidget *parent);
+
     void setMapDocument(MapDocument*);
-    /** redaws the scroll rectangle only. minimap image stays unchanged */
+
+    /** Redaws the scroll rectangle only. Minimap image stays unchanged. */
     void redrawFrame();
-    /** redraws the minimap image and the scroll rectanlge */
+
+    /** Redraws the minimap image and the scroll rectangle. */
     void redrawMapAndFrame();
+
     NavigatorRenderFlags renderFlags() const;
     void setRenderFlags(NavigatorRenderFlags flags);
 
 protected:
-
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *);
     void wheelEvent(QWheelEvent *event);
@@ -65,8 +67,10 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void leaveEvent(QEvent *);
 
-private:
+private slots:
+    void scrollbarChanged();
 
+private:
     MapDocument *mMapDocument;
     QImage mMapImage;
     QRect imageContentRect;
@@ -77,18 +81,11 @@ private:
     bool mMouseMoveCursorState;
     NavigatorRenderFlags mRenderFlags;
 
-    QRectF getViewportRect();
+    QRectF viewportRect() const;
     void recreateMapImage();
     void renderMapToImage();
     void resizeImage(const QSize &newSize);
-    void centerViewOnLocalPixel(const QPointF &centerPos, int delta=0);
-
-
-public slots:
-
-    void scrollbarChanged();
-
-
+    void centerViewOnLocalPixel(const QPointF &centerPos, int delta = 0);
 };
 
 
