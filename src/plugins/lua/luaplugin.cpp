@@ -164,13 +164,13 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeStartTable("tiles");
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
-        const Properties properties = tile->properties();
+        const Properties &properties = tile->properties();
 
         // Include enties for those tiles that have properties set on them
         if (!properties.isEmpty()) {
             writer.writeStartTable();
             writer.writeKeyAndValue("id", i);
-            writeProperties(writer, tile->properties());
+            writeProperties(writer, properties);
             writer.writeEndTable();
         }
     }

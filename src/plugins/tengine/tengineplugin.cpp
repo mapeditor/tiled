@@ -136,7 +136,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 // Search the cached tiles for a match
                 bool foundInCache = false;
                 QString displayString;
-                for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); i++) {
+                for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); ++i) {
                     displayString = i.key();
                     currentTile["display"] = displayString;
                     if (currentTile == i.value()) {
@@ -181,7 +181,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
     // Write the definitions to the file
     out << "-- defineTile section" << endl;
-    for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); i++) {
+    for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); ++i) {
         QString displayString = i.key();
         // Only print the emptyTile definition if there were empty tiles
         if (displayString == QLatin1String("?") && numEmptyTiles == 0) {

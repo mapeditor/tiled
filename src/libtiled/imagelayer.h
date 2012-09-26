@@ -84,7 +84,7 @@ public:
     /**
      *  Sets image source file name
      */
-    void setSource(const QString source) { mImageSource = source; }
+    void setSource(const QString &source) { mImageSource = source; }
 
     /**
      * Returns the file name of the layer image.

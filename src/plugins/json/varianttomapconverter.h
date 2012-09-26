@@ -48,7 +48,7 @@ class VariantToMapConverter
     Q_DECLARE_TR_FUNCTIONS(MapReader)
 
 public:
-    VariantToMapConverter() {}
+    VariantToMapConverter() : mMap(0) {}
 
     /**
      * Tries to convert the given \a variant to a Map instance. The \a mapDir

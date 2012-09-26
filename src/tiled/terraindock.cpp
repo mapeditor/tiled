@@ -219,13 +219,10 @@ void TerrainDock::insertTilesetView(int index, Tileset *tileset)
 
 void TerrainDock::updateActions()
 {
-    TerrainView *view = 0;
     const int index = mTabBar->currentIndex();
-    if (index > -1) {
-        view = terrainViewAt(index);
-        if (view)
+    if (index > -1)
+        if (TerrainView *view = terrainViewAt(index))
             mViewStack->setCurrentWidget(view);
-    }
 }
 
 void TerrainDock::updateCurrentTiles()
