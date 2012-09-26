@@ -20,8 +20,6 @@
 
 #include "tengineplugin.h"
 
-#include "math.h"
-
 #include "map.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -33,6 +31,8 @@
 #include <QTextStream>
 #include <QHash>
 #include <QList>
+
+#include <math.h>
 
 using namespace Tengine;
 
