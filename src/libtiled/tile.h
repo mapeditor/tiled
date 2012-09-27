@@ -31,17 +31,17 @@
 #define TILE_H
 
 #include "object.h"
-#include "tileset.h"
 
 #include <QPixmap>
 
 namespace Tiled {
 
+class Terrain;
+
 struct TILEDSHARED_EXPORT TileData : public QSharedData
 {
-    TileData(int id, Tileset *tileset, const QPixmap *image) :
+    TileData(int id, const QPixmap *image) :
         mId(id),
-        mTileset(tileset),
         mImage(image),
         mTerrain(0xFFFFFFFF),
         mTerrainProbability(-1.f)
@@ -52,7 +52,6 @@ struct TILEDSHARED_EXPORT TileData : public QSharedData
     ~TileData();
 
     int mId;
-    Tileset *mTileset;
     const QPixmap *mImage;
     unsigned int mTerrain;
     float mTerrainProbability;
@@ -65,8 +64,8 @@ public:
         : d(null.d)
     {}
 
-    Tile(const QPixmap &image, int id, Tileset *tileset)
-        : d(new TileData(id, tileset, new QPixmap(image)))
+    Tile(const QPixmap &image, int id)
+        : d(new TileData(id, new QPixmap(image)))
     {}
 
     bool isNull() const
@@ -76,11 +75,6 @@ public:
      * Returns ID of this tile within its tileset.
      */
     int id() const { return d->mId; }
-
-    /**
-     * Returns the tileset that this tile is part of.
-     */
-    Tileset *tileset() const { return d->mTileset; }
 
     /**
      * Returns the image of this tile.
@@ -126,7 +120,6 @@ public:
      */
     void setCornerTerrain(int corner, int terrainId)
     {
-        Q_ASSERT(d->mTileset);
         unsigned int mask = 0xFF << (3 - corner)*8;
         unsigned int insert = terrainId << (3 - corner)*8;
         d->mTerrain = (d->mTerrain & ~mask) | (insert & mask);

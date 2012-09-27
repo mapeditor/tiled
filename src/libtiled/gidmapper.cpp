@@ -43,12 +43,12 @@ GidMapper::GidMapper()
 {
 }
 
-GidMapper::GidMapper(const QList<Tileset *> &tilesets)
+GidMapper::GidMapper(const QVector<Tileset> &tilesets)
 {
     uint firstGid = 1;
-    foreach (Tileset *tileset, tilesets) {
+    foreach (const Tileset &tileset, tilesets) {
         insert(firstGid, tileset);
-        firstGid += tileset->tileCount();
+        firstGid += tileset.tileCount();
     }
 }
 
@@ -72,21 +72,22 @@ Cell GidMapper::gidToCell(uint gid, bool &ok) const
         ok = false;
     } else {
         // Find the tileset containing this tile
-        QMap<uint, Tileset*>::const_iterator i = mFirstGidToTileset.upperBound(gid);
+        QMap<uint, Tileset>::const_iterator i = mFirstGidToTileset.upperBound(gid);
         --i; // Navigate one tileset back since upper bound finds the next
         int tileId = gid - i.key();
-        const Tileset *tileset = i.value();
+        const Tileset &tileset = i.value();
 
-        if (tileset) {
+        if (!tileset.isNull()) {
             const int columnCount = mTilesetColumnCounts.value(tileset);
-            if (columnCount > 0 && columnCount != tileset->columnCount()) {
+            if (columnCount > 0 && columnCount != tileset.columnCount()) {
                 // Correct tile index for changes in image width
                 const int row = tileId / columnCount;
                 const int column = tileId % columnCount;
-                tileId = row * tileset->columnCount() + column;
+                tileId = row * tileset.columnCount() + column;
             }
 
-            result.tile = tileset->tileAt(tileId);
+            result.tileIndex = tileId;
+            result.tilesetIndex = mFirstGidToTileset.values().indexOf(tileset);
         }
 
         ok = true;
@@ -100,18 +101,18 @@ uint GidMapper::cellToGid(const Cell &cell) const
     if (cell.isEmpty())
         return 0;
 
-    const Tileset *tileset = cell.tile.tileset();
+    const Tileset tileset = mFirstGidToTileset.values().at(cell.tilesetIndex);
 
     // Find the first GID for the tileset
-    QMap<uint, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
-    QMap<uint, Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
+    QMap<uint, Tileset>::const_iterator i = mFirstGidToTileset.begin();
+    QMap<uint, Tileset>::const_iterator i_end = mFirstGidToTileset.end();
     while (i != i_end && i.value() != tileset)
         ++i;
 
     if (i == i_end) // tileset not found
         return 0;
 
-    uint gid = i.key() + cell.tile.id();
+    uint gid = i.key() + cell.tileIndex;
     if (cell.flippedHorizontally)
         gid |= FlippedHorizontallyFlag;
     if (cell.flippedVertically)
@@ -122,10 +123,10 @@ uint GidMapper::cellToGid(const Cell &cell) const
     return gid;
 }
 
-void GidMapper::setTilesetWidth(const Tileset *tileset, int width)
+void GidMapper::setTilesetWidth(const Tileset &tileset, int width)
 {
-    if (tileset->tileWidth() == 0)
+    if (tileset.tileWidth() == 0)
         return;
 
-    mTilesetColumnCounts.insert(tileset, tileset->columnCountForWidth(width));
+    mTilesetColumnCounts.insert(tileset, tileset.columnCountForWidth(width));
 }

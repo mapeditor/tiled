@@ -223,8 +223,9 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (layer->contains(columnItr)) {
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
-                    const QPixmap &img = cell.tile.image();
-                    const QPoint offset = cell.tile.tileset()->tileOffset();
+                    const Tileset &tileset = map()->tilesets().at(cell.tilesetIndex);
+                    const QPixmap &img = tileset.tileAt(cell.tileIndex).image();
+                    const QPoint offset = tileset.tileOffset();
 
                     qreal m11 = 1;      // Horizontal scaling factor
                     qreal m12 = 0;      // Vertical shearing factor

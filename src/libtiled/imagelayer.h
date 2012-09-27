@@ -60,7 +60,7 @@ public:
 
     QSet<Tileset*> usedTilesets() const { return QSet<Tileset*>(); }
     bool referencesTileset(const Tileset *) const { return false; }
-    void replaceReferencesToTileset(Tileset *, Tileset *) {}
+    void replaceReferencesToTileset(const Tileset &, const Tileset &) {}
 
     void offset(const QPoint &/*offset*/, const QRect &/*bounds*/,
                 bool /*wrapX*/, bool /*wrapY*/)

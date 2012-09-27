@@ -162,7 +162,7 @@ public:
     /**
      * Computes and returns the set of tilesets used by this layer.
      */
-    virtual QSet<Tileset*> usedTilesets() const = 0;
+    virtual QSet<Tileset> usedTilesets() const = 0;
 
     /**
      * Returns whether this layer is referencing the given tileset.
@@ -173,8 +173,8 @@ public:
      * Replaces all references to tiles from \a oldTileset with tiles from
      * \a newTileset.
      */
-    virtual void replaceReferencesToTileset(Tileset *oldTileset,
-                                            Tileset *newTileset) = 0;
+    virtual void replaceReferencesToTileset(const Tileset &oldTileset,
+                                            const Tileset &newTileset) = 0;
 
     /**
      * Resizes this layer to \a size, while shifting its contents by \a offset.

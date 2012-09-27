@@ -102,7 +102,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
                 map->tileWidth(), map->tileHeight());
 
     // Resolve the set of tilesets used by this layer
-    foreach (Tileset *tileset, copyLayer->usedTilesets())
+    foreach (const Tileset &tileset, copyLayer->usedTilesets())
         copyMap.addTileset(tileset);
 
     copyMap.addLayer(copyLayer);

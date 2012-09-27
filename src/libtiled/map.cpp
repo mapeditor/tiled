@@ -148,27 +148,27 @@ Layer *Map::takeLayerAt(int index)
     return layer;
 }
 
-void Map::addTileset(Tileset *tileset)
+void Map::addTileset(const Tileset &tileset)
 {
     mTilesets.append(tileset);
 }
 
-void Map::insertTileset(int index, Tileset *tileset)
+void Map::insertTileset(int index, const Tileset &tileset)
 {
     mTilesets.insert(index, tileset);
 }
 
-int Map::indexOfTileset(Tileset *tileset) const
+int Map::indexOfTileset(const Tileset &tileset) const
 {
     return mTilesets.indexOf(tileset);
 }
 
 void Map::removeTilesetAt(int index)
 {
-    mTilesets.removeAt(index);
+    mTilesets.remove(index);
 }
 
-void Map::replaceTileset(Tileset *oldTileset, Tileset *newTileset)
+void Map::replaceTileset(const Tileset &oldTileset, const Tileset &newTileset)
 {
     const int index = mTilesets.indexOf(oldTileset);
     Q_ASSERT(index != -1);
@@ -176,7 +176,7 @@ void Map::replaceTileset(Tileset *oldTileset, Tileset *newTileset)
     foreach (Layer *layer, mLayers)
         layer->replaceReferencesToTileset(oldTileset, newTileset);
 
-    mTilesets.replace(index, newTileset);
+    mTilesets[index] = newTileset;
 }
 
 bool Map::isTilesetUsed(Tileset *tileset) const

@@ -32,7 +32,7 @@
 
 using namespace Tiled;
 
-const Tile Tile::null(new TileData(0, 0, 0));
+const Tile Tile::null(new TileData(0, 0));
 
 
 TileData::TileData(const TileData &o) :

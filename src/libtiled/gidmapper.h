@@ -50,12 +50,12 @@ public:
     /**
      * Constructor that initializes the gid mapper using the given \a tilesets.
      */
-    GidMapper(const QList<Tileset *> &tilesets);
+    GidMapper(const QVector<Tileset> &tilesets);
 
     /**
      * Insert the given \a tileset with \a firstGid as its first global ID.
      */
-    void insert(uint firstGid, Tileset *tileset)
+    void insert(uint firstGid, const Tileset &tileset)
     { mFirstGidToTileset.insert(firstGid, tileset); }
 
     /**
@@ -85,11 +85,11 @@ public:
      * changed, the tile indexes will be adjusted automatically when using
      * gidToCell().
      */
-    void setTilesetWidth(const Tileset *tileset, int width);
+    void setTilesetWidth(const Tileset &tileset, int width);
 
 private:
-    QMap<uint, Tileset*> mFirstGidToTileset;
-    QMap<const Tileset*, int> mTilesetColumnCounts;
+    QMap<uint, Tileset> mFirstGidToTileset;
+    QMap<Tileset, int> mTilesetColumnCounts;
 };
 
 } // namespace Tiled

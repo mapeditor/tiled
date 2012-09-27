@@ -35,6 +35,8 @@
 
 using namespace Tiled;
 
+const Tileset Tileset::null(new TilesetData(QString(), 0, 0, 0, 0));
+
 Tileset::~Tileset()
 {
 }
@@ -95,19 +97,19 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
     return true;
 }
 
-Tileset *Tileset::findSimilarTileset(const QList<Tileset*> &tilesets) const
+Tileset Tileset::findSimilarTileset(const QVector<Tileset> &tilesets) const
 {
-    foreach (Tileset *candidate, tilesets) {
+    foreach (const Tileset &candidate, tilesets) {
         if (candidate != this
-            && candidate->imageSource() == imageSource()
-            && candidate->tileWidth() == tileWidth()
-            && candidate->tileHeight() == tileHeight()
-            && candidate->tileSpacing() == tileSpacing()
-            && candidate->margin() == margin()) {
+            && candidate.imageSource() == imageSource()
+            && candidate.tileWidth() == tileWidth()
+            && candidate.tileHeight() == tileHeight()
+            && candidate.tileSpacing() == tileSpacing()
+            && candidate.margin() == margin()) {
                 return candidate;
         }
     }
-    return 0;
+    return Tileset();
 }
 
 int Tileset::columnCountForWidth(int width) const

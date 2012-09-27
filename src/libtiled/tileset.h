@@ -86,6 +86,13 @@ class TILEDSHARED_EXPORT Tileset : public Object
 {
 public:
     /**
+     * Constructs a null tileset.
+     */
+    Tileset()
+        : d(null.d)
+    {}
+
+    /**
      * Constructor.
      *
      * @param name        the name of the tileset
@@ -106,6 +113,9 @@ public:
      * Destructor.
      */
     ~Tileset();
+
+    bool isNull() const
+    { return d == null.d && Object::isNull(); }
 
     /**
      * Returns the name of this tileset.
@@ -233,7 +243,7 @@ public:
      * This checks if there is a similar tileset in the given list.
      * It is needed for replacing this tileset by its similar copy.
      */
-    Tileset *findSimilarTileset(const QList<Tileset*> &tilesets) const;
+    Tileset findSimilarTileset(const QVector<Tileset> &tilesets) const;
 
     /**
      * Returns the file name of the external image that contains the tiles in
@@ -284,7 +294,19 @@ public:
      */
     void setTileImage(int index, const QPixmap &image);
 
+    // These comparators ignore the Object part since it doesn't matter.
+    bool operator==(const Tileset &other) const { return d == other.d; }
+    bool operator!=(const Tileset &other) const { return d != other.d; }
+
+    // For use with QMap
+    bool operator<(const Tileset &other) const { return d < other.d; }
+
 private:
+    /** Only used to construct the shared 'null' tileset. */
+    explicit Tileset(TilesetData *data):
+        d(data)
+    {}
+
     /**
      * Detaches from the external image. Should be called everytime the tileset
      * is changed.
@@ -297,6 +319,7 @@ private:
     void updateTileSize();
 
     QSharedDataPointer<TilesetData> d;
+    static const Tileset null;
 };
 
 } // namespace Tiled

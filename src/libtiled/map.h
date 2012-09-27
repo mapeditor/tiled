@@ -34,6 +34,7 @@
 #include "layer.h"
 #include "mapwriter.h"
 #include "object.h"
+#include "tileset.h"
 
 #include <QColor>
 #include <QList>
@@ -43,7 +44,6 @@
 namespace Tiled {
 
 class Tile;
-class Tileset;
 class ObjectGroup;
 
 /**
@@ -218,24 +218,23 @@ public:
     Layer *takeLayerAt(int index);
 
     /**
-     * Adds a tileset to this map. The map does not take ownership over its
-     * tilesets, this is merely for keeping track of which tilesets are used by
-     * the map, and their saving order.
+     * Adds a tileset to this map. This is done for keeping track of which
+     * tilesets are used by the map, and their saving order.
      *
      * @param tileset the tileset to add
      */
-    void addTileset(Tileset *tileset);
+    void addTileset(const Tileset &tileset);
 
     /**
      * Inserts \a tileset at \a index in the list of tilesets used by this map.
      */
-    void insertTileset(int index, Tileset *tileset);
+    void insertTileset(int index, const Tileset &tileset);
 
     /**
      * Returns the index of the given \a tileset, or -1 if it is not used in
      * this map.
      */
-    int indexOfTileset(Tileset *tileset) const;
+    int indexOfTileset(const Tileset &tileset) const;
 
     /**
      * Removes the tileset at \a index from this map.
@@ -252,12 +251,12 @@ public:
      * Also replaces the old tileset with the new tileset in the list of
      * tilesets.
      */
-    void replaceTileset(Tileset *oldTileset, Tileset *newTileset);
+    void replaceTileset(const Tileset &oldTileset, const Tileset &newTileset);
 
     /**
      * Returns the tilesets that the tiles on this map are using.
      */
-    const QList<Tileset*> &tilesets() const { return mTilesets; }
+    const QVector<Tileset> &tilesets() const { return mTilesets; }
 
     /**
      * Returns the background color of this map.
@@ -303,7 +302,7 @@ private:
     QColor mBackgroundColor;
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
-    QList<Tileset*> mTilesets;
+    QVector<Tileset> mTilesets;
     MapWriter::LayerDataFormat mLayerDataFormat;
 };
 

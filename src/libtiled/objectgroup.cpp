@@ -95,35 +95,38 @@ bool ObjectGroup::isEmpty() const
     return mObjects.isEmpty();
 }
 
-QSet<Tileset*> ObjectGroup::usedTilesets() const
+QSet<Tileset> ObjectGroup::usedTilesets() const
 {
-    QSet<Tileset*> tilesets;
+    QSet<Tileset> tilesets;
 
-    foreach (const MapObject *object, mObjects)
-        if (Tileset *tileset = object->tile().tileset())
-            tilesets.insert(tileset);
+    // FIXME
+//    foreach (const MapObject *object, mObjects)
+//        if (Tileset *tileset = object->tile().tileset())
+//            tilesets.insert(tileset);
 
     return tilesets;
 }
 
 bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 {
-    foreach (const MapObject *object, mObjects) {
-        if (object->tile().tileset() == tileset)
-            return true;
-    }
+    // FIXME
+//    foreach (const MapObject *object, mObjects) {
+//        if (object->tile().tileset() == tileset)
+//            return true;
+//    }
 
     return false;
 }
 
-void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
-                                             Tileset *newTileset)
+void ObjectGroup::replaceReferencesToTileset(const Tileset &oldTileset,
+                                             const Tileset &newTileset)
 {
-    foreach (MapObject *object, mObjects) {
-        const Tile &tile = object->tile();
-        if (tile.tileset() == oldTileset)
-            object->setTile(newTileset->tileAt(tile.id()));
-    }
+    // FIXME
+//    foreach (MapObject *object, mObjects) {
+//        const Tile &tile = object->tile();
+//        if (tile.tileset() == oldTileset)
+//            object->setTile(newTileset.tileAt(tile.id()));
+//    }
 }
 
 void ObjectGroup::resize(const QSize &size, const QPoint &offset)

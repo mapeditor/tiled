@@ -403,16 +403,16 @@ bool AutoMapper::setupCorrectIndexes()
 // because here mAddedTileset is modified.
 bool AutoMapper::setupTilesets(Map *src, Map *dst)
 {
-    QList<Tileset*> existingTilesets = dst->tilesets();
+    const QVector<Tileset> &existingTilesets = dst->tilesets();
 
     // Add tilesets that are not yet part of dst map
-    foreach (Tileset *tileset, src->tilesets()) {
+    foreach (const Tileset &tileset, src->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
         QUndoStack *undoStack = mMapDocument->undoStack();
 
-        Tileset *replacement = tileset->findSimilarTileset(existingTilesets);
+        Tileset replacement = tileset.findSimilarTileset(existingTilesets);
         if (!replacement) {
             mAddedTilesets.append(tileset);
             undoStack->push(new AddTileset(mMapDocument, tileset));
@@ -420,8 +420,8 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
         }
 
         // Merge the tile properties
-        const int sharedTileCount = qMin(tileset->tileCount(),
-                                         replacement->tileCount());
+        const int sharedTileCount = qMin(tileset.tileCount(),
+                                         replacement.tileCount());
         for (int i = 0; i < sharedTileCount; ++i) {
             Tile &replacementTile = replacement->tileAt(i);
             Properties properties = replacementTile.properties();
@@ -875,7 +875,7 @@ void AutoMapper::cleanAll()
 
 void AutoMapper::cleanTilesets()
 {
-    foreach (Tileset *tileset, mAddedTilesets) {
+    foreach (const Tileset &tileset, mAddedTilesets) {
         if (mMapWork->isTilesetUsed(tileset))
             continue;
 

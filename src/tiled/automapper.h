@@ -271,13 +271,12 @@ private:
     Map *mMapRules;
 
     /**
-     * This contains all added tilesets as pointers.
-     * if rules use Tilesets which are not in the mMapWork they are added.
-     * keep track of them, because we need to delete them afterwards,
-     * when they still are unused
-     * they will be added while setupTilesets().
+     * This contains all added tilesets.
+     * If rules use tilesets which are not in the mMapWork they are added.
+     * Keep track of them, because we need to delete them afterwards,
+     * when they still are unused they will be added while setupTilesets().
      */
-    QVector<Tileset*> mAddedTilesets;
+    QVector<Tileset> mAddedTilesets;
 
     /**
      * description see: mAddedTilesets, just described by Strings

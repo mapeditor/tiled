@@ -43,6 +43,13 @@ namespace Tiled {
 
 class Tileset;
 
+enum {
+    MaxTileCount = 1 << 21,
+    MaxTilesetCount = 1 << 8,
+    InvalidTile = MaxTileCount - 1,
+    InvalidTileset = MaxTilesetCount - 1
+};
+
 /**
  * A cell on a tile layer grid.
  */
@@ -50,23 +57,30 @@ class Cell
 {
 public:
     Cell() :
+        tileIndex(InvalidTile),
+        tilesetIndex(InvalidTileset),
         flippedHorizontally(false),
         flippedVertically(false),
         flippedAntiDiagonally(false)
     {}
 
-    explicit Cell(const Tile &tile) :
-        tile(tile),
+    Cell(unsigned int tilesetIndex, unsigned int tileIndex) :
+        tileIndex(tileIndex),
+        tilesetIndex(tilesetIndex),
         flippedHorizontally(false),
         flippedVertically(false),
         flippedAntiDiagonally(false)
-    {}
+    {
+        Q_ASSERT(tilesetIndex < MaxTilesetCount);
+        Q_ASSERT(tileIndex < MaxTileCount);
+    }
 
-    bool isEmpty() const { return tile.isNull(); }
+    bool isEmpty() const { return tileIndex == InvalidTile; }
 
     bool equals(const Cell &other) const
     {
-        return tile == other.tile
+        return tileIndex == other.tileIndex
+                && tilesetIndex == other.tilesetIndex
                 && flippedHorizontally == other.flippedHorizontally
                 && flippedVertically == other.flippedVertically
                 && flippedAntiDiagonally == other.flippedAntiDiagonally;
@@ -75,10 +89,12 @@ public:
     bool operator == (const Cell &other) const { return equals(other); }
     bool operator != (const Cell &other) const { return !equals(other); }
 
-    Tile tile;
-    bool flippedHorizontally;
-    bool flippedVertically;
-    bool flippedAntiDiagonally;
+    // Carefully aligned so that it will fit in 32-bit
+    unsigned int tileIndex : 21;    // index of the tile inside its tileset
+    unsigned int tilesetIndex : 8;  // index of tileset associated with map
+    bool flippedHorizontally : 1;
+    bool flippedVertically : 1;
+    bool flippedAntiDiagonally : 1;
 };
 
 /**
@@ -225,7 +241,8 @@ public:
     /**
      * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
      */
-    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
+    void replaceReferencesToTileset(const Tileset &oldTileset,
+                                    const Tileset &newTileset);
 
     /**
      * Resizes this tile layer to \a size, while shifting all tiles by

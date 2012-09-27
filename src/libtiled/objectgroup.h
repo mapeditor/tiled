@@ -117,7 +117,7 @@ public:
     /**
      * Computes and returns the set of tilesets used by this object group.
      */
-    QSet<Tileset*> usedTilesets() const;
+    QSet<Tileset> usedTilesets() const;
 
     /**
      * Returns whether any tile objects in this object group reference tiles
@@ -129,7 +129,8 @@ public:
      * Replaces all references to tiles from \a oldTileset with tiles from
      * \a newTileset.
      */
-    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
+    void replaceReferencesToTileset(const Tileset &oldTileset,
+                                    const Tileset &newTileset);
 
     /**
      * Resizes this object group to \a size, while shifting all objects by

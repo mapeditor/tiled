@@ -244,8 +244,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.isEmpty())
                 continue;
 
-            const QPixmap &img = cell.tile.image();
-            const QPoint offset = cell.tile.tileset()->tileOffset();
+            const Tileset &tileset = mMap->tilesets().at(cell.tilesetIndex);
+            const QPixmap &img = tileset.tileAt(cell.tileIndex).image();
+            const QPoint offset = tileset.tileOffset();
 
             qreal m11 = 1;      // Horizontal scaling factor
             qreal m12 = 0;      // Vertical shearing factor

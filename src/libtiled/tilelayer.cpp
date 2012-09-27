@@ -240,13 +240,14 @@ void TileLayer::rotate(RotateDirection direction)
 }
 
 
-QSet<Tileset*> TileLayer::usedTilesets() const
+QSet<Tileset> TileLayer::usedTilesets() const
 {
-    QSet<Tileset*> tilesets;
+    QSet<Tileset> tilesets;
 
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
-        if (Tileset *tileset = mGrid.at(i).tile.tileset())
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        if (Tileset tileset = mGrid.at(i).tile.tileset())
             tilesets.insert(tileset);
+    }
 
     return tilesets;
 }
@@ -282,13 +283,13 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
     }
 }
 
-void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
-                                           Tileset *newTileset)
+void TileLayer::replaceReferencesToTileset(const Tileset &oldTileset,
+                                           const Tileset &newTileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
         const Tile &tile = mGrid.at(i).tile;
         if (tile.tileset() == oldTileset)
-            mGrid[i].tile = newTileset->tileAt(tile.id());
+            mGrid[i].tile = newTileset.tileAt(tile.id());
     }
 }
 

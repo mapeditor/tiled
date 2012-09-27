@@ -67,7 +67,7 @@ public:
     {}
 
     Map *readMap(QIODevice *device, const QString &path);
-    Tileset *readTileset(QIODevice *device, const QString &path);
+    Tileset readTileset(QIODevice *device, const QString &path);
 
     bool openFile(QFile *file);
 
@@ -78,7 +78,7 @@ private:
 
     Map *readMap();
 
-    Tileset *readTileset();
+    Tileset readTileset();
     void readTilesetTile(Tileset *tileset);
     void readTilesetImage(Tileset *tileset);
     void readTilesetTerrainTypes(Tileset *tileset);
@@ -143,11 +143,11 @@ Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
     return map;
 }
 
-Tileset *MapReaderPrivate::readTileset(QIODevice *device, const QString &path)
+Tileset MapReaderPrivate::readTileset(QIODevice *device, const QString &path)
 {
     mError.clear();
     mPath = path;
-    Tileset *tileset = 0;
+    Tileset tileset;
     mReadingExternalTileset = true;
 
     xml.setDevice(device);
@@ -251,7 +251,7 @@ Map *MapReaderPrivate::readMap()
     return mMap;
 }
 
-Tileset *MapReaderPrivate::readTileset()
+Tileset MapReaderPrivate::readTileset()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tileset"));
 
@@ -260,7 +260,7 @@ Tileset *MapReaderPrivate::readTileset()
     const uint firstGid =
             atts.value(QLatin1String("firstgid")).toString().toUInt();
 
-    Tileset *tileset = 0;
+    Tileset tileset;
 
     if (source.isEmpty()) { // Not an external tileset
         const QString name =
@@ -279,28 +279,28 @@ Tileset *MapReaderPrivate::readTileset()
             xml.raiseError(tr("Invalid tileset parameters for tileset"
                               " '%1'").arg(name));
         } else {
-            tileset = new Tileset(name, tileWidth, tileHeight,
-                                  tileSpacing, margin);
+            tileset = Tileset(name, tileWidth, tileHeight,
+                              tileSpacing, margin);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("tile")) {
-                    readTilesetTile(tileset);
+                    readTilesetTile(&tileset);
                 } else if (xml.name() == QLatin1String("tileoffset")) {
                     const QXmlStreamAttributes oa = xml.attributes();
                     int x = oa.value(QLatin1String("x")).toString().toInt();
                     int y = oa.value(QLatin1String("y")).toString().toInt();
-                    tileset->setTileOffset(QPoint(x, y));
+                    tileset.setTileOffset(QPoint(x, y));
                     xml.skipCurrentElement();
                 } else if (xml.name() == QLatin1String("properties")) {
-                    tileset->mergeProperties(readProperties());
+                    tileset.mergeProperties(readProperties());
                 } else if (xml.name() == QLatin1String("image")) {
                     if (tileWidth == 0 || tileHeight == 0) {
                         xml.raiseError(tr("Invalid tileset parameters for tileset"
                                           " '%1'").arg(name));
                     }
-                    readTilesetImage(tileset);
+                    readTilesetImage(&tileset);
                 } else if (xml.name() == QLatin1String("terraintypes")) {
-                    readTilesetTerrainTypes(tileset);
+                    readTilesetTerrainTypes(&tileset);
                 } else {
                     readUnknownElement();
                 }
@@ -311,7 +311,7 @@ Tileset *MapReaderPrivate::readTileset()
         QString error;
         tileset = p->readExternalTileset(absoluteSource, &error);
 
-        if (!tileset) {
+        if (tileset.isNull()) {
             xml.raiseError(tr("Error while loading tileset '%1': %2")
                            .arg(absoluteSource, error));
         }
@@ -319,11 +319,12 @@ Tileset *MapReaderPrivate::readTileset()
         xml.skipCurrentElement();
     }
 
-    if (tileset && !mReadingExternalTileset)
-        mGidMapper.insert(firstGid, tileset);
+    if (!tileset.isNull()) {
+        tileset.calculateTerrainDistances();
 
-    if (tileset)
-        tileset->calculateTerrainDistances();
+        if (!mReadingExternalTileset)
+            mGidMapper.insert(firstGid, tileset);
+    }
 
     return tileset;
 }
@@ -392,7 +393,7 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
 
     // Set the width that the tileset had when the map was saved
     const int width = atts.value(QLatin1String("width")).toString().toInt();
-    mGidMapper.setTilesetWidth(tileset, width);
+    mGidMapper.setTilesetWidth(*tileset, width); // FIXME
 
     if (!tileset->loadFromImage(readImage(), source))
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
@@ -912,19 +913,19 @@ Map *MapReader::readMap(const QString &fileName)
     return readMap(&file, QFileInfo(fileName).absolutePath());
 }
 
-Tileset *MapReader::readTileset(QIODevice *device, const QString &path)
+Tileset MapReader::readTileset(QIODevice *device, const QString &path)
 {
     return d->readTileset(device, path);
 }
 
-Tileset *MapReader::readTileset(const QString &fileName)
+Tileset MapReader::readTileset(const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))
         return 0;
 
-    Tileset *tileset = readTileset(&file, QFileInfo(fileName).absolutePath());
-    if (tileset)
+    Tileset tileset = readTileset(&file, QFileInfo(fileName).absolutePath());
+    if (!tileset.isNull())
         tileset->setFileName(fileName);
 
     return tileset;
@@ -949,12 +950,12 @@ QImage MapReader::readExternalImage(const QString &source)
     return QImage(source);
 }
 
-Tileset *MapReader::readExternalTileset(const QString &source,
-                                        QString *error)
+Tileset MapReader::readExternalTileset(const QString &source,
+                                       QString *error)
 {
     MapReader reader;
-    Tileset *tileset = reader.readTileset(source);
-    if (!tileset)
+    Tileset tileset = reader.readTileset(source);
+    if (tileset.isNull())
         *error = reader.errorString();
     return tileset;
 }
