@@ -237,7 +237,7 @@ void MapObjectItem::setEditable(bool editable)
 
     mIsEditable = editable;
 
-    const bool handlesVisible = mIsEditable && !mObject->tile();
+    const bool handlesVisible = mIsEditable && mObject->tile().isNull();
     mResizeHandle->setVisible(handlesVisible && mObject->polygon().isEmpty());
 
     if (mIsEditable)

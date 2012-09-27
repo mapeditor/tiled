@@ -1,7 +1,6 @@
 /*
- * mapobject.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
+ * tile.cpp
+ * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -27,37 +26,38 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "mapobject.h"
+#include "tile.h"
+
+#include "tileset.h"
 
 using namespace Tiled;
 
-MapObject::MapObject():
-    mSize(0, 0),
-    mShape(Rectangle),
-    mObjectGroup(0),
-    mVisible(true)
+const Tile Tile::null(new TileData(0, 0, 0));
+
+
+TileData::TileData(const TileData &o) :
+    QSharedData(o),
+    mId(o.mId),
+    mTileset(o.mTileset),
+    mTerrain(o.mTerrain),
+    mTerrainProbability(o.mTerrainProbability)
 {
+    mImage = o.mImage ? new QPixmap(*o.mImage) : 0;
 }
 
-MapObject::MapObject(const QString &name, const QString &type,
-                     const QPointF &pos,
-                     const QSizeF &size):
-    mName(name),
-    mType(type),
-    mPos(pos),
-    mSize(size),
-    mShape(Rectangle),
-    mObjectGroup(0),
-    mVisible(true)
+TileData::~TileData()
 {
+    delete mImage;
 }
 
-MapObject *MapObject::clone() const
+
+void Tile::setImage(const QPixmap &image)
 {
-    MapObject *o = new MapObject(mName, mType, mPos, mSize);
-    o->setProperties(properties());
-    o->setPolygon(mPolygon);
-    o->setShape(mShape);
-    o->setTile(mTile);
-    return o;
+    delete d->mImage;
+    d->mImage = new QPixmap(image);
+}
+
+Terrain *Tile::terrainAtCorner(int corner) const
+{
+    return d->mTileset->terrain(cornerTerrainId(corner));
 }

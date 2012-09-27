@@ -54,7 +54,7 @@ QVariant TerrainModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole) {
         if (Terrain *terrain = terrainAt(index))
             if (terrain)
-                return terrain->paletteImage()->image();
+                return terrain->paletteImage().image();
     }
 
     return QVariant();

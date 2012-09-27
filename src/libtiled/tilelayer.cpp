@@ -30,7 +30,6 @@
 #include "tilelayer.h"
 
 #include "map.h"
-#include "tile.h"
 #include "tileset.h"
 
 using namespace Tiled;
@@ -87,14 +86,14 @@ void TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    if (cell.tile) {
-        int width = cell.tile->width();
-        int height = cell.tile->height();
+    if (!cell.tile.isNull()) {
+        int width = cell.tile.width();
+        int height = cell.tile.height();
 
         if (cell.flippedAntiDiagonally)
             std::swap(width, height);
 
-        const QPoint offset = cell.tile->tileset()->tileOffset();
+        const QPoint offset = cell.tile.tileset()->tileOffset();
 
         mMaxTileSize = maxSize(QSize(width, height), mMaxTileSize);
         mOffsetMargins = maxMargins(QMargins(-offset.x(),
@@ -246,8 +245,8 @@ QSet<Tileset*> TileLayer::usedTilesets() const
     QSet<Tileset*> tilesets;
 
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
-        if (const Tile *tile = mGrid.at(i).tile)
-            tilesets.insert(tile->tileset());
+        if (Tileset *tileset = mGrid.at(i).tile.tileset())
+            tilesets.insert(tileset);
 
     return tilesets;
 }
@@ -255,8 +254,8 @@ QSet<Tileset*> TileLayer::usedTilesets() const
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        const Tile *tile = mGrid.at(i).tile;
-        if (tile && tile->tileset() == tileset)
+        const Tile &tile = mGrid.at(i).tile;
+        if (tile.tileset() == tileset)
             return true;
     }
     return false;
@@ -268,9 +267,8 @@ QRegion TileLayer::tilesetReferences(Tileset *tileset) const
 
     for (int y = 0; y < mHeight; ++y)
         for (int x = 0; x < mWidth; ++x)
-            if (const Tile *tile = cellAt(x, y).tile)
-                if (tile->tileset() == tileset)
-                    region += QRegion(x + mX, y + mY, 1, 1);
+            if (cellAt(x, y).tile.tileset() == tileset)
+                region += QRegion(x + mX, y + mY, 1, 1);
 
     return region;
 }
@@ -278,8 +276,8 @@ QRegion TileLayer::tilesetReferences(Tileset *tileset) const
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        const Tile *tile = mGrid.at(i).tile;
-        if (tile && tile->tileset() == tileset)
+        const Tile &tile = mGrid.at(i).tile;
+        if (tile.tileset() == tileset)
             mGrid.replace(i, Cell());
     }
 }
@@ -288,9 +286,9 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        const Tile *tile = mGrid.at(i).tile;
-        if (tile && tile->tileset() == oldTileset)
-            mGrid[i].tile = newTileset->tileAt(tile->id());
+        const Tile &tile = mGrid.at(i).tile;
+        if (tile.tileset() == oldTileset)
+            mGrid[i].tile = newTileset->tileAt(tile.id());
     }
 }
 

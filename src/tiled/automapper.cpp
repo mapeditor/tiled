@@ -423,12 +423,12 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
         const int sharedTileCount = qMin(tileset->tileCount(),
                                          replacement->tileCount());
         for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
+            Tile &replacementTile = replacement->tileAt(i);
+            Properties properties = replacementTile.properties();
+            properties.merge(tileset->tileAt(i).properties());
 
             undoStack->push(new ChangeProperties(tr("Tile"),
-                                                 replacementTile,
+                                                 &replacementTile,
                                                  properties));
         }
         src->replaceTileset(tileset, replacement);

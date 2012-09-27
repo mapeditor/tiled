@@ -22,10 +22,9 @@
 #define CREATEOBJECTTOOL_H
 
 #include "abstractobjecttool.h"
+#include "tile.h"
 
 namespace Tiled {
-
-class Tile;
 
 namespace Internal {
 
@@ -62,7 +61,7 @@ public slots:
      * Sets the tile that will be used when the creation mode is
      * CreateTileObjects.
      */
-    void setTile(Tile *tile) { mTile = tile; }
+    void setTile(const Tile &tile) { mTile = tile; }
 
 private:
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
@@ -74,7 +73,7 @@ private:
     ObjectGroup *mOverlayObjectGroup;
     MapObject *mOverlayPolygonObject;
     MapObjectItem *mOverlayPolygonItem;
-    Tile *mTile;
+    Tile mTile;
     CreationMode mMode;
 };
 

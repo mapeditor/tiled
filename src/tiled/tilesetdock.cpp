@@ -144,7 +144,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mTabBar(new QTabBar),
     mViewStack(new QStackedWidget),
     mToolBar(new QToolBar),
-    mCurrentTile(0),
     mCurrentTiles(0),
     mImportTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
@@ -435,8 +434,8 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
         cleaned->removeReferencesToTileset(tileset);
         setCurrentTiles(cleaned);
     }
-    if (mCurrentTile && mCurrentTile->tileset() == tileset)
-        setCurrentTile(0);
+    if (mCurrentTile.tileset() == tileset)
+        setCurrentTile(Tile());
 }
 
 void TilesetDock::tilesetMoved(int from, int to)
@@ -507,8 +506,7 @@ void TilesetDock::removeTileset(int index)
                 }
             } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                 foreach (MapObject *object, objectGroup->objects()) {
-                    const Tile *tile = object->tile();
-                    if (tile && tile->tileset() == tileset) {
+                    if (object->tile().tileset() == tileset) {
                         undoStack->push(new RemoveMapObject(mMapDocument,
                                                             object));
                     }
@@ -538,7 +536,7 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     emit currentTilesChanged(mCurrentTiles);
 }
 
-void TilesetDock::setCurrentTile(Tile *tile)
+void TilesetDock::setCurrentTile(const Tile &tile)
 {
     if (mCurrentTile == tile)
         return;

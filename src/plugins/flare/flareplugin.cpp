@@ -302,9 +302,9 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
             out << "data=\n";
             for (int y = 0; y < mapHeight; ++y) {
                 for (int x = 0; x < mapWidth; ++x) {
-                    Cell t = tileLayer->cellAt(x, y);
+                    const Cell &t = tileLayer->cellAt(x, y);
                     int id = 0;
-                    if (t.tile)
+                    if (!t.tile.isNull())
                         id = gidMapper.cellToGid(t);
                     out << id;
                     if (x < mapWidth - 1)

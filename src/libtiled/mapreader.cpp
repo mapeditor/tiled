@@ -344,7 +344,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
         xml.raiseError(tr("Invalid (nonconsecutive) tile ID: %1").arg(id));
         return;
     }
-    Tile *tile = tileset->tileAt(id);
+    Tile &tile = tileset->tileAt(id);
 
     // Read tile quadrant terrain ids
     QString terrain = atts.value(QLatin1String("terrain")).toString();
@@ -353,20 +353,19 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
                 int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
-                tile->setCornerTerrain(i, t);
+                tile.setCornerTerrain(i, t);
             }
         }
     }
 
     // Read tile probability
     QString probability = atts.value(QLatin1String("probability")).toString();
-    if (!probability.isEmpty()) {
-        tile->setTerrainProbability(probability.toFloat());
-    }
+    if (!probability.isEmpty())
+        tile.setTerrainProbability(probability.toFloat());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
-            tile->mergeProperties(readProperties());
+            tile.mergeProperties(readProperties());
         } else if (xml.name() == QLatin1String("image")) {
             tileset->setTileImage(id, QPixmap::fromImage(readImage()));
         } else {

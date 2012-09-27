@@ -200,13 +200,13 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     w.writeEndElement();
 }
 
-static QString makeTerrainAttribute(const Tile *tile)
+static QString makeTerrainAttribute(const Tile &tile)
 {
     QString terrain;
     for (int i = 0; i < 4; ++i ) {
         if (i > 0)
             terrain += QLatin1String(",");
-        int t = tile->cornerTerrainId(i);
+        int t = tile.cornerTerrainId(i);
         if (t > -1)
             terrain += QString::number(t);
     }
@@ -310,10 +310,10 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
 
     // Write the properties for those tiles that have them
     for (int i = 0; i < tileset->tileCount(); ++i) {
-        const Tile *tile = tileset->tileAt(i);
-        const Properties properties = tile->properties();
-        unsigned int terrain = tile->terrain();
-        int probability = tile->terrainProbability();
+        const Tile &tile = tileset->tileAt(i);
+        const Properties &properties = tile.properties();
+        unsigned int terrain = tile.terrain();
+        int probability = tile.terrainProbability();
 
         if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1 || imageSource.isEmpty()) {
             w.writeStartElement(QLatin1String("tile"));
@@ -334,7 +334,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                                  QLatin1String("base64"));
 
                 QBuffer buffer;
-                tile->image().save(&buffer, "png");
+                tile.image().save(&buffer, "png");
                 w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
 
                 w.writeEndElement();
@@ -507,7 +507,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
 
-    if (mapObject->tile()) {
+    if (!mapObject->tile().isNull()) {
         const uint gid = mGidMapper.cellToGid(Cell(mapObject->tile()));
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }

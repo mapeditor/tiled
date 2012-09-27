@@ -102,8 +102,6 @@ private:
 
     void capture();
 
-    Tile *findBestTile(Tileset *tileset, unsigned int terrain, unsigned int considerationMask);
-
     /**
      * updates the brush given new coordinates.
      */

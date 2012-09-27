@@ -118,9 +118,9 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         // Add the tiles to our layer.
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                quint8 tile_id = *tp++;
-                if (tile_id != 255) {
-                    Tile *tile = tileset->tileAt(tile_id);
+                quint8 tileId = *tp++;
+                if (tileId != 255 && tileset->hasTile(tileId)) {
+                    const Tile &tile = tileset->tileAt(tileId);
                     layer->setCell(x, y, Cell(tile));
                 }
             }
@@ -310,9 +310,9 @@ bool ReplicaIslandPlugin::writeLayer(QDataStream &out, Tiled::TileLayer *layer)
     // correct tileset for this layer.
     for (int y = 0; y < layer->height(); y++) {
         for (int x = 0; x < layer->width(); x++) {
-            Tile *tile = layer->cellAt(x, y).tile;
-            if (tile)
-                out << static_cast<quint8>(tile->id());
+            const Tile &tile = layer->cellAt(x, y).tile;
+            if (!tile.isNull())
+                out << static_cast<quint8>(tile.id());
             else
                 out << static_cast<quint8>(255);
         }

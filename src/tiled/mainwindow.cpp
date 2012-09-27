@@ -363,8 +363,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            tileObjectsTool, SLOT(setTile(Tile*)));
+    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile)),
+            tileObjectsTool, SLOT(setTile(Tile)));
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));

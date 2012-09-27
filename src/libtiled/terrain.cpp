@@ -1,7 +1,6 @@
 /*
- * mapobject.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
+ * terrain.cpp
+ * Copyright 2012, Manu Evans <turkeyman@gmail.com>
  *
  * This file is part of libtiled.
  *
@@ -27,37 +26,13 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "mapobject.h"
+#include "terrain.h"
+
+#include "tileset.h"
 
 using namespace Tiled;
 
-MapObject::MapObject():
-    mSize(0, 0),
-    mShape(Rectangle),
-    mObjectGroup(0),
-    mVisible(true)
+Tile Terrain::paletteImage() const
 {
-}
-
-MapObject::MapObject(const QString &name, const QString &type,
-                     const QPointF &pos,
-                     const QSizeF &size):
-    mName(name),
-    mType(type),
-    mPos(pos),
-    mSize(size),
-    mShape(Rectangle),
-    mObjectGroup(0),
-    mVisible(true)
-{
-}
-
-MapObject *MapObject::clone() const
-{
-    MapObject *o = new MapObject(mName, mType, mPos, mSize);
-    o->setProperties(properties());
-    o->setPolygon(mPolygon);
-    o->setShape(mShape);
-    o->setTile(mTile);
-    return o;
+    return mTileset->tileAt(mImageTile);
 }

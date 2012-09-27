@@ -33,6 +33,7 @@
 #include "tiled_global.h"
 
 #include "layer.h"
+#include "tile.h"
 
 #include <QMargins>
 #include <QString>
@@ -40,7 +41,6 @@
 
 namespace Tiled {
 
-class Tile;
 class Tileset;
 
 /**
@@ -50,22 +50,21 @@ class Cell
 {
 public:
     Cell() :
-        tile(0),
         flippedHorizontally(false),
         flippedVertically(false),
         flippedAntiDiagonally(false)
     {}
 
-    explicit Cell(Tile *tile) :
+    explicit Cell(const Tile &tile) :
         tile(tile),
         flippedHorizontally(false),
         flippedVertically(false),
         flippedAntiDiagonally(false)
     {}
 
-    bool isEmpty() const { return tile == 0; }
+    bool isEmpty() const { return tile.isNull(); }
 
-    bool operator == (const Cell &other) const
+    bool equals(const Cell &other) const
     {
         return tile == other.tile
                 && flippedHorizontally == other.flippedHorizontally
@@ -73,15 +72,10 @@ public:
                 && flippedAntiDiagonally == other.flippedAntiDiagonally;
     }
 
-    bool operator != (const Cell &other) const
-    {
-        return tile != other.tile
-                || flippedHorizontally != other.flippedHorizontally
-                || flippedVertically != other.flippedVertically
-                || flippedAntiDiagonally != other.flippedAntiDiagonally;
-    }
+    bool operator == (const Cell &other) const { return equals(other); }
+    bool operator != (const Cell &other) const { return !equals(other); }
 
-    Tile *tile;
+    Tile tile;
     bool flippedHorizontally;
     bool flippedVertically;
     bool flippedAntiDiagonally;

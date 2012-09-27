@@ -37,70 +37,99 @@
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT Tile : public Object
+struct TILEDSHARED_EXPORT TileData : public QSharedData
 {
-public:
-    Tile(const QPixmap &image, int id, Tileset *tileset):
+    TileData(int id, Tileset *tileset, const QPixmap *image) :
         mId(id),
         mTileset(tileset),
         mImage(image),
-        mTerrain(-1),
+        mTerrain(0xFFFFFFFF),
         mTerrainProbability(-1.f)
     {}
+
+    TileData(const TileData &o);
+
+    ~TileData();
+
+    int mId;
+    Tileset *mTileset;
+    const QPixmap *mImage;
+    unsigned int mTerrain;
+    float mTerrainProbability;
+};
+
+class TILEDSHARED_EXPORT Tile : public Object
+{
+public:
+    Tile()
+        : d(null.d)
+    {}
+
+    Tile(const QPixmap &image, int id, Tileset *tileset)
+        : d(new TileData(id, tileset, new QPixmap(image)))
+    {}
+
+    bool isNull() const
+    { return d == null.d && Object::isNull(); }
 
     /**
      * Returns ID of this tile within its tileset.
      */
-    int id() const { return mId; }
+    int id() const { return d->mId; }
 
     /**
      * Returns the tileset that this tile is part of.
      */
-    Tileset *tileset() const { return mTileset; }
+    Tileset *tileset() const { return d->mTileset; }
 
     /**
      * Returns the image of this tile.
      */
-    const QPixmap &image() const { return mImage; }
+    QPixmap image() const { return d->mImage ? *d->mImage : QPixmap(); }
 
     /**
      * Sets the image of this tile.
      */
-    void setImage(const QPixmap &image) { mImage = image; }
+    void setImage(const QPixmap &image);
 
     /**
      * Returns the width of this tile.
      */
-    int width() const { return mImage.width(); }
+    int width() const { return d->mImage ? d->mImage->width() : 0; }
 
     /**
      * Returns the height of this tile.
      */
-    int height() const { return mImage.height(); }
+    int height() const { return d->mImage ? d->mImage->height() : 0; }
 
     /**
      * Returns the size of this tile.
      */
-    QSize size() const { return mImage.size(); }
+    QSize size() const { return d->mImage ? d->mImage->size() : QSize(0, 0); }
 
     /**
      * Returns the Terrain of a given corner.
      */
-    Terrain *terrainAtCorner(int corner) const { return mTileset->terrain(cornerTerrainId(corner)); }
+    Terrain *terrainAtCorner(int corner) const;
 
     /**
      * Returns the terrain id at a given corner.
      */
-    int cornerTerrainId(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+    int cornerTerrainId(int corner) const
+    {
+        unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF;
+        return t == 0xFF ? -1 : (int)t;
+    }
 
     /**
      * Set the terrain type of a given corner.
      */
     void setCornerTerrain(int corner, int terrainId)
     {
+        Q_ASSERT(d->mTileset);
         unsigned int mask = 0xFF << (3 - corner)*8;
         unsigned int insert = terrainId << (3 - corner)*8;
-        mTerrain = (mTerrain & ~mask) | (insert & mask);
+        d->mTerrain = (d->mTerrain & ~mask) | (insert & mask);
     }
 
     /**
@@ -110,24 +139,30 @@ public:
     unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
     unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
     unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
-    unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; } // HACK: NULL Tile has 'none' terrain type.
+    unsigned int terrain() const { return d->mTerrain; }
 
     /**
      * Returns the probability of this terrain type appearing while painting (0-100%).
      */
-    float terrainProbability() const { return mTerrainProbability; }
+    float terrainProbability() const { return d->mTerrainProbability; }
 
     /**
      * Set the probability of this terrain type appearing while painting (0-100%).
      */
-    void setTerrainProbability(float probability) { mTerrainProbability = probability; }
+    void setTerrainProbability(float probability) { d->mTerrainProbability = probability; }
+
+    // These comparators ignore the Object part since it doesn't matter.
+    bool operator==(const Tile &other) const { return d == other.d; }
+    bool operator!=(const Tile &other) const { return d != other.d; }
 
 private:
-    int mId;
-    Tileset *mTileset;
-    QPixmap mImage;
-    unsigned int mTerrain;
-    float mTerrainProbability;
+    /** Only used to construct the shared 'null' tile. */
+    explicit Tile(TileData *data):
+        d(data)
+    {}
+
+    QSharedDataPointer<TileData> d;
+    static const Tile null;
 };
 
 } // namespace Tiled

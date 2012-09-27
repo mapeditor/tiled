@@ -32,6 +32,7 @@
 #define MAPOBJECT_H
 
 #include "object.h"
+#include "tile.h"
 
 #include <QPolygonF>
 #include <QSizeF>
@@ -41,7 +42,6 @@
 namespace Tiled {
 
 class ObjectGroup;
-class Tile;
 
 /**
  * An object on a map. Objects are positioned and scaled using floating point
@@ -204,12 +204,12 @@ public:
      *
      * \warning The object shape is ignored for tile objects!
      */
-    void setTile(Tile *tile) { mTile = tile; }
+    void setTile(const Tile &tile) { mTile = tile; }
 
     /**
      * Returns the tile associated with this object.
      */
-    Tile *tile() const { return mTile; }
+    const Tile &tile() const { return mTile; }
 
     /**
      * Returns the object group this object belongs to.
@@ -239,7 +239,7 @@ private:
     QSizeF mSize;
     QPolygonF mPolygon;
     Shape mShape;
-    Tile *mTile;
+    Tile mTile;
     ObjectGroup *mObjectGroup;
     bool mVisible;
 };

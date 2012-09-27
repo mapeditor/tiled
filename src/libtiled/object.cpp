@@ -1,7 +1,6 @@
 /*
- * mapobject.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
+ * object.cpp
+ * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -27,37 +26,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "mapobject.h"
+#include "object.h"
 
 using namespace Tiled;
 
-MapObject::MapObject():
-    mSize(0, 0),
-    mShape(Rectangle),
-    mObjectGroup(0),
-    mVisible(true)
-{
-}
-
-MapObject::MapObject(const QString &name, const QString &type,
-                     const QPointF &pos,
-                     const QSizeF &size):
-    mName(name),
-    mType(type),
-    mPos(pos),
-    mSize(size),
-    mShape(Rectangle),
-    mObjectGroup(0),
-    mVisible(true)
-{
-}
-
-MapObject *MapObject::clone() const
-{
-    MapObject *o = new MapObject(mName, mType, mPos, mSize);
-    o->setProperties(properties());
-    o->setPolygon(mPolygon);
-    o->setShape(mShape);
-    o->setTile(mTile);
-    return o;
-}
+const Object Object::null(new ObjectData);

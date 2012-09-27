@@ -202,7 +202,7 @@ void TerrainBrush::capture()
     // TODO: we need to know which corner the mouse is closest to...
 
     const Cell &cell = tileLayer->cellAt(tilePosition());
-    Terrain *t = cell.tile->terrainAtCorner(0);
+    Terrain *t = cell.tile.terrainAtCorner(0);
     setTerrain(t);
 }
 
@@ -240,30 +240,32 @@ static inline unsigned int makeTerrain(int tl, int tr, int bl, int br)
     return (tl & 0xFF) << 24 | (tr & 0xFF) << 16 | (bl & 0xFF) << 8 | (br & 0xFF);
 }
 
-Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigned int considerationMask)
+static Tile findBestTile(const Tileset *tileset,
+                         unsigned int terrain,
+                         unsigned int considerationMask)
 {
     // we should have hooked 0xFFFFFFFF terrains outside this function
     Q_ASSERT(terrain != 0xFFFFFFFF);
 
     // if all quadrants are set to 'no terrain', then the 'empty' tile is the only choice we can deduce
     if (terrain == 0xFFFFFFFF)
-        return NULL;
+        return Tile();
 
-    QList<Tile*> matches;
+    QVector<Tile> matches;
     int penalty = INT_MAX;
 
     // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
     int tileCount = tileset->tileCount();
     for (int i = 0; i < tileCount; ++i) {
-        Tile *t = tileset->tileAt(i);
-        if ((t->terrain() & considerationMask) != (terrain & considerationMask))
+        const Tile &t = tileset->tileAt(i);
+        if ((t.terrain() & considerationMask) != (terrain & considerationMask))
             continue;
 
         // calculate the tile transition penalty based on shortest distance to target terrain type
-        int tr = tileset->terrainTransitionPenalty(t->terrain() >> 24, terrain >> 24);
-        int tl = tileset->terrainTransitionPenalty((t->terrain() >> 16) & 0xFF, (terrain >> 16) & 0xFF);
-        int br = tileset->terrainTransitionPenalty((t->terrain() >> 8) & 0xFF, (terrain >> 8) & 0xFF);
-        int bl = tileset->terrainTransitionPenalty(t->terrain() & 0xFF, terrain & 0xFF);
+        int tr = tileset->terrainTransitionPenalty(t.terrain() >> 24, terrain >> 24);
+        int tl = tileset->terrainTransitionPenalty((t.terrain() >> 16) & 0xFF, (terrain >> 16) & 0xFF);
+        int br = tileset->terrainTransitionPenalty((t.terrain() >> 8) & 0xFF, (terrain >> 8) & 0xFF);
+        int bl = tileset->terrainTransitionPenalty(t.terrain() & 0xFF, terrain & 0xFF);
 
         // if there is no path to the destination terrain, this isn't a useful transition
         if (tr < 0 || tl < 0 || br < 0 || bl < 0)
@@ -276,7 +278,7 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
                 matches.clear();
             penalty = transitionPenalty;
 
-            matches.push_back(t);
+            matches.append(t);
         }
     }
 
@@ -287,7 +289,7 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
 
         // allow the tiles with assigned probability to take their share
         for (int i = 0; i < matches.size(); ++i) {
-            float probability = matches[i]->terrainProbability();
+            float probability = matches[i].terrainProbability();
             if (probability < 0.f) {
                 ++unassigned;
                 continue;
@@ -300,7 +302,7 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
         // divide the remaining percentile by the numer of unassigned tiles
         float remainingShare = (100.f - total) / (float)unassigned;
         for (int i = 0; i < matches.size(); ++i) {
-            if (matches[i]->terrainProbability() >= 0.f)
+            if (matches[i].terrainProbability() >= 0.f)
                 continue;
             if (random < total + remainingShare)
                 return matches[i];
@@ -309,7 +311,7 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
     }
 
     // TODO: conveniently, the NULL tile doesn't currently work, but when it does, we need to signal a failure to find any matches some other way
-    return NULL;
+    return Tile();
 }
 
 void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
@@ -340,10 +342,10 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         return;
 
     // TODO: this seems like a problem... there's nothing to say that 2 adjacent tiles are from the same tileset, or have any relation to eachother...
-    Tileset *terrainTileset = mTerrain ? mTerrain->tileset() : NULL;
+    Tileset *terrainTileset = mTerrain ? mTerrain->tileset() : 0;
 
     // allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
-    Tile **newTerrain = new Tile*[numTiles];
+    Tile *newTerrain = new Tile[numTiles];
 
     // allocate a buffer of flags for each tile that may be considered (TODO: this could be retained per layer to save regular allocation)
     char *checked = new char[numTiles];
@@ -356,11 +358,11 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     if (list) {
         // if we were supplied a list of start points
         foreach (const QPoint &p, *list) {
-            transitionList.push_back(p);
+            transitionList.append(p);
             ++initialTiles;
         }
     } else {
-        transitionList.push_back(cursorPos);
+        transitionList.append(cursorPos);
         initialTiles = 1;
     }
 
@@ -369,32 +371,31 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
     while (!transitionList.isEmpty()) {
         // get the next point in the consideration list
-        QPoint p = transitionList.front();
-        transitionList.pop_front();
+        QPoint p = transitionList.takeFirst();
         int x = p.x(), y = p.y();
-        int i = y*layerWidth + x;
+        int i = y * layerWidth + x;
 
         // if we have already considered this point, skip to the next
         // TODO: we might want to allow re-consideration if prior tiles... but not for now, this would risk infinite loops
         if (checked[i])
             continue;
 
-        const Tile *tile = currentLayer->cellAt(p).tile;
+        const Tile &tile = currentLayer->cellAt(p).tile;
 
         // get the tileset for this tile
-        Tileset *tileset = NULL;
+        Tileset *tileset = 0;
         if (terrainTileset) // if we are painting a terrain, then we'll use the terrains tileset
             tileset = terrainTileset;
-        else if(tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
-            tileset = tile->tileset();
+        else if (!tile.isNull()) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
+            tileset = tile.tileset();
 
         // calculate the ideal tile for this position
         unsigned int preferredTerrain, mask;
-        Tile *paste = NULL;
+        Tile paste;
 
         if (initialTiles) {
             // for the initial tiles, we will insert the selected terrain and add the surroundings for consideration
-            unsigned int currentTerrain = tile->terrain();
+            unsigned int currentTerrain = tile.terrain();
 
             if (mBrushMode == PaintTile) {
                 // set the whole tile to the selected terrain
@@ -415,24 +416,24 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
                 continue;
         } else {
             // following tiles each need consideration against their surroundings
-            preferredTerrain = tile->terrain();
+            preferredTerrain = tile.terrain();
             mask = 0;
 
             // depending which connections have been set, we update the preferred terrain of the tile accordingly
             if (y > 0 && checked[i - layerWidth]) {
-                preferredTerrain = (newTerrain[i - layerWidth]->terrain() << 16) | (preferredTerrain & 0x0000FFFF);
+                preferredTerrain = (newTerrain[i - layerWidth].terrain() << 16) | (preferredTerrain & 0x0000FFFF);
                 mask |= 0xFFFF0000;
             }
             if (y < layerHeight - 1 && checked[i + layerWidth]) {
-                preferredTerrain = (newTerrain[i + layerWidth]->terrain() >> 16) | (preferredTerrain & 0xFFFF0000);
+                preferredTerrain = (newTerrain[i + layerWidth].terrain() >> 16) | (preferredTerrain & 0xFFFF0000);
                 mask |= 0x0000FFFF;
             }
             if (x > 0 && checked[i - 1]) {
-                preferredTerrain = ((newTerrain[i - 1]->terrain() << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
+                preferredTerrain = ((newTerrain[i - 1].terrain() << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
                 mask |= 0xFF00FF00;
             }
             if (x < layerWidth - 1 && checked[i + 1]) {
-                preferredTerrain = ((newTerrain[i + 1]->terrain() >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
+                preferredTerrain = ((newTerrain[i + 1].terrain() >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
                 mask |= 0x00FF00FF;
             }
         }
@@ -440,7 +441,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         // find the most appropriate tile in the tileset
         if (preferredTerrain != 0xFFFFFFFF) {
             paste = findBestTile(tileset, preferredTerrain, mask);
-            if (!paste)
+            if (paste.isNull())
                 continue;
         }
 
@@ -453,24 +454,24 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
         // consider surrounding tiles if terrain constraints were not satisfied
         if (y > 0 && !checked[i - layerWidth]) {
-            const Tile *above = currentLayer->cellAt(x, y - 1).tile;
-            if (paste->topEdge() != above->bottomEdge())
-                transitionList.push_back(QPoint(x, y - 1));
+            const Tile &above = currentLayer->cellAt(x, y - 1).tile;
+            if (paste.topEdge() != above.bottomEdge())
+                transitionList.append(QPoint(x, y - 1));
         }
         if (y < layerHeight - 1 && !checked[i + layerWidth]) {
-            const Tile *below = currentLayer->cellAt(x, y + 1).tile;
-            if (paste->bottomEdge() != below->topEdge())
-                transitionList.push_back(QPoint(x, y + 1));
+            const Tile &below = currentLayer->cellAt(x, y + 1).tile;
+            if (paste.bottomEdge() != below.topEdge())
+                transitionList.append(QPoint(x, y + 1));
         }
         if (x > 0 && !checked[i - 1]) {
-            const Tile *left = currentLayer->cellAt(x - 1, y).tile;
-            if (paste->leftEdge() != left->rightEdge())
-                transitionList.push_back(QPoint(x - 1, y));
+            const Tile &left = currentLayer->cellAt(x - 1, y).tile;
+            if (paste.leftEdge() != left.rightEdge())
+                transitionList.append(QPoint(x - 1, y));
         }
         if (x < layerWidth - 1 && !checked[i + 1]) {
-            const Tile *right = currentLayer->cellAt(x + 1, y).tile;
-            if (paste->rightEdge() != right->leftEdge())
-                transitionList.push_back(QPoint(x + 1, y));
+            const Tile &right = currentLayer->cellAt(x + 1, y).tile;
+            if (paste.rightEdge() != right.leftEdge())
+                transitionList.append(QPoint(x + 1, y));
         }
     }
 
@@ -479,12 +480,12 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     for (int y = brushRect.top(); y <= brushRect.bottom(); ++y) {
         for (int x = brushRect.left(); x <= brushRect.right(); ++x) {
-            int i = y*layerWidth + x;
+            int i = y * layerWidth + x;
             if (!checked[i])
                 continue;
 
-            Tile *tile = newTerrain[i];
-            if (tile)
+            const Tile &tile = newTerrain[i];
+            if (!tile.isNull())
                 stamp->setCell(x - brushRect.left(), y - brushRect.top(), Cell(tile));
             else {
                 // TODO: we need to do something to erase tiles where checked[i] is true, and newTerrain[i] is NULL

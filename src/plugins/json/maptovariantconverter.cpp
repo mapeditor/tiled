@@ -109,8 +109,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset, int firstGid)
     // Write the properties for those tiles that have them
     QVariantMap tilePropertiesVariant;
     for (int i = 0; i < tileset->tileCount(); ++i) {
-        const Tile *tile = tileset->tileAt(i);
-        const Properties properties = tile->properties();
+        const Tile &tile = tileset->tileAt(i);
+        const Properties &properties = tile.properties();
         if (!properties.isEmpty())
             tilePropertiesVariant[QString::number(i)] = toVariant(properties);
     }
@@ -194,7 +194,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
         objectVariant["properties"] = toVariant(object->properties());
         objectVariant["name"] = name;
         objectVariant["type"] = type;
-        if (object->tile())
+        if (!object->tile().isNull())
             objectVariant["gid"] = mGidMapper.cellToGid(Cell(object->tile()));
 
         const TileToPixelCoordinates toPixel(objectGroup->map());

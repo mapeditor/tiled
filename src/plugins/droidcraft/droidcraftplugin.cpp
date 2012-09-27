@@ -76,8 +76,10 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
         int y = i / 48;
         int x = i - (48 * y);
 
-        Tile *tile = mapTileset->tileAt(tileFile);
-        mapLayer->setCell(x, y, Cell(tile));
+        if (mapTileset->hasTile(tileFile)) {
+            const Tile &tile = mapTileset->tileAt(tileFile);
+            mapLayer->setCell(x, y, Cell(tile));
+        }
     }
 
     map->addLayer(mapLayer);
@@ -110,15 +112,16 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     // Create QByteArray and compress it
-    QByteArray uncompressed = QByteArray(48 * 48, 0);
+    QByteArray uncompressed;
+    uncompressed.resize(48 * 48);
 
     const int width = mapLayer->width();
     const int height = mapLayer->height();
 
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            if (Tile *tile = mapLayer->cellAt(x, y).tile)
-                uncompressed[y * width + x] = (unsigned char) tile->id();
+            const Tile &tile = mapLayer->cellAt(x, y).tile;
+            uncompressed[y * width + x] = (unsigned char) tile.id();
         }
     }
 

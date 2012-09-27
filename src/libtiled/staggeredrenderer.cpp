@@ -199,8 +199,8 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
                 continue;
             }
 
-            const QPixmap &img = cell.tile->image();
-            const QPoint offset = cell.tile->tileset()->tileOffset();
+            const QPixmap &img = cell.tile.image();
+            const QPoint offset = cell.tile.tileset()->tileOffset();
 
             qreal m11 = 1;      // Horizontal scaling factor
             qreal m12 = 0;      // Vertical shearing factor

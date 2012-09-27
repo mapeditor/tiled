@@ -31,21 +31,19 @@
 #define TILESET_H
 
 #include "object.h"
+#include "terrain.h"
+#include "tile.h"
 
 #include <QColor>
 #include <QList>
 #include <QVector>
 #include <QPoint>
-#include <QSharedData>
 #include <QString>
 #include <QPixmap>
 
 class QImage;
 
 namespace Tiled {
-
-class Tile;
-class Terrain;
 
 struct TILEDSHARED_EXPORT TilesetData : public QSharedData
 {
@@ -74,7 +72,7 @@ struct TILEDSHARED_EXPORT TilesetData : public QSharedData
     int mImageWidth;
     int mImageHeight;
     int mColumnCount;
-    QList<Tile*> mTiles;
+    QList<Tile> mTiles;
     QList<Terrain*> mTerrainTypes;
 };
 
@@ -167,11 +165,21 @@ public:
     void setTileOffset(QPoint offset) { d->mTileOffset = offset; }
 
     /**
-     * Returns the tile for the given tile ID.
+     * Returns whether there exists a tile with the given id.
+     */
+    bool hasTile(int id) const { return id >= 0 && id < d->mTiles.size(); }
+
+    /**
+     * Returns a const reference to the tile for the given tile ID.
      * The tile ID is local to this tileset, which means the IDs are in range
      * [0, tileCount() - 1].
      */
-    Tile *tileAt(int id) const;
+    const Tile &tileAt(int id) const { return d->mTiles.at(id); }
+
+    /**
+     * Returns a reference to the tile for the given tile ID.
+     */
+    Tile &tileAt(int id) { return d->mTiles[id]; }
 
     /**
      * Returns the number of tiles in this tileset.

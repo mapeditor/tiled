@@ -64,9 +64,9 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
     QRectF boundingRect;
 
-    if (object->tile()) {
+    if (!object->tile().isNull()) {
         const QPointF bottomLeft = rect.topLeft();
-        const QPixmap &img = object->tile()->image();
+        const QPixmap &img = object->tile().image();
         boundingRect = QRectF(bottomLeft.x(),
                               bottomLeft.y() - img.height(),
                               img.width(),
@@ -102,7 +102,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
 
-    if (object->tile()) {
+    if (!object->tile().isNull()) {
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
@@ -244,8 +244,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.isEmpty())
                 continue;
 
-            const QPixmap &img = cell.tile->image();
-            const QPoint offset = cell.tile->tileset()->tileOffset();
+            const QPixmap &img = cell.tile.image();
+            const QPoint offset = cell.tile.tileset()->tileOffset();
 
             qreal m11 = 1;      // Horizontal scaling factor
             qreal m12 = 0;      // Vertical shearing factor
@@ -310,8 +310,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
 
-    if (object->tile()) {
-        const QPixmap &img = object->tile()->image();
+    if (!object->tile().isNull()) {
+        const QPixmap &img = object->tile().image();
         const QPoint paintOrigin(0, -img.height());
         painter->drawPixmap(paintOrigin, img);
 

@@ -362,7 +362,7 @@ void EditPolygonTool::updateHandles()
 
     foreach (MapObjectItem *item, selection) {
         const MapObject *object = item->mapObject();
-        if (object->tile())
+        if (!object->tile().isNull())
             continue;
 
         QPolygonF polygon = object->polygon();

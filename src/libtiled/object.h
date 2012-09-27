@@ -1,6 +1,6 @@
 /*
  * object.h
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -46,12 +46,15 @@ struct TILEDSHARED_EXPORT ObjectData : public QSharedData
 class TILEDSHARED_EXPORT Object
 {
 public:
-    Object() : d(new ObjectData) {}
+    Object() : d(null.d) {}
 
     /**
      * Virtual destructor.
      */
     virtual ~Object() {}
+
+    bool isNull() const
+    { return d == null.d; }
 
     /**
      * Returns the properties of this object.
@@ -86,7 +89,13 @@ public:
     { d->mProperties.insert(name, value); }
 
 private:
+    /** Only used to construct the shared 'null' object. */
+    explicit Object(ObjectData *data):
+        d(data)
+    {}
+
     QSharedDataPointer<ObjectData> d;
+    static const Object null;
 };
 
 } // namespace Tiled

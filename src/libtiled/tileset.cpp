@@ -37,12 +37,6 @@ using namespace Tiled;
 
 Tileset::~Tileset()
 {
-    qDeleteAll(d->mTiles);
-}
-
-Tile *Tileset::tileAt(int id) const
-{
-    return (id < d->mTiles.size()) ? d->mTiles.at(id) : 0;
 }
 
 bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
@@ -78,9 +72,9 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
             }
 
             if (tileNum < oldTilesetSize) {
-                d.mTiles.at(tileNum)->setImage(tilePixmap);
+                d.mTiles[tileNum].setImage(tilePixmap);
             } else {
-                d.mTiles.append(new Tile(tilePixmap, tileNum, this));
+                d.mTiles.append(Tile(tilePixmap, tileNum, this));
             }
             ++tileNum;
         }
@@ -90,7 +84,7 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
     while (tileNum < oldTilesetSize) {
         QPixmap tilePixmap = QPixmap(tileWidth, tileHeight);
         tilePixmap.fill();
-        d.mTiles.at(tileNum)->setImage(tilePixmap);
+        d.mTiles[tileNum].setImage(tilePixmap);
         ++tileNum;
     }
 
@@ -159,16 +153,16 @@ void Tileset::calculateTerrainDistances()
 
         // Check all tiles for transitions to other terrain types
         for (int j = 0; j < tileCount(); ++j) {
-            Tile *t = tileAt(j);
+            const Tile &t = tileAt(j);
 
-            if (!hasByteEqualTo(t->terrain(), i))
+            if (!hasByteEqualTo(t.terrain(), i))
                 continue;
 
             // This tile has transitions, add the transitions as neightbours (distance 1)
-            int tl = t->cornerTerrainId(0);
-            int tr = t->cornerTerrainId(1);
-            int bl = t->cornerTerrainId(2);
-            int br = t->cornerTerrainId(3);
+            int tl = t.cornerTerrainId(0);
+            int tr = t.cornerTerrainId(1);
+            int bl = t.cornerTerrainId(2);
+            int br = t.cornerTerrainId(3);
 
             // Terrain on diagonally opposite corners are not actually a neighbour
             if (tl == i || br == i) {
@@ -231,8 +225,7 @@ void Tileset::calculateTerrainDistances()
 void Tileset::addTile(const QPixmap &image)
 {
     detachExternalImage();
-    Tile *newTile = new Tile(image, tileCount(), this);
-    d->mTiles.append(newTile);
+    d->mTiles.append(Tile(image, tileCount(), this));
     if (d->mTileHeight < image.height())
         d->mTileHeight = image.height();
     if (d->mTileWidth < image.width())
@@ -242,24 +235,24 @@ void Tileset::addTile(const QPixmap &image)
 void Tileset::setTileImage(int index, const QPixmap &image)
 {
     detachExternalImage();
-    Tile *tile = tileAt(index);
-    if (tile) {
-        QPixmap previousImage = tile->image();
-        tile->setImage(image);
-        if (previousImage.height() != image.height() ||
-                previousImage.width() != image.width()) {
-            // Update our max. tile size
-            if (previousImage.height() == d->mTileHeight ||
-                    previousImage.width() == d->mTileWidth) {
-                // This used to be the max image; we have to recompute
-                updateTileSize();
-            } else {
-                // Check if we have a new maximum
-                if (d->mTileHeight < image.height())
-                    d->mTileHeight = image.height();
-                if (d->mTileWidth < image.width())
-                    d->mTileWidth = image.width();
-            }
+
+    Tile &tile = tileAt(index);
+    QPixmap previousImage = tile.image();
+    tile.setImage(image);
+
+    if (previousImage.height() != image.height() ||
+            previousImage.width() != image.width()) {
+        // Update our max. tile size
+        if (previousImage.height() == d->mTileHeight ||
+                previousImage.width() == d->mTileWidth) {
+            // This used to be the max image; we have to recompute
+            updateTileSize();
+        } else {
+            // Check if we have a new maximum
+            if (d->mTileHeight < image.height())
+                d->mTileHeight = image.height();
+            if (d->mTileWidth < image.width())
+                d->mTileWidth = image.width();
         }
     }
 }
@@ -274,11 +267,11 @@ void Tileset::updateTileSize()
 {
     int maxWidth = 0;
     int maxHeight = 0;
-    foreach (Tile *tile, d->mTiles) {
-        if (maxWidth < tile->width())
-            maxWidth = tile->width();
-        if (maxHeight < tile->height())
-            maxHeight = tile->height();
+    foreach (const Tile &tile, d->mTiles) {
+        if (maxWidth < tile.width())
+            maxWidth = tile.width();
+        if (maxHeight < tile.height())
+            maxHeight = tile.height();
     }
     d->mTileWidth = maxWidth;
     d->mTileHeight = maxHeight;

@@ -30,7 +30,6 @@
 #define TERRAIN_H
 
 #include "object.h"
-#include "tileset.h"
 
 #include <QColor>
 #include <QString>
@@ -39,6 +38,7 @@
 namespace Tiled {
 
 class Tile;
+class Tileset;
 
 /**
  * Represents a terrain type.
@@ -57,7 +57,7 @@ public:
     /**
      * Returns ID of this tile terrain type.
      */
-    int id() const { return this != NULL ? mId : -1; }
+    int id() const { return this ? mId : -1; }
 
     /**
      * Returns the tileset this terrain type belongs to.
@@ -70,14 +70,16 @@ public:
     QString name() const { return mName; }
 
     /**
-     * Returns a tile index that represents this terrain type in the terrain palette.
+     * Returns the tile index that represents this terrain type in the terrain
+     * palette.
      */
     int paletteImageTile() const { return mImageTile; }
 
     /**
-     * Returns a Tile that represents this terrain type in the terrain palette.
+     * Returns the tile that represents this terrain type in the terrain
+     * palette.
      */
-    Tile *paletteImage() const { return mTileset->tileAt(mImageTile); }
+    Tile paletteImage() const;
 
     /**
      * Returns true if this terrain type already has transition distances calculated.

@@ -23,6 +23,8 @@
 #ifndef TILESETDOCK_H
 #define TILESETDOCK_H
 
+#include "tile.h"
+
 #include <QDockWidget>
 #include <QMap>
 
@@ -37,7 +39,6 @@ class QMenu;
 
 namespace Tiled {
 
-class Tile;
 class TileLayer;
 class Tileset;
 
@@ -71,13 +72,13 @@ public:
     /**
      * Returns the currently selected tile.
      */
-    Tile *currentTile() const { return mCurrentTile; }
+    const Tile &currentTile() const { return mCurrentTile; }
 
 signals:
     /**
      * Emitted when the current tile changed.
      */
-    void currentTileChanged(Tile *tile);
+    void currentTileChanged(const Tile &tile);
 
     /**
      * Emitted when the currently selected tiles changed.
@@ -119,7 +120,7 @@ private slots:
     void refreshTilesetMenu();
 
 private:
-    void setCurrentTile(Tile *tile);
+    void setCurrentTile(const Tile &tile);
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
 
@@ -130,7 +131,7 @@ private:
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;
-    Tile *mCurrentTile;
+    Tile mCurrentTile;
     TileLayer *mCurrentTiles;
 
     QAction *mImportTileset;

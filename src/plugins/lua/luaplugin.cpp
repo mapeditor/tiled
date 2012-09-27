@@ -163,14 +163,14 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
 
     writer.writeStartTable("tiles");
     for (int i = 0; i < tileset->tileCount(); ++i) {
-        const Tile *tile = tileset->tileAt(i);
-        const Properties properties = tile->properties();
+        const Tile &tile = tileset->tileAt(i);
+        const Properties &properties = tile.properties();
 
         // Include enties for those tiles that have properties set on them
         if (!properties.isEmpty()) {
             writer.writeStartTable();
             writer.writeKeyAndValue("id", i);
-            writeProperties(writer, tile->properties());
+            writeProperties(writer, properties);
             writer.writeEndTable();
         }
     }
@@ -288,7 +288,8 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     writer.writeKeyAndValue("width", size.x());
     writer.writeKeyAndValue("height", size.y());
 
-    if (Tile *tile = mapObject->tile())
+    const Tile &tile = mapObject->tile();
+    if (!tile.isNull())
         writer.writeKeyAndValue("gid", mGidMapper.cellToGid(Cell(tile)));
 
     writer.writeKeyAndValue("visible", mapObject->isVisible());

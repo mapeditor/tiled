@@ -170,14 +170,14 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 {
     const QModelIndex index = indexAt(event->pos());
     const TilesetModel *m = tilesetModel();
-    Tile *tile = m->tileAt(index);
+    const int tileId = m->tileIdAt(index);
 
     const bool isExternal = m->tileset()->isExternal();
     QMenu menu;
 
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
 
-    if (tile) {
+    if (tileId != -1) {
         // Select this tile to make sure it is clear that only the properties
         // of a single tile are being edited.
         selectionModel()->setCurrentIndex(index,
@@ -210,12 +210,12 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 void TilesetView::editTileProperties()
 {
     const TilesetModel *m = tilesetModel();
-    Tile *tile = m->tileAt(selectionModel()->currentIndex());
-    if (!tile)
+    int tileId = m->tileIdAt(selectionModel()->currentIndex());
+    if (tileId == -1)
         return;
 
     PropertiesDialog propertiesDialog(tr("Tile"),
-                                      tile,
+                                      &m->tileset()->tileAt(tileId),
                                       mMapDocument->undoStack(),
                                       this);
     propertiesDialog.exec();

@@ -65,10 +65,8 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole) {
-        if (Tile *tile = tileAt(index))
-            return tile->image();
-    }
+    if (role == Qt::DisplayRole)
+        return tileAt(index).image();
 
     return QVariant();
 }
@@ -82,13 +80,28 @@ QVariant TilesetModel::headerData(int /* section */,
     return QVariant();
 }
 
-Tile *TilesetModel::tileAt(const QModelIndex &index) const
+Tile TilesetModel::tileAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return Tile();
 
     const int i = index.column() + index.row() * columnCount();
+    if (i >= mTileset->tileCount())
+        return Tile();
+
     return mTileset->tileAt(i);
+}
+
+int TilesetModel::tileIdAt(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return -1;
+
+    const int i = index.column() + index.row() * columnCount();
+    if (i >= mTileset->tileCount())
+        return -1;
+
+    return i;
 }
 
 void TilesetModel::setTileset(Tileset *tileset)

@@ -71,7 +71,13 @@ public:
     /**
      * Returns the tile at the given index.
      */
-    Tile *tileAt(const QModelIndex &index) const;
+    Tile tileAt(const QModelIndex &index) const;
+
+    /**
+     * Returns the id of the tile at the given index, or -1 if no such tile
+     * exists.
+     */
+    int tileIdAt(const QModelIndex &index) const;
 
     /**
      * Returns the tileset associated with this model.

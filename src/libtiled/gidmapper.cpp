@@ -87,8 +87,6 @@ Cell GidMapper::gidToCell(uint gid, bool &ok) const
             }
 
             result.tile = tileset->tileAt(tileId);
-        } else {
-            result.tile = 0;
         }
 
         ok = true;
@@ -102,7 +100,7 @@ uint GidMapper::cellToGid(const Cell &cell) const
     if (cell.isEmpty())
         return 0;
 
-    const Tileset *tileset = cell.tile->tileset();
+    const Tileset *tileset = cell.tile.tileset();
 
     // Find the first GID for the tileset
     QMap<uint, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
@@ -113,7 +111,7 @@ uint GidMapper::cellToGid(const Cell &cell) const
     if (i == i_end) // tileset not found
         return 0;
 
-    uint gid = i.key() + cell.tile->id();
+    uint gid = i.key() + cell.tile.id();
     if (cell.flippedHorizontally)
         gid |= FlippedHorizontallyFlag;
     if (cell.flippedVertically)

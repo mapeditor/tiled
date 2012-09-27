@@ -141,7 +141,7 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
         const QVariant propertiesVar = it.value();
         if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
             const Properties properties = toProperties(propertiesVar);
-            tileset->tileAt(tileIndex)->setProperties(properties);
+            tileset->tileAt(tileIndex).setProperties(properties);
         }
     }
 

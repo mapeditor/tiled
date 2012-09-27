@@ -450,11 +450,11 @@ void MapDocument::unifyTilesets(Map *map)
         const int sharedTileCount = qMin(tileset->tileCount(),
                                          replacement->tileCount());
         for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
+            Tile &replacementTile = replacement->tileAt(i);
+            Properties properties = replacementTile.properties();
+            properties.merge(tileset->tileAt(i).properties());
             undoCommands.append(new ChangeProperties(tr("Tile"),
-                                                     replacementTile,
+                                                     &replacementTile,
                                                      properties));
         }
         map->replaceTileset(tileset, replacement);
