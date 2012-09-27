@@ -1,3 +1,38 @@
+0.9.0 (...)
+* Added objects dock and per-object visibility toggle (by Tim Baker)
+* Added maps dock (by Tim Baker)
+* Added terrain tool for automatic terrain transitions (by Manu Evans)
+* Added a minimap (by Christoph Schnackenberg)
+* Added a staggered isometric map renderer, still without object layer support
+* Added basic image layer support (by Gregory Nickonov and Alexander Kuhrt)
+* Added display of current layer to the status bar (by Tim Baker)
+* Added editable combo box for changing the zoom level (by Tim Baker)
+* Added support for multiple input layers to automapping (by Stefan Beller)
+* Added option to apply automapping rules while editing (by Stefan Beller)
+* Added a converter to update old automapping rules (by Stefan Beller)
+* Added support for objects layers to automapping (by Stefan Beller)
+* Added support for random mode to the fill tool (by Stefan Beller)
+* Added Replica Island plugin (by Eric Kidd)
+* Added option to change the grid color (by Stefan Beller)
+* Added support for ellipse objects (by devnewton and Christoph Schnackenberg)
+* Added name labels for objects on isometric maps (by Andrew Motrenko)
+* Added map property for changing the background color (by Emmanuel Barroga)
+* Added shortcut to manually reload tilesets (Ctrl-T) (by Michael Williams)
+* Added toggle for showing tile object outlines
+* Added initial (non-GUI) support for individual and/or embedded tile images
+  (by Petr Viktorin)
+* Added reading support to Flare plugin (by Stefan Beller)
+* Respect the original layer data format of a loaded map (by Ben Longbons)
+* Improved handling of external tilesets in Lua export
+* Reverted tilesets view back to tabs, but with menu button (by Stefan Beller)
+* Allowed plugins to support multiple file name filters (by Samuli Tuomola)
+* Allow saving in any format that can also be read (by Stefan Beller)
+* Header files of libtiled are now installed on Linux
+* Fixed bug in Flare plugin (by Clint Bellanger)
+* Fixed compile against Qt 5 (by Kenney Phillis)
+* Fixed resolving of symbolic links while loading map
+* Updated Portuguese translation (by Porfírio Ribeiro)
+
 0.8.1 (7 May 2012)
 * Added MacOS X Lion full screen support
 * Fixed crash that could happen when painting with a pasted stamp
