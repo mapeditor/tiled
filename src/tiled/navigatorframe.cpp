@@ -71,6 +71,9 @@ void NavigatorFrame::setMapDocument(MapDocument *map)
 
         connect(mHScrollBar, SIGNAL(valueChanged(int)), SLOT(scrollbarChanged()));
         connect(mVScrollBar, SIGNAL(valueChanged(int)), SLOT(scrollbarChanged()));
+    } else {
+        mHScrollBar = 0;
+        mVScrollBar = 0;
     }
 
     mMapDocument = map;
