@@ -406,9 +406,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
 
     connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
-    connect(undoGroup,  SIGNAL(indexChanged(int)),
-            SLOT(undoGroupIndexChanged()));
-
     connect(mDocumentManager, SIGNAL(currentDocumentChanged(MapDocument*)),
             SLOT(mapDocumentChanged(MapDocument*)));
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
@@ -521,11 +518,6 @@ void MainWindow::dropEvent(QDropEvent *e)
 {
     foreach (const QUrl &url, e->mimeData()->urls())
         openFile(url.toLocalFile());
-}
-
-void MainWindow::undoGroupIndexChanged()
-{
-    this->mNavigatorDock->mapModelChanged(true);
 }
 
 void MainWindow::newMap()

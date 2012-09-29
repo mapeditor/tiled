@@ -110,8 +110,6 @@ protected:
     void dropEvent(QDropEvent *);
 
 public slots:
-    void undoGroupIndexChanged();
-
     void newMap();
     void openFile();
     bool saveFile();

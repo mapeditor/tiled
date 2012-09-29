@@ -22,7 +22,6 @@
 #define NAVIGATORDOCK_H
 
 #include <QDockWidget>
-#include <QTimer>
 
 namespace Tiled {
 namespace Internal {
@@ -43,24 +42,13 @@ public:
 
     void setMapDocument(MapDocument *);
 
-    /** Should be notified whenever zoom/scrollpos has changed. */
-    void mapViewChanged();
-
-    /** Should be notified whenever the content of the map has changed. */
-    void mapModelChanged(bool buffered);
-
 protected:
     void changeEvent(QEvent *e);
-
-private slots:
-    void redrawTimeout();
 
 private:
     void retranslateUi();    
 
     NavigatorFrame *mDrawFrame;
-    MapDocument *mMapDocument;
-    QTimer mUpdateSuspendTimer;
 };
 
 } // namespace Internal

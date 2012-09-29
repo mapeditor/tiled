@@ -19,14 +19,10 @@
  */
 
 #include "navigatordock.h"
+
 #include "navigatorframe.h"
-#include "mapdocument.h"
 
 #include <QEvent>
-#include <QUndoView>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QGraphicsView>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -36,37 +32,15 @@ NavigatorDock::NavigatorDock(QWidget *parent)
 {
     setObjectName(QLatin1String("navigatorDock"));
 
-    QWidget *widget = new QWidget(this);
-    QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
-
     mDrawFrame = new NavigatorFrame(this);
-    layout->addWidget(mDrawFrame);
 
-    connect(&mUpdateSuspendTimer, SIGNAL(timeout()),
-            SLOT(redrawTimeout()));
-
-    setWidget(widget);
+    setWidget(mDrawFrame);
     retranslateUi();
 }
 
 void NavigatorDock::setMapDocument(MapDocument *map)
 {
-    mMapDocument = map;
     mDrawFrame->setMapDocument(map);
-}
-
-void NavigatorDock::mapViewChanged()
-{
-    mDrawFrame->redrawFrame();
-}
-
-void NavigatorDock::mapModelChanged(bool buffered)
-{
-    if (buffered)
-        mUpdateSuspendTimer.start(100);
-    else
-        mDrawFrame->redrawMapAndFrame();
 }
 
 void NavigatorDock::changeEvent(QEvent *e)
@@ -84,10 +58,4 @@ void NavigatorDock::changeEvent(QEvent *e)
 void NavigatorDock::retranslateUi()
 {
     setWindowTitle(tr("Navigator"));
-}
-
-void NavigatorDock::redrawTimeout()
-{
-    mDrawFrame->redrawMapAndFrame();
-    mUpdateSuspendTimer.stop();
 }

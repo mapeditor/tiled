@@ -83,6 +83,12 @@ public:
     MapScene *currentMapScene() const;
 
     /**
+     * Returns the map view that displays the given document, or 0 when there
+     * is none.
+     */
+    MapView *viewForDocument(MapDocument *mapDocument) const;
+
+    /**
      * Returns the number of map documents.
      */
     int documentCount() const { return mDocuments.size(); }

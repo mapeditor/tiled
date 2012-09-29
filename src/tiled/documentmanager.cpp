@@ -102,6 +102,15 @@ MapScene *DocumentManager::currentMapScene() const
     return 0;
 }
 
+MapView *DocumentManager::viewForDocument(MapDocument *mapDocument) const
+{
+    const int index = mDocuments.indexOf(mapDocument);
+    if (index == -1)
+        return 0;
+
+    return static_cast<MapView*>(mTabWidget->widget(index));
+}
+
 int DocumentManager::findDocument(const QString &fileName) const
 {
     const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();

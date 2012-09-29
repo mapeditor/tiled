@@ -1,6 +1,7 @@
 /*
  * navigatorframe.h
  * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
+ * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -24,19 +25,19 @@
 #include <QFrame>
 #include <QImage>
 #include <QScrollBar>
+#include <QTimer>
 
 namespace Tiled {
 namespace Internal {
 
 class MapDocument;
 
-class NavigatorFrame: public QFrame
+class NavigatorFrame : public QFrame
 {
     Q_OBJECT
 
 public:
-    enum NavigatorRenderFlag
-    {
+    enum NavigatorRenderFlag {
         DrawObjects             = 0x0001,
         DrawTiles               = 0x0002,
         DrawImages              = 0x0004,
@@ -47,16 +48,16 @@ public:
 
     NavigatorFrame(QWidget *parent);
 
-    void setMapDocument(MapDocument*);
+    void setMapDocument(MapDocument *);
 
-    /** Redaws the scroll rectangle only. Minimap image stays unchanged. */
-    void redrawFrame();
+    NavigatorRenderFlags renderFlags() const { return mRenderFlags; }
+    void setRenderFlags(NavigatorRenderFlags flags) { mRenderFlags = flags; }
 
-    /** Redraws the minimap image and the scroll rectangle. */
-    void redrawMapAndFrame();
+    QSize sizeHint() const;
 
-    NavigatorRenderFlags renderFlags() const;
-    void setRenderFlags(NavigatorRenderFlags flags);
+public slots:
+    /** Schedules a redraw of the minimap image. */
+    void scheduleMapImageUpdate();
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -65,31 +66,31 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-    void leaveEvent(QEvent *);
 
 private slots:
-    void scrollbarChanged();
+    void redrawTimeout();
 
 private:
     MapDocument *mMapDocument;
     QImage mMapImage;
-    QRect imageContentRect;
-    QScrollBar *mHScrollBar;
-    QScrollBar *mVScrollBar;
+    QRect mImageRect;
+    QTimer mMapImageUpdateTimer;
     bool mDragging;
-    QPointF mDragOffset;
+    QPoint mDragOffset;
     bool mMouseMoveCursorState;
+    bool mRedrawMapImage;
     NavigatorRenderFlags mRenderFlags;
 
-    QRectF viewportRect() const;
-    void recreateMapImage();
+    QRect viewportRect() const;
+    QPointF mapToScene(QPoint p) const;
+    void updateImageRect();
     void renderMapToImage();
-    void resizeImage(const QSize &newSize);
-    void centerViewOnLocalPixel(const QPointF &centerPos, int delta = 0);
+    void centerViewOnLocalPixel(QPoint centerPos, int delta = 0);
 };
-
 
 } // namespace Internal
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::NavigatorFrame::NavigatorRenderFlags)
 
 #endif // NAVIGATORFRAME_H
