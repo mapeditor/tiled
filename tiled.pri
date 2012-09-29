@@ -2,6 +2,7 @@
 isEmpty(PREFIX):PREFIX = /usr/local
 isEmpty(LIBDIR):LIBDIR = $${PREFIX}/lib
 isEmpty(RPATH):RPATH = yes
+isEmpty(INSTALL_HEADERS):INSTALL_HEADERS = no
 
 macx {
     # Do a universal build when possible

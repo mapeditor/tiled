@@ -27,7 +27,6 @@
 * Reverted tilesets view back to tabs, but with menu button (by Stefan Beller)
 * Allowed plugins to support multiple file name filters (by Samuli Tuomola)
 * Allow saving in any format that can also be read (by Stefan Beller)
-* Header files of libtiled are now installed on Linux
 * Fixed bug in Flare plugin (by Clint Bellanger)
 * Fixed compile against Qt 5 (by Kenney Phillis)
 * Fixed resolving of symbolic links while loading map
