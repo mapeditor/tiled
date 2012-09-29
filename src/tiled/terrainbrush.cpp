@@ -202,6 +202,9 @@ void TerrainBrush::capture()
     // TODO: we need to know which corner the mouse is closest to...
 
     const Cell &cell = tileLayer->cellAt(tilePosition());
+    if (!cell.tile)
+        return;
+
     Terrain *t = cell.tile->terrainAtCorner(0);
     setTerrain(t);
 }
