@@ -1,5 +1,5 @@
 /*
- * navigatorframe.h
+ * minimap.h
  * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
  * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
@@ -19,12 +19,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAVIGATORFRAME_H
-#define NAVIGATORFRAME_H
+#ifndef MINIMAP_H
+#define MINIMAP_H
 
 #include <QFrame>
 #include <QImage>
-#include <QScrollBar>
 #include <QTimer>
 
 namespace Tiled {
@@ -32,26 +31,26 @@ namespace Internal {
 
 class MapDocument;
 
-class NavigatorFrame : public QFrame
+class MiniMap : public QFrame
 {
     Q_OBJECT
 
 public:
-    enum NavigatorRenderFlag {
+    enum MiniMapRenderFlag {
         DrawObjects             = 0x0001,
         DrawTiles               = 0x0002,
         DrawImages              = 0x0004,
         IgnoreInvisibleLayer    = 0x0008,
         DrawGrid                = 0x0010
     };
-    Q_DECLARE_FLAGS(NavigatorRenderFlags, NavigatorRenderFlag)
+    Q_DECLARE_FLAGS(MiniMapRenderFlags, MiniMapRenderFlag)
 
-    NavigatorFrame(QWidget *parent);
+    MiniMap(QWidget *parent);
 
     void setMapDocument(MapDocument *);
 
-    NavigatorRenderFlags renderFlags() const { return mRenderFlags; }
-    void setRenderFlags(NavigatorRenderFlags flags) { mRenderFlags = flags; }
+    MiniMapRenderFlags renderFlags() const { return mRenderFlags; }
+    void setRenderFlags(MiniMapRenderFlags flags) { mRenderFlags = flags; }
 
     QSize sizeHint() const;
 
@@ -79,7 +78,7 @@ private:
     QPoint mDragOffset;
     bool mMouseMoveCursorState;
     bool mRedrawMapImage;
-    NavigatorRenderFlags mRenderFlags;
+    MiniMapRenderFlags mRenderFlags;
 
     QRect viewportRect() const;
     QPointF mapToScene(QPoint p) const;
@@ -91,6 +90,6 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::NavigatorFrame::NavigatorRenderFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Internal::MiniMap::MiniMapRenderFlags)
 
-#endif // NAVIGATORFRAME_H
+#endif // MINIMAP_H

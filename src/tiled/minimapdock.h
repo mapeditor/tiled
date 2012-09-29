@@ -1,5 +1,5 @@
 /*
- * navigatordock.h
+ * minimapdock.h
  * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
  *
  * This file is part of Tiled.
@@ -18,27 +18,27 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAVIGATORDOCK_H
-#define NAVIGATORDOCK_H
+#ifndef MINIMAPDOCK_H
+#define MINIMAPDOCK_H
 
 #include <QDockWidget>
 
 namespace Tiled {
 namespace Internal {
 
-class NavigatorFrame;
+class MiniMap;
 class MapDocument;
 class MapView;
 
 /**
- * Shows a minimap.
+ * Shows a mini-map.
  */
-class NavigatorDock : public QDockWidget
+class MiniMapDock : public QDockWidget
 {
     Q_OBJECT
 
 public:
-    NavigatorDock(QWidget *parent = 0);
+    MiniMapDock(QWidget *parent = 0);
 
     void setMapDocument(MapDocument *);
 
@@ -48,10 +48,10 @@ protected:
 private:
     void retranslateUi();    
 
-    NavigatorFrame *mDrawFrame;
+    MiniMap *mMiniMap;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // NAVIGATORDOCK_H
+#endif // MINIMAPDOCK_H

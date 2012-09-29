@@ -1,5 +1,5 @@
 /*
- * navigatordock.cpp
+ * minimapdock.cpp
  * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
  *
  * This file is part of Tiled.
@@ -18,32 +18,32 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "navigatordock.h"
+#include "minimapdock.h"
 
-#include "navigatorframe.h"
+#include "minimap.h"
 
 #include <QEvent>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-NavigatorDock::NavigatorDock(QWidget *parent)
+MiniMapDock::MiniMapDock(QWidget *parent)
     : QDockWidget(parent)
 {
-    setObjectName(QLatin1String("navigatorDock"));
+    setObjectName(QLatin1String("miniMapDock"));
 
-    mDrawFrame = new NavigatorFrame(this);
+    mMiniMap = new MiniMap(this);
 
-    setWidget(mDrawFrame);
+    setWidget(mMiniMap);
     retranslateUi();
 }
 
-void NavigatorDock::setMapDocument(MapDocument *map)
+void MiniMapDock::setMapDocument(MapDocument *map)
 {
-    mDrawFrame->setMapDocument(map);
+    mMiniMap->setMapDocument(map);
 }
 
-void NavigatorDock::changeEvent(QEvent *e)
+void MiniMapDock::changeEvent(QEvent *e)
 {
     QDockWidget::changeEvent(e);
     switch (e->type()) {
@@ -55,7 +55,7 @@ void NavigatorDock::changeEvent(QEvent *e)
     }
 }
 
-void NavigatorDock::retranslateUi()
+void MiniMapDock::retranslateUi()
 {
-    setWindowTitle(tr("Navigator"));
+    setWindowTitle(tr("Mini-map"));
 }

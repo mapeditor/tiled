@@ -61,7 +61,7 @@ class MapView;
 class CommandButton;
 class ObjectsDock;
 class Zoomable;
-class NavigatorDock;
+class MiniMapDock;
 
 /**
  * The main editor window.
@@ -215,7 +215,7 @@ private:
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
-    NavigatorDock* mNavigatorDock;
+    MiniMapDock* mMiniMapDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;

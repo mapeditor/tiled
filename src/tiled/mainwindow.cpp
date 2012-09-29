@@ -79,7 +79,7 @@
 #include "zoomable.h"
 #include "commandbutton.h"
 #include "objectsdock.h"
-#include "navigatordock.h"
+#include "minimapdock.h"
 
 #ifdef Q_WS_MAC
 #include "macsupport.h"
@@ -116,7 +116,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     , mObjectsDock(new ObjectsDock())
     , mTilesetDock(new TilesetDock(this))
     , mTerrainDock(new TerrainDock(this))
-    , mNavigatorDock(new NavigatorDock(this))
+    , mMiniMapDock(new MiniMapDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -175,7 +175,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);    
-    addDockWidget(Qt::RightDockWidgetArea, mNavigatorDock);
+    addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
 
 
     tabifyDockWidget(undoDock, mObjectsDock);
@@ -402,7 +402,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->menuView->addAction(mLayerDock->toggleViewAction());
     mUi->menuView->addAction(undoDock->toggleViewAction());
     mUi->menuView->addAction(mObjectsDock->toggleViewAction());
-    mUi->menuView->addAction(mNavigatorDock->toggleViewAction());
+    mUi->menuView->addAction(mMiniMapDock->toggleViewAction());
 
     connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
@@ -1538,7 +1538,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mObjectsDock->setMapDocument(mMapDocument);
     mTilesetDock->setMapDocument(mMapDocument);
     mTerrainDock->setMapDocument(mMapDocument);
-    mNavigatorDock->setMapDocument(mMapDocument);
+    mMiniMapDock->setMapDocument(mMapDocument);
     AutomappingManager::instance()->setMapDocument(mMapDocument);
     QuickStampManager::instance()->setMapDocument(mMapDocument);
 

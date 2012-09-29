@@ -1,5 +1,5 @@
 /*
- * navigatorframe.cpp
+ * minimap.cpp
  * Copyright 2012, Christoph Schnackenberg <bluechs@gmx.de>
  * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
@@ -19,7 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "navigatorframe.h"
+#include "minimap.h"
 
 #include "documentmanager.h"
 #include "imagelayer.h"
@@ -42,7 +42,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-NavigatorFrame::NavigatorFrame(QWidget *parent)
+MiniMap::MiniMap(QWidget *parent)
     : QFrame(parent)
     , mMapDocument(0)
     , mDragging(false)
@@ -60,7 +60,7 @@ NavigatorFrame::NavigatorFrame(QWidget *parent)
             SLOT(redrawTimeout()));
 }
 
-void NavigatorFrame::setMapDocument(MapDocument *map)
+void MiniMap::setMapDocument(MapDocument *map)
 {
     const DocumentManager *dm = DocumentManager::instance();
 
@@ -90,17 +90,17 @@ void NavigatorFrame::setMapDocument(MapDocument *map)
     scheduleMapImageUpdate();
 }
 
-QSize NavigatorFrame::sizeHint() const
+QSize MiniMap::sizeHint() const
 {
     return QSize(200, 200);
 }
 
-void NavigatorFrame::scheduleMapImageUpdate()
+void MiniMap::scheduleMapImageUpdate()
 {
     mMapImageUpdateTimer.start(100);
 }
 
-void NavigatorFrame::paintEvent(QPaintEvent *pe)
+void MiniMap::paintEvent(QPaintEvent *pe)
 {
     QFrame::paintEvent(pe);
 
@@ -138,13 +138,13 @@ void NavigatorFrame::paintEvent(QPaintEvent *pe)
     p.drawRect(viewRect);
 }
 
-void NavigatorFrame::resizeEvent(QResizeEvent *)
+void MiniMap::resizeEvent(QResizeEvent *)
 {
     updateImageRect();
     scheduleMapImageUpdate();
 }
 
-void NavigatorFrame::updateImageRect()
+void MiniMap::updateImageRect()
 {
     QRect imageRect = mMapImage.rect();
     if (imageRect.isEmpty()) {
@@ -162,7 +162,7 @@ void NavigatorFrame::updateImageRect()
     mImageRect = imageRect;
 }
 
-void NavigatorFrame::renderMapToImage()
+void MiniMap::renderMapToImage()
 {
     if (!mMapDocument) {
         mMapImage = QImage();
@@ -239,7 +239,7 @@ void NavigatorFrame::renderMapToImage()
     renderer->setFlags(renderFlags);
 }
 
-void NavigatorFrame::centerViewOnLocalPixel(QPoint centerPos, int delta)
+void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)
 {
     MapView *mapView = DocumentManager::instance()->currentMapView();
     if (!mapView)
@@ -251,13 +251,13 @@ void NavigatorFrame::centerViewOnLocalPixel(QPoint centerPos, int delta)
     mapView->centerOn(mapToScene(centerPos));
 }
 
-void NavigatorFrame::redrawTimeout()
+void MiniMap::redrawTimeout()
 {
     mRedrawMapImage = true;
     update();
 }
 
-void NavigatorFrame::wheelEvent(QWheelEvent *event)
+void MiniMap::wheelEvent(QWheelEvent *event)
 {    
     if (event->orientation() == Qt::Vertical) {
         centerViewOnLocalPixel(event->pos(), event->delta());
@@ -267,7 +267,7 @@ void NavigatorFrame::wheelEvent(QWheelEvent *event)
     QFrame::wheelEvent(event);
 }
 
-void NavigatorFrame::mousePressEvent(QMouseEvent *event)
+void MiniMap::mousePressEvent(QMouseEvent *event)
 {       
     if (event->button() == Qt::LeftButton) {
         QPoint cursorPos = event->pos();
@@ -290,7 +290,7 @@ void NavigatorFrame::mousePressEvent(QMouseEvent *event)
     QFrame::mouseReleaseEvent(event);
 }
 
-void NavigatorFrame::mouseReleaseEvent(QMouseEvent *event)
+void MiniMap::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && mDragging) {
         mDragging = false;
@@ -310,7 +310,7 @@ void NavigatorFrame::mouseReleaseEvent(QMouseEvent *event)
     QFrame::mouseReleaseEvent(event);
 }
 
-void NavigatorFrame::mouseMoveEvent(QMouseEvent *event)
+void MiniMap::mouseMoveEvent(QMouseEvent *event)
 {    
     if (mDragging) {
         centerViewOnLocalPixel(event->pos() + mDragOffset);
@@ -332,7 +332,7 @@ void NavigatorFrame::mouseMoveEvent(QMouseEvent *event)
     QFrame::mouseMoveEvent(event);
 }
 
-QRect NavigatorFrame::viewportRect() const
+QRect MiniMap::viewportRect() const
 {
     MapView *mapView = DocumentManager::instance()->currentMapView();
     if (!mapView)
@@ -346,7 +346,7 @@ QRect NavigatorFrame::viewportRect() const
                  viewRect.height() / sceneRect.height() * mImageRect.height());
 }
 
-QPointF NavigatorFrame::mapToScene(QPoint p) const
+QPointF MiniMap::mapToScene(QPoint p) const
 {
     if (mImageRect.isEmpty())
         return QPointF();

@@ -87,6 +87,8 @@ SOURCES += aboutdialog.cpp \
     mapscene.cpp \
     mapsdock.cpp \
     mapview.cpp \
+    minimap.cpp \
+    minimapdock.cpp \
     movelayer.cpp \
     movemapobject.cpp \
     movemapobjecttogroup.cpp \
@@ -119,6 +121,10 @@ SOURCES += aboutdialog.cpp \
     saveasimagedialog.cpp \
     selectionrectangle.cpp \
     stampbrush.cpp \
+    terrainbrush.cpp \
+    terraindock.cpp \
+    terrainmodel.cpp \
+    terrainview.cpp \
     tiledapplication.cpp \
     tilelayeritem.cpp \
     tilepainter.cpp \
@@ -133,13 +139,7 @@ SOURCES += aboutdialog.cpp \
     toolmanager.cpp \
     undodock.cpp \
     utils.cpp \
-    zoomable.cpp \
-    terrainbrush.cpp \
-    terraindock.cpp \
-    terrainview.cpp \
-    terrainmodel.cpp \
-    navigatordock.cpp \
-    navigatorframe.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -191,6 +191,8 @@ HEADERS += aboutdialog.h \
     mapscene.h \
     mapsdock.h \
     mapview.h \
+    minimap.h \
+    minimapdock.h \
     movelayer.h \
     movemapobject.h \
     movemapobjecttogroup.h \
@@ -224,6 +226,10 @@ HEADERS += aboutdialog.h \
     saveasimagedialog.h \
     selectionrectangle.h \
     stampbrush.h \
+    terrainbrush.h \
+    terraindock.h \
+    terrainmodel.h \
+    terrainview.h \
     tiledapplication.h \
     tilelayeritem.h \
     tilepainter.h \
@@ -239,13 +245,7 @@ HEADERS += aboutdialog.h \
     undocommands.h \
     undodock.h \
     utils.h \
-    zoomable.h \
-    terrainbrush.h \
-    terraindock.h \
-    terrainview.h \
-    terrainmodel.h \
-    navigatordock.h \
-    navigatorframe.h
+    zoomable.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
