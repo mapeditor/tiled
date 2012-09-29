@@ -43,6 +43,9 @@ public:
 
     QSize sizeHint() const;
 
+    int sizeHintForColumn(int column) const;
+    int sizeHintForRow(int row) const;
+
     Zoomable *zoomable() const { return mZoomable; }
 
     bool drawGrid() const { return mDrawGrid; }

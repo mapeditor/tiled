@@ -88,15 +88,14 @@ void TileLayer::setCell(int x, int y, const Cell &cell)
     Q_ASSERT(contains(x, y));
 
     if (cell.tile) {
-        int width = cell.tile->width();
-        int height = cell.tile->height();
+        QSize size = cell.tile->size();
 
         if (cell.flippedAntiDiagonally)
-            std::swap(width, height);
+            size.transpose();
 
         const QPoint offset = cell.tile->tileset()->tileOffset();
 
-        mMaxTileSize = maxSize(QSize(width, height), mMaxTileSize);
+        mMaxTileSize = maxSize(size, mMaxTileSize);
         mOffsetMargins = maxMargins(QMargins(-offset.x(),
                                              -offset.y(),
                                              offset.x(),

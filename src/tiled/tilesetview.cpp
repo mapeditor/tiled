@@ -148,6 +148,28 @@ QSize TilesetView::sizeHint() const
     return QSize(130, 100);
 }
 
+int TilesetView::sizeHintForColumn(int column) const
+{
+    Q_UNUSED(column)
+    const TilesetModel *model = tilesetModel();
+    if (!model)
+        return -1;
+
+    const int tileWidth = model->tileset()->tileWidth();
+    return tileWidth * zoomable()->scale() + (mDrawGrid ? 1 : 0);
+}
+
+int TilesetView::sizeHintForRow(int row) const
+{
+    Q_UNUSED(row)
+    const TilesetModel *model = tilesetModel();
+    if (!model)
+        return -1;
+
+    const int tileHeight = model->tileset()->tileHeight();
+    return tileHeight * zoomable()->scale() + (mDrawGrid ? 1 : 0);
+}
+
 /**
  * Override to support zooming in and out using the mouse wheel.
  */
