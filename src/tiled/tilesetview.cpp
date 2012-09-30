@@ -191,10 +191,13 @@ void TilesetView::wheelEvent(QWheelEvent *event)
 void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 {
     const QModelIndex index = indexAt(event->pos());
-    const TilesetModel *m = tilesetModel();
-    Tile *tile = m->tileAt(index);
+    const TilesetModel *model = tilesetModel();
+    if (!model)
+        return;
 
-    const bool isExternal = m->tileset()->isExternal();
+    Tile *tile = model->tileAt(index);
+
+    const bool isExternal = model->tileset()->isExternal();
     QMenu menu;
 
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));

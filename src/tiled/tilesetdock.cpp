@@ -162,8 +162,6 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     connect(mTabBar, SIGNAL(currentChanged(int)),
             SLOT(updateActions()));
-    connect(mTabBar, SIGNAL(currentChanged(int)),
-            mViewStack, SLOT(setCurrentIndex(int)));
     connect(mTabBar, SIGNAL(tabMoved(int,int)),
             this, SLOT(moveTileset(int,int)));
 
@@ -252,15 +250,24 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+    // Hide while we update the tab bar, to avoid repeated layouting
+    widget()->hide();
+
     setCurrentTiles(0);
-    if (mMapDocument)
-        mCurrentTilesets.insert(mMapDocument,
-                                mTabBar->tabText(mTabBar->currentIndex()));
+
+    if (mMapDocument) {
+        // Remember the last visible tileset for this map
+        const QString tilesetName = mTabBar->tabText(mTabBar->currentIndex());
+        mCurrentTilesets.insert(mMapDocument, tilesetName);
+    }
+
     // Clear previous content
     while (mTabBar->count())
         mTabBar->removeTab(0);
-    while (mViewStack->currentWidget())
-        delete mViewStack->currentWidget();
+    while (mViewStack->count())
+        delete mViewStack->widget(0);
+
+    mTilesets.clear();
 
     // Clear all connections to the previous document
     if (mMapDocument)
@@ -269,12 +276,15 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        Map *map = mMapDocument->map();
-        foreach (Tileset *tileset, map->tilesets())
-            insertTilesetView(mTabBar->count(), tileset);
+        mTilesets = mMapDocument->map()->tilesets();
+
+        foreach (Tileset *tileset, mTilesets) {
+            mTabBar->addTab(tileset->name());
+            mViewStack->addWidget(new TilesetView(mMapDocument, mZoomable));
+        }
 
         connect(mMapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
-                SLOT(insertTilesetView(int,Tileset*)));
+                SLOT(tilesetAdded(int,Tileset*)));
         connect(mMapDocument, SIGNAL(tilesetRemoved(Tileset*)),
                 SLOT(tilesetRemoved(Tileset*)));
         connect(mMapDocument, SIGNAL(tilesetMoved(int,int)),
@@ -292,7 +302,10 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
             }
         }
     }
+
     updateActions();
+
+    widget()->show();
 }
 
 void TilesetDock::changeEvent(QEvent *e)
@@ -328,30 +341,27 @@ void TilesetDock::dropEvent(QDropEvent *e)
     }
 }
 
-void TilesetDock::insertTilesetView(int index, Tileset *tileset)
-{
-    TilesetView *view = new TilesetView(mMapDocument, mZoomable);
-    view->setModel(new TilesetModel(tileset, view));
-
-    connect(view->selectionModel(),
-            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(updateCurrentTiles()));
-
-    mTabBar->insertTab(index, tileset->name());
-    mViewStack->insertWidget(index, view);
-    updateActions();
-}
-
 void TilesetDock::updateActions()
 {
     bool external = false;
     TilesetView *view = 0;
     const int index = mTabBar->currentIndex();
+
     if (index > -1) {
         view = tilesetViewAt(index);
         if (view) {
-            mViewStack->setCurrentWidget(view);
-            external = view->tilesetModel()->tileset()->isExternal();
+            Tileset *tileset = mTilesets.at(index);
+
+            if (!view->model()) {
+                // Lazily set up the model
+                view->setModel(new TilesetModel(tileset, view));
+                connect(view->selectionModel(),
+                        SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                        SLOT(updateCurrentTiles()));
+            }
+
+            mViewStack->setCurrentIndex(index);
+            external = tileset->isExternal();
         }
     }
 
@@ -369,8 +379,10 @@ void TilesetDock::updateCurrentTiles()
         return;
 
     const QItemSelectionModel *s = tilesetViewAt(viewIndex)->selectionModel();
-    const QModelIndexList indexes = s->selection().indexes();
+    if (!s)
+        return;
 
+    const QModelIndexList indexes = s->selection().indexes();
     if (indexes.isEmpty())
         return;
 
@@ -403,29 +415,35 @@ void TilesetDock::updateCurrentTiles()
     setCurrentTile(model->tileAt(s->currentIndex()));
 }
 
+void TilesetDock::tilesetAdded(int index, Tileset *tileset)
+{
+    mTilesets.insert(index, tileset);
+
+    mTabBar->insertTab(index, tileset->name());
+    mViewStack->insertWidget(index, new TilesetView(mMapDocument, mZoomable));
+
+    updateActions();
+}
+
 void TilesetDock::tilesetChanged(Tileset *tileset)
 {
-    // Update the affected tileset model
-    for (int i = 0; i < mViewStack->count(); ++i) {
-        TilesetModel *model = tilesetViewAt(i)->tilesetModel();
-        if (model->tileset() == tileset) {
-            model->tilesetChanged();
-            break;
-        }
-    }
+    // Update the affected tileset model, if it exists
+    const int index = mTilesets.indexOf(tileset);
+    Q_ASSERT(index != -1);
+
+    if (TilesetModel *model = tilesetViewAt(index)->tilesetModel())
+        model->tilesetChanged();
 }
 
 void TilesetDock::tilesetRemoved(Tileset *tileset)
 {
     // Delete the related tileset view
-    for (int i = 0; i < mViewStack->count(); ++i) {
-        TilesetView *view = tilesetViewAt(i);
-        if (view->tilesetModel()->tileset() == tileset) {
-            mTabBar->removeTab(i);
-            delete view;
-            break;
-        }
-    }
+    const int index = mTilesets.indexOf(tileset);
+    Q_ASSERT(index != -1);
+
+    mTilesets.removeAt(index);
+    mTabBar->removeTab(index);
+    delete tilesetViewAt(index);
 
     // Make sure we don't reference this tileset anymore
     if (mCurrentTiles) {
@@ -441,6 +459,8 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
 
 void TilesetDock::tilesetMoved(int from, int to)
 {
+    mTilesets.insert(to, mTilesets.takeAt(from));
+
     // Move the related tileset views
     QWidget *widget = mViewStack->widget(from);
     mViewStack->removeWidget(widget);
@@ -451,7 +471,7 @@ void TilesetDock::tilesetMoved(int from, int to)
     const int start = qMin(from, to);
     const int end = qMax(from, to);
     for (int i = start; i <= end; ++i) {
-        const Tileset *tileset = tilesetViewAt(i)->tilesetModel()->tileset();
+        const Tileset *tileset = mTilesets.at(i);
         if (mTabBar->tabText(i) != tileset->name())
             mTabBar->setTabText(i, tileset->name());
     }
@@ -473,7 +493,7 @@ void TilesetDock::removeTileset()
  */
 void TilesetDock::removeTileset(int index)
 {
-    Tileset *tileset = tilesetViewAt(index)->tilesetModel()->tileset();
+    Tileset *tileset = mTilesets.at(index);
     const bool inUse = mMapDocument->map()->isTilesetUsed(tileset);
 
     // If the tileset is in use, warn the user and confirm removal
@@ -559,10 +579,11 @@ void TilesetDock::retranslateUi()
 
 Tileset *TilesetDock::currentTileset() const
 {
-    if (QWidget *widget = mViewStack->currentWidget())
-        return static_cast<TilesetView *>(widget)->tilesetModel()->tileset();
+    const int index = mTabBar->currentIndex();
+    if (index == -1)
+        return 0;
 
-    return 0;
+    return mTilesets.at(index);
 }
 
 TilesetView *TilesetDock::tilesetViewAt(int index) const
@@ -634,24 +655,18 @@ void TilesetDock::renameTileset()
     if (!ok || newText == oldText)
         return;
 
-    int index = mViewStack->currentIndex();
-    TilesetView *view = tilesetViewAt(index);
-
     RenameTileset *name = new RenameTileset(mMapDocument,
-                                            view->tilesetModel()->tileset(),
+                                            currentTileset(),
                                             oldText, newText);
     mMapDocument->undoStack()->push(name);
 }
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)
 {
-    for (int i = 0; i < mTabBar->count(); i++) {
-        TilesetView *view = tilesetViewAt(i);
-        if (tileset == view->tilesetModel()->tileset()) {
-            mTabBar->setTabText(i, tileset->name());
-            return;
-        }
-    }
+    const int index = mTilesets.indexOf(tileset);
+    Q_ASSERT(index != -1);
+
+    mTabBar->setTabText(index, tileset->name());
 }
 
 void TilesetDock::documentCloseRequested(int index)
