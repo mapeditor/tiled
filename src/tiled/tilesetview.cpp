@@ -249,10 +249,12 @@ void TilesetView::editTileProperties()
 void TilesetView::setDrawGrid(bool drawGrid)
 {
     mDrawGrid = drawGrid;
-    tilesetModel()->tilesetChanged();
+    if (TilesetModel *model = tilesetModel())
+        model->tilesetChanged();
 }
 
 void TilesetView::adjustScale()
 {
-    tilesetModel()->tilesetChanged();
+    if (TilesetModel *model = tilesetModel())
+        model->tilesetChanged();
 }
