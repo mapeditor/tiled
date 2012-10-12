@@ -42,10 +42,10 @@ typedef struct {
 
 
 typedef struct {
-    unsigned int            x;
-    unsigned int            y;
-    unsigned int            layer;
-    unsigned int            ref;
+    int                     x;
+    int                     y;
+    int                     layer;
+    int                     ref;
 } LDMZ_OBJECT;
 
 

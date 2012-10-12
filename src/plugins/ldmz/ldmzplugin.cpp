@@ -128,8 +128,8 @@ bool LDMZPlugin::writeStrings(const Tiled::Map *map, char *strings, LDMZ_REF *re
             foreach (const MapObject *o, group->objects()) {
                 it = o->properties().constBegin();
                 it_end = o->properties().constEnd();
-                object[objects].x = qToBigEndian(o->x());
-                object[objects].y = qToBigEndian(o->y());
+                object[objects].x = qToBigEndian((int) o->x());
+                object[objects].y = qToBigEndian((int) o->y());
                 object[objects].layer = qToBigEndian(layers);
                 object[objects].ref = qToBigEndian(ref_i);
                 
