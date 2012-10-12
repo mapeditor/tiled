@@ -5,4 +5,5 @@ SUBDIRS = flare \
           lua \
           tengine \
           tmw \
-          replicaisland
+          replicaisland \
+	  ldmz
