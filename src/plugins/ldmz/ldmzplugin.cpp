@@ -159,19 +159,25 @@ bool LDMZPlugin::writeStrings(const Tiled::Map *map, char *strings, LDMZ_REF *re
         }
     }
     
-    data.resize(map_s->strtable_len);
+    //data.resize(map_s->strtable_len);
+    data.resize(0);
     data.insert(0, strings, map_s->strtable_len);
+    zdata.resize(0);
     zdata = compress(data);
     map_s->strtable_zlen = zdata.size();
     fwrite((void *) zdata.data(), zdata.size(), 1, fp);
     
-    data.resize(map_s->strtable_refs_len);
+    //data.resize(map_s->strtable_refs_len);
+    data.resize(0);
+    zdata.resize(0);
     data.insert(0, (const char *) ref, map_s->strtable_refs_len);
     zdata = compress(data);
     map_s->strtable_refs_zlen = zdata.size();
     fwrite((void *) zdata.data(), zdata.size(), 1, fp);
     
-    data.resize(map_s->objects * sizeof(LDMZ_OBJECT));
+    //data.resize(map_s->objects * sizeof(LDMZ_OBJECT));
+    data.resize(0);
+    zdata.resize(0);
     data.insert(0, (const char *) object, map_s->objects * sizeof(LDMZ_OBJECT));
     zdata = compress(data);
     map_s->object_zlen = zdata.size();
@@ -337,24 +343,26 @@ bool LDMZPlugin::write(const Tiled::Map *map, const QString &fileName) {
         return false;
     }
     
-    data.resize(0);
-    
     /* I know, this is very slow. But I can't think of a lazier way :P */
     for (i = 0; i < layers; i++) {
+        data.resize(0);
         data.insert(0, (char *) &layer[layerSZ * i], layerSZ * sizeof(unsigned int));
+        zdata.resize(0);
         zdata = compress(data);
         layer_s[i].layer_zlen = qToBigEndian(zdata.size());
     }
     
     data.resize(0);
     data.insert(0, (char *) layer_s, sizeof(LDMZ_LAYER) * layers);
+    zdata.resize(0);
     zdata = compress(data);
     fwrite((void *) zdata.data(), zdata.size(), 1, fp);
     map_s.layer_zlen = zdata.size();
-    data.resize(0);
     
     for (i = 0; i < layers; i++) {
+        data.resize(0);
         data.insert(0, (char *) &layer[layerSZ * i], layerSZ * sizeof(unsigned int));
+        zdata.resize(0);
         zdata = compress(data);
         fwrite((void *) zdata.data(), zdata.size(), 1, fp);
     }
