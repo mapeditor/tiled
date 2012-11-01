@@ -78,10 +78,11 @@ private:
                                    QList<Tiled::Tileset *> &typeTilesets,
                                    QList<Tiled::Tileset *> &tileIndexTilesets);
     Tiled::Tileset *loadTilesetFromResource(const QString &name);
-    void addTilesetsToMap(Tiled::Map *map, QList<Tiled::Tileset *> tilesets);
-    Tiled::Tileset *tilesetForLayer(char type, char tileIndex,
-                                    QList<Tiled::Tileset *> typeTilesets,
-                                    QList<Tiled::Tileset *> tileIndexTilesets);
+    void addTilesetsToMap(Tiled::Map *map,
+                          const QList<Tiled::Tileset *> &tilesets);
+    Tiled::Tileset *tilesetForLayer(int type, int tileIndex,
+                                    const QList<Tiled::Tileset *> &typeTilesets,
+                                    const QList<Tiled::Tileset *> &tileIndexTilesets);
     QString layerTypeToName(char type);
 
     // MapWriterInterface support.
