@@ -26,6 +26,9 @@
 
 #include <QApplication>
 #include <QCursor>
+#include <QGesture>
+#include <QGestureEvent>
+#include <QPinchGesture>
 #include <QWheelEvent>
 #include <QScrollBar>
 
@@ -63,6 +66,8 @@ MapView::MapView(QWidget *parent)
 
     // Adjustment for antialiasing is done by the items that need it
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);
+
+    grabGesture(Qt::PinchGesture);
 
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
 }
@@ -130,6 +135,18 @@ bool MapView::event(QEvent *e)
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_Space) {
             e->ignore();
             return false;
+        }
+    } else if (e->type() == QEvent::Gesture)
+    {
+        QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(e);
+        if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
+        {
+            QPinchGesture *pinchGesture = static_cast<QPinchGesture *>(gesture);
+            if (pinchGesture->changeFlags() & QPinchGesture::ScaleFactorChanged)
+            {
+                mZoomable->handlePinchGesture(pinchGesture);
+                return true;
+            }
         }
     }
 
