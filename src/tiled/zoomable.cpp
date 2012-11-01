@@ -53,6 +53,7 @@ static QString scaleToString(qreal scale)
 Zoomable::Zoomable(QObject *parent)
     : QObject(parent)
     , mScale(1)
+    , mCurrentScale(0)
     , mComboBox(0)
     , mComboRegExp(QLatin1String("^\\s*(\\d+)\\s*%?\\s*$"))
     , mComboValidator(0)
@@ -102,6 +103,23 @@ void Zoomable::handleWheelDelta(int delta)
 
         // Round to at most four digits after the decimal point
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
+    }
+}
+
+void Zoomable::handlePinchGesture(QPinchGesture *pinch)
+{
+    switch (pinch->state())
+    {
+    case Qt::GestureStarted:
+        mCurrentScale = mScale;
+        break;
+    case Qt::GestureUpdated:
+        qreal factor = pinch->scaleFactor();
+        qreal scale = qBound(mZoomFactors.first(),
+                             mCurrentScale * factor,
+                             mZoomFactors.back());
+        setScale(std::floor(scale * 10000 + 0.5) / 10000);
+        break;
     }
 }
 
