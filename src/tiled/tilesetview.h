@@ -57,6 +57,7 @@ public:
     { return static_cast<TilesetModel *>(model()); }
 
 protected:
+    bool event(QEvent *event);
     void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
 
