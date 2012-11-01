@@ -29,7 +29,6 @@ public:
 private:
     QVariant m_result;
     QString m_errorString;
-    void *reserved;
 };
 
 class JsonWriter
@@ -57,7 +56,6 @@ private:
     QString m_errorString;
     bool m_autoFormatting;
     QString m_autoFormattingIndent;
-    void *reserved;
 };
 
 #endif // JSON_H

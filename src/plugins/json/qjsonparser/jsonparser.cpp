@@ -403,6 +403,9 @@ int JsonLexer::lex()
 #undef L1C
 
 JsonParser::JsonParser()
+    : m_tos(0)
+    , m_errorLineNumber(-1)
+    , m_errorPos(-1)
 {
 }
 
