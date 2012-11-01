@@ -108,8 +108,7 @@ void Zoomable::handleWheelDelta(int delta)
 
 void Zoomable::handlePinchGesture(QPinchGesture *pinch)
 {
-    switch (pinch->state())
-    {
+    switch (pinch->state()) {
     case Qt::GestureStarted:
         mCurrentScale = mScale;
         break;

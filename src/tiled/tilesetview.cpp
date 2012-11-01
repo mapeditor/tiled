@@ -177,14 +177,11 @@ int TilesetView::sizeHintForRow(int row) const
 
 bool TilesetView::event(QEvent *event)
 {
-    if (event->type() == QEvent::Gesture)
-    {
+    if (event->type() == QEvent::Gesture) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
-        if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
-        {
+        if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture)) {
             QPinchGesture *pinchGesture = static_cast<QPinchGesture *>(gesture);
-            if (pinchGesture->changeFlags() & QPinchGesture::ScaleFactorChanged)
-            {
+            if (pinchGesture->changeFlags() & QPinchGesture::ScaleFactorChanged) {
                 mZoomable->handlePinchGesture(pinchGesture);
                 return true;
             }
