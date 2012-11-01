@@ -127,8 +127,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
 
-    PluginManager::instance()->loadPlugins();
-
 #ifdef Q_WS_MAC
     MacSupport::addFullscreen(this);
 #endif

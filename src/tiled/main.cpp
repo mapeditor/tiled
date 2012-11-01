@@ -23,6 +23,7 @@
 #include "commandlineparser.h"
 #include "mainwindow.h"
 #include "languagemanager.h"
+#include "pluginmanager.h"
 #include "preferences.h"
 #include "tiledapplication.h"
 
@@ -151,6 +152,8 @@ int main(int argc, char *argv[])
         return 0;
     if (commandLine.disableOpenGL)
         Preferences::instance()->setUseOpenGL(false);
+
+    PluginManager::instance()->loadPlugins();
 
     MainWindow w;
     w.show();
