@@ -36,7 +36,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMouseEvent>
-#include <QToolButton>
+#include <QPushButton>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -53,7 +53,6 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
     layout->setMargin(5);
 
     QHBoxLayout *dirLayout = new QHBoxLayout;
-    QLabel *label = new QLabel(tr("Folder:"));
 
     // QDirModel is obsolete, but I could not get QFileSystemModel to work here
     QDirModel *model = new QDirModel(this);
@@ -61,10 +60,7 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
     QCompleter *completer = new QCompleter(model, this);
     mDirectoryEdit->setCompleter(completer);
 
-    QToolButton *button = new QToolButton();
-    button->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
-    button->setToolTip(tr("Choose Folder"));
-    dirLayout->addWidget(label);
+    QPushButton *button = new QPushButton(tr("Browse..."));
     dirLayout->addWidget(mDirectoryEdit);
     dirLayout->addWidget(button);
 
