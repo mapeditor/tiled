@@ -180,13 +180,11 @@ bool TilesetView::event(QEvent *event)
     if (event->type() == QEvent::Gesture) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture)) {
-            QPinchGesture *pinchGesture = static_cast<QPinchGesture *>(gesture);
-            if (pinchGesture->changeFlags() & QPinchGesture::ScaleFactorChanged) {
-                mZoomable->handlePinchGesture(pinchGesture);
-                return true;
-            }
+            mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
+            return true;
         }
     }
+
     return QTableView::event(event);
 }
 

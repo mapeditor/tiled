@@ -108,10 +108,12 @@ void Zoomable::handleWheelDelta(int delta)
 
 void Zoomable::handlePinchGesture(QPinchGesture *pinch)
 {
+    if (!(pinch->changeFlags() & QPinchGesture::ScaleFactorChanged))
+        return;
+
     switch (pinch->state()) {
     case Qt::GestureStarted:
         mCurrentScale = mScale;
-        break;
     case Qt::GestureUpdated:
         qreal factor = pinch->scaleFactor();
         qreal scale = qBound(mZoomFactors.first(),

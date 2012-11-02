@@ -139,11 +139,8 @@ bool MapView::event(QEvent *e)
     } else if (e->type() == QEvent::Gesture) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(e);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture)) {
-            QPinchGesture *pinchGesture = static_cast<QPinchGesture *>(gesture);
-            if (pinchGesture->changeFlags() & QPinchGesture::ScaleFactorChanged) {
-                mZoomable->handlePinchGesture(pinchGesture);
-                return true;
-            }
+            mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
+            return true;
         }
     }
 
