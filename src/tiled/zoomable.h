@@ -93,7 +93,7 @@ private:
 
 private:
     qreal mScale;
-    qreal mCurrentScale;
+    qreal mGestureStartScale;
     QVector<qreal> mZoomFactors;
     QComboBox *mComboBox;
     QRegExp mComboRegExp;

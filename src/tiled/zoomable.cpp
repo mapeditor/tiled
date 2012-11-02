@@ -53,7 +53,7 @@ static QString scaleToString(qreal scale)
 Zoomable::Zoomable(QObject *parent)
     : QObject(parent)
     , mScale(1)
-    , mCurrentScale(0)
+    , mGestureStartScale(0)
     , mComboBox(0)
     , mComboRegExp(QLatin1String("^\\s*(\\d+)\\s*%?\\s*$"))
     , mComboValidator(0)
@@ -113,11 +113,11 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
 
     switch (pinch->state()) {
     case Qt::GestureStarted:
-        mCurrentScale = mScale;
+        mGestureStartScale = mScale;
     case Qt::GestureUpdated:
         qreal factor = pinch->scaleFactor();
         qreal scale = qBound(mZoomFactors.first(),
-                             mCurrentScale * factor,
+                             mGestureStartScale * factor,
                              mZoomFactors.back());
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
         break;
