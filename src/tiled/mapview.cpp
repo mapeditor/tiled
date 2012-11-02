@@ -139,8 +139,9 @@ bool MapView::event(QEvent *e)
     } else if (e->type() == QEvent::Gesture) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(e);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture)) {
-            mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
-            return true;
+            QPinchGesture *pinch = static_cast<QPinchGesture *>(gesture);
+            if (pinch->changeFlags() & QPinchGesture::ScaleFactorChanged)
+                handlePinchGesture(pinch);
         }
     }
 
@@ -167,12 +168,7 @@ void MapView::wheelEvent(QWheelEvent *event)
 
         mZoomable->handleWheelDelta(event->delta());
 
-        // Place the last known mouse scene pos below the mouse again
-        QWidget *view = viewport();
-        QPointF viewCenterScenePos = mapToScene(view->rect().center());
-        QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mLastMousePos));
-        QPointF diff = viewCenterScenePos - mouseScenePos;
-        centerOn(mLastMouseScenePos + diff);
+        adjustCenterFromMousePosition(mLastMousePos);
 
         // Restore the centering anchor
         setTransformationAnchor(QGraphicsView::AnchorViewCenter);
@@ -227,4 +223,26 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
     QGraphicsView::mouseMoveEvent(event);
     mLastMousePos = event->globalPos();
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+}
+
+void MapView::handlePinchGesture(QPinchGesture *pinch)
+{
+    setTransformationAnchor(QGraphicsView::NoAnchor);
+
+    mZoomable->handlePinchGesture(pinch);
+
+    QPoint centerPoint = pinch->hotSpot().toPoint();
+    adjustCenterFromMousePosition(centerPoint);
+
+    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+}
+
+void MapView::adjustCenterFromMousePosition(QPoint &mousePos)
+{
+    // Place the last known mouse scene pos below the mouse again
+    QWidget *view = viewport();
+    QPointF viewCenterScenePos = mapToScene(view->rect().center());
+    QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
+    QPointF diff = viewCenterScenePos - mouseScenePos;
+    centerOn(mLastMouseScenePos + diff);
 }

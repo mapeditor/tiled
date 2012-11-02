@@ -22,6 +22,7 @@
 #define MAPVIEW_H
 
 #include <QGraphicsView>
+#include <QPinchGesture>
 
 namespace Tiled {
 namespace Internal {
@@ -61,6 +62,10 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+
+    void handlePinchGesture(QPinchGesture *pinch);
+
+    void adjustCenterFromMousePosition(QPoint &mousePos);
 
 private slots:
     void adjustScale(qreal scale);
