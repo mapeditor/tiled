@@ -169,6 +169,10 @@ void MapView::wheelEvent(QWheelEvent *event)
     }
 
     QGraphicsView::wheelEvent(event);
+
+    // When scrolling the mouse does not move, but the view below it does.
+    // This affects the mouse scene position, which needs to be updated.
+    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
 }
 
 /**
