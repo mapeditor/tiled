@@ -208,7 +208,9 @@ void TmxRasterizer::render(const QString &mapFileName, const QString &bitmapFile
           mMap->layers().at(i)->name().toLower() == "collision"
         ) {
             mMap->layers().at(i)->setVisible(false);
-      }
+        } else {
+	    mMap->layers().at(i)->setVisible(true);
+	}
     }
     mScene->addItem(new MapItem(mMap, mRenderer));
     
