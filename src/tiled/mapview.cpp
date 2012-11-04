@@ -168,11 +168,11 @@ void MapView::wheelEvent(QWheelEvent *event)
         return;
     }
 
+    QGraphicsView::wheelEvent(event);
+
     // We are scrolling. The mouse do not move, but the view bellow it yes.
     // So its global position did not change, but its position in the scene yes.
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
-
-    QGraphicsView::wheelEvent(event);
 }
 
 /**
