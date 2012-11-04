@@ -325,7 +325,7 @@ bool LDMZPlugin::write(const Tiled::Map *map, const QString &fileName) {
                     }
                 
                 /* Unsupported by Tiled */
-                layer_s[layers].layer_w = qToBigEndian(mapWidth);map->tileWidth();
+                layer_s[layers].layer_w = qToBigEndian(mapWidth);
                 layer_s[layers].layer_h = qToBigEndian(mapHeight);
                 layer_s[layers].layer_offset_x = qToBigEndian(0);
                 layer_s[layers].layer_offset_y = qToBigEndian(0);
