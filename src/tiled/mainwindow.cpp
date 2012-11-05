@@ -172,7 +172,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
-    addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);    
+    addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
 
 
@@ -699,6 +699,9 @@ bool MainWindow::saveFile(const QString &fileName)
     if (!mMapDocument)
         return false;
 
+    if (fileName.isEmpty())
+        return false;
+
     QString error;
     if (!mMapDocument->save(fileName, &error)) {
         QMessageBox::critical(this, tr("Error Saving Map"), error);
@@ -762,15 +765,16 @@ bool MainWindow::saveFileAs()
             QFileDialog::getSaveFileName(this, QString(), suggestedFileName,
                                          filter, &selectedFilter);
 
+    if (fileName.isEmpty())
+        return false;
+
     QString writerPluginFilename;
     if (const Plugin *p = pm->pluginByNameFilter(selectedFilter))
         writerPluginFilename = p->fileName;
 
     mMapDocument->setWriterPluginFileName(writerPluginFilename);
 
-    if (!fileName.isEmpty())
-        return saveFile(fileName);
-    return false;
+    return saveFile(fileName);
 }
 
 bool MainWindow::confirmSave()
