@@ -21,6 +21,8 @@
 #ifndef CHANGEMAPPROPERTIES_H
 #define CHANGEMAPPROPERTIES_H
 
+#include "map.h"
+
 #include <QColor>
 #include <QUndoCommand>
 
@@ -37,18 +39,22 @@ public:
      * Constructs a new 'Change Map Properties' command.
      *
      * @param mapDocument       the map document of the map
-     * @param bgColor           the new color to apply for the background
+     * @param backgroundColor   the new color to apply for the background
+     * @param layerDataFormat   the new layer data format
      */
-    ChangeMapProperties(MapDocument *mapDocument, const QColor &bgColor);
+    ChangeMapProperties(MapDocument *mapDocument,
+                        const QColor &backgroundColor,
+                        Map::LayerDataFormat layerDataFormat);
 
     void undo();
     void redo();
 
 private:
+    void swap();
 
     MapDocument *mMapDocument;
-    const QColor mUndoColor;
-    const QColor mRedoColor;
+    QColor mBackgroundColor;
+    Map::LayerDataFormat mLayerDataFormat;
 };
 
 } // namespace Internal

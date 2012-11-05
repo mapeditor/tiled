@@ -30,23 +30,37 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ChangeMapProperties::ChangeMapProperties(MapDocument *mapDocument,
-                                         const QColor &bgColor)
+                                         const QColor &backgroundColor,
+                                         Map::LayerDataFormat layerDataFormat)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Map Properties"))
     , mMapDocument(mapDocument)
-    , mUndoColor(mapDocument->map()->backgroundColor())
-    , mRedoColor(bgColor)
+    , mBackgroundColor(backgroundColor)
+    , mLayerDataFormat(layerDataFormat)
 {
 }
 
 void ChangeMapProperties::redo()
 {
-    mMapDocument->map()->setBackgroundColor(mRedoColor);
-    mMapDocument->emitMapChanged();
+    swap();
 }
 
 void ChangeMapProperties::undo()
 {
-    mMapDocument->map()->setBackgroundColor(mUndoColor);
+    swap();
+}
+
+void ChangeMapProperties::swap()
+{
+    Map *map = mMapDocument->map();
+
+    const QColor backgroundColor = map->backgroundColor();
+    const Map::LayerDataFormat layerDataFormat = map->layerDataFormat();
+
+    map->setBackgroundColor(mBackgroundColor);
+    map->setLayerDataFormat(mLayerDataFormat);
     mMapDocument->emitMapChanged();
+
+    mBackgroundColor = backgroundColor;
+    mLayerDataFormat = layerDataFormat;
 }

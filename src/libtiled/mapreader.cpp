@@ -36,7 +36,6 @@
 #include "objectgroup.h"
 #include "map.h"
 #include "mapobject.h"
-#include "mapwriter.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -521,16 +520,16 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
     bool respect = true; // TODO: init from preferences
     if (respect) {
         if (encoding.isEmpty())
-            mMap->setLayerDataFormat(MapWriter::XML);
+            mMap->setLayerDataFormat(Map::XML);
         else if (encoding == QLatin1String("csv"))
-            mMap->setLayerDataFormat(MapWriter::CSV);
+            mMap->setLayerDataFormat(Map::CSV);
         else if (encoding == QLatin1String("base64")) {
             if (compression.isEmpty())
-                mMap->setLayerDataFormat(MapWriter::Base64);
+                mMap->setLayerDataFormat(Map::Base64);
             else if (compression == QLatin1String("gzip"))
-                mMap->setLayerDataFormat(MapWriter::Base64Gzip);
+                mMap->setLayerDataFormat(Map::Base64Gzip);
             else if (compression == QLatin1String("zlib"))
-                mMap->setLayerDataFormat(MapWriter::Base64Zlib);
+                mMap->setLayerDataFormat(Map::Base64Zlib);
         }
         // else, error handled below
     }

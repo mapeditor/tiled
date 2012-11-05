@@ -32,7 +32,6 @@
 #define MAP_H
 
 #include "layer.h"
-#include "mapwriter.h"
 #include "object.h"
 
 #include <QColor>
@@ -70,6 +69,18 @@ public:
         Orthogonal,
         Isometric,
         Staggered
+    };
+
+    /**
+     * The different formats in which the tile layer data can be stored.
+     */
+    enum LayerDataFormat {
+        Default    = -1,
+        XML        = 0,
+        Base64     = 1,
+        Base64Gzip = 2,
+        Base64Zlib = 3,
+        CSV        = 4
     };
 
     /**
@@ -287,9 +298,9 @@ public:
      */
     static Map *fromLayer(Layer *layer);
 
-    MapWriter::LayerDataFormat layerDataFormat() const
+    LayerDataFormat layerDataFormat() const
     { return mLayerDataFormat; }
-    void setLayerDataFormat(MapWriter::LayerDataFormat format)
+    void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
 private:
@@ -304,7 +315,7 @@ private:
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
-    MapWriter::LayerDataFormat mLayerDataFormat;
+    LayerDataFormat mLayerDataFormat;
 };
 
 /**

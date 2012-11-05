@@ -33,8 +33,8 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
-    MapWriter::LayerDataFormat format = map->layerDataFormat();
-    if (format == MapWriter::Default)
+    Map::LayerDataFormat format = map->layerDataFormat();
+    if (format == Map::Default)
         format = prefs->layerDataFormat();
 
     MapWriter writer;
@@ -74,7 +74,6 @@ QByteArray TmxMapWriter::toByteArray(const Map *map)
     buffer.open(QIODevice::WriteOnly);
 
     MapWriter writer;
-    writer.setLayerDataFormat(MapWriter::Base64Zlib);
     writer.writeMap(map, &buffer);
 
     return bytes;

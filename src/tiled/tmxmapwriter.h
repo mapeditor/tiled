@@ -22,7 +22,6 @@
 #define TMXMAPWRITER_H
 
 #include "mapwriterinterface.h"
-#include "mapwriter.h"
 
 #include <QCoreApplication>
 #include <QString>

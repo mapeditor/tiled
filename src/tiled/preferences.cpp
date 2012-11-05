@@ -51,9 +51,9 @@ Preferences::Preferences()
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
-    mLayerDataFormat = (MapWriter::LayerDataFormat)
+    mLayerDataFormat = (Map::LayerDataFormat)
                        mSettings->value(QLatin1String("LayerDataFormat"),
-                                        MapWriter::Base64Zlib).toInt();
+                                        Map::Base64Zlib).toInt();
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mSettings->endGroup();
@@ -162,12 +162,12 @@ void Preferences::setShowTilesetGrid(bool showTilesetGrid)
     emit showTilesetGridChanged(mShowTilesetGrid);
 }
 
-MapWriter::LayerDataFormat Preferences::layerDataFormat() const
+Map::LayerDataFormat Preferences::layerDataFormat() const
 {
     return mLayerDataFormat;
 }
 
-void Preferences::setLayerDataFormat(MapWriter::LayerDataFormat
+void Preferences::setLayerDataFormat(Map::LayerDataFormat
                                      layerDataFormat)
 {
     if (mLayerDataFormat == layerDataFormat)

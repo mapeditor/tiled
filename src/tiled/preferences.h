@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QColor>
 
-#include "mapwriter.h"
+#include "map.h"
 #include "objecttypes.h"
 
 class QSettings;
@@ -52,8 +52,8 @@ public:
     bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
 
-    MapWriter::LayerDataFormat layerDataFormat() const;
-    void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
+    Map::LayerDataFormat layerDataFormat() const;
+    void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
 
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
@@ -130,7 +130,7 @@ private:
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
 
-    MapWriter::LayerDataFormat mLayerDataFormat;
+    Map::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;

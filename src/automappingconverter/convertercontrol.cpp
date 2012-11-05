@@ -109,13 +109,9 @@ void ConverterControl::convertV1toV2(const QString &fileName)
                           QString("unused layers found");
         }
     }
-    Tiled::MapWriter writer;
-    QSettings settings;
-    MapWriter::LayerDataFormat layerformat = (MapWriter::LayerDataFormat)
-            (settings.value(QLatin1String("Storage/LayerDataFormat"),
-                            MapWriter::Base64Zlib).toInt());
 
-    writer.setLayerDataFormat(layerformat);
+    Tiled::MapWriter writer;
+    writer.setLayerDataFormat(map->layerDataFormat());
     writer.writeMap(map, fileName);
 
     qDeleteAll(map->tilesets());
