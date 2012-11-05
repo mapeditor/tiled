@@ -45,9 +45,10 @@ protected:
     void tilePositionChanged(const QPoint &tilePos);
 
 private:
-    void doErase(bool mergeable);
+    void doErase(bool continuation);
 
     bool mErasing;
+    QPoint mLastTilePos;
 };
 
 } // namespace Internal

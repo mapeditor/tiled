@@ -22,6 +22,7 @@
 
 #include "brushitem.h"
 #include "erasetiles.h"
+#include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -71,17 +72,23 @@ void Eraser::languageChanged()
     setShortcut(QKeySequence(tr("E")));
 }
 
-void Eraser::doErase(bool mergeable)
+void Eraser::doErase(bool continuation)
 {
     TileLayer *tileLayer = currentTileLayer();
     const QPoint tilePos = tilePosition();
+    QRegion eraseRegion(tilePos.x(), tilePos.y(), 1, 1);
 
-    if (!tileLayer->bounds().contains(tilePos))
+    if (continuation) {
+        foreach (const QPoint &p, pointsOnLine(mLastTilePos, tilePos))
+            eraseRegion |= QRegion(p.x(), p.y(), 1, 1);
+    }
+    mLastTilePos = tilePosition();
+
+    if (!tileLayer->bounds().intersects(eraseRegion.boundingRect()))
         return;
 
-    QRegion eraseRegion(tilePos.x(), tilePos.y(), 1, 1);
     EraseTiles *erase = new EraseTiles(mapDocument(), tileLayer, eraseRegion);
-    erase->setMergeable(mergeable);
+    erase->setMergeable(continuation);
 
     mapDocument()->undoStack()->push(erase);
     mapDocument()->emitRegionEdited(eraseRegion, tileLayer);
