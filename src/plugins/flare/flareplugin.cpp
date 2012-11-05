@@ -59,7 +59,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     QTextStream stream (&file);
     QString line;
     QString sectionName;
-    bool newsection;
+    bool newsection = false;
     QString path = QFileInfo(file).absolutePath();
     int base;
     GidMapper gidMapper;
@@ -193,6 +193,9 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                 objectgroup->addObject(mapobject);
                 newsection = false;
             }
+            if (!mapobject)
+                continue;
+
             if (startsWith == QChar('#')) {
                 QString name = line.mid(1).trimmed();
                 mapobject->setName(name);
@@ -219,8 +222,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     }
 
     if (!headerSectionFound || !tilesetsSectionFound || !tilelayerSectionFound) {
-        mError = tr("This seems to be no valid flare map."
-                    "A Flare map consists of at least a header"
+        mError = tr("This seems to be no valid flare map. "
+                    "A Flare map consists of at least a header "
                     "section, a tileset section and one tile layer.");
         delete map;
         return 0;
