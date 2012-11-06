@@ -22,6 +22,7 @@
 #define ZOOMABLE_H
 
 #include <QObject>
+#include <QPinchGesture>
 #include <QRegExp>
 #include <QVector>
 
@@ -61,6 +62,11 @@ public:
     void handleWheelDelta(int delta);
 
     /**
+     * Changes the current scale based on the given pinch gesture.
+     */
+    void handlePinchGesture(QPinchGesture *pinch);
+
+    /**
      * Returns whether images should be smoothly transformed when drawn at the
      * current scale. This is the case when the scale is not a whole number.
      */
@@ -87,6 +93,7 @@ private:
 
 private:
     qreal mScale;
+    qreal mGestureStartScale;
     QVector<qreal> mZoomFactors;
     QComboBox *mComboBox;
     QRegExp mComboRegExp;

@@ -34,9 +34,12 @@
 #include <QAbstractItemDelegate>
 #include <QCoreApplication>
 #include <QFileDialog>
+#include <QGesture>
+#include <QGestureEvent>
 #include <QHeaderView>
 #include <QMenu>
 #include <QPainter>
+#include <QPinchGesture>
 #include <QUndoCommand>
 #include <QWheelEvent>
 
@@ -138,6 +141,8 @@ TilesetView::TilesetView(MapDocument *mapDocument, Zoomable *zoomable, QWidget *
     Preferences *prefs = Preferences::instance();
     mDrawGrid = prefs->showTilesetGrid();
 
+    grabGesture(Qt::PinchGesture);
+
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
     connect(prefs, SIGNAL(showTilesetGridChanged(bool)),
             SLOT(setDrawGrid(bool)));
@@ -168,6 +173,17 @@ int TilesetView::sizeHintForRow(int row) const
 
     const int tileHeight = model->tileset()->tileHeight();
     return tileHeight * zoomable()->scale() + (mDrawGrid ? 1 : 0);
+}
+
+bool TilesetView::event(QEvent *event)
+{
+    if (event->type() == QEvent::Gesture) {
+        QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
+        if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
+            mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
+    }
+
+    return QTableView::event(event);
 }
 
 /**
