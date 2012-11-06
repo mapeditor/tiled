@@ -295,6 +295,9 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
 
 void TileLayer::resize(const QSize &size, const QPoint &offset)
 {
+    if (this->size() == size && offset.isNull())
+        return;
+
     QVector<Cell> newGrid(size.width() * size.height());
 
     // Copy over the preserved part

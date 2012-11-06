@@ -153,6 +153,11 @@ public:
     int height() const { return mHeight; }
 
     /**
+     * Returns the size of this layer.
+     */
+    QSize size() const { return QSize(mWidth, mHeight); }
+
+    /**
      * Returns the bounds of this layer.
      */
     QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
