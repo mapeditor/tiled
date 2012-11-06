@@ -179,10 +179,8 @@ bool TilesetView::event(QEvent *event)
 {
     if (event->type() == QEvent::Gesture) {
         QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
-        if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture)) {
+        if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
             mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
-            return true;
-        }
     }
 
     return QTableView::event(event);
