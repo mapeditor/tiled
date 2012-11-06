@@ -22,11 +22,11 @@
 #define ZOOMABLE_H
 
 #include <QObject>
-#include <QPinchGesture>
 #include <QRegExp>
 #include <QVector>
 
 class QComboBox;
+class QPinchGesture;
 class QRegExpValidator;
 
 namespace Tiled {

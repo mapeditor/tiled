@@ -22,6 +22,7 @@
 
 #include <QComboBox>
 #include <QLineEdit>
+#include <QPinchGesture>
 #include <QValidator>
 
 #include <cmath>
@@ -112,14 +113,21 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         return;
 
     switch (pinch->state()) {
+    case Qt::NoGesture:
+        break;
     case Qt::GestureStarted:
         mGestureStartScale = mScale;
-    case Qt::GestureUpdated:
+        // fall through
+    case Qt::GestureUpdated: {
         qreal factor = pinch->scaleFactor();
         qreal scale = qBound(mZoomFactors.first(),
                              mGestureStartScale * factor,
                              mZoomFactors.back());
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
+        break;
+    }
+    case Qt::GestureFinished:
+    case Qt::GestureCanceled:
         break;
     }
 }
