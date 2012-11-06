@@ -118,6 +118,16 @@ public:
     Layer *takeLayerAt(int index);
 
     /**
+     * Sets whether the layer at the given index is visible.
+     */
+    void setLayerVisible(int layerIndex, bool visible);
+
+    /**
+     * Sets the opacity of the layer at the given index.
+     */
+    void setLayerOpacity(int layerIndex, float opacity);
+
+    /**
      * Renames the layer at the given index.
      */
     void renameLayer(int index, const QString &name);

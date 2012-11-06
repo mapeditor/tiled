@@ -28,7 +28,8 @@
 enum UndoCommands {
     Cmd_EraseTiles,
     Cmd_PaintTileLayer,
-    Cmd_MoveTileset
+    Cmd_MoveTileset,
+    Cmd_ChangeLayerOpacity
 };
 
 #endif // UNDOCOMMANDS_H
