@@ -23,8 +23,9 @@
 
 #include "documentmanager.h"
 #include "imagelayer.h"
-#include "mapdocument.h"
 #include "map.h"
+#include "mapdocument.h"
+#include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "mapview.h"
@@ -222,8 +223,10 @@ void MiniMap::renderMapToImage()
             renderer->drawTileLayer(&painter, tileLayer);
         } else if (objGroup && drawObjects) {
             foreach (const MapObject *object, objGroup->objects()) {
-                const QColor color = MapObjectItem::objectColor(object);
-                renderer->drawMapObject(&painter, object, color);
+                if (object->isVisible()) {
+                    const QColor color = MapObjectItem::objectColor(object);
+                    renderer->drawMapObject(&painter, object, color);
+                }
             }
         } else if (imageLayer && drawImages) {
             renderer->drawImageLayer(&painter, imageLayer);

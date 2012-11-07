@@ -23,6 +23,7 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "imagelayer.h"
@@ -162,8 +163,10 @@ void SaveAsImageDialog::accept()
             renderer->drawTileLayer(&painter, tileLayer);
         } else if (objGroup) {
             foreach (const MapObject *object, objGroup->objects()) {
-                const QColor color = MapObjectItem::objectColor(object);
-                renderer->drawMapObject(&painter, object, color);
+                if (object->isVisible()) {
+                    const QColor color = MapObjectItem::objectColor(object);
+                    renderer->drawMapObject(&painter, object, color);
+                }
             }
         } else if (imageLayer) {
             renderer->drawImageLayer(&painter, imageLayer);
