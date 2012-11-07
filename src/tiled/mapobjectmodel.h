@@ -96,6 +96,7 @@ public:
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
+    void setObjectVisible(MapObject *o, bool visible);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);
