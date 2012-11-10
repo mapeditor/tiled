@@ -348,8 +348,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     mBucketFillTool = new BucketFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateTile, this);
-    CreateObjectTool *areaObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateArea, this);
+    CreateObjectTool *rectangleObjectsTool = new CreateObjectTool(
+            CreateObjectTool::CreateRectangle, this);
     CreateObjectTool *ellipseObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateEllipse, this);
     CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
@@ -381,11 +381,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->addSeparator();
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(new EditPolygonTool(this));
-    toolManager->registerTool(areaObjectsTool);
+    toolManager->registerTool(rectangleObjectsTool);
     toolManager->registerTool(ellipseObjectsTool);
-    toolManager->registerTool(tileObjectsTool);
     toolManager->registerTool(polygonObjectsTool);
     toolManager->registerTool(polylineObjectsTool);
+    toolManager->registerTool(tileObjectsTool);
 
     addToolBar(toolManager->toolBar());
 

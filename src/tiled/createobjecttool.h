@@ -37,7 +37,7 @@ class CreateObjectTool : public AbstractObjectTool
 
 public:
     enum CreationMode {
-        CreateArea,
+        CreateRectangle,
         CreateTile,
         CreatePolygon,
         CreatePolyline,
