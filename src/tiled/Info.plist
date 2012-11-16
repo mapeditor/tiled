@@ -23,7 +23,9 @@
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2008-2010 Thorbjørn Lindeijer</string>
+	<string>Copyright 2008-2012 Thorbjørn Lindeijer</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
