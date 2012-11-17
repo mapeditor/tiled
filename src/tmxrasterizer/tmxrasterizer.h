@@ -30,25 +30,24 @@
 #ifndef TMXRASTERIZER_H
 #define TMXRASTERIZER_H
 
-#include <QGraphicsView>
+#include <QObject>
 
 namespace Tiled {
 class Map;
 class MapRenderer;
 }
 
-class TmxRasterizer : public QGraphicsView
+class TmxRasterizer : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit TmxRasterizer(QWidget *parent = 0);
+    explicit TmxRasterizer(QObject *parent = 0);
     ~TmxRasterizer();
 
     void render(const QString &mapFileName, const QString &bitmapFileName, qreal scale);
 
 private:
-    QGraphicsScene *mScene;
     Tiled::Map *mMap;
     Tiled::MapRenderer *mRenderer;
 };

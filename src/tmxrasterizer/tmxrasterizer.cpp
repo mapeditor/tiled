@@ -1,7 +1,6 @@
 /*
  * tmxrasterizer.cpp
  * Copyright 2012, Vincent Petithory <vincent.petithory@gmail.com>
- * Mostly inspired from tmxviewer by Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of the TMX Rasterizer.
  *
@@ -29,165 +28,32 @@
 
 #include "tmxrasterizer.h"
 
+#include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "map.h"
-#include "mapobject.h"
 #include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
 #include "tilelayer.h"
-#include "tileset.h"
-
-#include <QCoreApplication>
-#include <QGraphicsItem>
-#include <QGraphicsScene>
-#include <QStyleOptionGraphicsItem>
 
 using namespace Tiled;
 
-/**
- * Item that represents a map object.
- */
-class MapObjectItem : public QGraphicsItem
-{
-public:
-    MapObjectItem(MapObject *mapObject, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
-        : QGraphicsItem(parent)
-        , mMapObject(mapObject)
-        , mRenderer(renderer)
-    {}
-
-    QRectF boundingRect() const
-    {
-        return mRenderer->boundingRect(mMapObject);
-    }
-
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *)
-    {
-        const QColor &color = mMapObject->objectGroup()->color();
-        mRenderer->drawMapObject(p, mMapObject,
-                                 color.isValid() ? color : Qt::darkGray);
-    }
-
-private:
-    MapObject *mMapObject;
-    MapRenderer *mRenderer;
-};
-
-/**
- * Item that represents a tile layer.
- */
-class TileLayerItem : public QGraphicsItem
-{
-public:
-    TileLayerItem(TileLayer *tileLayer, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
-        : QGraphicsItem(parent)
-        , mTileLayer(tileLayer)
-        , mRenderer(renderer)
-    {
-        setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
-    }
-
-    QRectF boundingRect() const
-    {
-        return mRenderer->boundingRect(mTileLayer->bounds());
-    }
-
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *)
-    {
-        mRenderer->drawTileLayer(p, mTileLayer, option->rect);
-    }
-
-private:
-    TileLayer *mTileLayer;
-    MapRenderer *mRenderer;
-};
-
-/**
- * Item that represents an object group.
- */
-class ObjectGroupItem : public QGraphicsItem
-{
-public:
-    ObjectGroupItem(ObjectGroup *objectGroup, MapRenderer *renderer,
-                    QGraphicsItem *parent = 0)
-        : QGraphicsItem(parent)
-    {
-        setFlag(QGraphicsItem::ItemHasNoContents);
-
-        // Create a child item for each object
-        foreach (MapObject *object, objectGroup->objects())
-            new MapObjectItem(object, renderer, this);
-    }
-
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
-};
-
-/**
- * Item that represents a map.
- */
-class MapItem : public QGraphicsItem
-{
-public:
-    MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = 0)
-        : QGraphicsItem(parent)
-    {
-        setFlag(QGraphicsItem::ItemHasNoContents);
-
-        // Create a child item for each layer
-        foreach (Layer *layer, map->layers()) {
-            if (!layer->isVisible())
-                continue;
-            if (TileLayer *tileLayer = layer->asTileLayer()) {
-                new TileLayerItem(tileLayer, renderer, this);
-            } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-                new ObjectGroupItem(objectGroup, renderer, this);
-            }
-        }
-    }
-
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
-};
-
-
-TmxRasterizer::TmxRasterizer(QWidget *parent) :
-    QGraphicsView(parent),
-    mScene(new QGraphicsScene(this)),
+TmxRasterizer::TmxRasterizer(QObject *parent) :
+    QObject(parent),
     mMap(0),
     mRenderer(0)
 {
-    setWindowTitle(tr("TMX Rasterizer"));
-
-    setScene(mScene);
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    setDragMode(QGraphicsView::ScrollHandDrag);
-    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
-                         | QGraphicsView::DontSavePainterState);
-    setBackgroundBrush(Qt::black);
-    setFrameStyle(QFrame::NoFrame);
-
-    viewport()->setAttribute(Qt::WA_StaticContents);
+    
 }
 
 TmxRasterizer::~TmxRasterizer()
 {
-    qDeleteAll(mMap->tilesets());
     delete mMap;
     delete mRenderer;
 }
 
 void TmxRasterizer::render(const QString &mapFileName, const QString &bitmapFileName, qreal scale)
 {
-    delete mRenderer;
-    mRenderer = 0;
-
-    mScene->clear();
-    centerOn(0, 0);
-
     MapReader reader;
     mMap = reader.readMap(mapFileName);
     if (!mMap)
@@ -202,30 +68,41 @@ void TmxRasterizer::render(const QString &mapFileName, const QString &bitmapFile
         mRenderer = new OrthogonalRenderer(mMap);
         break;
     }
-    for (int i = 0; i < mMap->layers().size(); ++i) {
-        if (
-          mMap->layers().at(i)->isObjectGroup() ||
-          mMap->layers().at(i)->name().toLower() == "collision"
-        ) {
-            mMap->layers().at(i)->setVisible(false);
-        } else {
-	    mMap->layers().at(i)->setVisible(true);
-	}
-    }
-    mScene->addItem(new MapItem(mMap, mRenderer));
-    
-    // Render the map
-    QSize size(mScene->width()*scale, mScene->height()*scale);
-    
-    QImage image(mScene->width(), mScene->height(), QImage::Format_ARGB32);
+
+    QSize mapSize = mRenderer->mapSize()*scale;
+
+    QImage image(mapSize, QImage::Format_ARGB32);
+    image.fill(Qt::transparent);
     QPainter painter(&image);
-    painter.setRenderHint(QPainter::Antialiasing);
-    mScene->render(&painter);
-    if (scale == 1.0) {
-        image.save(bitmapFileName);
-    } else {
-        QImage scaledImage = image.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        scaledImage.save(bitmapFileName);
+
+    if (scale != qreal(1)) {
+        // TODO add option to use or not AA
+        painter.setRenderHints(QPainter::SmoothPixmapTransform |
+                               QPainter::HighQualityAntialiasing);
+        painter.setTransform(QTransform::fromScale(scale,
+                                                   scale));
     }
-    
+    // Perform a similar rendering than found in saveasimagedialog.cpp
+    foreach (Layer *layer, mMap->layers()) {
+        // Exclude all object groups and collision layers
+        if (layer->isObjectGroup() || layer->name().toLower() == "collision") {
+            continue;
+        } else {
+            // Auto-include all other layers
+            layer->setVisible(true);
+        }
+
+        painter.setOpacity(layer->opacity());
+
+        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
+        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+
+        if (tileLayer) {
+            mRenderer->drawTileLayer(&painter, tileLayer);
+        } else if (imageLayer) {
+            mRenderer->drawImageLayer(&painter, imageLayer);
+        }
+    }
+    // Save image
+    image.save(bitmapFileName);
 }

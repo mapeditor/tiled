@@ -31,6 +31,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QStringList>
 
 namespace {
 
@@ -120,8 +121,10 @@ int main(int argc, char *argv[])
     if (options.showVersion
             || options.showHelp
             || options.fileToOpen.isEmpty()
-            || options.fileToSave.isEmpty())
+            || options.fileToSave.isEmpty()) {
+	showHelp();
         return 0;
+    }
 
     TmxRasterizer w;
     w.render(options.fileToOpen, options.fileToSave, options.scale);
