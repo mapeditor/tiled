@@ -38,12 +38,20 @@
 
 using namespace Tiled;
 
-TmxRasterizer::TmxRasterizer(QObject *parent) :
-    QObject(parent),
+TmxRasterizer::TmxRasterizer():
+    mScale(1.0),
+    mUseAntiAliasing(true),
     mMap(0),
     mRenderer(0)
 {
-    
+}
+
+TmxRasterizer::TmxRasterizer(qreal scale, bool useAntiAliasing) :
+    mScale(scale),
+    mUseAntiAliasing(useAntiAliasing),
+    mMap(0),
+    mRenderer(0)
+{
 }
 
 TmxRasterizer::~TmxRasterizer()
@@ -52,8 +60,13 @@ TmxRasterizer::~TmxRasterizer()
     delete mRenderer;
 }
 
-void TmxRasterizer::render(const QString &mapFileName, const QString &bitmapFileName, qreal scale)
+void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFileName)
 {
+    delete mRenderer;
+    mRenderer = 0;
+    delete mMap;
+    mMap = 0;
+
     MapReader reader;
     mMap = reader.readMap(mapFileName);
     if (!mMap)
@@ -69,27 +82,25 @@ void TmxRasterizer::render(const QString &mapFileName, const QString &bitmapFile
         break;
     }
 
-    QSize mapSize = mRenderer->mapSize()*scale;
+    QSize mapSize = mRenderer->mapSize()*mScale;
 
     QImage image(mapSize, QImage::Format_ARGB32);
     image.fill(Qt::transparent);
     QPainter painter(&image);
 
-    if (scale != qreal(1)) {
-        // TODO add option to use or not AA
-        painter.setRenderHints(QPainter::SmoothPixmapTransform |
-                               QPainter::HighQualityAntialiasing);
-        painter.setTransform(QTransform::fromScale(scale,
-                                                   scale));
+    if (mScale != qreal(1)) {
+        if (mUseAntiAliasing) {
+            painter.setRenderHints(QPainter::SmoothPixmapTransform |
+                                   QPainter::Antialiasing);
+        }
+        painter.setTransform(QTransform::fromScale(mScale,
+                                                   mScale));
     }
     // Perform a similar rendering than found in saveasimagedialog.cpp
     foreach (Layer *layer, mMap->layers()) {
         // Exclude all object groups and collision layers
         if (layer->isObjectGroup() || layer->name().toLower() == "collision") {
             continue;
-        } else {
-            // Auto-include all other layers
-            layer->setVisible(true);
         }
 
         painter.setOpacity(layer->opacity());

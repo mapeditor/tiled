@@ -46,6 +46,7 @@ struct CommandLineOptions {
     QString fileToOpen;
     QString fileToSave;
     qreal scale;
+    bool useAntiAliasing;
 };
 
 } // anonymous namespace
@@ -71,6 +72,7 @@ static void parseCommandLineArguments(CommandLineOptions &options)
 {
     const QStringList arguments = QCoreApplication::arguments();
     options.scale = 1.0;
+    options.useAntiAliasing = false;
     for (int i = 1; i < arguments.size(); ++i) {
         const QString &arg = arguments.at(i);
         if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
@@ -86,6 +88,9 @@ static void parseCommandLineArguments(CommandLineOptions &options)
             } else {
                 options.scale = arguments.at(i).toDouble();
             }
+        } else if (arg == QLatin1String("--anti-aliasing")
+                || arg == QLatin1String("-a")) {
+            options.useAntiAliasing = true;
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
@@ -99,11 +104,6 @@ static void parseCommandLineArguments(CommandLineOptions &options)
 
 int main(int argc, char *argv[])
 {
-    // Avoid performance issues with X11 engine when rendering objects
-#ifdef Q_WS_X11
-    QApplication::setGraphicsSystem(QLatin1String("raster"));
-#endif
-
     QApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
@@ -113,21 +113,17 @@ int main(int argc, char *argv[])
     CommandLineOptions options;
     parseCommandLineArguments(options);
 
-    if (options.showVersion)
+    if (options.showVersion) {
         showVersion();
-    if (options.showHelp || ((options.fileToOpen.isEmpty() || options.fileToOpen.isEmpty())
-                             && !options.showVersion))
+        return 0;
+    }
+    if (options.showHelp || (options.fileToOpen.isEmpty() || options.fileToOpen.isEmpty())) {
         showHelp();
-    if (options.showVersion
-            || options.showHelp
-            || options.fileToOpen.isEmpty()
-            || options.fileToSave.isEmpty()) {
-	showHelp();
         return 0;
     }
 
-    TmxRasterizer w;
-    w.render(options.fileToOpen, options.fileToSave, options.scale);
+    TmxRasterizer w(options.scale, options.useAntiAliasing);
+    w.render(options.fileToOpen, options.fileToSave);
     a.quit();
     return 0;
 }

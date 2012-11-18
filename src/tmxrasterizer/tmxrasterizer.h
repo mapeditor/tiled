@@ -30,22 +30,25 @@
 #ifndef TMXRASTERIZER_H
 #define TMXRASTERIZER_H
 
-#include <QObject>
+#include <QString>
 
 namespace Tiled {
 class Map;
 class MapRenderer;
 }
 
-class TmxRasterizer : public QObject
+class TmxRasterizer
 {
-    Q_OBJECT
 
 public:
-    explicit TmxRasterizer(QObject *parent = 0);
+    TmxRasterizer();
+    TmxRasterizer(qreal scale, bool useAntiAliasing);
     ~TmxRasterizer();
 
-    void render(const QString &mapFileName, const QString &bitmapFileName, qreal scale);
+    void render(const QString &mapFileName, const QString &bitmapFileName);
+
+    qreal mScale;
+    bool mUseAntiAliasing;
 
 private:
     Tiled::Map *mMap;
