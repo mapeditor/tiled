@@ -95,6 +95,14 @@ void TilesetModel::setTileset(Tileset *tileset)
 {
     if (mTileset == tileset)
         return;
+
+    beginResetModel();
     mTileset = tileset;
-    reset();
+    endResetModel();
+}
+
+void TilesetModel::tilesetChanged()
+{
+    beginResetModel();
+    endResetModel();
 }

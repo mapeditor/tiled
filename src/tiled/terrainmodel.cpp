@@ -82,6 +82,14 @@ void TerrainModel::setTileset(Tileset *tileset)
 {
     if (mTileset == tileset)
         return;
+
+    beginResetModel();
     mTileset = tileset;
-    reset();
+    endResetModel();
+}
+
+void TerrainModel::tilesetChanged()
+{
+    beginResetModel();
+    endResetModel();
 }

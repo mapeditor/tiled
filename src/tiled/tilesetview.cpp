@@ -124,15 +124,19 @@ TilesetView::TilesetView(MapDocument *mapDocument, Zoomable *zoomable, QWidget *
     setItemDelegate(new TileDelegate(this, this));
     setShowGrid(false);
 
-    QHeaderView *header = horizontalHeader();
-    header->hide();
-    header->setResizeMode(QHeaderView::ResizeToContents);
-    header->setMinimumSectionSize(1);
-
-    header = verticalHeader();
-    header->hide();
-    header->setResizeMode(QHeaderView::ResizeToContents);
-    header->setMinimumSectionSize(1);
+    QHeaderView *hHeader = horizontalHeader();
+    QHeaderView *vHeader = verticalHeader();
+    hHeader->hide();
+    vHeader->hide();
+#if QT_VERSION >= 0x050000
+    hHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+    vHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
+    hHeader->setResizeMode(QHeaderView::ResizeToContents);
+    vHeader->setResizeMode(QHeaderView::ResizeToContents);
+#endif
+    hHeader->setMinimumSectionSize(1);
+    vHeader->setMinimumSectionSize(1);
 
     // Hardcode this view on 'left to right' since it doesn't work properly
     // for 'right to left' languages.

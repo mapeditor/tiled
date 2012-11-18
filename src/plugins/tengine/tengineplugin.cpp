@@ -150,7 +150,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                     while (true) {
                         // First try to use the ASCII characters
                         if (asciiDisplay < ASCII_MAX) {
-                            displayString = QString(QChar::fromAscii(asciiDisplay));
+                            displayString = QString(QChar::fromLatin1(asciiDisplay));
                             asciiDisplay++;
                         // Then fall back onto integers
                         } else {

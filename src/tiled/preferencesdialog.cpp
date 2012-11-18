@@ -124,7 +124,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
 
     QHeaderView *horizontalHeader = mUi->objectTypesTable->horizontalHeader();
+#if QT_VERSION >= 0x050000
+    horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
+#else
     horizontalHeader->setResizeMode(QHeaderView::Stretch);
+#endif
 
     Utils::setThemeIcon(mUi->addObjectTypeButton, "add");
     Utils::setThemeIcon(mUi->removeObjectTypeButton, "remove");

@@ -249,9 +249,10 @@ void LayerModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+    beginResetModel();
     mMapDocument = mapDocument;
     mMap = mMapDocument->map();
-    reset();
+    endResetModel();
 }
 
 void LayerModel::insertLayer(int index, Layer *layer)

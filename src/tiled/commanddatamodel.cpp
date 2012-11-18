@@ -231,10 +231,12 @@ bool CommandDataModel::setData(const QModelIndex &index,
             mCommands[index.row()] = command;
 
         // Reset if there could be new rows or reordering, else emit dataChanged
-        if (shouldAppend || index.column() == NameColumn)
-            reset();
-        else
+        if (shouldAppend || index.column() == NameColumn) {
+            beginResetModel();
+            endResetModel();
+        } else {
             emit dataChanged(index, index);
+        }
     }
 
     return isModified;

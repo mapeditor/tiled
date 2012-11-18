@@ -299,6 +299,7 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument)
         mMapDocument->disconnect(this);
 
+    beginResetModel();
     mMapDocument = mapDocument;
     mMap = 0;
 
@@ -330,7 +331,7 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
         }
     }
 
-    reset();
+    endResetModel();
 }
 
 void MapObjectModel::layerAdded(int index)
