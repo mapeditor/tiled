@@ -260,7 +260,7 @@ void ObjectsDock::objectProperties()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
 
     MapObject *mapObject = selectedObjects.first();
-    ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, 0);
+    ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
     propertiesDialog.exec();
 }
 
@@ -350,8 +350,8 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
 void ObjectsView::onActivated(const QModelIndex &index)
 {
-    if (MapObject *o = model()->toMapObject(index)) {
-        ObjectPropertiesDialog propertiesDialog(mMapDocument, o, 0);
+    if (MapObject *mapObject = model()->toMapObject(index)) {
+        ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
         propertiesDialog.exec();
     }
 }
