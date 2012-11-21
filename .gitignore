@@ -1,4 +1,5 @@
 build
+bin/automappingconverter
 bin/tiled
 bin/tmxviewer
 lib/tiled/plugins/*
