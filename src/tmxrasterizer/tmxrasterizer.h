@@ -43,11 +43,13 @@ class TmxRasterizer
 public:
     TmxRasterizer();
     TmxRasterizer(qreal scale, bool useAntiAliasing);
+    TmxRasterizer(int tileSize, bool useAntiAliasing);
     ~TmxRasterizer();
 
     void render(const QString &mapFileName, const QString &bitmapFileName);
 
     qreal mScale;
+    int mTileSize;
     bool mUseAntiAliasing;
 
 private:

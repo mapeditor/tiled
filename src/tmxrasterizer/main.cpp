@@ -46,6 +46,7 @@ struct CommandLineOptions {
     QString fileToOpen;
     QString fileToSave;
     qreal scale;
+    int tileSize;
     bool useAntiAliasing;
 };
 
@@ -57,9 +58,10 @@ static void showHelp()
     qWarning() <<
             "Usage: tmxrasterizer [option] [file] [outfile]\n\n"
             "Options:\n"
-            "  -h --help         : Display this help\n"
-            "  -v --version      : Display the version\n"
-            "  -s --scale SCALE  : The scale of the output image";
+            "  -h --help           : Display this help\n"
+            "  -v --version        : Display the version\n"
+            "  -s --scale SCALE    : The scale of the output image\n"
+            "  -t --tilesize SIZE  : The requested size in pixels at which a tile is rendered. Superseeds --scale.";
 }
 
 static void showVersion()
@@ -71,7 +73,8 @@ static void showVersion()
 static void parseCommandLineArguments(CommandLineOptions &options)
 {
     const QStringList arguments = QCoreApplication::arguments();
-    options.scale = 1.0;
+    options.scale = 0.0;
+    options.tileSize = 0;
     options.useAntiAliasing = false;
     for (int i = 1; i < arguments.size(); ++i) {
         const QString &arg = arguments.at(i);
@@ -87,6 +90,14 @@ static void parseCommandLineArguments(CommandLineOptions &options)
                 options.showHelp = true;
             } else {
                 options.scale = arguments.at(i).toDouble();
+            }
+        } else if (arg == QLatin1String("--tilesize")
+                || arg == QLatin1String("-t")) {
+            i++;
+            if (i >= arguments.size()) {
+                options.showHelp = true;
+            } else {
+                options.tileSize = arguments.at(i).toInt();
             }
         } else if (arg == QLatin1String("--anti-aliasing")
                 || arg == QLatin1String("-a")) {
@@ -121,9 +132,21 @@ int main(int argc, char *argv[])
         showHelp();
         return 0;
     }
+    if (options.scale == 0.0 && options.tileSize == 0) {
+        showHelp();
+        return 0;
+    }
 
-    TmxRasterizer w(options.scale, options.useAntiAliasing);
-    w.render(options.fileToOpen, options.fileToSave);
+    if (options.tileSize > 0) {
+        TmxRasterizer w(options.tileSize, options.useAntiAliasing);
+        w.render(options.fileToOpen, options.fileToSave);
+    } else if (options.scale > 0.0) {
+        TmxRasterizer w(options.scale, options.useAntiAliasing);
+        w.render(options.fileToOpen, options.fileToSave);
+    } else {
+        showHelp();
+        return 0;
+    }
     a.quit();
     return 0;
 }

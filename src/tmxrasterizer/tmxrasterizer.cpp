@@ -40,6 +40,7 @@ using namespace Tiled;
 
 TmxRasterizer::TmxRasterizer():
     mScale(1.0),
+    mTileSize(0),
     mUseAntiAliasing(true),
     mMap(0),
     mRenderer(0)
@@ -48,6 +49,16 @@ TmxRasterizer::TmxRasterizer():
 
 TmxRasterizer::TmxRasterizer(qreal scale, bool useAntiAliasing) :
     mScale(scale),
+    mTileSize(0),
+    mUseAntiAliasing(useAntiAliasing),
+    mMap(0),
+    mRenderer(0)
+{
+}
+
+TmxRasterizer::TmxRasterizer(int tileSize, bool useAntiAliasing) :
+    mScale(0.0),
+    mTileSize(tileSize),
     mUseAntiAliasing(useAntiAliasing),
     mMap(0),
     mRenderer(0)
@@ -82,19 +93,29 @@ void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFile
         break;
     }
 
-    QSize mapSize = mRenderer->mapSize()*mScale;
+    qreal xScale, yScale;
+
+    if (mTileSize > 0) {
+        xScale = (qreal) mTileSize/mMap->tileWidth();
+        yScale = (qreal) mTileSize/mMap->tileHeight();
+    } else {
+        xScale = yScale = mScale;
+    }
+
+    QSize mapSize = mRenderer->mapSize();
+    mapSize.rwidth() *= xScale;
+    mapSize.rheight() *= yScale;
 
     QImage image(mapSize, QImage::Format_ARGB32);
     image.fill(Qt::transparent);
     QPainter painter(&image);
 
-    if (mScale != qreal(1)) {
+    if (xScale != qreal(1) || yScale != qreal(1)) {
         if (mUseAntiAliasing) {
             painter.setRenderHints(QPainter::SmoothPixmapTransform |
                                    QPainter::Antialiasing);
         }
-        painter.setTransform(QTransform::fromScale(mScale,
-                                                   mScale));
+        painter.setTransform(QTransform::fromScale(xScale, yScale));
     }
     // Perform a similar rendering than found in saveasimagedialog.cpp
     foreach (Layer *layer, mMap->layers()) {
