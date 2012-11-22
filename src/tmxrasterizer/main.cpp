@@ -1,7 +1,6 @@
 /*
  * main.cpp
  * Copyright 2012, Vincent Petithory <vincent.petithory@gmail.com>
- * Mostly inspired from tmxviewer by Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of the TMX Rasterizer.
  *
