@@ -47,28 +47,22 @@ TmxRasterizer::TmxRasterizer():
 {
 }
 
-TmxRasterizer::TmxRasterizer(qreal scale, bool useAntiAliasing) :
-    mScale(scale),
-    mTileSize(0),
-    mUseAntiAliasing(useAntiAliasing),
-    mMap(0),
-    mRenderer(0)
-{
-}
-
-TmxRasterizer::TmxRasterizer(int tileSize, bool useAntiAliasing) :
-    mScale(0.0),
-    mTileSize(tileSize),
-    mUseAntiAliasing(useAntiAliasing),
-    mMap(0),
-    mRenderer(0)
-{
-}
-
 TmxRasterizer::~TmxRasterizer()
 {
     delete mMap;
     delete mRenderer;
+}
+
+void TmxRasterizer::setScale(qreal scale) {
+    mScale = scale;
+}
+
+void TmxRasterizer::setTileSize(int tileSize) {
+    mTileSize = tileSize;
+}
+
+void TmxRasterizer::setAntiAliasing (bool useAntiAliasing) {
+    mUseAntiAliasing = useAntiAliasing;
 }
 
 void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFileName)

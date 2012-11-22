@@ -42,17 +42,21 @@ class TmxRasterizer
 
 public:
     TmxRasterizer();
-    TmxRasterizer(qreal scale, bool useAntiAliasing);
-    TmxRasterizer(int tileSize, bool useAntiAliasing);
     ~TmxRasterizer();
 
+    qreal scale() const { return mScale; }
+    int tileSize() const { return mTileSize; }
+    bool useAntiAliasing() const { return mUseAntiAliasing; }
+
+    void setScale(qreal scale);
+    void setTileSize(int tileSize);
+    void setAntiAliasing( bool useAntiAliasing);
     void render(const QString &mapFileName, const QString &bitmapFileName);
 
+private:
     qreal mScale;
     int mTileSize;
     bool mUseAntiAliasing;
-
-private:
     Tiled::Map *mMap;
     Tiled::MapRenderer *mRenderer;
 };

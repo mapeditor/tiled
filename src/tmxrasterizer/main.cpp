@@ -132,21 +132,21 @@ int main(int argc, char *argv[])
         showHelp();
         return 0;
     }
-    if (options.scale == 0.0 && options.tileSize == 0) {
+    if (options.scale <= 0.0 && options.tileSize <= 0) {
         showHelp();
         return 0;
     }
 
+    TmxRasterizer w;
+    w.setAntiAliasing(options.useAntiAliasing);
+
     if (options.tileSize > 0) {
-        TmxRasterizer w(options.tileSize, options.useAntiAliasing);
-        w.render(options.fileToOpen, options.fileToSave);
+        w.setTileSize(options.tileSize);
     } else if (options.scale > 0.0) {
-        TmxRasterizer w(options.scale, options.useAntiAliasing);
-        w.render(options.fileToOpen, options.fileToSave);
-    } else {
-        showHelp();
-        return 0;
+        w.setScale(options.scale);
     }
+
+    w.render(options.fileToOpen, options.fileToSave);
     a.quit();
     return 0;
 }
