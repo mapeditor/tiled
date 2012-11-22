@@ -1,6 +1,7 @@
 build
 bin/automappingconverter
 bin/tiled
+bin/tmxrasterizer
 bin/tmxviewer
 lib/tiled/plugins/*
 lib/*.so*
