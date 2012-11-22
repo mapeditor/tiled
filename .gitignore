@@ -17,6 +17,7 @@ docs/html
 
 # Build artifacts on Windows
 tiled.exe
+tmxrasterizer.exe
 tmxviewer.exe
 automappingconverter.exe
 *.dll
