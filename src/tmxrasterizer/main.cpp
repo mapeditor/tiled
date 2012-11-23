@@ -60,7 +60,8 @@ static void showHelp()
             "  -h --help           : Display this help\n"
             "  -v --version        : Display the version\n"
             "  -s --scale SCALE    : The scale of the output image\n"
-            "  -t --tilesize SIZE  : The requested size in pixels at which a tile is rendered. Superseeds --scale.";
+            "  -t --tilesize SIZE  : The requested size in pixels at which a tile is rendered\n"
+            "                        Superseeds the --scale option";
 }
 
 static void showVersion()
@@ -88,7 +89,12 @@ static void parseCommandLineArguments(CommandLineOptions &options)
             if (i >= arguments.size()) {
                 options.showHelp = true;
             } else {
-                options.scale = arguments.at(i).toDouble();
+                bool scaleIsDouble;
+                options.scale = arguments.at(i).toDouble(&scaleIsDouble);
+                if (!scaleIsDouble) {
+                    qWarning() << arguments.at(i) << ": the specified scale is not a number.";
+                    options.showHelp = true;
+                }
             }
         } else if (arg == QLatin1String("--tilesize")
                 || arg == QLatin1String("-t")) {
@@ -96,7 +102,12 @@ static void parseCommandLineArguments(CommandLineOptions &options)
             if (i >= arguments.size()) {
                 options.showHelp = true;
             } else {
-                options.tileSize = arguments.at(i).toInt();
+                bool tileSizeIsInt;
+                options.tileSize = arguments.at(i).toInt(&tileSizeIsInt);
+                if (!tileSizeIsInt) {
+                    qWarning() << arguments.at(i) << ": the specified tile size is not an integer.";
+                    options.showHelp = true;
+                }
             }
         } else if (arg == QLatin1String("--anti-aliasing")
                 || arg == QLatin1String("-a")) {
@@ -104,10 +115,15 @@ static void parseCommandLineArguments(CommandLineOptions &options)
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
+        } else if (arg.isEmpty()) {
+            options.showHelp = true;
         } else if (options.fileToOpen.isEmpty()) {
             options.fileToOpen = arg;
         } else if (options.fileToSave.isEmpty()) {
             options.fileToSave = arg;
+        } else {
+            // All args are already defined. Show help.
+            options.showHelp = true;
         }
     }
 }
@@ -146,6 +162,5 @@ int main(int argc, char *argv[])
     }
 
     w.render(options.fileToOpen, options.fileToSave);
-    a.quit();
     return 0;
 }

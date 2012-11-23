@@ -31,11 +31,6 @@
 
 #include <QString>
 
-namespace Tiled {
-class Map;
-class MapRenderer;
-}
-
 class TmxRasterizer
 {
 
@@ -47,17 +42,16 @@ public:
     int tileSize() const { return mTileSize; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
 
-    void setScale(qreal scale);
-    void setTileSize(int tileSize);
-    void setAntiAliasing( bool useAntiAliasing);
+    void setScale(qreal scale) { mScale = scale; }
+    void setTileSize(int tileSize) { mTileSize = tileSize; }
+    void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
+
     void render(const QString &mapFileName, const QString &bitmapFileName);
 
 private:
     qreal mScale;
     int mTileSize;
     bool mUseAntiAliasing;
-    Tiled::Map *mMap;
-    Tiled::MapRenderer *mRenderer;
 };
 
 #endif // TMXRASTERIZER_H

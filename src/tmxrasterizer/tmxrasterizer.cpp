@@ -34,69 +34,57 @@
 #include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
+
+#include <QDebug>
 
 using namespace Tiled;
 
 TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
-    mUseAntiAliasing(true),
-    mMap(0),
-    mRenderer(0)
+    mUseAntiAliasing(true)
 {
 }
 
 TmxRasterizer::~TmxRasterizer()
 {
-    delete mMap;
-    delete mRenderer;
-}
-
-void TmxRasterizer::setScale(qreal scale) {
-    mScale = scale;
-}
-
-void TmxRasterizer::setTileSize(int tileSize) {
-    mTileSize = tileSize;
-}
-
-void TmxRasterizer::setAntiAliasing (bool useAntiAliasing) {
-    mUseAntiAliasing = useAntiAliasing;
 }
 
 void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFileName)
 {
-    delete mRenderer;
-    mRenderer = 0;
-    delete mMap;
-    mMap = 0;
-
+    Map *map;
+    MapRenderer *renderer;
     MapReader reader;
-    mMap = reader.readMap(mapFileName);
-    if (!mMap)
-        return; // TODO: Add error handling
+    map = reader.readMap(mapFileName);
+    if (!map) {
+        qWarning() << "Error while reading" << mapFileName << ":\n" << reader.errorString();
+        return;
+    }
 
-    switch (mMap->orientation()) {
+    switch (map->orientation()) {
     case Map::Isometric:
-        mRenderer = new IsometricRenderer(mMap);
+        renderer = new IsometricRenderer(map);
         break;
+    case Map::Staggered:
+        renderer = new StaggeredRenderer(map);
     case Map::Orthogonal:
     default:
-        mRenderer = new OrthogonalRenderer(mMap);
+        renderer = new OrthogonalRenderer(map);
         break;
     }
 
     qreal xScale, yScale;
 
     if (mTileSize > 0) {
-        xScale = (qreal) mTileSize/mMap->tileWidth();
-        yScale = (qreal) mTileSize/mMap->tileHeight();
+        xScale = (qreal) mTileSize/map->tileWidth();
+        yScale = (qreal) mTileSize/map->tileHeight();
     } else {
         xScale = yScale = mScale;
     }
 
-    QSize mapSize = mRenderer->mapSize();
+    QSize mapSize = renderer->mapSize();
     mapSize.rwidth() *= xScale;
     mapSize.rheight() *= yScale;
 
@@ -112,11 +100,10 @@ void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFile
         painter.setTransform(QTransform::fromScale(xScale, yScale));
     }
     // Perform a similar rendering than found in saveasimagedialog.cpp
-    foreach (Layer *layer, mMap->layers()) {
+    foreach (Layer *layer, map->layers()) {
         // Exclude all object groups and collision layers
-        if (layer->isObjectGroup() || layer->name().toLower() == "collision") {
+        if (layer->isObjectGroup() || layer->name().toLower() == "collision")
             continue;
-        }
 
         painter.setOpacity(layer->opacity());
 
@@ -124,11 +111,16 @@ void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFile
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
 
         if (tileLayer) {
-            mRenderer->drawTileLayer(&painter, tileLayer);
+            renderer->drawTileLayer(&painter, tileLayer);
         } else if (imageLayer) {
-            mRenderer->drawImageLayer(&painter, imageLayer);
+            renderer->drawImageLayer(&painter, imageLayer);
         }
     }
+
     // Save image
     image.save(bitmapFileName);
+
+    delete renderer;
+    qDeleteAll< QList<Tileset*> >(map->tilesets());
+    delete map;
 }
