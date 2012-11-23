@@ -121,6 +121,6 @@ void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFile
     image.save(bitmapFileName);
 
     delete renderer;
-    qDeleteAll< QList<Tileset*> >(map->tilesets());
+    qDeleteAll(map->tilesets());
     delete map;
 }
