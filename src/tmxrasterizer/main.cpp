@@ -112,10 +112,10 @@ static void parseCommandLineArguments(CommandLineOptions &options)
         } else if (arg == QLatin1String("--anti-aliasing")
                 || arg == QLatin1String("-a")) {
             options.useAntiAliasing = true;
+        } else if (arg.isEmpty()) {
+            options.showHelp = true;
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
-            options.showHelp = true;
-        } else if (arg.isEmpty()) {
             options.showHelp = true;
         } else if (options.fileToOpen.isEmpty()) {
             options.fileToOpen = arg;
