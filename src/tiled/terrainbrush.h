@@ -51,6 +51,9 @@ public:
     TerrainBrush(QObject *parent = 0);
     ~TerrainBrush();
 
+    void activate(MapScene *scene);
+    void deactivate(MapScene *scene);
+
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);
 
@@ -115,6 +118,8 @@ private:
     const Terrain *mTerrain;
     int mPaintX, mPaintY;
     int mOffsetX, mOffsetY;
+
+    bool mIsActive;
 
     /**
      * There are several options how the stamp utility can be used.
