@@ -146,10 +146,11 @@ void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if (modifiers & Qt::ShiftModifier) {
-        mBrushBehavior = Line;
-    } else {
-        mBrushBehavior = Free;
+    const bool lineMode = modifiers & Qt::ShiftModifier;
+
+    if (lineMode != (mBrushBehavior == Line ||
+                     mBrushBehavior == LineStartSet)) {
+        mBrushBehavior = lineMode ? Line : Free;
     }
 
     setBrushMode((modifiers & Qt::ControlModifier) ? PaintVertex : PaintTile);

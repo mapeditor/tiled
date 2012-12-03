@@ -76,7 +76,11 @@ public:
     /**
      * Set the brush mode.
      */
-    void setBrushMode(BrushMode mode) { mBrushMode = mode; setTilePositionMethod(mode == PaintTile ? OnTiles : BetweenTiles); }
+    void setBrushMode(BrushMode mode)
+    {
+        mBrushMode = mode;
+        setTilePositionMethod(mode == PaintTile ? OnTiles : BetweenTiles);
+    }
 
 signals:
     /**
