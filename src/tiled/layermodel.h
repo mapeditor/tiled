@@ -73,7 +73,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 
     /**
-     * Makes sure the items are checkable.
+     * Makes sure the items are checkable and names editable.
      */
     Qt::ItemFlags flags(const QModelIndex &index) const;
 

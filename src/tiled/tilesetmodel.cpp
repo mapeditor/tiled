@@ -65,12 +65,34 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole) {
+    if (role == Qt::DecorationRole) {
         if (Tile *tile = tileAt(index))
             return tile->image();
+    } else if (role == TerrainRole) {
+        if (Tile *tile = tileAt(index))
+            return tile->terrain();
     }
 
     return QVariant();
+}
+
+bool TilesetModel::setData(const QModelIndex &index, const QVariant &value,
+                           int role)
+{
+    if (role != TerrainRole)
+        return false;
+
+    bool ok;
+    const unsigned terrain = value.toUInt(&ok);
+    Q_ASSERT(ok);
+
+    Tile *tile = tileAt(index);
+    Q_ASSERT(tile);
+
+    // TODO: Undo support
+    tile->setTerrain(terrain);
+    emit dataChanged(index, index);
+    return true;
 }
 
 QVariant TilesetModel::headerData(int /* section */,
@@ -91,6 +113,18 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     return mTileset->tileAt(i);
 }
 
+QModelIndex TilesetModel::tileIndex(const Tile *tile) const
+{
+    Q_ASSERT(tile->tileset() == mTileset);
+
+    const int columnCount = TilesetModel::columnCount();
+    const int id = tile->id();
+    const int row = id / columnCount;
+    const int column = id % columnCount;
+
+    return index(row, column);
+}
+
 void TilesetModel::setTileset(Tileset *tileset)
 {
     if (mTileset == tileset)
@@ -105,4 +139,34 @@ void TilesetModel::tilesetChanged()
 {
     beginResetModel();
     endResetModel();
+}
+
+void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
+{
+    if (tiles.first()->tileset() != mTileset)
+        return;
+
+    QModelIndex topLeft;
+    QModelIndex bottomRight;
+
+    foreach (const Tile *tile, tiles) {
+        const QModelIndex i = tileIndex(tile);
+
+        if (!topLeft.isValid()) {
+            topLeft = i;
+            bottomRight = i;
+            continue;
+        }
+
+        if (i.row() < topLeft.row() || i.column() < topLeft.column())
+            topLeft = index(qMin(topLeft.row(), i.row()),
+                            qMin(topLeft.column(), i.column()));
+
+        if (i.row() > bottomRight.row() || i.column() > bottomRight.column())
+            bottomRight = index(qMax(bottomRight.row(), i.row()),
+                                qMax(bottomRight.column(), i.column()));
+    }
+
+    if (topLeft.isValid())
+        emit dataChanged(topLeft, bottomRight);
 }

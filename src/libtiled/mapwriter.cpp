@@ -213,19 +213,6 @@ static QString makeTerrainAttribute(const Tile *tile)
     return terrain;
 }
 
-static QString makeTransitionDistanceAttribute(const Terrain *t, int numTerains)
-{
-    QString distance;
-    for (int i = -1; i < numTerains; ++i ) {
-        if (i > -1)
-            distance += QLatin1String(",");
-        int d = t->transitionDistance(i);
-        if (d > -1)
-            distance += QString::number(d);
-    }
-    return distance;
-}
-
 void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                                     uint firstGid)
 {
@@ -298,11 +285,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         for (int i = 0; i < tileset->terrainCount(); ++i) {
             Terrain* t = tileset->terrain(i);
             w.writeStartElement(QLatin1String("terrain"));
+
             w.writeAttribute(QLatin1String("name"), t->name());
-//            w.writeAttribute(QLatin1String("color"), tt->color());
-            w.writeAttribute(QLatin1String("tile"), QString::number(t->paletteImageTile()));
-            if (t->hasTransitionDistances())
-                w.writeAttribute(QLatin1String("distances"), makeTransitionDistanceAttribute(t, tileset->terrainCount()));
+            w.writeAttribute(QLatin1String("tile"), QString::number(t->imageTileId()));
 
             writeProperties(w, t->properties());
 

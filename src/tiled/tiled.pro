@@ -43,6 +43,7 @@ SOURCES += aboutdialog.cpp \
     abstracttool.cpp \
     addremovelayer.cpp \
     addremovemapobject.cpp \
+    addremoveterrain.cpp \
     addremovetileset.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
@@ -57,6 +58,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changetileselection.cpp \
+    changetileterrain.cpp \
     clipboardmanager.cpp \
     colorbutton.cpp \
     commandbutton.cpp \
@@ -67,6 +69,7 @@ SOURCES += aboutdialog.cpp \
     createobjecttool.cpp \
     documentmanager.cpp \
     editpolygontool.cpp \
+    editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
     filesystemwatcher.cpp \
@@ -147,6 +150,7 @@ HEADERS += aboutdialog.h \
     abstracttool.h \
     addremovelayer.h \
     addremovemapobject.h \
+    addremoveterrain.h \
     addremovetileset.h \
     automapper.h \
     automapperwrapper.h \
@@ -161,6 +165,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changetileselection.h \
+    changetileterrain.h \
     clipboardmanager.h \
     colorbutton.h \
     commandbutton.h \
@@ -171,6 +176,7 @@ HEADERS += aboutdialog.h \
     createobjecttool.h \
     documentmanager.h \
     editpolygontool.h \
+    editterraindialog.h \
     eraser.h \
     erasetiles.h \
     filesystemwatcher.h \
@@ -262,7 +268,8 @@ FORMS += aboutdialog.ui \
     propertiesdialog.ui \
     resizedialog.ui \
     saveasimagedialog.ui\
-    newimagelayerdialog.ui
+    newimagelayerdialog.ui \
+    editterraindialog.ui
 
 RESOURCES += tiled.qrc
 macx {

@@ -202,7 +202,7 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
         const QString newName = value.toString();
         if (layer->name() != newName) {
             RenameLayer *rename = new RenameLayer(mMapDocument, layerIndex,
-                                                  value.toString());
+                                                  newName);
             mMapDocument->undoStack()->push(rename);
         }
         return true;

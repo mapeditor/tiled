@@ -27,19 +27,10 @@
 #include <QDockWidget>
 #include <QMap>
 
-class QAction;
-class QMenu;
-class QTabBar;
-class QToolBar;
-class QToolButton;
-class QSignalMapper;
-class QStackedWidget;
+class QModelIndex;
 
 namespace Tiled {
 
-class Tile;
-class TileLayer;
-class Tileset;
 class Terrain;
 
 namespace Internal {
@@ -48,8 +39,8 @@ class MapDocument;
 class TerrainView;
 
 /**
- * The dock widget that displays the tilesets. Also keeps track of the
- * currently selected tile.
+ * The dock widget that displays the terrains. Also keeps track of the
+ * currently selected terrain.
  */
 class TerrainDock : public QDockWidget
 {
@@ -79,51 +70,19 @@ signals:
      */
     void currentTerrainChanged(const Terrain *terrain);
 
-    /**
-     * Emitted when files are dropped at the tileset dock.
-     */
-    void tilesetsDropped(const QStringList &paths);
-
 protected:
     void changeEvent(QEvent *e);
 
-    void dragEnterEvent(QDragEnterEvent *);
-    void dropEvent(QDropEvent *);
-
 private slots:
-    void insertTilesetView(int index, Tileset *tileset);
-    void updateActions();
-    void updateCurrentTiles();
-    void tilesetChanged(Tileset *tileset);
-    void tilesetRemoved(Tileset *tileset);
-    void tilesetMoved(int from, int to);
-    void tilesetNameChanged(Tileset *tileset);
-
-    void removeTileset();
-    void removeTileset(int index);
-    void moveTileset(int from, int to);
-
-    void documentCloseRequested(int index);
-
-    void refreshTerrainMenu();
+    void currentRowChanged(const QModelIndex &index);
 
 private:
     void setCurrentTerrain(Terrain *terrain);
     void retranslateUi();
 
-    Tileset *currentTileset() const;
-    TerrainView *terrainViewAt(int index) const;
-
     MapDocument *mMapDocument;
-    QTabBar *mTabBar;
-    QStackedWidget *mViewStack;
+    TerrainView *mTerrainView;
     Terrain *mCurrentTerrain;
-
-    QMap<MapDocument *, QString> mCurrentTilesets;
-
-    QToolButton *mTerrainMenuButton;
-    QMenu *mTerrainMenu; //opens on click of mTerraintMenu
-    QSignalMapper *mTerrainMenuMapper; //needed due to dynamic content
 };
 
 } // namespace Internal

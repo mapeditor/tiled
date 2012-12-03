@@ -4,8 +4,8 @@
   <tileoffset x="0" y="16"/>
   <image source="isometric_grass_and_water.png" width="256" height="384"/>
   <terraintypes>
-   <terrain name="Grass" tile="0" distances=",0,1"/>
-   <terrain name="Water" tile="22" distances=",1,0"/>
+   <terrain name="Grass" tile="0"/>
+   <terrain name="Water" tile="22"/>
   </terraintypes>
   <tile id="0" terrain="0,0,0,0"/>
   <tile id="1" terrain="0,0,0,0"/>

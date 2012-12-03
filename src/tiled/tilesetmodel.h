@@ -36,7 +36,16 @@ namespace Internal {
  */
 class TilesetModel : public QAbstractListModel
 {
+    Q_OBJECT
+
 public:
+    /**
+     * The TerrainRole allows querying and changing the terrain info.
+     */
+    enum UserRoles {
+        TerrainRole = Qt::UserRole
+    };
+
     /**
      * Constructor.
      *
@@ -62,6 +71,11 @@ public:
                   int role = Qt::DisplayRole) const;
 
     /**
+     * Allows for changing the terrain info of a tile.
+     */
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
+
+    /**
      * Returns a small size hint, to prevent the headers from affecting the
      * minimum width and height of the sections.
      */
@@ -72,6 +86,12 @@ public:
      * Returns the tile at the given index.
      */
     Tile *tileAt(const QModelIndex &index) const;
+
+    /**
+     * Returns the index of the given \a tile. The tile is required to be from
+     * the tileset used by this model.
+     */
+    QModelIndex tileIndex(const Tile *tile) const;
 
     /**
      * Returns the tileset associated with this model.
@@ -87,6 +107,18 @@ public:
      * Performs a reset on the model.
      */
     void tilesetChanged();
+
+public slots:
+    /**
+     * Should be called when anything changes about the given \a tiles that
+     * affects their display in any views on this model.
+     *
+     * Tiles that are not from the tileset displayed by this model are simply
+     * ignored. All tiles in the list are assumed to be from the same tileset.
+     *
+     * \sa MapDocument::tileTerrainChanged
+     */
+    void tilesChanged(const QList<Tile*> &tiles);
 
 private:
     Tileset *mTileset;

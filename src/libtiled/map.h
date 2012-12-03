@@ -266,6 +266,16 @@ public:
     void replaceTileset(Tileset *oldTileset, Tileset *newTileset);
 
     /**
+     * Returns the number of tilesets of this map.
+     */
+    int tilesetCount() const { return mTilesets.size(); }
+
+    /**
+     * Returns the tileset at the given index.
+     */
+    Tileset *tilesetAt(int index) const { return mTilesets.at(index); }
+
+    /**
      * Returns the tilesets that the tiles on this map are using.
      */
     const QList<Tileset*> &tilesets() const { return mTilesets; }

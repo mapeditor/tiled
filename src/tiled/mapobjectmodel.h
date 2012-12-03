@@ -34,6 +34,11 @@ namespace Internal {
 
 class MapDocument;
 
+/**
+ * Provides a tree view on the objects present on a map. Also has member
+ * functions to modify objects that emit the appropriate signals to allow
+ * the UI to update.
+ */
 class MapObjectModel : public QAbstractItemModel
 {
     Q_OBJECT

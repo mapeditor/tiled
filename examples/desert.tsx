@@ -2,10 +2,10 @@
 <tileset name="Desert" tilewidth="32" tileheight="32" spacing="1" margin="1">
  <image source="tmw_desert_spacing.png" width="265" height="199"/>
  <terraintypes>
-  <terrain name="Desert" tile="29" distances=",0,1,1,1"/>
-  <terrain name="Brick" tile="9" distances=",1,0,2,2"/>
-  <terrain name="Cobblestone" tile="33" distances=",1,2,0,2"/>
-  <terrain name="Dirt" tile="14" distances=",1,2,2,0"/>
+  <terrain name="Desert" tile="29"/>
+  <terrain name="Brick" tile="9"/>
+  <terrain name="Cobblestone" tile="33"/>
+  <terrain name="Dirt" tile="14"/>
  </terraintypes>
  <tile id="0" terrain="0,0,0,1"/>
  <tile id="1" terrain="0,0,1,1"/>

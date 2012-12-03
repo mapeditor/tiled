@@ -104,9 +104,9 @@ QModelIndex MapObjectModel::index(int row, int column,
 
 QModelIndex MapObjectModel::parent(const QModelIndex &index) const
 {
-    MapObject *mapObject = toMapObject(index);
-    if (mapObject)
+    if (MapObject *mapObject = toMapObject(index))
         return this->index(mapObject->objectGroup());
+
     return QModelIndex();
 }
 

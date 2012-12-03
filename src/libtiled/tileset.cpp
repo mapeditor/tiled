@@ -114,13 +114,66 @@ int Tileset::columnCountForWidth(int width) const
     return (width - mMargin + mTileSpacing) / (mTileWidth + mTileSpacing);
 }
 
-void Tileset::addTerrain(Terrain *terrain)
+Terrain *Tileset::addTerrain(const QString &name, int imageTileId)
 {
-    mTerrainTypes.push_back(terrain);
+    Terrain *terrain = new Terrain(terrainCount(), this, name, imageTileId);
+    insertTerrain(terrainCount(), terrain);
+    return terrain;
+}
+
+void Tileset::insertTerrain(int index, Terrain *terrain)
+{
+    Q_ASSERT(terrain->tileset() == this);
+
+    mTerrainTypes.insert(index, terrain);
+
+    // Reassign terrain IDs
+    for (int terrainId = index; terrainId < mTerrainTypes.size(); ++terrainId)
+        mTerrainTypes.at(terrainId)->setId(terrainId);
+
+    // Adjust tile terrain references
+    foreach (Tile *tile, mTiles) {
+        for (int corner = 0; corner < 4; ++corner) {
+            const int terrainId = tile->cornerTerrainId(corner);
+            if (terrainId >= index)
+                tile->setCornerTerrain(corner, terrainId + 1);
+        }
+    }
+
+    mTerrainDistancesDirty = true;
+}
+
+Terrain *Tileset::takeTerrainAt(int index)
+{
+    Terrain *terrain = mTerrainTypes.takeAt(index);
+
+    // Reassign terrain IDs
+    for (int terrainId = index; terrainId < mTerrainTypes.size(); ++terrainId)
+        mTerrainTypes.at(terrainId)->setId(terrainId);
+
+    // Clear and adjust tile terrain references
+    foreach (Tile *tile, mTiles) {
+        for (int corner = 0; corner < 4; ++corner) {
+            const int terrainId = tile->cornerTerrainId(corner);
+            if (terrainId == index)
+                tile->setCornerTerrain(corner, 0xFF);
+            else if (terrainId > index)
+                tile->setCornerTerrain(corner, terrainId - 1);
+        }
+    }
+
+    mTerrainDistancesDirty = true;
+
+    return terrain;
 }
 
 int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1)
 {
+    if (mTerrainDistancesDirty) {
+        recalculateTerrainDistances();
+        mTerrainDistancesDirty = false;
+    }
+
     terrainType0 = terrainType0 == 255 ? -1 : terrainType0;
     terrainType1 = terrainType1 == 255 ? -1 : terrainType1;
 
@@ -128,11 +181,11 @@ int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1)
     if (terrainType0 == -1 && terrainType1 == -1)
         return 0;
     if (terrainType0 == -1)
-        return mTerrainTypes[terrainType1]->transitionDistance(terrainType0);
-    return mTerrainTypes[terrainType0]->transitionDistance(terrainType1);
+        return mTerrainTypes.at(terrainType1)->transitionDistance(terrainType0);
+    return mTerrainTypes.at(terrainType0)->transitionDistance(terrainType1);
 }
 
-void Tileset::calculateTerrainDistances()
+void Tileset::recalculateTerrainDistances()
 {
     // some fancy macros which can search for a value in each byte of a word simultaneously
     #define hasZeroByte(dword) (((dword) - 0x01010101UL) & ~(dword) & 0x80808080UL)
@@ -144,9 +197,6 @@ void Tileset::calculateTerrainDistances()
 
     for (int i = 0; i < terrainCount(); ++i) {
         Terrain *type = terrain(i);
-        if (type->hasTransitionDistances())
-            continue;
-
         QVector<int> distance(terrainCount() + 1, -1);
 
         // Check all tiles for transitions to other terrain types

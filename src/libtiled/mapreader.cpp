@@ -321,9 +321,6 @@ Tileset *MapReaderPrivate::readTileset()
     if (tileset && !mReadingExternalTileset)
         mGidMapper.insert(firstGid, tileset);
 
-    if (tileset)
-        tileset->calculateTerrainDistances();
-
     return tileset;
 }
 
@@ -443,20 +440,8 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
             const QXmlStreamAttributes atts = xml.attributes();
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toString().toInt();
-//            int tile = atts.value(QLatin1String("color")).toString().toInt();
 
-            Terrain *terrain = new Terrain(tileset->terrainCount(), tileset, name, tile);
-
-            QString distances = atts.value(QLatin1String("distances")).toString();
-            if (!distances.isEmpty()) {
-                QStringList distStrings = distances.split(QLatin1Char(','));
-                QVector<int> dist(distStrings.size(), -1);
-                for (int i = 0; i < distStrings.size(); ++i) {
-                    if (!distStrings[i].isEmpty())
-                        dist[i] = distStrings[i].toInt();
-                }
-                terrain->setTransitionDistances(dist);
-            }
+            Terrain *terrain = tileset->addTerrain(name, tile);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))
@@ -464,11 +449,9 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
                 else
                     readUnknownElement();
             }
-
-            tileset->addTerrain(terrain);
-        }
-        else
+        } else {
             readUnknownElement();
+        }
     }
 }
 
