@@ -458,9 +458,14 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
                 terrain->setTransitionDistances(dist);
             }
 
-            tileset->addTerrain(terrain);
+            while (xml.readNextStartElement()) {
+                if (xml.name() == QLatin1String("properties"))
+                    terrain->mergeProperties(readProperties());
+                else
+                    readUnknownElement();
+            }
 
-            xml.skipCurrentElement();
+            tileset->addTerrain(terrain);
         }
         else
             readUnknownElement();
