@@ -28,7 +28,7 @@
         <string>Undo</string>
        </property>
        <property name="icon">
-        <iconset theme="edit-undo" resource="tiled.qrc">
+        <iconset resource="tiled.qrc">
          <normaloff>:/images/24x24/edit-undo.png</normaloff>:/images/24x24/edit-undo.png</iconset>
        </property>
        <property name="autoRaise">
@@ -48,7 +48,7 @@
         <string>Redo</string>
        </property>
        <property name="icon">
-        <iconset theme="edit-redo" resource="tiled.qrc">
+        <iconset resource="tiled.qrc">
          <normaloff>:/images/24x24/edit-redo.png</normaloff>:/images/24x24/edit-redo.png</iconset>
        </property>
        <property name="autoRaise">

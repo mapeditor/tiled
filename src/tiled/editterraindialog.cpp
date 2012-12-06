@@ -28,11 +28,10 @@
 #include "terrainmodel.h"
 #include "tile.h"
 #include "tileset.h"
+#include "utils.h"
 #include "zoomable.h"
 
 #include <QUndoStack>
-
-#include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -82,6 +81,9 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     , mTileset(tileset)
 {
     mUi->setupUi(this);
+
+    Utils::setThemeIcon(mUi->redo, "edit-redo");
+    Utils::setThemeIcon(mUi->undo, "edit-undo");
 
     Zoomable *zoomable = new Zoomable(this);
     zoomable->connectToComboBox(mUi->zoomComboBox);
