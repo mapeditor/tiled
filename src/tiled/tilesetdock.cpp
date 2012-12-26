@@ -434,7 +434,15 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
 {
     // Update the affected tileset model, if it exists
     const int index = mTilesets.indexOf(tileset);
-    Q_ASSERT(index != -1);
+
+    /*
+     * The reference counts and the actual tileset lists are not guaranteed
+     * to be completely synchronized.  If the TilesetManager tells us a file
+     * has changed but the tileset using that file no longer exists in the
+     * dock, just ignore it.
+     */
+    if (index < 0)
+        return;
 
     if (TilesetModel *model = tilesetViewAt(index)->tilesetModel())
         model->tilesetChanged();
