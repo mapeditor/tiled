@@ -434,7 +434,8 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
 {
     // Update the affected tileset model, if it exists
     const int index = mTilesets.indexOf(tileset);
-    Q_ASSERT(index != -1);
+    if (index < 0)
+        return;
 
     if (TilesetModel *model = tilesetViewAt(index)->tilesetModel())
         model->tilesetChanged();
