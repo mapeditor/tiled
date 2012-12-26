@@ -461,6 +461,8 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
     }
     if (mCurrentTile && mCurrentTile->tileset() == tileset)
         setCurrentTile(0);
+
+    updateActions();
 }
 
 void TilesetDock::tilesetMoved(int from, int to)
