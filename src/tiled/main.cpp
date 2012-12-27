@@ -86,8 +86,7 @@ CommandLineHandler::CommandLineHandler()
     option<&CommandLineHandler::justQuit>(
                 QChar(),
                 QLatin1String("--quit"),
-                QLatin1String("Only check validity of arguments, "
-                              "don't actually load any files"));
+                QLatin1String("Only check validity of arguments"));
 
     option<&CommandLineHandler::setDisableOpenGL>(
                 QChar(),
@@ -99,7 +98,7 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning() << "Tiled (Qt) Map Editor"
+        qWarning() << qPrintable(QApplication::applicationName())
                    << qPrintable(QApplication::applicationVersion());
         quit = true;
     }

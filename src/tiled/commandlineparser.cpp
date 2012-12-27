@@ -119,7 +119,8 @@ bool CommandLineParser::parse(const QStringList &arguments)
 void CommandLineParser::showHelp()
 {
     // TODO: Make translatable
-    qWarning().nospace() << "Usage: " << qPrintable(mCurrentProgramName)
+    qWarning().nospace() << "Usage:\n"
+                         << "  " << qPrintable(mCurrentProgramName)
                          << " [options] [files...]\n\n"
                          << "Options:";
 
@@ -138,6 +139,8 @@ void CommandLineParser::showHelp()
 
         }
     }
+
+    qWarning("");
 }
 
 bool CommandLineParser::handleLongOption(const QString &longName)
