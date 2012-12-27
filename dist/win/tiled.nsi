@@ -175,6 +175,7 @@ File /oname=LICENSE.GPL.txt ${ROOT_DIR}\LICENSE.GPL
 File ${BUILD_DIR}\${P_NORM}.dll
 File ${BUILD_DIR}\${P_NORM}.exe
 File ${BUILD_DIR}\tmxviewer.exe
+File ${BUILD_DIR}\tmxrasterizer.exe
 File ${BUILD_DIR}\automappingconverter.exe
 File ${MINGW_DIR}\bin\mingwm10.dll
 File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
@@ -251,6 +252,7 @@ Delete $INSTDIR\LICENSE.LGPL.txt
 Delete $INSTDIR\tiled.dll
 Delete $INSTDIR\tiled.exe
 Delete $INSTDIR\tmxviewer.exe
+Delete $INSTDIR\tmxrasterizer.exe
 Delete $INSTDIR\automappingconverter.exe
 Delete $INSTDIR\mingwm10.dll
 Delete $INSTDIR\libgcc_s_dw2-1.dll

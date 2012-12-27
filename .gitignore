@@ -1,6 +1,7 @@
 build
 bin/automappingconverter
 bin/tiled
+bin/tmxrasterizer
 bin/tmxviewer
 lib/tiled/plugins/*
 lib/*.so*
@@ -16,6 +17,7 @@ docs/html
 
 # Build artifacts on Windows
 tiled.exe
+tmxrasterizer.exe
 tmxviewer.exe
 automappingconverter.exe
 *.dll
