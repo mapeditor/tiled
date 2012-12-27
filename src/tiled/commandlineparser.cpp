@@ -140,7 +140,7 @@ void CommandLineParser::showHelp()
         }
     }
 
-    qWarning("");
+    qWarning();
 }
 
 bool CommandLineParser::handleLongOption(const QString &longName)
