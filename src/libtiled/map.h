@@ -215,7 +215,7 @@ public:
      * searched.
      */
     int indexOfLayer(const QString &layerName,
-                     uint layerTypes = Layer::AnyLayerType) const;
+                     unsigned layerTypes = Layer::AnyLayerType) const;
 
     /**
      * Adds a layer to this map, inserting it at the given index.

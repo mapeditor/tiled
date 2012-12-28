@@ -67,6 +67,7 @@ private:
     void writeTileset(LuaTableWriter &, const Tiled::Tileset *, uint firstGid);
     void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *);
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *);
+    void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);
     void writeMapObject(LuaTableWriter &, const Tiled::MapObject *);
 
     QString mError;

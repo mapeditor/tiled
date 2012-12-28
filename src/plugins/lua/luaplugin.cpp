@@ -22,6 +22,7 @@
 
 #include "luatablewriter.h"
 
+#include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -104,11 +105,18 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeEndTable();
 
     writer.writeStartTable("layers");
-    foreach (Layer *layer, map->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer())
-            writeTileLayer(writer, tileLayer);
-        else if (ObjectGroup *objectGroup = layer->asObjectGroup())
-            writeObjectGroup(writer, objectGroup);
+    foreach (const Layer *layer, map->layers()) {
+        switch (layer->type()) {
+        case Layer::TileLayerType:
+            writeTileLayer(writer, static_cast<const TileLayer*>(layer));
+            break;
+        case Layer::ObjectGroupType:
+            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
+            break;
+        case Layer::ImageLayerType:
+            writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
+            break;
+        }
     }
     writer.writeEndTable();
 
@@ -155,7 +163,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeKeyAndValue("imageheight", tileset->imageHeight());
 
     if (tileset->transparentColor().isValid()) {
-        writer.writeKeyAndValue("transparentColor",
+        writer.writeKeyAndValue("transparentcolor",
                                 tileset->transparentColor().name());
     }
 
@@ -212,6 +220,7 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
                                  const ObjectGroup *objectGroup)
 {
     writer.writeStartTable();
+
     writer.writeKeyAndValue("type", "objectgroup");
     writer.writeKeyAndValue("name", objectGroup->name());
     writer.writeKeyAndValue("visible", objectGroup->isVisible());
@@ -222,6 +231,27 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     foreach (MapObject *mapObject, objectGroup->objects())
         writeMapObject(writer, mapObject);
     writer.writeEndTable();
+
+    writer.writeEndTable();
+}
+
+void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
+                                const ImageLayer *imageLayer)
+{
+    writer.writeStartTable();
+
+    writer.writeKeyAndValue("type", "imagelayer");
+    writer.writeKeyAndValue("name", imageLayer->name());
+    writer.writeKeyAndValue("visible", imageLayer->isVisible());
+    writer.writeKeyAndValue("opacity", imageLayer->opacity());
+
+    const QString rel = mMapDir.relativeFilePath(imageLayer->imageSource());
+    writer.writeKeyAndValue("image", rel);
+
+    if (imageLayer->transparentColor().isValid()) {
+        writer.writeKeyAndValue("transparentcolor",
+                                imageLayer->transparentColor().name());
+    }
 
     writer.writeEndTable();
 }

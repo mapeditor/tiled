@@ -21,6 +21,7 @@
 
 #include "varianttomapconverter.h"
 
+#include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -158,6 +159,8 @@ Layer *VariantToMapConverter::toLayer(const QVariant &variant)
         layer = toTileLayer(variantMap);
     else if (variantMap["type"] == "objectgroup")
         layer = toObjectGroup(variantMap);
+    else if (variantMap["type"] == "imagelayer")
+        layer = toImageLayer(variantMap);
 
     if (layer)
         layer->setProperties(toProperties(variantMap["properties"]));
@@ -308,6 +311,38 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
     }
 
     return objectGroup;
+}
+
+ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
+{
+    ImageLayer *imageLayer = new ImageLayer(variantMap["name"].toString(),
+                                            variantMap["x"].toInt(),
+                                            variantMap["y"].toInt(),
+                                            variantMap["width"].toInt(),
+                                            variantMap["height"].toInt());
+
+    const qreal opacity = variantMap["opacity"].toReal();
+    const bool visible = variantMap["visible"].toBool();
+
+    imageLayer->setOpacity(opacity);
+    imageLayer->setVisible(visible);
+
+    const QString trans = variantMap["transparentcolor"].toString();
+    if (!trans.isEmpty())
+#if QT_VERSION >= 0x040700
+        if (QColor::isValidColor(trans))
+#endif
+            imageLayer->setTransparentColor(QColor(trans));
+
+    const QString imageSource = variantMap["image"].toString();
+    if (!imageSource.isEmpty()) {
+        if (!imageLayer->loadFromImage(QImage(imageSource), imageSource)) {
+            // TODO: This error is currently ignored
+            mError = tr("Error loading image:\n'%1'").arg(imageSource);
+        }
+    }
+
+    return imageLayer;
 }
 
 QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const

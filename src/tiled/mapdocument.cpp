@@ -269,8 +269,6 @@ void MapDocument::addLayer(Layer::Type layerType)
         name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
         layer = new ImageLayer(name, 0, 0, mMap->width(), mMap->height());
         break;
-    case Layer::AnyLayerType:
-        break; // Q_ASSERT below will fail.
     }
     Q_ASSERT(layer);
 

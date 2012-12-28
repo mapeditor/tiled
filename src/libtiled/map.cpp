@@ -117,7 +117,7 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName, uint layertypes) const
+int Map::indexOfLayer(const QString &layerName, unsigned layertypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName

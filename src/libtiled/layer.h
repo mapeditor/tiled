@@ -55,9 +55,10 @@ public:
     enum Type {
         TileLayerType   = 0x01,
         ObjectGroupType = 0x02,
-        ImageLayerType  = 0x04,
-        AnyLayerType    = 0xFF
+        ImageLayerType  = 0x04
     };
+
+    enum { AnyLayerType = 0xFF };
 
     /**
      * Constructor.

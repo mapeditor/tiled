@@ -21,6 +21,7 @@
 
 #include "maptovariantconverter.h"
 
+#include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
@@ -59,12 +60,17 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     QVariantList layerVariants;
     foreach (const Layer *layer, map->layers()) {
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ObjectGroup *objectGroup = dynamic_cast<const ObjectGroup *>(layer);
-        if (tileLayer != 0)
-            layerVariants << toVariant(tileLayer);
-        else if (objectGroup != 0)
-            layerVariants << toVariant(objectGroup);
+        switch (layer->type()) {
+        case Layer::TileLayerType:
+            layerVariants << toVariant(static_cast<const TileLayer*>(layer));
+            break;
+        case Layer::ObjectGroupType:
+            layerVariants << toVariant(static_cast<const ObjectGroup*>(layer));
+            break;
+        case Layer::ImageLayerType:
+            layerVariants << toVariant(static_cast<const ImageLayer*>(layer));
+            break;
+        }
     }
     mapVariant["layers"] = layerVariants;
 
@@ -242,6 +248,23 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
 
     objectGroupVariant["objects"] = objectVariants;
     return objectGroupVariant;
+}
+
+QVariant MapToVariantConverter::toVariant(const ImageLayer *imageLayer)
+{
+    QVariantMap imageLayerVariant;
+    imageLayerVariant["type"] = "imagelayer";
+
+    addLayerAttributes(imageLayerVariant, imageLayer);
+
+    const QString rel = mMapDir.relativeFilePath(imageLayer->imageSource());
+    imageLayerVariant["image"] = rel;
+
+    const QColor transColor = imageLayer->transparentColor();
+    if (transColor.isValid())
+        imageLayerVariant["transparentcolor"] = transColor.name();
+
+    return imageLayerVariant;
 }
 
 void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
