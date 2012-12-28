@@ -191,7 +191,6 @@ void Tileset::recalculateTerrainDistances()
     #define hasZeroByte(dword) (((dword) - 0x01010101UL) & ~(dword) & 0x80808080UL)
     #define hasByteEqualTo(dword, value) (hasZeroByte((dword) ^ (~0UL/255 * (value))))
 
-    // Calculate terrain distances if they are not already present...
     // Terrain distances are the number of transitions required before one terrain may meet another
     // Terrains that have no transition path have a distance of -1
 

@@ -1,6 +1,6 @@
 /*
  * terraindock.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  * Copyright 2012, Stefan Beller <stefanbeller@googlemail.com>
  * Copyright 2012, Manu Evans <turkeyman@gmail.com>
@@ -29,18 +29,59 @@
 
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QSortFilterProxyModel>
 #include <QTreeView>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+namespace Tiled {
+namespace Internal {
+
+/**
+ * Filter model that filters out tilesets that have no terrains from the
+ * TerrainModel.
+ */
+class TerrainFilterModel : public QSortFilterProxyModel
+{
+public:
+    TerrainFilterModel(QObject *parent = 0)
+        : QSortFilterProxyModel(parent)
+    {
+        setDynamicSortFilter(true);
+    }
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    {
+        if (sourceParent.isValid())
+            return true;
+
+        const QAbstractItemModel *model = sourceModel();
+        const QModelIndex index = model->index(sourceRow, 0, sourceParent);
+        return index.isValid() && model->hasChildren(index);
+    }
+};
+
+} // namespace Internal
+} // namespace Tiled
+
 TerrainDock::TerrainDock(QWidget *parent):
     QDockWidget(parent),
     mMapDocument(0),
     mTerrainView(new TerrainView),
-    mCurrentTerrain(0)
+    mCurrentTerrain(0),
+    mProxyModel(new TerrainFilterModel(this))
 {
     setObjectName(QLatin1String("TerrainDock"));
+
+    mTerrainView->setModel(mProxyModel);
+    connect(mTerrainView->selectionModel(),
+            SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+            SLOT(currentRowChanged(QModelIndex)));
+
+    connect(mProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+            this, SLOT(expandRows(QModelIndex,int,int)));
 
     QWidget *w = new QWidget(this);
 
@@ -68,19 +109,13 @@ void TerrainDock::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
-    QItemSelectionModel *oldSelectionModel = mTerrainView->selectionModel();
     if (mMapDocument) {
         mTerrainView->setMapDocument(mMapDocument);
-        mTerrainView->setModel(mMapDocument->terrainModel());
+        mProxyModel->setSourceModel(mMapDocument->terrainModel());
         mTerrainView->expandAll();
-
-        connect(mTerrainView->selectionModel(),
-                SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-                SLOT(currentRowChanged(QModelIndex)));
     } else {
-        mTerrainView->setModel(0);
+        mProxyModel->setSourceModel(0);
     }
-    delete oldSelectionModel;
 }
 
 void TerrainDock::changeEvent(QEvent *e)
@@ -97,8 +132,19 @@ void TerrainDock::changeEvent(QEvent *e)
 
 void TerrainDock::currentRowChanged(const QModelIndex &index)
 {
-    if (Terrain *terrain = mMapDocument->terrainModel()->terrainAt(index))
+    if (Terrain *terrain = mTerrainView->terrainAt(index))
         setCurrentTerrain(terrain);
+}
+
+void TerrainDock::expandRows(const QModelIndex &parent, int first, int last)
+{
+    // If it has a valid parent, then it's not a tileset
+    if (parent.isValid())
+        return;
+
+    // Make sure any newly appearing tileset rows are expanded
+    for (int row = first; row <= last; ++row)
+        mTerrainView->expand(mProxyModel->index(row, 0, parent));
 }
 
 void TerrainDock::setCurrentTerrain(Terrain *terrain)

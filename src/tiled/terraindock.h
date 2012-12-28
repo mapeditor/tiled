@@ -1,6 +1,6 @@
 /*
  * terraindock.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  * Copyright 2012, Stefan Beller <stefanbeller@googlemail.com>
  * Copyright 2012, Manu Evans <turkeyman@gmail.com>
@@ -36,6 +36,7 @@ class Terrain;
 namespace Internal {
 
 class MapDocument;
+class TerrainFilterModel;
 class TerrainView;
 
 /**
@@ -75,6 +76,7 @@ protected:
 
 private slots:
     void currentRowChanged(const QModelIndex &index);
+    void expandRows(const QModelIndex &parent, int first, int last);
 
 private:
     void setCurrentTerrain(Terrain *terrain);
@@ -83,6 +85,7 @@ private:
     MapDocument *mMapDocument;
     TerrainView *mTerrainView;
     Terrain *mCurrentTerrain;
+    TerrainFilterModel *mProxyModel;
 };
 
 } // namespace Internal

@@ -43,6 +43,10 @@ class TerrainModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
+    enum UserRoles {
+        TerrainRole = Qt::UserRole
+    };
+
     /**
      * Constructor.
      *
@@ -86,7 +90,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 
     /**
-     * Makes terrain names are editable.
+     * Makes terrain names editable.
      */
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
@@ -98,12 +102,12 @@ public:
                         int role = Qt::DisplayRole) const;
 
     /**
-     * Returns the tileset at the given index, or 0 if there is no tileset.
+     * Returns the tileset at the given \a index, or 0 if there is no tileset.
      */
     Tileset *tilesetAt(const QModelIndex &index) const;
 
     /**
-     * Returns the terrain at the given index, or 0 if there is no terrain.
+     * Returns the terrain at the given \a index, or 0 if there is no terrain.
      */
     Terrain *terrainAt(const QModelIndex &index) const;
 

@@ -33,6 +33,7 @@
 #include "tileset.h"
 
 #include <QColor>
+#include <QMetaType>
 #include <QString>
 #include <QVector>
 
@@ -119,5 +120,7 @@ private:
 };
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Terrain*)
 
 #endif // TERRAIN_H

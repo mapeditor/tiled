@@ -33,7 +33,8 @@ class MapDocument;
 class Zoomable;
 
 /**
- * The terrain view. May only be used with the TerrainModel.
+ * The terrain view. Is expected to be used with the TerrainModel, but will
+ * also work when it is wrapped by a proxy model.
  */
 class TerrainView : public QTreeView
 {
@@ -47,10 +48,9 @@ public:
     Zoomable *zoomable() const { return mZoomable; }
 
     /**
-     * Convenience method that returns the model as a TerrainModel.
+     * Convenience method to get the terrain at a given \a index.
      */
-    TerrainModel *terrainModel() const
-    { return static_cast<TerrainModel *>(model()); }
+    Terrain *terrainAt(const QModelIndex &index) const;
 
 protected:
     void wheelEvent(QWheelEvent *event);

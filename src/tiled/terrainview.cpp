@@ -63,6 +63,12 @@ void TerrainView::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 }
 
+Terrain *TerrainView::terrainAt(const QModelIndex &index) const
+{
+    const QVariant data = model()->data(index, TerrainModel::TerrainRole);
+    return data.value<Terrain*>();
+}
+
 /**
  * Override to support zooming in and out using the mouse wheel.
  */
@@ -83,9 +89,7 @@ void TerrainView::wheelEvent(QWheelEvent *event)
  */
 void TerrainView::contextMenuEvent(QContextMenuEvent *event)
 {
-    const QModelIndex index = indexAt(event->pos());
-    const TerrainModel *m = terrainModel();
-    Terrain *terrain = m->terrainAt(index);
+    Terrain *terrain = terrainAt(indexAt(event->pos()));
     if (!terrain)
         return;
 
@@ -108,8 +112,7 @@ void TerrainView::contextMenuEvent(QContextMenuEvent *event)
 
 void TerrainView::editTerrainProperties()
 {
-    const TerrainModel *m = terrainModel();
-    Terrain *terrain = m->terrainAt(selectionModel()->currentIndex());
+    Terrain *terrain = terrainAt(selectionModel()->currentIndex());
     if (!terrain)
         return;
 

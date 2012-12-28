@@ -133,6 +133,9 @@ int TerrainModel::columnCount(const QModelIndex &parent) const
 QVariant TerrainModel::data(const QModelIndex &index, int role) const
 {
     if (Terrain *terrain = terrainAt(index)) {
+        if (role == TerrainRole)
+            return QVariant::fromValue(terrain);
+
         if (index.column() == 0) {
             if (role == Qt::DecorationRole) {
                 if (Tile *imageTile = terrain->imageTile())
@@ -196,6 +199,8 @@ Tileset *TerrainModel::tilesetAt(const QModelIndex &index) const
         return 0;
     if (index.parent().isValid()) // tilesets don't have parents
         return 0;
+    if (index.row() >= mMapDocument->map()->tilesetCount())
+        return 0;
 
     return mMapDocument->map()->tilesetAt(index.row());
 }
@@ -223,6 +228,7 @@ void TerrainModel::insertTerrain(Tileset *tileset, int index, Terrain *terrain)
     tileset->insertTerrain(index, terrain);
     endInsertRows();
     emit terrainAdded(tileset, index);
+    emit dataChanged(tilesetIndex, tilesetIndex); // for TerrainFilterModel
 }
 
 /**
@@ -241,6 +247,7 @@ Terrain *TerrainModel::takeTerrainAt(Tileset *tileset, int index)
     Terrain *terrain = tileset->takeTerrainAt(index);
     endRemoveRows();
     emit terrainRemoved(tileset, index);
+    emit dataChanged(tilesetIndex, tilesetIndex); // for TerrainFilterModel
 
     return terrain;
 }
