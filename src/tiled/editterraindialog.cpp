@@ -81,6 +81,7 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     , mTileset(tileset)
 {
     mUi->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     Utils::setThemeIcon(mUi->redo, "edit-redo");
     Utils::setThemeIcon(mUi->undo, "edit-undo");
