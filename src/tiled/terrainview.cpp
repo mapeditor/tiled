@@ -54,6 +54,7 @@ TerrainView::TerrainView(QWidget *parent)
     setRootIsDecorated(false);
     setIndentation(0);
     setItemsExpandable(false);
+    setHeaderHidden(true);
 
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
 }

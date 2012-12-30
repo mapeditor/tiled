@@ -182,7 +182,7 @@ void EditTerrainDialog::addTerrainType()
     mMapDocument->undoStack()->push(new AddTerrain(mMapDocument, terrain));
 
     // Select the newly added terrain and edit its name
-    const QModelIndex index = mTerrainModel->index(terrain, 1);
+    const QModelIndex index = mTerrainModel->index(terrain);
     QItemSelectionModel *selectionModel = mUi->terrainList->selectionModel();
     selectionModel->setCurrentIndex(index,
                                     QItemSelectionModel::ClearAndSelect |
