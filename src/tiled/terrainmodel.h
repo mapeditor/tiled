@@ -118,6 +118,9 @@ signals:
      */
     void terrainChanged(Tileset *tileset, int index);
 
+private slots:
+    void tilesetNameChanged(Tileset *tileset);
+
 private:
     void emitTerrainChanged(Terrain *terrain);
 

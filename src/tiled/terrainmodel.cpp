@@ -75,6 +75,8 @@ TerrainModel::TerrainModel(MapDocument *mapDocument,
     QAbstractItemModel(parent),
     mMapDocument(mapDocument)
 {
+    connect(mapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
+            this, SLOT(tilesetNameChanged(Tileset*)));
 }
 
 TerrainModel::~TerrainModel()
@@ -273,4 +275,10 @@ void TerrainModel::emitTerrainChanged(Terrain *terrain)
     const QModelIndex index = TerrainModel::index(terrain);
     emit dataChanged(index, index);
     emit terrainChanged(terrain->tileset(), index.row());
+}
+
+void TerrainModel::tilesetNameChanged(Tileset *tileset)
+{
+    const QModelIndex index = TerrainModel::index(tileset);
+    emit dataChanged(index, index);
 }
