@@ -302,6 +302,9 @@ void LayerModel::renameLayer(int layerIndex, const QString &name)
 
 void LayerModel::toggleOtherLayers(int layerIndex)
 {
+    if (mMap->layerCount() <= 1) // No other layers
+        return;
+
     bool visibility = true;
     for (int i = 0; i < mMap->layerCount(); i++) {
         if (i == layerIndex)
@@ -314,14 +317,19 @@ void LayerModel::toggleOtherLayers(int layerIndex)
         }
     }
 
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    if (visibility)
+        undoStack->beginMacro(tr("Show Other Layers"));
+    else
+        undoStack->beginMacro(tr("Hide Other Layers"));
+
     for (int i = 0; i < mMap->layerCount(); i++) {
         if (i == layerIndex)
             continue;
 
-        const QModelIndex modelIndex = index(layerIndexToRow(i), 0);
-        Layer *layer = mMap->layerAt(i);
-        layer->setVisible(visibility);
-        emit dataChanged(modelIndex, modelIndex);
-        emit layerChanged(i);
+        if (visibility != mMap->layerAt(i)->isVisible())
+            undoStack->push(new SetLayerVisible(mMapDocument, i, visibility));
     }
+
+    undoStack->endMacro();
 }
