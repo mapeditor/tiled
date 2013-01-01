@@ -24,6 +24,7 @@
 #include <QDialog>
 
 class QModelIndex;
+class QShortcut;
 
 namespace Ui {
 class EditTerrainDialog;
@@ -65,6 +66,8 @@ private:
     int mInitialUndoStackIndex;
     Tileset *mTileset;
     TerrainModel *mTerrainModel;
+    QShortcut *mUndoShortcut;
+    QShortcut *mRedoShortcut;
 };
 
 } // namespace Internal

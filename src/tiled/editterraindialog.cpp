@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "zoomable.h"
 
+#include <QShortcut>
 #include <QUndoStack>
 
 using namespace Tiled;
@@ -141,6 +142,11 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
             mUi->redo, SLOT(setEnabled(bool)));
     connect(mUi->undo, SIGNAL(clicked()), undoStack, SLOT(undo()));
     connect(mUi->redo, SIGNAL(clicked()), undoStack, SLOT(redo()));
+
+    mUndoShortcut = new QShortcut(QKeySequence::Undo, this);
+    mRedoShortcut = new QShortcut(QKeySequence::Redo, this);
+    connect(mUndoShortcut, SIGNAL(activated()), undoStack, SLOT(undo()));
+    connect(mRedoShortcut, SIGNAL(activated()), undoStack, SLOT(redo()));
 
     updateUndoButton();
 }
@@ -256,8 +262,11 @@ void EditTerrainDialog::setTerrainImage(Tile *tile)
 void EditTerrainDialog::updateUndoButton()
 {
     QUndoStack *undoStack = mMapDocument->undoStack();
-    const int index = undoStack->index();
+    const bool canUndo = undoStack->index() > mInitialUndoStackIndex;
+    const bool canRedo = undoStack->canRedo();
 
-    mUi->undo->setEnabled(index > mInitialUndoStackIndex);
-    mUi->redo->setEnabled(undoStack->canRedo());
+    mUi->undo->setEnabled(canUndo);
+    mUi->redo->setEnabled(canRedo);
+    mUndoShortcut->setEnabled(canUndo);
+    mRedoShortcut->setEnabled(canRedo);
 }
