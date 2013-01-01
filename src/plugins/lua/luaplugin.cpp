@@ -96,7 +96,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeStartTable("tilesets");
 
     mGidMapper.clear();
-    uint firstGid = 1;
+    unsigned firstGid = 1;
     foreach (Tileset *tileset, map->tilesets()) {
         writeTileset(writer, tileset, firstGid);
         mGidMapper.insert(firstGid, tileset);
@@ -137,7 +137,7 @@ void LuaPlugin::writeProperties(LuaTableWriter &writer,
 }
 
 void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
-                             uint firstGid)
+                             unsigned firstGid)
 {
     writer.writeStartTable();
 

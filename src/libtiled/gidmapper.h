@@ -55,7 +55,7 @@ public:
     /**
      * Insert the given \a tileset with \a firstGid as its first global ID.
      */
-    void insert(uint firstGid, Tileset *tileset)
+    void insert(unsigned firstGid, Tileset *tileset)
     { mFirstGidToTileset.insert(firstGid, tileset); }
 
     /**
@@ -72,13 +72,13 @@ public:
      * Returns the cell data matched by the given \a gid. The \a ok parameter
      * indicates whether an error occurred.
      */
-    Cell gidToCell(uint gid, bool &ok) const;
+    Cell gidToCell(unsigned gid, bool &ok) const;
 
     /**
      * Returns the global tile ID for the given \a cell. Returns 0 when the
      * cell is empty or when its tileset isn't known.
      */
-    uint cellToGid(const Cell &cell) const;
+    unsigned cellToGid(const Cell &cell) const;
 
     /**
      * This sets the original tileset width. In case the image size has
@@ -88,7 +88,7 @@ public:
     void setTilesetWidth(const Tileset *tileset, int width);
 
 private:
-    QMap<uint, Tileset*> mFirstGidToTileset;
+    QMap<unsigned, Tileset*> mFirstGidToTileset;
     QMap<const Tileset*, int> mTilesetColumnCounts;
 };
 

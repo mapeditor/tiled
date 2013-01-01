@@ -50,7 +50,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     QVariantList tilesetVariants;
 
-    uint firstGid = 1;
+    unsigned firstGid = 1;
     foreach (Tileset *tileset, map->tilesets()) {
         tilesetVariants << toVariant(tileset, firstGid);
         mGidMapper.insert(firstGid, tileset);

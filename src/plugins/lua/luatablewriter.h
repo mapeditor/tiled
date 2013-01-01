@@ -45,14 +45,14 @@ public:
     void writeEndTable();
 
     void writeValue(int value);
-    void writeValue(uint value);
+    void writeValue(unsigned value);
     void writeValue(const QByteArray &value);
     void writeValue(const QString &value);
 
     void writeUnquotedValue(const QByteArray &value);
 
     void writeKeyAndValue(const QByteArray &key, int value);
-    void writeKeyAndValue(const QByteArray &key, uint value);
+    void writeKeyAndValue(const QByteArray &key, unsigned value);
     void writeKeyAndValue(const QByteArray &key, double value);
     void writeKeyAndValue(const QByteArray &key, bool value);
     void writeKeyAndValue(const QByteArray &key, const char *value);
@@ -75,7 +75,7 @@ private:
     void writeIndent();
 
     void writeNewline();
-    void write(const char *bytes, uint length);
+    void write(const char *bytes, unsigned length);
     void write(const char *bytes);
     void write(const QByteArray &bytes);
     void write(char c);
@@ -92,7 +92,7 @@ private:
 inline void LuaTableWriter::writeValue(int value)
 { writeUnquotedValue(QByteArray::number(value)); }
 
-inline void LuaTableWriter::writeValue(uint value)
+inline void LuaTableWriter::writeValue(unsigned value)
 { writeUnquotedValue(QByteArray::number(value)); }
 
 inline void LuaTableWriter::writeValue(const QString &value)
@@ -101,7 +101,7 @@ inline void LuaTableWriter::writeValue(const QString &value)
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, int value)
 { writeKeyAndUnquotedValue(key, QByteArray::number(value)); }
 
-inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, uint value)
+inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, unsigned value)
 { writeKeyAndUnquotedValue(key, QByteArray::number(value)); }
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, double value)

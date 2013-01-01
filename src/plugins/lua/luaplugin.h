@@ -64,7 +64,7 @@ public:
 private:
     void writeMap(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
-    void writeTileset(LuaTableWriter &, const Tiled::Tileset *, uint firstGid);
+    void writeTileset(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid);
     void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *);
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *);
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);

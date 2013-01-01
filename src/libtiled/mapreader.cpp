@@ -98,7 +98,7 @@ private:
      * @return the cell data associated with the given global tile ID, or an
      *         empty cell if not found
      */
-    Cell cellForGid(uint gid);
+    Cell cellForGid(unsigned gid);
 
     ImageLayer *readImageLayer();
     void readImageLayerImage(ImageLayer *imageLayer);
@@ -256,7 +256,7 @@ Tileset *MapReaderPrivate::readTileset()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString source = atts.value(QLatin1String("source")).toString();
-    const uint firstGid =
+    const unsigned firstGid =
             atts.value(QLatin1String("firstgid")).toString().toUInt();
 
     Tileset *tileset = 0;
@@ -536,7 +536,7 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
                 }
 
                 const QXmlStreamAttributes atts = xml.attributes();
-                uint gid = atts.value(QLatin1String("gid")).toString().toUInt();
+                unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
                 tileLayer->setCell(x, y, cellForGid(gid));
 
                 x++;
@@ -599,10 +599,10 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer *tileLayer,
     int y = 0;
 
     for (int i = 0; i < size - 3; i += 4) {
-        const uint gid = data[i] |
-                         data[i + 1] << 8 |
-                         data[i + 2] << 16 |
-                         data[i + 3] << 24;
+        const unsigned gid = data[i] |
+                             data[i + 1] << 8 |
+                             data[i + 2] << 16 |
+                             data[i + 3] << 24;
 
         tileLayer->setCell(x, y, cellForGid(gid));
 
@@ -628,7 +628,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer *tileLayer, const QString &t
     for (int y = 0; y < tileLayer->height(); y++) {
         for (int x = 0; x < tileLayer->width(); x++) {
             bool conversionOk;
-            const uint gid = tiles.at(y * tileLayer->width() + x)
+            const unsigned gid = tiles.at(y * tileLayer->width() + x)
                     .toUInt(&conversionOk);
             if (!conversionOk) {
                 xml.raiseError(
@@ -641,7 +641,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer *tileLayer, const QString &t
     }
 }
 
-Cell MapReaderPrivate::cellForGid(uint gid)
+Cell MapReaderPrivate::cellForGid(unsigned gid)
 {
     bool ok;
     const Cell result = mGidMapper.gidToCell(gid, ok);
@@ -757,7 +757,7 @@ MapObject *MapReaderPrivate::readObject()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const uint gid = atts.value(QLatin1String("gid")).toString().toUInt();
+    const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const int x = atts.value(QLatin1String("x")).toString().toInt();
     const int y = atts.value(QLatin1String("y")).toString().toInt();
     const int width = atts.value(QLatin1String("width")).toString().toInt();

@@ -196,7 +196,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     bool ok;
 
     foreach (const QVariant &gidVariant, dataVariantList) {
-        const uint gid = gidVariant.toUInt(&ok);
+        const unsigned gid = gidVariant.toUInt(&ok);
         if (!ok) {
             mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
                     .arg(x).arg(y).arg(tileLayer->name());
