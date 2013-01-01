@@ -119,6 +119,10 @@ signals:
     void terrainChanged(Tileset *tileset, int index);
 
 private slots:
+    void tilesetAboutToBeAdded(int index);
+    void tilesetAdded();
+    void tilesetAboutToBeRemoved(int index);
+    void tilesetRemoved();
     void tilesetNameChanged(Tileset *tileset);
 
 private:

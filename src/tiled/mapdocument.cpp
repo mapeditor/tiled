@@ -374,6 +374,7 @@ void MapDocument::toggleOtherLayers(int index)
  */
 void MapDocument::insertTileset(int index, Tileset *tileset)
 {
+    emit tilesetAboutToBeAdded(index);
     mMap->insertTileset(index, tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
@@ -389,6 +390,7 @@ void MapDocument::insertTileset(int index, Tileset *tileset)
  */
 void MapDocument::removeTilesetAt(int index)
 {
+    emit tilesetAboutToBeRemoved(index);
     Tileset *tileset = mMap->tilesets().at(index);
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset);

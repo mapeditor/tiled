@@ -75,6 +75,14 @@ TerrainModel::TerrainModel(MapDocument *mapDocument,
     QAbstractItemModel(parent),
     mMapDocument(mapDocument)
 {
+    connect(mapDocument, SIGNAL(tilesetAboutToBeAdded(int)),
+            this, SLOT(tilesetAboutToBeAdded(int)));
+    connect(mapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
+            this, SLOT(tilesetAdded()));
+    connect(mapDocument, SIGNAL(tilesetAboutToBeRemoved(int)),
+            this, SLOT(tilesetAboutToBeRemoved(int)));
+    connect(mapDocument, SIGNAL(tilesetRemoved(Tileset*)),
+            this, SLOT(tilesetRemoved()));
     connect(mapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
             this, SLOT(tilesetNameChanged(Tileset*)));
 }
@@ -275,6 +283,26 @@ void TerrainModel::emitTerrainChanged(Terrain *terrain)
     const QModelIndex index = TerrainModel::index(terrain);
     emit dataChanged(index, index);
     emit terrainChanged(terrain->tileset(), index.row());
+}
+
+void TerrainModel::tilesetAboutToBeAdded(int index)
+{
+    beginInsertRows(QModelIndex(), index, index);
+}
+
+void TerrainModel::tilesetAdded()
+{
+    endInsertRows();
+}
+
+void TerrainModel::tilesetAboutToBeRemoved(int index)
+{
+    beginRemoveRows(QModelIndex(), index, index);
+}
+
+void TerrainModel::tilesetRemoved()
+{
+    endRemoveRows();
 }
 
 void TerrainModel::tilesetNameChanged(Tileset *tileset)

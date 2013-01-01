@@ -298,7 +298,9 @@ signals:
      */
     void tileTerrainChanged(const QList<Tile*> &tiles);
 
+    void tilesetAboutToBeAdded(int index);
     void tilesetAdded(int index, Tileset *tileset);
+    void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
     void tilesetFileNameChanged(Tileset *tileset);
