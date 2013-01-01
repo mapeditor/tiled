@@ -328,6 +328,33 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
     return NULL;
 }
 
+static unsigned int terrain(const Tile *tile)
+{
+    return tile ? tile->terrain() : 0xFFFFFFFF;
+}
+
+static unsigned short topEdge(const Tile *tile)
+{
+    return terrain(tile) >> 16;
+}
+
+static unsigned short bottomEdge(const Tile *tile)
+{
+    return terrain(tile) & 0xFFFF;
+}
+
+static unsigned short leftEdge(const Tile *tile)
+{
+    unsigned int t = terrain(tile);
+    return((t >> 16) & 0xFF00) | ((t >> 8) & 0xFF);
+}
+
+static unsigned short rightEdge(const Tile *tile)
+{
+    unsigned int t = terrain(tile);
+    return ((t >> 8) & 0xFF00) | (t & 0xFF);
+}
+
 void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 {
     // get the current tile layer
@@ -481,22 +508,22 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         // consider surrounding tiles if terrain constraints were not satisfied
         if (y > 0 && !checked[i - layerWidth]) {
             const Tile *above = currentLayer->cellAt(x, y - 1).tile;
-            if (paste->topEdge() != above->bottomEdge())
+            if (topEdge(paste) != bottomEdge(above))
                 transitionList.append(QPoint(x, y - 1));
         }
         if (y < layerHeight - 1 && !checked[i + layerWidth]) {
             const Tile *below = currentLayer->cellAt(x, y + 1).tile;
-            if (paste->bottomEdge() != below->topEdge())
+            if (bottomEdge(paste) != topEdge(below))
                 transitionList.append(QPoint(x, y + 1));
         }
         if (x > 0 && !checked[i - 1]) {
             const Tile *left = currentLayer->cellAt(x - 1, y).tile;
-            if (paste->leftEdge() != left->rightEdge())
+            if (leftEdge(paste) != rightEdge(left))
                 transitionList.append(QPoint(x - 1, y));
         }
         if (x < layerWidth - 1 && !checked[i + 1]) {
             const Tile *right = currentLayer->cellAt(x + 1, y).tile;
-            if (paste->rightEdge() != right->leftEdge())
+            if (rightEdge(paste) != leftEdge(right))
                 transitionList.append(QPoint(x + 1, y));
         }
     }

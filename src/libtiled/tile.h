@@ -112,12 +112,8 @@ public:
     { setTerrain(setTerrainCorner(mTerrain, corner, terrainId)); }
 
     /**
-     * Functions to get various terrain type information from tiles.
+     * Returns the terrain for each corner of this tile.
      */
-    unsigned short topEdge() const { return terrain() >> 16; }
-    unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
-    unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
-    unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
     unsigned int terrain() const { return mTerrain; }
 
     /**
