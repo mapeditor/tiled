@@ -124,8 +124,8 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
         mUi->terrainList->setFocus();
     }
 
-    connect(mUi->clearTerrain, SIGNAL(toggled(bool)),
-            SLOT(clearTerrainToggled(bool)));
+    connect(mUi->eraseTerrain, SIGNAL(toggled(bool)),
+            SLOT(eraseTerrainToggled(bool)));
 
     connect(mUi->addTerrainTypeButton, SIGNAL(clicked()),
             SLOT(addTerrainType()));
@@ -162,21 +162,13 @@ void EditTerrainDialog::selectedTerrainChanged(const QModelIndex &index)
     if (Terrain *terrain = mTerrainModel->terrainAt(index))
         terrainId = terrain->id();
 
-    if (!mUi->clearTerrain->isChecked())
-        mUi->tilesetView->setTerrainId(terrainId);
-
+    mUi->tilesetView->setTerrainId(terrainId);
     mUi->removeTerrainTypeButton->setEnabled(terrainId != -1);
 }
 
-void EditTerrainDialog::clearTerrainToggled(bool checked)
+void EditTerrainDialog::eraseTerrainToggled(bool checked)
 {
-    if (checked) {
-        mUi->tilesetView->setTerrainId(-1);
-    } else {
-        const QModelIndex currentIndex = mUi->terrainList->currentIndex();
-        if (Terrain *terrain = mTerrainModel->terrainAt(currentIndex))
-            mUi->tilesetView->setTerrainId(terrain->id());
-    }
+    mUi->tilesetView->setEraseTerrain(checked);
 }
 
 void EditTerrainDialog::addTerrainType()

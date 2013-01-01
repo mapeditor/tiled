@@ -81,6 +81,13 @@ public:
     void setEditTerrain(bool enabled);
 
     /**
+     * Sets whether terrain editing is in "erase" mode.
+     * \sa setEditTerrain
+     */
+    void setEraseTerrain(bool erase) { mEraseTerrain = erase; }
+    bool isEraseTerrain() const { return mEraseTerrain; }
+
+    /**
      * The id of the terrain currently being specified. Set to -1 for erasing
      * terrain info.
      */
@@ -124,6 +131,7 @@ private:
     bool mDrawGrid;
 
     bool mEditTerrain;
+    bool mEraseTerrain;
     int mTerrainId;
     QModelIndex mHoveredIndex;
     int mHoveredCorner;

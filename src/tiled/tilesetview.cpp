@@ -84,7 +84,7 @@ enum Corners
  * Returns a mask of the corners of a certain tile's \a terrain that contain
  * the given \a terrainTypeId.
  */
-static int terrainCorners(unsigned terrain, int terrainTypeId)
+static unsigned terrainCorners(unsigned terrain, int terrainTypeId)
 {
     const unsigned terrainIndex = terrainTypeId >= 0 ? terrainTypeId : 0xFF;
 
@@ -94,8 +94,13 @@ static int terrainCorners(unsigned terrain, int terrainTypeId)
             ((terrain & 0xFF) == terrainIndex ? BottomRight : 0);
 }
 
+static unsigned invertCorners(unsigned corners)
+{
+    return corners ^ (TopLeft | TopRight | BottomLeft | BottomRight);
+}
+
 static void paintCorners(QPainter *painter,
-                         int corners,
+                         unsigned corners,
                          const QRect &rect)
 {
     // FIXME: This only works right for orthogonal maps right now
@@ -180,7 +185,12 @@ static void paintTerrainOverlay(QPainter *painter,
     painter->setClipRect(rect);
     painter->setRenderHint(QPainter::Antialiasing);
 
-    const int corners = terrainCorners(terrain, terrainTypeId);
+    const unsigned corners = terrainCorners(terrain, terrainTypeId);
+
+    // Draw the "any terrain" background
+    painter->setBrush(QColor(128, 128, 128, 100));
+    painter->setPen(QPen(Qt::gray, 2));
+    paintCorners(painter, invertCorners(terrainCorners(terrain, -1)), rect);
 
     // Draw the shadow
     painter->translate(1, 1);
@@ -279,6 +289,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mZoomable(0)
     , mMapDocument(0)
     , mEditTerrain(false)
+    , mEraseTerrain(false)
     , mTerrainId(-1)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
@@ -575,7 +586,7 @@ void TilesetView::applyTerrain()
 
     unsigned terrain = setTerrainCorner(tile->terrain(),
                                         mHoveredCorner,
-                                        mTerrainId);
+                                        mEraseTerrain ? 0xFF : mTerrainId);
 
     if (terrain == tile->terrain())
         return;

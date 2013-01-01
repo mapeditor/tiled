@@ -31,6 +31,9 @@
         <iconset resource="tiled.qrc">
          <normaloff>:/images/24x24/edit-undo.png</normaloff>:/images/24x24/edit-undo.png</iconset>
        </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -50,6 +53,26 @@
        <property name="icon">
         <iconset resource="tiled.qrc">
          <normaloff>:/images/24x24/edit-redo.png</normaloff>:/images/24x24/edit-redo.png</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="eraseTerrain">
+       <property name="text">
+        <string>Erase</string>
+       </property>
+       <property name="icon">
+        <iconset resource="tiled.qrc">
+         <normaloff>:/images/22x22/stock-tool-eraser.png</normaloff>:/images/22x22/stock-tool-eraser.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -78,16 +101,6 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QPushButton" name="clearTerrain">
-         <property name="text">
-          <string>No Terrain</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="Tiled::Internal::TerrainView" name="terrainList">
          <property name="maximumSize">

@@ -53,7 +53,7 @@ public:
 
 private slots:
     void selectedTerrainChanged(const QModelIndex &index);
-    void clearTerrainToggled(bool checked);
+    void eraseTerrainToggled(bool checked);
     void addTerrainType();
     void removeTerrainType();
     void setTerrainImage(Tile *tile);
