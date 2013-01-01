@@ -148,6 +148,10 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     connect(mUndoShortcut, SIGNAL(activated()), undoStack, SLOT(undo()));
     connect(mRedoShortcut, SIGNAL(activated()), undoStack, SLOT(redo()));
 
+    QShortcut *eraseShortcut = new QShortcut(QKeySequence(tr("E")), this);
+    connect(eraseShortcut, SIGNAL(activated()),
+            mUi->eraseTerrain, SLOT(toggle()));
+
     updateUndoButton();
 }
 
