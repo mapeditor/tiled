@@ -53,7 +53,6 @@ private:
     Tileset *mTileset;
     int mIndex;
     Terrain *mTerrain;
-    bool mTerrainAdded;
 };
 
 

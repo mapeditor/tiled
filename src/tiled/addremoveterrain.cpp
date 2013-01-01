@@ -38,7 +38,6 @@ AddRemoveTerrain::AddRemoveTerrain(MapDocument *mapDocument,
     , mTileset(tileset)
     , mIndex(index)
     , mTerrain(terrain)
-    , mTerrainAdded(false)
 {
 }
 
