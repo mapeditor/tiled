@@ -58,7 +58,7 @@ public:
     /**
      * Returns ID of this terrain type.
      */
-    int id() const { return this != NULL ? mId : -1; }
+    int id() const { return mId; }
 
     /**
      * Sets the ID of this terrain type.

@@ -118,7 +118,7 @@ public:
     unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
     unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
     unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
-    unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; } // HACK: NULL Tile has 'none' terrain type.
+    unsigned int terrain() const { return mTerrain; }
 
     /**
      * Set the terrain for each corner of the tile.

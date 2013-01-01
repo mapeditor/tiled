@@ -355,8 +355,12 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     if (!currentLayer->bounds().contains(cursorPos))
         return;
 
-    // TODO: this seems like a problem... there's nothing to say that 2 adjacent tiles are from the same tileset, or have any relation to eachother...
-    Tileset *terrainTileset = mTerrain ? mTerrain->tileset() : NULL;
+    Tileset *terrainTileset = 0;
+    int terrainId = -1;
+    if (mTerrain) {
+        terrainTileset = mTerrain->tileset();
+        terrainId = mTerrain->id();
+    }
 
     // allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
     Tile **newTerrain = new Tile*[numTiles];
@@ -372,11 +376,11 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     if (list) {
         // if we were supplied a list of start points
         foreach (const QPoint &p, *list) {
-            transitionList.push_back(p);
+            transitionList.append(p);
             ++initialTiles;
         }
     } else {
-        transitionList.push_back(cursorPos);
+        transitionList.append(cursorPos);
         initialTiles = 1;
     }
 
@@ -385,8 +389,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
     while (!transitionList.isEmpty()) {
         // get the next point in the consideration list
-        QPoint p = transitionList.front();
-        transitionList.pop_front();
+        QPoint p = transitionList.takeFirst();
         int x = p.x(), y = p.y();
         int i = y*layerWidth + x;
 
@@ -396,42 +399,49 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             continue;
 
         const Tile *tile = currentLayer->cellAt(p).tile;
+        const unsigned int currentTerrain = tile ? tile->terrain() : 0xFFFFFFFF;
 
         // get the tileset for this tile
-        Tileset *tileset = NULL;
+        Tileset *tileset = 0;
         if (terrainTileset) // if we are painting a terrain, then we'll use the terrains tileset
             tileset = terrainTileset;
-        else if(tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
+        else if (tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
             tileset = tile->tileset();
 
         // calculate the ideal tile for this position
-        unsigned int preferredTerrain, mask;
-        Tile *paste = NULL;
+        unsigned int preferredTerrain = 0xFFFFFFFF;
+        unsigned int mask = 0;
 
         if (initialTiles) {
             // for the initial tiles, we will insert the selected terrain and add the surroundings for consideration
-            unsigned int currentTerrain = tile->terrain();
-
             if (mBrushMode == PaintTile) {
                 // set the whole tile to the selected terrain
-                preferredTerrain = makeTerrain(mTerrain->id());
+                preferredTerrain = makeTerrain(terrainId);
                 mask = 0xFFFFFFFF;
             } else {
+                // Bail out if encountering a tile from a different tileset
+                if (tile && tile->tileset() != tileset)
+                    continue;
+
                 // calculate the corner mask
                 mask = 0xFF << (3 - paintCorner)*8;
 
                 // mask in the selected terrain
-                preferredTerrain = (currentTerrain & ~mask) | (mTerrain->id() << (3 - paintCorner)*8);
+                preferredTerrain = (currentTerrain & ~mask) | (terrainId << (3 - paintCorner)*8);
             }
 
             --initialTiles;
 
             // if there's nothing to paint... skip this tile
-            if (preferredTerrain == currentTerrain)
+            if (preferredTerrain == currentTerrain && (!tile || tile->tileset() == tileset))
                 continue;
         } else {
+            // Bail out if encountering a tile from a different tileset
+            if (tile && tile->tileset() != tileset)
+                continue;
+
             // following tiles each need consideration against their surroundings
-            preferredTerrain = tile->terrain();
+            preferredTerrain = currentTerrain;
             mask = 0;
 
             // depending which connections have been set, we update the preferred terrain of the tile accordingly
@@ -454,6 +464,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         }
 
         // find the most appropriate tile in the tileset
+        Tile *paste = 0;
         if (preferredTerrain != 0xFFFFFFFF) {
             paste = findBestTile(tileset, preferredTerrain, mask);
             if (!paste)
@@ -471,22 +482,22 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         if (y > 0 && !checked[i - layerWidth]) {
             const Tile *above = currentLayer->cellAt(x, y - 1).tile;
             if (paste->topEdge() != above->bottomEdge())
-                transitionList.push_back(QPoint(x, y - 1));
+                transitionList.append(QPoint(x, y - 1));
         }
         if (y < layerHeight - 1 && !checked[i + layerWidth]) {
             const Tile *below = currentLayer->cellAt(x, y + 1).tile;
             if (paste->bottomEdge() != below->topEdge())
-                transitionList.push_back(QPoint(x, y + 1));
+                transitionList.append(QPoint(x, y + 1));
         }
         if (x > 0 && !checked[i - 1]) {
             const Tile *left = currentLayer->cellAt(x - 1, y).tile;
             if (paste->leftEdge() != left->rightEdge())
-                transitionList.push_back(QPoint(x - 1, y));
+                transitionList.append(QPoint(x - 1, y));
         }
         if (x < layerWidth - 1 && !checked[i + 1]) {
             const Tile *right = currentLayer->cellAt(x + 1, y).tile;
             if (paste->rightEdge() != right->leftEdge())
-                transitionList.push_back(QPoint(x + 1, y));
+                transitionList.append(QPoint(x + 1, y));
         }
     }
 
