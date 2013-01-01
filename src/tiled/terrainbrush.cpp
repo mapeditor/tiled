@@ -426,7 +426,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             continue;
 
         const Tile *tile = currentLayer->cellAt(p).tile;
-        const unsigned currentTerrain = tile ? tile->terrain() : 0xFFFFFFFF;
+        const unsigned currentTerrain = ::terrain(tile);
 
         // get the tileset for this tile
         Tileset *tileset = 0;
@@ -473,19 +473,19 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
             // depending which connections have been set, we update the preferred terrain of the tile accordingly
             if (y > 0 && checked[i - layerWidth]) {
-                preferredTerrain = (newTerrain[i - layerWidth]->terrain() << 16) | (preferredTerrain & 0x0000FFFF);
+                preferredTerrain = (::terrain(newTerrain[i - layerWidth]) << 16) | (preferredTerrain & 0x0000FFFF);
                 mask |= 0xFFFF0000;
             }
             if (y < layerHeight - 1 && checked[i + layerWidth]) {
-                preferredTerrain = (newTerrain[i + layerWidth]->terrain() >> 16) | (preferredTerrain & 0xFFFF0000);
+                preferredTerrain = (::terrain(newTerrain[i + layerWidth]) >> 16) | (preferredTerrain & 0xFFFF0000);
                 mask |= 0x0000FFFF;
             }
             if (x > 0 && checked[i - 1]) {
-                preferredTerrain = ((newTerrain[i - 1]->terrain() << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
+                preferredTerrain = ((::terrain(newTerrain[i - 1]) << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
                 mask |= 0xFF00FF00;
             }
             if (x < layerWidth - 1 && checked[i + 1]) {
-                preferredTerrain = ((newTerrain[i + 1]->terrain() >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
+                preferredTerrain = ((::terrain(newTerrain[i + 1]) >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
                 mask |= 0x00FF00FF;
             }
         }
