@@ -44,8 +44,8 @@ class Tileset;
  */
 inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
 {
-    unsigned int mask = 0xFF << (3 - corner) * 8;
-    unsigned int insert = terrainId << (3 - corner) * 8;
+    unsigned mask = 0xFF << (3 - corner) * 8;
+    unsigned insert = terrainId << (3 - corner) * 8;
     return (terrain & ~mask) | (insert & mask);
 }
 
@@ -103,7 +103,7 @@ public:
     /**
      * Returns the terrain id at a given corner.
      */
-    int cornerTerrainId(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+    int cornerTerrainId(int corner) const { unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
 
     /**
      * Set the terrain type of a given corner.
@@ -114,12 +114,12 @@ public:
     /**
      * Returns the terrain for each corner of this tile.
      */
-    unsigned int terrain() const { return mTerrain; }
+    unsigned terrain() const { return mTerrain; }
 
     /**
      * Set the terrain for each corner of the tile.
      */
-    void setTerrain(unsigned int terrain);
+    void setTerrain(unsigned terrain);
 
     /**
      * Returns the probability of this terrain type appearing while painting (0-100%).
@@ -135,7 +135,7 @@ private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-    unsigned int mTerrain;
+    unsigned mTerrain;
     float mTerrainProbability;
 };
 

@@ -245,18 +245,18 @@ void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
     mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
-static inline unsigned int makeTerrain(int t)
+static inline unsigned makeTerrain(int t)
 {
     t &= 0xFF;
     return t << 24 | t << 16 | t << 8 | t;
 }
 
-static inline unsigned int makeTerrain(int tl, int tr, int bl, int br)
+static inline unsigned makeTerrain(int tl, int tr, int bl, int br)
 {
     return (tl & 0xFF) << 24 | (tr & 0xFF) << 16 | (bl & 0xFF) << 8 | (br & 0xFF);
 }
 
-Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigned int considerationMask)
+Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned terrain, unsigned considerationMask)
 {
     // we should have hooked 0xFFFFFFFF terrains outside this function
     Q_ASSERT(terrain != 0xFFFFFFFF);
@@ -328,7 +328,7 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
     return NULL;
 }
 
-static unsigned int terrain(const Tile *tile)
+static unsigned terrain(const Tile *tile)
 {
     return tile ? tile->terrain() : 0xFFFFFFFF;
 }
@@ -345,13 +345,13 @@ static unsigned short bottomEdge(const Tile *tile)
 
 static unsigned short leftEdge(const Tile *tile)
 {
-    unsigned int t = terrain(tile);
+    unsigned t = terrain(tile);
     return((t >> 16) & 0xFF00) | ((t >> 8) & 0xFF);
 }
 
 static unsigned short rightEdge(const Tile *tile)
 {
-    unsigned int t = terrain(tile);
+    unsigned t = terrain(tile);
     return ((t >> 8) & 0xFF00) | (t & 0xFF);
 }
 
@@ -426,7 +426,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             continue;
 
         const Tile *tile = currentLayer->cellAt(p).tile;
-        const unsigned int currentTerrain = tile ? tile->terrain() : 0xFFFFFFFF;
+        const unsigned currentTerrain = tile ? tile->terrain() : 0xFFFFFFFF;
 
         // get the tileset for this tile
         Tileset *tileset = 0;
@@ -436,8 +436,8 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             tileset = tile->tileset();
 
         // calculate the ideal tile for this position
-        unsigned int preferredTerrain = 0xFFFFFFFF;
-        unsigned int mask = 0;
+        unsigned preferredTerrain = 0xFFFFFFFF;
+        unsigned mask = 0;
 
         if (initialTiles) {
             // for the initial tiles, we will insert the selected terrain and add the surroundings for consideration

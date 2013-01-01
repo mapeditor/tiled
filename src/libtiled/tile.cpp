@@ -37,7 +37,7 @@ Terrain *Tile::terrainAtCorner(int corner) const
     return mTileset->terrain(cornerTerrainId(corner));
 }
 
-void Tile::setTerrain(unsigned int terrain)
+void Tile::setTerrain(unsigned terrain)
 {
     if (mTerrain == terrain)
         return;
