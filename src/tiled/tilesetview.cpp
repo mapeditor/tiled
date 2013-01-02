@@ -516,8 +516,14 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                                           QItemSelectionModel::SelectCurrent |
                                           QItemSelectionModel::Clear);
 
+        if (mEditTerrain) {
+            QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
+            addTerrain->setEnabled(!isExternal);
+            connect(addTerrain, SIGNAL(triggered()), SLOT(createNewTerrain()));
+        }
+
         if (mEditTerrain && mTerrainId != -1) {
-            QAction *setImage = menu.addAction(tr("Set As Terrain Image"));
+            QAction *setImage = menu.addAction(tr("Set Terrain Image"));
             setImage->setEnabled(!isExternal);
             connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
         }
@@ -543,6 +549,12 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             prefs, SLOT(setShowTilesetGrid(bool)));
 
     menu.exec(event->globalPos());
+}
+
+void TilesetView::createNewTerrain()
+{
+    if (Tile *tile = currentTile())
+        emit createNewTerrain(tile);
 }
 
 void TilesetView::selectTerrainImage()

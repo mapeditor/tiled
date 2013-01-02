@@ -103,6 +103,7 @@ public:
     int hoveredCorner() const { return mHoveredCorner; }
 
 signals:
+    void createNewTerrain(Tile *tile);
     void terrainImageSelected(Tile *tile);
 
 protected:
@@ -115,6 +116,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
+    void createNewTerrain();
     void selectTerrainImage();
     void editTileProperties();
     void setDrawGrid(bool drawGrid);

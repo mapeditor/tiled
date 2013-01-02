@@ -132,6 +132,8 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     connect(mUi->removeTerrainTypeButton, SIGNAL(clicked()),
             SLOT(removeTerrainType()));
 
+    connect(mUi->tilesetView, SIGNAL(createNewTerrain(Tile*)),
+            SLOT(addTerrainType(Tile*)));
     connect(mUi->tilesetView, SIGNAL(terrainImageSelected(Tile*)),
             SLOT(setTerrainImage(Tile*)));
 
@@ -175,10 +177,10 @@ void EditTerrainDialog::eraseTerrainToggled(bool checked)
     mUi->tilesetView->setEraseTerrain(checked);
 }
 
-void EditTerrainDialog::addTerrainType()
+void EditTerrainDialog::addTerrainType(Tile *tile)
 {
     Terrain *terrain = new Terrain(mTileset->terrainCount(), mTileset,
-                                   QString(), -1);
+                                   QString(), tile ? tile->id() : -1);
     terrain->setName(tr("New Terrain"));
 
     mMapDocument->undoStack()->push(new AddTerrain(mMapDocument, terrain));
