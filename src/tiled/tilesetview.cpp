@@ -185,24 +185,26 @@ static void paintTerrainOverlay(QPainter *painter,
     painter->setClipRect(rect);
     painter->setRenderHint(QPainter::Antialiasing);
 
-    const unsigned corners = terrainCorners(terrain, terrainTypeId);
-
     // Draw the "any terrain" background
     painter->setBrush(QColor(128, 128, 128, 100));
     painter->setPen(QPen(Qt::gray, 2));
     paintCorners(painter, invertCorners(terrainCorners(terrain, -1)), rect);
 
-    // Draw the shadow
-    painter->translate(1, 1);
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(Qt::black, 2));
-    paintCorners(painter, corners, rect);
+    if (terrainTypeId != -1) {
+        const unsigned corners = terrainCorners(terrain, terrainTypeId);
 
-    // Draw the foreground
-    painter->translate(-1, -1);
-    painter->setBrush(QColor(color.red(), color.green(), color.blue(), 100));
-    painter->setPen(QPen(color, 2));
-    paintCorners(painter, corners, rect);
+        // Draw the shadow
+        painter->translate(1, 1);
+        painter->setBrush(Qt::NoBrush);
+        painter->setPen(QPen(Qt::black, 2));
+        paintCorners(painter, corners, rect);
+
+        // Draw the foreground
+        painter->translate(-1, -1);
+        painter->setBrush(QColor(color.red(), color.green(), color.blue(), 100));
+        painter->setPen(QPen(color, 2));
+        paintCorners(painter, corners, rect);
+    }
 
     painter->restore();
 }
