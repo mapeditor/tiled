@@ -159,7 +159,7 @@ void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void TerrainBrush::languageChanged()
 {
-    setName(tr("Terain Brush"));
+    setName(tr("Terrain Brush"));
     setShortcut(QKeySequence(tr("T")));
 }
 
