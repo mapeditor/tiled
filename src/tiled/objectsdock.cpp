@@ -171,16 +171,13 @@ void ObjectsDock::updateActions()
     mActionRemoveObjects->setEnabled(enabled);
     mActionObjectProperties->setEnabled(enabled && (count == 1));
 
-    mActionDuplicateObjects->setToolTip((enabled && count > 1)
-        ? tr("Duplicate %n Objects", "", count) : tr("Duplicate Object"));
-    mActionRemoveObjects->setToolTip((enabled && count > 1)
-        ? tr("Remove %n Objects", "", count) : tr("Remove Object"));
+    mActionDuplicateObjects->setToolTip(tr("Duplicate %n Object(s)", "", count));
+    mActionRemoveObjects->setToolTip(tr("Remove %n Object(s)", "", count));
 
     if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
         enabled = false;
     mActionMoveToLayer->setEnabled(enabled);
-    mActionMoveToLayer->setToolTip((enabled && count > 1)
-        ? tr("Move %n Objects To Layer", "", count) : tr("Move Object To Layer"));
+    mActionMoveToLayer->setToolTip(tr("Move %n Object(s) To Layer", "", count));
 }
 
 void ObjectsDock::aboutToShowMoveToMenu()
