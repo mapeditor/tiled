@@ -256,7 +256,7 @@ static inline unsigned makeTerrain(int tl, int tr, int bl, int br)
     return (tl & 0xFF) << 24 | (tr & 0xFF) << 16 | (bl & 0xFF) << 8 | (br & 0xFF);
 }
 
-Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned terrain, unsigned considerationMask)
+static Tile *findBestTile(Tileset *tileset, unsigned terrain, unsigned considerationMask)
 {
     // we should have hooked 0xFFFFFFFF terrains outside this function
     Q_ASSERT(terrain != 0xFFFFFFFF);
@@ -561,7 +561,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 */
 
-    brushItem()->setTileLayerPosition(QPoint(brushRect.left(), brushRect.top()));
+    brushItem()->setTileLayerPosition(brushRect.topLeft());
 
     mPaintX = cursorPos.x();
     mPaintY = cursorPos.y();
