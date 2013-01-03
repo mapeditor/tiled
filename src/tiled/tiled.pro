@@ -268,7 +268,6 @@ FORMS += aboutdialog.ui \
     propertiesdialog.ui \
     resizedialog.ui \
     saveasimagedialog.ui\
-    newimagelayerdialog.ui \
     editterraindialog.ui
 
 RESOURCES += tiled.qrc
