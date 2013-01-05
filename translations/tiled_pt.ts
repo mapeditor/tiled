@@ -153,7 +153,7 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossivel abrir ficheiro para leitura.</translation>
     </message>
     <message>
         <location line="+73"/>
@@ -1274,45 +1274,45 @@ Linha %1, coluna %2</translation>
         <translation>&apos;%1&apos;: Propriedade &apos;%2&apos; = &apos;%3&apos; não faz sentido. Ignorando esta propriedade.</translation>
     </message>
     <message>
-        <location line="+28"/>
-        <source>&apos;input regions layer must not occur more than once.</source>
-        <translation>&apos;camada de regiões de entrada não deve ocorrer mais de uma vez.</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <location line="+13"/>
-        <source>regions layer must be tile layer!</source>
-        <translation>camada regiões deve ser camada de tiles!</translation>
-    </message>
-    <message>
-        <location line="-6"/>
-        <source>&apos;output regions layer must not occur more than once.</source>
-        <translation>&apos;camada de regiões de saída não deve ocorrer mais de uma vez.</translation>
-    </message>
-    <message>
-        <location line="+30"/>
+        <location line="+71"/>
         <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
         <translation>Esqueceu-se de um &quot;_&quot; na camada &apos;%1&apos;?</translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>&apos;input&apos; and &apos;inputnot&apos; layers must be tile layers!</source>
-        <translation>camadas &apos;input&apos; e &apos;inputnot&apos; devem ser camadas de telha!</translation>
-    </message>
-    <message>
-        <location line="+51"/>
+        <location line="+62"/>
         <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
         <translation>Camada &apos;%1&apos; não é reconhecido como uma camada válida para Automapping.</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>No input regions layer found!</source>
-        <translation>Nenhuma camada de entrada de regiões encontrado!</translation>
+        <location line="-105"/>
+        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <location line="+13"/>
+        <source>&apos;regions_*&apos; layers must be tile layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-6"/>
+        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+56"/>
+        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No output regions layer found!</source>
-        <translation>Nenhuma camada de saida de regiões encontrado!</translation>
+        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2320,51 +2320,12 @@ Por favor, selecione um formato específico.</translation>
         <translation>Adicionar Camada de Objectos</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+92"/>
-        <source>Move Object To Layer</source>
-        <translation>Mover Objecto para Camada</translation>
-    </message>
-    <message>
-        <location line="-20"/>
+        <location line="+77"/>
         <source>Objects</source>
         <translation>Objectos</translation>
     </message>
     <message numerus="yes">
-        <location line="+12"/>
-        <source>Duplicate %n Objects</source>
-        <translation>
-            <numerusform>Duplicar %n Objecto</numerusform>
-            <numerusform>Duplicar %n Objectos</numerusform>
-        </translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Duplicate Object</source>
-        <translation>Duplicar Objecto</translation>
-    </message>
-    <message numerus="yes">
-        <location line="+2"/>
-        <source>Remove %n Objects</source>
-        <translation>
-            <numerusform>Remover %n Objecto</numerusform>
-            <numerusform>Remover %n Objectos</numerusform>
-        </translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Remove Object</source>
-        <translation>Remover Objecto</translation>
-    </message>
-    <message numerus="yes">
-        <location line="+6"/>
-        <source>Move %n Objects To Layer</source>
-        <translation>
-            <numerusform>Mover %n Objecto para Camada</numerusform>
-            <numerusform>Mover %n Objectos para Camada</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
+        <location line="+17"/>
         <location line="+20"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
@@ -2373,7 +2334,8 @@ Por favor, selecione um formato específico.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+21"/>
+        <location line="-26"/>
+        <location line="+47"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Duplicar %n Objecto</numerusform>
@@ -2381,7 +2343,8 @@ Por favor, selecione um formato específico.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+24"/>
+        <location line="-46"/>
+        <location line="+70"/>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Remover %n Objecto</numerusform>
@@ -2494,19 +2457,15 @@ Deseja substituí-lo?</translation>
     <name>Tiled::Internal::TerrainBrush</name>
     <message>
         <location filename="../src/tiled/terrainbrush.cpp" line="+44"/>
+        <location line="+118"/>
         <source>Terrain Brush</source>
         <translation>Pincel de Terreno</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-115"/>
         <location line="+116"/>
         <source>T</source>
         <translation></translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <source>Terain Brush</source>
-        <translation>Pincel de Terreno</translation>
     </message>
 </context>
 <context>

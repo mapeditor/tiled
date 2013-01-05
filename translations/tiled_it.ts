@@ -1265,44 +1265,44 @@ Line %1, column %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+28"/>
-        <source>&apos;input regions layer must not occur more than once.</source>
+        <location line="+71"/>
+        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+62"/>
+        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-105"/>
+        <source>&apos;regions_input&apos; layer must not occur more than once.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
-        <source>regions layer must be tile layer!</source>
+        <source>&apos;regions_*&apos; layers must be tile layers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-6"/>
-        <source>&apos;output regions layer must not occur more than once.</source>
+        <source>&apos;regions_output&apos; layer must not occur more than once.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+30"/>
-        <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
+        <location line="+41"/>
+        <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
-        <source>&apos;input&apos; and &apos;inputnot&apos; layers must be tile layers!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+51"/>
-        <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>No input regions layer found!</source>
+        <location line="+56"/>
+        <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>No output regions layer found!</source>
+        <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2306,51 +2306,12 @@ Please select specific format.</source>
         <translation type="unfinished">Aggiungi Livello Oggetto</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+92"/>
-        <source>Move Object To Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-20"/>
+        <location line="+77"/>
         <source>Objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location line="+12"/>
-        <source>Duplicate %n Objects</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Duplicate Object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message numerus="yes">
-        <location line="+2"/>
-        <source>Remove %n Objects</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source>Remove Object</source>
-        <translation type="unfinished">Rimuovi Oggetto</translation>
-    </message>
-    <message numerus="yes">
-        <location line="+6"/>
-        <source>Move %n Objects To Layer</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
+        <location line="+17"/>
         <location line="+20"/>
         <source>Move %n Object(s) to Layer</source>
         <translation type="unfinished">
@@ -2359,7 +2320,8 @@ Please select specific format.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+21"/>
+        <location line="-26"/>
+        <location line="+47"/>
         <source>Duplicate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>%n oggetto duplicati</numerusform>
@@ -2367,7 +2329,8 @@ Please select specific format.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+24"/>
+        <location line="-46"/>
+        <location line="+70"/>
         <source>Remove %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Rimuovi %n oggetto</numerusform>
@@ -2479,18 +2442,14 @@ Do you want to replace it?</source>
     <name>Tiled::Internal::TerrainBrush</name>
     <message>
         <location filename="../src/tiled/terrainbrush.cpp" line="+44"/>
+        <location line="+118"/>
         <source>Terrain Brush</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-115"/>
         <location line="+116"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <source>Terain Brush</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
