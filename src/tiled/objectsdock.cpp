@@ -88,7 +88,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     mActionMoveToLayer = new QAction(this);
     mActionMoveToLayer->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
-    mActionMoveToLayer->setToolTip(tr("Move Object To Layer"));
 
     QToolBar *toolbar = new QToolBar;
     toolbar->setFloatable(false);
@@ -177,7 +176,7 @@ void ObjectsDock::updateActions()
     if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
         enabled = false;
     mActionMoveToLayer->setEnabled(enabled);
-    mActionMoveToLayer->setToolTip(tr("Move %n Object(s) To Layer", "", count));
+    mActionMoveToLayer->setToolTip(tr("Move %n Object(s) to Layer", "", count));
 }
 
 void ObjectsDock::aboutToShowMoveToMenu()
