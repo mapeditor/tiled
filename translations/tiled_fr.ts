@@ -16,15 +16,15 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste complète des contributeurs.)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Il vous est possible de modifier et de redistribuer ce programme selon les termes de la license GPL (version 2 ou supérieure). Une copie de la GPL est présente dans le fichier &apos;COPYING&apos; distribué avec Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
-</translation>
+ {2&quot;?} {1&lt;?} {2008-2013 ?} {2 ?}</translation>
     </message>
 </context>
 <context>
@@ -1704,7 +1704,7 @@ Ligne %1, colonne %2</translation>
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+206"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+210"/>
         <source>Layers</source>
         <translation>Calques</translation>
     </message>
@@ -2318,7 +2318,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>Add Object Layer</source>
         <translation type="unfinished">Ajouter un calque d&apos;objets</translation>
     </message>
@@ -2514,7 +2514,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+510"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+540"/>
         <source>Remove Tileset</source>
         <translatorcomment>Tile et Tileset ne sont pas traduits. De ce fait, il prennent une majuscule car ces mots sont anglais et sont des notions importantes du logiciel.</translatorcomment>
         <translation>Effacer le Tileset</translation>
@@ -2783,7 +2783,7 @@ Do you want to replace it?</source>
         <translation>Déplacer un Tileset</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-582"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-611"/>
         <source>Import Tileset</source>
         <translation>Importer un Tileset</translation>
     </message>

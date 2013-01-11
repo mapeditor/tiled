@@ -16,15 +16,15 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versão %1&lt;/i&gt;&lt;/p&gt;
+        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versão %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(veja no arquivo AUTHORS a lista completa de todos os que contribuiram com o projeto)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Você pode modificar e redistribuir este programa sob os termos da GPL (versão 2 ou posterior). Uma cópia da GPL se encontra no arquivo &apos;COPYING&apos; distribuído com o Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
-</translation>
+ {2&quot;?} {1&lt;?} {2008-2013 ?} {2 ?}</translation>
     </message>
 </context>
 <context>
@@ -1704,7 +1704,7 @@ Linha %1, coluna %2</translation>
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+206"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+210"/>
         <source>Layers</source>
         <translation>Camadas</translation>
     </message>
@@ -2313,7 +2313,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>Add Object Layer</source>
         <translation type="unfinished">Adicionar Camade de Objetos</translation>
     </message>
@@ -2510,7 +2510,7 @@ Deseja substituí-lo?</translation>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+510"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+540"/>
         <source>Remove Tileset</source>
         <translation>Remover Tileset</translation>
     </message>
@@ -2778,7 +2778,7 @@ Deseja substituí-lo?</translation>
         <translation>Mover Tileset</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-582"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-611"/>
         <source>Import Tileset</source>
         <translation>Importar Tileset</translation>
     </message>

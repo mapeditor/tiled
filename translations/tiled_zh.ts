@@ -16,15 +16,15 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled地图编辑器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
+        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled地图编辑器&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;版本 %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(查看AUTHORS文件获取全部贡献者名单列表)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;你可以基于GPL(V2或更新版本)修改、重发布此应用程序.GPL的一份拷贝被包含在&apos;COPYING&apos;文件中并随Tiled一起发布.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
-</translation>
+ {2&quot;?} {1&lt;?} {2008-2013 ?} {2 ?}</translation>
     </message>
 </context>
 <context>
@@ -1701,7 +1701,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+206"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+210"/>
         <source>Layers</source>
         <translation>图层</translation>
     </message>
@@ -2310,7 +2310,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>Add Object Layer</source>
         <translation type="unfinished">添加对象层</translation>
     </message>
@@ -2504,7 +2504,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+510"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+540"/>
         <source>Remove Tileset</source>
         <translation>删除图块集</translation>
     </message>
@@ -2772,7 +2772,7 @@ Do you want to replace it?</source>
         <translation>移动图块</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-582"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-611"/>
         <source>Import Tileset</source>
         <translation>导入图块</translation>
     </message>

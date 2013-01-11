@@ -16,15 +16,14 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versie %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Auteursrecht 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(zie het AUTHORS bestand voor de lijst van bijdragers)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Auteursrecht 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(zie het AUTHORS bestand voor de lijst van bijdragers)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;U kan dit programma verspreiden en/of wijzigen onder de bepalingen van de GPL (versie 2 of later). Een kopie van de GPL is te vinden in het meegeleverde bestand &apos;COPYING&apos;.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
-</translation>
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -1707,7 +1706,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>Tiled::Internal::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+206"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+210"/>
         <source>Layers</source>
         <translation>Lagen</translation>
     </message>
@@ -2318,7 +2317,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Object Eigenschappen</translation>
     </message>
     <message>
-        <location line="+18"/>
+        <location line="+19"/>
         <source>Add Object Layer</source>
         <translation>Objectlaag Toevoegen</translation>
     </message>
@@ -2515,7 +2514,7 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+510"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+540"/>
         <source>Remove Tileset</source>
         <translation>Tileset Verwijderen</translation>
     </message>
@@ -2783,7 +2782,7 @@ Moet het bestand vervangen worden?</translation>
         <translation>Tileset Verplaatsen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-582"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-611"/>
         <source>Import Tileset</source>
         <translation>Tileset Importeren</translation>
     </message>
