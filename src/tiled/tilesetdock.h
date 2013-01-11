@@ -32,6 +32,7 @@ class QStackedWidget;
 class QTabBar;
 class QToolBar;
 class QAction;
+class QActionGroup;
 class QSignalMapper;
 class QToolButton;
 class QMenu;
@@ -152,6 +153,7 @@ private:
 
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
+    QActionGroup *mTilesetActionGroup;
     QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 
     Zoomable *mZoomable;

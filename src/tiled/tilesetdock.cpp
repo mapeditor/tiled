@@ -55,6 +55,7 @@
 #include <QMessageBox>
 #include <QSignalMapper>
 #include <QStackedWidget>
+#include <QStylePainter>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUrl>
@@ -128,6 +129,36 @@ private:
     QString mNewName;
 };
 
+
+class TilesetMenuButton : public QToolButton
+{
+public:
+    TilesetMenuButton(QWidget *parent = 0)
+        : QToolButton(parent)
+    {
+        setArrowType(Qt::DownArrow);
+        setIconSize(QSize(16, 16));
+        setPopupMode(QToolButton::InstantPopup);
+        setAutoRaise(true);
+
+        setSizePolicy(sizePolicy().horizontalPolicy(),
+                      QSizePolicy::Ignored);
+    }
+
+protected:
+    void paintEvent(QPaintEvent *)
+    {
+        QStylePainter p(this);
+        QStyleOptionToolButton opt;
+        initStyleOption(&opt);
+
+        // Disable the menu arrow, since we already got a down arrow icon
+        opt.features &= ~QStyleOptionToolButton::HasMenu;
+
+        p.drawComplexControl(QStyle::CC_ToolButton, opt);
+    }
+};
+
 } // anonymous namespace
 
 TilesetDock::TilesetDock(QWidget *parent):
@@ -144,8 +175,9 @@ TilesetDock::TilesetDock(QWidget *parent):
     mDeleteTileset(new QAction(this)),
     mRenameTileset(new QAction(this)),
     mEditTerrain(new QAction(this)),
-    mTilesetMenuButton(new QToolButton(this)),
+    mTilesetMenuButton(new TilesetMenuButton(this)),
     mTilesetMenu(new QMenu(this)),
+    mTilesetActionGroup(new QActionGroup(this)),
     mTilesetMenuMapper(0)
 {
     setObjectName(QLatin1String("TilesetDock"));
@@ -160,19 +192,19 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     QWidget *w = new QWidget(this);
 
-    QHBoxLayout *horizontal = new QHBoxLayout();
-    horizontal->setSpacing(5);
+    QHBoxLayout *horizontal = new QHBoxLayout;
+    horizontal->setSpacing(0);
     horizontal->addWidget(mTabBar);
     horizontal->addWidget(mTilesetMenuButton);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
-    vertical->setSpacing(5);
+    vertical->setSpacing(0);
     vertical->setMargin(5);
     vertical->addLayout(horizontal);
     vertical->addWidget(mViewStack);
 
-    horizontal = new QHBoxLayout();
-    horizontal->setSpacing(5);
+    horizontal = new QHBoxLayout;
+    horizontal->setSpacing(0);
     horizontal->addWidget(mToolBar, 1);
     vertical->addLayout(horizontal);
 
@@ -227,8 +259,6 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(documentCloseRequested(int)));
 
     mTilesetMenuButton->setMenu(mTilesetMenu);
-    mTilesetMenuButton->setPopupMode(QToolButton::InstantPopup);
-    mTilesetMenuButton->setAutoRaise(true);
     connect(mTilesetMenu, SIGNAL(aboutToShow()), SLOT(refreshTilesetMenu()));
 
     setWidget(w);
@@ -712,9 +742,16 @@ void TilesetDock::refreshTilesetMenu()
     connect(mTilesetMenuMapper, SIGNAL(mapped(int)),
             mTabBar, SLOT(setCurrentIndex(int)));
 
+    const int currentIndex = mTabBar->currentIndex();
+
     for (int i = 0; i < mTabBar->count(); ++i) {
-        const QString name = mTabBar->tabText(i);
-        QAction *action = new QAction(name, this);
+        QAction *action = new QAction(mTabBar->tabText(i), this);
+        action->setCheckable(true);
+
+        mTilesetActionGroup->addAction(action);
+        if (i == currentIndex)
+            action->setChecked(true);
+
         mTilesetMenu->addAction(action);
         connect(action, SIGNAL(triggered()), mTilesetMenuMapper, SLOT(map()));
         mTilesetMenuMapper->setMapping(action, i);

@@ -94,9 +94,13 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addSeparator();
     buttonContainer->addAction(handler->actionToggleOtherLayers());
 
+    QVBoxLayout *listAndToolBar = new QVBoxLayout;
+    listAndToolBar->setSpacing(0);
+    listAndToolBar->addWidget(mLayerView);
+    listAndToolBar->addWidget(buttonContainer);
+
     layout->addLayout(opacityLayout);
-    layout->addWidget(mLayerView);
-    layout->addWidget(buttonContainer);
+    layout->addLayout(listAndToolBar);
 
     setWidget(widget);
     retranslateUi();
