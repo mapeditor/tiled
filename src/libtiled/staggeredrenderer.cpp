@@ -281,12 +281,10 @@ void StaggeredRenderer::drawImageLayer(QPainter *painter,
 {
     Q_UNUSED(exposed)
 
+    const QPointF layerPos(imageLayer->x() * map()->tileWidth(), imageLayer->y() * map()->tileHeight());
     const QPixmap &img = imageLayer->image();
-    QPointF paintOrigin(-img.width() / 2, -img.height());
 
-    paintOrigin += tileToPixelCoords(imageLayer->x(), imageLayer->y());
-
-    painter->drawPixmap(paintOrigin, img);
+    painter->drawPixmap(layerPos, img);
 }
 
 /**
