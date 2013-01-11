@@ -43,7 +43,7 @@ ImageLayerItem::ImageLayerItem(ImageLayer *layer, MapRenderer *renderer)
 void ImageLayerItem::syncWithImageLayer()
 {
     prepareGeometryChange();
-    mBoundingRect = mRenderer->boundingRect(mLayer->bounds());
+    mBoundingRect = mRenderer->boundingRect(mLayer);
 }
 
 QRectF ImageLayerItem::boundingRect() const

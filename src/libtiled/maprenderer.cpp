@@ -28,9 +28,27 @@
 
 #include "maprenderer.h"
 
+#include "imagelayer.h"
+
 #include <QVector2D>
 
 using namespace Tiled;
+
+QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
+{
+    return QRectF(imageLayer->position(),
+                  imageLayer->image().size());
+}
+
+void MapRenderer::drawImageLayer(QPainter *painter,
+                                 const ImageLayer *imageLayer,
+                                 const QRectF &exposed)
+{
+    Q_UNUSED(exposed)
+
+    painter->drawPixmap(imageLayer->position(),
+                        imageLayer->image());
+}
 
 void MapRenderer::setFlag(RenderFlag flag, bool enabled)
 {
