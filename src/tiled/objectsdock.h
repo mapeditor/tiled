@@ -63,6 +63,7 @@ private:
     void saveExpandedGroups(MapDocument *mapDoc);
     void restoreExpandedGroups(MapDocument *mapDoc);
 
+    QAction *mActionNewLayer;
     QAction *mActionDuplicateObjects;
     QAction *mActionRemoveObjects;
     QAction *mActionObjectProperties;

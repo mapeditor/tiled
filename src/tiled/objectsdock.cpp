@@ -64,7 +64,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     mActionObjectProperties = new QAction(this);
     mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
 
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
     Utils::setThemeIcon(mActionObjectProperties, "document-properties");
@@ -81,10 +80,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
-    QAction *newLayerAction = new QAction(this);
-    newLayerAction->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
-    newLayerAction->setToolTip(tr("Add Object Layer"));
-    connect(newLayerAction, SIGNAL(triggered()),
+    mActionNewLayer = new QAction(this);
+    mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    connect(mActionNewLayer, SIGNAL(triggered()),
             handler->actionAddObjectGroup(), SIGNAL(triggered()));
 
     mActionMoveToLayer = new QAction(this);
@@ -95,7 +93,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     toolbar->setMovable(false);
     toolbar->setIconSize(QSize(16, 16));
 
-    toolbar->addAction(newLayerAction);
+    toolbar->addAction(mActionNewLayer);
     toolbar->addAction(mActionDuplicateObjects);
     toolbar->addAction(mActionRemoveObjects);
 
@@ -122,8 +120,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
             SLOT(documentCloseRequested(int)));
-
-    updateActions();
 }
 
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
@@ -161,6 +157,11 @@ void ObjectsDock::changeEvent(QEvent *e)
 void ObjectsDock::retranslateUi()
 {
     setWindowTitle(tr("Objects"));
+
+    mActionNewLayer->setToolTip(tr("Add Object Layer"));
+    mActionObjectProperties->setToolTip(tr("Object Properties"));
+
+    updateActions();
 }
 
 void ObjectsDock::updateActions()
