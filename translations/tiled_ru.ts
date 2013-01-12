@@ -20,11 +20,11 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле &apos;COPYING&apos; поставляемым с Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
- {2&quot;?} {1&lt;?} {2008-2013 ?} {2 ?}</translation>
+</translation>
     </message>
 </context>
 <context>
@@ -45,12 +45,12 @@
     <message>
         <location filename="../src/automappingconverter/converterdatamodel.cpp" line="+75"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия</translation>
     </message>
 </context>
 <context>
@@ -58,22 +58,22 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить всё как %1</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Все файлы (*)</translation>
+        <translation>Все файлы (*)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Tiled map файлы (*.tmx)</translation>
+        <translation>Tiled map файлы (*.tmx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Open Map</source>
-        <translation type="unfinished">Открыть карту</translation>
+        <translation>Открыть карту</translation>
     </message>
 </context>
 <context>
@@ -109,44 +109,44 @@
     <message>
         <location filename="../src/tiled/editterraindialog.ui" line="+14"/>
         <source>Edit Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить информацию участка</translation>
     </message>
     <message>
         <location line="+11"/>
         <location line="+3"/>
         <source>Undo</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location line="+20"/>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished">Повторить</translation>
+        <translation>Повторить</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Erase</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить тип участка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add</source>
-        <translation type="unfinished">Добавить</translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Remove Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить тип участка</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -154,27 +154,27 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Не удается открыть файл для чтения.</translation>
+        <translation>Не удается открыть файл для чтения.</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Возникла ошибка при загрузке набора тайлов %1, расширяемого в %2. Путь не найден!</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>No tilesets section found before layer section.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найдено набора тайлов до слоя тайлов.</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Error mapping tile id %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при создании карты для тайла с id %1.</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не соответствует спецификации Flare-карты. Flare карта состоит по крайней мере из одной секции заголовка, набора тайлов и слоя тайлов.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -194,7 +194,7 @@
     <message>
         <location line="+3"/>
         <source>Multiple &quot;%1&quot; layers found!</source>
-        <translation>Найдено несколько слоёв &quot;%1&quot;!</translation>
+        <translation>Найдено несколько слоев &quot;%1&quot;!</translation>
     </message>
 </context>
 <context>
@@ -470,17 +470,17 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Object &amp;Outlines</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Отображать границы тайлов-объектов</translation>
     </message>
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
         <source>Tiled Automapping Rule Files Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Конвертер файлов правил авто-карты</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Add new Automapping rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить правило Авто-карты</translation>
     </message>
 </context>
 <context>
@@ -518,7 +518,7 @@ Line %1, column %2</source>
         <location line="+35"/>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+48"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
-        <translation>Неподдерживаемая ориентация карты: &quot;%1&quot;</translation>
+        <translation>Не поддерживаемая ориентация карты: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -540,7 +540,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Invalid (nonconsecutive) tile ID: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный (непоследовательный) ID тайла: %1</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -554,7 +554,8 @@ Line %1, column %2</source>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+210"/>
         <source>Error loading image:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при загрузке изображения:
+&apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+106"/>
@@ -570,7 +571,8 @@ Line %1, column %2</source>
         <location line="+80"/>
         <source>Error loading image layer image:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при загрузке изображения слоя изображений:
+&apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -978,12 +980,12 @@ Line %1, column %2</source>
     <message>
         <location line="+171"/>
         <source>Automapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Авто-карта</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Use Automapping, when drawing into layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать Авто-карту при рисовании на слое</translation>
     </message>
     <message>
         <location line="-190"/>
@@ -993,7 +995,7 @@ Line %1, column %2</source>
     <message>
         <location line="+17"/>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет сетки:</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -1045,22 +1047,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/automappingconverter/convertercontrol.h" line="+33"/>
         <source>v0.8 and before</source>
-        <translation type="unfinished"></translation>
+        <translation>v0.8 и ниже</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>v0.9 and later</source>
-        <translation type="unfinished"></translation>
+        <translation>v0.9 и выше</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>неизвестно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>not a map</source>
-        <translation type="unfinished"></translation>
+        <translation>не карта</translation>
     </message>
 </context>
 <context>
@@ -1068,72 +1070,72 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+48"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть Replica Insland файл!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can&apos;t parse file header!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается распарсить заголовок файла!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Can&apos;t parse layer header!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается распарсить заголовок слоя!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Inconsistent layer sizes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Несовместимый размер слоя!</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File ended in middle of layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл закончился в середине слоя!</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unexpected data at end of file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Неожиданное содержимое в конце файла!</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Replica Island map files (*.bin)</source>
-        <translation type="unfinished"></translation>
+        <translation>Replica Island файлы (*.bin)</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Cannot open temporary file for writing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть временный файл для записи!</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>You must define a background_index property on the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы должны установить параметр background_index для карты!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Can&apos;t save non-tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается сохранить не тайловый слой!</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Couldn&apos;t overwrite old version; may be deleted!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается перезаписать старую версию; возможно была удалена!</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>You must define a type property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы должны установить параметр типа для каждого слоя!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы должны установить параметр tile_index для каждого слоя!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы должны установить параметр scroll_speed для каждого слоя!</translation>
     </message>
 </context>
 <context>
@@ -1273,53 +1275,53 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: Параметр &apos;%2&apos; = &apos;%3&apos; не выполняет ничего важного. Параметр игнорируется.</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы забыли подчеркивание в слое &apos;%1&apos;?</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой &apos;%1&apos; не является действительным слоем для Авто-карты.</translation>
     </message>
     <message>
         <location line="-105"/>
         <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;regions_input&apos; слой может объявляться лишь однократно.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;regions_*&apos; слои должны быть слоями тайлов.</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;regions_output&apos; слой может объявляться лишь однократно.</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;input_*&apos; и &apos;inputnot_*&apos; слои должны быть слоями тайлов.</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найдено слоев &apos;regions&apos; и &apos;regions_input&apos;.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найдено слоев &apos;regions&apos; и &apos;regions_outpu&apos;.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найден слой input_&lt;name&gt;!</translation>
     </message>
     <message>
         <location line="+171"/>
@@ -1337,13 +1339,13 @@ Line %1, column %2</source>
     <message>
         <location line="+31"/>
         <source>Apply AutoMap rules</source>
-        <translation>Применить правила автокарты</translation>
+        <translation>Применить правила авто-карты</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>No rules file found at:
 %1</source>
-        <translation>Не найден файл правил в:
+        <translation>Не найден файл правил:
 %1</translation>
     </message>
     <message>
@@ -1555,22 +1557,22 @@ Line %1, column %2</source>
     <message>
         <location line="+213"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить прямоугольник</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить эллипс</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1654,12 +1656,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="+153"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+31"/>
         <source>New Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый участок</translation>
     </message>
 </context>
 <context>
@@ -1682,27 +1684,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished">Слой изображений</translation>
+        <translation>Слой изображений</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished">Обзор...</translation>
+        <translation>Обзор...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">Изображение:</translation>
+        <translation>Изображение:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Color:</source>
-        <translation type="unfinished">Цвет:</translation>
+        <translation>Цвет:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished">Изображение слоя</translation>
+        <translation>Изображение слоя</translation>
     </message>
 </context>
 <context>
@@ -1728,12 +1730,12 @@ Line %1, column %2</source>
     <message>
         <location line="+97"/>
         <source>Show Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать другие слои</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Hide Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрятать другие слои</translation>
     </message>
 </context>
 <context>
@@ -1753,7 +1755,7 @@ Line %1, column %2</source>
     <message>
         <location line="+40"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1779,7 +1781,7 @@ Line %1, column %2</source>
     <message>
         <location line="-1281"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1795,7 +1797,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1805,7 +1807,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Ctrl+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1868,12 +1870,12 @@ Line %1, column %2</source>
     <message>
         <location line="+25"/>
         <source>Unsaved Changes</source>
-        <translation>Несохраненные изменения</translation>
+        <translation>Не сохраненные изменения</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are unsaved changes. Do you want to save now?</source>
-        <translation>Имеются несохраненные изменения. Хотите сохранить сейчас?</translation>
+        <translation>Имеются не сохраненные изменения. Хотите сохранить сейчас?</translation>
     </message>
     <message>
         <location line="+70"/>
@@ -1883,13 +1885,14 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>Non-unique file extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Не уникальное расширение файла</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не уникальное расширение файла.
+Пожалуйста, выберите соответствующий формат.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1934,22 +1937,22 @@ Please select specific format.</source>
     <message>
         <location line="+181"/>
         <source>Current layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущий слой: %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;none&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="-123"/>
         <source>Automatic Mapping Warning</source>
-        <translation>Предупреждение автокарты</translation>
+        <translation>Предупреждение авто-карты</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Automatic Mapping Error</source>
-        <translation>Ошибка автокарты</translation>
+        <translation>Ошибка авто-карты</translation>
     </message>
     <message>
         <location line="+274"/>
@@ -1987,7 +1990,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Image Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой изображений %1</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2002,7 +2005,7 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation>Объеденить слой с предыдущим</translation>
+        <translation>Объединить слой с предыдущим</translation>
     </message>
     <message>
         <location line="+140"/>
@@ -2110,12 +2113,12 @@ Please select specific format.</source>
     <message>
         <location line="-1"/>
         <source>Add &amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить слой &amp;изображений</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Merge Layer Down</source>
-        <translation>Объеденить слой с п&amp;редыдущим</translation>
+        <translation>Объединить слой с п&amp;редыдущим</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2133,22 +2136,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="+189"/>
         <source>Change Object Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать объект</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Сменить тип объекта</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
 </context>
 <context>
@@ -2156,17 +2159,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mappropertiesdialog.cpp" line="+40"/>
         <source>Map</source>
-        <translation type="unfinished">Карта</translation>
+        <translation>Карта</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет фона:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат слоя:</translation>
     </message>
 </context>
 <context>
@@ -2174,17 +2177,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
         <source>Browse...</source>
-        <translation type="unfinished">Обзор...</translation>
+        <translation>Обзор...</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Choose the Maps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите папку с картами</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Карты</translation>
     </message>
 </context>
 <context>
@@ -2192,7 +2195,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/minimapdock.cpp" line="+60"/>
         <source>Mini-map</source>
-        <translation type="unfinished"></translation>
+        <translation>Мини-карта</translation>
     </message>
 </context>
 <context>
@@ -2200,17 +2203,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+58"/>
         <source>Orthogonal</source>
-        <translation type="unfinished">Ортогональная</translation>
+        <translation>Ортогональная</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Isometric</source>
-        <translation type="unfinished">Изометрическая</translation>
+        <translation>Изометрическая</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>Изометрическая (смещенная)</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2239,7 +2242,7 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation>Не удалось найти тайлы в изображении набора тайлов, соответстующие заданным параметрам!</translation>
+        <translation>Не удалось найти тайлы в изображении набора тайлов, соответствующие заданным параметрам!</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2315,23 +2318,23 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objectsdock.cpp" line="+67"/>
         <source>Object Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры объекта</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Add Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить слой объектов</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Объекты</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
         <location line="+20"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Переместить %n объект на слой</numerusform>
             <numerusform>Переместить %n объекта на слой</numerusform>
             <numerusform>Переместить %n объектов на слой</numerusform>
@@ -2341,7 +2344,7 @@ Please select specific format.</source>
         <location line="-26"/>
         <location line="+47"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Дублировать %n объект</numerusform>
             <numerusform>Дублировать %n объекта</numerusform>
             <numerusform>Дублировать %n объектов</numerusform>
@@ -2351,7 +2354,7 @@ Please select specific format.</source>
         <location line="-46"/>
         <location line="+70"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Удалить %n объект</numerusform>
             <numerusform>Удалить %n объекта</numerusform>
             <numerusform>Удалить %n объектов</numerusform>
@@ -2385,7 +2388,7 @@ Please select specific format.</source>
     <message>
         <location line="+14"/>
         <source>Export Object Types</source>
-        <translation>Экпортировать типы объектов</translation>
+        <translation>Экспортировать типы объектов</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2436,7 +2439,7 @@ Please select specific format.</source>
         <source>%1 already exists.
 Do you want to replace it?</source>
         <translation>%1 уже существует.
-Хотите переписать файл?</translation>
+Хотите перезаписать файл?</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -2465,13 +2468,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/terrainbrush.cpp" line="+44"/>
         <location line="+118"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Рисование участком</translation>
     </message>
     <message>
         <location line="-115"/>
         <location line="+116"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2479,7 +2482,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/terraindock.cpp" line="+161"/>
         <source>Terrains</source>
-        <translation type="unfinished"></translation>
+        <translation>Участки</translation>
     </message>
 </context>
 <context>
@@ -2487,12 +2490,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/terrainview.cpp" line="+103"/>
         <source>Terrain &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Параметры участка...</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Участок</translation>
     </message>
 </context>
 <context>
@@ -2560,12 +2563,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Rena&amp;me Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Пере&amp;именовать набор тайлов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit &amp;Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать информа&amp;цию участка</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -2585,12 +2588,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+28"/>
         <source>Rename Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать набор тайлов</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Новое имя:</translation>
     </message>
 </context>
 <context>
@@ -2603,12 +2606,12 @@ Do you want to replace it?</source>
     <message>
         <location line="-12"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить тип участка</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить изображением участка</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2803,13 +2806,13 @@ Do you want to replace it?</source>
     <message>
         <location line="+26"/>
         <source>Change Tileset Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать набор тайлов</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+27"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished">Изменить параметры слоя изображений</translation>
+        <translation>Изменить параметры слоя изображений</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -2829,58 +2832,58 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/addremoveterrain.cpp" line="+69"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить участок</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить участок</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapproperties.cpp" line="+35"/>
         <location filename="../src/tiled/mappropertiesdialog.cpp" line="+38"/>
         <source>Change Map Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить параметры карты</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+134"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить участок тайла</translation>
     </message>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="-135"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить изображение участка</translation>
     </message>
     <message>
         <location filename="../src/tiled/layermodel.cpp" line="-273"/>
         <source>Show Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать слой</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрятать слой</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Change Layer Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить прозрачность слоя</translation>
     </message>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="-192"/>
         <source>Show Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать объект</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрятать объект</translation>
     </message>
     <message>
         <location filename="../src/tiled/terrainmodel.cpp" line="+48"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать участок</translation>
     </message>
 </context>
 <context>
