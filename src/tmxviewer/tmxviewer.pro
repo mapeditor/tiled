@@ -38,3 +38,7 @@ SOURCES += main.cpp \
          tmxviewer.cpp
 
 HEADERS += tmxviewer.h
+
+manpage.path = $${PREFIX}/share/man/man1/
+manpage.files += ../../docs/tmxviewer.1
+INSTALLS += manpage

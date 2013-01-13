@@ -28,3 +28,6 @@ automappingconverter.exe
 *.intermediate.manifest
 
 tests/test_mapreader
+
+# Ronn html outputs
+docs/*.1.html
