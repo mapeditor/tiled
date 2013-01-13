@@ -1,0 +1,41 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "TMXRASTERIZER" "1" "January 2013" "" ""
+.
+.SH "NAME"
+\fBtmxrasterizer\fR \- renders a tile map to an image
+.
+.SH "SYNOPSIS"
+\fBtmxrasterizer\fR [\fIOPTIONS\fR] [INPUT FILE] [OUTPUT FILE]
+.
+.SH "DESCRIPTION"
+This application can be used to render maps created by the Tiled Map Editor to an image\. This is very helpful for creating small\-scale previews, such as mini\-maps\.
+.
+.SH "OPTIONS"
+.
+.TP
+\fB\-h\fR \fB\-\-help\fR
+Displays the help
+.
+.TP
+\fB\-v\fR \fB\-\-version\fR
+Displays the version
+.
+.TP
+\fB\-s\fR \fB\-\-scale\fR SIZE
+The scale of the output image
+.
+.TP
+\fB\-t\fR \fB\-\-tilesize\fR SIZE
+The requested size in pixels at which a tile is rendered\. Overrides the \-\-scale option\.
+.
+.TP
+\fB\-a\fR \fB\-\-anti\-aliasing\fR
+Smooth the output image using anti\-aliasing
+.
+.SH "AUTHOR"
+Vincent Petithory <\fIvincent\.petithory@gmail\.com\fR>
+.
+.SH "SEE ALSO"
+tiled(1), tmxviewer(1), \fIhttp://www\.mapeditor\.org/\fR

@@ -1,0 +1,25 @@
+tmxviewer(1) -- a simple tile map viewer
+========================================
+
+## SYNOPSIS
+
+`tmxviewer` [<OPTIONS>] [FILE]
+
+## DESCRIPTION
+
+This application can be used to quickly view a map that was created by the
+Tiled Map Editor.
+
+## OPTIONS
+
+  * `-h` `--help`:
+    Displays the help
+  * `-v` `--version`:
+    Displays the version
+
+## AUTHORS
+<https://github.com/bjorn/tiled/blob/master/AUTHORS>
+
+## SEE ALSO
+
+tiled(1), tmxrasterizer(1), <http://www.mapeditor.org/>
