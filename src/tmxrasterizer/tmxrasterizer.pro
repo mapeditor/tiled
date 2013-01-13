@@ -38,3 +38,7 @@ SOURCES += main.cpp \
          tmxrasterizer.cpp
 
 HEADERS += tmxrasterizer.h
+
+manpage.path = $${PREFIX}/share/man/man1/
+manpage.files += ../../docs/tmxrasterizer.1
+INSTALLS += manpage

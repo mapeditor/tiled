@@ -270,6 +270,18 @@ FORMS += aboutdialog.ui \
     saveasimagedialog.ui\
     editterraindialog.ui
 
+images.path = $${PREFIX}/share/tiled/images
+images.files += images/tiled-icon-32.png
+INSTALLS += images
+
+desktopfile.path = $${PREFIX}/share/applications/
+desktopfile.files += ../../docs/tiled.desktop
+INSTALLS += desktopfile
+
+manpage.path = $${PREFIX}/share/man/man1/
+manpage.files += ../../docs/tiled.1
+INSTALLS += manpage
+
 RESOURCES += tiled.qrc
 macx {
     TARGET = Tiled
