@@ -187,9 +187,9 @@ bool MapReaderPrivate::openFile(QFile *file)
 
 void MapReaderPrivate::readUnknownElement()
 {
-    qDebug() << "Unknown element (fixme):" << xml.name()
-             << " at line " << xml.lineNumber()
-             << ", column " << xml.columnNumber();
+    qDebug().nospace() << "Unknown element (fixme): " << xml.name()
+                       << " at line " << xml.lineNumber()
+                       << ", column " << xml.columnNumber();
     xml.skipCurrentElement();
 }
 
