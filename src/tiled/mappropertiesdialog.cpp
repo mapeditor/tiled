@@ -73,7 +73,8 @@ void MapPropertiesDialog::accept()
         // this shouldn't happen!
         format = 0;
     }
-    mMapDocument->map()->setLayerDataFormat((MapWriter::LayerDataFormat)(format - 1));
+
+    Map::LayerDataFormat newLayerDataFormat = static_cast<Map::LayerDataFormat>(format - 1);
 
     QUndoStack *undoStack = mMapDocument->undoStack();
 
@@ -82,14 +83,17 @@ void MapPropertiesDialog::accept()
         newColor = QColor();
 
     const Map *map = mMapDocument->map();
-    const bool localChanges = newColor != map->backgroundColor();
+    bool localChanges = newColor != map->backgroundColor() ||
+            newLayerDataFormat != map->layerDataFormat();
 
     if (localChanges) {
         undoStack->beginMacro(QCoreApplication::translate(
             "Undo Commands",
             "Change Map Properties"));
 
-        undoStack->push(new ChangeMapProperties(mMapDocument, newColor));
+        undoStack->push(new ChangeMapProperties(mMapDocument,
+                                                newColor,
+                                                newLayerDataFormat));
     }
 
     PropertiesDialog::accept();

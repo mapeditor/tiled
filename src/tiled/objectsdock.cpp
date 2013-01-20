@@ -64,7 +64,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     mActionObjectProperties = new QAction(this);
     mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
 
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
     Utils::setThemeIcon(mActionObjectProperties, "document-properties");
@@ -76,26 +75,25 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(5);
+    layout->setSpacing(0);
     layout->addWidget(mObjectsView);
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
-    QAction *newLayerAction = new QAction(this);
-    newLayerAction->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
-    newLayerAction->setToolTip(tr("Add Object Layer"));
-    connect(newLayerAction, SIGNAL(triggered()),
+    mActionNewLayer = new QAction(this);
+    mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
+    connect(mActionNewLayer, SIGNAL(triggered()),
             handler->actionAddObjectGroup(), SIGNAL(triggered()));
 
     mActionMoveToLayer = new QAction(this);
     mActionMoveToLayer->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
-    mActionMoveToLayer->setToolTip(tr("Move Object To Layer"));
 
     QToolBar *toolbar = new QToolBar;
     toolbar->setFloatable(false);
     toolbar->setMovable(false);
     toolbar->setIconSize(QSize(16, 16));
 
-    toolbar->addAction(newLayerAction);
+    toolbar->addAction(mActionNewLayer);
     toolbar->addAction(mActionDuplicateObjects);
     toolbar->addAction(mActionRemoveObjects);
 
@@ -122,8 +120,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 
     connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
             SLOT(documentCloseRequested(int)));
-
-    updateActions();
 }
 
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
@@ -161,6 +157,11 @@ void ObjectsDock::changeEvent(QEvent *e)
 void ObjectsDock::retranslateUi()
 {
     setWindowTitle(tr("Objects"));
+
+    mActionNewLayer->setToolTip(tr("Add Object Layer"));
+    mActionObjectProperties->setToolTip(tr("Object Properties"));
+
+    updateActions();
 }
 
 void ObjectsDock::updateActions()
@@ -171,16 +172,13 @@ void ObjectsDock::updateActions()
     mActionRemoveObjects->setEnabled(enabled);
     mActionObjectProperties->setEnabled(enabled && (count == 1));
 
-    mActionDuplicateObjects->setToolTip((enabled && count > 1)
-        ? tr("Duplicate %n Objects", "", count) : tr("Duplicate Object"));
-    mActionRemoveObjects->setToolTip((enabled && count > 1)
-        ? tr("Remove %n Objects", "", count) : tr("Remove Object"));
+    mActionDuplicateObjects->setToolTip(tr("Duplicate %n Object(s)", "", count));
+    mActionRemoveObjects->setToolTip(tr("Remove %n Object(s)", "", count));
 
     if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
         enabled = false;
     mActionMoveToLayer->setEnabled(enabled);
-    mActionMoveToLayer->setToolTip((enabled && count > 1)
-        ? tr("Move %n Objects To Layer", "", count) : tr("Move Object To Layer"));
+    mActionMoveToLayer->setToolTip(tr("Move %n Object(s) to Layer", "", count));
 }
 
 void ObjectsDock::aboutToShowMoveToMenu()
@@ -260,7 +258,7 @@ void ObjectsDock::objectProperties()
     const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
 
     MapObject *mapObject = selectedObjects.first();
-    ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, 0);
+    ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
     propertiesDialog.exec();
 }
 
@@ -330,7 +328,13 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         mMapObjectModel = mMapDocument->mapObjectModel();
         setModel(mMapObjectModel);
         model()->setMapDocument(mapDoc);
-        header()->setResizeMode(0, QHeaderView::Stretch); // 2 equal-sized columns, user can't adjust
+
+        // 2 equal-sized columns, user can't adjust
+#if QT_VERSION >= 0x050000
+        header()->setSectionResizeMode(0, QHeaderView::Stretch);
+#else
+        header()->setResizeMode(0, QHeaderView::Stretch);
+#endif
 
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
@@ -344,8 +348,10 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
 void ObjectsView::onActivated(const QModelIndex &index)
 {
-    Q_UNUSED(index)
-    // show object properties, center in view
+    if (MapObject *mapObject = model()->toMapObject(index)) {
+        ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
+        propertiesDialog.exec();
+    }
 }
 
 void ObjectsView::selectionChanged(const QItemSelection &selected,

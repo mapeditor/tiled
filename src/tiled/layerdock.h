@@ -61,7 +61,8 @@ protected:
 
 private slots:
     void updateOpacitySlider();
-    void setLayerOpacity(int opacity);
+    void layerChanged(int index);
+    void sliderValueChanged(int opacity);
 
 private:
     void retranslateUi();
@@ -70,6 +71,8 @@ private:
     QSlider *mOpacitySlider;
     LayerView *mLayerView;
     MapDocument *mMapDocument;
+    bool mUpdatingSlider;
+    bool mChangingLayerOpacity;
 };
 
 /**

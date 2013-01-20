@@ -24,7 +24,7 @@
 
 #include "terrainmodel.h"
 
-#include <QListView>
+#include <QTreeView>
 
 namespace Tiled {
 namespace Internal {
@@ -33,26 +33,24 @@ class MapDocument;
 class Zoomable;
 
 /**
- * The tileset view. May only be used with the TilesetModel.
+ * The terrain view. Is expected to be used with the TerrainModel, but will
+ * also work when it is wrapped by a proxy model.
  */
-class TerrainView : public QListView
+class TerrainView : public QTreeView
 {
     Q_OBJECT
 
 public:
-    TerrainView(MapDocument *mapDocument, QWidget *parent = 0);
+    TerrainView(QWidget *parent = 0);
 
-    QSize sizeHint() const;
+    void setMapDocument(MapDocument *mapDocument);
 
     Zoomable *zoomable() const { return mZoomable; }
 
-    bool drawGrid() const { return mDrawGrid; }
-
     /**
-     * Convenience method that returns the model as a TilesetModel.
+     * Convenience method to get the terrain at a given \a index.
      */
-    TerrainModel *terrainModel() const
-    { return static_cast<TerrainModel *>(model()); }
+    Terrain *terrainAt(const QModelIndex &index) const;
 
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -60,14 +58,12 @@ protected:
 
 private slots:
     void editTerrainProperties();
-    void setDrawGrid(bool drawGrid);
 
     void adjustScale();
 
 private:
     Zoomable *mZoomable;
     MapDocument *mMapDocument;
-    bool mDrawGrid;
 };
 
 } // namespace Internal

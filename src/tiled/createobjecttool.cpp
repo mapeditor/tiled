@@ -41,7 +41,7 @@ using namespace Tiled::Internal;
 
 CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     : AbstractObjectTool(QString(),
-          QIcon(QLatin1String(":images/24x24/insert-object.png")),
+          QIcon(QLatin1String(":images/24x24/insert-rectangle.png")),
           QKeySequence(tr("O")),
           parent)
     , mNewMapObjectItem(0)
@@ -52,8 +52,8 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mMode(mode)
 {
     switch (mMode) {
-    case CreateArea:
-        Utils::setThemeIcon(this, "insert-object");
+    case CreateRectangle:
+        Utils::setThemeIcon(this, "insert-rectangle");
         break;
 
     case CreateTile:
@@ -119,7 +119,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         snapToGrid = !snapToGrid;
 
     switch (mMode) {
-    case CreateArea:
+    case CreateRectangle:
     case CreateEllipse: {
         const QPointF tileCoords = renderer->pixelToTileCoords(pos);
 
@@ -175,7 +175,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     // Check if we are already creating a new map object
     if (mNewMapObjectItem) {
         switch (mMode) {
-        case CreateArea:
+        case CreateRectangle:
         case CreateTile:
         case CreateEllipse:
             if (event->button() == Qt::RightButton)
@@ -246,7 +246,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
-        if (mMode == CreateArea || mMode == CreateTile || mMode == CreateEllipse)
+        if (mMode == CreateRectangle || mMode == CreateTile || mMode == CreateEllipse)
             finishNewMapObject();
     }
 }
@@ -254,9 +254,9 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 void CreateObjectTool::languageChanged()
 {
     switch (mMode) {
-    case CreateArea:
-        setName(tr("Insert Object"));
-        setShortcut(QKeySequence(tr("O")));
+    case CreateRectangle:
+        setName(tr("Insert Rectangle"));
+        setShortcut(QKeySequence(tr("R")));
         break;
     case CreateEllipse:
         setName(tr("Insert Ellipse"));

@@ -124,7 +124,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
 
     QHeaderView *horizontalHeader = mUi->objectTypesTable->horizontalHeader();
+#if QT_VERSION >= 0x050000
+    horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
+#else
     horizontalHeader->setResizeMode(QHeaderView::Stretch);
+#endif
 
     Utils::setThemeIcon(mUi->addObjectTypeButton, "add");
     Utils::setThemeIcon(mUi->removeObjectTypeButton, "remove");
@@ -297,20 +301,20 @@ void PreferencesDialog::fromPreferences()
 
     int formatIndex = 0;
     switch (prefs->layerDataFormat()) {
-    case MapWriter::XML:
+    case Map::XML:
         formatIndex = 0;
         break;
-    case MapWriter::Base64:
+    case Map::Base64:
         formatIndex = 1;
         break;
-    case MapWriter::Base64Gzip:
+    case Map::Base64Gzip:
         formatIndex = 2;
         break;
     default:
-    case MapWriter::Base64Zlib:
+    case Map::Base64Zlib:
         formatIndex = 3;
         break;
-    case MapWriter::CSV:
+    case Map::CSV:
         formatIndex = 4;
         break;
     }
@@ -336,20 +340,20 @@ void PreferencesDialog::toPreferences()
     prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
 }
 
-MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
+Map::LayerDataFormat PreferencesDialog::layerDataFormat() const
 {
     switch (mUi->layerDataCombo->currentIndex()) {
     case 0:
-        return MapWriter::XML;
+        return Map::XML;
     case 1:
-        return MapWriter::Base64;
+        return Map::Base64;
     case 2:
-        return MapWriter::Base64Gzip;
+        return Map::Base64Gzip;
     case 3:
     default:
-        return MapWriter::Base64Zlib;
+        return Map::Base64Zlib;
     case 4:
-        return MapWriter::CSV;
+        return Map::CSV;
     }
 }
 

@@ -172,20 +172,19 @@ ReplicaIslandPlugin::loadTilesetFromResource(const QString &name)
 }
 
 void ReplicaIslandPlugin::addTilesetsToMap(Tiled::Map *map,
-                                           QList<Tiled::Tileset *> tilesets)
+                                           const QList<Tiled::Tileset *> &tilesets)
 {
     using namespace Tiled;
 
-    QList<Tileset *>::iterator i = tilesets.begin();
+    QList<Tileset *>::const_iterator i = tilesets.begin();
     for (; i != tilesets.end(); ++i)
         if (*i)
             map->addTileset(*i);
 }
 
-Tiled::Tileset *ReplicaIslandPlugin::tilesetForLayer(
-    char type, char tileIndex,
-    QList<Tiled::Tileset *> typeTilesets,
-    QList<Tiled::Tileset *> tileIndexTilesets)
+Tiled::Tileset *ReplicaIslandPlugin::tilesetForLayer(int type, int tileIndex,
+                                                     const QList<Tiled::Tileset *> &typeTilesets,
+                                                     const QList<Tiled::Tileset *> &tileIndexTilesets)
 {
     if (type == 0)
         return tileIndexTilesets[tileIndex];

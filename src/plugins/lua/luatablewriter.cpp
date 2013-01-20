@@ -187,7 +187,7 @@ void LuaTableWriter::writeNewline()
     }
 }
 
-void LuaTableWriter::write(const char *bytes, uint length)
+void LuaTableWriter::write(const char *bytes, unsigned length)
 {
     if (m_device->write(bytes, length) != length)
         m_error = true;

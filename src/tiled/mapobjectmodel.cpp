@@ -28,10 +28,49 @@
 #include "objectgroup.h"
 #include "renamelayer.h"
 
+#include <QCoreApplication>
+
 #define GROUPS_IN_DISPLAY_ORDER 1
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+namespace {
+
+/**
+ * Used for changing object visibility.
+ */
+class SetMapObjectVisible : public QUndoCommand
+{
+public:
+    SetMapObjectVisible(MapDocument *mapDocument,
+                        MapObject *mapObject,
+                        bool visible)
+        : mMapObjectModel(mapDocument->mapObjectModel())
+        , mMapObject(mapObject)
+        , mOldVisible(mapObject->isVisible())
+        , mNewVisible(visible)
+    {
+        if (visible)
+            setText(QCoreApplication::translate("Undo Commands",
+                                                "Show Object"));
+        else
+            setText(QCoreApplication::translate("Undo Commands",
+                                                "Hide Object"));
+    }
+
+    void undo() { mMapObjectModel->setObjectVisible(mMapObject, mOldVisible); }
+    void redo() { mMapObjectModel->setObjectVisible(mMapObject, mNewVisible); }
+
+private:
+    MapObjectModel *mMapObjectModel;
+    MapObject *mMapObject;
+    bool mOldVisible;
+    bool mNewVisible;
+};
+
+} // anonymous namespace
+
 
 MapObjectModel::MapObjectModel(QObject *parent):
     QAbstractItemModel(parent),
@@ -65,9 +104,9 @@ QModelIndex MapObjectModel::index(int row, int column,
 
 QModelIndex MapObjectModel::parent(const QModelIndex &index) const
 {
-    MapObject *mapObject = toMapObject(index);
-    if (mapObject)
+    if (MapObject *mapObject = toMapObject(index))
         return this->index(mapObject->objectGroup());
+
     return QModelIndex();
 }
 
@@ -134,9 +173,13 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
         switch (role) {
         case Qt::CheckStateRole: {
             Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
-            mapObject->setVisible(c == Qt::Checked);
-            emit dataChanged(index, index);
-            emit objectsChanged(QList<MapObject*>() << mapObject);
+            const bool visible = (c == Qt::Checked);
+            if (visible != mapObject->isVisible()) {
+                QUndoCommand *command = new SetMapObjectVisible(mMapDocument,
+                                                                mapObject,
+                                                                visible);
+                mMapDocument->undoStack()->push(command);
+            }
             return true;
         }
         case Qt::EditRole: {
@@ -256,6 +299,7 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument)
         mMapDocument->disconnect(this);
 
+    beginResetModel();
     mMapDocument = mapDocument;
     mMap = 0;
 
@@ -287,7 +331,7 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
         }
     }
 
-    reset();
+    endResetModel();
 }
 
 void MapObjectModel::layerAdded(int index)
@@ -401,5 +445,13 @@ void MapObjectModel::setObjectPosition(MapObject *o, const QPointF &pos)
 void MapObjectModel::setObjectSize(MapObject *o, const QSizeF &size)
 {
     o->setSize(size);
+    emit objectsChanged(QList<MapObject*>() << o);
+}
+
+void MapObjectModel::setObjectVisible(MapObject *o, bool visible)
+{
+    o->setVisible(visible);
+    QModelIndex index = this->index(o);
+    emit dataChanged(index, index);
     emit objectsChanged(QList<MapObject*>() << o);
 }

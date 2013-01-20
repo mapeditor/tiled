@@ -74,16 +74,20 @@ bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
             // Add a new property
             if (text.isEmpty())
                 return false;
+
+            beginResetModel();
             mProperties.insert(text, QString());
         } else {
             const QString &key = mKeys.at(index.row());
             const QString propertyValue = mProperties.value(key);
+
+            beginResetModel();
             mProperties.remove(key);
             mProperties.insert(text, propertyValue);
         }
         // Have to request keys and reset because of possible reordering
         mKeys = mProperties.keys();
-        reset();
+        endResetModel();
         return true;
     }
     else if (index.column() == 1) { // Edit value
@@ -128,9 +132,10 @@ QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
 
 void PropertiesModel::setProperties(const Properties &properties)
 {
+    beginResetModel();
     mProperties = properties;
     mKeys = mProperties.keys();
-    reset();
+    endResetModel();
 }
 
 const Properties &PropertiesModel::properties() const

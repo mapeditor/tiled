@@ -32,7 +32,6 @@
 #define MAP_H
 
 #include "layer.h"
-#include "mapwriter.h"
 #include "object.h"
 
 #include <QColor>
@@ -70,6 +69,18 @@ public:
         Orthogonal,
         Isometric,
         Staggered
+    };
+
+    /**
+     * The different formats in which the tile layer data can be stored.
+     */
+    enum LayerDataFormat {
+        Default    = -1,
+        XML        = 0,
+        Base64     = 1,
+        Base64Gzip = 2,
+        Base64Zlib = 3,
+        CSV        = 4
     };
 
     /**
@@ -204,7 +215,7 @@ public:
      * searched.
      */
     int indexOfLayer(const QString &layerName,
-                     uint layerTypes = Layer::AnyLayerType) const;
+                     unsigned layerTypes = Layer::AnyLayerType) const;
 
     /**
      * Adds a layer to this map, inserting it at the given index.
@@ -255,6 +266,16 @@ public:
     void replaceTileset(Tileset *oldTileset, Tileset *newTileset);
 
     /**
+     * Returns the number of tilesets of this map.
+     */
+    int tilesetCount() const { return mTilesets.size(); }
+
+    /**
+     * Returns the tileset at the given index.
+     */
+    Tileset *tilesetAt(int index) const { return mTilesets.at(index); }
+
+    /**
      * Returns the tilesets that the tiles on this map are using.
      */
     const QList<Tileset*> &tilesets() const { return mTilesets; }
@@ -287,9 +308,9 @@ public:
      */
     static Map *fromLayer(Layer *layer);
 
-    MapWriter::LayerDataFormat layerDataFormat() const
+    LayerDataFormat layerDataFormat() const
     { return mLayerDataFormat; }
-    void setLayerDataFormat(MapWriter::LayerDataFormat format)
+    void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
 private:
@@ -304,7 +325,7 @@ private:
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
-    MapWriter::LayerDataFormat mLayerDataFormat;
+    LayerDataFormat mLayerDataFormat;
 };
 
 /**

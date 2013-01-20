@@ -19,14 +19,18 @@
 * Added map property for changing the background color (by Emmanuel Barroga)
 * Added shortcut to manually reload tilesets (Ctrl-T) (by Michael Williams)
 * Added toggle for showing tile object outlines
+* Added support for pinch zooming (by Pierre-David Bélanger)
 * Added initial (non-GUI) support for individual and/or embedded tile images
   (by Petr Viktorin)
 * Added reading support to Flare plugin (by Stefan Beller)
+* Added a TMX rasterizer command line tool (by Vincent Petithory)
 * Respect the original layer data format of a loaded map (by Ben Longbons)
+* Marked Tiled as high-resolution capable on Mac OS X
 * Improved handling of external tilesets in Lua export
 * Reverted tilesets view back to tabs, but with menu button (by Stefan Beller)
 * Allowed plugins to support multiple file name filters (by Samuli Tuomola)
 * Allow saving in any format that can also be read (by Stefan Beller)
+* Fixed eraser skipping tiles when moving fast
 * Fixed bug in Flare plugin (by Clint Bellanger)
 * Fixed compile against Qt 5 (by Kenney Phillis)
 * Fixed resolving of symbolic links while loading map

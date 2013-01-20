@@ -29,7 +29,6 @@
 #include <QString>
 
 #include "layer.h"
-#include "mapwriter.h"
 
 class QPoint;
 class QRect;
@@ -41,13 +40,16 @@ namespace Tiled {
 class Map;
 class MapObject;
 class MapRenderer;
+class Terrain;
+class Tile;
 class Tileset;
 
 namespace Internal {
 
 class LayerModel;
-class TileSelectionModel;
 class MapObjectModel;
+class TerrainModel;
+class TileSelectionModel;
 
 /**
  * Represents an editable map. The purpose of this class is to make sure that
@@ -164,6 +166,8 @@ public:
 
     MapObjectModel *mapObjectModel() const { return mMapObjectModel; }
 
+    TerrainModel *terrainModel() const { return mTerrainModel; }
+
     /**
      * Returns the map renderer.
      */
@@ -226,6 +230,12 @@ public:
     void emitRegionEdited(const QRegion &region, Layer *layer);
 
     /**
+     * Emits the signal notifying tileset models about changes to tile terrain
+     * information. All the \a tiles need to be from the same tileset.
+     */
+    void emitTileTerrainChanged(const QList<Tile*> &tiles);
+
+    /**
      * Emits the editLayerNameRequested signal, to get renamed.
      */
     inline void emitEditLayerNameRequested()
@@ -282,7 +292,15 @@ signals:
      */
     void regionEdited(const QRegion &region, Layer *layer);
 
+    /**
+     * Emitted when the terrain information for the given list of tiles was
+     * changed. All the tiles are guaranteed to be from the same tileset.
+     */
+    void tileTerrainChanged(const QList<Tile*> &tiles);
+
+    void tilesetAboutToBeAdded(int index);
     void tilesetAdded(int index, Tileset *tileset);
+    void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
     void tilesetFileNameChanged(Tileset *tileset);
@@ -306,7 +324,7 @@ private:
 
     QString mFileName;
 
-    /**
+    /*
      * The filename of a plugin is unique. So it can be used to determine
      * the right plugin to be used for saving the map again.
      * The nameFilter of a plugin can not be used, since it's translatable.
@@ -321,6 +339,7 @@ private:
     MapRenderer *mRenderer;
     int mCurrentLayerIndex;
     MapObjectModel *mMapObjectModel;
+    TerrainModel *mTerrainModel;
     QUndoStack *mUndoStack;
 };
 

@@ -45,14 +45,14 @@ GidMapper::GidMapper()
 
 GidMapper::GidMapper(const QList<Tileset *> &tilesets)
 {
-    uint firstGid = 1;
+    unsigned firstGid = 1;
     foreach (Tileset *tileset, tilesets) {
         insert(firstGid, tileset);
         firstGid += tileset->tileCount();
     }
 }
 
-Cell GidMapper::gidToCell(uint gid, bool &ok) const
+Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
 {
     Cell result;
 
@@ -72,7 +72,7 @@ Cell GidMapper::gidToCell(uint gid, bool &ok) const
         ok = false;
     } else {
         // Find the tileset containing this tile
-        QMap<uint, Tileset*>::const_iterator i = mFirstGidToTileset.upperBound(gid);
+        QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.upperBound(gid);
         --i; // Navigate one tileset back since upper bound finds the next
         int tileId = gid - i.key();
         const Tileset *tileset = i.value();
@@ -97,7 +97,7 @@ Cell GidMapper::gidToCell(uint gid, bool &ok) const
     return result;
 }
 
-uint GidMapper::cellToGid(const Cell &cell) const
+unsigned GidMapper::cellToGid(const Cell &cell) const
 {
     if (cell.isEmpty())
         return 0;
@@ -105,15 +105,15 @@ uint GidMapper::cellToGid(const Cell &cell) const
     const Tileset *tileset = cell.tile->tileset();
 
     // Find the first GID for the tileset
-    QMap<uint, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
-    QMap<uint, Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
+    QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.begin();
+    QMap<unsigned, Tileset*>::const_iterator i_end = mFirstGidToTileset.end();
     while (i != i_end && i.value() != tileset)
         ++i;
 
     if (i == i_end) // tileset not found
         return 0;
 
-    uint gid = i.key() + cell.tile->id();
+    unsigned gid = i.key() + cell.tile->id();
     if (cell.flippedHorizontally)
         gid |= FlippedHorizontallyFlag;
     if (cell.flippedVertically)

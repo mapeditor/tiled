@@ -24,7 +24,12 @@
 #include "languagemanager.h"
 #include "tilesetmanager.h"
 
+#if QT_VERSION >= 0x050000
+#include <QStandardPaths>
+#else
 #include <QDesktopServices>
+#endif
+
 #include <QFileInfo>
 #include <QSettings>
 
@@ -51,9 +56,9 @@ Preferences::Preferences()
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
-    mLayerDataFormat = (MapWriter::LayerDataFormat)
+    mLayerDataFormat = (Map::LayerDataFormat)
                        mSettings->value(QLatin1String("LayerDataFormat"),
-                                        MapWriter::Base64Zlib).toInt();
+                                        Map::Base64Zlib).toInt();
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mSettings->endGroup();
@@ -162,12 +167,12 @@ void Preferences::setShowTilesetGrid(bool showTilesetGrid)
     emit showTilesetGridChanged(mShowTilesetGrid);
 }
 
-MapWriter::LayerDataFormat Preferences::layerDataFormat() const
+Map::LayerDataFormat Preferences::layerDataFormat() const
 {
     return mLayerDataFormat;
 }
 
-void Preferences::setLayerDataFormat(MapWriter::LayerDataFormat
+void Preferences::setLayerDataFormat(Map::LayerDataFormat
                                      layerDataFormat)
 {
     if (mLayerDataFormat == layerDataFormat)
@@ -295,9 +300,15 @@ QString Preferences::lastPath(FileType fileType) const
             path = QFileInfo(mapDocument->fileName()).path();
     }
 
-    if (path.isEmpty())
+    if (path.isEmpty()) {
+#if QT_VERSION >= 0x050000
+        path = QStandardPaths::writableLocation(
+                    QStandardPaths::DocumentsLocation);
+#else
         path = QDesktopServices::storageLocation(
                     QDesktopServices::DocumentsLocation);
+#endif
+    }
 
     return path;
 }

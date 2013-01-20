@@ -86,6 +86,7 @@ private:
     TileLayer *mFillOverlay;
     QRegion mFillRegion;
 
+    bool mIsActive;
     bool mLastShiftStatus;
 
     /**

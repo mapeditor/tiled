@@ -50,7 +50,9 @@ LayerDock::LayerDock(QWidget *parent):
     mOpacityLabel(new QLabel),
     mOpacitySlider(new QSlider(Qt::Horizontal)),
     mLayerView(new LayerView),
-    mMapDocument(0)
+    mMapDocument(0),
+    mUpdatingSlider(false),
+    mChangingLayerOpacity(false)
 {
     setObjectName(QLatin1String("layerDock"));
 
@@ -92,15 +94,19 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addSeparator();
     buttonContainer->addAction(handler->actionToggleOtherLayers());
 
+    QVBoxLayout *listAndToolBar = new QVBoxLayout;
+    listAndToolBar->setSpacing(0);
+    listAndToolBar->addWidget(mLayerView);
+    listAndToolBar->addWidget(buttonContainer);
+
     layout->addLayout(opacityLayout);
-    layout->addWidget(mLayerView);
-    layout->addWidget(buttonContainer);
+    layout->addLayout(listAndToolBar);
 
     setWidget(widget);
     retranslateUi();
 
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
-            this, SLOT(setLayerOpacity(int)));
+            this, SLOT(sliderValueChanged(int)));
     updateOpacitySlider();
 
     // Workaround since a tabbed dockwidget that is not currently visible still
@@ -122,6 +128,8 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(updateOpacitySlider()));
+        connect(mMapDocument, SIGNAL(layerChanged(int)),
+                this, SLOT(layerChanged(int)));
     }
 
     mLayerView->setMapDocument(mapDocument);
@@ -148,17 +156,36 @@ void LayerDock::updateOpacitySlider()
     mOpacitySlider->setEnabled(enabled);
     mOpacityLabel->setEnabled(enabled);
 
+    mUpdatingSlider = true;
     if (enabled) {
         qreal opacity = mMapDocument->currentLayer()->opacity();
         mOpacitySlider->setValue((int) (opacity * 100));
     } else {
         mOpacitySlider->setValue(100);
     }
+    mUpdatingSlider = false;
 }
 
-void LayerDock::setLayerOpacity(int opacity)
+void LayerDock::layerChanged(int index)
+{
+    if (index != mMapDocument->currentLayerIndex())
+        return;
+
+    // Don't update the slider when we're the ones changing the layer opacity
+    if (mChangingLayerOpacity)
+        return;
+
+    updateOpacitySlider();
+}
+
+void LayerDock::sliderValueChanged(int opacity)
 {
     if (!mMapDocument)
+        return;
+
+    // When the slider changes value just because we're updating it, it
+    // shouldn't try to set the layer opacity.
+    if (mUpdatingSlider)
         return;
 
     const int layerIndex = mMapDocument->currentLayerIndex();
@@ -168,11 +195,13 @@ void LayerDock::setLayerOpacity(int opacity)
     const Layer *layer = mMapDocument->map()->layerAt(layerIndex);
 
     if ((int) (layer->opacity() * 100) != opacity) {
+        mChangingLayerOpacity = true;
         LayerModel *layerModel = mMapDocument->layerModel();
         const int row = layerModel->layerIndexToRow(layerIndex);
         layerModel->setData(layerModel->index(row),
                             qreal(opacity) / 100,
                             LayerModel::OpacityRole);
+        mChangingLayerOpacity = false;
     }
 }
 
@@ -182,6 +211,8 @@ void LayerDock::retranslateUi()
     mOpacityLabel->setText(tr("Opacity:"));
 }
 
+
+//=============================================================================
 
 LayerView::LayerView(QWidget *parent):
     QTreeView(parent),
@@ -275,7 +306,6 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionDuplicateLayer());
         menu.addAction(handler->actionMergeLayerDown());
         menu.addAction(handler->actionRemoveLayer());
-        menu.addAction(handler->actionRenameLayer());
         menu.addSeparator();
         menu.addAction(handler->actionMoveLayerUp());
         menu.addAction(handler->actionMoveLayerDown());

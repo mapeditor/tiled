@@ -52,6 +52,7 @@ private:
     QVariant toVariant(const Tiled::Properties &properties);
     QVariant toVariant(const Tiled::TileLayer *tileLayer);
     QVariant toVariant(const Tiled::ObjectGroup *objectGroup);
+    QVariant toVariant(const Tiled::ImageLayer *imageLayer);
 
     void addLayerAttributes(QVariantMap &layerVariant,
                             const Tiled::Layer *layer);

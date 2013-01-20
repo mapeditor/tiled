@@ -41,6 +41,8 @@
 #include "resizelayer.h"
 #include "resizemap.h"
 #include "staggeredrenderer.h"
+#include "terrain.h"
+#include "terrainmodel.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
@@ -59,6 +61,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mMap(map),
     mLayerModel(new LayerModel(this)),
     mMapObjectModel(new MapObjectModel(this)),
+    mTerrainModel(new TerrainModel(this, this)),
     mUndoStack(new QUndoStack(this))
 {
     switch (map->orientation()) {
@@ -266,8 +269,6 @@ void MapDocument::addLayer(Layer::Type layerType)
         name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
         layer = new ImageLayer(name, 0, 0, mMap->width(), mMap->height());
         break;
-    case Layer::AnyLayerType:
-        break; // Q_ASSERT below will fail.
     }
     Q_ASSERT(layer);
 
@@ -373,6 +374,7 @@ void MapDocument::toggleOtherLayers(int index)
  */
 void MapDocument::insertTileset(int index, Tileset *tileset)
 {
+    emit tilesetAboutToBeAdded(index);
     mMap->insertTileset(index, tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
@@ -388,6 +390,7 @@ void MapDocument::insertTileset(int index, Tileset *tileset)
  */
 void MapDocument::removeTilesetAt(int index)
 {
+    emit tilesetAboutToBeRemoved(index);
     Tileset *tileset = mMap->tilesets().at(index);
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset);
@@ -487,6 +490,12 @@ void MapDocument::emitRegionChanged(const QRegion &region)
 void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
 {
     emit regionEdited(region, layer);
+}
+
+void MapDocument::emitTileTerrainChanged(const QList<Tile *> &tiles)
+{
+    if (!tiles.isEmpty())
+        emit tileTerrainChanged(tiles);
 }
 
 /**

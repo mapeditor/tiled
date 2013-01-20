@@ -28,7 +28,11 @@ using namespace Tiled::Internal;
 PropertiesView::PropertiesView(QWidget *parent):
     QTreeView(parent)
 {
+#if QT_VERSION >= 0x050000
+    header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
     header()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
 }
 
 void PropertiesView::keyPressEvent(QKeyEvent *event)

@@ -34,6 +34,11 @@ namespace Internal {
 
 class MapDocument;
 
+/**
+ * Provides a tree view on the objects present on a map. Also has member
+ * functions to modify objects that emit the appropriate signals to allow
+ * the UI to update.
+ */
 class MapObjectModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -81,9 +86,6 @@ public:
     MapObject *toMapObject(const QModelIndex &index) const;
     ObjectGroup *toLayer(const QModelIndex &index) const;
 
-    int toRow(const ObjectGroup *objectGroup) const;
-    int toRow(const MapObject *mapObject) const;
-
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
 
@@ -96,6 +98,7 @@ public:
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
+    void setObjectVisible(MapObject *o, bool visible);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);

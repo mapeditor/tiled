@@ -21,6 +21,8 @@
 #include "mapsdock.h"
 
 #include "mainwindow.h"
+#include "mapreaderinterface.h"
+#include "pluginmanager.h"
 #include "preferences.h"
 #include "utils.h"
 
@@ -34,13 +36,14 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMouseEvent>
-#include <QToolButton>
+#include <QPushButton>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
     : QDockWidget(parent)
+    , mDirectoryEdit(new QLineEdit)
     , mMapsView(new MapsView(mainWindow))
 {
     setObjectName(QLatin1String("MapsDock"));
@@ -50,20 +53,15 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
     layout->setMargin(5);
 
     QHBoxLayout *dirLayout = new QHBoxLayout;
-    QLabel *label = new QLabel(tr("Folder:"));
 
     // QDirModel is obsolete, but I could not get QFileSystemModel to work here
-    QLineEdit *edit = mDirectoryEdit = new QLineEdit();
     QDirModel *model = new QDirModel(this);
     model->setFilter(QDir::AllDirs | QDir::Dirs | QDir::Drives | QDir::NoDotAndDotDot);
     QCompleter *completer = new QCompleter(model, this);
-    edit->setCompleter(completer);
+    mDirectoryEdit->setCompleter(completer);
 
-    QToolButton *button = new QToolButton();
-    button->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
-    button->setToolTip(tr("Choose Folder"));
-    dirLayout->addWidget(label);
-    dirLayout->addWidget(edit);
+    QPushButton *button = new QPushButton(tr("Browse..."));
+    dirLayout->addWidget(mDirectoryEdit);
     dirLayout->addWidget(button);
 
     layout->addWidget(mMapsView);
@@ -76,8 +74,8 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, SIGNAL(mapsDirectoryChanged()), this, SLOT(onMapsDirectoryChanged()));
-    edit->setText(prefs->mapsDirectory());
-    connect(edit, SIGNAL(returnPressed()), this, SLOT(editedMapsDirectory()));
+    mDirectoryEdit->setText(prefs->mapsDirectory());
+    connect(mDirectoryEdit, SIGNAL(returnPressed()), this, SLOT(editedMapsDirectory()));
 
     // Workaround since a tabbed dockwidget that is not currently visible still
     // returns true for isVisible()
@@ -153,8 +151,22 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     filters |= QDir::NoDot;
 #endif
 
+    PluginManager *pm = PluginManager::instance();
+    QStringList nameFilters(QLatin1String("*.tmx"));
+
+    // The file system model name filters are plain, whereas the plugins expose
+    // a filter as part of the file description
+    QRegExp filterFinder(QLatin1String("\\((\\*\\.[^\\)\\s]*)"));
+
+    foreach (MapReaderInterface *reader, pm->interfaces<MapReaderInterface>()) {
+        foreach (const QString &filter, reader->nameFilters()) {
+            if (filterFinder.indexIn(filter) != -1)
+                nameFilters.append(filterFinder.cap(1));
+        }
+    }
+
     mFSModel->setFilter(filters);
-    mFSModel->setNameFilters(QStringList(QLatin1String("*.tmx")));
+    mFSModel->setNameFilters(nameFilters);
     mFSModel->setNameFilterDisables(false); // hide filtered files
 
     setModel(mFSModel);
@@ -167,7 +179,11 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     setRootIndex(mFSModel->index(mapsDir.absolutePath()));
     
     header()->setStretchLastSection(false);
+#if QT_VERSION >= 0x050000
+    header()->setSectionResizeMode(0, QHeaderView::Stretch);
+#else
     header()->setResizeMode(0, QHeaderView::Stretch);
+#endif
 
     connect(this, SIGNAL(activated(QModelIndex)),
             SLOT(onActivated(QModelIndex)));

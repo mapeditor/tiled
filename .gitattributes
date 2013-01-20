@@ -1,0 +1,11 @@
+*                   text=auto
+
+*.cpp               text
+*.h                 text
+*.ui                text
+
+*.png               binary
+
+.gitignore          export-ignore
+.gitattributes      export-ignore
+.mailmap            export-ignore

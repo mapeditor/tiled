@@ -79,6 +79,12 @@ public:
     virtual QRectF boundingRect(const MapObject *object) const = 0;
 
     /**
+     * Returns the bounding rectangle in pixels of the given \a imageLayer, as
+     * it would be drawn by drawImageLayer().
+     */
+    QRectF boundingRect(const ImageLayer *imageLayer) const;
+
+    /**
      * Returns the shape in pixels of the given \a object. This is used for
      * mouse interaction and should match the rendered object as closely as
      * possible.
@@ -122,9 +128,9 @@ public:
     /**
      * Draws the given image \a layer using the given \a painter.
      */
-    virtual void drawImageLayer(QPainter *painter,
-                                const ImageLayer *layer,
-                                const QRectF &exposed = QRectF()) const = 0;
+    void drawImageLayer(QPainter *painter,
+                        const ImageLayer *imageLayer,
+                        const QRectF &exposed = QRectF());
 
     /**
      * Returns the tile coordinates matching the given pixel position.

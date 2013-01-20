@@ -46,9 +46,10 @@ TerrainBrush::TerrainBrush(QObject *parent)
                                ":images/24x24/terrain-edit.png")),
                        QKeySequence(tr("T")),
                        parent)
-    , mTerrain(NULL)
+    , mTerrain(0)
     , mPaintX(0), mPaintY(0)
     , mOffsetX(0), mOffsetY(0)
+    , mIsActive(false)
     , mBrushBehavior(Free)
     , mLineReferenceX(0)
     , mLineReferenceY(0)
@@ -60,11 +61,22 @@ TerrainBrush::~TerrainBrush()
 {
 }
 
+void TerrainBrush::activate(MapScene *scene)
+{
+    AbstractTileTool::activate(scene);
+    mIsActive = true;
+}
+
+void TerrainBrush::deactivate(MapScene *scene)
+{
+    AbstractTileTool::deactivate(scene);
+    mIsActive = false;
+}
+
 void TerrainBrush::tilePositionChanged(const QPoint &pos)
 {
     switch (mBrushBehavior) {
-    case Paint:
-    {
+    case Paint: {
         int x = mPaintX;
         int y = mPaintY;
         foreach (const QPoint &p, pointsOnLine(x, y, pos.x(), pos.y())) {
@@ -76,8 +88,7 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
         mPaintY = pos.y();
         break;
     }
-    case LineStartSet:
-    {
+    case LineStartSet: {
         QVector<QPoint> lineList = pointsOnLine(mLineReferenceX, mLineReferenceY,
                                                 pos.x(), pos.y());
         updateBrush(pos, &lineList);
@@ -135,10 +146,11 @@ void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if (modifiers & Qt::ShiftModifier) {
-        mBrushBehavior = Line;
-    } else {
-        mBrushBehavior = Free;
+    const bool lineMode = modifiers & Qt::ShiftModifier;
+
+    if (lineMode != (mBrushBehavior == Line ||
+                     mBrushBehavior == LineStartSet)) {
+        mBrushBehavior = lineMode ? Line : Free;
     }
 
     setBrushMode((modifiers & Qt::ControlModifier) ? PaintVertex : PaintTile);
@@ -147,7 +159,7 @@ void TerrainBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void TerrainBrush::languageChanged()
 {
-    setName(tr("Terain Brush"));
+    setName(tr("Terrain Brush"));
     setShortcut(QKeySequence(tr("T")));
 }
 
@@ -182,7 +194,8 @@ void TerrainBrush::setTerrain(const Terrain *terrain)
 
     mTerrain = terrain;
 
-    updateBrush(tilePosition());
+    if (mIsActive && brushItem()->isVisible())
+        updateBrush(tilePosition());
 }
 
 void TerrainBrush::beginPaint()
@@ -232,18 +245,18 @@ void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
     mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
 }
 
-static inline unsigned int makeTerrain(int t)
+static inline unsigned makeTerrain(int t)
 {
     t &= 0xFF;
     return t << 24 | t << 16 | t << 8 | t;
 }
 
-static inline unsigned int makeTerrain(int tl, int tr, int bl, int br)
+static inline unsigned makeTerrain(int tl, int tr, int bl, int br)
 {
     return (tl & 0xFF) << 24 | (tr & 0xFF) << 16 | (bl & 0xFF) << 8 | (br & 0xFF);
 }
 
-Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigned int considerationMask)
+static Tile *findBestTile(Tileset *tileset, unsigned terrain, unsigned considerationMask)
 {
     // we should have hooked 0xFFFFFFFF terrains outside this function
     Q_ASSERT(terrain != 0xFFFFFFFF);
@@ -315,6 +328,33 @@ Tile *TerrainBrush::findBestTile(Tileset *tileset, unsigned int terrain, unsigne
     return NULL;
 }
 
+static unsigned terrain(const Tile *tile)
+{
+    return tile ? tile->terrain() : 0xFFFFFFFF;
+}
+
+static unsigned short topEdge(const Tile *tile)
+{
+    return terrain(tile) >> 16;
+}
+
+static unsigned short bottomEdge(const Tile *tile)
+{
+    return terrain(tile) & 0xFFFF;
+}
+
+static unsigned short leftEdge(const Tile *tile)
+{
+    unsigned t = terrain(tile);
+    return((t >> 16) & 0xFF00) | ((t >> 8) & 0xFF);
+}
+
+static unsigned short rightEdge(const Tile *tile)
+{
+    unsigned t = terrain(tile);
+    return ((t >> 8) & 0xFF00) | (t & 0xFF);
+}
+
 void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 {
     // get the current tile layer
@@ -342,8 +382,12 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     if (!currentLayer->bounds().contains(cursorPos))
         return;
 
-    // TODO: this seems like a problem... there's nothing to say that 2 adjacent tiles are from the same tileset, or have any relation to eachother...
-    Tileset *terrainTileset = mTerrain ? mTerrain->tileset() : NULL;
+    Tileset *terrainTileset = 0;
+    int terrainId = -1;
+    if (mTerrain) {
+        terrainTileset = mTerrain->tileset();
+        terrainId = mTerrain->id();
+    }
 
     // allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
     Tile **newTerrain = new Tile*[numTiles];
@@ -359,11 +403,11 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     if (list) {
         // if we were supplied a list of start points
         foreach (const QPoint &p, *list) {
-            transitionList.push_back(p);
+            transitionList.append(p);
             ++initialTiles;
         }
     } else {
-        transitionList.push_back(cursorPos);
+        transitionList.append(cursorPos);
         initialTiles = 1;
     }
 
@@ -372,8 +416,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
     while (!transitionList.isEmpty()) {
         // get the next point in the consideration list
-        QPoint p = transitionList.front();
-        transitionList.pop_front();
+        QPoint p = transitionList.takeFirst();
         int x = p.x(), y = p.y();
         int i = y*layerWidth + x;
 
@@ -383,64 +426,72 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             continue;
 
         const Tile *tile = currentLayer->cellAt(p).tile;
+        const unsigned currentTerrain = ::terrain(tile);
 
         // get the tileset for this tile
-        Tileset *tileset = NULL;
+        Tileset *tileset = 0;
         if (terrainTileset) // if we are painting a terrain, then we'll use the terrains tileset
             tileset = terrainTileset;
-        else if(tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
+        else if (tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
             tileset = tile->tileset();
 
         // calculate the ideal tile for this position
-        unsigned int preferredTerrain, mask;
-        Tile *paste = NULL;
+        unsigned preferredTerrain = 0xFFFFFFFF;
+        unsigned mask = 0;
 
         if (initialTiles) {
             // for the initial tiles, we will insert the selected terrain and add the surroundings for consideration
-            unsigned int currentTerrain = tile->terrain();
-
             if (mBrushMode == PaintTile) {
                 // set the whole tile to the selected terrain
-                preferredTerrain = makeTerrain(mTerrain->id());
+                preferredTerrain = makeTerrain(terrainId);
                 mask = 0xFFFFFFFF;
             } else {
+                // Bail out if encountering a tile from a different tileset
+                if (tile && tile->tileset() != tileset)
+                    continue;
+
                 // calculate the corner mask
                 mask = 0xFF << (3 - paintCorner)*8;
 
                 // mask in the selected terrain
-                preferredTerrain = (currentTerrain & ~mask) | (mTerrain->id() << (3 - paintCorner)*8);
+                preferredTerrain = (currentTerrain & ~mask) | (terrainId << (3 - paintCorner)*8);
             }
 
             --initialTiles;
 
             // if there's nothing to paint... skip this tile
-            if (preferredTerrain == currentTerrain)
+            if (preferredTerrain == currentTerrain && (!tile || tile->tileset() == tileset))
                 continue;
         } else {
+            // Bail out if encountering a tile from a different tileset
+            if (tile && tile->tileset() != tileset)
+                continue;
+
             // following tiles each need consideration against their surroundings
-            preferredTerrain = tile->terrain();
+            preferredTerrain = currentTerrain;
             mask = 0;
 
             // depending which connections have been set, we update the preferred terrain of the tile accordingly
             if (y > 0 && checked[i - layerWidth]) {
-                preferredTerrain = (newTerrain[i - layerWidth]->terrain() << 16) | (preferredTerrain & 0x0000FFFF);
+                preferredTerrain = (::terrain(newTerrain[i - layerWidth]) << 16) | (preferredTerrain & 0x0000FFFF);
                 mask |= 0xFFFF0000;
             }
             if (y < layerHeight - 1 && checked[i + layerWidth]) {
-                preferredTerrain = (newTerrain[i + layerWidth]->terrain() >> 16) | (preferredTerrain & 0xFFFF0000);
+                preferredTerrain = (::terrain(newTerrain[i + layerWidth]) >> 16) | (preferredTerrain & 0xFFFF0000);
                 mask |= 0x0000FFFF;
             }
             if (x > 0 && checked[i - 1]) {
-                preferredTerrain = ((newTerrain[i - 1]->terrain() << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
+                preferredTerrain = ((::terrain(newTerrain[i - 1]) << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
                 mask |= 0xFF00FF00;
             }
             if (x < layerWidth - 1 && checked[i + 1]) {
-                preferredTerrain = ((newTerrain[i + 1]->terrain() >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
+                preferredTerrain = ((::terrain(newTerrain[i + 1]) >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
                 mask |= 0x00FF00FF;
             }
         }
 
         // find the most appropriate tile in the tileset
+        Tile *paste = 0;
         if (preferredTerrain != 0xFFFFFFFF) {
             paste = findBestTile(tileset, preferredTerrain, mask);
             if (!paste)
@@ -457,23 +508,23 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         // consider surrounding tiles if terrain constraints were not satisfied
         if (y > 0 && !checked[i - layerWidth]) {
             const Tile *above = currentLayer->cellAt(x, y - 1).tile;
-            if (paste->topEdge() != above->bottomEdge())
-                transitionList.push_back(QPoint(x, y - 1));
+            if (topEdge(paste) != bottomEdge(above))
+                transitionList.append(QPoint(x, y - 1));
         }
         if (y < layerHeight - 1 && !checked[i + layerWidth]) {
             const Tile *below = currentLayer->cellAt(x, y + 1).tile;
-            if (paste->bottomEdge() != below->topEdge())
-                transitionList.push_back(QPoint(x, y + 1));
+            if (bottomEdge(paste) != topEdge(below))
+                transitionList.append(QPoint(x, y + 1));
         }
         if (x > 0 && !checked[i - 1]) {
             const Tile *left = currentLayer->cellAt(x - 1, y).tile;
-            if (paste->leftEdge() != left->rightEdge())
-                transitionList.push_back(QPoint(x - 1, y));
+            if (leftEdge(paste) != rightEdge(left))
+                transitionList.append(QPoint(x - 1, y));
         }
         if (x < layerWidth - 1 && !checked[i + 1]) {
             const Tile *right = currentLayer->cellAt(x + 1, y).tile;
-            if (paste->rightEdge() != right->leftEdge())
-                transitionList.push_back(QPoint(x + 1, y));
+            if (rightEdge(paste) != leftEdge(right))
+                transitionList.append(QPoint(x + 1, y));
         }
     }
 
@@ -510,7 +561,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 */
 
-    brushItem()->setTileLayerPosition(QPoint(brushRect.left(), brushRect.top()));
+    brushItem()->setTileLayerPosition(brushRect.topLeft());
 
     mPaintX = cursorPos.x();
     mPaintY = cursorPos.y();

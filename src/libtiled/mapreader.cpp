@@ -36,7 +36,6 @@
 #include "objectgroup.h"
 #include "map.h"
 #include "mapobject.h"
-#include "mapwriter.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -99,7 +98,7 @@ private:
      * @return the cell data associated with the given global tile ID, or an
      *         empty cell if not found
      */
-    Cell cellForGid(uint gid);
+    Cell cellForGid(unsigned gid);
 
     ImageLayer *readImageLayer();
     void readImageLayerImage(ImageLayer *imageLayer);
@@ -188,9 +187,9 @@ bool MapReaderPrivate::openFile(QFile *file)
 
 void MapReaderPrivate::readUnknownElement()
 {
-    qDebug() << "Unknown element (fixme):" << xml.name()
-             << " at line " << xml.lineNumber()
-             << ", column " << xml.columnNumber();
+    qDebug().nospace() << "Unknown element (fixme): " << xml.name()
+                       << " at line " << xml.lineNumber()
+                       << ", column " << xml.columnNumber();
     xml.skipCurrentElement();
 }
 
@@ -257,7 +256,7 @@ Tileset *MapReaderPrivate::readTileset()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString source = atts.value(QLatin1String("source")).toString();
-    const uint firstGid =
+    const unsigned firstGid =
             atts.value(QLatin1String("firstgid")).toString().toUInt();
 
     Tileset *tileset = 0;
@@ -321,9 +320,6 @@ Tileset *MapReaderPrivate::readTileset()
 
     if (tileset && !mReadingExternalTileset)
         mGidMapper.insert(firstGid, tileset);
-
-    if (tileset)
-        tileset->calculateTerrainDistances();
 
     return tileset;
 }
@@ -444,27 +440,18 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
             const QXmlStreamAttributes atts = xml.attributes();
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toString().toInt();
-//            int tile = atts.value(QLatin1String("color")).toString().toInt();
 
-            Terrain *terrain = new Terrain(tileset->terrainCount(), tileset, name, tile);
+            Terrain *terrain = tileset->addTerrain(name, tile);
 
-            QString distances = atts.value(QLatin1String("distances")).toString();
-            if (!distances.isEmpty()) {
-                QStringList distStrings = distances.split(QLatin1Char(','));
-                QVector<int> dist(distStrings.size(), -1);
-                for (int i = 0; i < distStrings.size(); ++i) {
-                    if (!distStrings[i].isEmpty())
-                        dist[i] = distStrings[i].toInt();
-                }
-                terrain->setTransitionDistances(dist);
+            while (xml.readNextStartElement()) {
+                if (xml.name() == QLatin1String("properties"))
+                    terrain->mergeProperties(readProperties());
+                else
+                    readUnknownElement();
             }
-
-            tileset->addTerrain(terrain);
-
-            xml.skipCurrentElement();
-        }
-        else
+        } else {
             readUnknownElement();
+        }
     }
 }
 
@@ -521,16 +508,16 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
     bool respect = true; // TODO: init from preferences
     if (respect) {
         if (encoding.isEmpty())
-            mMap->setLayerDataFormat(MapWriter::XML);
+            mMap->setLayerDataFormat(Map::XML);
         else if (encoding == QLatin1String("csv"))
-            mMap->setLayerDataFormat(MapWriter::CSV);
+            mMap->setLayerDataFormat(Map::CSV);
         else if (encoding == QLatin1String("base64")) {
             if (compression.isEmpty())
-                mMap->setLayerDataFormat(MapWriter::Base64);
+                mMap->setLayerDataFormat(Map::Base64);
             else if (compression == QLatin1String("gzip"))
-                mMap->setLayerDataFormat(MapWriter::Base64Gzip);
+                mMap->setLayerDataFormat(Map::Base64Gzip);
             else if (compression == QLatin1String("zlib"))
-                mMap->setLayerDataFormat(MapWriter::Base64Zlib);
+                mMap->setLayerDataFormat(Map::Base64Zlib);
         }
         // else, error handled below
     }
@@ -549,7 +536,7 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
                 }
 
                 const QXmlStreamAttributes atts = xml.attributes();
-                uint gid = atts.value(QLatin1String("gid")).toString().toUInt();
+                unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
                 tileLayer->setCell(x, y, cellForGid(gid));
 
                 x++;
@@ -612,10 +599,10 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer *tileLayer,
     int y = 0;
 
     for (int i = 0; i < size - 3; i += 4) {
-        const uint gid = data[i] |
-                         data[i + 1] << 8 |
-                         data[i + 2] << 16 |
-                         data[i + 3] << 24;
+        const unsigned gid = data[i] |
+                             data[i + 1] << 8 |
+                             data[i + 2] << 16 |
+                             data[i + 3] << 24;
 
         tileLayer->setCell(x, y, cellForGid(gid));
 
@@ -641,7 +628,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer *tileLayer, const QString &t
     for (int y = 0; y < tileLayer->height(); y++) {
         for (int x = 0; x < tileLayer->width(); x++) {
             bool conversionOk;
-            const uint gid = tiles.at(y * tileLayer->width() + x)
+            const unsigned gid = tiles.at(y * tileLayer->width() + x)
                     .toUInt(&conversionOk);
             if (!conversionOk) {
                 xml.raiseError(
@@ -654,7 +641,7 @@ void MapReaderPrivate::decodeCSVLayerData(TileLayer *tileLayer, const QString &t
     }
 }
 
-Cell MapReaderPrivate::cellForGid(uint gid)
+Cell MapReaderPrivate::cellForGid(unsigned gid)
 {
     bool ok;
     const Cell result = mGidMapper.gidToCell(gid, ok);
@@ -770,7 +757,7 @@ MapObject *MapReaderPrivate::readObject()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const uint gid = atts.value(QLatin1String("gid")).toString().toUInt();
+    const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const int x = atts.value(QLatin1String("x")).toString().toInt();
     const int y = atts.value(QLatin1String("y")).toString().toInt();
     const int width = atts.value(QLatin1String("width")).toString().toInt();
