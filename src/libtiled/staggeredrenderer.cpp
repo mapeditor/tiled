@@ -36,8 +36,6 @@
 
 #include <cmath>
 
-#include <QDebug>
-
 using namespace Tiled;
 
 QSize StaggeredRenderer::mapSize() const
@@ -179,8 +177,6 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
     // Odd row shifting is applied in the rendering loop, so un-apply it here
     if ((startTile.y() + layer->y()) % 2)
         startPos.rx() -= tileWidth / 2;
-
-    qDebug() << rect << startTile << startPos << layer->position();
 
     QTransform baseTransform = painter->transform();
 
