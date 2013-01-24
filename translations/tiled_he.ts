@@ -20,10 +20,10 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;עורך המפות Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;גרסא %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;זכויות יוצרים שמורות ל 2008-2010 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(ראה קובץ AUTHORS לרשימה מלאה של תורמים)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;הנך מורשה להפיץ מחדש תוכנה זאת תחת חוקי רשיון GPL (ראה קובץ מצורף)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt; {2&quot;?} {1&lt;?} {2008-2013 ?} {2 ?}</translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;עורך המפות Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;גרסא %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;זכויות יוצרים שמורות ל 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(ראה קובץ AUTHORS לרשימה מלאה של תורמים)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;הנך רשאי לשנות ולהפיץ מחדש תוכנית זו תחת תנאי ה-GPL (גרסא 2 או מאוחרת יותר). העתק קובץ ה-GPL מוכלל בקובץ &apos;COPYING&apos; המופץ עם Tiled. &lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -44,12 +44,12 @@
     <message>
         <location filename="../src/automappingconverter/converterdatamodel.cpp" line="+75"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>קובץ</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>גרסא</translation>
     </message>
 </context>
 <context>
@@ -57,22 +57,22 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>שמור הכל כ %1</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">כל הקבצים (*)</translation>
+        <translation>כל הקבצים (*)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished"></translation>
+        <translation>קבצי מפות Tiled (*.tmx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Open Map</source>
-        <translation type="unfinished">פתח מפה</translation>
+        <translation>פתח מפה</translation>
     </message>
 </context>
 <context>
@@ -108,44 +108,44 @@
     <message>
         <location filename="../src/tiled/editterraindialog.ui" line="+14"/>
         <source>Edit Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>ערוך מידע קרקע</translation>
     </message>
     <message>
         <location line="+11"/>
         <location line="+3"/>
         <source>Undo</source>
-        <translation type="unfinished">בטל</translation>
+        <translation>בטל</translation>
     </message>
     <message>
         <location line="+20"/>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished">החזר</translation>
+        <translation>החזר</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Erase</source>
-        <translation type="unfinished">מחיקה</translation>
+        <translation>מחק</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף סוג קרקע</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add</source>
-        <translation type="unfinished">הוסף</translation>
+        <translation>הוסף</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Remove Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>הסר סוג קרקע</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove</source>
-        <translation type="unfinished">מחק</translation>
+        <translation>הסר</translation>
     </message>
 </context>
 <context>
@@ -153,27 +153,27 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">לא היה ניתן לפתוח את הקובץ לכתיבה.לא היה ניתן לפתוח את הקובץ לקריאה.</translation>
+        <translation>לא היה ניתן לפתוח את הקובץ לכתיבה.לא היה ניתן לפתוח את הקובץ לקריאה.</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation type="unfinished"></translation>
+        <translation>שגיאה בטעינת סט המשבצות %1, המתרחב ל%2. הנתיב לא נמצא!</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>No tilesets section found before layer section.</source>
-        <translation type="unfinished"></translation>
+        <translation>לא נמצא חלק של סטי משבצות לפני חלק השכבות.</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Error mapping tile id %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>שגיאה במיפוי מזהה המשבצת %1.</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>זוהי לא נראית כמפת flare תקינה. מפת Flare חייבת להכיל לפחות קטע כותרת אחד, קטע של סטי משבצות ושכבת משבצות אחת.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -413,7 +413,7 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Object &amp;Outlines</source>
-        <translation type="unfinished"></translation>
+        <translation>הראה &amp;קווי מתאר של עצם משבצות</translation>
     </message>
     <message>
         <location line="-88"/>
@@ -473,12 +473,12 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
         <source>Tiled Automapping Rule Files Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>ממיר קובץ חוקי מיפוי אוטומטי של Tiled</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Add new Automapping rules</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף חוקי מיפוי אוטומתי חדשים</translation>
     </message>
 </context>
 <context>
@@ -536,7 +536,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Invalid (nonconsecutive) tile ID: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>מזהה משבצת שגוי (בלתי עקבי): %1</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -550,7 +550,7 @@ Line %1, column %2</source>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+210"/>
         <source>Error loading image:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>שגיאה בטעינת תמונה: &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+106"/>
@@ -566,7 +566,7 @@ Line %1, column %2</source>
         <location line="+80"/>
         <source>Error loading image layer image:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>שגיאה בטעינת תמונת שכבת תמונה: &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -972,12 +972,12 @@ Line %1, column %2</source>
     <message>
         <location line="+171"/>
         <source>Automapping</source>
-        <translation type="unfinished"></translation>
+        <translation>מיפוי אוטומתי</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Use Automapping, when drawing into layers</source>
-        <translation type="unfinished"></translation>
+        <translation>השתמשת במיפוי אוטומתי, בעת ציור לתוך שכבות</translation>
     </message>
     <message>
         <location line="-190"/>
@@ -987,7 +987,7 @@ Line %1, column %2</source>
     <message>
         <location line="+17"/>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>צבע הלוח: </translation>
     </message>
     <message>
         <location line="+43"/>
@@ -1039,22 +1039,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/automappingconverter/convertercontrol.h" line="+33"/>
         <source>v0.8 and before</source>
-        <translation type="unfinished"></translation>
+        <translation>גרסא 0.8 ולפני</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>v0.9 and later</source>
-        <translation type="unfinished"></translation>
+        <translation>גרסא 0.9 ואחרי</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ידוע</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>not a map</source>
-        <translation type="unfinished"></translation>
+        <translation>לא מפה</translation>
     </message>
 </context>
 <context>
@@ -1062,72 +1062,72 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+48"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן לפתוח מפת Replica Island!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can&apos;t parse file header!</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן לפרוס כותרת!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Can&apos;t parse layer header!</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן לפרוס כותרת שכבה!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Inconsistent layer sizes!</source>
-        <translation type="unfinished"></translation>
+        <translation>גדלי שכבות בלתי עקביים!</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File ended in middle of layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>הקובץ הסתיים באמצע שכבה!</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unexpected data at end of file!</source>
-        <translation type="unfinished"></translation>
+        <translation>נתונים לא צפויים בסוף הקובץ!</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Replica Island map files (*.bin)</source>
-        <translation type="unfinished"></translation>
+        <translation>קבצי מפה של Replica Island (*.bin)</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Cannot open temporary file for writing!</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן לפתוח קובץ זמני לכתיבה!</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>You must define a background_index property on the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>הינך חייב לציין את המאפיין background_index במפה! </translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Can&apos;t save non-tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן לשמור שכבה שאינה שכבת משבצות!</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Couldn&apos;t overwrite old version; may be deleted!</source>
-        <translation type="unfinished"></translation>
+        <translation>לא ניתן לכתוב מעל גרס ישנה; עשוי להמחק!</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>You must define a type property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>הינך חייב להגדיר את מאפיין הסוג (type) בכל שכבה!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>הינך חייב להגדיר את המאפיין tile_index בכל שכבה!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>הינך חייב להגדיר את המאפיין scroll_speed בכל שכבה!</translation>
     </message>
 </context>
 <context>
@@ -1264,53 +1264,53 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: המאפיין &apos;%2&apos; = &apos;%3&apos; אינו הגיוני. מתעלם ממאפיין זה.</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>האם שכחת קו תחתות בשכבה &apos;%1&apos;?</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation type="unfinished"></translation>
+        <translation>השכבה &apos;%1&apos; אינה מזוהה כשכבה תקינה למיפוי אוטומתי.</translation>
     </message>
     <message>
         <location line="-105"/>
         <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>השכבה &apos;regions_input&apos; חייבת להופיע רק פעם אחת.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>שכבות &apos;regions_*&apos; חייבות להיות שכבות משבצות.</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>שכבתהשכבה &apos;regions_output&apos; חייבת להופיע רק פעם אחת.</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>השכבות &apos;input_*&apos; ו&apos;inputnot_*&apos; חייבות להיות שכבות משבצות.</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>לא נמצאה שכבת &apos;regions&apos; או שכבת &apos;regions_input&apos;.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>לא נמצאה שכבת &apos;regions&apos; או שכבת &apos;regions_output&apos;.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>לא נמצאה שכבת input_&lt;name&gt;!</translation>
     </message>
     <message>
         <location line="+171"/>
@@ -1547,22 +1547,22 @@ Line %1, column %2</source>
     <message>
         <location line="+213"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס מלבן</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>הכנס אליפסה</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1613,8 +1613,8 @@ Line %1, column %2</source>
         <location line="+210"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>הזז n% נקודות</numerusform>
-            <numerusform></numerusform>
+            <numerusform>הזז בנקודה</numerusform>
+            <numerusform>הזז ב%n נקודות</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1622,8 +1622,8 @@ Line %1, column %2</source>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>מחק n% חוליות</numerusform>
-            <numerusform></numerusform>
+            <numerusform>מחק חולייה</numerusform>
+            <numerusform>מחק %n חוליות</numerusform>
         </translation>
     </message>
     <message>
@@ -1644,12 +1644,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="+153"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>New Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>קרקע חדשה</translation>
     </message>
 </context>
 <context>
@@ -1672,27 +1672,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished">שכבת תמונה</translation>
+        <translation>שכבת תמונה</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished">סייר...</translation>
+        <translation>עיין...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">תמונה:</translation>
+        <translation>תמונה:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Color:</source>
-        <translation type="unfinished">צבע:</translation>
+        <translation>צבע:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished">תמונת שכבה</translation>
+        <translation>תמונת שכבה</translation>
     </message>
 </context>
 <context>
@@ -1718,12 +1718,12 @@ Line %1, column %2</source>
     <message>
         <location line="+97"/>
         <source>Show Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>הראה שכבות אחרות</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Hide Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>החבא שכבות אחרות</translation>
     </message>
 </context>
 <context>
@@ -1743,7 +1743,7 @@ Line %1, column %2</source>
     <message>
         <location line="+40"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1769,7 +1769,7 @@ Line %1, column %2</source>
     <message>
         <location line="-1281"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1785,7 +1785,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Tab</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1795,7 +1795,7 @@ Line %1, column %2</source>
     <message>
         <location line="+3"/>
         <source>Ctrl+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Tab</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1873,13 +1873,13 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>Non-unique file extension</source>
-        <translation type="unfinished"></translation>
+        <translation>סיומת קובץ לא ייחודית</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation type="unfinished"></translation>
+        <translation>סיומת קובץ לא ייחודית. אנה בחר פורמט ספציפי.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1924,12 +1924,12 @@ Please select specific format.</source>
     <message>
         <location line="+181"/>
         <source>Current layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>שכבה נוכחית: %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;none&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ריק&gt;</translation>
     </message>
     <message>
         <location line="-123"/>
@@ -1977,7 +1977,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Image Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>שכבת תמונה %1</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2070,7 +2070,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Add &amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף שכבת &amp;תמונה</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -2123,22 +2123,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="+189"/>
         <source>Change Object Name</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה את שם העצם</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה את סוג העצם</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Name</source>
-        <translation type="unfinished">שם</translation>
+        <translation>שם</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">סוג</translation>
+        <translation>סוג</translation>
     </message>
 </context>
 <context>
@@ -2146,17 +2146,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mappropertiesdialog.cpp" line="+40"/>
         <source>Map</source>
-        <translation type="unfinished">מפה</translation>
+        <translation>מפה</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation>צבע רקע:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation>פורמט שכבה:</translation>
     </message>
 </context>
 <context>
@@ -2164,17 +2164,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
         <source>Browse...</source>
-        <translation type="unfinished">סייר...</translation>
+        <translation>עיין...</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Choose the Maps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>בחר תיקיית מפות</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>מפות</translation>
     </message>
 </context>
 <context>
@@ -2182,7 +2182,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/minimapdock.cpp" line="+60"/>
         <source>Mini-map</source>
-        <translation type="unfinished"></translation>
+        <translation>מיני-מפה</translation>
     </message>
 </context>
 <context>
@@ -2190,17 +2190,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+58"/>
         <source>Orthogonal</source>
-        <translation type="unfinished">אורטוגונלי (ריבועי)</translation>
+        <translation>אורטוגונלי (ריבועי)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Isometric</source>
-        <translation type="unfinished">איסומטרי (אלכסוני)</translation>
+        <translation>איסומטרי (אלכסוני)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>אלכסוני (מועד)</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2304,23 +2304,23 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objectsdock.cpp" line="+67"/>
         <source>Object Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>מאפייני העצם</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Add Object Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף שכבת משבצות</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>עצמים</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
         <location line="+20"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>הזז עצם לשכבה</numerusform>
             <numerusform>הזז %n עצמים לשכבה</numerusform>
         </translation>
@@ -2329,7 +2329,7 @@ Please select specific format.</source>
         <location line="-26"/>
         <location line="+47"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>שכפל עצם</numerusform>
             <numerusform>שכפל %n עצמים</numerusform>
         </translation>
@@ -2338,7 +2338,7 @@ Please select specific format.</source>
         <location line="-46"/>
         <location line="+70"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>מחק עצם</numerusform>
             <numerusform>מחק %n עצמים</numerusform>
         </translation>
@@ -2451,13 +2451,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/terrainbrush.cpp" line="+44"/>
         <location line="+118"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>מברשת קרקע</translation>
     </message>
     <message>
         <location line="-115"/>
         <location line="+116"/>
         <source>T</source>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -2465,7 +2465,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/terraindock.cpp" line="+161"/>
         <source>Terrains</source>
-        <translation type="unfinished"></translation>
+        <translation>קרקעות</translation>
     </message>
 </context>
 <context>
@@ -2473,12 +2473,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/terrainview.cpp" line="+103"/>
         <source>Terrain &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>מאפייני &amp;קרקע...</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>קרקע</translation>
     </message>
 </context>
 <context>
@@ -2546,12 +2546,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>Rena&amp;me Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה &amp;שם סט משבצות</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit &amp;Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ערוך מידע על הקרקע</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -2571,12 +2571,12 @@ Do you want to replace it?</source>
     <message>
         <location line="+28"/>
         <source>Rename Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה שם סט משבצות</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New name:</source>
-        <translation type="unfinished"></translation>
+        <translation>שם חדש:</translation>
     </message>
 </context>
 <context>
@@ -2589,12 +2589,12 @@ Do you want to replace it?</source>
     <message>
         <location line="-12"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף סוג קרקע</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>קבע תמונת קרקע</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2789,13 +2789,13 @@ Do you want to replace it?</source>
     <message>
         <location line="+26"/>
         <source>Change Tileset Name</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה שם סט משבצות</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+27"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished">שנה מאפייני שכבת תמונה</translation>
+        <translation>שנה מאפייני שכבת תמונה</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -2815,58 +2815,58 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/addremoveterrain.cpp" line="+69"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>הוסף קרקע</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>הסר קרקע</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapproperties.cpp" line="+35"/>
         <location filename="../src/tiled/mappropertiesdialog.cpp" line="+38"/>
         <source>Change Map Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה מאפייני מפה</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+134"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה קרקע משבצות</translation>
     </message>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="-135"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה תמונת קרקע</translation>
     </message>
     <message>
         <location filename="../src/tiled/layermodel.cpp" line="-273"/>
         <source>Show Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>הצג שכבה</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>החבא שכבה</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Change Layer Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה את שקיפות השכבה</translation>
     </message>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="-192"/>
         <source>Show Object</source>
-        <translation type="unfinished"></translation>
+        <translation>הצג עצם</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Object</source>
-        <translation type="unfinished"></translation>
+        <translation>החבא עצם</translation>
     </message>
     <message>
         <location filename="../src/tiled/terrainmodel.cpp" line="+48"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>שנה את שם הקרקע</translation>
     </message>
 </context>
 <context>
