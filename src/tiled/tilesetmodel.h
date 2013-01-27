@@ -40,7 +40,7 @@ class TilesetModel : public QAbstractListModel
 
 public:
     /**
-     * The TerrainRole allows querying and changing the terrain info.
+     * The TerrainRole allows querying the terrain info.
      */
     enum UserRoles {
         TerrainRole = Qt::UserRole
@@ -69,11 +69,6 @@ public:
      */
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const;
-
-    /**
-     * Allows for changing the terrain info of a tile.
-     */
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
 
     /**
      * Returns a small size hint, to prevent the headers from affecting the
