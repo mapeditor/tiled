@@ -96,10 +96,13 @@ SaveAsImageDialog::SaveAsImageDialog(MapDocument *mapDocument,
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
             this, SLOT(updateAcceptEnabled()));
+
+    Utils::restoreGeometry(this);
 }
 
 SaveAsImageDialog::~SaveAsImageDialog()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 

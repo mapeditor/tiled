@@ -155,10 +155,13 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
             mUi->eraseTerrain, SLOT(toggle()));
 
     updateUndoButton();
+
+    Utils::restoreGeometry(this);
 }
 
 EditTerrainDialog::~EditTerrainDialog()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 

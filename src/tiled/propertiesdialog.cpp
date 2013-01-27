@@ -29,6 +29,7 @@
 #include "objectgroup.h"
 #include "objectgrouppropertiesdialog.h"
 #include "propertiesmodel.h"
+#include "utils.h"
 
 #include <QShortcut>
 #include <QUndoStack>
@@ -68,10 +69,13 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
             this, SLOT(deleteSelectedProperties()));
 
     setWindowTitle(tr("%1 Properties").arg(mKind));
+
+    Utils::restoreGeometry(this);
 }
 
 PropertiesDialog::~PropertiesDialog()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 
