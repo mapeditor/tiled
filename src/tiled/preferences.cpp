@@ -68,7 +68,9 @@ Preferences::Preferences()
     mShowGrid = boolValue("ShowGrid");
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
     mSnapToGrid = boolValue("SnapToGrid");
+    mSnapToFineGrid = boolValue("SnapToFineGrid");
     mGridColor = colorValue("GridColor", Qt::black);
+    mGridFine = intValue("GridFine", 4);
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
@@ -135,6 +137,16 @@ void Preferences::setSnapToGrid(bool snapToGrid)
     emit snapToGridChanged(mSnapToGrid);
 }
 
+void Preferences::setSnapToFineGrid(bool snapToFineGrid)
+{
+    if (mSnapToFineGrid == snapToFineGrid)
+        return;
+
+    mSnapToFineGrid = snapToFineGrid;
+    mSettings->setValue(QLatin1String("Interface/SnapToFineGrid"), mSnapToFineGrid);
+    emit snapToFineGridChanged(mSnapToFineGrid);
+}
+
 void Preferences::setGridColor(QColor gridColor)
 {
     if (mGridColor == gridColor)
@@ -143,6 +155,15 @@ void Preferences::setGridColor(QColor gridColor)
     mGridColor = gridColor;
     mSettings->setValue(QLatin1String("Interface/GridColor"), mGridColor.name());
     emit gridColorChanged(mGridColor);
+}
+
+void Preferences::setGridFine(int gridFine)
+{
+    if ( mGridFine == gridFine )
+        return;
+    mGridFine = gridFine;
+    mSettings->setValue(QLatin1String("Interface/GridFine"), mGridFine);
+    emit gridFineChanged(mGridFine);
 }
 
 void Preferences::setHighlightCurrentLayer(bool highlight)
@@ -362,4 +383,9 @@ QColor Preferences::colorValue(const char *key, const QColor &def) const
 QString Preferences::stringValue(const char *key, const QString &def) const
 {
     return mSettings->value(QLatin1String(key), def).toString();
+}
+
+int Preferences::intValue(const char *key, int defaultValue) const
+{
+    return mSettings->value(QLatin1String(key), defaultValue).toInt();
 }

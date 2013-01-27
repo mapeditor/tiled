@@ -199,6 +199,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
+    mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
 
     QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
@@ -284,6 +285,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, SLOT(setShowTileObjectOutlines(bool)));
     connect(mUi->actionSnapToGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setSnapToGrid(bool)));
+    connect(mUi->actionSnapToFineGrid, SIGNAL(toggled(bool)),
+            preferences, SLOT(setSnapToFineGrid(bool)));
     connect(mUi->actionHighlightCurrentLayer, SIGNAL(toggled(bool)),
             preferences, SLOT(setHighlightCurrentLayer(bool)));
     connect(mUi->actionZoomIn, SIGNAL(triggered()), SLOT(zoomIn()));
@@ -1009,8 +1012,13 @@ void MainWindow::paste()
             const MapRenderer *renderer = mMapDocument->renderer();
             const QPointF scenePos = view->mapToScene(viewPos);
             QPointF insertPos = renderer->pixelToTileCoords(scenePos);
-            if (Preferences::instance()->snapToGrid())
+            if (Preferences::instance()->snapToFineGrid()) {
+                int gridFine = Preferences::instance()->gridFine();
+                insertPos = (insertPos * gridFine).toPoint();
+                insertPos /= gridFine;
+            } else if (Preferences::instance()->snapToGrid()) {
                 insertPos = insertPos.toPoint();
+            }
             const QPointF offset = insertPos - center;
 
             QUndoStack *undoStack = mMapDocument->undoStack();
