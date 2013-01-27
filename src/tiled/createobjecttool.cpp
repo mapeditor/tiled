@@ -250,8 +250,10 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     bool snapToGrid = Preferences::instance()->snapToGrid();
     bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (event->modifiers() & Qt::ControlModifier)
+    if (event->modifiers() & Qt::ControlModifier) {
         snapToGrid = !snapToGrid;
+        snapToFineGrid = false;
+    }
 
     if (snapToFineGrid) {
         int gridFine = Preferences::instance()->gridFine();
