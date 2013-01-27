@@ -168,18 +168,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     UndoDock *undoDock = new UndoDock(undoGroup, this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
-    addDockWidget(Qt::RightDockWidgetArea, undoDock);
-    addDockWidget(Qt::RightDockWidgetArea, mMapsDock);
+    addDockWidget(Qt::LeftDockWidgetArea, undoDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
+    addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
 
-
-    tabifyDockWidget(undoDock, mObjectsDock);
+    tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
-    tabifyDockWidget(mLayerDock, mMapsDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
+    tabifyDockWidget(undoDock, mMapsDock);
+
+    // These dock widgets may not be immediately useful to many people, so
+    // they are hidden by default.
+    undoDock->setVisible(false);
+    mMapsDock->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 
@@ -1479,7 +1483,7 @@ void MainWindow::readSettings()
     if (!geom.isEmpty())
         restoreGeometry(geom);
     else
-        resize(800, 600);
+        resize(1000, 700);
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
     mSettings.endGroup();
