@@ -61,7 +61,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     QString sectionName;
     bool newsection = false;
     QString path = QFileInfo(file).absolutePath();
-    int base;
+    int base = 10;
     GidMapper gidMapper;
     int gid = 1;
     TileLayer *tilelayer = 0;
