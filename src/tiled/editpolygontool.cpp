@@ -496,17 +496,22 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
     QPointF diff = pos - mStart;
 
     bool snapToGrid = Preferences::instance()->snapToGrid();
-    if (modifiers & Qt::ControlModifier)
+    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+    if (modifiers & Qt::ControlModifier) {
         snapToGrid = !snapToGrid;
+        snapToFineGrid = false;
+    }
 
-    if (snapToGrid) {
+    if (snapToGrid || snapToFineGrid) {
+        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
         const QPointF alignPixelPos =
                 renderer->tileToPixelCoords(mAlignPosition);
         const QPointF newAlignPixelPos = alignPixelPos + diff;
 
         // Snap the position to the grid
-        const QPointF newTileCoords =
-                renderer->pixelToTileCoords(newAlignPixelPos).toPoint();
+        QPointF newTileCoords =
+                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+        newTileCoords /= scale;
         diff = renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
     }
 

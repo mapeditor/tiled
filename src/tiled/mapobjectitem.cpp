@@ -140,8 +140,11 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
 
         if (change == ItemPositionChange) {
             bool snapToGrid = Preferences::instance()->snapToGrid();
-            if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+            bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+            if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
                 snapToGrid = !snapToGrid;
+                snapToFineGrid = false;
+            }
 
             // Calculate the absolute pixel position
             const QPointF itemPos = mMapObjectItem->pos();
@@ -153,7 +156,11 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
             tileCoords -= objectPos;
             tileCoords.setX(qMax(tileCoords.x(), qreal(0)));
             tileCoords.setY(qMax(tileCoords.y(), qreal(0)));
-            if (snapToGrid)
+            if (snapToFineGrid) {
+                int gridFine = Preferences::instance()->gridFine();
+                tileCoords = (tileCoords * gridFine).toPoint();
+                tileCoords /= gridFine;
+            } else if (snapToGrid)
                 tileCoords = tileCoords.toPoint();
             tileCoords += objectPos;
 
