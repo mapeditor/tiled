@@ -1,4 +1,4 @@
-0.9.0 (...)
+0.9.0 (27 January 2013)
 * Added objects dock and per-object visibility toggle (by Tim Baker)
 * Added maps dock (by Tim Baker)
 * Added terrain tool for automatic terrain transitions (by Manu Evans)
@@ -24,6 +24,8 @@
   (by Petr Viktorin)
 * Added reading support to Flare plugin (by Stefan Beller)
 * Added a TMX rasterizer command line tool (by Vincent Petithory)
+* Added man pages and desktop file (by Erik Schilling)
+* Made the size and position of most dialogs persistent
 * Respect the original layer data format of a loaded map (by Ben Longbons)
 * Marked Tiled as high-resolution capable on Mac OS X
 * Improved handling of external tilesets in Lua export
@@ -34,7 +36,9 @@
 * Fixed bug in Flare plugin (by Clint Bellanger)
 * Fixed compile against Qt 5 (by Kenney Phillis)
 * Fixed resolving of symbolic links while loading map
-* Updated Portuguese translation (by Porfírio Ribeiro)
+* Fixed a crash that could happen after trying to load a faulty map
+* Updated Portuguese, Dutch, German, Spanish, Russian, French, Japanese,
+  Chinese, Brazilian Portuguese, Hebrew and Czech translations
 
 0.8.1 (7 May 2012)
 * Added MacOS X Lion full screen support
