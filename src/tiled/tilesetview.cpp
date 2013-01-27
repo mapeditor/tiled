@@ -215,6 +215,8 @@ void TileDelegate::paint(QPainter *painter,
 {
     const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
     const Tile *tile = model->tileAt(index);
+    if (!tile)
+        return;
 
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
