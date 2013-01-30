@@ -68,9 +68,6 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     qobject_cast<QBoxLayout*>(layout())->insertWidget(0, widget);
 
     mUi->name->setFocus();
-
-    // Resize the dialog to its recommended size
-    resize(sizeHint());
 }
 
 ObjectPropertiesDialog::~ObjectPropertiesDialog()
