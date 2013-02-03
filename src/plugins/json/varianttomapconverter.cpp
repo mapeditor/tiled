@@ -58,6 +58,13 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
 
     mMap->setProperties(toProperties(variantMap["properties"]));
 
+    const QString bgColor = variantMap["backgroundcolor"].toString();
+    if (!bgColor.isEmpty())
+#if QT_VERSION >= 0x040700
+        if (QColor::isValidColor(bgColor))
+#endif
+            mMap->setBackgroundColor(QColor(bgColor));
+
     foreach (const QVariant &tilesetVariant, variantMap["tilesets"].toList()) {
         Tileset *tileset = toTileset(tilesetVariant);
         if (!tileset) {
