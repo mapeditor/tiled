@@ -48,6 +48,10 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     mapVariant["tileheight"] = map->tileHeight();
     mapVariant["properties"] = toVariant(map->properties());
 
+    const QColor bgColor = map->backgroundColor();
+    if (bgColor.isValid())
+        mapVariant["backgroundcolor"] = bgColor.name();
+
     QVariantList tilesetVariants;
 
     unsigned firstGid = 1;
