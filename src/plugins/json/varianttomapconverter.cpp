@@ -153,6 +153,36 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
         }
     }
 
+    // Read terrains
+    QVariantList terrainsVariantList = variantMap["terrains"].toList();
+    for (int i = 0; i < terrainsVariantList.count(); ++i) {
+        QVariantMap terrainMap = terrainsVariantList[i].toMap();
+        tileset->addTerrain(terrainMap["name"].toString(),
+                            terrainMap["tile"].toInt());
+    }
+
+    // Read tile terrain information
+    const QVariantMap tilesVariantMap = variantMap["tiles"].toMap();
+    for (it = tilesVariantMap.begin(); it != tilesVariantMap.end(); ++it) {
+        bool ok;
+        const int tileIndex = it.key().toInt();
+        Tile *tile = tileset->tileAt(tileIndex);
+        if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
+            const QVariantMap tileVar = it.value().toMap();
+            QList<QVariant> terrains = tileVar["terrain"].toList();
+            if (terrains.count() == 4) {
+                for (int i = 0; i < 4; ++i) {
+                    int terrainID = terrains.at(i).toInt(&ok);
+                    if (ok && terrainID >= 0 && terrainID < tileset->terrainCount())
+                        tile->setCornerTerrain(i, terrainID);
+                }
+            }
+            float terrainProbability = tileVar["probability"].toFloat(&ok);
+            if (ok)
+                tile->setTerrainProbability(terrainProbability);
+        }
+    }
+
     mGidMapper.insert(firstGid, tileset);
     return tileset;
 }
