@@ -495,14 +495,13 @@ QPointF IsometricRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
-    const qreal ratio = (qreal) tileWidth / tileHeight;
 
     x -= map()->height() * tileWidth / 2;
-    const qreal mx = y + (x / ratio);
-    const qreal my = y - (x / ratio);
+    const qreal tileY = y / tileHeight;
+    const qreal tileX = x / tileWidth;
 
-    return QPointF(mx / tileHeight,
-                   my / tileHeight);
+    return QPointF(tileY + tileX,
+                   tileY - tileX);
 }
 
 QPointF IsometricRenderer::tileToPixelCoords(qreal x, qreal y) const
