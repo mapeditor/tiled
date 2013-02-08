@@ -4,8 +4,10 @@
     <title>Bootstrap 101 Template</title>
     <!-- Bootstrap -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="me" href="https://plus.google.com/113047271137781766813" />
+    <link rel='publisher' href='https://plus.google.com/104206952440491912596/' />
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
     <style type="text/css">
       .container-narrow {
         margin: 0 auto;
@@ -13,40 +15,78 @@
       }
       
       .hero-unit {
-        background: #e5e5e5; /* Old browsers */
-        background: -moz-linear-gradient(top,  #e5e5e5 0%, #ffffff 23%, #ffffff 100%); /* FF3.6+ */
-        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(23%,#ffffff), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
-        background: -webkit-linear-gradient(top,  #e5e5e5 0%,#ffffff 23%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-        background: -o-linear-gradient(top,  #e5e5e5 0%,#ffffff 23%,#ffffff 100%); /* Opera 11.10+ */
-        background: -ms-linear-gradient(top,  #e5e5e5 0%,#ffffff 23%,#ffffff 100%); /* IE10+ */
-        background: linear-gradient(to bottom,  #e5e5e5 0%,#ffffff 23%,#ffffff 100%); /* W3C */
+        box-shadow: 1px 1px 5px #888888;
+        /*
+        margin-top: 50px;
+        border-top: 1px solid black;
+        */
+        border-bottom: 1px solid black;
+
+        background: #ffffff;
+        background: -moz-linear-gradient(-45deg,  #ffffff 0%, #d5cebd 100%);
+        background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#ffffff), color-stop(100%,#d5cebd));
+        background: -webkit-linear-gradient(-45deg,  #ffffff 0%,#d5cebd 100%);
+        background: -o-linear-gradient(-45deg,  #ffffff 0%,#d5cebd 100%);
+        background: -ms-linear-gradient(-45deg,  #ffffff 0%,#d5cebd 100%);
+        background: linear-gradient(135deg,  #ffffff 0%,#d5cebd 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#d5cebd',GradientType=1 );
+      }
+
+      .hero-unit .lead {
+        text-align: center;
+      }
+
+      .my-box {
+        box-shadow: 1px 1px 5px #888888;
+        border: 1px solid black;
+        padding: 10px;
+        background: white;  /* Old browsers */
+        background: -moz-linear-gradient(top,  #e5e5e5 0%, #ffffff 100px, #ffffff 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100px,#ffffff), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* W3C */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
       }
     </style>
   </head>
   <body>
+  <a href='http://github.com/bjorn/tiled'><img alt='Fork me on GitHub' src='https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png' style='position: absolute; right: 0; border: 0;'/></a>
+      <div class="hero-unit" style="padding-top: 100px; border-radius: 0px;">
     <div class="container">
-      <div class="hero-unit" style="margin-top: 150px; padding-top: 100px; border-radius: 10px; border: 1px solid black; box-shadow: 1px 1px 5px #888888; background-color: white;">
-        <img src="title-logo.png" style="top: 20px; margin-left: -100px; position: absolute;">
+        <!--
+        <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
+        -->
         <h1 style="display: none;">Tiled</h1>
-        <p class="lead">Your free, easy to use and flexible tile map editor</p>
-
-        <p>
-        <a class="btn btn-large btn-success" href=""><i class="icon-download-alt icon-white"></i> Download</a>
-        <a class="btn btn-large btn-info" href=""><i class="icon-heart icon-white"></i> Support</a>
-        </p>
-      </div>
       <div class="row">
-        <div class="span8" style="">
-          <h2>Hello, world!</h2>
+        <div class="lead span6 offset1">
+        <img src="title-logo.png" style="top: -50px; margin-bottom: -50px; position: relative;"><br />
+        Your free, easy to use and flexible tile map editor.</div>
+
+        <div class="span2 offset2">
+        <a class="btn btn-large btn-success" style="width: 100%; margin-bottom: 10px;" href=""><i class="icon-download-alt icon-white"></i> Download</a><br />
+        <a class="btn btn-large btn-info" style="width: 100%;" href=""><i class="icon-heart icon-white"></i> Support</a>
         </div>
-        <div class="span4">
-          <h2>Sidebar</h2>
-          <ul class="nav nav-list">
-            <li><a href="#"><i class="icon-home"></i> Home</a></li>
-            <li><a href="#"><i class="icon-book"></i> Library</a></li>
-            <li><a href="#"><i class="icon-pencil"></i> Applications</a></li>
-          </ul>
+        </div>
+        </div>
+      </div>
+    <div class="container">
+      <div class="row">
+        <div class="span8" style="margin-bottom: 2em;">
+          <div class="my-box">
+            <h2>Hello, world!</h2>
+          </div>
+        </div>
+        <div class="span4" style="margin-bottom: 2em;">
+          <div class="my-box">
+            <h2>Sidebar</h2>
+            <ul class="nav nav-list">
+              <li><a href="#"><i class="icon-home"></i> Home</a></li>
+              <li><a href="#"><i class="icon-book"></i> Library</a></li>
+              <li><a href="#"><i class="icon-pencil"></i> Applications</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
