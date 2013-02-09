@@ -1,0 +1,11 @@
+/* Base styles ago here, only stuff that should appear on every page */
+
+body {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.container-narrow {
+    margin: 0 auto;
+    max-width: 1170px;
+}
