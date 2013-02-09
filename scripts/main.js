@@ -1,5 +1,6 @@
 require(["jquery"], function($) {
   $(function() {
-    console.log("jQuery loaded via AMD");
+    // Set up the image carousel
+    $('.carousel').carousel();
   });
 });

@@ -13,9 +13,9 @@
   <body>
     <div class="my-top-box">
       <div class="row-fluid">
-      <!--
-      <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
-      -->
+	<!--
+	    <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
+	    -->
         <h1 style="display: none;">Tiled</h1>
         <div class="lead span6" style="text-align: center; color: white; text-shadow: 1px 1px 2px #000000;">
           <img src="img/tiled-logo-white.png" style="position: relative;"><br />
@@ -37,13 +37,27 @@
         <div class="span12">
         </div>
       </div>
+      <!-- jQuery Bootstrap Image Carousel -->
       <div class="row">
-        <div class="span8" style="margin-bottom: 2em;">
-          <div class="my-box">
-            <h2>Hello, world!</h2>
-          </div>
-        </div>
-        <div class="span4" style="margin-bottom: 2em;">
+	<div id="this-carousel-id" class="carousel slide span8">
+	  <div class="carousel-inner">
+	    <div class="item active">
+	      <img src="img/tiled-qt-screenshot-4.png" alt="screenshot" />
+	      <div class="carousel-caption">
+		<p>Tiled is freakin' awesome.</p>
+	      </div>
+	    </div>
+	    <div class="item">
+	      <img src="img/tiled-qt-screenshot-5.png" alt="screenshot" />
+	      <div class="carousel-caption">
+		<p>Seriously, awesome.</p>
+	      </div>
+	    </div>
+	  </div>
+	  <a class="carousel-control left" href="#this-carousel-id" data-slide="prev">&lsaquo;</a>
+	  <a class="carousel-control right" href="#this-carousel-id" data-slide="next">&rsaquo;</a>
+	</div>	
+	<div class="span4" style="margin-bottom: 2em;">
           <div class="my-box">
             <h2>Sidebar</h2>
             <ul class="nav nav-list">
@@ -52,7 +66,7 @@
               <li><a href="#"><i class="icon-pencil"></i> Applications</a></li>
             </ul>
           </div>
-        </div>
+	</div>
       </div>
     </div>
     <script data-main="scripts/main" src="scripts/require-jquery.js"></script>
