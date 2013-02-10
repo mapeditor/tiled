@@ -26,9 +26,21 @@
     -->
     <div class="container">
       <div class="row">
-        <div class="span12" style="text-align: right; padding-top: 5px;">
-          <iframe src="http://ghbtns.com/github-btn.html?user=bjorn&repo=tiled&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
-          <iframe src="http://ghbtns.com/github-btn.html?user=bjorn&repo=tiled&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
+        <div class="span12" style="padding-top: 5px;">
+          <div class="g-plusone pull-left" data-size="medium"></div>
+
+          <!-- Place this tag after the last +1 button tag. -->
+          <script type="text/javascript">
+            (function() {
+              var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+              po.src = 'https://apis.google.com/js/plusone.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+            })();
+          </script>
+          <div class="pull-right">
+            <iframe src="http://ghbtns.com/github-btn.html?user=bjorn&repo=tiled&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+            <iframe src="http://ghbtns.com/github-btn.html?user=bjorn&repo=tiled&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
+          </div>
         </div>
       </div>
     </div>
@@ -96,6 +108,8 @@
         </div>
       </div>
     </div>
+
+    <!-- Script at the end to avoid delay in display time -->
     <script data-main="scripts/main" src="scripts/require-jquery.js"></script>
     <script src="scripts/bootstrap.min.js"></script>
   </body>
