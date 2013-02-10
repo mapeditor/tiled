@@ -10,3 +10,7 @@ body {
     margin: 0 auto;
     max-width: 1170px;
 }
+
+.my-navigation .btn {
+    margin-bottom: 0.5em;
+}
