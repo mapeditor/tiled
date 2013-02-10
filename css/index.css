@@ -53,3 +53,12 @@
     background: linear-gradient(to bottom,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
 }
+
+/* Override hover underline for thumbnails */
+.thumbnail:hover {
+    text-decoration: none;
+}
+
+.thumbnails .caption {
+    padding: 4px 8px;
+}
