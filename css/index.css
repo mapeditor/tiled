@@ -25,7 +25,7 @@
 }
 
 .my-top-box {
-    box-shadow: inset 0px 20px 20px -20px #000000, inset 0px -15px 20px -20px #000000;
+    box-shadow: inset 0px 20px 10px -20px #000000, inset 0px -5px 10px -7px #000000;
 /*
     box-shadow: inset 0px 2px 10px #000000;
     */
