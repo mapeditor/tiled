@@ -3,7 +3,7 @@
 body {
     padding-right: 0px;
     padding-left: 0px;
-    background-color: #a9a9a9;
+    background-color: #e8e8e8;
 }
 
 .container-narrow {
@@ -11,6 +11,25 @@ body {
     max-width: 1170px;
 }
 
+.my-navigation {
+    background-color: rgba(255,255,255,.2);
+    margin-bottom: 0px;
+    padding-top: 0.75em;
+    padding-bottom: 0.25em;
+    text-align: center;
+}
+
 .my-navigation .btn {
     margin-bottom: 0.5em;
+    /*
+    box-shadow: none;
+    */
+    border: 1px solid gray;
 }
+
+/*
+.my-navigation .btn:hover {
+    margin-bottom: 0.5em;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.25);
+}
+*/

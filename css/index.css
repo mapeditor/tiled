@@ -7,30 +7,36 @@
 .my-top-box .my-buttons .btn {
     display: block;
     margin-bottom: 10px;
-    box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.5);
     max-width: 200px;
     margin-left: auto;
     margin-right: auto;
 }
 
-@media (max-width: 767px) {
-    .container {
-        margin-right: 20px;
-        margin-left: 20px;
-    }
-    .my-top-box .my-buttons {
-        margin-top: 0px;
-    }
+.btn-success {
+    border: 1px solid #387038;
+}
+.btn-info {
+    border: 1px solid #1f6377;
+}
+
+.btn-large .icon-heart,
+.btn-large .icon-download-alt {
 }
 
 .my-top-box {
-    box-shadow: 0px 0px 10px #000000;
-    border-bottom: 1px solid black;
+    box-shadow: inset 0px 20px 20px -20px #000000, inset 0px -15px 20px -20px #000000;
+/*
+    box-shadow: inset 0px 2px 10px #000000;
+    */
+    border-bottom: 1px solid white;
+    border-top: 1px solid white;
     /*
       border-top: 1px solid black;
       margin-top: 1em;
       */
-    padding: 10px;
+    padding-top: 10px;
+    margin-bottom: 2em;
 
     background: #808080;
     background-image: url('/img/grid-white.png');
@@ -39,19 +45,20 @@
 
 .my-box {
     box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-    border: 1px solid black;
-    border-radius: 10px;
+    border-radius: 4px;
     padding: 10px;
     margin-bottom: 2em;
 
-    background: white;  /* Old browsers */
-    background: -moz-linear-gradient(top,  #e5e5e5 0%, #ffffff 100px, #ffffff 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100px,#ffffff), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+    background: white;
+    /*
+    background: -moz-linear-gradient(top,  #e5e5e5 0%, #ffffff 100px, #ffffff 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100px,#ffffff), color-stop(100%,#ffffff));
+    background: -webkit-linear-gradient(bottom,  #e5e5e5 0%,#ffffff 50px,#ffffff 100%);
+    background: -o-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%);
+    background: -ms-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%);
+    background: linear-gradient(to bottom,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%);
+    */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 );
 }
 
 /* Override hover underline for thumbnails */
@@ -69,4 +76,16 @@
 
 ul.thumbnails {
   margin: 0px;
+}
+
+@media (max-width: 767px) {
+    .container {
+        margin-right: 3%;
+        margin-left: 3%;
+    }
+    .my-top-box .my-buttons {
+        margin-top: 0px;
+    }
+    .my-box {
+    }
 }
