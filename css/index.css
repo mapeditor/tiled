@@ -79,7 +79,7 @@ ul.thumbnails {
 }
 
 @media (max-width: 767px) {
-    .container {
+    .container-fluid {
         margin-right: 3%;
         margin-left: 3%;
     }

@@ -6,7 +6,7 @@ body {
     background-color: #e8e8e8;
 }
 
-.container-narrow {
+.container-fluid {
     margin: 0 auto;
     max-width: 1170px;
 }
