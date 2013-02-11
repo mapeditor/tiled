@@ -62,3 +62,11 @@
 .thumbnails .caption {
     padding: 4px 8px;
 }
+
+.thumbnails > li {
+  margin-bottom: 0px;
+}
+
+ul.thumbnails {
+  margin: 0px;
+}
