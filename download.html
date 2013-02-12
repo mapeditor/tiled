@@ -7,7 +7,7 @@
     <link href="css/bootstrap.css" rel="stylesheet" media="screen">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/fontawesome.css" rel="stylesheet">
-    <link href="css/index.css" rel="stylesheet" media="screen">
+    <link href="css/base.css" rel="stylesheet" media="screen">
     <link rel="me" href="https://plus.google.com/113047271137781766813" />
     <link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
   </head>
@@ -24,6 +24,7 @@
       </div>
     </div>
 
+    <!-- Thin social bar -->
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12" style="padding-top: 5px;">
@@ -44,6 +45,7 @@
         </div>
       </div>
     </div>
+
     <div class="my-top-box">
       <div class="container-fluid">
         <div class="row-fluid">
@@ -51,36 +53,45 @@
           <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
           -->
           <h1 style="display: none;">Tiled</h1>
-          <div class="lead span6" style="text-align: center; color: white; text-shadow: 1px 1px 2px #000000;">
-            <img src="img/tiled-logo-white.png" style="margin-bottom: -0.5em; margin-left: -20px;"><br />
-            Your free, easy to use and flexible tile&nbsp;map&nbsp;editor.
+          <div class="lead span3" style="color: white; text-shadow: 1px 1px 2px #000000;">
+            <a href="index.html"><img src="img/tiled-logo-white.png" style="margin-bottom: -0.5em; margin-left: -20px; width: 200px;"></a><br />
           </div>
 
-          <div class="span4 offset1 my-buttons">
-            <a class="btn btn-large btn-success" href="download.html"><i class="icon-download-alt"></i> Download</a>
-            <a class="btn btn-large btn-info" href="donate.html"><i class="icon-heart"></i> Donate</a>
+          <div class="span5 my-buttons" style="text-align: center;">
+            <!--
+            <a class="btn btn-success" href="download.html"><i class="icon-download-alt"></i> Download</a>
+            -->
           </div>
         </div>
       </div>
-      <div class="my-navigation">
-          <a class="btn" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>
-          <a class="btn" href="http://github.com/bjorn/tiled/wiki"><i class="icon-book"></i> Documentation</a>
-          <a class="btn" href="http://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
-          <a class="btn" href="http://groups.google.com/group/mapeditor" target="_blank"><i class="icon-group"></i> Mailing List</a>
-          <div class="btn-group" style="text-align: left;">
-            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-comments"></i> IRC Channel <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="top: 2em">
-              <li><a tabindex="-1" href="irc://irc.freenode.net/tiled">Join with IRC client</a></li>
-              <li><a tabindex="-1" href="http://webchat.freenode.net/?channels=tiled" target="_blank">Join with browser</a></li>
-            </ul>
-          </div>
+      <div class="my-navigation" style="margin-top: -50px;">
+        <a class="btn btn-small btn-info" href="donate.html"><i class="icon-heart"></i> Donate</a>
+        <a class="btn btn-small" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>
+        <a class="btn btn-small" href="http://github.com/bjorn/tiled/wiki"><i class="icon-book"></i> Documentation</a>
+        <a class="btn btn-small" href="http://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
+        <a class="btn btn-small" href="http://groups.google.com/group/mapeditor" target="_blank"><i class="icon-group"></i> Mailing List</a>
+        <div class="btn-group" style="text-align: left;">
+          <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-comments"></i> IRC Channel <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="top: 1.75em">
+            <li><a tabindex="-1" href="irc://irc.freenode.net/tiled">Join with IRC client</a></li>
+            <li><a tabindex="-1" href="http://webchat.freenode.net/?channels=tiled" target="_blank">Join with browser</a></li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12">
-          <div class="my-box" style="text-align: center;">
-            <h4 class="muted">Downloading Tiled...</h4>
+          <div class="my-box">
+            <h4 class="muted">Download</h4>
+              <ul>
+                <li>Tiled Qt 0.9.0 for Windows
+                <li>Tiled Qt 0.9.0 for Mac OS X
+                <li>Tiled Qt 0.9.0 source
+                <li>Ubuntu PPA
+                <li>Fedora, openSUSE and CentOS packages
+                <li>Daily builds for Windows
+              </ul>
           </div>
         </div>
       </div>
