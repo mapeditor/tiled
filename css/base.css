@@ -82,3 +82,21 @@ body {
         margin-left: 3%;
     }
 }
+
+/* center the social buttons */
+#social-buttons {
+    margin-top: 3px;
+}
+
+#navbar {
+    height: 30px;
+}
+
+#navbar .nav li a {
+    height: 10px;
+    line-height: 10px;
+}
+
+#navbar-title {
+    line-height: 10px;
+}
