@@ -73,16 +73,23 @@ body {
 
 /* center the social buttons */
 #navbar #social-buttons {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
-#navbar .navbar-inner {
-    min-height: 0px;
-}
+@media (max-width: 768px) {
+    #navbar .navbar-inner {
+        min-height: 0px;
+    }
 
-#navbar .nav li a {
-    height: 10px;
-    line-height: 10px;
+    #navbar .nav li a {
+        height: 10px;
+        line-height: 10px;
+    }
+
+    /* center the social buttons */
+    #navbar #social-buttons {
+        margin-top: 5px;
+    }
 }
 
 @media (max-width: 767px) {
