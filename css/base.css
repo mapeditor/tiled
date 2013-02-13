@@ -33,7 +33,6 @@ body {
     box-shadow: inset 0px 2px 10px #000000;
     */
     border-bottom: 1px solid white;
-    border-top: 1px solid white;
     /*
       border-top: 1px solid black;
       margin-top: 1em;
@@ -63,33 +62,22 @@ body {
     border-radius: 4px;
     padding: 10px;
     margin-bottom: 2em;
-
     background: white;
-    /*
-    background: -moz-linear-gradient(top,  #e5e5e5 0%, #ffffff 100px, #ffffff 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100px,#ffffff), color-stop(100%,#ffffff));
-    background: -webkit-linear-gradient(bottom,  #e5e5e5 0%,#ffffff 50px,#ffffff 100%);
-    background: -o-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%);
-    background: -ms-linear-gradient(top,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%);
-    background: linear-gradient(to bottom,  #e5e5e5 0%,#ffffff 100px,#ffffff 100%);
-    */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 );
-}
-
-@media (max-width: 767px) {
-    .container-fluid {
-        margin-right: 3%;
-        margin-left: 3%;
-    }
-}
-
-/* center the social buttons */
-#social-buttons {
-    margin-top: 3px;
 }
 
 #navbar {
-    height: 30px;
+    max-width: 1170px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* center the social buttons */
+#navbar #social-buttons {
+    margin-top: 5px;
+}
+
+#navbar .navbar-inner {
+    min-height: 0px;
 }
 
 #navbar .nav li a {
@@ -97,6 +85,15 @@ body {
     line-height: 10px;
 }
 
-#navbar-title {
-    line-height: 10px;
+@media (max-width: 767px) {
+    .container-fluid {
+        margin-right: 3%;
+        margin-left: 3%;
+    }
+
+    /* restore overridden bootstrap behavior */
+    #navbar {
+        margin-left: -20px;
+        margin-right: -20px;
+    }
 }
