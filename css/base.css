@@ -103,3 +103,11 @@ body {
         margin-right: -20px;
     }
 }
+
+@media (max-width: 650px) {
+    #fork { display: none; }
+}
+
+@media (max-width: 540px) {
+    #watch { display: none; }
+}
