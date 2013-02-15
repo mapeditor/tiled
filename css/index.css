@@ -13,6 +13,10 @@
     margin-right: auto;
 }
 
+.my-box {
+    padding: 10px;
+}
+
 .btn-large .icon-heart,
 .btn-large .icon-download-alt {
 }
