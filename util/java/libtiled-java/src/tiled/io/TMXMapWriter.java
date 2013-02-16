@@ -33,6 +33,7 @@ import java.awt.Rectangle;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
 import tiled.core.*;
@@ -49,6 +50,14 @@ public class TMXMapWriter
 
     private static final boolean encodeLayerData = true;
     private static final boolean compressLayerData = encodeLayerData;
+
+    public static class Settings {
+        public static final String LAYER_COMPRESSION_METHOD_GZIP = "gzip";
+        public static final String LAYER_COMPRESSION_METHOD_ZLIB = "zlib";
+
+        public String layerCompressionMethod = LAYER_COMPRESSION_METHOD_GZIP;
+    }
+    public Settings settings = new Settings();
 
     /**
      * Saves a map to an XML file.
@@ -116,7 +125,7 @@ public class TMXMapWriter
         writer.flush();
     }
 
-    private static void writeMap(Map map, XMLWriter w, String wp) throws IOException {
+    private void writeMap(Map map, XMLWriter w, String wp) throws IOException {
         w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
@@ -297,7 +306,7 @@ public class TMXMapWriter
      * first global ids for the tilesets are determined, in order for the right
      * gids to be written to the layer data.
      */
-    private static void writeMapLayer(MapLayer l, XMLWriter w, String wp) throws IOException {
+    private void writeMapLayer(MapLayer l, XMLWriter w, String wp) throws IOException {
         Rectangle bounds = l.getBounds();
 
         if (l instanceof ObjectGroup) {
@@ -336,9 +345,17 @@ public class TMXMapWriter
 
                 w.writeAttribute("encoding", "base64");
 
+                DeflaterOutputStream dos;
                 if (compressLayerData) {
-                    w.writeAttribute("compression", "gzip");
-                    out = new GZIPOutputStream(baos);
+                    if (Settings.LAYER_COMPRESSION_METHOD_ZLIB.equalsIgnoreCase(settings.layerCompressionMethod)) {
+                        dos = new DeflaterOutputStream(baos);
+                    } else if (Settings.LAYER_COMPRESSION_METHOD_GZIP.equalsIgnoreCase(settings.layerCompressionMethod)) {
+                        dos = new GZIPOutputStream(baos);
+                    } else {
+                        throw new IOException("Unrecognized compression method \"" + settings.layerCompressionMethod + "\" for map layer " + l.getName());
+                    }
+                    out = dos;
+                    w.writeAttribute("compression", settings.layerCompressionMethod);
                 } else {
                     out = baos;
                 }
@@ -360,8 +377,8 @@ public class TMXMapWriter
                     }
                 }
 
-                if (compressLayerData) {
-                    ((GZIPOutputStream)out).finish();
+                if (compressLayerData && dos != null) {
+                    dos.finish();
                 }
 
                 w.writeCDATA(Base64.encodeToString(baos.toByteArray(), true));
