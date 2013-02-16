@@ -207,7 +207,7 @@ public class TileLayer extends MapLayer
      * @param bounds new new bounds of this tile layer (in tiles)
      * @see MapLayer#setBounds
      */
-    protected void setBounds(Rectangle bounds) {
+    public void setBounds(Rectangle bounds) {
         super.setBounds(bounds);
         map = new Tile[bounds.height][bounds.width];
 
