@@ -75,7 +75,7 @@ public class TMXMapWriter
         XMLWriter xmlWriter = new XMLWriter(writer);
 
         xmlWriter.startDocument();
-        writeMap(map, xmlWriter, filename, settings);
+        writeMap(map, xmlWriter, filename);
         xmlWriter.endDocument();
 
         writer.flush();
@@ -108,7 +108,7 @@ public class TMXMapWriter
         XMLWriter xmlWriter = new XMLWriter(writer);
 
         xmlWriter.startDocument();
-        writeMap(map, xmlWriter, "/.", settings);
+        writeMap(map, xmlWriter, "/.");
         xmlWriter.endDocument();
 
         writer.flush();
@@ -125,7 +125,7 @@ public class TMXMapWriter
         writer.flush();
     }
 
-    private static void writeMap(Map map, XMLWriter w, String wp, Settings settings) throws IOException {
+    private void writeMap(Map map, XMLWriter w, String wp) throws IOException {
         w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
@@ -157,7 +157,7 @@ public class TMXMapWriter
         }
 
         for (MapLayer layer : map) {
-            writeMapLayer(layer, w, wp, settings);
+            writeMapLayer(layer, w, wp);
         }
 
         w.endElement();
@@ -306,7 +306,7 @@ public class TMXMapWriter
      * first global ids for the tilesets are determined, in order for the right
      * gids to be written to the layer data.
      */
-    private static void writeMapLayer(MapLayer l, XMLWriter w, String wp, Settings settings) throws IOException {
+    private void writeMapLayer(MapLayer l, XMLWriter w, String wp) throws IOException {
         Rectangle bounds = l.getBounds();
 
         if (l instanceof ObjectGroup) {
