@@ -51,13 +51,13 @@ public class TMXMapWriter
     private static final boolean encodeLayerData = true;
     private static final boolean compressLayerData = encodeLayerData;
 
-	public static class Settings {
-		public static final String LAYER_COMPRESSION_METHOD_GZIP = "gzip";
-		public static final String LAYER_COMPRESSION_METHOD_ZLIB = "zlib";
+    public static class Settings {
+        public static final String LAYER_COMPRESSION_METHOD_GZIP = "gzip";
+        public static final String LAYER_COMPRESSION_METHOD_ZLIB = "zlib";
 
-		public String layerCompressionMethod = LAYER_COMPRESSION_METHOD_GZIP;
-	}
-	public Settings settings = new Settings();
+        public String layerCompressionMethod = LAYER_COMPRESSION_METHOD_GZIP;
+    }
+    public Settings settings = new Settings();
 
     /**
      * Saves a map to an XML file.
