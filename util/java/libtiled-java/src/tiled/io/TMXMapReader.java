@@ -30,6 +30,7 @@ package tiled.io;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -505,7 +506,9 @@ public class TMXMapReader
 
         final int offsetX = getAttribute(t, "x", 0);
         final int offsetY = getAttribute(t, "y", 0);
-        og.setOffset(offsetX, offsetY);
+        final int layerWidth = getAttribute(t, "width", 0);
+        final int layerHeight = getAttribute(t, "height", 0);
+        og.setBounds(new Rectangle(offsetX, offsetY, layerWidth, layerHeight));
 
         // Add all objects from the objects group
         NodeList children = t.getChildNodes();
