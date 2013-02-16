@@ -51,6 +51,8 @@ public class TMXMapWriter
     private static final boolean encodeLayerData = true;
     private static final boolean compressLayerData = encodeLayerData;
 
+    private HashMap<String, Integer> firstGidPerTileset;
+
     public static class Settings {
         public static final String LAYER_COMPRESSION_METHOD_GZIP = "gzip";
         public static final String LAYER_COMPRESSION_METHOD_ZLIB = "zlib";
@@ -149,9 +151,10 @@ public class TMXMapWriter
 
         writeProperties(map.getProperties(), w);
 
+        firstGidPerTileset = new HashMap<String, Integer>();
         int firstgid = 1;
         for (TileSet tileset : map.getTileSets()) {
-            tileset.setFirstGid(firstgid);
+            setFirstGidForTileset(tileset, firstgid);
             writeTilesetReference(tileset, w, wp);
             firstgid += tileset.getMaxTileId() + 1;
         }
@@ -159,6 +162,7 @@ public class TMXMapWriter
         for (MapLayer layer : map) {
             writeMapLayer(layer, w, wp);
         }
+        firstGidPerTileset = null;
 
         w.endElement();
     }
@@ -197,7 +201,7 @@ public class TMXMapWriter
      * @param wp  the working directory of the map
      * @throws java.io.IOException
      */
-    private static void writeTilesetReference(TileSet set, XMLWriter w, String wp)
+    private void writeTilesetReference(TileSet set, XMLWriter w, String wp)
         throws IOException {
 
         String source = set.getSource();
@@ -206,7 +210,7 @@ public class TMXMapWriter
             writeTileset(set, w, wp);
         } else {
             w.startElement("tileset");
-            w.writeAttribute("firstgid", set.getFirstGid());
+            w.writeAttribute("firstgid", getFirstGidForTileset(set));
             w.writeAttribute("source", getRelativePath(wp, source));
             if (set.getBaseDir() != null) {
                 w.writeAttribute("basedir", set.getBaseDir());
@@ -215,14 +219,14 @@ public class TMXMapWriter
         }
     }
 
-    private static void writeTileset(TileSet set, XMLWriter w, String wp)
+    private void writeTileset(TileSet set, XMLWriter w, String wp)
         throws IOException {
 
         String tileBitmapFile = set.getTilebmpFile();
         String name = set.getName();
 
         w.startElement("tileset");
-        w.writeAttribute("firstgid", set.getFirstGid());
+        w.writeAttribute("firstgid", getFirstGidForTileset(set));
 
         if (name != null) {
             w.writeAttribute("name", name);
@@ -371,7 +375,7 @@ public class TMXMapWriter
                         int gid = 0;
 
                         if (tile != null) {
-                            gid = tile.getGid();
+                            gid = getGid(tile);
                         }
 
                         out.write(gid       & LAST_BYTE);
@@ -393,7 +397,7 @@ public class TMXMapWriter
                         int gid = 0;
 
                         if (tile != null) {
-                            gid = tile.getGid();
+                            gid = getGid(tile);
                         }
 
                         w.startElement("tile");
@@ -440,7 +444,7 @@ public class TMXMapWriter
      * @param w the writer to write to
      * @throws IOException when an io error occurs
      */
-    private static void writeTile(Tile tile, XMLWriter w) throws IOException {
+    private void writeTile(Tile tile, XMLWriter w) throws IOException {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
 
@@ -452,7 +456,7 @@ public class TMXMapWriter
         w.endElement();
     }
 
-    private static void writeAnimation(Sprite s, XMLWriter w) throws IOException {
+    private void writeAnimation(Sprite s, XMLWriter w) throws IOException {
         w.startElement("animation");
         for (int k = 0; k < s.getTotalKeys(); k++) {
             Sprite.KeyFrame key = s.getKey(k);
@@ -461,7 +465,7 @@ public class TMXMapWriter
             for (int it = 0; it < key.getTotalFrames(); it++) {
                 Tile stile = key.getFrame(it);
                 w.startElement("tile");
-                w.writeAttribute("gid", stile.getGid());
+                w.writeAttribute("gid", getGid(stile));
                 w.endElement();
             }
             w.endElement();
@@ -580,5 +584,26 @@ public class TMXMapWriter
             }
         } catch (IOException e) {}
         return false;
+    }
+
+    /**
+     * Returns the global tile id of the given tile.
+     *
+     * @return global tile id of the given tile
+     */
+    private int getGid(Tile tile) {
+        TileSet tileset = tile.getTileSet();
+        if (tileset != null) {
+            return tile.getId() + getFirstGidForTileset(tileset);
+        }
+        return tile.getId();
+    }
+
+    private void setFirstGidForTileset(TileSet tileset, int firstGid) {
+        firstGidPerTileset.put(tileset.getName(), firstGid);
+    }
+
+    private int getFirstGidForTileset(TileSet tileset) {
+        return firstGidPerTileset.get(tileset.getName());
     }
 }

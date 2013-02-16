@@ -54,7 +54,6 @@ public class TileSet implements Iterable<Tile>
 {
     private String base;
     final private Vector<Tile> tiles = new Vector<Tile>();
-    private int firstGid;
     private long tilebmpFileLastModified;
     private TileCutter tileCutter;
     private Rectangle tileDimensions;
@@ -245,15 +244,6 @@ public class TileSet implements Iterable<Tile>
         else {
             tilebmpFile = null;
         }
-    }
-
-    /**
-     * Sets the first global id used by this tileset.
-     *
-     * @param firstGid first global id
-     */
-    public void setFirstGid(int firstGid) {
-        this.firstGid = firstGid;
     }
 
     /**
@@ -461,15 +451,6 @@ public class TileSet implements Iterable<Tile>
         }
 
         return null;
-    }
-
-    /**
-     * Returns the first global id connected to this tileset.
-     *
-     * @return first global id
-     */
-    public int getFirstGid() {
-        return firstGid;
     }
 
     /**
