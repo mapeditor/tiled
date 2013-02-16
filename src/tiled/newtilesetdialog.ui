@@ -179,7 +179,7 @@
            <number>0</number>
           </property>
           <property name="maximum">
-           <number>99</number>
+           <number>9999</number>
           </property>
           <property name="value">
            <number>0</number>
@@ -195,7 +195,7 @@
            <number>0</number>
           </property>
           <property name="maximum">
-           <number>99</number>
+           <number>9999</number>
           </property>
           <property name="value">
            <number>0</number>
