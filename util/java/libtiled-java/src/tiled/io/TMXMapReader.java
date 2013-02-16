@@ -567,9 +567,12 @@ public class TMXMapReader
                         String comp = getAttributeValue(child, "compression");
 
                         if ("gzip".equalsIgnoreCase(comp)) {
-                            is = new GZIPInputStream(bais);
+                            final int len = layerWidth * layerHeight * 4;
+                            is = new GZIPInputStream(bais, len);
                         } else if ("zlib".equalsIgnoreCase(comp)) {
                             is = new InflaterInputStream(bais);
+                        } else if (comp != null && !comp.isEmpty()) {
+                            throw new IOException("Unrecognized compression method \"" + comp + "\" for map layer " + ml.getName());
                         } else {
                             is = bais;
                         }
