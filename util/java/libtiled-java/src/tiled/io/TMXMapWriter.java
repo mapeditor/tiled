@@ -316,8 +316,12 @@ public class TMXMapWriter
         }
 
         w.writeAttribute("name", l.getName());
-        w.writeAttribute("width", bounds.width);
-        w.writeAttribute("height", bounds.height);
+        if (bounds.width != 0) {
+            w.writeAttribute("width", bounds.width);
+        }
+        if (bounds.height != 0) {
+            w.writeAttribute("height", bounds.height);
+        }
         if (bounds.x != 0) {
             w.writeAttribute("x", bounds.x);
         }
