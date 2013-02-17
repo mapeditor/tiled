@@ -66,6 +66,12 @@ public class TMXMapReader
     private String error;
     private final EntityResolver entityResolver = new MapEntityResolver();
     private TreeMap<Integer, TileSet> tilesetPerFirstGid;
+    public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
+    private final HashMap<String, TileSet> cachedTilesets = new HashMap<String, TileSet>();
+
+    public static final class TMXMapReaderSettings {
+        public boolean reuseCachedTilesets = false;
+    }
 
     public TMXMapReader() {
     }
@@ -318,9 +324,22 @@ public class TMXMapReader
             final int tileSpacing = getAttribute(t, "spacing", 0);
             final int tileMargin = getAttribute(t, "margin", 0);
 
-            TileSet set = new TileSet();
+            final String name = getAttributeValue(t, "name");
 
-            set.setName(getAttributeValue(t, "name"));
+            TileSet set;
+            if (settings.reuseCachedTilesets) {
+                set = cachedTilesets.get(name);
+                if (set != null) {
+                    setFirstGidForTileset(set, firstGid);
+                    return set;
+                }
+                set = new TileSet();
+                cachedTilesets.put(name, set);
+            } else {
+                set = new TileSet();
+            }
+
+            set.setName(name);
             set.setBaseDir(basedir);
             setFirstGidForTileset(set, firstGid);
 
