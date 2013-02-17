@@ -1,4 +1,4 @@
-twistd.log
+twistd.log*
 twistd.pid
 auto-save-list
 custom.el
