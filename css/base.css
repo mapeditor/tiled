@@ -79,6 +79,8 @@ body {
 @media (max-width: 767px) {
     #navbar .navbar-inner {
         min-height: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
     }
 
     #navbar .nav li a {
@@ -94,13 +96,6 @@ body {
     .container-fluid {
         margin-right: 3%;
         margin-left: 3%;
-    }
-
-    /* restore overridden bootstrap behavior */
-    /* TODO: This hack causes a horizontal scrollbar */
-    #navbar {
-        margin-left: -20px;
-        margin-right: -20px;
     }
 }
 
