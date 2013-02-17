@@ -7,6 +7,7 @@
 .btn-download {
     min-width: 200px;
     text-align: left;
+    float: left;
     margin-right: 10px;
     margin-bottom: 10px;
 }
