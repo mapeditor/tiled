@@ -171,6 +171,267 @@
             </div>
         </div>
       </div>
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="my-box">
+            <h3>Changes</h3>
+            <h4>0.9.0 <small>(27 January 2013)</small></h4>
+            <ul>
+            <li>Added objects dock and per-object visibility toggle (by Tim Baker)</li>
+            <li>Added maps dock (by Tim Baker)</li>
+            <li>Added terrain tool for automatic terrain transitions (by Manu Evans)</li>
+            <li>Added a minimap (by Christoph Schnackenberg)</li>
+            <li>Added a staggered isometric map renderer, still without object layer support</li>
+            <li>Added basic image layer support (by Gregory Nickonov and Alexander Kuhrt)</li>
+            <li>Added display of current layer to the status bar (by Tim Baker)</li>
+            <li>Added editable combo box for changing the zoom level (by Tim Baker)</li>
+            <li>Added support for multiple input layers to automapping (by Stefan Beller)</li>
+            <li>Added option to apply automapping rules while editing (by Stefan Beller)</li>
+            <li>Added a converter to update old automapping rules (by Stefan Beller)</li>
+            <li>Added support for objects layers to automapping (by Stefan Beller)</li>
+            <li>Added support for random mode to the fill tool (by Stefan Beller)</li>
+            <li>Added Replica Island plugin (by Eric Kidd)</li>
+            <li>Added option to change the grid color (by Stefan Beller)</li>
+            <li>Added support for ellipse objects (by devnewton and Christoph Schnackenberg)</li>
+            <li>Added name labels for objects on isometric maps (by Andrew Motrenko)</li>
+            <li>Added map property for changing the background color (by Emmanuel Barroga)</li>
+            <li>Added shortcut to manually reload tilesets (Ctrl-T) (by Michael Williams)</li>
+            <li>Added toggle for showing tile object outlines</li>
+            <li>Added support for pinch zooming (by Pierre-David Bélanger)</li>
+            <li>Added initial (non-GUI) support for individual and/or embedded tile images (by Petr Viktorin)</li>
+            <li>Added reading support to Flare plugin (by Stefan Beller)</li>
+            <li>Added a TMX rasterizer command line tool (by Vincent Petithory)</li>
+            <li>Added man pages and desktop file (by Erik Schilling)</li>
+            <li>Made the size and position of most dialogs persistent</li>
+            <li>Respect the original layer data format of a loaded map (by Ben Longbons)</li>
+            <li>Marked Tiled as high-resolution capable on Mac OS X</li>
+            <li>Improved handling of external tilesets in Lua export</li>
+            <li>Reverted tilesets view back to tabs, but with menu button (by Stefan Beller)</li>
+            <li>Allowed plugins to support multiple file name filters (by Samuli Tuomola)</li>
+            <li>Allow saving in any format that can also be read (by Stefan Beller)</li>
+            <li>Fixed eraser skipping tiles when moving fast</li>
+            <li>Fixed bug in Flare plugin (by Clint Bellanger)</li>
+            <li>Fixed compile against Qt 5 (by Kenney Phillis)</li>
+            <li>Fixed resolving of symbolic links while loading map</li>
+            <li>Fixed a crash that could happen after trying to load a faulty map</li>
+            <li>Updated Portuguese, Dutch, German, Spanish, Russian, French, Japanese, Chinese, Brazilian Portuguese, Hebrew and Czech translations</li>
+            </ul>
+
+            <h4>0.8.1 <small>(7 May 2012)</small></h4>
+            <ul>
+            <li>Added MacOS X Lion full screen support</li>
+            <li>Fixed crash that could happen when painting with a pasted stamp</li>
+            <li>Fixed zoom sensitivity for finer-resolution mouse wheels</li>
+            <li>Fixed issues when using quickstamps in combination with the fill tool</li>
+            <li>Fixed stamp tool not to miss tiles when drawing fast</li>
+            <li>Fixed automapping to work with external tilesets</li>
+            <li>Fixed crash in automapping when dealing with broken rule files</li>
+            <li>Fixed object type getting erased on pressing Enter</li>
+            <li>Changed the license of libtiled-java from LGPL to BSD</li>
+            <li>Updated Italian and Hebrew translations</li>
+            </ul>
+
+            <h4>0.8.0 <small>(11 December 2011)</small></h4>
+            <ul>
+            <li>Added support for polygon and polyline objects</li>
+            <li>Added support for tile rotation</li>
+            <li>Added support for defining the color of custom object types</li>
+            <li>Added a Delete action to delete selected tiles or objects</li>
+            <li>Added random mode to the stamp brush</li>
+            <li>Added Flare export plugin</li>
+            <li>Added JSON plugin that supports both reading and writing</li>
+            <li>Added ability to rename tilesets</li>
+            <li>Added a mode in which the current layer is highlighted</li>
+            <li>Added support for specifying a tile drawing offset</li>
+            <li>Added a shortcut to copy the current tile position to clipboard (Alt+C)</li>
+            <li>Added a command line option to disable OpenGL</li>
+            <li>Allow custom properties on tilesets</li>
+            <li>Many automapping improvements</li>
+            <li>Improved tileset dock to handle a large amount of tilesets better</li>
+            <li>Made the 'Show Grid' option in the tileset view persistent</li>
+            <li>Raised the tile size limit in the New Tileset dialog from 999 to 9999</li>
+            <li>Correctly handle changes in the width of a tileset image</li>
+            <li>Worked around a long standing crash bug</li>
+            <li>Added Russian translation</li>
+            <li>Updated the German, Japanese, Spanish, Chinese, Czech, Dutch, French and Brazilian Portuguese translations</li>
+            </ul>
+
+            <h4>0.7.1 <small>(27 September 2011)</small></h4>
+            <ul>
+            <li>Select stamp tool when selecting tiles in tileset view</li>
+            <li>Enable anti-aliasing for OpenGL mode</li>
+            <li>Small improvement to the Lua export plugin (incompatible!)</li>
+            <li>Fixed a bug in the Create Object tool</li>
+            <li>Fixed reading of maps without tilesets but with a tile layer</li>
+            <li>Fixed position of tile objects to center on the mouse on insertion</li>
+            <li>Updated the Czech translation</li>
+            </ul>
+
+            <h4>0.7.0 <small>(20 July 2011)</small></h4>
+            <ul>
+            <li>Added support for horizontal and vertical flipping of tiles</li>
+            <li>Added copy/paste support for objects</li>
+            <li>Added merge layer down action</li>
+            <li>Added Show or Hide all Other Layers action</li>
+            <li>Added actions to select the previous/next layer</li>
+            <li>Added Crop to Selection action</li>
+            <li>Added a Lua export plugin</li>
+            <li>Added Droidcraft plugin to read and export the map files</li>
+            <li>Added option to turn off grid in the tileset view</li>
+            <li>Added hand scrolling while holding the spacebar</li>
+            <li>Made the object context menu available in all object tools</li>
+            <li>Display tile coordinates also when using object tools</li>
+            <li>Various improvements to running external commands</li>
+            <li>Automapping stability and memory consumption improvements</li>
+            <li>Objects that fall outside of the map on resize are now removed</li>
+            <li>Fixed problems with watching tilesets multiple times</li>
+            <li>Fixed several issues related to restoring previously opened files</li>
+            <li>Updated Brazilian Portuguese, Chinese, German, Spanish, Japanese, Hebrew, Portuguese, Dutch and French translations</li>
+            </ul>
+
+            <h4>0.6.2 <small>(2 May 2011)</small></h4>
+            <ul>
+            <li>Fixed object layers losing their color when resizing the map</li>
+            <li>Fixed the tabs in the Tilesets dock to use scroll buttons on MacOS X</li>
+            <li>Fixed window title to update when saving a map with a different name</li>
+            </ul>
+
+            <h4>0.6.1 <small>(3 April 2011)</small></h4>
+            <ul>
+            <li>Added ability to open multiple files at once</li>
+            <li>Added Ctrl+PageUp/PageDown shortcuts to switch documents</li>
+            <li>Added an example to show how automatic mapping works</li>
+            <li>Fixed bugs, crashes and leaks in the automatic mapping feature</li>
+            <li>Fixed starting point for circles to be the click position</li>
+            <li>Fixed a memory leak when using lines or circles</li>
+            <li>Fixed layer opacity to be taken into account when saving as image</li>
+            <li>Fixed endless loop when tile size is set to 0</li>
+            <li>Fixed crash when passing an empty string as command line parameter</li>
+            <li>Fixed problems with the tileset view after switching documents</li>
+            <li>Fixed tile objects to be removed when their tileset is removed</li>
+            </ul>
+
+            <h4>0.6.0 <small>(26 January 2011)</small></h4>
+            <ul>
+            <li>Added support for opening multiple maps in one session</li>
+            <li>Added support for placing tiles as objects</li>
+            <li>Added automatic mapping feature, allowing placing of tiles based on rules</li>
+            <li>Added ability to save/restore up to 9 stamps with Ctrl+<number></li>
+            <li>Added an object selection tool, allowing moving/deleting multiple objects</li>
+            <li>Added ability to run external commands</li>
+            <li>Added support for drawing lines and ellipses with the stamp brush</li>
+            <li>Added icons to distinguish tile layers from object layers</li>
+            <li>Added "Move To Layer" submenu to the context menu of objects</li>
+            <li>Added option to use hardware rendering based on OpenGL</li>
+            <li>Added a T-Engine4 map export plugin</li>
+            <li>Added a simple TMX viewer application (BSD licensed)</li>
+            <li>Added a New Layer dropdown menu to the layers dock</li>
+            <li>Added a checkbox that enables snap to grid permanently</li>
+            <li>Added an initial version of libtiled-java (LGPL licensed)</li>
+            <li>Added Chinese and Hebrew translations</li>
+            <li>Allowed dragging an image onto Tiled to add a tileset</li>
+            <li>Center the map when it is smaller than the map view</li>
+            <li>Remember the selected layer across restarts</li>
+            <li>Changed the default layer data format to use zlib rather than gzip</li>
+            <li>Store the tileset image width and height in the map file</li>
+            <li>Compile fixes related to linking zlib</li>
+            <li>Fixed the current stamp to get updated when switching tilesets</li>
+            <li>Fixed the maximum sizes of the resize map dialog</li>
+            <li>Fixed build issues when an older version of libtiled is installed</li>
+            <li>Fixed saving of property when clicking OK while editing on MacOS X</li>
+            <li>Allow Backspace to delete properties to make it easier on a MacBook</li>
+            <li>Associate tmx files with Tiled on MacOS X</li>
+            <li>Changed the license of libtiled from GPL to BSD</li>
+            <li>Updated Czech, Spanish, German, Brazilian Portuguese, Dutch and French translations</li>
+            </ul>
+
+            <h4>0.5.1 <small>(2 September 2010)</small></h4>
+            <ul>
+            <li>Fixed saving of objects when tile width is different from tile height</li>
+            <li>Updated Czech translation</li>
+            </ul>
+
+            <h4>0.5.0 <small>(30 June 2010)</small></h4>
+            <ul>
+            <li>Added support for import and export plugins</li>
+            <li>Added support for external tilesets</li>
+            <li>Added undo for adding tilesets and ability to remove tilesets</li>
+            <li>Added error handling to the New Tileset dialog</li>
+            <li>Added ability to change tileset order by dragging them around</li>
+            <li>Added option to draw the tile grid when saving as image</li>
+            <li>Added a context menu and tool buttons to the layer dock</li>
+            <li>Added Latvian translation</li>
+            <li>Added an install target to the Makefile</li>
+            <li>Open local files when they are dropped onto Tiled</li>
+            <li>Allow changing position and size of objects in the Object Properties dialog</li>
+            <li>Fixed rendering issues with tiles wider than the tile width of the map</li>
+            <li>Fixed eraser and fill tool working on invisible layers</li>
+            <li>Fixed a crash when using some tools when no map is loaded</li>
+            <li>Fixed compile errors related to detecting static builds</li>
+            <li>Fixed the Save dialog not suggesting any particular file extension</li>
+            <li>Updated Japanese, Dutch, German, Brazilian Portuguese, French, Portuguese and Spanish translations</li>
+            </ul>
+
+            <h4>0.4.1 <small>(14 April 2010)</small></h4>
+            <ul>
+            <li>Added support for saving tile layer data as CSV</li>
+            <li>Added shift modifier to bucket fill tool for filling the selection</li>
+            <li>Added Brazilian Portugese, Japanese, French, Italian and Czech translations</li>
+            <li>Made values used in the New Map and New Tileset dialogs persistent</li>
+            <li>Fixed drawing selection highlight where brush is not painting</li>
+            <li>Fixed an incompatibility with Tiled Java in 'trans' attribute</li>
+            </ul>
+
+            <h4>0.4.0 <small>(30 January 2010)</small></h4>
+            <ul>
+            <li>Added support for isometric maps</li>
+            <li>Added automatic reloading of tileset images when they change</li>
+            <li>Added Offset Map action that can shift a set of layers by a certain amount</li>
+            <li>Added a fill tool</li>
+            <li>Added ability to duplicate map objects</li>
+            <li>Added support for choosing the tile layer data format used when saving</li>
+            <li>Added mouse wheel zooming support to the tileset view</li>
+            <li>Added an object display color attribute to object groups</li>
+            <li>Added ability to edit tile properties through a context menu</li>
+            <li>Made writing out a DTD reference optional and disabled it by default</li>
+            <li>Made translations functional</li>
+            <li>Updated Dutch, Portuguese, Spanish and German translations</li>
+            </ul>
+
+            <h4>0.3.1 <small>(22 November 2009)</small></h4>
+            <ul>
+            <li>Enabled undo command compression for stamp brush and eraser</li>
+            <li>Fixed reading of maps with non-binary-encoded layer data</li>
+            <li>Fixed a compile issue on Mac OS X related to QXmlStreamWriter</li>
+            <li>Fixed a crash when loading a map while holding Ctrl</li>
+            <li>Confirm overwrite on the right moment for 'Save as Image' dialog</li>
+            </ul>
+
+            <h4>0.3.0 <small>(13 November 2009)</small></h4>
+            <ul>
+            <li>Added a tile selection tool</li>
+            <li>Added support for cut, copy and paste</li>
+            <li>Added current cursor position to the status bar</li>
+            <li>Added keyboard shortcuts to switch tools</li>
+            <li>Added scrolling the map view with middle mouse button</li>
+            <li>Snap objects to the grid when Ctrl is pressed</li>
+            </ul>
+
+            <h4>0.2.0 <small>(1 October 2009)</small></h4>
+            <ul>
+            <li>Added support for zooming the map view</li>
+            <li>Added an eraser tool that allows you to erase tiles</li>
+            <li>Added ability to save a map as an image</li>
+            <li>Added support for masking tileset images based on a certain color</li>
+            <li>Added a slider to change the opacity of the current layer</li>
+            <li>Fixed the minimum row and column size in the tileset view</li>
+            <li>Fixed stamp creation when not dragging topleft to bottomright</li>
+            </ul>
+
+            <h4>0.1.0 <small>(1 September 2009)</pre></small></h4>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Script at the end to avoid delay in display time -->
