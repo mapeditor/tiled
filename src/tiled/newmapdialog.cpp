@@ -29,6 +29,7 @@
 #include "tilelayer.h"
 
 #include <QSettings>
+#include <QMessageBox>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
@@ -103,8 +104,20 @@ MapDocument *NewMapDialog::createMap()
                        mapWidth, mapHeight,
                        tileWidth, tileHeight);
 
-    // Add one filling tile layer to new maps
-    map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0, mapWidth, mapHeight));
+    const size_t gigabyte = 1073741824;
+    const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
+
+    // Add a tile layer to new maps of reasonable size
+    if (memory < gigabyte) {
+        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
+                                    mapWidth, mapHeight));
+    } else {
+        const double gigabytes = (double) memory / gigabyte;
+        QMessageBox::warning(this, tr("Memory Usage Warning"),
+                             tr("Tile layers for this map will consume %L1 GB "
+                                "of memory each. Not creating one by default.")
+                             .arg(gigabytes, 0, 'f', 2));
+    }
 
     // Store settings for next time
     QSettings *s = Preferences::instance()->settings();
