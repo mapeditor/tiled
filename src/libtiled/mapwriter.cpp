@@ -515,9 +515,9 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (size.y() != 0)
         w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
 
-    const qreal angle = mapObject->angle();
-    if (angle != 0.0)
-        w.writeAttribute(QLatin1String("angle"), QString::number(angle));
+    const qreal rotation = mapObject->rotation();
+    if (rotation != 0.0)
+        w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
 
     if (!mapObject->isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));

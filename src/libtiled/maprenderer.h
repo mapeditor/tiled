@@ -55,7 +55,7 @@ Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
-    MapRenderer(const Map *map) : mShowAngleArrows(false), mMap(map) {}
+    MapRenderer(const Map *map) : mShowRotationArrows(false), mMap(map) {}
     virtual ~MapRenderer() {}
 
     /**
@@ -126,13 +126,13 @@ public:
                                const QColor &color) const = 0;
 
     /**
-     * Draws the arrow showing the angle of the \a object in the given \a color
-     * using the \a painter.
+     * Draws the arrow showing the rotation of the \a object in the given
+     * \a color using the \a painter.
      */
-    virtual void drawMapObjectAngleArrow(QPainter *painter,
-                                         const MapObject *object,
-                                         const QColor &color,
-                                         qreal arrowLength) const = 0;
+    virtual void drawMapObjectRotationArrow(QPainter *painter,
+                                            const MapObject *object,
+                                            const QColor &color,
+                                            qreal arrowLength) const = 0;
 
     /**
      * Draws the given image \a layer using the given \a painter.
@@ -175,14 +175,14 @@ public:
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
     /**
-     * Returns whether the object angle arrow is drawn.
+     * Returns whether the object rotation arrow is drawn.
      */
-    bool showAngleArrows() const { return mShowAngleArrows; }
+    bool showRotationArrows() const { return mShowRotationArrows; }
 
     /**
-     * Sets if the object angle arrow should be drawn.
+     * Sets if the object rotation arrow should be drawn.
      */
-    void setShowAngleArrows(bool showAngleArrows) { mShowAngleArrows = showAngleArrows; }
+    void setShowRotationArrows(bool showRotationArrows) { mShowRotationArrows = showRotationArrows; }
 
 protected:
     /**
@@ -190,7 +190,7 @@ protected:
      */
     const Map *map() const { return mMap; }
 
-    bool mShowAngleArrows;
+    bool mShowRotationArrows;
 
 private:
     const Map *mMap;

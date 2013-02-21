@@ -244,7 +244,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
         objectVariant["y"] = pos.y();
         objectVariant["width"] = size.x();
         objectVariant["height"] = size.y();
-        objectVariant["angle"] = object->angle();
+        objectVariant["rotation"] = object->rotation();
 
         objectVariant["visible"] = object->isVisible();
 

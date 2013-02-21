@@ -779,9 +779,9 @@ MapObject *MapReaderPrivate::readObject()
                                                               size.y()));
 
     bool ok;
-    const qreal angle = atts.value(QLatin1String("angle")).toString().toDouble(&ok);
+    const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);
     if (ok)
-        object->setAngle(angle);
+        object->setRotation(rotation);
 
     if (gid) {
         const Cell cell = cellForGid(gid);

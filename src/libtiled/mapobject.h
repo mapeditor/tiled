@@ -224,14 +224,14 @@ public:
     { mObjectGroup = objectGroup; }
 
     /**
-     * Sets the angle of the object
+     * Sets the rotation of the object
      */
-    void setAngle(qreal angle) { mAngle = angle; }
+    void setRotation(qreal rotation) { mRotation = rotation; }
 
     /**
-     * Returns the angle of the object.
+     * Returns the rotation of the object.
      */
-    qreal angle() const { return mAngle; }
+    qreal rotation() const { return mRotation; }
 
     bool isVisible() const { return mVisible; }
     void setVisible(bool visible) { mVisible = visible; }
@@ -251,7 +251,7 @@ private:
     Shape mShape;
     Tile *mTile;
     ObjectGroup *mObjectGroup;
-    qreal mAngle;
+    qreal mRotation;
     bool mVisible;
 };
 

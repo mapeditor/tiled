@@ -36,7 +36,7 @@ class RotateMapObject : public QUndoCommand
 public:
     RotateMapObject(MapDocument *mapDocument,
                     MapObject *mapObject,
-                    qreal oldAngle);
+                    qreal oldRotation);
 
     void undo();
     void redo();
@@ -44,8 +44,8 @@ public:
 private:
     MapDocument *mMapDocument;
     MapObject *mMapObject;
-    qreal mOldAngle;
-    qreal mNewAngle;
+    qreal mOldRotation;
+    qreal mNewRotation;
 };
 
 } // namespace Internal

@@ -98,7 +98,7 @@ public:
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
-    void setObjectAngle(MapObject *o, qreal angle);
+    void setObjectRotation(MapObject *o, qreal rotation);
     void setObjectVisible(MapObject *o, bool visible);
 
 signals:

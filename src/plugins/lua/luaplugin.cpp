@@ -317,7 +317,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     writer.writeKeyAndValue("y", pos.y());
     writer.writeKeyAndValue("width", size.x());
     writer.writeKeyAndValue("height", size.y());
-    writer.writeKeyAndValue("angle", mapObject->angle());
+    writer.writeKeyAndValue("rotation", mapObject->rotation());
 
     if (Tile *tile = mapObject->tile())
         writer.writeKeyAndValue("gid", mGidMapper.cellToGid(Cell(tile)));

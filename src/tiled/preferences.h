@@ -46,7 +46,7 @@ public:
 
     bool showGrid() const { return mShowGrid; }
     bool showTileObjectOutlines() const { return mShowTileObjectOutlines; }
-    bool showAngleArrows() const { return mShowAngleArrows; }
+    bool showRotationArrows() const { return mShowRotationArrows; }
     bool snapToGrid() const { return mSnapToGrid; }
     QColor gridColor() const { return mGridColor; }
 
@@ -95,7 +95,7 @@ public:
 public slots:
     void setShowGrid(bool showGrid);
     void setShowTileObjectOutlines(bool enabled);
-    void setShowAngleArrows(bool showAngleArrows);
+    void setShowRotationArrows(bool showRotationArrows);
     void setSnapToGrid(bool snapToGrid);
     void setGridColor(QColor gridColor);
     void setHighlightCurrentLayer(bool highlight);
@@ -104,7 +104,7 @@ public slots:
 signals:
     void showGridChanged(bool showGrid);
     void showTileObjectOutlinesChanged(bool enabled);
-    void showAngleArrowsChanged(bool showAngleArrows);
+    void showRotationArrowsChanged(bool showRotationArrows);
     void snapToGridChanged(bool snapToGrid);
     void gridColorChanged(QColor gridColor);
     void highlightCurrentLayerChanged(bool highlight);
@@ -128,7 +128,7 @@ private:
 
     bool mShowGrid;
     bool mShowTileObjectOutlines;
-    bool mShowAngleArrows;
+    bool mShowRotationArrows;
     bool mSnapToGrid;
     QColor mGridColor;
     bool mHighlightCurrentLayer;

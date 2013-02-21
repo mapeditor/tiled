@@ -31,21 +31,21 @@ using namespace Tiled::Internal;
 
 RotateMapObject::RotateMapObject(MapDocument *mapDocument,
                 MapObject *mapObject,
-                qreal oldAngle)
+                qreal oldRotation)
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mOldAngle(oldAngle)
-    , mNewAngle(mapObject->angle())
+    , mOldRotation(oldRotation)
+    , mNewRotation(mapObject->rotation())
 {
     setText(QCoreApplication::translate("Undo Commands", "Rotate Object"));
 }
 
 void RotateMapObject::undo()
 {
-    mMapDocument->mapObjectModel()->setObjectAngle(mMapObject, mOldAngle);
+    mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mOldRotation);
 }
 
 void RotateMapObject::redo()
 {
-    mMapDocument->mapObjectModel()->setObjectAngle(mMapObject, mNewAngle);
+    mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mNewRotation);
 }

@@ -73,8 +73,8 @@ MapScene::MapScene(QObject *parent):
     connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
     connect(prefs, SIGNAL(showTileObjectOutlinesChanged(bool)),
             SLOT(setShowTileObjectOutlines(bool)));
-    connect(prefs, SIGNAL(showAngleArrowsChanged(bool)),
-            SLOT(setShowAngleArrows(bool)));
+    connect(prefs, SIGNAL(showRotationArrowsChanged(bool)),
+            SLOT(setShowRotationArrows(bool)));
     connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
     connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
             SLOT(setHighlightCurrentLayer(bool)));
@@ -87,7 +87,7 @@ MapScene::MapScene(QObject *parent):
 
     mGridVisible = prefs->showGrid();
     mShowTileObjectOutlines = prefs->showTileObjectOutlines();
-    mShowAngleArrows = prefs->showAngleArrows();
+    mShowRotationArrows = prefs->showRotationArrows();
     mHighlightCurrentLayer = prefs->highlightCurrentLayer();
 
     // Install an event filter so that we can get key events on behalf of the
@@ -112,7 +112,7 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         MapRenderer *renderer = mMapDocument->renderer();
         renderer->setFlag(ShowTileObjectOutlines, mShowTileObjectOutlines);
-        renderer->setShowAngleArrows(mShowAngleArrows);
+        renderer->setShowRotationArrows(mShowRotationArrows);
 
         connect(mMapDocument, SIGNAL(mapChanged()),
                 this, SLOT(mapChanged()));
@@ -468,15 +468,15 @@ void MapScene::setShowTileObjectOutlines(bool enabled)
     }
 }
 
-void MapScene::setShowAngleArrows(bool showAngleArrow)
+void MapScene::setShowRotationArrows(bool showRotationArrow)
 {
-    if (mShowAngleArrows == showAngleArrow)
+    if (mShowRotationArrows == showRotationArrow)
         return;
 
-    mShowAngleArrows = showAngleArrow;
+    mShowRotationArrows = showRotationArrow;
 
     if (mMapDocument) {
-        mMapDocument->renderer()->setShowAngleArrows(showAngleArrow);
+        mMapDocument->renderer()->setShowRotationArrows(showRotationArrow);
         if (!mObjectItems.isEmpty())
             update();
     }

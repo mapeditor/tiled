@@ -270,10 +270,10 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
     // TODO
 }
 
-void StaggeredRenderer::drawMapObjectAngleArrow(QPainter *painter,
-                                                const MapObject *object,
-                                                const QColor &color,
-                                                qreal arrowLength) const
+void StaggeredRenderer::drawMapObjectRotationArrow(QPainter *painter,
+                                                   const MapObject *object,
+                                                   const QColor &color,
+                                                   qreal arrowLength) const
 {
     Q_UNUSED(painter)
     Q_UNUSED(object)

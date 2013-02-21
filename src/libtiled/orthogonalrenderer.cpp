@@ -425,14 +425,14 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
     painter->restore();
 
-    if (mShowAngleArrows)
-        drawMapObjectAngleArrow(painter, object, color, 32);
+    if (mShowRotationArrows)
+        drawMapObjectRotationArrow(painter, object, color, 32);
 }
 
-void OrthogonalRenderer::drawMapObjectAngleArrow(QPainter *painter,
-                                                 const MapObject *object,
-                                                 const QColor &color,
-                                                 qreal arrowLength) const
+void OrthogonalRenderer::drawMapObjectRotationArrow(QPainter *painter,
+                                                    const MapObject *object,
+                                                    const QColor &color,
+                                                    qreal arrowLength) const
 {
     if (object->shape() == MapObject::Polyline ||
             object->shape() == MapObject::Polygon)
@@ -460,7 +460,7 @@ void OrthogonalRenderer::drawMapObjectAngleArrow(QPainter *painter,
     }
     const qreal arrowArmStart = arrowLength - 4;
     const qreal arrowArmAngle = 12 * M_PI / 180;
-    const qreal angleRad = object->angle() * M_PI / 180;
+    const qreal angleRad = object->rotation() * M_PI / 180;
     const qreal angleCos = cos(angleRad);
     const qreal angleSin = sin(angleRad);
     const QPointF arrowEnd = QPointF(

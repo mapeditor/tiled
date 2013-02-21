@@ -65,7 +65,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     mUi->y->setValue(mMapObject->y());
     mUi->width->setValue(mMapObject->width());
     mUi->height->setValue(mMapObject->height());
-    mUi->angle->setValue(mMapObject->angle());
+    mUi->rotation->setValue(mMapObject->rotation());
 
     qobject_cast<QBoxLayout*>(layout())->insertWidget(0, widget);
 
@@ -86,7 +86,7 @@ void ObjectPropertiesDialog::accept()
     const qreal newPosY = mUi->y->value();
     const qreal newWidth = mUi->width->value();
     const qreal newHeight = mUi->height->value();
-    const qreal newAngle = mUi->angle->value();
+    const qreal newRotation = mUi->rotation->value();
 
     bool changed = false;
     changed |= mMapObject->name() != newName;
@@ -95,7 +95,7 @@ void ObjectPropertiesDialog::accept()
     changed |= mMapObject->y() != newPosY;
     changed |= mMapObject->width() != newWidth;
     changed |= mMapObject->height() != newHeight;
-    changed |= mMapObject->angle() != newAngle;
+    changed |= mMapObject->rotation() != newRotation;
 
     if (changed) {
         QUndoStack *undo = mMapDocument->undoStack();
@@ -113,9 +113,9 @@ void ObjectPropertiesDialog::accept()
         mMapObject->setHeight(newHeight);
         undo->push(new ResizeMapObject(mMapDocument, mMapObject, oldSize));
 
-        const qreal oldAngle = mMapObject->angle();
-        mMapObject->setAngle(newAngle);
-        undo->push(new RotateMapObject(mMapDocument, mMapObject, oldAngle));
+        const qreal oldRotation = mMapObject->rotation();
+        mMapObject->setRotation(newRotation);
+        undo->push(new RotateMapObject(mMapDocument, mMapObject, oldRotation));
 
         PropertiesDialog::accept(); // Let PropertiesDialog add its command
         undo->endMacro();

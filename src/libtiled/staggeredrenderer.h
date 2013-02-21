@@ -100,10 +100,10 @@ public:
                        const MapObject *object,
                        const QColor &color) const;
 
-    void drawMapObjectAngleArrow(QPainter *painter,
-                                 const MapObject *object,
-                                 const QColor &color,
-                                 qreal arrowLength) const;
+    void drawMapObjectRotationArrow(QPainter *painter,
+                                    const MapObject *object,
+                                    const QColor &color,
+                                    qreal arrowLength) const;
 
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;

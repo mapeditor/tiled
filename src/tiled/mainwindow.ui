@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -99,7 +99,7 @@
     </property>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
-    <addaction name="actionShowAngleArrows"/>
+    <addaction name="actionShowRotationArrows"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
     <addaction name="actionSnapToGrid"/>
@@ -415,12 +415,15 @@
     <string>Show Tile Object &amp;Outlines</string>
    </property>
   </action>
-  <action name="actionShowAngleArrows">
+  <action name="actionShowRotationArrows">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show &amp;Angle Arrows</string>
+    <string>Show &amp;Rotation Arrows</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Rotation Arrows</string>
    </property>
   </action>
  </widget>
