@@ -67,7 +67,6 @@ Preferences::Preferences()
     mSettings->beginGroup(QLatin1String("Interface"));
     mShowGrid = boolValue("ShowGrid");
     mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
-    mShowRotationArrows = boolValue("ShowRotationArrows");
     mSnapToGrid = boolValue("SnapToGrid");
     mGridColor = colorValue("GridColor", Qt::black);
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
@@ -124,17 +123,6 @@ void Preferences::setShowTileObjectOutlines(bool enabled)
     mSettings->setValue(QLatin1String("Interface/ShowTileObjectOutlines"),
                         mShowTileObjectOutlines);
     emit showTileObjectOutlinesChanged(mShowTileObjectOutlines);
-}
-
-void Preferences::setShowRotationArrows(bool showRotationArrows)
-{
-    if (mShowRotationArrows == showRotationArrows)
-        return;
-
-    mShowRotationArrows = showRotationArrows;
-    mSettings->setValue(QLatin1String("Interface/ShowRotationArrows"),
-                        mShowRotationArrows);
-    emit showRotationArrowsChanged(mShowRotationArrows);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)

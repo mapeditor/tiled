@@ -73,8 +73,6 @@ MapScene::MapScene(QObject *parent):
     connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
     connect(prefs, SIGNAL(showTileObjectOutlinesChanged(bool)),
             SLOT(setShowTileObjectOutlines(bool)));
-    connect(prefs, SIGNAL(showRotationArrowsChanged(bool)),
-            SLOT(setShowRotationArrows(bool)));
     connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
     connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
             SLOT(setHighlightCurrentLayer(bool)));
@@ -87,7 +85,6 @@ MapScene::MapScene(QObject *parent):
 
     mGridVisible = prefs->showGrid();
     mShowTileObjectOutlines = prefs->showTileObjectOutlines();
-    mShowRotationArrows = prefs->showRotationArrows();
     mHighlightCurrentLayer = prefs->highlightCurrentLayer();
 
     // Install an event filter so that we can get key events on behalf of the
@@ -112,7 +109,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         MapRenderer *renderer = mMapDocument->renderer();
         renderer->setFlag(ShowTileObjectOutlines, mShowTileObjectOutlines);
-        renderer->setShowRotationArrows(mShowRotationArrows);
 
         connect(mMapDocument, SIGNAL(mapChanged()),
                 this, SLOT(mapChanged()));
@@ -463,20 +459,6 @@ void MapScene::setShowTileObjectOutlines(bool enabled)
 
     if (mMapDocument) {
         mMapDocument->renderer()->setFlag(ShowTileObjectOutlines, enabled);
-        if (!mObjectItems.isEmpty())
-            update();
-    }
-}
-
-void MapScene::setShowRotationArrows(bool showRotationArrow)
-{
-    if (mShowRotationArrows == showRotationArrow)
-        return;
-
-    mShowRotationArrows = showRotationArrow;
-
-    if (mMapDocument) {
-        mMapDocument->renderer()->setShowRotationArrows(showRotationArrow);
         if (!mObjectItems.isEmpty())
             update();
     }

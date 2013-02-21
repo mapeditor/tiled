@@ -55,7 +55,7 @@ Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
-    MapRenderer(const Map *map) : mShowRotationArrows(false), mMap(map) {}
+    MapRenderer(const Map *map) : mMap(map) {}
     virtual ~MapRenderer() {}
 
     /**
@@ -126,15 +126,6 @@ public:
                                const QColor &color) const = 0;
 
     /**
-     * Draws the arrow showing the rotation of the \a object in the given
-     * \a color using the \a painter.
-     */
-    virtual void drawMapObjectRotationArrow(QPainter *painter,
-                                            const MapObject *object,
-                                            const QColor &color,
-                                            qreal arrowLength) const = 0;
-
-    /**
      * Draws the given image \a layer using the given \a painter.
      */
     void drawImageLayer(QPainter *painter,
@@ -174,23 +165,11 @@ public:
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
-    /**
-     * Returns whether the object rotation arrow is drawn.
-     */
-    bool showRotationArrows() const { return mShowRotationArrows; }
-
-    /**
-     * Sets if the object rotation arrow should be drawn.
-     */
-    void setShowRotationArrows(bool showRotationArrows) { mShowRotationArrows = showRotationArrows; }
-
 protected:
     /**
      * Returns the map this renderer is associated with.
      */
     const Map *map() const { return mMap; }
-
-    bool mShowRotationArrows;
 
 private:
     const Map *mMap;

@@ -99,7 +99,6 @@
     </property>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
-    <addaction name="actionShowRotationArrows"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
     <addaction name="actionSnapToGrid"/>
@@ -413,17 +412,6 @@
    </property>
    <property name="text">
     <string>Show Tile Object &amp;Outlines</string>
-   </property>
-  </action>
-  <action name="actionShowRotationArrows">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show &amp;Rotation Arrows</string>
-   </property>
-   <property name="toolTip">
-    <string>Show Rotation Arrows</string>
    </property>
   </action>
  </widget>

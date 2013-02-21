@@ -70,45 +70,16 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                               bottomLeft.y() - img.height(),
                               img.width(),
                               img.height()).adjusted(-1, -1, 1, 1);
-        qreal wdiff = 1, hdiff = 1;
-        if (boundingRect.width() < 66) {
-            wdiff = (66 - boundingRect.width()) / 2;
-        }
-        if (boundingRect.height() < 66) {
-            hdiff = (66 - boundingRect.height()) / 2;
-        }
-        boundingRect = boundingRect.adjusted(-wdiff, -hdiff, wdiff, hdiff);
     } else {
         // The -2 and +3 are to account for the pen width and shadow
         switch (object->shape()) {
         case MapObject::Ellipse:
         case MapObject::Rectangle:
             if (rect.isNull()) {
-                // 32 is the size of the angle arrow - this should be configurable
-                boundingRect = rect.adjusted(-32 - 2, -32 - 2, 32 + 3, 32 + 3);
+                boundingRect = rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
             } else {
-                // 64 is 2x32, the size of the angle arrow
                 const int nameHeight = object->name().isEmpty() ? 0 : 15;
-                boundingRect = rect;
-                if (boundingRect.width() < 64) {
-                    const qreal missing = (64 - boundingRect.width()) / 2;
-                    boundingRect.setLeft(boundingRect.left() - missing);
-                    boundingRect.setRight(boundingRect.right() + missing);
-                }
-                if (boundingRect.height() < 64) {
-                    const qreal missing = (64 - boundingRect.height()) / 2;
-                    boundingRect.setBottom(boundingRect.bottom() + missing);
-                    if (missing < nameHeight) {
-                        boundingRect.setTop(boundingRect.top() - nameHeight);
-                    } else {
-                        boundingRect.setTop(boundingRect.top() - missing);
-                    }
-                } else {
-                    boundingRect.setTop(boundingRect.top() - nameHeight);
-                }
-
-                //boundingRect = rect.adjusted(-2, -nameHeight - 2, 3, 3);
-                boundingRect.adjust(-2, - 2, 3, 3);
+                boundingRect = rect.adjusted(-2, -nameHeight - 2, 3, 3);
             }
             break;
 
@@ -422,73 +393,6 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         }
         }
     }
-
-    painter->restore();
-
-    if (mShowRotationArrows)
-        drawMapObjectRotationArrow(painter, object, color, 32);
-}
-
-void OrthogonalRenderer::drawMapObjectRotationArrow(QPainter *painter,
-                                                    const MapObject *object,
-                                                    const QColor &color,
-                                                    qreal arrowLength) const
-{
-    if (object->shape() == MapObject::Polyline ||
-            object->shape() == MapObject::Polygon)
-        return;
-
-    painter->save();
-
-    const QRectF bounds = object->bounds();
-    QRectF rect(tileToPixelCoords(bounds.topLeft()),
-                tileToPixelCoords(bounds.bottomRight()));
-
-    painter->translate(rect.topLeft());
-    rect.moveTopLeft(QPointF(0, 0));
-
-    const QPen linePen(color, 2);
-    const QPen shadowPen(Qt::black, 2);
-
-    // calculate arrow
-    QPointF center;
-    if (object->tile()) {
-        const QPixmap &img = object->tile()->image();
-        center = QPointF(rect.x() + img.width() / 2, rect.y() - img.height() / 2);
-    } else {
-        center = rect.center();
-    }
-    const qreal arrowArmStart = arrowLength - 4;
-    const qreal arrowArmAngle = 12 * M_PI / 180;
-    const qreal angleRad = 0;
-    const qreal angleCos = cos(angleRad);
-    const qreal angleSin = sin(angleRad);
-    const QPointF arrowEnd = QPointF(
-                    center.x() + arrowLength * angleCos,
-                    center.y() + arrowLength * angleSin
-                );
-    const QPointF arrowLeft = QPointF(
-                    center.x() + arrowArmStart * cos(angleRad + arrowArmAngle),
-                    center.y() + arrowArmStart * sin(angleRad + arrowArmAngle)
-                );
-    const QPointF arrowRight = QPointF(
-                    center.x() + arrowArmStart * cos(angleRad - arrowArmAngle),
-                    center.y() + arrowArmStart * sin(angleRad - arrowArmAngle)
-                );
-    // draw arrow
-    const QLineF lineCenter = QLineF(center, arrowEnd);
-    const QLineF lineLeft = QLineF(arrowLeft, arrowEnd);
-    const QLineF lineRight = QLineF(arrowRight, arrowEnd);
-
-    painter->setPen(shadowPen);
-    painter->drawLine(lineCenter.translated(1, 1));
-    painter->drawLine(lineLeft.translated(1, 1));
-    painter->drawLine(lineRight.translated(1, 1));
-
-    painter->setPen(linePen);
-    painter->drawLine(lineCenter);
-    painter->drawLine(lineLeft);
-    painter->drawLine(lineRight);
 
     painter->restore();
 }
