@@ -36,6 +36,8 @@ class MapDocument;
 class ObjectGroupItem;
 class PointHandle;
 class ResizeHandle;
+class RotationHandle;
+class RotationOriginIndicator;
 
 /**
  * A graphics item displaying a map object.
@@ -86,6 +88,12 @@ public:
     void resize(const QSizeF &size);
 
     /**
+     * Sets the rotation for this map object item as well as the associated
+     * map object.
+     */
+    void setRotation(qreal angle);
+
+    /**
      * Sets a new polygon on the associated object.
      */
     void setPolygon(const QPolygonF &polygon);
@@ -116,10 +124,12 @@ private:
     bool mIsEditable;
     bool mSyncing;
     ResizeHandle *mResizeHandle;
+    RotationHandle *mRotationHandle;
+    RotationOriginIndicator *mRotationOriginIndicator;
 
     friend class Handle;
-    friend class PointHandle;
     friend class ResizeHandle;
+    friend class RotationHandle;
 };
 
 } // namespace Internal
