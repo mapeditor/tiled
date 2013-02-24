@@ -334,11 +334,13 @@ bool LDMZPlugin::write(const Tiled::Map *map, const QString &fileName) {
                 
                 /* Isometric map? Need to do this hack... */
                 /* Stores the tileset height in a special location... */
-                if (map->orientation() == Tiled::Map::Isometric)
+                if (map->orientation() == Tiled::Map::Isometric) {
                   foreach (Tileset *tileset, map->tilesets()) {
-                    layer_s[layers].layer_offset_x = qToBigEndian(tileset->tileHeight());
+                    layer_s[layers].tile_h = qToBigEndian(tileset->tileHeight());
                     break;
                   }
+                  layer_s[layers].layer_offset_x = qToBigEndian(map->tileHeight());
+                }
             }
         }
     }
