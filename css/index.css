@@ -42,6 +42,7 @@ ul.thumbnails {
     .my-top-box .my-buttons {
         margin-top: 0px;
     }
-    .my-box {
+    .firstsponsor {
+        display: none !important;
     }
 }
