@@ -24,6 +24,7 @@
 
 #define LDMZ_MAGIC              0xFF00E00E
 #define LDMZ_VERSION            0x55555555
+#define	LDMZ_VERSION_ISOMETRIC	0x55555566
 
 #include "ldmz_global.h"
 

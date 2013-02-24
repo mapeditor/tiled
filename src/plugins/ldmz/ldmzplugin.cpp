@@ -331,6 +331,14 @@ bool LDMZPlugin::write(const Tiled::Map *map, const QString &fileName) {
                 layer_s[layers].layer_offset_y = qToBigEndian(0);
                 layer_s[layers].tile_w = qToBigEndian(map->tileWidth());
                 layer_s[layers].tile_h = qToBigEndian(map->tileHeight());
+                
+                /* Isometric map? Need to do this hack... */
+                /* Stores the tileset height in a special location... */
+                if (map->orientation() == Tiled::Map::Isometric)
+                  foreach (Tileset *tileset, map->tilesets()) {
+                    layer_s[layers].layer_offset_x = qToBigEndian(tileset->tileHeight());
+                    break;
+                  }
             }
         }
     }
@@ -368,7 +376,10 @@ bool LDMZPlugin::write(const Tiled::Map *map, const QString &fileName) {
     }
     
     map_s.magic = LDMZ_MAGIC;
-    map_s.version = LDMZ_VERSION;
+    if (map->orientation() == Tiled::Map::Isometric)
+      map_s.version = LDMZ_VERSION_ISOMETRIC;
+    else
+      map_s.version = LDMZ_VERSION;
     
     fseek(fp, 0, SEEK_SET);
     writeInts((unsigned int *) &map_s, sizeof(LDMZ_MAP) / 4, fp);
