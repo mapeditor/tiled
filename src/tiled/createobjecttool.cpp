@@ -142,7 +142,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         break;
     }
     case CreateTile: {
-        const QSize imgSize = mNewMapObjectItem->mapObject()->tile()->size();
+        const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
         const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
         QPointF tileCoords = renderer->pixelToTileCoords(pos + diff);
 
@@ -289,7 +289,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     newMapObject->setPosition(pos);
 
     if (mMode == CreateTile)
-        newMapObject->setTile(mTile);
+        newMapObject->setCell(Cell(mTile));
 
     if (mMode == CreatePolygon || mMode == CreatePolyline) {
         MapObject::Shape shape = mMode == CreatePolygon ? MapObject::Polygon

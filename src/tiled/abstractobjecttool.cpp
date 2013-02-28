@@ -21,6 +21,7 @@
 #include "abstractobjecttool.h"
 
 #include "addremovemapobject.h"
+#include "flipmapobjects.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -103,6 +104,22 @@ MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
     return 0;
 }
 
+void AbstractObjectTool::flipHorizontally()
+{
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new FlipMapObjects(mapDocument(),
+                                       mapDocument()->selectedObjects(),
+                                       MapObject::FlipHorizontally));
+}
+
+void AbstractObjectTool::flipVertically()
+{
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new FlipMapObjects(mapDocument(),
+                                       mapDocument()->selectedObjects(),
+                                       MapObject::FlipVertically));
+}
+
 /**
  * Shows the context menu for map objects. The menu allows you to duplicate and
  * remove the map objects, or to edit their properties.
@@ -119,7 +136,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     if (selection.isEmpty())
         return;
 
-    const QList<MapObject*> selectedObjects = mapDocument()->selectedObjects();
+    const QList<MapObject*> &selectedObjects = mapDocument()->selectedObjects();
 
     QList<ObjectGroup*> objectGroups;
     foreach (Layer *layer, mapDocument()->map()->layers()) {
@@ -135,6 +152,12 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QString removeText = tr("Remove %n Object(s)", "", selectedObjects.size());
     QAction *dupAction = menu.addAction(dupIcon, dupText);
     QAction *removeAction = menu.addAction(delIcon, removeText);
+
+    menu.addSeparator();
+    QAction *horizontalAction = menu.addAction(tr("Flip Horizontally"));
+    QAction *verticalAction = menu.addAction(tr("Flip Vertically"));
+    connect(horizontalAction, SIGNAL(triggered()), SLOT(flipHorizontally()));
+    connect(verticalAction, SIGNAL(triggered()), SLOT(flipVertically()));
 
     typedef QMap<QAction*, ObjectGroup*> MoveToLayerActionMap;
     MoveToLayerActionMap moveToLayerActions;

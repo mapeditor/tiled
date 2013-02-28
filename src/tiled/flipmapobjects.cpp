@@ -1,6 +1,6 @@
 /*
- * changemapobject.cpp
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * flipmapobjects.cpp
+ * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "changemapobject.h"
+#include "flipmapobjects.h"
 
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -29,27 +29,23 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
-                                 MapObject *mapObject,
-                                 const QString &name,
-                                 const QString &type)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Object"))
-    , mMapDocument(mapDocument)
-    , mMapObject(mapObject)
-    , mName(name)
-    , mType(type)
+FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
+                               const QList<MapObject *> &mapObjects,
+                               MapObject::FlipDirection flipDirection)
+    : mMapDocument(mapDocument)
+    , mMapObjects(mapObjects)
+    , mFlipDirection(flipDirection)
 {
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Flip %n Object(s)",
+                                        0, QCoreApplication::UnicodeUTF8,
+                                        mapObjects.size()));
 }
 
-void ChangeMapObject::swap()
+void FlipMapObjects::flip()
 {
-    const QString name = mMapObject->name();
-    const QString type = mMapObject->type();
+    foreach (MapObject *object, mMapObjects)
+        object->flip(mFlipDirection);
 
-    mMapDocument->mapObjectModel()->setObjectName(mMapObject, mName);
-    mMapDocument->mapObjectModel()->setObjectType(mMapObject, mType);
-
-    mName = name;
-    mType = type;
+    mMapDocument->mapObjectModel()->emitObjectsChanged(mMapObjects);
 }

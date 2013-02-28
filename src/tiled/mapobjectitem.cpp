@@ -387,7 +387,7 @@ void MapObjectItem::setEditable(bool editable)
 
     mIsEditable = editable;
 
-    const bool handlesVisible = mIsEditable && !mObject->tile();
+    const bool handlesVisible = mIsEditable && mObject->cell().isEmpty();
     mResizeHandle->setVisible(handlesVisible && mObject->polygon().isEmpty());
     mRotationHandle->setVisible(mIsEditable);
     mRotationOriginIndicator->setVisible(mIsEditable);

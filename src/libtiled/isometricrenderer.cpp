@@ -67,13 +67,15 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
     const int nameHeight = object->name().isEmpty() ? 0 : 15;
 
-    if (object->tile()) {
+    if (!object->cell().isEmpty()) {
         const QPointF bottomCenter = tileToPixelCoords(object->position());
-        const QPixmap &img = object->tile()->image();
-        return QRectF(bottomCenter.x() - img.width() / 2,
-                      bottomCenter.y() - img.height(),
-                      img.width(),
-                      img.height()).adjusted(-1, -1 - nameHeight, 1, 1);
+        const Tile *tile = object->cell().tile;
+        const QSize imgSize = tile->image().size();
+        const QPoint tileOffset = tile->tileset()->tileOffset();
+        return QRectF(bottomCenter.x() + tileOffset.x() - imgSize.width() / 2,
+                      bottomCenter.y() + tileOffset.y() - imgSize.height(),
+                      imgSize.width(),
+                      imgSize.height()).adjusted(-1, -1 - nameHeight, 1, 1);
     } else if (!object->polygon().isEmpty()) {
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
@@ -91,7 +93,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 QPainterPath IsometricRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
-    if (object->tile()) {
+    if (!object->cell().isEmpty()) {
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
@@ -222,43 +224,10 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (layer->contains(columnItr)) {
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
-                    const QPixmap &img = cell.tile->image();
-                    const QPoint offset = cell.tile->tileset()->tileOffset();
-
-                    qreal m11 = 1;      // Horizontal scaling factor
-                    qreal m12 = 0;      // Vertical shearing factor
-                    qreal m21 = 0;      // Horizontal shearing factor
-                    qreal m22 = 1;      // Vertical scaling factor
-                    qreal dx = offset.x() + x;
-                    qreal dy = offset.y() + y - img.height();
-
-                    if (cell.flippedAntiDiagonally) {
-                        // Use shearing to swap the X/Y axis
-                        m11 = 0;
-                        m12 = 1;
-                        m21 = 1;
-                        m22 = 0;
-
-                        // Compensate for the swap of image dimensions
-                        dy += img.height() - img.width();
-                    }
-                    if (cell.flippedHorizontally) {
-                        m11 = -m11;
-                        m21 = -m21;
-                        dx += cell.flippedAntiDiagonally ? img.height()
-                                                         : img.width();
-                    }
-                    if (cell.flippedVertically) {
-                        m12 = -m12;
-                        m22 = -m22;
-                        dy += cell.flippedAntiDiagonally ? img.width()
-                                                         : img.height();
-                    }
-
-                    const QTransform transform(m11, m12, m21, m22, dx, dy);
-                    painter->setTransform(transform * baseTransform);
-
-                    painter->drawPixmap(0, 0, img);
+                    drawCell(painter, cell,
+                             QPointF(x, y),
+                             BottomLeft,
+                             baseTransform);
                 }
             }
 
@@ -304,33 +273,39 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
     QPen pen(Qt::black);
 
-    if (object->tile()) {
-        const QPixmap &img = object->tile()->image();
-        QPointF paintOrigin(-img.width() / 2, -img.height());
-        paintOrigin += tileToPixelCoords(object->position()).toPoint();
-        painter->drawPixmap(paintOrigin, img);
+    if (!object->cell().isEmpty()) {
+        const Tile *tile = object->cell().tile;
+        const QSize imgSize = tile->size();
+        const QPointF pos = tileToPixelCoords(object->position());
 
+        // Draw the name before the transform is applied
         const QFontMetrics fm = painter->fontMetrics();
         QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                     img.width() + 2);
-        if (!name.isEmpty())
-            painter->drawText(QPoint(paintOrigin.x(), paintOrigin.y() - 5 + 1), name);
+                                     imgSize.width() + 2);
+        if (!name.isEmpty()) {
+            const QPointF tileOffset = tile->tileset()->tileOffset();
+            const QPointF textPos = pos + tileOffset -
+                    QPointF(imgSize.width() / 2, 5 + imgSize.height());
+
+            painter->drawText(textPos + QPointF(1, 1), name);
+            painter->setPen(color);
+            painter->drawText(textPos, name);
+        }
+
+        drawCell(painter, object->cell(),
+                 pos,
+                 BottomCenter,
+                 painter->transform());
 
         if (testFlag(ShowTileObjectOutlines)) {
             pen.setStyle(Qt::SolidLine);
             painter->setPen(pen);
-            painter->drawRect(QRectF(paintOrigin, img.size()));
+            painter->drawRect(QRectF(QPointF(), imgSize));
             pen.setStyle(Qt::DotLine);
             pen.setColor(color);
             painter->setPen(pen);
-            painter->drawRect(QRectF(paintOrigin, img.size()));
+            painter->drawRect(QRectF(QPointF(), imgSize));
         }
-
-        if (!name.isEmpty()) {
-            painter->setPen(color);
-            painter->drawText(QPoint(paintOrigin.x(), paintOrigin.y() - 5), name);
-        }
-
     } else {
         QColor brushColor = color;
         brushColor.setAlpha(50);

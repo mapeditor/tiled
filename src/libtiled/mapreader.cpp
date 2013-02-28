@@ -783,10 +783,8 @@ MapObject *MapReaderPrivate::readObject()
     if (ok)
         object->setRotation(rotation);
 
-    if (gid) {
-        const Cell cell = cellForGid(gid);
-        object->setTile(cell.tile);
-    }
+    if (gid)
+        object->setCell(cellForGid(gid));
 
     const int visible = visibleRef.toString().toInt(&ok);
     if (ok)
