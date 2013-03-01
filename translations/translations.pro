@@ -35,7 +35,8 @@ win32:CONFIG -= embed_manifest_exe
 
 TRANSLATIONS = $$prependAppend(LANGUAGES, $$PWD/tiled_, .ts)
 LUPDATE = $$fixSlashes($$[QT_INSTALL_BINS]/lupdate) -locations relative -no-obsolete
-LRELEASE = $$fixSlashes($$[QT_INSTALL_BINS]/lrelease)
+LRELEASE = $$QMAKE_LRELEASE
+isEmpty(LRELEASE):LRELEASE = $$fixSlashes($$[QT_INSTALL_BINS]/lrelease)
 
 ts.commands = cd $$PWD/.. && $$LUPDATE src -ts $$TRANSLATIONS
 QMAKE_EXTRA_TARGETS += ts
