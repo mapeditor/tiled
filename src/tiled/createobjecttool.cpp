@@ -138,7 +138,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
             newSize.setHeight(max);
         }
 
-        mNewMapObjectItem->resize(newSize);
+        mNewMapObjectItem->resizeObject(newSize);
         break;
     }
     case CreateTile: {

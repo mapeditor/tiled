@@ -24,6 +24,7 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
@@ -256,7 +257,7 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
             const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
             QPointF tileCoords = renderer->pixelToTileCoords(newPos);
             tileCoords -= mMapObjectItem->mapObject()->position();
-            mMapObjectItem->resize(QSizeF(tileCoords.x(), tileCoords.y()));
+            mMapObjectItem->resizeObject(QSizeF(tileCoords.x(), tileCoords.y()));
         }
     }
 
@@ -304,7 +305,7 @@ void RotationHandle::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if (QApplication::keyboardModifiers() & Qt::ControlModifier)
         rotation = std::floor((rotation + 7.5) / 15) * 15;
 
-    mMapObjectItem->setRotation(rotation);
+    mMapObjectItem->setObjectRotation(rotation);
 }
 
 
@@ -356,7 +357,6 @@ void MapObjectItem::syncWithMapObject()
 
     setPos(pixelPos);
     setZValue(pixelPos.y());
-
     setRotation(mObject->rotation());
 
     // TODO: Rotating around the center makes things rather more complicated
@@ -438,32 +438,23 @@ void MapObjectItem::paint(QPainter *painter,
     }
 }
 
-void MapObjectItem::resize(const QSizeF &size)
+void MapObjectItem::resizeObject(const QSizeF &size)
 {
+    // Not using the MapObjectModel because it is also used during object
+    // creation, when the object is not actually part of the map yet.
     mObject->setSize(size);
     syncWithMapObject();
 }
 
-void MapObjectItem::setRotation(qreal angle)
+void MapObjectItem::setObjectRotation(qreal angle)
 {
-    mObject->setRotation(angle);
-    QGraphicsItem::setRotation(angle);
+    mMapDocument->mapObjectModel()->setObjectRotation(mObject, angle);
 }
 
 void MapObjectItem::setPolygon(const QPolygonF &polygon)
 {
     mObject->setPolygon(polygon);
     syncWithMapObject();
-}
-
-MapDocument *MapObjectItem::mapDocument() const
-{
-    return mMapDocument;
-}
-
-QColor MapObjectItem::color() const
-{
-    return mColor;
 }
 
 QColor MapObjectItem::objectColor(const MapObject *object)
