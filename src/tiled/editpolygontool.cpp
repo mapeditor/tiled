@@ -65,11 +65,11 @@ public:
         setCursor(Qt::SizeAllCursor);
     }
 
+    MapObjectItem *mapObjectItem() const { return mMapObjectItem; }
     MapObject *mapObject() const { return mMapObjectItem->mapObject(); }
 
     int pointIndex() const { return mPointIndex; }
 
-    QPointF pointPosition() const;
     void setPointPosition(const QPointF &pos);
 
     // These hide the QGraphicsItem members
@@ -89,12 +89,6 @@ private:
 
 } // namespace Internal
 } // namespace Tiled
-
-QPointF PointHandle::pointPosition() const
-{
-    MapObject *mapObject = mMapObjectItem->mapObject();
-    return mapObject->polygon().at(mPointIndex) + mapObject->position();
-}
 
 void PointHandle::setPointPosition(const QPointF &pos)
 {
@@ -362,7 +356,7 @@ void EditPolygonTool::updateHandles()
 
     foreach (MapObjectItem *item, selection) {
         const MapObject *object = item->mapObject();
-        if (object->tile())
+        if (!object->cell().isEmpty())
             continue;
 
         QPolygonF polygon = object->polygon();
@@ -389,7 +383,8 @@ void EditPolygonTool::updateHandles()
         for (int i = 0; i < pointHandles.size(); ++i) {
             const QPointF &point = polygon.at(i);
             const QPointF handlePos = renderer->tileToPixelCoords(point);
-            pointHandles.at(i)->setPos(handlePos);
+            const QPointF internalHandlePos = handlePos - item->pos();
+            pointHandles.at(i)->setPos(item->mapToScene(internalHandlePos));
         }
 
         mHandles.insert(item, pointHandles);
@@ -470,14 +465,16 @@ void EditPolygonTool::startMoving()
 
     mMode = Moving;
 
+    MapRenderer *renderer = mapDocument()->renderer();
+
     // Remember the current object positions
     mOldHandlePositions.clear();
     mOldPolygons.clear();
-    mAlignPosition = (*mSelectedHandles.begin())->pointPosition();
+    mAlignPosition = renderer->pixelToTileCoords((*mSelectedHandles.begin())->pos());
 
     foreach (PointHandle *handle, mSelectedHandles) {
-        const QPointF pos = handle->pointPosition();
-        mOldHandlePositions += handle->pos();
+        const QPointF pos = renderer->pixelToTileCoords(handle->pos());
+        mOldHandlePositions.append(handle->pos());
         if (pos.x() < mAlignPosition.x())
             mAlignPosition.setX(pos.x());
         if (pos.y() < mAlignPosition.y())
@@ -517,10 +514,12 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     int i = 0;
     foreach (PointHandle *handle, mSelectedHandles) {
+        const MapObjectItem *item = handle->mapObjectItem();
         const QPointF newPixelPos = mOldHandlePositions.at(i) + diff;
-        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
+        const QPointF newInternalPos = item->mapFromScene(newPixelPos);
+        const QPointF newScenePos = item->pos() + newInternalPos;
         handle->setPos(newPixelPos);
-        handle->setPointPosition(newPos);
+        handle->setPointPosition(renderer->pixelToTileCoords(newScenePos));
         ++i;
     }
 }

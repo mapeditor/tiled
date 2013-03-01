@@ -107,8 +107,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     refreshScene();
 
     if (mMapDocument) {
-        mMapDocument->renderer()->setFlag(ShowTileObjectOutlines,
-                                          mShowTileObjectOutlines);
+        MapRenderer *renderer = mMapDocument->renderer();
+        renderer->setFlag(ShowTileObjectOutlines, mShowTileObjectOutlines);
 
         connect(mMapDocument, SIGNAL(mapChanged()),
                 this, SLOT(mapChanged()));

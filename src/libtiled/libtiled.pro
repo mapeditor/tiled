@@ -87,6 +87,7 @@ HEADERS += compression.h \
     staggeredrenderer.h \
     terrain.h \
     tile.h \
+    tiled.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h

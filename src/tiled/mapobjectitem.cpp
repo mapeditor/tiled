@@ -24,6 +24,7 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
@@ -31,12 +32,17 @@
 #include "objectpropertiesdialog.h"
 #include "preferences.h"
 #include "resizemapobject.h"
+#include "rotatemapobject.h"
+#include "tile.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QPalette>
 #include <QStyleOptionGraphicsItem>
+#include <QVector2D>
+
+#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -90,6 +96,93 @@ protected:
 private:
     QSizeF mOldSize;
 };
+
+/**
+ * Rotation origin indicator.
+ */
+class RotationOriginIndicator : public QGraphicsItem
+{
+public:
+    RotationOriginIndicator(MapObjectItem *mapObjectItem)
+        : QGraphicsItem(mapObjectItem)
+    {
+        setFlags(QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
+    }
+
+    QRectF boundingRect() const { return QRectF(-9, -9, 18, 18); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+    {
+        static const QLine lines[] = {
+            QLine(-8,0, 8,0),
+            QLine(0,-8, 0,8),
+        };
+        painter->setPen(QPen(Qt::DashLine));
+        painter->drawLines(lines, sizeof(lines) / sizeof(lines[0]));
+    }
+};
+
+/**
+ * Rotation handle.
+ */
+class RotationHandle : public QGraphicsItem
+{
+public:
+    RotationHandle(MapObjectItem *mapObjectItem)
+        : QGraphicsItem(mapObjectItem)
+        , mMapObjectItem(mapObjectItem)
+    {
+        setCursor(Qt::SizeAllCursor);
+        setFlags(QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
+        setPos(30, 0);
+    }
+
+    QRectF boundingRect() const { return QRectF(-5, -5, 10 + 1, 10 + 1); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
+private:
+    qreal mOldRotation;
+    MapObjectItem *mMapObjectItem;
+    QPointF mStartPress;
+    QPointF mStartPos;
+};
+
+#if 0
+/**
+ * Returns the center of the object in pixels.
+ */
+static QPointF objectCenter(MapObject *object, MapRenderer *renderer)
+{
+    if (object->tile()) {
+        const QSize tileSize = object->tile()->size();
+        const QPointF pos = renderer->tileToPixelCoords(object->position());
+        return QPointF(pos.x() + tileSize.width() / 2,
+                       pos.y() - tileSize.height() / 2);
+    }
+
+    QPointF center;
+
+    switch (object->shape()) {
+    case MapObject::Rectangle:
+    case MapObject::Ellipse:
+        center = object->bounds().center();
+        break;
+    case MapObject::Polygon:
+    case MapObject::Polyline:
+        center = object->position() +
+                object->polygon().boundingRect().center();
+        break;
+    }
+
+    return renderer->tileToPixelCoords(center);
+}
+#endif
 
 } // namespace Internal
 } // namespace Tiled
@@ -171,11 +264,55 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
             const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
             QPointF tileCoords = renderer->pixelToTileCoords(newPos);
             tileCoords -= mMapObjectItem->mapObject()->position();
-            mMapObjectItem->resize(QSizeF(tileCoords.x(), tileCoords.y()));
+            mMapObjectItem->resizeObject(QSizeF(tileCoords.x(), tileCoords.y()));
         }
     }
 
     return Handle::itemChange(change, value);
+}
+
+
+void RotationHandle::paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *, QWidget *)
+{
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(mMapObjectItem->color());
+    painter->setPen(Qt::black);
+    painter->drawEllipse(QRectF(-5, -5, 10, 10));
+}
+
+void RotationHandle::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    // Remember the old rotation since we may rotate the object
+    if (event->button() == Qt::LeftButton)
+        mOldRotation = mMapObjectItem->mapObject()->rotation();
+
+    const qreal rad = mOldRotation * (M_PI / 180);
+    mStartPress = event->scenePos();
+    mStartPos = (QVector2D(cos(rad), sin(rad)) * 30).toPointF();
+}
+
+void RotationHandle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    // If we rotated the object, create an undo command
+    MapObject *obj = mMapObjectItem->mapObject();
+    if (event->button() == Qt::LeftButton && mOldRotation != obj->rotation()) {
+        MapDocument *document = mMapObjectItem->mapDocument();
+        QUndoCommand *cmd = new RotateMapObject(document, obj, mOldRotation);
+        document->undoStack()->push(cmd);
+    }
+}
+
+void RotationHandle::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    QPointF diff = (event->scenePos() - mStartPress) + mStartPos;
+    qreal rotation = std::atan2(diff.y(), diff.x());
+    rotation *= 180 / M_PI;
+
+    if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+        rotation = std::floor((rotation + 7.5) / 15) * 15;
+
+    mMapObjectItem->setObjectRotation(rotation);
 }
 
 
@@ -186,10 +323,14 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
     mMapDocument(mapDocument),
     mIsEditable(false),
     mSyncing(false),
-    mResizeHandle(new ResizeHandle(this))
+    mResizeHandle(new ResizeHandle(this)),
+    mRotationHandle(new RotationHandle(this)),
+    mRotationOriginIndicator(new RotationOriginIndicator(this))
 {
     syncWithMapObject();
     mResizeHandle->setVisible(false);
+    mRotationHandle->setVisible(false);
+    mRotationOriginIndicator->setVisible(false);
 }
 
 void MapObjectItem::syncWithMapObject()
@@ -206,6 +347,7 @@ void MapObjectItem::syncWithMapObject()
         mColor = color;
         update();
         mResizeHandle->update();
+        mRotationHandle->update();
     }
 
     QString toolTip = mName;
@@ -217,10 +359,17 @@ void MapObjectItem::syncWithMapObject()
     MapRenderer *renderer = mMapDocument->renderer();
     const QPointF pixelPos = renderer->tileToPixelCoords(mObject->position());
     QRectF bounds = renderer->boundingRect(mObject);
+
     bounds.translate(-pixelPos);
 
     setPos(pixelPos);
     setZValue(pixelPos.y());
+    setRotation(mObject->rotation());
+
+    // TODO: Rotating around the center makes things rather more complicated
+//    const QPointF rotationOrigin = objectCenter(mObject, renderer) - pixelPos;
+//    setTransformOriginPoint(rotationOrigin);
+//    mRotationOriginIndicator->setPos(rotationOrigin);
 
     mSyncing = true;
 
@@ -245,8 +394,10 @@ void MapObjectItem::setEditable(bool editable)
 
     mIsEditable = editable;
 
-    const bool handlesVisible = mIsEditable && !mObject->tile();
+    const bool handlesVisible = mIsEditable && mObject->cell().isEmpty();
     mResizeHandle->setVisible(handlesVisible && mObject->polygon().isEmpty());
+    mRotationHandle->setVisible(mIsEditable);
+    mRotationOriginIndicator->setVisible(mIsEditable);
 
     if (mIsEditable)
         setCursor(Qt::SizeAllCursor);
@@ -294,26 +445,23 @@ void MapObjectItem::paint(QPainter *painter,
     }
 }
 
-void MapObjectItem::resize(const QSizeF &size)
+void MapObjectItem::resizeObject(const QSizeF &size)
 {
+    // Not using the MapObjectModel because it is also used during object
+    // creation, when the object is not actually part of the map yet.
     mObject->setSize(size);
     syncWithMapObject();
+}
+
+void MapObjectItem::setObjectRotation(qreal angle)
+{
+    mMapDocument->mapObjectModel()->setObjectRotation(mObject, angle);
 }
 
 void MapObjectItem::setPolygon(const QPolygonF &polygon)
 {
     mObject->setPolygon(polygon);
     syncWithMapObject();
-}
-
-MapDocument *MapObjectItem::mapDocument() const
-{
-    return mMapDocument;
-}
-
-QColor MapObjectItem::color() const
-{
-    return mColor;
 }
 
 QColor MapObjectItem::objectColor(const MapObject *object)

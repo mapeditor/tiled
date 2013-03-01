@@ -67,6 +67,10 @@ protected:
     ObjectGroup *currentObjectGroup() const;
     MapObjectItem *topMostObjectItemAt(QPointF pos) const;
 
+private slots:
+    void flipHorizontally();
+    void flipVertically();
+
 private:
     void showContextMenu(MapObjectItem *clickedObject,
                          QPoint screenPos, QWidget *parent);

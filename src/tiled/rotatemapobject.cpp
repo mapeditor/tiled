@@ -1,6 +1,6 @@
 /*
- * changemapobject.cpp
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * rotatemapobject.cpp
+ * Copyright 2012, Przemysław Grzywacz <nexather@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "changemapobject.h"
+#include "rotatemapobject.h"
 
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -29,27 +29,23 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
-                                 MapObject *mapObject,
-                                 const QString &name,
-                                 const QString &type)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                               "Change Object"))
-    , mMapDocument(mapDocument)
+RotateMapObject::RotateMapObject(MapDocument *mapDocument,
+                MapObject *mapObject,
+                qreal oldRotation)
+    : mMapDocument(mapDocument)
     , mMapObject(mapObject)
-    , mName(name)
-    , mType(type)
+    , mOldRotation(oldRotation)
+    , mNewRotation(mapObject->rotation())
 {
+    setText(QCoreApplication::translate("Undo Commands", "Rotate Object"));
 }
 
-void ChangeMapObject::swap()
+void RotateMapObject::undo()
 {
-    const QString name = mMapObject->name();
-    const QString type = mMapObject->type();
+    mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mOldRotation);
+}
 
-    mMapDocument->mapObjectModel()->setObjectName(mMapObject, mName);
-    mMapDocument->mapObjectModel()->setObjectType(mMapObject, mType);
-
-    mName = name;
-    mType = type;
+void RotateMapObject::redo()
+{
+    mMapDocument->mapObjectModel()->setObjectRotation(mMapObject, mNewRotation);
 }

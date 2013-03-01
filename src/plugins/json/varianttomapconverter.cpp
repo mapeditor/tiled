@@ -312,6 +312,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const int y = objectVariantMap["y"].toInt();
         const int width = objectVariantMap["width"].toInt();
         const int height = objectVariantMap["height"].toInt();
+        const qreal rotation = objectVariantMap["rotation"].toReal();
 
         const QPointF pos = toTile(x, y);
         const QPointF size = toTile(width, height);
@@ -319,11 +320,11 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         MapObject *object = new MapObject(name, type,
                                           pos,
                                           QSizeF(size.x(), size.y()));
+        object->setRotation(rotation);
 
         if (gid) {
             bool ok;
-            const Cell cell = mGidMapper.gidToCell(gid, ok);
-            object->setTile(cell.tile);
+            object->setCell(mGidMapper.gidToCell(gid, ok));
         }
 
         if (objectVariantMap.contains("visible"))

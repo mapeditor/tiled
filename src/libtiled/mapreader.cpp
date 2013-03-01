@@ -777,12 +777,15 @@ MapObject *MapReaderPrivate::readObject()
 
     MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
                                                               size.y()));
-    if (gid) {
-        const Cell cell = cellForGid(gid);
-        object->setTile(cell.tile);
-    }
 
     bool ok;
+    const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);
+    if (ok)
+        object->setRotation(rotation);
+
+    if (gid)
+        object->setCell(cellForGid(gid));
+
     const int visible = visibleRef.toString().toInt(&ok);
     if (ok)
         object->setVisible(visible);

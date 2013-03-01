@@ -36,6 +36,8 @@ class MapDocument;
 class ObjectGroupItem;
 class PointHandle;
 class ResizeHandle;
+class RotationHandle;
+class RotationOriginIndicator;
 
 /**
  * A graphics item displaying a map object.
@@ -80,10 +82,14 @@ public:
                QWidget *widget = 0);
 
     /**
-     * Resizes this map object item and the associated map object. The
-     * \a size is given in tiles.
+     * Resizes the associated map object. The \a size is given in tiles.
      */
-    void resize(const QSizeF &size);
+    void resizeObject(const QSizeF &size);
+
+    /**
+     * Sets the rotation of the associated map object.
+     */
+    void setObjectRotation(qreal angle);
 
     /**
      * Sets a new polygon on the associated object.
@@ -102,8 +108,8 @@ protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    MapDocument *mapDocument() const;
-    QColor color() const;
+    MapDocument *mapDocument() const { return mMapDocument; }
+    QColor color() const { return mColor; }
 
     MapObject *mObject;
     MapDocument *mMapDocument;
@@ -116,10 +122,12 @@ private:
     bool mIsEditable;
     bool mSyncing;
     ResizeHandle *mResizeHandle;
+    RotationHandle *mRotationHandle;
+    RotationOriginIndicator *mRotationOriginIndicator;
 
     friend class Handle;
-    friend class PointHandle;
     friend class ResizeHandle;
+    friend class RotationHandle;
 };
 
 } // namespace Internal

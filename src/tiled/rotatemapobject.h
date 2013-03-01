@@ -1,6 +1,6 @@
 /*
- * changemapobject.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * rotatemapobject.h
+ * Copyright 2012, Przemysław Grzywacz <nexather@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,8 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEMAPOBJECT_H
-#define CHANGEMAPOBJECT_H
+#ifndef ROTATEMAPOBJECT_H
+#define ROTATEMAPOBJECT_H
 
 #include <QUndoCommand>
 
@@ -31,31 +31,24 @@ namespace Internal {
 
 class MapDocument;
 
-class ChangeMapObject : public QUndoCommand
+class RotateMapObject : public QUndoCommand
 {
 public:
-    /**
-     * Creates an undo command that sets the given \a object's \a name and
-     * \a type.
-     */
-    ChangeMapObject(MapDocument *mapDocument,
-                    MapObject *object,
-                    const QString &name,
-                    const QString &type);
+    RotateMapObject(MapDocument *mapDocument,
+                    MapObject *mapObject,
+                    qreal oldRotation);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo();
+    void redo();
 
 private:
-    void swap();
-
     MapDocument *mMapDocument;
     MapObject *mMapObject;
-    QString mName;
-    QString mType;
+    qreal mOldRotation;
+    qreal mNewRotation;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CHANGEMAPOBJECT_H
+#endif // ROTATEMAPOBJECT_H

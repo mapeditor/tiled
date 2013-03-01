@@ -35,6 +35,7 @@
 
 namespace Tiled {
 
+class Cell;
 class Layer;
 class Map;
 class MapObject;
@@ -164,6 +165,16 @@ public:
     void setFlags(RenderFlags flags) { mFlags = flags; }
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
+
+    enum Origin {
+        BottomLeft,
+        BottomCenter
+    };
+    static void drawCell(QPainter *painter,
+                         const Cell &cell,
+                         const QPointF &pos,
+                         Origin origin,
+                         const QTransform &baseTransform);
 
 protected:
     /**

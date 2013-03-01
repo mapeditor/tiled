@@ -1,6 +1,6 @@
 /*
- * changemapobject.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * flipmapobjects.h
+ * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,44 +18,38 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEMAPOBJECT_H
-#define CHANGEMAPOBJECT_H
+#ifndef FLIPMAPOBJECTS_H
+#define FLIPMAPOBJECTS_H
 
+#include "mapobject.h"
+
+#include <QList>
 #include <QUndoCommand>
 
 namespace Tiled {
-
-class MapObject;
-
 namespace Internal {
 
 class MapDocument;
 
-class ChangeMapObject : public QUndoCommand
+class FlipMapObjects : public QUndoCommand
 {
 public:
-    /**
-     * Creates an undo command that sets the given \a object's \a name and
-     * \a type.
-     */
-    ChangeMapObject(MapDocument *mapDocument,
-                    MapObject *object,
-                    const QString &name,
-                    const QString &type);
+    FlipMapObjects(MapDocument *mapDocument,
+                   const QList<MapObject *> &mapObjects,
+                   FlipDirection flipDirection);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() { flip(); }
+    void redo() { flip(); }
 
 private:
-    void swap();
+    void flip();
 
     MapDocument *mMapDocument;
-    MapObject *mMapObject;
-    QString mName;
-    QString mType;
+    QList<MapObject *> mMapObjects;
+    FlipDirection mFlipDirection;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CHANGEMAPOBJECT_H
+#endif // FLIPMAPOBJECTS_H

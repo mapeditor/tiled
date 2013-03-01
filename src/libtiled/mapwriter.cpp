@@ -495,8 +495,8 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
 
-    if (mapObject->tile()) {
-        const unsigned gid = mGidMapper.cellToGid(Cell(mapObject->tile()));
+    if (!mapObject->cell().isEmpty()) {
+        const unsigned gid = mGidMapper.cellToGid(mapObject->cell());
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 
@@ -514,6 +514,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("width"), QString::number(size.x()));
     if (size.y() != 0)
         w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
+
+    const qreal rotation = mapObject->rotation();
+    if (rotation != 0.0)
+        w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
 
     if (!mapObject->isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));

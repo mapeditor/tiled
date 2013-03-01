@@ -430,10 +430,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mDocumentManager, SLOT(switchToRightDocument()));
 
 
-    new QShortcut(tr("X"), this, SLOT(flipStampHorizontally()));
-    new QShortcut(tr("Y"), this, SLOT(flipStampVertically()));
-    new QShortcut(tr("Z"), this, SLOT(rotateStampRight()));
-    new QShortcut(tr("Shift+Z"), this, SLOT(rotateStampLeft()));
+    new QShortcut(tr("X"), this, SLOT(flipHorizontally()));
+    new QShortcut(tr("Y"), this, SLOT(flipVertically()));
+    new QShortcut(tr("Z"), this, SLOT(rotateRight()));
+    new QShortcut(tr("Shift+Z"), this, SLOT(rotateLeft()));
 
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
@@ -1373,39 +1373,29 @@ void MainWindow::editLayerProperties()
         PropertiesDialog::showDialogFor(layer, mMapDocument, this);
 }
 
-void MainWindow::flipStampHorizontally()
+void MainWindow::flip(FlipDirection direction)
 {
-    if (TileLayer *stamp = mStampBrush->stamp()) {
-        stamp = static_cast<TileLayer*>(stamp->clone());
-        stamp->flip(TileLayer::FlipHorizontally);
-        setStampBrush(stamp);
+    if (mStampBrush->isEnabled()) {
+        if (TileLayer *stamp = mStampBrush->stamp()) {
+            stamp = static_cast<TileLayer*>(stamp->clone());
+            stamp->flip(direction);
+            setStampBrush(stamp);
+        }
+    } else if (mMapDocument) {
+        mMapDocument->flipSelectedObjects(direction);
     }
 }
 
-void MainWindow::flipStampVertically()
+void MainWindow::rotate(RotateDirection direction)
 {
-    if (TileLayer *stamp = mStampBrush->stamp()) {
-        stamp = static_cast<TileLayer*>(stamp->clone());
-        stamp->flip(TileLayer::FlipVertically);
-        setStampBrush(stamp);
-    }
-}
-
-void MainWindow::rotateStampLeft()
-{
-    if (TileLayer *stamp = mStampBrush->stamp()) {
-        stamp = static_cast<TileLayer*>(stamp->clone());
-        stamp->rotate(TileLayer::RotateLeft);
-        setStampBrush(stamp);
-    }
-}
-
-void MainWindow::rotateStampRight()
-{
-    if (TileLayer *stamp = mStampBrush->stamp()) {
-        stamp = static_cast<TileLayer*>(stamp->clone());
-        stamp->rotate(TileLayer::RotateRight);
-        setStampBrush(stamp);
+    if (mStampBrush->isEnabled()) {
+        if (TileLayer *stamp = mStampBrush->stamp()) {
+            stamp = static_cast<TileLayer*>(stamp->clone());
+            stamp->rotate(direction);
+            setStampBrush(stamp);
+        }
+    } else if (mMapDocument) {
+        mMapDocument->rotateSelectedObjects(direction);
     }
 }
 

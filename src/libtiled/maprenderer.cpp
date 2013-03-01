@@ -29,7 +29,10 @@
 #include "maprenderer.h"
 
 #include "imagelayer.h"
+#include "tile.h"
+#include "tilelayer.h"
 
+#include <QPainter>
 #include <QVector2D>
 
 using namespace Tiled;
@@ -77,4 +80,58 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     polygon[2] = end - perpendicular + direction;
     polygon[3] = end + perpendicular + direction;
     return polygon;
+}
+
+/**
+ * Draws a \a cell with the given \a origin at \a pos, taking into account the
+ * flipping and tile offset.
+ *
+ * It leaves the painter transform set to the transform used to draw the cell.
+ */
+void MapRenderer::drawCell(QPainter *painter,
+                           const Cell &cell,
+                           const QPointF &pos,
+                           Origin origin,
+                           const QTransform &baseTransform)
+{
+    const QPixmap &img = cell.tile->image();
+    const QPoint offset = cell.tile->tileset()->tileOffset();
+    const QSize imgSize = img.size();
+
+    qreal m11 = 1;      // Horizontal scaling factor
+    qreal m12 = 0;      // Vertical shearing factor
+    qreal m21 = 0;      // Horizontal shearing factor
+    qreal m22 = 1;      // Vertical scaling factor
+    qreal dx = offset.x() + pos.x();
+    qreal dy = offset.y() + pos.y() - imgSize.height();
+
+    if (origin == BottomCenter)
+        dx += -imgSize.width() / 2;
+
+    if (cell.flippedAntiDiagonally) {
+        // Use shearing to swap the X/Y axis
+        m11 = 0;
+        m12 = 1;
+        m21 = 1;
+        m22 = 0;
+
+        // Compensate for the swap of image dimensions
+        dy += imgSize.height() - imgSize.width();
+        if (origin == BottomCenter)
+            dx += (imgSize.width() - imgSize.height()) / 2;
+    }
+    if (cell.flippedHorizontally) {
+        m11 = -m11;
+        m21 = -m21;
+        dx += cell.flippedAntiDiagonally ? imgSize.height() : imgSize.width();
+    }
+    if (cell.flippedVertically) {
+        m12 = -m12;
+        m22 = -m22;
+        dy += cell.flippedAntiDiagonally ? imgSize.width() : imgSize.height();
+    }
+
+    const QTransform transform(m11, m12, m21, m22, dx, dy);
+    painter->setTransform(transform * baseTransform);
+    painter->drawPixmap(QPointF(), img);
 }
