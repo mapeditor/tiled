@@ -29,6 +29,8 @@
 
 #include <QDebug>
 #include <QtPlugin>
+#include <QStyle>
+#include <QStyleFactory>
 
 #ifdef STATIC_BUILD
 Q_IMPORT_PLUGIN(qgif)
@@ -138,6 +140,24 @@ int main(int argc, char *argv[])
 
 #ifdef Q_WS_MAC
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
+#endif
+
+#ifndef Q_OS_WIN
+    QString baseName = QApplication::style()->objectName();
+    if (baseName == QLatin1String("windows")) {
+        // Avoid Windows 95 style at all cost
+        if (QStyleFactory::keys().contains(QLatin1String("Fusion"))) {
+            baseName = QLatin1String("fusion"); // Qt5
+        } else { // Qt4
+            // e.g. if we are running on a KDE4 desktop
+            QByteArray desktopEnvironment = qgetenv("DESKTOP_SESSION");
+            if (desktopEnvironment == "kde")
+                baseName = QLatin1String("plastique");
+            else
+                baseName = QLatin1String("cleanlooks");
+        }
+        a.setStyle(QStyleFactory::create(baseName));
+    }
 #endif
 
     LanguageManager *languageManager = LanguageManager::instance();
