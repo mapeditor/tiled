@@ -147,10 +147,13 @@ public slots:
 
     void editLayerProperties();
 
-    void flipStampHorizontally();
-    void flipStampVertically();
-    void rotateStampLeft();
-    void rotateStampRight();
+    void flipHorizontally() { flip(FlipHorizontally); }
+    void flipVertically() { flip(FlipVertically); }
+    void rotateLeft() { rotate(RotateLeft); }
+    void rotateRight() { rotate(RotateRight); }
+
+    void flip(FlipDirection direction);
+    void rotate(RotateDirection direction);
 
     void setStampBrush(const TileLayer *tiles);
     void setTerrainBrush(const Terrain *terrain);

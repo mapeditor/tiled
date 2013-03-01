@@ -33,6 +33,7 @@
 #include "tiled_global.h"
 
 #include "layer.h"
+#include "tiled.h"
 
 #include <QMargins>
 #include <QString>
@@ -97,17 +98,6 @@ public:
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
 public:
-    enum FlipDirection {
-        FlipHorizontally,
-        FlipVertically,
-        FlipDiagonally
-    };
-
-    enum RotateDirection {
-        RotateLeft,
-        RotateRight
-    };
-
     /**
      * Constructor.
      */

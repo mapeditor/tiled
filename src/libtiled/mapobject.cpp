@@ -54,7 +54,7 @@ MapObject::MapObject(const QString &name, const QString &type,
 {
 }
 
-void MapObject::flip(MapObject::FlipDirection direction)
+void MapObject::flip(FlipDirection direction)
 {
     if (!mCell.isEmpty()) {
         if (direction == FlipHorizontally)

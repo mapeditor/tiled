@@ -31,7 +31,7 @@ using namespace Tiled::Internal;
 
 FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
                                const QList<MapObject *> &mapObjects,
-                               MapObject::FlipDirection flipDirection)
+                               FlipDirection flipDirection)
     : mMapDocument(mapDocument)
     , mMapObjects(mapObjects)
     , mFlipDirection(flipDirection)
@@ -44,6 +44,7 @@ FlipMapObjects::FlipMapObjects(MapDocument *mapDocument,
 
 void FlipMapObjects::flip()
 {
+    // TODO: Flip them properly as a group
     foreach (MapObject *object, mMapObjects)
         object->flip(mFlipDirection);
 

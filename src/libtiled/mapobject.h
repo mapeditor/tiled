@@ -32,6 +32,7 @@
 #define MAPOBJECT_H
 
 #include "object.h"
+#include "tiled.h"
 #include "tilelayer.h"
 
 #include <QPolygonF>
@@ -66,11 +67,6 @@ public:
         Polygon,
         Polyline,
         Ellipse
-    };
-
-    enum FlipDirection {
-        FlipHorizontally,
-        FlipVertically
     };
 
     MapObject();

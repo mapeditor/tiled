@@ -26,6 +26,7 @@
 #include "addremovetileset.h"
 #include "changeproperties.h"
 #include "changetileselection.h"
+#include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
@@ -40,6 +41,7 @@
 #include "pluginmanager.h"
 #include "resizelayer.h"
 #include "resizemap.h"
+#include "rotatemapobject.h"
 #include "staggeredrenderer.h"
 #include "terrain.h"
 #include "terrainmodel.h"
@@ -245,6 +247,49 @@ void MapDocument::offsetMap(const QList<int> &layerIndexes,
         }
         mUndoStack->endMacro();
     }
+}
+
+/**
+ * Flips the selected objects in the given \a direction.
+ */
+void MapDocument::flipSelectedObjects(FlipDirection direction)
+{
+    if (mSelectedObjects.isEmpty())
+        return;
+
+    mUndoStack->push(new FlipMapObjects(this, mSelectedObjects, direction));
+}
+
+/**
+ * Rotates the selected objects.
+ */
+void MapDocument::rotateSelectedObjects(RotateDirection direction)
+{
+    if (mSelectedObjects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Rotate %n Object(s)", "",
+                              mSelectedObjects.size()));
+
+    // TODO: Rotate them properly as a group
+    foreach (MapObject *mapObject, mSelectedObjects) {
+        const qreal oldRotation = mapObject->rotation();
+        qreal newRotation = oldRotation;
+
+        if (direction == RotateLeft) {
+            newRotation -= 90;
+            if (newRotation < -180)
+                newRotation += 360;
+        } else {
+            newRotation += 90;
+            if (newRotation > 180)
+                newRotation -= 360;
+        }
+
+        mapObject->setRotation(newRotation);
+        mUndoStack->push(new RotateMapObject(this, mapObject, oldRotation));
+    }
+    mUndoStack->endMacro();
 }
 
 /**

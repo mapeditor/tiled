@@ -21,7 +21,6 @@
 #include "abstractobjecttool.h"
 
 #include "addremovemapobject.h"
-#include "flipmapobjects.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -106,18 +105,12 @@ MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 
 void AbstractObjectTool::flipHorizontally()
 {
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->push(new FlipMapObjects(mapDocument(),
-                                       mapDocument()->selectedObjects(),
-                                       MapObject::FlipHorizontally));
+    mapDocument()->flipSelectedObjects(FlipHorizontally);
 }
 
 void AbstractObjectTool::flipVertically()
 {
-    QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->push(new FlipMapObjects(mapDocument(),
-                                       mapDocument()->selectedObjects(),
-                                       MapObject::FlipVertically));
+    mapDocument()->flipSelectedObjects(FlipVertically);
 }
 
 /**

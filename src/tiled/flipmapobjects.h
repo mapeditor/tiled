@@ -36,7 +36,7 @@ class FlipMapObjects : public QUndoCommand
 public:
     FlipMapObjects(MapDocument *mapDocument,
                    const QList<MapObject *> &mapObjects,
-                   MapObject::FlipDirection flipDirection);
+                   FlipDirection flipDirection);
 
     void undo() { flip(); }
     void redo() { flip(); }
@@ -46,7 +46,7 @@ private:
 
     MapDocument *mMapDocument;
     QList<MapObject *> mMapObjects;
-    MapObject::FlipDirection mFlipDirection;
+    FlipDirection mFlipDirection;
 };
 
 } // namespace Internal

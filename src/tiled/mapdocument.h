@@ -23,12 +23,13 @@
 #ifndef MAPDOCUMENT_H
 #define MAPDOCUMENT_H
 
+#include "layer.h"
+#include "tiled.h"
+
 #include <QList>
 #include <QObject>
 #include <QRegion>
 #include <QString>
-
-#include "layer.h"
 
 class QPoint;
 class QRect;
@@ -143,6 +144,8 @@ public:
                    const QRect &bounds,
                    bool wrapX, bool wrapY);
 
+    void flipSelectedObjects(FlipDirection direction);
+    void rotateSelectedObjects(RotateDirection direction);
 
     void addLayer(Layer::Type layerType);
     void duplicateLayer();
