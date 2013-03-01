@@ -36,7 +36,7 @@ win32 {
         }
 
         INCLUDEPATH += $${ZLIB_PATH}/include
-        win32-g++:LIBS += $${ZLIB_PATH}/lib/libz.a
+        win32-g++*:LIBS += $${ZLIB_PATH}/lib/libz.a
         win32-msvc*:LIBS += $${ZLIB_PATH}/lib/zlib.lib
     } else {
         INCLUDEPATH += ../zlib
