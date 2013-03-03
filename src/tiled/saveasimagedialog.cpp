@@ -106,6 +106,11 @@ SaveAsImageDialog::~SaveAsImageDialog()
     delete mUi;
 }
 
+static bool objectLessThan(const MapObject *a, const MapObject *b)
+{
+    return a->y() < b->y();
+}
+
 void SaveAsImageDialog::accept()
 {
     const QString fileName = mUi->fileNameEdit->text();
@@ -165,7 +170,12 @@ void SaveAsImageDialog::accept()
         if (tileLayer) {
             renderer->drawTileLayer(&painter, tileLayer);
         } else if (objGroup) {
-            foreach (const MapObject *object, objGroup->objects()) {
+            QList<MapObject*> objects = objGroup->objects();
+
+            // Objects are always drawn top to bottom at the moment
+            qStableSort(objects.begin(), objects.end(), objectLessThan);
+
+            foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
                     const QColor color = MapObjectItem::objectColor(object);
                     renderer->drawMapObject(&painter, object, color);
