@@ -40,9 +40,8 @@ body {
     padding-top: 10px;
     margin-bottom: 2em;
 
-    background: #808080;
-    background-image: url('/img/grid-white.png');
-    background-position: center top;
+    background: url('/img/backgroundmap.png') center top;
+    background-color: #808080;
 }
 
 .my-top-box .my-buttons {
