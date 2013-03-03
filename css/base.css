@@ -105,4 +105,13 @@ body {
 
 @media (max-width: 540px) {
     #watch { display: none; }
+
+    .container-fluid {
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+
+    .my-box {
+        border-radius: 0px;
+    }
 }

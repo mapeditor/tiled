@@ -1,3 +1,0 @@
-(function ($) {
-  $(".fancybox").fancybox();
-}(jQuery));
