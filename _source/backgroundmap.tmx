@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="40" height="13" tilewidth="40" tileheight="40">
+ <tileset firstgid="1" name="grass2rock" tilewidth="40" tileheight="40">
+  <image source="grass2rock.png" width="640" height="480"/>
+  <terraintypes>
+   <terrain name="Grass" tile="39"/>
+   <terrain name="Rock" tile="67"/>
+  </terraintypes>
+  <tile id="33" terrain="0,0,0,1"/>
+  <tile id="35" terrain="0,0,1,1"/>
+  <tile id="37" terrain="0,0,1,0"/>
+  <tile id="39" terrain="0,0,0,0">
+   <properties>
+    <property name="grass" value="true"/>
+   </properties>
+  </tile>
+  <tile id="65" terrain="0,1,0,1"/>
+  <tile id="67" terrain="1,1,1,1"/>
+  <tile id="69" terrain="1,0,1,0"/>
+  <tile id="71" terrain="0,1,1,1"/>
+  <tile id="73" terrain="1,0,1,1"/>
+  <tile id="97" terrain="0,1,0,0"/>
+  <tile id="99" terrain="1,1,0,0"/>
+  <tile id="101" terrain="1,0,0,0"/>
+  <tile id="103" terrain="1,1,0,1"/>
+  <tile id="105" terrain="1,1,1,0"/>
+ </tileset>
+ <tileset firstgid="193" name="tree" tilewidth="120" tileheight="160">
+  <tileoffset x="0" y="40"/>
+  <image source="tree.png" width="120" height="160"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="40" height="13">
+  <data encoding="base64" compression="zlib">
+   eJy1VUEKwzAMy1tCKXtHGWPkGWGE0v8/YB5EIISTliY7iBxcJ7JsuTmEsBuehpfhcQNbzZ8N8MmGj6FM5nfUe/dGvIdjgI8iCwfwKo34lRqSYZ3ETznonETDW/gAReJaX5zIE31Wftz/ny6LvKnzwdrliTyhofbGm0/UoNppnL+561/csToatnrb6qs3I6P+xTupnofzvvrR003zR7RaCLgTPkR/Pc9EyvnHXkHdng95Br3d2pq1WZ5lbr0aM8VZa4+b7krN59k+47dd1B+c2C9n/zDlwidmu8fxzOOeTim0+6n7kHMTvfUFgpF2Nw==
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1" width="40" height="13">
+  <object gid="193" x="146" y="412"/>
+  <object gid="193" x="237" y="442"/>
+  <object gid="193" x="197" y="522"/>
+  <object gid="193" x="302" y="425"/>
+  <object gid="193" x="683" y="276"/>
+  <object gid="193" x="227" y="372"/>
+  <object gid="193" x="173" y="316"/>
+  <object gid="193" x="309" y="175"/>
+  <object gid="193" x="393" y="198"/>
+  <object gid="193" x="608" y="276"/>
+  <object gid="193" x="353" y="160"/>
+  <object gid="193" x="641" y="230"/>
+  <object gid="193" x="515" y="181"/>
+ </objectgroup>
+</map>

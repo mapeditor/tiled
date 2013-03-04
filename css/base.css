@@ -28,20 +28,11 @@ body {
 }
 
 .my-top-box {
-    box-shadow: inset 0px 20px 10px -20px #000000, inset 0px -5px 10px -7px #000000;
-/*
-    box-shadow: inset 0px 2px 10px #000000;
-    */
     border-bottom: 1px solid white;
-    /*
-      border-top: 1px solid black;
-      margin-top: 1em;
-      */
-    padding-top: 10px;
     margin-bottom: 2em;
 
-    background: url('/img/backgroundmap.png') center top;
     background-color: #808080;
+    background: url(/img/tile40.png) center top;
 }
 
 .my-top-box .my-buttons {
@@ -113,4 +104,30 @@ body {
     .my-box {
         border-radius: 0px;
     }
+}
+
+/* Tiles */
+.t {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+}
+.t34 { background: url(/img/tile34.png); }
+.t36 { background: url(/img/tile36.png); }
+.t38 { background: url(/img/tile38.png); }
+.t66 { background: url(/img/tile66.png); }
+.t68 { background: url(/img/tile68.png); }
+.t70 { background: url(/img/tile70.png); }
+.t72 { background: url(/img/tile72.png); }
+.t74 { background: url(/img/tile74.png); }
+.t98 { background: url(/img/tile98.png); }
+.t100 { background: url(/img/tile100.png); }
+.t102 { background: url(/img/tile102.png); }
+.t104 { background: url(/img/tile104.png); }
+.t106 { background: url(/img/tile106.png); }
+.tree {
+    width: 120px;
+    height: 160px;
+    position: absolute;
+    background: url(/img/tree.png);
 }
