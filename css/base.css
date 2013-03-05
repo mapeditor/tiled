@@ -35,6 +35,21 @@ body {
     background: url(/img/tile40.png) center top;
 }
 
+/* element to fill the whole area, center contents and hide overflow */
+.my-top-box .background {
+    text-align: center;
+    position: absolute;
+    width: 100%; height: 100%;
+    overflow: hidden;
+}
+
+/* adding top/bottom shadows and relative position to make this stuff appear on top */
+.my-top-box .contents {
+     box-shadow: inset 0px 20px 10px -20px #000000, inset 0px -6px 10px -7px #000000;
+     position: relative;
+     padding-top: 10px;
+}
+
 .my-top-box .my-buttons {
     margin-top: 20px;
 }

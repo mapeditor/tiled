@@ -40,13 +40,10 @@
 
     <!-- relative position allows positioning absolute elements inside -->
     <div class="my-top-box" style="position: relative;">
-
-      <!-- element to fill the whole area, center contents and hide overflow -->
-      <div style="text-align: center; position: absolute; width: 100%; height: 100%; overflow: hidden;">
+      <div class="background">
 
         <!-- a centered 0-width inline block -->
         <div style="display: inline-block; width: 0px;">
-
           <!-- the actual map, centered on the parent by using negative offset -->
           <div style="position: relative; left: -800px; width: 1600px; height: 520px;">
 
@@ -276,10 +273,9 @@
 
           </div>
         </div>
-      </div>
 
-      <!-- adding top/bottom shadows and relative position to make this stuff appear on top -->
-      <div style="box-shadow: inset 0px 20px 10px -20px #000000, inset 0px -6px 10px -7px #000000; position: relative;">
+      </div>
+      <div class="contents">
 
       <div class="container-fluid">
         <div class="row-fluid">
