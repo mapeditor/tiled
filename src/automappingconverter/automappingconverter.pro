@@ -12,7 +12,7 @@ macx {
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
-    QMAKE_LIBDIR += $$OUT_PWD/../../lib
+    QMAKE_LIBDIR = $$OUT_PWD/../../lib $$QMAKE_LIBDIR
 }
 
 # Make sure the executable can find libtiled
