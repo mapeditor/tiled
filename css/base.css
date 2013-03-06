@@ -81,6 +81,37 @@ body {
     margin-top: 10px;
 }
 
+#footer {
+    box-shadow: inset 0px 20px 10px -20px #000000, inset 0px -5px 10px -7px #000000;
+    color: white;
+    text-shadow: 1px 1px 2px #000000;
+    margin-top: 20px;
+
+    padding-top: 20px;
+    padding-bottom: 30px;
+
+    background: #666666;
+    background-image: url('/img/grid.png');
+    background-position: center top;
+}
+
+#footer a {
+  color: #80d4ff;
+  text-decoration: none;
+}
+
+#footer a:hover {
+  text-decoration: underline;
+}
+
+#footer .tiled-copyright {
+    text-align: left;
+}
+
+#footer .attribution {
+    text-align: right;
+}
+
 @media (max-width: 767px) {
     #navbar .navbar-inner {
         min-height: 0px;
@@ -102,6 +133,14 @@ body {
         margin-right: 3%;
         margin-left: 3%;
     }
+
+    #footer .tiled-copyright {
+        text-align: left;
+    }
+
+    #footer .attribution {
+        margin-top: 10px;
+    }
 }
 
 @media (max-width: 650px) {
@@ -118,6 +157,14 @@ body {
 
     .my-box {
         border-radius: 0px;
+    }
+
+    #footer .container-fluid {
+        margin-right: 3%;
+        margin-left: 3%;
+    }
+    #footer .attribution {
+        text-align: left;
     }
 }
 
