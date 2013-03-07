@@ -4,6 +4,10 @@
     margin-top: 70px;
 }
 
+.my-top-box .lead a {
+    color: white;
+}
+
 .my-top-box .my-buttons .btn {
     display: block;
     margin-bottom: 10px;
