@@ -25,6 +25,10 @@
 .btn-large .icon-download-alt {
 }
 
+.btn-success, .btn-info {
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+}
+
 /* Override hover underline for thumbnails */
 .thumbnail:hover {
     text-decoration: none;
