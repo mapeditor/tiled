@@ -115,6 +115,10 @@ body {
         padding-right: 0px;
     }
 
+    #navbar i {
+        display: none;
+    }
+
     #navbar .nav li a {
         height: 10px;
         line-height: 10px;
@@ -155,6 +159,9 @@ body {
     #footer .container-fluid {
         margin-right: 3%;
         margin-left: 3%;
+    }
+    #footer {
+        margin-top: 0px;
     }
 }
 
