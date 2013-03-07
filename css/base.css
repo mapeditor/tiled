@@ -32,7 +32,7 @@ body {
     margin-bottom: 2em;
 
     background-color: #808080;
-    background: url(/img/tile40.png) center top;
+    background: url(img/tile40.png) center top;
 }
 
 /* element to fill the whole area, center contents and hide overflow */
@@ -91,7 +91,7 @@ body {
     padding-bottom: 30px;
 
     background: #666666;
-    background-image: url('/img/grid.png');
+    background-image: url('img/grid.png');
     background-position: center top;
 }
 
@@ -164,22 +164,22 @@ body {
     height: 40px;
     position: absolute;
 }
-.t34 { background: url(/img/tile34.png); }
-.t36 { background: url(/img/tile36.png); }
-.t38 { background: url(/img/tile38.png); }
-.t66 { background: url(/img/tile66.png); }
-.t68 { background: url(/img/tile68.png); }
-.t70 { background: url(/img/tile70.png); }
-.t72 { background: url(/img/tile72.png); }
-.t74 { background: url(/img/tile74.png); }
-.t98 { background: url(/img/tile98.png); }
-.t100 { background: url(/img/tile100.png); }
-.t102 { background: url(/img/tile102.png); }
-.t104 { background: url(/img/tile104.png); }
-.t106 { background: url(/img/tile106.png); }
+.t34 { background: url(img/tile34.png); }
+.t36 { background: url(img/tile36.png); }
+.t38 { background: url(img/tile38.png); }
+.t66 { background: url(img/tile66.png); }
+.t68 { background: url(img/tile68.png); }
+.t70 { background: url(img/tile70.png); }
+.t72 { background: url(img/tile72.png); }
+.t74 { background: url(img/tile74.png); }
+.t98 { background: url(img/tile98.png); }
+.t100 { background: url(img/tile100.png); }
+.t102 { background: url(img/tile102.png); }
+.t104 { background: url(img/tile104.png); }
+.t106 { background: url(img/tile106.png); }
 .tree {
     width: 120px;
     height: 160px;
     position: absolute;
-    background: url(/img/tree.png);
+    background: url(img/tree.png);
 }
