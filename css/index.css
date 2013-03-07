@@ -42,11 +42,28 @@ ul.thumbnails {
   margin: 0px;
 }
 
+.stepmap-banner {
+    background-color: AntiqueWhite;
+    border: 1px solid #c8a064;
+    margin: 0px auto;
+    padding: 5px;
+    max-width: 540px;
+    border-radius: 5px;
+}
+
 @media (max-width: 767px) {
     .my-top-box .my-buttons {
         margin-top: 0px;
     }
     .firstsponsor {
         display: none !important;
+    }
+}
+
+@media (max-width: 540px) {
+    .stepmap-banner {
+        border-radius: 0px;
+        border-left: none;
+        border-right: none;
     }
 }

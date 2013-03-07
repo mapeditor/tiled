@@ -1,4 +1,4 @@
-/* Base styles ago here, only stuff that should appear on every page */
+/* Base styles go here, only stuff that should appear on every page */
 
 body {
     padding-right: 0px;
@@ -104,10 +104,6 @@ body {
   text-decoration: underline;
 }
 
-#footer .tiled-copyright {
-    text-align: left;
-}
-
 #footer .attribution {
     text-align: right;
 }
@@ -134,12 +130,9 @@ body {
         margin-left: 3%;
     }
 
-    #footer .tiled-copyright {
-        text-align: left;
-    }
-
     #footer .attribution {
         margin-top: 10px;
+        text-align: left;
     }
 }
 
@@ -162,9 +155,6 @@ body {
     #footer .container-fluid {
         margin-right: 3%;
         margin-left: 3%;
-    }
-    #footer .attribution {
-        text-align: left;
     }
 }
 
