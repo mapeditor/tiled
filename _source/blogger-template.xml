@@ -156,7 +156,7 @@ URL:      tinachen.org
    <Variable name="widget.padding.side" description="Widget Padding Side" type="length" default="15px"  value="15px"/>
    <Variable name="widget.outer.margin.top" description="Widget Top Margin" type="length" default="0"  value="0"/>
    <Variable name="widget.outer.background.gradient" description="Gradient" type="url" default="none"  value="none"/>
-   <Variable name="widget.border.radius" description="Gadget Border Radius" type="length" default="0"  value="0"/>
+   <Variable name="widget.border.radius" description="Gadget Border Radius" type="length" default="0"  value="4px"/>
    <Variable name="outer.shadow.spread" description="Outer Shadow Size" type="length" default="0"  value="0"/>
 
    <Variable name="date.header.border.radius.top" description="Date Header Border Radius Top" type="length" default="0"  value="0"/>
@@ -181,7 +181,7 @@ URL:      tinachen.org
    <Variable name="separator.outdent" description="Separator Outdent" type="length" default="15px"  value="15px"/>
    <Variable name="title.separator.border.size" description="Widget Title Border Size" type="length" default="1px"  value="1px"/>
    <Variable name="list.separator.border.size" description="List Separator Border Size" type="length" default="1px"  value="1px"/>
-   <Variable name="shadow.spread" description="Shadow Size" type="length" default="0" value="20px"/>
+   <Variable name="shadow.spread" description="Shadow Size" type="length" default="0" value="5px"/>
 
    <Variable name="startSide" description="Side where text starts in blog language" type="automatic" default="left" value="left"/>
    <Variable name="endSide" description="Side where text ends in blog language" type="automatic" default="right" value="right"/>
@@ -426,10 +426,10 @@ h2 {
   padding: 0 $(widget.padding.side) 15px;
   margin: 20px -16px;
 
-  -moz-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -webkit-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -goog-ms-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
+  -moz-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  -goog-ms-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
 
   -moz-border-radius: $(widget.border.radius);
   -webkit-border-radius: $(widget.border.radius);
@@ -582,12 +582,11 @@ body .main-inner .Blog {
   padding: 0 15px;
 
   background-color: $(post.background.color);
-  border: 1px solid $(post.border.color);
 
-  -moz-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -webkit-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -goog-ms-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
+  -moz-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  -goog-ms-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
 
   -moz-border-radius: $(widget.border.radius);
   -webkit-border-radius: $(widget.border.radius);
@@ -695,10 +694,10 @@ h3.post-title a:hover {
   background-color: $(pager.background.color);
   border: 1px solid $(widget.border.color);
 
-  -moz-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -webkit-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -goog-ms-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
+  -moz-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  -goog-ms-box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
+  box-shadow: 1px 1px $(shadow.spread) rgba(0, 0, 0, .5);
 
   -moz-border-radius: $(widget.border.radius);
   -webkit-border-radius: $(widget.border.radius);
@@ -934,17 +933,17 @@ body.mobile {
 ]]></b:skin>
 
     <b:template-skin>
-      <b:variable default='960px' name='content.width' type='length' value='860px'/>
+      <b:variable default='960px' name='content.width' type='length' value='1170px'/>
       <b:variable default='0' name='main.column.left.width' type='length' value='0px'/>
       <b:variable default='310px' name='main.column.right.width' type='length' value='260px'/>
 
       <![CDATA[
       body {
-        min-width: $(content.width);
+        min-width: 860px;
       }
 
       .content-outer, .content-fauxcolumn-outer, .region-inner {
-        min-width: $(content.width);
+        min-width: 860px;
         max-width: $(content.width);
         _width: $(content.width);
       }
