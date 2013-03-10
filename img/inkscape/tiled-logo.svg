@@ -64,17 +64,51 @@
          stdDeviation="3.616818"
          inkscape:collect="always" />
     </filter>
+    <linearGradient
+       y2="122.36218"
+       x2="301.22604"
+       y1="122.36218"
+       x1="34.293228"
+       gradientTransform="translate(170.53831,664.82299)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3882-6"
+       xlink:href="#linearGradient3770"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient3770">
+      <stop
+         id="stop3772"
+         offset="0"
+         style="stop-color:#e6e6e6;stop-opacity:1;" />
+      <stop
+         id="stop3774"
+         offset="1"
+         style="stop-color:#a1a1a1;stop-opacity:1;" />
+    </linearGradient>
+    <filter
+       color-interpolation-filters="sRGB"
+       height="1.3034008"
+       y="-0.15170041"
+       width="1.1985166"
+       x="-0.099258281"
+       id="filter3831-7"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur3833-1"
+         stdDeviation="11.039705"
+         inkscape:collect="always" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#7a7a7a"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="1"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="235.52611"
-     inkscape:cy="82.068606"
+     inkscape:cx="150.02611"
+     inkscape:cy="-49.822987"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -84,8 +118,8 @@
      fit-margin-bottom="0"
      inkscape:window-width="1341"
      inkscape:window-height="683"
-     inkscape:window-x="126"
-     inkscape:window-y="131"
+     inkscape:window-x="465"
+     inkscape:window-y="280"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata4293">
@@ -95,7 +129,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -147,5 +181,29 @@
        id="path4640"
        style="fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 357.03409,566.98945 57,-29.625 m -96.375,-6 55.75,-25.875 m -90.25,-5.75 55,-22.5 m 0.25,0.125 -32.875,-26.125 m -53.75,19.75 31.625,28.625 m -90.61586,-6.53654 159.09903,-59.04342 33.94113,23.68808 -47.7297,19.62221 121.62235,96.52008 -57.27564,34.82501 -119.14749,-108.89445 -60.45764,25.10229 z" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:connector-curvature="0"
+       id="path4523-7"
+       style="opacity:0.7;fill:#232323;fill-opacity:1;stroke:none;filter:url(#filter3831-7)"
+       d="m 368.0724,843.81244 57,-29.625 m -96.375,-6 55.75,-25.875 m -90.25,-5.75 55,-22.5 m 0.25,0.125 -32.875,-26.125 m -53.75,19.75 31.625,28.625 m -90.61586,-6.53654 159.09902,-59.04342 33.94113,23.68808 -47.7297,19.62221 121.62236,96.52008 -57.27565,34.82501 -119.14749,-108.89445 -60.45764,25.10229 z"
+       inkscape:export-filename="/home/bjorn/projects/bootstrap/img/tiled-logo-grayscale.png" />
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       d="m 369.0724,832.81244 57,-29.625 m -96.375,-6 55.75,-25.875 m -90.25,-5.75 55,-22.5 m 0.25,0.125 -32.875,-26.125 m -53.75,19.75 31.625,28.625 m -90.61586,-6.53654 159.09902,-59.04342 33.94113,23.68808 -47.7297,19.62221 121.62236,96.52008 -57.27565,34.82501 -119.14749,-108.89445 -60.45764,25.10229 z"
+       style="opacity:0.8;fill:url(#linearGradient3882-6);fill-opacity:1;stroke:none"
+       id="path4519-6"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/bjorn/projects/bootstrap/img/tiled-logo-grayscale.png" />
+    <path
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       d="m 364.22581,697.60424 -1,0.375 -159.09375,59.03125 -2.84375,1.0625 2.09375,2.1875 30.0625,31.84375 0.9375,1 1.28125,-0.53125 59.28125,-24.625 118.1875,108.03125 1.125,1.03125 1.28125,-0.78125 57.25,-34.84375 2.46875,-1.46875 -2.25,-1.78125 -118.96875,-94.40625 44.59375,-18.34375 3.375,-1.375 -3,-2.09375 -33.9375,-23.6875 -0.84375,-0.625 z m -0.59375,4.5 30.0625,21 -43.0625,17.6875 -29.0625,-23.09375 42.0625,-15.59375 z m -46.4375,17.21875 29.125,23.15625 -50.4375,20.625 -28.125,-25.4375 49.4375,-18.34375 z m -53.65625,19.90625 28.3125,25.65625 -56.4375,23.46875 -27.0625,-28.625 55.1875,-20.5 z m 86.21875,6.1875 32.03125,25.40625 -51.59375,23.9375 -31.25,-28.5625 50.8125,-20.78125 z m 35.53125,28.1875 36.9375,29.34375 -52.96875,27.53125 -35.84375,-32.78125 51.875,-24.09375 z m 40.375,32.0625 42.59375,33.8125 -53.53125,32.53125 -42.3125,-38.6875 53.25,-27.65625 z"
+       id="path4640"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/bjorn/projects/bootstrap/img/tiled-logo-grayscale.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>
