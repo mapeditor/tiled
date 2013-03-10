@@ -3,11 +3,7 @@
 <html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
   <head>
     <meta content='IE=EmulateIE7' http-equiv='X-UA-Compatible'/>
-    <b:if cond='data:blog.isMobile'>
-      <meta content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0' name='viewport'/>
-    <b:else/>
-      <meta content='width=1100' name='viewport'/>
-    </b:if>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <b:include data='blog' name='all-head-content'/>
     <title><data:blog.pageTitle/></title>
 
@@ -131,8 +127,8 @@ URL:      tinachen.org
    </Group>
 
    <Group description="Footer" selector=".footer-outer">
-     <Variable name="footer.background.color" description="Background Color" type="color" default="$(widget.background.color)"  value="$(widget.background.color)"/>
-     <Variable name="footer.text.color" description="Text Color" type="color" default="$(body.text.color)"  value="$(body.text.color)"/>
+     <Variable name="footer.background.color" description="Background Color" type="color" default="$(widget.background.color)"  value="#666666"/>
+     <Variable name="footer.text.color" description="Text Color" type="color" default="$(body.text.color)"  value="#FFF"/>
    </Group>
 
    <Variable name="title.shadow.spread" description="Title Shadow" type="length" default="-1px" value="0"/>
@@ -148,7 +144,7 @@ URL:      tinachen.org
        default="none" value="url(//www.blogblog.com/1kt/awesomeinc/tabs_gradient_light.png)"/>
 
    <Variable name="header.background.gradient" description="Header Background Gradient" type="url" default="none"  value="none"/>
-   <Variable name="header.padding.top" description="Header Top Padding" type="length" default="22px"  value="22px"/>
+   <Variable name="header.padding.top" description="Header Top Padding" type="length" default="22px"  value="42px"/>
    <Variable name="header.margin.top" description="Header Top Margin" type="length" default="0"  value="0"/>
    <Variable name="header.margin.bottom" description="Header Bottom Margin" type="length" default="0"  value="0"/>
 
@@ -244,6 +240,10 @@ a:hover {
 ----------------------------------------------- */
 .content-inner {
   padding: 0;
+}
+
+#header-inner {
+  margin-left: 170px;
 }
 
 .header-inner .section {
@@ -758,22 +758,24 @@ h3.post-title a:hover {
 /* Footer
 ----------------------------------------------- */
 .footer-outer {
-  margin: -$(shadow.spread) 0 -1px;
-  padding: $(shadow.spread) 0 0;
+  background: $(footer.background.color) url(//github.mapeditor.org/img/grid.png) center top;
+
+  -moz-box-shadow: inset 0px 20px 10px -20px #000000;
+  -webkit-box-shadow: inset 0px 20px 10px -20px #000000;
+  -goog-ms-box-shadow: inset 0px 20px 10px -20px #000000;
+  box-shadow: inset 0px 20px 10px -20px #000000;
+
   color: $(footer.text.color);
+  text-shadow: 1px 1px 2px #000000;
+
   overflow: hidden;
 }
 
+.footer-outer a {
+  color: #80d4ff;
+}
+
 .footer-fauxborder-left {
-  border-top: 1px solid $(widget.border.color);
-  background: $(footer.background.color) $(footer.background.gradient) repeat scroll 0 0;
-
-  -moz-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -webkit-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  -goog-ms-box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-  box-shadow: 0 0 $(shadow.spread) rgba(0, 0, 0, .2);
-
-  margin: 0 -$(shadow.spread);
 }
 
 /* Mobile
@@ -1068,9 +1070,12 @@ body.mobile {
     <div class='fauxborder-left header-fauxborder-left'>
     <div class='fauxborder-right header-fauxborder-right'/>
     <div class='region-inner header-inner'>
+      <!-- insert logo image -->
+      <div style="width: 0; height: 0;"><img src="http://github.mapeditor.org/img/tiled-logo-grayscale.png" style="margin-left: -70px; margin-top: -10px;" /></div>
       <b:section class='header' id='header' maxwidgets='1' showaddelement='no'>
 <b:widget id='Header1' locked='true' title='The Mana Project (Header)' type='Header'/>
 </b:section>
+      <div style="margin-left: 230px; font-size: 20px; color: #666">Development Blog</div>
     </div>
     </div>
     <div class='header-cap-bottom cap-bottom'>
