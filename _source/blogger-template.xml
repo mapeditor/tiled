@@ -1193,7 +1193,7 @@ a.btn { color: #333333; }
     <div class='fauxborder-right header-fauxborder-right'/>
     <div class='region-inner header-inner'>
       <!-- insert logo image -->
-      <div style='width: 0; height: 0;'><img src='/img/tiled-logo-outlined.png' style='margin-left: -70px; margin-top: -10px;'/></div>
+      <div style='width: 0; height: 0;'><img src='/img/tiled-logo-grayscale.png' style='margin-left: -70px; margin-top: -10px;'/></div>
       <div id="website-button"><a class="btn btn-large" href="http://github.mapeditor.org/"><img src="/img/font-awesome-home.png" height="14"/> Tiled Homepage</a></div>
       <b:section class='header' id='header' maxwidgets='1' showaddelement='no'>
 <b:widget id='Header1' locked='true' title='Tiled Map Editor (Header)' type='Header'/>
