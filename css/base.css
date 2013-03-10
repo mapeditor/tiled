@@ -91,7 +91,7 @@ body {
     padding-bottom: 30px;
 
     background: #666666;
-    background-image: url('/img/grid.png');
+    background-image: url(/img/grid.png);
     background-position: center top;
 }
 
