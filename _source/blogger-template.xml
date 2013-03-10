@@ -3,7 +3,7 @@
 <html b:version='2' class='v2' expr:dir='data:blog.languageDirection' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
   <head>
     <meta content='IE=EmulateIE7' http-equiv='X-UA-Compatible'/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
     <b:include data='blog' name='all-head-content'/>
     <title><data:blog.pageTitle/></title>
 
@@ -23,11 +23,11 @@ URL:      tinachen.org
      <Variable name="body.font" description="Font" type="font"
          default="normal normal 13px Arial, Tahoma, Helvetica, FreeSans, sans-serif" value="normal normal 14px 'Helvetica Neue',Helvetica,Arial,sans-serif;"/>
      <Variable name="body.background.color" description="Background Color" type="color" default="#000000" value="#e8e8e8"/>
-     <Variable name="body.text.color" description="Text Color" type="color" default="#ffffff" value="#333"/>
+     <Variable name="body.text.color" description="Text Color" type="color" default="#ffffff" value="#333333"/>
    </Group>
 
    <Group description="Links" selector=".main-inner">
-     <Variable name="link.color" description="Link Color" type="color" default="#888888" value="#08c"/>
+     <Variable name="link.color" description="Link Color" type="color" default="#888888" value="#0088cc"/>
      <Variable name="link.visited.color" description="Visited Color" type="color" default="#444444" value="$(link.color)"/>
      <Variable name="link.hover.color" description="Hover Color" type="color" default="#cccccc" value="$(link.color)"/>
    </Group>
@@ -62,7 +62,7 @@ URL:      tinachen.org
    <Group description="Date Header" selector=".main-inner .widget h2.date-header, .main-inner .widget h2.date-header span">
      <Variable name="date.font" description="Font" type="font"
          default="normal normal 14px Arial, Tahoma, Helvetica, FreeSans, sans-serif" value="$(body.font)"/>
-     <Variable name="date.text.color" description="Text Color" type="color" default="#666666" value="#777"/>
+     <Variable name="date.text.color" description="Text Color" type="color" default="#666666" value="#777777"/>
      <Variable name="date.border.color" description="Border Color" type="color" default="$(widget.border.color)" value="$(widget.border.color)"/>
    </Group>
 
@@ -128,7 +128,7 @@ URL:      tinachen.org
 
    <Group description="Footer" selector=".footer-outer">
      <Variable name="footer.background.color" description="Background Color" type="color" default="$(widget.background.color)"  value="#666666"/>
-     <Variable name="footer.text.color" description="Text Color" type="color" default="$(body.text.color)"  value="#FFF"/>
+     <Variable name="footer.text.color" description="Text Color" type="color" default="$(body.text.color)"  value="#FFFFFF"/>
    </Group>
 
    <Variable name="title.shadow.spread" description="Title Shadow" type="length" default="-1px" value="0"/>
@@ -938,7 +938,7 @@ body.mobile {
     <b:template-skin>
       <b:variable default='960px' name='content.width' type='length' value='1170px'/>
       <b:variable default='0' name='main.column.left.width' type='length' value='0px'/>
-      <b:variable default='310px' name='main.column.right.width' type='length' value='300px'/>
+      <b:variable default='310px' name='main.column.right.width' type='length' value='320px'/>
 
       <![CDATA[
       body {
@@ -1071,11 +1071,11 @@ body.mobile {
     <div class='fauxborder-right header-fauxborder-right'/>
     <div class='region-inner header-inner'>
       <!-- insert logo image -->
-      <div style="width: 0; height: 0;"><img src="http://github.mapeditor.org/img/tiled-logo-grayscale.png" style="margin-left: -70px; margin-top: -10px;" /></div>
+      <div style='width: 0; height: 0;'><img src='http://github.mapeditor.org/img/tiled-logo-grayscale.png' style='margin-left: -70px; margin-top: -10px;'/></div>
       <b:section class='header' id='header' maxwidgets='1' showaddelement='no'>
-<b:widget id='Header1' locked='true' title='The Mana Project (Header)' type='Header'/>
+<b:widget id='Header1' locked='true' title='Tiled Map Editor (Header)' type='Header'/>
 </b:section>
-      <div style="margin-left: 230px; font-size: 20px; color: #666">Development Blog</div>
+      <div style='margin-left: 230px; font-size: 20px; color: #666'>Development Blog</div>
     </div>
     </div>
     <div class='header-cap-bottom cap-bottom'>
@@ -1302,4 +1302,5 @@ body.mobile {
 
 <b:section-contents id='sidebar-right-1'>
 <b:widget id='BlogArchive1' locked='false' title='Blog Archive' type='BlogArchive'/>
+<b:widget id='PlusFollowers1' locked='false' title='Google+ Followers' type='PlusFollowers'/>
 </b:section-contents><b:section-contents id='footer-1'/><b:section-contents id='footer-2-1'/><b:section-contents id='footer-2-2'/></html>
