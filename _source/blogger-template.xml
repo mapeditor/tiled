@@ -1302,5 +1302,4 @@ body.mobile {
 
 <b:section-contents id='sidebar-right-1'>
 <b:widget id='BlogArchive1' locked='false' title='Blog Archive' type='BlogArchive'/>
-<b:widget id='PlusFollowers1' locked='false' title='Google+ Followers' type='PlusFollowers'/>
 </b:section-contents><b:section-contents id='footer-1'/><b:section-contents id='footer-2-1'/><b:section-contents id='footer-2-2'/></html>
