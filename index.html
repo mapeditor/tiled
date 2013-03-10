@@ -326,33 +326,33 @@
           <div class="my-box">
             <ul class="thumbnails screenshots">
               <li class="span4">
-                <a href="img/tiled-qt-screenshot-5.png"  class="thumbnail fancybox" rel="gallery" data-title-id="title-1">
-                  <div style="height: 200px; background-image: url(img/tiled-qt-screenshot-5-cropped.png); background-position: center;"></div>
+                <a href="img/screenshot-terrain.png"  class="thumbnail fancybox" rel="gallery" data-title-id="title-1">
+                  <div style="height: 200px; background-image: url(img/screenshot-terrain-thumb.png); background-position: center;"></div>
                 </a>
                 <div id="title-1" class="hidden">
-                    The terrain tool automates placement of transition tiles. This example uses tiles from the <a href="http://lpc.opengameart.org/">Liberated Pixel Cup</a>.
+                    The terrain tool automates placement of transition tiles. This example uses tiles from the <a href="http://lpc.opengameart.org/">Liberated Pixel Cup</a> <small>(CC-BY-SA 3.0 & GPLv3)</small>.
                 </div>
                 <div class="caption">
                   <p>Efficient tile editing tools like <strong>stamp</strong>, <strong>fill</strong> and <strong>terrain</strong> brushes.</p>
                 </div>
               </li>
               <li class="span4">
-                <a href="img/objects-small.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-2">
-                  <div style="height: 200px; background-image: url(img/objects-small-cropped.png); background-position: center;"></div>
+                <a href="img/screenshot-objects.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-2">
+                  <div style="height: 200px; background-image: url(img/screenshot-objects-thumb.png); background-position: center;"></div>
                 </a>
                 <div id="title-2" class="hidden">
-                    This is <b>2nd title</b>. <a href="http://google.com">Some link</a>
+                    Demonstrating support for custom objects alongside a tile map with background image. Graphics from <a href="http://www.spicypixel.net/2008/01/10/gfxlib-fuzed-a-free-developer-graphic-library/">GfxLib-Fuzed</a> <small>(CPL)</small>.
                 </div>
                 <div class="caption">
                   <p><strong>Rectangle</strong>, <strong>ellipse</strong>, <strong>polygon</strong> and <strong>image</strong> objects can be placed with pixel precision.</p>
                 </div>
               </li>
               <li class="span4">
-                <a href="img/tiled-qt-screenshot-4.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-3">
-                  <div style="height: 200px; background-image: url(img/tiled-qt-screenshot-4-cropped.png); background-position: center;"></div>
+                <a href="img/screenshot-isometric.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-3">
+                  <div style="height: 200px; background-image: url(img/screenshot-isometric-thumb.png); background-position: center;"></div>
                 </a>
                 <div id="title-3" class="hidden">
-                    This is <b>3rd title</b>. <a href="http://google.com">Some link</a>
+                    An isometric map with a custom object, showing object shapes are projected as well. The tiles are by <a href="http://opengameart.org/content/grass-and-water-tiles">Clint Bellanger</a> <small>(CC-BY 3.0)</small>.
                 </div>
                 <div class="caption">
                   <p>Supports <strong>orthogonal</strong>, <strong>isometric</strong> and <strong>staggered</strong> maps.</p>
@@ -415,40 +415,9 @@
     <script src="scripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="/scripts/jquery.fancybox.pack.js?v=2.1.4"></script>
     <script type="text/javascript">
-        (function ($, F) {
-            F.transitions.resizeIn = function() {
-                var previous = F.previous,
-                    current  = F.current,
-                    startPos = previous.wrap.stop(true).position(),
-                    endPos   = $.extend({opacity : 1}, current.pos);
-
-                startPos.width  = previous.wrap.width();
-                startPos.height = previous.wrap.height();
-
-                previous.wrap.stop(true).trigger('onReset').remove();
-
-                delete endPos.position;
-
-                current.inner.hide();
-
-                current.wrap.css(startPos).animate(endPos, {
-                    duration : current.nextSpeed,
-                    easing   : current.nextEasing,
-                    step     : F.transitions.step,
-                    complete : function() {
-                        F._afterZoomIn();
-
-                        current.inner.fadeIn("fast");
-                    }
-                });
-            };
-
-        }(jQuery, jQuery.fancybox));
-
         $(".fancybox").attr('rel', 'gallery').fancybox({
-            nextMethod: 'resizeIn',
-            nextSpeed: 250,
-            prevMethod: false,
+            nextEffect: 'fade',
+            prevEffect: 'fade',
             helpers : {
                 title: {
                     type: 'inside'
