@@ -41,9 +41,9 @@ URL:      tinachen.org
 
    <Group description="Blog Description" selector=".header .description">
      <Variable name="description.font" description="Font" type="font"
-         default="normal normal 14px Arial, Tahoma, Helvetica, FreeSans, sans-serif" value="normal normal 14px Arial, Tahoma, Helvetica, FreeSans, sans-serif"/>
+         default="normal normal 14px Arial, Tahoma, Helvetica, FreeSans, sans-serif" value="$(body.font)"/>
      <Variable name="description.text.color" description="Text Color" type="color"
-         default="$(body.text.color)"  value="$(body.text.color)"/>
+         default="$(body.text.color)"  value="#666666"/>
    </Group>
 
    <Group description="Tabs Text" selector=".tabs-inner .widget li a">
@@ -291,6 +291,8 @@ a:hover {
 
 .Header .description {
   font: $(description.font);
+  margin-left: 40px;
+  font-size: 20px;
   color: $(description.text.color);
 }
 
@@ -1194,11 +1196,10 @@ a.btn { color: #333333; }
     <div class='region-inner header-inner'>
       <!-- insert logo image -->
       <div style='width: 0; height: 0;'><img src='/img/tiled-logo-grayscale.png' style='margin-left: -70px; margin-top: -10px;'/></div>
-      <div id="website-button"><a class="btn btn-large" href="http://github.mapeditor.org/"><img src="/img/font-awesome-home.png" height="14"/> Tiled Homepage</a></div>
+      <div id='website-button'><a class='btn btn-large' href='http://github.mapeditor.org/'><img height='14' src='/img/font-awesome-home.png'/> Tiled Homepage</a></div>
       <b:section class='header' id='header' maxwidgets='1' showaddelement='no'>
 <b:widget id='Header1' locked='true' title='Tiled Map Editor (Header)' type='Header'/>
 </b:section>
-      <div style='margin-left: 230px; font-size: 20px; color: #666'>Development Blog</div>
     </div>
     </div>
     <div class='header-cap-bottom cap-bottom'>
