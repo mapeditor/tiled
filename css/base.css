@@ -21,9 +21,6 @@ body {
 
 .my-navigation .btn {
     margin-bottom: 0.5em;
-    /*
-    box-shadow: none;
-    */
     border: 1px solid gray;
 }
 
@@ -82,7 +79,7 @@ body {
 }
 
 #footer {
-    box-shadow: inset 0px 20px 10px -20px #000000, inset 0px -5px 10px -7px #000000;
+    box-shadow: inset 0px 20px 10px -20px #000000;
     color: white;
     text-shadow: 1px 1px 2px #000000;
     margin-top: 20px;
