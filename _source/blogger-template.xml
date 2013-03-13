@@ -945,6 +945,11 @@ body.mobile {
     position: relative;
 }
 
+.sidebar .PlusBadge {
+    padding: 15px;
+    height: 136px;
+}
+
 /* Copied from Bootstrap
 ----------------------------------------------- */
 
@@ -1196,7 +1201,7 @@ a.btn { color: #333333; }
     <div class='region-inner header-inner'>
       <!-- insert logo image -->
       <div style='width: 0; height: 0;'><img src='/img/tiled-logo-grayscale.png' style='margin-left: -70px; margin-top: -10px;'/></div>
-      <div id='website-button'><a class='btn btn-large' href='http://github.mapeditor.org/'><img height='14' src='/img/font-awesome-home.png'/> Tiled Homepage</a></div>
+      <div id='website-button'><a class='btn btn-large' href='http://www.mapeditor.org/'><img height='14' src='/img/font-awesome-home.png'/> Tiled Homepage</a></div>
       <b:section class='header' id='header' maxwidgets='1' showaddelement='no'>
 <b:widget id='Header1' locked='true' title='Tiled Map Editor (Header)' type='Header'/>
 </b:section>
@@ -1425,5 +1430,6 @@ a.btn { color: #333333; }
 </macro:includable>
 
 <b:section-contents id='sidebar-right-1'>
+<b:widget id='PlusBadge1' locked='false' title='Google+ Badge' type='PlusBadge'/>
 <b:widget id='BlogArchive1' locked='false' title='Blog Archive' type='BlogArchive'/>
 </b:section-contents><b:section-contents id='footer-1'/><b:section-contents id='footer-2-1'/><b:section-contents id='footer-2-2'/></html>
