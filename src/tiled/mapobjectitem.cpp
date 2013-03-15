@@ -277,6 +277,7 @@ void MapObjectItem::paint(QPainter *painter,
         QLineF bottom(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight());
 
         QPen dashPen(Qt::DashLine);
+        dashPen.setWidth(0);
         dashPen.setDashOffset(qMax(qreal(0), x()));
         painter->setPen(dashPen);
         painter->drawLines(QVector<QLineF>() << top << bottom);

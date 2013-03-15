@@ -169,7 +169,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     gridColor.setAlpha(128);
 
-    QPen gridPen(gridColor);
+    QPen gridPen(gridColor, 0);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
 
     if (startY < endY) {
@@ -304,6 +304,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
         if (testFlag(ShowTileObjectOutlines)) {
             QPen pen(Qt::SolidLine);
+            pen.setWidth(0);
             painter->setPen(pen);
             painter->drawRect(QRect(paintOrigin, img.size()));
             pen.setStyle(Qt::DotLine);
