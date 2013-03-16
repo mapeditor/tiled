@@ -1,8 +1,5 @@
 build
-bin/automappingconverter
-bin/tiled
-bin/tmxrasterizer
-bin/tmxviewer
+bin
 lib/tiled/plugins/*
 lib/*.so*
 Makefile*
@@ -26,6 +23,9 @@ automappingconverter.exe
 *.lib
 *.exp
 *.intermediate.manifest
+
+# Build artifacts on Mac
+translations/phony_target.app
 
 tests/test_mapreader
 

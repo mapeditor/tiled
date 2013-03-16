@@ -1227,7 +1227,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+134"/>
         <location line="+54"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Duplicate Object</numerusform>
             <numerusform>Duplicate %n Objects</numerusform>
         </translation>
@@ -1236,7 +1236,7 @@ Line %1, column %2</source>
         <location line="-53"/>
         <location line="+71"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Remove Object</numerusform>
             <numerusform>Remove %n Objects</numerusform>
         </translation>
@@ -1245,7 +1245,7 @@ Line %1, column %2</source>
         <location line="-62"/>
         <location line="+72"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Move Object to Layer</numerusform>
             <numerusform>Move %n Objects to Layer</numerusform>
         </translation>
@@ -1605,18 +1605,18 @@ Line %1, column %2</source>
     <message numerus="yes">
         <location line="+210"/>
         <source>Move %n Point(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Move Point</numerusform>
+            <numerusform>Move %n Points</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Delete Node</numerusform>
+            <numerusform>Delete %n Nodes</numerusform>
         </translation>
     </message>
     <message>
@@ -2313,7 +2313,7 @@ Please select specific format.</source>
         <location line="+17"/>
         <location line="+20"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Move Object to Layer</numerusform>
             <numerusform>Move %n Objects to Layer</numerusform>
         </translation>
@@ -2322,7 +2322,7 @@ Please select specific format.</source>
         <location line="-26"/>
         <location line="+47"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Duplicate Object</numerusform>
             <numerusform>Duplicate %n Objects</numerusform>
         </translation>
@@ -2331,7 +2331,7 @@ Please select specific format.</source>
         <location line="-46"/>
         <location line="+70"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Remove Object</numerusform>
             <numerusform>Remove %n Objects</numerusform>
         </translation>

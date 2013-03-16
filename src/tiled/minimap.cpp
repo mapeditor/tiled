@@ -163,6 +163,11 @@ void MiniMap::updateImageRect()
     mImageRect = imageRect;
 }
 
+static bool objectLessThan(const MapObject *a, const MapObject *b)
+{
+    return a->y() < b->y();
+}
+
 void MiniMap::renderMapToImage()
 {
     if (!mMapDocument) {
@@ -222,7 +227,12 @@ void MiniMap::renderMapToImage()
         if (tileLayer && drawTiles) {
             renderer->drawTileLayer(&painter, tileLayer);
         } else if (objGroup && drawObjects) {
-            foreach (const MapObject *object, objGroup->objects()) {
+            QList<MapObject*> objects = objGroup->objects();
+
+            // Objects are always drawn top to bottom at the moment
+            qStableSort(objects.begin(), objects.end(), objectLessThan);
+
+            foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
                     const QColor color = MapObjectItem::objectColor(object);
                     renderer->drawMapObject(&painter, object, color);

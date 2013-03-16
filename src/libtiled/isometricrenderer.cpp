@@ -141,7 +141,7 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     gridColor.setAlpha(128);
 
-    QPen gridPen(gridColor);
+    QPen gridPen(gridColor, 0);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
     painter->setPen(gridPen);
 
@@ -271,7 +271,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 {
     painter->save();
 
-    QPen pen(Qt::black);
+    QPen pen(Qt::black, 0);
 
     if (!object->cell().isEmpty()) {
         const Tile *tile = object->cell().tile;
