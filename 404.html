@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Page Not Found</title>
+    </head>
+    <body>
+        <h2>Page could not be found</h2>
+        <p>This domain used to host the blog, which has been moved to
+           <a href="http://blog.mapeditor.org">http://blog.mapeditor.org/</a>.
+           If you're trying to read a blog article, you should be able to
+           find it at <a id="link" href=""></a>.
+        </p>
+        <p><a href=""></a></p>
+        <script type="text/javascript">
+            var url = document.location.href;
+            url = url.replace(/www.mapeditor.org/g, "blog.mapeditor.org")
+
+            var link = document.getElementById("link");
+            link.setAttribute("href", url);
+            link.innerText = url;
+        </script>
+    </body>
+</html>
