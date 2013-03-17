@@ -19,7 +19,7 @@
 
    var link = document.getElementById("link");
    link.setAttribute("href", url);
-   link.innerText = url;
+   link.appendChild(document.createTextNode(url));
   </script>
  </body>
 </html>
