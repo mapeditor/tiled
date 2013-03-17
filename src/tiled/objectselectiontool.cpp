@@ -30,14 +30,148 @@
 #include "movemapobject.h"
 #include "objectgroup.h"
 #include "preferences.h"
+#include "rotatemapobject.h"
 #include "selectionrectangle.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QUndoStack>
+#include <QGraphicsView>
+
+#include <cmath>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+namespace Tiled {
+namespace Internal {
+
+/**
+ * Rotation origin indicator.
+ */
+class RotationOriginIndicator : public QGraphicsItem
+{
+public:
+    RotationOriginIndicator(QGraphicsItem *parent = 0)
+        : QGraphicsItem(parent)
+    {
+        setFlags(QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
+        setZValue(10000 + 1);
+        setOpacity(0.5);
+    }
+
+    QRectF boundingRect() const { return QRectF(-9, -9, 18, 18); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+    {
+        static const QLine lines[] = {
+            QLine(-8,0, 8,0),
+            QLine(0,-8, 0,8),
+        };
+        painter->setPen(QPen(Qt::DashLine));
+        painter->drawLines(lines, sizeof(lines) / sizeof(lines[0]));
+    }
+};
+
+enum Corner {
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight
+};
+
+static QPainterPath createArrow()
+{
+    const qreal arrowHeadPos = 10;
+    const qreal arrowHeadLength = 4;
+    const qreal arrowHeadWidth = 4;
+    const qreal arcWidth = 2;
+    const qreal outerArcSize = arrowHeadPos + arcWidth - arrowHeadLength;
+    const qreal innerArcSize = arrowHeadPos - arcWidth - arrowHeadLength;
+
+    QPainterPath path;
+    path.moveTo(arrowHeadPos, 0);
+    path.lineTo(arrowHeadPos + arrowHeadWidth, arrowHeadLength);
+    path.lineTo(arrowHeadPos + arcWidth, arrowHeadLength);
+    path.arcTo(QRectF(arrowHeadLength - outerArcSize,
+                      arrowHeadLength - outerArcSize,
+                      outerArcSize * 2,
+                      outerArcSize * 2),
+               0, -90);
+    path.lineTo(arrowHeadLength, arrowHeadPos + arrowHeadWidth);
+    path.lineTo(0, arrowHeadPos);
+    path.lineTo(arrowHeadLength, arrowHeadPos - arrowHeadWidth);
+    path.lineTo(arrowHeadLength, arrowHeadPos - arcWidth);
+    path.arcTo(QRectF(arrowHeadLength - innerArcSize,
+                      arrowHeadLength - innerArcSize,
+                      innerArcSize * 2,
+                      innerArcSize * 2),
+               -90, 90);
+    path.lineTo(arrowHeadPos - arrowHeadWidth, arrowHeadLength);
+    path.closeSubpath();
+
+    path.translate(-3, -3);
+
+    return path;
+}
+
+/**
+ * Corner rotation handle.
+ */
+class CornerHandle : public QGraphicsItem
+{
+public:
+    CornerHandle(Corner corner, QGraphicsItem *parent = 0)
+        : QGraphicsItem(parent)
+    {
+        setFlags(QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
+        setOpacity(0.5);
+        setAcceptHoverEvents(true);
+        setZValue(10000 + 1);
+
+        switch (corner) {
+        case TopLeft:       setRotation(180);   break;
+        case TopRight:      setRotation(-90);   break;
+        case BottomLeft:    setRotation(90);    break;
+        case BottomRight:   break;
+        }
+    }
+
+    QRectF boundingRect() const { return mArrow.boundingRect(); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *) { setOpacity(1); }
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) { setOpacity(0.5); }
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+private:
+    static const QPainterPath mArrow;
+};
+
+const QPainterPath CornerHandle::mArrow = createArrow();
+
+void CornerHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                           QWidget *)
+{
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(Qt::white);
+    painter->drawPath(mArrow);
+}
+
+QVariant CornerHandle::itemChange(GraphicsItemChange change,
+                                  const QVariant &value)
+{
+    if (change == ItemVisibleHasChanged) {
+        if (value.toBool())
+            setOpacity(isUnderMouse() ? 1 : 0.5);
+    }
+    return QGraphicsItem::itemChange(change, value);
+}
+
+} // namespace Internal
+} // namespace Tiled
 
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     : AbstractObjectTool(tr("Select Objects"),
@@ -45,15 +179,56 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
           QKeySequence(tr("S")),
           parent)
     , mSelectionRectangle(new SelectionRectangle)
+    , mRotationOriginIndicator(new RotationOriginIndicator)
     , mMousePressed(false)
     , mClickedObjectItem(0)
+    , mClickedCornerHandle(0)
     , mMode(NoMode)
 {
+    for (int i = 0; i < 4; ++i)
+        mCornerHandles[i] = new CornerHandle(static_cast<Corner>(i));
 }
 
 ObjectSelectionTool::~ObjectSelectionTool()
 {
     delete mSelectionRectangle;
+    delete mRotationOriginIndicator;
+
+    for (int i = 0; i < 4; ++i)
+        delete mCornerHandles[i];
+}
+
+void ObjectSelectionTool::activate(MapScene *scene)
+{
+    AbstractObjectTool::activate(scene);
+
+    updateHandles();
+
+    connect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
+            this, SLOT(updateHandles()));
+    connect(scene, SIGNAL(selectedObjectItemsChanged()),
+            this, SLOT(updateHandles()));
+
+    connect(mapDocument(), SIGNAL(objectsRemoved(QList<MapObject*>)),
+            this, SLOT(objectsRemoved(QList<MapObject*>)));
+
+    scene->addItem(mRotationOriginIndicator);
+    for (int i = 0; i < 4; ++i)
+        scene->addItem(mCornerHandles[i]);
+}
+
+void ObjectSelectionTool::deactivate(MapScene *scene)
+{
+    scene->removeItem(mRotationOriginIndicator);
+    for (int i = 0; i < 4; ++i)
+        scene->removeItem(mCornerHandles[i]);
+
+    disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
+               this, SLOT(updateHandles()));
+    disconnect(scene, SIGNAL(selectedObjectItemsChanged()),
+               this, SLOT(updateHandles()));
+
+    AbstractObjectTool::deactivate(scene);
 }
 
 void ObjectSelectionTool::mouseEntered()
@@ -70,6 +245,8 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         if (dragDistance >= QApplication::startDragDistance()) {
             if (mClickedObjectItem)
                 startMoving();
+            else if (mClickedCornerHandle)
+                startRotating();
             else
                 startSelecting();
         }
@@ -82,9 +259,19 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     case Moving:
         updateMovingItems(pos, modifiers);
         break;
+    case Rotating:
+        updateRotatingItems(pos, modifiers);
+        break;
     case NoMode:
         break;
     }
+}
+
+static QGraphicsView *findView(QGraphicsSceneEvent *event)
+{
+    if (QWidget *viewport = event->widget())
+        return qobject_cast<QGraphicsView*>(viewport->parent());
+    return 0;
 }
 
 void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -93,11 +280,25 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     switch (event->button()) {
-    case Qt::LeftButton:
+    case Qt::LeftButton: {
         mMousePressed = true;
         mStart = event->scenePos();
-        mClickedObjectItem = topMostObjectItemAt(mStart);
+
+        CornerHandle *clickedHandle = 0;
+
+        if (QGraphicsView *view = findView(event)) {
+            QGraphicsItem *clickedItem = mapScene()->itemAt(event->scenePos(),
+                                                            view->transform());
+
+            clickedHandle = dynamic_cast<CornerHandle*>(clickedItem);
+        }
+
+        mClickedCornerHandle = clickedHandle;
+        if (!clickedHandle)
+            mClickedObjectItem = topMostObjectItemAt(mStart);
+
         break;
+    }
     default:
         AbstractObjectTool::mousePressed(event);
         break;
@@ -136,10 +337,14 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     case Moving:
         finishMoving(event->scenePos());
         break;
+    case Rotating:
+        finishRotating(event->scenePos());
+        break;
     }
 
     mMousePressed = false;
     mClickedObjectItem = 0;
+    mClickedCornerHandle = 0;
 }
 
 void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -151,6 +356,68 @@ void ObjectSelectionTool::languageChanged()
 {
     setName(tr("Select Objects"));
     setShortcut(QKeySequence(tr("S")));
+}
+
+void ObjectSelectionTool::updateHandles()
+{
+    if (mMode == Moving || mMode == Rotating)
+        return;
+
+    const QSet<MapObjectItem*> &items = mapScene()->selectedObjectItems();
+    const bool showHandles = items.size() > 0;
+    QRectF boundingRect;
+
+    if (showHandles) {
+        QSetIterator<MapObjectItem*> iter(items);
+        MapObjectItem *item = iter.next();
+        boundingRect = item->mapToScene(item->boundingRect()).boundingRect();
+
+        while (iter.hasNext()) {
+            item = iter.next();
+            boundingRect |= item->mapToScene(item->boundingRect()).boundingRect();
+        }
+
+        mCornerHandles[TopLeft]->setPos(boundingRect.topLeft());
+        mCornerHandles[TopRight]->setPos(boundingRect.topRight());
+        mCornerHandles[BottomLeft]->setPos(boundingRect.bottomLeft());
+        mCornerHandles[BottomRight]->setPos(boundingRect.bottomRight());
+
+        // TODO: Might be nice to make it configurable
+        mRotationOrigin = boundingRect.center();
+        mRotationOriginIndicator->setPos(mRotationOrigin);
+    }
+
+    mSelectionBoundingRect = boundingRect;
+    setHandlesVisible(showHandles);
+    mRotationOriginIndicator->setVisible(showHandles);
+}
+
+void ObjectSelectionTool::setHandlesVisible(bool visible)
+{
+    for (int i = 0; i < 4; ++i)
+        mCornerHandles[i]->setVisible(visible);
+}
+
+void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
+{
+    if (mMode != Moving && mMode != Rotating)
+        return;
+
+    // Abort move/rotate to avoid crashing...
+    // TODO: This should really not be allowed to happen in the first place.
+    int i = 0;
+    foreach (MapObjectItem *objectItem, mMovingItems) {
+        MapObject *object = objectItem->mapObject();
+        if (!objects.contains(object)) {
+            object->setPosition(mOldObjectPositions.at(i));
+            objectItem->setPos(mOldObjectItemPositions.at(i));
+            if (mMode == Rotating)
+                objectItem->setObjectRotation(mOldObjectRotations.at(i));
+        }
+        ++i;
+    }
+
+    mMovingItems.clear();
 }
 
 void ObjectSelectionTool::updateSelection(const QPointF &pos,
@@ -170,16 +437,10 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
             selectedItems.insert(mapObjectItem);
     }
 
-    const QSet<MapObjectItem*> oldSelection = mapScene()->selectedObjectItems();
-    QSet<MapObjectItem*> newSelection;
+    if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier))
+        selectedItems |= mapScene()->selectedObjectItems();
 
-    if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier)) {
-        newSelection = oldSelection | selectedItems;
-    } else {
-        newSelection = selectedItems;
-    }
-
-    mapScene()->setSelectedObjectItems(newSelection);
+    mapScene()->setSelectedObjectItems(selectedItems);
 }
 
 void ObjectSelectionTool::startSelecting()
@@ -215,6 +476,9 @@ void ObjectSelectionTool::startMoving()
         if (pos.y() < mAlignPosition.y())
             mAlignPosition.setY(pos.y());
     }
+
+    setHandlesVisible(false);
+    mRotationOriginIndicator->setVisible(false);
 }
 
 void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
@@ -258,6 +522,7 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
 {
     Q_ASSERT(mMode == Moving);
     mMode = NoMode;
+    updateHandles();
 
     if (mStart == pos) // Move is a no-op
         return;
@@ -275,5 +540,89 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
 
     mOldObjectItemPositions.clear();
     mOldObjectPositions.clear();
+    mMovingItems.clear();
+}
+
+void ObjectSelectionTool::startRotating()
+{
+    mMovingItems = mapScene()->selectedObjectItems();
+    mMode = Rotating;
+
+    // Remember the current object positions and orientations
+    mOldObjectItemPositions.clear();
+    mOldObjectPositions.clear();
+    mOldObjectRotations.clear();
+
+    foreach (MapObjectItem *objectItem, mMovingItems) {
+        MapObject *object = objectItem->mapObject();
+        mOldObjectItemPositions += objectItem->pos();
+        mOldObjectPositions += object->position();
+        mOldObjectRotations += object->rotation();
+    }
+
+    setHandlesVisible(false);
+}
+
+void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
+                                              Qt::KeyboardModifiers modifiers)
+{
+    MapRenderer *renderer = mapDocument()->renderer();
+
+    const QPointF startDiff = mRotationOrigin - mStart;
+    const QPointF currentDiff = mRotationOrigin - pos;
+
+    const qreal startAngle = std::atan2(startDiff.y(), startDiff.x());
+    const qreal currentAngle = std::atan2(currentDiff.y(), currentDiff.x());
+    qreal angleDiff = currentAngle - startAngle;
+
+    const qreal snap = 15 * M_PI / 180; // 15 degrees in radians
+    if (modifiers & Qt::ControlModifier)
+        angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
+
+    int i = 0;
+    foreach (MapObjectItem *objectItem, mMovingItems) {
+        const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mRotationOrigin;
+        const qreal sn = std::sin(angleDiff);
+        const qreal cs = std::cos(angleDiff);
+        const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
+                                oldRelPos.x() * sn + oldRelPos.y() * cs);
+        const QPointF newPixelPos = mRotationOrigin + newRelPos;
+        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
+
+        const qreal newRotation = mOldObjectRotations.at(i) + angleDiff * 180 / M_PI;
+
+        objectItem->setPos(newPixelPos);
+        objectItem->setZValue(newPixelPos.y());
+        objectItem->mapObject()->setPosition(newPos);
+        objectItem->setObjectRotation(newRotation);
+        ++i;
+    }
+}
+
+void ObjectSelectionTool::finishRotating(const QPointF &pos)
+{
+    Q_ASSERT(mMode == Rotating);
+    mMode = NoMode;
+    updateHandles();
+
+    if (mStart == pos) // No rotation at all
+        return;
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->beginMacro(tr("Rotate %n Object(s)", "", mMovingItems.size()));
+    int i = 0;
+    foreach (MapObjectItem *objectItem, mMovingItems) {
+        MapObject *object = objectItem->mapObject();
+        const QPointF oldPos = mOldObjectPositions.at(i);
+        const qreal oldRotation = mOldObjectRotations.at(i);
+        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
+        undoStack->push(new RotateMapObject(mapDocument(), object, oldRotation));
+        ++i;
+    }
+    undoStack->endMacro();
+
+    mOldObjectItemPositions.clear();
+    mOldObjectPositions.clear();
+    mOldObjectRotations.clear();
     mMovingItems.clear();
 }

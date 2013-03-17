@@ -36,8 +36,6 @@ class MapDocument;
 class ObjectGroupItem;
 class PointHandle;
 class ResizeHandle;
-class RotationHandle;
-class RotationOriginIndicator;
 
 /**
  * A graphics item displaying a map object.
@@ -122,12 +120,9 @@ private:
     bool mIsEditable;
     bool mSyncing;
     ResizeHandle *mResizeHandle;
-    RotationHandle *mRotationHandle;
-    RotationOriginIndicator *mRotationOriginIndicator;
 
     friend class Handle;
     friend class ResizeHandle;
-    friend class RotationHandle;
 };
 
 } // namespace Internal
