@@ -1,22 +1,25 @@
 <html>
-    <head>
-        <title>Page Not Found</title>
-    </head>
-    <body>
-        <h2>Page could not be found</h2>
-        <p>This domain used to host the blog, which has been moved to
-           <a href="http://blog.mapeditor.org">http://blog.mapeditor.org/</a>.
-           If you're trying to read a blog article, you should be able to
-           find it at <a id="link" href=""></a>.
-        </p>
-        <p><a href=""></a></p>
-        <script type="text/javascript">
-            var url = document.location.href;
-            url = url.replace(/www.mapeditor.org/g, "blog.mapeditor.org")
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15"/>
+  <meta http-equiv="Content-Language" content="en"/>
+  <link href='http://blog.mapeditor.org/favicon.ico' rel='icon' type='image/x-icon'/>
+  <title>Page Not Found</title>
+ </head>
+ <body>
+  <h2>Page could not be found</h2>
 
-            var link = document.getElementById("link");
-            link.setAttribute("href", url);
-            link.innerText = url;
-        </script>
-    </body>
+  <p>This domain used to host the blog, which has been moved to <a
+   href="http://blog.mapeditor.org">http://blog.mapeditor.org/</a>. If you're
+  trying to read a blog article, you should be able to find it at <a id="link"
+   href=""></a>.</p>
+
+  <script type="text/javascript">
+   var url = document.URL;
+   url = url.replace(/www.mapeditor.org/g, "blog.mapeditor.org");
+
+   var link = document.getElementById("link");
+   link.setAttribute("href", url);
+   link.innerText = url;
+  </script>
+ </body>
 </html>
