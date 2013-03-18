@@ -228,6 +228,7 @@ void MapObjectItem::syncWithMapObject()
     setPos(pixelPos);
     setZValue(pixelPos.y());
     setRotation(mObject->rotation());
+    setTransformOriginPoint(objectCenter());
 
     mSyncing = true;
 
@@ -300,6 +301,33 @@ void MapObjectItem::paint(QPainter *painter,
         painter->setPen(dashPen);
         painter->drawLines(QVector<QLineF>() << left << right);
     }
+}
+
+QPointF MapObjectItem::objectCenter() const
+{
+    if (!mObject->cell().isEmpty()) {
+        const QSize tileSize = mObject->cell().tile->size();
+        return QPointF(tileSize.width() / 2,
+                       -tileSize.height() / 2);
+    }
+
+    QPointF center;
+
+    switch (mObject->shape()) {
+    case MapObject::Rectangle:
+    case MapObject::Ellipse:
+        center = mObject->bounds().center();
+        break;
+    case MapObject::Polygon:
+    case MapObject::Polyline:
+        center = mObject->position() +
+                mObject->polygon().boundingRect().center();
+        break;
+    }
+
+    const MapRenderer *renderer = mMapDocument->renderer();
+    const QPointF pos = renderer->tileToPixelCoords(mObject->position());
+    return renderer->tileToPixelCoords(center) - pos;
 }
 
 void MapObjectItem::resizeObject(const QSizeF &size)

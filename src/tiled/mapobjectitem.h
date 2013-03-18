@@ -80,6 +80,12 @@ public:
                QWidget *widget = 0);
 
     /**
+     * Returns the center of the object as the distance in pixels from its
+     * position.
+     */
+    QPointF objectCenter() const;
+
+    /**
      * Resizes the associated map object. The \a size is given in tiles.
      */
     void resizeObject(const QSizeF &size);
