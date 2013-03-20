@@ -238,3 +238,6 @@ Map *Map::fromLayer(Layer *layer)
     result->addLayer(layer);
     return result;
 }
+
+
+//Just a comment.
