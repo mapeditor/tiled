@@ -132,6 +132,13 @@ public:
     { return contains(point.x(), point.y()); }
 
     /**
+     * Calculates the region of cells in this tile layer for which the given
+     * \a condition returns true.
+     */
+    template<typename Condition>
+    QRegion region(Condition condition) const;
+
+    /**
      * Calculates the region occupied by the tiles of this layer. Similar to
      * Layer::bounds(), but leaves out the regions without tiles.
      */
@@ -266,6 +273,37 @@ private:
     QMargins mOffsetMargins;
     QVector<Cell> mGrid;
 };
+
+template<typename Condition>
+QRegion TileLayer::region(Condition condition) const
+{
+    QRegion region;
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            if (condition(cellAt(x, y))) {
+                const int rangeStart = x;
+                for (++x; x <= mWidth; ++x) {
+                    if (x == mWidth || !condition(cellAt(x, y))) {
+                        const int rangeEnd = x;
+                        region += QRect(rangeStart + mX, y + mY,
+                                        rangeEnd - rangeStart, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return region;
+}
+
+static inline bool cellInUse(const Cell &cell) { return !cell.isEmpty(); }
+
+inline QRegion TileLayer::region() const
+{
+    return region(cellInUse);
+}
 
 } // namespace Tiled
 

@@ -44,29 +44,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     Q_ASSERT(height >= 0);
 }
 
-QRegion TileLayer::region() const
-{
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            if (!cellAt(x, y).isEmpty()) {
-                const int rangeStart = x;
-                for (++x; x <= mWidth; ++x) {
-                    if (x == mWidth || cellAt(x, y).isEmpty()) {
-                        const int rangeEnd = x;
-                        region += QRect(rangeStart + mX, y + mY,
-                                        rangeEnd - rangeStart, 1);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return region;
-}
-
 static QSize maxSize(const QSize &a,
                      const QSize &b)
 {
@@ -261,17 +238,29 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
     return false;
 }
 
+namespace {
+
+class ReferencesTileset
+{
+public:
+    explicit ReferencesTileset(Tileset *tileset) : mTileset(tileset) {}
+
+    bool operator() (const Cell &cell) const
+    {
+        if (const Tile *tile = cell.tile)
+            return tile->tileset() == mTileset;
+        return false;
+    }
+
+private:
+    Tileset *mTileset;
+};
+
+} // anonymous namespace
+
 QRegion TileLayer::tilesetReferences(Tileset *tileset) const
 {
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y)
-        for (int x = 0; x < mWidth; ++x)
-            if (const Tile *tile = cellAt(x, y).tile)
-                if (tile->tileset() == tileset)
-                    region += QRegion(x + mX, y + mY, 1, 1);
-
-    return region;
+    return region(ReferencesTileset(tileset));
 }
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
