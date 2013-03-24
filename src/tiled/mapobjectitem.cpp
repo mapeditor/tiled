@@ -225,7 +225,7 @@ void MapObjectItem::syncWithMapObject()
     bounds.translate(-pixelPos);
 
     setPos(pixelPos);
-    setZValue(pixelPos.y());
+//    setZValue(pixelPos.y());
     setRotation(mObject->rotation());
 
     mSyncing = true;

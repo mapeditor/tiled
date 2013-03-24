@@ -360,14 +360,28 @@ void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
 
 int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)
 {
-    emit objectsAboutToBeRemoved(QList<MapObject*>() << o);
+    QList<MapObject*> objects;
+    objects << o;
+
     const int row = og->objects().indexOf(o);
     beginRemoveRows(index(og), row, row);
     og->removeObjectAt(row);
     delete mObjects.take(o);
     endRemoveRows();
-    emit objectsRemoved(QList<MapObject*>() << o);
+    emit objectsRemoved(objects);
     return row;
+}
+
+void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
+{
+    const QModelIndex parent = index(og);
+    if (!beginMoveRows(parent, from, from + count - 1, parent, to)) {
+        Q_ASSERT(false); // The code should never attempt this
+        return;
+    }
+
+    og->moveObjects(from, to, count);
+    endMoveRows();
 }
 
 // ObjectGroup color changed

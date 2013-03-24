@@ -71,6 +71,11 @@ private slots:
     void flipHorizontally();
     void flipVertically();
 
+    void raise();
+    void lower();
+    void raiseToTop();
+    void lowerToBottom();
+
 private:
     void showContextMenu(MapObjectItem *clickedObject,
                          QPoint screenPos);

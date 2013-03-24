@@ -55,6 +55,7 @@ SOURCES += aboutdialog.cpp \
     changeimagelayerproperties.cpp \
     changelayer.cpp \
     changemapobject.cpp \
+    changemapobjectsorder.cpp \
     changemapproperties.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
@@ -114,6 +115,7 @@ SOURCES += aboutdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
     quickstampmanager.cpp \
+    raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
     renametileset.cpp \
@@ -166,6 +168,7 @@ HEADERS += aboutdialog.h \
     changeimagelayerproperties.h\
     changelayer.h \
     changemapobject.h \
+    changemapobjectsorder.h \
     changemapproperties.h \
     changeobjectgroupproperties.h \
     changepolygon.h \
@@ -225,6 +228,7 @@ HEADERS += aboutdialog.h \
     propertiesdock.h \
     propertybrowser.h \
     quickstampmanager.h \
+    raiselowerhelper.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \

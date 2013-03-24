@@ -75,6 +75,11 @@ public:
     int objectCount() const { return mObjects.size(); }
 
     /**
+     * Returns the object at the specified index.
+     */
+    MapObject *objectAt(int index) const { return mObjects.at(index); }
+
+    /**
      * Adds an object to this object group.
      */
     void addObject(MapObject *object);
@@ -103,6 +108,14 @@ public:
      * @param index the index at which to remove an object
      */
     void removeObjectAt(int index);
+
+    /**
+     * Moves \a count objects starting at \a from to the index given by \a to.
+     *
+     * The \a to index may not lie within the range of objects that is
+     * being moved.
+     */
+    void moveObjects(int from, int to, int count);
 
     /**
      * Returns the bounding rect around all objects in this object group.

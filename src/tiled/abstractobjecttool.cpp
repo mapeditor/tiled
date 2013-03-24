@@ -28,6 +28,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
+#include "raiselowerhelper.h"
 #include "utils.h"
 
 #include <QMenu>
@@ -111,6 +112,26 @@ void AbstractObjectTool::flipVertically()
     mapDocument()->flipSelectedObjects(FlipVertically);
 }
 
+void AbstractObjectTool::raise()
+{
+    RaiseLowerHelper(mMapScene).raise();
+}
+
+void AbstractObjectTool::lower()
+{
+    RaiseLowerHelper(mMapScene).lower();
+}
+
+void AbstractObjectTool::raiseToTop()
+{
+    RaiseLowerHelper(mMapScene).raiseToTop();
+}
+
+void AbstractObjectTool::lowerToBottom()
+{
+    RaiseLowerHelper(mMapScene).lowerToBottom();
+}
+
 /**
  * Shows the context menu for map objects. The menu allows you to duplicate and
  * remove the map objects, or to edit their properties.
@@ -146,6 +167,16 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     QAction *verticalAction = menu.addAction(tr("Flip Vertically"));
     connect(horizontalAction, SIGNAL(triggered()), SLOT(flipHorizontally()));
     connect(verticalAction, SIGNAL(triggered()), SLOT(flipVertically()));
+
+    menu.addSeparator();
+    QAction *raiseAction = menu.addAction(tr("Raise Object"));
+    QAction *lowerAction = menu.addAction(tr("Lower Object"));
+    QAction *raiseToTopAction = menu.addAction(tr("Raise Object to Top"));
+    QAction *lowerToBottomAction = menu.addAction(tr("Lower Object to Bottom"));
+    connect(raiseAction, SIGNAL(triggered()), SLOT(raise()));
+    connect(lowerAction, SIGNAL(triggered()), SLOT(lower()));
+    connect(raiseToTopAction, SIGNAL(triggered()), SLOT(raiseToTop()));
+    connect(lowerToBottomAction, SIGNAL(triggered()), SLOT(lowerToBottom()));
 
     if (objectGroups.size() > 1) {
         menu.addSeparator();

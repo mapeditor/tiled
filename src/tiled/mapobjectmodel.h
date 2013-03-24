@@ -91,6 +91,7 @@ public:
 
     void insertObject(ObjectGroup *og, int index, MapObject *o);
     int removeObject(ObjectGroup *og, MapObject *o);
+    void moveObjects(ObjectGroup *og, int from, int to, int count);
     void emitObjectsChanged(const QList<MapObject *> &objects);
 
     void setObjectName(MapObject *o, const QString &name);
@@ -104,7 +105,6 @@ public:
 signals:
     void objectsAdded(const QList<MapObject *> &objects);
     void objectsChanged(const QList<MapObject *> &objects);
-    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
     void objectsRemoved(const QList<MapObject *> &objects);
 
 private slots:

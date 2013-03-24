@@ -82,6 +82,28 @@ void ObjectGroup::removeObjectAt(int index)
     object->setObjectGroup(0);
 }
 
+void ObjectGroup::moveObjects(int from, int to, int count)
+{
+    // It's an error when 'to' lies within the moving range of objects
+    Q_ASSERT(count >= 0);
+    Q_ASSERT(to <= from || to >= from + count);
+
+    // Nothing to be done when 'to' is the start of the end of the range, or
+    // when the number of objects to be moved is 0.
+    if (count == 0 || to == from || to == from + count)
+        return;
+
+    const QList<MapObject*> movingObjects = mObjects.mid(from, count);
+    mObjects.erase(mObjects.begin() + from,
+                   mObjects.begin() + from + count);
+
+    if (to > from)
+        to -= count;
+
+    for (int i = 0; i < count; ++i)
+        mObjects.insert(to + i, movingObjects.at(i));
+}
+
 QRectF ObjectGroup::objectsBoundingRect() const
 {
     QRectF boundingRect;
