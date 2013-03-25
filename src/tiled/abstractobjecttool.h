@@ -75,11 +75,6 @@ private:
     void showContextMenu(MapObjectItem *clickedObject,
                          QPoint screenPos, QWidget *parent);
 
-    void duplicateObjects(const QList<MapObject*> &objects);
-    void removeObjects(const QList<MapObject*> &objects);
-    void moveObjectsToGroup(const QList<MapObject*> &objects,
-                            ObjectGroup *objectGroup);
-
     MapScene *mMapScene;
 };
 

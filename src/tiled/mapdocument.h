@@ -161,6 +161,11 @@ public:
     void setTilesetFileName(Tileset *tileset, const QString &fileName);
     void setTilesetName(Tileset *tileset, const QString &name);
 
+    void duplicateObjects(const QList<MapObject*> &objects);
+    void removeObjects(const QList<MapObject*> &objects);
+    void moveObjectsToGroup(const QList<MapObject*> &objects,
+                            ObjectGroup *objectGroup);
+
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
      * map, and to display the layer stack in a view.

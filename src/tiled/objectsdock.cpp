@@ -20,13 +20,11 @@
 
 #include "objectsdock.h"
 
-#include "addremovemapobject.h"
 #include "documentmanager.h"
 #include "map.h"
 #include "mapobject.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
-#include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "objectpropertiesdialog.h"
 #include "utils.h"
@@ -56,20 +54,13 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 {
     setObjectName(QLatin1String("ObjectsDock"));
 
-    mActionDuplicateObjects = new QAction(this);
-    mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
-
-    mActionRemoveObjects = new QAction(this);
-    mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
-
     mActionObjectProperties = new QAction(this);
     mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
 
-    Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
     Utils::setThemeIcon(mActionObjectProperties, "document-properties");
 
-    connect(mActionDuplicateObjects, SIGNAL(triggered()), SLOT(duplicateObjects()));
-    connect(mActionRemoveObjects, SIGNAL(triggered()), SLOT(removeObjects()));
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+
     connect(mActionObjectProperties, SIGNAL(triggered()), SLOT(objectProperties()));
 
     QWidget *widget = new QWidget(this);
@@ -78,15 +69,13 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     layout->setSpacing(0);
     layout->addWidget(mObjectsView);
 
-    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
-
     mActionNewLayer = new QAction(this);
     mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
     connect(mActionNewLayer, SIGNAL(triggered()),
             handler->actionAddObjectGroup(), SIGNAL(triggered()));
 
-    mActionMoveToLayer = new QAction(this);
-    mActionMoveToLayer->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
+    mActionMoveToGroup = new QAction(this);
+    mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
 
     QToolBar *toolbar = new QToolBar;
     toolbar->setFloatable(false);
@@ -94,12 +83,12 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     toolbar->setIconSize(QSize(16, 16));
 
     toolbar->addAction(mActionNewLayer);
-    toolbar->addAction(mActionDuplicateObjects);
-    toolbar->addAction(mActionRemoveObjects);
+    toolbar->addAction(handler->actionDuplicateObjects());
+    toolbar->addAction(handler->actionRemoveObjects());
 
-    toolbar->addAction(mActionMoveToLayer);
+    toolbar->addAction(mActionMoveToGroup);
     QToolButton *button;
-    button = dynamic_cast<QToolButton*>(toolbar->widgetForAction(mActionMoveToLayer));
+    button = dynamic_cast<QToolButton*>(toolbar->widgetForAction(mActionMoveToGroup));
     mMoveToMenu = new QMenu(this);
     button->setPopupMode(QToolButton::InstantPopup);
     button->setMenu(mMoveToMenu);
@@ -168,17 +157,12 @@ void ObjectsDock::updateActions()
 {
     int count = mMapDocument ? mMapDocument->selectedObjects().count() : 0;
     bool enabled = count > 0;
-    mActionDuplicateObjects->setEnabled(enabled);
-    mActionRemoveObjects->setEnabled(enabled);
     mActionObjectProperties->setEnabled(enabled && (count == 1));
-
-    mActionDuplicateObjects->setToolTip(tr("Duplicate %n Object(s)", "", count));
-    mActionRemoveObjects->setToolTip(tr("Remove %n Object(s)", "", count));
 
     if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
         enabled = false;
-    mActionMoveToLayer->setEnabled(enabled);
-    mActionMoveToLayer->setToolTip(tr("Move %n Object(s) to Layer", "", count));
+    mActionMoveToGroup->setEnabled(enabled);
+    mActionMoveToGroup->setToolTip(tr("Move %n Object(s) to Layer", "", count));
 }
 
 void ObjectsDock::aboutToShowMoveToMenu()
@@ -193,60 +177,10 @@ void ObjectsDock::aboutToShowMoveToMenu()
 
 void ObjectsDock::triggeredMoveToMenu(QAction *action)
 {
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+
     ObjectGroup *objectGroup = action->data().value<ObjectGroup*>();
-
-    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
-                             objects.size()));
-    foreach (MapObject *mapObject, objects) {
-        if (mapObject->objectGroup() == objectGroup)
-            continue;
-        undoStack->push(new MoveMapObjectToGroup(mMapDocument,
-                                                 mapObject,
-                                                 objectGroup));
-    }
-    undoStack->endMacro();
-}
-
-void ObjectsDock::duplicateObjects()
-{
-    // Unnecessary check is unnecessary
-    if (!mMapDocument || !mMapDocument->selectedObjects().count())
-        return;
-
-    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
-
-    QList<MapObject*> clones;
-    foreach (MapObject *mapObject, objects) {
-        MapObject *clone = mapObject->clone();
-        undoStack->push(new AddMapObject(mMapDocument,
-                                         mapObject->objectGroup(),
-                                         clone));
-        clones << clone;
-    }
-
-    undoStack->endMacro();
-    mMapDocument->setSelectedObjects(clones);
-}
-
-void ObjectsDock::removeObjects()
-{
-    // Unnecessary check is unnecessary
-    if (!mMapDocument || !mMapDocument->selectedObjects().count())
-        return;
-
-    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    foreach (MapObject *mapObject, objects)
-        undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
-    undoStack->endMacro();
+    handler->moveObjectsToGroup(objectGroup);
 }
 
 void ObjectsDock::objectProperties()

@@ -34,6 +34,7 @@
 #include "map.h"
 #include "mapobject.h"
 #include "movelayer.h"
+#include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
@@ -607,4 +608,55 @@ void MapDocument::setTilesetName(Tileset *tileset, const QString &name)
 {
     tileset->setName(name);
     emit tilesetNameChanged(tileset);
+}
+
+void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
+
+    QList<MapObject*> clones;
+    foreach (const MapObject *mapObject, objects) {
+        MapObject *clone = mapObject->clone();
+        clones.append(clone);
+        mUndoStack->push(new AddMapObject(this,
+                                          mapObject->objectGroup(),
+                                          clone));
+    }
+
+    mUndoStack->endMacro();
+    setSelectedObjects(clones);
+}
+
+void MapDocument::removeObjects(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
+    foreach (MapObject *mapObject, objects)
+        mUndoStack->push(new RemoveMapObject(this, mapObject));
+    mUndoStack->endMacro();
+}
+
+void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
+                                     ObjectGroup *objectGroup)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
+                              objects.size()));
+
+    foreach (MapObject *mapObject, objects) {
+        if (mapObject->objectGroup() == objectGroup)
+            continue;
+
+        mUndoStack->push(new MoveMapObjectToGroup(this,
+                                                  mapObject,
+                                                  objectGroup));
+    }
+    mUndoStack->endMacro();
 }
