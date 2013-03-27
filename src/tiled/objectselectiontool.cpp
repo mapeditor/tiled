@@ -1,6 +1,6 @@
 /*
  * objectselectiontool.cpp
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -35,6 +35,7 @@
 
 #include <QApplication>
 #include <QGraphicsItem>
+#include <QKeyEvent>
 #include <QUndoStack>
 #include <QGraphicsView>
 
@@ -229,6 +230,49 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
                this, SLOT(updateHandles()));
 
     AbstractObjectTool::deactivate(scene);
+}
+
+void ObjectSelectionTool::keyPressed(QKeyEvent *event)
+{
+    QPointF moveBy;
+
+    switch (event->key()) {
+    case Qt::Key_Up:    moveBy = QPointF(0, -1); break;
+    case Qt::Key_Down:  moveBy = QPointF(0, 1); break;
+    case Qt::Key_Left:  moveBy = QPointF(-1, 0); break;
+    case Qt::Key_Right: moveBy = QPointF(1, 0); break;
+    }
+
+    const QSet<MapObjectItem*> &items = mapScene()->selectedObjectItems();
+    const Qt::KeyboardModifiers modifiers = event->modifiers();
+
+    if (moveBy.isNull() || items.isEmpty() || (modifiers & Qt::ControlModifier)) {
+        event->ignore();
+        return;
+    }
+
+    const bool moveFast = modifiers & Qt::ShiftModifier;
+    const bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+
+    if (!moveFast) {
+        // TODO: This only makes sense for orthogonal maps
+        moveBy.rx() /= mapDocument()->map()->tileWidth();
+        moveBy.ry() /= mapDocument()->map()->tileHeight();
+    } else if (snapToFineGrid) {
+        moveBy /= Preferences::instance()->gridFine();
+    }
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->beginMacro(tr("Move %n Object(s)", "", items.size()));
+    int i = 0;
+    foreach (MapObjectItem *objectItem, items) {
+        MapObject *object = objectItem->mapObject();
+        const QPointF oldPos = object->position();
+        object->setPosition(oldPos + moveBy);
+        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
+        ++i;
+    }
+    undoStack->endMacro();
 }
 
 void ObjectSelectionTool::mouseEntered()

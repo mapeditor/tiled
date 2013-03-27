@@ -1,6 +1,6 @@
 /*
  * abstracttool.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of Tiled.
@@ -23,6 +23,8 @@
 
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+
+#include <QKeyEvent>
 
 using namespace Tiled::Internal;
 
@@ -59,6 +61,11 @@ void AbstractTool::setEnabled(bool enabled)
 
     mEnabled = enabled;
     emit enabledChanged(mEnabled);
+}
+
+void AbstractTool::keyPressed(QKeyEvent *event)
+{
+    event->ignore();
 }
 
 void AbstractTool::updateEnabledState()

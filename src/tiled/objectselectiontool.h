@@ -1,6 +1,6 @@
 /*
  * objectselectiontool.h
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -45,6 +45,7 @@ public:
     void activate(MapScene *scene);
     void deactivate(MapScene *scene);
 
+    void keyPressed(QKeyEvent *);
     void mouseEntered();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
