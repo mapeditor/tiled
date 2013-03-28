@@ -45,7 +45,17 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
     }
 
     JsonReader reader;
-    reader.parse(file.readAll());
+    QByteArray contents = file.readAll();
+    if(fileName.endsWith(".js") && contents[0] != '{') {
+        // Scan past JSONP prefix; look for an open curly at the start of the line
+        for(int i=0; i < contents.size()-2; i++) {
+            if(contents[i] == '\n' && contents[i+1] == '{') {
+                contents.remove(0, i);
+                break;
+            }
+        }
+    }
+    reader.parse(contents);
 
     const QVariant variant = reader.result();
 
@@ -84,6 +94,10 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(&file);
+    if(fileName.endsWith(".js")) {
+        out << "TileMaps=TileMaps||{};\n";
+        out << "TileMaps[\"" << fileName << "\"] =\n";
+    }
     out << writer.result();
     out.flush();
 
@@ -95,14 +109,18 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     return true;
 }
 
-QString JsonPlugin::nameFilter() const
+QStringList JsonPlugin::nameFilters() const
 {
-    return tr("Json files (*.json)");
+    QStringList filters;
+    filters.append(tr("Json files (*.json)"));
+    filters.append(tr("Javascript files (*.js)"));
+    return filters;
 }
 
 bool JsonPlugin::supportsFile(const QString &fileName) const
 {
-    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
+    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) ||
+           fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
 }
 
 QString JsonPlugin::errorString() const
