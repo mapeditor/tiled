@@ -270,9 +270,17 @@ FORMS += aboutdialog.ui \
     saveasimagedialog.ui\
     editterraindialog.ui
 
-images.path = $${PREFIX}/share/tiled/images
-images.files += images/tiled-icon-32.png
-INSTALLS += images
+icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
+icon32.files += images/32x32/tiled.png
+INSTALLS += icon32
+
+icon16.path = $${PREFIX}/share/icons/hicolor/16x16/apps/
+icon16.files += images/16x16/tiled.png
+INSTALLS += icon16
+
+iconscalable.path = $${PREFIX}/share/icons/hicolor/scalable/apps/
+iconscalable.files += images/scalable/tiled.svg
+INSTALLS += iconscalable
 
 desktopfile.path = $${PREFIX}/share/applications/
 desktopfile.files += ../../docs/tiled.desktop
