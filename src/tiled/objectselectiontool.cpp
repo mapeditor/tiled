@@ -234,6 +234,11 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
 
 void ObjectSelectionTool::keyPressed(QKeyEvent *event)
 {
+    if (mMode != NoMode) {
+        event->ignore();
+        return;
+    }
+
     QPointF moveBy;
 
     switch (event->key()) {
