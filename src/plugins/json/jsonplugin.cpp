@@ -96,7 +96,11 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     QTextStream out(&file);
     if(fileName.endsWith(".js")) {
         out << "TileMaps=TileMaps||{};\n";
-        out << "TileMaps[\"" << fileName << "\"] =\n";
+        // Trim and escape name
+        JsonWriter nameWriter;
+        QString baseName = QFileInfo(fileName).baseName();
+        nameWriter.stringify(baseName);
+        out << "TileMaps[" << nameWriter.result() << "] =\n";
     }
     out << writer.result();
     out.flush();
