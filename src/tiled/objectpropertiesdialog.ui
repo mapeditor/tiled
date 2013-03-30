@@ -212,6 +212,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>type</tabstop>
+  <tabstop>rotation</tabstop>
+  <tabstop>x</tabstop>
+  <tabstop>y</tabstop>
+  <tabstop>width</tabstop>
+  <tabstop>height</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
