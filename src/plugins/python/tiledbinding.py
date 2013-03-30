@@ -167,10 +167,8 @@ cls_mapobject.add_method('setHeight', None, [('int','h')])
 cls_mapobject.add_method('setShape', None, [param('Shape','s')])
 cls_mapobject.add_method('shape', 'Shape', [])
 #cls_mapobject.add_method('bounds', 'QRectF', [])
-cls_mapobject.add_method('setTile', None,
-  [param('Tiled::Tile*','t',transfer_ownership=True)])
-cls_mapobject.add_method('tile',
-  retval('Tiled::Tile*',caller_owns_return=False), [])
+cls_mapobject.add_method('setCell', None, [param('const Tiled::Cell','c',)])
+cls_mapobject.add_method('cell', retval('const Tiled::Cell'), [])
 #cls_mapobject.add_method('setObjectGroup', 'ObjectGroup*', [])
 #cls_mapobject.add_method('objectGroup', 'ObjectGroup*', [])
 

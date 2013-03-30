@@ -233,7 +233,7 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
           spr = self.sprites[sprite]
           obj = Tiled.MapObject(str(spr.kuvatiedosto), '', QPointF(rx, ry), QSizeF(1, 1)) #spr.width, spr.height))
           # 0 should point to the actual sprite but how?
-          obj.setTile(self.spriteGfx[str(spr.kuvatiedosto)].tileAt(0))
+          obj.cell().tile = self.spriteGfx[str(spr.kuvatiedosto)].tileAt(0)
           la.addObject(obj)
 
   def doTiles(self, ts, la, bb):
