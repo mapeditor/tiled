@@ -1,6 +1,6 @@
 /*
- * propertiesview.h
- * Copyright 2009-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * propertiesdock.h
+ * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,27 +18,45 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTIESVIEW_H
-#define PROPERTIESVIEW_H
+#ifndef PROPERTIESDOCK_H
+#define PROPERTIESDOCK_H
 
-#include <QTreeView>
+#include <QDockWidget>
 
 namespace Tiled {
+
+class Object;
+
 namespace Internal {
 
-/**
- * The view that displays the properties.
- */
-class PropertiesView : public QTreeView
+class MapDocument;
+class PropertiesModel;
+class PropertiesView;
+
+class PropertiesDock : public QDockWidget
 {
+    Q_OBJECT
+
 public:
-    explicit PropertiesView(QWidget *parent = 0);
+    explicit PropertiesDock(QWidget *parent = 0);
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void changeEvent(QEvent *e);
+
+private slots:
+    void mapDocumentChanged(MapDocument *mapDocument);
+    void currentObjectChanged(Object *object);
+    void deleteSelectedProperties();
+
+private:
+    void retranslateUi();
+
+    MapDocument *mMapDocument;
+    PropertiesModel *mPropertiesModel;
+    PropertiesView *mPropertiesView;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // PROPERTIESVIEW_H
+#endif // PROPERTIESDOCK_H

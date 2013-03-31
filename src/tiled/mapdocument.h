@@ -1,6 +1,6 @@
 /*
  * mapdocument.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
@@ -213,6 +213,9 @@ public:
      */
     void setSelectedObjects(const QList<MapObject*> &selectedObjects);
 
+    Object *currentObject() const { return mCurrentObject; }
+    void setCurrentObject(Object *object);
+
     /**
      * Makes sure the all tilesets which are used at the given \a map will be
      * present in the map document.
@@ -249,6 +252,8 @@ signals:
      * Emitted when the list of selected objects changes.
      */
     void selectedObjectsChanged();
+
+    void currentObjectChanged(Object *object);
 
     /**
      * Emitted when the map size or its tile size changes.
@@ -345,6 +350,7 @@ private:
     LayerModel *mLayerModel;
     QRegion mTileSelection;
     QList<MapObject*> mSelectedObjects;
+    Object *mCurrentObject;             /**< Current properties object. */
     MapRenderer *mRenderer;
     int mCurrentLayerIndex;
     MapObjectModel *mMapObjectModel;

@@ -63,6 +63,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mFileName(fileName),
     mMap(map),
     mLayerModel(new LayerModel(this)),
+    mCurrentObject(0),
     mMapObjectModel(new MapObjectModel(this)),
     mTerrainModel(new TerrainModel(this, this)),
     mUndoStack(new QUndoStack(this))
@@ -179,6 +180,8 @@ bool MapDocument::isModified() const
 void MapDocument::setCurrentLayerIndex(int index)
 {
     Q_ASSERT(index >= -1 && index < mMap->layerCount());
+
+    const bool changed = mCurrentLayerIndex != index;
     mCurrentLayerIndex = index;
 
     /* This function always sends the following signal, even if the index
@@ -192,6 +195,9 @@ void MapDocument::setCurrentLayerIndex(int index)
      * layer index does.
      */
     emit currentLayerIndexChanged(mCurrentLayerIndex);
+
+    if (changed && mCurrentLayerIndex != -1)
+        setCurrentObject(currentLayer());
 }
 
 Layer *MapDocument::currentLayer() const
@@ -468,6 +474,18 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 {
     mSelectedObjects = selectedObjects;
     emit selectedObjectsChanged();
+
+    if (selectedObjects.size() == 1)
+        setCurrentObject(selectedObjects.first());
+}
+
+void MapDocument::setCurrentObject(Object *object)
+{
+    if (object == mCurrentObject)
+        return;
+
+    mCurrentObject = object;
+    emit currentObjectChanged(object);
 }
 
 /**

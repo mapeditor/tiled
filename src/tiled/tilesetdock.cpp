@@ -601,7 +601,10 @@ void TilesetDock::setCurrentTile(Tile *tile)
         return;
 
     mCurrentTile = tile;
-    emit currentTileChanged(mCurrentTile);
+    emit currentTileChanged(tile);
+
+    if (tile)
+        mMapDocument->setCurrentObject(tile);
 }
 
 void TilesetDock::retranslateUi()

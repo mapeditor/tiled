@@ -113,6 +113,7 @@ SOURCES += aboutdialog.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
     propertiesdialog.cpp \
+    propertiesdock.cpp \
     propertiesmodel.cpp \
     propertiesview.cpp \
     quickstampmanager.cpp \
@@ -222,6 +223,7 @@ HEADERS += aboutdialog.h \
     preferencesdialog.h \
     preferences.h \
     propertiesdialog.h \
+    propertiesdock.h \
     propertiesmodel.h \
     propertiesview.h \
     quickstampmanager.h \

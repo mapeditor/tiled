@@ -1,6 +1,6 @@
 /*
  * propertiesview.cpp
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -28,6 +28,16 @@ using namespace Tiled::Internal;
 PropertiesView::PropertiesView(QWidget *parent):
     QTreeView(parent)
 {
+    setEditTriggers(QAbstractItemView::AnyKeyPressed |
+                    QAbstractItemView::DoubleClicked |
+                    QAbstractItemView::EditKeyPressed);
+
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
+    setRootIsDecorated(false);
+    setUniformRowHeights(true);
+    setItemsExpandable(false);
+    setExpandsOnDoubleClick(false);
+
 #if QT_VERSION >= 0x050000
     header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else

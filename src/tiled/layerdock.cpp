@@ -222,6 +222,9 @@ LayerView::LayerView(QWidget *parent):
     setHeaderHidden(true);
     setItemsExpandable(false);
     setUniformRowHeights(true);
+
+    connect(this, SIGNAL(pressed(QModelIndex)),
+            SLOT(indexPressed(QModelIndex)));
 }
 
 QSize LayerView::sizeHint() const
@@ -262,6 +265,15 @@ void LayerView::currentRowChanged(const QModelIndex &index)
 {
     const int layer = mMapDocument->layerModel()->toLayerIndex(index);
     mMapDocument->setCurrentLayerIndex(layer);
+}
+
+void LayerView::indexPressed(const QModelIndex &index)
+{
+    const int layerIndex = mMapDocument->layerModel()->toLayerIndex(index);
+    if (layerIndex != -1) {
+        Layer *layer = mMapDocument->map()->layerAt(layerIndex);
+        mMapDocument->setCurrentObject(layer);
+    }
 }
 
 void LayerView::currentLayerIndexChanged(int index)
