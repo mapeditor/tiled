@@ -1,6 +1,8 @@
 /*
  * mappropertiesdialog.h
  * Copyright 2012, Emmanuel Barroga emmanuelbarroga@gmail.com
+ * Copyright 2012, Ben Longbons <b.r.longbons@gmail.com>
+ * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -38,7 +40,10 @@ class MapPropertiesDialog : public PropertiesDialog
 public:
     MapPropertiesDialog(MapDocument *mapDocument, QWidget *parent = 0);
 
-    void accept();
+private slots:
+    void layerDataIndexChanged(int);
+    void backgroundColorChanged(const QColor &);
+    void mapChanged();
 
 private:
     MapDocument *mMapDocument;

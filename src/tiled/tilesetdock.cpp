@@ -642,7 +642,7 @@ void TilesetDock::editTilesetProperties()
 
     PropertiesDialog propertiesDialog(tr("Tileset"),
                                       tileset,
-                                      mMapDocument->undoStack(),
+                                      mMapDocument,
                                       this);
     propertiesDialog.exec();
 }

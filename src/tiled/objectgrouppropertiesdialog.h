@@ -42,10 +42,11 @@ public:
                                 ObjectGroup *objectGroup,
                                 QWidget *parent = 0);
 
-    void accept();
+private slots:
+    void colorChanged(const QColor &);
+    void objectGroupChanged(ObjectGroup *objectGroup);
 
 private:
-    MapDocument *mMapDocument;
     ObjectGroup *mObjectGroup;
     ColorButton *mColorButton;
 };

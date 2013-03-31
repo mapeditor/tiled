@@ -20,12 +20,46 @@
 
 #include "propertiesmodel.h"
 
+#include "changeproperties.h"
+#include "mapdocument.h"
+#include "object.h"
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-PropertiesModel::PropertiesModel(QObject *parent):
-    QAbstractTableModel(parent)
+PropertiesModel::PropertiesModel(QObject *parent)
+    : QAbstractTableModel(parent)
+    , mMapDocument(0)
+    , mUndoStack(0)
+    , mObject(0)
 {
+}
+
+void PropertiesModel::setObject(MapDocument *mapDocument, Object *object)
+{
+    beginResetModel();
+
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
+
+    mMapDocument = mapDocument;
+    mUndoStack = mapDocument ? mapDocument->undoStack() : 0;
+    mObject = object;
+    mProperties = object ? object->properties() : Properties();
+    mKeys = mProperties.keys();
+
+    if (mapDocument) {
+        connect(mapDocument, SIGNAL(propertyAdded(Object*,QString)),
+                SLOT(propertyAdded(Object*,QString)));
+        connect(mapDocument, SIGNAL(propertyRemoved(Object*,QString)),
+                SLOT(propertyRemoved(Object*,QString)));
+        connect(mapDocument, SIGNAL(propertyChanged(Object*,QString)),
+                SLOT(propertyChanged(Object*,QString)));
+        connect(mapDocument, SIGNAL(propertiesChanged(Object*)),
+                SLOT(propertiesChanged(Object*)));
+    }
+
+    endResetModel();
 }
 
 int PropertiesModel::rowCount(const QModelIndex &parent) const
@@ -45,7 +79,7 @@ QVariant PropertiesModel::data(const QModelIndex &index, int role) const
             const QString &key = mKeys.at(index.row());
             switch (index.column()) {
                 case 0: return key;
-                case 1: return mProperties.value(key);
+                case 1: return mObject->property(key);
             }
         } else if (index.column() == 0) {
             return (role == Qt::EditRole) ? QString() : tr("<new property>");
@@ -75,25 +109,17 @@ bool PropertiesModel::setData(const QModelIndex &index, const QVariant &value,
             if (text.isEmpty())
                 return false;
 
-            beginResetModel();
-            mProperties.insert(text, QString());
+            mUndoStack->push(new SetProperty(mMapDocument, mObject, text, QString()));
         } else {
             const QString &key = mKeys.at(index.row());
-            const QString propertyValue = mProperties.value(key);
 
-            beginResetModel();
-            mProperties.remove(key);
-            mProperties.insert(text, propertyValue);
+            mUndoStack->push(new RenameProperty(mMapDocument, mObject, key, text));
         }
-        // Have to request keys and reset because of possible reordering
-        mKeys = mProperties.keys();
-        endResetModel();
         return true;
     }
     else if (index.column() == 1) { // Edit value
         const QString &key = mKeys.at(index.row());
-        mProperties.insert(key, value.toString());
-        emit dataChanged(index, index);
+        mUndoStack->push(new SetProperty(mMapDocument, mObject, key, value.toString()));
         return true;
     }
 
@@ -107,13 +133,13 @@ void PropertiesModel::deleteProperties(const QModelIndexList &indices)
         if (index.row() < mKeys.size())
             keys.append(mKeys.at(index.row()));
     }
-    foreach (const QString &key, keys) {
-        const int row = mKeys.indexOf(key);
-        beginRemoveRows(QModelIndex(), row, row);
-        mProperties.remove(key);
-        mKeys = mProperties.keys();
-        endRemoveRows();
-    }
+    if (keys.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Remove %n Properties", "", keys.size()));
+    foreach (const QString &key, keys)
+        mUndoStack->push(new RemoveProperty(mMapDocument, mObject, key));
+    mUndoStack->endMacro();
 }
 
 QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
@@ -130,15 +156,51 @@ QVariant PropertiesModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-void PropertiesModel::setProperties(const Properties &properties)
+void PropertiesModel::propertyAdded(Object *object, const QString &name)
 {
-    beginResetModel();
-    mProperties = properties;
-    mKeys = mProperties.keys();
-    endResetModel();
+    if (object != mObject)
+        return;
+
+    const QStringList keys = object->properties().keys();
+    const int row = keys.indexOf(name);
+
+    beginInsertRows(QModelIndex(), row, row);
+    mKeys = keys;
+    mProperties = object->properties();
+    endInsertRows();
 }
 
-const Properties &PropertiesModel::properties() const
+void PropertiesModel::propertyRemoved(Object *object, const QString &name)
 {
-    return mProperties;
+    if (object != mObject)
+        return;
+
+    const int row = mKeys.indexOf(name);
+
+    beginRemoveRows(QModelIndex(), row, row);
+    mKeys.removeAt(row);
+    mProperties.remove(name);
+    endRemoveRows();
+}
+
+void PropertiesModel::propertyChanged(Object *object, const QString &name)
+{
+    if (object != mObject)
+        return;
+
+    mProperties.insert(name, object->property(name));
+
+    const QModelIndex i = index(mKeys.indexOf(name), 1);
+    emit dataChanged(i, i);
+}
+
+void PropertiesModel::propertiesChanged(Object *object)
+{
+    if (object != mObject)
+        return;
+
+    beginResetModel();
+    mProperties = object->properties();
+    mKeys = object->properties().keys();
+    endResetModel();
 }

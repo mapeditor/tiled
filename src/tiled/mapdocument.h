@@ -166,6 +166,10 @@ public:
     void moveObjectsToGroup(const QList<MapObject*> &objects,
                             ObjectGroup *objectGroup);
 
+    void setProperty(Object *object, const QString &name, const QString &value);
+    void setProperties(Object *object, const Properties &properties);
+    void removeProperty(Object *object, const QString &name);
+
     /**
      * Returns the layer model. Can be used to modify the layer stack of the
      * map, and to display the layer stack in a view.
@@ -223,31 +227,12 @@ public:
     void unifyTilesets(Map *map);
 
     void emitMapChanged();
-
-    /**
-     * Emits the region changed signal for the specified region. The region
-     * should be in tile coordinates. This method is used by the TilePainter.
-     */
     void emitRegionChanged(const QRegion &region);
-
-    /**
-     * Emits the region edited signal for the specified region and tile layer.
-     * The region should be in tile coordinates. This should be called from
-     * all map document changing classes which are triggered by user input.
-     */
     void emitRegionEdited(const QRegion &region, Layer *layer);
-
-    /**
-     * Emits the signal notifying tileset models about changes to tile terrain
-     * information. All the \a tiles need to be from the same tileset.
-     */
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
-
-    /**
-     * Emits the editLayerNameRequested signal, to get renamed.
-     */
-    inline void emitEditLayerNameRequested()
-    { emit editLayerNameRequested(); }
+    void emitObjectGroupChanged(ObjectGroup *objectGroup);
+    void emitImageLayerChanged(ImageLayer *imageLayer);
+    void emitEditLayerNameRequested();
 
 signals:
     void fileNameChanged();
@@ -306,6 +291,17 @@ signals:
      */
     void tileTerrainChanged(const QList<Tile*> &tiles);
 
+    /**
+     * Emitted after the color of an object group has changed.
+     */
+    void objectGroupChanged(ObjectGroup *objectGroup);
+
+    /**
+     * Emitted after the image and/or the transparent color of an image layer
+     * have changed.
+     */
+    void imageLayerChanged(ImageLayer *imageLayer);
+
     void tilesetAboutToBeAdded(int index);
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetAboutToBeRemoved(int index);
@@ -318,6 +314,11 @@ signals:
     void objectsAboutToBeRemoved(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);
     void objectsChanged(const QList<MapObject*> &objects);
+
+    void propertyAdded(Object *object, const QString &name);
+    void propertyRemoved(Object *object, const QString &name);
+    void propertyChanged(Object *object, const QString &name);
+    void propertiesChanged(Object *object);
 
 private slots:
     void onObjectsRemoved(const QList<MapObject*> &objects);
@@ -350,6 +351,70 @@ private:
     TerrainModel *mTerrainModel;
     QUndoStack *mUndoStack;
 };
+
+/**
+ * Emits the map changed signal. This signal should be emitted after changing
+ * the map size or its tile size.
+ */
+inline void MapDocument::emitMapChanged()
+{
+    emit mapChanged();
+}
+
+/**
+ * Emits the region changed signal for the specified region. The region
+ * should be in tile coordinates. This method is used by the TilePainter.
+ */
+inline void MapDocument::emitRegionChanged(const QRegion &region)
+{
+    emit regionChanged(region);
+}
+
+/**
+ * Emits the region edited signal for the specified region and tile layer.
+ * The region should be in tile coordinates. This should be called from
+ * all map document changing classes which are triggered by user input.
+ */
+inline void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
+{
+    emit regionEdited(region, layer);
+}
+
+/**
+ * Emits the signal notifying tileset models about changes to tile terrain
+ * information. All the \a tiles need to be from the same tileset.
+ */
+inline void MapDocument::emitTileTerrainChanged(const QList<Tile *> &tiles)
+{
+    if (!tiles.isEmpty())
+        emit tileTerrainChanged(tiles);
+}
+
+/**
+ * Emits the objectGroupChanged signal, should be called when changing the
+ * color of an object group.
+ */
+inline void MapDocument::emitObjectGroupChanged(ObjectGroup *objectGroup)
+{
+    emit objectGroupChanged(objectGroup);
+}
+
+/**
+ * Emits the imageLayerChanged signal, should be called when changing the
+ * image or the transparent color of an image layer.
+ */
+inline void MapDocument::emitImageLayerChanged(ImageLayer *imageLayer)
+{
+    emit imageLayerChanged(imageLayer);
+}
+
+/**
+ * Emits the editLayerNameRequested signal, to get renamed.
+ */
+inline void MapDocument::emitEditLayerNameRequested()
+{
+    emit editLayerNameRequested();
+}
 
 } // namespace Internal
 } // namespace Tiled

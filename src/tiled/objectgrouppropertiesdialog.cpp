@@ -42,9 +42,8 @@ ObjectGroupPropertiesDialog::ObjectGroupPropertiesDialog(
 
     : PropertiesDialog(tr("Object Layer"),
                        objectGroup,
-                       mapDocument->undoStack(),
+                       mapDocument,
                        parent)
-    , mMapDocument(mapDocument)
     , mObjectGroup(objectGroup)
     , mColorButton(new ColorButton)
 {
@@ -57,31 +56,32 @@ ObjectGroupPropertiesDialog::ObjectGroupPropertiesDialog(
         : Qt::gray);
 
     qobject_cast<QBoxLayout*>(layout())->insertLayout(0, grid);
+
+    connect(mColorButton, SIGNAL(colorChanged(QColor)),
+            SLOT(colorChanged(QColor)));
+
+    connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
+            SLOT(objectGroupChanged(ObjectGroup*)));
 }
 
-void ObjectGroupPropertiesDialog::accept()
+void ObjectGroupPropertiesDialog::colorChanged(const QColor &color)
 {
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    const QColor newColor = color != Qt::gray ? color : QColor();
+    if (mObjectGroup->color() == newColor)
+        return;
 
-    const QColor newColor = mColorButton->color() != Qt::gray
-        ? mColorButton->color()
-        : QColor();
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new ChangeObjectGroupProperties(mapDocument(),
+                                                    mObjectGroup,
+                                                    color));
+}
 
-    const bool localChanges = newColor != mObjectGroup->color();
+void ObjectGroupPropertiesDialog::objectGroupChanged(ObjectGroup *objectGroup)
+{
+    if (mObjectGroup != objectGroup)
+        return;
 
-    if (localChanges) {
-        undoStack->beginMacro(QCoreApplication::translate(
-            "Undo Commands",
-            "Change Object Layer Properties"));
-
-        undoStack->push(new ChangeObjectGroupProperties(
-            mMapDocument,
-            mObjectGroup,
-            mColorButton->color()));
-    }
-
-    PropertiesDialog::accept();
-
-    if (localChanges)
-        undoStack->endMacro();
+    mColorButton->setColor(objectGroup->color().isValid()
+                           ? objectGroup->color()
+                           : Qt::gray);
 }

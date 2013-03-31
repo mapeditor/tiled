@@ -24,11 +24,17 @@
 #include "properties.h"
 
 #include <QAbstractItemModel>
-#include <QList>
-#include <QString>
+#include <QStringList>
+
+class QUndoStack;
 
 namespace Tiled {
+
+class Object;
+
 namespace Internal {
+
+class MapDocument;
 
 class PropertiesModel : public QAbstractTableModel
 {
@@ -39,6 +45,11 @@ public:
      * Constructor.
      */
     PropertiesModel(QObject *parent = 0);
+
+    /**
+     * Sets the properties displayed by this model.
+     */
+    void setObject(MapDocument *mapDocument, Object *object);
 
     /**
      * Returns the number of rows.
@@ -81,19 +92,18 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
 
-    /**
-     * Sets the properties displayed by this model.
-     */
-    void setProperties(const Properties &properties);
-
-    /**
-     * Returns the, possibly edited, properties.
-     */
-    const Properties &properties() const;
+private slots:
+    void propertyAdded(Object *object, const QString &name);
+    void propertyRemoved(Object *object, const QString &name);
+    void propertyChanged(Object *object, const QString &name);
+    void propertiesChanged(Object *object);
 
 private:
+    MapDocument *mMapDocument;
+    QUndoStack *mUndoStack;
+    Object *mObject;
     Properties mProperties;
-    QList<QString> mKeys;
+    QStringList mKeys;
 };
 
 } // namespace Internal

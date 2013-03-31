@@ -1,8 +1,8 @@
 /*
  * imagelayerpropertiesdialog.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2010, Michael Woerister <michaelwoerister@gmail.com>
  * Copyright 2011, Gregory Nickonov <gregory@nickonov.ru>
+ * Copyright 2011, Alexander Kuhrt <alex@qrt.de>
+ * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -24,6 +24,7 @@
 #define IMAGELAYERPROPERTIESDIALOG_H
 
 #include "propertiesdialog.h"
+
 #include <QValidator>
 
 class QLineEdit;
@@ -59,14 +60,16 @@ public:
                                ImageLayer *imageLayer,
                                QWidget *parent = 0);
 
-    void accept();
-
 private slots:
     void browseForImage();
     void imagePathChanged();
+    void transparentColorChanged(const QColor &);
+
+    void imageLayerChanged(ImageLayer *imageLayer);
 
 private:
-    MapDocument *mMapDocument;
+    void applyNewImage();
+
     ImageLayer *mImageLayer;
     ColorButton *mColorButton;
     QLineEdit *mImage;

@@ -571,10 +571,7 @@ void TilesetView::editTileProperties()
     if (!tile)
         return;
 
-    PropertiesDialog propertiesDialog(tr("Tile"),
-                                      tile,
-                                      mMapDocument->undoStack(),
-                                      this);
+    PropertiesDialog propertiesDialog(tr("Tile"), tile, mMapDocument, this);
     propertiesDialog.exec();
 }
 

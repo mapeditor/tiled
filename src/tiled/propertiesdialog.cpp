@@ -22,7 +22,6 @@
 #include "propertiesdialog.h"
 #include "ui_propertiesdialog.h"
 
-#include "changeproperties.h"
 #include "imagelayer.h"
 #include "imagelayerpropertiesdialog.h"
 #include "mapdocument.h"
@@ -39,11 +38,11 @@ using namespace Tiled::Internal;
 
 PropertiesDialog::PropertiesDialog(const QString &kind,
                                    Object *object,
-                                   QUndoStack *undoStack,
+                                   MapDocument *mapDocument,
                                    QWidget *parent):
     QDialog(parent),
     mUi(new Ui::PropertiesDialog),
-    mUndoStack(undoStack),
+    mMapDocument(mapDocument),
     mObject(object),
     mKind(kind)
 {
@@ -51,7 +50,7 @@ PropertiesDialog::PropertiesDialog(const QString &kind,
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     mModel = new PropertiesModel(this);
-    mModel->setProperties(mObject->properties());
+    mModel->setObject(mMapDocument, mObject);
     mUi->propertiesView->setModel(mModel);
 
     // Delete selected properties when the delete or backspace key is pressed
@@ -87,12 +86,6 @@ void PropertiesDialog::accept()
     // the data being edited gets saved when the user clicks OK.
     mUi->propertiesView->setFocus();
 
-    const Properties &properties = mModel->properties();
-    if (mObject && mObject->properties() != properties) {
-        mUndoStack->push(new ChangeProperties(mKind,
-                                              mObject,
-                                              properties));
-    }
     QDialog::accept();
 }
 
@@ -113,7 +106,7 @@ void PropertiesDialog::showDialogFor(Layer *layer,
     } else {
         dialog = new PropertiesDialog(tr("Layer"),
                                       layer,
-                                      mapDocument->undoStack(),
+                                      mapDocument,
                                       parent);
     }
 

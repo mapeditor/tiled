@@ -502,7 +502,8 @@ void MapDocument::unifyTilesets(Map *map)
             Tile *replacementTile = replacement->tileAt(i);
             Properties properties = replacementTile->properties();
             properties.merge(tileset->tileAt(i)->properties());
-            undoCommands.append(new ChangeProperties(tr("Tile"),
+            undoCommands.append(new ChangeProperties(this,
+                                                     tr("Tile"),
                                                      replacementTile,
                                                      properties));
         }
@@ -517,31 +518,6 @@ void MapDocument::unifyTilesets(Map *map)
             mUndoStack->push(command);
         mUndoStack->endMacro();
     }
-}
-
-/**
- * Emits the map changed signal. This signal should be emitted after changing
- * the map size or its tile size.
- */
-void MapDocument::emitMapChanged()
-{
-    emit mapChanged();
-}
-
-void MapDocument::emitRegionChanged(const QRegion &region)
-{
-    emit regionChanged(region);
-}
-
-void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
-{
-    emit regionEdited(region, layer);
-}
-
-void MapDocument::emitTileTerrainChanged(const QList<Tile *> &tiles)
-{
-    if (!tiles.isEmpty())
-        emit tileTerrainChanged(tiles);
 }
 
 /**
@@ -659,4 +635,29 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
                                                   objectGroup));
     }
     mUndoStack->endMacro();
+}
+
+void MapDocument::setProperty(Object *object,
+                              const QString &name,
+                              const QString &value)
+{
+    const bool hadProperty = object->hasProperty(name);
+    object->setProperty(name, value);
+
+    if (hadProperty)
+        emit propertyChanged(object, name);
+    else
+        emit propertyAdded(object, name);
+}
+
+void MapDocument::setProperties(Object *object, const Properties &properties)
+{
+    object->setProperties(properties);
+    emit propertiesChanged(object);
+}
+
+void MapDocument::removeProperty(Object *object, const QString &name)
+{
+    object->removeProperty(name);
+    emit propertyRemoved(object, name);
 }

@@ -1,6 +1,8 @@
 /*
  * mappropertiesdialog.cpp
  * Copyright 2012, Emmanuel Barroga emmanuelbarroga@gmail.com
+ * Copyright 2012, Ben Longbons <b.r.longbons@gmail.com>
+ * Copyright 2012-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -39,7 +41,7 @@ MapPropertiesDialog::MapPropertiesDialog(MapDocument *mapDocument,
                                          QWidget *parent)
     : PropertiesDialog(tr("Map"),
                        mapDocument->map(),
-                       mapDocument->undoStack(),
+                       mapDocument,
                        parent)
     , mMapDocument(mapDocument)
     , mColorButton(new ColorButton)
@@ -57,47 +59,62 @@ MapPropertiesDialog::MapPropertiesDialog(MapDocument *mapDocument,
     mLayerDataCombo->addItem(QLatin1String("Base64 (gzip compressed)"));
     mLayerDataCombo->addItem(QLatin1String("Base64 (zlib compressed)"));
     mLayerDataCombo->addItem(QLatin1String("CSV"));
-    mLayerDataCombo->setCurrentIndex(mMapDocument->map()->layerDataFormat() + 1);
+    mLayerDataCombo->setCurrentIndex(mapDocument->map()->layerDataFormat() + 1);
     grid->addWidget(mLayerDataCombo);
 
     QColor bgColor = mapDocument->map()->backgroundColor();
     mColorButton->setColor(bgColor.isValid() ? bgColor : Qt::darkGray);
 
     qobject_cast<QBoxLayout*>(layout())->insertLayout(0, grid);
+
+    connect(mLayerDataCombo, SIGNAL(currentIndexChanged(int)),
+            SLOT(layerDataIndexChanged(int)));
+    connect(mColorButton, SIGNAL(colorChanged(QColor)),
+            SLOT(backgroundColorChanged(QColor)));
+
+    connect(mapDocument, SIGNAL(mapChanged()),
+            SLOT(mapChanged()));
 }
 
-void MapPropertiesDialog::accept()
+void MapPropertiesDialog::layerDataIndexChanged(int index)
 {
-    int format = mLayerDataCombo->currentIndex();
-    if (format == -1) {
+    if (index == -1) {
         // this shouldn't happen!
-        format = 0;
+        index = 0;
     }
 
-    Map::LayerDataFormat newLayerDataFormat = static_cast<Map::LayerDataFormat>(format - 1);
+    const Map *map = mMapDocument->map();
+    const Map::LayerDataFormat format = static_cast<Map::LayerDataFormat>(index - 1);
+    if (map->layerDataFormat() == format)
+        return;
 
     QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new ChangeMapProperties(mMapDocument,
+                                            map->backgroundColor(),
+                                            format));
+}
 
-    QColor newColor = mColorButton->color();
+void MapPropertiesDialog::backgroundColorChanged(const QColor &color)
+{
+    QColor newColor = color;
     if (newColor == Qt::darkGray)
         newColor = QColor();
 
     const Map *map = mMapDocument->map();
-    bool localChanges = newColor != map->backgroundColor() ||
-            newLayerDataFormat != map->layerDataFormat();
+    if (map->backgroundColor() == newColor)
+        return;
 
-    if (localChanges) {
-        undoStack->beginMacro(QCoreApplication::translate(
-            "Undo Commands",
-            "Change Map Properties"));
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new ChangeMapProperties(mMapDocument,
+                                            newColor,
+                                            map->layerDataFormat()));
+}
 
-        undoStack->push(new ChangeMapProperties(mMapDocument,
-                                                newColor,
-                                                newLayerDataFormat));
-    }
+void MapPropertiesDialog::mapChanged()
+{
+    const Map *map = mMapDocument->map();
+    const QColor &bgColor = map->backgroundColor();
 
-    PropertiesDialog::accept();
-
-    if (localChanges)
-        undoStack->endMacro();
+    mColorButton->setColor(bgColor.isValid() ? bgColor : Qt::darkGray);
+    mLayerDataCombo->setCurrentIndex(map->layerDataFormat() + 1);
 }

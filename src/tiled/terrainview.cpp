@@ -119,7 +119,7 @@ void TerrainView::editTerrainProperties()
 
     PropertiesDialog propertiesDialog(tr("Terrain"),
                                       terrain,
-                                      mMapDocument->undoStack(),
+                                      mMapDocument,
                                       this);
     propertiesDialog.exec();
 }

@@ -427,7 +427,8 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
             Properties properties = replacementTile->properties();
             properties.merge(tileset->tileAt(i)->properties());
 
-            undoStack->push(new ChangeProperties(tr("Tile"),
+            undoStack->push(new ChangeProperties(mMapDocument,
+                                                 tr("Tile"),
                                                  replacementTile,
                                                  properties));
         }

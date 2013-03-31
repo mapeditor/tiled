@@ -1,8 +1,8 @@
 /*
  * imagelayerpropertiesdialog.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2010, Michael Woerister <michaelwoerister@gmail.com>
  * Copyright 2011, Gregory Nickonov <gregory@nickonov.ru>
+ * Copyright 2011, Alexander Kuhrt <alex@qrt.de>
+ * Copyright 2012-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -58,16 +58,15 @@ ImageLayerPropertiesDialog::ImageLayerPropertiesDialog(
     ImageLayer *imageLayer,
     QWidget *parent)
     : PropertiesDialog(tr("Image Layer"),
-          imageLayer,
-          mapDocument->undoStack(),
-          parent)
-    , mMapDocument(mapDocument)
+                       imageLayer,
+                       mapDocument,
+                       parent)
     , mImageLayer(imageLayer)
     , mColorButton(new ColorButton)
 {
     mBrowseButton = new QPushButton(tr("Browse..."));
     mImage = new QLineEdit(imageLayer->imageSource());
-    mImage->setValidator(new PathValidator);
+    mImage->setValidator(new PathValidator(this));
 
     QGridLayout *grid = new QGridLayout;
 
@@ -85,6 +84,12 @@ ImageLayerPropertiesDialog::ImageLayerPropertiesDialog(
         : Qt::gray);
 
     qobject_cast<QBoxLayout*>(layout())->insertLayout(0, grid);
+
+    connect(mColorButton, SIGNAL(colorChanged(QColor)),
+            SLOT(transparentColorChanged(QColor)));
+
+    connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
+            SLOT(imageLayerChanged(ImageLayer*)));
 }
 
 void ImageLayerPropertiesDialog::browseForImage()
@@ -93,8 +98,10 @@ void ImageLayerPropertiesDialog::browseForImage()
     const QString filter = Utils::readableImageFormatsFilter();
     QString f = QFileDialog::getOpenFileName(this, tr("Layer Image"), path, filter);
 
-    if (!f.isEmpty())
+    if (!f.isEmpty()) {
         mImage->setText(f);
+        applyNewImage();
+    }
 }
 
 void ImageLayerPropertiesDialog::imagePathChanged()
@@ -103,34 +110,45 @@ void ImageLayerPropertiesDialog::imagePathChanged()
 
     if (!QFile::exists(newPath))
         mImage->setText(mImageLayer->imageSource());
+    else
+        applyNewImage();
 }
 
-void ImageLayerPropertiesDialog::accept()
+void ImageLayerPropertiesDialog::transparentColorChanged(const QColor &color)
 {
-    QUndoStack *undoStack = mMapDocument->undoStack();
+    const QColor newColor = color != Qt::gray ? color : QColor();
+    if (mImageLayer->transparentColor() == newColor)
+        return;
 
-    const QColor newColor = mColorButton->color() != Qt::gray
-        ? mColorButton->color()
-        : QColor();
+    const QString &imageSource = mImageLayer->imageSource();
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new ChangeImageLayerProperties(mapDocument(),
+                                                   mImageLayer,
+                                                   newColor,
+                                                   imageSource));
+}
 
+void ImageLayerPropertiesDialog::imageLayerChanged(ImageLayer *imageLayer)
+{
+    if (mImageLayer != imageLayer)
+        return;
+
+    mImage->setText(imageLayer->imageSource());
+    mColorButton->setColor(imageLayer->transparentColor().isValid()
+                           ? imageLayer->transparentColor()
+                           : Qt::gray);
+}
+
+void ImageLayerPropertiesDialog::applyNewImage()
+{
     const QString newPath = mImage->text();
-    const bool localChanges = newColor != mImageLayer->transparentColor() ||
-            newPath != mImageLayer->imageSource();
+    if (mImageLayer->imageSource() == newPath)
+        return;
 
-    if (localChanges) {
-        undoStack->beginMacro(QCoreApplication::translate(
-            "Undo Commands",
-            "Change Image Layer Properties"));
-
-        undoStack->push(new ChangeImageLayerProperties(
-                            mMapDocument,
-                            mImageLayer,
-                            newColor,
-                            newPath));
-    }
-
-    PropertiesDialog::accept();
-
-    if (localChanges)
-        undoStack->endMacro();
+    const QColor &color = mImageLayer->transparentColor();
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new ChangeImageLayerProperties(mapDocument(),
+                                                   mImageLayer,
+                                                   color,
+                                                   newPath));
 }

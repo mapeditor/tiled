@@ -43,9 +43,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
                                                QWidget *parent)
     : PropertiesDialog(tr("Object"),
                        mapObject,
-                       mapDocument->undoStack(),
+                       mapDocument,
                        parent)
-    , mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mUi(new Ui::ObjectPropertiesDialog)
 {
@@ -70,6 +69,24 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(MapDocument *mapDocument,
     qobject_cast<QBoxLayout*>(layout())->insertWidget(0, widget);
 
     mUi->name->setFocus();
+
+    connect(mUi->name, SIGNAL(textEdited(QString)),
+            SLOT(nameOrTypeEdited()));
+    connect(mUi->type, SIGNAL(editTextChanged(QString)),
+            SLOT(nameOrTypeEdited()));
+    connect(mUi->x, SIGNAL(valueChanged(double)),
+            SLOT(positionEdited()));
+    connect(mUi->y, SIGNAL(valueChanged(double)),
+            SLOT(positionEdited()));
+    connect(mUi->width, SIGNAL(valueChanged(double)),
+            SLOT(sizeEdited()));
+    connect(mUi->height, SIGNAL(valueChanged(double)),
+            SLOT(sizeEdited()));
+    connect(mUi->rotation, SIGNAL(valueChanged(double)),
+            SLOT(rotationEdited()));
+
+    connect(mapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
+            SLOT(objectsChanged(QList<MapObject*>)));
 }
 
 ObjectPropertiesDialog::~ObjectPropertiesDialog()
@@ -77,49 +94,79 @@ ObjectPropertiesDialog::~ObjectPropertiesDialog()
     delete mUi;
 }
 
-void ObjectPropertiesDialog::accept()
+void ObjectPropertiesDialog::nameOrTypeEdited()
 {
     const QString newName = mUi->name->text();
     const QString newType = mUi->type->currentText();
 
-    const qreal newPosX = mUi->x->value();
-    const qreal newPosY = mUi->y->value();
-    const qreal newWidth = mUi->width->value();
-    const qreal newHeight = mUi->height->value();
+    if (mMapObject->name() == newName && mMapObject->type() == newType)
+        return;
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new ChangeMapObject(mapDocument(), mMapObject,
+                                        newName, newType));
+}
+
+void ObjectPropertiesDialog::positionEdited()
+{
+    const QPointF newPos(mUi->x->value(),
+                         mUi->y->value());
+
+    if (mMapObject->position() == newPos)
+        return;
+
+    const QPointF oldPos = mMapObject->position();
+    mMapObject->setPosition(newPos);
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new MoveMapObject(mapDocument(), mMapObject, oldPos));
+}
+
+void ObjectPropertiesDialog::sizeEdited()
+{
+    const QSizeF newSize(mUi->width->value(),
+                         mUi->height->value());
+
+    if (mMapObject->size() == newSize)
+        return;
+
+    const QSizeF oldSize = mMapObject->size();
+    mMapObject->setSize(newSize);
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new ResizeMapObject(mapDocument(), mMapObject, oldSize));
+}
+
+void ObjectPropertiesDialog::rotationEdited()
+{
     const qreal newRotation = mUi->rotation->value();
+    if (mMapObject->rotation() == newRotation)
+        return;
 
-    bool changed = false;
-    changed |= mMapObject->name() != newName;
-    changed |= mMapObject->type() != newType;
-    changed |= mMapObject->x() != newPosX;
-    changed |= mMapObject->y() != newPosY;
-    changed |= mMapObject->width() != newWidth;
-    changed |= mMapObject->height() != newHeight;
-    changed |= mMapObject->rotation() != newRotation;
+    const qreal oldRotation = mMapObject->rotation();
+    mMapObject->setRotation(newRotation);
 
-    if (changed) {
-        QUndoStack *undo = mMapDocument->undoStack();
-        undo->beginMacro(tr("Change Object"));
-        undo->push(new ChangeMapObject(mMapDocument, mMapObject,
-                                       newName, newType));
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->push(new RotateMapObject(mapDocument(), mMapObject, oldRotation));
+}
 
-        const QPointF oldPos = mMapObject->position();
-        mMapObject->setX(newPosX);
-        mMapObject->setY(newPosY);
-        undo->push(new MoveMapObject(mMapDocument, mMapObject, oldPos));
+void ObjectPropertiesDialog::objectsChanged(const QList<MapObject *> &objects)
+{
+    foreach (MapObject *object, objects) {
+        if (object != mMapObject)
+            continue;
 
-        const QSizeF oldSize = mMapObject->size();
-        mMapObject->setWidth(newWidth);
-        mMapObject->setHeight(newHeight);
-        undo->push(new ResizeMapObject(mMapDocument, mMapObject, oldSize));
+        if (mUi->name->text() != object->name())
+            mUi->name->setText(object->name());
 
-        const qreal oldRotation = mMapObject->rotation();
-        mMapObject->setRotation(newRotation);
-        undo->push(new RotateMapObject(mMapDocument, mMapObject, oldRotation));
+        if (mUi->type->currentText() != object->type())
+            mUi->type->setEditText(object->type());
 
-        PropertiesDialog::accept(); // Let PropertiesDialog add its command
-        undo->endMacro();
-    } else {
-        PropertiesDialog::accept();
+        mUi->x->setValue(object->x());
+        mUi->y->setValue(object->y());
+        mUi->width->setValue(object->width());
+        mUi->height->setValue(object->height());
+        mUi->rotation->setValue(object->rotation());
+        break;
     }
 }

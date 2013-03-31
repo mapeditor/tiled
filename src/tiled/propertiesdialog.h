@@ -27,8 +27,6 @@
 #include <QDialog>
 #include <QString>
 
-class QUndoStack;
-
 namespace Ui {
 class PropertiesDialog;
 }
@@ -56,7 +54,7 @@ public:
      */
     PropertiesDialog(const QString &kind,
                      Object *object,
-                     QUndoStack *undoStack,
+                     MapDocument *mapDocument,
                      QWidget *parent = 0);
 
     /**
@@ -77,13 +75,16 @@ public:
                               MapDocument *mapDocument,
                               QWidget *parent);
 
+protected:
+    MapDocument *mapDocument() const { return mMapDocument; }
+
 private slots:
     void deleteSelectedProperties();
 
 private:
     Ui::PropertiesDialog *mUi;
     PropertiesModel *mModel;
-    QUndoStack *mUndoStack;
+    MapDocument *mMapDocument;
     Object *mObject;
     QString mKind;
 };

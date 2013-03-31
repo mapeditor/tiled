@@ -49,10 +49,15 @@ public:
 
     ~ObjectPropertiesDialog();
 
-    void accept();
+private slots:
+    void nameOrTypeEdited();
+    void positionEdited();
+    void sizeEdited();
+    void rotationEdited();
+
+    void objectsChanged(const QList<MapObject*> &objects);
 
 private:
-    MapDocument *mMapDocument;
     MapObject *mMapObject;
 
     Ui::ObjectPropertiesDialog *mUi;

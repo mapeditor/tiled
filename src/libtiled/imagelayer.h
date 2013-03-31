@@ -73,7 +73,7 @@ public:
      * Returns the transparent color, or an invalid color if no transparent
      * color is used.
      */
-    QColor transparentColor() const { return mTransparentColor; }
+    const QColor &transparentColor() const { return mTransparentColor; }
 
     /**
      * Sets the transparent color. Pixels with this color will be masked out
