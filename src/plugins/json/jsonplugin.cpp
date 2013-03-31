@@ -46,15 +46,14 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
 
     JsonReader reader;
     QByteArray contents = file.readAll();
-    if(fileName.endsWith(".js") && contents[0] != '{') {
+    if (fileName.endsWith(".js") && contents.size() > 0 && contents[0] != '{') {
         // Scan past JSONP prefix; look for an open curly at the start of the line
-        for(int i=0; i < contents.size()-2; i++) {
-            if(contents[i] == '\n' && contents[i+1] == '{') {
-                contents.remove(0, i);
-                if(contents.endsWith(';')) contents.chop(1);
-                if(contents.endsWith(')')) contents.chop(1);
-                break;
-            }
+        int i = contents.indexOf(QLatin1String("\n{"));
+        if (i > 0) {
+            contents.remove(0, i);
+            if(contents.endsWith(';')) contents.chop(1);
+            if(contents.endsWith(')')) contents.chop(1);
+            break;
         }
     }
     reader.parse(contents);
@@ -102,8 +101,12 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         JsonWriter nameWriter;
         QString baseName = QFileInfo(fileName).baseName();
         nameWriter.stringify(baseName);
-        out << "(function(name,data){\n if(typeof onTileMapLoaded === 'undefined') {\n  if(typeof TileMaps === 'undefined') TileMaps = {};\n  TileMaps[name] = data;\n } else {\n  onTileMapsLoaded(name,data);\n }})";
-        out << "(" << nameWriter.result() << ",\n";
+        out << "(function(name,data){\n if(typeof onTileMapLoaded === 'undefined') {\n";
+        out << "  if(typeof TileMaps === 'undefined') TileMaps = {};\n";
+        out << "  TileMaps[name] = data;\n";
+        out << " } else {\n";
+        out << "  onTileMapLoaded(name,data);\n";
+        out << " }})(" << nameWriter.result() << ",\n";
     }
     out << writer.result();
     if(isJsFile) {
@@ -123,7 +126,7 @@ QStringList JsonPlugin::nameFilters() const
 {
     QStringList filters;
     filters.append(tr("Json files (*.json)"));
-    filters.append(tr("Javascript files (*.js)"));
+    filters.append(tr("JavaScript files (*.js)"));
     return filters;
 }
 
