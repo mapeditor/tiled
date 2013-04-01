@@ -144,7 +144,8 @@ SOURCES += aboutdialog.cpp \
     toolmanager.cpp \
     undodock.cpp \
     utils.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    consoledialog.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -255,7 +256,8 @@ HEADERS += aboutdialog.h \
     undocommands.h \
     undodock.h \
     utils.h \
-    zoomable.h
+    zoomable.h \
+    consoledialog.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
@@ -272,7 +274,8 @@ FORMS += aboutdialog.ui \
     propertiesdialog.ui \
     resizedialog.ui \
     saveasimagedialog.ui\
-    editterraindialog.ui
+    editterraindialog.ui \
+    consoledialog.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
 icon32.files += images/32x32/tiled.png

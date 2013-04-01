@@ -25,6 +25,7 @@
 
 #include "mapwriterinterface.h"
 #include "mapreaderinterface.h"
+#include "consoleinterface.h"
 
 #include <QObject>
 #include <Python.h>
@@ -39,13 +40,22 @@ class Q_DECL_EXPORT PythonPlugin
         : public QObject
         , public Tiled::MapReaderInterface
         , public Tiled::MapWriterInterface
+        , public Tiled::ConsoleInterface
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapReaderInterface Tiled::MapWriterInterface)
+    Q_INTERFACES(Tiled::MapReaderInterface Tiled::MapWriterInterface Tiled::ConsoleInterface)
+
+signals:
+    void info(QString s);
+    void error(QString s);
 
 public:
     PythonPlugin();
     ~PythonPlugin();
+
+    void PassMessage(const QString msg, OutputType type);
+    void PassMessage(const QString msg);
+    void init_catcher(void);
 
     // MapReaderInterface
     Tiled::Map *read(const QString &fileName);
@@ -83,5 +93,6 @@ public:
 PyMODINIT_FUNC inittiled(void);
 extern int _wrap_convert_py2c__Tiled__Map(PyObject *obj, Tiled::Map *map);
 extern PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue);
+extern PyObject* _wrap_convert_c2py__Tiled__ConsoleInterface(Tiled::ConsoleInterface *cvalue);
 
 #endif // PYTHONPLUGIN_H

@@ -80,6 +80,7 @@
 #include "commandbutton.h"
 #include "objectsdock.h"
 #include "minimapdock.h"
+#include "consoledialog.h"
 
 #ifdef Q_WS_MAC
 #include "macsupport.h"
@@ -117,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTilesetDock(new TilesetDock(this))
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
+    , mConsoleDialog(new ConsoleDialog(NULL))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -130,6 +132,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #ifdef Q_WS_MAC
     MacSupport::addFullscreen(this);
 #endif
+
 
     Preferences *preferences = Preferences::instance();
 
@@ -186,6 +189,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mMapsDock->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
+
+    QIcon consoleIcon(QLatin1String(":images/16x16/terminal.png"));
+    QToolButton *consoleButton = new QToolButton;
+    consoleButton->setPopupMode(QToolButton::InstantPopup);
+    consoleButton->setIcon(consoleIcon);
+    statusBar()->addPermanentWidget(consoleButton);
+    connect(consoleButton, SIGNAL(clicked()), this, SLOT(openConsoleWindow()));
 
     mUi->actionNew->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
@@ -1514,6 +1524,12 @@ void MainWindow::aboutTiled()
 {
     AboutDialog aboutDialog(this);
     aboutDialog.exec();
+}
+
+void MainWindow::openConsoleWindow()
+{
+    mConsoleDialog->show();
+    mConsoleDialog->exec();
 }
 
 void MainWindow::retranslateUi()

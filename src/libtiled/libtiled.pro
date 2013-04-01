@@ -69,6 +69,7 @@ SOURCES += compression.cpp \
     tilelayer.cpp \
     tileset.cpp
 HEADERS += compression.h \
+    consoleinterface.h \
     gidmapper.h \
     imagelayer.h \
     isometricrenderer.h \

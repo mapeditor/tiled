@@ -267,6 +267,10 @@ bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
 }
 """)
 
+"""
+ C++ class PythonScript is seen as Tiled.Plugin from Python script
+ (naming describes the opposite side from either perspective)
+"""
 cls_pp = mod.add_class('PythonScript',
   allow_subclassing=True,
   foreign_cpp_namespace='Python',
@@ -278,16 +282,45 @@ cls_pp = mod.add_class('PythonScript',
 #  [param('const Tiled::Map*','map',transfer_ownership=False),
 #  ('const QString','fileName')])
 
-with open('pythonbind.cpp','w') as fh:
-  mod.generate(fh)
+"""
+PythonPlugin implements ConsoleInterface for messaging to Tiled's console
+window, by exposing "PassMessage" method as "write" and assigning plugin
+instance to sys.stdout/stderr the output goes to the console window.
+"""
+cls_consolei = tiled.add_class('ConsoleInterface')
+cls_consolei.add_enum('OutputType', ('INFO','ERROR'))
+cls_consolei.add_method('PassMessage', 'void', [('QString','msg'),('OutputType','type')], 
+  is_virtual=True)
 
+
+with open('pythonbind.cpp','w') as fh:
   import pybindgen.typehandlers.codesink as cs
   sink = cs.MemoryCodeSink()
+
+  mod.generate(fh)
+
+  print >>fh, """
+PyObject* _wrap_convert_c2py__Tiled__ConsoleInterface(Tiled::ConsoleInterface *cvalue)
+{
+    PyObject *py_retval;
+    PyTiledConsoleInterface *py_ConsoleInterface;
+    
+    py_ConsoleInterface = PyObject_New(PyTiledConsoleInterface, &PyTiledConsoleInterface_Type);
+    py_ConsoleInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_ConsoleInterface->obj = cvalue;
+    py_retval = Py_BuildValue((char *) "N", py_ConsoleInterface);
+    return py_retval;
+}
+    """
+  #mod.generate_c_to_python_type_converter(
+  #  utils.eval_retval(retval("Tiled::ConsoleInterface")),
+  #  sink)
   mod.generate_python_to_c_type_converter(
     utils.eval_retval("Tiled::Map"),
     sink)
   mod.generate_c_to_python_type_converter(
     utils.eval_retval("const Tiled::Map"),
     sink)
+
   print >>fh, sink.flush()
 
