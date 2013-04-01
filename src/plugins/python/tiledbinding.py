@@ -289,7 +289,7 @@ instance to sys.stdout/stderr the output goes to the console window.
 """
 cls_consolei = tiled.add_class('ConsoleInterface')
 cls_consolei.add_enum('OutputType', ('INFO','ERROR'))
-cls_consolei.add_method('PassMessage', 'void', [('QString','msg'),('OutputType','type')], 
+cls_consolei.add_method('PassMessage', 'void', [('const QString','msg'),('OutputType','type')], 
   is_virtual=True)
 
 

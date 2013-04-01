@@ -66,7 +66,8 @@ PythonPlugin::PythonPlugin()
 
     // w/o differentiating error messages could just rename "PassMessage"
     // to "write" in the binding and assign plugin directly to stdout/stderr
-    PySys_SetObject("_tiledplugin", _wrap_convert_c2py__Tiled__ConsoleInterface(this));
+    PySys_SetObject((char *)"_tiledplugin",
+                    _wrap_convert_c2py__Tiled__ConsoleInterface(this));
 
     PyRun_SimpleString("import sys\n"
         "#from tiled.Tiled.ConsoleInterface import INFO,ERROR\n"
@@ -161,7 +162,8 @@ bool PythonPlugin::checkFileSupport(PyObject* cls, char *file) const {
                     "and has @classmethod supportsFile(cls, filename)\n");
     return false;
   }
-  PyObject *pinst = PyObject_CallMethod(cls, "supportsFile", "(s)", file);
+  PyObject *pinst = PyObject_CallMethod(cls, (char *)"supportsFile",
+                                        (char *)"(s)", file);
   if (!pinst) {
     handleError();
     return false;
@@ -212,7 +214,8 @@ void PythonPlugin::reloadModules() {
 
     PyObject *pcls = findPluginSubclass(pmod);
     if(!pcls || !PyCallable_Check(pcls)) {
-      PySys_WriteStderr("Extension of tiled.Plugin not defined in script: %s\n", name.toUtf8().data());
+      PySys_WriteStderr("Extension of tiled.Plugin not defined in "
+                        "script: %s\n", name.toUtf8().data());
       Py_XDECREF(knownExtModules[name]);
       knownExtModules.remove(name);
       continue;
@@ -235,10 +238,12 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
     PassMessage(QString("-- %1 supports %2\n").arg(it.key()).arg(fileName));
 
     if(!PyObject_HasAttrString(it.value(), "read")) {
-      mError = "Please define class that extends tiled.Plugin and has @classmethod read(cls, filename)";
+      mError = "Please define class that extends tiled.Plugin and "
+               "has @classmethod read(cls, filename)";
       return NULL;
     }
-    PyObject *pinst = PyObject_CallMethod(it.value(), "read", "(s)", fileName.toUtf8().data());
+    PyObject *pinst = PyObject_CallMethod(it.value(), (char *)"read",
+                                          (char *)"(s)", fileName.toUtf8().data());
 
     Tiled::Map *ret = new Tiled::Map(Tiled::Map::Orthogonal, 10,10, 16,16);
     if(!pinst) {
@@ -272,10 +277,12 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
     PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map->clone());
     if(!pmap) return false;
     if(!PyObject_HasAttrString(it.value(), "write")) {
-      mError = "Please define class that extends tiled.Plugin and has @classmethod write(cls, map, filename)";
+      mError = "Please define class that extends tiled.Plugin and has "
+               "@classmethod write(cls, map, filename)";
       return NULL;
     }
-    PyObject *pinst = PyObject_CallMethod(it.value(), "write", "(Ns)", pmap, fileName.toUtf8().data());
+    PyObject *pinst = PyObject_CallMethod(it.value(), (char *)"write",
+                                          (char *)"(Ns)", pmap, fileName.toUtf8().data());
 
     if(!pinst) {
       PySys_WriteStderr("** Uncaught exception in script **\n");

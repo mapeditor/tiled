@@ -92,7 +92,8 @@ class QStringParam(Parameter):
 
   def convert_python_to_c(self, wrapper):
     name = wrapper.declarations.declare_variable("const char *", self.name)
-    wrapper.parse_params.add_parameter('s', ['&'+name], self.value)
+    len_ = wrapper.declarations.declare_variable("Py_ssize_t", self.name+"_len")
+    wrapper.parse_params.add_parameter('s#', ['&'+name, '&'+len_], self.value)
     wrapper.call_params.append('QString::fromUtf8(%s)' % name)
 
 class QStringReturnValue(ReturnValue):

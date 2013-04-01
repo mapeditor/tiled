@@ -1108,10 +1108,11 @@ _wrap_PyQImage_load(PyQImage *self, PyObject *args, PyObject *kwargs)
     PyObject *py_retval;
     bool retval;
     const char *fileName;
+    Py_ssize_t fileName_len;
     char *fmt;
     const char *keywords[] = {"fileName", "fmt", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ss", (char **) keywords, &fileName, &fmt)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s", (char **) keywords, &fileName, &fileName_len, &fmt)) {
         return NULL;
     }
     retval = self->obj->load(QString::fromUtf8(fileName), fmt);
@@ -1753,13 +1754,16 @@ _wrap_PyQFileDialog_getOpenFileName(PyQFileDialog *PYBINDGEN_UNUSED(dummy), PyOb
     PyQWidget *parent;
     QWidget *parent_ptr;
     const char *caption;
+    Py_ssize_t caption_len;
     const char *dir;
+    Py_ssize_t dir_len;
     const char *filter;
+    Py_ssize_t filter_len;
     const char *selectedFilter;
     QFileDialog::Option options;
     const char *keywords[] = {"parent", "caption", "dir", "filter", "selectedFilter", "options", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "Osss|si", (char **) keywords, &parent, &caption, &dir, &filter, &selectedFilter, &options)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "Os#s#s#|si", (char **) keywords, &parent, &caption, &caption_len, &dir, &dir_len, &filter, &filter_len, &selectedFilter, &options)) {
         return NULL;
     }
     if (parent && ((PyObject *) parent != Py_None) && !PyObject_IsInstance((PyObject *) parent, (PyObject *) &PyQWidget_Type)) {
@@ -1908,7 +1912,7 @@ _wrap_PyQVector__lt__QRgb__gt____tp_dealloc(PyQVector__lt__QRgb__gt__ *self)
     delete self->obj;
     self->obj = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -1919,7 +1923,7 @@ _wrap_PyQVector__lt__QRgb__gt__Iter__tp_dealloc(PyQVector__lt__QRgb__gt__Iter *s
     delete self->iterator;
     self->iterator = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -2150,7 +2154,7 @@ _wrap_PyQList__lt__QString__gt____tp_dealloc(PyQList__lt__QString__gt__ *self)
     delete self->obj;
     self->obj = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -2161,7 +2165,7 @@ _wrap_PyQList__lt__QString__gt__Iter__tp_dealloc(PyQList__lt__QString__gt__Iter 
     delete self->iterator;
     self->iterator = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -2788,13 +2792,14 @@ static int
 _wrap_PyTiledTileset__tp_init(PyTiledTileset *self, PyObject *args, PyObject *kwargs)
 {
     const char *name;
+    Py_ssize_t name_len;
     int tw;
     int th;
     int ts;
     int margin;
     const char *keywords[] = {"name", "tw", "th", "ts", "margin", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "siiii", (char **) keywords, &name, &tw, &th, &ts, &margin)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#iiii", (char **) keywords, &name, &name_len, &tw, &th, &ts, &margin)) {
         return -1;
     }
     self->obj = new Tiled::Tileset(QString::fromUtf8(name), tw, th, ts, margin);
@@ -2822,9 +2827,10 @@ _wrap_PyTiledTileset_loadFromImage(PyTiledTileset *self, PyObject *args, PyObjec
     bool retval;
     PyQImage *img;
     const char *file;
+    Py_ssize_t file_len;
     const char *keywords[] = {"img", "file", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s", (char **) keywords, &PyQImage_Type, &img, &file)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, &PyQImage_Type, &img, &file, &file_len)) {
         return NULL;
     }
     retval = self->obj->loadFromImage(*((PyQImage *) img)->obj, QString::fromUtf8(file));
@@ -2862,9 +2868,10 @@ _wrap_PyTiledTileset_setName(PyTiledTileset *self, PyObject *args, PyObject *kwa
 {
     PyObject *py_retval;
     const char *name;
+    Py_ssize_t name_len;
     const char *keywords[] = {"name", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s", (char **) keywords, &name)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &name, &name_len)) {
         return NULL;
     }
     self->obj->setName(QString::fromUtf8(name));
@@ -2918,9 +2925,10 @@ _wrap_PyTiledTileset_setFileName(PyTiledTileset *self, PyObject *args, PyObject 
 {
     PyObject *py_retval;
     const char *name;
+    Py_ssize_t name_len;
     const char *keywords[] = {"name", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s", (char **) keywords, &name)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &name, &name_len)) {
         return NULL;
     }
     self->obj->setFileName(QString::fromUtf8(name));
@@ -3258,9 +3266,10 @@ _wrap_PyTiledLayer_setName(PyTiledLayer *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
     const char *name;
+    Py_ssize_t name_len;
     const char *keywords[] = {"name", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s", (char **) keywords, &name)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &name, &name_len)) {
         return NULL;
     }
     self->obj->setName(QString::fromUtf8(name));
@@ -3791,9 +3800,10 @@ _wrap_PyTiledMap_property(PyTiledMap *self, PyObject *args, PyObject *kwargs)
     PyObject *py_retval;
     QString retval;
     const char *name;
+    Py_ssize_t name_len;
     const char *keywords[] = {"name", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s", (char **) keywords, &name)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &name, &name_len)) {
         return NULL;
     }
     retval = self->obj->property(QString::fromUtf8(name));
@@ -4128,40 +4138,17 @@ _wrap_PyTiledMap_setProperty(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
     const char *name;
+    Py_ssize_t name_len;
     const char *value;
+    Py_ssize_t value_len;
     const char *keywords[] = {"name", "value", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ss", (char **) keywords, &name, &value)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#", (char **) keywords, &name, &name_len, &value, &value_len)) {
         return NULL;
     }
     self->obj->setProperty(QString::fromUtf8(name), QString::fromUtf8(value));
     Py_INCREF(Py_None);
     py_retval = Py_None;
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledMap_layerAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    Tiled::Layer *retval;
-    int idx;
-    const char *keywords[] = {"idx", NULL};
-    PyTiledLayer *py_Layer;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &idx)) {
-        return NULL;
-    }
-    retval = self->obj->layerAt(idx);
-    if (!(retval)) {
-        Py_INCREF(Py_None);
-        return Py_None;
-    }
-    py_Layer = PyObject_New(PyTiledLayer, &PyTiledLayer_Type);
-    py_Layer->obj = retval;
-    py_Layer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
-    py_retval = Py_BuildValue((char *) "N", py_Layer);
     return py_retval;
 }
 
@@ -4210,6 +4197,31 @@ _wrap_PyTiledMap_properties(PyTiledMap *self)
 }
 
 
+PyObject *
+_wrap_PyTiledMap_layerAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    Tiled::Layer *retval;
+    int idx;
+    const char *keywords[] = {"idx", NULL};
+    PyTiledLayer *py_Layer;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &idx)) {
+        return NULL;
+    }
+    retval = self->obj->layerAt(idx);
+    if (!(retval)) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    py_Layer = PyObject_New(PyTiledLayer, &PyTiledLayer_Type);
+    py_Layer->obj = retval;
+    py_Layer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
+    py_retval = Py_BuildValue((char *) "N", py_Layer);
+    return py_retval;
+}
+
+
 static PyObject*
 _wrap_PyTiledMap__copy__(PyTiledMap *self)
 {
@@ -4239,10 +4251,10 @@ static PyMethodDef PyTiledMap_methods[] = {
     {(char *) "layerCount", (PyCFunction) _wrap_PyTiledMap_layerCount, METH_NOARGS, NULL },
     {(char *) "addLayer", (PyCFunction) _wrap_PyTiledMap_addLayer, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "setProperty", (PyCFunction) _wrap_PyTiledMap_setProperty, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "objectGroupCount", (PyCFunction) _wrap_PyTiledMap_objectGroupCount, METH_NOARGS, NULL },
     {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMap_setWidth, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "properties", (PyCFunction) _wrap_PyTiledMap_properties, METH_NOARGS, NULL },
+    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "__copy__", (PyCFunction) _wrap_PyTiledMap__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
@@ -4510,13 +4522,14 @@ static int
 _wrap_PyTiledTileLayer__tp_init(PyTiledTileLayer *self, PyObject *args, PyObject *kwargs)
 {
     const char *name;
+    Py_ssize_t name_len;
     int x;
     int y;
     int w;
     int h;
     const char *keywords[] = {"name", "x", "y", "w", "h", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "siiii", (char **) keywords, &name, &x, &y, &w, &h)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#iiii", (char **) keywords, &name, &name_len, &x, &y, &w, &h)) {
         return -1;
     }
     self->obj = new Tiled::TileLayer(QString::fromUtf8(name), x, y, w, h);
@@ -4705,13 +4718,14 @@ static int
 _wrap_PyTiledImageLayer__tp_init(PyTiledImageLayer *self, PyObject *args, PyObject *kwargs)
 {
     const char *name;
+    Py_ssize_t name_len;
     int x;
     int y;
     int w;
     int h;
     const char *keywords[] = {"name", "x", "y", "w", "h", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "siiii", (char **) keywords, &name, &x, &y, &w, &h)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#iiii", (char **) keywords, &name, &name_len, &x, &y, &w, &h)) {
         return -1;
     }
     self->obj = new Tiled::ImageLayer(QString::fromUtf8(name), x, y, w, h);
@@ -4742,9 +4756,10 @@ _wrap_PyTiledImageLayer_loadFromImage(PyTiledImageLayer *self, PyObject *args, P
     bool retval;
     PyQImage *img;
     const char *file;
+    Py_ssize_t file_len;
     const char *keywords[] = {"img", "file", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s", (char **) keywords, &PyQImage_Type, &img, &file)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, &PyQImage_Type, &img, &file, &file_len)) {
         return NULL;
     }
     retval = self->obj->loadFromImage(*((PyQImage *) img)->obj, QString::fromUtf8(file));
@@ -4887,10 +4902,12 @@ _wrap_PyTiledObject_setProperty(PyTiledObject *self, PyObject *args, PyObject *k
 {
     PyObject *py_retval;
     const char *prop;
+    Py_ssize_t prop_len;
     const char *val;
+    Py_ssize_t val_len;
     const char *keywords[] = {"prop", "val", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ss", (char **) keywords, &prop, &val)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#", (char **) keywords, &prop, &prop_len, &val, &val_len)) {
         return NULL;
     }
     self->obj->setProperty(QString::fromUtf8(prop), QString::fromUtf8(val));
@@ -4906,9 +4923,10 @@ _wrap_PyTiledObject_property(PyTiledObject *self, PyObject *args, PyObject *kwar
     PyObject *py_retval;
     QString retval;
     const char *prop;
+    Py_ssize_t prop_len;
     const char *keywords[] = {"prop", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s", (char **) keywords, &prop)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &prop, &prop_len)) {
         return NULL;
     }
     retval = self->obj->property(QString::fromUtf8(prop));
@@ -5044,12 +5062,14 @@ static int
 _wrap_PyTiledMapObject__tp_init__1(PyTiledMapObject *self, PyObject *args, PyObject *kwargs, PyObject **return_exception)
 {
     const char *name;
+    Py_ssize_t name_len;
     const char *type;
+    Py_ssize_t type_len;
     PyQPointF *pos;
     PyQSizeF *size;
     const char *keywords[] = {"name", "type", "pos", "size", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "ssO!O!", (char **) keywords, &name, &type, &PyQPointF_Type, &pos, &PyQSizeF_Type, &size)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#O!O!", (char **) keywords, &name, &name_len, &type, &type_len, &PyQPointF_Type, &pos, &PyQSizeF_Type, &size)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -5418,13 +5438,14 @@ static int
 _wrap_PyTiledObjectGroup__tp_init(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
 {
     const char *name;
+    Py_ssize_t name_len;
     int x;
     int y;
     int w;
     int h;
     const char *keywords[] = {"name", "x", "y", "w", "h", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "siiii", (char **) keywords, &name, &x, &y, &w, &h)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#iiii", (char **) keywords, &name, &name_len, &x, &y, &w, &h)) {
         return -1;
     }
     self->obj = new Tiled::ObjectGroup(QString::fromUtf8(name), x, y, w, h);
@@ -5631,10 +5652,11 @@ _wrap_PyTiledConsoleInterface_PassMessage(PyTiledConsoleInterface *self, PyObjec
 {
     PyObject *py_retval;
     const char *msg;
+    Py_ssize_t msg_len;
     Tiled::ConsoleInterface::OutputType type;
     const char *keywords[] = {"msg", "type", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "si", (char **) keywords, &msg, &type)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#i", (char **) keywords, &msg, &msg_len, &type)) {
         return NULL;
     }
     self->obj->PassMessage(QString::fromUtf8(msg), type);
@@ -5899,9 +5921,10 @@ _wrap_tiled_loadTilesetFromFile(PyObject * PYBINDGEN_UNUSED(dummy), PyObject *ar
     PyTiledTileset *ts;
     Tiled::Tileset *ts_ptr;
     const char *file;
+    Py_ssize_t file_len;
     const char *keywords[] = {"ts", "file", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s", (char **) keywords, &PyTiledTileset_Type, &ts, &file)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!s#", (char **) keywords, &PyTiledTileset_Type, &ts, &file, &file_len)) {
         return NULL;
     }
     ts_ptr = (ts ? ts->obj : NULL);
