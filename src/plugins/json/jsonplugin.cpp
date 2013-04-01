@@ -51,8 +51,8 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
         int i = contents.indexOf(QLatin1String("\n{"));
         if (i > 0) {
             contents.remove(0, i);
-            if(contents.endsWith(';')) contents.chop(1);
-            if(contents.endsWith(')')) contents.chop(1);
+            if (contents.endsWith(';')) contents.chop(1);
+            if (contents.endsWith(')')) contents.chop(1);
             break;
         }
     }
@@ -96,7 +96,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
 
     QTextStream out(&file);
     bool isJsFile = fileName.endsWith(".js");
-    if(isJsFile) {
+    if (isJsFile) {
         // Trim and escape name
         JsonWriter nameWriter;
         QString baseName = QFileInfo(fileName).baseName();
@@ -109,7 +109,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         out << " }})(" << nameWriter.result() << ",\n";
     }
     out << writer.result();
-    if(isJsFile) {
+    if (isJsFile) {
         out << ");";
     }
     out.flush();
