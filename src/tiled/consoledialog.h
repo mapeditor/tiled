@@ -43,8 +43,6 @@ protected slots:
 
 private:
     Ui::ConsoleDialog *ui;
-    QColor infoColor;
-    QColor errorColor;
 };
 
 #endif // CONSOLEDIALOG_H

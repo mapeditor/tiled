@@ -32,8 +32,12 @@ ConsoleDialog::ConsoleDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    infoColor = Qt::green; // .setRgb( 0xff, 0xff, 0xff, 0xff );
-    errorColor = Qt::red;
+    ui->plainTextEdit->setStyleSheet(QString::fromUtf8(
+                            "QAbstractScrollArea {"
+                            " background-color: black;"
+                            " color:green;"
+                            "}"
+                            ));
 
     PluginManager *pm = PluginManager::instance();
 
@@ -50,16 +54,16 @@ ConsoleDialog::ConsoleDialog(QWidget *parent) :
 
 void ConsoleDialog::appendInfo(QString str)
 {
-//    ui->plainTextEdit->setTextColor(infoColor);
-    ui->plainTextEdit->moveCursor(QTextCursor::End);
-    ui->plainTextEdit->insertPlainText(str);
+    ui->plainTextEdit->appendHtml(str
+                    .prepend(QString::fromUtf8("<pre>"))
+                    .append(QString::fromUtf8("</pre>")));
 }
 
 void ConsoleDialog::appendError(QString str)
 {
-//    ui->plainTextEdit->setTextColor(errorColor);
-    ui->plainTextEdit->moveCursor(QTextCursor::End);
-    ui->plainTextEdit->insertPlainText(str);
+    ui->plainTextEdit->appendHtml(str
+                    .prepend(QString::fromUtf8("<pre style='color:red'>"))
+                    .append(QString::fromUtf8("</pre>")));
 }
 
 ConsoleDialog::~ConsoleDialog()

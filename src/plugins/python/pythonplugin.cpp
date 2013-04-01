@@ -57,7 +57,7 @@ PythonPlugin::PythonPlugin()
     PyObject *pmod = PyImport_ImportModule("tiled");
     pTiledCls = PyObject_GetAttrString(pmod, "Plugin");
     if(!pTiledCls || !PyCallable_Check(pTiledCls)) {
-      PySys_WriteStderr("Can't find tiled.Plugin baseclass");
+      PySys_WriteStderr("Can't find tiled.Plugin baseclass\n");
       Py_XDECREF(pTiledCls);
       handleError();
       return;
@@ -72,9 +72,13 @@ PythonPlugin::PythonPlugin()
         "#from tiled.Tiled.ConsoleInterface import INFO,ERROR\n"
         "class _Catcher:\n"
         "   def __init__(self, type):\n"
+        "      self.buffer = ''\n"
         "      self.type = type\n"
         "   def write(self, msg):\n"
-        "      sys._tiledplugin.PassMessage(msg, self.type)\n"
+        "      self.buffer += msg\n"
+        "      if self.buffer.endswith('\\n'):\n"
+        "         sys._tiledplugin.PassMessage(self.buffer, self.type)\n"
+        "         self.buffer = ''\n"
         "sys.stdout = _Catcher(0)\n"
         "sys.stderr = _Catcher(1)\n");
 
@@ -141,7 +145,7 @@ PyObject *PythonPlugin::findPluginSubclass(PyObject *pmod) {
 PyObject *PythonPlugin::checkFunction(PyObject *pcls, const char *fun) const {
   PyObject *pfun = PyObject_GetAttrString(pcls, fun);
   if(!pfun || !PyCallable_Check(pfun)) {
-    PySys_WriteStderr("No such function defined: %s", fun);
+    PySys_WriteStderr("No such function defined: %s\n", fun);
     return NULL;
   }
   return pfun;
@@ -153,7 +157,8 @@ PyObject *PythonPlugin::checkFunction(PyObject *pcls, const char *fun) const {
  */
 bool PythonPlugin::checkFileSupport(PyObject* cls, char *file) const {
   if(!PyObject_HasAttrString(cls, "supportsFile")) {
-    PySys_WriteStderr("Please define class that extends tiled.Plugin and has @classmethod supportsFile(cls, filename)");
+    PySys_WriteStderr("Please define class that extends tiled.Plugin "
+                    "and has @classmethod supportsFile(cls, filename)\n");
     return false;
   }
   PyObject *pinst = PyObject_CallMethod(cls, "supportsFile", "(s)", file);
@@ -184,20 +189,20 @@ void PythonPlugin::reloadModules() {
     PyObject *pmod;
 
     if (knownExtModules.contains(name)) {
-      PySys_WriteStdout("-- Reloading %s", name.toUtf8().data());
+      PySys_WriteStdout("-- Reloading %s\n", name.toUtf8().data());
       Py_XDECREF(knownExtClasses[name]);
       knownExtClasses.remove(name);
 
       pmod = PyImport_ReloadModule(knownExtModules[name]);
 
     } else {
-      PySys_WriteStdout("-- Loading %s", name.toUtf8().data());
+      PySys_WriteStdout("-- Loading %s\n", name.toUtf8().data());
       pmod = PyImport_ImportModule(name.toUtf8().data());
       knownExtModules[name] = pmod;
     }
 
     if(pmod == NULL) {
-      PySys_WriteStderr("** Parse exception **");
+      PySys_WriteStderr("** Parse exception **\n");
       PyErr_Print();
       PyErr_Clear();
       Py_XDECREF(knownExtModules[name]);
@@ -207,7 +212,7 @@ void PythonPlugin::reloadModules() {
 
     PyObject *pcls = findPluginSubclass(pmod);
     if(!pcls || !PyCallable_Check(pcls)) {
-      PySys_WriteStderr("Extension of tiled.Plugin not defined in script: %s", name.toUtf8().data());
+      PySys_WriteStderr("Extension of tiled.Plugin not defined in script: %s\n", name.toUtf8().data());
       Py_XDECREF(knownExtModules[name]);
       knownExtModules.remove(name);
       continue;
@@ -237,7 +242,7 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
 
     Tiled::Map *ret = new Tiled::Map(Tiled::Map::Orthogonal, 10,10, 16,16);
     if(!pinst) {
-      PySys_WriteStderr("** Uncaught exception in script **");
+      PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
       _wrap_convert_py2c__Tiled__Map(pinst, ret);
       Py_DECREF(pinst);
@@ -273,7 +278,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
     PyObject *pinst = PyObject_CallMethod(it.value(), "write", "(Ns)", pmap, fileName.toUtf8().data());
 
     if(!pinst) {
-      PySys_WriteStderr("** Uncaught exception in script **");
+      PySys_WriteStderr("** Uncaught exception in script **\n");
       mError = "Uncaught exception in script. Please check console.";
     } else {
       bool ret = PyObject_IsTrue(pinst);
@@ -285,7 +290,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
     return false;
   }
   mError = "Export aborted. Map property \"__script__\" undefined or script missing";
-  PySys_WriteStderr(mError.toUtf8().data());
+  PySys_WriteStderr(mError.append("\n").toUtf8().data());
   return false;
 }
 
@@ -303,14 +308,14 @@ QStringList PythonPlugin::nameFilters() const
     // find fun
     PyObject *pfun = PyObject_GetAttrString(it.value(), "nameFilter");
     if(!pfun || !PyCallable_Check(pfun)) {
-      PySys_WriteStderr("Plugin extension doesn't define \"nameFilter\"");
+      PySys_WriteStderr("Plugin extension doesn't define \"nameFilter\"\n");
       continue;
     }
 
     // have fun
     PyObject *pinst = PyEval_CallFunction(pfun, "()");
     if(!pinst) {
-      PySys_WriteStderr("** Uncaught exception in script **");
+      PySys_WriteStderr("** Uncaught exception in script **\n");
     } else {
       ret += PyString_AsString(pinst);
       Py_DECREF(pinst);
