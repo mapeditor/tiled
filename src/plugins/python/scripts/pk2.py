@@ -7,6 +7,7 @@ Notes:
 """
 import os, sys, re, string
 from tiled import *
+from tiled.qt import *
 from lib import cpystruct
 from os.path import dirname, exists
 from struct import pack,unpack,Struct
@@ -35,9 +36,6 @@ class PK2(Plugin):
       lay3 = PK2MAPLAYER(fh)
       print lvl
 
-    m = Tiled.Map(Tiled.Map.Orthogonal, 0,0, 32,32)
-    maps.append(m)
-
     # -- tileset
     img = QImage()
     img.load(dirname(f)+'/../../gfx/tiles/'+str(lvl.tileFile), 'BMP')
@@ -55,6 +53,9 @@ class PK2(Plugin):
       bb[3] = max([bb[3], l.height()])
 
     print 'bounds', bb
+
+    m = Tiled.Map(Tiled.Map.Orthogonal, bb[2], bb[3], 32,32)
+    maps.append(m)
 
     # -- background image
     lai = Tiled.ImageLayer('Scenery', 0,0, bb[2], bb[3])

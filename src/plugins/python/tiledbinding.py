@@ -120,8 +120,9 @@ cls_map.add_method('setProperty', None, [('QString','name'),
 
 cls_cell = tiled.add_class('Cell')
 cls_cell.add_constructor([param('Tiled::Tile*','tile',
-  transfer_ownership=True)]) # ok
-cls_cell.add_instance_attribute('tile', param('Tiled::Tile*',reference_existing_object=True))
+  transfer_ownership=True)])
+cls_cell.add_instance_attribute('tile', param('Tiled::Tile*',
+        caller_owns_return=True, reference_existing_object=True))
 
 cls_tilelayer = tiled.add_class('TileLayer', cls_layer)
 cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
