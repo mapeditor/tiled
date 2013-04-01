@@ -247,7 +247,7 @@ void DocumentManager::updateDocumentTab()
     mTabWidget->setTabToolTip(index, mapDocument->fileName());
 }
 
-void DocumentManager::centerViewOn(int x, int y)
+void DocumentManager::centerViewOn(qreal x, qreal y)
 {
     MapView *view = currentMapView();
     if (!view)

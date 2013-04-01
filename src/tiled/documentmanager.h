@@ -128,7 +128,9 @@ public:
     /**
      * Centers the current map on the tile coordinates \a x, \a y.
      */
-    void centerViewOn(int x, int y);
+    void centerViewOn(qreal x, qreal y);
+    void centerViewOn(const QPointF &pos)
+    { centerViewOn(pos.x(), pos.y()); }
 
 signals:
     /**
