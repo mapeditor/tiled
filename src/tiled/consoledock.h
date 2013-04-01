@@ -1,5 +1,5 @@
 /*
- * consoledialog.h
+ * consoledock.h
  * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
  *
  * This file is part of Tiled.
@@ -18,31 +18,27 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONSOLEDIALOG_H
-#define CONSOLEDIALOG_H
+#ifndef CONSOLEDOCK_H
+#define CONSOLEDOCK_H
 
-#include <QDialog>
-#include <QString>
-#include "consoleinterface.h"
+#include <QDockWidget>
+#include <QPlainTextEdit>
+#include "logginginterface.h"
 
-namespace Ui {
-class ConsoleDialog;
-}
-
-class ConsoleDialog : public QDialog
+class ConsoleDock : public QDockWidget
 {
     Q_OBJECT
     
 public:
-    explicit ConsoleDialog(QWidget *parent = 0);
-    ~ConsoleDialog();
+    explicit ConsoleDock(QWidget *parent = 0);
+    ~ConsoleDock();
 
 protected slots:
     void appendInfo(QString str);
     void appendError(QString str);
 
 private:
-    Ui::ConsoleDialog *ui;
+    QPlainTextEdit *plainTextEdit;
 };
 
-#endif // CONSOLEDIALOG_H
+#endif // CONSOLEDOCK_H

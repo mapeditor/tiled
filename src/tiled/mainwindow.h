@@ -25,7 +25,7 @@
 #define MAINWINDOW_H
 
 #include "mapdocument.h"
-#include "consoledialog.h"
+#include "consoledock.h"
 
 #include <QMainWindow>
 #include <QSessionManager>
@@ -143,7 +143,6 @@ public slots:
     void updateActions();
     void updateZoomLabel();
     void aboutTiled();
-    void openConsoleWindow();
     void openRecentFile();
     void clearRecentFiles();
 
@@ -221,7 +220,7 @@ private:
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
-    ConsoleDialog *mConsoleDialog;
+    ConsoleDock *mConsoleDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;

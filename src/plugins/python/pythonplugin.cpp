@@ -64,13 +64,13 @@ PythonPlugin::PythonPlugin()
     }
     Py_XDECREF(pmod);
 
-    // w/o differentiating error messages could just rename "PassMessage"
+    // w/o differentiating error messages could just rename "log"
     // to "write" in the binding and assign plugin directly to stdout/stderr
     PySys_SetObject((char *)"_tiledplugin",
-                    _wrap_convert_c2py__Tiled__ConsoleInterface(this));
+                    _wrap_convert_c2py__Tiled__LoggingInterface(this));
 
     PyRun_SimpleString("import sys\n"
-        "#from tiled.Tiled.ConsoleInterface import INFO,ERROR\n"
+        "#from tiled.Tiled.LoggingInterface import INFO,ERROR\n"
         "class _Catcher:\n"
         "   def __init__(self, type):\n"
         "      self.buffer = ''\n"
@@ -78,7 +78,7 @@ PythonPlugin::PythonPlugin()
         "   def write(self, msg):\n"
         "      self.buffer += msg\n"
         "      if self.buffer.endswith('\\n'):\n"
-        "         sys._tiledplugin.PassMessage(self.buffer, self.type)\n"
+        "         sys._tiledplugin.log(self.type, self.buffer)\n"
         "         self.buffer = ''\n"
         "sys.stdout = _Catcher(0)\n"
         "sys.stderr = _Catcher(1)\n");
@@ -86,20 +86,20 @@ PythonPlugin::PythonPlugin()
     PyRun_SimpleString(QString("import sys; sys.path.insert(0, \"%1\")")
         .arg(scriptdir).toUtf8().data());
 
-    PassMessage(QString("-- Added %1 to path\n").arg(scriptdir));
+    log(QString("-- Added %1 to path\n").arg(scriptdir));
   }
 
   reloadModules();
 }
 
-void PythonPlugin::PassMessage(const QString msg, OutputType type) {
+void PythonPlugin::log(OutputType type, const QString msg) {
   if(type == INFO)
     emit info(msg);
   else if(type == ERROR)
     emit error(msg);
 }
-void PythonPlugin::PassMessage(const QString msg) {
-  PassMessage(msg, INFO);
+void PythonPlugin::log(const QString msg) {
+  log(INFO, msg);
 }
 
 /**
@@ -235,7 +235,7 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
   while (it.hasNext()) {
     it.next();
     if(!checkFileSupport(it.value(), fileName.toUtf8().data())) continue;
-    PassMessage(QString("-- %1 supports %2\n").arg(it.key()).arg(fileName));
+    log(QString("-- %1 supports %2\n").arg(it.key()).arg(fileName));
 
     if(!PyObject_HasAttrString(it.value(), "read")) {
       mError = "Please define class that extends tiled.Plugin and "
@@ -272,7 +272,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
   while (it.hasNext()) {
     it.next();
     if(map->property("__script__") != it.key()) continue;
-    PassMessage(QString("-- Script used for exporting: %1\n").arg(it.key()));
+    log(QString("-- Script used for exporting: %1\n").arg(it.key()));
 
     PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map->clone());
     if(!pmap) return false;

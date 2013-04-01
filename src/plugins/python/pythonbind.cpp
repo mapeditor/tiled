@@ -316,12 +316,12 @@ extern PyTypeObject PyTiledObjectGroup_Type;
 
 typedef struct {
     PyObject_HEAD
-    Tiled::ConsoleInterface *obj;
+    Tiled::LoggingInterface *obj;
     PyBindGenWrapperFlags flags:8;
-} PyTiledConsoleInterface;
+} PyTiledLoggingInterface;
 
 
-extern PyTypeObject PyTiledConsoleInterface_Type;
+extern PyTypeObject PyTiledLoggingInterface_Type;
 
 
 int _wrap_convert_py2c__QRgb(PyObject *value, QRgb *address);
@@ -1912,7 +1912,7 @@ _wrap_PyQVector__lt__QRgb__gt____tp_dealloc(PyQVector__lt__QRgb__gt__ *self)
     delete self->obj;
     self->obj = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -1923,7 +1923,7 @@ _wrap_PyQVector__lt__QRgb__gt__Iter__tp_dealloc(PyQVector__lt__QRgb__gt__Iter *s
     delete self->iterator;
     self->iterator = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -2154,7 +2154,7 @@ _wrap_PyQList__lt__QString__gt____tp_dealloc(PyQList__lt__QString__gt__ *self)
     delete self->obj;
     self->obj = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -2165,7 +2165,7 @@ _wrap_PyQList__lt__QString__gt__Iter__tp_dealloc(PyQList__lt__QString__gt__Iter 
     delete self->iterator;
     self->iterator = NULL;
 
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    self->ob_type->tp_free((PyObject*)self);
 }
 
 
@@ -4154,31 +4154,6 @@ _wrap_PyTiledMap_setProperty(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 
 
 PyObject *
-_wrap_PyTiledMap_layerAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    Tiled::Layer *retval;
-    int idx;
-    const char *keywords[] = {"idx", NULL};
-    PyTiledLayer *py_Layer;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &idx)) {
-        return NULL;
-    }
-    retval = self->obj->layerAt(idx);
-    if (!(retval)) {
-        Py_INCREF(Py_None);
-        return Py_None;
-    }
-    py_Layer = PyObject_New(PyTiledLayer, &PyTiledLayer_Type);
-    py_Layer->obj = retval;
-    py_Layer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
-    py_retval = Py_BuildValue((char *) "N", py_Layer);
-    return py_retval;
-}
-
-
-PyObject *
 _wrap_PyTiledMap_objectGroupCount(PyTiledMap *self)
 {
     PyObject *py_retval;
@@ -4222,6 +4197,31 @@ _wrap_PyTiledMap_properties(PyTiledMap *self)
 }
 
 
+PyObject *
+_wrap_PyTiledMap_layerAt(PyTiledMap *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    Tiled::Layer *retval;
+    int idx;
+    const char *keywords[] = {"idx", NULL};
+    PyTiledLayer *py_Layer;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &idx)) {
+        return NULL;
+    }
+    retval = self->obj->layerAt(idx);
+    if (!(retval)) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    py_Layer = PyObject_New(PyTiledLayer, &PyTiledLayer_Type);
+    py_Layer->obj = retval;
+    py_Layer->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
+    py_retval = Py_BuildValue((char *) "N", py_Layer);
+    return py_retval;
+}
+
+
 static PyObject*
 _wrap_PyTiledMap__copy__(PyTiledMap *self)
 {
@@ -4251,10 +4251,10 @@ static PyMethodDef PyTiledMap_methods[] = {
     {(char *) "layerCount", (PyCFunction) _wrap_PyTiledMap_layerCount, METH_NOARGS, NULL },
     {(char *) "addLayer", (PyCFunction) _wrap_PyTiledMap_addLayer, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "setProperty", (PyCFunction) _wrap_PyTiledMap_setProperty, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "objectGroupCount", (PyCFunction) _wrap_PyTiledMap_objectGroupCount, METH_NOARGS, NULL },
     {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMap_setWidth, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "properties", (PyCFunction) _wrap_PyTiledMap_properties, METH_NOARGS, NULL },
+    {(char *) "layerAt", (PyCFunction) _wrap_PyTiledMap_layerAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "__copy__", (PyCFunction) _wrap_PyTiledMap__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
@@ -5639,40 +5639,40 @@ PyTypeObject PyTiledObjectGroup_Type = {
 
 
 static int
-_wrap_PyTiledConsoleInterface__tp_init(void)
+_wrap_PyTiledLoggingInterface__tp_init(void)
 {
-    PyErr_SetString(PyExc_TypeError, "class 'ConsoleInterface' cannot be constructed ()");
+    PyErr_SetString(PyExc_TypeError, "class 'LoggingInterface' cannot be constructed ()");
     return -1;
 }
 
 
 PyObject *
-_wrap_PyTiledConsoleInterface_PassMessage(PyTiledConsoleInterface *self, PyObject *args, PyObject *kwargs)
+_wrap_PyTiledLoggingInterface_log(PyTiledLoggingInterface *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
+    Tiled::LoggingInterface::OutputType type;
     const char *msg;
     Py_ssize_t msg_len;
-    Tiled::ConsoleInterface::OutputType type;
-    const char *keywords[] = {"msg", "type", NULL};
+    const char *keywords[] = {"type", "msg", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#i", (char **) keywords, &msg, &msg_len, &type)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "is#", (char **) keywords, &type, &msg, &msg_len)) {
         return NULL;
     }
-    self->obj->PassMessage(QString::fromUtf8(msg), type);
+    self->obj->log(type, QString::fromUtf8(msg));
     Py_INCREF(Py_None);
     py_retval = Py_None;
     return py_retval;
 }
 
-static PyMethodDef PyTiledConsoleInterface_methods[] = {
-    {(char *) "PassMessage", (PyCFunction) _wrap_PyTiledConsoleInterface_PassMessage, METH_KEYWORDS|METH_VARARGS, NULL },
+static PyMethodDef PyTiledLoggingInterface_methods[] = {
+    {(char *) "log", (PyCFunction) _wrap_PyTiledLoggingInterface_log, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
 
 static void
-_wrap_PyTiledConsoleInterface__tp_dealloc(PyTiledConsoleInterface *self)
+_wrap_PyTiledLoggingInterface__tp_dealloc(PyTiledLoggingInterface *self)
 {
-        Tiled::ConsoleInterface *tmp = self->obj;
+        Tiled::LoggingInterface *tmp = self->obj;
         self->obj = NULL;
         if (!(self->flags&PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED)) {
             delete tmp;
@@ -5681,10 +5681,10 @@ _wrap_PyTiledConsoleInterface__tp_dealloc(PyTiledConsoleInterface *self)
 }
 
 static PyObject*
-_wrap_PyTiledConsoleInterface__tp_richcompare (PyTiledConsoleInterface *PYBINDGEN_UNUSED(self), PyTiledConsoleInterface *other, int opid)
+_wrap_PyTiledLoggingInterface__tp_richcompare (PyTiledLoggingInterface *PYBINDGEN_UNUSED(self), PyTiledLoggingInterface *other, int opid)
 {
 
-    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledConsoleInterface_Type)) {
+    if (!PyObject_IsInstance((PyObject*) other, (PyObject*) &PyTiledLoggingInterface_Type)) {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
@@ -5713,14 +5713,14 @@ _wrap_PyTiledConsoleInterface__tp_richcompare (PyTiledConsoleInterface *PYBINDGE
     return Py_NotImplemented;
 }
 
-PyTypeObject PyTiledConsoleInterface_Type = {
+PyTypeObject PyTiledLoggingInterface_Type = {
     PyObject_HEAD_INIT(NULL)
     0,                                 /* ob_size */
-    (char *) "tiled.Tiled.ConsoleInterface",            /* tp_name */
-    sizeof(PyTiledConsoleInterface),                  /* tp_basicsize */
+    (char *) "tiled.Tiled.LoggingInterface",            /* tp_name */
+    sizeof(PyTiledLoggingInterface),                  /* tp_basicsize */
     0,                                 /* tp_itemsize */
     /* methods */
-    (destructor)_wrap_PyTiledConsoleInterface__tp_dealloc,        /* tp_dealloc */
+    (destructor)_wrap_PyTiledLoggingInterface__tp_dealloc,        /* tp_dealloc */
     (printfunc)0,                      /* tp_print */
     (getattrfunc)NULL,       /* tp_getattr */
     (setattrfunc)NULL,       /* tp_setattr */
@@ -5739,11 +5739,11 @@ PyTypeObject PyTiledConsoleInterface_Type = {
     NULL,                        /* Documentation string */
     (traverseproc)NULL,     /* tp_traverse */
     (inquiry)NULL,             /* tp_clear */
-    (richcmpfunc)_wrap_PyTiledConsoleInterface__tp_richcompare,   /* tp_richcompare */
+    (richcmpfunc)_wrap_PyTiledLoggingInterface__tp_richcompare,   /* tp_richcompare */
     0,             /* tp_weaklistoffset */
     (getiterfunc)NULL,          /* tp_iter */
     (iternextfunc)NULL,     /* tp_iternext */
-    (struct PyMethodDef*)PyTiledConsoleInterface_methods, /* tp_methods */
+    (struct PyMethodDef*)PyTiledLoggingInterface_methods, /* tp_methods */
     (struct PyMemberDef*)0,              /* tp_members */
     0,                     /* tp_getset */
     NULL,                              /* tp_base */
@@ -5751,7 +5751,7 @@ PyTypeObject PyTiledConsoleInterface_Type = {
     (descrgetfunc)NULL,    /* tp_descr_get */
     (descrsetfunc)NULL,    /* tp_descr_set */
     0,                 /* tp_dictoffset */
-    (initproc)_wrap_PyTiledConsoleInterface__tp_init,             /* tp_init */
+    (initproc)_wrap_PyTiledLoggingInterface__tp_init,             /* tp_init */
     (allocfunc)PyType_GenericAlloc,           /* tp_alloc */
     (newfunc)PyType_GenericNew,               /* tp_new */
     (freefunc)0,             /* tp_free */
@@ -5840,11 +5840,11 @@ inittiled_Tiled(void)
         return NULL;
     }
     PyModule_AddObject(m, (char *) "ObjectGroup", (PyObject *) &PyTiledObjectGroup_Type);
-    /* Register the 'Tiled::ConsoleInterface' class */
-    if (PyType_Ready(&PyTiledConsoleInterface_Type)) {
+    /* Register the 'Tiled::LoggingInterface' class */
+    if (PyType_Ready(&PyTiledLoggingInterface_Type)) {
         return NULL;
     }
-    PyModule_AddObject(m, (char *) "ConsoleInterface", (PyObject *) &PyTiledConsoleInterface_Type);
+    PyModule_AddObject(m, (char *) "LoggingInterface", (PyObject *) &PyTiledLoggingInterface_Type);
     {
         PyObject *tmp_value;
          // Tiled::Map::Unknown
@@ -5877,13 +5877,13 @@ inittiled_Tiled(void)
     }
     {
         PyObject *tmp_value;
-         // Tiled::ConsoleInterface::INFO
-        tmp_value = PyInt_FromLong(Tiled::ConsoleInterface::INFO);
-        PyDict_SetItemString((PyObject*) PyTiledConsoleInterface_Type.tp_dict, "INFO", tmp_value);
+         // Tiled::LoggingInterface::INFO
+        tmp_value = PyInt_FromLong(Tiled::LoggingInterface::INFO);
+        PyDict_SetItemString((PyObject*) PyTiledLoggingInterface_Type.tp_dict, "INFO", tmp_value);
         Py_DECREF(tmp_value);
-         // Tiled::ConsoleInterface::ERROR
-        tmp_value = PyInt_FromLong(Tiled::ConsoleInterface::ERROR);
-        PyDict_SetItemString((PyObject*) PyTiledConsoleInterface_Type.tp_dict, "ERROR", tmp_value);
+         // Tiled::LoggingInterface::ERROR
+        tmp_value = PyInt_FromLong(Tiled::LoggingInterface::ERROR);
+        PyDict_SetItemString((PyObject*) PyTiledLoggingInterface_Type.tp_dict, "ERROR", tmp_value);
         Py_DECREF(tmp_value);
     }
     return m;
@@ -6181,15 +6181,15 @@ inittiled(void)
     PyModule_AddObject(m, (char *) "Tiled", submodule);
 }
 
-PyObject* _wrap_convert_c2py__Tiled__ConsoleInterface(Tiled::ConsoleInterface *cvalue)
+PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue)
 {
     PyObject *py_retval;
-    PyTiledConsoleInterface *py_ConsoleInterface;
+    PyTiledLoggingInterface *py_LoggingInterface;
     
-    py_ConsoleInterface = PyObject_New(PyTiledConsoleInterface, &PyTiledConsoleInterface_Type);
-    py_ConsoleInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    py_ConsoleInterface->obj = cvalue;
-    py_retval = Py_BuildValue((char *) "N", py_ConsoleInterface);
+    py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
+    py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_LoggingInterface->obj = cvalue;
+    py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
     return py_retval;
 }
     

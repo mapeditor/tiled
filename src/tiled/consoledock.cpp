@@ -18,30 +18,40 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "consoledialog.h"
-#include "ui_consoledialog.h"
+#include "consoledock.h"
 #include "pluginmanager.h"
 
-#include <QMessageBox>
+#include <QVBoxLayout>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ConsoleDialog::ConsoleDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ConsoleDialog)
+ConsoleDock::ConsoleDock(QWidget *parent)
+    : QDockWidget(parent)
 {
-    ui->setupUi(this);
+    setObjectName(QLatin1String("ConsoleDock"));
 
-    ui->plainTextEdit->setStyleSheet(QString::fromUtf8(
+    setWindowTitle(tr("Debug Console"));
+
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setMargin(5);
+
+    plainTextEdit = new QPlainTextEdit;
+    plainTextEdit->setReadOnly(true);
+
+    plainTextEdit->setStyleSheet(QString::fromUtf8(
                             "QAbstractScrollArea {"
                             " background-color: black;"
                             " color:green;"
                             "}"
                             ));
 
+    layout->addWidget(plainTextEdit);
+
     PluginManager *pm = PluginManager::instance();
 
-    foreach (ConsoleInterface *plg, pm->interfaces<ConsoleInterface>()) {
+    foreach (LoggingInterface *plg, pm->interfaces<LoggingInterface>()) {
 
         connect(pm->plugin(plg)->instance, SIGNAL(info(QString)),
                 this, SLOT(appendInfo(QString)));
@@ -50,23 +60,24 @@ ConsoleDialog::ConsoleDialog(QWidget *parent) :
                 this, SLOT(appendError(QString)));
 
     }
+
+    setWidget(widget);
 }
 
-void ConsoleDialog::appendInfo(QString str)
+void ConsoleDock::appendInfo(QString str)
 {
-    ui->plainTextEdit->appendHtml(str
+    plainTextEdit->appendHtml(str
                     .prepend(QString::fromUtf8("<pre>"))
                     .append(QString::fromUtf8("</pre>")));
 }
 
-void ConsoleDialog::appendError(QString str)
+void ConsoleDock::appendError(QString str)
 {
-    ui->plainTextEdit->appendHtml(str
+    plainTextEdit->appendHtml(str
                     .prepend(QString::fromUtf8("<pre style='color:red'>"))
                     .append(QString::fromUtf8("</pre>")));
 }
 
-ConsoleDialog::~ConsoleDialog()
+ConsoleDock::~ConsoleDock()
 {
-    delete ui;
 }

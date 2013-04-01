@@ -80,7 +80,7 @@
 #include "commandbutton.h"
 #include "objectsdock.h"
 #include "minimapdock.h"
-#include "consoledialog.h"
+#include "consoledock.h"
 
 #ifdef Q_WS_MAC
 #include "macsupport.h"
@@ -118,7 +118,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTilesetDock(new TilesetDock(this))
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
-    , mConsoleDialog(new ConsoleDialog(this))
+    , mConsoleDock(new ConsoleDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -177,6 +177,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
+    addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
@@ -187,15 +188,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // they are hidden by default.
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
+    mConsoleDock->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
-
-    QIcon consoleIcon(QLatin1String(":images/16x16/terminal.png"));
-    QToolButton *consoleButton = new QToolButton;
-    consoleButton->setPopupMode(QToolButton::InstantPopup);
-    consoleButton->setIcon(consoleIcon);
-    statusBar()->addPermanentWidget(consoleButton);
-    connect(consoleButton, SIGNAL(clicked()), this, SLOT(openConsoleWindow()));
 
     mUi->actionNew->setShortcuts(QKeySequence::New);
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
@@ -1524,12 +1519,6 @@ void MainWindow::aboutTiled()
 {
     AboutDialog aboutDialog(this);
     aboutDialog.exec();
-}
-
-void MainWindow::openConsoleWindow()
-{
-    mConsoleDialog->show();
-    mConsoleDialog->exec();
 }
 
 void MainWindow::retranslateUi()

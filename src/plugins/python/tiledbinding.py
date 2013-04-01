@@ -276,21 +276,13 @@ cls_pp = mod.add_class('PythonScript',
   allow_subclassing=True,
   foreign_cpp_namespace='Python',
   custom_name='Plugin')
-#cls_pp.add_method('nameFilter', 'QString', [])
-#cls_pp.add_method('supportsFile', 'bool', [('const QString','fileName')])
-#cls_pp.add_method('read', retval('Tiled::Map'), [('const QString','fileName')])
-#cls_pp.add_method('write', 'bool',
-#  [param('const Tiled::Map*','map',transfer_ownership=False),
-#  ('const QString','fileName')])
 
 """
-PythonPlugin implements ConsoleInterface for messaging to Tiled's console
-window, by exposing "PassMessage" method as "write" and assigning plugin
-instance to sys.stdout/stderr the output goes to the console window.
+ PythonPlugin implements LoggingInterface for messaging to Tiled
 """
-cls_consolei = tiled.add_class('ConsoleInterface')
-cls_consolei.add_enum('OutputType', ('INFO','ERROR'))
-cls_consolei.add_method('PassMessage', 'void', [('const QString','msg'),('OutputType','type')], 
+cls_logi = tiled.add_class('LoggingInterface')
+cls_logi.add_enum('OutputType', ('INFO','ERROR'))
+cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')], 
   is_virtual=True)
 
 
@@ -301,20 +293,20 @@ with open('pythonbind.cpp','w') as fh:
   mod.generate(fh)
 
   print >>fh, """
-PyObject* _wrap_convert_c2py__Tiled__ConsoleInterface(Tiled::ConsoleInterface *cvalue)
+PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue)
 {
     PyObject *py_retval;
-    PyTiledConsoleInterface *py_ConsoleInterface;
+    PyTiledLoggingInterface *py_LoggingInterface;
     
-    py_ConsoleInterface = PyObject_New(PyTiledConsoleInterface, &PyTiledConsoleInterface_Type);
-    py_ConsoleInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    py_ConsoleInterface->obj = cvalue;
-    py_retval = Py_BuildValue((char *) "N", py_ConsoleInterface);
+    py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
+    py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_LoggingInterface->obj = cvalue;
+    py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
     return py_retval;
 }
     """
   #mod.generate_c_to_python_type_converter(
-  #  utils.eval_retval(retval("Tiled::ConsoleInterface")),
+  #  utils.eval_retval(retval("Tiled::LoggingInterface")),
   #  sink)
   mod.generate_python_to_c_type_converter(
     utils.eval_retval("Tiled::Map"),

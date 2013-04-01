@@ -1,5 +1,5 @@
 /*
- * consoleinterface.h
+ * logginginterface.h
  * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
  *
  * This file is part of libtiled.
@@ -26,8 +26,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CONSOLEINTERFACE_H
-#define CONSOLEINTERFACE_H
+#ifndef LOGGINGINTERFACE_H
+#define LOGGINGINTERFACE_H
 
 #include <QtPlugin>
 
@@ -39,19 +39,19 @@ namespace Tiled {
  * An interface to be implemented by classes that want to signal
  * the message console.
  */
-class ConsoleInterface
+class LoggingInterface
 {
   public:
     enum OutputType {
       INFO, ERROR
     };
 
-    virtual void PassMessage(const QString, OutputType type) = 0;
+    virtual void log(OutputType type, const QString) = 0;
 };
 
 } // namespace Tiled
 
-Q_DECLARE_INTERFACE(Tiled::ConsoleInterface,
-                    "org.mapeditor.ConsoleInterface")
+Q_DECLARE_INTERFACE(Tiled::LoggingInterface,
+                    "org.mapeditor.LoggingInterface")
 
-#endif // CONSOLEINTERFACE_H
+#endif // LOGGINGINTERFACE_H

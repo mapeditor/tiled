@@ -69,7 +69,6 @@ SOURCES += compression.cpp \
     tilelayer.cpp \
     tileset.cpp
 HEADERS += compression.h \
-    consoleinterface.h \
     gidmapper.h \
     imagelayer.h \
     isometricrenderer.h \
@@ -91,7 +90,8 @@ HEADERS += compression.h \
     tiled.h \
     tiled_global.h \
     tilelayer.h \
-    tileset.h
+    tileset.h \
+    logginginterface.h
 
 contains(INSTALL_HEADERS, yes) {
     headers.files = $${HEADERS}
