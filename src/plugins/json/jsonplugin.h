@@ -59,7 +59,7 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName);
 
     // Both interfaces
-    QString nameFilter() const;
+    QStringList nameFilters() const;
     QString errorString() const;
 
 private:
