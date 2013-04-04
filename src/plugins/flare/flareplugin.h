@@ -58,8 +58,6 @@ public:
     QString errorString() const;
 
 private:
-    bool checkOneLayerWithName(const Tiled::Map *map, const QString &name);
-
     QString mError;
 };
 
