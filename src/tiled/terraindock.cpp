@@ -24,6 +24,7 @@
 #include "terraindock.h"
 
 #include "documentmanager.h"
+#include "terrain.h"
 #include "terrainmodel.h"
 #include "terrainview.h"
 
@@ -153,6 +154,10 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
         return;
 
     mCurrentTerrain = terrain;
+
+    if (terrain)
+        mMapDocument->setCurrentObject(terrain);
+
     emit currentTerrainChanged(mCurrentTerrain);
 }
 

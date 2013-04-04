@@ -39,10 +39,26 @@ namespace Tiled {
 class TILEDSHARED_EXPORT Object
 {
 public:
+    enum TypeId {
+        LayerType,
+        MapObjectType,
+        MapType,
+        TerrainType,
+        TilesetType,
+        TileType
+    };
+
+    Object(TypeId typeId) : mTypeId(typeId) {}
+
     /**
      * Virtual destructor.
      */
     virtual ~Object() {}
+
+    /**
+     * Returns the type of this object.
+     */
+    TypeId typeId() const { return mTypeId; }
 
     /**
      * Returns the properties of this object.
@@ -89,6 +105,7 @@ public:
     { mProperties.remove(name); }
 
 private:
+    TypeId mTypeId;
     Properties mProperties;
 };
 

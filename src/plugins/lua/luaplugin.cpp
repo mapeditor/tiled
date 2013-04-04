@@ -106,7 +106,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     writer.writeStartTable("layers");
     foreach (const Layer *layer, map->layers()) {
-        switch (layer->type()) {
+        switch (layer->layerType()) {
         case Layer::TileLayerType:
             writeTileLayer(writer, static_cast<const TileLayer*>(layer));
             break;

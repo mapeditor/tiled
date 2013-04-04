@@ -1,6 +1,6 @@
 /*
- * propertiesdock.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * renameterrain.h
+ * Copyright 2012-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,48 +18,40 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTIESDOCK_H
-#define PROPERTIESDOCK_H
+#ifndef RENAMETERRAIN_H
+#define RENAMETERRAIN_H
 
-#include <QDockWidget>
+#include <QUndoCommand>
 
 namespace Tiled {
 
-class Object;
+class Tileset;
 
 namespace Internal {
 
 class MapDocument;
-class PropertiesModel;
-class PropertiesView;
-class PropertyBrowser;
+class TerrainModel;
 
-class PropertiesDock : public QDockWidget
+class RenameTerrain : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
-    explicit PropertiesDock(QWidget *parent = 0);
+    RenameTerrain(MapDocument *mapDocument,
+                  Tileset *tileset,
+                  int terrainId,
+                  const QString &newName);
 
-public slots:
-    void bringToFront();
-
-protected:
-    void changeEvent(QEvent *e);
-
-private slots:
-    void mapDocumentChanged(MapDocument *mapDocument);
-    void currentObjectChanged(Object *object);
-    void deleteSelectedProperty();
+    void undo();
+    void redo();
 
 private:
-    void retranslateUi();
-
-    MapDocument *mMapDocument;
-    PropertyBrowser *mPropertyBrowser;
+    TerrainModel *mTerrainModel;
+    Tileset *mTileset;
+    int mTerrainId;
+    QString mOldName;
+    QString mNewName;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // PROPERTIESDOCK_H
+#endif // RENAMETERRAIN_H

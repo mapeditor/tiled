@@ -24,10 +24,12 @@
 #include "mapdocument.h"
 #include "propertiesmodel.h"
 #include "propertiesview.h"
+#include "propertybrowser.h"
 
 #include <QEvent>
 #include <QShortcut>
 #include <QUndoStack>
+#include <QVBoxLayout>
 
 namespace Tiled {
 namespace Internal {
@@ -35,13 +37,18 @@ namespace Internal {
 PropertiesDock::PropertiesDock(QWidget *parent)
     : QDockWidget(parent)
     , mMapDocument(0)
-    , mPropertiesModel(new PropertiesModel(this))
-    , mPropertiesView(new PropertiesView(this))
+    , mPropertyBrowser(new PropertyBrowser)
 {
     setObjectName(QLatin1String("propertiesDock"));
-    setWidget(mPropertiesView);
 
-    mPropertiesView->setModel(mPropertiesModel);
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
+    layout->setMargin(5);
+    layout->setSpacing(0);
+    layout->addWidget(mPropertyBrowser);
+    widget->setLayout(layout);
+
+    setWidget(widget);
 
     DocumentManager *manager = DocumentManager::instance();
     connect(manager, SIGNAL(currentDocumentChanged(MapDocument*)),
@@ -49,19 +56,26 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     // Delete selected properties when the delete or backspace key is pressed
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete,
-                                              mPropertiesView);
+                                              mPropertyBrowser);
     QShortcut *deleteShortcutAlt =
             new QShortcut(QKeySequence(Qt::Key_Backspace),
-                          mPropertiesView);
+                          mPropertyBrowser);
     deleteShortcut->setContext(Qt::WidgetShortcut);
     deleteShortcutAlt->setContext(Qt::WidgetShortcut);
 
     connect(deleteShortcut, SIGNAL(activated()),
-            this, SLOT(deleteSelectedProperties()));
+            this, SLOT(deleteSelectedProperty()));
     connect(deleteShortcutAlt, SIGNAL(activated()),
-            this, SLOT(deleteSelectedProperties()));
+            this, SLOT(deleteSelectedProperty()));
 
     retranslateUi();
+}
+
+void PropertiesDock::bringToFront()
+{
+    show();
+    raise();
+    mPropertyBrowser->setFocus();
 }
 
 void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
@@ -70,6 +84,7 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
         mMapDocument->disconnect(this);
 
     mMapDocument = mapDocument;
+    mPropertyBrowser->setMapDocument(mapDocument);
 
     if (mapDocument) {
         connect(mapDocument, SIGNAL(currentObjectChanged(Object*)),
@@ -81,12 +96,8 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
 
 void PropertiesDock::currentObjectChanged(Object *object)
 {
-    if (object)
-        mPropertiesModel->setObject(mMapDocument, object);
-    else
-        mPropertiesModel->setObject(0, 0);
-
-    mPropertiesView->setEnabled(object != 0);
+    mPropertyBrowser->setObject(object);
+    mPropertyBrowser->setEnabled(object != 0);
 
     // TODO: If the current object is a tile, disable when this tile is from
     // an external tileset.
@@ -104,16 +115,9 @@ void PropertiesDock::changeEvent(QEvent *e)
     }
 }
 
-void PropertiesDock::deleteSelectedProperties()
+void PropertiesDock::deleteSelectedProperty()
 {
-    QItemSelectionModel *selection = mPropertiesView->selectionModel();
-    const QModelIndexList indices = selection->selectedRows();
-    if (!indices.isEmpty()) {
-        mPropertiesModel->deleteProperties(indices);
-        selection->select(mPropertiesView->currentIndex(),
-                          QItemSelectionModel::ClearAndSelect |
-                          QItemSelectionModel::Rows);
-    }
+    // TODO
 }
 
 void PropertiesDock::retranslateUi()

@@ -147,7 +147,7 @@ public:
     void flipSelectedObjects(FlipDirection direction);
     void rotateSelectedObjects(RotateDirection direction);
 
-    void addLayer(Layer::Type layerType);
+    void addLayer(Layer::TypeFlag layerType);
     void duplicateLayer();
     void mergeLayerDown();
     void moveLayerUp(int index);

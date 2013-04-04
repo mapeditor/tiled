@@ -1,6 +1,6 @@
 /*
- * changemapobject.h
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * changelayer.h
+ * Copyright 2012-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,31 +18,27 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGEMAPOBJECT_H
-#define CHANGEMAPOBJECT_H
+#ifndef CHANGELAYER_H
+#define CHANGELAYER_H
+
+#include "undocommands.h"
 
 #include <QUndoCommand>
 
 namespace Tiled {
-
-class MapObject;
-
 namespace Internal {
 
 class MapDocument;
-class MapObjectModel;
 
-class ChangeMapObject : public QUndoCommand
+/**
+ * Used for changing layer visibility.
+ */
+class SetLayerVisible : public QUndoCommand
 {
 public:
-    /**
-     * Creates an undo command that sets the given \a object's \a name and
-     * \a type.
-     */
-    ChangeMapObject(MapDocument *mapDocument,
-                    MapObject *object,
-                    const QString &name,
-                    const QString &type);
+    SetLayerVisible(MapDocument *mapDocument,
+                    int layerIndex,
+                    bool visible);
 
     void undo() { swap(); }
     void redo() { swap(); }
@@ -51,32 +47,37 @@ private:
     void swap();
 
     MapDocument *mMapDocument;
-    MapObject *mMapObject;
-    QString mName;
-    QString mType;
+    int mLayerIndex;
+    bool mVisible;
 };
 
 /**
- * Used for changing object visibility.
+ * Used for changing layer opacity.
  */
-class SetMapObjectVisible : public QUndoCommand
+class SetLayerOpacity : public QUndoCommand
 {
 public:
-    SetMapObjectVisible(MapDocument *mapDocument,
-                        MapObject *mapObject,
-                        bool visible);
+    SetLayerOpacity(MapDocument *mapDocument,
+                    int layerIndex,
+                    float opacity);
 
-    void undo();
-    void redo();
+    void undo() { setOpacity(mOldOpacity); }
+    void redo() { setOpacity(mNewOpacity); }
+
+    int id() const { return Cmd_ChangeLayerOpacity; }
+
+    bool mergeWith(const QUndoCommand *other);
 
 private:
-    MapObjectModel *mMapObjectModel;
-    MapObject *mMapObject;
-    bool mOldVisible;
-    bool mNewVisible;
+    void setOpacity(float opacity);
+
+    MapDocument *mMapDocument;
+    int mLayerIndex;
+    float mOldOpacity;
+    float mNewOpacity;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CHANGEMAPOBJECT_H
+#endif // CHANGELAYER_H

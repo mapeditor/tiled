@@ -66,6 +66,7 @@ public:
      */
     Tileset(const QString &name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0):
+        Object(TilesetType),
         mName(name),
         mTileWidth(tileWidth),
         mTileHeight(tileHeight),

@@ -40,6 +40,7 @@ using namespace Tiled;
 
 Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
+    Object(MapType),
     mOrientation(orientation),
     mWidth(width),
     mHeight(height),
@@ -75,20 +76,20 @@ void Map::adjustDrawMargins(const QMargins &margins)
                               mDrawMargins);
 }
 
-int Map::layerCount(Layer::Type type) const
+int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)
-       if (layer->type() == type)
+       if (layer->layerType() == type)
            count++;
     return count;
 }
 
-QList<Layer*> Map::layers(Layer::Type type) const
+QList<Layer*> Map::layers(Layer::TypeFlag type) const
 {
     QList<Layer*> layers;
     foreach (Layer *layer, mLayers)
-        if (layer->type() == type)
+        if (layer->layerType() == type)
             layers.append(layer);
     return layers;
 }
@@ -121,7 +122,7 @@ int Map::indexOfLayer(const QString &layerName, unsigned layertypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName
-                && (layertypes & layerAt(index)->type()))
+                && (layertypes & layerAt(index)->layerType()))
             return index;
 
     return -1;

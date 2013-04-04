@@ -303,7 +303,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
  * Adds a layer of the given type to the top of the layer stack. After adding
  * the new layer, emits editLayerNameRequested().
  */
-void MapDocument::addLayer(Layer::Type layerType)
+void MapDocument::addLayer(Layer::TypeFlag layerType)
 {
     Layer *layer = 0;
     QString name;
