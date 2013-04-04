@@ -286,6 +286,22 @@ iconscalable.path = $${PREFIX}/share/icons/hicolor/scalable/apps/
 iconscalable.files += images/scalable/tiled.svg
 INSTALLS += iconscalable
 
+mimeicon16.path = $${PREFIX}/share/icons/hicolor/16x16/mimetypes/
+mimeicon16.files += images/16x16/application-x-tiled.png
+INSTALLS += mimeicon16
+
+mimeicon32.path = $${PREFIX}/share/icons/hicolor/32x32/mimetypes/
+mimeicon32.files += images/32x32/application-x-tiled.png
+INSTALLS += mimeicon32
+
+mimeiconscalable.path = $${PREFIX}/share/icons/hicolor/scalable/mimetypes/
+mimeiconscalable.files += images/scalable/application-x-tiled.svg
+INSTALLS += mimeiconscalable
+
+mimeinfofile.path = $${PREFIX}/share/mime/packages/
+mimeinfofile.files += ../../docs/mime/tiled.xml
+INSTALLS += mimeinfofile
+
 desktopfile.path = $${PREFIX}/share/applications/
 desktopfile.files += ../../docs/tiled.desktop
 INSTALLS += desktopfile
