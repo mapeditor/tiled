@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Tiled
+GenericName=Map editor
 Comment=Tile map editor
+TryExec=tiled
 Exec=tiled
 Terminal=false
 Type=Application
