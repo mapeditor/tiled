@@ -7,3 +7,4 @@ Type=Application
 Icon=tiled
 Categories=Graphics;2DGraphics;
 X-Desktop-File-Install-Version=0.1
+MimeType=application/x-tiled
