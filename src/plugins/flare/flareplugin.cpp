@@ -249,13 +249,6 @@ QString FlarePlugin::errorString() const
 
 bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-    if (!checkOneLayerWithName(map, QLatin1String("background")))
-        return false;
-    if (!checkOneLayerWithName(map, QLatin1String("object")))
-        return false;
-    if (!checkOneLayerWithName(map, QLatin1String("collision")))
-        return false;
-
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         mError = tr("Could not open file for writing.");
@@ -347,25 +340,6 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
     }
     file.close();
-    return true;
-}
-
-bool FlarePlugin::checkOneLayerWithName(const Tiled::Map *map,
-                                        const QString &name)
-{
-    int count = 0;
-    foreach (const Layer *layer, map->layers())
-        if (layer->name() == name)
-            count++;
-
-    if (count == 0) {
-        mError = tr("No \"%1\" layer found!").arg(name);
-        return false;
-    } else if (count > 1) {
-        mError = tr("Multiple \"%1\" layers found!").arg(name);
-        return false;
-    }
-
     return true;
 }
 
