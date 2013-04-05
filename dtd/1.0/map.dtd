@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  TMX version 1.1 by
+    Tiled Developers (mapeditor.org)
+  documented in dtd form originally by
+    Olivier.Beaton@quadir.net
+    Creative Commons Attribution 3.0
+    http://creativecommons.org/licenses/by/3.0/
+  last updated on
+    2011-06-06
+-->
+
+<!ELEMENT map (properties?, tileset*, (layer | objectgroup)*)>
+<!ATTLIST map
+  xmlns       CDATA   #IMPLIED
+  xmlns:xsi   CDATA   #IMPLIED
+  xsi:schemaLocation  CDATA #IMPLIED
+  version     CDATA   #REQUIRED
+  orientation (orthogonal | isometric | hexagonal | shifted)  #REQUIRED
+  width       CDATA   #REQUIRED
+  height      CDATA   #REQUIRED
+  tilewidth   CDATA   #REQUIRED
+  tileheight  CDATA   #REQUIRED
+>
+
+<!ELEMENT properties (property*)>
+
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+  name        CDATA   #REQUIRED
+  value       CDATA   #REQUIRED
+>
+
+<!--
+  data is required when a child of tilset
+  data is not valid when a child of tile
+-->
+<!ELEMENT image (data?)>
+<!-- 
+  format is required when a child of tileset
+  format is not valid when a child of tile
+  source here is required when tileset tileheight/tilewidth -> image is used and you are referencing an outside image
+-->
+<!ATTLIST image
+  format      CDATA   #IMPLIED
+  id          CDATA   #IMPLIED
+  source      CDATA   #IMPLIED
+  trans       CDATA   #IMPLIED
+  width       CDATA   #IMPLIED
+  height      CDATA   #IMPLIED
+>
+
+<!--
+  #PCDATA when data is child of image
+  tile* when data is child of layer without compression
+-->
+<!ELEMENT data (#PCDATA | tile)*>
+<!ATTLIST data
+  encoding    CDATA   #IMPLIED
+  compression CDATA   #IMPLIED
+>
+
+<!ELEMENT tileset (image*, tile*)>
+<!--
+  name REQUIRED only if source tsx not present
+  source here refers to a TSX
+-->
+<!ATTLIST tileset
+  name        CDATA   #IMPLIED
+  firstgid    CDATA   #REQUIRED
+  source      CDATA   #IMPLIED
+  tilewidth   CDATA   #IMPLIED
+  tileheight  CDATA   #IMPLIED
+  spacing     CDATA   #IMPLIED
+  margin      CDATA   #IMPLIED
+>
+
+<!--
+  image required when child of all but layer -> data
+  image not valid when child of layer -> data
+-->
+<!ELEMENT tile (properties?, image?)>
+<!--
+  id required when child of all but layer -> data
+  id not valid when child of layer -> data
+  gid required when child of layer -> data
+  gid not valid when not child of layer -> data
+-->
+<!ATTLIST tile
+  id          CDATA   #IMPLIED
+  gid         CDATA   #IMPLIED
+>
+
+<!ELEMENT layer (properties?, data)>
+<!ATTLIST layer
+  name        CDATA   #REQUIRED
+  width       CDATA   #REQUIRED
+  height      CDATA   #REQUIRED
+  x           CDATA   #IMPLIED
+  y           CDATA   #IMPLIED
+  opacity     CDATA   #IMPLIED
+  visible     (0 | 1) #IMPLIED
+>
+
+<!ELEMENT objectgroup (properties?, object*)>
+<!ATTLIST objectgroup
+  name        CDATA   #REQUIRED
+  width       CDATA   #IMPLIED
+  height      CDATA   #IMPLIED
+  x           CDATA   #IMPLIED
+  y           CDATA   #IMPLIED
+  opacity     CDATA   #IMPLIED
+  visible     (0 | 1) #IMPLIED
+>
+
+<!ELEMENT object (properties?)>
+<!ATTLIST object
+  name        CDATA   #IMPLIED
+  type        CDATA   #IMPLIED
+  x           CDATA   #REQUIRED
+  y           CDATA   #REQUIRED
+  width       CDATA   #IMPLIED
+  height      CDATA   #IMPLIED
+  gid         CDATA   #IMPLIED
+>
