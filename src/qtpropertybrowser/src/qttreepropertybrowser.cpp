@@ -471,6 +471,7 @@ void QtTreePropertyBrowserPrivate::init(QWidget *parent)
     m_treeWidget->setEditorPrivate(this);
     m_treeWidget->setIconSize(QSize(18, 18));
     layout->addWidget(m_treeWidget);
+    parent->setFocusProxy(m_treeWidget);
 
     m_treeWidget->setColumnCount(2);
     QStringList labels;
