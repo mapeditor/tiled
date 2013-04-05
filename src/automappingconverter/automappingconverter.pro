@@ -31,6 +31,9 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 TARGET = automappingconverter
 TEMPLATE = app
 
+target.path = $${PREFIX}/bin
+INSTALLS += target
+
 
 SOURCES += main.cpp \
     converterdatamodel.cpp \
