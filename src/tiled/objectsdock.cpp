@@ -77,18 +77,18 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     mActionMoveToGroup = new QAction(this);
     mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
 
-    QToolBar *toolbar = new QToolBar;
-    toolbar->setFloatable(false);
-    toolbar->setMovable(false);
-    toolbar->setIconSize(QSize(16, 16));
+    QToolBar *toolBar = new QToolBar;
+    toolBar->setFloatable(false);
+    toolBar->setMovable(false);
+    toolBar->setIconSize(QSize(16, 16));
 
-    toolbar->addAction(mActionNewLayer);
-    toolbar->addAction(handler->actionDuplicateObjects());
-    toolbar->addAction(handler->actionRemoveObjects());
+    toolBar->addAction(mActionNewLayer);
+    toolBar->addAction(handler->actionDuplicateObjects());
+    toolBar->addAction(handler->actionRemoveObjects());
 
-    toolbar->addAction(mActionMoveToGroup);
+    toolBar->addAction(mActionMoveToGroup);
     QToolButton *button;
-    button = dynamic_cast<QToolButton*>(toolbar->widgetForAction(mActionMoveToGroup));
+    button = dynamic_cast<QToolButton*>(toolBar->widgetForAction(mActionMoveToGroup));
     mMoveToMenu = new QMenu(this);
     button->setPopupMode(QToolButton::InstantPopup);
     button->setMenu(mMoveToMenu);
@@ -96,9 +96,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(mMoveToMenu, SIGNAL(triggered(QAction*)),
             SLOT(triggeredMoveToMenu(QAction*)));
 
-    toolbar->addAction(mActionObjectProperties);
+    toolBar->addAction(mActionObjectProperties);
 
-    layout->addWidget(toolbar);
+    layout->addWidget(toolBar);
     setWidget(widget);
     retranslateUi();
 
