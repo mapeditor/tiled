@@ -101,6 +101,9 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)),
             SLOT(onObjectsRemoved(QList<MapObject*>)));
 
+    connect(mTerrainModel, SIGNAL(terrainRemoved(Terrain*)),
+            SLOT(onTerrainRemoved(Terrain*)));
+
     connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
 
     // Register tileset references
@@ -433,6 +436,22 @@ void MapDocument::insertTileset(int index, Tileset *tileset)
     emit tilesetAdded(index, tileset);
 }
 
+static bool isFromTileset(Object *object, Tileset *tileset)
+{
+    if (!object)
+        return false;
+
+    if (object->typeId() == Object::TileType
+            && tileset == static_cast<Tile*>(object)->tileset())
+        return true;
+
+    if (object->typeId() == Object::TerrainType
+            && tileset == static_cast<Terrain*>(object)->tileset())
+        return true;
+
+    return false;
+}
+
 /**
  * Removes the tileset at the given \a index from this map. Emits the
  * appropriate signal.
@@ -443,9 +462,15 @@ void MapDocument::insertTileset(int index, Tileset *tileset)
 void MapDocument::removeTilesetAt(int index)
 {
     emit tilesetAboutToBeRemoved(index);
+
     Tileset *tileset = mMap->tilesets().at(index);
+
+    if (tileset == mCurrentObject || isFromTileset(mCurrentObject, tileset))
+        setCurrentObject(0);
+
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset);
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReference(tileset);
 }
@@ -560,8 +585,12 @@ void MapDocument::onLayerAdded(int index)
 
 void MapDocument::onLayerAboutToBeRemoved(int index)
 {
+    Layer *layer = mMap->layerAt(index);
+    if (layer == mCurrentObject)
+        setCurrentObject(0);
+
     // Deselect any objects on this layer when necessary
-    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(mMap->layerAt(index)))
+    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer))
         deselectObjects(og->objects());
     emit layerAboutToBeRemoved(index);
 }
@@ -581,8 +610,19 @@ void MapDocument::onLayerRemoved(int index)
         emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
+void MapDocument::onTerrainRemoved(Terrain *terrain)
+{
+    if (terrain == mCurrentObject)
+        setCurrentObject(0);
+}
+
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
+    // Unset the current object when it was part of this list of objects
+    if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType)
+        if (objects.contains(static_cast<MapObject*>(mCurrentObject)))
+            setCurrentObject(0);
+
     int removedCount = 0;
     foreach (MapObject *object, objects)
         removedCount += mSelectedObjects.removeAll(object);

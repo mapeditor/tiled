@@ -332,6 +332,8 @@ private slots:
     void onLayerAboutToBeRemoved(int index);
     void onLayerRemoved(int index);
 
+    void onTerrainRemoved(Terrain *terrain);
+
 private:
     void setFileName(const QString &fileName);
     void deselectObjects(const QList<MapObject*> &objects);

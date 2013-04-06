@@ -224,7 +224,7 @@ Terrain *TerrainModel::takeTerrainAt(Tileset *tileset, int index)
     beginRemoveRows(tilesetIndex, index, index);
     Terrain *terrain = tileset->takeTerrainAt(index);
     endRemoveRows();
-    emit terrainRemoved(tileset, index);
+    emit terrainRemoved(terrain);
     emit dataChanged(tilesetIndex, tilesetIndex); // for TerrainFilterModel
 
     return terrain;
