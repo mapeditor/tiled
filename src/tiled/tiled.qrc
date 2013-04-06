@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>images/about-tiled-logo.png</file>
+        <file>images/16x16/add.png</file>
+        <file>images/16x16/remove.png</file>
         <file>images/16x16/application-exit.png</file>
         <file>images/16x16/document-export.png</file>
         <file>images/16x16/document-import.png</file>

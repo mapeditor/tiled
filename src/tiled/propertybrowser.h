@@ -61,6 +61,17 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
+    /**
+     * Returns whether the given \a item displays a custom property.
+     */
+    bool isCustomPropertyItem(QtBrowserItem *item) const;
+
+    /**
+     * Makes the custom property with the \a name the currently edited one,
+     * if it exists.
+     */
+    void editCustomProperty(const QString &name);
+
 private slots:
     void mapChanged();
     void objectsChanged(const QList<MapObject*> &objects);

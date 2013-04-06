@@ -20,14 +20,22 @@
 
 #include "propertiesdock.h"
 
+#include "changeproperties.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
 #include "propertiesmodel.h"
 #include "propertiesview.h"
 #include "propertybrowser.h"
+#include "tile.h"
+#include "tileset.h"
+#include "utils.h"
 
+#include <QAction>
 #include <QEvent>
+#include <QInputDialog>
+#include <QKeyEvent>
 #include <QShortcut>
+#include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
 
@@ -41,11 +49,34 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 {
     setObjectName(QLatin1String("propertiesDock"));
 
+    mActionAddProperty = new QAction(this);
+    mActionAddProperty->setEnabled(false);
+    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
+    connect(mActionAddProperty, SIGNAL(triggered()),
+            SLOT(addProperty()));
+
+    mActionRemoveProperty = new QAction(this);
+    mActionRemoveProperty->setEnabled(false);
+    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16x16/remove.png")));
+    connect(mActionRemoveProperty, SIGNAL(triggered()),
+            SLOT(removeProperty()));
+
+    Utils::setThemeIcon(mActionAddProperty, "add");
+    Utils::setThemeIcon(mActionRemoveProperty, "remove");
+
+    QToolBar *toolBar = new QToolBar;
+    toolBar->setFloatable(false);
+    toolBar->setMovable(false);
+    toolBar->setIconSize(QSize(16, 16));
+    toolBar->addAction(mActionAddProperty);
+    toolBar->addAction(mActionRemoveProperty);
+
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setMargin(5);
     layout->setSpacing(0);
     layout->addWidget(mPropertyBrowser);
+    layout->addWidget(toolBar);
     widget->setLayout(layout);
 
     setWidget(widget);
@@ -54,19 +85,8 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(manager, SIGNAL(currentDocumentChanged(MapDocument*)),
             SLOT(mapDocumentChanged(MapDocument*)));
 
-    // Delete selected properties when the delete or backspace key is pressed
-    QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete,
-                                              mPropertyBrowser);
-    QShortcut *deleteShortcutAlt =
-            new QShortcut(QKeySequence(Qt::Key_Backspace),
-                          mPropertyBrowser);
-    deleteShortcut->setContext(Qt::WidgetShortcut);
-    deleteShortcutAlt->setContext(Qt::WidgetShortcut);
-
-    connect(deleteShortcut, SIGNAL(activated()),
-            this, SLOT(deleteSelectedProperty()));
-    connect(deleteShortcutAlt, SIGNAL(activated()),
-            this, SLOT(deleteSelectedProperty()));
+    connect(mPropertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem*)),
+            SLOT(currentItemChanged(QtBrowserItem*)));
 
     retranslateUi();
 }
@@ -97,32 +117,86 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
 void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
-    mPropertyBrowser->setEnabled(object != 0);
+    mActionAddProperty->setEnabled(object != 0);
 
-    // TODO: If the current object is a tile, disable when this tile is from
-    // an external tileset.
+    // TODO: If the current object is a tile or terrain, disable when this tile
+    // is from an external tileset.
 }
 
-void PropertiesDock::changeEvent(QEvent *e)
+void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
-    QDockWidget::changeEvent(e);
-    switch (e->type()) {
+    bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
+    mActionRemoveProperty->setEnabled(isCustomProperty);
+}
+
+void PropertiesDock::addProperty()
+{
+    QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
+    dialog->setInputMode(QInputDialog::TextInput);
+    dialog->setLabelText(tr("Name:"));
+    dialog->setWindowTitle(tr("Add Property"));
+    dialog->open(this, SLOT(addProperty(QString)));
+}
+
+void PropertiesDock::addProperty(const QString &name)
+{
+    if (name.isEmpty())
+        return;
+    Object *object = mMapDocument->currentObject();
+    if (!object)
+        return;
+
+    if (!object->hasProperty(name)) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new SetProperty(mMapDocument, object, name, QString()));
+    }
+
+    mPropertyBrowser->editCustomProperty(name);
+}
+
+void PropertiesDock::removeProperty()
+{
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
+    Object *object = mMapDocument->currentObject();
+    if (!item || !object)
+        return;
+
+    const QString name = item->property()->propertyName();
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new RemoveProperty(mMapDocument, object, name));
+
+    // TODO: Would be nice to automatically select the next property
+}
+
+bool PropertiesDock::event(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::KeyPress:
+    case QEvent::ShortcutOverride: {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent->matches(QKeySequence::Delete) || keyEvent->key() == Qt::Key_Backspace) {
+            removeProperty();
+            event->accept();
+            return true;
+        }
+        break;
+    }
     case QEvent::LanguageChange:
         retranslateUi();
         break;
     default:
         break;
     }
-}
 
-void PropertiesDock::deleteSelectedProperty()
-{
-    // TODO
+    return QDockWidget::event(event);
 }
 
 void PropertiesDock::retranslateUi()
 {
     setWindowTitle(tr("Properties"));
+
+    mActionAddProperty->setText(tr("Add Property"));
+    mActionRemoveProperty->setText(tr("Remove Property"));
 }
 
 } // namespace Internal

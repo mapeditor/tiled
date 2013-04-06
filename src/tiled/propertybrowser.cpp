@@ -144,6 +144,22 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
     }
 }
 
+bool PropertyBrowser::isCustomPropertyItem(QtBrowserItem *item) const
+{
+    return item && mPropertyToId[item->property()] == CustomProperty;
+}
+
+void PropertyBrowser::editCustomProperty(const QString &name)
+{
+    QtVariantProperty *property = mNameToProperty.value(name);
+    if (!property)
+        return;
+
+    const QList<QtBrowserItem*> propertyItems = items(property);
+    if (!propertyItems.isEmpty())
+        editItem(propertyItems.first());
+}
+
 void PropertyBrowser::mapChanged()
 {
     if (sender() == mMapDocument)

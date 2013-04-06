@@ -23,6 +23,8 @@
 
 #include <QDockWidget>
 
+class QtBrowserItem;
+
 namespace Tiled {
 
 class Object;
@@ -45,18 +47,24 @@ public slots:
     void bringToFront();
 
 protected:
-    void changeEvent(QEvent *e);
+    bool event(QEvent *event);
 
 private slots:
     void mapDocumentChanged(MapDocument *mapDocument);
     void currentObjectChanged(Object *object);
-    void deleteSelectedProperty();
+    void currentItemChanged(QtBrowserItem *item);
+
+    void addProperty();
+    void addProperty(const QString &name);
+    void removeProperty();
 
 private:
     void retranslateUi();
 
     MapDocument *mMapDocument;
     PropertyBrowser *mPropertyBrowser;
+    QAction *mActionAddProperty;
+    QAction *mActionRemoveProperty;
 };
 
 } // namespace Internal
