@@ -24,7 +24,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
-#include "propertiesdialog.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
 #include "tileset.h"
@@ -43,8 +42,6 @@
 #include <QPinchGesture>
 #include <QUndoCommand>
 #include <QWheelEvent>
-
-#include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -509,11 +506,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     const bool isExternal = model->tileset()->isExternal();
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-
     if (tile) {
-        // Select this tile to make sure it is clear that only the properties
-        // of a single tile are being edited.
+        // Select this tile to make sure it is clear that only a single tile is
+        // being edited.
         selectionModel()->setCurrentIndex(index,
                                           QItemSelectionModel::SelectCurrent |
                                           QItemSelectionModel::Clear);
@@ -522,22 +517,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
             addTerrain->setEnabled(!isExternal);
             connect(addTerrain, SIGNAL(triggered()), SLOT(createNewTerrain()));
+
+            if (mTerrainId != -1) {
+                QAction *setImage = menu.addAction(tr("Set Terrain Image"));
+                setImage->setEnabled(!isExternal);
+                connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
+            }
+
+            menu.addSeparator();
         }
-
-        if (mEditTerrain && mTerrainId != -1) {
-            QAction *setImage = menu.addAction(tr("Set Terrain Image"));
-            setImage->setEnabled(!isExternal);
-            connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
-        }
-
-        QAction *tileProperties = menu.addAction(propIcon,
-                                                 tr("Tile &Properties..."));
-        tileProperties->setEnabled(!isExternal);
-        Utils::setThemeIcon(tileProperties, "document-properties");
-        menu.addSeparator();
-
-        connect(tileProperties, SIGNAL(triggered()),
-                SLOT(editTileProperties()));
     }
 
 
@@ -563,16 +551,6 @@ void TilesetView::selectTerrainImage()
 {
     if (Tile *tile = currentTile())
         emit terrainImageSelected(tile);
-}
-
-void TilesetView::editTileProperties()
-{
-    Tile *tile = currentTile();
-    if (!tile)
-        return;
-
-    PropertiesDialog propertiesDialog(tr("Tile"), tile, mMapDocument, this);
-    propertiesDialog.exec();
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)
