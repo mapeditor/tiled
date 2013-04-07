@@ -108,11 +108,6 @@ LayerDock::LayerDock(QWidget *parent):
     connect(mOpacitySlider, SIGNAL(valueChanged(int)),
             this, SLOT(sliderValueChanged(int)));
     updateOpacitySlider();
-
-    // Workaround since a tabbed dockwidget that is not currently visible still
-    // returns true for isVisible()
-    connect(this, SIGNAL(visibilityChanged(bool)),
-            mLayerView, SLOT(setVisible(bool)));
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
@@ -130,6 +125,8 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(updateOpacitySlider()));
         connect(mMapDocument, SIGNAL(layerChanged(int)),
                 this, SLOT(layerChanged(int)));
+        connect(mMapDocument, SIGNAL(editLayerNameRequested()),
+                this, SLOT(editLayerName()));
     }
 
     mLayerView->setMapDocument(mapDocument);
@@ -176,6 +173,19 @@ void LayerDock::layerChanged(int index)
         return;
 
     updateOpacitySlider();
+}
+
+void LayerDock::editLayerName()
+{
+    if (!isVisible())
+        return;
+
+    const LayerModel *layerModel = mMapDocument->layerModel();
+    const int currentLayerIndex = mMapDocument->currentLayerIndex();
+    const int row = layerModel->layerIndexToRow(currentLayerIndex);
+
+    raise();
+    mLayerView->edit(layerModel->index(row));
 }
 
 void LayerDock::sliderValueChanged(int opacity)
@@ -245,8 +255,6 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(currentLayerIndexChanged(int)));
-        connect(mMapDocument, SIGNAL(editLayerNameRequested()),
-                this, SLOT(editLayerName()));
 
         QItemSelectionModel *s = selectionModel();
         connect(s, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
@@ -273,17 +281,6 @@ void LayerView::currentLayerIndexChanged(int index)
     } else {
         setCurrentIndex(QModelIndex());
     }
-}
-
-void LayerView::editLayerName()
-{
-    if (!isVisible())
-        return;
-
-    const LayerModel *layerModel = mMapDocument->layerModel();
-    const int currentLayerIndex = mMapDocument->currentLayerIndex();
-    const int row = layerModel->layerIndexToRow(currentLayerIndex);
-    edit(layerModel->index(row));
 }
 
 void LayerView::contextMenuEvent(QContextMenuEvent *event)

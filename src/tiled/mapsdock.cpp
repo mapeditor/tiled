@@ -76,11 +76,6 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
     connect(prefs, SIGNAL(mapsDirectoryChanged()), this, SLOT(onMapsDirectoryChanged()));
     mDirectoryEdit->setText(prefs->mapsDirectory());
     connect(mDirectoryEdit, SIGNAL(returnPressed()), this, SLOT(editedMapsDirectory()));
-
-    // Workaround since a tabbed dockwidget that is not currently visible still
-    // returns true for isVisible()
-    connect(this, SIGNAL(visibilityChanged(bool)),
-            mMapsView, SLOT(setVisible(bool)));
 }
 
 void MapsDock::browse()

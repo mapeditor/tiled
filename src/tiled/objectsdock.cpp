@@ -102,11 +102,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
-    // Workaround since a tabbed dockwidget that is not currently visible still
-    // returns true for isVisible()
-    connect(this, SIGNAL(visibilityChanged(bool)),
-            mObjectsView, SLOT(setVisible(bool)));
-
     connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
             SLOT(documentCloseRequested(int)));
 }
