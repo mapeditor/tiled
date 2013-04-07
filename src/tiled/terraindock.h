@@ -76,6 +76,7 @@ protected:
 
 private slots:
     void currentRowChanged(const QModelIndex &index);
+    void indexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
 
 private:

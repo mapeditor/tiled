@@ -80,6 +80,8 @@ TerrainDock::TerrainDock(QWidget *parent):
     connect(mTerrainView->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(currentRowChanged(QModelIndex)));
+    connect(mTerrainView, SIGNAL(pressed(QModelIndex)),
+            SLOT(indexPressed(QModelIndex)));
 
     connect(mProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(expandRows(QModelIndex,int,int)));
@@ -135,6 +137,12 @@ void TerrainDock::currentRowChanged(const QModelIndex &index)
 {
     if (Terrain *terrain = mTerrainView->terrainAt(index))
         setCurrentTerrain(terrain);
+}
+
+void TerrainDock::indexPressed(const QModelIndex &index)
+{
+    if (Terrain *terrain = mTerrainView->terrainAt(index))
+        mMapDocument->setCurrentObject(terrain);
 }
 
 void TerrainDock::expandRows(const QModelIndex &parent, int first, int last)

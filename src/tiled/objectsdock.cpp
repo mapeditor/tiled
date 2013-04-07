@@ -49,7 +49,7 @@ using namespace Tiled::Internal;
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
-    , mObjectsView(new ObjectsView())
+    , mObjectsView(new ObjectsView)
     , mMapDocument(0)
 {
     setObjectName(QLatin1String("ObjectsDock"));
@@ -214,7 +214,9 @@ void ObjectsDock::restoreExpandedGroups(MapDocument *mapDoc)
     // Also restore the selection
     foreach (MapObject *o, mapDoc->selectedObjects()) {
         QModelIndex index = mObjectsView->model()->index(o);
-        mObjectsView->selectionModel()->select(index, QItemSelectionModel::Select |  QItemSelectionModel::Rows);
+        mObjectsView->selectionModel()->select(index,
+                                               QItemSelectionModel::Select |
+                                               QItemSelectionModel::Rows);
     }
 }
 
@@ -240,6 +242,7 @@ ObjectsView::ObjectsView(QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
+    connect(this, SIGNAL(pressed(QModelIndex)), SLOT(onPressed(QModelIndex)));
     connect(this, SIGNAL(activated(QModelIndex)), SLOT(onActivated(QModelIndex)));
 }
 
@@ -278,6 +281,14 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         setModel(mMapObjectModel = 0);
     }
 
+}
+
+void ObjectsView::onPressed(const QModelIndex &index)
+{
+    if (MapObject *mapObject = model()->toMapObject(index))
+        mMapDocument->setCurrentObject(mapObject);
+    else if (ObjectGroup *objectGroup = model()->toObjectGroup(index))
+        mMapDocument->setCurrentObject(objectGroup);
 }
 
 void ObjectsView::onActivated(const QModelIndex &index)

@@ -250,6 +250,8 @@ TilesetDock::TilesetDock(QWidget *parent):
 
     connect(mViewStack, SIGNAL(currentChanged(int)),
             this, SLOT(updateCurrentTiles()));
+    connect(mViewStack, SIGNAL(currentChanged(int)),
+            this, SLOT(updateCurrentTile()));
 
     connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
@@ -385,9 +387,14 @@ void TilesetDock::updateActions()
             if (!view->model()) {
                 // Lazily set up the model
                 view->setModel(new TilesetModel(tileset, view));
-                connect(view->selectionModel(),
-                        SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+
+                QItemSelectionModel *s = view->selectionModel();
+                connect(s, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
                         SLOT(updateCurrentTiles()));
+                connect(s, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+                        SLOT(updateCurrentTile()));
+                connect(view, SIGNAL(pressed(QModelIndex)),
+                        SLOT(indexPressed(QModelIndex)));
             }
 
             mViewStack->setCurrentIndex(index);
@@ -405,11 +412,11 @@ void TilesetDock::updateActions()
 
 void TilesetDock::updateCurrentTiles()
 {
-    const int viewIndex = mViewStack->currentIndex();
-    if (viewIndex == -1)
+    TilesetView *view = currentTilesetView();
+    if (!view)
         return;
 
-    const QItemSelectionModel *s = tilesetViewAt(viewIndex)->selectionModel();
+    const QItemSelectionModel *s = view->selectionModel();
     if (!s)
         return;
 
@@ -435,7 +442,7 @@ void TilesetDock::updateCurrentTiles()
                                          maxX - minX + 1,
                                          maxY - minY + 1);
 
-    const TilesetModel *model = static_cast<const TilesetModel*>(s->model());
+    const TilesetModel *model = view->tilesetModel();
     foreach (const QModelIndex &index, indexes) {
         tileLayer->setCell(index.column() - minX,
                            index.row() - minY,
@@ -443,7 +450,20 @@ void TilesetDock::updateCurrentTiles()
     }
 
     setCurrentTiles(tileLayer);
-    setCurrentTile(model->tileAt(s->currentIndex()));
+}
+
+void TilesetDock::updateCurrentTile()
+{
+    if (const TilesetView *view = currentTilesetView())
+        if (const QItemSelectionModel *s = view->selectionModel())
+            setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+}
+
+void TilesetDock::indexPressed(const QModelIndex &index)
+{
+    TilesetView *view = currentTilesetView();
+    if (Tile *tile = view->tilesetModel()->tileAt(index))
+        mMapDocument->setCurrentObject(tile);
 }
 
 void TilesetDock::tilesetAdded(int index, Tileset *tileset)

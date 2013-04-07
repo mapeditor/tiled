@@ -88,6 +88,7 @@ protected slots:
                                   const QItemSelection &deselected);
 
 private slots:
+    void onPressed(const QModelIndex &index);
     void onActivated(const QModelIndex &index);
     void selectedObjectsChanged();
 
