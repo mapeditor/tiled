@@ -255,17 +255,17 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
         PyObject *pinst = PyObject_CallMethod(it.value(), (char *)"read",
                                               (char *)"(s)", fileName.toUtf8().data());
 
-        Tiled::Map *ret = new Tiled::Map(Tiled::Map::Orthogonal, 10,10, 16,16);
+        Tiled::Map *ret;
         if(!pinst) {
             PySys_WriteStderr("** Uncaught exception in script **\n");
         } else {
-            _wrap_convert_py2c__Tiled__Map(pinst, ret);
-            Py_DECREF(pinst);
+            _wrap_convert_py2c__Tiled__Map___star__(pinst, &ret);
+            //Py_DECREF(pinst);
         }
         handleError();
 
         ret->setProperty("__script__", it.key());
-        return ret->clone();
+        return ret;
     }
     return NULL;
 }

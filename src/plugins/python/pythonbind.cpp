@@ -6194,7 +6194,7 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
 }
     
 
-int _wrap_convert_py2c__Tiled__Map(PyObject *value, Tiled::Map *address)
+int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *address)
 {
     PyObject *py_retval;
     PyTiledMap *tmp_Map;
@@ -6204,7 +6204,7 @@ int _wrap_convert_py2c__Tiled__Map(PyObject *value, Tiled::Map *address)
         Py_DECREF(py_retval);
         return 0;
     }
-    *address = *tmp_Map->obj;
+    *address = new Tiled::Map(*tmp_Map->obj);
     Py_DECREF(py_retval);
     return 1;
 }

@@ -7,8 +7,6 @@ from tiled.qt import *
 import os, sys, struct
 from lib.mappy_types import BLKSTR, MPHD, fmpchunk
 
-maps = []
-
 class Mappy(Plugin):
   @classmethod
   def nameFilter(cls):
@@ -31,7 +29,6 @@ class Mappy(Plugin):
     tset = Tiled.Tileset('Tiles', hd.blockwidth, hd.blockheight, 0, 0)
     cmap = list(readcmap(chunks['CMAP']))
     tset.loadFromImage(readtilegfx(hd, chunks['BGFX'], cmap), "")
-    maps.append(m)  # w/o live ref crashes in mapscene:createLayerItem setVisible
 
     blks = list(readblockdata(chunks['BKDT'], hd))
 

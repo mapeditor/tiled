@@ -309,7 +309,7 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
   #  utils.eval_retval(retval("Tiled::LoggingInterface")),
   #  sink)
   mod.generate_python_to_c_type_converter(
-    utils.eval_retval("Tiled::Map"),
+    utils.eval_retval(retval('Tiled::Map*',caller_owns_return=True)),
     sink)
   mod.generate_c_to_python_type_converter(
     utils.eval_retval("const Tiled::Map"),
