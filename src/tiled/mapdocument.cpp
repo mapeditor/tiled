@@ -63,7 +63,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mFileName(fileName),
     mMap(map),
     mLayerModel(new LayerModel(this)),
-    mCurrentObject(0),
+    mCurrentObject(map),
     mMapObjectModel(new MapObjectModel(this)),
     mTerrainModel(new TerrainModel(this, this)),
     mUndoStack(new QUndoStack(this))

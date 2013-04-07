@@ -44,6 +44,8 @@
 #include <QtGroupPropertyManager>
 #include <QtVariantPropertyManager>
 
+#include <QCoreApplication>
+
 namespace Tiled {
 namespace Internal {
 
@@ -271,6 +273,25 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
 void PropertyBrowser::addMapProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
+
+    QtVariantProperty *layerFormatProperty =
+            createProperty(LayerFormatProperty,
+                           QtVariantPropertyManager::enumTypeId(),
+                           tr("Layer Format"),
+                           groupProperty);
+
+    QStringList formatNames;
+    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Default"));
+    formatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
+    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
+    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
+    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
+    formatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
+
+    mUpdating = true;
+    mVariantManager->setAttribute(layerFormatProperty, QLatin1String("enumNames"), formatNames);
+    mUpdating = false;
+
     createProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
 }
@@ -350,6 +371,13 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     QUndoCommand *command = 0;
 
     switch (id) {
+    case LayerFormatProperty: {
+        Map::LayerDataFormat format = static_cast<Map::LayerDataFormat>(val.toInt() - 1);
+        command = new ChangeMapProperties(mMapDocument,
+                                          map->backgroundColor(),
+                                          format);
+        break;
+    }
     case ColorProperty:
         command = new ChangeMapProperties(mMapDocument,
                                           val.value<QColor>(),
@@ -521,6 +549,7 @@ void PropertyBrowser::updateProperties()
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
+        mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat() + 1);
         QColor backgroundColor = map->backgroundColor();
         if (!backgroundColor.isValid())
             backgroundColor = Qt::darkGray;

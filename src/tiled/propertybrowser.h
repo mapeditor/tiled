@@ -97,6 +97,7 @@ private:
         VisibleProperty,
         OpacityProperty,
         ColorProperty,
+        LayerFormatProperty,
         CustomProperty
     };
 
