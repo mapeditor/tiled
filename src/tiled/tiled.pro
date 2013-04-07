@@ -144,7 +144,8 @@ SOURCES += aboutdialog.cpp \
     toolmanager.cpp \
     undodock.cpp \
     utils.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    consoledock.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -255,7 +256,8 @@ HEADERS += aboutdialog.h \
     undocommands.h \
     undodock.h \
     utils.h \
-    zoomable.h
+    zoomable.h \
+    consoledock.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
