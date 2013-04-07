@@ -119,8 +119,6 @@ private slots:
     void importTileset();
     void exportTileset();
 
-    void renameTileset();
-
     void editTerrain();
 
     void documentCloseRequested(int index);
@@ -149,7 +147,6 @@ private:
     QAction *mExportTileset;
     QAction *mPropertiesTileset;
     QAction *mDeleteTileset;
-    QAction *mRenameTileset;
     QAction *mEditTerrain;
 
     QMap<MapDocument *, QString> mCurrentTilesets;

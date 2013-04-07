@@ -32,7 +32,6 @@
 #include "mapobject.h"
 #include "movetileset.h"
 #include "objectgroup.h"
-#include "propertiesdialog.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -105,30 +104,6 @@ private:
     QString mFileName;
 };
 
-class RenameTileset : public QUndoCommand
-{
-public:
-    RenameTileset(MapDocument *mapDocument,
-                  Tileset *tileset,
-                  const QString &newName)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                                   "Change Tileset Name"))
-        , mMapDocument(mapDocument)
-        , mTileset(tileset)
-        , mOldName(tileset->name())
-        , mNewName(newName)
-    {}
-
-    void undo() { mMapDocument->setTilesetName(mTileset, mOldName); }
-    void redo() { mMapDocument->setTilesetName(mTileset, mNewName); }
-
-private:
-    MapDocument *mMapDocument;
-    Tileset *mTileset;
-    QString mOldName;
-    QString mNewName;
-};
-
 
 class TilesetMenuButton : public QToolButton
 {
@@ -173,7 +148,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mExportTileset(new QAction(this)),
     mPropertiesTileset(new QAction(this)),
     mDeleteTileset(new QAction(this)),
-    mRenameTileset(new QAction(this)),
     mEditTerrain(new QAction(this)),
     mTilesetMenuButton(new TilesetMenuButton(this)),
     mTilesetMenu(new QMenu(this)),
@@ -212,14 +186,12 @@ TilesetDock::TilesetDock(QWidget *parent):
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
     mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
     mDeleteTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
-    mRenameTileset->setIcon(QIcon(QLatin1String(":images/16x16/edit-rename.png")));
     mEditTerrain->setIcon(QIcon(QLatin1String(":images/16x16/terrain.png")));
 
     Utils::setThemeIcon(mImportTileset, "document-import");
     Utils::setThemeIcon(mExportTileset, "document-export");
     Utils::setThemeIcon(mPropertiesTileset, "document-properties");
     Utils::setThemeIcon(mDeleteTileset, "edit-delete");
-    Utils::setThemeIcon(mRenameTileset, "edit-rename");
 
     connect(mImportTileset, SIGNAL(triggered()),
             SLOT(importTileset()));
@@ -229,8 +201,6 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(editTilesetProperties()));
     connect(mDeleteTileset, SIGNAL(triggered()),
             SLOT(removeTileset()));
-    connect(mRenameTileset, SIGNAL(triggered()),
-            SLOT(renameTileset()));
     connect(mEditTerrain, SIGNAL(triggered()),
             SLOT(editTerrain()));
 
@@ -239,7 +209,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->addAction(mExportTileset);
     mToolBar->addAction(mPropertiesTileset);
     mToolBar->addAction(mDeleteTileset);
-    mToolBar->addAction(mRenameTileset);
     mToolBar->addAction(mEditTerrain);
 
     mZoomable = new Zoomable(this);
@@ -402,7 +371,6 @@ void TilesetDock::updateActions()
         }
     }
 
-    mRenameTileset->setEnabled(view && !external);
     mImportTileset->setEnabled(view && external);
     mExportTileset->setEnabled(view && !external);
     mPropertiesTileset->setEnabled(view && !external);
@@ -634,7 +602,6 @@ void TilesetDock::retranslateUi()
     mExportTileset->setText(tr("&Export Tileset As..."));
     mPropertiesTileset->setText(tr("Tile&set Properties"));
     mDeleteTileset->setText(tr("&Remove Tileset"));
-    mRenameTileset->setText(tr("Rena&me Tileset"));
     mEditTerrain->setText(tr("Edit &Terrain Information"));
 }
 
@@ -663,11 +630,8 @@ void TilesetDock::editTilesetProperties()
     if (!tileset)
         return;
 
-    PropertiesDialog propertiesDialog(tr("Tileset"),
-                                      tileset,
-                                      mMapDocument,
-                                      this);
-    propertiesDialog.exec();
+    mMapDocument->setCurrentObject(tileset);
+    mMapDocument->emitEditCurrentObject();
 }
 
 void TilesetDock::exportTileset()
@@ -708,23 +672,6 @@ void TilesetDock::importTileset()
     QUndoCommand *command = new SetTilesetFileName(mMapDocument,
                                                    tileset, QString());
     mMapDocument->undoStack()->push(command);
-}
-
-void TilesetDock::renameTileset()
-{
-    bool ok;
-    const QString oldText = mTabBar->tabText(mTabBar->currentIndex());
-    QString newText = QInputDialog::getText(this, tr("Rename Tileset"),
-                                         tr("New name:"), QLineEdit::Normal,
-                                         oldText, &ok);
-
-    if (!ok || newText == oldText)
-        return;
-
-    RenameTileset *name = new RenameTileset(mMapDocument,
-                                            currentTileset(),
-                                            newText);
-    mMapDocument->undoStack()->push(name);
 }
 
 void TilesetDock::editTerrain()

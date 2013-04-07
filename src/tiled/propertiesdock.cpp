@@ -109,6 +109,8 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
     if (mapDocument) {
         connect(mapDocument, SIGNAL(currentObjectChanged(Object*)),
                 SLOT(currentObjectChanged(Object*)));
+        connect(mapDocument, SIGNAL(editCurrentObject()),
+                SLOT(bringToFront()));
 
         currentObjectChanged(mapDocument->currentObject());
     }

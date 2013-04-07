@@ -236,6 +236,7 @@ public:
     void emitObjectGroupChanged(ObjectGroup *objectGroup);
     void emitImageLayerChanged(ImageLayer *imageLayer);
     void emitEditLayerNameRequested();
+    void emitEditCurrentObject();
 
 signals:
     void fileNameChanged();
@@ -271,6 +272,8 @@ signals:
      * Applies to the current layer.
      */
     void editLayerNameRequested();
+
+    void editCurrentObject();
 
     /**
      * Emitted when the current layer index changes.
@@ -422,6 +425,14 @@ inline void MapDocument::emitImageLayerChanged(ImageLayer *imageLayer)
 inline void MapDocument::emitEditLayerNameRequested()
 {
     emit editLayerNameRequested();
+}
+
+/**
+ * Emits the editCurrentObject signal, which makes the
+ */
+inline void MapDocument::emitEditCurrentObject()
+{
+    emit editCurrentObject();
 }
 
 } // namespace Internal

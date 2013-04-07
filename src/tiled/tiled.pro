@@ -122,6 +122,7 @@ SOURCES += aboutdialog.cpp \
     quickstampmanager.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
+    renametileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
     resizelayer.cpp \
@@ -236,6 +237,7 @@ HEADERS += aboutdialog.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \
+    renametileset.h \
     resizedialog.h \
     resizehelper.h \
     resizelayer.h \

@@ -35,6 +35,7 @@
 #include "resizemapobject.h"
 #include "renamelayer.h"
 #include "renameterrain.h"
+#include "renametileset.h"
 #include "rotatemapobject.h"
 #include "terrain.h"
 #include "terrainmodel.h"
@@ -91,9 +92,9 @@ void PropertyBrowser::setObject(Object *object)
         case Layer::ImageLayerType:     addImageLayerProperties();  break;
         }
         break;
+    case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
     case Object::TerrainType:           addTerrainProperties(); break;
-    case Object::TilesetType:           break;
     }
 
     // Add a node for the custom properties
@@ -261,9 +262,9 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::MapType:       applyMapValue(id, val); break;
     case Object::MapObjectType: applyMapObjectValue(id, val); break;
     case Object::LayerType:     applyLayerValue(id, val); break;
+    case Object::TilesetType:   applyTilesetValue(id, val); break;
     case Object::TileType:      break;
     case Object::TerrainType:   applyTerrainValue(id, val); break;
-    case Object::TilesetType:   break;
     }
 }
 
@@ -320,6 +321,13 @@ void PropertyBrowser::addImageLayerProperties()
     addLayerProperties(groupProperty);
     // TODO: Property for changing the image source
     createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
+    addProperty(groupProperty);
+}
+
+void PropertyBrowser::addTilesetProperties()
+{
+    QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
+    createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -465,6 +473,18 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
     }
 }
 
+void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QVariant &val)
+{
+    Tileset *tileset = static_cast<Tileset*>(mObject);
+
+    if (id == NameProperty) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new RenameTileset(mMapDocument,
+                                          tileset,
+                                          val.toString()));
+    }
+}
+
 void PropertyBrowser::applyTerrainValue(PropertyId id, const QVariant &val)
 {
     Terrain *terrain = static_cast<Terrain*>(mObject);
@@ -542,14 +562,18 @@ void PropertyBrowser::updateProperties()
         }
         break;
     }
+    case Object::TilesetType: {
+        const Tileset *tileset = static_cast<const Tileset*>(mObject);
+        mIdToProperty[NameProperty]->setValue(tileset->name());
+        break;
+    }
+    case Object::TileType:
+        break;
     case Object::TerrainType: {
         const Terrain *terrain = static_cast<const Terrain*>(mObject);
         mIdToProperty[NameProperty]->setValue(terrain->name());
         break;
     }
-    case Object::TileType:
-    case Object::TilesetType:
-        break;
     }
 
     mUpdating = false;
