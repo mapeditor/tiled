@@ -26,6 +26,7 @@
 #include "propertiesmodel.h"
 #include "propertiesview.h"
 #include "propertybrowser.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
 #include "utils.h"
@@ -109,6 +110,8 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
     if (mapDocument) {
         connect(mapDocument, SIGNAL(currentObjectChanged(Object*)),
                 SLOT(currentObjectChanged(Object*)));
+        connect(mapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
+                SLOT(tilesetFileNameChanged(Tileset*)));
         connect(mapDocument, SIGNAL(editCurrentObject()),
                 SLOT(bringToFront()));
 
@@ -116,19 +119,65 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
     }
 }
 
+static bool isExternal(const Object *object)
+{
+    if (!object)
+        return false;
+
+    switch (object->typeId()) {
+    case Object::TilesetType:
+        return static_cast<const Tileset*>(object)->isExternal();
+    case Object::TileType:
+        return static_cast<const Tile*>(object)->tileset()->isExternal();
+    case Object::TerrainType:
+        return static_cast<const Terrain*>(object)->tileset()->isExternal();
+    default:
+        return false;
+    }
+}
+
 void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
-    mActionAddProperty->setEnabled(object != 0);
 
-    // TODO: If the current object is a tile or terrain, disable when this tile
-    // is from an external tileset.
+    const bool enabled = object != 0 && !isExternal(object);
+    mPropertyBrowser->setEnabled(enabled);
+    mActionAddProperty->setEnabled(enabled);
 }
 
 void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
-    mActionRemoveProperty->setEnabled(isCustomProperty);
+    bool external = isExternal(mMapDocument->currentObject());
+    mActionRemoveProperty->setEnabled(isCustomProperty && !external);
+}
+
+void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
+{
+    Object *object = mMapDocument->currentObject();
+    if (!object)
+        return;
+
+    bool update = false;
+
+    switch (object->typeId()) {
+    case Object::TilesetType:
+        update = object == tileset;
+        break;
+    case Object::TileType:
+        update = static_cast<Tile*>(object)->tileset() == tileset;
+        break;
+    case Object::TerrainType:
+        update = static_cast<Terrain*>(object)->tileset() == tileset;
+        break;
+    default:
+        break;
+    }
+
+    if (update) {
+        currentObjectChanged(object);
+        currentItemChanged(mPropertyBrowser->currentItem());
+    }
 }
 
 void PropertiesDock::addProperty()

@@ -28,6 +28,7 @@ class QtBrowserItem;
 namespace Tiled {
 
 class Object;
+class Tileset;
 
 namespace Internal {
 
@@ -53,6 +54,7 @@ private slots:
     void mapDocumentChanged(MapDocument *mapDocument);
     void currentObjectChanged(Object *object);
     void currentItemChanged(QtBrowserItem *item);
+    void tilesetFileNameChanged(Tileset *tileset);
 
     void addProperty();
     void addProperty(const QString &name);
