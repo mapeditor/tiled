@@ -531,6 +531,9 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
                                                    QtProperty *parent)
 {
     QtVariantProperty *property = mVariantManager->addProperty(type, name);
+    if (type == QVariant::Bool)
+        property->setAttribute(QLatin1String("textVisible"), false);
+
     parent->addSubProperty(property);
     mPropertyToId.insert(property, id);
 
