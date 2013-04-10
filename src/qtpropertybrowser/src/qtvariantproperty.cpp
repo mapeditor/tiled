@@ -857,6 +857,10 @@ void QtVariantPropertyManagerPrivate::slotFlagNamesChanged(QtProperty *property,
         \o regExp
         \o QVariant::RegExp
     \row
+        \o
+        \o echoMode
+        \o QVariant::Int
+    \row
         \o QDate
         \o minimum
         \o QVariant::Date
