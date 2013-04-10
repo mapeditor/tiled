@@ -153,6 +153,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void slotValueChanged(QtProperty *, const QCursor &))
     Q_PRIVATE_SLOT(d_func(), void slotFlagNamesChanged(QtProperty *, const QStringList &))
     Q_PRIVATE_SLOT(d_func(), void slotReadOnlyChanged(QtProperty *, bool))
+    Q_PRIVATE_SLOT(d_func(), void slotTextVisibleChanged(QtProperty *, bool))
     Q_PRIVATE_SLOT(d_func(), void slotPropertyInserted(QtProperty *, QtProperty *, QtProperty *))
     Q_PRIVATE_SLOT(d_func(), void slotPropertyRemoved(QtProperty *, QtProperty *))
     Q_DECLARE_PRIVATE(QtVariantPropertyManager)

@@ -139,6 +139,7 @@ private:
     Q_DECLARE_PRIVATE(QtCheckBoxFactory)
     Q_DISABLE_COPY(QtCheckBoxFactory)
     Q_PRIVATE_SLOT(d_func(), void slotPropertyChanged(QtProperty *, bool))
+    Q_PRIVATE_SLOT(d_func(), void slotTextVisibleChanged(QtProperty *, bool))
     Q_PRIVATE_SLOT(d_func(), void slotSetValue(bool))
     Q_PRIVATE_SLOT(d_func(), void slotEditorDestroyed(QObject *))
 };

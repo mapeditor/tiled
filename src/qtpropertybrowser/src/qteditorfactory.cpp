@@ -631,6 +631,7 @@ class QtCheckBoxFactoryPrivate : public EditorFactoryPrivate<QtBoolEdit>
     Q_DECLARE_PUBLIC(QtCheckBoxFactory)
 public:
     void slotPropertyChanged(QtProperty *property, bool value);
+    void slotTextVisibleChanged(QtProperty *property, bool textVisible);
     void slotSetValue(bool value);
 };
 
@@ -645,6 +646,22 @@ void QtCheckBoxFactoryPrivate::slotPropertyChanged(QtProperty *property, bool va
         editor->blockCheckBoxSignals(true);
         editor->setChecked(value);
         editor->blockCheckBoxSignals(false);
+    }
+}
+
+void QtCheckBoxFactoryPrivate::slotTextVisibleChanged(QtProperty *property, bool textVisible)
+{
+    if (!m_createdEditors.contains(property))
+        return;
+
+    QtBoolPropertyManager *manager = q_ptr->propertyManager(property);
+    if (!manager)
+        return;
+
+    QListIterator<QtBoolEdit *> itEditor(m_createdEditors[property]);
+    while (itEditor.hasNext()) {
+        QtBoolEdit *editor = itEditor.next();
+        editor->setTextVisible(textVisible);
     }
 }
 
@@ -702,6 +719,8 @@ void QtCheckBoxFactory::connectPropertyManager(QtBoolPropertyManager *manager)
 {
     connect(manager, SIGNAL(valueChanged(QtProperty *, bool)),
                 this, SLOT(slotPropertyChanged(QtProperty *, bool)));
+    connect(manager, SIGNAL(textVisibleChanged(QtProperty *, bool)),
+                this, SLOT(slotTextVisibleChanged(QtProperty *, bool)));
 }
 
 /*!
@@ -714,6 +733,7 @@ QWidget *QtCheckBoxFactory::createEditor(QtBoolPropertyManager *manager, QtPrope
 {
     QtBoolEdit *editor = d_ptr->createEditor(property, parent);
     editor->setChecked(manager->value(property));
+    editor->setTextVisible(manager->textVisible(property));
 
     connect(editor, SIGNAL(toggled(bool)), this, SLOT(slotSetValue(bool)));
     connect(editor, SIGNAL(destroyed(QObject *)),
@@ -730,6 +750,8 @@ void QtCheckBoxFactory::disconnectPropertyManager(QtBoolPropertyManager *manager
 {
     disconnect(manager, SIGNAL(valueChanged(QtProperty *, bool)),
                 this, SLOT(slotPropertyChanged(QtProperty *, bool)));
+    disconnect(manager, SIGNAL(textVisibleChanged(QtProperty *, bool)),
+                this, SLOT(slotTextVisibleChanged(QtProperty *, bool)));
 }
 
 // QtDoubleSpinBoxFactory
