@@ -70,7 +70,6 @@ public:
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
     QAction *actionToggleOtherLayers() const
     { return mActionToggleOtherLayers; }
-    QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
     QAction *actionRemoveObjects() const { return mActionRemoveObjects; }
@@ -124,7 +123,6 @@ private:
     QAction *mActionMoveLayerUp;
     QAction *mActionMoveLayerDown;
     QAction *mActionToggleOtherLayers;
-    QAction *mActionLayerProperties;
 
     QAction *mActionDuplicateObjects;
     QAction *mActionRemoveObjects;

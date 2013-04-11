@@ -22,11 +22,7 @@
 #include "propertiesdialog.h"
 #include "ui_propertiesdialog.h"
 
-#include "imagelayer.h"
-#include "imagelayerpropertiesdialog.h"
 #include "mapdocument.h"
-#include "objectgroup.h"
-#include "objectgrouppropertiesdialog.h"
 #include "propertiesmodel.h"
 #include "utils.h"
 
@@ -87,31 +83,6 @@ void PropertiesDialog::accept()
     mUi->propertiesView->setFocus();
 
     QDialog::accept();
-}
-
-void PropertiesDialog::showDialogFor(Layer *layer,
-                                     MapDocument *mapDocument,
-                                     QWidget *parent)
-{
-    PropertiesDialog *dialog;
-
-    if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
-        dialog = new ObjectGroupPropertiesDialog(mapDocument,
-                                                 objectGroup,
-                                                 parent);
-    } else if (ImageLayer *imageLayer = layer->asImageLayer()) {
-        dialog = new ImageLayerPropertiesDialog(mapDocument,
-                                                imageLayer,
-                                                parent);
-    } else {
-        dialog = new PropertiesDialog(tr("Layer"),
-                                      layer,
-                                      mapDocument,
-                                      parent);
-    }
-
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->exec();
 }
 
 void PropertiesDialog::deleteSelectedProperties()

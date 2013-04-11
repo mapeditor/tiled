@@ -32,9 +32,6 @@ class PropertiesDialog;
 }
 
 namespace Tiled {
-
-class Layer;
-
 namespace Internal {
 
 class PropertiesModel;
@@ -67,13 +64,6 @@ public:
      * ChangeProperties command and adding it to the undo stack.
      */
     void accept();
-
-    /**
-     * Shows the appropriate properties dialog for the given layer.
-     */
-    static void showDialogFor(Layer *layer,
-                              MapDocument *mapDocument,
-                              QWidget *parent);
 
 protected:
     MapDocument *mapDocument() const { return mMapDocument; }

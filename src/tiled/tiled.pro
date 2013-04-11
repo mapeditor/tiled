@@ -80,7 +80,6 @@ SOURCES += aboutdialog.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     imagelayeritem.cpp \
-    imagelayerpropertiesdialog.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -102,7 +101,6 @@ SOURCES += aboutdialog.cpp \
     newmapdialog.cpp \
     newtilesetdialog.cpp \
     objectgroupitem.cpp \
-    objectgrouppropertiesdialog.cpp \
     objectpropertiesdialog.cpp \
     objectsdock.cpp \
     objectselectiontool.cpp \
@@ -196,7 +194,6 @@ HEADERS += aboutdialog.h \
     flipmapobjects.h \
     geometry.h \
     imagelayeritem.h \
-    imagelayerpropertiesdialog.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
@@ -218,7 +215,6 @@ HEADERS += aboutdialog.h \
     newmapdialog.h \
     newtilesetdialog.h \
     objectgroupitem.h \
-    objectgrouppropertiesdialog.h \
     objectpropertiesdialog.h \
     objectsdock.h \
     objectselectiontool.h \

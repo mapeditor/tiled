@@ -146,8 +146,6 @@ public slots:
     void openRecentFile();
     void clearRecentFiles();
 
-    void editLayerProperties();
-
     void flipHorizontally() { flip(FlipHorizontally); }
     void flipVertically() { flip(FlipVertically); }
     void rotateLeft() { rotate(RotateLeft); }

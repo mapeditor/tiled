@@ -261,8 +261,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mLayerMenu->addAction(mActionHandler->actionMoveLayerDown());
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionToggleOtherLayers());
-    mLayerMenu->addSeparator();
-    mLayerMenu->addAction(mActionHandler->actionLayerProperties());
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
@@ -307,9 +305,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
     connect(mUi->actionAutoMap, SIGNAL(triggered()), SLOT(autoMap()));
-
-    connect(mActionHandler->actionLayerProperties(), SIGNAL(triggered()),
-            SLOT(editLayerProperties()));
 
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -1363,15 +1358,6 @@ void MainWindow::updateZoomLabel()
         mZoomComboBox->setCurrentIndex(index);
         mZoomComboBox->setEnabled(false);
     }
-}
-
-void MainWindow::editLayerProperties()
-{
-    if (!mMapDocument)
-        return;
-
-    if (Layer *layer = mMapDocument->currentLayer())
-        PropertiesDialog::showDialogFor(layer, mMapDocument, this);
 }
 
 void MainWindow::flip(FlipDirection direction)
