@@ -302,10 +302,10 @@ void PropertyBrowser::addMapObjectProperties()
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     // TODO: Dropdown with possible values for object type
     createProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
+    createProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
     createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
     createProperty(SizeProperty, QVariant::SizeF, tr("Size"), groupProperty);
     createProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
-    createProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -403,6 +403,9 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
                                       mIdToProperty[NameProperty]->value().toString(),
                                       mIdToProperty[TypeProperty]->value().toString());
         break;
+    case VisibleProperty:
+        command = new SetMapObjectVisible(mMapDocument, mapObject, val.toBool());
+        break;
     case PositionProperty: {
         const QPointF oldPos = mapObject->position();
         mapObject->setPosition(val.toPointF());
@@ -421,9 +424,6 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
         command = new RotateMapObject(mMapDocument, mapObject, oldRotation);
         break;
     }
-    case VisibleProperty:
-        command = new SetMapObjectVisible(mMapDocument, mapObject, val.toBool());
-        break;
     default:
         break;
     }
@@ -563,10 +563,10 @@ void PropertyBrowser::updateProperties()
         const MapObject *mapObject = static_cast<const MapObject*>(mObject);
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(mapObject->type());
+        mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
         mIdToProperty[PositionProperty]->setValue(mapObject->position());
         mIdToProperty[SizeProperty]->setValue(mapObject->size());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
-        mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
         break;
     }
     case Object::LayerType: {
