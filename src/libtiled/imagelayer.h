@@ -107,8 +107,9 @@ public:
     void resetImage();
 
     /**
-     * Load this layer from the given \a image. This will replace
-     * existing layer image.
+     * Load this layer from the given \a image. This will replace the existing
+     * image. The \a fileName becomes the new imageSource, regardless of
+     * whether the image could be loaded.
      *
      * @param image    the image to load the layer from
      * @param fileName the file name of the image, which will be remembered

@@ -52,10 +52,10 @@ SOURCES += aboutdialog.cpp \
     automappingutils.cpp  \
     brushitem.cpp \
     bucketfilltool.cpp \
+    changeimagelayerproperties.cpp \
     changelayer.cpp \
     changemapobject.cpp \
     changemapproperties.cpp \
-    changeimagelayerproperties.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
@@ -74,6 +74,7 @@ SOURCES += aboutdialog.cpp \
     editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
+    fileedit.cpp \
     filesystemwatcher.cpp \
     filltiles.cpp \
     flipmapobjects.cpp \
@@ -149,6 +150,8 @@ SOURCES += aboutdialog.cpp \
     toolmanager.cpp \
     undodock.cpp \
     utils.cpp \
+    varianteditorfactory.cpp \
+    variantpropertymanager.cpp \
     zoomable.cpp
 
 HEADERS += aboutdialog.h \
@@ -165,10 +168,10 @@ HEADERS += aboutdialog.h \
     automappingutils.h \
     brushitem.h \
     bucketfilltool.h \
-    changemapobject.h \
-    changemapproperties.h \
     changeimagelayerproperties.h\
     changelayer.h \
+    changemapobject.h \
+    changemapproperties.h \
     changeobjectgroupproperties.h \
     changepolygon.h \
     changeproperties.h \
@@ -187,6 +190,7 @@ HEADERS += aboutdialog.h \
     editterraindialog.h \
     eraser.h \
     erasetiles.h \
+    fileedit.h \
     filesystemwatcher.h \
     filltiles.h \
     flipmapobjects.h \
@@ -264,6 +268,8 @@ HEADERS += aboutdialog.h \
     undocommands.h \
     undodock.h \
     utils.h \
+    varianteditorfactory.h \
+    variantpropertymanager.h \
     zoomable.h
 
 macx {

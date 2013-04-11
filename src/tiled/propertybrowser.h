@@ -98,6 +98,7 @@ private:
         OpacityProperty,
         ColorProperty,
         LayerFormatProperty,
+        ImageSourceProperty,
         CustomProperty
     };
 

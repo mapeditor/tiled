@@ -40,9 +40,11 @@
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "tilelayer.h"
+#include "utils.h"
+#include "varianteditorfactory.h"
+#include "variantpropertymanager.h"
 
 #include <QtGroupPropertyManager>
-#include <QtVariantPropertyManager>
 
 #include <QCoreApplication>
 
@@ -53,10 +55,10 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
     , mObject(0)
     , mMapDocument(0)
-    , mVariantManager(new QtVariantPropertyManager(this))
+    , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
 {
-    setFactoryForManager(mVariantManager, new QtVariantEditorFactory(this));
+    setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
     setResizeMode(ResizeToContents);
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
@@ -340,7 +342,14 @@ void PropertyBrowser::addImageLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Image Layer"));
     addLayerProperties(groupProperty);
-    // TODO: Property for changing the image source
+
+    QtVariantProperty *imageSourceProperty = createProperty(ImageSourceProperty,
+                                                            VariantPropertyManager::filePathTypeId(),
+                                                            tr("Image"), groupProperty);
+
+    imageSourceProperty->setAttribute(QLatin1String("filter"),
+                                      Utils::readableImageFormatsFilter());
+
     createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
     addProperty(groupProperty);
 }
@@ -486,18 +495,32 @@ void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
 {
     ImageLayer *imageLayer = static_cast<ImageLayer*>(mObject);
+    QUndoStack *undoStack = mMapDocument->undoStack();
 
-    if (id == ColorProperty) {
+    switch (id) {
+    case ImageSourceProperty: {
+        const QString imageSource = val.toString();
+        const QColor &color = imageLayer->transparentColor();
+        undoStack->push(new ChangeImageLayerProperties(mMapDocument,
+                                                       imageLayer,
+                                                       color,
+                                                       imageSource));
+        break;
+    }
+    case ColorProperty: {
         QColor color = val.value<QColor>();
         if (color == Qt::gray)
             color = QColor();
 
         const QString &imageSource = imageLayer->imageSource();
-        QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
                                                        imageSource));
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -589,6 +612,7 @@ void PropertyBrowser::updateProperties()
         }
         case Layer::ImageLayerType:
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
+            mIdToProperty[ImageSourceProperty]->setValue(imageLayer->imageSource());
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
             break;
         }
