@@ -26,7 +26,6 @@
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "objectgroup.h"
-#include "objectpropertiesdialog.h"
 #include "utils.h"
 #include "mapobjectmodel.h"
 
@@ -54,14 +53,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
 {
     setObjectName(QLatin1String("ObjectsDock"));
 
-    mActionObjectProperties = new QAction(this);
-    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
-
-    Utils::setThemeIcon(mActionObjectProperties, "document-properties");
-
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
-
-    connect(mActionObjectProperties, SIGNAL(triggered()), SLOT(objectProperties()));
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -95,8 +87,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(mMoveToMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowMoveToMenu()));
     connect(mMoveToMenu, SIGNAL(triggered(QAction*)),
             SLOT(triggeredMoveToMenu(QAction*)));
-
-    toolbar->addAction(mActionObjectProperties);
 
     layout->addWidget(toolbar);
     setWidget(widget);
@@ -148,7 +138,6 @@ void ObjectsDock::retranslateUi()
     setWindowTitle(tr("Objects"));
 
     mActionNewLayer->setToolTip(tr("Add Object Layer"));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
 
     updateActions();
 }
@@ -157,7 +146,6 @@ void ObjectsDock::updateActions()
 {
     int count = mMapDocument ? mMapDocument->selectedObjects().count() : 0;
     bool enabled = count > 0;
-    mActionObjectProperties->setEnabled(enabled && (count == 1));
 
     if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
         enabled = false;
@@ -181,19 +169,6 @@ void ObjectsDock::triggeredMoveToMenu(QAction *action)
 
     ObjectGroup *objectGroup = action->data().value<ObjectGroup*>();
     handler->moveObjectsToGroup(objectGroup);
-}
-
-void ObjectsDock::objectProperties()
-{
-    // Unnecessary check is unnecessary
-    if (!mMapDocument || !mMapDocument->selectedObjects().count())
-        return;
-
-    const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
-
-    MapObject *mapObject = selectedObjects.first();
-    ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
-    propertiesDialog.exec();
 }
 
 void ObjectsDock::saveExpandedGroups(MapDocument *mapDoc)
@@ -243,7 +218,6 @@ ObjectsView::ObjectsView(QWidget *parent)
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     connect(this, SIGNAL(pressed(QModelIndex)), SLOT(onPressed(QModelIndex)));
-    connect(this, SIGNAL(activated(QModelIndex)), SLOT(onActivated(QModelIndex)));
 }
 
 QSize ObjectsView::sizeHint() const
@@ -289,14 +263,6 @@ void ObjectsView::onPressed(const QModelIndex &index)
         mMapDocument->setCurrentObject(mapObject);
     else if (ObjectGroup *objectGroup = model()->toObjectGroup(index))
         mMapDocument->setCurrentObject(objectGroup);
-}
-
-void ObjectsView::onActivated(const QModelIndex &index)
-{
-    if (MapObject *mapObject = model()->toMapObject(index)) {
-        ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
-        propertiesDialog.exec();
-    }
 }
 
 void ObjectsView::selectionChanged(const QItemSelection &selected,

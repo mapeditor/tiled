@@ -101,7 +101,6 @@ SOURCES += aboutdialog.cpp \
     newmapdialog.cpp \
     newtilesetdialog.cpp \
     objectgroupitem.cpp \
-    objectpropertiesdialog.cpp \
     objectsdock.cpp \
     objectselectiontool.cpp \
     objecttypes.cpp \
@@ -112,10 +111,7 @@ SOURCES += aboutdialog.cpp \
     pluginmanager.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
-    propertiesdialog.cpp \
     propertiesdock.cpp \
-    propertiesmodel.cpp \
-    propertiesview.cpp \
     propertybrowser.cpp \
     quickstampmanager.cpp \
     renamelayer.cpp \
@@ -215,7 +211,6 @@ HEADERS += aboutdialog.h \
     newmapdialog.h \
     newtilesetdialog.h \
     objectgroupitem.h \
-    objectpropertiesdialog.h \
     objectsdock.h \
     objectselectiontool.h \
     objecttypes.h \
@@ -226,10 +221,7 @@ HEADERS += aboutdialog.h \
     pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
-    propertiesdialog.h \
     propertiesdock.h \
-    propertiesmodel.h \
-    propertiesview.h \
     propertybrowser.h \
     quickstampmanager.h \
     rangeset.h \
@@ -277,10 +269,8 @@ FORMS += aboutdialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
-    objectpropertiesdialog.ui \
     offsetmapdialog.ui \
     preferencesdialog.ui \
-    propertiesdialog.ui \
     resizedialog.ui \
     saveasimagedialog.ui\
     editterraindialog.ui

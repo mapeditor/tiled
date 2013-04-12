@@ -23,8 +23,6 @@
 #include "changeproperties.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
-#include "propertiesmodel.h"
-#include "propertiesview.h"
 #include "propertybrowser.h"
 #include "terrain.h"
 #include "tile.h"

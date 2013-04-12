@@ -33,8 +33,6 @@ class Tileset;
 namespace Internal {
 
 class MapDocument;
-class PropertiesModel;
-class PropertiesView;
 class PropertyBrowser;
 
 class PropertiesDock : public QDockWidget

@@ -73,7 +73,7 @@ private slots:
 
 private:
     void showContextMenu(MapObjectItem *clickedObject,
-                         QPoint screenPos, QWidget *parent);
+                         QPoint screenPos);
 
     MapScene *mMapScene;
 };

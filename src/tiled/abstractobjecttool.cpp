@@ -28,7 +28,6 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
-#include "objectpropertiesdialog.h"
 #include "utils.h"
 
 #include <QMenu>
@@ -76,7 +75,7 @@ void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
         showContextMenu(topMostObjectItemAt(event->scenePos()),
-                        event->screenPos(), event->widget());
+                        event->screenPos());
     }
 }
 
@@ -117,7 +116,7 @@ void AbstractObjectTool::flipVertically()
  * remove the map objects, or to edit their properties.
  */
 void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
-                                         QPoint screenPos, QWidget *parent)
+                                         QPoint screenPos)
 {
     QSet<MapObjectItem *> selection = mMapScene->selectedObjectItems();
     if (clickedObjectItem && !selection.contains(clickedObjectItem)) {
@@ -139,7 +138,6 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
     QMenu menu;
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
     menu.addAction(handler->actionDuplicateObjects());
     menu.addAction(handler->actionRemoveObjects());
 
@@ -159,25 +157,9 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         }
     }
 
-    menu.addSeparator();
-    QAction *propertiesAction = menu.addAction(propIcon,
-                                               tr("Object &Properties..."));
-    // TODO: Implement editing of properties for multiple objects
-    propertiesAction->setEnabled(selectedObjects.size() == 1);
-
-    Utils::setThemeIcon(propertiesAction, "document-properties");
-
     QAction *action = menu.exec(screenPos);
     if (!action)
         return;
-
-    if (action == propertiesAction) {
-        MapObject *mapObject = selectedObjects.first();
-        ObjectPropertiesDialog propertiesDialog(mapDocument(), mapObject,
-                                                parent);
-        propertiesDialog.exec();
-        return;
-    }
 
     if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>())
         handler->moveObjectsToGroup(objectGroup);
