@@ -21,16 +21,8 @@
 
 #include "terrainview.h"
 
-#include "map.h"
-#include "mapdocument.h"
-#include "preferences.h"
-#include "propertiesdialog.h"
-#include "tmxmapwriter.h"
-#include "tile.h"
-#include "tileset.h"
 #include "terrain.h"
 #include "terrainmodel.h"
-#include "utils.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
@@ -48,7 +40,6 @@ using namespace Tiled::Internal;
 TerrainView::TerrainView(QWidget *parent)
     : QTreeView(parent)
     , mZoomable(new Zoomable(this))
-    , mMapDocument(0)
 {
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setRootIsDecorated(false);
@@ -57,11 +48,6 @@ TerrainView::TerrainView(QWidget *parent)
     setHeaderHidden(true);
 
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale()));
-}
-
-void TerrainView::setMapDocument(MapDocument *mapDocument)
-{
-    mMapDocument = mapDocument;
 }
 
 Terrain *TerrainView::terrainAt(const QModelIndex &index) const
@@ -83,45 +69,6 @@ void TerrainView::wheelEvent(QWheelEvent *event)
     }
 
     QTreeView::wheelEvent(event);
-}
-
-/**
- * Allow changing terrain properties through a context menu.
- */
-void TerrainView::contextMenuEvent(QContextMenuEvent *event)
-{
-    Terrain *terrain = terrainAt(indexAt(event->pos()));
-    if (!terrain)
-        return;
-
-    const bool isExternal = terrain->tileset()->isExternal();
-    QMenu menu;
-
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-
-    QAction *terrainProperties = menu.addAction(propIcon,
-                                             tr("Terrain &Properties..."));
-    terrainProperties->setEnabled(!isExternal);
-    Utils::setThemeIcon(terrainProperties, "document-properties");
-    menu.addSeparator();
-
-    connect(terrainProperties, SIGNAL(triggered()),
-            SLOT(editTerrainProperties()));
-
-    menu.exec(event->globalPos());
-}
-
-void TerrainView::editTerrainProperties()
-{
-    Terrain *terrain = terrainAt(selectionModel()->currentIndex());
-    if (!terrain)
-        return;
-
-    PropertiesDialog propertiesDialog(tr("Terrain"),
-                                      terrain,
-                                      mMapDocument->undoStack(),
-                                      this);
-    propertiesDialog.exec();
 }
 
 void TerrainView::adjustScale()

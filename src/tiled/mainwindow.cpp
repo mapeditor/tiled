@@ -47,20 +47,19 @@
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapobject.h"
-#include "mappropertiesdialog.h"
 #include "maprenderer.h"
 #include "mapsdock.h"
 #include "mapscene.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
 #include "pluginmanager.h"
-#include "propertiesdialog.h"
 #include "resizedialog.h"
 #include "objectselectiontool.h"
 #include "objectgroup.h"
 #include "offsetmapdialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
+#include "propertiesdock.h"
 #include "quickstampmanager.h"
 #include "saveasimagedialog.h"
 #include "stampbrush.h"
@@ -166,6 +165,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(undoGroup, SIGNAL(cleanChanged(bool)), SLOT(updateWindowTitle()));
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
+    PropertiesDock *propertiesDock = new PropertiesDock(this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
@@ -174,6 +174,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
+    addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
@@ -259,8 +260,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mLayerMenu->addAction(mActionHandler->actionMoveLayerDown());
     mLayerMenu->addSeparator();
     mLayerMenu->addAction(mActionHandler->actionToggleOtherLayers());
-    mLayerMenu->addSeparator();
-    mLayerMenu->addAction(mActionHandler->actionLayerProperties());
 
     menuBar()->insertMenu(mUi->menuHelp->menuAction(), mLayerMenu);
 
@@ -305,9 +304,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
     connect(mUi->actionAutoMap, SIGNAL(triggered()), SLOT(autoMap()));
-
-    connect(mActionHandler->actionLayerProperties(), SIGNAL(triggered()),
-            SLOT(editLayerProperties()));
 
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -1206,9 +1202,8 @@ void MainWindow::editMapProperties()
     if (!mMapDocument)
         return;
 
-    MapPropertiesDialog mapPropertiesDialog(mMapDocument, this);
-
-    mapPropertiesDialog.exec();
+    mMapDocument->setCurrentObject(mMapDocument->map());
+    mMapDocument->emitEditCurrentObject();
 }
 
 void MainWindow::autoMap()
@@ -1362,15 +1357,6 @@ void MainWindow::updateZoomLabel()
         mZoomComboBox->setCurrentIndex(index);
         mZoomComboBox->setEnabled(false);
     }
-}
-
-void MainWindow::editLayerProperties()
-{
-    if (!mMapDocument)
-        return;
-
-    if (Layer *layer = mMapDocument->currentLayer())
-        PropertiesDialog::showDialogFor(layer, mMapDocument, this);
 }
 
 void MainWindow::flip(FlipDirection direction)

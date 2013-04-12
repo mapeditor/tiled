@@ -23,7 +23,6 @@
 #define CHANGEOBJECTGROUPPROPERTIES_H
 
 #include <QColor>
-#include <QString>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -52,7 +51,6 @@ public:
     void redo();
 
 private:
-
     MapDocument *mMapDocument;
     ObjectGroup *mObjectGroup;
     const QColor mUndoColor;

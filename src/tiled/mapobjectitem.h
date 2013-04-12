@@ -108,9 +108,6 @@ public:
      */
     static QColor objectColor(const MapObject *object);
 
-protected:
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
-
 private:
     MapDocument *mapDocument() const { return mMapDocument; }
     QColor color() const { return mColor; }

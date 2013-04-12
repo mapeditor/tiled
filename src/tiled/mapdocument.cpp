@@ -63,6 +63,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mFileName(fileName),
     mMap(map),
     mLayerModel(new LayerModel(this)),
+    mCurrentObject(map),
     mMapObjectModel(new MapObjectModel(this)),
     mTerrainModel(new TerrainModel(this, this)),
     mUndoStack(new QUndoStack(this))
@@ -99,6 +100,9 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
             SIGNAL(objectsAboutToBeRemoved(QList<MapObject*>)));
     connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)),
             SLOT(onObjectsRemoved(QList<MapObject*>)));
+
+    connect(mTerrainModel, SIGNAL(terrainRemoved(Terrain*)),
+            SLOT(onTerrainRemoved(Terrain*)));
 
     connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
 
@@ -179,6 +183,8 @@ bool MapDocument::isModified() const
 void MapDocument::setCurrentLayerIndex(int index)
 {
     Q_ASSERT(index >= -1 && index < mMap->layerCount());
+
+    const bool changed = mCurrentLayerIndex != index;
     mCurrentLayerIndex = index;
 
     /* This function always sends the following signal, even if the index
@@ -192,6 +198,9 @@ void MapDocument::setCurrentLayerIndex(int index)
      * layer index does.
      */
     emit currentLayerIndexChanged(mCurrentLayerIndex);
+
+    if (changed && mCurrentLayerIndex != -1)
+        setCurrentObject(currentLayer());
 }
 
 Layer *MapDocument::currentLayer() const
@@ -297,7 +306,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
  * Adds a layer of the given type to the top of the layer stack. After adding
  * the new layer, emits editLayerNameRequested().
  */
-void MapDocument::addLayer(Layer::Type layerType)
+void MapDocument::addLayer(Layer::TypeFlag layerType)
 {
     Layer *layer = 0;
     QString name;
@@ -427,6 +436,22 @@ void MapDocument::insertTileset(int index, Tileset *tileset)
     emit tilesetAdded(index, tileset);
 }
 
+static bool isFromTileset(Object *object, Tileset *tileset)
+{
+    if (!object)
+        return false;
+
+    if (object->typeId() == Object::TileType
+            && tileset == static_cast<Tile*>(object)->tileset())
+        return true;
+
+    if (object->typeId() == Object::TerrainType
+            && tileset == static_cast<Terrain*>(object)->tileset())
+        return true;
+
+    return false;
+}
+
 /**
  * Removes the tileset at the given \a index from this map. Emits the
  * appropriate signal.
@@ -437,9 +462,15 @@ void MapDocument::insertTileset(int index, Tileset *tileset)
 void MapDocument::removeTilesetAt(int index)
 {
     emit tilesetAboutToBeRemoved(index);
+
     Tileset *tileset = mMap->tilesets().at(index);
+
+    if (tileset == mCurrentObject || isFromTileset(mCurrentObject, tileset))
+        setCurrentObject(0);
+
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset);
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReference(tileset);
 }
@@ -468,6 +499,18 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 {
     mSelectedObjects = selectedObjects;
     emit selectedObjectsChanged();
+
+    if (selectedObjects.size() == 1)
+        setCurrentObject(selectedObjects.first());
+}
+
+void MapDocument::setCurrentObject(Object *object)
+{
+    if (object == mCurrentObject)
+        return;
+
+    mCurrentObject = object;
+    emit currentObjectChanged(object);
 }
 
 /**
@@ -502,7 +545,8 @@ void MapDocument::unifyTilesets(Map *map)
             Tile *replacementTile = replacement->tileAt(i);
             Properties properties = replacementTile->properties();
             properties.merge(tileset->tileAt(i)->properties());
-            undoCommands.append(new ChangeProperties(tr("Tile"),
+            undoCommands.append(new ChangeProperties(this,
+                                                     tr("Tile"),
                                                      replacementTile,
                                                      properties));
         }
@@ -517,31 +561,6 @@ void MapDocument::unifyTilesets(Map *map)
             mUndoStack->push(command);
         mUndoStack->endMacro();
     }
-}
-
-/**
- * Emits the map changed signal. This signal should be emitted after changing
- * the map size or its tile size.
- */
-void MapDocument::emitMapChanged()
-{
-    emit mapChanged();
-}
-
-void MapDocument::emitRegionChanged(const QRegion &region)
-{
-    emit regionChanged(region);
-}
-
-void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
-{
-    emit regionEdited(region, layer);
-}
-
-void MapDocument::emitTileTerrainChanged(const QList<Tile *> &tiles)
-{
-    if (!tiles.isEmpty())
-        emit tileTerrainChanged(tiles);
 }
 
 /**
@@ -566,8 +585,12 @@ void MapDocument::onLayerAdded(int index)
 
 void MapDocument::onLayerAboutToBeRemoved(int index)
 {
+    Layer *layer = mMap->layerAt(index);
+    if (layer == mCurrentObject)
+        setCurrentObject(0);
+
     // Deselect any objects on this layer when necessary
-    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(mMap->layerAt(index)))
+    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer))
         deselectObjects(og->objects());
     emit layerAboutToBeRemoved(index);
 }
@@ -587,8 +610,19 @@ void MapDocument::onLayerRemoved(int index)
         emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
+void MapDocument::onTerrainRemoved(Terrain *terrain)
+{
+    if (terrain == mCurrentObject)
+        setCurrentObject(0);
+}
+
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
+    // Unset the current object when it was part of this list of objects
+    if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType)
+        if (objects.contains(static_cast<MapObject*>(mCurrentObject)))
+            setCurrentObject(0);
+
     int removedCount = 0;
     foreach (MapObject *object, objects)
         removedCount += mSelectedObjects.removeAll(object);
@@ -659,4 +693,29 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
                                                   objectGroup));
     }
     mUndoStack->endMacro();
+}
+
+void MapDocument::setProperty(Object *object,
+                              const QString &name,
+                              const QString &value)
+{
+    const bool hadProperty = object->hasProperty(name);
+    object->setProperty(name, value);
+
+    if (hadProperty)
+        emit propertyChanged(object, name);
+    else
+        emit propertyAdded(object, name);
+}
+
+void MapDocument::setProperties(Object *object, const Properties &properties)
+{
+    object->setProperties(properties);
+    emit propertiesChanged(object);
+}
+
+void MapDocument::removeProperty(Object *object, const QString &name)
+{
+    object->removeProperty(name);
+    emit propertyRemoved(object, name);
 }

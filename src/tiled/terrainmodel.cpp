@@ -24,6 +24,7 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "renameterrain.h"
 #include "terrain.h"
 #include "tileset.h"
 #include "tile.h"
@@ -31,44 +32,9 @@
 #include <QApplication>
 #include <QFont>
 #include <QPalette>
-#include <QUndoCommand>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-namespace {
-
-class RenameTerrain : public QUndoCommand
-{
-public:
-    RenameTerrain(MapDocument *mapDocument,
-                  Tileset *tileset,
-                  int terrainId,
-                  const QString &newName)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands",
-                                                   "Change Terrain Name"))
-        , mTerrainModel(mapDocument->terrainModel())
-        , mTileset(tileset)
-        , mTerrainId(terrainId)
-        , mOldName(tileset->terrain(terrainId)->name())
-        , mNewName(newName)
-    {}
-
-    void undo()
-    { mTerrainModel->setTerrainName(mTileset, mTerrainId, mOldName); }
-
-    void redo()
-    { mTerrainModel->setTerrainName(mTileset, mTerrainId, mNewName); }
-
-private:
-    TerrainModel *mTerrainModel;
-    Tileset *mTileset;
-    int mTerrainId;
-    QString mOldName;
-    QString mNewName;
-};
-
-} // anonymous namespace
 
 TerrainModel::TerrainModel(MapDocument *mapDocument,
                            QObject *parent):
@@ -258,7 +224,7 @@ Terrain *TerrainModel::takeTerrainAt(Tileset *tileset, int index)
     beginRemoveRows(tilesetIndex, index, index);
     Terrain *terrain = tileset->takeTerrainAt(index);
     endRemoveRows();
-    emit terrainRemoved(tileset, index);
+    emit terrainRemoved(terrain);
     emit dataChanged(tilesetIndex, tilesetIndex); // for TerrainFilterModel
 
     return terrain;

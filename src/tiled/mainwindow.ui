@@ -219,7 +219,7 @@
      <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
    </property>
    <property name="text">
-    <string>Map &amp;Properties...</string>
+    <string>Map &amp;Properties</string>
    </property>
   </action>
   <action name="actionAutoMap">

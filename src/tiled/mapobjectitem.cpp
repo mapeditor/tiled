@@ -29,7 +29,6 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
-#include "objectpropertiesdialog.h"
 #include "preferences.h"
 #include "resizemapobject.h"
 #include "tile.h"
@@ -364,16 +363,4 @@ QColor MapObjectItem::objectColor(const MapObject *object)
 
     // Fallback color
     return Qt::gray;
-}
-
-void MapObjectItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (!mIsEditable) {
-        event->ignore();
-        return;
-    }
-
-    ObjectPropertiesDialog propertiesDialog(mMapDocument, mObject,
-                                            event->widget());
-    propertiesDialog.exec();
 }

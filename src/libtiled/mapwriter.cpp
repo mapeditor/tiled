@@ -188,7 +188,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     }
 
     foreach (const Layer *layer, map->layers()) {
-        const Layer::Type type = layer->type();
+        const Layer::TypeFlag type = layer->layerType();
         if (type == Layer::TileLayerType)
             writeTileLayer(w, static_cast<const TileLayer*>(layer));
         else if (type == Layer::ObjectGroupType)

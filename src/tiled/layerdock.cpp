@@ -28,8 +28,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
-#include "propertiesdialog.h"
-#include "objectgrouppropertiesdialog.h"
 #include "objectgroup.h"
 #include "utils.h"
 
@@ -232,6 +230,9 @@ LayerView::LayerView(QWidget *parent):
     setHeaderHidden(true);
     setItemsExpandable(false);
     setUniformRowHeights(true);
+
+    connect(this, SIGNAL(pressed(QModelIndex)),
+            SLOT(indexPressed(QModelIndex)));
 }
 
 QSize LayerView::sizeHint() const
@@ -272,6 +273,15 @@ void LayerView::currentRowChanged(const QModelIndex &index)
     mMapDocument->setCurrentLayerIndex(layer);
 }
 
+void LayerView::indexPressed(const QModelIndex &index)
+{
+    const int layerIndex = mMapDocument->layerModel()->toLayerIndex(index);
+    if (layerIndex != -1) {
+        Layer *layer = mMapDocument->map()->layerAt(layerIndex);
+        mMapDocument->setCurrentObject(layer);
+    }
+}
+
 void LayerView::currentLayerIndexChanged(int index)
 {
     if (index > -1) {
@@ -308,8 +318,6 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionMoveLayerDown());
         menu.addSeparator();
         menu.addAction(handler->actionToggleOtherLayers());
-        menu.addSeparator();
-        menu.addAction(handler->actionLayerProperties());
     }
 
     menu.exec(event->globalPos());

@@ -175,7 +175,7 @@ public:
      * Convenience function that returns the number of layers of this map that
      * match the given \a type.
      */
-    int layerCount(Layer::Type type) const;
+    int layerCount(Layer::TypeFlag type) const;
 
     int tileLayerCount() const
     { return layerCount(Layer::TileLayerType); }
@@ -198,7 +198,7 @@ public:
      */
     const QList<Layer*> &layers() const { return mLayers; }
 
-    QList<Layer*> layers(Layer::Type type) const;
+    QList<Layer*> layers(Layer::TypeFlag type) const;
     QList<ObjectGroup*> objectGroups() const;
     QList<TileLayer*> tileLayers() const;
 

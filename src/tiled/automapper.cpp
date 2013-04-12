@@ -226,7 +226,7 @@ bool AutoMapper::setupRuleMapTileLayers()
             else
                 mTouchedObjectGroups.insert(name);
 
-            Layer::Type type = layer->type();
+            Layer::TypeFlag type = layer->layerType();
             int layerIndex = mMapWork->indexOfLayer(name, type);
 
             bool found = false;
@@ -389,7 +389,7 @@ bool AutoMapper::setupCorrectIndexes()
             if (index >= mMapWork->layerCount() || index == -1 ||
                     name != mMapWork->layerAt(index)->name()) {
 
-                int newIndex = mMapWork->indexOfLayer(name, layerKey->type());
+                int newIndex = mMapWork->indexOfLayer(name, layerKey->layerType());
                 Q_ASSERT(newIndex != -1);
 
                 translationTable->insert(layerKey, newIndex);
@@ -427,7 +427,8 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
             Properties properties = replacementTile->properties();
             properties.merge(tileset->tileAt(i)->properties());
 
-            undoStack->push(new ChangeProperties(tr("Tile"),
+            undoStack->push(new ChangeProperties(mMapDocument,
+                                                 tr("Tile"),
                                                  replacementTile,
                                                  properties));
         }

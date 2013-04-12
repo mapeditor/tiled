@@ -53,6 +53,7 @@ class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
     Tile(const QPixmap &image, int id, Tileset *tileset):
+        Object(TileType),
         mId(id),
         mTileset(tileset),
         mImage(image),

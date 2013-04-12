@@ -111,7 +111,7 @@ public:
 
 signals:
     void terrainAdded(Tileset *tileset, int terrainId);
-    void terrainRemoved(Tileset *tileset, int terrainId);
+    void terrainRemoved(Terrain *terrain);
 
     /**
      * Emitted when either the name or the image of a terrain changed.

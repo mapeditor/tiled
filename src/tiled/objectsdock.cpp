@@ -26,7 +26,6 @@
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "objectgroup.h"
-#include "objectpropertiesdialog.h"
 #include "utils.h"
 #include "mapobjectmodel.h"
 
@@ -49,19 +48,12 @@ using namespace Tiled::Internal;
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
-    , mObjectsView(new ObjectsView())
+    , mObjectsView(new ObjectsView)
     , mMapDocument(0)
 {
     setObjectName(QLatin1String("ObjectsDock"));
 
-    mActionObjectProperties = new QAction(this);
-    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
-
-    Utils::setThemeIcon(mActionObjectProperties, "document-properties");
-
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
-
-    connect(mActionObjectProperties, SIGNAL(triggered()), SLOT(objectProperties()));
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -95,8 +87,6 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(mMoveToMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowMoveToMenu()));
     connect(mMoveToMenu, SIGNAL(triggered(QAction*)),
             SLOT(triggeredMoveToMenu(QAction*)));
-
-    toolBar->addAction(mActionObjectProperties);
 
     layout->addWidget(toolBar);
     setWidget(widget);
@@ -143,7 +133,6 @@ void ObjectsDock::retranslateUi()
     setWindowTitle(tr("Objects"));
 
     mActionNewLayer->setToolTip(tr("Add Object Layer"));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
 
     updateActions();
 }
@@ -152,7 +141,6 @@ void ObjectsDock::updateActions()
 {
     int count = mMapDocument ? mMapDocument->selectedObjects().count() : 0;
     bool enabled = count > 0;
-    mActionObjectProperties->setEnabled(enabled && (count == 1));
 
     if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
         enabled = false;
@@ -178,19 +166,6 @@ void ObjectsDock::triggeredMoveToMenu(QAction *action)
     handler->moveObjectsToGroup(objectGroup);
 }
 
-void ObjectsDock::objectProperties()
-{
-    // Unnecessary check is unnecessary
-    if (!mMapDocument || !mMapDocument->selectedObjects().count())
-        return;
-
-    const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
-
-    MapObject *mapObject = selectedObjects.first();
-    ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
-    propertiesDialog.exec();
-}
-
 void ObjectsDock::saveExpandedGroups(MapDocument *mapDoc)
 {
     mExpandedGroups[mapDoc].clear();
@@ -209,7 +184,9 @@ void ObjectsDock::restoreExpandedGroups(MapDocument *mapDoc)
     // Also restore the selection
     foreach (MapObject *o, mapDoc->selectedObjects()) {
         QModelIndex index = mObjectsView->model()->index(o);
-        mObjectsView->selectionModel()->select(index, QItemSelectionModel::Select |  QItemSelectionModel::Rows);
+        mObjectsView->selectionModel()->select(index,
+                                               QItemSelectionModel::Select |
+                                               QItemSelectionModel::Rows);
     }
 }
 
@@ -235,7 +212,7 @@ ObjectsView::ObjectsView(QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    connect(this, SIGNAL(activated(QModelIndex)), SLOT(onActivated(QModelIndex)));
+    connect(this, SIGNAL(pressed(QModelIndex)), SLOT(onPressed(QModelIndex)));
 }
 
 QSize ObjectsView::sizeHint() const
@@ -275,12 +252,12 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
 }
 
-void ObjectsView::onActivated(const QModelIndex &index)
+void ObjectsView::onPressed(const QModelIndex &index)
 {
-    if (MapObject *mapObject = model()->toMapObject(index)) {
-        ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
-        propertiesDialog.exec();
-    }
+    if (MapObject *mapObject = model()->toMapObject(index))
+        mMapDocument->setCurrentObject(mapObject);
+    else if (ObjectGroup *objectGroup = model()->toObjectGroup(index))
+        mMapDocument->setCurrentObject(objectGroup);
 }
 
 void ObjectsView::selectionChanged(const QItemSelection &selected,

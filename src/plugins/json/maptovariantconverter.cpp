@@ -65,7 +65,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     QVariantList layerVariants;
     foreach (const Layer *layer, map->layers()) {
-        switch (layer->type()) {
+        switch (layer->layerType()) {
         case Layer::TileLayerType:
             layerVariants << toVariant(static_cast<const TileLayer*>(layer));
             break;

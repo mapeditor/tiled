@@ -48,11 +48,12 @@ void ChangeObjectGroupProperties::redo()
 {
     mObjectGroup->setColor(mRedoColor);
     mMapDocument->mapObjectModel()->emitObjectsChanged(mObjectGroup->objects());
-
+    mMapDocument->emitObjectGroupChanged(mObjectGroup);
 }
 
 void ChangeObjectGroupProperties::undo()
 {
     mObjectGroup->setColor(mUndoColor);
     mMapDocument->mapObjectModel()->emitObjectsChanged(mObjectGroup->objects());
+    mMapDocument->emitObjectGroupChanged(mObjectGroup);
 }

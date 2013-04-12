@@ -30,6 +30,7 @@ class MapObject;
 namespace Internal {
 
 class MapDocument;
+class MapObjectModel;
 
 class ChangeMapObject : public QUndoCommand
 {
@@ -53,6 +54,26 @@ private:
     MapObject *mMapObject;
     QString mName;
     QString mType;
+};
+
+/**
+ * Used for changing object visibility.
+ */
+class SetMapObjectVisible : public QUndoCommand
+{
+public:
+    SetMapObjectVisible(MapDocument *mapDocument,
+                        MapObject *mapObject,
+                        bool visible);
+
+    void undo();
+    void redo();
+
+private:
+    MapObjectModel *mMapObjectModel;
+    MapObject *mMapObject;
+    bool mOldVisible;
+    bool mNewVisible;
 };
 
 } // namespace Internal

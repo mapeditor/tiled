@@ -1,0 +1,23 @@
+<RCC version="1.0">
+    <qresource prefix="/qt-project.org/qtpropertybrowser">
+        <file>images/cursor-arrow.png</file>
+        <file>images/cursor-busy.png</file>
+        <file>images/cursor-closedhand.png</file>
+        <file>images/cursor-cross.png</file>
+        <file>images/cursor-forbidden.png</file>
+        <file>images/cursor-hand.png</file>
+        <file>images/cursor-hsplit.png</file>
+        <file>images/cursor-ibeam.png</file>
+        <file>images/cursor-openhand.png</file>
+        <file>images/cursor-sizeall.png</file>
+        <file>images/cursor-sizeb.png</file>
+        <file>images/cursor-sizef.png</file>
+        <file>images/cursor-sizeh.png</file>
+        <file>images/cursor-sizev.png</file>
+        <file>images/cursor-uparrow.png</file>
+        <file>images/cursor-vsplit.png</file>
+        <file>images/cursor-wait.png</file>
+        <file>images/cursor-whatsthis.png</file>
+    </qresource>
+</RCC>
+  
