@@ -990,8 +990,11 @@ void QtLineEditFactoryPrivate::slotPropertyChanged(QtProperty *property,
     QListIterator<QLineEdit *> itEditor( m_createdEditors[property]);
     while (itEditor.hasNext()) {
         QLineEdit *editor = itEditor.next();
-        if (editor->text() != value)
+        if (editor->text() != value) {
+            editor->blockSignals(true);
             editor->setText(value);
+            editor->blockSignals(false);
+        }
     }
 }
 
@@ -1139,7 +1142,7 @@ QWidget *QtLineEditFactory::createEditor(QtStringPropertyManager *manager,
     }
     editor->setText(manager->value(property));
 
-    connect(editor, SIGNAL(textEdited(const QString &)),
+    connect(editor, SIGNAL(textChanged(const QString &)),
                 this, SLOT(slotSetValue(const QString &)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
