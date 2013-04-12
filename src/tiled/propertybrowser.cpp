@@ -32,6 +32,7 @@
 #include "mapobject.h"
 #include "movemapobject.h"
 #include "objectgroup.h"
+#include "preferences.h"
 #include "resizemapobject.h"
 #include "renamelayer.h"
 #include "renameterrain.h"
@@ -298,12 +299,23 @@ void PropertyBrowser::addMapProperties()
     addProperty(groupProperty);
 }
 
+static QStringList objectTypeNames()
+{
+    QStringList names;
+    foreach (const ObjectType &type, Preferences::instance()->objectTypes())
+        names.append(type.name);
+    return names;
+}
+
 void PropertyBrowser::addMapObjectProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
-    // TODO: Dropdown with possible values for object type
-    createProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
+
+    QtVariantProperty *typeProperty =
+            createProperty(TypeProperty, QVariant::String, tr("Type"), groupProperty);
+    typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
+
     createProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
     createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
     createProperty(SizeProperty, QVariant::SizeF, tr("Size"), groupProperty);
@@ -642,13 +654,14 @@ void PropertyBrowser::updateCustomProperties()
     qDeleteAll(mNameToProperty);
     mNameToProperty.clear();
 
-    // Using keys() in order to sort the properties by name
-    foreach (const QString &name, mObject->properties().keys()) {
+    QMapIterator<QString,QString> it(mObject->properties());
+    while (it.hasNext()) {
+        it.next();
         QtVariantProperty *property = createProperty(CustomProperty,
                                                      QVariant::String,
-                                                     name,
+                                                     it.key(),
                                                      mCustomPropertiesGroup);
-        property->setValue(mObject->property(name));
+        property->setValue(it.value());
     }
 
     mUpdating = false;

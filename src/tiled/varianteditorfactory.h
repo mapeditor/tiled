@@ -32,6 +32,8 @@ class FileEdit;
 /**
  * Extension of the QtVariantEditorFactory that adds support for a FileEdit,
  * used for editing file references.
+ *
+ * It also adds support for a "suggestions" attribute for string values.
  */
 class VariantEditorFactory : public QtVariantEditorFactory
 {

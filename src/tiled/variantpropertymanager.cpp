@@ -83,6 +83,9 @@ QVariant VariantPropertyManager::attributeValue(const QtProperty *property,
             return mValues[property].filter;
         return QVariant();
     }
+    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
+        return mSuggestions[property];
+
     return QtVariantPropertyManager::attributeValue(property, attribute);
 }
 
@@ -129,19 +132,28 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
         }
         return;
     }
+
+    if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
+        mSuggestions[property] = qVariantValue<QStringList>(val);
+
     QtVariantPropertyManager::setAttribute(property, attribute, val);
 }
 
 void VariantPropertyManager::initializeProperty(QtProperty *property)
 {
-    if (propertyType(property) == filePathTypeId())
+    const int type = propertyType(property);
+    if (type == filePathTypeId())
         mValues[property] = Data();
+    else if (type == QVariant::String)
+        mSuggestions[property] = QStringList();
+
     QtVariantPropertyManager::initializeProperty(property);
 }
 
 void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 {
     mValues.remove(property);
+    mSuggestions.remove(property);
     QtVariantPropertyManager::uninitializeProperty(property);
 }
 

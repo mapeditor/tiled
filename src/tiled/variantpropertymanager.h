@@ -38,6 +38,7 @@ class VariantPropertyManager : public QtVariantPropertyManager
 public:
     explicit VariantPropertyManager(QObject *parent = 0)
         : QtVariantPropertyManager(parent)
+        , mSuggestionsAttribute(QLatin1String("suggestions"))
     {}
 
     QVariant value(const QtProperty *property) const;
@@ -68,6 +69,9 @@ private:
         QString filter;
     };
     QMap<const QtProperty *, Data> mValues;
+    QMap<const QtProperty *, QStringList> mSuggestions;
+
+    const QString mSuggestionsAttribute;
 };
 
 } // namespace Internal

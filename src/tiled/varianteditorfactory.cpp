@@ -24,6 +24,8 @@
 #include "variantpropertymanager.h"
 #include "fileedit.h"
 
+#include <QCompleter>
+
 namespace Tiled {
 namespace Internal {
 
@@ -45,7 +47,9 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                                             QtProperty *property,
                                             QWidget *parent)
 {
-    if (manager->propertyType(property) == VariantPropertyManager::filePathTypeId()) {
+    const int type = manager->propertyType(property);
+
+    if (type == VariantPropertyManager::filePathTypeId()) {
         FileEdit *editor = new FileEdit(parent);
         editor->setFilePath(manager->value(property).toString());
         editor->setFilter(manager->attributeValue(property, QLatin1String("filter")).toString());
@@ -58,7 +62,19 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                 this, SLOT(slotEditorDestroyed(QObject *)));
         return editor;
     }
-    return QtVariantEditorFactory::createEditor(manager, property, parent);
+
+    QWidget *editor = QtVariantEditorFactory::createEditor(manager, property, parent);
+
+    if (type == QVariant::String) {
+        // Add support for "suggestions" attribute that adds a QCompleter to the QLineEdit
+        QVariant suggestions = manager->attributeValue(property, QLatin1String("suggestions"));
+        if (!suggestions.toStringList().isEmpty()) {
+            if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor))
+                lineEdit->setCompleter(new QCompleter(suggestions.toStringList(), lineEdit));
+        }
+    }
+
+    return editor;
 }
 
 void VariantEditorFactory::disconnectPropertyManager(QtVariantPropertyManager *manager)
