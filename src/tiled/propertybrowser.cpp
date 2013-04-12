@@ -26,6 +26,7 @@
 #include "changemapproperties.h"
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
+#include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -64,6 +65,16 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
 
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Default"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
+    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
+
+    mFlippingFlagNames.append(tr("Horizontal"));
+    mFlippingFlagNames.append(tr("Vertical"));
+
     connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
             SLOT(valueChanged(QtProperty*,QVariant)));
 }
@@ -86,6 +97,8 @@ void PropertyBrowser::setObject(Object *object)
     if (!mObject)
         return;
 
+    mUpdating = true;
+
     // Add the built-in properties for each object type
     switch (object->typeId()) {
     case Object::MapType:               addMapProperties(); break;
@@ -105,6 +118,8 @@ void PropertyBrowser::setObject(Object *object)
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
     addProperty(mCustomPropertiesGroup);
+
+    mUpdating = false;
 
     updateProperties();
     updateCustomProperties();
@@ -283,17 +298,7 @@ void PropertyBrowser::addMapProperties()
                            tr("Layer Format"),
                            groupProperty);
 
-    QStringList formatNames;
-    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Default"));
-    formatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
-    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
-    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
-    formatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
-    formatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
-
-    mUpdating = true;
-    mVariantManager->setAttribute(layerFormatProperty, QLatin1String("enumNames"), formatNames);
-    mUpdating = false;
+    layerFormatProperty->setAttribute(QLatin1String("enumNames"), mLayerFormatNames);
 
     createProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
@@ -320,6 +325,15 @@ void PropertyBrowser::addMapObjectProperties()
     createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
     createProperty(SizeProperty, QVariant::SizeF, tr("Size"), groupProperty);
     createProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
+
+    if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
+        QtVariantProperty *flippingProperty =
+                createProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
+                               tr("Flipping"), groupProperty);
+
+        flippingProperty->setAttribute(QLatin1String("flagNames"), mFlippingFlagNames);
+    }
+
     addProperty(groupProperty);
 }
 
@@ -444,6 +458,22 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
         mapObject->setRotation(val.toDouble());
         command = new RotateMapObject(mMapDocument, mapObject, oldRotation);
         break;
+    }
+    case FlippingProperty: {
+        const int flippingFlags = val.toInt();
+        const bool flippedHorizontally = flippingFlags & 1;
+        const bool flippedVertically = flippingFlags & 2;
+
+        // You can only change one checkbox at a time
+        if (mapObject->cell().flippedHorizontally != flippedHorizontally) {
+            command = new FlipMapObjects(mMapDocument,
+                                         QList<MapObject*>() << mapObject,
+                                         FlipHorizontally);
+        } else if (mapObject->cell().flippedVertically != flippedVertically) {
+            command = new FlipMapObjects(mMapDocument,
+                                         QList<MapObject*>() << mapObject,
+                                         FlipVertically);
+        }
     }
     default:
         break;
@@ -602,6 +632,15 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[PositionProperty]->setValue(mapObject->position());
         mIdToProperty[SizeProperty]->setValue(mapObject->size());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
+
+        if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
+            int flippingFlags = 0;
+            if (mapObject->cell().flippedHorizontally)
+                flippingFlags |= 1;
+            if (mapObject->cell().flippedVertically)
+                flippingFlags |= 2;
+            property->setValue(flippingFlags);
+        }
         break;
     }
     case Object::LayerType: {

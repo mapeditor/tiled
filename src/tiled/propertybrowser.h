@@ -99,6 +99,7 @@ private:
         ColorProperty,
         LayerFormatProperty,
         ImageSourceProperty,
+        FlippingProperty,
         CustomProperty
     };
 
@@ -140,6 +141,9 @@ private:
     QHash<QtProperty *, PropertyId> mPropertyToId;
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
     QHash<QString, QtVariantProperty *> mNameToProperty;
+
+    QStringList mLayerFormatNames;
+    QStringList mFlippingFlagNames;
 };
 
 } // namespace Internal
