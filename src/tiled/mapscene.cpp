@@ -120,6 +120,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(layerRemoved(int)));
         connect(mMapDocument, SIGNAL(layerChanged(int)),
                 this, SLOT(layerChanged(int)));
+        connect(mMapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
+                this, SLOT(imageLayerChanged(ImageLayer*)));
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(currentLayerIndexChanged()));
         connect(mMapDocument, SIGNAL(objectsAdded(QList<MapObject*>)),
@@ -358,6 +360,19 @@ void MapScene::layerChanged(int index)
         multiplier = opacityFactor;
 
     layerItem->setOpacity(layer->opacity() * multiplier);
+}
+
+/**
+ * When an image layer has changed, it may change size and it may look
+ * differently.
+ */
+void MapScene::imageLayerChanged(ImageLayer *imageLayer)
+{
+    const int index = mMapDocument->map()->layers().indexOf(imageLayer);
+    ImageLayerItem *item = static_cast<ImageLayerItem*>(mLayerItems.at(index));
+
+    item->syncWithImageLayer();
+    item->update();
 }
 
 /**
