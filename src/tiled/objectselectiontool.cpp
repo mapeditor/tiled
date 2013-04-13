@@ -68,7 +68,8 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     if (mMode == NoMode && mMousePressed) {
         const int dragDistance = (mStart - pos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
-            if (mClickedObjectItem)
+            // Holding shift makes sure we'll start a selection operation
+            if (mClickedObjectItem && !(modifiers & Qt::ShiftModifier))
                 startMoving();
             else
                 startSelecting();
