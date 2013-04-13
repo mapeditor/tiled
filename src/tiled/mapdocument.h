@@ -241,6 +241,8 @@ public:
     inline void emitEditLayerNameRequested()
     { emit editLayerNameRequested(); }
 
+    void emitImageLayerChanged(ImageLayer *imageLayer);
+
 signals:
     void fileNameChanged();
     void modifiedChanged();
@@ -298,6 +300,12 @@ signals:
      */
     void tileTerrainChanged(const QList<Tile*> &tiles);
 
+    /**
+     * Emitted after the image and/or the transparent color of an image layer
+     * have changed.
+     */
+    void imageLayerChanged(ImageLayer *imageLayer);
+
     void tilesetAboutToBeAdded(int index);
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetAboutToBeRemoved(int index);
@@ -342,6 +350,15 @@ private:
     TerrainModel *mTerrainModel;
     QUndoStack *mUndoStack;
 };
+
+/**
+ * Emits the imageLayerChanged signal, should be called when changing the
+ * image or the transparent color of an image layer.
+ */
+inline void MapDocument::emitImageLayerChanged(ImageLayer *imageLayer)
+{
+    emit imageLayerChanged(imageLayer);
+}
 
 } // namespace Internal
 } // namespace Tiled

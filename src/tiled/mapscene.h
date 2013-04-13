@@ -31,6 +31,7 @@
 
 namespace Tiled {
 
+class ImageLayer;
 class Layer;
 class MapObject;
 class Tileset;
@@ -157,6 +158,8 @@ private slots:
     void layerAdded(int index);
     void layerRemoved(int index);
     void layerChanged(int index);
+
+    void imageLayerChanged(ImageLayer *imageLayer);
 
     void objectsAdded(const QList<MapObject*> &objects);
     void objectsRemoved(const QList<MapObject*> &objects);
