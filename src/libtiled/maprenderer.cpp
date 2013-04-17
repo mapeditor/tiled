@@ -82,56 +82,68 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     return polygon;
 }
 
-/**
- * Draws a \a cell with the given \a origin at \a pos, taking into account the
- * flipping and tile offset.
- *
- * It leaves the painter transform set to the transform used to draw the cell.
- */
-void MapRenderer::drawCell(QPainter *painter,
-                           const Cell &cell,
-                           const QPointF &pos,
-                           Origin origin,
-                           const QTransform &baseTransform)
-{
-    const QPixmap &img = cell.tile->image();
-    const QPoint offset = cell.tile->tileset()->tileOffset();
-    const QSize imgSize = img.size();
 
-    qreal m11 = 1;      // Horizontal scaling factor
-    qreal m12 = 0;      // Vertical shearing factor
-    qreal m21 = 0;      // Horizontal shearing factor
-    qreal m22 = 1;      // Vertical scaling factor
-    qreal dx = offset.x() + pos.x();
-    qreal dy = offset.y() + pos.y() - imgSize.height();
+/**
+ * Renders a \a cell with the given \a origin at \a pos, taking into account
+ * the flipping and tile offset.
+ *
+ * For performance reasons, the actual drawing is delayed until a different
+ * kind of tile has to be drawn. For this reason it is necessary to call
+ * flush when finished doing drawCell calls. This function is also called by
+ * the destructor so usually an explicit call it not needed.
+ */
+void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
+{
+    if (mTile != cell.tile) {
+        flush();
+        mTile = cell.tile;
+    }
+
+    const QSizeF size = cell.tile->size();
+    const QPoint offset = cell.tile->tileset()->tileOffset();
+    const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
+
+    QPainter::PixmapFragment fragment;
+    fragment.x = pos.x() + offset.x() + sizeHalf.x();
+    fragment.y = pos.y() + offset.y() + sizeHalf.y() - size.height();
+    fragment.sourceLeft = 0;
+    fragment.sourceTop = 0;
+    fragment.width = size.width();
+    fragment.height = size.height();
+    fragment.scaleX = cell.flippedHorizontally ? -1 : 1;
+    fragment.scaleY = cell.flippedVertically ? -1 : 1;
+    fragment.rotation = 0;
+    fragment.opacity = 1;
 
     if (origin == BottomCenter)
-        dx += -imgSize.width() / 2;
+        fragment.x -= sizeHalf.x();
 
     if (cell.flippedAntiDiagonally) {
-        // Use shearing to swap the X/Y axis
-        m11 = 0;
-        m12 = 1;
-        m21 = 1;
-        m22 = 0;
+        fragment.rotation = 90;
+        fragment.scaleX *= -1;
 
         // Compensate for the swap of image dimensions
-        dy += imgSize.height() - imgSize.width();
-        if (origin == BottomCenter)
-            dx += (imgSize.width() - imgSize.height()) / 2;
-    }
-    if (cell.flippedHorizontally) {
-        m11 = -m11;
-        m21 = -m21;
-        dx += cell.flippedAntiDiagonally ? imgSize.height() : imgSize.width();
-    }
-    if (cell.flippedVertically) {
-        m12 = -m12;
-        m22 = -m22;
-        dy += cell.flippedAntiDiagonally ? imgSize.width() : imgSize.height();
+        const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
+        fragment.y += halfDiff;
+        if (origin != BottomCenter)
+            fragment.x += halfDiff;
     }
 
-    const QTransform transform(m11, m12, m21, m22, dx, dy);
-    painter->setTransform(transform * baseTransform);
-    painter->drawPixmap(QPointF(), img);
+    mFragments.append(fragment);
+}
+
+/**
+ * Renders any remaining cells.
+ */
+void CellRenderer::flush()
+{
+    if (!mTile)
+        return;
+
+    mPainter->drawPixmapFragments(mFragments.constData(),
+                                  mFragments.size(),
+                                  mTile->image());
+
+    mTile = 0;
+    mFragments.resize(0);
 }

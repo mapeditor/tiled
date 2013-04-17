@@ -213,7 +213,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     // Determine whether the current row is shifted half a tile to the right
     bool shifted = inUpperHalf ^ inLeftHalf;
 
-    QTransform baseTransform = painter->transform();
+    CellRenderer renderer(painter);
 
     for (int y = startPos.y(); y - tileHeight < rect.bottom();
          y += tileHeight / 2)
@@ -224,10 +224,8 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (layer->contains(columnItr)) {
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
-                    drawCell(painter, cell,
-                             QPointF(x, y),
-                             BottomLeft,
-                             baseTransform);
+                    renderer.render(cell, QPointF(x, y),
+                                    CellRenderer::BottomLeft);
                 }
             }
 
@@ -247,8 +245,6 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             shifted = false;
         }
     }
-
-    painter->setTransform(baseTransform);
 }
 
 void IsometricRenderer::drawTileSelection(QPainter *painter,
@@ -292,10 +288,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawText(textPos, name);
         }
 
-        drawCell(painter, object->cell(),
-                 pos,
-                 BottomCenter,
-                 painter->transform());
+        CellRenderer(painter).render(object->cell(), pos,
+                                     CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {
             pen.setStyle(Qt::SolidLine);

@@ -193,7 +193,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
                                        const QRectF &exposed) const
 {
-    QTransform savedTransform = painter->transform();
+    const QTransform savedTransform = painter->transform();
 
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -225,7 +225,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
         endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
     }
 
-    QTransform baseTransform = painter->transform();
+    CellRenderer renderer(painter);
 
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
@@ -233,12 +233,13 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.isEmpty())
                 continue;
 
-            drawCell(painter, cell,
-                     QPointF(x * tileWidth, (y + 1) * tileHeight),
-                     BottomLeft,
-                     baseTransform);
+            renderer.render(cell,
+                            QPointF(x * tileWidth, (y + 1) * tileHeight),
+                            CellRenderer::BottomLeft);
         }
     }
+
+    renderer.flush();
 
     painter->setTransform(savedTransform);
 }
@@ -271,10 +272,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     if (!object->cell().isEmpty()) {
         const Cell &cell = object->cell();
 
-        drawCell(painter, cell,
-                 QPointF(),
-                 BottomLeft,
-                 painter->transform());
+        CellRenderer(painter).render(cell, QPointF(),
+                                     CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
             const QRect rect = cell.tile->image().rect();

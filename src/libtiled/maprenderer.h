@@ -39,6 +39,7 @@ class Cell;
 class Layer;
 class Map;
 class MapObject;
+class Tile;
 class TileLayer;
 class ImageLayer;
 
@@ -166,16 +167,6 @@ public:
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
-    enum Origin {
-        BottomLeft,
-        BottomCenter
-    };
-    static void drawCell(QPainter *painter,
-                         const Cell &cell,
-                         const QPointF &pos,
-                         Origin origin,
-                         const QTransform &baseTransform);
-
 protected:
     /**
      * Returns the map this renderer is associated with.
@@ -186,6 +177,33 @@ private:
     const Map *mMap;
 
     RenderFlags mFlags;
+};
+
+/**
+ * A utility class for rendering cells.
+ */
+class CellRenderer
+{
+public:
+    enum Origin {
+        BottomLeft,
+        BottomCenter
+    };
+
+    explicit CellRenderer(QPainter *painter)
+        : mPainter(painter)
+        , mTile(0)
+    {}
+
+    ~CellRenderer() { flush(); }
+
+    void render(const Cell &cell, const QPointF &pos, Origin origin);
+    void flush();
+
+private:
+    QPainter *mPainter;
+    Tile *mTile;
+    QVector<QPainter::PixmapFragment> mFragments;
 };
 
 } // namespace Tiled
