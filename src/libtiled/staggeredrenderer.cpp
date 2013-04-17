@@ -178,7 +178,7 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
     if ((startTile.y() + layer->y()) % 2)
         startPos.rx() -= tileWidth / 2;
 
-    QTransform baseTransform = painter->transform();
+    CellRenderer renderer(painter);
 
     for (; startPos.y() < rect.bottom() && startTile.y() < layer->height(); startTile.ry()++) {
         QPoint rowTile = startTile;
@@ -189,56 +189,14 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
 
         for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++) {
             const Cell &cell = layer->cellAt(rowTile);
-            if (cell.isEmpty()) {
-                rowPos.rx() += tileWidth;
-                continue;
-            }
-
-            const QPixmap &img = cell.tile->image();
-            const QPoint offset = cell.tile->tileset()->tileOffset();
-
-            qreal m11 = 1;      // Horizontal scaling factor
-            qreal m12 = 0;      // Vertical shearing factor
-            qreal m21 = 0;      // Horizontal shearing factor
-            qreal m22 = 1;      // Vertical scaling factor
-            qreal dx = offset.x() + rowPos.x();
-            qreal dy = offset.y() + rowPos.y() - img.height();
-
-            if (cell.flippedAntiDiagonally) {
-                // Use shearing to swap the X/Y axis
-                m11 = 0;
-                m12 = 1;
-                m21 = 1;
-                m22 = 0;
-
-                // Compensate for the swap of image dimensions
-                dy += img.height() - img.width();
-            }
-            if (cell.flippedHorizontally) {
-                m11 = -m11;
-                m21 = -m21;
-                dx += cell.flippedAntiDiagonally ? img.height()
-                                                 : img.width();
-            }
-            if (cell.flippedVertically) {
-                m12 = -m12;
-                m22 = -m22;
-                dy += cell.flippedAntiDiagonally ? img.width()
-                                                 : img.height();
-            }
-
-            const QTransform transform(m11, m12, m21, m22, dx, dy);
-            painter->setTransform(transform * baseTransform);
-
-            painter->drawPixmap(0, 0, img);
+            if (!cell.isEmpty())
+                renderer.render(cell, rowPos, CellRenderer::BottomLeft);
 
             rowPos.rx() += tileWidth;
         }
 
         startPos.ry() += tileHeight / 2;
     }
-
-    painter->setTransform(baseTransform);
 }
 
 void StaggeredRenderer::drawTileSelection(QPainter *painter,
