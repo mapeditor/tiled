@@ -372,10 +372,8 @@ QColor Preferences::colorValue(const char *key, const QColor &def) const
 {
     const QString name = mSettings->value(QLatin1String(key),
                                           def.name()).toString();
-#if QT_VERSION >= 0x040700
     if (!QColor::isValidColor(name))
         return QColor();
-#endif
 
     return QColor(name);
 }

@@ -1023,9 +1023,8 @@ void MainWindow::paste()
 
             QUndoStack *undoStack = mMapDocument->undoStack();
             QList<MapObject*> pastedObjects;
-#if QT_VERSION >= 0x040700
             pastedObjects.reserve(objectGroup->objectCount());
-#endif
+
             undoStack->beginMacro(tr("Paste Objects"));
             foreach (const MapObject *mapObject, objectGroup->objects()) {
                 MapObject *objectClone = mapObject->clone();

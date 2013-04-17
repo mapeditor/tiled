@@ -141,11 +141,6 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     mFSModel = new QFileSystemModel;
     mFSModel->setRootPath(mapsDir.absolutePath());
 
-    QDir::Filters filters = QDir::AllDirs | QDir::Files;
-#if QT_VERSION >= 0x040700
-    filters |= QDir::NoDot;
-#endif
-
     PluginManager *pm = PluginManager::instance();
     QStringList nameFilters(QLatin1String("*.tmx"));
 
@@ -160,7 +155,7 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
         }
     }
 
-    mFSModel->setFilter(filters);
+    mFSModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);
     mFSModel->setNameFilters(nameFilters);
     mFSModel->setNameFilterDisables(false); // hide filtered files
 
