@@ -630,13 +630,12 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
-        const QPointF objectCenter = objectItem->objectCenter();
-        const QPointF oldRelPos = mOldObjectItemPositions.at(i) + objectCenter - mRotationOrigin;
+        const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mRotationOrigin;
         const qreal sn = std::sin(angleDiff);
         const qreal cs = std::cos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
-        const QPointF newPixelPos = mRotationOrigin + newRelPos - objectCenter;
+        const QPointF newPixelPos = mRotationOrigin + newRelPos;
         const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
 
         const qreal newRotation = mOldObjectRotations.at(i) + angleDiff * 180 / M_PI;
