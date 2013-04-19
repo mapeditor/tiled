@@ -238,8 +238,6 @@ public:
     void emitEditLayerNameRequested();
     void emitEditCurrentObject();
 
-    void emitImageLayerChanged(ImageLayer *imageLayer);
-
 signals:
     void fileNameChanged();
     void modifiedChanged();
