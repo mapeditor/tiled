@@ -221,11 +221,12 @@ void TileDelegate::paint(QPainter *painter,
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal zoom = mTilesetView->scale();
+    const QSize tileSize = tileImage.size() * zoom;
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
-    targetRect.setTop(targetRect.bottom() - tileImage.height() * zoom + 1);
-    targetRect.setRight(targetRect.left() + tileImage.width() * zoom - 1);
+    targetRect.setTop(targetRect.bottom() - tileSize.height() + 1);
+    targetRect.setRight(targetRect.left() + tileSize.width() - 1);
 
     // Draw the tile image
     if (Zoomable *zoomable = mTilesetView->zoomable())
@@ -278,11 +279,11 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 {
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
     const Tileset *tileset = m->tileset();
-    const qreal zoom = mTilesetView->scale();
+    const QSize tileSize = tileset->tileSize() * mTilesetView->scale();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
-    return QSize(tileset->tileWidth() * zoom + extra,
-                 tileset->tileHeight() * zoom + extra);
+    return QSize(tileSize.width() + extra,
+                 tileSize.height() + extra);
 }
 
 } // anonymous namespace
@@ -348,7 +349,7 @@ int TilesetView::sizeHintForColumn(int column) const
         return -1;
 
     const int tileWidth = model->tileset()->tileWidth();
-    return tileWidth * scale() + (mDrawGrid ? 1 : 0);
+    return qRound(tileWidth * scale()) + (mDrawGrid ? 1 : 0);
 }
 
 int TilesetView::sizeHintForRow(int row) const
@@ -359,7 +360,7 @@ int TilesetView::sizeHintForRow(int row) const
         return -1;
 
     const int tileHeight = model->tileset()->tileHeight();
-    return tileHeight * scale() + (mDrawGrid ? 1 : 0);
+    return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);
 }
 
 void TilesetView::setZoomable(Zoomable *zoomable)
