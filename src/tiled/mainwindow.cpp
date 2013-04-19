@@ -779,10 +779,12 @@ bool MainWindow::saveFileAs()
     return saveFile(fileName);
 }
 
-bool MainWindow::confirmSave()
+bool MainWindow::confirmSave(MapDocument *mapDocument)
 {
-    if (!mMapDocument || !mMapDocument->isModified())
+    if (!mapDocument || !mapDocument->isModified())
         return true;
+
+    mDocumentManager->switchToDocument(mapDocument);
 
     int ret = QMessageBox::warning(
             this, tr("Unsaved Changes"),
@@ -800,9 +802,8 @@ bool MainWindow::confirmSave()
 
 bool MainWindow::confirmAllSave()
 {
-    for (int i = 0; i < mDocumentManager->documentCount(); i++) {
-        mDocumentManager->switchToDocument(i);
-        if (!confirmSave())
+    for (int i = 0; i < mDocumentManager->documentCount(); ++i) {
+        if (!confirmSave(mDocumentManager->documents().at(i)))
             return false;
     }
 
@@ -915,7 +916,7 @@ void MainWindow::exportAs()
 
 void MainWindow::closeFile()
 {
-    if (confirmSave())
+    if (confirmSave(mDocumentManager->currentDocument()))
         mDocumentManager->closeCurrentDocument();
 }
 
@@ -1455,10 +1456,10 @@ void MainWindow::writeSettings()
     QStringList scrollY;
     QStringList selectedLayer;
     for (int i = 0; i < mDocumentManager->documentCount(); i++) {
-        mDocumentManager->switchToDocument(i);
-        fileList.append(mDocumentManager->currentDocument()->fileName());
-        MapView *mapView = mDocumentManager->currentMapView();
-        const int currentLayerIndex = mMapDocument->currentLayerIndex();
+        MapDocument *document = mDocumentManager->documents().at(i);
+        MapView *mapView = mDocumentManager->viewForDocument(document);
+        fileList.append(document->fileName());
+        const int currentLayerIndex = document->currentLayerIndex();
 
         mapScales.append(QString::number(mapView->zoomable()->scale()));
         scrollX.append(QString::number(
@@ -1599,7 +1600,6 @@ void MainWindow::setupQuickStamps()
 
 void MainWindow::closeMapDocument(int index)
 {
-    mDocumentManager->switchToDocument(index);
-    if (confirmSave())
-        mDocumentManager->closeCurrentDocument();
+    if (confirmSave(mDocumentManager->documents().at(index)))
+        mDocumentManager->closeDocumentAt(index);
 }

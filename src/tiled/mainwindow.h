@@ -164,13 +164,15 @@ public slots:
 
 private:
     /**
-      * Asks the user whether the current map should be saved when necessary.
+      * Asks the user whether the given \a mapDocument should be saved, when
+      * necessary. If it needs to ask, also makes sure that it is the current
+      * document.
       *
       * @return <code>true</code> when any unsaved data is either discarded or
       *         saved, <code>false</code> when the user cancelled or saving
       *         failed.
       */
-    bool confirmSave();
+    bool confirmSave(MapDocument *mapDocument);
 
     /**
       * Checks all maps for changes, if so, ask if to save these changes.
