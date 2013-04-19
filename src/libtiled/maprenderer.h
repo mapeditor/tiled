@@ -190,10 +190,7 @@ public:
         BottomCenter
     };
 
-    explicit CellRenderer(QPainter *painter)
-        : mPainter(painter)
-        , mTile(0)
-    {}
+    explicit CellRenderer(QPainter *painter);
 
     ~CellRenderer() { flush(); }
 
@@ -201,9 +198,10 @@ public:
     void flush();
 
 private:
-    QPainter *mPainter;
+    QPainter * const mPainter;
     Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
+    const bool mIsOpenGL;
 };
 
 } // namespace Tiled

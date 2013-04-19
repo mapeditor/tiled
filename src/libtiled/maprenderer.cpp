@@ -32,6 +32,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
+#include <QPaintEngine>
 #include <QPainter>
 #include <QVector2D>
 
@@ -83,6 +84,20 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
 }
 
 
+static bool hasOpenGLEngine(const QPainter *painter)
+{
+    const QPaintEngine::Type type = painter->paintEngine()->type();
+    return (type == QPaintEngine::OpenGL ||
+            type == QPaintEngine::OpenGL2);
+}
+
+CellRenderer::CellRenderer(QPainter *painter)
+    : mPainter(painter)
+    , mTile(0)
+    , mIsOpenGL(hasOpenGLEngine(painter))
+{
+}
+
 /**
  * Renders a \a cell with the given \a origin at \a pos, taking into account
  * the flipping and tile offset.
@@ -94,10 +109,8 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
 {
-    if (mTile != cell.tile) {
+    if (mTile != cell.tile)
         flush();
-        mTile = cell.tile;
-    }
 
     const QSizeF size = cell.tile->size();
     const QPoint offset = cell.tile->tileset()->tileOffset();
@@ -129,7 +142,30 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
             fragment.x += halfDiff;
     }
 
-    mFragments.append(fragment);
+    if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
+        mTile = cell.tile;
+        mFragments.append(fragment);
+        return;
+    }
+
+    // The Raster paint engine as of Qt 4.8.4 / 5.0.2 does not support
+    // drawing fragments with a negative scaling factor.
+
+    flush(); // make sure we drew all tiles so far
+
+    const QTransform oldTransform = mPainter->transform();
+    QTransform transform = oldTransform;
+    transform.translate(fragment.x, fragment.y);
+    transform.rotate(fragment.rotation);
+    transform.scale(fragment.scaleX, fragment.scaleY);
+
+    const QRectF target(fragment.width * -0.5, fragment.height * -0.5,
+                        fragment.width, fragment.height);
+    const QRectF source(0, 0, fragment.width, fragment.height);
+
+    mPainter->setTransform(transform);
+    mPainter->drawPixmap(target, cell.tile->image(), source);
+    mPainter->setTransform(oldTransform);
 }
 
 /**
