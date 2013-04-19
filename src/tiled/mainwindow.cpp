@@ -546,9 +546,9 @@ bool MainWindow::openFile(const QString &fileName,
 
     TmxMapReader tmxMapReader;
 
+    const PluginManager *pm = PluginManager::instance();
     if (!mapReader && !tmxMapReader.supportsFile(fileName)) {
         // Try to find a plugin that implements support for this format
-        const PluginManager *pm = PluginManager::instance();
         QList<MapReaderInterface*> readers =
                 pm->interfaces<MapReaderInterface>();
 
@@ -562,10 +562,9 @@ bool MainWindow::openFile(const QString &fileName,
 
     // check if we can save in that format as well
     QString writerPluginFileName;
-    PluginManager *pm = PluginManager::instance();
     if (mapReader) {
-        if (dynamic_cast<MapWriterInterface*>(mapReader)) {
-            if (const Plugin *plugin = pm->plugin(mapReader))
+        if (const Plugin *plugin = pm->plugin(mapReader)) {
+            if (qobject_cast<MapWriterInterface*>(plugin->instance))
                 writerPluginFileName = plugin->fileName;
         }
     } else {
