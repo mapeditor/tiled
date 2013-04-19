@@ -69,6 +69,9 @@ MapView::MapView(QWidget *parent)
 
     grabGesture(Qt::PinchGesture);
 
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
 }
 
