@@ -40,9 +40,16 @@ using namespace Python;
 QString scriptdir(QDir::homePath() + "/.tiled");
 QMap<QString,PyObject*> knownExtModules;
 QMap<QString,PyObject*> knownExtClasses;
+QList<PyObject*> loadedMaps;
 PyObject *pTiledCls;
 
 PythonPlugin::~PythonPlugin() {
+
+    qDeleteAll(loadedMaps);
+    qDeleteAll(knownExtModules);
+    qDeleteAll(knownExtClasses);
+    delete pTiledCls;
+
     Py_Finalize();
 }
 
@@ -260,7 +267,7 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
             PySys_WriteStderr("** Uncaught exception in script **\n");
         } else {
             _wrap_convert_py2c__Tiled__Map___star__(pinst, &ret);
-            //Py_DECREF(pinst);
+            loadedMaps.push_back(pinst);
         }
         handleError();
 

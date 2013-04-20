@@ -21,6 +21,7 @@
 #ifndef PYTHONPLUGIN_H
 #define PYTHONPLUGIN_H
 
+#include <Python.h>
 #include <QtCore/qglobal.h>
 
 #include "mapwriterinterface.h"
@@ -28,7 +29,6 @@
 #include "logginginterface.h"
 
 #include <QObject>
-#include <Python.h>
 
 namespace Tiled {
 class Map;
