@@ -90,7 +90,8 @@ HEADERS += compression.h \
     tiled.h \
     tiled_global.h \
     tilelayer.h \
-    tileset.h
+    tileset.h \
+    logginginterface.h
 
 contains(INSTALL_HEADERS, yes) {
     headers.files = $${HEADERS}

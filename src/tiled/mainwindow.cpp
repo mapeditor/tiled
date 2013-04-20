@@ -79,6 +79,7 @@
 #include "commandbutton.h"
 #include "objectsdock.h"
 #include "minimapdock.h"
+#include "consoledock.h"
 
 #ifdef Q_WS_MAC
 #include "macsupport.h"
@@ -116,6 +117,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTilesetDock(new TilesetDock(this))
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
+    , mConsoleDock(new ConsoleDock(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -129,6 +131,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #ifdef Q_WS_MAC
     MacSupport::addFullscreen(this);
 #endif
+
 
     Preferences *preferences = Preferences::instance();
 
@@ -175,6 +178,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
+    addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
@@ -185,6 +189,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // they are hidden by default.
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
+    mConsoleDock->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 

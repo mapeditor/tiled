@@ -25,6 +25,7 @@
 #define MAINWINDOW_H
 
 #include "mapdocument.h"
+#include "consoledock.h"
 
 #include <QMainWindow>
 #include <QSessionManager>
@@ -218,6 +219,7 @@ private:
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
+    ConsoleDock *mConsoleDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
