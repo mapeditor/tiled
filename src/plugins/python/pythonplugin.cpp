@@ -255,7 +255,7 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
         PyObject *pinst = PyObject_CallMethod(it.value(), (char *)"read",
                                               (char *)"(s)", fileName.toUtf8().data());
 
-        Tiled::Map *ret;
+        Tiled::Map *ret = 0;
         if(!pinst) {
             PySys_WriteStderr("** Uncaught exception in script **\n");
         } else {
@@ -264,7 +264,8 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
         }
         handleError();
 
-        ret->setProperty("__script__", it.key());
+        if (ret)
+            ret->setProperty("__script__", it.key());
         return ret;
     }
     return NULL;
