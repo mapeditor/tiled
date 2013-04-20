@@ -31,6 +31,8 @@ mod.add_include('"tilelayer.h"')
 mod.add_include('"objectgroup.h"')
 mod.add_include('"tileset.h"')
 
+mod.header.writeln('#pragma GCC diagnostic ignored "-Wmissing-field-initializers"')
+
 # one day PyQt/PySide could be considered
 import qtbinding
 qtbinding.generate(mod)
@@ -280,7 +282,7 @@ cls_pp = mod.add_class('PythonScript',
 """
  PythonPlugin implements LoggingInterface for messaging to Tiled
 """
-cls_logi = tiled.add_class('LoggingInterface')
+cls_logi = tiled.add_class('LoggingInterface', destructor_visibility='private')
 cls_logi.add_enum('OutputType', ('INFO','ERROR'))
 cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')], 
   is_virtual=True)
