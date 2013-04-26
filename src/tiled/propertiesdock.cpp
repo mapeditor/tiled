@@ -114,6 +114,8 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
                 SLOT(bringToFront()));
 
         currentObjectChanged(mapDocument->currentObject());
+    } else {
+        currentObjectChanged(0);
     }
 }
 
