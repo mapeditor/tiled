@@ -253,6 +253,8 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
                                 imageLayer->transparentColor().name());
     }
 
+    writeProperties(writer, imageLayer->properties());
+
     writer.writeEndTable();
 }
 
