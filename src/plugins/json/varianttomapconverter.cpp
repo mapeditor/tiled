@@ -126,7 +126,7 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
     QString imageSource = variantMap["image"].toString();
 
     if (QDir::isRelativePath(imageSource))
-        imageSource = mMapDir.path() + QLatin1Char('/') + imageSource;
+        imageSource = QDir::cleanPath(mMapDir.absoluteFilePath(imageSource));
 
     if (!tileset->loadFromImage(QImage(imageSource), imageSource)) {
         mError = tr("Error loading tileset image:\n'%1'").arg(imageSource);
@@ -363,8 +363,12 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
     if (!trans.isEmpty() && QColor::isValidColor(trans))
         imageLayer->setTransparentColor(QColor(trans));
 
-    const QString imageSource = variantMap["image"].toString();
+    QString imageSource = variantMap["image"].toString();
+
     if (!imageSource.isEmpty()) {
+        if (QDir::isRelativePath(imageSource))
+            imageSource = QDir::cleanPath(mMapDir.absoluteFilePath(imageSource));
+
         if (!imageLayer->loadFromImage(QImage(imageSource), imageSource)) {
             // TODO: This error is currently ignored
             mError = tr("Error loading image:\n'%1'").arg(imageSource);
