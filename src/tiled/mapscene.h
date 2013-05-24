@@ -134,6 +134,11 @@ private slots:
      */
     void setGridVisible(bool visible);
 
+    /**
+     * Sets whether the guide grid is visible.
+     */
+    void setGuideGridVisible(bool visible);
+
     void setShowTileObjectOutlines(bool enabled);
 
     /**
@@ -180,6 +185,7 @@ private:
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;
+    bool mGuideGridVisible;
     bool mShowTileObjectOutlines;
     bool mHighlightCurrentLayer;
     bool mUnderMouse;

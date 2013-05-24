@@ -62,6 +62,13 @@ void MapRenderer::setFlag(RenderFlag flag, bool enabled)
         mFlags &= ~flag;
 }
 
+
+void MapRenderer::drawGrid(QPainter *painter, const QRectF &rect,
+                           QColor gridColor) const
+{
+    drawGrid(painter, rect, gridColor, 1, 1);
+}
+
 /**
  * Converts a line running from \a start to \a end to a polygon which
  * extends 5 pixels from the line in all directions.

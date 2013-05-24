@@ -86,7 +86,7 @@ public:
     QPainterPath shape(const MapObject *object) const;
 
     void drawGrid(QPainter *painter, const QRectF &rect,
-                  QColor gridColor) const;
+                  QColor gridColor, int spacingX, int spacingY) const;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF()) const;

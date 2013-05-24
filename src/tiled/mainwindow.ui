@@ -21,7 +21,16 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
    </layout>
@@ -32,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -98,6 +107,7 @@
      <string>&amp;View</string>
     </property>
     <addaction name="actionShowGrid"/>
+    <addaction name="actionShowGuideGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
@@ -421,6 +431,20 @@
    </property>
    <property name="text">
     <string>Snap to &amp;Fine Grid</string>
+   </property>
+  </action>
+  <action name="actionShowGuideGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Gui&amp;de Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows the guideline grid</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
    </property>
   </action>
  </widget>

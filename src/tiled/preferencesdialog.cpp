@@ -142,6 +142,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
             Preferences::instance(), SLOT(setGridColor(QColor)));
     connect(mUi->gridFine, SIGNAL(valueChanged(int)),
             Preferences::instance(), SLOT(setGridFine(int)));
+    connect(mUi->guideSpacingX, SIGNAL(valueChanged(int)),
+            Preferences::instance(), SLOT(setGuideGridSpacingX(int)));
+    connect(mUi->guideSpacingY, SIGNAL(valueChanged(int)),
+            Preferences::instance(), SLOT(setGuideGridSpacingY(int)));
+    connect(mUi->guideColor, SIGNAL(colorChanged(QColor)),
+            Preferences::instance(), SLOT(setGuideGridColor(QColor)));
 
     connect(mUi->objectTypesTable->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -329,6 +335,9 @@ void PreferencesDialog::fromPreferences()
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
     mUi->gridFine->setValue(prefs->gridFine());
+    mUi->guideColor->setColor(prefs->guideGridColor());
+    mUi->guideSpacingX->setValue(prefs->guideGridSpacingX());
+    mUi->guideSpacingY->setValue(prefs->guideGridSpacingY());
     mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }

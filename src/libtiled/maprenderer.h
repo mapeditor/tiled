@@ -97,8 +97,15 @@ public:
      * Draws the tile grid in the specified \a rect using the given
      * \a painter.
      */
+    void drawGrid(QPainter *painter, const QRectF &rect,
+                  QColor gridColor = Qt::black) const;
+
+    /**
+     * Draws a custom grid in the specified \a rect with a specific
+     * \a spacing (defined as number of tiles) using the given \a painter.
+     */
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
-                          QColor gridColor = Qt::black) const = 0;
+                          QColor gridColor, int spacingX, int spacingY) const = 0;
 
     /**
      * Draws the given \a layer using the given \a painter.

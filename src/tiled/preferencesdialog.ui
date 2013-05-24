@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>462</width>
-    <height>392</height>
+    <height>449</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,7 +98,7 @@
           <string>Interface</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="4" column="0" colspan="4">
+          <item row="15" column="0" colspan="4">
            <widget class="QCheckBox" name="openGL">
             <property name="text">
              <string>Hardware &amp;accelerated drawing (OpenGL)</string>
@@ -144,7 +144,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Fine grid divisions</string>
+             <string>Fine grid divisions:</string>
             </property>
            </widget>
           </item>
@@ -157,6 +157,50 @@
              <number>128</number>
             </property>
            </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Guide grid spacing X:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="3">
+           <widget class="QSpinBox" name="guideSpacingX">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>128</number>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Guide grid spacing Y:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="3">
+           <widget class="QSpinBox" name="guideSpacingY">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>128</number>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Guide grid color:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="3">
+           <widget class="Tiled::Internal::ColorButton" name="guideColor"/>
           </item>
          </layout>
         </widget>
@@ -340,6 +384,10 @@
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>languageCombo</tabstop>
   <tabstop>gridColor</tabstop>
+  <tabstop>gridFine</tabstop>
+  <tabstop>guideSpacingX</tabstop>
+  <tabstop>guideSpacingY</tabstop>
+  <tabstop>guideColor</tabstop>
   <tabstop>openGL</tabstop>
   <tabstop>objectTypesTable</tabstop>
   <tabstop>addObjectTypeButton</tabstop>
