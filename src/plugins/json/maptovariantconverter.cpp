@@ -82,7 +82,8 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     return mapVariant;
 }
 
-QVariant MapToVariantConverter::toVariant(const Tileset *tileset, int firstGid)
+QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
+                                          int firstGid) const
 {
     QVariantMap tilesetVariant;
 
@@ -158,7 +159,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset, int firstGid)
     return tilesetVariant;
 }
 
-QVariant MapToVariantConverter::toVariant(const Properties &properties)
+QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 {
     QVariantMap variantMap;
 
@@ -170,7 +171,7 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties)
     return variantMap;
 }
 
-QVariant MapToVariantConverter::toVariant(const TileLayer *tileLayer)
+QVariant MapToVariantConverter::toVariant(const TileLayer *tileLayer) const
 {
     QVariantMap tileLayerVariant;
     tileLayerVariant["type"] = "tilelayer";
@@ -214,7 +215,7 @@ private:
     int mMultiplierY;
 };
 
-QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
+QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
 {
     QVariantMap objectGroupVariant;
     objectGroupVariant["type"] = "objectgroup";
@@ -283,7 +284,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup)
     return objectGroupVariant;
 }
 
-QVariant MapToVariantConverter::toVariant(const ImageLayer *imageLayer)
+QVariant MapToVariantConverter::toVariant(const ImageLayer *imageLayer) const
 {
     QVariantMap imageLayerVariant;
     imageLayerVariant["type"] = "imagelayer";
@@ -301,7 +302,7 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer *imageLayer)
 }
 
 void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
-                                               const Layer *layer)
+                                               const Layer *layer) const
 {
     layerVariant["name"] = layer->name();
     layerVariant["width"] = layer->width();
