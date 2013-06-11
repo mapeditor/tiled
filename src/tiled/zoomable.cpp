@@ -30,6 +30,8 @@
 using namespace Tiled::Internal;
 
 static const qreal zoomFactors[] = {
+    0.015625,
+    0.03125,
     0.0625,
     0.125,
     0.25,
@@ -40,7 +42,19 @@ static const qreal zoomFactors[] = {
     1.5,
     2.0,
     3.0,
-    4.0
+    4.0,
+    5.5,
+    8.0,
+    11.0,
+    16.0,
+    23.0,
+    32.0,
+    45.0,
+    64.0,
+    90.0,
+    128.0,
+    180.0,
+    256.0
 };
 const int zoomFactorCount = sizeof(zoomFactors) / sizeof(zoomFactors[0]);
 
