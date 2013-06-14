@@ -155,6 +155,7 @@ bool LDMZPlugin::writeStrings(const Tiled::Map *map, char *strings, LDMZ_REF *re
                 }
                 ref[ref_i].key = ref[ref_i].value = qToBigEndian(-1);
                 ref_i++;
+		objects++;
             }
         }
     }
