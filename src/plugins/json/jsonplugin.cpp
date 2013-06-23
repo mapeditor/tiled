@@ -124,7 +124,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
 QStringList JsonPlugin::nameFilters() const
 {
     QStringList filters;
-    filters.append(tr("Json files (*.json)"));
+    filters.append(tr("Json files (*.json *.txt)"));
     filters.append(tr("JavaScript files (*.js)"));
     return filters;
 }
@@ -132,7 +132,8 @@ QStringList JsonPlugin::nameFilters() const
 bool JsonPlugin::supportsFile(const QString &fileName) const
 {
     return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) ||
-           fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
+           fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive) ||
+           fileName.endsWith(QLatin1String(".txt"), Qt::CaseInsensitive);
 }
 
 QString JsonPlugin::errorString() const
