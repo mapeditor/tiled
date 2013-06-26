@@ -287,11 +287,8 @@ int JsonLexer::parseString()
             else if (c == L1C('\\')) str += QLatin1Char('\\');
             else if (c == L1C('\"')) str += QLatin1Char('\"');
             else if (c == L1C('u') && m_pos+4<m_strdata.length()-1) {
-                // FIXME: This code is wrong
-                QString u1 = m_strdata.mid(m_pos+1, 2); // TODO: QStringRef please
-                QString u2 = m_strdata.mid(m_pos+3, 2);
-                bool ok;
-                str += QChar(u2.toInt(&ok, 16), u1.toInt(&ok, 16));
+                QString u = m_strdata.mid(m_pos+1, 4);
+                str += QChar(u.toUShort(0, 16));
                 m_pos += 4;
             } else {
                 str += QChar(c);
@@ -358,13 +355,13 @@ int JsonLexer::parseKeyword()
     if (l == 4) {
         static const ushort true_data[] = { 't', 'r', 'u', 'e' };
         static const ushort null_data[] = { 'n', 'u', 'l', 'l' };
-        if (!memcmp(k, true_data, 4))
+        if (!memcmp(k, true_data, 4 * sizeof(ushort)))
             return JsonGrammar::T_TRUE;
-        if (!memcmp(k, null_data, 4))
+        if (!memcmp(k, null_data, 4 * sizeof(ushort)))
             return JsonGrammar::T_NULL;
     } else if (l == 5) {
         static const ushort false_data[] = { 'f', 'a', 'l', 's', 'e' };
-        if (!memcmp(k, false_data, 5))
+        if (!memcmp(k, false_data, 5 * sizeof(ushort)))
             return JsonGrammar::T_FALSE;
     }
     return JsonGrammar::ERROR;
@@ -455,29 +452,29 @@ bool JsonParser::parse(JsonLexer *lexer)
             act = m_stateStack.at(m_tos++);
             switch (r) {
 
-#line 337 "json.g"
+#line 334 "json.g"
           case 0: { m_result = sym(1); break; } 
-#line 340 "json.g"
+#line 337 "json.g"
           case 1: { sym(1) = map(2); break; } 
-#line 343 "json.g"
+#line 340 "json.g"
           case 2: { QVariantMap m; m.insert(sym(1).toString(), sym(3)); map(1) = m; break; } 
-#line 346 "json.g"
+#line 343 "json.g"
           case 3: { map(1).insert(sym(3).toString(), sym(5)); break; } 
-#line 349 "json.g"
+#line 346 "json.g"
           case 4: { map(1) = QVariantMap(); break; } 
-#line 352 "json.g"
+#line 349 "json.g"
           case 5: { sym(1) = QVariant(false); break; } 
-#line 355 "json.g"
+#line 352 "json.g"
           case 6: { sym(1) = QVariant(true); break; } 
-#line 364 "json.g"
+#line 361 "json.g"
           case 12: { sym(1) = list(2); break; } 
-#line 367 "json.g"
+#line 364 "json.g"
           case 13: { QVariantList l; l.append(sym(1)); list(1) = l; break; } 
-#line 370 "json.g"
+#line 367 "json.g"
           case 14: { list(1).append(sym(3)); break; } 
-#line 373 "json.g"
+#line 370 "json.g"
           case 15: { list(1) = QVariantList(); break; } 
-#line 375 "json.g"
+#line 372 "json.g"
 
             } // switch
             m_stateStack[m_tos] = nt_action(act, lhs[r] - TERMINAL_COUNT);
