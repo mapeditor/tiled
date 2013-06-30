@@ -82,7 +82,7 @@ class CpySkeleton(struct.Struct):
         ret += v.pack()
         continue
 
-      if type(f) != type(struct.Struct):
+      if type(f) != type(struct.Struct) and f in fdict:
         f = fdict[f]
 
       if a != '':
@@ -108,6 +108,7 @@ class CpySkeleton(struct.Struct):
           #v = f(v.ljust(sz,'\0'))
           ret += struct.pack(getattr(f, '__fstr'), v)
       else:
+        f = getattr(self, '__endianflag') + f
         if type(v) is list:
           for x in v:
             ret += struct.pack(f, x)
@@ -277,7 +278,7 @@ def parseformat(fmt, callscope=None):
 
   return (fmt, fstr, sz)
 
-def CpyStruct(s, bigendian=False):
+def CpyStruct(s, endianflg='<'):
   """ Call with a string specifying
   C-like struct to get a Struct class """
   # f=format, n=name, a=arraydef, v=default value
@@ -289,9 +290,15 @@ def CpyStruct(s, bigendian=False):
   finally:
     del callscope
 
-  #print fmt,fstr
+  # for backwards compatibility
+  if endianflg == True:
+    endianflg = '>'
+  elif endianflg == False:
+    endianflg = '<'
+
   d = {}
-  d['__fstr'] = ('>' if bigendian else '<') + fstr
+  d['__endianflag'] = endianflg
+  d['__fstr'] = endianflg + fstr
   d['__fsz'] = fsz
   d['__slots__'] = [n for f,n,a,v in fmt]
   d['formats'] = fmt

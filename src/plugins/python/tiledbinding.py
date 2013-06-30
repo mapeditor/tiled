@@ -65,7 +65,7 @@ cls_tileset.add_method('margin', 'int', [])
 cls_tileset.add_method('loadFromImage', 'bool',
   [('const QImage&','img'),('QString','file')])
 cls_tileset.add_method('tileAt',
-  retval('Tiled::Tile*',caller_owns_return=False), [('int','id')])
+  retval('Tiled::Tile*',reference_existing_object=True), [('int','id')])
 cls_tileset.add_method('tileCount', 'int', [])
 cls_tileset.add_method('columnCount', 'int', [])
 cls_tileset.add_method('imageWidth', 'int', [])
@@ -76,11 +76,12 @@ cls_tileset.add_method('transparentColor', 'QColor', [])
 cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
   param('Tileset*','ts',transfer_ownership=False)])
 cls_tile.add_method('tileset',
-  retval('Tiled::Tileset*',caller_owns_return=False), [])
+  retval('Tiled::Tileset*',reference_existing_object=True), [])
 
 cls_layer = tiled.add_class('Layer')
 
-#mod.add_container('QList<Tileset>', retval('Tileset'), 'list')
+#mod.add_container('QList<Tiled::Tileset*>',
+#                retval('Tiled::Tileset*',caller_owns_return=False), 'list')
 
 cls_props = tiled.add_class('Properties')
 cls_props.add_method('keys', 'QList<QString>', [])
@@ -91,6 +92,7 @@ cls_map.add_enum('Orientation', ('Unknown','Orthogonal','Isometric'))
 cls_map.add_copy_constructor()
 cls_map.add_constructor([('Orientation','orient'), ('int','w'), ('int','h'),
   ('int','tileW'), ('int','tileH')])
+cls_map.add_method('orientation', 'Orientation', [])
 cls_map.add_method('setOrientation', None, [('Orientation','o')])
 cls_map.add_method('width', 'int', [])
 cls_map.add_method('setWidth', None, [('int','w')])
@@ -111,8 +113,10 @@ cls_map.add_method('removeTilesetAt', None, [('int','pos')])
 cls_map.add_method('replaceTileset', None,
   [param('Tileset*','oldts',transfer_ownership=True),
   param('Tileset*','newts',transfer_ownership=True)])
-#cls_map.add_method('tilesets', 'std::list<Tileset>', [])
-#cls_map.add_method('tilesets', retval('std::list<Tileset>'), [])
+cls_map.add_method('tilesetAt',
+                retval('Tiled::Tileset*',reference_existing_object=True),
+                [('int','idx')])
+cls_map.add_method('tilesetCount', 'int', [])
 cls_map.add_method('isTilesetUsed', 'bool',
   [param('Tileset*','ts',transfer_ownership=True)])
 cls_map.add_method('properties', retval('Tiled::Properties','p'), [])
@@ -123,8 +127,9 @@ cls_map.add_method('setProperty', None, [('QString','name'),
 cls_cell = tiled.add_class('Cell')
 cls_cell.add_constructor([param('Tiled::Tile*','tile',
   transfer_ownership=True)])
-cls_cell.add_instance_attribute('tile', param('Tiled::Tile*',
-        caller_owns_return=True, reference_existing_object=True))
+cls_cell.add_method('isEmpty', 'bool', [])
+cls_cell.add_instance_attribute('tile', retval('Tiled::Tile*',
+        caller_owns_return=False))
 
 cls_tilelayer = tiled.add_class('TileLayer', cls_layer)
 cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
@@ -197,8 +202,7 @@ cls_map.add_method('addLayer', None,
   [param('ObjectGroup*','l',transfer_ownership=True)])
 
 cls_map.add_method('layerAt',
-  retval('Tiled::Layer*',caller_owns_return=False,
-          reference_existing_object=True), [('int','idx')])
+  retval('Tiled::Layer*',reference_existing_object=True), [('int','idx')])
 
 cls_layer.add_method('name', 'QString', [])
 cls_layer.add_method('setName', None, [('QString','name')])
@@ -206,7 +210,7 @@ cls_layer.add_method('opacity', 'float', [])
 cls_layer.add_method('setOpacity', None, [('float','opacity')])
 cls_layer.add_method('isVisible', 'bool', [])
 cls_layer.add_method('setVisible', None, [('bool','visible')])
-cls_layer.add_method('map', retval('Tiled::Map*',caller_owns_return=False), [])
+cls_layer.add_method('map', retval('Tiled::Map*',reference_existing_object=True), [])
 cls_layer.add_method('setMap', None,
   [param('Tiled::Map*','map',transfer_ownership=False)])
 cls_layer.add_method('x', 'int', [])
@@ -217,9 +221,9 @@ cls_layer.add_method('setPosition', None, [('int','x'),('int','y')])
 cls_layer.add_method('width', 'int', [])
 cls_layer.add_method('height', 'int', [])
 cls_layer.add_method('asTileLayer',
-  retval('Tiled::TileLayer*',caller_owns_return=False), [], is_virtual=True)
+  retval('Tiled::TileLayer*',reference_existing_object=True), [], is_virtual=True)
 cls_layer.add_method('asObjectGroup',
-  retval('Tiled::ObjectGroup*',caller_owns_return=False), [], is_virtual=True)
+  retval('Tiled::ObjectGroup*',reference_existing_object=True), [], is_virtual=True)
 
 
 mod.body.writeln("""
@@ -249,12 +253,10 @@ mod.add_function('isObjectGroupAt', 'bool',
   [param('Tiled::Map*','map',transfer_ownership=False),('int','idx')])
 
 mod.add_function('tileLayerAt',
-  retval('Tiled::TileLayer*',caller_owns_return=False,
-          reference_existing_object=True),
+  retval('Tiled::TileLayer*',reference_existing_object=True),
   [param('Tiled::Map*','map',transfer_ownership=False),('int','idx')])
 mod.add_function('objectGroupAt',
-  retval('Tiled::ObjectGroup*',caller_owns_return=False,
-          reference_existing_object=True),
+  retval('Tiled::ObjectGroup*',reference_existing_object=True),
   [param('Tiled::Map*','map',transfer_ownership=False),('int','idx')])
 
 

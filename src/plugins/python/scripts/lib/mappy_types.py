@@ -80,7 +80,7 @@ short blockstrsize; // size of a block data structure */
 short numblockstr;  // Number of block structures in BKDT */
 short numblockgfx;  // Number of 'blocks' in graphics (BODY) */
 BYTE skip;
-BYTE trans8bit;
+SBYTE trans8bit;
 short transhi;
 """)): pass
 
