@@ -1,3 +1,25 @@
+0.9.1 (.. July 2013)
+* Added saving of map background to JSON format (by Petr Viktorin)
+* Added saving of terrain information to JSON format (by Petr Viktorin)
+* Object Selection tool now always start selecting objects when holding Shift
+* Increased maximum for tileset margin and spacing to 9999
+* Some updates to libtiled-java (by Oskar Wiksten)
+* Install the automappingconverter application (relevant on Linux)
+* Avoid using Windows 95 style (was used on some Linux desktop environments)
+* Removed layer name checks from the Flare export plugin (by Stefan Beller)
+* Double-clicking an object now opens the Object Properties dialog
+* Fixed Object Properties dialog not remembering its size
+* Fixed object drawing order for image saving and mini-map
+* Fixed some plurals in English translation
+* Fixed line widths when zooming in Qt 5
+* Fixed updating of image layer when its opacity or image is changed
+* Fixed display of grid in tileset view on certain zoom levels
+* Fixed save in wrong format after opening a map with plugin (by Mike Hendricks)
+* Fixed closing Tiled being very slow with many maps
+* Fixed saving of image layer properties in the Lua format
+* Fixed escaping of special characters in the Lua format
+* Fixed handling of relative paths for image layers in the JSON plugin
+
 0.9.0 (27 January 2013)
 * Added objects dock and per-object visibility toggle (by Tim Baker)
 * Added maps dock (by Tim Baker)
