@@ -566,8 +566,12 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
         const QPointF newPixelPos = mOldObjectItemPositions.at(i) + diff;
         const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
         objectItem->setPos(newPixelPos);
-//        objectItem->setZValue(newPixelPos.y());
         objectItem->mapObject()->setPosition(newPos);
+
+        ObjectGroup *objectGroup = objectItem->mapObject()->objectGroup();
+        if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
+            objectItem->setZValue(newPixelPos.y());
+
         ++i;
     }
 }
@@ -646,9 +650,9 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const qreal newRotation = mOldObjectRotations.at(i) + angleDiff * 180 / M_PI;
 
         objectItem->setPos(newPixelPos);
-//        objectItem->setZValue(newPixelPos.y());
         objectItem->mapObject()->setPosition(newPos);
         objectItem->setObjectRotation(newRotation);
+
         ++i;
     }
 }

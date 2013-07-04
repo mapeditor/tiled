@@ -161,6 +161,7 @@ private slots:
     void layerRemoved(int index);
     void layerChanged(int index);
 
+    void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);

@@ -162,6 +162,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 
         mNewMapObjectItem->mapObject()->setPosition(tileCoords);
         mNewMapObjectItem->syncWithMapObject();
+        mNewMapObjectItem->setZValue(10000); // sync may change it
         break;
     }
     case CreatePolygon:
@@ -337,6 +338,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     objectGroup->addObject(newMapObject);
 
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument());
+    mNewMapObjectItem->setZValue(10000); // same as the BrushItem
     mapScene()->addItem(mNewMapObjectItem);
 }
 

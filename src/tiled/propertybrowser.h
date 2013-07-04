@@ -100,6 +100,7 @@ private:
         LayerFormatProperty,
         ImageSourceProperty,
         FlippingProperty,
+        DrawOrderProperty,
         CustomProperty
     };
 
@@ -144,6 +145,7 @@ private:
 
     QStringList mLayerFormatNames;
     QStringList mFlippingFlagNames;
+    QStringList mDrawOrderNames;
 };
 
 } // namespace Internal

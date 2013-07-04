@@ -681,6 +681,17 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
     if (!color.isEmpty())
         objectGroup->setColor(color);
 
+    if (atts.hasAttribute(QLatin1String("draworder"))) {
+        QString value = atts.value(QLatin1String("draworder")).toString();
+        ObjectGroup::DrawOrder drawOrder = drawOrderFromString(value);
+        if (drawOrder == ObjectGroup::UnknownOrder) {
+            delete objectGroup;
+            xml.raiseError(tr("Invalid draw order: %1").arg(value));
+            return 0;
+        }
+        objectGroup->setDrawOrder(drawOrder);
+    }
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("object"))
             objectGroup->addObject(readObject());

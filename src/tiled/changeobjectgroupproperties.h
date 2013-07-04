@@ -22,13 +22,12 @@
 #ifndef CHANGEOBJECTGROUPPROPERTIES_H
 #define CHANGEOBJECTGROUPPROPERTIES_H
 
+#include "objectgroup.h"
+
 #include <QColor>
 #include <QUndoCommand>
 
 namespace Tiled {
-
-class ObjectGroup;
-
 namespace Internal {
 
 class MapDocument;
@@ -45,7 +44,8 @@ public:
      */
     ChangeObjectGroupProperties(MapDocument *mapDocument,
                                 ObjectGroup *objectGroup,
-                                const QColor &newColor);
+                                const QColor &newColor,
+                                ObjectGroup::DrawOrder newDrawOrder);
 
     void undo();
     void redo();
@@ -55,6 +55,8 @@ private:
     ObjectGroup *mObjectGroup;
     const QColor mUndoColor;
     const QColor mRedoColor;
+    ObjectGroup::DrawOrder mUndoDrawOrder;
+    ObjectGroup::DrawOrder mRedoDrawOrder;
 };
 
 } // namespace Internal

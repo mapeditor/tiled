@@ -50,6 +50,18 @@ class TILEDSHARED_EXPORT ObjectGroup : public Layer
 {
 public:
     /**
+     * Objects within an object group can either be drawn top down (sorted
+     * by their y-coordinate) or by index (manual stacking order).
+     *
+     * The default is top down.
+     */
+    enum DrawOrder {
+        UnknownOrder = -1,
+        TopDownOrder,
+        IndexOrder
+    };
+
+    /**
      * Default constructor.
      */
     ObjectGroup();
@@ -165,16 +177,11 @@ public:
     bool canMergeWith(Layer *other) const;
     Layer *mergedWith(Layer *other) const;
 
-    /**
-     * Returns the color of the object group, or an invalid color if no color
-     * is set.
-     */
-    const QColor &color() const { return mColor; }
+    const QColor &color() const;
+    void setColor(const QColor &color);
 
-    /**
-     * Sets the display color of the object group.
-     */
-    void setColor(const QColor &color) {  mColor = color; }
+    DrawOrder drawOrder() const;
+    void setDrawOrder(DrawOrder drawOrder);
 
     Layer *clone() const;
 
@@ -184,7 +191,56 @@ protected:
 private:
     QList<MapObject*> mObjects;
     QColor mColor;
+    DrawOrder mDrawOrder;
 };
+
+
+/**
+ * Returns the color of the object group, or an invalid color if no color
+ * is set.
+ */
+inline const QColor &ObjectGroup::color() const
+{ return mColor; }
+
+/**
+ * Sets the display color of the object group.
+ */
+inline void ObjectGroup::setColor(const QColor &color)
+{ mColor = color; }
+
+/**
+ * Returns the draw order for the objects in this group.
+ *
+ * \sa ObjectGroup::DrawOrder
+ */
+inline ObjectGroup::DrawOrder ObjectGroup::drawOrder() const
+{ return mDrawOrder; }
+
+/**
+ * Sets the draw order for the objects in this group.
+ *
+ * \sa ObjectGroup::DrawOrder
+ */
+inline void ObjectGroup::setDrawOrder(DrawOrder drawOrder)
+{ mDrawOrder = drawOrder; }
+
+
+/**
+ * Helper function that converts a drawing order to its string value. Useful
+ * for map writers.
+ *
+ * @return The draw order as a lowercase string.
+ */
+TILEDSHARED_EXPORT QString drawOrderToString(ObjectGroup::DrawOrder);
+
+/**
+ * Helper function that converts a string to a drawing order enumerator.
+ * Useful for map readers.
+ *
+ * @return The draw order matching the given string, or
+ *         ObjectGroup::UnknownOrder if the string is unrecognized.
+ */
+TILEDSHARED_EXPORT ObjectGroup::DrawOrder drawOrderFromString(const QString &);
 
 } // namespace Tiled
 

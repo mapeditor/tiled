@@ -162,12 +162,7 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         return;
 
     const QList<MapObject*> &selectedObjects = mapDocument()->selectedObjects();
-
-    QList<ObjectGroup*> objectGroups;
-    foreach (Layer *layer, mapDocument()->map()->layers()) {
-        if (ObjectGroup *objectGroup = layer->asObjectGroup())
-            objectGroups.append(objectGroup);
-    }
+    const QList<ObjectGroup*> objectGroups = mapDocument()->map()->objectGroups();
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
@@ -176,20 +171,17 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
     menu.addAction(handler->actionRemoveObjects());
 
     menu.addSeparator();
-    QAction *horizontalAction = menu.addAction(tr("Flip Horizontally"));
-    QAction *verticalAction = menu.addAction(tr("Flip Vertically"));
-    connect(horizontalAction, SIGNAL(triggered()), SLOT(flipHorizontally()));
-    connect(verticalAction, SIGNAL(triggered()), SLOT(flipVertically()));
+    menu.addAction(tr("Flip Horizontally"), this, SLOT(flipHorizontally()), QKeySequence(tr("X")));
+    menu.addAction(tr("Flip Vertically"), this, SLOT(flipVertically()), QKeySequence(tr("Y")));
 
-    menu.addSeparator();
-    QAction *raiseAction = menu.addAction(tr("Raise Object"));
-    QAction *lowerAction = menu.addAction(tr("Lower Object"));
-    QAction *raiseToTopAction = menu.addAction(tr("Raise Object to Top"));
-    QAction *lowerToBottomAction = menu.addAction(tr("Lower Object to Bottom"));
-    connect(raiseAction, SIGNAL(triggered()), SLOT(raise()));
-    connect(lowerAction, SIGNAL(triggered()), SLOT(lower()));
-    connect(raiseToTopAction, SIGNAL(triggered()), SLOT(raiseToTop()));
-    connect(lowerToBottomAction, SIGNAL(triggered()), SLOT(lowerToBottom()));
+    ObjectGroup *objectGroup = RaiseLowerHelper::sameObjectGroup(selection);
+    if (objectGroup && objectGroup->drawOrder() == ObjectGroup::IndexOrder) {
+        menu.addSeparator();
+        menu.addAction(tr("Raise Object"), this, SLOT(raise()), QKeySequence(tr("PgUp")));
+        menu.addAction(tr("Lower Object"), this, SLOT(lower()), QKeySequence(tr("PgDown")));
+        menu.addAction(tr("Raise Object to Top"), this, SLOT(raiseToTop()), QKeySequence(tr("Home")));
+        menu.addAction(tr("Lower Object to Bottom"), this, SLOT(lowerToBottom()), QKeySequence(tr("End")));
+    }
 
     if (objectGroups.size() > 1) {
         menu.addSeparator();

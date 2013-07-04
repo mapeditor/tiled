@@ -33,21 +33,6 @@
 namespace Tiled {
 namespace Internal {
 
-static ObjectGroup *sameObjectGroup(const QSet<MapObjectItem*> &selectedItems)
-{
-    if (selectedItems.isEmpty())
-        return 0;
-
-    // All selected objects need to be in the same group
-    ObjectGroup *group = (*selectedItems.begin())->mapObject()->objectGroup();
-
-    foreach (const MapObjectItem *item, selectedItems)
-        if (item->mapObject()->objectGroup() != group)
-            return 0;
-
-    return group;
-}
-
 void RaiseLowerHelper::raise()
 {
     if (!initContext())
@@ -117,6 +102,8 @@ void RaiseLowerHelper::raiseToTop()
     ObjectGroup *objectGroup = sameObjectGroup(selectedItems);
     if (!objectGroup)
         return;
+    if (objectGroup->drawOrder() != ObjectGroup::IndexOrder)
+        return;
 
     RangeSet<int> ranges;
     foreach (MapObjectItem *item, selectedItems)
@@ -158,6 +145,8 @@ void RaiseLowerHelper::lowerToBottom()
     ObjectGroup *objectGroup = sameObjectGroup(selectedItems);
     if (!objectGroup)
         return;
+    if (objectGroup->drawOrder() != ObjectGroup::IndexOrder)
+        return;
 
     RangeSet<int> ranges;
     foreach (MapObjectItem *item, selectedItems)
@@ -187,6 +176,21 @@ void RaiseLowerHelper::lowerToBottom()
          QCoreApplication::translate("Undo Commands", "Lower Object To Bottom"));
 }
 
+ObjectGroup *RaiseLowerHelper::sameObjectGroup(const QSet<MapObjectItem *> &items)
+{
+    if (items.isEmpty())
+        return 0;
+
+    // All selected objects need to be in the same group
+    ObjectGroup *group = (*items.begin())->mapObject()->objectGroup();
+
+    foreach (const MapObjectItem *item, items)
+        if (item->mapObject()->objectGroup() != group)
+            return 0;
+
+    return group;
+}
+
 /**
  * Initializes the context in which objects are being raised or lowered. Only
  * used for single-step raising and lowering, since the context is not relevant
@@ -206,6 +210,9 @@ bool RaiseLowerHelper::initContext()
 
     // All selected objects need to be in the same group
     mObjectGroup = (*selectedItems.begin())->mapObject()->objectGroup();
+    if (mObjectGroup->drawOrder() != ObjectGroup::IndexOrder)
+        return false;
+
     QPainterPath shape;
 
     foreach (const MapObjectItem *item, selectedItems) {

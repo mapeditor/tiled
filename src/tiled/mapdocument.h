@@ -410,7 +410,7 @@ inline void MapDocument::emitTileTerrainChanged(const QList<Tile *> &tiles)
 
 /**
  * Emits the objectGroupChanged signal, should be called when changing the
- * color of an object group.
+ * color or drawing order of an object group.
  */
 inline void MapDocument::emitObjectGroupChanged(ObjectGroup *objectGroup)
 {

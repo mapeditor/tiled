@@ -120,6 +120,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(layerRemoved(int)));
         connect(mMapDocument, SIGNAL(layerChanged(int)),
                 this, SLOT(layerChanged(int)));
+        connect(mMapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
+                this, SLOT(objectGroupChanged(ObjectGroup*)));
         connect(mMapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
                 this, SLOT(imageLayerChanged(ImageLayer*)));
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
@@ -203,12 +205,17 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
     if (TileLayer *tl = layer->asTileLayer()) {
         layerItem = new TileLayerItem(tl, mMapDocument->renderer());
     } else if (ObjectGroup *og = layer->asObjectGroup()) {
+        const ObjectGroup::DrawOrder drawOrder = og->drawOrder();
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
         int objectIndex = 0;
         foreach (MapObject *object, og->objects()) {
             MapObjectItem *item = new MapObjectItem(object, mMapDocument,
                                                     ogItem);
-            item->setZValue(objectIndex);
+            if (drawOrder == ObjectGroup::TopDownOrder)
+                item->setZValue(item->y());
+            else
+                item->setZValue(objectIndex);
+
             mObjectItems.insert(object, item);
             ++objectIndex;
         }
@@ -368,6 +375,16 @@ void MapScene::layerChanged(int index)
 }
 
 /**
+ * When an object group has changed it may mean its color or drawing order
+ * changed, which affects all its objects.
+ */
+void MapScene::objectGroupChanged(ObjectGroup *objectGroup)
+{
+    objectsChanged(objectGroup->objects());
+    objectsIndexChanged(objectGroup, 0, objectGroup->objectCount() - 1);
+}
+
+/**
  * When an image layer has changed, it may change size and it may look
  * differently.
  */
@@ -399,11 +416,16 @@ void MapScene::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 
     Q_ASSERT(ogItem);
 
+    const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
+
     for (int i = first; i <= last; ++i) {
         MapObject *object = objectGroup->objectAt(i);
 
         MapObjectItem *item = new MapObjectItem(object, mMapDocument, ogItem);
-        item->setZValue(i);
+        if (drawOrder == ObjectGroup::TopDownOrder)
+            item->setZValue(item->y());
+        else
+            item->setZValue(i);
 
         mObjectItems.insert(object, item);
     }
@@ -443,6 +465,9 @@ void MapScene::objectsChanged(const QList<MapObject*> &objects)
 void MapScene::objectsIndexChanged(ObjectGroup *objectGroup,
                                    int first, int last)
 {
+    if (objectGroup->drawOrder() != ObjectGroup::IndexOrder)
+        return;
+
     for (int i = first; i <= last; ++i) {
         MapObjectItem *item = itemForObject(objectGroup->objectAt(i));
         Q_ASSERT(item);

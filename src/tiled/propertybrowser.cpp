@@ -75,6 +75,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     mFlippingFlagNames.append(tr("Horizontal"));
     mFlippingFlagNames.append(tr("Vertical"));
 
+    mDrawOrderNames.append(tr("Top Down"));
+    mDrawOrderNames.append(tr("Manual"));
+
     connect(mVariantManager, SIGNAL(valueChanged(QtProperty*,QVariant)),
             SLOT(valueChanged(QtProperty*,QVariant)));
 }
@@ -360,7 +363,17 @@ void PropertyBrowser::addObjectGroupProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object Layer"));
     addLayerProperties(groupProperty);
+
     createProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
+
+    QtVariantProperty *drawOrderProperty =
+            createProperty(DrawOrderProperty,
+                           QtVariantPropertyManager::enumTypeId(),
+                           tr("Drawing Order"),
+                           groupProperty);
+
+    drawOrderProperty->setAttribute(QLatin1String("enumNames"), mDrawOrderNames);
+
     addProperty(groupProperty);
 }
 
@@ -521,17 +534,34 @@ void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
 {
     ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mObject);
+    QUndoCommand *command = 0;
 
-    if (id == ColorProperty) {
+    switch (id) {
+    case ColorProperty: {
         QColor color = val.value<QColor>();
         if (color == Qt::gray)
             color = QColor();
 
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new ChangeObjectGroupProperties(mMapDocument,
-                                                        objectGroup,
-                                                        color));
+        command = new ChangeObjectGroupProperties(mMapDocument,
+                                                  objectGroup,
+                                                  color,
+                                                  objectGroup->drawOrder());
+        break;
     }
+    case DrawOrderProperty: {
+        ObjectGroup::DrawOrder drawOrder = static_cast<ObjectGroup::DrawOrder>(val.toInt());
+        command = new ChangeObjectGroupProperties(mMapDocument,
+                                                  objectGroup,
+                                                  objectGroup->color(),
+                                                  drawOrder);
+        break;
+    }
+    default:
+        break;
+    }
+
+    if (command)
+        mMapDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
@@ -659,6 +689,7 @@ void PropertyBrowser::updateProperties()
             if (!color.isValid())
                 color = Qt::gray;
             mIdToProperty[ColorProperty]->setValue(color);
+            mIdToProperty[DrawOrderProperty]->setValue(objectGroup->drawOrder());
             break;
         }
         case Layer::ImageLayerType:

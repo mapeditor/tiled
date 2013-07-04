@@ -40,6 +40,10 @@ class MapScene;
 
 /**
  * Implements operations to raise or lower the set of selected objects.
+ *
+ * The operations don't do anything when there are multiple object groups
+ * active in the selection, or when the object group does not use index drawing
+ * order.
  */
 class RaiseLowerHelper
 {
@@ -54,6 +58,8 @@ public:
     void lower();
     void raiseToTop();
     void lowerToBottom();
+
+    static ObjectGroup *sameObjectGroup(const QSet<MapObjectItem*> &items);
 
 private:
     bool initContext();

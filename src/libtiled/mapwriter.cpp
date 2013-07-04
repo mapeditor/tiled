@@ -448,6 +448,9 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("color"),
                          objectGroup->color().name());
 
+    w.writeAttribute(QLatin1String("draworder"),
+                     drawOrderToString(objectGroup->drawOrder()));
+
     writeLayerAttributes(w, objectGroup);
     writeProperties(w, objectGroup->properties());
 
