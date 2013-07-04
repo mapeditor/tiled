@@ -223,6 +223,8 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
     if (objectGroup->color().isValid())
         objectGroupVariant["color"] = objectGroup->color().name();
 
+    objectGroupVariant["draworder"] = drawOrderToString(objectGroup->drawOrder());
+
     addLayerAttributes(objectGroupVariant, objectGroup);
     QVariantList objectVariants;
     foreach (const MapObject *object, objectGroup->objects()) {

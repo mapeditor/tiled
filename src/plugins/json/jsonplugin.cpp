@@ -51,6 +51,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
         int i = contents.indexOf(QLatin1String("\n{"));
         if (i > 0) {
             contents.remove(0, i);
+            contents = contents.trimmed(); // potential trailing whitespace
             if (contents.endsWith(';')) contents.chop(1);
             if (contents.endsWith(')')) contents.chop(1);
         }
