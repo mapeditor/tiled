@@ -31,6 +31,7 @@
 #include "raiselowerhelper.h"
 #include "utils.h"
 
+#include <QKeyEvent>
 #include <QMenu>
 #include <QUndoStack>
 
@@ -56,6 +57,18 @@ void AbstractObjectTool::activate(MapScene *scene)
 void AbstractObjectTool::deactivate(MapScene *)
 {
     mMapScene = 0;
+}
+
+void AbstractObjectTool::keyPressed(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_PageUp:    raise(); return;
+    case Qt::Key_PageDown:  lower(); return;
+    case Qt::Key_Home:      raiseToTop(); return;
+    case Qt::Key_End:       lowerToBottom(); return;
+    }
+
+    event->ignore();
 }
 
 void AbstractObjectTool::mouseLeft()

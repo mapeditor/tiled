@@ -70,10 +70,10 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
             QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
     mActionSelectPreviousLayer = new QAction(this);
-    mActionSelectPreviousLayer->setShortcut(tr("PgUp"));
+    mActionSelectPreviousLayer->setShortcut(tr("Ctrl+PgUp"));
 
     mActionSelectNextLayer = new QAction(this);
-    mActionSelectNextLayer->setShortcut(tr("PgDown"));
+    mActionSelectNextLayer->setShortcut(tr("Ctrl+PgDown"));
 
     mActionMoveLayerUp = new QAction(this);
     mActionMoveLayerUp->setShortcut(tr("Ctrl+Shift+Up"));

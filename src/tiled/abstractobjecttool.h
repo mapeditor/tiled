@@ -52,6 +52,7 @@ public:
     void activate(MapScene *scene);
     void deactivate(MapScene *scene);
 
+    void keyPressed(QKeyEvent *event);
     void mouseLeft();
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
