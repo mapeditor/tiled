@@ -10,3 +10,5 @@
 .gitattributes      export-ignore
 .mailmap            export-ignore
 .tx                 export-ignore
+.LICENSE-HEADER     export-ignore
+.travis.yml         export-ignore
