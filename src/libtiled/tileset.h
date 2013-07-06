@@ -270,19 +270,21 @@ public:
     Terrain *takeTerrainAt(int index);
 
     /**
-     * Returns the transition penalty(/distance) between 2 terrains. -1 if no transition is possible.
+     * Returns the transition penalty(/distance) between 2 terrains. -1 if no
+     * transition is possible.
      */
     int terrainTransitionPenalty(int terrainType0, int terrainType1);
 
     /**
      * Add a new tile to the end of the tileset
      */
-    void addTile(const QPixmap &image);
+    Tile *addTile(const QPixmap &image, const QString &source = QString());
 
     /**
-     * Set a tile's image
+     * Set the \a image to be used for the tile with the given \a id.
      */
-    void setTileImage(int index, const QPixmap &image);
+    void setTileImage(int id, const QPixmap &image,
+                      const QString &source = QString());
 
     /**
      * Used by the Tile class when its terrain information changes.
@@ -290,12 +292,6 @@ public:
     void markTerrainDistancesDirty() { mTerrainDistancesDirty = true; }
 
 private:
-    /**
-     * Detaches from the external image. Should be called everytime the tileset
-     * is changed.
-     */
-    void detachExternalImage();
-
     /**
      * Sets tile size to the maximum size.
      */

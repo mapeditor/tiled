@@ -314,22 +314,29 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                 writeProperties(w, properties);
             if (imageSource.isEmpty()) {
                 w.writeStartElement(QLatin1String("image"));
-                w.writeAttribute(QLatin1String("format"),
-                                 QLatin1String("png"));
 
-                w.writeStartElement(QLatin1String("data"));
-                w.writeAttribute(QLatin1String("encoding"),
-                                 QLatin1String("base64"));
+                if (tile->imageSource().isEmpty()) {
+                    w.writeAttribute(QLatin1String("format"),
+                                     QLatin1String("png"));
 
-                QBuffer buffer;
-                tile->image().save(&buffer, "png");
-                w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
+                    w.writeStartElement(QLatin1String("data"));
+                    w.writeAttribute(QLatin1String("encoding"),
+                                     QLatin1String("base64"));
 
-                w.writeEndElement();
+                    QBuffer buffer;
+                    tile->image().save(&buffer, "png");
+                    w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
+                    w.writeEndElement(); // </data>
+                } else {
+                    QString source = tile->imageSource();
+                    if (!mUseAbsolutePaths)
+                        source = mMapDir.relativeFilePath(source);
+                    w.writeAttribute(QLatin1String("source"), source);
+                }
 
-                w.writeEndElement();
+                w.writeEndElement(); // </image>
             }
-            w.writeEndElement();
+            w.writeEndElement(); // </tile>
         }
     }
 

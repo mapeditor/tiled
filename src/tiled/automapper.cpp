@@ -404,6 +404,7 @@ bool AutoMapper::setupCorrectIndexes()
 bool AutoMapper::setupTilesets(Map *src, Map *dst)
 {
     QList<Tileset*> existingTilesets = dst->tilesets();
+    TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of dst map
     foreach (Tileset *tileset, src->tilesets()) {
@@ -434,7 +435,6 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
         }
         src->replaceTileset(tileset, replacement);
 
-        TilesetManager *tilesetManager = TilesetManager::instance();
         tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
     }

@@ -341,12 +341,24 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     if (id < 0) {
         xml.raiseError(tr("Invalid tile ID: %1").arg(id));
         return;
-    } else if (id == tileset->tileCount()) {
-        tileset->addTile(QPixmap());
-    } else if (id > tileset->tileCount()) {
+    }
+
+    const bool hasImage = !tileset->imageSource().isEmpty();
+    if (hasImage && id >= tileset->tileCount()) {
+        xml.raiseError(tr("Tile ID does not exist in tileset image: %1").arg(id));
+        return;
+    }
+
+    if (id > tileset->tileCount()) {
         xml.raiseError(tr("Invalid (nonconsecutive) tile ID: %1").arg(id));
         return;
     }
+
+    // For tilesets without image source, consecutive tile IDs are allowed (for
+    // tiles with individual images)
+    if (id == tileset->tileCount())
+        tileset->addTile(QPixmap());
+
     Tile *tile = tileset->tileAt(id);
 
     // Read tile quadrant terrain ids
@@ -362,16 +374,18 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     }
 
     // Read tile probability
-    QString probability = atts.value(QLatin1String("probability")).toString();
-    if (!probability.isEmpty()) {
-        tile->setTerrainProbability(probability.toFloat());
-    }
+    QStringRef probability = atts.value(QLatin1String("probability"));
+    if (!probability.isEmpty())
+        tile->setTerrainProbability(probability.toString().toFloat());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());
         } else if (xml.name() == QLatin1String("image")) {
-            tileset->setTileImage(id, QPixmap::fromImage(readImage()));
+            QString source = xml.attributes().value(QLatin1String("source")).toString();
+            if (!source.isEmpty())
+                source = p->resolveReference(source, mPath);
+            tileset->setTileImage(id, QPixmap::fromImage(readImage()), source);
         } else {
             readUnknownElement();
         }
@@ -392,7 +406,8 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
         tileset->setTransparentColor(QColor(trans));
     }
 
-    source = p->resolveReference(source, mPath);
+    if (!source.isEmpty())
+        source = p->resolveReference(source, mPath);
 
     // Set the width that the tileset had when the map was saved
     const int width = atts.value(QLatin1String("width")).toString().toInt();
