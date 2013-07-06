@@ -128,19 +128,21 @@ void NewTilesetDialog::tryAccept()
     if (useTransparentColor)
         tileset->setTransparentColor(transparentColor);
 
-    if (!tileset->loadFromImage(QImage(image), image)) {
-        QMessageBox::critical(this, tr("Error"),
-                              tr("Failed to load tileset image '%1'.")
-                              .arg(image));
-        return;
-    }
+    if (!image.isEmpty()) {
+        if (!tileset->loadFromImage(QImage(image), image)) {
+            QMessageBox::critical(this, tr("Error"),
+                                  tr("Failed to load tileset image '%1'.")
+                                  .arg(image));
+            return;
+        }
 
-    if (tileset->tileCount() == 0) {
-        QMessageBox::critical(this, tr("Error"),
-                              tr("No tiles found in the tileset image when "
-                                 "using the given tile size, margin and "
-                                 "spacing!"));
-        return;
+        if (tileset->tileCount() == 0) {
+            QMessageBox::critical(this, tr("Error"),
+                                  tr("No tiles found in the tileset image when "
+                                     "using the given tile size, margin and "
+                                     "spacing!"));
+            return;
+        }
     }
 
     // Store settings for next time
@@ -177,6 +179,5 @@ void NewTilesetDialog::nameEdited(const QString &name)
 void NewTilesetDialog::updateOkButton()
 {
     QPushButton *okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
-    okButton->setEnabled(!mUi->name->text().isEmpty()
-                         && !mUi->image->text().isEmpty());
+    okButton->setEnabled(!mUi->name->text().isEmpty());
 }

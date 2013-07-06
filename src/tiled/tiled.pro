@@ -45,6 +45,7 @@ SOURCES += aboutdialog.cpp \
     addremovelayer.cpp \
     addremovemapobject.cpp \
     addremoveterrain.cpp \
+    addremovetiles.cpp \
     addremovetileset.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
@@ -158,6 +159,7 @@ HEADERS += aboutdialog.h \
     addremovelayer.h \
     addremovemapobject.h \
     addremoveterrain.h \
+    addremovetiles.h \
     addremovetileset.h \
     automapper.h \
     automapperwrapper.h \

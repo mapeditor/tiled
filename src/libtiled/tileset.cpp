@@ -281,6 +281,33 @@ Tile *Tileset::addTile(const QPixmap &image, const QString &source)
     return newTile;
 }
 
+void Tileset::insertTiles(int index, const QList<Tile *> &tiles)
+{
+    const int count = tiles.count();
+    for (int i = 0; i < count; ++i)
+        mTiles.insert(index + i, tiles.at(i));
+
+    // Adjust the tile IDs of the remaining tiles
+    for (int i = index + count; i < mTiles.size(); ++i)
+        mTiles.at(i)->mId += count;
+
+    updateTileSize();
+}
+
+void Tileset::removeTiles(int index, int count)
+{
+    const QList<Tile*>::iterator first = mTiles.begin() + index;
+
+    QList<Tile*>::iterator last = first + count;
+    last = mTiles.erase(first, last);
+
+    // Adjust the tile IDs of the remaining tiles
+    for (; last != mTiles.end(); ++last)
+        (*last)->mId -= count;
+
+    updateTileSize();
+}
+
 void Tileset::setTileImage(int id, const QPixmap &image,
                            const QString &source)
 {
@@ -319,10 +346,11 @@ void Tileset::updateTileSize()
     int maxWidth = 0;
     int maxHeight = 0;
     foreach (Tile *tile, mTiles) {
-        if (maxWidth < tile->width())
-            maxWidth = tile->width();
-        if (maxHeight < tile->height())
-            maxHeight = tile->height();
+        const QSize size = tile->size();
+        if (maxWidth < size.width())
+            maxWidth = size.width();
+        if (maxHeight < size.height())
+            maxHeight = size.height();
     }
     mTileWidth = maxWidth;
     mTileHeight = maxHeight;

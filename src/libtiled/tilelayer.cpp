@@ -275,31 +275,6 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
     return false;
 }
 
-namespace {
-
-class ReferencesTileset
-{
-public:
-    explicit ReferencesTileset(Tileset *tileset) : mTileset(tileset) {}
-
-    bool operator() (const Cell &cell) const
-    {
-        if (const Tile *tile = cell.tile)
-            return tile->tileset() == mTileset;
-        return false;
-    }
-
-private:
-    Tileset *mTileset;
-};
-
-} // anonymous namespace
-
-QRegion TileLayer::tilesetReferences(Tileset *tileset) const
-{
-    return region(ReferencesTileset(tileset));
-}
-
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {

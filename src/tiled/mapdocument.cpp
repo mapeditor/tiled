@@ -569,6 +569,18 @@ void MapDocument::unifyTilesets(Map *map)
 }
 
 /**
+ * Emits the tileset changed signal. This signal is currently used when adding
+ * or removing tiles from a tileset.
+ *
+ * @todo Emit more specific signals.
+ */
+void MapDocument::emitTilesetChanged(Tileset *tileset)
+{
+    Q_ASSERT(mMap->tilesets().contains(tileset));
+    emit tilesetChanged(tileset);
+}
+
+/**
  * Before forwarding the signal, the objects are removed from the list of
  * selected objects, triggering a selectedObjectsChanged signal when
  * appropriate.

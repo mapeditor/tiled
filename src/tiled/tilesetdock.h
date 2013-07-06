@@ -100,6 +100,7 @@ protected:
     void dropEvent(QDropEvent *);
 
 private slots:
+    void selectionChanged();
     void updateActions();
     void updateCurrentTiles();
     void updateCurrentTile();
@@ -120,6 +121,8 @@ private slots:
     void exportTileset();
 
     void editTerrain();
+    void addTiles();
+    void removeTiles();
 
     void documentCloseRequested(int index);
 
@@ -148,6 +151,8 @@ private:
     QAction *mPropertiesTileset;
     QAction *mDeleteTileset;
     QAction *mEditTerrain;
+    QAction *mAddTiles;
+    QAction *mRemoveTiles;
 
     QMap<MapDocument *, QString> mCurrentTilesets;
 
