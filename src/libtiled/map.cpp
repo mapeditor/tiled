@@ -76,6 +76,21 @@ void Map::adjustDrawMargins(const QMargins &margins)
                               mDrawMargins);
 }
 
+/**
+ * Recomputes the draw margins for this map and each of its tile layers. Needed
+ * after the tile offset of a tileset has changed for example.
+ *
+ * \sa TileLayer::recomputeDrawMargins
+ */
+void Map::recomputeDrawMargins()
+{
+    mDrawMargins = QMargins();
+
+    foreach (Layer *layer, mLayers)
+        if (TileLayer *tileLayer = layer->asTileLayer())
+            tileLayer->recomputeDrawMargins();
+}
+
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;

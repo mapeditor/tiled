@@ -78,6 +78,7 @@ private slots:
     void layerChanged(int index);
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
+    void tilesetChanged(Tileset *tileset);
     void terrainChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);
@@ -101,6 +102,7 @@ private:
         ImageSourceProperty,
         FlippingProperty,
         DrawOrderProperty,
+        TileOffsetProperty,
         CustomProperty
     };
 

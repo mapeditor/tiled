@@ -32,6 +32,7 @@
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "preferences.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
@@ -126,6 +127,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(imageLayerChanged(ImageLayer*)));
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(currentLayerIndexChanged()));
+        connect(mMapDocument, SIGNAL(tilesetTileOffsetChanged(Tileset*)),
+                this, SLOT(tilesetTileOffsetChanged(Tileset*)));
         connect(mMapDocument, SIGNAL(objectsInserted(ObjectGroup*,int,int)),
                 this, SLOT(objectsInserted(ObjectGroup*,int,int)));
         connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
@@ -395,6 +398,25 @@ void MapScene::imageLayerChanged(ImageLayer *imageLayer)
 
     item->syncWithImageLayer();
     item->update();
+}
+
+/**
+ * When the tile offset of a tileset has changed, it can affect the bounding
+ * rect of all tile layers and tile objects. It also requires a full repaint.
+ */
+void MapScene::tilesetTileOffsetChanged(Tileset *tileset)
+{
+    update();
+
+    foreach (QGraphicsItem *item, mLayerItems)
+        if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
+            tli->syncWithTileLayer();
+
+    foreach (MapObjectItem *item, mObjectItems) {
+        const Cell &cell = item->mapObject()->cell();
+        if (!cell.isEmpty() && cell.tile->tileset() == tileset)
+            item->syncWithMapObject();
+    }
 }
 
 /**

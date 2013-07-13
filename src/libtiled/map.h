@@ -165,6 +165,8 @@ public:
      */
     QMargins drawMargins() const { return mDrawMargins; }
 
+    void recomputeDrawMargins();
+
     /**
      * Returns the number of layers of this map.
      */

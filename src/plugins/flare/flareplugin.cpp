@@ -283,10 +283,10 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
         const QString &imageSource = ts->imageSource();
         QString source = mapDir.relativeFilePath(imageSource);
         out << "tileset=" << source
-            << "," <<ts->tileWidth()
-            << "," <<ts->tileHeight()
-            << "," <<ts->tileOffset().x()
-            << "," <<ts->tileOffset().y()
+            << "," << ts->tileWidth()
+            << "," << ts->tileHeight()
+            << "," << ts->tileOffset().x()
+            << "," << ts->tileOffset().y()
             << "\n";
     }
     out << "\n";

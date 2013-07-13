@@ -1,5 +1,5 @@
 /*
- * renametileset.cpp
+ * tilesetchanges.cpp
  * Copyright 2011, Maus <Zeitmaus@github>
  * Copyright 2011-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
@@ -19,7 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "renametileset.h"
+#include "tilesetchanges.h"
 
 #include "mapdocument.h"
 #include "tileset.h"
@@ -48,6 +48,38 @@ void RenameTileset::undo()
 void RenameTileset::redo()
 {
     mMapDocument->setTilesetName(mTileset, mNewName);
+}
+
+
+ChangeTilesetTileOffset::ChangeTilesetTileOffset(MapDocument *mapDocument,
+                                                 Tileset *tileset,
+                                                 QPoint tileOffset)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Drawing Offset"))
+    , mMapDocument(mapDocument)
+    , mTileset(tileset)
+    , mOldTileOffset(tileset->tileOffset())
+    , mNewTileOffset(tileOffset)
+{}
+
+void ChangeTilesetTileOffset::undo()
+{
+    mMapDocument->setTilesetTileOffset(mTileset, mOldTileOffset);
+}
+
+void ChangeTilesetTileOffset::redo()
+{
+    mMapDocument->setTilesetTileOffset(mTileset, mNewTileOffset);
+}
+
+bool ChangeTilesetTileOffset::mergeWith(const QUndoCommand *other)
+{
+    const ChangeTilesetTileOffset *o = static_cast<const ChangeTilesetTileOffset*>(other);
+    if (!(mMapDocument == o->mMapDocument && mTileset == o->mTileset))
+        return false;
+
+    mNewTileOffset = o->mNewTileOffset;
+    return true;
 }
 
 } // namespace Internal

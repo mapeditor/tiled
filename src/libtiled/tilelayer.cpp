@@ -60,6 +60,43 @@ static QMargins maxMargins(const QMargins &a,
                     qMax(a.bottom(), b.bottom()));
 }
 
+/**
+ * Recomputes the draw margins. Needed after the tile offset of a tileset
+ * has changed for example.
+ *
+ * Generally you want to call Map::recomputeDrawMargins instead.
+ */
+void TileLayer::recomputeDrawMargins()
+{
+    QSize maxTileSize(0, 0);
+    QMargins offsetMargins;
+
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        const Cell &cell = mGrid.at(i);
+        if (const Tile *tile = cell.tile) {
+            QSize size = tile->size();
+
+            if (cell.flippedAntiDiagonally)
+                size.transpose();
+
+            const QPoint offset = tile->tileset()->tileOffset();
+
+            maxTileSize = maxSize(size, maxTileSize);
+            offsetMargins = maxMargins(QMargins(-offset.x(),
+                                                 -offset.y(),
+                                                 offset.x(),
+                                                 offset.y()),
+                                        offsetMargins);
+        }
+    }
+
+    mMaxTileSize = maxTileSize;
+    mOffsetMargins = offsetMargins;
+
+    if (mMap)
+        mMap->adjustDrawMargins(drawMargins());
+}
+
 void TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));

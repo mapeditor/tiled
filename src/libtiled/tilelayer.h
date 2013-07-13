@@ -121,6 +121,7 @@ public:
                         mOffsetMargins.bottom());
     }
 
+    void recomputeDrawMargins();
 
     /**
      * Returns whether (x, y) is inside this map layer.

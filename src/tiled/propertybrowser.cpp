@@ -37,11 +37,11 @@
 #include "resizemapobject.h"
 #include "renamelayer.h"
 #include "renameterrain.h"
-#include "renametileset.h"
 #include "rotatemapobject.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "tilelayer.h"
+#include "tilesetchanges.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
@@ -152,6 +152,11 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
                 SLOT(imageLayerChanged(ImageLayer*)));
 
+        connect(mapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
+                SLOT(tilesetChanged(Tileset*)));
+        connect(mapDocument, SIGNAL(tilesetTileOffsetChanged(Tileset*)),
+                SLOT(tilesetChanged(Tileset*)));
+
         TerrainModel *terrainModel = mapDocument->terrainModel();
         connect(terrainModel, SIGNAL(terrainChanged(Tileset*,int)),
                 SLOT(terrainChanged(Tileset*,int)));
@@ -212,6 +217,12 @@ void PropertyBrowser::objectGroupChanged(ObjectGroup *objectGroup)
 void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)
 {
     if (mObject == imageLayer)
+        updateProperties();
+}
+
+void PropertyBrowser::tilesetChanged(Tileset *tileset)
+{
+    if (mObject == tileset)
         updateProperties();
 }
 
@@ -397,6 +408,7 @@ void PropertyBrowser::addTilesetProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
+    createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -599,12 +611,21 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QVariant &val)
 {
     Tileset *tileset = static_cast<Tileset*>(mObject);
+    QUndoStack *undoStack = mMapDocument->undoStack();
 
-    if (id == NameProperty) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
+    switch (id) {
+    case NameProperty:
         undoStack->push(new RenameTileset(mMapDocument,
                                           tileset,
                                           val.toString()));
+        break;
+    case TileOffsetProperty:
+        undoStack->push(new ChangeTilesetTileOffset(mMapDocument,
+                                                    tileset,
+                                                    val.toPoint()));
+        break;
+    default:
+        break;
     }
 }
 
@@ -703,6 +724,7 @@ void PropertyBrowser::updateProperties()
     case Object::TilesetType: {
         const Tileset *tileset = static_cast<const Tileset*>(mObject);
         mIdToProperty[NameProperty]->setValue(tileset->name());
+        mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         break;
     }
     case Object::TileType:

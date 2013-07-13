@@ -69,6 +69,7 @@ SOURCES += aboutdialog.cpp \
     commanddatamodel.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
+    consoledock.cpp \
     createobjecttool.cpp \
     documentmanager.cpp \
     editpolygontool.cpp \
@@ -118,7 +119,6 @@ SOURCES += aboutdialog.cpp \
     raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
-    renametileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
     resizelayer.cpp \
@@ -137,6 +137,7 @@ SOURCES += aboutdialog.cpp \
     tilepainter.cpp \
     tileselectionitem.cpp \
     tileselectiontool.cpp \
+    tilesetchanges.cpp \
     tilesetdock.cpp \
     tilesetmanager.cpp \
     tilesetmodel.cpp \
@@ -148,8 +149,7 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp \
-    consoledock.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
     abstractobjecttool.h \
@@ -182,6 +182,7 @@ HEADERS += aboutdialog.h \
     commanddialog.h \
     command.h \
     commandlineparser.h \
+    consoledock.h \
     createobjecttool.h \
     documentmanager.h \
     editpolygontool.h \
@@ -232,7 +233,6 @@ HEADERS += aboutdialog.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \
-    renametileset.h \
     resizedialog.h \
     resizehelper.h \
     resizelayer.h \
@@ -251,6 +251,7 @@ HEADERS += aboutdialog.h \
     tilepainter.h \
     tileselectionitem.h \
     tileselectiontool.h \
+    tilesetchanges.h \
     tilesetdock.h \
     tilesetmanager.h \
     tilesetmodel.h \
@@ -263,8 +264,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    consoledock.h
+    zoomable.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

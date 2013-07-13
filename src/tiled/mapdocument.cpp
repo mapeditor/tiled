@@ -690,6 +690,14 @@ void MapDocument::setTilesetName(Tileset *tileset, const QString &name)
     emit tilesetNameChanged(tileset);
 }
 
+void MapDocument::setTilesetTileOffset(Tileset *tileset,
+                                       const QPoint &tileOffset)
+{
+    tileset->setTileOffset(tileOffset);
+    mMap->recomputeDrawMargins();
+    emit tilesetTileOffsetChanged(tileset);
+}
+
 void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
 {
     if (objects.isEmpty())

@@ -1,5 +1,5 @@
 /*
- * renametileset.h
+ * tilesetchanges.h
  * Copyright 2011, Maus <Zeitmaus@github>
  * Copyright 2011-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
@@ -19,9 +19,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RENAMETILESET_H
-#define RENAMETILESET_H
+#ifndef TILESETCHANGES_H
+#define TILESETCHANGES_H
 
+#include "undocommands.h"
+
+#include <QPoint>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -49,7 +52,27 @@ private:
     QString mNewName;
 };
 
+class ChangeTilesetTileOffset : public QUndoCommand
+{
+public:
+    ChangeTilesetTileOffset(MapDocument *mapDocument,
+                            Tileset *tileset,
+                            QPoint tileOffset);
+
+    void undo();
+    void redo();
+
+    int id() const { return Cmd_ChangeTilesetTileOffset; }
+    bool mergeWith(const QUndoCommand *other);
+
+private:
+    MapDocument *mMapDocument;
+    Tileset *mTileset;
+    QPoint mOldTileOffset;
+    QPoint mNewTileOffset;
+};
+
 } // namespace Internal
 } // namespace Tiled
 
-#endif // RENAMETILESET_H
+#endif // TILESETCHANGES_H
