@@ -1,7 +1,7 @@
 /*
  * tileset.cpp
  * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyrigth 2009, Edward Hutchins <eah1@yahoo.com>
+ * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of libtiled.
  *
