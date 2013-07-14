@@ -233,6 +233,7 @@ ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
     foreach (const MapObject *object, mObjects)
         clone->addObject(object->clone());
     clone->setColor(mColor);
+    clone->setDrawOrder(mDrawOrder);
     return clone;
 }
 
