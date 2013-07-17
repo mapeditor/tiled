@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     a.setApplicationVersion(QLatin1String("0.9.0"));
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 

@@ -81,7 +81,7 @@
 #include "minimapdock.h"
 #include "consoledock.h"
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #include "macsupport.h"
 #endif
 
@@ -128,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
 #endif
 
