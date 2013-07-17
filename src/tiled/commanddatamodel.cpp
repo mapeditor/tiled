@@ -53,7 +53,7 @@ CommandDataModel::CommandDataModel()
         Command command(false);
 #ifdef Q_WS_X11
         command.command = QLatin1String("gedit %mapfile");
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
         command.command = QLatin1String("open -t %mapfile");
 #endif
         if (!command.command.isEmpty()) {
@@ -308,7 +308,7 @@ QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
             connect(mapper, SIGNAL(mapped(int)), SLOT(execute(int)));
         }
 
-#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+#if defined(Q_WS_X11) || defined(Q_OS_MAC)
         {
             QAction *action = menu->addAction(tr("Execute in Terminal"));
             QSignalMapper *mapper = new QSignalMapper(action);

@@ -90,7 +90,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
     : QProcess(DocumentManager::instance())
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     , mFile(QLatin1String("tiledXXXXXX.command"))
 #endif
 {
@@ -110,7 +110,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
             mFinalCommand = QLatin1String("gnome-terminal -x ") + mFinalCommand;
         else
             mFinalCommand = QLatin1String("xterm -e ") + mFinalCommand;
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
         // The only way I know to launch a Terminal with a command on mac is
         // to make a .command file and open it. The client command invoke the
         // exectuable directly (rather than using open) in order to get std
