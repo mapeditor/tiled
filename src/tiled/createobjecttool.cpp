@@ -311,8 +311,12 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     MapObject *newMapObject = new MapObject;
     newMapObject->setPosition(pos);
 
-    if (mMode == CreateTile)
+    if (mMode == CreateTile) {
         newMapObject->setCell(Cell(mTile));
+	if (newMapObject->cell().isEmpty() == false) {
+	    newMapObject->setSize(newMapObject->cell().tile->size());
+	}
+    }
 
     if (mMode == CreatePolygon || mMode == CreatePolyline) {
         MapObject::Shape shape = mMode == CreatePolygon ? MapObject::Polygon
