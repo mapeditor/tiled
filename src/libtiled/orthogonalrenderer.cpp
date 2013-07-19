@@ -64,14 +64,21 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
     QRectF boundingRect;
 
     if (!object->cell().isEmpty()) {
-        const QPointF bottomLeft = rect.topLeft();
+	const QPointF bottomLeft = rect.topLeft();
         const Tile *tile = object->cell().tile;
         const QSize imgSize = tile->image().size();
         const QPoint tileOffset = tile->tileset()->tileOffset();
-        boundingRect = QRectF(bottomLeft.x() + tileOffset.x(),
-                              bottomLeft.y() + tileOffset.y() - imgSize.height(),
-                              imgSize.width(),
-                              imgSize.height()).adjusted(-1, -1, 1, 1);
+	QSizeF objectSize = object->size();
+	if (objectSize.width() == 0)
+	    objectSize.setWidth(imgSize.width());
+	if (objectSize.height() == 0)
+	    objectSize.setHeight(imgSize.height());
+	const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
+	
+        boundingRect = QRectF(bottomLeft.x() + (tileOffset.x() * scale.width()),
+			      bottomLeft.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
+			      objectSize.width(),
+			      objectSize.height()).adjusted(-1, -1, 1, 1);
     } else {
         // The -2 and +3 are to account for the pen width and shadow
         switch (object->shape()) {
@@ -235,6 +242,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
+			    QSizeF(0, 0),
                             CellRenderer::BottomLeft);
         }
     }
@@ -272,7 +280,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     if (!object->cell().isEmpty()) {
         const Cell &cell = object->cell();
 
-        CellRenderer(painter).render(cell, QPointF(),
+        CellRenderer(painter).render(cell, QPointF(), object->size(),
                                      CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
