@@ -794,27 +794,26 @@ void ObjectSelectionTool::updateScalingItems(const QPointF &pos,
     // Calculate the scaling factor.
     const QPointF startDiff = mStart - mRotationOrigin;
     
-    const QSizeF scalingFactor(diff.x() / startDiff.x(),
-                               diff.y() / startDiff.y());
+    const QSizeF scalingFactor(qMax((qreal)0, diff.x() / startDiff.x()),
+                               qMax((qreal)0, diff.y() / startDiff.y()));
     
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
-        if (objectItem->mapObject()->polygon().isEmpty() == false)
-            continue;
+        if (objectItem->mapObject()->polygon().isEmpty() == true) {
+            const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mRotationOrigin;
+            const QPointF scaledRelPos(oldRelPos.x() * scalingFactor.width(),
+                                       oldRelPos.y() * scalingFactor.height());
+            const QPointF newPixelPos = mRotationOrigin + scaledRelPos;
+            const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
+            const QSizeF origSize = mOldObjectSizes.at(i);
+            const QSizeF newSize(origSize.width() * scalingFactor.width(),
+                                 origSize.height() * scalingFactor.height());
         
-        const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mRotationOrigin;
-        const QPointF scaledRelPos(oldRelPos.x() * scalingFactor.width(),
-                                   oldRelPos.y() * scalingFactor.height());
-        const QPointF newPixelPos = mRotationOrigin + scaledRelPos;
-        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
-        const QSizeF origSize = mOldObjectSizes.at(i);
-        const QSizeF newSize(origSize.width() * scalingFactor.width(),
-                             origSize.height() * scalingFactor.height());
+            objectItem->resizeObject(newSize);
+            objectItem->setPos(newPixelPos);
+            objectItem->mapObject()->setPosition(newPos);
+        }
         
-        objectItem->resizeObject(newSize);
-        objectItem->setPos(newPixelPos);
-        objectItem->mapObject()->setPosition(newPos);
-
         ++i;
     }
 }
