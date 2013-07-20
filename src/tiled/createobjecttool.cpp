@@ -313,9 +313,9 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     if (mMode == CreateTile) {
         newMapObject->setCell(Cell(mTile));
-	if (newMapObject->cell().isEmpty() == false) {
-	    newMapObject->setSize(newMapObject->cell().tile->size());
-	}
+        if (newMapObject->cell().isEmpty() == false) {
+            newMapObject->setSize(newMapObject->cell().tile->size());
+        }
     }
 
     if (mMode == CreatePolygon || mMode == CreatePolyline) {
