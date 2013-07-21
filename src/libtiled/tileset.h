@@ -49,8 +49,10 @@ class Terrain;
 /**
  * A tileset, representing a set of tiles.
  *
- * This class currently only supports loading tiles from a tileset image, using
- * loadFromImage(). There is no way to add or remove arbitrary tiles.
+ * This class is meant to be used by either loading tiles from a tileset image
+ * (using loadFromImage) or by adding/removing individual tiles (using
+ * addTile, insertTiles and removeTiles). These two use-cases are not meant to
+ * be mixed.
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
