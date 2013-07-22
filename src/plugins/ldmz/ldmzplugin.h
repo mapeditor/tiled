@@ -80,12 +80,16 @@ typedef struct {
 
 namespace LDMZ {
 
-class CTMBSHARED_EXPORT LDMZPlugin
+class LDMZSHARED_EXPORT LDMZPlugin
         : public QObject
         , public Tiled::MapWriterInterface
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapWriterInterface)
+
+    #if QT_VERSION >= 0x050000
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.ldmz")
+    #endif
 
 public:
     LDMZPlugin();

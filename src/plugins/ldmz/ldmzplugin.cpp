@@ -401,4 +401,6 @@ bool LDMZPlugin::write(const Tiled::Map *map, const QString &fileName) {
         return false;
 }
 
+#if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(LDMZ, LDMZPlugin)
+#endif

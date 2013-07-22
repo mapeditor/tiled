@@ -23,10 +23,10 @@
 
 #include <QtCore/qglobal.h>
 
-#if defined(CTMB_LIBRARY)
-#  define CTMBSHARED_EXPORT Q_DECL_EXPORT
+#if defined(LDMZ_LIBRARY)
+#  define LDMZSHARED_EXPORT Q_DECL_EXPORT
 #else
-#  define CTMBSHARED_EXPORT Q_DECL_IMPORT
+#  define LDMZSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
 #endif // LDMZ_GLOBAL_H
