@@ -1,5 +1,6 @@
 include(../../tiled.pri)
 include(../libtiled/libtiled.pri)
+include(../qtpropertybrowser/src/qtpropertybrowser.pri)
 
 TEMPLATE = app
 TARGET = tiled
@@ -25,7 +26,7 @@ macx {
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
-    QMAKE_LIBDIR += $$OUT_PWD/../../lib
+    QMAKE_LIBDIR = $$OUT_PWD/../../lib $$QMAKE_LIBDIR
 }
 
 # Make sure the Tiled executable can find libtiled
@@ -44,6 +45,7 @@ SOURCES += aboutdialog.cpp \
     addremovelayer.cpp \
     addremovemapobject.cpp \
     addremoveterrain.cpp \
+    addremovetiles.cpp \
     addremovetileset.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
@@ -51,9 +53,11 @@ SOURCES += aboutdialog.cpp \
     automappingutils.cpp  \
     brushitem.cpp \
     bucketfilltool.cpp \
-    changemapobject.cpp \
-    changemapproperties.cpp \
     changeimagelayerproperties.cpp \
+    changelayer.cpp \
+    changemapobject.cpp \
+    changemapobjectsorder.cpp \
+    changemapproperties.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
@@ -66,17 +70,19 @@ SOURCES += aboutdialog.cpp \
     commanddatamodel.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
+    consoledock.cpp \
     createobjecttool.cpp \
     documentmanager.cpp \
     editpolygontool.cpp \
     editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
+    fileedit.cpp \
     filesystemwatcher.cpp \
     filltiles.cpp \
+    flipmapobjects.cpp \
     geometry.cpp \
     imagelayeritem.cpp \
-    imagelayerpropertiesdialog.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -86,7 +92,6 @@ SOURCES += aboutdialog.cpp \
     mapdocument.cpp \
     mapobjectitem.cpp \
     mapobjectmodel.cpp \
-    mappropertiesdialog.cpp \
     mapscene.cpp \
     mapsdock.cpp \
     mapview.cpp \
@@ -99,8 +104,6 @@ SOURCES += aboutdialog.cpp \
     newmapdialog.cpp \
     newtilesetdialog.cpp \
     objectgroupitem.cpp \
-    objectgrouppropertiesdialog.cpp \
-    objectpropertiesdialog.cpp \
     objectsdock.cpp \
     objectselectiontool.cpp \
     objecttypes.cpp \
@@ -111,16 +114,18 @@ SOURCES += aboutdialog.cpp \
     pluginmanager.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
-    propertiesdialog.cpp \
-    propertiesmodel.cpp \
-    propertiesview.cpp \
+    propertiesdock.cpp \
+    propertybrowser.cpp \
     quickstampmanager.cpp \
+    raiselowerhelper.cpp \
     renamelayer.cpp \
+    renameterrain.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
     resizelayer.cpp \
     resizemap.cpp \
     resizemapobject.cpp \
+    rotatemapobject.cpp \
     saveasimagedialog.cpp \
     selectionrectangle.cpp \
     stampbrush.cpp \
@@ -133,6 +138,7 @@ SOURCES += aboutdialog.cpp \
     tilepainter.cpp \
     tileselectionitem.cpp \
     tileselectiontool.cpp \
+    tilesetchanges.cpp \
     tilesetdock.cpp \
     tilesetmanager.cpp \
     tilesetmodel.cpp \
@@ -142,6 +148,8 @@ SOURCES += aboutdialog.cpp \
     toolmanager.cpp \
     undodock.cpp \
     utils.cpp \
+    varianteditorfactory.cpp \
+    variantpropertymanager.cpp \
     zoomable.cpp
 
 HEADERS += aboutdialog.h \
@@ -151,6 +159,7 @@ HEADERS += aboutdialog.h \
     addremovelayer.h \
     addremovemapobject.h \
     addremoveterrain.h \
+    addremovetiles.h \
     addremovetileset.h \
     automapper.h \
     automapperwrapper.h \
@@ -158,9 +167,11 @@ HEADERS += aboutdialog.h \
     automappingutils.h \
     brushitem.h \
     bucketfilltool.h \
-    changemapobject.h \
-    changemapproperties.h \
     changeimagelayerproperties.h\
+    changelayer.h \
+    changemapobject.h \
+    changemapobjectsorder.h \
+    changemapproperties.h \
     changeobjectgroupproperties.h \
     changepolygon.h \
     changeproperties.h \
@@ -173,17 +184,19 @@ HEADERS += aboutdialog.h \
     commanddialog.h \
     command.h \
     commandlineparser.h \
+    consoledock.h \
     createobjecttool.h \
     documentmanager.h \
     editpolygontool.h \
     editterraindialog.h \
     eraser.h \
     erasetiles.h \
+    fileedit.h \
     filesystemwatcher.h \
     filltiles.h \
+    flipmapobjects.h \
     geometry.h \
     imagelayeritem.h \
-    imagelayerpropertiesdialog.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
@@ -193,7 +206,6 @@ HEADERS += aboutdialog.h \
     mapdocument.h \
     mapobjectitem.h \
     mapobjectmodel.h \
-    mappropertiesdialog.h \
     mapscene.h \
     mapsdock.h \
     mapview.h \
@@ -206,8 +218,6 @@ HEADERS += aboutdialog.h \
     newmapdialog.h \
     newtilesetdialog.h \
     objectgroupitem.h \
-    objectgrouppropertiesdialog.h \
-    objectpropertiesdialog.h \
     objectsdock.h \
     objectselectiontool.h \
     objecttypes.h \
@@ -218,17 +228,19 @@ HEADERS += aboutdialog.h \
     pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
-    propertiesdialog.h \
-    propertiesmodel.h \
-    propertiesview.h \
+    propertiesdock.h \
+    propertybrowser.h \
     quickstampmanager.h \
+    raiselowerhelper.h \
     rangeset.h \
     renamelayer.h \
+    renameterrain.h \
     resizedialog.h \
     resizehelper.h \
     resizelayer.h \
     resizemap.h \
     resizemapobject.h \
+    rotatemapobject.h \
     saveasimagedialog.h \
     selectionrectangle.h \
     stampbrush.h \
@@ -241,6 +253,7 @@ HEADERS += aboutdialog.h \
     tilepainter.h \
     tileselectionitem.h \
     tileselectiontool.h \
+    tilesetchanges.h \
     tilesetdock.h \
     tilesetmanager.h \
     tilesetmodel.h \
@@ -251,6 +264,8 @@ HEADERS += aboutdialog.h \
     undocommands.h \
     undodock.h \
     utils.h \
+    varianteditorfactory.h \
+    variantpropertymanager.h \
     zoomable.h
 
 macx {
@@ -262,17 +277,39 @@ FORMS += aboutdialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
-    objectpropertiesdialog.ui \
     offsetmapdialog.ui \
     preferencesdialog.ui \
-    propertiesdialog.ui \
     resizedialog.ui \
     saveasimagedialog.ui\
     editterraindialog.ui
 
-images.path = $${PREFIX}/share/tiled/images
-images.files += images/tiled-icon-32.png
-INSTALLS += images
+icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
+icon32.files += images/32x32/tiled.png
+INSTALLS += icon32
+
+icon16.path = $${PREFIX}/share/icons/hicolor/16x16/apps/
+icon16.files += images/16x16/tiled.png
+INSTALLS += icon16
+
+iconscalable.path = $${PREFIX}/share/icons/hicolor/scalable/apps/
+iconscalable.files += images/scalable/tiled.svg
+INSTALLS += iconscalable
+
+mimeicon16.path = $${PREFIX}/share/icons/hicolor/16x16/mimetypes/
+mimeicon16.files += images/16x16/application-x-tiled.png
+INSTALLS += mimeicon16
+
+mimeicon32.path = $${PREFIX}/share/icons/hicolor/32x32/mimetypes/
+mimeicon32.files += images/32x32/application-x-tiled.png
+INSTALLS += mimeicon32
+
+mimeiconscalable.path = $${PREFIX}/share/icons/hicolor/scalable/mimetypes/
+mimeiconscalable.files += images/scalable/application-x-tiled.svg
+INSTALLS += mimeiconscalable
+
+mimeinfofile.path = $${PREFIX}/share/mime/packages/
+mimeinfofile.files += ../../docs/mime/tiled.xml
+INSTALLS += mimeinfofile
 
 desktopfile.path = $${PREFIX}/share/applications/
 desktopfile.files += ../../docs/tiled.desktop

@@ -1,6 +1,6 @@
 /*
  * mapobject.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  *
@@ -32,6 +32,8 @@
 #define MAPOBJECT_H
 
 #include "object.h"
+#include "tiled.h"
+#include "tilelayer.h"
 
 #include <QPolygonF>
 #include <QSizeF>
@@ -67,22 +69,11 @@ public:
         Ellipse
     };
 
-    /**
-     * Default constructor.
-     */
     MapObject();
 
-    /**
-     * Constructor.
-     */
     MapObject(const QString &name, const QString &type,
               const QPointF &pos,
               const QSizeF &size);
-
-    /**
-     * Destructor.
-     */
-    ~MapObject() {}
 
     /**
      * Returns the name of this object. The name is usually just used for
@@ -204,12 +195,12 @@ public:
      *
      * \warning The object shape is ignored for tile objects!
      */
-    void setTile(Tile *tile) { mTile = tile; }
+    void setCell(const Cell &cell) { mCell = cell; }
 
     /**
      * Returns the tile associated with this object.
      */
-    Tile *tile() const { return mTile; }
+    const Cell &cell() const { return mCell; }
 
     /**
      * Returns the object group this object belongs to.
@@ -224,13 +215,29 @@ public:
     { mObjectGroup = objectGroup; }
 
     /**
+     * Sets the rotation of the object
+     */
+    void setRotation(qreal rotation) { mRotation = rotation; }
+
+    /**
+     * Returns the rotation of the object.
+     */
+    qreal rotation() const { return mRotation; }
+
+    bool isVisible() const { return mVisible; }
+    void setVisible(bool visible) { mVisible = visible; }
+
+    /**
+     * Flip this object in the given \a direction. This doesn't change the size
+     * of the object.
+     */
+    void flip(FlipDirection direction);
+
+    /**
      * Returns a duplicate of this object. The caller is responsible for the
      * ownership of this newly created object.
      */
     MapObject *clone() const;
-
-    bool isVisible() const { return mVisible; }
-    void setVisible(bool visible) { mVisible = visible; }
 
 private:
     QString mName;
@@ -239,8 +246,9 @@ private:
     QSizeF mSize;
     QPolygonF mPolygon;
     Shape mShape;
-    Tile *mTile;
+    Cell mCell;
     ObjectGroup *mObjectGroup;
+    qreal mRotation;
     bool mVisible;
 };
 

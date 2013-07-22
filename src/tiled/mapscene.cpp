@@ -1,6 +1,6 @@
 /*
  * mapscene.cpp
- * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
@@ -32,6 +32,7 @@
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "preferences.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
@@ -107,8 +108,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     refreshScene();
 
     if (mMapDocument) {
-        mMapDocument->renderer()->setFlag(ShowTileObjectOutlines,
-                                          mShowTileObjectOutlines);
+        MapRenderer *renderer = mMapDocument->renderer();
+        renderer->setFlag(ShowTileObjectOutlines, mShowTileObjectOutlines);
 
         connect(mMapDocument, SIGNAL(mapChanged()),
                 this, SLOT(mapChanged()));
@@ -120,14 +121,22 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(layerRemoved(int)));
         connect(mMapDocument, SIGNAL(layerChanged(int)),
                 this, SLOT(layerChanged(int)));
+        connect(mMapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
+                this, SLOT(objectGroupChanged(ObjectGroup*)));
+        connect(mMapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
+                this, SLOT(imageLayerChanged(ImageLayer*)));
         connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 this, SLOT(currentLayerIndexChanged()));
-        connect(mMapDocument, SIGNAL(objectsAdded(QList<MapObject*>)),
-                this, SLOT(objectsAdded(QList<MapObject*>)));
+        connect(mMapDocument, SIGNAL(tilesetTileOffsetChanged(Tileset*)),
+                this, SLOT(tilesetTileOffsetChanged(Tileset*)));
+        connect(mMapDocument, SIGNAL(objectsInserted(ObjectGroup*,int,int)),
+                this, SLOT(objectsInserted(ObjectGroup*,int,int)));
         connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
                 this, SLOT(objectsRemoved(QList<MapObject*>)));
         connect(mMapDocument, SIGNAL(objectsChanged(QList<MapObject*>)),
                 this, SLOT(objectsChanged(QList<MapObject*>)));
+        connect(mMapDocument, SIGNAL(objectsIndexChanged(ObjectGroup*,int,int)),
+                this, SLOT(objectsIndexChanged(ObjectGroup*,int,int)));
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(updateSelectedObjectItems()));
     }
@@ -137,11 +146,11 @@ void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
 {
     // Inform the map document about the newly selected objects
     QList<MapObject*> selectedObjects;
-#if QT_VERSION >= 0x040700
     selectedObjects.reserve(items.size());
-#endif
+
     foreach (const MapObjectItem *item, items)
         selectedObjects.append(item->mapObject());
+
     mMapDocument->setSelectedObjects(selectedObjects);
 }
 
@@ -199,11 +208,19 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
     if (TileLayer *tl = layer->asTileLayer()) {
         layerItem = new TileLayerItem(tl, mMapDocument->renderer());
     } else if (ObjectGroup *og = layer->asObjectGroup()) {
+        const ObjectGroup::DrawOrder drawOrder = og->drawOrder();
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
+        int objectIndex = 0;
         foreach (MapObject *object, og->objects()) {
             MapObjectItem *item = new MapObjectItem(object, mMapDocument,
                                                     ogItem);
+            if (drawOrder == ObjectGroup::TopDownOrder)
+                item->setZValue(item->y());
+            else
+                item->setZValue(objectIndex);
+
             mObjectItems.insert(object, item);
+            ++objectIndex;
         }
         layerItem = ogItem;
     } else if (ImageLayer *il = layer->asImageLayer()) {
@@ -361,26 +378,77 @@ void MapScene::layerChanged(int index)
 }
 
 /**
+ * When an object group has changed it may mean its color or drawing order
+ * changed, which affects all its objects.
+ */
+void MapScene::objectGroupChanged(ObjectGroup *objectGroup)
+{
+    objectsChanged(objectGroup->objects());
+    objectsIndexChanged(objectGroup, 0, objectGroup->objectCount() - 1);
+}
+
+/**
+ * When an image layer has changed, it may change size and it may look
+ * differently.
+ */
+void MapScene::imageLayerChanged(ImageLayer *imageLayer)
+{
+    const int index = mMapDocument->map()->layers().indexOf(imageLayer);
+    ImageLayerItem *item = static_cast<ImageLayerItem*>(mLayerItems.at(index));
+
+    item->syncWithImageLayer();
+    item->update();
+}
+
+/**
+ * When the tile offset of a tileset has changed, it can affect the bounding
+ * rect of all tile layers and tile objects. It also requires a full repaint.
+ */
+void MapScene::tilesetTileOffsetChanged(Tileset *tileset)
+{
+    update();
+
+    foreach (QGraphicsItem *item, mLayerItems)
+        if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
+            tli->syncWithTileLayer();
+
+    foreach (MapObjectItem *item, mObjectItems) {
+        const Cell &cell = item->mapObject()->cell();
+        if (!cell.isEmpty() && cell.tile->tileset() == tileset)
+            item->syncWithMapObject();
+    }
+}
+
+/**
  * Inserts map object items for the given objects.
  */
-void MapScene::objectsAdded(const QList<MapObject*> &objects)
+void MapScene::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 {
-    foreach (MapObject *object, objects) {
-        ObjectGroup *og = object->objectGroup();
-        ObjectGroupItem *ogItem = 0;
+    ObjectGroupItem *ogItem = 0;
 
-        // Find the object group item for the map object's object group
-        foreach (QGraphicsItem *item, mLayerItems) {
-            if (ObjectGroupItem *ogi = dynamic_cast<ObjectGroupItem*>(item)) {
-                if (ogi->objectGroup() == og) {
-                    ogItem = ogi;
-                    break;
-                }
+    // Find the object group item for the object group
+    foreach (QGraphicsItem *item, mLayerItems) {
+        if (ObjectGroupItem *ogi = dynamic_cast<ObjectGroupItem*>(item)) {
+            if (ogi->objectGroup() == objectGroup) {
+                ogItem = ogi;
+                break;
             }
         }
+    }
 
-        Q_ASSERT(ogItem);
+    Q_ASSERT(ogItem);
+
+    const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
+
+    for (int i = first; i <= last; ++i) {
+        MapObject *object = objectGroup->objectAt(i);
+
         MapObjectItem *item = new MapObjectItem(object, mMapDocument, ogItem);
+        if (drawOrder == ObjectGroup::TopDownOrder)
+            item->setZValue(item->y());
+        else
+            item->setZValue(i);
+
         mObjectItems.insert(object, item);
     }
 }
@@ -410,6 +478,23 @@ void MapScene::objectsChanged(const QList<MapObject*> &objects)
         Q_ASSERT(item);
 
         item->syncWithMapObject();
+    }
+}
+
+/**
+ * Updates the Z value of the objects when appropriate.
+ */
+void MapScene::objectsIndexChanged(ObjectGroup *objectGroup,
+                                   int first, int last)
+{
+    if (objectGroup->drawOrder() != ObjectGroup::IndexOrder)
+        return;
+
+    for (int i = first; i <= last; ++i) {
+        MapObjectItem *item = itemForObject(objectGroup->objectAt(i));
+        Q_ASSERT(item);
+
+        item->setZValue(i);
     }
 }
 
@@ -500,6 +585,15 @@ bool MapScene::event(QEvent *event)
     }
 
     return QGraphicsScene::event(event);
+}
+
+void MapScene::keyPressEvent(QKeyEvent *event)
+{
+    if (mActiveTool)
+        mActiveTool->keyPressed(event);
+
+    if (!(mActiveTool && event->isAccepted()))
+        QGraphicsScene::keyPressEvent(event);
 }
 
 void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)

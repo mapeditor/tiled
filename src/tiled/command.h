@@ -25,7 +25,7 @@
 #include <QProcess>
 #include <QVariant>
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #include <QTemporaryFile>
 #endif
 
@@ -83,7 +83,7 @@ private:
     QString mName;
     QString mFinalCommand;
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QTemporaryFile mFile;
 #endif
 };

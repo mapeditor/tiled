@@ -131,6 +131,13 @@ void DocumentManager::switchToDocument(int index)
     mTabWidget->setCurrentIndex(index);
 }
 
+void DocumentManager::switchToDocument(MapDocument *mapDocument)
+{
+    const int index = mDocuments.indexOf(mapDocument);
+    if (index != -1)
+        switchToDocument(index);
+}
+
 void DocumentManager::switchToLeftDocument()
 {
     const int tabCount = mTabWidget->count();
@@ -182,8 +189,13 @@ void DocumentManager::closeCurrentDocument()
     if (index == -1)
         return;
 
+    closeDocumentAt(index);
+}
+
+void DocumentManager::closeDocumentAt(int index)
+{
     MapDocument *mapDocument = mDocuments.takeAt(index);
-    MapView *mapView = currentMapView();
+    QWidget *mapView = mTabWidget->widget(index);
 
     mTabWidget->removeTab(index);
     delete mapView;
@@ -247,7 +259,7 @@ void DocumentManager::updateDocumentTab()
     mTabWidget->setTabToolTip(index, mapDocument->fileName());
 }
 
-void DocumentManager::centerViewOn(int x, int y)
+void DocumentManager::centerViewOn(qreal x, qreal y)
 {
     MapView *view = currentMapView();
     if (!view)

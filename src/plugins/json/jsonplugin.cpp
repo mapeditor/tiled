@@ -45,7 +45,18 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
     }
 
     JsonReader reader;
-    reader.parse(file.readAll());
+    QByteArray contents = file.readAll();
+    if (fileName.endsWith(".js") && contents.size() > 0 && contents[0] != '{') {
+        // Scan past JSONP prefix; look for an open curly at the start of the line
+        int i = contents.indexOf(QLatin1String("\n{"));
+        if (i > 0) {
+            contents.remove(0, i);
+            contents = contents.trimmed(); // potential trailing whitespace
+            if (contents.endsWith(';')) contents.chop(1);
+            if (contents.endsWith(')')) contents.chop(1);
+        }
+    }
+    reader.parse(contents);
 
     const QVariant variant = reader.result();
 
@@ -84,7 +95,23 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(&file);
+    bool isJsFile = fileName.endsWith(".js");
+    if (isJsFile) {
+        // Trim and escape name
+        JsonWriter nameWriter;
+        QString baseName = QFileInfo(fileName).baseName();
+        nameWriter.stringify(baseName);
+        out << "(function(name,data){\n if(typeof onTileMapLoaded === 'undefined') {\n";
+        out << "  if(typeof TileMaps === 'undefined') TileMaps = {};\n";
+        out << "  TileMaps[name] = data;\n";
+        out << " } else {\n";
+        out << "  onTileMapLoaded(name,data);\n";
+        out << " }})(" << nameWriter.result() << ",\n";
+    }
     out << writer.result();
+    if (isJsFile) {
+        out << ");";
+    }
     out.flush();
 
     if (file.error() != QFile::NoError) {
@@ -95,20 +122,25 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     return true;
 }
 
-QString JsonPlugin::nameFilter() const
+QStringList JsonPlugin::nameFilters() const
 {
-    return tr("Json files (*.json)");
+    QStringList filters;
+    filters.append(tr("Json files (*.json)"));
+    filters.append(tr("JavaScript files (*.js)"));
+    return filters;
 }
 
 bool JsonPlugin::supportsFile(const QString &fileName) const
 {
-    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
+    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) ||
+           fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
 }
 
 QString JsonPlugin::errorString() const
 {
     return mError;
 }
+
 #if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(Json, JsonPlugin)
 #endif

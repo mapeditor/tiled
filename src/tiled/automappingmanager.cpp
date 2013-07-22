@@ -52,7 +52,7 @@ AutomappingManager::~AutomappingManager()
 AutomappingManager *AutomappingManager::instance()
 {
     if (!mInstance)
-        mInstance = new AutomappingManager(0);
+        mInstance = new AutomappingManager;
 
     return mInstance;
 }
@@ -223,8 +223,6 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
 
 void AutomappingManager::cleanUp()
 {
-    foreach (const AutoMapper *autoMapper, mAutoMappers) {
-        delete autoMapper;
-    }
+    qDeleteAll(mAutoMappers);
     mAutoMappers.clear();
 }

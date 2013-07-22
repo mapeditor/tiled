@@ -35,43 +35,6 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-namespace {
-
-/**
- * Used for changing object visibility.
- */
-class SetMapObjectVisible : public QUndoCommand
-{
-public:
-    SetMapObjectVisible(MapDocument *mapDocument,
-                        MapObject *mapObject,
-                        bool visible)
-        : mMapObjectModel(mapDocument->mapObjectModel())
-        , mMapObject(mapObject)
-        , mOldVisible(mapObject->isVisible())
-        , mNewVisible(visible)
-    {
-        if (visible)
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Show Object"));
-        else
-            setText(QCoreApplication::translate("Undo Commands",
-                                                "Hide Object"));
-    }
-
-    void undo() { mMapObjectModel->setObjectVisible(mMapObject, mOldVisible); }
-    void redo() { mMapObjectModel->setObjectVisible(mMapObject, mNewVisible); }
-
-private:
-    MapObjectModel *mMapObjectModel;
-    MapObject *mMapObject;
-    bool mOldVisible;
-    bool mNewVisible;
-};
-
-} // anonymous namespace
-
-
 MapObjectModel::MapObjectModel(QObject *parent):
     QAbstractItemModel(parent),
     mMapDocument(0),
@@ -397,14 +360,28 @@ void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
 
 int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)
 {
-    emit objectsAboutToBeRemoved(QList<MapObject*>() << o);
+    QList<MapObject*> objects;
+    objects << o;
+
     const int row = og->objects().indexOf(o);
     beginRemoveRows(index(og), row, row);
     og->removeObjectAt(row);
     delete mObjects.take(o);
     endRemoveRows();
-    emit objectsRemoved(QList<MapObject*>() << o);
+    emit objectsRemoved(objects);
     return row;
+}
+
+void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
+{
+    const QModelIndex parent = index(og);
+    if (!beginMoveRows(parent, from, from + count - 1, parent, to)) {
+        Q_ASSERT(false); // The code should never attempt this
+        return;
+    }
+
+    og->moveObjects(from, to, count);
+    endMoveRows();
 }
 
 // ObjectGroup color changed
@@ -445,6 +422,12 @@ void MapObjectModel::setObjectPosition(MapObject *o, const QPointF &pos)
 void MapObjectModel::setObjectSize(MapObject *o, const QSizeF &size)
 {
     o->setSize(size);
+    emit objectsChanged(QList<MapObject*>() << o);
+}
+
+void MapObjectModel::setObjectRotation(MapObject *o, qreal rotation)
+{
+    o->setRotation(rotation);
     emit objectsChanged(QList<MapObject*>() << o);
 }
 

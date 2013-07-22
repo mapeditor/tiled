@@ -1,7 +1,7 @@
 /*
  * tileset.h
  * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyrigth 2009, Edward Hutchins <eah1@yahoo.com>
+ * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of libtiled.
  *
@@ -49,8 +49,10 @@ class Terrain;
 /**
  * A tileset, representing a set of tiles.
  *
- * This class currently only supports loading tiles from a tileset image, using
- * loadFromImage(). There is no way to add or remove arbitrary tiles.
+ * This class is meant to be used by either loading tiles from a tileset image
+ * (using loadFromImage) or by adding/removing individual tiles (using
+ * addTile, insertTiles and removeTiles). These two use-cases are not meant to
+ * be mixed.
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
@@ -66,6 +68,7 @@ public:
      */
     Tileset(const QString &name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0):
+        Object(TilesetType),
         mName(name),
         mTileWidth(tileWidth),
         mTileHeight(tileHeight),
@@ -269,19 +272,24 @@ public:
     Terrain *takeTerrainAt(int index);
 
     /**
-     * Returns the transition penalty(/distance) between 2 terrains. -1 if no transition is possible.
+     * Returns the transition penalty(/distance) between 2 terrains. -1 if no
+     * transition is possible.
      */
     int terrainTransitionPenalty(int terrainType0, int terrainType1);
 
     /**
      * Add a new tile to the end of the tileset
      */
-    void addTile(const QPixmap &image);
+    Tile *addTile(const QPixmap &image, const QString &source = QString());
+
+    void insertTiles(int index, const QList<Tile*> &tiles);
+    void removeTiles(int index, int count);
 
     /**
-     * Set a tile's image
+     * Set the \a image to be used for the tile with the given \a id.
      */
-    void setTileImage(int index, const QPixmap &image);
+    void setTileImage(int id, const QPixmap &image,
+                      const QString &source = QString());
 
     /**
      * Used by the Tile class when its terrain information changes.
@@ -289,12 +297,6 @@ public:
     void markTerrainDistancesDirty() { mTerrainDistancesDirty = true; }
 
 private:
-    /**
-     * Detaches from the external image. Should be called everytime the tileset
-     * is changed.
-     */
-    void detachExternalImage();
-
     /**
      * Sets tile size to the maximum size.
      */

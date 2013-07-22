@@ -1,6 +1,6 @@
 /*
  * objectselectiontool.h
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -25,9 +25,12 @@
 
 #include <QSet>
 
+class QGraphicsItem;
+
 namespace Tiled {
 namespace Internal {
 
+class CornerHandle;
 class MapObjectItem;
 class SelectionRectangle;
 
@@ -39,6 +42,10 @@ public:
     explicit ObjectSelectionTool(QObject *parent = 0);
     ~ObjectSelectionTool();
 
+    void activate(MapScene *scene);
+    void deactivate(MapScene *scene);
+
+    void keyPressed(QKeyEvent *);
     void mouseEntered();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
@@ -48,11 +55,18 @@ public:
 
     void languageChanged();
 
+private slots:
+    void updateHandles();
+    void setHandlesVisible(bool visible);
+
+    void objectsRemoved(const QList<MapObject *> &);
+
 private:
     enum Mode {
         NoMode,
         Selecting,
-        Moving
+        Moving,
+        Rotating
     };
 
     void updateSelection(const QPointF &pos,
@@ -65,13 +79,24 @@ private:
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
+    void startRotating();
+    void updateRotatingItems(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+    void finishRotating(const QPointF &pos);
+
     SelectionRectangle *mSelectionRectangle;
+    QGraphicsItem *mRotationOriginIndicator;
+    CornerHandle *mCornerHandles[4];
     bool mMousePressed;
     MapObjectItem *mClickedObjectItem;
+    CornerHandle *mClickedCornerHandle;
     QSet<MapObjectItem*> mMovingItems;
     QVector<QPointF> mOldObjectItemPositions;
     QVector<QPointF> mOldObjectPositions;
+    QVector<qreal> mOldObjectRotations;
     QPointF mAlignPosition;
+    QRectF mSelectionBoundingRect;
+    QPointF mRotationOrigin;
     Mode mMode;
     QPointF mStart;
     Qt::KeyboardModifiers mModifiers;

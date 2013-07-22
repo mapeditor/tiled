@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>images/about-tiled-logo.png</file>
-        <file>images/tiled-icon-16.png</file>
-        <file>images/tiled-icon-32.png</file>
+        <file>images/16x16/add.png</file>
+        <file>images/16x16/remove.png</file>
         <file>images/16x16/application-exit.png</file>
         <file>images/16x16/document-export.png</file>
         <file>images/16x16/document-import.png</file>
@@ -28,6 +28,10 @@
         <file>images/16x16/window-close.png</file>
         <file>images/16x16/stock-duplicate-16.png</file>
         <file>images/16x16/terrain.png</file>
+        <file>images/16x16/terminal.png</file>
+        <file>images/16x16/terminal-green.png</file>
+        <file>images/16x16/terminal-red.png</file>
+        <file>images/16x16/tiled.png</file>
         <file>images/16x16/zoom-in.png</file>
         <file>images/16x16/zoom-original.png</file>
         <file>images/16x16/zoom-out.png</file>
@@ -73,5 +77,6 @@
         <file>images/16x16/show_hide_others.png</file>
         <file>images/24x24/dice.png</file>
         <file>images/24x24/terrain-edit.png</file>
+        <file>images/32x32/tiled.png</file>
     </qresource>
 </RCC>

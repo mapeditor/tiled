@@ -27,15 +27,16 @@
 #include <QList>
 #include <QMap>
 
+class QAction;
+class QActionGroup;
 class QComboBox;
+class QMenu;
+class QModelIndex;
+class QSignalMapper;
 class QStackedWidget;
 class QTabBar;
 class QToolBar;
-class QAction;
-class QActionGroup;
-class QSignalMapper;
 class QToolButton;
-class QMenu;
 
 namespace Tiled {
 
@@ -99,8 +100,11 @@ protected:
     void dropEvent(QDropEvent *);
 
 private slots:
+    void selectionChanged();
     void updateActions();
     void updateCurrentTiles();
+    void updateCurrentTile();
+    void indexPressed(const QModelIndex &index);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetChanged(Tileset *tileset);
@@ -116,9 +120,9 @@ private slots:
     void importTileset();
     void exportTileset();
 
-    void renameTileset();
-
     void editTerrain();
+    void addTiles();
+    void removeTiles();
 
     void documentCloseRequested(int index);
 
@@ -146,8 +150,9 @@ private:
     QAction *mExportTileset;
     QAction *mPropertiesTileset;
     QAction *mDeleteTileset;
-    QAction *mRenameTileset;
     QAction *mEditTerrain;
+    QAction *mAddTiles;
+    QAction *mRemoveTiles;
 
     QMap<MapDocument *, QString> mCurrentTilesets;
 

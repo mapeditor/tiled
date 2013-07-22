@@ -33,6 +33,7 @@
 #include "tiled_global.h"
 
 #include "layer.h"
+#include "tiled.h"
 
 #include <QMargins>
 #include <QString>
@@ -97,17 +98,6 @@ public:
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
 public:
-    enum FlipDirection {
-        FlipHorizontally,
-        FlipVertically,
-        FlipDiagonally
-    };
-
-    enum RotateDirection {
-        RotateLeft,
-        RotateRight
-    };
-
     /**
      * Constructor.
      */
@@ -131,6 +121,7 @@ public:
                         mOffsetMargins.bottom());
     }
 
+    void recomputeDrawMargins();
 
     /**
      * Returns whether (x, y) is inside this map layer.
@@ -140,6 +131,13 @@ public:
 
     bool contains(const QPoint &point) const
     { return contains(point.x(), point.y()); }
+
+    /**
+     * Calculates the region of cells in this tile layer for which the given
+     * \a condition returns true.
+     */
+    template<typename Condition>
+    QRegion region(Condition condition) const;
 
     /**
      * Calculates the region occupied by the tiles of this layer. Similar to
@@ -213,14 +211,16 @@ public:
     QSet<Tileset*> usedTilesets() const;
 
     /**
+     * Returns whether this tile layer has any cell for which the given
+     * \a condition returns true.
+     */
+    template<typename Condition>
+    bool hasCell(Condition condition) const;
+
+    /**
      * Returns whether this tile layer is referencing the given tileset.
      */
     bool referencesTileset(const Tileset *tileset) const;
-
-    /**
-     * Returns the region of tiles coming from the given \a tileset.
-     */
-    QRegion tilesetReferences(Tileset *tileset) const;
 
     /**
      * Removes all references to the given tileset. This sets all tiles on this
@@ -276,6 +276,49 @@ private:
     QMargins mOffsetMargins;
     QVector<Cell> mGrid;
 };
+
+
+template<typename Condition>
+QRegion TileLayer::region(Condition condition) const
+{
+    QRegion region;
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            if (condition(cellAt(x, y))) {
+                const int rangeStart = x;
+                for (++x; x <= mWidth; ++x) {
+                    if (x == mWidth || !condition(cellAt(x, y))) {
+                        const int rangeEnd = x;
+                        region += QRect(rangeStart + mX, y + mY,
+                                        rangeEnd - rangeStart, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return region;
+}
+
+template<typename Condition>
+bool TileLayer::hasCell(Condition condition) const
+{
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
+        if (condition(mGrid.at(i)))
+            return true;
+
+    return false;
+}
+
+
+static inline bool cellInUse(const Cell &cell) { return !cell.isEmpty(); }
+
+inline QRegion TileLayer::region() const
+{
+    return region(cellInUse);
+}
 
 } // namespace Tiled
 

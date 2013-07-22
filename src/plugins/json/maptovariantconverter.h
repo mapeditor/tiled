@@ -27,9 +27,6 @@
 
 #include "gidmapper.h"
 
-namespace Tiled {
-}
-
 namespace Json {
 
 /**
@@ -48,14 +45,14 @@ public:
     QVariant toVariant(const Tiled::Map *map, const QDir &mapDir);
 
 private:
-    QVariant toVariant(const Tiled::Tileset *tileset, int firstGid);
-    QVariant toVariant(const Tiled::Properties &properties);
-    QVariant toVariant(const Tiled::TileLayer *tileLayer);
-    QVariant toVariant(const Tiled::ObjectGroup *objectGroup);
-    QVariant toVariant(const Tiled::ImageLayer *imageLayer);
+    QVariant toVariant(const Tiled::Tileset *tileset, int firstGid) const;
+    QVariant toVariant(const Tiled::Properties &properties) const;
+    QVariant toVariant(const Tiled::TileLayer *tileLayer) const;
+    QVariant toVariant(const Tiled::ObjectGroup *objectGroup) const;
+    QVariant toVariant(const Tiled::ImageLayer *imageLayer) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,
-                            const Tiled::Layer *layer);
+                            const Tiled::Layer *layer) const;
 
     QDir mMapDir;
     Tiled::GidMapper mGidMapper;

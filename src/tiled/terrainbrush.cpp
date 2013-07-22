@@ -269,9 +269,7 @@ static Tile *findBestTile(Tileset *tileset, unsigned terrain, unsigned considera
     int penalty = INT_MAX;
 
     // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
-    int tileCount = tileset->tileCount();
-    for (int i = 0; i < tileCount; ++i) {
-        Tile *t = tileset->tileAt(i);
+    foreach (Tile *t, tileset->tiles()) {
         if ((t->terrain() & considerationMask) != (terrain & considerationMask))
             continue;
 

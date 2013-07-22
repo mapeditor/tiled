@@ -1,9 +1,12 @@
 [Desktop Entry]
 Name=Tiled
+GenericName=Map editor
 Comment=Tile map editor
-Exec=/usr/bin/tiled
+TryExec=tiled
+Exec=tiled
 Terminal=false
 Type=Application
-Icon=/usr/share/tiled/images/tiled-icon-32.png
+Icon=tiled
 Categories=Graphics;2DGraphics;
 X-Desktop-File-Install-Version=0.1
+MimeType=application/x-tiled-tmx

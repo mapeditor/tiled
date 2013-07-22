@@ -63,13 +63,15 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
     QRectF boundingRect;
 
-    if (object->tile()) {
+    if (!object->cell().isEmpty()) {
         const QPointF bottomLeft = rect.topLeft();
-        const QPixmap &img = object->tile()->image();
-        boundingRect = QRectF(bottomLeft.x(),
-                              bottomLeft.y() - img.height(),
-                              img.width(),
-                              img.height()).adjusted(-1, -1, 1, 1);
+        const Tile *tile = object->cell().tile;
+        const QSize imgSize = tile->image().size();
+        const QPoint tileOffset = tile->tileset()->tileOffset();
+        boundingRect = QRectF(bottomLeft.x() + tileOffset.x(),
+                              bottomLeft.y() + tileOffset.y() - imgSize.height(),
+                              imgSize.width(),
+                              imgSize.height()).adjusted(-1, -1, 1, 1);
     } else {
         // The -2 and +3 are to account for the pen width and shadow
         switch (object->shape()) {
@@ -101,7 +103,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
 
-    if (object->tile()) {
+    if (!object->cell().isEmpty()) {
         path.addRect(boundingRect(object));
     } else {
         switch (object->shape()) {
@@ -169,7 +171,7 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     gridColor.setAlpha(128);
 
-    QPen gridPen(gridColor);
+    QPen gridPen(gridColor, 0);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
 
     if (startY < endY) {
@@ -191,7 +193,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
                                        const TileLayer *layer,
                                        const QRectF &exposed) const
 {
-    QTransform savedTransform = painter->transform();
+    const QTransform savedTransform = painter->transform();
 
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -223,7 +225,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
         endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
     }
 
-    QTransform baseTransform = painter->transform();
+    CellRenderer renderer(painter);
 
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
@@ -231,43 +233,13 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
             if (cell.isEmpty())
                 continue;
 
-            const QPixmap &img = cell.tile->image();
-            const QPoint offset = cell.tile->tileset()->tileOffset();
-
-            qreal m11 = 1;      // Horizontal scaling factor
-            qreal m12 = 0;      // Vertical shearing factor
-            qreal m21 = 0;      // Horizontal shearing factor
-            qreal m22 = 1;      // Vertical scaling factor
-            qreal dx = offset.x() + x * tileWidth;
-            qreal dy = offset.y() + (y + 1) * tileHeight - img.height();
-
-            if (cell.flippedAntiDiagonally) {
-                // Use shearing to swap the X/Y axis
-                m11 = 0;
-                m12 = 1;
-                m21 = 1;
-                m22 = 0;
-
-                // Compensate for the swap of image dimensions
-                dy += img.height() - img.width();
-            }
-            if (cell.flippedHorizontally) {
-                m11 = -m11;
-                m21 = -m21;    
-                dx += cell.flippedAntiDiagonally ? img.height() : img.width();
-            }
-            if (cell.flippedVertically) {
-                m12 = -m12;
-                m22 = -m22;
-                dy += cell.flippedAntiDiagonally ? img.width() : img.height();
-            }
-
-            const QTransform transform(m11, m12, m21, m22, dx, dy);
-            painter->setTransform(transform * baseTransform);
-
-            painter->drawPixmap(0, 0, img);
+            renderer.render(cell,
+                            QPointF(x * tileWidth, (y + 1) * tileHeight),
+                            CellRenderer::BottomLeft);
         }
     }
+
+    renderer.flush();
 
     painter->setTransform(savedTransform);
 }
@@ -297,19 +269,22 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
 
-    if (object->tile()) {
-        const QPixmap &img = object->tile()->image();
-        const QPoint paintOrigin(0, -img.height());
-        painter->drawPixmap(paintOrigin, img);
+    if (!object->cell().isEmpty()) {
+        const Cell &cell = object->cell();
+
+        CellRenderer(painter).render(cell, QPointF(),
+                                     CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
+            const QRect rect = cell.tile->image().rect();
             QPen pen(Qt::SolidLine);
+            pen.setWidth(0);
             painter->setPen(pen);
-            painter->drawRect(QRect(paintOrigin, img.size()));
+            painter->drawRect(rect);
             pen.setStyle(Qt::DotLine);
             pen.setColor(color);
             painter->setPen(pen);
-            painter->drawRect(QRect(paintOrigin, img.size()));
+            painter->drawRect(rect);
         }
     } else {
         const QPen linePen(color, 2);

@@ -61,9 +61,7 @@ void ChangeTileTerrain::undo()
     Changes::const_iterator i = mChanges.constBegin();
 
     QList<Tile *> changedTiles;
-#if QT_VERSION >= 0x040700
     changedTiles.reserve(mChanges.size());
-#endif
 
     while (i != mChanges.constEnd()) {
         Tile *tile = i.key();
@@ -83,9 +81,7 @@ void ChangeTileTerrain::redo()
     Changes::const_iterator i = mChanges.constBegin();
 
     QList<Tile *> changedTiles;
-#if QT_VERSION >= 0x040700
     changedTiles.reserve(mChanges.size());
-#endif
 
     while (i != mChanges.constEnd()) {
         Tile *tile = i.key();

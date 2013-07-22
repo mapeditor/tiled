@@ -20,15 +20,12 @@
 
 #include "objectsdock.h"
 
-#include "addremovemapobject.h"
 #include "documentmanager.h"
 #include "map.h"
 #include "mapobject.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
-#include "movemapobjecttogroup.h"
 #include "objectgroup.h"
-#include "objectpropertiesdialog.h"
 #include "utils.h"
 #include "mapobjectmodel.h"
 
@@ -51,26 +48,12 @@ using namespace Tiled::Internal;
 
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
-    , mObjectsView(new ObjectsView())
+    , mObjectsView(new ObjectsView)
     , mMapDocument(0)
 {
     setObjectName(QLatin1String("ObjectsDock"));
 
-    mActionDuplicateObjects = new QAction(this);
-    mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
-
-    mActionRemoveObjects = new QAction(this);
-    mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
-
-    mActionObjectProperties = new QAction(this);
-    mActionObjectProperties->setIcon(QIcon(QLatin1String(":/images/16x16/document-properties.png")));
-
-    Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
-    Utils::setThemeIcon(mActionObjectProperties, "document-properties");
-
-    connect(mActionDuplicateObjects, SIGNAL(triggered()), SLOT(duplicateObjects()));
-    connect(mActionRemoveObjects, SIGNAL(triggered()), SLOT(removeObjects()));
-    connect(mActionObjectProperties, SIGNAL(triggered()), SLOT(objectProperties()));
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -78,28 +61,26 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     layout->setSpacing(0);
     layout->addWidget(mObjectsView);
 
-    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
-
     mActionNewLayer = new QAction(this);
     mActionNewLayer->setIcon(QIcon(QLatin1String(":/images/16x16/document-new.png")));
     connect(mActionNewLayer, SIGNAL(triggered()),
             handler->actionAddObjectGroup(), SIGNAL(triggered()));
 
-    mActionMoveToLayer = new QAction(this);
-    mActionMoveToLayer->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
+    mActionMoveToGroup = new QAction(this);
+    mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16x16/layer-object.png")));
 
-    QToolBar *toolbar = new QToolBar;
-    toolbar->setFloatable(false);
-    toolbar->setMovable(false);
-    toolbar->setIconSize(QSize(16, 16));
+    QToolBar *toolBar = new QToolBar;
+    toolBar->setFloatable(false);
+    toolBar->setMovable(false);
+    toolBar->setIconSize(QSize(16, 16));
 
-    toolbar->addAction(mActionNewLayer);
-    toolbar->addAction(mActionDuplicateObjects);
-    toolbar->addAction(mActionRemoveObjects);
+    toolBar->addAction(mActionNewLayer);
+    toolBar->addAction(handler->actionDuplicateObjects());
+    toolBar->addAction(handler->actionRemoveObjects());
 
-    toolbar->addAction(mActionMoveToLayer);
+    toolBar->addAction(mActionMoveToGroup);
     QToolButton *button;
-    button = dynamic_cast<QToolButton*>(toolbar->widgetForAction(mActionMoveToLayer));
+    button = dynamic_cast<QToolButton*>(toolBar->widgetForAction(mActionMoveToGroup));
     mMoveToMenu = new QMenu(this);
     button->setPopupMode(QToolButton::InstantPopup);
     button->setMenu(mMoveToMenu);
@@ -107,16 +88,9 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(mMoveToMenu, SIGNAL(triggered(QAction*)),
             SLOT(triggeredMoveToMenu(QAction*)));
 
-    toolbar->addAction(mActionObjectProperties);
-
-    layout->addWidget(toolbar);
+    layout->addWidget(toolBar);
     setWidget(widget);
     retranslateUi();
-
-    // Workaround since a tabbed dockwidget that is not currently visible still
-    // returns true for isVisible()
-    connect(this, SIGNAL(visibilityChanged(bool)),
-            mObjectsView, SLOT(setVisible(bool)));
 
     connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
             SLOT(documentCloseRequested(int)));
@@ -159,7 +133,6 @@ void ObjectsDock::retranslateUi()
     setWindowTitle(tr("Objects"));
 
     mActionNewLayer->setToolTip(tr("Add Object Layer"));
-    mActionObjectProperties->setToolTip(tr("Object Properties"));
 
     updateActions();
 }
@@ -168,17 +141,11 @@ void ObjectsDock::updateActions()
 {
     int count = mMapDocument ? mMapDocument->selectedObjects().count() : 0;
     bool enabled = count > 0;
-    mActionDuplicateObjects->setEnabled(enabled);
-    mActionRemoveObjects->setEnabled(enabled);
-    mActionObjectProperties->setEnabled(enabled && (count == 1));
-
-    mActionDuplicateObjects->setToolTip(tr("Duplicate %n Object(s)", "", count));
-    mActionRemoveObjects->setToolTip(tr("Remove %n Object(s)", "", count));
 
     if (mMapDocument && (mMapDocument->map()->objectGroupCount() < 2))
         enabled = false;
-    mActionMoveToLayer->setEnabled(enabled);
-    mActionMoveToLayer->setToolTip(tr("Move %n Object(s) to Layer", "", count));
+    mActionMoveToGroup->setEnabled(enabled);
+    mActionMoveToGroup->setToolTip(tr("Move %n Object(s) to Layer", "", count));
 }
 
 void ObjectsDock::aboutToShowMoveToMenu()
@@ -193,73 +160,10 @@ void ObjectsDock::aboutToShowMoveToMenu()
 
 void ObjectsDock::triggeredMoveToMenu(QAction *action)
 {
+    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
+
     ObjectGroup *objectGroup = action->data().value<ObjectGroup*>();
-
-    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
-                             objects.size()));
-    foreach (MapObject *mapObject, objects) {
-        if (mapObject->objectGroup() == objectGroup)
-            continue;
-        undoStack->push(new MoveMapObjectToGroup(mMapDocument,
-                                                 mapObject,
-                                                 objectGroup));
-    }
-    undoStack->endMacro();
-}
-
-void ObjectsDock::duplicateObjects()
-{
-    // Unnecessary check is unnecessary
-    if (!mMapDocument || !mMapDocument->selectedObjects().count())
-        return;
-
-    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
-
-    QList<MapObject*> clones;
-    foreach (MapObject *mapObject, objects) {
-        MapObject *clone = mapObject->clone();
-        undoStack->push(new AddMapObject(mMapDocument,
-                                         mapObject->objectGroup(),
-                                         clone));
-        clones << clone;
-    }
-
-    undoStack->endMacro();
-    mMapDocument->setSelectedObjects(clones);
-}
-
-void ObjectsDock::removeObjects()
-{
-    // Unnecessary check is unnecessary
-    if (!mMapDocument || !mMapDocument->selectedObjects().count())
-        return;
-
-    const QList<MapObject *> &objects = mMapDocument->selectedObjects();
-
-    QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
-    foreach (MapObject *mapObject, objects)
-        undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
-    undoStack->endMacro();
-}
-
-void ObjectsDock::objectProperties()
-{
-    // Unnecessary check is unnecessary
-    if (!mMapDocument || !mMapDocument->selectedObjects().count())
-        return;
-
-    const QList<MapObject *> &selectedObjects = mMapDocument->selectedObjects();
-
-    MapObject *mapObject = selectedObjects.first();
-    ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
-    propertiesDialog.exec();
+    handler->moveObjectsToGroup(objectGroup);
 }
 
 void ObjectsDock::saveExpandedGroups(MapDocument *mapDoc)
@@ -280,7 +184,9 @@ void ObjectsDock::restoreExpandedGroups(MapDocument *mapDoc)
     // Also restore the selection
     foreach (MapObject *o, mapDoc->selectedObjects()) {
         QModelIndex index = mObjectsView->model()->index(o);
-        mObjectsView->selectionModel()->select(index, QItemSelectionModel::Select |  QItemSelectionModel::Rows);
+        mObjectsView->selectionModel()->select(index,
+                                               QItemSelectionModel::Select |
+                                               QItemSelectionModel::Rows);
     }
 }
 
@@ -306,7 +212,7 @@ ObjectsView::ObjectsView(QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    connect(this, SIGNAL(activated(QModelIndex)), SLOT(onActivated(QModelIndex)));
+    connect(this, SIGNAL(pressed(QModelIndex)), SLOT(onPressed(QModelIndex)));
 }
 
 QSize ObjectsView::sizeHint() const
@@ -346,12 +252,12 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 
 }
 
-void ObjectsView::onActivated(const QModelIndex &index)
+void ObjectsView::onPressed(const QModelIndex &index)
 {
-    if (MapObject *mapObject = model()->toMapObject(index)) {
-        ObjectPropertiesDialog propertiesDialog(mMapDocument, mapObject, this);
-        propertiesDialog.exec();
-    }
+    if (MapObject *mapObject = model()->toMapObject(index))
+        mMapDocument->setCurrentObject(mapObject);
+    else if (ObjectGroup *objectGroup = model()->toObjectGroup(index))
+        mMapDocument->setCurrentObject(objectGroup);
 }
 
 void ObjectsView::selectionChanged(const QItemSelection &selected,
@@ -386,11 +292,9 @@ void ObjectsView::selectionChanged(const QItemSelection &selected,
     if (selectedObjects != mMapDocument->selectedObjects()) {
         mSynching = true;
         if (selectedObjects.count() == 1) {
-            MapObject *o = selectedObjects.first();
-            QPoint pos = o->position().toPoint();
-            QSize size = o->size().toSize();
-            DocumentManager::instance()->centerViewOn(pos.x() + size.width() / 2,
-                                                      pos.y() + size.height() / 2);
+            const MapObject *o = selectedObjects.first();
+            const QPointF center = o->bounds().center();
+            DocumentManager::instance()->centerViewOn(center);
         }
         mMapDocument->setSelectedObjects(selectedObjects);
         mSynching = false;

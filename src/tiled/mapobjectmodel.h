@@ -91,6 +91,7 @@ public:
 
     void insertObject(ObjectGroup *og, int index, MapObject *o);
     int removeObject(ObjectGroup *og, MapObject *o);
+    void moveObjects(ObjectGroup *og, int from, int to, int count);
     void emitObjectsChanged(const QList<MapObject *> &objects);
 
     void setObjectName(MapObject *o, const QString &name);
@@ -98,12 +99,12 @@ public:
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
+    void setObjectRotation(MapObject *o, qreal rotation);
     void setObjectVisible(MapObject *o, bool visible);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);
     void objectsChanged(const QList<MapObject *> &objects);
-    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
     void objectsRemoved(const QList<MapObject *> &objects);
 
 private slots:

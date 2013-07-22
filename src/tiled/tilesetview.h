@@ -118,7 +118,6 @@ protected:
 private slots:
     void createNewTerrain();
     void selectTerrainImage();
-    void editTileProperties();
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();

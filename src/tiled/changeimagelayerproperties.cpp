@@ -56,7 +56,7 @@ void ChangeImageLayerProperties::redo()
     else
         mImageLayer->loadFromImage(QImage(mRedoPath), mRedoPath);
 
-    mMapDocument->emitRegionChanged(mImageLayer->bounds());
+    mMapDocument->emitImageLayerChanged(mImageLayer);
 }
 
 void ChangeImageLayerProperties::undo()
@@ -68,6 +68,6 @@ void ChangeImageLayerProperties::undo()
     else
         mImageLayer->loadFromImage(QImage(mUndoPath), mUndoPath);
 
-    mMapDocument->emitRegionChanged(mImageLayer->bounds());
+    mMapDocument->emitImageLayerChanged(mImageLayer);
 }
 

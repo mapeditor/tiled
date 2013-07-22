@@ -76,25 +76,6 @@ QVariant TilesetModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool TilesetModel::setData(const QModelIndex &index, const QVariant &value,
-                           int role)
-{
-    if (role != TerrainRole)
-        return false;
-
-    bool ok;
-    const unsigned terrain = value.toUInt(&ok);
-    Q_ASSERT(ok);
-
-    Tile *tile = tileAt(index);
-    Q_ASSERT(tile);
-
-    // TODO: Undo support
-    tile->setTerrain(terrain);
-    emit dataChanged(index, index);
-    return true;
-}
-
 QVariant TilesetModel::headerData(int /* section */,
                                   Qt::Orientation /* orientation */,
                                   int role) const

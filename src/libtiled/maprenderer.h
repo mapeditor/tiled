@@ -35,9 +35,11 @@
 
 namespace Tiled {
 
+class Cell;
 class Layer;
 class Map;
 class MapObject;
+class Tile;
 class TileLayer;
 class ImageLayer;
 
@@ -175,6 +177,31 @@ private:
     const Map *mMap;
 
     RenderFlags mFlags;
+};
+
+/**
+ * A utility class for rendering cells.
+ */
+class CellRenderer
+{
+public:
+    enum Origin {
+        BottomLeft,
+        BottomCenter
+    };
+
+    explicit CellRenderer(QPainter *painter);
+
+    ~CellRenderer() { flush(); }
+
+    void render(const Cell &cell, const QPointF &pos, Origin origin);
+    void flush();
+
+private:
+    QPainter * const mPainter;
+    Tile *mTile;
+    QVector<QPainter::PixmapFragment> mFragments;
+    const bool mIsOpenGL;
 };
 
 } // namespace Tiled

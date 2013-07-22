@@ -226,7 +226,7 @@ bool AutoMapper::setupRuleMapTileLayers()
             else
                 mTouchedObjectGroups.insert(name);
 
-            Layer::Type type = layer->type();
+            Layer::TypeFlag type = layer->layerType();
             int layerIndex = mMapWork->indexOfLayer(name, type);
 
             bool found = false;
@@ -389,7 +389,7 @@ bool AutoMapper::setupCorrectIndexes()
             if (index >= mMapWork->layerCount() || index == -1 ||
                     name != mMapWork->layerAt(index)->name()) {
 
-                int newIndex = mMapWork->indexOfLayer(name, layerKey->type());
+                int newIndex = mMapWork->indexOfLayer(name, layerKey->layerType());
                 Q_ASSERT(newIndex != -1);
 
                 translationTable->insert(layerKey, newIndex);
@@ -404,6 +404,7 @@ bool AutoMapper::setupCorrectIndexes()
 bool AutoMapper::setupTilesets(Map *src, Map *dst)
 {
     QList<Tileset*> existingTilesets = dst->tilesets();
+    TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of dst map
     foreach (Tileset *tileset, src->tilesets()) {
@@ -427,13 +428,13 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
             Properties properties = replacementTile->properties();
             properties.merge(tileset->tileAt(i)->properties());
 
-            undoStack->push(new ChangeProperties(tr("Tile"),
+            undoStack->push(new ChangeProperties(mMapDocument,
+                                                 tr("Tile"),
                                                  replacementTile,
                                                  properties));
         }
         src->replaceTileset(tileset, replacement);
 
-        TilesetManager *tilesetManager = TilesetManager::instance();
         tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
     }

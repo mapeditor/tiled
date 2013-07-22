@@ -106,7 +106,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     writer.writeStartTable("layers");
     foreach (const Layer *layer, map->layers()) {
-        switch (layer->type()) {
+        switch (layer->layerType()) {
         case Layer::TileLayerType:
             writeTileLayer(writer, static_cast<const TileLayer*>(layer));
             break;
@@ -253,6 +253,8 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
                                 imageLayer->transparentColor().name());
     }
 
+    writeProperties(writer, imageLayer->properties());
+
     writer.writeEndTable();
 }
 
@@ -317,9 +319,10 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     writer.writeKeyAndValue("y", pos.y());
     writer.writeKeyAndValue("width", size.x());
     writer.writeKeyAndValue("height", size.y());
+    writer.writeKeyAndValue("rotation", mapObject->rotation());
 
-    if (Tile *tile = mapObject->tile())
-        writer.writeKeyAndValue("gid", mGidMapper.cellToGid(Cell(tile)));
+    if (!mapObject->cell().isEmpty())
+        writer.writeKeyAndValue("gid", mGidMapper.cellToGid(mapObject->cell()));
 
     writer.writeKeyAndValue("visible", mapObject->isVisible());
 

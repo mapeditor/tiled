@@ -1,6 +1,6 @@
 /*
  * mapobject.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  *
  * This file is part of libtiled.
@@ -32,10 +32,11 @@
 using namespace Tiled;
 
 MapObject::MapObject():
+    Object(MapObjectType),
     mSize(0, 0),
     mShape(Rectangle),
-    mTile(0),
     mObjectGroup(0),
+    mRotation(0.0f),
     mVisible(true)
 {
 }
@@ -43,15 +44,38 @@ MapObject::MapObject():
 MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
+    Object(MapObjectType),
     mName(name),
     mType(type),
     mPos(pos),
     mSize(size),
     mShape(Rectangle),
-    mTile(0),
     mObjectGroup(0),
+    mRotation(0.0f),
     mVisible(true)
 {
+}
+
+void MapObject::flip(FlipDirection direction)
+{
+    if (!mCell.isEmpty()) {
+        if (direction == FlipHorizontally)
+            mCell.flippedHorizontally = !mCell.flippedHorizontally;
+        else if (direction == FlipVertically)
+            mCell.flippedVertically = !mCell.flippedVertically;
+    }
+
+    if (!mPolygon.isEmpty()) {
+        const QPointF center2 = mPolygon.boundingRect().center() * 2;
+
+        if (direction == FlipHorizontally) {
+            for (int i = 0; i < mPolygon.size(); ++i)
+                mPolygon[i].setX(center2.x() - mPolygon[i].x());
+        } else if (direction == FlipVertically) {
+            for (int i = 0; i < mPolygon.size(); ++i)
+                mPolygon[i].setY(center2.y() - mPolygon[i].y());
+        }
+    }
 }
 
 MapObject *MapObject::clone() const
@@ -60,6 +84,7 @@ MapObject *MapObject::clone() const
     o->setProperties(properties());
     o->setPolygon(mPolygon);
     o->setShape(mShape);
-    o->setTile(mTile);
+    o->setCell(mCell);
+    o->setRotation(mRotation);
     return o;
 }

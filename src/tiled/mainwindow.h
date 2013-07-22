@@ -25,6 +25,7 @@
 #define MAINWINDOW_H
 
 #include "mapdocument.h"
+#include "consoledock.h"
 
 #include <QMainWindow>
 #include <QSessionManager>
@@ -46,22 +47,23 @@ class MapReaderInterface;
 
 namespace Internal {
 
+class BucketFillTool;
 class ClipboardManager;
+class CommandButton;
 class DocumentManager;
 class LayerDock;
 class MapDocumentActionHandler;
-class MapsDock;
 class MapScene;
-class StampBrush;
-class BucketFillTool;
-class TerrainBrush;
-class TilesetDock;
-class TerrainDock;
+class MapsDock;
 class MapView;
-class CommandButton;
-class ObjectsDock;
-class Zoomable;
 class MiniMapDock;
+class ObjectsDock;
+class PropertiesDock;
+class StampBrush;
+class TerrainBrush;
+class TerrainDock;
+class TilesetDock;
+class Zoomable;
 
 /**
  * The main editor window.
@@ -145,12 +147,13 @@ public slots:
     void openRecentFile();
     void clearRecentFiles();
 
-    void editLayerProperties();
+    void flipHorizontally() { flip(FlipHorizontally); }
+    void flipVertically() { flip(FlipVertically); }
+    void rotateLeft() { rotate(RotateLeft); }
+    void rotateRight() { rotate(RotateRight); }
 
-    void flipStampHorizontally();
-    void flipStampVertically();
-    void rotateStampLeft();
-    void rotateStampRight();
+    void flip(FlipDirection direction);
+    void rotate(RotateDirection direction);
 
     void setStampBrush(const TileLayer *tiles);
     void setTerrainBrush(const Terrain *terrain);
@@ -164,13 +167,15 @@ public slots:
 
 private:
     /**
-      * Asks the user whether the current map should be saved when necessary.
+      * Asks the user whether the given \a mapDocument should be saved, when
+      * necessary. If it needs to ask, also makes sure that it is the current
+      * document.
       *
       * @return <code>true</code> when any unsaved data is either discarded or
       *         saved, <code>false</code> when the user cancelled or saving
       *         failed.
       */
-    bool confirmSave();
+    bool confirmSave(MapDocument *mapDocument);
 
     /**
       * Checks all maps for changes, if so, ask if to save these changes.
@@ -216,6 +221,7 @@ private:
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
+    ConsoleDock *mConsoleDock;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;

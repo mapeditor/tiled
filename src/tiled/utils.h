@@ -62,6 +62,9 @@ void setThemeIcon(T *t, const char *name)
 #endif
 }
 
+void restoreGeometry(QWidget *widget);
+void saveGeometry(QWidget *widget);
+
 } // namespace Utils
 } // namespace Tiled
 

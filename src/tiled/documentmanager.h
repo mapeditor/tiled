@@ -103,6 +103,7 @@ public:
      * Switches to the map document at the given \a index.
      */
     void switchToDocument(int index);
+    void switchToDocument(MapDocument *mapDocument);
 
     /**
      * Adds the new or opened \a mapDocument to the document manager.
@@ -114,6 +115,12 @@ public:
      * any changes!
      */
     void closeCurrentDocument();
+
+    /**
+     * Closes the document at the given \a index. Will not ask the user whether
+     * to save any changes!
+     */
+    void closeDocumentAt(int index);
 
     /**
      * Close all documents. Will not ask the user whether to save any changes!
@@ -128,7 +135,9 @@ public:
     /**
      * Centers the current map on the tile coordinates \a x, \a y.
      */
-    void centerViewOn(int x, int y);
+    void centerViewOn(qreal x, qreal y);
+    void centerViewOn(const QPointF &pos)
+    { centerViewOn(pos.x(), pos.y()); }
 
 signals:
     /**

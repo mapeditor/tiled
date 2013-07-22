@@ -42,16 +42,6 @@ ChangeMapObject::ChangeMapObject(MapDocument *mapDocument,
 {
 }
 
-void ChangeMapObject::undo()
-{
-    swap();
-}
-
-void ChangeMapObject::redo()
-{
-    swap();
-}
-
 void ChangeMapObject::swap()
 {
     const QString name = mMapObject->name();
@@ -62,4 +52,31 @@ void ChangeMapObject::swap()
 
     mName = name;
     mType = type;
+}
+
+
+SetMapObjectVisible::SetMapObjectVisible(MapDocument *mapDocument,
+                                         MapObject *mapObject,
+                                         bool visible)
+    : mMapObjectModel(mapDocument->mapObjectModel())
+    , mMapObject(mapObject)
+    , mOldVisible(mapObject->isVisible())
+    , mNewVisible(visible)
+{
+    if (visible)
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Show Object"));
+    else
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Hide Object"));
+}
+
+void SetMapObjectVisible::undo()
+{
+    mMapObjectModel->setObjectVisible(mMapObject, mOldVisible);
+}
+
+void SetMapObjectVisible::redo()
+{
+    mMapObjectModel->setObjectVisible(mMapObject, mNewVisible);
 }

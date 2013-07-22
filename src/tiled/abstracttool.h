@@ -1,6 +1,6 @@
 /*
  * abstracttool.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of Tiled.
@@ -30,6 +30,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 class QEvent;
+class QKeyEvent;
 
 namespace Tiled {
 namespace Internal {
@@ -87,6 +88,8 @@ public:
      * tool is no longer active.
      */
     virtual void deactivate(MapScene *scene) = 0;
+
+    virtual void keyPressed(QKeyEvent *);
 
     /**
      * Called when the mouse entered the scene. This is usually an appropriate

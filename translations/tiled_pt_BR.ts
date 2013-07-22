@@ -20,11 +20,11 @@
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versão %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2011 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(veja no arquivo AUTHORS a lista completa de todos os que contribuiram com o projeto)&lt;/p&gt;
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Versão %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(veja no arquivo AUTHORS a lista completa de todos os que contribuiram com o projeto)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Você pode modificar e redistribuir este programa sob os termos da GPL (versão 2 ou posterior). Uma cópia da GPL se encontra no arquivo &apos;COPYING&apos; distribuído com o Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
- {2&quot;?} {1&lt;?} {2008-2013 ?} {2 ?}</translation>
+</translation>
     </message>
 </context>
 <context>
@@ -45,12 +45,12 @@
     <message>
         <location filename="../src/automappingconverter/converterdatamodel.cpp" line="+75"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivo</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versão</translation>
     </message>
 </context>
 <context>
@@ -58,22 +58,22 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvar tudo como %1</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Todos os Arquivos (*)</translation>
+        <translation>Todos os Arquivos (*)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Arquivos de mapa do Tiled (*.tmx)</translation>
+        <translation>Arquivos de mapa do Tiled (*.tmx)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Open Map</source>
-        <translation type="unfinished">Abrir Mapa</translation>
+        <translation>Abrir Mapa</translation>
     </message>
 </context>
 <context>
@@ -109,44 +109,44 @@
     <message>
         <location filename="../src/tiled/editterraindialog.ui" line="+14"/>
         <source>Edit Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar Informação de Terreno</translation>
     </message>
     <message>
         <location line="+11"/>
         <location line="+3"/>
         <source>Undo</source>
-        <translation type="unfinished">Desfazer</translation>
+        <translation>Desfazer</translation>
     </message>
     <message>
         <location line="+20"/>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished">Refazer</translation>
+        <translation>Refazer</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Erase</source>
-        <translation type="unfinished">Apagar</translation>
+        <translation>Apagar</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Tipo de Terreno</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add</source>
-        <translation type="unfinished">Adicionar</translation>
+        <translation>Adicionar</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Remove Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover Tipo de Terreno</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove</source>
-        <translation type="unfinished">Remover</translation>
+        <translation>Remover</translation>
     </message>
 </context>
 <context>
@@ -154,27 +154,27 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Não foi possível abrir o arquivo para leitura.</translation>
+        <translation>Não foi possível abrir o arquivo para leitura.</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro ao abrir tileset %1 que expande para %2. Caminho não encontrado!</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>No tilesets section found before layer section.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi encontrada seção de tilesets antes da seção de camadas.</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Error mapping tile id %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro mapeando o tile de iid %1.</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este não parece ser um mapa de Flare válido. Um mapa de Flare consiste de pelo menos uma seçao de cabeçalho, uma seçao de tileset e uma camada.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -394,7 +394,7 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Object &amp;Outlines</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar B&amp;ordas de Objeto</translation>
     </message>
     <message>
         <location line="-370"/>
@@ -474,12 +474,12 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
         <source>Tiled Automapping Rule Files Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Conversor de Arquivos de Regras de Automapeamento de Tiles</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Add new Automapping rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar novas regras de Automapeamento</translation>
     </message>
 </context>
 <context>
@@ -539,7 +539,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+5"/>
         <source>Invalid (nonconsecutive) tile ID: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ID de tile inválido (não consecutivo): %1</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -554,7 +554,8 @@ Linha %1, coluna %2</translation>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+210"/>
         <source>Error loading image:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro carregando imagem:
+&apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+106"/>
@@ -570,7 +571,8 @@ Linha %1, coluna %2</translation>
         <location line="+80"/>
         <source>Error loading image layer image:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Erro carregando imagem camada imagem:
+&apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -978,12 +980,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+171"/>
         <source>Automapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Automapeamento</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Use Automapping, when drawing into layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar Automapeamento ao desenhar nas camadas</translation>
     </message>
     <message>
         <location line="-190"/>
@@ -993,7 +995,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+17"/>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor da grade:</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -1045,22 +1047,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/automappingconverter/convertercontrol.h" line="+33"/>
         <source>v0.8 and before</source>
-        <translation type="unfinished"></translation>
+        <translation>v0.8 e anterior</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>v0.9 and later</source>
-        <translation type="unfinished"></translation>
+        <translation>v0.9 e posterior</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>desconhecido</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>not a map</source>
-        <translation type="unfinished"></translation>
+        <translation>não é um mapa</translation>
     </message>
 </context>
 <context>
@@ -1068,72 +1070,72 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+48"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possivel abrir o arquivo de mapa de Replica Island!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Can&apos;t parse file header!</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possivel processar o cabeçalho do arquivo!</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Can&apos;t parse layer header!</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possivel processar o cabeçalho da camada!</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Inconsistent layer sizes!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamanos de camada inconsistentes!</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>File ended in middle of layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Fim de arquivo no meio da camada!</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Unexpected data at end of file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Dados não esperados no fim do arquivo!</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Replica Island map files (*.bin)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos de mapa de Replica Island (*.bin)</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Cannot open temporary file for writing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível abrir o arquivo temporário para escrita!</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>You must define a background_index property on the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Você deve definir a propriedade background_index no mapa!</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Can&apos;t save non-tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível salvar camada que não é de tile!</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Couldn&apos;t overwrite old version; may be deleted!</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível sobrescrever a versão anterior; pode ser deletada!</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>You must define a type property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Você deve definir a propriedade type em cada camada!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Você deve definir a propriedade tile_index em cada camada!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Você deve definir a propriedade scroll_speed em cada camada!</translation>
     </message>
 </context>
 <context>
@@ -1270,53 +1272,53 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/automapper.cpp" line="+115"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;: Propriedade &apos;%2&apos; = &apos;%3&apos; não faz sentido. Ignorando essa propriedade.</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Did you forget an underscore in layer &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Você equeceu um underscore na camada %1 ?</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada &apos;%1&apos; não é reconhecida como uma camada válida para Automapeamento.</translation>
     </message>
     <message>
         <location line="-105"/>
         <source>&apos;regions_input&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>A camada &apos;regions_input&apos; não pode aparecer mais de uma vez.</translation>
     </message>
     <message>
         <location line="+6"/>
         <location line="+13"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>As camadas &apos;regions_*&apos; devem ser camadas de tiles.</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>&apos;regions_output&apos; layer must not occur more than once.</source>
-        <translation type="unfinished"></translation>
+        <translation>A camada &apos;regions_output&apos; não pode aparecer mais de uma vez.</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>As camadas input_* e inputnot_* devem ser camadas de tiles.</translation>
     </message>
     <message>
         <location line="+56"/>
         <source>No &apos;regions&apos; or &apos;regions_input&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi encontrada camada &apos;regions&apos; ou &apos;regions_input&apos;.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No &apos;regions&apos; or &apos;regions_output&apos; layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi encontrada camada &apos;regions&apos; ou &apos;regions_output&apos;.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>No input_&lt;name&gt; layer found!</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi encontrada a camada input_&lt;name&gt;!</translation>
     </message>
     <message>
         <location line="+171"/>
@@ -1553,22 +1555,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+213"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserir Retângulo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserir Elipse</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation>C</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1650,12 +1652,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="+153"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>New Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo Terreno</translation>
     </message>
 </context>
 <context>
@@ -1678,27 +1680,27 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+60"/>
         <source>Image Layer</source>
-        <translation type="unfinished">Camada de Imagem</translation>
+        <translation>Camada de Imagem</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Browse...</source>
-        <translation type="unfinished">Explorar...</translation>
+        <translation>Explorar...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Image:</source>
-        <translation type="unfinished">Imagem:</translation>
+        <translation>Imagem:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Color:</source>
-        <translation type="unfinished">Cor:</translation>
+        <translation>Cor:</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Layer Image</source>
-        <translation type="unfinished">Imagem da Camada</translation>
+        <translation>Imagem da Camada</translation>
     </message>
 </context>
 <context>
@@ -1724,12 +1726,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+97"/>
         <source>Show Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar Outras Camadas</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Hide Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Esconder Outras Camadas</translation>
     </message>
 </context>
 <context>
@@ -1760,7 +1762,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-525"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1786,7 +1788,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-1281"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1802,7 +1804,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Tab</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -1812,7 +1814,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+3"/>
         <source>Ctrl+Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Tab</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1879,13 +1881,14 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+24"/>
         <source>Non-unique file extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensão de arquivo não-única</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensão de arquivo não-única.
+Por favor selecione o formato específico.</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1925,12 +1928,12 @@ Please select specific format.</source>
     <message>
         <location line="+113"/>
         <source>Current layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada atual: %1</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&lt;none&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;none&gt;</translation>
     </message>
     <message>
         <location line="+160"/>
@@ -1983,7 +1986,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Image Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Camada de Imagem %1</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -2071,7 +2074,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Add &amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Camada de &amp;Imagem</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2129,22 +2132,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="+189"/>
         <source>Change Object Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar Nome do Objeto</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar Tipo do Objeto</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
 </context>
 <context>
@@ -2152,17 +2155,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mappropertiesdialog.cpp" line="+40"/>
         <source>Map</source>
-        <translation type="unfinished">Mapa</translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cor de fundo:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato da camada:</translation>
     </message>
 </context>
 <context>
@@ -2170,17 +2173,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
         <source>Browse...</source>
-        <translation type="unfinished">Explorar...</translation>
+        <translation>Explorar...</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Choose the Maps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Escolha a Pasta de Mapas</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapas</translation>
     </message>
 </context>
 <context>
@@ -2188,7 +2191,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/minimapdock.cpp" line="+60"/>
         <source>Mini-map</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimapa</translation>
     </message>
 </context>
 <context>
@@ -2196,17 +2199,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+58"/>
         <source>Orthogonal</source>
-        <translation type="unfinished">Ortogonal</translation>
+        <translation>Ortogonal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Isometric</source>
-        <translation type="unfinished">Isométrica</translation>
+        <translation>Isométrica</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>Isométrica (Escalonada)</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -2310,23 +2313,23 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objectsdock.cpp" line="+67"/>
         <source>Object Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriedades do Objeto</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Add Object Layer</source>
-        <translation type="unfinished">Adicionar Camade de Objetos</translation>
+        <translation>Adicionar Camade de Objetos</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objetos</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
         <location line="+20"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Mover %n Objeto para Camada</numerusform>
             <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
@@ -2335,7 +2338,7 @@ Please select specific format.</source>
         <location line="-26"/>
         <location line="+47"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Duplicar %n Objeto</numerusform>
             <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
@@ -2344,7 +2347,7 @@ Please select specific format.</source>
         <location line="-46"/>
         <location line="+70"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Remover %n Objeto</numerusform>
             <numerusform>Remover %n Objetos</numerusform>
         </translation>
@@ -2457,13 +2460,13 @@ Deseja substituí-lo?</translation>
         <location filename="../src/tiled/terrainbrush.cpp" line="+44"/>
         <location line="+118"/>
         <source>Terrain Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Pincel de Terreno</translation>
     </message>
     <message>
         <location line="-115"/>
         <location line="+116"/>
         <source>T</source>
-        <translation type="unfinished">T</translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -2471,7 +2474,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location filename="../src/tiled/terraindock.cpp" line="+161"/>
         <source>Terrains</source>
-        <translation type="unfinished"></translation>
+        <translation>Terrenos</translation>
     </message>
 </context>
 <context>
@@ -2479,12 +2482,12 @@ Deseja substituí-lo?</translation>
     <message>
         <location filename="../src/tiled/terrainview.cpp" line="+103"/>
         <source>Terrain &amp;Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Propriedades do Terreno...</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Terreno</translation>
     </message>
 </context>
 <context>
@@ -2552,12 +2555,12 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+1"/>
         <source>Rena&amp;me Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Reno&amp;mear Tileset</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit &amp;Terrain Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar Informação do &amp;Terreno</translation>
     </message>
     <message>
         <location line="+28"/>
@@ -2577,12 +2580,12 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+28"/>
         <source>Rename Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Renomear Tileset</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo nome:</translation>
     </message>
 </context>
 <context>
@@ -2595,12 +2598,12 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="-12"/>
         <source>Add Terrain Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Tipo de Terreno</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecionar Imagem do Terreno</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2790,7 +2793,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+26"/>
         <source>Change Tileset Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterar Nome do Tileset</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+41"/>
@@ -2801,7 +2804,7 @@ Deseja substituí-lo?</translation>
         <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
         <location filename="../src/tiled/imagelayerpropertiesdialog.cpp" line="+27"/>
         <source>Change Image Layer Properties</source>
-        <translation type="unfinished">Alterar Propriedades da Camada de Imagem</translation>
+        <translation>Alterar Propriedades da Camada de Imagem</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -2821,58 +2824,58 @@ Deseja substituí-lo?</translation>
     <message>
         <location filename="../src/tiled/addremoveterrain.cpp" line="+69"/>
         <source>Add Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar Terreno</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover Terreno</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapproperties.cpp" line="+35"/>
         <location filename="../src/tiled/mappropertiesdialog.cpp" line="+38"/>
         <source>Change Map Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterar Propriedades do Mapa</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+134"/>
         <source>Change Tile Terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterar Tile do Terreno</translation>
     </message>
     <message>
         <location filename="../src/tiled/editterraindialog.cpp" line="-135"/>
         <source>Change Terrain Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterar Imagem do Terreno</translation>
     </message>
     <message>
         <location filename="../src/tiled/layermodel.cpp" line="-273"/>
         <source>Show Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir Camada</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Esconder Camada</translation>
     </message>
     <message>
         <location line="+35"/>
         <source>Change Layer Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterar Opacidade da Camada</translation>
     </message>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="-192"/>
         <source>Show Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Exibir Objeto</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Esconder Objeto</translation>
     </message>
     <message>
         <location filename="../src/tiled/terrainmodel.cpp" line="+48"/>
         <source>Change Terrain Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Alterar Nome do Terreno</translation>
     </message>
 </context>
 <context>

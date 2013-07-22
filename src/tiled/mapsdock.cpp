@@ -76,11 +76,6 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
     connect(prefs, SIGNAL(mapsDirectoryChanged()), this, SLOT(onMapsDirectoryChanged()));
     mDirectoryEdit->setText(prefs->mapsDirectory());
     connect(mDirectoryEdit, SIGNAL(returnPressed()), this, SLOT(editedMapsDirectory()));
-
-    // Workaround since a tabbed dockwidget that is not currently visible still
-    // returns true for isVisible()
-    connect(this, SIGNAL(visibilityChanged(bool)),
-            mMapsView, SLOT(setVisible(bool)));
 }
 
 void MapsDock::browse()
@@ -146,11 +141,6 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     mFSModel = new QFileSystemModel;
     mFSModel->setRootPath(mapsDir.absolutePath());
 
-    QDir::Filters filters = QDir::AllDirs | QDir::Files;
-#if QT_VERSION >= 0x040700
-    filters |= QDir::NoDot;
-#endif
-
     PluginManager *pm = PluginManager::instance();
     QStringList nameFilters(QLatin1String("*.tmx"));
 
@@ -165,7 +155,7 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
         }
     }
 
-    mFSModel->setFilter(filters);
+    mFSModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);
     mFSModel->setNameFilters(nameFilters);
     mFSModel->setNameFilterDisables(false); // hide filtered files
 

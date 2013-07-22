@@ -44,29 +44,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     Q_ASSERT(height >= 0);
 }
 
-QRegion TileLayer::region() const
-{
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            if (!cellAt(x, y).isEmpty()) {
-                const int rangeStart = x;
-                for (++x; x <= mWidth; ++x) {
-                    if (x == mWidth || cellAt(x, y).isEmpty()) {
-                        const int rangeEnd = x;
-                        region += QRect(rangeStart + mX, y + mY,
-                                        rangeEnd - rangeStart, 1);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return region;
-}
-
 static QSize maxSize(const QSize &a,
                      const QSize &b)
 {
@@ -81,6 +58,43 @@ static QMargins maxMargins(const QMargins &a,
                     qMax(a.top(), b.top()),
                     qMax(a.right(), b.right()),
                     qMax(a.bottom(), b.bottom()));
+}
+
+/**
+ * Recomputes the draw margins. Needed after the tile offset of a tileset
+ * has changed for example.
+ *
+ * Generally you want to call Map::recomputeDrawMargins instead.
+ */
+void TileLayer::recomputeDrawMargins()
+{
+    QSize maxTileSize(0, 0);
+    QMargins offsetMargins;
+
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        const Cell &cell = mGrid.at(i);
+        if (const Tile *tile = cell.tile) {
+            QSize size = tile->size();
+
+            if (cell.flippedAntiDiagonally)
+                size.transpose();
+
+            const QPoint offset = tile->tileset()->tileOffset();
+
+            maxTileSize = maxSize(size, maxTileSize);
+            offsetMargins = maxMargins(QMargins(-offset.x(),
+                                                 -offset.y(),
+                                                 offset.x(),
+                                                 offset.y()),
+                                        offsetMargins);
+        }
+    }
+
+    mMaxTileSize = maxTileSize;
+    mOffsetMargins = offsetMargins;
+
+    if (mMap)
+        mMap->adjustDrawMargins(drawMargins());
 }
 
 void TileLayer::setCell(int x, int y, const Cell &cell)
@@ -259,19 +273,6 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
             return true;
     }
     return false;
-}
-
-QRegion TileLayer::tilesetReferences(Tileset *tileset) const
-{
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y)
-        for (int x = 0; x < mWidth; ++x)
-            if (const Tile *tile = cellAt(x, y).tile)
-                if (tile->tileset() == tileset)
-                    region += QRegion(x + mX, y + mY, 1, 1);
-
-    return region;
 }
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)

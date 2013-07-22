@@ -29,17 +29,21 @@
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
+
 class ChangeProperties : public QUndoCommand
 {
 public:
     /**
      * Constructs a new 'Change Properties' command.
      *
+     * @param mapDocument  the map document of the object's map
      * @param kind         the kind of properties (Map, Layer, Object, etc.)
      * @param object       the object of which the properties should be changed
      * @param newProperties the new properties that should be applied
      */
-    ChangeProperties(const QString &kind,
+    ChangeProperties(MapDocument *mapDocument,
+                     const QString &kind,
                      Object *object,
                      const Properties &newProperties);
     void undo();
@@ -48,8 +52,80 @@ public:
 private:
     void swapProperties();
 
+    MapDocument *mMapDocument;
     Object *mObject;
     Properties mNewProperties;
+};
+
+class SetProperty : public QUndoCommand
+{
+public:
+    /**
+     * Constructs a new 'Set Property' command.
+     *
+     * @param mapDocument  the map document of the object's map
+     * @param object       the object of which the property should be changed
+     * @param name         the name of the property to be changed
+     * @param value        the new value of the property
+     */
+    SetProperty(MapDocument *mapDocument,
+                Object *object,
+                const QString &name,
+                const QString &value,
+                QUndoCommand *parent = 0);
+
+    void undo();
+    void redo();
+
+private:
+    MapDocument *mMapDocument;
+    Object *mObject;
+    QString mName;
+    QString mValue;
+    QString mPreviousValue;
+    bool mPropertyExisted;
+};
+
+class RemoveProperty : public QUndoCommand
+{
+public:
+    /**
+     * Constructs a new 'Remove Property' command.
+     *
+     * @param mapDocument  the map document of the object's map
+     * @param object       the object from which the property should be removed
+     * @param name         the name of the property to be removed
+     */
+    RemoveProperty(MapDocument *mapDocument,
+                   Object *object,
+                   const QString &name,
+                   QUndoCommand *parent = 0);
+
+    void undo();
+    void redo();
+
+private:
+    MapDocument *mMapDocument;
+    Object *mObject;
+    QString mName;
+    QString mPreviousValue;
+};
+
+class RenameProperty : public QUndoCommand
+{
+public:
+    /**
+     * Constructs a new 'Rename Property' command.
+     *
+     * @param mapDocument  the map document of the object's map
+     * @param object       the object of which the property should be renamed
+     * @param oldName      the old name of the property
+     * @param newName      the new name of the property
+     */
+    RenameProperty(MapDocument *mapDocument,
+                   Object *object,
+                   const QString &oldName,
+                   const QString &newName);
 };
 
 } // namespace Internal

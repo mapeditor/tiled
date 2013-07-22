@@ -27,6 +27,9 @@
 class QAction;
 
 namespace Tiled {
+
+class ObjectGroup;
+
 namespace Internal {
 
 class MapDocument;
@@ -53,6 +56,7 @@ public:
     QAction *actionSelectAll() const { return mActionSelectAll; }
     QAction *actionSelectNone() const { return mActionSelectNone; }
     QAction *actionCropToSelection() const { return mActionCropToSelection; }
+
     QAction *actionAddTileLayer() const { return mActionAddTileLayer; }
     QAction *actionAddObjectGroup() const { return mActionAddObjectGroup; }
     QAction *actionAddImageLayer() const { return mActionAddImageLayer; }
@@ -66,7 +70,10 @@ public:
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
     QAction *actionToggleOtherLayers() const
     { return mActionToggleOtherLayers; }
-    QAction *actionLayerProperties() const { return mActionLayerProperties; }
+
+    QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
+    QAction *actionRemoveObjects() const { return mActionRemoveObjects; }
+
 
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
@@ -91,6 +98,10 @@ public slots:
     void removeLayer();
     void toggleOtherLayers();
 
+    void duplicateObjects();
+    void removeObjects();
+    void moveObjectsToGroup(ObjectGroup *);
+
 private slots:
     void updateActions();
 
@@ -100,6 +111,7 @@ private:
     QAction *mActionSelectAll;
     QAction *mActionSelectNone;
     QAction *mActionCropToSelection;
+
     QAction *mActionAddTileLayer;
     QAction *mActionAddObjectGroup;
     QAction *mActionAddImageLayer;
@@ -111,7 +123,9 @@ private:
     QAction *mActionMoveLayerUp;
     QAction *mActionMoveLayerDown;
     QAction *mActionToggleOtherLayers;
-    QAction *mActionLayerProperties;
+
+    QAction *mActionDuplicateObjects;
+    QAction *mActionRemoveObjects;
 
     static MapDocumentActionHandler *mInstance;
 };

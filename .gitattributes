@@ -4,8 +4,11 @@
 *.h                 text
 *.ui                text
 
+*.bat               eol=crlf
+
 *.png               binary
 
 .gitignore          export-ignore
 .gitattributes      export-ignore
 .mailmap            export-ignore
+.tx                 export-ignore

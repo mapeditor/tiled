@@ -1,6 +1,6 @@
 /*
  * layerdock.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  *
  * This file is part of Tiled.
@@ -49,7 +49,7 @@ public:
     /**
      * Constructor.
      */
-    LayerDock(QWidget *parent = 0);
+    explicit LayerDock(QWidget *parent = 0);
 
     /**
      * Sets the map for which the layers should be displayed.
@@ -62,6 +62,7 @@ protected:
 private slots:
     void updateOpacitySlider();
     void layerChanged(int index);
+    void editLayerName();
     void sliderValueChanged(int opacity);
 
 private:
@@ -84,7 +85,7 @@ class LayerView : public QTreeView
     Q_OBJECT
 
 public:
-    LayerView(QWidget *parent = 0);
+    explicit LayerView(QWidget *parent = 0);
 
     QSize sizeHint() const;
     void setMapDocument(MapDocument *mapDocument);
@@ -95,9 +96,8 @@ protected:
 
 private slots:
     void currentRowChanged(const QModelIndex &index);
+    void indexPressed(const QModelIndex &index);
     void currentLayerIndexChanged(int index);
-
-    void editLayerName();
 
 private:
     MapDocument *mMapDocument;

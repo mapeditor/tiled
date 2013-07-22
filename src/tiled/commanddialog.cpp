@@ -20,7 +20,9 @@
 
 #include "commanddialog.h"
 #include "ui_commanddialog.h"
+
 #include "commanddatamodel.h"
+#include "utils.h"
 
 #include <QShortcut>
 #include <QMenu>
@@ -40,10 +42,12 @@ CommandDialog::CommandDialog(QWidget *parent)
     mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute());
 
     setWindowTitle(tr("Edit Commands"));
+    Utils::restoreGeometry(this);
 }
 
 CommandDialog::~CommandDialog()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 

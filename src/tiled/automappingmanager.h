@@ -52,13 +52,13 @@ class AutomappingManager: public QObject
 
 public:
     /**
-     * Requests the AutomaticMapping manager. When the manager doesn't exist
+     * Requests the AutomappingManager instance. When the manager doesn't exist
      * yet, it will be created.
      */
     static AutomappingManager *instance();
 
     /**
-     * Deletes the AutomaticMapping manager instance, when it exists.
+     * Deletes the AutomappingManager instance, when it exists.
      */
     static void deleteInstance();
 
@@ -91,9 +91,9 @@ private:
     Q_DISABLE_COPY(AutomappingManager)
 
     /**
-     * Constructor. Only used by the AutomaticMapping manager itself.
+     * Constructor. Only used by the AutomappingManager itself.
      */
-    AutomappingManager(QObject *parent);
+    AutomappingManager(QObject *parent = 0);
 
     ~AutomappingManager();
 

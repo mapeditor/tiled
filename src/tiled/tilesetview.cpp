@@ -24,7 +24,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
-#include "propertiesdialog.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
 #include "tileset.h"
@@ -43,8 +42,6 @@
 #include <QPinchGesture>
 #include <QUndoCommand>
 #include <QWheelEvent>
-
-#include <QDebug>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -215,15 +212,18 @@ void TileDelegate::paint(QPainter *painter,
 {
     const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
     const Tile *tile = model->tileAt(index);
+    if (!tile)
+        return;
 
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal zoom = mTilesetView->scale();
+    const QSize tileSize = tileImage.size() * zoom;
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
-    targetRect.setTop(targetRect.bottom() - tileImage.height() * zoom + 1);
-    targetRect.setRight(targetRect.left() + tileImage.width() * zoom - 1);
+    targetRect.setTop(targetRect.bottom() - tileSize.height() + 1);
+    targetRect.setRight(targetRect.left() + tileSize.width() - 1);
 
     // Draw the tile image
     if (Zoomable *zoomable = mTilesetView->zoomable())
@@ -276,11 +276,11 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 {
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
     const Tileset *tileset = m->tileset();
-    const qreal zoom = mTilesetView->scale();
+    const QSize tileSize = tileset->tileSize() * mTilesetView->scale();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
-    return QSize(tileset->tileWidth() * zoom + extra,
-                 tileset->tileHeight() * zoom + extra);
+    return QSize(tileSize.width() + extra,
+                 tileSize.height() + extra);
 }
 
 } // anonymous namespace
@@ -346,7 +346,7 @@ int TilesetView::sizeHintForColumn(int column) const
         return -1;
 
     const int tileWidth = model->tileset()->tileWidth();
-    return tileWidth * scale() + (mDrawGrid ? 1 : 0);
+    return qRound(tileWidth * scale()) + (mDrawGrid ? 1 : 0);
 }
 
 int TilesetView::sizeHintForRow(int row) const
@@ -357,7 +357,7 @@ int TilesetView::sizeHintForRow(int row) const
         return -1;
 
     const int tileHeight = model->tileset()->tileHeight();
-    return tileHeight * scale() + (mDrawGrid ? 1 : 0);
+    return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);
 }
 
 void TilesetView::setZoomable(Zoomable *zoomable)
@@ -507,11 +507,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     const bool isExternal = model->tileset()->isExternal();
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-
     if (tile) {
-        // Select this tile to make sure it is clear that only the properties
-        // of a single tile are being edited.
+        // Select this tile to make sure it is clear that only a single tile is
+        // being edited.
         selectionModel()->setCurrentIndex(index,
                                           QItemSelectionModel::SelectCurrent |
                                           QItemSelectionModel::Clear);
@@ -520,22 +518,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
             addTerrain->setEnabled(!isExternal);
             connect(addTerrain, SIGNAL(triggered()), SLOT(createNewTerrain()));
+
+            if (mTerrainId != -1) {
+                QAction *setImage = menu.addAction(tr("Set Terrain Image"));
+                setImage->setEnabled(!isExternal);
+                connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
+            }
+
+            menu.addSeparator();
         }
-
-        if (mEditTerrain && mTerrainId != -1) {
-            QAction *setImage = menu.addAction(tr("Set Terrain Image"));
-            setImage->setEnabled(!isExternal);
-            connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
-        }
-
-        QAction *tileProperties = menu.addAction(propIcon,
-                                                 tr("Tile &Properties..."));
-        tileProperties->setEnabled(!isExternal);
-        Utils::setThemeIcon(tileProperties, "document-properties");
-        menu.addSeparator();
-
-        connect(tileProperties, SIGNAL(triggered()),
-                SLOT(editTileProperties()));
     }
 
 
@@ -561,19 +552,6 @@ void TilesetView::selectTerrainImage()
 {
     if (Tile *tile = currentTile())
         emit terrainImageSelected(tile);
-}
-
-void TilesetView::editTileProperties()
-{
-    Tile *tile = currentTile();
-    if (!tile)
-        return;
-
-    PropertiesDialog propertiesDialog(tr("Tile"),
-                                      tile,
-                                      mMapDocument->undoStack(),
-                                      this);
-    propertiesDialog.exec();
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)

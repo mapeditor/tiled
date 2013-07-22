@@ -53,9 +53,21 @@ class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
     Tile(const QPixmap &image, int id, Tileset *tileset):
+        Object(TileType),
         mId(id),
         mTileset(tileset),
         mImage(image),
+        mTerrain(-1),
+        mTerrainProbability(-1.f)
+    {}
+
+    Tile(const QPixmap &image, const QString &imageSource,
+         int id, Tileset *tileset):
+        Object(TileType),
+        mId(id),
+        mTileset(tileset),
+        mImage(image),
+        mImageSource(imageSource),
         mTerrain(-1),
         mTerrainProbability(-1.f)
     {}
@@ -79,6 +91,16 @@ public:
      * Sets the image of this tile.
      */
     void setImage(const QPixmap &image) { mImage = image; }
+
+    /**
+     * Returns the file name of the external image that represents this tile.
+     * When this tile doesn't refer to an external image, an empty string is
+     * returned.
+     */
+    const QString &imageSource() const { return mImageSource; }
+
+    void setImageSource(const QString &imageSource)
+    { mImageSource = imageSource; }
 
     /**
      * Returns the width of this tile.
@@ -135,8 +157,11 @@ private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
+    QString mImageSource;
     unsigned mTerrain;
     float mTerrainProbability;
+
+    friend class Tileset; // To allow changing the tile id
 };
 
 } // namespace Tiled

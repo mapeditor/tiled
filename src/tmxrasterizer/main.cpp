@@ -38,6 +38,9 @@ struct CommandLineOptions {
     CommandLineOptions()
         : showHelp(false)
         , showVersion(false)
+        , scale(0.0)
+        , tileSize(0)
+        , useAntiAliasing(false)
     {}
 
     bool showHelp;
@@ -76,9 +79,7 @@ static void showVersion()
 static void parseCommandLineArguments(CommandLineOptions &options)
 {
     const QStringList arguments = QCoreApplication::arguments();
-    options.scale = 0.0;
-    options.tileSize = 0;
-    options.useAntiAliasing = false;
+
     for (int i = 1; i < arguments.size(); ++i) {
         const QString &arg = arguments.at(i);
         if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {

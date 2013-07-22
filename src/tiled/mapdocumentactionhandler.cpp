@@ -70,10 +70,10 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
             QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
     mActionSelectPreviousLayer = new QAction(this);
-    mActionSelectPreviousLayer->setShortcut(tr("PgUp"));
+    mActionSelectPreviousLayer->setShortcut(tr("Ctrl+PgUp"));
 
     mActionSelectNextLayer = new QAction(this);
-    mActionSelectNextLayer->setShortcut(tr("PgDown"));
+    mActionSelectNextLayer->setShortcut(tr("Ctrl+PgDown"));
 
     mActionMoveLayerUp = new QAction(this);
     mActionMoveLayerUp->setShortcut(tr("Ctrl+Shift+Up"));
@@ -90,14 +90,16 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionToggleOtherLayers->setIcon(
             QIcon(QLatin1String(":/images/16x16/show_hide_others.png")));
 
-    mActionLayerProperties = new QAction(this);
-    mActionLayerProperties->setIcon(
-            QIcon(QLatin1String(":images/16x16/document-properties.png")));
+    mActionDuplicateObjects = new QAction(this);
+    mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
+
+    mActionRemoveObjects = new QAction(this);
+    mActionRemoveObjects->setIcon(QIcon(QLatin1String(":/images/16x16/edit-delete.png")));
 
     Utils::setThemeIcon(mActionRemoveLayer, "edit-delete");
     Utils::setThemeIcon(mActionMoveLayerUp, "go-up");
     Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
-    Utils::setThemeIcon(mActionLayerProperties, "document-properties");
+    Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
 
     connect(mActionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
     connect(mActionSelectNone, SIGNAL(triggered()), SLOT(selectNone()));
@@ -120,6 +122,9 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionMoveLayerDown, SIGNAL(triggered()), SLOT(moveLayerDown()));
     connect(mActionToggleOtherLayers, SIGNAL(triggered()),
             SLOT(toggleOtherLayers()));
+
+    connect(mActionDuplicateObjects, SIGNAL(triggered()), SLOT(duplicateObjects()));
+    connect(mActionRemoveObjects, SIGNAL(triggered()), SLOT(removeObjects()));
 
     updateActions();
     retranslateUi();
@@ -146,7 +151,6 @@ void MapDocumentActionHandler::retranslateUi()
     mActionMoveLayerUp->setText(tr("R&aise Layer"));
     mActionMoveLayerDown->setText(tr("&Lower Layer"));
     mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
-    mActionLayerProperties->setText(tr("Layer &Properties..."));
 }
 
 void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
@@ -164,6 +168,8 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));
         connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+                SLOT(updateActions()));
+        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
                 SLOT(updateActions()));
     }
 
@@ -300,17 +306,39 @@ void MapDocumentActionHandler::toggleOtherLayers()
         mMapDocument->toggleOtherLayers(mMapDocument->currentLayerIndex());
 }
 
+void MapDocumentActionHandler::duplicateObjects()
+{
+    if (mMapDocument)
+        mMapDocument->duplicateObjects(mMapDocument->selectedObjects());
+}
+
+void MapDocumentActionHandler::removeObjects()
+{
+    if (mMapDocument)
+        mMapDocument->removeObjects(mMapDocument->selectedObjects());
+}
+
+void MapDocumentActionHandler::moveObjectsToGroup(ObjectGroup *objectGroup)
+{
+    if (mMapDocument) {
+        mMapDocument->moveObjectsToGroup(mMapDocument->selectedObjects(),
+                                         objectGroup);
+    }
+}
+
 void MapDocumentActionHandler::updateActions()
 {
     Map *map = 0;
     int currentLayerIndex = -1;
     QRegion selection;
+    int selectedObjectsCount = 0;
     bool canMergeDown = false;
 
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayerIndex = mMapDocument->currentLayerIndex();
         selection = mMapDocument->tileSelection();
+        selectedObjectsCount = mMapDocument->selectedObjects().count();
 
         if (currentLayerIndex > 0) {
             Layer *upper = map->layerAt(currentLayerIndex);
@@ -341,5 +369,21 @@ void MapDocumentActionHandler::updateActions()
     mActionMoveLayerDown->setEnabled(hasNextLayer);
     mActionToggleOtherLayers->setEnabled(layerCount > 1);
     mActionRemoveLayer->setEnabled(currentLayerIndex >= 0);
-    mActionLayerProperties->setEnabled(currentLayerIndex >= 0);
+
+    mActionDuplicateObjects->setEnabled(selectedObjectsCount > 0);
+    mActionRemoveObjects->setEnabled(selectedObjectsCount > 0);
+
+    QString duplicateText;
+    QString removeText;
+
+    if (selectedObjectsCount > 0) {
+        duplicateText = tr("Duplicate %n Object(s)", "", selectedObjectsCount);
+        removeText = tr("Remove %n Object(s)", "", selectedObjectsCount);
+    } else {
+        duplicateText = tr("Duplicate Objects");
+        removeText = tr("Remove Objects");
+    }
+
+    mActionDuplicateObjects->setText(duplicateText);
+    mActionRemoveObjects->setText(removeText);
 }

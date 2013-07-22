@@ -188,7 +188,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     }
 
     foreach (const Layer *layer, map->layers()) {
-        const Layer::Type type = layer->type();
+        const Layer::TypeFlag type = layer->layerType();
         if (type == Layer::TileLayerType)
             writeTileLayer(w, static_cast<const TileLayer*>(layer));
         else if (type == Layer::ObjectGroupType)
@@ -314,22 +314,29 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                 writeProperties(w, properties);
             if (imageSource.isEmpty()) {
                 w.writeStartElement(QLatin1String("image"));
-                w.writeAttribute(QLatin1String("format"),
-                                 QLatin1String("png"));
 
-                w.writeStartElement(QLatin1String("data"));
-                w.writeAttribute(QLatin1String("encoding"),
-                                 QLatin1String("base64"));
+                if (tile->imageSource().isEmpty()) {
+                    w.writeAttribute(QLatin1String("format"),
+                                     QLatin1String("png"));
 
-                QBuffer buffer;
-                tile->image().save(&buffer, "png");
-                w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
+                    w.writeStartElement(QLatin1String("data"));
+                    w.writeAttribute(QLatin1String("encoding"),
+                                     QLatin1String("base64"));
 
-                w.writeEndElement();
+                    QBuffer buffer;
+                    tile->image().save(&buffer, "png");
+                    w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
+                    w.writeEndElement(); // </data>
+                } else {
+                    QString source = tile->imageSource();
+                    if (!mUseAbsolutePaths)
+                        source = mMapDir.relativeFilePath(source);
+                    w.writeAttribute(QLatin1String("source"), source);
+                }
 
-                w.writeEndElement();
+                w.writeEndElement(); // </image>
             }
-            w.writeEndElement();
+            w.writeEndElement(); // </tile>
         }
     }
 
@@ -448,6 +455,9 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("color"),
                          objectGroup->color().name());
 
+    w.writeAttribute(QLatin1String("draworder"),
+                     drawOrderToString(objectGroup->drawOrder()));
+
     writeLayerAttributes(w, objectGroup);
     writeProperties(w, objectGroup->properties());
 
@@ -495,8 +505,8 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
 
-    if (mapObject->tile()) {
-        const unsigned gid = mGidMapper.cellToGid(Cell(mapObject->tile()));
+    if (!mapObject->cell().isEmpty()) {
+        const unsigned gid = mGidMapper.cellToGid(mapObject->cell());
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 
@@ -514,6 +524,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("width"), QString::number(size.x()));
     if (size.y() != 0)
         w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
+
+    const qreal rotation = mapObject->rotation();
+    if (rotation != 0.0)
+        w.writeAttribute(QLatin1String("rotation"), QString::number(rotation));
 
     if (!mapObject->isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));

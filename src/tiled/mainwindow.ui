@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -102,6 +102,7 @@
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
     <addaction name="actionSnapToGrid"/>
+    <addaction name="actionSnapToFineGrid"/>
     <addaction name="separator"/>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -218,7 +219,7 @@
      <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
    </property>
    <property name="text">
-    <string>Map &amp;Properties...</string>
+    <string>Map &amp;Properties</string>
    </property>
   </action>
   <action name="actionAutoMap">
@@ -412,6 +413,14 @@
    </property>
    <property name="text">
     <string>Show Tile Object &amp;Outlines</string>
+   </property>
+  </action>
+  <action name="actionSnapToFineGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap to &amp;Fine Grid</string>
    </property>
   </action>
  </widget>

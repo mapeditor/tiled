@@ -61,6 +61,7 @@ public:
 private slots:
     void browse();
     void nameEdited(const QString &name);
+    void tilesetTypeChanged(int index);
     void updateOkButton();
     void tryAccept();
 

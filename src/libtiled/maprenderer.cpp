@@ -29,7 +29,11 @@
 #include "maprenderer.h"
 
 #include "imagelayer.h"
+#include "tile.h"
+#include "tilelayer.h"
 
+#include <QPaintEngine>
+#include <QPainter>
 #include <QVector2D>
 
 using namespace Tiled;
@@ -77,4 +81,105 @@ QPolygonF MapRenderer::lineToPolygon(const QPointF &start, const QPointF &end)
     polygon[2] = end - perpendicular + direction;
     polygon[3] = end + perpendicular + direction;
     return polygon;
+}
+
+
+static bool hasOpenGLEngine(const QPainter *painter)
+{
+    const QPaintEngine::Type type = painter->paintEngine()->type();
+    return (type == QPaintEngine::OpenGL ||
+            type == QPaintEngine::OpenGL2);
+}
+
+CellRenderer::CellRenderer(QPainter *painter)
+    : mPainter(painter)
+    , mTile(0)
+    , mIsOpenGL(hasOpenGLEngine(painter))
+{
+}
+
+/**
+ * Renders a \a cell with the given \a origin at \a pos, taking into account
+ * the flipping and tile offset.
+ *
+ * For performance reasons, the actual drawing is delayed until a different
+ * kind of tile has to be drawn. For this reason it is necessary to call
+ * flush when finished doing drawCell calls. This function is also called by
+ * the destructor so usually an explicit call it not needed.
+ */
+void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
+{
+    if (mTile != cell.tile)
+        flush();
+
+    const QSizeF size = cell.tile->size();
+    const QPoint offset = cell.tile->tileset()->tileOffset();
+    const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
+
+    QPainter::PixmapFragment fragment;
+    fragment.x = pos.x() + offset.x() + sizeHalf.x();
+    fragment.y = pos.y() + offset.y() + sizeHalf.y() - size.height();
+    fragment.sourceLeft = 0;
+    fragment.sourceTop = 0;
+    fragment.width = size.width();
+    fragment.height = size.height();
+    fragment.scaleX = cell.flippedHorizontally ? -1 : 1;
+    fragment.scaleY = cell.flippedVertically ? -1 : 1;
+    fragment.rotation = 0;
+    fragment.opacity = 1;
+
+    if (origin == BottomCenter)
+        fragment.x -= sizeHalf.x();
+
+    if (cell.flippedAntiDiagonally) {
+        fragment.rotation = 90;
+        fragment.scaleX *= -1;
+
+        // Compensate for the swap of image dimensions
+        const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
+        fragment.y += halfDiff;
+        if (origin != BottomCenter)
+            fragment.x += halfDiff;
+    }
+
+    if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
+        mTile = cell.tile;
+        mFragments.append(fragment);
+        return;
+    }
+
+    // The Raster paint engine as of Qt 4.8.4 / 5.0.2 does not support
+    // drawing fragments with a negative scaling factor.
+
+    flush(); // make sure we drew all tiles so far
+
+    const QTransform oldTransform = mPainter->transform();
+    QTransform transform = oldTransform;
+    transform.translate(fragment.x, fragment.y);
+    transform.rotate(fragment.rotation);
+    transform.scale(fragment.scaleX, fragment.scaleY);
+
+    const QRectF target(fragment.width * -0.5, fragment.height * -0.5,
+                        fragment.width, fragment.height);
+    const QRectF source(0, 0, fragment.width, fragment.height);
+
+    mPainter->setTransform(transform);
+    mPainter->drawPixmap(target, cell.tile->image(), source);
+    mPainter->setTransform(oldTransform);
+}
+
+/**
+ * Renders any remaining cells.
+ */
+void CellRenderer::flush()
+{
+    if (!mTile)
+        return;
+
+    mPainter->drawPixmapFragments(mFragments.constData(),
+                                  mFragments.size(),
+                                  mTile->image());
+
+    mTile = 0;
+    mFragments.resize(0);
 }

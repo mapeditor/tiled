@@ -24,6 +24,7 @@
 #include "terraindock.h"
 
 #include "documentmanager.h"
+#include "terrain.h"
 #include "terrainmodel.h"
 #include "terrainview.h"
 
@@ -79,6 +80,8 @@ TerrainDock::TerrainDock(QWidget *parent):
     connect(mTerrainView->selectionModel(),
             SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(currentRowChanged(QModelIndex)));
+    connect(mTerrainView, SIGNAL(pressed(QModelIndex)),
+            SLOT(indexPressed(QModelIndex)));
 
     connect(mProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(expandRows(QModelIndex,int,int)));
@@ -110,7 +113,6 @@ void TerrainDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        mTerrainView->setMapDocument(mMapDocument);
         mProxyModel->setSourceModel(mMapDocument->terrainModel());
         mTerrainView->expandAll();
     } else {
@@ -136,6 +138,12 @@ void TerrainDock::currentRowChanged(const QModelIndex &index)
         setCurrentTerrain(terrain);
 }
 
+void TerrainDock::indexPressed(const QModelIndex &index)
+{
+    if (Terrain *terrain = mTerrainView->terrainAt(index))
+        mMapDocument->setCurrentObject(terrain);
+}
+
 void TerrainDock::expandRows(const QModelIndex &parent, int first, int last)
 {
     // If it has a valid parent, then it's not a tileset
@@ -153,6 +161,10 @@ void TerrainDock::setCurrentTerrain(Terrain *terrain)
         return;
 
     mCurrentTerrain = terrain;
+
+    if (terrain)
+        mMapDocument->setCurrentObject(terrain);
+
     emit currentTerrainChanged(mCurrentTerrain);
 }
 

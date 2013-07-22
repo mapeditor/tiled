@@ -1,6 +1,6 @@
 /*
  * Lua Tiled Plugin
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -129,11 +129,10 @@ void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
                                             const QString &value)
 {
     prepareNewLine();
-    write("[\"");
-    write(key.toUtf8());
-    write("\"] = \"");
-    write(value.toUtf8());
-    write('"');
+    write('[');
+    write(quote(key).toUtf8());
+    write("] = ");
+    write(quote(value).toUtf8());
     m_newLine = false;
     m_valueWritten = true;
 }
@@ -147,6 +146,28 @@ void LuaTableWriter::writeKeyAndUnquotedValue(const QByteArray &key,
     write(value);
     m_newLine = false;
     m_valueWritten = true;
+}
+
+/**
+ * Quotes the given string, escaping special characters as necessary.
+ */
+QString LuaTableWriter::quote(const QString &str)
+{
+    QString quoted("\"");
+
+    for (int i = 0; i < str.length(); ++i) {
+        const QChar c = str.at(i);
+
+        switch (c.unicode()) {
+        case '\\':  quoted.append(QLatin1String("\\\\"));  break;
+        case '"':   quoted.append(QLatin1String("\\\""));  break;
+        case '\n':  quoted.append(QLatin1String("\\n"));   break;
+        default:    quoted.append(c);
+        }
+    }
+
+    quoted.append(QLatin1Char('"'));
+    return quoted;
 }
 
 void LuaTableWriter::prepareNewLine()

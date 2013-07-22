@@ -33,14 +33,30 @@
 
 #include <memory>
 
+static const char * const TYPE_KEY = "Tileset/Type";
 static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
 static const char * const COLOR_KEY = "Tileset/TransparentColor";
 static const char * const SPACING_KEY = "Tileset/Spacing";
 static const char * const MARGIN_KEY = "Tileset/Margin";
-static const char * const OFFSET_KEY = "Tileset/Offset";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+enum TilesetType {
+    TilesetImage,
+    ImageCollection
+};
+
+static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
+{
+    switch (ui->tilesetType->currentIndex()) {
+    default:
+    case 0:
+        return TilesetImage;
+    case 1:
+        return ImageCollection;
+    }
+}
 
 NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     QDialog(parent),
@@ -54,24 +70,25 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
 
     // Restore previously used settings
     QSettings *s = Preferences::instance()->settings();
+    int tilesetType = s->value(QLatin1String(TYPE_KEY)).toInt();
     bool colorEnabled = s->value(QLatin1String(COLOR_ENABLED_KEY)).toBool();
     QString colorName = s->value(QLatin1String(COLOR_KEY)).toString();
     QColor color = colorName.isEmpty() ? Qt::magenta : QColor(colorName);
     int spacing = s->value(QLatin1String(SPACING_KEY)).toInt();
     int margin = s->value(QLatin1String(MARGIN_KEY)).toInt();
-    QPoint offset = s->value(QLatin1String(OFFSET_KEY)).toPoint();
 
+    mUi->tilesetType->setCurrentIndex(tilesetType);
     mUi->useTransparentColor->setChecked(colorEnabled);
     mUi->colorButton->setColor(color);
     mUi->spacing->setValue(spacing);
     mUi->margin->setValue(margin);
-    mUi->offsetX->setValue(offset.x());
-    mUi->offsetY->setValue(offset.y());
 
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->name, SIGNAL(textEdited(QString)), SLOT(nameEdited(QString)));
     connect(mUi->name, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
     connect(mUi->image, SIGNAL(textChanged(QString)), SLOT(updateOkButton()));
+    connect(mUi->tilesetType, SIGNAL(currentIndexChanged(int)),
+            SLOT(tilesetTypeChanged(int)));
 
     // Set the image and name fields if the given path is a file
     const QFileInfo fileInfo(path);
@@ -80,6 +97,7 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
         mUi->name->setText(fileInfo.completeBaseName());
     }
 
+    mUi->imageGroupBox->setVisible(tilesetType == 0);
     updateOkButton();
 }
 
@@ -108,48 +126,55 @@ Tileset *NewTilesetDialog::createTileset()
 
 void NewTilesetDialog::tryAccept()
 {
-    const QString name = mUi->name->text();
-    const QString image = mUi->image->text();
-    const bool useTransparentColor = mUi->useTransparentColor->isChecked();
-    const QColor transparentColor = mUi->colorButton->color();
-    const int tileWidth = mUi->tileWidth->value();
-    const int tileHeight = mUi->tileHeight->value();
-    const int spacing = mUi->spacing->value();
-    const int margin = mUi->margin->value();
-    const QPoint offset = QPoint(mUi->offsetX->value(),
-                                 mUi->offsetY->value());
-
-    std::auto_ptr<Tileset> tileset(new Tileset(name,
-                                               tileWidth, tileHeight,
-                                               spacing, margin));
-
-    tileset->setTileOffset(offset);
-
-    if (useTransparentColor)
-        tileset->setTransparentColor(transparentColor);
-
-    if (!tileset->loadFromImage(QImage(image), image)) {
-        QMessageBox::critical(this, tr("Error"),
-                              tr("Failed to load tileset image '%1'.")
-                              .arg(image));
-        return;
-    }
-
-    if (tileset->tileCount() == 0) {
-        QMessageBox::critical(this, tr("Error"),
-                              tr("No tiles found in the tileset image when "
-                                 "using the given tile size, margin and "
-                                 "spacing!"));
-        return;
-    }
-
-    // Store settings for next time
+    // Used for storing the settings for next time
     QSettings *s = Preferences::instance()->settings();
-    s->setValue(QLatin1String(COLOR_ENABLED_KEY), useTransparentColor);
-    s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
-    s->setValue(QLatin1String(SPACING_KEY), spacing);
-    s->setValue(QLatin1String(MARGIN_KEY), margin);
-    s->setValue(QLatin1String(OFFSET_KEY), offset);
+
+    const QString name = mUi->name->text();
+
+    std::auto_ptr<Tileset> tileset;
+
+    if (tilesetType(mUi) == TilesetImage) {
+        const QString image = mUi->image->text();
+        const bool useTransparentColor = mUi->useTransparentColor->isChecked();
+        const QColor transparentColor = mUi->colorButton->color();
+        const int tileWidth = mUi->tileWidth->value();
+        const int tileHeight = mUi->tileHeight->value();
+        const int spacing = mUi->spacing->value();
+        const int margin = mUi->margin->value();
+
+        tileset.reset(new Tileset(name,
+                                  tileWidth, tileHeight,
+                                  spacing, margin));
+
+        if (useTransparentColor)
+            tileset->setTransparentColor(transparentColor);
+
+        if (!image.isEmpty()) {
+            if (!tileset->loadFromImage(QImage(image), image)) {
+                QMessageBox::critical(this, tr("Error"),
+                                      tr("Failed to load tileset image '%1'.")
+                                      .arg(image));
+                return;
+            }
+
+            if (tileset->tileCount() == 0) {
+                QMessageBox::critical(this, tr("Error"),
+                                      tr("No tiles found in the tileset image "
+                                         "when using the given tile size, "
+                                         "margin and spacing!"));
+                return;
+            }
+        }
+
+        s->setValue(QLatin1String(COLOR_ENABLED_KEY), useTransparentColor);
+        s->setValue(QLatin1String(COLOR_KEY), transparentColor.name());
+        s->setValue(QLatin1String(SPACING_KEY), spacing);
+        s->setValue(QLatin1String(MARGIN_KEY), margin);
+    } else {
+        tileset.reset(new Tileset(name, 1, 1));
+    }
+
+    s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
 
     mNewTileset = tileset.release();
     accept();
@@ -174,9 +199,19 @@ void NewTilesetDialog::nameEdited(const QString &name)
     mNameWasEdited = !name.isEmpty();
 }
 
+void NewTilesetDialog::tilesetTypeChanged(int index)
+{
+    mUi->imageGroupBox->setVisible(index == 0);
+    updateOkButton();
+}
+
 void NewTilesetDialog::updateOkButton()
 {
     QPushButton *okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
-    okButton->setEnabled(!mUi->name->text().isEmpty()
-                         && !mUi->image->text().isEmpty());
+
+    bool enabled = !mUi->name->text().isEmpty();
+    if (tilesetType(mUi) == TilesetImage)
+        enabled &= !mUi->image->text().isEmpty();
+
+    okButton->setEnabled(enabled);
 }

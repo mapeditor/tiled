@@ -52,6 +52,7 @@ public:
     void activate(MapScene *scene);
     void deactivate(MapScene *scene);
 
+    void keyPressed(QKeyEvent *event);
     void mouseLeft();
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
@@ -67,14 +68,18 @@ protected:
     ObjectGroup *currentObjectGroup() const;
     MapObjectItem *topMostObjectItemAt(QPointF pos) const;
 
+private slots:
+    void flipHorizontally();
+    void flipVertically();
+
+    void raise();
+    void lower();
+    void raiseToTop();
+    void lowerToBottom();
+
 private:
     void showContextMenu(MapObjectItem *clickedObject,
-                         QPoint screenPos, QWidget *parent);
-
-    void duplicateObjects(const QList<MapObject*> &objects);
-    void removeObjects(const QList<MapObject*> &objects);
-    void moveObjectsToGroup(const QList<MapObject*> &objects,
-                            ObjectGroup *objectGroup);
+                         QPoint screenPos);
 
     MapScene *mMapScene;
 };
