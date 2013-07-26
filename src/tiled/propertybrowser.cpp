@@ -191,13 +191,13 @@ void PropertyBrowser::editCustomProperty(const QString &name)
 
 void PropertyBrowser::mapChanged()
 {
-    if (sender() == mMapDocument)
+    if (mObject == mMapDocument->map())
         updateProperties();
 }
 
 void PropertyBrowser::objectsChanged(const QList<MapObject *> &objects)
 {
-    if (mObject->typeId() == Object::MapObjectType)
+    if (mObject && mObject->typeId() == Object::MapObjectType)
         if (objects.contains(static_cast<MapObject*>(mObject)))
             updateProperties();
 }
