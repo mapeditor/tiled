@@ -197,6 +197,8 @@ public:
      */
     void setCell(const Cell &cell) { mCell = cell; }
 
+    void setTile(Tile *tile) { mCell.tile=tile; }
+
     /**
      * Returns the tile associated with this object.
      */

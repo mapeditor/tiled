@@ -365,7 +365,7 @@ void TileLayer::offset(const QPoint &offset,
 
 bool TileLayer::canMergeWith(Layer *other) const
 {
-    return dynamic_cast<TileLayer*>(other) != 0;
+    return other->layerType()==Layer::TileLayerType;
 }
 
 Layer *TileLayer::mergedWith(Layer *other) const

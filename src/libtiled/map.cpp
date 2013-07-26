@@ -153,7 +153,7 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+    if (TileLayer *tileLayer = static_cast<TileLayer*>(layer))
         adjustDrawMargins(tileLayer->drawMargins());
 }
 

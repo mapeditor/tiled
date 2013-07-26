@@ -202,7 +202,7 @@ void ObjectGroup::offset(const QPoint &offset,
 
 bool ObjectGroup::canMergeWith(Layer *other) const
 {
-    return dynamic_cast<ObjectGroup*>(other) != 0;
+    return other->layerType()==Layer::ObjectGroupType;
 }
 
 Layer *ObjectGroup::mergedWith(Layer *other) const
