@@ -16,7 +16,7 @@ SetCompressor /FINAL /SOLID lzma
 !define P "Tiled"                             ; Program name
 !define P_NORM "tiled"                        ; Program name (normalized)
 !define ROOT_DIR "..\.."                      ; Program root directory
-!define BUILD_DIR "${ROOT_DIR}"               ; Build dir
+!define BUILD_DIR $%TILED_BUILD_DIR%          ; Build dir
 !define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tiled"
 !define PRODUCT_REG_KEY "Tiled Map Editor"
 
@@ -170,6 +170,7 @@ File /oname=COPYING.txt ${ROOT_DIR}\COPYING
 File /oname=AUTHORS.txt ${ROOT_DIR}\AUTHORS
 File /oname=README.txt ${ROOT_DIR}\README.md
 File /oname=NEWS.txt ${ROOT_DIR}\NEWS
+File /oname=LICENSE.APACHE.txt ${ROOT_DIR}\LICENSE.APACHE
 File /oname=LICENSE.BSD.txt ${ROOT_DIR}\LICENSE.BSD
 File /oname=LICENSE.GPL.txt ${ROOT_DIR}\LICENSE.GPL
 File ${BUILD_DIR}\${P_NORM}.dll
@@ -177,9 +178,9 @@ File ${BUILD_DIR}\${P_NORM}.exe
 File ${BUILD_DIR}\tmxviewer.exe
 File ${BUILD_DIR}\tmxrasterizer.exe
 File ${BUILD_DIR}\automappingconverter.exe
-File ${MINGW_DIR}\bin\mingwm10.dll
-File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
-File ${MINGW_DIR}\bin\libstdc++-6.dll
+;File ${MINGW_DIR}\bin\mingwm10.dll
+;File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
+;File ${MINGW_DIR}\bin\libstdc++-6.dll
 File ${QT_DIR}\bin\QtCore4.dll
 File ${QT_DIR}\bin\QtGui4.dll
 File ${QT_DIR}\bin\QtOpenGL4.dll
@@ -201,7 +202,7 @@ SetOutPath $INSTDIR\plugins\tiled
 File /r ${BUILD_DIR}\plugins\tiled\*.dll
 
 SetOutPath $INSTDIR\translations
-File  ${ROOT_DIR}\translations\*.qm
+File  ${BUILD_DIR}\translations\*.qm
 File  ${QT_DIR}\translations\qt_cs.qm
 File  ${QT_DIR}\translations\qt_de.qm
 File  ${QT_DIR}\translations\qt_es.qm
@@ -246,9 +247,9 @@ Delete $INSTDIR\COPYING.txt
 Delete $INSTDIR\AUTHORS.txt
 Delete $INSTDIR\README.txt
 Delete $INSTDIR\NEWS.txt
+Delete $INSTDIR\LICENSE.APACHE.txt
 Delete $INSTDIR\LICENSE.BSD.txt
 Delete $INSTDIR\LICENSE.GPL.txt
-Delete $INSTDIR\LICENSE.LGPL.txt
 Delete $INSTDIR\tiled.dll
 Delete $INSTDIR\tiled.exe
 Delete $INSTDIR\tmxviewer.exe

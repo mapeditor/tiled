@@ -20,7 +20,12 @@ if not defined MAKE (
 :: Check for Qt
 if not defined QTDIR (
     :get_qt_path
-    call:get_path Qt QTDIR
+    call :get_path Qt QTDIR
+)
+
+:: Check for the Tiled build directory
+if not defined TILED_BUILD_DIR (
+    call :get_path "the Tiled build" TILED_BUILD_DIR
 )
 
 call :check_path "!QTDIR!" qmake.exe Qt QMAKE
