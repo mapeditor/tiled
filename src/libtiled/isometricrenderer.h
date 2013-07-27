@@ -52,7 +52,8 @@ public:
     QRectF boundingRect(const MapObject *object) const;
     QPainterPath shape(const MapObject *object) const;
 
-    void drawGrid(QPainter *painter, const QRectF &rect, QColor grid) const;
+    void drawGrid(QPainter *painter, const QRectF &rect,
+                  QColor gridColor, int spacingX, int spacingY) const;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF()) const;

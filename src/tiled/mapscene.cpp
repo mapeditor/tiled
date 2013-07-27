@@ -72,12 +72,14 @@ MapScene::MapScene(QObject *parent):
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, SIGNAL(showGridChanged(bool)), SLOT(setGridVisible(bool)));
+    connect(prefs, SIGNAL(showGuideGridChanged(bool)), SLOT(setGuideGridVisible(bool)));
     connect(prefs, SIGNAL(showTileObjectOutlinesChanged(bool)),
             SLOT(setShowTileObjectOutlines(bool)));
     connect(prefs, SIGNAL(objectTypesChanged()), SLOT(syncAllObjectItems()));
     connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
             SLOT(setHighlightCurrentLayer(bool)));
     connect(prefs, SIGNAL(gridColorChanged(QColor)), SLOT(update()));
+    connect(prefs, SIGNAL(guideGridColorChanged(QColor)), SLOT(update()));
 
     mDarkRectangle->setPen(Qt::NoPen);
     mDarkRectangle->setBrush(Qt::black);
@@ -85,6 +87,7 @@ MapScene::MapScene(QObject *parent):
     addItem(mDarkRectangle);
 
     mGridVisible = prefs->showGrid();
+    mGuideGridVisible = prefs->showGuideGrid();
     mShowTileObjectOutlines = prefs->showTileObjectOutlines();
     mHighlightCurrentLayer = prefs->highlightCurrentLayer();
 
@@ -535,6 +538,15 @@ void MapScene::setGridVisible(bool visible)
     update();
 }
 
+void MapScene::setGuideGridVisible(bool visible)
+{
+    if (mGuideGridVisible == visible)
+        return;
+
+    mGuideGridVisible = visible;
+    update();
+}
+
 void MapScene::setShowTileObjectOutlines(bool enabled)
 {
     if (mShowTileObjectOutlines == enabled)
@@ -560,11 +572,23 @@ void MapScene::setHighlightCurrentLayer(bool highlightCurrentLayer)
 
 void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
 {
-    if (!mMapDocument || !mGridVisible)
+    if (!mMapDocument)
         return;
 
     Preferences *prefs = Preferences::instance();
-    mMapDocument->renderer()->drawGrid(painter, rect, prefs->gridColor());
+
+    if (mGridVisible)
+    {
+        mMapDocument->renderer()->drawGrid(painter, rect, prefs->gridColor());
+    }
+
+    if (mGuideGridVisible)
+    {
+        mMapDocument->renderer()->drawGrid(painter, rect,
+                                           prefs->guideGridColor(),
+                                           prefs->guideGridSpacingX(),
+                                           prefs->guideGridSpacingY());
+    }
 }
 
 bool MapScene::event(QEvent *event)

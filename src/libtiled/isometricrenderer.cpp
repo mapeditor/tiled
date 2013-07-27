@@ -123,8 +123,14 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
 }
 
 void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                 QColor gridColor) const
+                                 QColor gridColor, int spacingX, int spacingY) const
 {
+    if (spacingX > 1 || spacingY > 1)
+    {
+        // Guide grids not supported yet :(
+        return;
+    }
+
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 

@@ -71,6 +71,10 @@ Preferences::Preferences()
     mSnapToFineGrid = boolValue("SnapToFineGrid");
     mGridColor = colorValue("GridColor", Qt::black);
     mGridFine = intValue("GridFine", 4);
+    mShowGuideGrid = boolValue("ShowGuideGrid");
+    mGuideGridSpacingX = intValue("GuideGridSpacingX", 1);
+    mGuideGridSpacingY = intValue("GuideGridSpacingY", 1);
+    mGuideGridColor = colorValue("GuideGridColor", Qt::red);
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
@@ -164,6 +168,43 @@ void Preferences::setGridFine(int gridFine)
     mGridFine = gridFine;
     mSettings->setValue(QLatin1String("Interface/GridFine"), mGridFine);
     emit gridFineChanged(mGridFine);
+}
+
+void Preferences::setShowGuideGrid(bool show)
+{
+    if ( mShowGuideGrid == show )
+        return;
+    mShowGuideGrid = show;
+    mSettings->setValue(QLatin1String("Interface/ShowGuideGrid"), mShowGuideGrid);
+    emit showGuideGridChanged(mShowGuideGrid);
+}
+
+void Preferences::setGuideGridSpacingX(int spacing)
+{
+    if ( mGuideGridSpacingX == spacing )
+        return;
+    mGuideGridSpacingX = spacing;
+    mSettings->setValue(QLatin1String("Interface/GuideGridSpacingX"), mGuideGridSpacingX);
+    emit guideGridSpacingXChanged(mGuideGridSpacingX);
+}
+
+void Preferences::setGuideGridSpacingY(int spacing)
+{
+    if ( mGuideGridSpacingY == spacing )
+        return;
+    mGuideGridSpacingY = spacing;
+    mSettings->setValue(QLatin1String("Interface/GuideGridSpacingY"), mGuideGridSpacingY);
+    emit guideGridSpacingYChanged(mGuideGridSpacingY);
+}
+
+void Preferences::setGuideGridColor(QColor gridColor)
+{
+    if (mGuideGridColor == gridColor)
+        return;
+
+    mGuideGridColor = gridColor;
+    mSettings->setValue(QLatin1String("Interface/GuideGridColor"), mGuideGridColor.name());
+    emit guideGridColorChanged(mGuideGridColor);
 }
 
 void Preferences::setHighlightCurrentLayer(bool highlight)

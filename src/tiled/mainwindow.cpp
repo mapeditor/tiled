@@ -207,6 +207,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     redoAction->setShortcuts(QKeySequence::Redo);
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
+    mUi->actionShowGuideGrid->setChecked(preferences->showGuideGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
@@ -289,6 +290,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionShowGrid, SIGNAL(toggled(bool)),
             preferences, SLOT(setShowGrid(bool)));
+    connect(mUi->actionShowGuideGrid, SIGNAL(toggled(bool)),
+            preferences, SLOT(setShowGuideGrid(bool)));
     connect(mUi->actionShowTileObjectOutlines, SIGNAL(toggled(bool)),
             preferences, SLOT(setShowTileObjectOutlines(bool)));
     connect(mUi->actionSnapToGrid, SIGNAL(toggled(bool)),

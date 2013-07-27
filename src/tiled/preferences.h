@@ -50,6 +50,10 @@ public:
     bool snapToFineGrid() const { return mSnapToFineGrid; }
     QColor gridColor() const { return mGridColor; }
     int gridFine() const { return mGridFine; }
+    bool showGuideGrid() const { return mShowGuideGrid; }
+    int guideGridSpacingX() const { return mGuideGridSpacingX; }
+    int guideGridSpacingY() const { return mGuideGridSpacingY; }
+    QColor guideGridColor() const { return mGuideGridColor; }
 
     bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
@@ -100,6 +104,10 @@ public slots:
     void setSnapToFineGrid(bool snapToFineGrid);
     void setGridColor(QColor gridColor);
     void setGridFine(int gridFine);
+    void setShowGuideGrid(bool show);
+    void setGuideGridSpacingX(int spacing);
+    void setGuideGridSpacingY(int spacing);
+    void setGuideGridColor(QColor color);
     void setHighlightCurrentLayer(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
 
@@ -110,6 +118,10 @@ signals:
     void snapToFineGridChanged(bool snapToFineGrid);
     void gridColorChanged(QColor gridColor);
     void gridFineChanged(int gridFine);
+    void showGuideGridChanged(bool show);
+    void guideGridSpacingXChanged(int spacing);
+    void guideGridSpacingYChanged(int spacing);
+    void guideGridColorChanged(QColor color);
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
 
@@ -136,6 +148,9 @@ private:
     bool mSnapToFineGrid;
     QColor mGridColor;
     int mGridFine;
+    bool mShowGuideGrid;
+    int mGuideGridSpacingX, mGuideGridSpacingY;
+    QColor mGuideGridColor;
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
 

@@ -83,20 +83,24 @@ QPainterPath StaggeredRenderer::shape(const MapObject *object) const
 }
 
 void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                 QColor gridColor) const
+                                 QColor gridColor, int spacingX, int spacingY) const
 {
+    if (spacingX > 1 || spacingY > 1)
+    {
+        // Guide grids not supported yet :(
+        return;
+    }
+
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    int startX = 0;
-    int startY = 0;
-    int endX = map()->width();
-    int endY = (map()->height() + 1) / 2;
+    if (tileWidth <= 0 || tileHeight <= 0)
+        return;
 
-    startX = qMax((int) rect.x() / tileWidth, 0);
-    startY = qMax((int) rect.y() / tileHeight, 0);
-    endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
-    endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
+    const int startX = qMax((int) rect.x() / tileWidth, 0);
+    const int startY = qMax((int) rect.y() / tileHeight, 0);
+    const int endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, map()->width());
+    const int endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, (map()->height() + 1) / 2);
 
     gridColor.setAlpha(128);
 
