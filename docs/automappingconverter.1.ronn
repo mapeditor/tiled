@@ -1,4 +1,4 @@
-automappingconverter(1) -- a converter for old tiled automapping rules
+automappingconverter(1) -- a converter for old Tiled automapping rules
 ========================================
 
 ## SYNOPSIS
@@ -7,8 +7,8 @@ automappingconverter(1) -- a converter for old tiled automapping rules
 
 ## DESCRIPTION
 
-This converter is used to convert automapping rules of The Tiled Mapeditor from
-version 0.8.x and lower to 0.9.0 and later.
+This converter is used to convert automapping rules of the Tiled map editor
+from version 0.8.x and lower to 0.9.0 and later.
 
 ## AUTHORS
 <https://github.com/bjorn/tiled/blob/master/AUTHORS>
