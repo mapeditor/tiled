@@ -175,9 +175,7 @@ void PreferencesDialog::changeEvent(QEvent *e)
     QDialog::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange: {
-            const int formatIndex = mUi->layerDataCombo->currentIndex();
             mUi->retranslateUi(this);
-            mUi->layerDataCombo->setCurrentIndex(formatIndex);
             mUi->languageCombo->setItemText(0, tr("System default"));
         }
         break;
@@ -299,27 +297,6 @@ void PreferencesDialog::fromPreferences()
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
 
-    int formatIndex = 0;
-    switch (prefs->layerDataFormat()) {
-    case Map::XML:
-        formatIndex = 0;
-        break;
-    case Map::Base64:
-        formatIndex = 1;
-        break;
-    case Map::Base64Gzip:
-        formatIndex = 2;
-        break;
-    default:
-    case Map::Base64Zlib:
-        formatIndex = 3;
-        break;
-    case Map::CSV:
-        formatIndex = 4;
-        break;
-    }
-    mUi->layerDataCombo->setCurrentIndex(formatIndex);
-
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
     if (languageIndex == -1)
@@ -336,25 +313,7 @@ void PreferencesDialog::toPreferences()
 
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
-    prefs->setLayerDataFormat(layerDataFormat());
     prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
-}
-
-Map::LayerDataFormat PreferencesDialog::layerDataFormat() const
-{
-    switch (mUi->layerDataCombo->currentIndex()) {
-    case 0:
-        return Map::XML;
-    case 1:
-        return Map::Base64;
-    case 2:
-        return Map::Base64Gzip;
-    case 3:
-    default:
-        return Map::Base64Zlib;
-    case 4:
-        return Map::CSV;
-    }
 }
 
 void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)

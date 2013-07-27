@@ -50,14 +50,13 @@ MapPropertiesDialog::MapPropertiesDialog(MapDocument *mapDocument,
     grid->addWidget(mColorButton, 0, 1);
 
     grid->addWidget(new QLabel(tr("Layer format:")), 1, 0);
-    // fixme: is it possible to reuse the one from the main preferences?
-    mLayerDataCombo->addItem(QLatin1String("Default"));
-    mLayerDataCombo->addItem(QLatin1String("XML"));
-    mLayerDataCombo->addItem(QLatin1String("Base64 (uncompressed)"));
-    mLayerDataCombo->addItem(QLatin1String("Base64 (gzip compressed)"));
-    mLayerDataCombo->addItem(QLatin1String("Base64 (zlib compressed)"));
-    mLayerDataCombo->addItem(QLatin1String("CSV"));
-    mLayerDataCombo->setCurrentIndex(mMapDocument->map()->layerDataFormat() + 1);
+
+    mLayerDataCombo->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
+    mLayerDataCombo->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
+    mLayerDataCombo->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
+    mLayerDataCombo->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
+    mLayerDataCombo->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
+    mLayerDataCombo->setCurrentIndex(mMapDocument->map()->layerDataFormat());
     grid->addWidget(mLayerDataCombo);
 
     QColor bgColor = mapDocument->map()->backgroundColor();
@@ -71,10 +70,10 @@ void MapPropertiesDialog::accept()
     int format = mLayerDataCombo->currentIndex();
     if (format == -1) {
         // this shouldn't happen!
-        format = 0;
+        format = 3;
     }
 
-    Map::LayerDataFormat newLayerDataFormat = static_cast<Map::LayerDataFormat>(format - 1);
+    Map::LayerDataFormat newLayerDataFormat = static_cast<Map::LayerDataFormat>(format);
 
     QUndoStack *undoStack = mMapDocument->undoStack();
 
