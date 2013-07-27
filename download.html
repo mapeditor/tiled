@@ -187,19 +187,19 @@
                 <h4>Latest Release</h4>
                 <ul class="downloads">
                   <li>
-                    <a class="btn btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.0/tiled-0.9.0-win32-setup.exe">
+                    <a class="btn btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.1/tiled-0.9.1-win32-setup.exe">
                     <img src="img/os-windows.png" />
-                    Tiled 0.9.0 for Windows</a>
+                    Tiled 0.9.1 for Windows</a>
                   </li>
                   <li>
-                    <a class="btn btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.0/tiled-qt-0.9.0.dmg">
+                    <a class="btn btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.1/tiled-qt-0.9.1.dmg">
                     <img src="img/os-apple.png" />
-                    Tiled 0.9.0 for OS X</a>
+                    Tiled 0.9.1 for OS X</a>
                   </li>
                   <li>
-                    <a class="btn btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.0/tiled-qt-0.9.0.tar.gz">
+                    <a class="btn btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.1/tiled-qt-0.9.1.tar.gz">
                     <img src="img/os-linux.png" />
-                    Tiled 0.9.0 source</a>
+                    Tiled 0.9.1 source</a>
                   </li>
                 </ul>
                 <div style="clear: both;"></div>
@@ -289,6 +289,30 @@
         <div class="span12">
           <div class="my-box">
             <a id="changes"></a><h3>Changes</h3>
+            <h4>0.9.1 <small>(27 July 2013)</small></h4>
+            <ul>
+            <li>Added saving of map background to JSON format (by Petr Viktorin)</li>
+            <li>Added saving of terrain information to JSON format (by Petr Viktorin)</li>
+            <li>Object Selection tool now always start selecting objects when holding Shift</li>
+            <li>Increased maximum for tileset margin and spacing to 9999</li>
+            <li>Some updates to libtiled-java (by Oskar Wiksten)</li>
+            <li>Install the automappingconverter application (relevant on Linux)</li>
+            <li>Avoid using Windows 95 style (was used on some Linux desktop environments)</li>
+            <li>Removed layer name checks from the Flare export plugin (by Stefan Beller)</li>
+            <li>Double-clicking an object now opens the Object Properties dialog</li>
+            <li>Fixed Object Properties dialog not remembering its size</li>
+            <li>Fixed object drawing order for image saving and mini-map</li>
+            <li>Fixed some plurals in English translation</li>
+            <li>Fixed line widths when zooming in Qt 5</li>
+            <li>Fixed updating of image layer when its opacity or image is changed</li>
+            <li>Fixed display of grid in tileset view on certain zoom levels</li>
+            <li>Fixed save in wrong format after opening a map with plugin (by Mike Hendricks)</li>
+            <li>Fixed closing Tiled being very slow with many maps</li>
+            <li>Fixed saving of image layer properties in the Lua format</li>
+            <li>Fixed escaping of special characters in the Lua format</li>
+            <li>Fixed handling of relative paths for image layers in the JSON plugin</li>
+            </ul>
+
             <h4>0.9.0 <small>(27 January 2013)</small></h4>
             <ul>
             <li>Added objects dock and per-object visibility toggle (by Tim Baker)</li>
