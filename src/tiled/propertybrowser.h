@@ -56,6 +56,11 @@ public:
     void setObject(Object *object);
 
     /**
+     * Returns the object for which the properties are displayed.
+     */
+    Object *object() const;
+
+    /**
      * Sets the \a mapDocument, used for keeping track of changes and for
      * undo/redo support.
      */
@@ -149,6 +154,11 @@ private:
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
 };
+
+inline Object *PropertyBrowser::object() const
+{
+    return mObject;
+}
 
 } // namespace Internal
 } // namespace Tiled

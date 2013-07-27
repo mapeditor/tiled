@@ -148,7 +148,7 @@ void PropertiesDock::currentObjectChanged(Object *object)
 void PropertiesDock::currentItemChanged(QtBrowserItem *item)
 {
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
-    bool external = isExternal(mMapDocument->currentObject());
+    bool external = isExternal(mPropertyBrowser->object());
     mActionRemoveProperty->setEnabled(isCustomProperty && !external);
 }
 
