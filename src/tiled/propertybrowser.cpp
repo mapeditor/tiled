@@ -65,7 +65,6 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
 
-    mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Default"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
@@ -432,7 +431,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case LayerFormatProperty: {
-        Map::LayerDataFormat format = static_cast<Map::LayerDataFormat>(val.toInt() - 1);
+        Map::LayerDataFormat format = static_cast<Map::LayerDataFormat>(val.toInt());
         command = new ChangeMapProperties(mMapDocument,
                                           map->backgroundColor(),
                                           format);
@@ -668,7 +667,7 @@ void PropertyBrowser::updateProperties()
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
-        mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat() + 1);
+        mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         QColor backgroundColor = map->backgroundColor();
         if (!backgroundColor.isValid())
             backgroundColor = Qt::darkGray;

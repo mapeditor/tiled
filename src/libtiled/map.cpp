@@ -46,7 +46,7 @@ Map::Map(Orientation orientation,
     mHeight(height),
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
-    mLayerDataFormat(Default)
+    mLayerDataFormat(Base64Zlib)
 {
 }
 

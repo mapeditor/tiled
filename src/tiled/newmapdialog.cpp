@@ -48,7 +48,8 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Restore previously used settings
-    QSettings *s = Preferences::instance()->settings();
+    Preferences *prefs = Preferences::instance();
+    QSettings *s = prefs->settings();
     const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
     const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
     const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
@@ -56,11 +57,19 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
                                     32).toInt();
 
+    mUi->layerFormatLabel->setText(QCoreApplication::translate("Tiled::Internal::MapPropertiesDialog", "Layer format:"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
+
     mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
     mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
     mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
 
     mUi->orientation->setCurrentIndex(orientation);
+    mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
     mUi->mapWidth->setValue(mapWidth);
     mUi->mapHeight->setValue(mapHeight);
     mUi->tileWidth->setValue(tileWidth);
@@ -99,10 +108,14 @@ MapDocument *NewMapDialog::createMap()
     QVariant orientationData = mUi->orientation->itemData(orientationIndex);
     const Map::Orientation orientation =
             static_cast<Map::Orientation>(orientationData.toInt());
+    const Map::LayerDataFormat layerFormat =
+            static_cast<Map::LayerDataFormat>(mUi->layerFormat->currentIndex());
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
                        tileWidth, tileHeight);
+
+    map->setLayerDataFormat(layerFormat);
 
     const size_t gigabyte = 1073741824;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
@@ -120,6 +133,8 @@ MapDocument *NewMapDialog::createMap()
     }
 
     // Store settings for next time
+    Preferences *prefs = Preferences::instance();
+    prefs->setLayerDataFormat(layerFormat);
     QSettings *s = Preferences::instance()->settings();
     s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);

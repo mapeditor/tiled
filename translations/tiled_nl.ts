@@ -2165,7 +2165,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+3"/>
         <source>Layer format:</source>
-        <translation>&amp;Tilelagen opslaan als:</translation>
+        <translation>Tilelagen opslaan als:</translation>
     </message>
 </context>
 <context>

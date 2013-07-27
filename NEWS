@@ -1,4 +1,4 @@
-0.9.1 (.. July 2013)
+0.9.1 (27 July 2013)
 * Added saving of map background to JSON format (by Petr Viktorin)
 * Added saving of terrain information to JSON format (by Petr Viktorin)
 * Object Selection tool now always start selecting objects when holding Shift

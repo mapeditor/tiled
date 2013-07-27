@@ -47,3 +47,8 @@ HEADERS  += \
 
 FORMS    += \
     converterwindow.ui
+
+manpage.path = $${PREFIX}/share/man/man1/
+manpage.files += ../../docs/automappingconverter.1
+INSTALLS += manpage
+

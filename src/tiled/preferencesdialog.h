@@ -21,8 +21,6 @@
 #ifndef PREFERENCESDIALOG_H
 #define PREFERENCESDIALOG_H
 
-#include "map.h"
-
 #include <QDialog>
 
 class QModelIndex;
@@ -67,8 +65,6 @@ private slots:
 private:
     void fromPreferences();
     void toPreferences();
-
-    Map::LayerDataFormat layerDataFormat() const;
 
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
