@@ -33,9 +33,7 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
 
-    Map::LayerDataFormat format = map->layerDataFormat();
-    if (format == Map::Default)
-        format = prefs->layerDataFormat();
+    Map::LayerDataFormat format = prefs->layerDataFormat();
 
     MapWriter writer;
     writer.setLayerDataFormat(format);
