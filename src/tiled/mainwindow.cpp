@@ -401,13 +401,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(updateStatusInfoLabel(QString)));
     statusBar()->addWidget(mCurrentLayerLabel);
 
-    mUi->menuView->addSeparator();
-    mUi->menuView->addAction(mTilesetDock->toggleViewAction());
-    mUi->menuView->addAction(mTerrainDock->toggleViewAction());
-    mUi->menuView->addAction(mLayerDock->toggleViewAction());
-    mUi->menuView->addAction(undoDock->toggleViewAction());
-    mUi->menuView->addAction(mObjectsDock->toggleViewAction());
-    mUi->menuView->addAction(mMiniMapDock->toggleViewAction());
+    // Add the 'Views and Toolbars' submenu. This needs to happen after all
+    // the dock widgets and toolbars have been added to the main window.
+    QAction *viewsAndToolbars = new QAction(tr("Views and Toolbars"), this);
+    QMenu *popupMenu = createPopupMenu();
+    popupMenu->setParent(this);
+    viewsAndToolbars->setMenu(popupMenu);
+    mUi->menuView->insertAction(mUi->actionShowGrid, viewsAndToolbars);
+    mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
     connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
