@@ -28,6 +28,10 @@ using namespace Tiled::Internal;
 TiledApplication::TiledApplication(int &argc, char **argv) :
     QApplication(argc, argv)
 {
+#if QT_VERSION >= 0x050100
+    // Enable support for highres images (added in Qt 5.1, but off by default)
+    setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
 }
 
 bool TiledApplication::event(QEvent *event)
