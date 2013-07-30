@@ -120,7 +120,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &ce
 
     QPainter::PixmapFragment fragment;
     fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
-    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - objectSize.height();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = size.width();

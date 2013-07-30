@@ -72,7 +72,7 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
         const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
         
         boundingRect = QRectF(bottomLeft.x() + (tileOffset.x() * scale.width()),
-                              bottomLeft.y() + (tileOffset.y() * scale.height()) - imgSize.height(),
+                              bottomLeft.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
                               objectSize.width(),
                               objectSize.height()).adjusted(-1, -1, 1, 1);
     } else {

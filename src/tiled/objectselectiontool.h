@@ -31,6 +31,7 @@ namespace Tiled {
 namespace Internal {
 
 class CornerHandle;
+class ResizeHandle;
 class MapObjectItem;
 class SelectionRectangle;
 
@@ -57,7 +58,7 @@ public:
 
 private slots:
     void updateHandles();
-    void setHandlesVisible(bool visible);
+    void setHandlesVisible(bool visible, bool sideResizeVisible);
 
     void objectsRemoved(const QList<MapObject *> &);
 
@@ -66,7 +67,8 @@ private:
         NoMode,
         Selecting,
         Moving,
-        Rotating
+        Rotating,
+        Resizing
     };
 
     void updateSelection(const QPointF &pos,
@@ -84,19 +86,29 @@ private:
                              Qt::KeyboardModifiers modifiers);
     void finishRotating(const QPointF &pos);
 
+    void startResizing();
+    void updateResizingItems(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+    void finishResizing(const QPointF &pos);
+    
     SelectionRectangle *mSelectionRectangle;
     QGraphicsItem *mRotationOriginIndicator;
     CornerHandle *mCornerHandles[4];
+    ResizeHandle *mResizeHandles[9];
     bool mMousePressed;
     MapObjectItem *mClickedObjectItem;
     CornerHandle *mClickedCornerHandle;
+    ResizeHandle *mClickedResizeHandle;
     QSet<MapObjectItem*> mMovingItems;
     QVector<QPointF> mOldObjectItemPositions;
     QVector<QPointF> mOldObjectPositions;
+    QList<QSizeF> mOldObjectSizes;
     QVector<qreal> mOldObjectRotations;
     QPointF mAlignPosition;
     QRectF mSelectionBoundingRect;
     QPointF mRotationOrigin;
+    QPointF mResizingOrigin;
+    QPointF mResizingLimits;
     Mode mMode;
     QPointF mStart;
     Qt::KeyboardModifiers mModifiers;
