@@ -142,6 +142,11 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
+#if QT_VERSION >= 0x050100
+    // Enable support for highres images (added in Qt 5.1, but off by default)
+    a.setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
+
 #ifndef Q_OS_WIN
     QString baseName = QApplication::style()->objectName();
     if (baseName == QLatin1String("windows")) {
