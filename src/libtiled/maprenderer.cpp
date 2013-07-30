@@ -107,18 +107,20 @@ CellRenderer::CellRenderer(QPainter *painter)
  * flush when finished doing drawCell calls. This function is also called by
  * the destructor so usually an explicit call it not needed.
  */
-void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
+void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &cellSize, Origin origin)
 {
     if (mTile != cell.tile)
         flush();
 
     const QSizeF size = cell.tile->size();
+    const QSizeF objectSize = (cellSize == QSizeF(0, 0)) ? size : cellSize;
+    const QSizeF scale(objectSize.width() / size.width(), objectSize.height() / size.height()); 
     const QPoint offset = cell.tile->tileset()->tileOffset();
-    const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
+    const QPointF sizeHalf = QPointF(objectSize.width() / 2, objectSize.height() / 2);
 
     QPainter::PixmapFragment fragment;
-    fragment.x = pos.x() + offset.x() + sizeHalf.x();
-    fragment.y = pos.y() + offset.y() + sizeHalf.y() - size.height();
+    fragment.x = pos.x() + (offset.x() * scale.width()) + sizeHalf.x();
+    fragment.y = pos.y() + (offset.y() * scale.height()) + sizeHalf.y() - size.height();
     fragment.sourceLeft = 0;
     fragment.sourceTop = 0;
     fragment.width = size.width();
@@ -145,10 +147,10 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
             fragment.x += halfDiff;
     }
     
-    fragment.scaleX = flippedHorizontally ? -1 : 1;
-    fragment.scaleY = flippedVertically ? -1 : 1;
+    fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);
+    fragment.scaleY = scale.height() * (flippedVertically ? -1 : 1);
 
-    if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
+    if (mIsOpenGL || (fragment.scaleX == 1 && fragment.scaleY == 1)) {
         mTile = cell.tile;
         mFragments.append(fragment);
         return;
