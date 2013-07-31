@@ -35,7 +35,6 @@ class Handle;
 class MapDocument;
 class ObjectGroupItem;
 class PointHandle;
-class ResizeHandle;
 
 /**
  * A graphics item displaying a map object.
@@ -116,10 +115,8 @@ private:
     QColor mColor;      // Cached color of the object
     bool mIsEditable;
     bool mSyncing;
-    ResizeHandle *mResizeHandle;
 
     friend class Handle;
-    friend class ResizeHandle;
 };
 
 } // namespace Internal
