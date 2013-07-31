@@ -42,7 +42,6 @@
 #include <QGraphicsView>
 
 #include <cmath>
-#include <iostream>
 
 // MSVC 2010 math header does not come with M_PI
 #ifndef M_PI
@@ -199,23 +198,26 @@ public:
         setZValue(10000 + 2);
         
         mResizingOrigin = QPointF(0, 0);
+        mResizingLimitHorizontal = false;
+        mResizingLimitVertical = false;
         
         switch(anchorPosition) {
-        case TopLeft:       setCursor(Qt::SizeFDiagCursor); mResizingLimits = QPointF(1,1); break;
-        case TopRight:      setCursor(Qt::SizeBDiagCursor); mResizingLimits = QPointF(1,1); break;
-        case BottomLeft:    setCursor(Qt::SizeBDiagCursor); mResizingLimits = QPointF(1,1); break;
-        case BottomRight:   setCursor(Qt::SizeFDiagCursor); mResizingLimits = QPointF(1,1); break;
-        case TopCenter:     setCursor(Qt::SizeVerCursor); mResizingLimits = QPointF(0,1); break;
-        case CenterLeft:    setCursor(Qt::SizeHorCursor); mResizingLimits = QPointF(1,0); break;
-        case CenterRight:   setCursor(Qt::SizeHorCursor); mResizingLimits = QPointF(1,0); break;
-        default:            setCursor(Qt::SizeVerCursor); mResizingLimits = QPointF(0,1); break;
+        case TopLeft:       setCursor(Qt::SizeFDiagCursor); break;
+        case TopRight:      setCursor(Qt::SizeBDiagCursor); break;
+        case BottomLeft:    setCursor(Qt::SizeBDiagCursor); break;
+        case BottomRight:   setCursor(Qt::SizeFDiagCursor); break;
+        case TopCenter:     setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
+        case CenterLeft:    setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        case CenterRight:   setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        default:            setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
         }
     }
     
     void setResizingOrigin(QPointF scalingOrigin) { mResizingOrigin = scalingOrigin; }
     QPointF getResizingOrigin() const { return mResizingOrigin; }
     
-    QPointF getResizingLimits() const { return mResizingLimits; }
+    bool getResizingLimitHorizontal() const { return mResizingLimitHorizontal; }
+    bool getResizingLimitVertical() const { return mResizingLimitVertical; }
     
     QRectF boundingRect() const;
     
@@ -223,7 +225,8 @@ public:
    
 private:
     QPointF mResizingOrigin;
-    QPointF mResizingLimits;
+    bool mResizingLimitHorizontal;
+    bool mResizingLimitVertical;
 };
 
 QRectF ResizeHandle::boundingRect() const
@@ -810,7 +813,8 @@ void ObjectSelectionTool::startResizing()
     mMode = Resizing;
     
     mResizingOrigin = mClickedResizeHandle->getResizingOrigin();
-    mResizingLimits = mClickedResizeHandle->getResizingLimits();
+    mResizingLimitHorizontal = mClickedResizeHandle->getResizingLimitHorizontal();
+    mResizingLimitVertical = mClickedResizeHandle->getResizingLimitVertical();
 
     // Remember the current object positions and sizes.
     mOldObjectItemPositions.clear();
@@ -884,9 +888,9 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
     QSizeF scalingFactor(qMax((qreal)0, diff.x() / startDiff.x()),
                          qMax((qreal)0, diff.y() / startDiff.y()));
 
-    if (mResizingLimits.x() == 0)
+    if (mResizingLimitHorizontal)
         scalingFactor.setWidth(1);
-    if (mResizingLimits.y() == 0)
+    if (mResizingLimitVertical)
         scalingFactor.setHeight(1);
     
     if (objectItem->mapObject()->polygon().isEmpty() == true) {

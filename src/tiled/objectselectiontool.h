@@ -113,7 +113,8 @@ private:
     QRectF mSelectionBoundingRect;
     QPointF mRotationOrigin;
     QPointF mResizingOrigin;
-    QPointF mResizingLimits;
+    bool mResizingLimitHorizontal;
+    bool mResizingLimitVertical;
     Mode mMode;
     QPointF mStart;
     Qt::KeyboardModifiers mModifiers;
