@@ -85,16 +85,21 @@ private:
     void updateRotatingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
     void finishRotating(const QPointF &pos);
-
+    
     void startResizing();
     void updateResizingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
+    void updateResizingSingleItem(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
     void finishResizing(const QPointF &pos);
     
+    const QPointF snapToGrid(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+
     SelectionRectangle *mSelectionRectangle;
     QGraphicsItem *mRotationOriginIndicator;
     CornerHandle *mCornerHandles[4];
-    ResizeHandle *mResizeHandles[9];
+    ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
     MapObjectItem *mClickedObjectItem;
     CornerHandle *mClickedCornerHandle;

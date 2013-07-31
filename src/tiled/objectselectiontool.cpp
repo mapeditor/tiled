@@ -396,7 +396,11 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         updateRotatingItems(pos, modifiers);
         break;
     case Resizing:
-        updateResizingItems(pos, modifiers);
+        if (mMovingItems.size() == 1) {
+            updateResizingSingleItem(pos, modifiers);
+        } else {
+            updateResizingItems(pos, modifiers);
+        }
         break;
     case NoMode:
         break;
@@ -674,25 +678,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mStart;
 
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
-
-    if (snapToGrid || snapToFineGrid) {
-        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignPixelPos =
-                renderer->tileToPixelCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignPixelPos + diff;
-
-        // Snap the position to the grid
-        QPointF newTileCoords =
-                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
-        newTileCoords /= scale;
-        diff = renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
-    }
+    diff = snapToGrid(diff, modifiers);
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
@@ -846,54 +832,25 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 {
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mResizingOrigin;
+    QPointF startDiff = mStart - mResizingOrigin;
     
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
-
-    if (snapToGrid || snapToFineGrid) {
-        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignPixelPos =
-                renderer->tileToPixelCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignPixelPos + diff;
-
-        // Snap the position to the grid
-        QPointF newTileCoords =
-                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
-        newTileCoords /= scale;
-        diff = renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
-    }
-
+    diff = snapToGrid(diff, modifiers);
+    
     // Calculate the scaling factor.
-    const QPointF startDiff = mStart - mResizingOrigin;
-    
-    QSizeF scalingFactor(qMax((qreal)0, diff.x() / startDiff.x()),
-                         qMax((qreal)0, diff.y() / startDiff.y()));
-    
-    if (mResizingLimits.x() == 0)
-        scalingFactor.setWidth(1);
-    if (mResizingLimits.y() == 0)
-        scalingFactor.setHeight(1);
-    
-    if (mMovingItems.size() != 1) {
-        qreal scale = (scalingFactor.width() + scalingFactor.height()) / 2;
-        scalingFactor = QSizeF(scale, scale);
-    }
-    
+    qreal scale = (qMax((qreal)0, diff.x() / startDiff.x())
+                   + qMax((qreal)0, diff.y() / startDiff.y())) / 2;
+
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
         if (objectItem->mapObject()->polygon().isEmpty() == true) {
             const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mResizingOrigin;
-            const QPointF scaledRelPos(oldRelPos.x() * scalingFactor.width(),
-                                       oldRelPos.y() * scalingFactor.height());
+            const QPointF scaledRelPos(oldRelPos.x() * scale,
+                                       oldRelPos.y() * scale);
             const QPointF newPixelPos = mResizingOrigin + scaledRelPos;
             const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
             const QSizeF origSize = mOldObjectSizes.at(i);
-            const QSizeF newSize(origSize.width() * scalingFactor.width(),
-                                 origSize.height() * scalingFactor.height());
+            const QSizeF newSize(origSize.width() * scale,
+                                 origSize.height() * scale);
             
             objectItem->resizeObject(newSize);
             objectItem->setPos(newPixelPos);
@@ -901,6 +858,56 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         }
         
         ++i;
+    }
+}
+
+void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
+                                                   Qt::KeyboardModifiers modifiers)
+{
+    MapObjectItem *objectItem = *mMovingItems.begin();
+    MapRenderer *renderer = mapDocument()->renderer();
+    QPointF diff = pos - mResizingOrigin;
+    QPointF startDiff = mStart - mResizingOrigin;
+    
+    diff = snapToGrid(diff, modifiers);
+    
+    // Most calculations in this function occur in object space, so 
+    // we transform the scaling factors from world space.
+    qreal rotation = objectItem->rotation() * M_PI / -180;
+    const qreal sn = std::sin(rotation);
+    const qreal cs = std::cos(rotation);
+    
+    diff = QPointF(diff.x() * cs - diff.y() * sn, diff.x() * sn + diff.y() * cs);
+    startDiff = QPointF(startDiff.x() * cs - startDiff.y() * sn, startDiff.x() * sn + startDiff.y() * cs);
+    
+    // Calculate scaling factor.
+    QSizeF scalingFactor(qMax((qreal)0, diff.x() / startDiff.x()),
+                         qMax((qreal)0, diff.y() / startDiff.y()));
+
+    if (mResizingLimits.x() == 0)
+        scalingFactor.setWidth(1);
+    if (mResizingLimits.y() == 0)
+        scalingFactor.setHeight(1);
+    
+    if (objectItem->mapObject()->polygon().isEmpty() == true) {
+        // Convert relative position into object space, scale,
+        // and then convert back to world space.
+        const QPointF oldRelPos = mOldObjectItemPositions.at(0) - mResizingOrigin;
+        const QPointF objectRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
+                                   oldRelPos.x() * sn + oldRelPos.y() * cs);
+        const QPointF scaledRelPos(objectRelPos.x() * scalingFactor.width(),
+                                   objectRelPos.y() * scalingFactor.height());
+        const QPointF newRelPos(scaledRelPos.x() * cs + scaledRelPos.y() * sn,
+                                scaledRelPos.x() * -sn + scaledRelPos.y() * cs);
+        const QPointF newPixelPos = mResizingOrigin + newRelPos;
+        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
+        const QSizeF origSize = mOldObjectSizes.at(0);
+        const QSizeF newSize(origSize.width() * scalingFactor.width(),
+                             origSize.height() * scalingFactor.height());
+        
+        objectItem->resizeObject(newSize);
+        objectItem->setPos(newPixelPos);
+        objectItem->mapObject()->setPosition(newPos);
     }
 }
 
@@ -930,4 +937,32 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
     mOldObjectPositions.clear();
     mOldObjectSizes.clear();
     mMovingItems.clear();
+}
+
+const QPointF ObjectSelectionTool::snapToGrid(const QPointF &pos,
+                                              Qt::KeyboardModifiers modifiers)
+{
+    bool snapToGrid = Preferences::instance()->snapToGrid();
+    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+    if (modifiers & Qt::ControlModifier) {
+        snapToGrid = !snapToGrid;
+        snapToFineGrid = false;
+    }
+
+    if (snapToGrid || snapToFineGrid) {
+        MapRenderer *renderer = mapDocument()->renderer();
+        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
+        const QPointF alignPixelPos =
+                renderer->tileToPixelCoords(mAlignPosition);
+        const QPointF newAlignPixelPos = alignPixelPos + pos;
+
+        // Snap the position to the grid
+        QPointF newTileCoords =
+                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+        newTileCoords /= scale;
+        
+        return renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
+    }
+    
+    return pos;
 }
