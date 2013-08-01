@@ -2376,29 +2376,29 @@ PyTypeObject PyQList__lt__QString__gt__Iter_Type = {
 
 
 bool isImageLayerAt(Tiled::Map *map, int idx) {
-  return (dynamic_cast<const Tiled::ImageLayer*>(map->layerAt(idx)) != 0);
+    return (dynamic_cast<const Tiled::ImageLayer*>(map->layerAt(idx)) != 0);
 }
 bool isTileLayerAt(Tiled::Map *map, int idx) {
-  return (dynamic_cast<const Tiled::TileLayer*>(map->layerAt(idx)) != 0);
+    return (dynamic_cast<const Tiled::TileLayer*>(map->layerAt(idx)) != 0);
 }
 bool isObjectGroupAt(Tiled::Map *map, int idx) {
-  return (dynamic_cast<const Tiled::ObjectGroup*>(map->layerAt(idx)) != 0);
+    return (dynamic_cast<const Tiled::ObjectGroup*>(map->layerAt(idx)) != 0);
 }
 Tiled::ImageLayer* imageLayerAt(Tiled::Map *map, int idx) {
-  return static_cast<Tiled::ImageLayer*>(map->layerAt(idx));
+    return static_cast<Tiled::ImageLayer*>(map->layerAt(idx));
 }
 Tiled::TileLayer* tileLayerAt(Tiled::Map *map, int idx) {
-  return static_cast<Tiled::TileLayer*>(map->layerAt(idx));
+    return static_cast<Tiled::TileLayer*>(map->layerAt(idx));
 }
 Tiled::ObjectGroup* objectGroupAt(Tiled::Map *map, int idx) {
-  return static_cast<Tiled::ObjectGroup*>(map->layerAt(idx));
+    return static_cast<Tiled::ObjectGroup*>(map->layerAt(idx));
 }
 
 
 bool loadTilesetFromFile(Tiled::Tileset *ts, QString file)
 {
-  QImage img(file);
-  return ts->loadFromImage(img, file);
+    QImage img(file);
+    return ts->loadFromImage(img, file);
 }
 
 
@@ -4424,26 +4424,11 @@ static PyObject* _wrap_PyTiledCell__get_tile(PyTiledCell *self, void * PYBINDGEN
     py_retval = Py_BuildValue((char *) "N", py_Tile);
     return py_retval;
 }
-static int _wrap_PyTiledCell__set_tile(PyTiledCell *self, PyObject *value, void * PYBINDGEN_UNUSED(closure))
-{
-    PyObject *py_retval;
-    PyTiledTile *tmp_Tile;
-
-    py_retval = Py_BuildValue((char *) "(O)", value);
-    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledTile_Type, &tmp_Tile)) {
-        Py_DECREF(py_retval);
-        return -1;
-    }
-    // dangerous!
-    self->obj->tile = tmp_Tile->obj;
-    Py_DECREF(py_retval);
-    return 0;
-}
 static PyGetSetDef PyTiledCell__getsets[] = {
     {
         (char*) "tile", /* attribute name */
         (getter) _wrap_PyTiledCell__get_tile, /* C function to get the attribute */
-        (setter) _wrap_PyTiledCell__set_tile, /* C function to set the attribute */
+        (setter) NULL, /* C function to set the attribute */
         NULL, /* optional doc string */
         NULL /* optional additional data for getter and setter */
     },
@@ -6247,16 +6232,16 @@ inittiled(void)
 
 PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue)
 {
-    PyObject *py_retval;
-    PyTiledLoggingInterface *py_LoggingInterface;
-    
-    py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
-    py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    py_LoggingInterface->obj = cvalue;
-    py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
-    return py_retval;
+        PyObject *py_retval;
+        PyTiledLoggingInterface *py_LoggingInterface;
+        
+        py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
+        py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+        py_LoggingInterface->obj = cvalue;
+        py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
+        return py_retval;
 }
-    
+        
 
 int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *address)
 {

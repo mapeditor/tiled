@@ -38,10 +38,11 @@ class PK2(Plugin):
 
     # -- tileset
     img = QImage()
-    img.load(dirname(f)+'/../../gfx/tiles/'+str(lvl.tileFile), 'BMP')
+    imgfile = dirname(f)+'/../../gfx/tiles/'+str(lvl.tileFile)
+    img.load(imgfile, 'BMP')
     t = Tiled.Tileset('Tiles', 32,32, 0, 0)
     t.setTransparentColor(QColor(img.color(255)))
-    t.loadFromImage(img, 'script')
+    t.loadFromImage(img, imgfile)
 
     # find common bounding box for the layers
     bb = ['','',10,10]
@@ -60,8 +61,9 @@ class PK2(Plugin):
     # -- background image
     lai = Tiled.ImageLayer('Scenery', 0,0, bb[2], bb[3])
     img = QImage()
-    img.load(dirname(f)+'/../../gfx/scenery/'+str(lvl.fieldFile), 'BMP')
-    lai.loadFromImage(img, 'script')
+    imgfile = dirname(f)+'/../../gfx/scenery/'+str(lvl.fieldFile)
+    img.load(imgfile, 'BMP')
+    lai.loadFromImage(img, imgfile)
 
     # -- layers
     la1 = Tiled.TileLayer('Back', 0,0, bb[2], bb[3])
@@ -89,7 +91,7 @@ class PK2(Plugin):
         print 'loading', sprdir+sprfile
         sprts = Tiled.Tileset(sprfile, 32,32, 0, 0)
         sprts.setTransparentColor(QColor(img.color(255)))
-        sprts.loadFromImage(img, 'script')
+        sprts.loadFromImage(img, sprdir+sprfile)
         lay3.spriteGfx[str(spr.kuvatiedosto)] = sprts
 
       #sprgfx[(str(spr.kuvatiedosto]
@@ -234,7 +236,7 @@ class PK2MAPLAYER(cpystruct.CpyStruct("asciinum lx, ly, w, h;")):
           spr = self.sprites[sprite]
           obj = Tiled.MapObject(str(spr.kuvatiedosto), '', QPointF(rx, ry), QSizeF(1, 1)) #spr.width, spr.height))
           # 0 should point to the actual sprite but how?
-          obj.cell().tile = self.spriteGfx[str(spr.kuvatiedosto)].tileAt(0)
+          obj.setCell(Tiled.Cell(self.spriteGfx[str(spr.kuvatiedosto)].tileAt(0)))
           la.addObject(obj)
 
   def doTiles(self, ts, la, bb):
