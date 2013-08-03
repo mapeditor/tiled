@@ -514,7 +514,6 @@ void ObjectSelectionTool::updateHandles()
 
     const QSet<MapObjectItem*> &items = mapScene()->selectedObjectItems();
     const bool showHandles = items.size() > 0;
-    const bool showSideResizeHandles = items.size() == 1;
     QRectF boundingRect;
 
     if (showHandles) {
@@ -544,28 +543,29 @@ void ObjectSelectionTool::updateHandles()
         mRotationOriginIndicator->setPos(mRotationOrigin);
         
         // Resizing handles.
-        if (showSideResizeHandles == true) {
+        // If there is only one object seleced, align to its orientation.
+        if (items.size() == 1) {
             QRectF itemRect = item->boundingRect().adjusted(1, 1, -1, -1);
             
             topLeft = item->mapToScene(itemRect.topLeft());
             topRight = item->mapToScene(itemRect.topRight());
             bottomLeft = item->mapToScene(itemRect.bottomLeft());
             bottomRight = item->mapToScene(itemRect.bottomRight());
-            
-            QPointF top = (topLeft + topRight) / 2;
-            QPointF left = (topLeft + bottomLeft) / 2;
-            QPointF right = (topRight + bottomRight) / 2;
-            QPointF bottom = (bottomLeft + bottomRight) / 2;
-            
-            mResizeHandles[TopCenter]->setPos(top);
-            mResizeHandles[TopCenter]->setResizingOrigin(bottom);
-            mResizeHandles[CenterLeft]->setPos(left);
-            mResizeHandles[CenterLeft]->setResizingOrigin(right);
-            mResizeHandles[CenterRight]->setPos(right);
-            mResizeHandles[CenterRight]->setResizingOrigin(left);
-            mResizeHandles[BottomCenter]->setPos(bottom);
-            mResizeHandles[BottomCenter]->setResizingOrigin(top);
         }
+        
+        QPointF top = (topLeft + topRight) / 2;
+        QPointF left = (topLeft + bottomLeft) / 2;
+        QPointF right = (topRight + bottomRight) / 2;
+        QPointF bottom = (bottomLeft + bottomRight) / 2;
+        
+        mResizeHandles[TopCenter]->setPos(top);
+        mResizeHandles[TopCenter]->setResizingOrigin(bottom);
+        mResizeHandles[CenterLeft]->setPos(left);
+        mResizeHandles[CenterLeft]->setResizingOrigin(right);
+        mResizeHandles[CenterRight]->setPos(right);
+        mResizeHandles[CenterRight]->setResizingOrigin(left);
+        mResizeHandles[BottomCenter]->setPos(bottom);
+        mResizeHandles[BottomCenter]->setResizingOrigin(top);
         
         mResizeHandles[TopLeft]->setPos(topLeft);
         mResizeHandles[TopLeft]->setResizingOrigin(bottomRight);
@@ -578,18 +578,16 @@ void ObjectSelectionTool::updateHandles()
     }
 
     mSelectionBoundingRect = boundingRect;
-    setHandlesVisible(showHandles, showSideResizeHandles);
+    setHandlesVisible(showHandles);
     mRotationOriginIndicator->setVisible(showHandles);
 }
 
-void ObjectSelectionTool::setHandlesVisible(bool visible, bool sideResizeVisible)
+void ObjectSelectionTool::setHandlesVisible(bool visible)
 {
     for (int i = 0; i < 4; ++i)
         mCornerHandles[i]->setVisible(visible);
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 8; ++i)
         mResizeHandles[i]->setVisible(visible);
-    for (int i = 4; i < 8; ++i)
-        mResizeHandles[i]->setVisible(sideResizeVisible);
 }
 
 void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
@@ -671,7 +669,7 @@ void ObjectSelectionTool::startMoving()
             mAlignPosition.setY(pos.y());
     }
 
-    setHandlesVisible(false, false);
+    setHandlesVisible(false);
     mRotationOriginIndicator->setVisible(false);
 }
 
@@ -740,7 +738,7 @@ void ObjectSelectionTool::startRotating()
         mOldObjectRotations += object->rotation();
     }
 
-    setHandlesVisible(false, false);
+    setHandlesVisible(false);
 }
 
 void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
@@ -828,7 +826,7 @@ void ObjectSelectionTool::startResizing()
         mOldObjectSizes += object->size();
     }
 
-    setHandlesVisible(false, false);
+    setHandlesVisible(false);
 }
 
 void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
@@ -841,8 +839,14 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     diff = snapToGrid(diff, modifiers);
     
     // Calculate the scaling factor.
-    qreal scale = (qMax((qreal)0, diff.x() / startDiff.x())
-                   + qMax((qreal)0, diff.y() / startDiff.y())) / 2;
+    qreal scale;
+    if (mResizingLimitHorizontal)
+        scale = qMax((qreal)0, diff.y() / startDiff.y());
+    else if (mResizingLimitVertical)
+        scale = qMax((qreal)0, diff.x() / startDiff.x());
+    else
+        scale = (qMax((qreal)0, diff.x() / startDiff.x())
+                + qMax((qreal)0, diff.y() / startDiff.y())) / 2;
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {

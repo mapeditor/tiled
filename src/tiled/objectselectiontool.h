@@ -58,7 +58,7 @@ public:
 
 private slots:
     void updateHandles();
-    void setHandlesVisible(bool visible, bool sideResizeVisible);
+    void setHandlesVisible(bool visible);
 
     void objectsRemoved(const QList<MapObject *> &);
 
