@@ -380,8 +380,7 @@ void EditPolygonTool::updateHandles()
         // Update the position of all handles
         for (int i = 0; i < pointHandles.size(); ++i) {
             const QPointF &point = polygon.at(i);
-            const QPointF handlePos = point;
-            const QPointF internalHandlePos = handlePos - item->pos();
+            const QPointF internalHandlePos = point - item->pos();
             pointHandles.at(i)->setPos(item->mapToScene(internalHandlePos));
         }
 

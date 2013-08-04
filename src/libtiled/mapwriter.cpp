@@ -484,8 +484,6 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     }
 
     // Convert from tile to pixel coordinates
-    const ObjectGroup *objectGroup = mapObject->objectGroup();
-
     QPoint pos(mapObject->x(), mapObject->y());
     QPoint size(mapObject->width(), mapObject->height());
 
@@ -515,10 +513,9 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
         QString points;
         foreach (const QPointF &point, polygon) {
-            const QPoint pos(point.x(), point.y());
-            points.append(QString::number(pos.x()));
+            points.append(QString::number(point.x()));
             points.append(QLatin1Char(','));
-            points.append(QString::number(pos.y()));
+            points.append(QString::number(point.y()));
             points.append(QLatin1Char(' '));
         }
         points.chop(1);

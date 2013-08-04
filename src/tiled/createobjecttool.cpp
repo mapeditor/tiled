@@ -148,7 +148,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
             newSize.setWidth(max);
             newSize.setHeight(max);
         }
-        
+
         mNewMapObjectItem->resizeObject(newSize);
         break;
     }

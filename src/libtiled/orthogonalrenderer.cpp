@@ -254,8 +254,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 {
     painter->save();
 
-    const QRectF bounds = object->bounds();
-    QRectF rect(bounds);
+    QRectF rect = object->bounds();
 
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));

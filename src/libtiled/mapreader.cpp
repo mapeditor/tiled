@@ -768,22 +768,6 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer *imageLayer)
     xml.skipCurrentElement();
 }
 
-static QPointF pixelToTileCoordinates(Map *map, int x, int y)
-{
-    const int tileHeight = map->tileHeight();
-    const int tileWidth = map->tileWidth();
-
-    if (map->orientation() == Map::Isometric) {
-        // Isometric needs special handling, since the pixel values are based
-        // solely on the tile height.
-        return QPointF((qreal) x / tileHeight,
-                       (qreal) y / tileHeight);
-    } else {
-        return QPointF((qreal) x / tileWidth,
-                       (qreal) y / tileHeight);
-    }
-}
-
 MapObject *MapReaderPrivate::readObject()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
@@ -799,10 +783,9 @@ MapObject *MapReaderPrivate::readObject()
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
     const QPointF pos(x, y);
-    const QPointF size(width, height);
+    const QSizeF size(width, height);
 
-    MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
-                                                              size.y()));
+    MapObject *object = new MapObject(name, type, pos, size);
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);
