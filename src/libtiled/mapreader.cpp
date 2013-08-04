@@ -799,7 +799,9 @@ MapObject *MapReaderPrivate::readObject()
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
     const QPointF pos = pixelToTileCoordinates(mMap, x, y);
-    const QPointF size = pixelToTileCoordinates(mMap, width, height);
+    const QPointF size = gid > 0
+                         ? QPointF(width, height)
+                         : pixelToTileCoordinates(mMap, width, height);
 
     MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
                                                               size.y()));

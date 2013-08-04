@@ -515,7 +515,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     const TileToPixelCoordinates toPixel(objectGroup->map());
 
     QPoint pos = toPixel(mapObject->x(), mapObject->y());
-    QPoint size = toPixel(mapObject->width(), mapObject->height());
+    QPoint size(mapObject->width(), mapObject->height());
+    
+    if (mapObject->cell().isEmpty() == true)
+        size = toPixel(size.x(), size.y());
 
     w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
     w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
