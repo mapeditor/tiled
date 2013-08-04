@@ -73,28 +73,6 @@ protected:
     MapObjectItem *mMapObjectItem;
 };
 
-/**
- * A resize handle that allows resizing of a map object.
- */
-class ResizeHandle : public Handle
-{
-public:
-    ResizeHandle(MapObjectItem *mapObjectItem)
-        : Handle(mapObjectItem)
-    {
-        setCursor(Qt::SizeFDiagCursor);
-    }
-
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
-private:
-    QSizeF mOldSize;
-};
-
 } // namespace Internal
 } // namespace Tiled
 
@@ -113,87 +91,15 @@ void Handle::paint(QPainter *painter,
     painter->drawRect(QRectF(-5, -5, 10, 10));
 }
 
-
-void ResizeHandle::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    // Remember the old size since we may resize the object
-    if (event->button() == Qt::LeftButton)
-        mOldSize = mMapObjectItem->mapObject()->size();
-
-    Handle::mousePressEvent(event);
-}
-
-void ResizeHandle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    Handle::mouseReleaseEvent(event);
-
-    // If we resized the object, create an undo command
-    MapObject *obj = mMapObjectItem->mapObject();
-    if (event->button() == Qt::LeftButton && mOldSize != obj->size()) {
-        MapDocument *document = mMapObjectItem->mapDocument();
-        QUndoCommand *cmd = new ResizeMapObject(document, obj, mOldSize);
-        document->undoStack()->push(cmd);
-    }
-}
-
-QVariant ResizeHandle::itemChange(GraphicsItemChange change,
-                                  const QVariant &value)
-{
-    if (!mMapObjectItem->mSyncing) {
-        MapRenderer *renderer = mMapObjectItem->mapDocument()->renderer();
-
-        if (change == ItemPositionChange) {
-            bool snapToGrid = Preferences::instance()->snapToGrid();
-            bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-            if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-                snapToGrid = !snapToGrid;
-                snapToFineGrid = false;
-            }
-
-            // Calculate the absolute pixel position
-            const QPointF itemPos = mMapObjectItem->pos();
-            QPointF pixelPos = value.toPointF() + itemPos;
-
-            // Calculate the new coordinates in tiles
-            QPointF tileCoords = renderer->pixelToTileCoords(pixelPos);
-            const QPointF objectPos = mMapObjectItem->mapObject()->position();
-            tileCoords -= objectPos;
-            tileCoords.setX(qMax(tileCoords.x(), qreal(0)));
-            tileCoords.setY(qMax(tileCoords.y(), qreal(0)));
-            if (snapToFineGrid) {
-                int gridFine = Preferences::instance()->gridFine();
-                tileCoords = (tileCoords * gridFine).toPoint();
-                tileCoords /= gridFine;
-            } else if (snapToGrid)
-                tileCoords = tileCoords.toPoint();
-            tileCoords += objectPos;
-
-            return renderer->tileToPixelCoords(tileCoords) - itemPos;
-        }
-        else if (change == ItemPositionHasChanged) {
-            // Update the size of the map object
-            const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
-            QPointF tileCoords = renderer->pixelToTileCoords(newPos);
-            tileCoords -= mMapObjectItem->mapObject()->position();
-            mMapObjectItem->resizeObject(QSizeF(tileCoords.x(), tileCoords.y()));
-        }
-    }
-
-    return Handle::itemChange(change, value);
-}
-
-
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
                              ObjectGroupItem *parent):
     QGraphicsItem(parent),
     mObject(object),
     mMapDocument(mapDocument),
     mIsEditable(false),
-    mSyncing(false),
-    mResizeHandle(new ResizeHandle(this))
+    mSyncing(false)
 {
     syncWithMapObject();
-    mResizeHandle->setVisible(false);
 }
 
 void MapObjectItem::syncWithMapObject()
@@ -209,7 +115,6 @@ void MapObjectItem::syncWithMapObject()
     if (mColor != color) {
         mColor = color;
         update();
-        mResizeHandle->update();
     }
 
     QString toolTip = mName;
@@ -237,9 +142,6 @@ void MapObjectItem::syncWithMapObject()
         // Notify the graphics scene about the geometry change in advance
         prepareGeometryChange();
         mBoundingRect = bounds;
-        const QPointF bottomRight = mObject->bounds().bottomRight();
-        const QPointF handlePos = renderer->tileToPixelCoords(bottomRight);
-        mResizeHandle->setPos(handlePos - pixelPos);
     }
 
     mSyncing = false;
@@ -253,9 +155,6 @@ void MapObjectItem::setEditable(bool editable)
         return;
 
     mIsEditable = editable;
-
-    const bool handlesVisible = mIsEditable && mObject->cell().isEmpty();
-    mResizeHandle->setVisible(handlesVisible && mObject->polygon().isEmpty());
 
     if (mIsEditable)
         setCursor(Qt::SizeAllCursor);
