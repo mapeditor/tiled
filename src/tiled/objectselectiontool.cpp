@@ -813,6 +813,8 @@ void ObjectSelectionTool::startResizing()
     mResizingOrigin = mClickedResizeHandle->getResizingOrigin();
     mResizingLimitHorizontal = mClickedResizeHandle->getResizingLimitHorizontal();
     mResizingLimitVertical = mClickedResizeHandle->getResizingLimitVertical();
+    
+    mStart = mClickedResizeHandle->pos();
 
     // Remember the current object positions and sizes.
     mOldObjectItemPositions.clear();
