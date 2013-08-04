@@ -107,7 +107,7 @@ private:
     QSet<MapObjectItem*> mMovingItems;
     QVector<QPointF> mOldObjectItemPositions;
     QVector<QPointF> mOldObjectPositions;
-    QList<QSizeF> mOldObjectSizes;
+    QVector<QSizeF> mOldObjectSizes;
     QVector<qreal> mOldObjectRotations;
     QPointF mAlignPosition;
     QRectF mSelectionBoundingRect;
