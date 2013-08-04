@@ -568,14 +568,13 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
-        const QPointF newPixelPos = mOldObjectItemPositions.at(i) + diff;
-        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
-        objectItem->setPos(newPixelPos);
+        const QPointF newPos = mOldObjectItemPositions.at(i) + diff;
+        objectItem->setPos(newPos);
         objectItem->mapObject()->setPosition(newPos);
 
         ObjectGroup *objectGroup = objectItem->mapObject()->objectGroup();
         if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
-            objectItem->setZValue(newPixelPos.y());
+            objectItem->setZValue(newPos.y());
 
         ++i;
     }
@@ -629,8 +628,6 @@ void ObjectSelectionTool::startRotating()
 void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
-    MapRenderer *renderer = mapDocument()->renderer();
-
     const QPointF startDiff = mRotationOrigin - mStart;
     const QPointF currentDiff = mRotationOrigin - pos;
 
@@ -649,12 +646,11 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const qreal cs = std::cos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
-        const QPointF newPixelPos = mRotationOrigin + newRelPos;
-        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
+        const QPointF newPos = mRotationOrigin + newRelPos;
 
         const qreal newRotation = mOldObjectRotations.at(i) + angleDiff * 180 / M_PI;
 
-        objectItem->setPos(newPixelPos);
+        objectItem->setPos(newPos);
         objectItem->mapObject()->setPosition(newPos);
         objectItem->setObjectRotation(newRotation);
 

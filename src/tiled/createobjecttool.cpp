@@ -127,7 +127,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         const QPointF tileCoords = renderer->pixelToTileCoords(pos);
 
         // Update the size of the new map object
-        const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
+        const QPointF objectPos = renderer->pixelToTileCoords(mNewMapObjectItem->mapObject()->position());
         QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
                        qMax(qreal(0), tileCoords.y() - objectPos.y()));
 
@@ -138,13 +138,17 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         } else if (snapToGrid)
             newSize = newSize.toSize();
 
+        // After snapping, convert back to pixel units.
+        QPointF newCoords = renderer->tileToPixelCoords(newSize.width(), newSize.height());
+        newSize = QSizeF(newCoords.x(), newCoords.y());
+
         // Holding shift creates circle or square
         if (modifiers & Qt::ShiftModifier) {
             qreal max = qMax(newSize.width(), newSize.height());
             newSize.setWidth(max);
             newSize.setHeight(max);
         }
-
+        
         mNewMapObjectItem->resizeObject(newSize);
         break;
     }
@@ -159,6 +163,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
             tileCoords /= gridFine;
         } else if (snapToGrid)
             tileCoords = tileCoords.toPoint();
+        
+        tileCoords = renderer->tileToPixelCoords(tileCoords);
 
         mNewMapObjectItem->mapObject()->setPosition(tileCoords);
         mNewMapObjectItem->syncWithMapObject();
@@ -176,6 +182,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         } else if (snapToGrid)
             tileCoords = tileCoords.toPoint();
 
+        tileCoords = renderer->tileToPixelCoords(tileCoords);
+        
         tileCoords -= mNewMapObjectItem->mapObject()->position();
 
         QPolygonF polygon = mOverlayPolygonObject->polygon();
@@ -262,6 +270,8 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         tileCoords /= gridFine;
     } else if (snapToGrid)
         tileCoords = tileCoords.toPoint();
+    
+    tileCoords = renderer->tileToPixelCoords(tileCoords);
 
     startNewMapObject(tileCoords, objectGroup);
 }

@@ -467,33 +467,6 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
     w.writeEndElement();
 }
 
-class TileToPixelCoordinates
-{
-public:
-    TileToPixelCoordinates(Map *map)
-    {
-        if (map->orientation() == Map::Isometric) {
-            // Isometric needs special handling, since the pixel values are
-            // based solely on the tile height.
-            mMultiplierX = map->tileHeight();
-            mMultiplierY = map->tileHeight();
-        } else {
-            mMultiplierX = map->tileWidth();
-            mMultiplierY = map->tileHeight();
-        }
-    }
-
-    QPoint operator() (qreal x, qreal y) const
-    {
-        return QPoint(qRound(x * mMultiplierX),
-                      qRound(y * mMultiplierY));
-    }
-
-private:
-    int mMultiplierX;
-    int mMultiplierY;
-};
-
 void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                                    const MapObject *mapObject)
 {
@@ -512,10 +485,9 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     // Convert from tile to pixel coordinates
     const ObjectGroup *objectGroup = mapObject->objectGroup();
-    const TileToPixelCoordinates toPixel(objectGroup->map());
 
-    QPoint pos = toPixel(mapObject->x(), mapObject->y());
-    QPoint size = toPixel(mapObject->width(), mapObject->height());
+    QPoint pos(mapObject->x(), mapObject->y());
+    QPoint size(mapObject->width(), mapObject->height());
 
     w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
     w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
@@ -543,7 +515,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
         QString points;
         foreach (const QPointF &point, polygon) {
-            const QPoint pos = toPixel(point.x(), point.y());
+            const QPoint pos(point.x(), point.y());
             points.append(QString::number(pos.x()));
             points.append(QLatin1Char(','));
             points.append(QString::number(pos.y()));

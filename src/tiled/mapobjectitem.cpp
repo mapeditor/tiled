@@ -156,7 +156,7 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
 
             // Calculate the new coordinates in tiles
             QPointF tileCoords = renderer->pixelToTileCoords(pixelPos);
-            const QPointF objectPos = mMapObjectItem->mapObject()->position();
+            const QPointF objectPos = renderer->pixelToTileCoords(mMapObjectItem->mapObject()->position());
             tileCoords -= objectPos;
             tileCoords.setX(qMax(tileCoords.x(), qreal(0)));
             tileCoords.setY(qMax(tileCoords.y(), qreal(0)));
@@ -173,7 +173,7 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
         else if (change == ItemPositionHasChanged) {
             // Update the size of the map object
             const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
-            QPointF tileCoords = renderer->pixelToTileCoords(newPos);
+            QPointF tileCoords = newPos;
             tileCoords -= mMapObjectItem->mapObject()->position();
             mMapObjectItem->resizeObject(QSizeF(tileCoords.x(), tileCoords.y()));
         }
@@ -219,7 +219,7 @@ void MapObjectItem::syncWithMapObject()
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF pixelPos = renderer->tileToPixelCoords(mObject->position());
+    const QPointF pixelPos = mObject->position();
     QRectF bounds = renderer->boundingRect(mObject);
 
     bounds.translate(-pixelPos);
@@ -238,7 +238,7 @@ void MapObjectItem::syncWithMapObject()
         prepareGeometryChange();
         mBoundingRect = bounds;
         const QPointF bottomRight = mObject->bounds().bottomRight();
-        const QPointF handlePos = renderer->tileToPixelCoords(bottomRight);
+        const QPointF handlePos = bottomRight;
         mResizeHandle->setPos(handlePos - pixelPos);
     }
 

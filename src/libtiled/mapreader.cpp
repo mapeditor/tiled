@@ -798,8 +798,8 @@ MapObject *MapReaderPrivate::readObject()
     const QString type = atts.value(QLatin1String("type")).toString();
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
-    const QPointF pos = pixelToTileCoordinates(mMap, x, y);
-    const QPointF size = pixelToTileCoordinates(mMap, width, height);
+    const QPointF pos(x, y);
+    const QPointF size(width, height);
 
     MapObject *object = new MapObject(name, type, pos, QSizeF(size.x(),
                                                               size.y()));
@@ -863,7 +863,7 @@ QPolygonF MapReaderPrivate::readPolygon()
         if (!ok)
             break;
 
-        polygon.append(pixelToTileCoordinates(mMap, x, y));
+        polygon.append(QPointF(x, y));
     }
 
     if (!ok)
