@@ -1025,6 +1025,9 @@ void MainWindow::paste()
             } else if (Preferences::instance()->snapToGrid()) {
                 insertPos = insertPos.toPoint();
             }
+
+            insertPos = renderer->tileToPixelCoords(insertPos);
+
             const QPointF offset = insertPos - center;
 
             QUndoStack *undoStack = mMapDocument->undoStack();
