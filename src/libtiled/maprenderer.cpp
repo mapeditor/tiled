@@ -134,6 +134,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
     if (cell.flippedAntiDiagonally) {
         fragment.rotation = 90;
         fragment.scaleX *= -1;
+        std::swap(fragment.scaleX, fragment.scaleY);
 
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
