@@ -123,17 +123,20 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
     fragment.sourceTop = 0;
     fragment.width = size.width();
     fragment.height = size.height();
-    fragment.scaleX = cell.flippedHorizontally ? -1 : 1;
-    fragment.scaleY = cell.flippedVertically ? -1 : 1;
     fragment.rotation = 0;
     fragment.opacity = 1;
+    
+    bool flippedHorizontally = cell.flippedHorizontally;
+    bool flippedVertically = cell.flippedVertically;
 
     if (origin == BottomCenter)
         fragment.x -= sizeHalf.x();
 
     if (cell.flippedAntiDiagonally) {
         fragment.rotation = 90;
-        fragment.scaleX *= -1;
+        
+        flippedHorizontally = cell.flippedVertically;
+        flippedVertically = !cell.flippedHorizontally;
 
         // Compensate for the swap of image dimensions
         const qreal halfDiff = sizeHalf.y() - sizeHalf.x();
@@ -141,6 +144,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
         if (origin != BottomCenter)
             fragment.x += halfDiff;
     }
+    
+    fragment.scaleX = flippedHorizontally ? -1 : 1;
+    fragment.scaleY = flippedVertically ? -1 : 1;
 
     if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
         mTile = cell.tile;
