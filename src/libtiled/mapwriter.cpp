@@ -484,16 +484,16 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     }
 
     // Convert from tile to pixel coordinates
-    QPoint pos(mapObject->x(), mapObject->y());
-    QPoint size(mapObject->width(), mapObject->height());
+    QPoint pos(mapObject->position().toPoint());
+    QSize size(mapObject->size().toSize());
 
     w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
     w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
 
-    if (size.x() != 0)
-        w.writeAttribute(QLatin1String("width"), QString::number(size.x()));
-    if (size.y() != 0)
-        w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
+    if (size.width() != 0)
+        w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
+    if (size.height() != 0)
+        w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
 
     const qreal rotation = mapObject->rotation();
     if (rotation != 0.0)
