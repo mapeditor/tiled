@@ -167,6 +167,12 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
                                 tileset->transparentColor().name());
     }
 
+    const QPoint offset = tileset->tileOffset();
+    writer.writeStartTable("tileoffset");
+    writer.writeKeyAndValue("x", offset.x());
+    writer.writeKeyAndValue("y", offset.y());
+    writer.writeEndTable();
+
     writeProperties(writer, tileset->properties());
 
     writer.writeStartTable("tiles");
