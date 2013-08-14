@@ -49,6 +49,7 @@ public:
 
     void deactivate(MapScene *scene);
 
+    void keyPressed(QKeyEvent *event);
     void mouseEntered();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
@@ -69,6 +70,7 @@ private:
     MapObject *clearNewMapObjectItem();
     void cancelNewMapObject();
     void finishNewMapObject();
+    void finishOrCancelPolygon();
 
     MapObjectItem *mNewMapObjectItem;
     ObjectGroup *mOverlayObjectGroup;
