@@ -56,6 +56,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="actionSaveAsImage"/>
+    <addaction name="actionReload"/>
     <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -421,6 +422,11 @@
    </property>
    <property name="text">
     <string>Snap to &amp;Fine Grid</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>Reload</string>
    </property>
   </action>
  </widget>

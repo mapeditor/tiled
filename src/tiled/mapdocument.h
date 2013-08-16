@@ -86,6 +86,14 @@ public:
     bool save(QString *error = 0);
 
     /**
+     * Reloads the (externally changed?) map from disk. If loading fails, the
+     * current map will be kept.
+     * The return indicates whether the loading suceeded, error will be set
+     * appropriately to loading errors.
+     */
+    bool reload(QString *error = 0);
+
+    /**
      * Saves the map to the file at \a fileName. Returns whether or not the
      * file was saved successfully. If not, <i>error</i> will be set to the
      * error message if it is not 0.
