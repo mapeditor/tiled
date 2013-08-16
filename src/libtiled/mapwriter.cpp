@@ -513,9 +513,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
         QString points;
         foreach (const QPointF &point, polygon) {
-            points.append(QString::number(point.x()));
+            const QPoint p = point.toPoint();
+            points.append(QString::number(p.x()));
             points.append(QLatin1Char(','));
-            points.append(QString::number(point.y()));
+            points.append(QString::number(p.y()));
             points.append(QLatin1Char(' '));
         }
         points.chop(1);

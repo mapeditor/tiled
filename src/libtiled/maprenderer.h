@@ -145,8 +145,7 @@ public:
     /**
      * Returns the pixel coordinates matching the given tile coordinates.
      */
-    virtual QPointF tileToPixelCoords(qreal x, qreal y) const
-    { return QPointF(x, y); }
+    virtual QPointF tileToPixelCoords(qreal x, qreal y) const = 0;
 
     inline QPointF tileToPixelCoords(const QPointF &point) const
     { return tileToPixelCoords(point.x(), point.y()); }
@@ -185,13 +184,21 @@ public:
     inline QPointF screenToPixelCoords(const QPointF &point) const
     { return screenToPixelCoords(point.x(), point.y()); }
 
+    /**
+     * Returns the screen position matching the given tile coordinates.
+     */
     inline QPointF tileToScreenCoords(qreal x, qreal y) const
     { return pixelToScreenCoords(tileToPixelCoords(x, y)); }
+
     inline QPointF tileToScreenCoords(QPointF point) const
     { return tileToScreenCoords(point.x(), point.y()); }
     
+    /**
+     * Returns the tile coordinates matching the given screen position.
+     */
     inline QPointF screenToTileCoords(qreal x, qreal y) const
     { return pixelToTileCoords(screenToPixelCoords(x, y)); }
+
     inline QPointF screenToTileCoords(QPointF point) const
     { return screenToTileCoords(point.x(), point.y()); }
     
