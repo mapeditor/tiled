@@ -555,21 +555,21 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
 
     if (snapToGrid || snapToFineGrid) {
         int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignPixelPos =
-                renderer->tileToPixelCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignPixelPos + diff;
+        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition);
+        const QPointF newAlignScreenPos = alignScreenPos + diff;
 
         // Snap the position to the grid
         QPointF newTileCoords =
-                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+                (renderer->screenToTileCoords(newAlignScreenPos) * scale).toPoint();
         newTileCoords /= scale;
-        diff = renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
+        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
     }
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
-        const QPointF newPos = mOldObjectItemPositions.at(i) + diff;
-        objectItem->setPos(newPos);
+        const QPointF newScreenPos = mOldObjectItemPositions.at(i) + diff;
+        const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
+        objectItem->setPos(newScreenPos);
         objectItem->mapObject()->setPosition(newPos);
 
         ObjectGroup *objectGroup = objectItem->mapObject()->objectGroup();
@@ -628,6 +628,8 @@ void ObjectSelectionTool::startRotating()
 void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
+    MapRenderer *renderer = mapDocument()->renderer();
+
     const QPointF startDiff = mRotationOrigin - mStart;
     const QPointF currentDiff = mRotationOrigin - pos;
 
@@ -646,11 +648,12 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const qreal cs = std::cos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
-        const QPointF newPos = mRotationOrigin + newRelPos;
+        const QPointF newScreenPos = mRotationOrigin + newRelPos;
+        const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
 
         const qreal newRotation = mOldObjectRotations.at(i) + angleDiff * 180 / M_PI;
 
-        objectItem->setPos(newPos);
+        objectItem->setPos(newScreenPos);
         objectItem->mapObject()->setPosition(newPos);
         objectItem->setObjectRotation(newRotation);
 

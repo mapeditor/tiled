@@ -79,7 +79,7 @@ void AbstractObjectTool::mouseLeft()
 void AbstractObjectTool::mouseMoved(const QPointF &pos,
                                     Qt::KeyboardModifiers)
 {
-    const QPointF tilePosF = mapDocument()->renderer()->pixelToTileCoords(pos);
+    const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(pos);
     const int x = (int) std::floor(tilePosF.x());
     const int y = (int) std::floor(tilePosF.y());
     setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));

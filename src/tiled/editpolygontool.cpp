@@ -352,6 +352,8 @@ void EditPolygonTool::updateHandles()
         }
     }
 
+    MapRenderer *renderer = mapDocument()->renderer(); 
+
     foreach (MapObjectItem *item, selection) {
         const MapObject *object = item->mapObject();
         if (!object->cell().isEmpty())
@@ -380,7 +382,8 @@ void EditPolygonTool::updateHandles()
         // Update the position of all handles
         for (int i = 0; i < pointHandles.size(); ++i) {
             const QPointF &point = polygon.at(i);
-            const QPointF internalHandlePos = point - item->pos();
+            const QPointF handlePos = renderer->pixelToScreenCoords(point);
+            const QPointF internalHandlePos = handlePos - item->pos();
             pointHandles.at(i)->setPos(item->mapToScene(internalHandlePos));
         }
 
@@ -496,14 +499,14 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     if (snapToGrid || snapToFineGrid) {
         int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignPixelPos = mAlignPosition;
-        const QPointF newAlignPixelPos = alignPixelPos + diff;
+        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition);
+        const QPointF newAlignScreenPos = alignScreenPos + diff;
 
         // Snap the position to the grid
         QPointF newTileCoords =
-                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+                (renderer->screenToTileCoords(newAlignScreenPos) * scale).toPoint();
         newTileCoords /= scale;
-        diff = renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
+        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
     }
 
     int i = 0;
@@ -513,7 +516,7 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
         const QPointF newInternalPos = item->mapFromScene(newPixelPos);
         const QPointF newScenePos = item->pos() + newInternalPos;
         handle->setPos(newPixelPos);
-        handle->setPointPosition(newScenePos);
+        handle->setPointPosition(renderer->screenToPixelCoords(newScenePos));
         ++i;
     }
 }
