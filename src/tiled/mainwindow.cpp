@@ -1017,7 +1017,7 @@ void MainWindow::paste()
 
             const MapRenderer *renderer = mMapDocument->renderer();
             const QPointF scenePos = view->mapToScene(viewPos);
-            QPointF insertPos = renderer->pixelToTileCoords(scenePos);
+            QPointF insertPos = renderer->screenToTileCoords(scenePos);
             if (Preferences::instance()->snapToFineGrid()) {
                 int gridFine = Preferences::instance()->gridFine();
                 insertPos = (insertPos * gridFine).toPoint();
@@ -1025,6 +1025,9 @@ void MainWindow::paste()
             } else if (Preferences::instance()->snapToGrid()) {
                 insertPos = insertPos.toPoint();
             }
+
+            insertPos = renderer->tileToPixelCoords(insertPos);
+
             const QPointF offset = insertPos - center;
 
             QUndoStack *undoStack = mMapDocument->undoStack();

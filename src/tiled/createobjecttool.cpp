@@ -149,10 +149,10 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     switch (mMode) {
     case CreateRectangle:
     case CreateEllipse: {
-        const QPointF tileCoords = renderer->pixelToTileCoords(pos);
+        const QPointF tileCoords = renderer->screenToTileCoords(pos);
 
         // Update the size of the new map object
-        const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
+        const QPointF objectPos = renderer->pixelToTileCoords(mNewMapObjectItem->mapObject()->position());
         QSizeF newSize(qMax(qreal(0), tileCoords.x() - objectPos.x()),
                        qMax(qreal(0), tileCoords.y() - objectPos.y()));
 
@@ -162,6 +162,10 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
             newSize /= gridFine;
         } else if (snapToGrid)
             newSize = newSize.toSize();
+
+        // After snapping, convert back to pixel units.
+        QPointF newCoords = renderer->tileToPixelCoords(newSize.width(), newSize.height());
+        newSize = QSizeF(newCoords.x(), newCoords.y());
 
         // Holding shift creates circle or square
         if (modifiers & Qt::ShiftModifier) {
@@ -176,7 +180,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     case CreateTile: {
         const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
         const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
-        QPointF tileCoords = renderer->pixelToTileCoords(pos + diff);
+        QPointF tileCoords = renderer->screenToTileCoords(pos);
 
         if (snapToFineGrid) {
             int gridFine = Preferences::instance()->gridFine();
@@ -184,15 +188,17 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
             tileCoords /= gridFine;
         } else if (snapToGrid)
             tileCoords = tileCoords.toPoint();
+        
+        QPointF pixelCoords = renderer->tileToPixelCoords(tileCoords);
 
-        mNewMapObjectItem->mapObject()->setPosition(tileCoords);
+        mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
         mNewMapObjectItem->syncWithMapObject();
         mNewMapObjectItem->setZValue(10000); // sync may change it
         break;
     }
     case CreatePolygon:
     case CreatePolyline: {
-        QPointF tileCoords = renderer->pixelToTileCoords(pos);
+        QPointF tileCoords = renderer->screenToTileCoords(pos);
 
         if (snapToFineGrid) {
             int gridFine = Preferences::instance()->gridFine();
@@ -201,6 +207,8 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         } else if (snapToGrid)
             tileCoords = tileCoords.toPoint();
 
+        tileCoords = renderer->tileToPixelCoords(tileCoords);
+        
         tileCoords -= mNewMapObjectItem->mapObject()->position();
 
         QPolygonF polygon = mOverlayPolygonObject->polygon();
@@ -263,9 +271,9 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
             return;
 
         const QPointF diff(-mTile->width() / 2, mTile->height() / 2);
-        tileCoords = renderer->pixelToTileCoords(event->scenePos() + diff);
+        tileCoords = renderer->screenToTileCoords(event->scenePos() + diff);
     } else {
-        tileCoords = renderer->pixelToTileCoords(event->scenePos());
+        tileCoords = renderer->screenToTileCoords(event->scenePos());
     }
 
     bool snapToGrid = Preferences::instance()->snapToGrid();
@@ -281,6 +289,8 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         tileCoords /= gridFine;
     } else if (snapToGrid)
         tileCoords = tileCoords.toPoint();
+    
+    tileCoords = renderer->tileToPixelCoords(tileCoords);
 
     startNewMapObject(tileCoords, objectGroup);
 }

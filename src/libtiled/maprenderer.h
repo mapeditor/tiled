@@ -158,6 +158,50 @@ public:
         return screenPolygon;
     }
 
+    /**
+     * Returns the screen position matching the given pixel position.
+     */
+    virtual QPointF pixelToScreenCoords(qreal x, qreal y) const
+    { return QPointF(x, y); }
+
+    inline QPointF pixelToScreenCoords(const QPointF &point) const
+    { return pixelToScreenCoords(point.x(), point.y()); }
+
+    QPolygonF pixelToScreenCoords(const QPolygonF &polygon) const
+    {
+        QPolygonF screenPolygon(polygon.size());
+        for (int i = polygon.size() - 1; i >= 0; --i)
+            screenPolygon[i] = pixelToScreenCoords(polygon[i]);
+        return screenPolygon;
+    }
+
+    /**
+     * Returns the pixel position matching the given screen position.
+     */
+    virtual QPointF screenToPixelCoords(qreal x, qreal y) const
+    { return QPointF(x, y); }
+
+    inline QPointF screenToPixelCoords(const QPointF &point) const
+    { return screenToPixelCoords(point.x(), point.y()); }
+
+    /**
+     * Returns the screen position matching the given tile coordinates.
+     */
+    inline QPointF tileToScreenCoords(qreal x, qreal y) const
+    { return pixelToScreenCoords(tileToPixelCoords(x, y)); }
+
+    inline QPointF tileToScreenCoords(QPointF point) const
+    { return tileToScreenCoords(point.x(), point.y()); }
+    
+    /**
+     * Returns the tile coordinates matching the given screen position.
+     */
+    inline QPointF screenToTileCoords(qreal x, qreal y) const
+    { return pixelToTileCoords(screenToPixelCoords(x, y)); }
+
+    inline QPointF screenToTileCoords(QPointF point) const
+    { return screenToTileCoords(point.x(), point.y()); }
+    
     void setFlag(RenderFlag flag, bool enabled = true);
     bool testFlag(RenderFlag flag) const
     { return mFlags.testFlag(flag); }

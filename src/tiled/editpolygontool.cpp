@@ -352,7 +352,7 @@ void EditPolygonTool::updateHandles()
         }
     }
 
-    MapRenderer *renderer = mapDocument()->renderer();
+    MapRenderer *renderer = mapDocument()->renderer(); 
 
     foreach (MapObjectItem *item, selection) {
         const MapObject *object = item->mapObject();
@@ -382,7 +382,7 @@ void EditPolygonTool::updateHandles()
         // Update the position of all handles
         for (int i = 0; i < pointHandles.size(); ++i) {
             const QPointF &point = polygon.at(i);
-            const QPointF handlePos = renderer->tileToPixelCoords(point);
+            const QPointF handlePos = renderer->pixelToScreenCoords(point);
             const QPointF internalHandlePos = handlePos - item->pos();
             pointHandles.at(i)->setPos(item->mapToScene(internalHandlePos));
         }
@@ -465,15 +465,13 @@ void EditPolygonTool::startMoving()
 
     mMode = Moving;
 
-    MapRenderer *renderer = mapDocument()->renderer();
-
     // Remember the current object positions
     mOldHandlePositions.clear();
     mOldPolygons.clear();
-    mAlignPosition = renderer->pixelToTileCoords((*mSelectedHandles.begin())->pos());
+    mAlignPosition = (*mSelectedHandles.begin())->pos();
 
     foreach (PointHandle *handle, mSelectedHandles) {
-        const QPointF pos = renderer->pixelToTileCoords(handle->pos());
+        const QPointF pos = handle->pos();
         mOldHandlePositions.append(handle->pos());
         if (pos.x() < mAlignPosition.x())
             mAlignPosition.setX(pos.x());
@@ -501,15 +499,14 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     if (snapToGrid || snapToFineGrid) {
         int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignPixelPos =
-                renderer->tileToPixelCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignPixelPos + diff;
+        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition);
+        const QPointF newAlignScreenPos = alignScreenPos + diff;
 
         // Snap the position to the grid
         QPointF newTileCoords =
-                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+                (renderer->screenToTileCoords(newAlignScreenPos) * scale).toPoint();
         newTileCoords /= scale;
-        diff = renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
+        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
     }
 
     int i = 0;
@@ -519,7 +516,7 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
         const QPointF newInternalPos = item->mapFromScene(newPixelPos);
         const QPointF newScenePos = item->pos() + newInternalPos;
         handle->setPos(newPixelPos);
-        handle->setPointPosition(renderer->pixelToTileCoords(newScenePos));
+        handle->setPointPosition(renderer->screenToPixelCoords(newScenePos));
         ++i;
     }
 }
