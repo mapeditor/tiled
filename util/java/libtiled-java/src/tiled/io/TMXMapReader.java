@@ -634,8 +634,7 @@ public class TMXMapReader
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     int x = 0, y = 0;
                     for (Node dataChild = child.getFirstChild();
                          dataChild != null;
