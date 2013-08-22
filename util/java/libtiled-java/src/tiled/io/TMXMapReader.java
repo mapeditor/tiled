@@ -616,7 +616,26 @@ public class TMXMapReader
                             }
                         }
                     }
-                } else {
+                } else if (encoding != null && "csv".equalsIgnoreCase(encoding)) {
+                	String csvText = child.getTextContent();
+                	csvText = csvText.substring(1, csvText.length()-1); // remove '\n' at start and end of the string
+                	String[] csvLines = csvText.split(",[\\n|\\r]+");
+                	for (int y = 0; y < ml.getHeight(); y++) {
+                		String[] csvLineTileIds = csvLines[y].split(",");
+                        for (int x = 0; x < ml.getWidth(); x++) {
+                            String sTileId = csvLineTileIds[x];
+                            int tileId = Integer.parseInt(sTileId);
+                            java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
+                            if (ts != null) {
+                                ml.setTileAt(x, y,
+                                        ts.getValue().getTile(tileId - ts.getKey()));
+                            } else {
+                                ml.setTileAt(x, y, null);
+                            }
+                        }
+                    }
+                }
+                else {
                     int x = 0, y = 0;
                     for (Node dataChild = child.getFirstChild();
                          dataChild != null;
