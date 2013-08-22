@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="UHMcx" tilewidth="32" tileheight="32">
-  <image source="/Users/abratuhi/Downloads/UHMcx.png" width="512" height="512"/>
+  <image source="cvsmap_tileset.png" width="512" height="512"/>
  </tileset>
  <layer name="Kachelebene 1" width="100" height="100">
   <data encoding="csv">
