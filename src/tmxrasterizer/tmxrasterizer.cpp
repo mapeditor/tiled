@@ -52,7 +52,7 @@ TmxRasterizer::~TmxRasterizer()
 {
 }
 
-void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFileName)
+int TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFileName)
 {
     Map *map;
     MapRenderer *renderer;
@@ -60,7 +60,7 @@ void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFile
     map = reader.readMap(mapFileName);
     if (!map) {
         qWarning() << "Error while reading" << mapFileName << ":\n" << reader.errorString();
-        return;
+        return 1;
     }
 
     switch (map->orientation()) {
@@ -123,4 +123,6 @@ void TmxRasterizer::render(const QString& mapFileName, const QString& bitmapFile
     delete renderer;
     qDeleteAll(map->tilesets());
     delete map;
+
+    return 0;
 }
