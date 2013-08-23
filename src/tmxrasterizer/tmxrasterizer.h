@@ -46,7 +46,7 @@ public:
     void setTileSize(int tileSize) { mTileSize = tileSize; }
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
 
-    void render(const QString &mapFileName, const QString &bitmapFileName);
+    int render(const QString &mapFileName, const QString &bitmapFileName);
 
 private:
     qreal mScale;

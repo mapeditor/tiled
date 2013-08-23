@@ -165,6 +165,5 @@ int main(int argc, char *argv[])
         w.setScale(options.scale);
     }
 
-    w.render(options.fileToOpen, options.fileToSave);
-    return 0;
+    return w.render(options.fileToOpen, options.fileToSave);
 }
