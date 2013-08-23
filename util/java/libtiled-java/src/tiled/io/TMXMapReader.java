@@ -576,16 +576,15 @@ public class TMXMapReader
             String nodeName = child.getNodeName();
             if ("data".equalsIgnoreCase(nodeName)) {
                 String encoding = getAttributeValue(child, "encoding");
+                String comp = getAttributeValue(child, "compression");
 
-                if (encoding != null && "base64".equalsIgnoreCase(encoding)) {
+                if ("base64".equalsIgnoreCase(encoding)) {
                     Node cdata = child.getFirstChild();
                     if (cdata != null) {
                         char[] enc = cdata.getNodeValue().trim().toCharArray();
                         byte[] dec = Base64.decode(enc);
                         ByteArrayInputStream bais = new ByteArrayInputStream(dec);
                         InputStream is;
-
-                        String comp = getAttributeValue(child, "compression");
 
                         if ("gzip".equalsIgnoreCase(comp)) {
                             final int len = layerWidth * layerHeight * 4;
@@ -606,32 +605,28 @@ public class TMXMapReader
                                 tileId |= is.read() << 16;
                                 tileId |= is.read() << 24;
 
-                                java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
-                                if (ts != null) {
-                                    ml.setTileAt(x, y,
-                                            ts.getValue().getTile(tileId - ts.getKey()));
-                                } else {
-                                    ml.setTileAt(x, y, null);
-                                }
+                                setTileAtFromTileId(ml, y, x, tileId);
                             }
                         }
                     }
-                } else if (encoding != null && "csv".equalsIgnoreCase(encoding)) {
+                } else if ("csv".equalsIgnoreCase(encoding)) {
                 	String csvText = child.getTextContent();
-                	csvText = csvText.substring(1, csvText.length()-1); // remove '\n' at start and end of the string
-                	String[] csvLines = csvText.split(",[\\n|\\r]+");
+                	csvText = csvText.replaceAll("[,|\\s]+", ",");
+                	if (csvText.startsWith(",")) {csvText = csvText.substring(1); }
+                	if (csvText.endsWith(",")) {csvText = csvText.substring(0, csvText.length()-1); }
+                	
+                	if (comp != null && !comp.isEmpty()) {
+                		throw new IOException("Unrecognized compression method \"" + comp + "\" for map layer " + ml.getName() + " and encoding " + encoding);
+                	}
+                	
+                	String[] csvTileIds = csvText.split(",");
+                	
                 	for (int y = 0; y < ml.getHeight(); y++) {
-                		String[] csvLineTileIds = csvLines[y].split(",");
                         for (int x = 0; x < ml.getWidth(); x++) {
-                            String sTileId = csvLineTileIds[x];
+                            String sTileId = csvTileIds[x + y * ml.getHeight()];
                             int tileId = Integer.parseInt(sTileId);
-                            java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
-                            if (ts != null) {
-                                ml.setTileAt(x, y,
-                                        ts.getValue().getTile(tileId - ts.getKey()));
-                            } else {
-                                ml.setTileAt(x, y, null);
-                            }
+                            
+                            setTileAtFromTileId(ml, y, x, tileId);
                         }
                     }
                 } else {
@@ -642,13 +637,7 @@ public class TMXMapReader
                     {
                         if ("tile".equalsIgnoreCase(dataChild.getNodeName())) {
                             int tileId = getAttribute(dataChild, "gid", -1);
-                            java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
-                            if (ts != null) {
-                                ml.setTileAt(x, y,
-                                        ts.getValue().getTile(tileId - ts.getKey()));
-                            } else {
-                                ml.setTileAt(x, y, null);
-                            }
+                            setTileAtFromTileId(ml, y, x, tileId);
 
                             x++;
                             if (x == ml.getWidth()) {
@@ -689,6 +678,23 @@ public class TMXMapReader
 
         return ml;
     }
+
+	/**
+	 * Helper method to set the tile based on its global id.
+	 * @param ml	tile layer
+	 * @param y		y-coordinate
+	 * @param x		x-coordinate
+	 * @param tileId	global id of the tile as read from the file
+	 */
+	private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
+		java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
+		if (ts != null) {
+		    ml.setTileAt(x, y,
+		            ts.getValue().getTile(tileId - ts.getKey()));
+		} else {
+		    ml.setTileAt(x, y, null);
+		}
+	}
 
     private void buildMap(Document doc) throws Exception {
         Node item, mapNode;
