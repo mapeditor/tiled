@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
         showVersion();
         return 0;
     }
-    if (options.showHelp || (options.fileToOpen.isEmpty() || options.fileToOpen.isEmpty())) {
+    if (options.showHelp || options.fileToOpen.isEmpty() || options.fileToSave.isEmpty()) {
         showHelp();
         return 0;
     }
