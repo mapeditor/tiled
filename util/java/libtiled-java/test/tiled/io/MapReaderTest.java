@@ -52,14 +52,14 @@ public class MapReaderTest extends TestCase {
     }
     
     public void testReadingExampleCsvMap() throws Exception {
-    	// Arrange
-    	File mapFile = getFileFromResources("resources/csvmap.tmx");
-    	
-    	// Act
-    	Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
-    	
-    	// Assert
-    	assertEquals(Map.ORIENTATION_ORTHOGONAL, map.getOrientation());
+        // Arrange
+        File mapFile = getFileFromResources("resources/csvmap.tmx");
+        
+        // Act
+        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        
+        // Assert
+        assertEquals(Map.ORIENTATION_ORTHOGONAL, map.getOrientation());
         assertEquals(100, map.getHeight());
         assertEquals(100, map.getHeight());
         assertEquals(32, map.getTileWidth());

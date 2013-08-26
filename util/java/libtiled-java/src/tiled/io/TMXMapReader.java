@@ -610,21 +610,21 @@ public class TMXMapReader
                         }
                     }
                 } else if ("csv".equalsIgnoreCase(encoding)) {
-                	String csvText = child.getTextContent();
-                	
-                	if (comp != null && !comp.isEmpty()) {
-                		throw new IOException("Unrecognized compression method \"" + comp + "\" for map layer " + ml.getName() + " and encoding " + encoding);
-                	}
-                	
-                	String[] csvTileIds = csvText
-                			.trim()	// trim 'space', 'tab', 'newline'. pay attention to additional unicode chars like \u2028, \u2029, \u0085 if necessary
-                			.split("[\\s]*,[\\s]*");
-                	
-                	if (csvTileIds.length != ml.getHeight() * ml.getWidth()) {
-                		throw new IOException("Number of tiles does not match the layer's width and height");
-                	}
-                	
-                	for (int y = 0; y < ml.getHeight(); y++) {
+                    String csvText = child.getTextContent();
+                    
+                    if (comp != null && !comp.isEmpty()) {
+                        throw new IOException("Unrecognized compression method \"" + comp + "\" for map layer " + ml.getName() + " and encoding " + encoding);
+                    }
+                    
+                    String[] csvTileIds = csvText
+                            .trim()    // trim 'space', 'tab', 'newline'. pay attention to additional unicode chars like \u2028, \u2029, \u0085 if necessary
+                            .split("[\\s]*,[\\s]*");
+                    
+                    if (csvTileIds.length != ml.getHeight() * ml.getWidth()) {
+                        throw new IOException("Number of tiles does not match the layer's width and height");
+                    }
+                    
+                    for (int y = 0; y < ml.getHeight(); y++) {
                         for (int x = 0; x < ml.getWidth(); x++) {
                             String sTileId = csvTileIds[x + y * ml.getHeight()];
                             int tileId = Integer.parseInt(sTileId);
@@ -682,30 +682,30 @@ public class TMXMapReader
         return ml;
     }
 
-	/**
-	 * Helper method to set the tile based on its global id.
-	 * @param ml	tile layer
-	 * @param y		y-coordinate
-	 * @param x		x-coordinate
-	 * @param tileId	global id of the tile as read from the file
-	 */
-	private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
-		ml.setTileAt(x, y, getTileForTileGID(tileId));
-	}
-	
-	/**
-	 * Helper method to get the tile based on its global id
-	 * @param tileId	global id of the tile
-	 * @return	<ul><li>{@link Tile} object corresponding to the global id, if found</li><li><code>null</code>, otherwise</li></ul>
-	 */
-	private Tile getTileForTileGID(int tileId) {
-		Tile tile = null;
-		java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
-		if (ts != null) {
-		    tile = ts.getValue().getTile(tileId - ts.getKey());
-		}
-		return tile;
-	}
+    /**
+     * Helper method to set the tile based on its global id.
+     * @param ml    tile layer
+     * @param y        y-coordinate
+     * @param x        x-coordinate
+     * @param tileId    global id of the tile as read from the file
+     */
+    private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
+        ml.setTileAt(x, y, getTileForTileGID(tileId));
+    }
+    
+    /**
+     * Helper method to get the tile based on its global id
+     * @param tileId    global id of the tile
+     * @return    <ul><li>{@link Tile} object corresponding to the global id, if found</li><li><code>null</code>, otherwise</li></ul>
+     */
+    private Tile getTileForTileGID(int tileId) {
+        Tile tile = null;
+        java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
+        if (ts != null) {
+            tile = ts.getValue().getTile(tileId - ts.getKey());
+        }
+        return tile;
+    }
 
     private void buildMap(Document doc) throws Exception {
         Node item, mapNode;
