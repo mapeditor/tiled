@@ -620,6 +620,10 @@ public class TMXMapReader
                 			.trim()	// trim 'space', 'tab', 'newline'. pay attention to additional unicode chars like \u2028, \u2029, \u0085 if necessary
                 			.split("[\\s]*,[\\s]*");
                 	
+                	if (csvTileIds.length != ml.getHeight() * ml.getWidth()) {
+                		throw new IOException("Number of tiles does not match the layer's width and height");
+                	}
+                	
                 	for (int y = 0; y < ml.getHeight(); y++) {
                         for (int x = 0; x < ml.getWidth(); x++) {
                             String sTileId = csvTileIds[x + y * ml.getHeight()];
