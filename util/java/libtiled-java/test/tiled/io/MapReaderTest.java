@@ -67,4 +67,11 @@ public class MapReaderTest extends TestCase {
         assertEquals(1, map.getLayerCount());
         assertNotNull(((TileLayer)map.getLayer(0)).getTileAt(0, 0));
     }
+    
+    public void testTrim() {
+    	String test = " \n hello \n ";
+    	String expected = "hello";
+    	String actual = test.trim();
+    	assertEquals(expected, actual);
+    }
 }

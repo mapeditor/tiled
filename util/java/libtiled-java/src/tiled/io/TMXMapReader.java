@@ -611,15 +611,14 @@ public class TMXMapReader
                     }
                 } else if ("csv".equalsIgnoreCase(encoding)) {
                 	String csvText = child.getTextContent();
-                	csvText = csvText.replaceAll("[,|\\s]+", ",");
-                	if (csvText.startsWith(",")) {csvText = csvText.substring(1); }
-                	if (csvText.endsWith(",")) {csvText = csvText.substring(0, csvText.length()-1); }
                 	
                 	if (comp != null && !comp.isEmpty()) {
                 		throw new IOException("Unrecognized compression method \"" + comp + "\" for map layer " + ml.getName() + " and encoding " + encoding);
                 	}
                 	
-                	String[] csvTileIds = csvText.split(",");
+                	String[] csvTileIds = csvText
+                			.trim()	// trim 'space', 'tab', 'newline'. pay attention to additional unicode chars like \u2028, \u2029, \u0085 if necessary
+                			.split("[\\s]*,[\\s]*");
                 	
                 	for (int y = 0; y < ml.getHeight(); y++) {
                         for (int x = 0; x < ml.getWidth(); x++) {
@@ -687,13 +686,21 @@ public class TMXMapReader
 	 * @param tileId	global id of the tile as read from the file
 	 */
 	private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
+		ml.setTileAt(x, y, getTileForTileGID(tileId));
+	}
+	
+	/**
+	 * Helper method to get the tile based on its global id
+	 * @param tileId	global id of the tile
+	 * @return	<ul><li>{@link Tile} object corresponding to the global id, if found</li><li><code>null</code>, otherwise</li></ul>
+	 */
+	private Tile getTileForTileGID(int tileId) {
+		Tile tile = null;
 		java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
 		if (ts != null) {
-		    ml.setTileAt(x, y,
-		            ts.getValue().getTile(tileId - ts.getKey()));
-		} else {
-		    ml.setTileAt(x, y, null);
+		    tile = ts.getValue().getTile(tileId - ts.getKey());
 		}
+		return tile;
 	}
 
     private void buildMap(Document doc) throws Exception {
