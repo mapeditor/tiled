@@ -189,10 +189,15 @@ cls_objectgroup.add_method('insertObject', None,
     [('int','idx'),param('MapObject*','mo',transfer_ownership=False)])
 cls_objectgroup.add_method('removeObject', 'int',
     [param('MapObject*','mo',transfer_ownership=False)])
+#cls_tilelayer.add_method('cellAt', retval('Tiled::Cell'),
+#    [('int','x'),('int','y')])
+cls_objectgroup.add_method('objectAt', retval('Tiled::MapObject*',reference_existing_object=True),[('int','index')])
+cls_objectgroup.add_method('objectCount', 'int',[])
 #cls_objectgroup.add_method('objectsBoundingRect', 'QRectF', [])
 #cls_objectgroup.add_method('usedTilesets', 'QSet<Tileset*>', [])
 cls_objectgroup.add_method('referencesTileset', 'bool',
     [param('Tileset*','ts',transfer_ownership=False)])
+#MapObject *objectAt(int index)
 
 cls_map.add_method('addLayer', None,
     [param('ImageLayer*','l',transfer_ownership=True)])

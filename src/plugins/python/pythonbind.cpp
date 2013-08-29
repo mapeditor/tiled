@@ -5528,6 +5528,62 @@ _wrap_PyTiledObjectGroup_addObject(PyTiledObjectGroup *self, PyObject *args, PyO
 
 
 PyObject *
+_wrap_PyTiledObjectGroup_referencesTileset(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    bool retval;
+    PyTiledTileset *ts;
+    Tiled::Tileset *ts_ptr;
+    const char *keywords[] = {"ts", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileset_Type, &ts)) {
+        return NULL;
+    }
+    ts_ptr = (ts ? ts->obj : NULL);
+    retval = self->obj->referencesTileset(ts_ptr);
+    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(retval));
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledObjectGroup_objectAt(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    Tiled::MapObject *retval;
+    int index;
+    const char *keywords[] = {"index", NULL};
+    PyTiledMapObject *py_MapObject;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "i", (char **) keywords, &index)) {
+        return NULL;
+    }
+    retval = self->obj->objectAt(index);
+    if (!(retval)) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    py_MapObject = PyObject_New(PyTiledMapObject, &PyTiledMapObject_Type);
+    py_MapObject->obj = retval;
+    py_MapObject->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
+    py_retval = Py_BuildValue((char *) "N", py_MapObject);
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledObjectGroup_objectCount(PyTiledObjectGroup *self)
+{
+    PyObject *py_retval;
+    int retval;
+
+    retval = self->obj->objectCount();
+    py_retval = Py_BuildValue((char *) "i", retval);
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledObjectGroup_insertObject(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -5543,25 +5599,6 @@ _wrap_PyTiledObjectGroup_insertObject(PyTiledObjectGroup *self, PyObject *args, 
     self->obj->insertObject(idx, mo_ptr);
     Py_INCREF(Py_None);
     py_retval = Py_None;
-    return py_retval;
-}
-
-
-PyObject *
-_wrap_PyTiledObjectGroup_referencesTileset(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    bool retval;
-    PyTiledTileset *ts;
-    Tiled::Tileset *ts_ptr;
-    const char *keywords[] = {"ts", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledTileset_Type, &ts)) {
-        return NULL;
-    }
-    ts_ptr = (ts ? ts->obj : NULL);
-    retval = self->obj->referencesTileset(ts_ptr);
-    py_retval = Py_BuildValue((char *) "N", PyBool_FromLong(retval));
     return py_retval;
 }
 
@@ -5586,8 +5623,10 @@ _wrap_PyTiledObjectGroup_removeObject(PyTiledObjectGroup *self, PyObject *args, 
 
 static PyMethodDef PyTiledObjectGroup_methods[] = {
     {(char *) "addObject", (PyCFunction) _wrap_PyTiledObjectGroup_addObject, METH_KEYWORDS|METH_VARARGS, NULL },
-    {(char *) "insertObject", (PyCFunction) _wrap_PyTiledObjectGroup_insertObject, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "referencesTileset", (PyCFunction) _wrap_PyTiledObjectGroup_referencesTileset, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "objectAt", (PyCFunction) _wrap_PyTiledObjectGroup_objectAt, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "objectCount", (PyCFunction) _wrap_PyTiledObjectGroup_objectCount, METH_NOARGS, NULL },
+    {(char *) "insertObject", (PyCFunction) _wrap_PyTiledObjectGroup_insertObject, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "removeObject", (PyCFunction) _wrap_PyTiledObjectGroup_removeObject, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
