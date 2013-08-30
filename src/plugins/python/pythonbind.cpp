@@ -5528,6 +5528,26 @@ _wrap_PyTiledObjectGroup_addObject(PyTiledObjectGroup *self, PyObject *args, PyO
 
 
 PyObject *
+_wrap_PyTiledObjectGroup_insertObject(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    int idx;
+    PyTiledMapObject *mo;
+    Tiled::MapObject *mo_ptr;
+    const char *keywords[] = {"idx", "mo", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &idx, &PyTiledMapObject_Type, &mo)) {
+        return NULL;
+    }
+    mo_ptr = (mo ? mo->obj : NULL);
+    self->obj->insertObject(idx, mo_ptr);
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledObjectGroup_referencesTileset(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -5584,26 +5604,6 @@ _wrap_PyTiledObjectGroup_objectCount(PyTiledObjectGroup *self)
 
 
 PyObject *
-_wrap_PyTiledObjectGroup_insertObject(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
-{
-    PyObject *py_retval;
-    int idx;
-    PyTiledMapObject *mo;
-    Tiled::MapObject *mo_ptr;
-    const char *keywords[] = {"idx", "mo", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iO!", (char **) keywords, &idx, &PyTiledMapObject_Type, &mo)) {
-        return NULL;
-    }
-    mo_ptr = (mo ? mo->obj : NULL);
-    self->obj->insertObject(idx, mo_ptr);
-    Py_INCREF(Py_None);
-    py_retval = Py_None;
-    return py_retval;
-}
-
-
-PyObject *
 _wrap_PyTiledObjectGroup_removeObject(PyTiledObjectGroup *self, PyObject *args, PyObject *kwargs)
 {
     PyObject *py_retval;
@@ -5623,10 +5623,10 @@ _wrap_PyTiledObjectGroup_removeObject(PyTiledObjectGroup *self, PyObject *args, 
 
 static PyMethodDef PyTiledObjectGroup_methods[] = {
     {(char *) "addObject", (PyCFunction) _wrap_PyTiledObjectGroup_addObject, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "insertObject", (PyCFunction) _wrap_PyTiledObjectGroup_insertObject, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "referencesTileset", (PyCFunction) _wrap_PyTiledObjectGroup_referencesTileset, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "objectAt", (PyCFunction) _wrap_PyTiledObjectGroup_objectAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "objectCount", (PyCFunction) _wrap_PyTiledObjectGroup_objectCount, METH_NOARGS, NULL },
-    {(char *) "insertObject", (PyCFunction) _wrap_PyTiledObjectGroup_insertObject, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "removeObject", (PyCFunction) _wrap_PyTiledObjectGroup_removeObject, METH_KEYWORDS|METH_VARARGS, NULL },
     {NULL, NULL, 0, NULL}
 };
