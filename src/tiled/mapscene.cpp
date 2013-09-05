@@ -78,6 +78,8 @@ MapScene::MapScene(QObject *parent):
     connect(prefs, SIGNAL(highlightCurrentLayerChanged(bool)),
             SLOT(setHighlightCurrentLayer(bool)));
     connect(prefs, SIGNAL(gridColorChanged(QColor)), SLOT(update()));
+    connect(prefs, SIGNAL(objectLineWidthChanged(qreal)),
+            SLOT(setObjectLineWidth(qreal)));
 
     mDarkRectangle->setPen(Qt::NoPen);
     mDarkRectangle->setBrush(Qt::black);
@@ -85,6 +87,7 @@ MapScene::MapScene(QObject *parent):
     addItem(mDarkRectangle);
 
     mGridVisible = prefs->showGrid();
+    mObjectLineWidth = prefs->objectLineWidth();
     mShowTileObjectOutlines = prefs->showTileObjectOutlines();
     mHighlightCurrentLayer = prefs->highlightCurrentLayer();
 
@@ -105,10 +108,9 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
-    refreshScene();
-
     if (mMapDocument) {
         MapRenderer *renderer = mMapDocument->renderer();
+        renderer->setObjectLineWidth(mObjectLineWidth);
         renderer->setFlag(ShowTileObjectOutlines, mShowTileObjectOutlines);
 
         connect(mMapDocument, SIGNAL(mapChanged()),
@@ -140,6 +142,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(updateSelectedObjectItems()));
     }
+
+    refreshScene();
 }
 
 void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
@@ -526,6 +530,9 @@ void MapScene::syncAllObjectItems()
         item->syncWithMapObject();
 }
 
+/**
+ * Sets whether the tile grid is visible.
+ */
 void MapScene::setGridVisible(bool visible)
 {
     if (mGridVisible == visible)
@@ -533,6 +540,26 @@ void MapScene::setGridVisible(bool visible)
 
     mGridVisible = visible;
     update();
+}
+
+void MapScene::setObjectLineWidth(qreal lineWidth)
+{
+    if (mObjectLineWidth == lineWidth)
+        return;
+
+    mObjectLineWidth = lineWidth;
+
+    if (mMapDocument) {
+        mMapDocument->renderer()->setObjectLineWidth(lineWidth);
+
+        // Changing the line width can change the size of the object items
+        if (!mObjectItems.isEmpty()) {
+            foreach (MapObjectItem *item, mObjectItems)
+                item->syncWithMapObject();
+
+            update();
+        }
+    }
 }
 
 void MapScene::setShowTileObjectOutlines(bool enabled)

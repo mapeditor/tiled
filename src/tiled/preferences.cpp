@@ -71,6 +71,7 @@ Preferences::Preferences()
     mSnapToFineGrid = boolValue("SnapToFineGrid");
     mGridColor = colorValue("GridColor", Qt::black);
     mGridFine = intValue("GridFine", 4);
+    mObjectLineWidth = realValue("ObjectLineWidth", 2);
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
@@ -159,11 +160,20 @@ void Preferences::setGridColor(QColor gridColor)
 
 void Preferences::setGridFine(int gridFine)
 {
-    if ( mGridFine == gridFine )
+    if (mGridFine == gridFine)
         return;
     mGridFine = gridFine;
     mSettings->setValue(QLatin1String("Interface/GridFine"), mGridFine);
     emit gridFineChanged(mGridFine);
+}
+
+void Preferences::setObjectLineWidth(qreal lineWidth)
+{
+    if (mObjectLineWidth == lineWidth)
+        return;
+    mObjectLineWidth = lineWidth;
+    mSettings->setValue(QLatin1String("Interface/ObjectLineWidth"), mObjectLineWidth);
+    emit objectLineWidthChanged(mObjectLineWidth);
 }
 
 void Preferences::setHighlightCurrentLayer(bool highlight)
@@ -386,4 +396,9 @@ QString Preferences::stringValue(const char *key, const QString &def) const
 int Preferences::intValue(const char *key, int defaultValue) const
 {
     return mSettings->value(QLatin1String(key), defaultValue).toInt();
+}
+
+qreal Preferences::realValue(const char *key, qreal defaultValue) const
+{
+    return mSettings->value(QLatin1String(key), defaultValue).toReal();
 }

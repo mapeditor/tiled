@@ -130,11 +130,8 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
 
 private slots:
-    /**
-     * Sets whether the tile grid is visible.
-     */
     void setGridVisible(bool visible);
-
+    void setObjectLineWidth(qreal lineWidth);
     void setShowTileObjectOutlines(bool enabled);
 
     /**
@@ -185,6 +182,7 @@ private:
     AbstractTool *mSelectedTool;
     AbstractTool *mActiveTool;
     bool mGridVisible;
+    qreal mObjectLineWidth;
     bool mShowTileObjectOutlines;
     bool mHighlightCurrentLayer;
     bool mUnderMouse;

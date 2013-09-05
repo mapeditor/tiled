@@ -77,16 +77,23 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                       imgSize.width(),
                       imgSize.height()).adjusted(-1, -1 - nameHeight, 1, 1);
     } else if (!object->polygon().isEmpty()) {
+        const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
         const QPolygonF screenPolygon = tileToPixelCoords(polygon);
-        return screenPolygon.boundingRect().adjusted(-2, -2 - nameHeight, 3, 3);
+        return screenPolygon.boundingRect().adjusted(-extraSpace,
+                                                     -extraSpace - nameHeight - 1,
+                                                     extraSpace,
+                                                     extraSpace);
     } else {
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
         const QRectF base = tileRectToPolygon(object->bounds()).boundingRect();
+        const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
 
-        return base.adjusted(-2, -3 - nameHeight, 2, 2);
+        return base.adjusted(-extraSpace,
+                             -extraSpace - nameHeight - 1,
+                             extraSpace, extraSpace);
     }
 }
 
@@ -307,7 +314,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
         pen.setJoinStyle(Qt::RoundJoin);
         pen.setCapStyle(Qt::RoundCap);
-        pen.setWidth(2);
+        pen.setWidth(objectLineWidth());
 
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);

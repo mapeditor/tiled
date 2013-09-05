@@ -57,7 +57,12 @@ Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
-    MapRenderer(const Map *map) : mMap(map) {}
+    MapRenderer(const Map *map)
+        : mMap(map)
+        , mFlags(0)
+        , mObjectLineWidth(2)
+    {}
+
     virtual ~MapRenderer() {}
 
     /**
@@ -158,6 +163,9 @@ public:
         return screenPolygon;
     }
 
+    qreal objectLineWidth() const { return mObjectLineWidth; }
+    void setObjectLineWidth(qreal lineWidth) { mObjectLineWidth = lineWidth; }
+
     void setFlag(RenderFlag flag, bool enabled = true);
     bool testFlag(RenderFlag flag) const
     { return mFlags.testFlag(flag); }
@@ -177,6 +185,7 @@ private:
     const Map *mMap;
 
     RenderFlags mFlags;
+    qreal mObjectLineWidth;
 };
 
 /**

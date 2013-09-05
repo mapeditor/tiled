@@ -73,15 +73,22 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                               imgSize.width(),
                               imgSize.height()).adjusted(-1, -1, 1, 1);
     } else {
-        // The -2 and +3 are to account for the pen width and shadow
+        const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
+
         switch (object->shape()) {
         case MapObject::Ellipse:
         case MapObject::Rectangle:
             if (rect.isNull()) {
-                boundingRect = rect.adjusted(-10 - 2, -10 - 2, 10 + 3, 10 + 3);
+                boundingRect = rect.adjusted(-10 - extraSpace,
+                                             -10 - extraSpace,
+                                             10 + extraSpace + 1,
+                                             10 + extraSpace + 1);
             } else {
                 const int nameHeight = object->name().isEmpty() ? 0 : 15;
-                boundingRect = rect.adjusted(-2, -nameHeight - 2, 3, 3);
+                boundingRect = rect.adjusted(-extraSpace,
+                                             -nameHeight - extraSpace,
+                                             extraSpace + 1,
+                                             extraSpace + 1);
             }
             break;
 
@@ -90,7 +97,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = tileToPixelCoords(polygon);
-            boundingRect = screenPolygon.boundingRect().adjusted(-2, -2, 3, 3);
+            boundingRect = screenPolygon.boundingRect().adjusted(-extraSpace,
+                                                                 -extraSpace,
+                                                                 extraSpace + 1,
+                                                                 extraSpace + 1);
             break;
         }
         }
@@ -287,8 +297,9 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->drawRect(rect);
         }
     } else {
-        const QPen linePen(color, 2);
-        const QPen shadowPen(Qt::black, 2);
+        const qreal lineWidth = objectLineWidth();
+        const QPen linePen(color, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        const QPen shadowPen(Qt::black, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
         QColor brushColor = color;
         brushColor.setAlpha(50);
@@ -309,13 +320,13 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(shadowPen);
             painter->drawRect(rect.translated(QPointF(1, 1)));
             if (!name.isEmpty())
-                painter->drawText(QPoint(1, -5 + 1), name);
+                painter->drawText(QPoint(1, -4 - lineWidth / 2 + 1), name);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawRect(rect);
             if (!name.isEmpty())
-                painter->drawText(QPoint(0, -5), name);
+                painter->drawText(QPoint(0, -4 - lineWidth / 2), name);
 
             break;
         }

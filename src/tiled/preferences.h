@@ -50,6 +50,7 @@ public:
     bool snapToFineGrid() const { return mSnapToFineGrid; }
     QColor gridColor() const { return mGridColor; }
     int gridFine() const { return mGridFine; }
+    qreal objectLineWidth() const { return mObjectLineWidth; }
 
     bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
@@ -100,6 +101,7 @@ public slots:
     void setSnapToFineGrid(bool snapToFineGrid);
     void setGridColor(QColor gridColor);
     void setGridFine(int gridFine);
+    void setObjectLineWidth(qreal lineWidth);
     void setHighlightCurrentLayer(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
 
@@ -110,6 +112,7 @@ signals:
     void snapToFineGridChanged(bool snapToFineGrid);
     void gridColorChanged(QColor gridColor);
     void gridFineChanged(int gridFine);
+    void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
 
@@ -127,6 +130,7 @@ private:
     QColor colorValue(const char *key, const QColor &def = QColor()) const;
     QString stringValue(const char *key, const QString &def = QString()) const;
     int intValue(const char *key, int defaultValue) const;
+    qreal realValue(const char *key, qreal defaultValue) const;
 
     QSettings *mSettings;
 
@@ -136,6 +140,7 @@ private:
     bool mSnapToFineGrid;
     QColor mGridColor;
     int mGridFine;
+    qreal mObjectLineWidth;
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
 
