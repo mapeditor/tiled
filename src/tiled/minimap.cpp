@@ -229,8 +229,8 @@ void MiniMap::renderMapToImage()
         } else if (objGroup && drawObjects) {
             QList<MapObject*> objects = objGroup->objects();
 
-            // Objects are always drawn top to bottom at the moment
-            qStableSort(objects.begin(), objects.end(), objectLessThan);
+            if (objGroup->drawOrder() == ObjectGroup::TopDownOrder)
+                qStableSort(objects.begin(), objects.end(), objectLessThan);
 
             foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
