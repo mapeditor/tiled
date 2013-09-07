@@ -216,6 +216,39 @@ Layer *MapDocument::currentLayer() const
     return mMap->layerAt(mCurrentLayerIndex);
 }
 
+/**
+ * Custom intersects check necessary because QRectF::intersects wants a
+ * non-empty area of overlap, but we should also consider overlap with empty
+ * area as intersection.
+ *
+ * Results for rectangles with negative size are undefined.
+ */
+static bool intersects(const QRectF &a, const QRectF &b)
+{
+    return a.right() >= b.left() &&
+            a.bottom() >= b.top() &&
+            a.left() <= b.right() &&
+            a.top() <= b.bottom();
+}
+
+// TODO: This function does not take into account object rotation
+static bool visibleIn(const QRectF &area, MapObject *object)
+{
+    switch (object->shape()) {
+    case MapObject::Rectangle:
+    case MapObject::Ellipse:
+        return intersects(area, object->bounds());
+    case MapObject::Polygon:
+    case MapObject::Polyline: {
+        QRectF boundingRect = object->polygon().boundingRect();
+        boundingRect.translate(object->position());
+        return intersects(area, boundingRect);
+    }
+    }
+
+    return true;
+}
+
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 {
     const QRegion movedSelection = mTileSelection.translated(offset);
@@ -227,10 +260,8 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
         if (ObjectGroup *objectGroup = mMap->layerAt(i)->asObjectGroup()) {
             // Remove objects that will fall outside of the map
             foreach (MapObject *o, objectGroup->objects()) {
-                if (!(newArea.contains(o->position())
-                      || newArea.intersects(o->bounds()))) {
+                if (!visibleIn(newArea, o))
                     mUndoStack->push(new RemoveMapObject(this, o));
-                }
             }
         }
 
