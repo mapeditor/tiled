@@ -308,13 +308,17 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawRect(QRectF(QPointF(), imgSize));
         }
     } else {
+        const qreal lineWidth = objectLineWidth();
+        const qreal shadowOffset = lineWidth == 0 ? (1 / painter->transform().m11()) :
+                                                    qMin(qreal(1), lineWidth);
+
         QColor brushColor = color;
         brushColor.setAlpha(50);
         QBrush brush(brushColor);
 
         pen.setJoinStyle(Qt::RoundJoin);
         pen.setCapStyle(Qt::RoundCap);
-        pen.setWidth(objectLineWidth());
+        pen.setWidth(lineWidth);
 
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);
@@ -374,7 +378,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             pen.setColor(color);
             painter->setPen(pen);
             painter->setBrush(Qt::NoBrush);
-            painter->translate(QPointF(0, -1));
+            painter->translate(QPointF(0, -shadowOffset));
             painter->drawPolygon(polygon);
 
             painter->setBrush(brush);
@@ -407,16 +411,16 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QPolygonF polygon = tileRectToPolygon(object->bounds());
             painter->drawPolygon(polygon);
             if (!name.isEmpty())
-                painter->drawText(QPoint(headerX, headerY - 5 + 1), name);
+                painter->drawText(QPointF(headerX, headerY - 5 + shadowOffset), name);
 
             pen.setColor(color);
             painter->setPen(pen);
             painter->setBrush(brush);
-            polygon.translate(0, -1);
+            polygon.translate(0, -shadowOffset);
 
             painter->drawPolygon(polygon);
             if (!name.isEmpty())
-                painter->drawText(QPoint(headerX, headerY - 5), name);
+                painter->drawText(QPointF(headerX, headerY - 5), name);
             break;
         }
         case MapObject::Polygon: {
@@ -431,19 +435,19 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
                                          polygonBoundingRect.width() + 2);
 
             if (!name.isEmpty())
-                painter->drawText(QPoint(polygonBoundingRect.left(), polygonBoundingRect.top() - 5 + 1), name);
+                painter->drawText(QPointF(polygonBoundingRect.left(), polygonBoundingRect.top() - 5 + shadowOffset), name);
 
             painter->drawPolygon(screenPolygon);
 
             pen.setColor(color);
             painter->setPen(pen);
             painter->setBrush(brush);
-            screenPolygon.translate(0, -1);
+            screenPolygon.translate(0, -shadowOffset);
 
             painter->drawPolygon(screenPolygon);
 
             if (!name.isEmpty())
-                painter->drawText(QPoint(polygonBoundingRect.left(), polygonBoundingRect.top() - 5), name);
+                painter->drawText(QPointF(polygonBoundingRect.left(), polygonBoundingRect.top() - 5), name);
 
             break;
         }
@@ -456,7 +460,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
             pen.setColor(color);
             painter->setPen(pen);
-            screenPolygon.translate(0, -1);
+            screenPolygon.translate(0, -shadowOffset);
 
             painter->drawPolyline(screenPolygon);
             break;

@@ -300,6 +300,10 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         const qreal lineWidth = objectLineWidth();
         const QPen linePen(color, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         const QPen shadowPen(Qt::black, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        const qreal shadowDist = lineWidth == 0 ? (1 / painter->transform().m11()) :
+                                                  qMin(qreal(2), lineWidth);
+        const QPointF shadowOffset = QPointF(shadowDist * 0.5,
+                                             shadowDist * 0.5);
 
         QColor brushColor = color;
         brushColor.setAlpha(50);
@@ -318,15 +322,15 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
             // Draw the shadow
             painter->setPen(shadowPen);
-            painter->drawRect(rect.translated(QPointF(1, 1)));
+            painter->drawRect(rect.translated(shadowOffset));
             if (!name.isEmpty())
-                painter->drawText(QPoint(1, -4 - lineWidth / 2 + 1), name);
+                painter->drawText(QPointF(0, -4 - lineWidth / 2) + shadowOffset, name);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawRect(rect);
             if (!name.isEmpty())
-                painter->drawText(QPoint(0, -4 - lineWidth / 2), name);
+                painter->drawText(QPointF(0, -4 - lineWidth / 2), name);
 
             break;
         }
@@ -335,7 +339,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             QPolygonF screenPolygon = tileToPixelCoords(object->polygon());
 
             painter->setPen(shadowPen);
-            painter->drawPolyline(screenPolygon.translated(1, 1));
+            painter->drawPolyline(screenPolygon.translated(shadowOffset));
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
@@ -347,7 +351,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             QPolygonF screenPolygon = tileToPixelCoords(object->polygon());
 
             painter->setPen(shadowPen);
-            painter->drawPolygon(screenPolygon.translated(1, 1));
+            painter->drawPolygon(screenPolygon.translated(shadowOffset));
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
@@ -365,7 +369,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
             // Draw the shadow
             painter->setPen(shadowPen);
-            painter->drawEllipse(rect.translated(QPointF(1, 1)));
+            painter->drawEllipse(rect.translated(shadowOffset));
             if (!name.isEmpty())
                 painter->drawText(QPoint(1, -5 + 1), name);
 
