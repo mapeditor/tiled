@@ -439,7 +439,8 @@ inline void MapDocument::emitEditLayerNameRequested()
 }
 
 /**
- * Emits the editCurrentObject signal, which makes the
+ * Emits the editCurrentObject signal, which makes the Properties window become
+ * visible and take focus.
  */
 inline void MapDocument::emitEditCurrentObject()
 {

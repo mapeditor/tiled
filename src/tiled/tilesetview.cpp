@@ -507,6 +507,8 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     const bool isExternal = model->tileset()->isExternal();
     QMenu menu;
 
+    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+
     if (tile) {
         // Select this tile to make sure it is clear that only a single tile is
         // being edited.
@@ -524,13 +526,18 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                 setImage->setEnabled(!isExternal);
                 connect(setImage, SIGNAL(triggered()), SLOT(selectTerrainImage()));
             }
-
-            menu.addSeparator();
+        } else {
+            QAction *tileProperties = menu.addAction(propIcon,
+                                                     tr("Tile &Properties..."));
+            tileProperties->setEnabled(!isExternal);
+            Utils::setThemeIcon(tileProperties, "document-properties");
+            connect(tileProperties, SIGNAL(triggered()),
+                    SLOT(editTileProperties()));
         }
+
+        menu.addSeparator();
     }
 
-
-    menu.addSeparator();
     QAction *toggleGrid = menu.addAction(tr("Show &Grid"));
     toggleGrid->setCheckable(true);
     toggleGrid->setChecked(mDrawGrid);
@@ -552,6 +559,16 @@ void TilesetView::selectTerrainImage()
 {
     if (Tile *tile = currentTile())
         emit terrainImageSelected(tile);
+}
+
+void TilesetView::editTileProperties()
+{
+    Tile *tile = currentTile();
+    if (!tile)
+        return;
+
+    mMapDocument->setCurrentObject(tile);
+    mMapDocument->emitEditCurrentObject();
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)

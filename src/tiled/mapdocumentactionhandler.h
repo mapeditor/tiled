@@ -70,6 +70,7 @@ public:
     QAction *actionMoveLayerDown() const { return mActionMoveLayerDown; }
     QAction *actionToggleOtherLayers() const
     { return mActionToggleOtherLayers; }
+    QAction *actionLayerProperties() const { return mActionLayerProperties; }
 
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
     QAction *actionRemoveObjects() const { return mActionRemoveObjects; }
@@ -97,6 +98,7 @@ public slots:
     void moveLayerDown();
     void removeLayer();
     void toggleOtherLayers();
+    void layerProperties();
 
     void duplicateObjects();
     void removeObjects();
@@ -123,6 +125,7 @@ private:
     QAction *mActionMoveLayerUp;
     QAction *mActionMoveLayerDown;
     QAction *mActionToggleOtherLayers;
+    QAction *mActionLayerProperties;
 
     QAction *mActionDuplicateObjects;
     QAction *mActionRemoveObjects;

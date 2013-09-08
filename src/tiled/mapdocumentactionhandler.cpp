@@ -90,6 +90,10 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionToggleOtherLayers->setIcon(
             QIcon(QLatin1String(":/images/16x16/show_hide_others.png")));
 
+    mActionLayerProperties = new QAction(this);
+    mActionLayerProperties->setIcon(
+            QIcon(QLatin1String(":images/16x16/document-properties.png")));
+
     mActionDuplicateObjects = new QAction(this);
     mActionDuplicateObjects->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
 
@@ -99,6 +103,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     Utils::setThemeIcon(mActionRemoveLayer, "edit-delete");
     Utils::setThemeIcon(mActionMoveLayerUp, "go-up");
     Utils::setThemeIcon(mActionMoveLayerDown, "go-down");
+    Utils::setThemeIcon(mActionLayerProperties, "document-properties");
     Utils::setThemeIcon(mActionRemoveObjects, "edit-delete");
 
     connect(mActionSelectAll, SIGNAL(triggered()), SLOT(selectAll()));
@@ -122,6 +127,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionMoveLayerDown, SIGNAL(triggered()), SLOT(moveLayerDown()));
     connect(mActionToggleOtherLayers, SIGNAL(triggered()),
             SLOT(toggleOtherLayers()));
+    connect(mActionLayerProperties, SIGNAL(triggered()),
+            SLOT(layerProperties()));
 
     connect(mActionDuplicateObjects, SIGNAL(triggered()), SLOT(duplicateObjects()));
     connect(mActionRemoveObjects, SIGNAL(triggered()), SLOT(removeObjects()));
@@ -151,6 +158,7 @@ void MapDocumentActionHandler::retranslateUi()
     mActionMoveLayerUp->setText(tr("R&aise Layer"));
     mActionMoveLayerDown->setText(tr("&Lower Layer"));
     mActionToggleOtherLayers->setText(tr("Show/&Hide all Other Layers"));
+    mActionLayerProperties->setText(tr("Layer &Properties..."));
 }
 
 void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
@@ -306,6 +314,14 @@ void MapDocumentActionHandler::toggleOtherLayers()
         mMapDocument->toggleOtherLayers(mMapDocument->currentLayerIndex());
 }
 
+void MapDocumentActionHandler::layerProperties()
+{
+    if (mMapDocument) {
+        mMapDocument->setCurrentObject(mMapDocument->currentLayer());
+        mMapDocument->emitEditCurrentObject();
+    }
+}
+
 void MapDocumentActionHandler::duplicateObjects()
 {
     if (mMapDocument)
@@ -369,6 +385,7 @@ void MapDocumentActionHandler::updateActions()
     mActionMoveLayerDown->setEnabled(hasNextLayer);
     mActionToggleOtherLayers->setEnabled(layerCount > 1);
     mActionRemoveLayer->setEnabled(currentLayerIndex >= 0);
+    mActionLayerProperties->setEnabled(currentLayerIndex >= 0);
 
     mActionDuplicateObjects->setEnabled(selectedObjectsCount > 0);
     mActionRemoveObjects->setEnabled(selectedObjectsCount > 0);

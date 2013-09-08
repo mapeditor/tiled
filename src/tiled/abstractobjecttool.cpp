@@ -193,9 +193,25 @@ void AbstractObjectTool::showContextMenu(MapObjectItem *clickedObjectItem,
         }
     }
 
+    menu.addSeparator();
+    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QAction *propertiesAction = menu.addAction(propIcon,
+                                               tr("Object &Properties..."));
+    // TODO: Implement editing of properties for multiple objects
+    propertiesAction->setEnabled(selectedObjects.size() == 1);
+
+    Utils::setThemeIcon(propertiesAction, "document-properties");
+
     QAction *action = menu.exec(screenPos);
     if (!action)
         return;
+
+    if (action == propertiesAction) {
+        MapObject *mapObject = selectedObjects.first();
+        mapDocument()->setCurrentObject(mapObject);
+        mapDocument()->emitEditCurrentObject();
+        return;
+    }
 
     if (ObjectGroup *objectGroup = action->data().value<ObjectGroup*>())
         handler->moveObjectsToGroup(objectGroup);

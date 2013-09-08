@@ -318,6 +318,8 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(handler->actionMoveLayerDown());
         menu.addSeparator();
         menu.addAction(handler->actionToggleOtherLayers());
+        menu.addSeparator();
+        menu.addAction(handler->actionLayerProperties());
     }
 
     menu.exec(event->globalPos());
