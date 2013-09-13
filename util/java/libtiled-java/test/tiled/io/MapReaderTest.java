@@ -1,11 +1,12 @@
 package tiled.io;
 
-import junit.framework.TestCase;
-import tiled.core.Map;
-
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import junit.framework.TestCase;
+import tiled.core.Map;
+import tiled.core.TileLayer;
 
 public class MapReaderTest extends TestCase {
     public void testAcceptValidFilenames() {
@@ -47,5 +48,23 @@ public class MapReaderTest extends TestCase {
         assertEquals(24, map.getTileWidth());
         assertEquals(24, map.getTileHeight());
         assertEquals(3, map.getLayerCount());
+        assertNotNull(((TileLayer)map.getLayer(0)).getTileAt(0, 0));
+    }
+    
+    public void testReadingExampleCsvMap() throws Exception {
+        // Arrange
+        File mapFile = getFileFromResources("resources/csvmap.tmx");
+        
+        // Act
+        Map map = new TMXMapReader().readMap(mapFile.getAbsolutePath());
+        
+        // Assert
+        assertEquals(Map.ORIENTATION_ORTHOGONAL, map.getOrientation());
+        assertEquals(100, map.getHeight());
+        assertEquals(100, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(1, map.getLayerCount());
+        assertNotNull(((TileLayer)map.getLayer(0)).getTileAt(0, 0));
     }
 }
