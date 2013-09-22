@@ -113,6 +113,7 @@ void TerrainDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
+        mTerrainView->setMapDocument(mMapDocument);
         mProxyModel->setSourceModel(mMapDocument->terrainModel());
         mTerrainView->expandAll();
     } else {

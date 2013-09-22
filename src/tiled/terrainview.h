@@ -29,6 +29,7 @@
 namespace Tiled {
 namespace Internal {
 
+class MapDocument;
 class Zoomable;
 
 /**
@@ -53,12 +54,16 @@ public:
 
 protected:
     void wheelEvent(QWheelEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
+    void editTerrainProperties();
+
     void adjustScale();
 
 private:
     Zoomable *mZoomable;
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

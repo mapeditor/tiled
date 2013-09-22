@@ -102,6 +102,7 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     mTerrainModel = mapDocument->terrainModel();
     const QModelIndex rootIndex = mTerrainModel->index(tileset);
 
+    mUi->terrainList->setMapDocument(mapDocument);
     mUi->terrainList->setModel(mTerrainModel);
     mUi->terrainList->setRootIndex(rootIndex);
 
