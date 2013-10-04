@@ -148,8 +148,11 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         QVariantList terrainsVariant;
         for (int i = 0; i < tileset->terrainCount(); ++i) {
             Terrain *terrain = tileset->terrain(i);
+            const Properties &properties = terrain->properties();
             QVariantMap terrainVariant;
             terrainVariant["name"] = terrain->name();
+            if (!properties.isEmpty())
+                terrainVariant["properties"] = toVariant(properties);
             terrainVariant["tile"] = terrain->imageTileId();
             terrainsVariant << terrainVariant;
         }
