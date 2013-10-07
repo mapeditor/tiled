@@ -197,6 +197,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
     mUi->actionSave->setShortcuts(QKeySequence::Save);
     mUi->actionSaveAs->setShortcuts(QKeySequence::SaveAs);
+    mUi->actionReload->setShortcut(QKeySequence::Refresh);
     mUi->actionClose->setShortcuts(QKeySequence::Close);
     mUi->actionQuit->setShortcuts(QKeySequence::Quit);
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
@@ -277,6 +278,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
+    connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reloadMapDocument()));
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
@@ -784,6 +786,17 @@ bool MainWindow::saveFileAs()
     mMapDocument->setWriterPluginFileName(writerPluginFilename);
 
     return saveFile(fileName);
+}
+
+void MainWindow::reloadMapDocument()
+{
+    // prevent accidental reloading
+    if (!confirmSave(mMapDocument))
+        return;
+
+    QString error;
+    if (!mMapDocument->reload(&error))
+        QMessageBox::critical(this, tr("Error Reloading Map"), error);
 }
 
 bool MainWindow::confirmSave(MapDocument *mapDocument)

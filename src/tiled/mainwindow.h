@@ -118,6 +118,7 @@ public slots:
     bool saveFileAs();
     void saveAsImage();
     void exportAs();
+    void reloadMapDocument();
     void closeFile();
     void closeAllFiles();
 
