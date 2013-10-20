@@ -42,6 +42,7 @@ public class MapObject implements Cloneable
     private Properties properties = new Properties();
     private ObjectGroup objectGroup;
     private Rectangle bounds = new Rectangle();
+    private Shape shape = new Rectangle();
     private String name = "Object";
     private String type = "";
     private String imageSource = "";
@@ -84,7 +85,15 @@ public class MapObject implements Cloneable
         this.bounds = bounds;
     }
 
-    public String getImageSource() {
+    public Shape getShape() {
+        return shape;
+    }
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
+    }
+
+	public String getImageSource() {
         return imageSource;
     }
 
