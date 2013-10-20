@@ -130,7 +130,8 @@ public class Sprite
             return name != null && name.equalsIgnoreCase(n);
         }
 
-        public String toString() {
+        @Override
+		public String toString() {
             return "(" + name + ")" + id + ": @ " + frameRate;
         }
     }
@@ -367,7 +368,8 @@ public class Sprite
     /**
      * @see Object#toString()
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return "Frame: (" + frameSize.width + "x" + frameSize.height + ")\n" +
                 "Border: " + borderWidth + "\n" +
                 "FPL: " + fpl + "\n" +

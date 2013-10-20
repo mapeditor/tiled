@@ -82,49 +82,59 @@ public class ObjectGroup extends MapLayer
     /**
      * @see MapLayer#rotate(int)
      */
-    public void rotate(int angle) {
+    @Override
+	public void rotate(int angle) {
         // TODO: Implement rotating an object group
     }
 
     /**
      * @see MapLayer#mirror(int)
      */
-    public void mirror(int dir) {
+    @Override
+	public void mirror(int dir) {
         // TODO: Implement mirroring an object group
     }
 
-    public void mergeOnto(MapLayer other) {
+    @Override
+	public void mergeOnto(MapLayer other) {
         // TODO: Implement merging with another object group
     }
 
-    public void maskedMergeOnto(MapLayer other, Area mask) {
+    @Override
+	public void maskedMergeOnto(MapLayer other, Area mask) {
         // TODO: Figure out what object group should do with this method
     }
 
-    public void copyFrom(MapLayer other) {
+    @Override
+	public void copyFrom(MapLayer other) {
         // TODO: Implement copying from another object group (same as merging)
     }
 
-    public void maskedCopyFrom(MapLayer other, Area mask) {
+    @Override
+	public void maskedCopyFrom(MapLayer other, Area mask) {
         // TODO: Figure out what object group should do with this method
     }
 
-    public void copyTo(MapLayer other) {
+    @Override
+	public void copyTo(MapLayer other) {
         // TODO: Implement copying to another object group (same as merging)
     }
 
     /**
      * @see MapLayer#resize(int,int,int,int)
      */
-    public void resize(int width, int height, int dx, int dy) {
+    @Override
+	public void resize(int width, int height, int dx, int dy) {
         // TODO: Translate contained objects by the change of origin
     }
 
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return objects.isEmpty();
     }
 
-    public Object clone() throws CloneNotSupportedException {
+    @Override
+	public Object clone() throws CloneNotSupportedException {
         ObjectGroup clone = (ObjectGroup) super.clone();
         clone.objects = new LinkedList<MapObject>();
         for (MapObject object : objects) {
@@ -138,6 +148,8 @@ public class ObjectGroup extends MapLayer
     /**
      * @deprecated
      */
+    @Override
+	@Deprecated
     public MapLayer createDiff(MapLayer ml) {
         return null;
     }

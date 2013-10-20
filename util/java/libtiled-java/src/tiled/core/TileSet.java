@@ -473,7 +473,8 @@ public class TileSet implements Iterable<Tile>
     /**
      * @return the name of the tileset, and the total tiles
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return getName() + " [" + size() + "]";
     }
 

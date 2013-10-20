@@ -52,7 +52,8 @@ public class TransparentImageFilter extends RGBImageFilter
      * Filters the given pixel. It returns a transparent pixel for pixels that
      * match the transparency color, or the existing pixel for anything else.
      */
-    public int filterRGB(int x, int y, int rgb) {
+    @Override
+	public int filterRGB(int x, int y, int rgb) {
         if (rgb == trans) {
             return 0;
         } else {
