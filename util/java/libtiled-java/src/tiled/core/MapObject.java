@@ -93,7 +93,7 @@ public class MapObject implements Cloneable
         this.shape = shape;
     }
 
-	public String getImageSource() {
+    public String getImageSource() {
         return imageSource;
     }
 
