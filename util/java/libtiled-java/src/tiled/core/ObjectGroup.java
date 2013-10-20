@@ -39,7 +39,7 @@ import java.util.Iterator;
 /**
  * A layer containing {@link MapObject map objects}.
  */
-public class ObjectGroup extends MapLayer
+public class ObjectGroup extends MapLayer implements Iterable<MapObject>
 {
     private LinkedList<MapObject> objects = new LinkedList<MapObject>();
 
@@ -168,6 +168,10 @@ public class ObjectGroup extends MapLayer
         return objects.iterator();
     }
 
+    public Iterator<MapObject> iterator() {
+        return objects.iterator();
+    }
+
     public MapObject getObjectAt(int x, int y) {
         for (MapObject obj : objects) {
             // Attempt to get an object bordering the point that has no width
@@ -212,4 +216,5 @@ public class ObjectGroup extends MapLayer
 
         return null;
     }
+
 }
