@@ -42,6 +42,7 @@ import java.util.Iterator;
 public class ObjectGroup extends MapLayer implements Iterable<MapObject>
 {
     private LinkedList<MapObject> objects = new LinkedList<MapObject>();
+    private String draworder;
 
     /**
      * Default constructor.
@@ -77,6 +78,42 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
      */
     public ObjectGroup(Rectangle area) {
         super(area);
+    }
+
+    /**
+     * gets the draw order (topdown, index)
+     *
+     * @return draw order
+     */
+    public String getDraworder() {
+        return draworder;
+    }
+
+    /**
+     * sets the draw order
+     *
+     * @param draworder "topdown" or "index"
+     */
+    public void setDraworder(String draworder) {
+       this.draworder = draworder;
+    }
+
+    /**
+     * sets the height
+     *
+     * @param height height
+     */
+    public void setHeight(int height) {
+        super.getBounds().height = height;
+    }
+
+    /**
+     * sets the weight
+     *
+     * @param width width
+     */
+    public void setWidth(int width) {
+        super.getBounds().width = width;
     }
 
     /**
