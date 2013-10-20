@@ -504,7 +504,6 @@ public class TMXMapReader
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if ("image".equalsIgnoreCase(child.getNodeName())) {
-                int id = getAttribute(child, "id", -1);
                 Image img = unmarshalImage(child, baseDir);
                 tile.setImage(img);
             } else if ("animation".equalsIgnoreCase(child.getNodeName())) {
