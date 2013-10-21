@@ -36,7 +36,7 @@
 #include "tileset.h"
 
 #include <QColor>
-#include <QPixmap>
+#include <QImage>
 
 class QImage;
 
@@ -94,12 +94,12 @@ public:
     /**
       * Returns the image of this layer.
       */
-    const QPixmap &image() const { return mImage; }
+    const QImage &image() const { return mImage; }
 
     /**
       * Sets the image of this layer.
       */
-    void setImage(const QPixmap &image) { mImage = image; }
+    void setImage(const QImage &image) { mImage = image; }
 
     /**
      * Resets layer image.
@@ -134,7 +134,7 @@ protected:
 private:
     QString mImageSource;
     QColor mTransparentColor;
-    QPixmap mImage;
+    QImage mImage;
 };
 
 } // namespace Tiled

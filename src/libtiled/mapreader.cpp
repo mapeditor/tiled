@@ -357,7 +357,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     // For tilesets without image source, consecutive tile IDs are allowed (for
     // tiles with individual images)
     if (id == tileset->tileCount())
-        tileset->addTile(QPixmap());
+        tileset->addTile(QImage());
 
     Tile *tile = tileset->tileAt(id);
 
@@ -385,7 +385,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
             QString source = xml.attributes().value(QLatin1String("source")).toString();
             if (!source.isEmpty())
                 source = p->resolveReference(source, mPath);
-            tileset->setTileImage(id, QPixmap::fromImage(readImage()), source);
+            tileset->setTileImage(id, readImage(), source);
         } else {
             readUnknownElement();
         }

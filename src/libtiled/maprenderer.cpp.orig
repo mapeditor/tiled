@@ -35,7 +35,6 @@
 #include <QPaintEngine>
 #include <QPainter>
 #include <QVector2D>
-#include <QPixmap>
 
 using namespace Tiled;
 
@@ -51,7 +50,7 @@ void MapRenderer::drawImageLayer(QPainter *painter,
 {
     Q_UNUSED(exposed)
 
-    painter->drawImage(imageLayer->position(),
+    painter->drawPixmap(imageLayer->position(),
                         imageLayer->image());
 }
 
@@ -165,7 +164,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
     const QRectF source(0, 0, fragment.width, fragment.height);
 
     mPainter->setTransform(transform);
-    mPainter->drawImage(target, cell.tile->image(), source);
+    mPainter->drawPixmap(target, cell.tile->image(), source);
     mPainter->setTransform(oldTransform);
 }
 
@@ -179,7 +178,7 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  QPixmap::fromImage(mTile->image()));
+                                  mTile->image());
 
     mTile = 0;
     mFragments.resize(0);

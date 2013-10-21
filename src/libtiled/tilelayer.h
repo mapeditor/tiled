@@ -38,6 +38,7 @@
 #include <QMargins>
 #include <QString>
 #include <QVector>
+#include <QRegion>
 
 namespace Tiled {
 
