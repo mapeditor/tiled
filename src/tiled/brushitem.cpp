@@ -102,8 +102,16 @@ void BrushItem::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,
                       QWidget *)
 {
-    QColor highlight = QApplication::palette().highlight().color();
-    highlight.setAlpha(64);
+    QColor insideMapHighlight = QApplication::palette().highlight().color();
+    insideMapHighlight.setAlpha(64);
+    QColor outsideMapHighlight = QColor(255, 0, 0);
+    outsideMapHighlight.setAlpha(64);
+    
+    int mapWidth = mMapDocument->map()->width();
+    int mapHeight = mMapDocument->map()->height();
+    QRegion mapRegion = QRegion(0, 0, mapWidth, mapHeight);
+    QRegion insideMapRegion = mRegion.intersected(mapRegion);
+    QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
 
     const MapRenderer *renderer = mMapDocument->renderer();
 
@@ -113,10 +121,18 @@ void BrushItem::paint(QPainter *painter,
         renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
         painter->setOpacity(opacity);
 
-        renderer->drawTileSelection(painter, mRegion, highlight,
+        renderer->drawTileSelection(painter, insideMapRegion, 
+                                    insideMapHighlight,
+                                    option->exposedRect);
+        renderer->drawTileSelection(painter, outsideMapRegion,
+                                    outsideMapHighlight,
                                     option->exposedRect);
     } else {
-        renderer->drawTileSelection(painter, mRegion, highlight,
+        renderer->drawTileSelection(painter, insideMapRegion,
+                                    insideMapHighlight,
+                                    option->exposedRect);
+        renderer->drawTileSelection(painter, outsideMapRegion,
+                                    outsideMapHighlight,
                                     option->exposedRect);
     }
 }
