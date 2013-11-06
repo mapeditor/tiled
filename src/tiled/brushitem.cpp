@@ -104,8 +104,7 @@ void BrushItem::paint(QPainter *painter,
 {
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
-    QColor outsideMapHighlight = QColor(255, 0, 0);
-    outsideMapHighlight.setAlpha(64);
+    QColor outsideMapHighlight = QColor(255, 0, 0, 64);
     
     int mapWidth = mMapDocument->map()->width();
     int mapHeight = mMapDocument->map()->height();
@@ -114,27 +113,19 @@ void BrushItem::paint(QPainter *painter,
     QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
 
     const MapRenderer *renderer = mMapDocument->renderer();
-
+    const qreal opacity = painter->opacity();
     if (mTileLayer) {
-        const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
         renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
-        painter->setOpacity(opacity);
-
-        renderer->drawTileSelection(painter, insideMapRegion, 
-                                    insideMapHighlight,
-                                    option->exposedRect);
-        renderer->drawTileSelection(painter, outsideMapRegion,
-                                    outsideMapHighlight,
-                                    option->exposedRect);
-    } else {
-        renderer->drawTileSelection(painter, insideMapRegion,
-                                    insideMapHighlight,
-                                    option->exposedRect);
-        renderer->drawTileSelection(painter, outsideMapRegion,
-                                    outsideMapHighlight,
-                                    option->exposedRect);
     }
+
+    painter->setOpacity(opacity);
+    renderer->drawTileSelection(painter, insideMapRegion,
+                                insideMapHighlight,
+                                option->exposedRect);
+    renderer->drawTileSelection(painter, outsideMapRegion,
+                                outsideMapHighlight,
+                                option->exposedRect);
 }
 
 void BrushItem::updateBoundingRect()
