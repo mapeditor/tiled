@@ -113,13 +113,13 @@ void BrushItem::paint(QPainter *painter,
     QRegion outsideMapRegion = mRegion.subtracted(mapRegion);
 
     const MapRenderer *renderer = mMapDocument->renderer();
-    const qreal opacity = painter->opacity();
     if (mTileLayer) {
+        const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
         renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
+        painter->setOpacity(opacity);
     }
 
-    painter->setOpacity(opacity);
     renderer->drawTileSelection(painter, insideMapRegion,
                                 insideMapHighlight,
                                 option->exposedRect);
