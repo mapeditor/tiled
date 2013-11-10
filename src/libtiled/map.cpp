@@ -207,10 +207,12 @@ bool Map::isTilesetUsed(Tileset *tileset) const
 Map *Map::clone() const
 {
     Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
+    o->mBackgroundColor = mBackgroundColor;
     o->mDrawMargins = mDrawMargins;
     foreach (const Layer *layer, mLayers)
         o->addLayer(layer->clone());
     o->mTilesets = mTilesets;
+    o->mLayerDataFormat = mLayerDataFormat;
     o->setProperties(properties());
     return o;
 }
