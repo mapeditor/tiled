@@ -5199,6 +5199,17 @@ _wrap_PyTiledMapObject_name(PyTiledMapObject *self)
     return py_retval;
 }
 
+PyObject *
+_wrap_PyTiledMapObject_type(PyTiledMapObject *self)
+{
+    PyObject *py_retval;
+    QString retval;
+
+    retval = self->obj->type();
+    py_retval = Py_BuildValue((char *) "s", retval.toUtf8().data());
+    return py_retval;
+}
+
 
 PyObject *
 _wrap_PyTiledMapObject_setWidth(PyTiledMapObject *self, PyObject *args, PyObject *kwargs)
@@ -5350,6 +5361,22 @@ _wrap_PyTiledMapObject_setName(PyTiledMapObject *self, PyObject *args, PyObject 
     return py_retval;
 }
 
+PyObject *
+_wrap_PyTiledMapObject_setType(PyTiledMapObject *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    const char *n;
+    Py_ssize_t n_len;
+    const char *keywords[] = {"n", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#", (char **) keywords, &n, &n_len)) {
+        return NULL;
+    }
+    self->obj->setType(QString::fromUtf8(n));
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
 
 PyObject *
 _wrap_PyTiledMapObject_setRotation(PyTiledMapObject *self, PyObject *args, PyObject *kwargs)
@@ -5463,6 +5490,7 @@ static PyMethodDef PyTiledMapObject_methods[] = {
     {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMapObject_setHeight, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "rotation", (PyCFunction) _wrap_PyTiledMapObject_rotation, METH_NOARGS, NULL },
     {(char *) "name", (PyCFunction) _wrap_PyTiledMapObject_name, METH_NOARGS, NULL },
+    {(char *) "type", (PyCFunction) _wrap_PyTiledMapObject_type, METH_NOARGS, NULL },
     {(char *) "setWidth", (PyCFunction) _wrap_PyTiledMapObject_setWidth, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "setVisible", (PyCFunction) _wrap_PyTiledMapObject_setVisible, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "setSize", (PyCFunction) _wrap_PyTiledMapObject_setSize, METH_KEYWORDS|METH_VARARGS, NULL },
@@ -5473,6 +5501,7 @@ static PyMethodDef PyTiledMapObject_methods[] = {
     {(char *) "shape", (PyCFunction) _wrap_PyTiledMapObject_shape, METH_NOARGS, NULL },
     {(char *) "setCell", (PyCFunction) _wrap_PyTiledMapObject_setCell, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "setName", (PyCFunction) _wrap_PyTiledMapObject_setName, METH_KEYWORDS|METH_VARARGS, NULL },
+    {(char *) "setType", (PyCFunction) _wrap_PyTiledMapObject_setType, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "setRotation", (PyCFunction) _wrap_PyTiledMapObject_setRotation, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "y", (PyCFunction) _wrap_PyTiledMapObject_y, METH_NOARGS, NULL },
     {(char *) "x", (PyCFunction) _wrap_PyTiledMapObject_x, METH_NOARGS, NULL },
