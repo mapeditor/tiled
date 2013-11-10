@@ -185,6 +185,8 @@ cls_mapobject.add_method('isVisible', 'bool', [])
 cls_mapobject.add_method('setVisible', None, [('bool','v')])
 cls_mapobject.add_method('name', 'QString', [])
 cls_mapobject.add_method('setName', None, [('QString','n')])
+cls_mapobject.add_method('type', 'QString', [])
+cls_mapobject.add_method('setType', None, [('QString','n')])
 
 cls_objectgroup = tiled.add_class('ObjectGroup', cls_layer)
 cls_objectgroup.add_constructor([('QString','name'),
