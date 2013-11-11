@@ -210,7 +210,9 @@ void PythonPlugin::reloadModules()
 
         if (mKnownExtModules.contains(name)) {
             PySys_WriteStdout("-- Reloading %s\n", name.toUtf8().data());
-            Py_XDECREF(mKnownExtClasses.take(name));
+
+            PyObject *oldClass = mKnownExtClasses.take(name);
+            Py_XDECREF(oldClass);
 
             pmod = PyImport_ReloadModule(mKnownExtModules[name]);
         } else {
@@ -223,7 +225,8 @@ void PythonPlugin::reloadModules()
             PySys_WriteStderr("** Parse exception **\n");
             PyErr_Print();
             PyErr_Clear();
-            Py_XDECREF(mKnownExtModules.take(name));
+            PyObject *oldClass = mKnownExtClasses.take(name);
+            Py_XDECREF(oldClass);
             continue;
         }
 
@@ -231,7 +234,8 @@ void PythonPlugin::reloadModules()
         if (!pcls || !PyCallable_Check(pcls)) {
             PySys_WriteStderr("Extension of tiled.Plugin not defined in "
                               "script: %s\n", name.toUtf8().data());
-            Py_XDECREF(mKnownExtModules.take(name));
+            PyObject *oldClass = mKnownExtClasses.take(name);
+            Py_XDECREF(oldClass);
             continue;
         }
         mKnownExtClasses.insert(name, pcls);
