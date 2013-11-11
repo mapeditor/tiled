@@ -138,7 +138,7 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     if (!mapsDir.exists())
         mapsDir.setPath(QDir::currentPath());
 
-    mFSModel = new QFileSystemModel;
+    mFSModel = new QFileSystemModel(this);
     mFSModel->setRootPath(mapsDir.absolutePath());
 
     PluginManager *pm = PluginManager::instance();
