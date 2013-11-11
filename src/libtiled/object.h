@@ -50,6 +50,11 @@ public:
 
     Object(TypeId typeId) : mTypeId(typeId) {}
 
+    Object(const Object &object) :
+        mTypeId(object.mTypeId),
+        mProperties(object.mProperties)
+    {}
+
     /**
      * Virtual destructor.
      */

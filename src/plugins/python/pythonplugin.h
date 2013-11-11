@@ -84,7 +84,6 @@ private:
     QString mScriptDir;
     QMap<QString,PyObject*> mKnownExtModules;
     QMap<QString,PyObject*> mKnownExtClasses;
-    QList<PyObject*> mLoadedMaps;
     PyObject *pTiledCls;
 
     QString mError;

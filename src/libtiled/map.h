@@ -90,6 +90,11 @@ public:
         int tileWidth, int tileHeight);
 
     /**
+     * Copy constructor. Makes sure that a deep-copy of the layers is created.
+     */
+    Map(const Map &map);
+
+    /**
      * Destructor.
      */
     ~Map();
@@ -296,8 +301,6 @@ public:
      * map.
      */
     bool isTilesetUsed(Tileset *tileset) const;
-
-    Map *clone() const;
 
     /**
      * Creates a new map that contains the given \a layer. The map size will be

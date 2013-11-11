@@ -38,10 +38,12 @@ using namespace Python;
 
 PythonPlugin::~PythonPlugin()
 {
-    qDeleteAll(mLoadedMaps);
-    qDeleteAll(mKnownExtModules);
-    qDeleteAll(mKnownExtClasses);
-    delete pTiledCls;
+    foreach (PyObject *pythonClass, mKnownExtClasses)
+        Py_DECREF(pythonClass);
+    foreach (PyObject *pythonModule, mKnownExtModules)
+        Py_DECREF(pythonModule);
+
+    Py_XDECREF(pTiledCls);
 
     Py_Finalize();
 }
@@ -57,16 +59,26 @@ PythonPlugin::PythonPlugin()
         Py_Initialize();
         inittiled();
 
-        // get reference to base class to find it's extensions later on
+        // Get reference to base class to find its extensions later on
         PyObject *pmod = PyImport_ImportModule("tiled");
-        pTiledCls = PyObject_GetAttrString(pmod, "Plugin");
-        if (!pTiledCls || !PyCallable_Check(pTiledCls)) {
+        if (pmod) {
+            PyObject *tiledPlugin = PyObject_GetAttrString(pmod, "Plugin");
+            Py_DECREF(pmod);
+
+            if (tiledPlugin) {
+                if (PyCallable_Check(tiledPlugin)) {
+                    pTiledCls = tiledPlugin;
+                } else {
+                    Py_DECREF(tiledPlugin);
+                }
+            }
+        }
+
+        if (!pTiledCls) {
             log(ERROR, "Can't find tiled.Plugin baseclass\n");
-            Py_XDECREF(pTiledCls);
             handleError();
             return;
         }
-        Py_XDECREF(pmod);
 
         // w/o differentiating error messages could just rename "log"
         // to "write" in the binding and assign plugin directly to stdout/stderr
@@ -158,6 +170,7 @@ PyObject *PythonPlugin::checkFunction(PyObject *pcls, const char *fun) const
 
     if (!pfun || !PyCallable_Check(pfun)) {
         PySys_WriteStderr("No such function defined: %s\n", fun);
+        Py_XDECREF(pfun);
         return NULL;
     }
 
@@ -207,33 +220,38 @@ void PythonPlugin::reloadModules()
         iter.next();
         QString name = iter.fileInfo().baseName();
         PyObject *pmod;
+        PyObject *knownModule = mKnownExtModules.take(name);
 
-        if (mKnownExtModules.contains(name)) {
+        if (knownModule) {
             PySys_WriteStdout("-- Reloading %s\n", name.toUtf8().data());
-            Py_XDECREF(mKnownExtClasses.take(name));
+            PyObject *moduleClass = mKnownExtClasses.take(name);
+            Py_XDECREF(moduleClass);
 
-            pmod = PyImport_ReloadModule(mKnownExtModules[name]);
+            pmod = PyImport_ReloadModule(knownModule);
+            Py_DECREF(knownModule);
         } else {
             PySys_WriteStdout("-- Loading %s\n", name.toUtf8().data());
             pmod = PyImport_ImportModule(name.toUtf8().data());
-            mKnownExtModules[name] = pmod;
         }
 
         if (!pmod) {
             PySys_WriteStderr("** Parse exception **\n");
             PyErr_Print();
             PyErr_Clear();
-            Py_XDECREF(mKnownExtModules.take(name));
             continue;
         }
 
+        mKnownExtModules[name] = pmod;
+
         PyObject *pcls = findPluginSubclass(pmod);
+
         if (!pcls || !PyCallable_Check(pcls)) {
             PySys_WriteStderr("Extension of tiled.Plugin not defined in "
                               "script: %s\n", name.toUtf8().data());
-            Py_XDECREF(mKnownExtModules.take(name));
+            Py_XDECREF(pcls);
             continue;
         }
+
         mKnownExtClasses.insert(name, pcls);
     }
 }
@@ -265,7 +283,7 @@ Tiled::Map *PythonPlugin::read(const QString &fileName)
             PySys_WriteStderr("** Uncaught exception in script **\n");
         } else {
             _wrap_convert_py2c__Tiled__Map___star__(pinst, &ret);
-            mLoadedMaps.push_back(pinst);
+            Py_DECREF(pinst);
         }
         handleError();
 
@@ -290,7 +308,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
         if (map->property("__script__") != it.key()) continue;
         log(QString("-- Script used for exporting: %1\n").arg(it.key()));
 
-        PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map->clone());
+        PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map);
         if (!pmap) return false;
         if (!PyObject_HasAttrString(it.value(), "write")) {
             mError = "Please define class that extends tiled.Plugin and has "

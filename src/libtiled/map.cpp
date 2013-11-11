@@ -50,6 +50,25 @@ Map::Map(Orientation orientation,
 {
 }
 
+Map::Map(const Map &map):
+    Object(map),
+    mOrientation(map.mOrientation),
+    mWidth(map.mWidth),
+    mHeight(map.mHeight),
+    mTileWidth(map.mTileWidth),
+    mTileHeight(map.mTileHeight),
+    mBackgroundColor(map.mBackgroundColor),
+    mDrawMargins(map.mDrawMargins),
+    mTilesets(map.mTilesets),
+    mLayerDataFormat(map.mLayerDataFormat)
+{
+    foreach (const Layer *layer, map.mLayers) {
+        Layer *clone = layer->clone();
+        clone->setMap(this);
+        mLayers.append(clone);
+    }
+}
+
 Map::~Map()
 {
     qDeleteAll(mLayers);
@@ -202,19 +221,6 @@ bool Map::isTilesetUsed(Tileset *tileset) const
             return true;
 
     return false;
-}
-
-Map *Map::clone() const
-{
-    Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
-    o->mBackgroundColor = mBackgroundColor;
-    o->mDrawMargins = mDrawMargins;
-    foreach (const Layer *layer, mLayers)
-        o->addLayer(layer->clone());
-    o->mTilesets = mTilesets;
-    o->mLayerDataFormat = mLayerDataFormat;
-    o->setProperties(properties());
-    return o;
 }
 
 
