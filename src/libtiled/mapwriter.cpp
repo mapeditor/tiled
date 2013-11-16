@@ -315,6 +315,14 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
             if (imageSource.isEmpty()) {
                 w.writeStartElement(QLatin1String("image"));
 
+                const QSize tileSize = tile->size();
+                if (!tileSize.isNull()) {
+                    w.writeAttribute(QLatin1String("width"),
+                                     QString::number(tileSize.width()));
+                    w.writeAttribute(QLatin1String("height"),
+                                     QString::number(tileSize.height()));
+                }
+
                 if (tile->imageSource().isEmpty()) {
                     w.writeAttribute(QLatin1String("format"),
                                      QLatin1String("png"));
