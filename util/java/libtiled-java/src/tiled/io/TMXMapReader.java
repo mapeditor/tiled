@@ -446,7 +446,6 @@ public class TMXMapReader
                 break;
             } else if ("ellipse".equalsIgnoreCase(child.getNodeName())) {
                 obj.setShape(new Ellipse2D.Double(x, y, width, height));
-                obj.setBounds(obj.getShape().getBounds());
             } else if ("polygon".equalsIgnoreCase(child.getNodeName()) || "polyline".equalsIgnoreCase(child.getNodeName())) {
                 Polygon shape = new Polygon();
                 final String pointsAttribute = getAttributeValue(child, "points");
