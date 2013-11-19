@@ -406,7 +406,7 @@ public class Map implements Iterable<MapLayer>
      * @return string describing map
      */
     @Override
-	public String toString() {
+    public String toString() {
         return "Map[" + bounds.width + "x" + bounds.height + "x" +
             getLayerCount() + "][" + tileWidth + "x" +
             tileHeight + "]";

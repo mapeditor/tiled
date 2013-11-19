@@ -107,7 +107,7 @@ public class TileLayer extends MapLayer
      * @see MapLayer#rotate(int)
      */
     @Override
-	public void rotate(int angle) {
+    public void rotate(int angle) {
         Tile[][] trans;
         int xtrans = 0, ytrans = 0;
 
@@ -157,7 +157,7 @@ public class TileLayer extends MapLayer
      * @param dir the axial orientation to mirror around
      */
     @Override
-	public void mirror(int dir) {
+    public void mirror(int dir) {
         Tile[][] mirror = new Tile[bounds.height][bounds.width];
         for (int y = 0; y < bounds.height; y++) {
             for (int x = 0; x < bounds.width; x++) {
@@ -190,7 +190,7 @@ public class TileLayer extends MapLayer
     }
 
     @Override
-	public boolean isEmpty() {
+    public boolean isEmpty() {
         for (int p = 0; p < 2; p++) {
             for (int y = 0; y < bounds.height; y++) {
                 for (int x = p; x < bounds.width; x += 2) {
@@ -211,7 +211,7 @@ public class TileLayer extends MapLayer
      * @see MapLayer#setBounds
      */
     @Override
-	protected void setBounds(Rectangle bounds) {
+    protected void setBounds(Rectangle bounds) {
         super.setBounds(bounds);
         map = new Tile[bounds.height][bounds.width];
 
@@ -231,7 +231,7 @@ public class TileLayer extends MapLayer
      *         layer, and the argument, or <b>null</b> if no difference exists.
      */
     @Override
-	public MapLayer createDiff(MapLayer ml) {
+    public MapLayer createDiff(MapLayer ml) {
         if (ml == null) { return null; }
 
         if (ml instanceof TileLayer) {
@@ -342,7 +342,7 @@ public class TileLayer extends MapLayer
     }
 
     @Override
-	public void mergeOnto(MapLayer other) {
+    public void mergeOnto(MapLayer other) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
             for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
                 Tile tile = getTileAt(x, y);
@@ -361,7 +361,7 @@ public class TileLayer extends MapLayer
      * @param mask
      */
     @Override
-	public void maskedMergeOnto(MapLayer other, Area mask) {
+    public void maskedMergeOnto(MapLayer other, Area mask) {
         Rectangle boundBox = mask.getBounds();
 
         for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
@@ -382,7 +382,7 @@ public class TileLayer extends MapLayer
      * @param other
      */
     @Override
-	public void copyFrom(MapLayer other) {
+    public void copyFrom(MapLayer other) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
             for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
                 setTileAt(x, y, ((TileLayer) other).getTileAt(x, y));
@@ -398,7 +398,7 @@ public class TileLayer extends MapLayer
      * @param mask
      */
     @Override
-	public void maskedCopyFrom(MapLayer other, Area mask) {
+    public void maskedCopyFrom(MapLayer other, Area mask) {
         Rectangle boundBox = mask.getBounds();
 
         for (int y = boundBox.y; y < boundBox.y + boundBox.height; y++) {
@@ -418,7 +418,7 @@ public class TileLayer extends MapLayer
      * @param other the layer to copy this layer to
      */
     @Override
-	public void copyTo(MapLayer other) {
+    public void copyTo(MapLayer other) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
             for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
                 ((TileLayer) other).setTileAt(x, y, getTileAt(x, y));
@@ -434,7 +434,7 @@ public class TileLayer extends MapLayer
      * @exception CloneNotSupportedException
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         TileLayer clone = (TileLayer) super.clone();
 
         // Clone the layer data
@@ -465,7 +465,7 @@ public class TileLayer extends MapLayer
      * @param dy     the shift in y direction
      */
     @Override
-	public void resize(int width, int height, int dx, int dy) {
+    public void resize(int width, int height, int dx, int dy) {
         Tile[][] newMap = new Tile[height][width];
         HashMap<Object, Properties> newTileInstanceProperties = new HashMap<Object, Properties>();
 

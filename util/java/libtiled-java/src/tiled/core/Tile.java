@@ -140,7 +140,7 @@ public class Tile
      * @see java.lang.Object#toString()
      */
     @Override
-	public String toString() {
+    public String toString() {
         return "Tile " + id + " (" + getWidth() + "x" + getHeight() + ")";
     }
 }

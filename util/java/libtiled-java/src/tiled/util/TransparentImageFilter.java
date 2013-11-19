@@ -53,7 +53,7 @@ public class TransparentImageFilter extends RGBImageFilter
      * match the transparency color, or the existing pixel for anything else.
      */
     @Override
-	public int filterRGB(int x, int y, int rgb) {
+    public int filterRGB(int x, int y, int rgb) {
         if (rgb == trans) {
             return 0;
         } else {

@@ -282,7 +282,7 @@ public abstract class MapLayer implements Cloneable
      * @exception CloneNotSupportedException
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         MapLayer clone = (MapLayer) super.clone();
 
         // Create a new bounds object

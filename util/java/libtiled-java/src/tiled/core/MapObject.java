@@ -53,7 +53,7 @@ public class MapObject implements Cloneable
     }
 
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         MapObject clone = (MapObject) super.clone();
         clone.bounds = new Rectangle(bounds);
         clone.properties = (Properties) properties.clone();
@@ -194,7 +194,7 @@ public class MapObject implements Cloneable
     }
 
     @Override
-	public String toString() {
+    public String toString() {
         return type + " (" + getX() + "," + getY() + ")";
     }
 }
