@@ -100,7 +100,8 @@ void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     gridColor.setAlpha(128);
 
-    QPen gridPen(gridColor, 0);
+    QPen gridPen(gridColor);
+    gridPen.setCosmetic(true);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
     painter->setPen(gridPen);
 

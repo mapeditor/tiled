@@ -148,7 +148,8 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     gridColor.setAlpha(128);
 
-    QPen gridPen(gridColor, 0);
+    QPen gridPen(gridColor);
+    gridPen.setCosmetic(true);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
     painter->setPen(gridPen);
 
@@ -274,7 +275,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 {
     painter->save();
 
-    QPen pen(Qt::black, 0);
+    QPen pen(Qt::black);
+    pen.setCosmetic(true);
 
     if (!object->cell().isEmpty()) {
         const Tile *tile = object->cell().tile;
@@ -309,8 +311,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         }
     } else {
         const qreal lineWidth = objectLineWidth();
-        const qreal shadowOffset = lineWidth == 0 ? (1 / painter->transform().m11()) :
-                                                    qMin(qreal(1), lineWidth);
+        const qreal scale = painter->transform().m11();
+        const qreal shadowOffset = (lineWidth == 0 ? 1 : lineWidth) / scale;
 
         QColor brushColor = color;
         brushColor.setAlpha(50);

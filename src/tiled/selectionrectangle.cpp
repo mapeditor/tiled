@@ -54,6 +54,7 @@ void SelectionRectangle::paint(QPainter *painter,
     QColor black(Qt::black);
     black.setAlpha(128);
     QPen pen(black, 2, Qt::DotLine);
+    pen.setCosmetic(true);
     painter->setPen(pen);
     painter->drawRect(mRectangle.translated(1, 1));
 

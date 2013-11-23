@@ -181,7 +181,8 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     gridColor.setAlpha(128);
 
-    QPen gridPen(gridColor, 0);
+    QPen gridPen(gridColor);
+    gridPen.setCosmetic(true);
     gridPen.setDashPattern(QVector<qreal>() << 2 << 2);
 
     if (startY < endY) {
@@ -288,7 +289,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         if (testFlag(ShowTileObjectOutlines)) {
             const QRect rect = cell.tile->image().rect();
             QPen pen(Qt::SolidLine);
-            pen.setWidth(0);
+            pen.setCosmetic(true);
             painter->setPen(pen);
             painter->drawRect(rect);
             pen.setStyle(Qt::DotLine);
@@ -298,12 +299,15 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         }
     } else {
         const qreal lineWidth = objectLineWidth();
-        const QPen linePen(color, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        const QPen shadowPen(Qt::black, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        const qreal shadowDist = lineWidth == 0 ? (1 / painter->transform().m11()) :
-                                                  qMin(qreal(2), lineWidth);
+        const qreal scale = painter->transform().m11();
+        const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / scale;
         const QPointF shadowOffset = QPointF(shadowDist * 0.5,
                                              shadowDist * 0.5);
+
+        QPen linePen(color, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        linePen.setCosmetic(true);
+        QPen shadowPen(linePen);
+        shadowPen.setColor(Qt::black);
 
         QColor brushColor = color;
         brushColor.setAlpha(50);
