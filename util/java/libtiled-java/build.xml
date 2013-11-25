@@ -30,7 +30,7 @@
   </target>
 
   <target name="test" depends="init" description="Run all unit-tests">
-    <javac destdir="${build.test}" debug="true">
+    <javac destdir="${build.test}" debug="true" source="1.5" target="1.5">
       <src path="${src}" />
       <src path="${test}" />
       <classpath refid="classpath.test"/>
@@ -50,7 +50,7 @@
   </target>
 
   <target name="jar" depends="init" description="Build libtiled.jar">
-    <javac destdir="${build}">
+    <javac destdir="${build}" source="1.5" target="1.5">
       <src path="${src}" />
       <classpath refid="classpath"/>
     </javac>
