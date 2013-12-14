@@ -29,13 +29,10 @@
 #include "preferences.h"
 
 #include <QFileInfo>
-#include <QFileSystemWatcher>
 #include <QTextStream>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-AutomappingManager *AutomappingManager::mInstance = 0;
 
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
@@ -47,20 +44,6 @@ AutomappingManager::AutomappingManager(QObject *parent)
 AutomappingManager::~AutomappingManager()
 {
     cleanUp();
-}
-
-AutomappingManager *AutomappingManager::instance()
-{
-    if (!mInstance)
-        mInstance = new AutomappingManager;
-
-    return mInstance;
-}
-
-void AutomappingManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = 0;
 }
 
 void AutomappingManager::autoMap()
@@ -75,13 +58,14 @@ void AutomappingManager::autoMap()
     autoMapInternal(QRect(0, 0, w, h), 0);
 }
 
-void AutomappingManager::autoMap(QRegion where, Layer *touchedLayer)
+void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
 {
     if (Preferences::instance()->automappingDrawing())
         autoMapInternal(where, touchedLayer);
 }
 
-void AutomappingManager::autoMapInternal(QRegion where, Layer *touchedLayer)
+void AutomappingManager::autoMapInternal(const QRegion &where,
+                                         Layer *touchedLayer)
 {
     mError.clear();
     mWarning.clear();
@@ -215,9 +199,11 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
-    if (mMapDocument)
+    if (mMapDocument) {
         connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
                 this, SLOT(autoMap(QRegion,Layer*)));
+    }
+
     mLoaded = false;
 }
 

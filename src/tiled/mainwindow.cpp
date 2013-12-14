@@ -122,8 +122,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
+    , mAutomappingManager(new AutomappingManager(this))
     , mClipboardManager(new ClipboardManager(this))
     , mDocumentManager(DocumentManager::instance())
+    , mQuickStampManager(new QuickStampManager(this))
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -310,7 +312,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionOffsetMap, SIGNAL(triggered()), SLOT(offsetMap()));
     connect(mUi->actionMapProperties, SIGNAL(triggered()),
             SLOT(editMapProperties()));
-    connect(mUi->actionAutoMap, SIGNAL(triggered()), SLOT(autoMap()));
+    connect(mUi->actionAutoMap, SIGNAL(triggered()),
+            mAutomappingManager, SLOT(autoMap()));
 
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
     connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -447,9 +450,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     readSettings();
     setupQuickStamps();
 
-    connect(AutomappingManager::instance(), SIGNAL(warningsOccurred()),
+    connect(mAutomappingManager, SIGNAL(warningsOccurred()),
             this, SLOT(autoMappingWarning()));
-    connect(AutomappingManager::instance(), SIGNAL(errorsOccurred()),
+    connect(mAutomappingManager, SIGNAL(errorsOccurred()),
             this, SLOT(autoMappingError()));
 }
 
@@ -457,8 +460,6 @@ MainWindow::~MainWindow()
 {
     mDocumentManager->closeAllDocuments();
 
-    AutomappingManager::deleteInstance();
-    QuickStampManager::deleteInstance();
     ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1213,27 +1214,20 @@ void MainWindow::editMapProperties()
     mMapDocument->emitEditCurrentObject();
 }
 
-void MainWindow::autoMap()
-{
-    AutomappingManager::instance()->autoMap();
-}
-
 void MainWindow::autoMappingWarning()
 {
     const QString title = tr("Automatic Mapping Warning");
-    QString warnings = AutomappingManager::instance()->warningString();
-    if (!warnings.isEmpty()) {
+    QString warnings = mAutomappingManager->warningString();
+    if (!warnings.isEmpty())
         QMessageBox::warning(this, title, warnings);
-    }
 }
 
 void MainWindow::autoMappingError()
 {
     const QString title = tr("Automatic Mapping Error");
-    QString error = AutomappingManager::instance()->errorString();
-    if (!error.isEmpty()) {
+    QString error = mAutomappingManager->errorString();
+    if (!error.isEmpty())
         QMessageBox::critical(this, title, error);
-    }
 }
 
 void MainWindow::openRecentFile()
@@ -1255,6 +1249,9 @@ QString MainWindow::fileDialogStartLocation() const
     return (!files.isEmpty()) ? QFileInfo(files.first()).path() : QString();
 }
 
+/**
+ * Adds the given file to the recent files list.
+ */
 void MainWindow::setRecentFile(const QString &fileName)
 {
     // Remember the file by its canonical file path
@@ -1283,6 +1280,9 @@ void MainWindow::clearRecentFiles()
     updateRecentFiles();
 }
 
+/**
+ * Updates the recent files menu.
+ */
 void MainWindow::updateRecentFiles()
 {
     QStringList files = recentFiles();
@@ -1535,8 +1535,8 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mTilesetDock->setMapDocument(mMapDocument);
     mTerrainDock->setMapDocument(mMapDocument);
     mMiniMapDock->setMapDocument(mMapDocument);
-    AutomappingManager::instance()->setMapDocument(mMapDocument);
-    QuickStampManager::instance()->setMapDocument(mMapDocument);
+    mAutomappingManager->setMapDocument(mMapDocument);
+    mQuickStampManager->setMapDocument(mMapDocument);
 
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(fileNameChanged()),
@@ -1560,7 +1560,6 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
 void MainWindow::setupQuickStamps()
 {
-    QuickStampManager *quickStampManager = QuickStampManager::instance();
     QList<int> keys = QuickStampManager::keys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
@@ -1581,11 +1580,11 @@ void MainWindow::setupQuickStamps()
     }
 
     connect(selectMapper, SIGNAL(mapped(int)),
-            quickStampManager, SLOT(selectQuickStamp(int)));
+            mQuickStampManager, SLOT(selectQuickStamp(int)));
     connect(saveMapper, SIGNAL(mapped(int)),
-            quickStampManager, SLOT(saveQuickStamp(int)));
+            mQuickStampManager, SLOT(saveQuickStamp(int)));
 
-    connect(quickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
+    connect(mQuickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
 }
 

@@ -47,6 +47,7 @@ class MapReaderInterface;
 
 namespace Internal {
 
+class AutomappingManager;
 class BucketFillTool;
 class ClipboardManager;
 class CommandButton;
@@ -59,6 +60,7 @@ class MapView;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
+class QuickStampManager;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
@@ -138,7 +140,6 @@ public slots:
     void resizeMap();
     void offsetMap();
     void editMapProperties();
-    void autoMap();
 
     void updateWindowTitle();
     void updateActions();
@@ -200,14 +201,7 @@ private:
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
 
-    /**
-     * Add the given file to the recent files list.
-     */
     void setRecentFile(const QString &fileName);
-
-    /**
-     * Update the recent files menu.
-     */
     void updateRecentFiles();
 
     void retranslateUi();
@@ -234,8 +228,6 @@ private:
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
 
-    ClipboardManager *mClipboardManager;
-
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];
 
@@ -243,7 +235,10 @@ private:
 
     void setupQuickStamps();
 
+    AutomappingManager *mAutomappingManager;
+    ClipboardManager *mClipboardManager;
     DocumentManager *mDocumentManager;
+    QuickStampManager *mQuickStampManager;
 };
 
 } // namespace Internal

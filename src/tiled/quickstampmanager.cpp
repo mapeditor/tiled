@@ -34,23 +34,9 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-QuickStampManager *QuickStampManager::mInstance = 0;
-
-QuickStampManager *QuickStampManager::instance()
-{
-    if (!mInstance)
-        mInstance = new QuickStampManager;
-    return mInstance;
-}
-
-void QuickStampManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = 0;
-}
-
-QuickStampManager::QuickStampManager() :
-    mMapDocument(0)
+QuickStampManager::QuickStampManager(QObject *parent)
+    : QObject(parent)
+    , mMapDocument(0)
 {
     mQuickStamps.resize(keys().length());
 }
@@ -113,7 +99,7 @@ void QuickStampManager::saveQuickStamp(int index)
     }
 
     eraseQuickStamp(index);
-    mQuickStamps.replace(index, copyMap);
+    mQuickStamps[index] = copyMap;
 }
 
 void QuickStampManager::cleanQuickStamps()
