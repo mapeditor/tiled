@@ -31,6 +31,7 @@ class TileLayer;
 
 namespace Internal {
 
+class AbstractTool;
 class MapDocument;
 
 /**
@@ -67,7 +68,7 @@ public:
 
 public slots:
     void selectQuickStamp(int index);
-    void saveQuickStamp(int index);
+    void saveQuickStamp(int index, AbstractTool *selectedTool);
     void setMapDocument(MapDocument *mapDocument);
 
 signals:

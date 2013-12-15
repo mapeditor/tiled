@@ -126,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mClipboardManager(new ClipboardManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mQuickStampManager(new QuickStampManager(this))
+    , mToolManager(new ToolManager(this))
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -384,25 +385,28 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mBucketFillTool, SLOT(setRandom(bool)));
 
-    ToolManager *toolManager = ToolManager::instance();
-    toolManager->registerTool(mStampBrush);
-    toolManager->registerTool(mTerrainBrush);
-    toolManager->registerTool(mBucketFillTool);
-    toolManager->registerTool(new Eraser(this));
-    toolManager->registerTool(new TileSelectionTool(this));
-    toolManager->addSeparator();
-    toolManager->registerTool(new ObjectSelectionTool(this));
-    toolManager->registerTool(new EditPolygonTool(this));
-    toolManager->registerTool(rectangleObjectsTool);
-    toolManager->registerTool(ellipseObjectsTool);
-    toolManager->registerTool(polygonObjectsTool);
-    toolManager->registerTool(polylineObjectsTool);
-    toolManager->registerTool(tileObjectsTool);
+    mToolManager->registerTool(mStampBrush);
+    mToolManager->registerTool(mTerrainBrush);
+    mToolManager->registerTool(mBucketFillTool);
+    mToolManager->registerTool(new Eraser(this));
+    mToolManager->registerTool(new TileSelectionTool(this));
+    mToolManager->addSeparator();
+    mToolManager->registerTool(new ObjectSelectionTool(this));
+    mToolManager->registerTool(new EditPolygonTool(this));
+    mToolManager->registerTool(rectangleObjectsTool);
+    mToolManager->registerTool(ellipseObjectsTool);
+    mToolManager->registerTool(polygonObjectsTool);
+    mToolManager->registerTool(polylineObjectsTool);
+    mToolManager->registerTool(tileObjectsTool);
 
-    addToolBar(toolManager->toolBar());
+    addToolBar(mToolManager->toolBar());
+
+    mDocumentManager->setSelectedTool(mToolManager->selectedTool());
+    connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
+            mDocumentManager, SLOT(setSelectedTool(AbstractTool*)));
 
     statusBar()->addWidget(mStatusInfoLabel);
-    connect(toolManager, SIGNAL(statusInfoChanged(QString)),
+    connect(mToolManager, SIGNAL(statusInfoChanged(QString)),
             this, SLOT(updateStatusInfoLabel(QString)));
     statusBar()->addWidget(mCurrentLayerLabel);
 
@@ -460,7 +464,6 @@ MainWindow::~MainWindow()
 {
     mDocumentManager->closeAllDocuments();
 
-    ToolManager::deleteInstance();
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
     Preferences::deleteInstance();
@@ -1003,7 +1006,7 @@ void MainWindow::paste()
         // Reset selection and paste into the stamp brush
         mActionHandler->selectNone();
         setStampBrush(tileLayer);
-        ToolManager::instance()->selectTool(mStampBrush);
+        mToolManager->selectTool(mStampBrush);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         if (ObjectGroup *currentObjectGroup = currentLayer->asObjectGroup()) {
             // Determine where to insert the objects
@@ -1405,10 +1408,9 @@ void MainWindow::setStampBrush(const TileLayer *tiles)
     mBucketFillTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
 
     // When selecting a new stamp, it makes sense to switch to a stamp tool
-    ToolManager *m = ToolManager::instance();
-    AbstractTool *selectedTool = m->selectedTool();
+    AbstractTool *selectedTool = mToolManager->selectedTool();
     if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
-        m->selectTool(mStampBrush);
+        mToolManager->selectTool(mStampBrush);
 }
 
 /**
@@ -1419,10 +1421,14 @@ void MainWindow::setTerrainBrush(const Terrain *terrain)
     mTerrainBrush->setTerrain(terrain);
 
     // When selecting a new terrain, it makes sense to switch to a terrain brush tool
-    ToolManager *m = ToolManager::instance();
-    AbstractTool *selectedTool = m->selectedTool();
+    AbstractTool *selectedTool = mToolManager->selectedTool();
     if (selectedTool != mTerrainBrush)
-        m->selectTool(mTerrainBrush);
+        mToolManager->selectTool(mTerrainBrush);
+}
+
+void MainWindow::saveQuickStamp(int index)
+{
+    mQuickStampManager->saveQuickStamp(index, mToolManager->selectedTool());
 }
 
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
@@ -1582,7 +1588,7 @@ void MainWindow::setupQuickStamps()
     connect(selectMapper, SIGNAL(mapped(int)),
             mQuickStampManager, SLOT(selectQuickStamp(int)));
     connect(saveMapper, SIGNAL(mapped(int)),
-            mQuickStampManager, SLOT(saveQuickStamp(int)));
+            this, SLOT(saveQuickStamp(int)));
 
     connect(mQuickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));

@@ -29,7 +29,6 @@
 #include "tileselectiontool.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
-#include "toolmanager.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -46,7 +45,7 @@ QuickStampManager::~QuickStampManager()
     cleanQuickStamps();
 }
 
-void QuickStampManager::saveQuickStamp(int index)
+void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
 {
     if (!mMapDocument)
         return;
@@ -54,7 +53,6 @@ void QuickStampManager::saveQuickStamp(int index)
     const Map *map = mMapDocument->map();
 
     // The source of the saved stamp depends on which tool is selected
-    AbstractTool *selectedTool = ToolManager::instance()->selectedTool();
     TileLayer *copy = 0;
     if (dynamic_cast<StampBrush*>(selectedTool)) {
         TileLayer *stamp = (static_cast<StampBrush*>(selectedTool))->stamp();

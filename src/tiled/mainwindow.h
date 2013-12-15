@@ -65,6 +65,7 @@ class StampBrush;
 class TerrainBrush;
 class TerrainDock;
 class TilesetDock;
+class ToolManager;
 class Zoomable;
 
 /**
@@ -158,6 +159,7 @@ public slots:
 
     void setStampBrush(const TileLayer *tiles);
     void setTerrainBrush(const Terrain *terrain);
+    void saveQuickStamp(int index);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
@@ -239,6 +241,7 @@ private:
     ClipboardManager *mClipboardManager;
     DocumentManager *mDocumentManager;
     QuickStampManager *mQuickStampManager;
+    ToolManager *mToolManager;
 };
 
 } // namespace Internal

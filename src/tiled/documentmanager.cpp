@@ -23,7 +23,6 @@
 
 #include "abstracttool.h"
 #include "maprenderer.h"
-#include "toolmanager.h"
 
 #include <QTabWidget>
 #include <QUndoGroup>
@@ -61,11 +60,6 @@ DocumentManager::DocumentManager(QObject *parent)
             SLOT(currentIndexChanged()));
     connect(mTabWidget, SIGNAL(tabCloseRequested(int)),
             SIGNAL(documentCloseRequested(int)));
-
-    ToolManager *toolManager = ToolManager::instance();
-    setSelectedTool(toolManager->selectedTool());
-    connect(toolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            SLOT(setSelectedTool(AbstractTool*)));
 }
 
 DocumentManager::~DocumentManager()

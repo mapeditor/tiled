@@ -63,23 +63,9 @@ protected:
 
 } // anonymous namespace
 
-ToolManager *ToolManager::mInstance = 0;
-
-ToolManager *ToolManager::instance()
-{
-    if (!mInstance)
-        mInstance = new ToolManager;
-    return mInstance;
-}
-
-void ToolManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = 0;
-}
-
-ToolManager::ToolManager()
-    : mToolBar(new ToolBar)
+ToolManager::ToolManager(QObject *parent)
+    : QObject(parent)
+    , mToolBar(new ToolBar)
     , mActionGroup(new QActionGroup(this))
     , mSelectedTool(0)
     , mPreviouslyDisabledTool(0)

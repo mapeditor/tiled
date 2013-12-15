@@ -154,9 +154,10 @@ public slots:
     void switchToLeftDocument();
     void switchToRightDocument();
 
+    void setSelectedTool(AbstractTool *tool);
+
 private slots:
     void currentIndexChanged();
-    void setSelectedTool(AbstractTool *tool);
     void updateDocumentTab();
 
 private:

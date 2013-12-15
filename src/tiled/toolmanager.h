@@ -42,17 +42,8 @@ class ToolManager : public QObject
     Q_OBJECT
 
 public:
-    /**
-     * Returns the tool manager instance. Creates the instance when it doesn't
-     * exist yet.
-     */
-    static ToolManager *instance();
-
-    /**
-     * Deletes the tool manager instance. Should only be called on application
-     * exit.
-     */
-    static void deleteInstance();
+    ToolManager(QObject *parent = 0);
+    ~ToolManager();
 
     /**
      * Registers a new tool. It will be added to the tools tool bar. The tool
@@ -100,13 +91,8 @@ private slots:
 private:
     Q_DISABLE_COPY(ToolManager)
 
-    ToolManager();
-    ~ToolManager();
-
     AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
-
-    static ToolManager *mInstance;
 
     QToolBar *mToolBar;
     QActionGroup *mActionGroup;
