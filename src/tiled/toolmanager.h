@@ -31,6 +31,7 @@ namespace Tiled {
 namespace Internal {
 
 class AbstractTool;
+class MapDocument;
 
 /**
  * The tool manager provides a central place to register editing tools. In
@@ -44,6 +45,11 @@ class ToolManager : public QObject
 public:
     ToolManager(QObject *parent = 0);
     ~ToolManager();
+
+    /**
+     * Sets the MapDocument on which the registered tools will operate.
+     */
+    void setMapDocument(MapDocument *mapDocument);
 
     /**
      * Registers a new tool. It will be added to the tools tool bar. The tool
@@ -98,6 +104,7 @@ private:
     QActionGroup *mActionGroup;
     AbstractTool *mSelectedTool;
     AbstractTool *mPreviouslyDisabledTool;
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

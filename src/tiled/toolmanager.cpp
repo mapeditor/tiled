@@ -69,6 +69,7 @@ ToolManager::ToolManager(QObject *parent)
     , mActionGroup(new QActionGroup(this))
     , mSelectedTool(0)
     , mPreviouslyDisabledTool(0)
+    , mMapDocument(0)
 {
     mToolBar->setObjectName(QLatin1String("toolsToolBar"));
     mToolBar->setWindowTitle(tr("Tools"));
@@ -85,8 +86,23 @@ ToolManager::~ToolManager()
     delete mToolBar;
 }
 
+void ToolManager::setMapDocument(MapDocument *mapDocument)
+{
+    if (mMapDocument == mapDocument)
+        return;
+
+    mMapDocument = mapDocument;
+
+    foreach (QAction *action, mActionGroup->actions()) {
+        AbstractTool *tool = action->data().value<AbstractTool*>();
+        tool->setMapDocument(mapDocument);
+    }
+}
+
 void ToolManager::registerTool(AbstractTool *tool)
 {
+    tool->setMapDocument(mMapDocument);
+
     QAction *toolAction = new QAction(tool->icon(), tool->name(), this);
     toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));

@@ -1535,17 +1535,18 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
-    mActionHandler->setMapDocument(mMapDocument);
-    mLayerDock->setMapDocument(mMapDocument);
-    mObjectsDock->setMapDocument(mMapDocument);
-    mTilesetDock->setMapDocument(mMapDocument);
-    mTerrainDock->setMapDocument(mMapDocument);
-    mMiniMapDock->setMapDocument(mMapDocument);
-    mAutomappingManager->setMapDocument(mMapDocument);
-    mQuickStampManager->setMapDocument(mMapDocument);
+    mActionHandler->setMapDocument(mapDocument);
+    mLayerDock->setMapDocument(mapDocument);
+    mObjectsDock->setMapDocument(mapDocument);
+    mTilesetDock->setMapDocument(mapDocument);
+    mTerrainDock->setMapDocument(mapDocument);
+    mMiniMapDock->setMapDocument(mapDocument);
+    mToolManager->setMapDocument(mapDocument);
+    mAutomappingManager->setMapDocument(mapDocument);
+    mQuickStampManager->setMapDocument(mapDocument);
 
-    if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(fileNameChanged()),
+    if (mapDocument) {
+        connect(mapDocument, SIGNAL(fileNameChanged()),
                 SLOT(updateWindowTitle()));
         connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));

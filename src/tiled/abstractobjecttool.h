@@ -69,6 +69,9 @@ protected:
     MapObjectItem *topMostObjectItemAt(QPointF pos) const;
 
 private slots:
+    void duplicateObjects();
+    void removeObjects();
+
     void flipHorizontally();
     void flipVertically();
 

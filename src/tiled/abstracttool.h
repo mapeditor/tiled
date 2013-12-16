@@ -130,6 +130,9 @@ public:
      */
     virtual void languageChanged() = 0;
 
+public slots:
+    void setMapDocument(MapDocument *mapDocument);
+
 protected:
     /**
      * Can be used to respond to the map document changing.
@@ -156,9 +159,6 @@ protected slots:
 signals:
     void statusInfoChanged(const QString &statusInfo);
     void enabledChanged(bool enabled);
-
-private slots:
-    void setMapDocument(MapDocument *mapDocument);
 
 private:
     QString mName;

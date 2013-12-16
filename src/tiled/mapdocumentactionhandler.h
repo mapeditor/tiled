@@ -75,7 +75,6 @@ public:
     QAction *actionDuplicateObjects() const { return mActionDuplicateObjects; }
     QAction *actionRemoveObjects() const { return mActionRemoveObjects; }
 
-
 signals:
     void mapDocumentChanged(MapDocument *mapDocument);
 

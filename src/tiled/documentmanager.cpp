@@ -233,8 +233,8 @@ void DocumentManager::setSelectedTool(AbstractTool *tool)
     if (mSceneWithTool) {
         mSceneWithTool->disableSelectedTool();
 
-        if (mSelectedTool) {
-            mSceneWithTool->setSelectedTool(mSelectedTool);
+        if (tool) {
+            mSceneWithTool->setSelectedTool(tool);
             mSceneWithTool->enableSelectedTool();
         }
     }
