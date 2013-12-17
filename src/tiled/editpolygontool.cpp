@@ -185,7 +185,8 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
     if (mMode == NoMode && mMousePressed) {
-        const int dragDistance = (mStart - pos).manhattanLength();
+        QPoint screenPos = QCursor::pos();
+        const int dragDistance = (mScreenStart - screenPos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
             if (mClickedHandle)
                 startMoving();
@@ -225,6 +226,7 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
     case Qt::LeftButton: {
         mMousePressed = true;
         mStart = event->scenePos();
+        mScreenStart = event->screenPos();
 
         const QList<QGraphicsItem *> items = mapScene()->items(mStart);
         mClickedObjectItem = first<MapObjectItem>(items);
