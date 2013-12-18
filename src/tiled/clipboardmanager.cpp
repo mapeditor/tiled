@@ -39,14 +39,28 @@ static const char * const TMX_MIMETYPE = "text/tmx";
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ClipboardManager::ClipboardManager(QObject *parent) :
-    QObject(parent),
+ClipboardManager *ClipboardManager::mInstance = 0;
+
+ClipboardManager::ClipboardManager() :
     mHasMap(false)
 {
     mClipboard = QApplication::clipboard();
     connect(mClipboard, SIGNAL(dataChanged()), SLOT(updateHasMap()));
 
     updateHasMap();
+}
+
+ClipboardManager *ClipboardManager::instance()
+{
+    if (!mInstance)
+        mInstance = new ClipboardManager;
+    return mInstance;
+}
+
+void ClipboardManager::deleteInstance()
+{
+    delete mInstance;
+    mInstance = 0;
 }
 
 Map *ClipboardManager::map() const

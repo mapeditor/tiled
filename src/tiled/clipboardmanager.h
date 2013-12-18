@@ -41,7 +41,16 @@ class ClipboardManager : public QObject
     Q_OBJECT
 
 public:
-    ClipboardManager(QObject *parent = 0);
+    /**
+     * Returns the clipboard manager instance. Creates the instance when it
+     * doesn't exist yet.
+     */
+    static ClipboardManager *instance();
+
+    /**
+     * Deletes the clipboard manager instance if it exists.
+     */
+    static void deleteInstance();
 
     /**
      * Returns whether the clipboard has a map.
@@ -75,8 +84,14 @@ private slots:
     void updateHasMap();
 
 private:
+    ClipboardManager();
+
+    Q_DISABLE_COPY(ClipboardManager)
+
     QClipboard *mClipboard;
     bool mHasMap;
+
+    static ClipboardManager *mInstance;
 };
 
 #endif // CLIPBOARDMANAGER_H

@@ -49,7 +49,6 @@ namespace Internal {
 
 class AutomappingManager;
 class BucketFillTool;
-class ClipboardManager;
 class CommandButton;
 class DocumentManager;
 class LayerDock;
@@ -242,7 +241,6 @@ private:
     void setupQuickStamps();
 
     AutomappingManager *mAutomappingManager;
-    ClipboardManager *mClipboardManager;
     DocumentManager *mDocumentManager;
     QuickStampManager *mQuickStampManager;
     ToolManager *mToolManager;

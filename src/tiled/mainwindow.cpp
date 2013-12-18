@@ -125,7 +125,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
     , mAutomappingManager(new AutomappingManager(this))
-    , mClipboardManager(new ClipboardManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mQuickStampManager(new QuickStampManager(this))
     , mToolManager(new ToolManager(this))
@@ -426,7 +425,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
-    connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
+    connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
     connect(mDocumentManager, SIGNAL(currentDocumentChanged(MapDocument*)),
             SLOT(mapDocumentChanged(MapDocument*)));
@@ -480,6 +479,7 @@ MainWindow::~MainWindow()
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
     PluginManager::deleteInstance();
+    ClipboardManager::deleteInstance();
 
     delete mUi;
 }
@@ -983,7 +983,7 @@ void MainWindow::copy()
     if (!mMapDocument)
         return;
 
-    mClipboardManager->copySelection(mMapDocument);
+    ClipboardManager::instance()->copySelection(mMapDocument);
 }
 
 void MainWindow::paste()
@@ -995,7 +995,7 @@ void MainWindow::paste()
     if (!currentLayer)
         return;
 
-    Map *map = mClipboardManager->map();
+    Map *map = ClipboardManager::instance()->map();
     if (!map)
         return;
 
@@ -1342,7 +1342,7 @@ void MainWindow::updateActions()
     mUi->actionCloseAll->setEnabled(map);
     mUi->actionCut->setEnabled(canCopy);
     mUi->actionCopy->setEnabled(canCopy);
-    mUi->actionPaste->setEnabled(mClipboardManager->hasMap());
+    mUi->actionPaste->setEnabled(ClipboardManager::instance()->hasMap());
     mUi->actionDelete->setEnabled(canCopy);
     mUi->actionNewTileset->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
