@@ -302,8 +302,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         const Properties properties = tile->properties();
         unsigned terrain = tile->terrain();
         float probability = tile->terrainProbability();
+        ObjectGroup *objectGroup = tile->objectGroup();
 
-        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1.f || imageSource.isEmpty()) {
+        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1.f || imageSource.isEmpty() || objectGroup) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(i));
             if (terrain != 0xFFFFFFFF)
@@ -344,6 +345,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
 
                 w.writeEndElement(); // </image>
             }
+            if (objectGroup)
+                writeObjectGroup(w, objectGroup);
+
             w.writeEndElement(); // </tile>
         }
     }
@@ -437,10 +441,16 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
 void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                                             const Layer *layer)
 {
-    w.writeAttribute(QLatin1String("name"), layer->name());
-    w.writeAttribute(QLatin1String("width"), QString::number(layer->width()));
-    w.writeAttribute(QLatin1String("height"),
-                     QString::number(layer->height()));
+    if (!layer->name().isEmpty())
+        w.writeAttribute(QLatin1String("name"), layer->name());
+
+    if (layer->layerType() == Layer::TileLayerType) {
+        w.writeAttribute(QLatin1String("width"),
+                         QString::number(layer->width()));
+        w.writeAttribute(QLatin1String("height"),
+                         QString::number(layer->height()));
+    }
+
     const int x = layer->x();
     const int y = layer->y();
     const qreal opacity = layer->opacity();
@@ -463,8 +473,10 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("color"),
                          objectGroup->color().name());
 
-    w.writeAttribute(QLatin1String("draworder"),
-                     drawOrderToString(objectGroup->drawOrder()));
+    if (objectGroup->drawOrder() != ObjectGroup::TopDownOrder) {
+        w.writeAttribute(QLatin1String("draworder"),
+                         drawOrderToString(objectGroup->drawOrder()));
+    }
 
     writeLayerAttributes(w, objectGroup);
     writeProperties(w, objectGroup->properties());
@@ -480,7 +492,13 @@ class TileToPixelCoordinates
 public:
     TileToPixelCoordinates(Map *map)
     {
-        if (map->orientation() == Map::Isometric) {
+        if (!map) {
+            // This is used for objects that are in object groups that are not
+            // part of a map. This happens with object groups associated with
+            // tiles, for example.
+            mMultiplierX = 1;
+            mMultiplierY = 1;
+        } else if (map->orientation() == Map::Isometric) {
             // Isometric needs special handling, since the pixel values are
             // based solely on the tile height.
             mMultiplierX = map->tileHeight();
@@ -491,10 +509,10 @@ public:
         }
     }
 
-    QPoint operator() (qreal x, qreal y) const
+    QPointF operator() (qreal x, qreal y) const
     {
-        return QPoint(qRound(x * mMultiplierX),
-                      qRound(y * mMultiplierY));
+        return QPointF(x * mMultiplierX,
+                       y * mMultiplierY);
     }
 
 private:
@@ -522,8 +540,8 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     const ObjectGroup *objectGroup = mapObject->objectGroup();
     const TileToPixelCoordinates toPixel(objectGroup->map());
 
-    QPoint pos = toPixel(mapObject->x(), mapObject->y());
-    QPoint size = toPixel(mapObject->width(), mapObject->height());
+    QPointF pos = toPixel(mapObject->x(), mapObject->y());
+    QPointF size = toPixel(mapObject->width(), mapObject->height());
 
     w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
     w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
@@ -551,7 +569,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
         QString points;
         foreach (const QPointF &point, polygon) {
-            const QPoint pos = toPixel(point.x(), point.y());
+            const QPointF pos = toPixel(point.x(), point.y());
             points.append(QString::number(pos.x()));
             points.append(QLatin1Char(','));
             points.append(QString::number(pos.y()));

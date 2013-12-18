@@ -103,8 +103,14 @@ MapScene::~MapScene()
 
 void MapScene::setMapDocument(MapDocument *mapDocument)
 {
-    if (mMapDocument)
+    if (mMapDocument) {
         mMapDocument->disconnect(this);
+
+        if (!mSelectedObjectItems.isEmpty()) {
+            mSelectedObjectItems.clear();
+            emit selectedObjectItemsChanged();
+        }
+    }
 
     mMapDocument = mapDocument;
 

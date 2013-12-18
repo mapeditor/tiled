@@ -28,9 +28,37 @@
 
 #include "tile.h"
 
+#include "objectgroup.h"
 #include "tileset.h"
 
 using namespace Tiled;
+
+Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
+    Object(TileType),
+    mId(id),
+    mTileset(tileset),
+    mImage(image),
+    mTerrain(-1),
+    mTerrainProbability(-1.f),
+    mObjectGroup(0)
+{}
+
+Tile::Tile(const QPixmap &image, const QString &imageSource,
+           int id, Tileset *tileset):
+    Object(TileType),
+    mId(id),
+    mTileset(tileset),
+    mImage(image),
+    mImageSource(imageSource),
+    mTerrain(-1),
+    mTerrainProbability(-1.f),
+    mObjectGroup(0)
+{}
+
+Tile::~Tile()
+{
+    delete mObjectGroup;
+}
 
 Terrain *Tile::terrainAtCorner(int corner) const
 {
@@ -44,4 +72,34 @@ void Tile::setTerrain(unsigned terrain)
 
     mTerrain = terrain;
     mTileset->markTerrainDistancesDirty();
+}
+
+/**
+ * Sets \a objectGroup to be the group of objects associated with this tile.
+ * The Tile takes ownership over the ObjectGroup and it can't also be part of
+ * a map.
+ */
+void Tile::setObjectGroup(ObjectGroup *objectGroup)
+{
+    Q_ASSERT(!objectGroup || !objectGroup->map());
+
+    if (mObjectGroup == objectGroup)
+        return;
+
+    delete mObjectGroup;
+    mObjectGroup = objectGroup;
+}
+
+/**
+ * Swaps the object group of this tile with \a objectGroup. The tile releases
+ * ownership over its existing object group and takes ownership over the new
+ * one.
+ *
+ * @return The previous object group referenced by this tile.
+ */
+ObjectGroup *Tile::swapObjectGroup(ObjectGroup *objectGroup)
+{
+    ObjectGroup *previousObjectGroup = mObjectGroup;
+    mObjectGroup = objectGroup;
+    return previousObjectGroup;
 }

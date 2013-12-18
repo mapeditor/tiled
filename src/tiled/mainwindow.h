@@ -64,6 +64,7 @@ class QuickStampManager;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
+class TileCollisionEditor;
 class TilesetDock;
 class ToolManager;
 class Zoomable;
@@ -218,6 +219,7 @@ private:
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
     ConsoleDock *mConsoleDock;
+    TileCollisionEditor *mTileCollisionEditor;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
@@ -234,6 +236,8 @@ private:
     QAction *mRecentFiles[MaxRecentFiles];
 
     QMenu *mLayerMenu;
+    QAction *mViewsAndToolbarsMenu;
+
 
     void setupQuickStamps();
 

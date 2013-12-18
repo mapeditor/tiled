@@ -61,6 +61,7 @@ SOURCES += aboutdialog.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
+    changetileobjectgroup.cpp \
     changetileselection.cpp \
     changetileterrain.cpp \
     clipboardmanager.cpp \
@@ -133,6 +134,7 @@ SOURCES += aboutdialog.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
     terrainview.cpp \
+    tilecollisioneditor.cpp \
     tiledapplication.cpp \
     tilelayeritem.cpp \
     tilepainter.cpp \
@@ -175,6 +177,7 @@ HEADERS += aboutdialog.h \
     changeobjectgroupproperties.h \
     changepolygon.h \
     changeproperties.h \
+    changetileobjectgroup.h \
     changetileselection.h \
     changetileterrain.h \
     clipboardmanager.h \
@@ -248,6 +251,7 @@ HEADERS += aboutdialog.h \
     terraindock.h \
     terrainmodel.h \
     terrainview.h \
+    tilecollisioneditor.h \
     tiledapplication.h \
     tilelayeritem.h \
     tilepainter.h \

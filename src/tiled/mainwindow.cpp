@@ -80,6 +80,7 @@
 #include "objectsdock.h"
 #include "minimapdock.h"
 #include "consoledock.h"
+#include "tilecollisioneditor.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -118,6 +119,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
     , mConsoleDock(new ConsoleDock(this))
+    , mTileCollisionEditor(new TileCollisionEditor(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
     , mZoomComboBox(new QComboBox)
@@ -182,7 +184,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
     addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::RightDockWidgetArea, mTileCollisionEditor);
 
+    tabifyDockWidget(mTileCollisionEditor, mMiniMapDock);
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
@@ -193,6 +197,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
     mConsoleDock->setVisible(false);
+    mTileCollisionEditor->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 
@@ -376,6 +381,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
+    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
+            mTileCollisionEditor, SLOT(setTile(Tile*)));
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
@@ -412,11 +419,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
-    QAction *viewsAndToolbars = new QAction(tr("Views and Toolbars"), this);
+    mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
-    viewsAndToolbars->setMenu(popupMenu);
-    mUi->menuView->insertAction(mUi->actionShowGrid, viewsAndToolbars);
+    mViewsAndToolbarsMenu->setMenu(popupMenu);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
     connect(mClipboardManager, SIGNAL(hasMapChanged()), SLOT(updateActions()));
@@ -463,6 +470,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 MainWindow::~MainWindow()
 {
     mDocumentManager->closeAllDocuments();
+
+    // This needs to happen before deleting the TilesetManager otherwise it may
+    // hold references to tilesets.
+    mTileCollisionEditor->setTile(0);
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1521,6 +1532,7 @@ void MainWindow::retranslateUi()
 
     mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
+    mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
     mActionHandler->retranslateUi();
 }
 
@@ -1541,6 +1553,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mTilesetDock->setMapDocument(mapDocument);
     mTerrainDock->setMapDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
+    mTileCollisionEditor->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
     mAutomappingManager->setMapDocument(mapDocument);
     mQuickStampManager->setMapDocument(mapDocument);

@@ -36,6 +36,7 @@
 
 namespace Tiled {
 
+class ObjectGroup;
 class Terrain;
 class Tileset;
 
@@ -52,25 +53,11 @@ inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
-    Tile(const QPixmap &image, int id, Tileset *tileset):
-        Object(TileType),
-        mId(id),
-        mTileset(tileset),
-        mImage(image),
-        mTerrain(-1),
-        mTerrainProbability(-1.f)
-    {}
-
+    Tile(const QPixmap &image, int id, Tileset *tileset);
     Tile(const QPixmap &image, const QString &imageSource,
-         int id, Tileset *tileset):
-        Object(TileType),
-        mId(id),
-        mTileset(tileset),
-        mImage(image),
-        mImageSource(imageSource),
-        mTerrain(-1),
-        mTerrainProbability(-1.f)
-    {}
+         int id, Tileset *tileset);
+
+    ~Tile();
 
     /**
      * Returns ID of this tile within its tileset.
@@ -153,6 +140,10 @@ public:
      */
     void setTerrainProbability(float probability) { mTerrainProbability = probability; }
 
+    ObjectGroup *objectGroup() const;
+    void setObjectGroup(ObjectGroup *objectGroup);
+    ObjectGroup *swapObjectGroup(ObjectGroup *objectGroup);
+
 private:
     int mId;
     Tileset *mTileset;
@@ -160,9 +151,19 @@ private:
     QString mImageSource;
     unsigned mTerrain;
     float mTerrainProbability;
+    ObjectGroup *mObjectGroup;
 
     friend class Tileset; // To allow changing the tile id
 };
+
+/**
+ * @return The group of objects associated with this tile. This is generally
+ *         expected to be used for editing collision shapes.
+ */
+inline ObjectGroup *Tile::objectGroup() const
+{
+    return mObjectGroup;
+}
 
 } // namespace Tiled
 

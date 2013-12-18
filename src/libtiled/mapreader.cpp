@@ -386,6 +386,16 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
             if (!source.isEmpty())
                 source = p->resolveReference(source, mPath);
             tileset->setTileImage(id, QPixmap::fromImage(readImage()), source);
+        } else if (xml.name() == QLatin1String("objectgroup")) {
+            // A quick hack to avoid taking into account the map's tile size
+            // for object groups associated with a tile.
+            const int tileWidth = mMap->tileWidth();
+            const int tileHeight = mMap->tileHeight();
+            mMap->setTileWidth(1);
+            mMap->setTileHeight(1);
+            tile->setObjectGroup(readObjectGroup());
+            mMap->setTileWidth(tileWidth);
+            mMap->setTileHeight(tileHeight);
         } else {
             readUnknownElement();
         }
@@ -768,7 +778,7 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer *imageLayer)
     xml.skipCurrentElement();
 }
 
-static QPointF pixelToTileCoordinates(Map *map, int x, int y)
+static QPointF pixelToTileCoordinates(Map *map, qreal x, qreal y)
 {
     const int tileHeight = map->tileHeight();
     const int tileWidth = map->tileWidth();
@@ -776,11 +786,11 @@ static QPointF pixelToTileCoordinates(Map *map, int x, int y)
     if (map->orientation() == Map::Isometric) {
         // Isometric needs special handling, since the pixel values are based
         // solely on the tile height.
-        return QPointF((qreal) x / tileHeight,
-                       (qreal) y / tileHeight);
+        return QPointF(x / tileHeight,
+                       y / tileHeight);
     } else {
-        return QPointF((qreal) x / tileWidth,
-                       (qreal) y / tileHeight);
+        return QPointF(x / tileWidth,
+                       y / tileHeight);
     }
 }
 
@@ -791,10 +801,10 @@ MapObject *MapReaderPrivate::readObject()
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
-    const int x = atts.value(QLatin1String("x")).toString().toInt();
-    const int y = atts.value(QLatin1String("y")).toString().toInt();
-    const int width = atts.value(QLatin1String("width")).toString().toInt();
-    const int height = atts.value(QLatin1String("height")).toString().toInt();
+    const qreal x = atts.value(QLatin1String("x")).toString().toDouble();
+    const qreal y = atts.value(QLatin1String("y")).toString().toDouble();
+    const qreal width = atts.value(QLatin1String("width")).toString().toDouble();
+    const qreal height = atts.value(QLatin1String("height")).toString().toDouble();
     const QString type = atts.value(QLatin1String("type")).toString();
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
@@ -856,10 +866,10 @@ QPolygonF MapReaderPrivate::readPolygon()
             break;
         }
 
-        const int x = point.left(commaPos).toInt(&ok);
+        const qreal x = point.left(commaPos).toDouble(&ok);
         if (!ok)
             break;
-        const int y = point.mid(commaPos + 1).toInt(&ok);
+        const qreal y = point.mid(commaPos + 1).toDouble(&ok);
         if (!ok)
             break;
 

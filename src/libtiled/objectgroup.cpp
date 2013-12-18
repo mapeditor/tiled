@@ -31,7 +31,6 @@
 #include "objectgroup.h"
 
 #include "layer.h"
-#include "map.h"
 #include "mapobject.h"
 #include "tile.h"
 #include "tileset.h"
