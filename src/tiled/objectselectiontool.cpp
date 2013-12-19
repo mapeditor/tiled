@@ -299,7 +299,8 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
     if (mMode == NoMode && mMousePressed) {
-        const int dragDistance = (mStart - pos).manhattanLength();
+        QPoint screenPos = QCursor::pos();
+        const int dragDistance = (mScreenStart - screenPos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
             // Holding shift makes sure we'll start a selection operation
             if (mClickedObjectItem && !(modifiers & Qt::ShiftModifier))
@@ -342,6 +343,7 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     case Qt::LeftButton: {
         mMousePressed = true;
         mStart = event->scenePos();
+        mScreenStart = event->screenPos();
 
         CornerHandle *clickedHandle = 0;
 

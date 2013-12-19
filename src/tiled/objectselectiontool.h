@@ -99,6 +99,7 @@ private:
     QPointF mRotationOrigin;
     Mode mMode;
     QPointF mStart;
+    QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 };
 
