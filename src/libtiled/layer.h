@@ -32,7 +32,6 @@
 
 #include "object.h"
 
-#include <QPixmap>
 #include <QRect>
 #include <QSet>
 #include <QString>

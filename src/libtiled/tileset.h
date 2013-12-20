@@ -37,7 +37,7 @@
 #include <QVector>
 #include <QPoint>
 #include <QString>
-#include <QPixmap>
+#include <QImage>
 
 class QImage;
 
@@ -280,7 +280,7 @@ public:
     /**
      * Add a new tile to the end of the tileset
      */
-    Tile *addTile(const QPixmap &image, const QString &source = QString());
+    Tile *addTile(const QImage &image, const QString &source = QString());
 
     void insertTiles(int index, const QList<Tile*> &tiles);
     void removeTiles(int index, int count);
@@ -288,7 +288,7 @@ public:
     /**
      * Set the \a image to be used for the tile with the given \a id.
      */
-    void setTileImage(int id, const QPixmap &image,
+    void setTileImage(int id, const QImage &image,
                       const QString &source = QString());
 
     /**

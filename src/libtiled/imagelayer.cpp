@@ -45,7 +45,7 @@ ImageLayer::~ImageLayer()
 
 void ImageLayer::resetImage()
 {
-    mImage = QPixmap();
+    mImage = QImage();
     mImageSource.clear();
 }
 
@@ -54,15 +54,14 @@ bool ImageLayer::loadFromImage(const QImage &image, const QString &fileName)
     mImageSource = fileName;
 
     if (image.isNull()) {
-        mImage = QPixmap();
+        mImage = QImage();
         return false;
     }
 
-    mImage = QPixmap::fromImage(image);
+    mImage = image;
 
     if (mTransparentColor.isValid()) {
-        const QImage mask = image.createMaskFromColor(mTransparentColor.rgb());
-        mImage.setMask(QBitmap::fromImage(mask));
+       mImage = mImage.createMaskFromColor(mTransparentColor.rgb(),Qt::MaskOutColor);
     }
 
     return true;

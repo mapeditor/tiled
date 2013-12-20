@@ -32,7 +32,7 @@
 
 #include "object.h"
 
-#include <QPixmap>
+#include <QImage>
 
 namespace Tiled {
 
@@ -52,7 +52,7 @@ inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
-    Tile(const QPixmap &image, int id, Tileset *tileset):
+    Tile(const QImage &image, int id, Tileset *tileset):
         Object(TileType),
         mId(id),
         mTileset(tileset),
@@ -61,7 +61,7 @@ public:
         mTerrainProbability(-1.f)
     {}
 
-    Tile(const QPixmap &image, const QString &imageSource,
+    Tile(const QImage &image, const QString &imageSource,
          int id, Tileset *tileset):
         Object(TileType),
         mId(id),
@@ -85,12 +85,12 @@ public:
     /**
      * Returns the image of this tile.
      */
-    const QPixmap &image() const { return mImage; }
+    const QImage &image() const { return mImage; }
 
     /**
      * Sets the image of this tile.
      */
-    void setImage(const QPixmap &image) { mImage = image; }
+    void setImage(const QImage &image) { mImage = image; }
 
     /**
      * Returns the file name of the external image that represents this tile.
@@ -156,7 +156,7 @@ public:
 private:
     int mId;
     Tileset *mTileset;
-    QPixmap mImage;
+    QImage mImage;
     QString mImageSource;
     unsigned mTerrain;
     float mTerrainProbability;

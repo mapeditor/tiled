@@ -58,16 +58,16 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
     int oldTilesetSize = mTiles.size();
     int tileNum = 0;
 
+    QPixmap pixmap = QPixmap::fromImage(image);
+    if(mTransparentColor.isValid())
+    {
+        const QImage mask =
+                image.createMaskFromColor(mTransparentColor.rgb());
+        pixmap.setMask(QBitmap::fromImage(mask));
+    }
     for (int y = mMargin; y <= stopHeight; y += mTileHeight + mTileSpacing) {
         for (int x = mMargin; x <= stopWidth; x += mTileWidth + mTileSpacing) {
-            const QImage tileImage = image.copy(x, y, mTileWidth, mTileHeight);
-            QPixmap tilePixmap = QPixmap::fromImage(tileImage);
-
-            if (mTransparentColor.isValid()) {
-                const QImage mask =
-                        tileImage.createMaskFromColor(mTransparentColor.rgb());
-                tilePixmap.setMask(QBitmap::fromImage(mask));
-            }
+            const QPixmap &tilePixmap = pixmap.copy(x, y, mTileWidth, mTileHeight);
 
             if (tileNum < oldTilesetSize) {
                 mTiles.at(tileNum)->setImage(tilePixmap);
@@ -80,8 +80,8 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
 
     // Blank out any remaining tiles to avoid confusion
     while (tileNum < oldTilesetSize) {
-        QPixmap tilePixmap = QPixmap(mTileWidth, mTileHeight);
-        tilePixmap.fill();
+        QImage tilePixmap = QImage(mTileWidth, mTileHeight, QImage::Format_ARGB32);
+        tilePixmap.fill(QColor(255,255,255,0));
         mTiles.at(tileNum)->setImage(tilePixmap);
         ++tileNum;
     }
@@ -270,7 +270,7 @@ void Tileset::recalculateTerrainDistances()
     } while (bNewConnections);
 }
 
-Tile *Tileset::addTile(const QPixmap &image, const QString &source)
+Tile *Tileset::addTile(const QImage &image, const QString &source)
 {
     Tile *newTile = new Tile(image, source, tileCount(), this);
     mTiles.append(newTile);
@@ -308,7 +308,7 @@ void Tileset::removeTiles(int index, int count)
     updateTileSize();
 }
 
-void Tileset::setTileImage(int id, const QPixmap &image,
+void Tileset::setTileImage(int id, const QImage &image,
                            const QString &source)
 {
     // This operation is not supposed to be used on tilesets that are based
