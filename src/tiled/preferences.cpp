@@ -52,7 +52,7 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
-    : mSettings(new QSettings)
+    : mSettings(new QSettings(this))
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
@@ -104,7 +104,6 @@ Preferences::Preferences()
 
 Preferences::~Preferences()
 {
-    delete mSettings;
 }
 
 void Preferences::setShowGrid(bool showGrid)

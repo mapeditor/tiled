@@ -33,7 +33,7 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mName(name)
     , mIcon(icon)
     , mShortcut(shortcut)
-    , mEnabled(true)
+    , mEnabled(false)
     , mMapDocument(0)
 {
 }

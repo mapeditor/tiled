@@ -32,11 +32,17 @@ namespace Internal {
 class AbstractTool;
 class MapDocument;
 class MapScene;
+class MapView;
 class ToolManager;
 
 class TileCollisionEditor : public QDockWidget
 {
     Q_OBJECT
+
+    enum Operation {
+        Cut,
+        Delete
+    };
 
 public:
     explicit TileCollisionEditor(QWidget *parent = 0);
@@ -47,10 +53,18 @@ public:
 public slots:
     void setTile(Tile *tile);
 
+protected:
+    void changeEvent(QEvent *e);
+
 private slots:
     void setSelectedTool(AbstractTool*);
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
+
+    void cut();
+    void copy();
+    void paste();
+    void delete_(Operation operation = Delete);
 
 private:
     void retranslateUi();
@@ -58,6 +72,7 @@ private:
     Tile *mTile;
     MapDocument *mMapDocument;
     MapScene *mMapScene;
+    MapView *mMapView;
     ToolManager *mToolManager;
     bool mApplyingChanges;
     bool mSynchronizing;

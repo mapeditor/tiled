@@ -27,11 +27,13 @@ class QClipboard;
 
 namespace Tiled {
 
+class ObjectGroup;
 class Map;
 
 namespace Internal {
 
 class MapDocument;
+class MapView;
 
 /**
  * The clipboard manager deals with interaction with the clipboard.
@@ -73,6 +75,20 @@ public:
      * Deals with either tile selection or object selection.
      */
     void copySelection(const MapDocument *mapDocument);
+
+    enum PasteMode {
+        Standard,
+        NoTileObjects,
+    };
+
+    /**
+     * Convenience method that deals with some of the logic related to pasting
+     * a group of objects.
+     */
+    void pasteObjectGroup(const ObjectGroup *objectGroup,
+                          MapDocument *mapDocument,
+                          const MapView *view,
+                          PasteMode mode = Standard);
 
 signals:
     /**

@@ -20,10 +20,14 @@
 
 #include "clipboardmanager.h"
 
+#include "addremovemapobject.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "maprenderer.h"
+#include "mapview.h"
 #include "objectgroup.h"
+#include "preferences.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
@@ -33,6 +37,7 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QSet>
+#include <QUndoStack>
 
 static const char * const TMX_MIMETYPE = "text/tmx";
 
@@ -122,6 +127,63 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     copyMap.addLayer(copyLayer);
 
     setMap(&copyMap);
+}
+
+void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
+                                        MapDocument *mapDocument,
+                                        const MapView *view,
+                                        PasteMode mode)
+{
+    Layer *currentLayer = mapDocument->currentLayer();
+    if (!currentLayer)
+        return;
+
+    ObjectGroup *currentObjectGroup = currentLayer->asObjectGroup();
+    if (!currentObjectGroup)
+        return;
+
+    // Determine where to insert the objects
+    const QPointF center = objectGroup->objectsBoundingRect().center();
+
+    // Take the mouse position if the mouse is on the view, otherwise
+    // take the center of the view.
+    QPoint viewPos;
+    if (view->underMouse())
+        viewPos = view->mapFromGlobal(QCursor::pos());
+    else
+        viewPos = QPoint(view->width() / 2, view->height() / 2);
+
+    const MapRenderer *renderer = mapDocument->renderer();
+    const QPointF scenePos = view->mapToScene(viewPos);
+    QPointF insertPos = renderer->pixelToTileCoords(scenePos);
+    if (Preferences::instance()->snapToFineGrid()) {
+        int gridFine = Preferences::instance()->gridFine();
+        insertPos = (insertPos * gridFine).toPoint();
+        insertPos /= gridFine;
+    } else if (Preferences::instance()->snapToGrid()) {
+        insertPos = insertPos.toPoint();
+    }
+    const QPointF offset = insertPos - center;
+
+    QUndoStack *undoStack = mapDocument->undoStack();
+    QList<MapObject*> pastedObjects;
+    pastedObjects.reserve(objectGroup->objectCount());
+
+    undoStack->beginMacro(tr("Paste Objects"));
+    foreach (const MapObject *mapObject, objectGroup->objects()) {
+        if (mode == NoTileObjects && !mapObject->cell().isEmpty())
+            continue;
+
+        MapObject *objectClone = mapObject->clone();
+        objectClone->setPosition(objectClone->position() + offset);
+        pastedObjects.append(objectClone);
+        undoStack->push(new AddMapObject(mapDocument,
+                                         currentObjectGroup,
+                                         objectClone));
+    }
+    undoStack->endMacro();
+
+    mapDocument->setSelectedObjects(pastedObjects);
 }
 
 void ClipboardManager::updateHasMap()
