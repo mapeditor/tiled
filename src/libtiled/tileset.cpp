@@ -38,6 +38,7 @@ using namespace Tiled;
 Tileset::~Tileset()
 {
     qDeleteAll(mTiles);
+    qDeleteAll(mTerrainTypes);
 }
 
 Tile *Tileset::tileAt(int id) const
