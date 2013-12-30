@@ -144,14 +144,31 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setProperties(toProperties(variantMap["properties"]));
 
-    // Read tile terrain information
+    // Read tile terrain and external image information
     const QVariantMap tilesVariantMap = variantMap["tiles"].toMap();
     QVariantMap::const_iterator it = tilesVariantMap.constBegin();
     for (; it != tilesVariantMap.end(); ++it) {
         bool ok;
         const int tileIndex = it.key().toInt();
+        if (tileIndex < 0) {
+            mError = tr("Tileset tile index negative:\n'%1'").arg(tileIndex);
+        }
+        if (tileIndex >= tileset->tileCount()) {
+            // Extend the tileset to fit the tile
+            if (tileIndex >= tilesVariantMap.count()) {
+                // If tiles are  defined this way, there should be an entry
+                // for each tile.
+                // Limit the index to number of entries to prevent running out
+                // of memory on malicious input.
+                mError = tr("Tileset tile index too high:\n'%1'").arg(tileIndex);
+                return 0;
+            }
+            int i;
+            for (i=tileset->tileCount(); i <= tileIndex; i++)
+                tileset->addTile(QPixmap());
+        }
         Tile *tile = tileset->tileAt(tileIndex);
-        if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
+        if (tile) {
             const QVariantMap tileVar = it.value().toMap();
             QList<QVariant> terrains = tileVar["terrain"].toList();
             if (terrains.count() == 4) {
@@ -164,6 +181,11 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
             float terrainProbability = tileVar["probability"].toFloat(&ok);
             if (ok)
                 tile->setTerrainProbability(terrainProbability);
+            imageVariant = tileVar["image"];
+            if (!imageVariant.isNull())
+                tileset->setTileImage(tileIndex,
+                                      QPixmap::fromImage(loadImage(imageVariant)),
+                                      imageVariant.toString());
         }
     }
 

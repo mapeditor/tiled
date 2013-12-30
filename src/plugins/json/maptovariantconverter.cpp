@@ -118,7 +118,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         tilesetVariant["imageheight"] = tileset->imageHeight();
     }
 
-    // Write the properties & terrain for those tiles that have them
+    // Write the properties, terrain & external image for those tiles that have them
     QVariantMap tilePropertiesVariant;
     QVariantMap tilesVariant;
     for (int i = 0; i < tileset->tileCount(); ++i) {
@@ -135,6 +135,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         }
         if (tile->terrainProbability() != -1.f)
             tileVariant["probability"] = tile->terrainProbability();
+        if (!tile->imageSource().isEmpty()) {
+            const QString rel = mMapDir.relativeFilePath(tile->imageSource());
+            tileVariant["image"] = rel;
+        }
         if (!tileVariant.empty())
             tilesVariant[QString::number(i)] = tileVariant;
     }
