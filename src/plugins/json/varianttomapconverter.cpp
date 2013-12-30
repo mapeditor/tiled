@@ -144,28 +144,10 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setProperties(toProperties(variantMap["properties"]));
 
-    QVariantMap propertiesVariantMap = variantMap["tileproperties"].toMap();
-    QVariantMap::const_iterator it = propertiesVariantMap.constBegin();
-    for (; it != propertiesVariantMap.constEnd(); ++it) {
-        const int tileIndex = it.key().toInt();
-        const QVariant propertiesVar = it.value();
-        if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
-            const Properties properties = toProperties(propertiesVar);
-            tileset->tileAt(tileIndex)->setProperties(properties);
-        }
-    }
-
-    // Read terrains
-    QVariantList terrainsVariantList = variantMap["terrains"].toList();
-    for (int i = 0; i < terrainsVariantList.count(); ++i) {
-        QVariantMap terrainMap = terrainsVariantList[i].toMap();
-        tileset->addTerrain(terrainMap["name"].toString(),
-                            terrainMap["tile"].toInt());
-    }
-
     // Read tile terrain information
     const QVariantMap tilesVariantMap = variantMap["tiles"].toMap();
-    for (it = tilesVariantMap.begin(); it != tilesVariantMap.end(); ++it) {
+    QVariantMap::const_iterator it = tilesVariantMap.constBegin();
+    for (; it != tilesVariantMap.end(); ++it) {
         bool ok;
         const int tileIndex = it.key().toInt();
         Tile *tile = tileset->tileAt(tileIndex);
@@ -183,6 +165,25 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
             if (ok)
                 tile->setTerrainProbability(terrainProbability);
         }
+    }
+
+    // Read tile properties
+    QVariantMap propertiesVariantMap = variantMap["tileproperties"].toMap();
+    for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
+        const int tileIndex = it.key().toInt();
+        const QVariant propertiesVar = it.value();
+        if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
+            const Properties properties = toProperties(propertiesVar);
+            tileset->tileAt(tileIndex)->setProperties(properties);
+        }
+    }
+
+    // Read terrains
+    QVariantList terrainsVariantList = variantMap["terrains"].toList();
+    for (int i = 0; i < terrainsVariantList.count(); ++i) {
+        QVariantMap terrainMap = terrainsVariantList[i].toMap();
+        tileset->addTerrain(terrainMap["name"].toString(),
+                            terrainMap["tile"].toInt());
     }
 
     mGidMapper.insert(firstGid, tileset.data());
