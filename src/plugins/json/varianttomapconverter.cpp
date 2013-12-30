@@ -133,14 +133,13 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
     if (!trans.isEmpty() && QColor::isValidColor(trans))
         tileset->setTransparentColor(QColor(trans));
 
-    QString imageSource = variantMap["image"].toString();
+    QVariant imageVariant = variantMap["image"];
 
-    if (QDir::isRelativePath(imageSource))
-        imageSource = QDir::cleanPath(mMapDir.absoluteFilePath(imageSource));
-
-    if (!tileset->loadFromImage(QImage(imageSource), imageSource)) {
-        mError = tr("Error loading tileset image:\n'%1'").arg(imageSource);
-        return 0;
+    if (!imageVariant.isNull()) {
+        if (!tileset->loadFromImage(loadImage(imageVariant), imageVariant.toString())) {
+            mError = tr("Error loading tileset image:\n'%1'").arg(imageVariant.toString());
+            return 0;
+        }
     }
 
     tileset->setProperties(toProperties(variantMap["properties"]));
@@ -381,14 +380,11 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
     if (!trans.isEmpty() && QColor::isValidColor(trans))
         imageLayer->setTransparentColor(QColor(trans));
 
-    QString imageSource = variantMap["image"].toString();
+    QVariant imageVariant = variantMap["image"].toString();
 
-    if (!imageSource.isEmpty()) {
-        if (QDir::isRelativePath(imageSource))
-            imageSource = QDir::cleanPath(mMapDir.absoluteFilePath(imageSource));
-
-        if (!imageLayer->loadFromImage(QImage(imageSource), imageSource)) {
-            mError = tr("Error loading image:\n'%1'").arg(imageSource);
+    if (!imageVariant.isNull()) {
+        if (!imageLayer->loadFromImage(loadImage(imageVariant), imageVariant.toString())) {
+            mError = tr("Error loading image:\n'%1'").arg(imageVariant.toString());
             return 0;
         }
     }
@@ -408,4 +404,11 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
         polygon.append(toTile(pointX, pointY));
     }
     return polygon;
+}
+
+QImage VariantToMapConverter::loadImage(const QVariant &variant) {
+    QString filename = variant.toString();
+    if (QDir::isRelativePath(filename))
+        filename = QDir::cleanPath(mMapDir.absoluteFilePath(filename));
+    return QImage(filename);
 }

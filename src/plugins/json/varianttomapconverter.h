@@ -72,6 +72,8 @@ private:
     Tiled::ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
     Tiled::ImageLayer *toImageLayer(const QVariantMap &variantMap);
 
+    QImage loadImage(const QVariant &variant);
+
     QPolygonF toPolygon(const QVariant &variant) const;
 
     Tiled::Map *mMap;
