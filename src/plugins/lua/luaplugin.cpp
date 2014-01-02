@@ -180,7 +180,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
         const Tile *tile = tileset->tileAt(i);
         const Properties &properties = tile->properties();
 
-        // Include enties for those tiles that have properties set on them
+        // Include entries for those tiles that have properties set on them
         if (!properties.isEmpty()) {
             writer.writeStartTable();
             writer.writeKeyAndValue("id", i);
