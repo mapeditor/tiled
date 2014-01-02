@@ -21,7 +21,7 @@
 #ifndef TILECOLLISIONEDITOR_H
 #define TILECOLLISIONEDITOR_H
 
-#include <QDockWidget>
+#include <QMainWindow>
 
 namespace Tiled {
 
@@ -35,7 +35,7 @@ class MapScene;
 class MapView;
 class ToolManager;
 
-class TileCollisionEditor : public QDockWidget
+class TileCollisionEditor : public QMainWindow
 {
     Q_OBJECT
 
@@ -50,10 +50,16 @@ public:
 
     void setMapDocument(MapDocument *mapDocument);
 
+    void writeSettings();
+
+signals:
+    void closed();
+
 public slots:
     void setTile(Tile *tile);
 
 protected:
+    void closeEvent(QCloseEvent *);
     void changeEvent(QEvent *e);
 
 private slots:
@@ -61,6 +67,8 @@ private slots:
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
 
+    void undo();
+    void redo();
     void cut();
     void copy();
     void paste();

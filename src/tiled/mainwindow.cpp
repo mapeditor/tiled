@@ -183,9 +183,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
     addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::RightDockWidgetArea, mTileCollisionEditor);
 
-    tabifyDockWidget(mTileCollisionEditor, mMiniMapDock);
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
@@ -196,7 +194,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
     mConsoleDock->setVisible(false);
-    mTileCollisionEditor->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 
@@ -419,11 +416,18 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
     mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
+    mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
+    mShowTileCollisionEditor->setCheckable(true);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
+
+    connect(mShowTileCollisionEditor, SIGNAL(toggled(bool)),
+            mTileCollisionEditor, SLOT(setVisible(bool)));
+    connect(mTileCollisionEditor, SIGNAL(closed()), SLOT(onCollisionEditorClosed()));
 
     connect(ClipboardManager::instance(), SIGNAL(hasMapChanged()), SLOT(updateActions()));
 
@@ -473,6 +477,7 @@ MainWindow::~MainWindow()
     // This needs to happen before deleting the TilesetManager otherwise it may
     // hold references to tilesets.
     mTileCollisionEditor->setTile(0);
+    mTileCollisionEditor->writeSettings();
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1187,6 +1192,14 @@ void MainWindow::editMapProperties()
     mMapDocument->emitEditCurrentObject();
 }
 
+void MainWindow::autoMappingError()
+{
+    const QString title = tr("Automatic Mapping Error");
+    QString error = mAutomappingManager->errorString();
+    if (!error.isEmpty())
+        QMessageBox::critical(this, title, error);
+}
+
 void MainWindow::autoMappingWarning()
 {
     const QString title = tr("Automatic Mapping Warning");
@@ -1195,12 +1208,9 @@ void MainWindow::autoMappingWarning()
         QMessageBox::warning(this, title, warnings);
 }
 
-void MainWindow::autoMappingError()
+void MainWindow::onCollisionEditorClosed()
 {
-    const QString title = tr("Automatic Mapping Error");
-    QString error = mAutomappingManager->errorString();
-    if (!error.isEmpty())
-        QMessageBox::critical(this, title, error);
+    mShowTileCollisionEditor->setChecked(false);
 }
 
 void MainWindow::openRecentFile()
@@ -1492,6 +1502,7 @@ void MainWindow::retranslateUi()
     mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
+    mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();
 }
 

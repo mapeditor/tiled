@@ -168,6 +168,8 @@ public slots:
     void autoMappingError();
     void autoMappingWarning();
 
+    void onCollisionEditorClosed();
+
 private:
     /**
       * Asks the user whether the given \a mapDocument should be saved, when
@@ -236,7 +238,7 @@ private:
 
     QMenu *mLayerMenu;
     QAction *mViewsAndToolbarsMenu;
-
+    QAction *mShowTileCollisionEditor;
 
     void setupQuickStamps();
 
