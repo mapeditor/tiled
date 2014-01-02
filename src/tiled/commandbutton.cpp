@@ -98,20 +98,18 @@ void CommandButton::populateMenu()
         if (!command.isEnabled)
             continue;
 
-        QAction *action = new QAction(command.name, this);
+        QAction *action = mMenu->addAction(command.name);
         action->setStatusTip(command.command);
         action->setData(command.toQVariant());
         connect(action, SIGNAL(triggered()), SLOT(runCommand()));
-        mMenu->addAction(action);
     }
 
     if (!mMenu->isEmpty())
         mMenu->addSeparator();
 
     // Add "Edit Commands..." action
-    QAction *action = new QAction(tr("Edit Commands..."), this);
+    QAction *action = mMenu->addAction(tr("Edit Commands..."));
     connect(action, SIGNAL(triggered()), SLOT(showDialog()));
-    mMenu->addAction(action);
 }
 
 void CommandButton::changeEvent(QEvent *event)
