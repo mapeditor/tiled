@@ -38,9 +38,10 @@
 
 using namespace Tiled::Internal;
 
-MapView::MapView(QWidget *parent)
+MapView::MapView(QWidget *parent, Mode mode)
     : QGraphicsView(parent)
     , mHandScrolling(false)
+    , mMode(mode)
     , mZoomable(new Zoomable(this))
 {
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
@@ -58,7 +59,8 @@ MapView::MapView(QWidget *parent)
 
     /* Since Qt 4.5, setting this attribute yields significant repaint
      * reduction when the view is being resized. */
-    v->setAttribute(Qt::WA_StaticContents);
+    if (mMode == StaticContents)
+        v->setAttribute(Qt::WA_StaticContents);
 
     /* Since Qt 4.6, mouse tracking is disabled when no graphics item uses
      * hover events. We need to set it since our scene wants the events. */
@@ -108,7 +110,8 @@ void MapView::setUseOpenGL(bool useOpenGL)
     }
 
     QWidget *v = viewport();
-    v->setAttribute(Qt::WA_StaticContents);
+    if (mMode == StaticContents)
+        v->setAttribute(Qt::WA_StaticContents);
     v->setMouseTracking(true);
 #endif
 }

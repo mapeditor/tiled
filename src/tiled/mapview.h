@@ -42,7 +42,20 @@ class MapView : public QGraphicsView
     Q_OBJECT
 
 public:
-    MapView(QWidget *parent = 0);
+    /**
+     * Using Qt::WA_StaticContents gives a performance boost in certain
+     * resizing operations. There is however a problem with it when used in
+     * child windows, so this option allows it to be turned off in that case.
+     *
+     * See https://codereview.qt-project.org/#change,74595 for my attempt at
+     * fixing the problem in Qt.
+     */
+    enum Mode {
+        StaticContents,
+        NoStaticContents,
+    };
+
+    MapView(QWidget *parent = 0, Mode mode = StaticContents);
     ~MapView();
 
     MapScene *mapScene() const;
@@ -75,6 +88,7 @@ private:
     QPoint mLastMousePos;
     QPointF mLastMouseScenePos;
     bool mHandScrolling;
+    Mode mMode;
     Zoomable *mZoomable;
 };
 
