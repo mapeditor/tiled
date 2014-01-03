@@ -136,7 +136,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     MacSupport::addFullscreen(this);
 #endif
 
-
     Preferences *preferences = Preferences::instance();
 
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
@@ -388,21 +387,20 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mBucketFillTool, SLOT(setRandom(bool)));
 
-    mToolManager->registerTool(mStampBrush);
-    mToolManager->registerTool(mTerrainBrush);
-    mToolManager->registerTool(mBucketFillTool);
-    mToolManager->registerTool(new Eraser(this));
-    mToolManager->registerTool(new TileSelectionTool(this));
-    mToolManager->addSeparator();
-    mToolManager->registerTool(new ObjectSelectionTool(this));
-    mToolManager->registerTool(new EditPolygonTool(this));
-    mToolManager->registerTool(rectangleObjectsTool);
-    mToolManager->registerTool(ellipseObjectsTool);
-    mToolManager->registerTool(polygonObjectsTool);
-    mToolManager->registerTool(polylineObjectsTool);
-    mToolManager->registerTool(tileObjectsTool);
-
-    addToolBar(mToolManager->toolBar());
+    QToolBar *toolBar = mUi->toolsToolBar;
+    toolBar->addAction(mToolManager->registerTool(mStampBrush));
+    toolBar->addAction(mToolManager->registerTool(mTerrainBrush));
+    toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
+    toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
+    toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
+    toolBar->addSeparator();
+    toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
+    toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
@@ -1504,6 +1502,7 @@ void MainWindow::retranslateUi()
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();
+    mToolManager->retranslateTools();
 }
 
 void MainWindow::mapDocumentChanged(MapDocument *mapDocument)

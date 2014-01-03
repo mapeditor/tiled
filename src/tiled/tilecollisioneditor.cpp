@@ -82,16 +82,17 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     CreateObjectTool *polylineObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreatePolyline, this);
 
-    mToolManager->registerTool(new ObjectSelectionTool(this));
-    mToolManager->registerTool(new EditPolygonTool(this));
-    mToolManager->registerTool(rectangleObjectsTool);
-    mToolManager->registerTool(ellipseObjectsTool);
-    mToolManager->registerTool(polygonObjectsTool);
-    mToolManager->registerTool(polylineObjectsTool);
-
-    QToolBar *toolBar = mToolManager->toolBar();
+    QToolBar *toolBar = new QToolBar(this);
     toolBar->setMovable(false);
     toolBar->setFloatable(false);
+
+    mToolManager = new ToolManager(this);
+    toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
+    toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
 
     setCentralWidget(mMapView);
     addToolBar(toolBar);
