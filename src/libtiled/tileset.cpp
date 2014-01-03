@@ -94,6 +94,11 @@ bool Tileset::loadFromImage(const QImage &image, const QString &fileName)
     return true;
 }
 
+bool Tileset::loadFromImage(const QString &fileName)
+{
+    return loadFromImage(QImage(fileName), fileName);
+}
+
 Tileset *Tileset::findSimilarTileset(const QList<Tileset*> &tilesets) const
 {
     foreach (Tileset *candidate, tilesets) {

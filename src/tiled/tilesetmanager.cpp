@@ -139,7 +139,7 @@ void TilesetManager::forceTilesetReload(Tileset *tileset)
         return;
 
     QString fileName = tileset->imageSource();
-    if (tileset->loadFromImage(QImage(fileName), fileName))
+    if (tileset->loadFromImage(fileName))
         emit tilesetChanged(tileset);
 }
 
@@ -168,7 +168,7 @@ void TilesetManager::fileChangedTimeout()
     foreach (Tileset *tileset, tilesets()) {
         QString fileName = tileset->imageSource();
         if (mChangedFiles.contains(fileName))
-            if (tileset->loadFromImage(QImage(fileName), fileName))
+            if (tileset->loadFromImage(fileName))
                 emit tilesetChanged(tileset);
     }
 

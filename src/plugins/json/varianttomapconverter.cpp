@@ -35,6 +35,14 @@
 using namespace Tiled;
 using namespace Json;
 
+static QString resolvePath(const QDir &dir, const QVariant &variant)
+{
+    QString fileName = variant.toString();
+    if (QDir::isRelativePath(fileName))
+        fileName = QDir::cleanPath(dir.absoluteFilePath(fileName));
+    return fileName;
+}
+
 Map *VariantToMapConverter::toMap(const QVariant &variant,
                                   const QDir &mapDir)
 {
@@ -136,8 +144,9 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
     QVariant imageVariant = variantMap["image"];
 
     if (!imageVariant.isNull()) {
-        if (!tileset->loadFromImage(loadImage(imageVariant), imageVariant.toString())) {
-            mError = tr("Error loading tileset image:\n'%1'").arg(imageVariant.toString());
+        QString imagePath = resolvePath(mMapDir, imageVariant);
+        if (!tileset->loadFromImage(imagePath)) {
+            mError = tr("Error loading tileset image:\n'%1'").arg(imagePath);
             return 0;
         }
     }
@@ -182,10 +191,10 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
             if (ok)
                 tile->setTerrainProbability(terrainProbability);
             imageVariant = tileVar["image"];
-            if (!imageVariant.isNull())
-                tileset->setTileImage(tileIndex,
-                                      QPixmap::fromImage(loadImage(imageVariant)),
-                                      imageVariant.toString());
+            if (!imageVariant.isNull()) {
+                QString imagePath = resolvePath(mMapDir, imageVariant);
+                tileset->setTileImage(tileIndex, QPixmap(imagePath), imagePath);
+            }
         }
     }
 
@@ -406,8 +415,9 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
     QVariant imageVariant = variantMap["image"].toString();
 
     if (!imageVariant.isNull()) {
-        if (!imageLayer->loadFromImage(loadImage(imageVariant), imageVariant.toString())) {
-            mError = tr("Error loading image:\n'%1'").arg(imageVariant.toString());
+        QString imagePath = resolvePath(mMapDir, imageVariant);
+        if (!imageLayer->loadFromImage(QImage(imagePath), imagePath)) {
+            mError = tr("Error loading image:\n'%1'").arg(imagePath);
             return 0;
         }
     }
@@ -427,11 +437,4 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
         polygon.append(toTile(pointX, pointY));
     }
     return polygon;
-}
-
-QImage VariantToMapConverter::loadImage(const QVariant &variant) {
-    QString filename = variant.toString();
-    if (QDir::isRelativePath(filename))
-        filename = QDir::cleanPath(mMapDir.absoluteFilePath(filename));
-    return QImage(filename);
 }

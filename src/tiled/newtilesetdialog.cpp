@@ -150,7 +150,7 @@ void NewTilesetDialog::tryAccept()
             tileset->setTransparentColor(transparentColor);
 
         if (!image.isEmpty()) {
-            if (!tileset->loadFromImage(QImage(image), image)) {
+            if (!tileset->loadFromImage(image)) {
                 QMessageBox::critical(this, tr("Error"),
                                       tr("Failed to load tileset image '%1'.")
                                       .arg(image));

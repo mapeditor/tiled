@@ -211,6 +211,11 @@ public:
     bool loadFromImage(const QImage &image, const QString &fileName);
 
     /**
+     * Convenience override that loads the image using the QImage constructor.
+     */
+    bool loadFromImage(const QString &fileName);
+
+    /**
      * This checks if there is a similar tileset in the given list.
      * It is needed for replacing this tileset by its similar copy.
      */
