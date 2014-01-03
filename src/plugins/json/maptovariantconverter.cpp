@@ -139,6 +139,9 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
             const QString rel = mMapDir.relativeFilePath(tile->imageSource());
             tileVariant["image"] = rel;
         }
+        if (tile->objectGroup())
+            tileVariant["objectgroup"] = toVariant(tile->objectGroup());
+
         if (!tileVariant.empty())
             tilesVariant[QString::number(i)] = tileVariant;
     }
@@ -200,7 +203,13 @@ class TileToPixelCoordinates
 public:
     TileToPixelCoordinates(Map *map)
     {
-        if (map->orientation() == Map::Isometric) {
+        if (!map) {
+            // This is used for objects that are in object groups that are not
+            // part of a map. This happens with object groups associated with
+            // tiles, for example.
+            mMultiplierX = 1;
+            mMultiplierY = 1;
+        } else if (map->orientation() == Map::Isometric) {
             // Isometric needs special handling, since the pixel values are
             // based solely on the tile height.
             mMultiplierX = map->tileHeight();
@@ -211,10 +220,10 @@ public:
         }
     }
 
-    QPoint operator() (qreal x, qreal y) const
+    QPointF operator() (qreal x, qreal y) const
     {
-        return QPoint(qRound(x * mMultiplierX),
-                      qRound(y * mMultiplierY));
+        return QPointF(x * mMultiplierX,
+                       y * mMultiplierY);
     }
 
 private:
@@ -247,8 +256,8 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
 
         const TileToPixelCoordinates toPixel(objectGroup->map());
 
-        const QPoint pos = toPixel(object->x(), object->y());
-        const QPoint size = toPixel(object->width(), object->height());
+        const QPointF pos = toPixel(object->x(), object->y());
+        const QPointF size = toPixel(object->width(), object->height());
 
         objectVariant["x"] = pos.x();
         objectVariant["y"] = pos.y();
@@ -270,7 +279,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
         if (!polygon.isEmpty()) {
             QVariantList pointVariants;
             foreach (const QPointF &point, polygon) {
-                const QPoint pixelCoordinates = toPixel(point.x(), point.y());
+                const QPointF pixelCoordinates = toPixel(point.x(), point.y());
                 QVariantMap pointVariant;
                 pointVariant["x"] = pixelCoordinates.x();
                 pointVariant["y"] = pixelCoordinates.y();

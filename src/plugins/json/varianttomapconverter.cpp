@@ -195,6 +195,18 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
                 QString imagePath = resolvePath(mMapDir, imageVariant);
                 tileset->setTileImage(tileIndex, QPixmap(imagePath), imagePath);
             }
+            QVariantMap objectGroupVariant = tileVar["objectgroup"].toMap();
+            if (!objectGroupVariant.isEmpty()) {
+                // A quick hack to avoid taking into account the map's tile size
+                // for object groups associated with a tile.
+                const int tileWidth = mMap->tileWidth();
+                const int tileHeight = mMap->tileHeight();
+                mMap->setTileWidth(1);
+                mMap->setTileHeight(1);
+                tile->setObjectGroup(toObjectGroup(objectGroupVariant));
+                mMap->setTileWidth(tileWidth);
+                mMap->setTileHeight(tileHeight);
+            }
         }
     }
 
@@ -289,32 +301,21 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     return tileLayer.take();
 }
 
-class PixelToTileCoordinates
+static QPointF pixelToTileCoordinates(Map *map, qreal x, qreal y)
 {
-public:
-    PixelToTileCoordinates(const Map *map)
-    {
-        if (map->orientation() == Map::Isometric) {
-            // Isometric needs special handling, since the pixel values are
-            // based solely on the tile height.
-            mMultiplierX = (qreal) 1 / map->tileHeight();
-            mMultiplierY = (qreal) 1 / map->tileHeight();
-        } else {
-            mMultiplierX = (qreal) 1 / map->tileWidth();
-            mMultiplierY = (qreal) 1 / map->tileHeight();
-        }
-    }
+    const int tileHeight = map->tileHeight();
+    const int tileWidth = map->tileWidth();
 
-    QPointF operator() (int x, int y) const
-    {
-        return QPointF(x * mMultiplierX,
-                       y * mMultiplierY);
+    if (map->orientation() == Map::Isometric) {
+        // Isometric needs special handling, since the pixel values are based
+        // solely on the tile height.
+        return QPointF(x / tileHeight,
+                       y / tileHeight);
+    } else {
+        return QPointF(x / tileWidth,
+                       y / tileHeight);
     }
-
-private:
-    qreal mMultiplierX;
-    qreal mMultiplierY;
-};
+}
 
 ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 {
@@ -342,22 +343,20 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         }
     }
 
-    const PixelToTileCoordinates toTile(mMap);
-
     foreach (const QVariant &objectVariant, variantMap["objects"].toList()) {
         const QVariantMap objectVariantMap = objectVariant.toMap();
 
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
         const int gid = objectVariantMap["gid"].toInt();
-        const int x = objectVariantMap["x"].toInt();
-        const int y = objectVariantMap["y"].toInt();
-        const int width = objectVariantMap["width"].toInt();
-        const int height = objectVariantMap["height"].toInt();
+        const qreal x = objectVariantMap["x"].toReal();
+        const qreal y = objectVariantMap["y"].toReal();
+        const qreal width = objectVariantMap["width"].toReal();
+        const qreal height = objectVariantMap["height"].toReal();
         const qreal rotation = objectVariantMap["rotation"].toReal();
 
-        const QPointF pos = toTile(x, y);
-        const QPointF size = toTile(width, height);
+        const QPointF pos = pixelToTileCoordinates(mMap, x, y);
+        const QPointF size = pixelToTileCoordinates(mMap, width, height);
 
         MapObject *object = new MapObject(name, type,
                                           pos,
@@ -427,14 +426,12 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 
 QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
 {
-    const PixelToTileCoordinates toTile(mMap);
-
     QPolygonF polygon;
     foreach (const QVariant &pointVariant, variant.toList()) {
         const QVariantMap pointVariantMap = pointVariant.toMap();
-        const int pointX = pointVariantMap["x"].toInt();
-        const int pointY = pointVariantMap["y"].toInt();
-        polygon.append(toTile(pointX, pointY));
+        const qreal pointX = pointVariantMap["x"].toReal();
+        const qreal pointY = pointVariantMap["y"].toReal();
+        polygon.append(pixelToTileCoordinates(mMap, pointX, pointY));
     }
     return polygon;
 }
