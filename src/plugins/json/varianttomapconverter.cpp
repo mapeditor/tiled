@@ -133,21 +133,65 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
     if (!trans.isEmpty() && QColor::isValidColor(trans))
         tileset->setTransparentColor(QColor(trans));
 
-    QString imageSource = variantMap["image"].toString();
+    QVariant imageVariant = variantMap["image"];
 
-    if (QDir::isRelativePath(imageSource))
-        imageSource = QDir::cleanPath(mMapDir.absoluteFilePath(imageSource));
-
-    if (!tileset->loadFromImage(QImage(imageSource), imageSource)) {
-        mError = tr("Error loading tileset image:\n'%1'").arg(imageSource);
-        return 0;
+    if (!imageVariant.isNull()) {
+        if (!tileset->loadFromImage(loadImage(imageVariant), imageVariant.toString())) {
+            mError = tr("Error loading tileset image:\n'%1'").arg(imageVariant.toString());
+            return 0;
+        }
     }
 
     tileset->setProperties(toProperties(variantMap["properties"]));
 
+    // Read tile terrain and external image information
+    const QVariantMap tilesVariantMap = variantMap["tiles"].toMap();
+    QVariantMap::const_iterator it = tilesVariantMap.constBegin();
+    for (; it != tilesVariantMap.end(); ++it) {
+        bool ok;
+        const int tileIndex = it.key().toInt();
+        if (tileIndex < 0) {
+            mError = tr("Tileset tile index negative:\n'%1'").arg(tileIndex);
+        }
+        if (tileIndex >= tileset->tileCount()) {
+            // Extend the tileset to fit the tile
+            if (tileIndex >= tilesVariantMap.count()) {
+                // If tiles are  defined this way, there should be an entry
+                // for each tile.
+                // Limit the index to number of entries to prevent running out
+                // of memory on malicious input.
+                mError = tr("Tileset tile index too high:\n'%1'").arg(tileIndex);
+                return 0;
+            }
+            int i;
+            for (i=tileset->tileCount(); i <= tileIndex; i++)
+                tileset->addTile(QPixmap());
+        }
+        Tile *tile = tileset->tileAt(tileIndex);
+        if (tile) {
+            const QVariantMap tileVar = it.value().toMap();
+            QList<QVariant> terrains = tileVar["terrain"].toList();
+            if (terrains.count() == 4) {
+                for (int i = 0; i < 4; ++i) {
+                    int terrainID = terrains.at(i).toInt(&ok);
+                    if (ok && terrainID >= 0 && terrainID < tileset->terrainCount())
+                        tile->setCornerTerrain(i, terrainID);
+                }
+            }
+            float terrainProbability = tileVar["probability"].toFloat(&ok);
+            if (ok)
+                tile->setTerrainProbability(terrainProbability);
+            imageVariant = tileVar["image"];
+            if (!imageVariant.isNull())
+                tileset->setTileImage(tileIndex,
+                                      QPixmap::fromImage(loadImage(imageVariant)),
+                                      imageVariant.toString());
+        }
+    }
+
+    // Read tile properties
     QVariantMap propertiesVariantMap = variantMap["tileproperties"].toMap();
-    QVariantMap::const_iterator it = propertiesVariantMap.constBegin();
-    for (; it != propertiesVariantMap.constEnd(); ++it) {
+    for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
         const int tileIndex = it.key().toInt();
         const QVariant propertiesVar = it.value();
         if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
@@ -162,28 +206,6 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
         QVariantMap terrainMap = terrainsVariantList[i].toMap();
         tileset->addTerrain(terrainMap["name"].toString(),
                             terrainMap["tile"].toInt());
-    }
-
-    // Read tile terrain information
-    const QVariantMap tilesVariantMap = variantMap["tiles"].toMap();
-    for (it = tilesVariantMap.begin(); it != tilesVariantMap.end(); ++it) {
-        bool ok;
-        const int tileIndex = it.key().toInt();
-        Tile *tile = tileset->tileAt(tileIndex);
-        if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
-            const QVariantMap tileVar = it.value().toMap();
-            QList<QVariant> terrains = tileVar["terrain"].toList();
-            if (terrains.count() == 4) {
-                for (int i = 0; i < 4; ++i) {
-                    int terrainID = terrains.at(i).toInt(&ok);
-                    if (ok && terrainID >= 0 && terrainID < tileset->terrainCount())
-                        tile->setCornerTerrain(i, terrainID);
-                }
-            }
-            float terrainProbability = tileVar["probability"].toFloat(&ok);
-            if (ok)
-                tile->setTerrainProbability(terrainProbability);
-        }
     }
 
     mGidMapper.insert(firstGid, tileset.data());
@@ -381,14 +403,11 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
     if (!trans.isEmpty() && QColor::isValidColor(trans))
         imageLayer->setTransparentColor(QColor(trans));
 
-    QString imageSource = variantMap["image"].toString();
+    QVariant imageVariant = variantMap["image"].toString();
 
-    if (!imageSource.isEmpty()) {
-        if (QDir::isRelativePath(imageSource))
-            imageSource = QDir::cleanPath(mMapDir.absoluteFilePath(imageSource));
-
-        if (!imageLayer->loadFromImage(QImage(imageSource), imageSource)) {
-            mError = tr("Error loading image:\n'%1'").arg(imageSource);
+    if (!imageVariant.isNull()) {
+        if (!imageLayer->loadFromImage(loadImage(imageVariant), imageVariant.toString())) {
+            mError = tr("Error loading image:\n'%1'").arg(imageVariant.toString());
             return 0;
         }
     }
@@ -408,4 +427,11 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
         polygon.append(toTile(pointX, pointY));
     }
     return polygon;
+}
+
+QImage VariantToMapConverter::loadImage(const QVariant &variant) {
+    QString filename = variant.toString();
+    if (QDir::isRelativePath(filename))
+        filename = QDir::cleanPath(mMapDir.absoluteFilePath(filename));
+    return QImage(filename);
 }
