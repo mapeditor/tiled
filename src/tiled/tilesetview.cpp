@@ -275,12 +275,15 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
                              const QModelIndex &index) const
 {
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
-    const Tileset *tileset = m->tileset();
-    const QSize tileSize = tileset->tileSize() * mTilesetView->scale();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
-    return QSize(tileSize.width() + extra,
-                 tileSize.height() + extra);
+    if (const Tile *tile = m->tileAt(index)) {
+        const QSize tileSize = tile->size() * mTilesetView->scale();
+        return QSize(tileSize.width() + extra,
+                     tileSize.height() + extra);
+    }
+
+    return QSize(extra, extra);
 }
 
 } // anonymous namespace
@@ -344,6 +347,10 @@ int TilesetView::sizeHintForColumn(int column) const
     const TilesetModel *model = tilesetModel();
     if (!model)
         return -1;
+#if QT_VERSION >= 0x050200
+    if (model->tileset()->imageSource().isEmpty())
+        return QTableView::sizeHintForColumn(column);
+#endif
 
     const int tileWidth = model->tileset()->tileWidth();
     return qRound(tileWidth * scale()) + (mDrawGrid ? 1 : 0);
@@ -355,6 +362,10 @@ int TilesetView::sizeHintForRow(int row) const
     const TilesetModel *model = tilesetModel();
     if (!model)
         return -1;
+#if QT_VERSION >= 0x050200
+    if (model->tileset()->imageSource().isEmpty())
+        return QTableView::sizeHintForRow(row);
+#endif
 
     const int tileHeight = model->tileset()->tileHeight();
     return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);
