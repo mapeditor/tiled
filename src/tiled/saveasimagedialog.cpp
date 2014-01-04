@@ -146,7 +146,7 @@ void SaveAsImageDialog::accept()
     if (useCurrentScale)
         mapSize *= mCurrentScale;
 
-    QImage image(mapSize, QImage::Format_ARGB32);
+    QImage image(mapSize, QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
     QPainter painter(&image);
 

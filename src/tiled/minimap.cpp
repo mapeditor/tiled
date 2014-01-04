@@ -191,7 +191,7 @@ void MiniMap::renderMapToImage()
     // Allocate a new image when the size changed
     const QSize imageSize = mapSize * scale;
     if (mMapImage.size() != imageSize) {
-        mMapImage = QImage(imageSize, QImage::Format_ARGB32);
+        mMapImage = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
         updateImageRect();
     }
 
