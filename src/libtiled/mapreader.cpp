@@ -403,6 +403,27 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
             readUnknownElement();
         }
     }
+
+    // Temporary code to support TMW-style animation frame properties
+    if (!tile->isAnimated() && tile->hasProperty(QLatin1String("animation-frame0"))) {
+        QVector<Frame> frames;
+
+        for (int i = 0; ; i++) {
+            QString frameName = QLatin1String("animation-frame") + QString::number(i);
+            QString delayName = QLatin1String("animation-delay") + QString::number(i);
+
+            if (tile->hasProperty(frameName) && tile->hasProperty(delayName)) {
+                Frame frame;
+                frame.tileId = tile->property(frameName).toInt();
+                frame.duration = tile->property(delayName).toInt() * 10;
+                frames.append(frame);
+            } else {
+                break;
+            }
+        }
+
+        tile->setFrames(frames);
+    }
 }
 
 void MapReaderPrivate::readTilesetImage(Tileset *tileset)
