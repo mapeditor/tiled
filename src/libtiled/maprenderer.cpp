@@ -112,7 +112,8 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
     if (mTile != cell.tile)
         flush();
 
-    const QSizeF size = cell.tile->size();
+    const QPixmap &image = cell.tile->currentFrameImage();
+    const QSizeF size = image.size();
     const QPoint offset = cell.tile->tileset()->tileOffset();
     const QPointF sizeHalf = QPointF(size.width() / 2, size.height() / 2);
 
@@ -165,7 +166,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, Origin origin)
     const QRectF source(0, 0, fragment.width, fragment.height);
 
     mPainter->setTransform(transform);
-    mPainter->drawPixmap(target, cell.tile->image(), source);
+    mPainter->drawPixmap(target, image, source);
     mPainter->setTransform(oldTransform);
 }
 
@@ -179,7 +180,7 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  mTile->image());
+                                  mTile->currentFrameImage());
 
     mTile = 0;
     mFragments.resize(0);

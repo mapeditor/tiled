@@ -1,6 +1,6 @@
 /*
  * tilesetmanager.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of Tiled.
@@ -22,6 +22,8 @@
 #include "tilesetmanager.h"
 
 #include "filesystemwatcher.h"
+#include "tileanimationdriver.h"
+#include "tile.h"
 #include "tileset.h"
 
 #include <QImage>
@@ -33,6 +35,7 @@ TilesetManager *TilesetManager::mInstance = 0;
 
 TilesetManager::TilesetManager():
     mWatcher(new FileSystemWatcher(this)),
+    mAnimationDriver(new TileAnimationDriver(this)),
     mReloadTilesetsOnChange(false)
 {
     connect(mWatcher, SIGNAL(fileChanged(QString)),
@@ -43,6 +46,12 @@ TilesetManager::TilesetManager():
 
     connect(&mChangedFilesTimer, SIGNAL(timeout()),
             this, SLOT(fileChangedTimeout()));
+
+    connect(mAnimationDriver, SIGNAL(update(int)),
+            this, SLOT(advanceTileAnimations(int)));
+
+    // TODO: Only start the animation driver when there are animated tiles
+    mAnimationDriver->start();
 }
 
 TilesetManager::~TilesetManager()
@@ -173,4 +182,19 @@ void TilesetManager::fileChangedTimeout()
     }
 
     mChangedFiles.clear();
+}
+
+void TilesetManager::advanceTileAnimations(int ms)
+{
+    // TODO: This could be more optimal by keeping track of the list of
+    // actually animated tiles
+    foreach (Tileset *tileset, tilesets()) {
+        bool imageChanged = false;
+
+        foreach (Tile *tile, tileset->tiles())
+            imageChanged |= tile->advanceAnimation(ms);
+
+        if (imageChanged)
+            emit repaintTileset(tileset);
+    }
 }

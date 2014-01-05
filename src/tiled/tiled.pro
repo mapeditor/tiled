@@ -134,6 +134,7 @@ SOURCES += aboutdialog.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
     terrainview.cpp \
+    tileanimationdriver.cpp \
     tilecollisioneditor.cpp \
     tiledapplication.cpp \
     tilelayeritem.cpp \
@@ -251,6 +252,7 @@ HEADERS += aboutdialog.h \
     terraindock.h \
     terrainmodel.h \
     terrainview.h \
+    tileanimationdriver.h \
     tilecollisioneditor.h \
     tiledapplication.h \
     tilelayeritem.h \
