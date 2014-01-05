@@ -1,6 +1,6 @@
 /*
  * mapwriter.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010, Dennis Honeyman <arcticuno@gmail.com>
  *
@@ -304,7 +304,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         float probability = tile->terrainProbability();
         ObjectGroup *objectGroup = tile->objectGroup();
 
-        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1.f || imageSource.isEmpty() || objectGroup) {
+        if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != -1.f || imageSource.isEmpty() || objectGroup || tile->isAnimated()) {
             w.writeStartElement(QLatin1String("tile"));
             w.writeAttribute(QLatin1String("id"), QString::number(i));
             if (terrain != 0xFFFFFFFF)
@@ -347,6 +347,18 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
             }
             if (objectGroup)
                 writeObjectGroup(w, objectGroup);
+            if (tile->isAnimated()) {
+                const QVector<Frame> &frames = tile->frames();
+
+                w.writeStartElement(QLatin1String("animation"));
+                foreach (const Frame &frame, frames) {
+                    w.writeStartElement(QLatin1String("frame"));
+                    w.writeAttribute(QLatin1String("tileid"), QString::number(frame.tileId));
+                    w.writeAttribute(QLatin1String("duration"), QString::number(frame.duration));
+                    w.writeEndElement(); // </frame>
+                }
+                w.writeEndElement(); // </animation>
+            }
 
             w.writeEndElement(); // </tile>
         }

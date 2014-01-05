@@ -1,6 +1,6 @@
 /*
  * tile.cpp
- * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2012-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -40,7 +40,9 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mImage(image),
     mTerrain(-1),
     mTerrainProbability(-1.f),
-    mObjectGroup(0)
+    mObjectGroup(0),
+    mCurrentFrameIndex(0),
+    mUnusedTime(0)
 {}
 
 Tile::Tile(const QPixmap &image, const QString &imageSource,
@@ -52,12 +54,28 @@ Tile::Tile(const QPixmap &image, const QString &imageSource,
     mImageSource(imageSource),
     mTerrain(-1),
     mTerrainProbability(-1.f),
-    mObjectGroup(0)
+    mObjectGroup(0),
+    mCurrentFrameIndex(0),
+    mUnusedTime(0)
 {}
 
 Tile::~Tile()
 {
     delete mObjectGroup;
+}
+
+/**
+ * Returns the image for rendering this tile, taking into account tile
+ * animations.
+ */
+const QPixmap &Tile::currentFrameImage() const
+{
+    if (isAnimated()) {
+        const Frame &frame = mFrames.at(mCurrentFrameIndex);
+        return mTileset->tileAt(frame.tileId)->image();
+    } else {
+        return mImage;
+    }
 }
 
 Terrain *Tile::terrainAtCorner(int corner) const
@@ -102,4 +120,39 @@ ObjectGroup *Tile::swapObjectGroup(ObjectGroup *objectGroup)
     ObjectGroup *previousObjectGroup = mObjectGroup;
     mObjectGroup = objectGroup;
     return previousObjectGroup;
+}
+
+/**
+ * Sets the animation frames to be used by this tile. Resets any currently
+ * running animation.
+ */
+void Tile::setFrames(const QVector<Frame> &frames)
+{
+    mFrames = frames;
+    mCurrentFrameIndex = 0;
+    mUnusedTime = 0;
+}
+
+/**
+ * Advances this tile animation by the given amount of milliseconds. Returns
+ * whether this caused the current tileId to change.
+ */
+bool Tile::advanceAnimation(int ms)
+{
+    if (!isAnimated())
+        return false;
+
+    mUnusedTime += ms;
+
+    Frame frame = mFrames.at(mCurrentFrameIndex);
+    const int previousTileId = frame.tileId;
+
+    while (frame.duration > 0 && mUnusedTime > frame.duration) {
+        mUnusedTime -= frame.duration;
+        mCurrentFrameIndex = (mCurrentFrameIndex + 1) % mFrames.size();
+
+        frame = mFrames.at(mCurrentFrameIndex);
+    }
+
+    return previousTileId != frame.tileId;
 }

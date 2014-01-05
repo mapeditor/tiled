@@ -1,6 +1,6 @@
 /*
  * tile.h
- * Copyright 2008-2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of libtiled.
@@ -50,6 +50,15 @@ inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
     return (terrain & ~mask) | (insert & mask);
 }
 
+/**
+ * A single frame of an animated tile.
+ */
+struct Frame
+{
+    int tileId;
+    int duration;
+};
+
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
@@ -73,6 +82,8 @@ public:
      * Returns the image of this tile.
      */
     const QPixmap &image() const { return mImage; }
+
+    const QPixmap &currentFrameImage() const;
 
     /**
      * Sets the image of this tile.
@@ -144,6 +155,12 @@ public:
     void setObjectGroup(ObjectGroup *objectGroup);
     ObjectGroup *swapObjectGroup(ObjectGroup *objectGroup);
 
+    const QVector<Frame> &frames() const;
+    void setFrames(const QVector<Frame> &frames);
+    bool isAnimated() const;
+    int currentFrameIndex() const;
+    bool advanceAnimation(int ms);
+
 private:
     int mId;
     Tileset *mTileset;
@@ -152,6 +169,10 @@ private:
     unsigned mTerrain;
     float mTerrainProbability;
     ObjectGroup *mObjectGroup;
+
+    QVector<Frame> mFrames;
+    int mCurrentFrameIndex;
+    int mUnusedTime;
 
     friend class Tileset; // To allow changing the tile id
 };
@@ -163,6 +184,21 @@ private:
 inline ObjectGroup *Tile::objectGroup() const
 {
     return mObjectGroup;
+}
+
+inline const QVector<Frame> &Tile::frames() const
+{
+    return mFrames;
+}
+
+inline bool Tile::isAnimated() const
+{
+    return !mFrames.isEmpty();
+}
+
+inline int Tile::currentFrameIndex() const
+{
+    return mCurrentFrameIndex;
 }
 
 } // namespace Tiled

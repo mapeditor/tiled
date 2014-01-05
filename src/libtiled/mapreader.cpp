@@ -1,6 +1,6 @@
 /*
  * mapreader.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010, Dennis Honeyman <arcticuno@gmail.com>
  *
@@ -108,6 +108,7 @@ private:
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
     QPolygonF readPolygon();
+    QVector<Frame> readAnimationFrames();
 
     Properties readProperties();
     void readProperty(Properties *properties);
@@ -396,6 +397,8 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
             tile->setObjectGroup(readObjectGroup());
             mMap->setTileWidth(tileWidth);
             mMap->setTileHeight(tileHeight);
+        } else if (xml.name() == QLatin1String("animation")) {
+            tile->setFrames(readAnimationFrames());
         } else {
             readUnknownElement();
         }
@@ -881,6 +884,30 @@ QPolygonF MapReaderPrivate::readPolygon()
 
     xml.skipCurrentElement();
     return polygon;
+}
+
+QVector<Frame> MapReaderPrivate::readAnimationFrames()
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("animation"));
+
+    QVector<Frame> frames;
+
+    while (xml.readNextStartElement()) {
+        if (xml.name() == QLatin1String("frame")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            Frame frame;
+            frame.tileId = atts.value(QLatin1String("tileid")).toString().toInt();
+            frame.duration = atts.value(QLatin1String("duration")).toString().toInt();
+            frames.append(frame);
+
+            xml.skipCurrentElement();
+        } else {
+            readUnknownElement();
+        }
+    }
+
+    return frames;
 }
 
 Properties MapReaderPrivate::readProperties()
