@@ -938,7 +938,7 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>Base64 (uncompressed)</source>
-        <translation>Base64 (zlib压缩)</translation>
+        <translation>Base64 (无压缩)</translation>
     </message>
     <message>
         <location line="+5"/>
