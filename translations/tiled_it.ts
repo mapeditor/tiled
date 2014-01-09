@@ -415,7 +415,7 @@
     <message>
         <location line="-147"/>
         <source>New &amp;Tileset...</source>
-        <translation>Nuovo &amp;Insieme Di Celle...</translation>
+        <translation>Nuovo &amp;Tileset...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -488,7 +488,7 @@
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation>Questo file non contiene un insieme di celle.</translation>
+        <translation>Questo file non è un tileset.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -518,12 +518,12 @@ Line %1, column %2</source>
         <location line="+19"/>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+61"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Parametri non validi per l&apos;insieme di celle &apos;%1&apos;</translation>
+        <translation>Parametri non validi per il tileset &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation>Errore durante il caricamento dell&apos;insieme di celle &apos;%1&apos;: %2</translation>
+        <translation>Errore durante il caricamento tileset &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -540,7 +540,7 @@ Line %1, column %2</source>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+22"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
-        <translation>Errore durante il caricamente dell&apos;immagine per l&apos;insieme di celle:
+        <translation>Errore durante il caricamento del tileset:
 &apos;%1&apos;</translation>
     </message>
     <message>
@@ -597,7 +597,7 @@ Line %1, column %2</source>
     <message>
         <location line="+16"/>
         <source>Tile used but no tilesets specified</source>
-        <translation>Cella utilizzata ma nessun insieme di celle specificato</translation>
+        <translation>Cella utilizzata ma nessun tileset specificato</translation>
     </message>
     <message>
         <location filename="../src/libtiled/mapwriter.cpp" line="+105"/>
@@ -664,12 +664,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
         <source>New Tileset</source>
-        <translation>Nuovo Insieme Di Celle</translation>
+        <translation>Nuovo Tileset</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Tileset</source>
-        <translation>Insieme Di Celle</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -945,7 +945,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>&amp;Ricarica le immagini dell&apos;insieme di celle quando esse cambiano</translation>
+        <translation>&amp;Ricarica le immagini del tileset quando esse cambiano</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2228,7 +2228,7 @@ Please select specific format.</source>
     <message>
         <location line="+21"/>
         <source>Tileset Image</source>
-        <translation>Immagine Insieme Di Celle</translation>
+        <translation>Immagine Tileset</translation>
     </message>
 </context>
 <context>
@@ -2514,7 +2514,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+64"/>
         <source>Tilesets</source>
-        <translation>Insieme Di Celle</translation>
+        <translation>Tilesets</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2524,7 +2524,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation>&amp;Esporta Tilset come...</translation>
+        <translation>&amp;Esporta Tileset come...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2549,7 +2549,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+28"/>
         <source>Tileset</source>
-        <translation>Insieme Di Celle</translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2626,12 +2626,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/plugins/tmw/tmwplugin.cpp" line="+47"/>
         <source>Multiple collision layers found!</source>
-        <translation>Trovati più di un layer che collidono!</translation>
+        <translation>Trovato più di un layer di collisione!</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>No collision layer found!</source>
-        <translation>Nessun layer che collide trovato!</translation>
+        <translation>Nessun layer di collisione trovato!</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2641,7 +2641,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+25"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation></translation>
+        <translation>Files di collisione TMW-eAthena (*.wlk)</translation>
     </message>
 </context>
 <context>
@@ -2722,7 +2722,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/offsetlayer.cpp" line="+40"/>
         <source>Offset Layer</source>
-        <translation>Livello Di Spostamento Laterale</translation>
+        <translation>Livello di Spostamento Laterale</translation>
     </message>
     <message>
         <location filename="../src/tiled/painttilelayer.cpp" line="+49"/>
