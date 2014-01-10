@@ -46,7 +46,7 @@
     <message>
         <location line="+3"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Versione</translation>
     </message>
 </context>
 <context>
@@ -54,7 +54,7 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.cpp" line="+36"/>
         <source>Save all as %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Salva tutto come %1</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -1090,7 +1090,7 @@ Line %1, column %2</source>
     <message>
         <location line="+75"/>
         <source>Replica Island map files (*.bin)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">File mappa di Replica Island (*.bin)</translation>
     </message>
     <message>
         <location line="+32"/>
@@ -1100,7 +1100,7 @@ Line %1, column %2</source>
     <message>
         <location line="+15"/>
         <source>You must define a background_index property on the map!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Devi definire una proprietà background_index sulla mappa!</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1110,7 +1110,7 @@ Line %1, column %2</source>
     <message>
         <location line="+12"/>
         <source>Couldn&apos;t overwrite old version; may be deleted!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Impossibile sovrascrivere la vecchia versione; potrebbe essere stata eliminata!</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1120,12 +1120,12 @@ Line %1, column %2</source>
     <message>
         <location line="+5"/>
         <source>You must define a tile_index property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Devi definire una proprietà tile_index in ogni livello!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>You must define a scroll_speed property on each layer!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Devi definire una proprietà scroll_speed in ogni livello!</translation>
     </message>
 </context>
 <context>
@@ -2054,12 +2054,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Add &amp;Object Layer</source>
-        <translation>Aggiungi un livello di &amp;Oggetti</translation>
+        <translation>Aggiungi un Livello di &amp;Oggetti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add &amp;Image Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aggiungi un Livello &amp;Immagine</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2117,7 +2117,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapobjectmodel.cpp" line="+189"/>
         <source>Change Object Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rinomina Oggetto</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2145,12 +2145,12 @@ Please select specific format.</source>
     <message>
         <location line="+9"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Colore di sfondo:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Formato livello:</translation>
     </message>
 </context>
 <context>
@@ -2168,7 +2168,7 @@ Please select specific format.</source>
     <message>
         <location line="+34"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mappe</translation>
     </message>
 </context>
 <context>
@@ -2228,7 +2228,7 @@ Please select specific format.</source>
     <message>
         <location line="+21"/>
         <source>Tileset Image</source>
-        <translation>Immagine Insieme Di Celle</translation>
+        <translation>Immagine Tileset</translation>
     </message>
 </context>
 <context>
@@ -2298,7 +2298,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/objectsdock.cpp" line="+67"/>
         <source>Object Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Proprietà Oggetto</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -2308,7 +2308,7 @@ Please select specific format.</source>
     <message>
         <location line="+77"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oggetti</translation>
     </message>
     <message numerus="yes">
         <location line="+17"/>
@@ -2514,7 +2514,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+64"/>
         <source>Tilesets</source>
-        <translation>Insieme Di Celle</translation>
+        <translation>Tilesets</translation>
     </message>
     <message>
         <location line="+1"/>
