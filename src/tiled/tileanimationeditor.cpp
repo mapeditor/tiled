@@ -23,6 +23,7 @@
 
 #include "changetileanimation.h"
 #include "mapdocument.h"
+#include "rangeset.h"
 #include "tile.h"
 #include "tiled.h"
 #include "tileset.h"
@@ -30,6 +31,7 @@
 
 #include <QAbstractListModel>
 #include <QCloseEvent>
+#include <QShortcut>
 #include <QUndoStack>
 #include <QMimeData>
 
@@ -249,6 +251,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mFrameListModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(framesEdited()));
 
+    QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
+    connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
+
     Utils::restoreGeometry(this);
 }
 
@@ -298,6 +303,27 @@ void TileAnimationEditor::framesEdited()
                                                     mTile,
                                                     mFrameListModel->frames());
     mMapDocument->undoStack()->push(command);
+}
+
+void TileAnimationEditor::delete_()
+{
+    QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
+    const QModelIndexList indexes = selectionModel->selectedIndexes();
+
+    RangeSet<int> ranges;
+    foreach (const QModelIndex &index, indexes)
+        ranges.insert(index.row());
+
+    // Iterate backwards over the ranges in order to keep the indexes valid
+    RangeSet<int>::Range firstRange = ranges.begin();
+    RangeSet<int>::Range it = ranges.end();
+    if (it == firstRange) // no range
+        return;
+
+    do {
+        --it;
+        mFrameListModel->removeRows(it.first(), it.length(), QModelIndex());
+    } while (it != firstRange);
 }
 
 } // namespace Internal

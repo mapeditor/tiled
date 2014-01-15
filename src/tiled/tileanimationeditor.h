@@ -60,6 +60,8 @@ protected:
 private slots:
     void framesEdited();
 
+    void delete_();
+
 private:
     Ui::TileAnimationEditor *mUi;
 
