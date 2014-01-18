@@ -59,7 +59,10 @@ protected:
 
 private slots:
     void framesEdited();
+    void tileAnimationChanged(Tile *tile);
 
+    void undo();
+    void redo();
     void delete_();
 
 private:
@@ -68,6 +71,7 @@ private:
     MapDocument *mMapDocument;
     Tile *mTile;
     FrameListModel *mFrameListModel;
+    bool mApplyingChanges;
 };
 
 } // namespace Internal

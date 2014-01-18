@@ -238,6 +238,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     , mMapDocument(0)
     , mTile(0)
     , mFrameListModel(new FrameListModel(this))
+    , mApplyingChanges(false)
 {
     mUi->setupUi(this);
     mUi->frameList->setModel(mFrameListModel);
@@ -251,7 +252,12 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mFrameListModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(framesEdited()));
 
+    QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
+    QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
+
+    connect(undoShortcut, SIGNAL(activated()), SLOT(undo()));
+    connect(redoShortcut, SIGNAL(activated()), SLOT(redo()));
     connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
 
     Utils::restoreGeometry(this);
@@ -264,8 +270,16 @@ TileAnimationEditor::~TileAnimationEditor()
 
 void TileAnimationEditor::setMapDocument(MapDocument *mapDocument)
 {
+    if (mMapDocument)
+        mMapDocument->disconnect(this);
+
     mMapDocument = mapDocument;
     mUi->tilesetView->setMapDocument(mapDocument);
+
+    if (mMapDocument) {
+        connect(mMapDocument, SIGNAL(tileAnimationChanged(Tile*)),
+                SLOT(tileAnimationChanged(Tile*)));
+    }
 }
 
 void TileAnimationEditor::setTile(Tile *tile)
@@ -299,16 +313,50 @@ void TileAnimationEditor::closeEvent(QCloseEvent *event)
 
 void TileAnimationEditor::framesEdited()
 {
-    QUndoCommand *command = new ChangeTileAnimation(mMapDocument,
-                                                    mTile,
-                                                    mFrameListModel->frames());
-    mMapDocument->undoStack()->push(command);
+    QUndoStack *undoStack = mMapDocument->undoStack();
+
+    mApplyingChanges = true;
+    undoStack->push(new ChangeTileAnimation(mMapDocument,
+                                            mTile,
+                                            mFrameListModel->frames()));
+    mApplyingChanges = false;
+}
+
+void TileAnimationEditor::tileAnimationChanged(Tile *tile)
+{
+    if (mTile != tile)
+        return;
+    if (mApplyingChanges)
+        return;
+
+    mFrameListModel->setFrames(tile->tileset(), tile->frames());
+}
+
+void TileAnimationEditor::undo()
+{
+    if (mMapDocument)
+        mMapDocument->undoStack()->undo();
+}
+
+void TileAnimationEditor::redo()
+{
+    if (mMapDocument)
+        mMapDocument->undoStack()->redo();
 }
 
 void TileAnimationEditor::delete_()
 {
+    if (!mMapDocument)
+        return;
+
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
     const QModelIndexList indexes = selectionModel->selectedIndexes();
+
+    if (indexes.isEmpty())
+        return;
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->beginMacro(tr("Delete Frames"));
 
     RangeSet<int> ranges;
     foreach (const QModelIndex &index, indexes)
@@ -324,6 +372,8 @@ void TileAnimationEditor::delete_()
         --it;
         mFrameListModel->removeRows(it.first(), it.length(), QModelIndex());
     } while (it != firstRange);
+
+    undoStack->endMacro();
 }
 
 } // namespace Internal
