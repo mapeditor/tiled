@@ -46,6 +46,7 @@ public:
 
     bool showGrid() const { return mShowGrid; }
     bool showTileObjectOutlines() const { return mShowTileObjectOutlines; }
+    bool showTileAnimations() const { return mShowTileAnimations; }
     bool snapToGrid() const { return mSnapToGrid; }
     bool snapToFineGrid() const { return mSnapToFineGrid; }
     QColor gridColor() const { return mGridColor; }
@@ -97,6 +98,7 @@ public:
 public slots:
     void setShowGrid(bool showGrid);
     void setShowTileObjectOutlines(bool enabled);
+    void setShowTileAnimations(bool enabled);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
     void setGridColor(QColor gridColor);
@@ -108,6 +110,7 @@ public slots:
 signals:
     void showGridChanged(bool showGrid);
     void showTileObjectOutlinesChanged(bool enabled);
+    void showTileAnimationsChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
     void gridColorChanged(QColor gridColor);
@@ -136,6 +139,7 @@ private:
 
     bool mShowGrid;
     bool mShowTileObjectOutlines;
+    bool mShowTileAnimations;
     bool mSnapToGrid;
     bool mSnapToFineGrid;
     QColor mGridColor;

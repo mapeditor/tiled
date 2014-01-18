@@ -99,6 +99,7 @@
     </property>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
+    <addaction name="actionShowTileAnimations"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
     <addaction name="actionSnapToGrid"/>
@@ -432,6 +433,14 @@
    </property>
    <property name="text">
     <string>Snap to &amp;Fine Grid</string>
+   </property>
+  </action>
+  <action name="actionShowTileAnimations">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Tile Animations</string>
    </property>
   </action>
  </widget>

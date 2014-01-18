@@ -49,9 +49,6 @@ TilesetManager::TilesetManager():
 
     connect(mAnimationDriver, SIGNAL(update(int)),
             this, SLOT(advanceTileAnimations(int)));
-
-    // TODO: Only start the animation driver when there are animated tiles
-    mAnimationDriver->start();
 }
 
 TilesetManager::~TilesetManager()
@@ -156,6 +153,20 @@ void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 {
     mReloadTilesetsOnChange = enabled;
     // TODO: Clear the file system watcher when disabled
+}
+
+void TilesetManager::setAnimateTiles(bool enabled)
+{
+    // TODO: Avoid running the driver when there are no animated tiles
+    if (enabled)
+        mAnimationDriver->start();
+    else
+        mAnimationDriver->stop();
+}
+
+bool TilesetManager::animateTiles() const
+{
+    return mAnimationDriver->state() == QAbstractAnimation::Running;
 }
 
 void TilesetManager::fileChanged(const QString &path)

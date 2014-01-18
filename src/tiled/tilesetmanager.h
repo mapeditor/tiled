@@ -123,9 +123,13 @@ public:
      * image changes.
      */
     void setReloadTilesetsOnChange(bool enabled);
+    bool reloadTilesetsOnChange() const;
 
-    bool reloadTilesetsOnChange() const
-    { return mReloadTilesetsOnChange; }
+    /**
+     * Sets whether tile animations are running.
+     */
+    void setAnimateTiles(bool enabled);
+    bool animateTiles() const;
 
 signals:
     /**
@@ -171,6 +175,9 @@ private:
     QTimer mChangedFilesTimer;
     bool mReloadTilesetsOnChange;
 };
+
+inline bool TilesetManager::reloadTilesetsOnChange() const
+{ return mReloadTilesetsOnChange; }
 
 } // namespace Internal
 } // namespace Tiled
