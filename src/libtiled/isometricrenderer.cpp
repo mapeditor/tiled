@@ -510,22 +510,29 @@ QPointF IsometricRenderer::tileToScreenCoords(qreal x, qreal y) const
                    (x + y) * tileHeight / 2);
 }
 
-QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
-{
-    const int tileWidth = map()->tileWidth();
-    x -= map()->height() * tileWidth / 2;
-    
-    return QPointF((y + x),
-                   (y - x));
-}
-
 QPointF IsometricRenderer::screenToPixelCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
-    const int originX = map()->height() * tileWidth / 2;
+    const int tileHeight = map()->tileHeight();
 
-    return QPointF((x - y) / 2 + originX,
-                   (x + y) / 2);
+    x -= map()->height() * tileWidth / 2;
+    const qreal tileY = y / tileHeight;
+    const qreal tileX = x / tileWidth;
+
+    return QPointF((tileY + tileX) * tileHeight,
+                   (tileY - tileX) * tileHeight);
+}
+
+QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+    const int originX = map()->height() * tileWidth / 2;
+    const qreal tileY = y / tileHeight;
+    const qreal tileX = x / tileHeight;
+    
+    return QPointF((tileX - tileY) * tileWidth / 2 + originX,
+                   (tileX + tileY) * tileHeight / 2);
 }
 
 QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRect &rect) const
