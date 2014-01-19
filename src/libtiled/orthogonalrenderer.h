@@ -64,10 +64,23 @@ public:
                        const MapObject *object,
                        const QColor &color) const;
 
+    using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;
 
     using MapRenderer::tileToPixelCoords;
     QPointF tileToPixelCoords(qreal x, qreal y) const;
+    
+    using MapRenderer::screenToTileCoords;
+    QPointF screenToTileCoords(qreal x, qreal y) const;
+
+    using MapRenderer::tileToScreenCoords;
+    QPointF tileToScreenCoords(qreal x, qreal y) const;
+    
+    using MapRenderer::screenToPixelCoords;
+    QPointF screenToPixelCoords(qreal x, qreal y) const;
+
+    using MapRenderer::pixelToScreenCoords;
+    QPointF pixelToScreenCoords(qreal x, qreal y) const;
 };
 
 } // namespace Tiled

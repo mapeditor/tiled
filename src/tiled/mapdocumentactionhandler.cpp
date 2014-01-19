@@ -221,7 +221,7 @@ void MapDocumentActionHandler::copyPosition()
     const QPointF scenePos = view->mapToScene(viewportPos);
 
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF tilePos = renderer->pixelToTileCoords(scenePos);
+    const QPointF tilePos = renderer->screenToTileCoords(scenePos);
     const int x = qFloor(tilePos.x());
     const int y = qFloor(tilePos.y());
 

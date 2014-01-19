@@ -105,6 +105,18 @@ public:
 
     using MapRenderer::tileToPixelCoords;
     QPointF tileToPixelCoords(qreal x, qreal y) const;
+    
+    using MapRenderer::screenToTileCoords;
+    QPointF screenToTileCoords(qreal x, qreal y) const;
+
+    using MapRenderer::tileToScreenCoords;
+    QPointF tileToScreenCoords(qreal x, qreal y) const;
+    
+    using MapRenderer::screenToPixelCoords;
+    QPointF screenToPixelCoords(qreal x, qreal y) const;
+
+    using MapRenderer::pixelToScreenCoords;
+    QPointF pixelToScreenCoords(qreal x, qreal y) const;
 
     // Functions specific to this type of renderer
     QPoint topLeft(int x, int y) const;
@@ -112,7 +124,7 @@ public:
     QPoint bottomLeft(int x, int y) const;
     QPoint bottomRight(int x, int y) const;
 
-    QPolygonF tileToPolygon(int x, int y) const;
+    QPolygonF tileToScreenPolygon(int x, int y) const;
 };
 
 } // namespace Tiled
