@@ -31,6 +31,7 @@
 #include "objectgroup.h"
 #include "preferences.h"
 #include "raiselowerhelper.h"
+#include "resizemapobject.h"
 #include "rotatemapobject.h"
 #include "selectionrectangle.h"
 
@@ -80,11 +81,15 @@ public:
     }
 };
 
-enum Corner {
+enum AnchorPosition {
     TopLeft,
     TopRight,
     BottomLeft,
-    BottomRight
+    BottomRight,
+    TopMiddle,
+    CenterLeft,
+    CenterRight,
+    BottomMiddle
 };
 
 static QPainterPath createArrow()
@@ -117,7 +122,7 @@ static QPainterPath createArrow()
     path.lineTo(arrowHeadPos - arrowHeadWidth, arrowHeadLength);
     path.closeSubpath();
 
-    path.translate(-3, -3);
+    path.translate(0, 0);
 
     return path;
 }
@@ -128,7 +133,7 @@ static QPainterPath createArrow()
 class CornerHandle : public QGraphicsItem
 {
 public:
-    CornerHandle(Corner corner, QGraphicsItem *parent = 0)
+    CornerHandle(AnchorPosition corner, QGraphicsItem *parent = 0)
         : QGraphicsItem(parent)
     {
         setFlags(QGraphicsItem::ItemIgnoresTransformations |
@@ -141,7 +146,7 @@ public:
         case TopLeft:       setRotation(180);   break;
         case TopRight:      setRotation(-90);   break;
         case BottomLeft:    setRotation(90);    break;
-        case BottomRight:   break;
+        default:            break; // BottomRight
         }
     }
 
@@ -177,6 +182,67 @@ QVariant CornerHandle::itemChange(GraphicsItemChange change,
     return QGraphicsItem::itemChange(change, value);
 }
 
+/**
+ * A resize handle that allows resizing of map objects.
+ */
+class ResizeHandle : public QGraphicsItem
+{
+public:
+    ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = 0)
+        : QGraphicsItem(parent)
+    {
+        setFlags(QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
+        setAcceptHoverEvents(true);
+        setCursor(Qt::SizeFDiagCursor);
+        setZValue(10000 + 2);
+        
+        mResizingOrigin = QPointF(0, 0);
+        mResizingLimitHorizontal = false;
+        mResizingLimitVertical = false;
+        
+        switch(anchorPosition) {
+        case TopLeft:       setCursor(Qt::SizeFDiagCursor); break;
+        case TopRight:      setCursor(Qt::SizeBDiagCursor); break;
+        case BottomLeft:    setCursor(Qt::SizeBDiagCursor); break;
+        case BottomRight:   setCursor(Qt::SizeFDiagCursor); break;
+        case TopMiddle:     setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
+        case CenterLeft:    setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        case CenterRight:   setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        default:            setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
+        }
+    }
+    
+    void setResizingOrigin(QPointF scalingOrigin) { mResizingOrigin = scalingOrigin; }
+    QPointF getResizingOrigin() const { return mResizingOrigin; }
+    
+    bool getResizingLimitHorizontal() const { return mResizingLimitHorizontal; }
+    bool getResizingLimitVertical() const { return mResizingLimitVertical; }
+    
+    QRectF boundingRect() const;
+    
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+   
+private:
+    QPointF mResizingOrigin;
+    bool mResizingLimitHorizontal;
+    bool mResizingLimitVertical;
+};
+
+QRectF ResizeHandle::boundingRect() const
+{
+    return QRectF(-5, -5, 10 + 1, 10 + 1);
+}
+
+void ResizeHandle::paint(QPainter *painter,
+                   const QStyleOptionGraphicsItem *,
+                   QWidget *)
+{
+    painter->setBrush(Qt::white);
+    painter->setPen(Qt::black);
+    painter->drawRect(QRectF(-5, -5, 10, 10));
+}
+
 } // namespace Internal
 } // namespace Tiled
 
@@ -190,10 +256,13 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mMousePressed(false)
     , mClickedObjectItem(0)
     , mClickedCornerHandle(0)
+    , mClickedResizeHandle(0)
     , mMode(NoMode)
 {
     for (int i = 0; i < 4; ++i)
-        mCornerHandles[i] = new CornerHandle(static_cast<Corner>(i));
+        mCornerHandles[i] = new CornerHandle(static_cast<AnchorPosition>(i));
+    for (int i = 0; i < 8; ++i)
+        mResizeHandles[i] = new ResizeHandle(static_cast<AnchorPosition>(i));
 }
 
 ObjectSelectionTool::~ObjectSelectionTool()
@@ -203,6 +272,8 @@ ObjectSelectionTool::~ObjectSelectionTool()
 
     for (int i = 0; i < 4; ++i)
         delete mCornerHandles[i];
+    for (int i = 0; i < 8; ++i)
+        delete mResizeHandles[i];
 }
 
 void ObjectSelectionTool::activate(MapScene *scene)
@@ -222,6 +293,8 @@ void ObjectSelectionTool::activate(MapScene *scene)
     scene->addItem(mRotationOriginIndicator);
     for (int i = 0; i < 4; ++i)
         scene->addItem(mCornerHandles[i]);
+    for (int i = 0; i < 8; ++i)
+        scene->addItem(mResizeHandles[i]);
 }
 
 void ObjectSelectionTool::deactivate(MapScene *scene)
@@ -229,6 +302,8 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     scene->removeItem(mRotationOriginIndicator);
     for (int i = 0; i < 4; ++i)
         scene->removeItem(mCornerHandles[i]);
+    for (int i = 0; i < 8; ++i)
+        scene->removeItem(mResizeHandles[i]);
 
     disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
                this, SLOT(updateHandles()));
@@ -307,6 +382,8 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
                 startMoving();
             else if (mClickedCornerHandle)
                 startRotating();
+            else if (mClickedResizeHandle)
+                startResizing();
             else
                 startSelecting();
         }
@@ -321,6 +398,13 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         break;
     case Rotating:
         updateRotatingItems(pos, modifiers);
+        break;
+    case Resizing:
+        if (mMovingItems.size() == 1) {
+            updateResizingSingleItem(pos, modifiers);
+        } else {
+            updateResizingItems(pos, modifiers);
+        }
         break;
     case NoMode:
         break;
@@ -345,17 +429,20 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mStart = event->scenePos();
         mScreenStart = event->screenPos();
 
-        CornerHandle *clickedHandle = 0;
+        CornerHandle *clickedCornerHandle = 0;
+        ResizeHandle *clickedResizeHandle = 0;
 
         if (QGraphicsView *view = findView(event)) {
             QGraphicsItem *clickedItem = mapScene()->itemAt(event->scenePos(),
                                                             view->transform());
 
-            clickedHandle = dynamic_cast<CornerHandle*>(clickedItem);
+            clickedCornerHandle = dynamic_cast<CornerHandle*>(clickedItem);
+            clickedResizeHandle = dynamic_cast<ResizeHandle*>(clickedItem);
         }
 
-        mClickedCornerHandle = clickedHandle;
-        if (!clickedHandle)
+        mClickedCornerHandle = clickedCornerHandle;
+        mClickedResizeHandle = clickedResizeHandle;
+        if (!clickedCornerHandle && !clickedResizeHandle)
             mClickedObjectItem = topMostObjectItemAt(mStart);
 
         break;
@@ -401,6 +488,9 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     case Rotating:
         finishRotating(event->scenePos());
         break;
+    case Resizing:
+        finishResizing(event->scenePos());
+        break;
     }
 
     mMousePressed = false;
@@ -438,14 +528,55 @@ void ObjectSelectionTool::updateHandles()
             boundingRect |= item->mapToScene(item->boundingRect()).boundingRect();
         }
 
-        mCornerHandles[TopLeft]->setPos(boundingRect.topLeft());
-        mCornerHandles[TopRight]->setPos(boundingRect.topRight());
-        mCornerHandles[BottomLeft]->setPos(boundingRect.bottomLeft());
-        mCornerHandles[BottomRight]->setPos(boundingRect.bottomRight());
+        boundingRect = boundingRect.adjusted(1, 1, -1, -1);
+        
+        QPointF topLeft = boundingRect.topLeft();
+        QPointF topRight = boundingRect.topRight();
+        QPointF bottomLeft = boundingRect.bottomLeft();
+        QPointF bottomRight = boundingRect.bottomRight();
+        
+        mCornerHandles[TopLeft]->setPos(topLeft);
+        mCornerHandles[TopRight]->setPos(topRight);
+        mCornerHandles[BottomLeft]->setPos(bottomLeft);
+        mCornerHandles[BottomRight]->setPos(bottomRight);
 
         // TODO: Might be nice to make it configurable
         mRotationOrigin = boundingRect.center();
         mRotationOriginIndicator->setPos(mRotationOrigin);
+        
+        // Resizing handles.
+        // If there is only one object seleced, align to its orientation.
+        if (items.size() == 1) {
+            QRectF itemRect = item->boundingRect().adjusted(1, 1, -1, -1);
+            
+            topLeft = item->mapToScene(itemRect.topLeft());
+            topRight = item->mapToScene(itemRect.topRight());
+            bottomLeft = item->mapToScene(itemRect.bottomLeft());
+            bottomRight = item->mapToScene(itemRect.bottomRight());
+        }
+        
+        QPointF top = (topLeft + topRight) / 2;
+        QPointF left = (topLeft + bottomLeft) / 2;
+        QPointF right = (topRight + bottomRight) / 2;
+        QPointF bottom = (bottomLeft + bottomRight) / 2;
+        
+        mResizeHandles[TopMiddle]->setPos(top);
+        mResizeHandles[TopMiddle]->setResizingOrigin(bottom);
+        mResizeHandles[CenterLeft]->setPos(left);
+        mResizeHandles[CenterLeft]->setResizingOrigin(right);
+        mResizeHandles[CenterRight]->setPos(right);
+        mResizeHandles[CenterRight]->setResizingOrigin(left);
+        mResizeHandles[BottomMiddle]->setPos(bottom);
+        mResizeHandles[BottomMiddle]->setResizingOrigin(top);
+        
+        mResizeHandles[TopLeft]->setPos(topLeft);
+        mResizeHandles[TopLeft]->setResizingOrigin(bottomRight);
+        mResizeHandles[TopRight]->setPos(topRight);
+        mResizeHandles[TopRight]->setResizingOrigin(bottomLeft);
+        mResizeHandles[BottomLeft]->setPos(bottomLeft);
+        mResizeHandles[BottomLeft]->setResizingOrigin(topRight);
+        mResizeHandles[BottomRight]->setPos(bottomRight);
+        mResizeHandles[BottomRight]->setResizingOrigin(topLeft);
     }
 
     mSelectionBoundingRect = boundingRect;
@@ -457,6 +588,8 @@ void ObjectSelectionTool::setHandlesVisible(bool visible)
 {
     for (int i = 0; i < 4; ++i)
         mCornerHandles[i]->setVisible(visible);
+    for (int i = 0; i < 8; ++i)
+        mResizeHandles[i]->setVisible(visible);
 }
 
 void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
@@ -548,25 +681,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mStart;
 
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
-
-    if (snapToGrid || snapToFineGrid) {
-        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignScreenPos =
-                renderer->pixelToScreenCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignScreenPos + diff;
-
-        // Snap the position to the grid
-        QPointF newTileCoords =
-                (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
-        newTileCoords /= scale;
-        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
-    }
+    diff = snapToGrid(diff, modifiers);
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
@@ -690,4 +805,177 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
     mOldObjectPositions.clear();
     mOldObjectRotations.clear();
     mMovingItems.clear();
+}
+
+
+void ObjectSelectionTool::startResizing()
+{
+    mMovingItems = mapScene()->selectedObjectItems();
+    mMode = Resizing;
+
+    mResizingOrigin = mClickedResizeHandle->getResizingOrigin();
+    mResizingLimitHorizontal = mClickedResizeHandle->getResizingLimitHorizontal();
+    mResizingLimitVertical = mClickedResizeHandle->getResizingLimitVertical();
+
+    mStart = mClickedResizeHandle->pos();
+
+    // Remember the current object positions and sizes.
+    mOldObjectItemPositions.clear();
+    mOldObjectPositions.clear();
+    mOldObjectSizes.clear();
+
+    foreach (MapObjectItem *objectItem, mMovingItems) {
+        MapObject *object = objectItem->mapObject();
+        mOldObjectItemPositions += objectItem->pos();
+        mOldObjectPositions += object->position();
+        mOldObjectSizes += object->size();
+    }
+
+    setHandlesVisible(false);
+}
+
+void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
+                                              Qt::KeyboardModifiers modifiers)
+{
+    MapRenderer *renderer = mapDocument()->renderer();
+    QPointF diff = pos - mResizingOrigin;
+    QPointF startDiff = mStart - mResizingOrigin;
+
+    diff = snapToGrid(diff, modifiers);
+
+    // Calculate the scaling factor.
+    qreal scale;
+    if (mResizingLimitHorizontal)
+        scale = qMax((qreal)0, diff.y() / startDiff.y());
+    else if (mResizingLimitVertical)
+        scale = qMax((qreal)0, diff.x() / startDiff.x());
+    else
+        scale = (qMax((qreal)0, diff.x() / startDiff.x())
+                + qMax((qreal)0, diff.y() / startDiff.y())) / 2;
+
+    int i = 0;
+    foreach (MapObjectItem *objectItem, mMovingItems) {
+        if (objectItem->mapObject()->polygon().isEmpty() == true) {
+            const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mResizingOrigin;
+            const QPointF scaledRelPos(oldRelPos.x() * scale,
+                                       oldRelPos.y() * scale);
+            const QPointF newScreenPos = mResizingOrigin + scaledRelPos;
+            const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
+            const QSizeF origSize = mOldObjectSizes.at(i);
+            const QSizeF newSize(origSize.width() * scale,
+                                 origSize.height() * scale);
+
+            objectItem->resizeObject(newSize);
+            objectItem->setPos(newScreenPos);
+            objectItem->mapObject()->setPosition(newPos);
+        }
+
+        ++i;
+    }
+}
+
+void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
+                                                   Qt::KeyboardModifiers modifiers)
+{
+    MapObjectItem *objectItem = *mMovingItems.begin();
+    MapRenderer *renderer = mapDocument()->renderer();
+    QPointF diff = pos - mResizingOrigin;
+    QPointF startDiff = mStart - mResizingOrigin;
+
+    diff = snapToGrid(diff, modifiers);
+
+    // Most calculations in this function occur in object space, so 
+    // we transform the scaling factors from world space.
+    qreal rotation = objectItem->rotation() * M_PI / -180;
+    const qreal sn = std::sin(rotation);
+    const qreal cs = std::cos(rotation);
+
+    diff = QPointF(diff.x() * cs - diff.y() * sn, diff.x() * sn + diff.y() * cs);
+    startDiff = QPointF(startDiff.x() * cs - startDiff.y() * sn, startDiff.x() * sn + startDiff.y() * cs);
+
+    // Calculate scaling factor.
+    QSizeF scalingFactor(qMax((qreal)0, diff.x() / startDiff.x()),
+                         qMax((qreal)0, diff.y() / startDiff.y()));
+
+    if (mResizingLimitHorizontal)
+        scalingFactor.setWidth(1);
+    if (mResizingLimitVertical)
+        scalingFactor.setHeight(1);
+
+    if (objectItem->mapObject()->polygon().isEmpty() == true) {
+        // Convert relative position into object space, scale,
+        // and then convert back to world space.
+        const QPointF oldRelPos = mOldObjectItemPositions.at(0) - mResizingOrigin;
+        const QPointF objectRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
+                                   oldRelPos.x() * sn + oldRelPos.y() * cs);
+        const QPointF scaledRelPos(objectRelPos.x() * scalingFactor.width(),
+                                   objectRelPos.y() * scalingFactor.height());
+        const QPointF newRelPos(scaledRelPos.x() * cs + scaledRelPos.y() * sn,
+                                scaledRelPos.x() * -sn + scaledRelPos.y() * cs);
+        const QPointF newScreenPos = mResizingOrigin + newRelPos;
+        const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
+        const QSizeF origSize = mOldObjectSizes.at(0);
+        const QSizeF newSize(origSize.width() * scalingFactor.width(),
+                             origSize.height() * scalingFactor.height());
+        
+        objectItem->resizeObject(newSize);
+        objectItem->setPos(newScreenPos);
+        objectItem->mapObject()->setPosition(newPos);
+    }
+}
+
+void ObjectSelectionTool::finishResizing(const QPointF &pos)
+{
+    Q_ASSERT(mMode == Resizing);
+    mMode = NoMode;
+    updateHandles();
+
+    if (mStart == pos) // No scaling at all
+        return;
+
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->beginMacro(tr("Resize %n Object(s)", "", mMovingItems.size()));
+    int i = 0;
+    foreach (MapObjectItem *objectItem, mMovingItems) {
+        MapObject *object = objectItem->mapObject();
+        const QPointF oldPos = mOldObjectPositions.at(i);
+        const QSizeF oldSize = mOldObjectSizes.at(i);
+        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
+        undoStack->push(new ResizeMapObject(mapDocument(), object, oldSize));
+        ++i;
+    }
+    undoStack->endMacro();
+
+    mOldObjectItemPositions.clear();
+    mOldObjectPositions.clear();
+    mOldObjectSizes.clear();
+    mMovingItems.clear();
+}
+
+const QPointF ObjectSelectionTool::snapToGrid(const QPointF &pos,
+                                              Qt::KeyboardModifiers modifiers)
+{
+    bool snapToGrid = Preferences::instance()->snapToGrid();
+    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+    if (modifiers & Qt::ControlModifier) {
+        snapToGrid = !snapToGrid;
+        snapToFineGrid = false;
+    }
+
+    if (snapToGrid || snapToFineGrid) {
+        MapRenderer *renderer = mapDocument()->renderer();
+        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
+        const QPointF alignPixelPos =
+                renderer->tileToPixelCoords(mAlignPosition);
+        const QPointF newAlignPixelPos = alignPixelPos + pos;
+
+        // Snap the position to the grid
+        QPointF newTileCoords =
+                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+        newTileCoords /= scale;
+        
+        return renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
+    }
+    
+    return pos;
 }

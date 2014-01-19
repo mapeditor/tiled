@@ -232,7 +232,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
             if (layer->contains(columnItr)) {
                 const Cell &cell = layer->cellAt(columnItr);
                 if (!cell.isEmpty()) {
-                    renderer.render(cell, QPointF(x, y),
+                    renderer.render(cell, QPointF(x, y), QSizeF(0, 0),
                                     CellRenderer::BottomLeft);
                 }
             }
@@ -299,7 +299,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawText(textPos, name);
         }
 
-        CellRenderer(painter).render(cell, pos,
+        CellRenderer(painter).render(cell, pos, object->size(),
                                      CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {

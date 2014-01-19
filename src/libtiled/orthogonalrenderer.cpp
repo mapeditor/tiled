@@ -66,10 +66,13 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
         const Tile *tile = object->cell().tile;
         const QSize imgSize = tile->image().size();
         const QPoint tileOffset = tile->tileset()->tileOffset();
-        boundingRect = QRectF(bottomLeft.x() + tileOffset.x(),
-                              bottomLeft.y() + tileOffset.y() - imgSize.height(),
-                              imgSize.width(),
-                              imgSize.height()).adjusted(-1, -1, 1, 1);
+        const QSizeF objectSize = object->size();
+        const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
+
+        boundingRect = QRectF(bottomLeft.x() + (tileOffset.x() * scale.width()),
+                              bottomLeft.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
+                              objectSize.width(),
+                              objectSize.height()).adjusted(-1, -1, 1, 1);
     } else {
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
 
@@ -270,6 +273,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
+                            QSizeF(0, 0),
                             CellRenderer::BottomLeft);
         }
     }
@@ -306,7 +310,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        CellRenderer(painter).render(cell, QPointF(),
+        CellRenderer(painter).render(cell, QPointF(), object->size(),
                                      CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
