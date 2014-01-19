@@ -867,12 +867,20 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                              origSize.height() * scale);
         
         if (objectItem->mapObject()->polygon().isEmpty() == false) {
-            const QPolygonF &oldPolygon = mOldObjectPolygons.at(0);
+            // For polygons, we have to scale in object space.
+            qreal rotation = objectItem->rotation() * M_PI / -180;
+            const qreal sn = std::sin(rotation);
+            const qreal cs = std::cos(rotation);
+            
+            const QPolygonF &oldPolygon = mOldObjectPolygons.at(i);
             QPolygonF newPolygon(oldPolygon.size());
             for (int n = 0; n < oldPolygon.size(); ++n) {
-                const QPointF point(oldPolygon[n]);
-                const QPointF newPoint(point.x() * scale,
-                                       point.y() * scale);
+                const QPointF oldPoint(oldPolygon[n]);
+                const QPointF rotPoint(oldPoint.x() * cs + oldPoint.y() * sn,
+                                       oldPoint.y() * cs - oldPoint.x() * sn);
+                const QPointF scaledPoint(rotPoint.x() * scale, rotPoint.y() * scale);
+                const QPointF newPoint(scaledPoint.x() * cs - scaledPoint.y() * sn,
+                                       scaledPoint.y() * cs + scaledPoint.x() * sn);
                 newPolygon += newPoint;
             }
             objectItem->mapObject()->setPolygon(newPolygon);
