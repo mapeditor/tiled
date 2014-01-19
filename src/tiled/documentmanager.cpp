@@ -259,5 +259,5 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
     if (!view)
         return;
 
-    view->centerOn(currentDocument()->renderer()->tileToScreenCoords(x, y));
+    view->centerOn(currentDocument()->renderer()->pixelToScreenCoords(x, y));
 }

@@ -154,10 +154,11 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
             const QPointF itemPos = mMapObjectItem->pos();
             QPointF pixelPos = value.toPointF() + itemPos;
 
-            // Calculate the new coordinates in tiles
+            // Calculate the new coordinates in pixels
             QPointF tileCoords = renderer->screenToTileCoords(pixelPos);
             const QPointF objectPos = mMapObjectItem->mapObject()->position();
-            tileCoords -= objectPos;
+            const QPointF objectTilePos = renderer->pixelToTileCoords(objectPos);
+            tileCoords -= objectTilePos;
             tileCoords.setX(qMax(tileCoords.x(), qreal(0)));
             tileCoords.setY(qMax(tileCoords.y(), qreal(0)));
             if (snapToFineGrid) {
@@ -166,14 +167,14 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
                 tileCoords /= gridFine;
             } else if (snapToGrid)
                 tileCoords = tileCoords.toPoint();
-            tileCoords += objectPos;
+            tileCoords += objectTilePos;
 
             return renderer->tileToScreenCoords(tileCoords) - itemPos;
         }
         else if (change == ItemPositionHasChanged) {
             // Update the size of the map object
             const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
-            QPointF tileCoords = renderer->screenToTileCoords(newPos);
+            QPointF tileCoords = renderer->screenToPixelCoords(newPos);
             tileCoords -= mMapObjectItem->mapObject()->position();
             mMapObjectItem->resizeObject(QSizeF(tileCoords.x(), tileCoords.y()));
         }
@@ -219,7 +220,7 @@ void MapObjectItem::syncWithMapObject()
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF pixelPos = renderer->tileToScreenCoords(mObject->position());
+    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
     QRectF bounds = renderer->boundingRect(mObject);
 
     bounds.translate(-pixelPos);
@@ -238,7 +239,7 @@ void MapObjectItem::syncWithMapObject()
         prepareGeometryChange();
         mBoundingRect = bounds;
         const QPointF bottomRight = mObject->bounds().bottomRight();
-        const QPointF handlePos = renderer->tileToScreenCoords(bottomRight);
+        const QPointF handlePos = renderer->pixelToScreenCoords(bottomRight);
         mResizeHandle->setPos(handlePos - pixelPos);
     }
 
