@@ -108,6 +108,7 @@ private:
     QVector<QPointF> mOldObjectItemPositions;
     QVector<QPointF> mOldObjectPositions;
     QVector<QSizeF> mOldObjectSizes;
+    QVector<QPolygonF> mOldObjectPolygons;
     QVector<qreal> mOldObjectRotations;
     QPointF mAlignPosition;
     QRectF mSelectionBoundingRect;

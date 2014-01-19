@@ -20,6 +20,7 @@
 
 #include "objectselectiontool.h"
 
+#include "changepolygon.h"
 #include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -829,6 +830,7 @@ void ObjectSelectionTool::startResizing()
         mOldObjectItemPositions += objectItem->pos();
         mOldObjectPositions += object->position();
         mOldObjectSizes += object->size();
+        mOldObjectPolygons += object->polygon();
     }
 
     setHandlesVisible(false);
@@ -855,21 +857,31 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
-        if (objectItem->mapObject()->polygon().isEmpty() == true) {
-            const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mResizingOrigin;
-            const QPointF scaledRelPos(oldRelPos.x() * scale,
-                                       oldRelPos.y() * scale);
-            const QPointF newScreenPos = mResizingOrigin + scaledRelPos;
-            const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
-            const QSizeF origSize = mOldObjectSizes.at(i);
-            const QSizeF newSize(origSize.width() * scale,
-                                 origSize.height() * scale);
-
-            objectItem->resizeObject(newSize);
-            objectItem->setPos(newScreenPos);
-            objectItem->mapObject()->setPosition(newPos);
+        const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mResizingOrigin;
+        const QPointF scaledRelPos(oldRelPos.x() * scale,
+                                   oldRelPos.y() * scale);
+        const QPointF newScreenPos = mResizingOrigin + scaledRelPos;
+        const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
+        const QSizeF origSize = mOldObjectSizes.at(i);
+        const QSizeF newSize(origSize.width() * scale,
+                             origSize.height() * scale);
+        
+        if (objectItem->mapObject()->polygon().isEmpty() == false) {
+            const QPolygonF &oldPolygon = mOldObjectPolygons.at(0);
+            QPolygonF newPolygon(oldPolygon.size());
+            for (int n = 0; n < oldPolygon.size(); ++n) {
+                const QPointF point(oldPolygon[n]);
+                const QPointF newPoint(point.x() * scale,
+                                       point.y() * scale);
+                newPolygon += newPoint;
+            }
+            objectItem->mapObject()->setPolygon(newPolygon);
         }
-
+        
+        objectItem->resizeObject(newSize);
+        objectItem->setPos(newScreenPos);
+        objectItem->mapObject()->setPosition(newPos);
+        
         ++i;
     }
 }
@@ -901,27 +913,37 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
         scalingFactor.setWidth(1);
     if (mResizingLimitVertical)
         scalingFactor.setHeight(1);
-
-    if (objectItem->mapObject()->polygon().isEmpty() == true) {
-        // Convert relative position into object space, scale,
-        // and then convert back to world space.
-        const QPointF oldRelPos = mOldObjectItemPositions.at(0) - mResizingOrigin;
-        const QPointF objectRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
-                                   oldRelPos.x() * sn + oldRelPos.y() * cs);
-        const QPointF scaledRelPos(objectRelPos.x() * scalingFactor.width(),
-                                   objectRelPos.y() * scalingFactor.height());
-        const QPointF newRelPos(scaledRelPos.x() * cs + scaledRelPos.y() * sn,
-                                scaledRelPos.x() * -sn + scaledRelPos.y() * cs);
-        const QPointF newScreenPos = mResizingOrigin + newRelPos;
-        const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
-        const QSizeF origSize = mOldObjectSizes.at(0);
-        const QSizeF newSize(origSize.width() * scalingFactor.width(),
-                             origSize.height() * scalingFactor.height());
-        
-        objectItem->resizeObject(newSize);
-        objectItem->setPos(newScreenPos);
-        objectItem->mapObject()->setPosition(newPos);
+    
+    // Convert relative position into object space, scale,
+    // and then convert back to world space.
+    const QPointF oldRelPos = mOldObjectItemPositions.at(0) - mResizingOrigin;
+    const QPointF objectRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
+                               oldRelPos.x() * sn + oldRelPos.y() * cs);
+    const QPointF scaledRelPos(objectRelPos.x() * scalingFactor.width(),
+                               objectRelPos.y() * scalingFactor.height());
+    const QPointF newRelPos(scaledRelPos.x() * cs + scaledRelPos.y() * sn,
+                            scaledRelPos.x() * -sn + scaledRelPos.y() * cs);
+    const QPointF newScreenPos = mResizingOrigin + newRelPos;
+    const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
+    const QSizeF origSize = mOldObjectSizes.at(0);
+    const QSizeF newSize(origSize.width() * scalingFactor.width(),
+                         origSize.height() * scalingFactor.height());
+    
+    if (objectItem->mapObject()->polygon().isEmpty() == false) {
+        const QPolygonF &oldPolygon = mOldObjectPolygons.at(0);
+        QPolygonF newPolygon(oldPolygon.size());
+        for (int n = 0; n < oldPolygon.size(); ++n) {
+            const QPointF point(oldPolygon[n]);
+            const QPointF newPoint(point.x() * scalingFactor.width(),
+                                   point.y() * scalingFactor.height());
+            newPolygon += newPoint;
+        }
+        objectItem->mapObject()->setPolygon(newPolygon);
     }
+    
+    objectItem->resizeObject(newSize);
+    objectItem->setPos(newScreenPos);
+    objectItem->mapObject()->setPosition(newPos);
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
@@ -942,6 +964,12 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
         const QSizeF oldSize = mOldObjectSizes.at(i);
         undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
         undoStack->push(new ResizeMapObject(mapDocument(), object, oldSize));
+        
+        if (object->polygon().isEmpty() == false) {
+            const QPolygonF oldPolygon = mOldObjectPolygons.at(i);
+            undoStack->push(new ChangePolygon(mapDocument(), object, oldPolygon));
+        }
+        
         ++i;
     }
     undoStack->endMacro();
@@ -949,6 +977,7 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
     mOldObjectItemPositions.clear();
     mOldObjectPositions.clear();
     mOldObjectSizes.clear();
+    mOldObjectPolygons.clear();
     mMovingItems.clear();
 }
 
