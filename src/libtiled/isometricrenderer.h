@@ -85,6 +85,8 @@ public:
     QPointF pixelToScreenCoords(qreal x, qreal y) const;
 
 private:
+    QPolygonF pixelRectToScreenPolygon(const QRect &rect) const;
+    QPolygonF pixelRectToScreenPolygon(const QRectF &rect) const;
     QPolygonF tileRectToScreenPolygon(const QRect &rect) const;
     QPolygonF tileRectToScreenPolygon(const QRectF &rect) const;
 };

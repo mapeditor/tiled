@@ -147,6 +147,14 @@ public:
     inline QPointF pixelToTileCoords(const QPointF &point) const
     { return pixelToTileCoords(point.x(), point.y()); }
 
+    QPolygonF pixelToScreenCoords(const QPolygonF &polygon) const
+    {
+        QPolygonF screenPolygon(polygon.size());
+        for (int i = polygon.size() - 1; i >= 0; --i)
+            screenPolygon[i] = pixelToScreenCoords(polygon[i]);
+        return screenPolygon;
+    }
+
     /**
      * Returns the pixel coordinates matching the given tile coordinates.
      */
@@ -170,14 +178,6 @@ public:
 
     inline QPointF tileToScreenCoords(const QPointF &point) const
     { return tileToScreenCoords(point.x(), point.y()); }
-
-    QPolygonF tileToScreenCoords(const QPolygonF &polygon) const
-    {
-        QPolygonF screenPolygon(polygon.size());
-        for (int i = polygon.size() - 1; i >= 0; --i)
-            screenPolygon[i] = tileToScreenCoords(polygon[i]);
-        return screenPolygon;
-    }
 
     /**
      * Returns the pixel position matching the given screen position.
