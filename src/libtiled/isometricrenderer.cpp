@@ -534,16 +534,6 @@ QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
                    (tileX + tileY) * tileHeight / 2);
 }
 
-QPolygonF IsometricRenderer::pixelRectToScreenPolygon(const QRect &rect) const
-{
-    QPolygonF polygon;
-    polygon << QPointF(pixelToScreenCoords(rect.topLeft()));
-    polygon << QPointF(pixelToScreenCoords(rect.topRight()));
-    polygon << QPointF(pixelToScreenCoords(rect.bottomRight()));
-    polygon << QPointF(pixelToScreenCoords(rect.bottomLeft()));
-    return polygon;
-}
-
 QPolygonF IsometricRenderer::pixelRectToScreenPolygon(const QRectF &rect) const
 {
     QPolygonF polygon;
@@ -570,15 +560,5 @@ QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRect &rect) const
     polygon << QPointF(bottomRight.x(), bottomRight.y() + tileHeight);
     polygon << QPointF(bottomLeft.x() - tileWidth / 2,
                        bottomLeft.y() + tileHeight / 2);
-    return polygon;
-}
-
-QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRectF &rect) const
-{
-    QPolygonF polygon;
-    polygon << QPointF(tileToScreenCoords(rect.topLeft()));
-    polygon << QPointF(tileToScreenCoords(rect.topRight()));
-    polygon << QPointF(tileToScreenCoords(rect.bottomRight()));
-    polygon << QPointF(tileToScreenCoords(rect.bottomLeft()));
     return polygon;
 }
