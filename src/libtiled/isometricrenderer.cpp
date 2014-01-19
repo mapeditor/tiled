@@ -72,10 +72,13 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
         const Tile *tile = object->cell().tile;
         const QSize imgSize = tile->image().size();
         const QPoint tileOffset = tile->tileset()->tileOffset();
-        return QRectF(bottomCenter.x() + tileOffset.x() - imgSize.width() / 2,
-                      bottomCenter.y() + tileOffset.y() - imgSize.height(),
-                      imgSize.width(),
-                      imgSize.height()).adjusted(-1, -1 - nameHeight, 1, 1);
+        const QSizeF objectSize = object->size();
+        const QSizeF scale(objectSize.width() / imgSize.width(), objectSize.height() / imgSize.height());
+
+        return QRectF(bottomCenter.x() + (tileOffset.x() * scale.width()) - objectSize.width() / 2,
+                      bottomCenter.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
+                      objectSize.width(),
+                      objectSize.height()).adjusted(-1, -1 - nameHeight, 1, 1);
     } else if (!object->polygon().isEmpty()) {
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
         const QPointF &pos = object->position();
