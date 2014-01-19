@@ -28,9 +28,18 @@
 
 #include "compression.h"
 
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
+#include <QtZlib/zlib.h>
+#else
 #include <zlib.h>
+#endif
+
 #include <QByteArray>
 #include <QDebug>
+
+#ifdef Z_PREFIX
+#undef compress
+#endif
 
 using namespace Tiled;
 
