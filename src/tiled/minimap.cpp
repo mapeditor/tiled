@@ -213,6 +213,7 @@ void MiniMap::renderMapToImage()
     painter.setRenderHints(QPainter::SmoothPixmapTransform |
                            QPainter::HighQualityAntialiasing);
     painter.setTransform(QTransform::fromScale(scale, scale));
+    renderer->setPainterScale(scale);
 
     foreach (const Layer *layer, mMapDocument->map()->layers()) {
         if (visibleLayersOnly && !layer->isVisible())

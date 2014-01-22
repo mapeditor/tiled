@@ -27,11 +27,13 @@
 #include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
+#include "mapview.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
 #include "preferences.h"
 #include "resizemapobject.h"
 #include "tile.h"
+#include "zoomable.h"
 
 #include <QApplication>
 #include <QGraphicsSceneMouseEvent>
@@ -279,9 +281,11 @@ QPainterPath MapObjectItem::shape() const
 
 void MapObjectItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *,
-                          QWidget *)
+                          QWidget *widget)
 {
+    qreal scale = static_cast<MapView*>(widget->parent())->zoomable()->scale();
     painter->translate(-pos());
+    mMapDocument->renderer()->setPainterScale(scale);
     mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
 
     if (mIsEditable) {

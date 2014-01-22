@@ -61,6 +61,7 @@ public:
         : mMap(map)
         , mFlags(0)
         , mObjectLineWidth(2)
+        , mPainterScale(1)
     {}
 
     virtual ~MapRenderer() {}
@@ -170,6 +171,9 @@ public:
     bool testFlag(RenderFlag flag) const
     { return mFlags.testFlag(flag); }
 
+    qreal painterScale() const { return mPainterScale; }
+    void setPainterScale(qreal painterScale) { mPainterScale = painterScale; }
+
     RenderFlags flags() const { return mFlags; }
     void setFlags(RenderFlags flags) { mFlags = flags; }
 
@@ -186,6 +190,7 @@ private:
 
     RenderFlags mFlags;
     qreal mObjectLineWidth;
+    qreal mPainterScale;
 };
 
 /**

@@ -311,7 +311,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         }
     } else {
         const qreal lineWidth = objectLineWidth();
-        const qreal scale = painter->transform().m11();
+        const qreal scale = painterScale();
         const qreal shadowOffset = (lineWidth == 0 ? 1 : lineWidth) / scale;
 
         QColor brushColor = color;
