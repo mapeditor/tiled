@@ -136,6 +136,18 @@ void LuaPlugin::writeProperties(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
+static bool includeTile(const Tile *tile)
+{
+    if (!tile->properties().isEmpty())
+        return true;
+    if (!tile->imageSource().isEmpty())
+        return true;
+    if (tile->isAnimated())
+        return true;
+
+    return false;
+}
+
 void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
                              unsigned firstGid)
 {
@@ -157,10 +169,12 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeKeyAndValue("spacing", tileset->tileSpacing());
     writer.writeKeyAndValue("margin", tileset->margin());
 
-    const QString rel = mMapDir.relativeFilePath(tileset->imageSource());
-    writer.writeKeyAndValue("image", rel);
-    writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
-    writer.writeKeyAndValue("imageheight", tileset->imageHeight());
+    if (!tileset->imageSource().isEmpty()) {
+        const QString rel = mMapDir.relativeFilePath(tileset->imageSource());
+        writer.writeKeyAndValue("image", rel);
+        writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
+        writer.writeKeyAndValue("imageheight", tileset->imageHeight());
+    }
 
     if (tileset->transparentColor().isValid()) {
         writer.writeKeyAndValue("transparentcolor",
@@ -178,19 +192,45 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeStartTable("tiles");
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
-        const Properties &properties = tile->properties();
 
-        // Include entries for those tiles that have properties set on them
-        if (!properties.isEmpty()) {
-            writer.writeStartTable();
-            writer.writeKeyAndValue("id", i);
-            writeProperties(writer, properties);
-            writer.writeEndTable();
+        // For brevity only write tiles with interesting properties
+        if (!includeTile(tile))
+            continue;
+
+        writer.writeStartTable();
+        writer.writeKeyAndValue("id", i);
+
+        if (!tile->properties().isEmpty())
+            writeProperties(writer, tile->properties());
+
+        if (!tile->imageSource().isEmpty()) {
+            const QString src = mMapDir.relativeFilePath(tile->imageSource());
+            const QSize tileSize = tile->size();
+            writer.writeKeyAndValue("image", src);
+            if (!tileSize.isNull()) {
+                writer.writeKeyAndValue("width", tileSize.width());
+                writer.writeKeyAndValue("height", tileSize.height());
+            }
         }
-    }
-    writer.writeEndTable();
 
-    writer.writeEndTable();
+        if (tile->isAnimated()) {
+            const QVector<Frame> &frames = tile->frames();
+
+            writer.writeStartTable("animation");
+            foreach (const Frame &frame, frames) {
+                writer.writeStartTable();
+                writer.writeKeyAndValue("tileid", QString::number(frame.tileId));
+                writer.writeKeyAndValue("duration", QString::number(frame.duration));
+                writer.writeEndTable();
+            }
+            writer.writeEndTable(); // animation
+        }
+
+        writer.writeEndTable(); // tile
+    }
+    writer.writeEndTable(); // tiles
+
+    writer.writeEndTable(); // tileset
 }
 
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
