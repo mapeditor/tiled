@@ -54,6 +54,11 @@ public:
     TilesetModel(Tileset *tileset, QObject *parent = 0);
 
     /**
+     * Sets whether this view allows dragging tiles out of it.
+     */
+    void setAllowDragging(bool allowDragging);
+
+    /**
      * Returns the number of rows.
      */
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -70,6 +75,8 @@ public:
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const;
 
+
+
     /**
      * Returns a small size hint, to prevent the headers from affecting the
      * minimum width and height of the sections.
@@ -77,10 +84,17 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
 
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
+    QStringList mimeTypes() const;
+    QMimeData *mimeData(const QModelIndexList &indexes) const;
+
     /**
      * Returns the tile at the given index.
      */
     Tile *tileAt(const QModelIndex &index) const;
+
+    int tileIndexAt(const QModelIndex &index) const;
 
     /**
      * Returns the index of the given \a tile. The tile is required to be from
@@ -117,6 +131,7 @@ public slots:
 
 private:
     Tileset *mTileset;
+    bool mAllowDragging;
 };
 
 } // namespace Internal

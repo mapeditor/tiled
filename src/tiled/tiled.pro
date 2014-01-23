@@ -61,6 +61,7 @@ SOURCES += aboutdialog.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
+    changetileanimation.cpp \
     changetileobjectgroup.cpp \
     changetileselection.cpp \
     changetileterrain.cpp \
@@ -135,6 +136,7 @@ SOURCES += aboutdialog.cpp \
     terrainmodel.cpp \
     terrainview.cpp \
     tileanimationdriver.cpp \
+    tileanimationeditor.cpp \
     tilecollisioneditor.cpp \
     tiledapplication.cpp \
     tilelayeritem.cpp \
@@ -178,6 +180,7 @@ HEADERS += aboutdialog.h \
     changeobjectgroupproperties.h \
     changepolygon.h \
     changeproperties.h \
+    changetileanimation.h \
     changetileobjectgroup.h \
     changetileselection.h \
     changetileterrain.h \
@@ -253,6 +256,7 @@ HEADERS += aboutdialog.h \
     terrainmodel.h \
     terrainview.h \
     tileanimationdriver.h \
+    tileanimationeditor.h \
     tilecollisioneditor.h \
     tiledapplication.h \
     tilelayeritem.h \
@@ -280,14 +284,15 @@ macx {
 
 FORMS += aboutdialog.ui \
     commanddialog.ui \
+    editterraindialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
     offsetmapdialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
-    saveasimagedialog.ui\
-    editterraindialog.ui
+    saveasimagedialog.ui \
+    tileanimationeditor.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
 icon32.files += images/32x32/tiled.png

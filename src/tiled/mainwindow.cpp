@@ -80,6 +80,7 @@
 #include "objectsdock.h"
 #include "minimapdock.h"
 #include "consoledock.h"
+#include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 
 #ifdef Q_OS_MAC
@@ -119,6 +120,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTerrainDock(new TerrainDock(this))
     , mMiniMapDock(new MiniMapDock(this))
     , mConsoleDock(new ConsoleDock(this))
+    , mTileAnimationEditor(new TileAnimationEditor(this))
     , mTileCollisionEditor(new TileCollisionEditor(this))
     , mCurrentLayerLabel(new QLabel)
     , mZoomable(0)
@@ -377,6 +379,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
+            mTileAnimationEditor, SLOT(setTile(Tile*)));
+    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             mTileCollisionEditor, SLOT(setTile(Tile*)));
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
@@ -414,14 +418,21 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
     mViewsAndToolbarsMenu = new QAction(tr("Views and Toolbars"), this);
+    mShowTileAnimationEditor = new QAction(tr("Tile Animation Editor"), this);
+    mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
     mShowTileCollisionEditor->setCheckable(true);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
     mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsMenu);
+    mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileAnimationEditor);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowTileCollisionEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
+
+    connect(mShowTileAnimationEditor, SIGNAL(toggled(bool)),
+            mTileAnimationEditor, SLOT(setVisible(bool)));
+    connect(mTileAnimationEditor, SIGNAL(closed()), SLOT(onAnimationEditorClosed()));
 
     connect(mShowTileCollisionEditor, SIGNAL(toggled(bool)),
             mTileCollisionEditor, SLOT(setVisible(bool)));
@@ -474,6 +485,8 @@ MainWindow::~MainWindow()
 
     // This needs to happen before deleting the TilesetManager otherwise it may
     // hold references to tilesets.
+    mTileAnimationEditor->setTile(0);
+    mTileAnimationEditor->writeSettings();
     mTileCollisionEditor->setTile(0);
     mTileCollisionEditor->writeSettings();
 
@@ -1230,6 +1243,11 @@ void MainWindow::autoMappingWarning()
         QMessageBox::warning(this, title, warnings);
 }
 
+void MainWindow::onAnimationEditorClosed()
+{
+    mShowTileAnimationEditor->setChecked(false);
+}
+
 void MainWindow::onCollisionEditorClosed()
 {
     mShowTileCollisionEditor->setChecked(false);
@@ -1546,6 +1564,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mTilesetDock->setMapDocument(mapDocument);
     mTerrainDock->setMapDocument(mapDocument);
     mMiniMapDock->setMapDocument(mapDocument);
+    mTileAnimationEditor->setMapDocument(mapDocument);
     mTileCollisionEditor->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
     mAutomappingManager->setMapDocument(mapDocument);

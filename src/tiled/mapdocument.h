@@ -237,6 +237,7 @@ public:
     void emitTilesetChanged(Tileset *tileset);
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
     void emitTileObjectGroupChanged(Tile *tile);
+    void emitTileAnimationChanged(Tile *tile);
     void emitObjectGroupChanged(ObjectGroup *objectGroup);
     void emitImageLayerChanged(ImageLayer *imageLayer);
     void emitEditLayerNameRequested();
@@ -307,6 +308,11 @@ signals:
      * Emitted when the object group associated with a tile changes.
      */
     void tileObjectGroupChanged(Tile *tile);
+
+    /**
+     * Emitted when the animation of a tile changes.
+     */
+    void tileAnimationChanged(Tile *tile);
 
     /**
      * Emitted after the color of an object group has changed.
@@ -425,6 +431,14 @@ inline void MapDocument::emitTileTerrainChanged(const QList<Tile *> &tiles)
 inline void MapDocument::emitTileObjectGroupChanged(Tile *tile)
 {
     emit tileObjectGroupChanged(tile);
+}
+
+/**
+ * Emits the signal notifying about the animation of a tile changing.
+ */
+inline void MapDocument::emitTileAnimationChanged(Tile *tile)
+{
+    emit tileAnimationChanged(tile);
 }
 
 /**

@@ -63,6 +63,7 @@ class QuickStampManager;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
+class TileAnimationEditor;
 class TileCollisionEditor;
 class TilesetDock;
 class ToolManager;
@@ -168,6 +169,7 @@ public slots:
     void autoMappingError();
     void autoMappingWarning();
 
+    void onAnimationEditorClosed();
     void onCollisionEditorClosed();
 
 private:
@@ -220,6 +222,7 @@ private:
     TerrainDock *mTerrainDock;
     MiniMapDock* mMiniMapDock;
     ConsoleDock *mConsoleDock;
+    TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
@@ -238,6 +241,7 @@ private:
 
     QMenu *mLayerMenu;
     QAction *mViewsAndToolbarsMenu;
+    QAction *mShowTileAnimationEditor;
     QAction *mShowTileCollisionEditor;
 
     void setupQuickStamps();
