@@ -69,6 +69,13 @@ public:
     { return static_cast<TilesetModel *>(model()); }
 
     /**
+     * Sets whether animated tiles should be marked graphically. Enabled by
+     * default.
+     */
+    void setMarkAnimatedTiles(bool enabled);
+    bool markAnimatedTiles() const;
+
+    /**
      * Returns whether terrain editing is enabled.
      * \sa terrainId
      */
@@ -132,6 +139,7 @@ private:
     MapDocument *mMapDocument;
     bool mDrawGrid;
 
+    bool mMarkAnimatedTiles;
     bool mEditTerrain;
     bool mEraseTerrain;
     int mTerrainId;
@@ -139,6 +147,11 @@ private:
     int mHoveredCorner;
     bool mTerrainChanged;
 };
+
+inline bool TilesetView::markAnimatedTiles() const
+{
+    return mMarkAnimatedTiles;
+}
 
 } // namespace Internal
 } // namespace Tiled

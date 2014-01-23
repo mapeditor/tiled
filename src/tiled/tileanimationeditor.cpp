@@ -242,6 +242,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 {
     mUi->setupUi(this);
     mUi->frameList->setModel(mFrameListModel);
+    mUi->tilesetView->setMarkAnimatedTiles(false);
 
     connect(mFrameListModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             SLOT(framesEdited()));

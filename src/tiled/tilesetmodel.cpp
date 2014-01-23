@@ -200,3 +200,12 @@ void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
     if (topLeft.isValid())
         emit dataChanged(topLeft, bottomRight);
 }
+
+void TilesetModel::tileChanged(Tile *tile)
+{
+    if (tile->tileset() != mTileset)
+        return;
+
+    const QModelIndex i = tileIndex(tile);
+    emit dataChanged(i, i);
+}

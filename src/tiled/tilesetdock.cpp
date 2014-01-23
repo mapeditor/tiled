@@ -387,6 +387,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 SLOT(updateActions()));
         connect(mMapDocument, SIGNAL(tilesetChanged(Tileset*)),
                 SLOT(tilesetChanged(Tileset*)));
+        connect(mMapDocument, SIGNAL(tileAnimationChanged(Tile*)),
+                SLOT(tileAnimationChanged(Tile*)));
 
         QString cacheName = mCurrentTilesets.take(mMapDocument);
         for (int i = 0; i < mTabBar->count(); ++i) {
@@ -886,6 +888,13 @@ void TilesetDock::tilesetNameChanged(Tileset *tileset)
     Q_ASSERT(index != -1);
 
     mTabBar->setTabText(index, tileset->name());
+}
+
+void TilesetDock::tileAnimationChanged(Tile *tile)
+{
+    if (TilesetView *view = currentTilesetView())
+        if (TilesetModel *model = view->tilesetModel())
+            model->tileChanged(tile);
 }
 
 void TilesetDock::documentCloseRequested(int index)

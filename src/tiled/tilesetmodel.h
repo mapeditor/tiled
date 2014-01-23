@@ -129,6 +129,14 @@ public slots:
      */
     void tilesChanged(const QList<Tile*> &tiles);
 
+    /**
+     * Should be called when anything changes about the given \a tile that
+     * affects its display in any views on this model.
+     *
+     * \sa MapDocument::tileAnimationChanged
+     */
+    void tileChanged(Tile *tile);
+
 private:
     Tileset *mTileset;
     bool mAllowDragging;
