@@ -1128,20 +1128,44 @@ void MainWindow::addExternalTileset()
         return;
 
     const QString start = fileDialogStartLocation();
-    const QString fileName =
-            QFileDialog::getOpenFileName(this, tr("Add External Tileset"),
-                                         start,
-                                         tr("Tiled tileset files (*.tsx)"));
-    if (fileName.isEmpty())
+    const QStringList fileNames =
+            QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
+                                          start,
+                                          tr("Tiled tileset files (*.tsx)"));
+    if (fileNames.isEmpty())
         return;
+    
+    QList<Tileset *> tilesets;
 
-    TmxMapReader reader;
-    if (Tileset *tileset = reader.readTileset(fileName)) {
-        mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
-    } else {
-        QMessageBox::critical(this, tr("Error Reading Tileset"),
-                              reader.errorString());
+    foreach (QString fileName, fileNames) {
+        TmxMapReader reader;
+        if (Tileset *tileset = reader.readTileset(fileName)) {
+            tilesets += tileset;
+        } else if (fileNames.size() == 1) {
+            QMessageBox::critical(this, tr("Error Reading Tileset"),
+                                  reader.errorString());
+            return;
+        } else {
+            int result;
+            
+            result = QMessageBox::warning(this, tr("Error Reading Tileset"),
+                                          tr("%1: %2").arg(fileName, reader.errorString()),
+                                          QMessageBox::Abort | QMessageBox::Ignore,
+                                          QMessageBox::Ignore);
+            
+            if (result == QMessageBox::Abort) {
+                // On abort, clean out any already loaded tilesets.
+                qDeleteAll(tilesets);
+                return;
+            }
+        }
     }
+    
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
+    foreach (Tileset *tileset, tilesets)
+        undoStack->push(new AddTileset(mMapDocument, tileset));
+    undoStack->endMacro();
 }
 
 void MainWindow::resizeMap()
