@@ -299,7 +299,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         }
     } else {
         const qreal lineWidth = objectLineWidth();
-        const qreal scale = painter->transform().m11();
+        const qreal scale = painterScale();
         const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / scale;
         const QPointF shadowOffset = QPointF(shadowDist * 0.5,
                                              shadowDist * 0.5);

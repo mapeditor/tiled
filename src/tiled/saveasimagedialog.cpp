@@ -155,7 +155,9 @@ void SaveAsImageDialog::accept()
                                QPainter::HighQualityAntialiasing);
         painter.setTransform(QTransform::fromScale(mCurrentScale,
                                                    mCurrentScale));
-    }
+        renderer->setPainterScale(mCurrentScale);
+    } else
+        renderer->setPainterScale(1);
 
     foreach (const Layer *layer, mMapDocument->map()->layers()) {
         if (visibleLayersOnly && !layer->isVisible())
