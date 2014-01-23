@@ -118,7 +118,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         tilesetVariant["imageheight"] = tileset->imageHeight();
     }
 
-    // Write the properties, terrain & external image for those tiles that have them
+    // Write the properties, terrain, external image, object group and
+    // animation for those tiles that have them.
     QVariantMap tilePropertiesVariant;
     QVariantMap tilesVariant;
     for (int i = 0; i < tileset->tileCount(); ++i) {
@@ -141,6 +142,16 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
         }
         if (tile->objectGroup())
             tileVariant["objectgroup"] = toVariant(tile->objectGroup());
+        if (tile->isAnimated()) {
+            QVariantList frameVariants;
+            foreach (const Frame &frame, tile->frames()) {
+                QVariantMap frameVariant;
+                frameVariant["tileid"] = frame.tileId;
+                frameVariant["duration"] = frame.duration;
+                frameVariants.append(frameVariant);
+            }
+            tileVariant["animation"] = frameVariants;
+        }
 
         if (!tileVariant.empty())
             tilesVariant[QString::number(i)] = tileVariant;

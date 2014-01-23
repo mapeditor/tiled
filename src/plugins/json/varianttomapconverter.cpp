@@ -207,6 +207,17 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
                 mMap->setTileWidth(tileWidth);
                 mMap->setTileHeight(tileHeight);
             }
+            QVariantList frameList = tileVar["animation"].toList();
+            if (!frameList.isEmpty()) {
+                QVector<Frame> frames(frameList.size());
+                for (int i = frameList.size() - 1; i >= 0; --i) {
+                    const QVariantMap frameVariantMap = frameList[i].toMap();
+                    Frame &frame = frames[i];
+                    frame.tileId = frameVariantMap["tileid"].toInt();
+                    frame.duration = frameVariantMap["duration"].toInt();
+                }
+                tile->setFrames(frames);
+            }
         }
     }
 
