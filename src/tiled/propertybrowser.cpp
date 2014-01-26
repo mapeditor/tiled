@@ -609,7 +609,16 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
         break;
     }
     case PositionProperty: {
-        // TODO
+        QPointF pos = val.value<QPointF>();
+
+        const QColor &color = imageLayer->transparentColor();
+        const QString &imageSource = imageLayer->imageSource();
+        undoStack->push(new ChangeImageLayerProperties(mMapDocument,
+                                                       imageLayer,
+                                                       color,
+                                                       imageSource,
+                                                       pos));
+        break;
     }
     default:
         break;
