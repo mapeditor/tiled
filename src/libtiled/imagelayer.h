@@ -70,6 +70,16 @@ public:
     Layer *mergedWith(Layer *) const { return 0; }
 
     /**
+     * Returns the position of this object.
+     */
+    const QPointF &position() const { return mPos; }
+
+    /**
+     * Sets the position of this object.
+     */
+    void setPosition(const QPointF &pos) { mPos = pos; }
+
+    /**
      * Returns the transparent color, or an invalid color if no transparent
      * color is used.
      */
@@ -135,6 +145,7 @@ private:
     QString mImageSource;
     QColor mTransparentColor;
     QPixmap mImage;
+    QPointF mPos;
 };
 
 } // namespace Tiled
