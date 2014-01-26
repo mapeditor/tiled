@@ -25,6 +25,7 @@
 
 #include <QColor>
 #include <QString>
+#include <QPointF>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -49,7 +50,8 @@ public:
     ChangeImageLayerProperties(MapDocument *mapDocument,
                                ImageLayer *imageLayer,
                                const QColor &newColor,
-                               const QString &newPath);
+                               const QString &newPath,
+                               const QPointF &newPos);
 
     void undo();
     void redo();
@@ -61,6 +63,8 @@ private:
     const QColor mRedoColor;
     const QString mUndoPath;
     const QString mRedoPath;
+    QPointF mUndoPos;
+    QPointF mRedoPos;
 };
 
 } // namespace Internal

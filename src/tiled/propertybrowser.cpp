@@ -586,10 +586,12 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
     case ImageSourceProperty: {
         const QString imageSource = val.toString();
         const QColor &color = imageLayer->transparentColor();
+        const QPointF pos = imageLayer->position();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
-                                                       imageSource));
+                                                       imageSource,
+                                                       pos));
         break;
     }
     case ColorProperty: {
@@ -598,10 +600,12 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
             color = QColor();
 
         const QString &imageSource = imageLayer->imageSource();
+        const QPointF &pos = imageLayer->position();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
-                                                       imageSource));
+                                                       imageSource,
+                                                       pos));
         break;
     }
     case PositionProperty: {

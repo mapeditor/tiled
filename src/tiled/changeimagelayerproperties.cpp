@@ -34,7 +34,8 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
         MapDocument *mapDocument,
         ImageLayer *imageLayer,
         const QColor &color,
-        const QString &path)
+        const QString &path,
+        const QPointF &pos)
     : QUndoCommand(
           QCoreApplication::translate(
               "Undo Commands", "Change Image Layer Properties"))
@@ -44,12 +45,15 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
     , mRedoColor(color)
     , mUndoPath(imageLayer->imageSource())
     , mRedoPath(path)
+    , mUndoPos(imageLayer->position())
+    , mRedoPos(pos)
 {
 }
 
 void ChangeImageLayerProperties::redo()
 {
     mImageLayer->setTransparentColor(mRedoColor);
+    mImageLayer->setPosition(mRedoPos);
 
     if (mRedoPath.isEmpty())
         mImageLayer->resetImage();
@@ -62,6 +66,7 @@ void ChangeImageLayerProperties::redo()
 void ChangeImageLayerProperties::undo()
 {
     mImageLayer->setTransparentColor(mUndoColor);
+    mImageLayer->setPosition(mUndoPos);
 
     if (mUndoPath.isEmpty())
         mImageLayer->resetImage();
