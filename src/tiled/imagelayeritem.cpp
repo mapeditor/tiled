@@ -44,6 +44,9 @@ void ImageLayerItem::syncWithImageLayer()
 {
     prepareGeometryChange();
     mBoundingRect = mRenderer->boundingRect(mLayer);
+
+    const QPointF pixelPos = mRenderer->tileToPixelCoords(mLayer->position());
+    setPos(pixelPos);
 }
 
 QRectF ImageLayerItem::boundingRect() const

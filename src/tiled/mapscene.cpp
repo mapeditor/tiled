@@ -237,8 +237,6 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
         layerItem = ogItem;
     } else if (ImageLayer *il = layer->asImageLayer()) {
         layerItem = new ImageLayerItem(il, mMapDocument->renderer());
-        layerItem->setX(il->position().x());
-        layerItem->setY(il->position().y());
     }
 
     Q_ASSERT(layerItem);
