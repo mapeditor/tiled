@@ -81,7 +81,8 @@ public:
     QSize sizeHint() const;
 
     void setMapDocument(MapDocument *mapDoc);
-    MapObjectModel *model() const { return mMapObjectModel; }
+
+    MapObjectModel *model() const;
 
 protected slots:
     virtual void selectionChanged(const QItemSelection &selected,
@@ -95,7 +96,6 @@ private slots:
 private:
     MapDocument *mMapDocument;
     bool mSynching;
-    MapObjectModel *mMapObjectModel;
 };
 
 } // namespace Internal

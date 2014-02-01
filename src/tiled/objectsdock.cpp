@@ -251,9 +251,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     mMapDocument = mapDoc;
 
     if (mMapDocument) {
-        mMapObjectModel = mMapDocument->mapObjectModel();
-        setModel(mMapObjectModel);
-        model()->setMapDocument(mapDoc);
+        setModel(mMapDocument->mapObjectModel());
 
         // 2 equal-sized columns, user can't adjust
 #if QT_VERSION >= 0x050000
@@ -265,11 +263,13 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
     } else {
-        if (model())
-            model()->setMapDocument(0);
-        setModel(mMapObjectModel = 0);
+        setModel(0);
     }
+}
 
+MapObjectModel *ObjectsView::model() const
+{
+    return static_cast<MapObjectModel*>(QTreeView::model());
 }
 
 void ObjectsView::onPressed(const QModelIndex &index)
