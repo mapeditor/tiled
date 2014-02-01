@@ -989,7 +989,7 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
     mMovingItems.clear();
 }
 
-const QPointF ObjectSelectionTool::snapToGrid(const QPointF &pos,
+const QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
                                               Qt::KeyboardModifiers modifiers)
 {
     bool snapToGrid = Preferences::instance()->snapToGrid();
@@ -998,21 +998,21 @@ const QPointF ObjectSelectionTool::snapToGrid(const QPointF &pos,
         snapToGrid = !snapToGrid;
         snapToFineGrid = false;
     }
-
+    
     if (snapToGrid || snapToFineGrid) {
         MapRenderer *renderer = mapDocument()->renderer();
         int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignPixelPos =
-                renderer->tileToPixelCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignPixelPos + pos;
+        const QPointF alignScreenPos =
+                renderer->pixelToScreenCoords(mAlignPosition);
+        const QPointF newAlignScreenPos = alignScreenPos + diff;
 
         // Snap the position to the grid
         QPointF newTileCoords =
-                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+                (renderer->screenToTileCoords(newAlignScreenPos) * scale).toPoint();
         newTileCoords /= scale;
         
-        return renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
+        return renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
     }
     
-    return pos;
+    return diff;
 }
