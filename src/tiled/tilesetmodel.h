@@ -54,11 +54,6 @@ public:
     TilesetModel(Tileset *tileset, QObject *parent = 0);
 
     /**
-     * Sets whether this view allows dragging tiles out of it.
-     */
-    void setAllowDragging(bool allowDragging);
-
-    /**
      * Returns the number of rows.
      */
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -139,7 +134,6 @@ public slots:
 
 private:
     Tileset *mTileset;
-    bool mAllowDragging;
 };
 
 } // namespace Internal

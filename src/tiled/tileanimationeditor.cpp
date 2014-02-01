@@ -293,7 +293,6 @@ void TileAnimationEditor::setTile(Tile *tile)
 
         TilesetModel *tilesetModel = new TilesetModel(tile->tileset(),
                                                       mUi->tilesetView);
-        tilesetModel->setAllowDragging(true);
         mUi->tilesetView->setModel(tilesetModel);
     } else {
         mFrameListModel->setFrames(0, QVector<Frame>());

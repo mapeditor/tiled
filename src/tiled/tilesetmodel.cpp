@@ -37,13 +37,6 @@ TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
 {
 }
 
-void TilesetModel::setAllowDragging(bool allowDragging)
-{
-    beginResetModel();
-    mAllowDragging = allowDragging;
-    endResetModel();
-}
-
 int TilesetModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
