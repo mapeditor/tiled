@@ -529,7 +529,7 @@ QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
     const int originX = map()->height() * tileWidth / 2;
     const qreal tileY = y / tileHeight;
     const qreal tileX = x / tileHeight;
-    
+
     return QPointF((tileX - tileY) * tileWidth / 2 + originX,
                    (tileX + tileY) * tileHeight / 2);
 }

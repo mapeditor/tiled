@@ -503,15 +503,15 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     if (snapToGrid || snapToFineGrid) {
         int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignPixelPos =
-                renderer->tileToScreenCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignPixelPos + diff;
+        const QPointF alignScreenPos =
+                renderer->pixelToScreenCoords(mAlignPosition);
+        const QPointF newAlignPixelPos = alignScreenPos + diff;
 
         // Snap the position to the grid
         QPointF newTileCoords =
                 (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
         newTileCoords /= scale;
-        diff = renderer->tileToScreenCoords(newTileCoords) - alignPixelPos;
+        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
     }
 
     int i = 0;

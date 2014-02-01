@@ -143,7 +143,9 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         return;
 
     // Determine where to insert the objects
+    const MapRenderer *renderer = mapDocument->renderer();
     const QPointF center = objectGroup->objectsBoundingRect().center();
+    const QPointF tileCenter = renderer->pixelToTileCoords(center);
 
     // Take the mouse position if the mouse is on the view, otherwise
     // take the center of the view.
@@ -153,9 +155,8 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     else
         viewPos = QPoint(view->width() / 2, view->height() / 2);
 
-    const MapRenderer *renderer = mapDocument->renderer();
     const QPointF scenePos = view->mapToScene(viewPos);
-    QPointF insertPos = renderer->screenToPixelCoords(scenePos);
+    QPointF insertPos = renderer->screenToTileCoords(scenePos) - tileCenter;
     if (Preferences::instance()->snapToFineGrid()) {
         int gridFine = Preferences::instance()->gridFine();
         insertPos = (insertPos * gridFine).toPoint();
@@ -163,7 +164,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     } else if (Preferences::instance()->snapToGrid()) {
         insertPos = insertPos.toPoint();
     }
-    const QPointF offset = insertPos - center;
+    const QPointF offset = renderer->tileToPixelCoords(insertPos);
 
     QUndoStack *undoStack = mapDocument->undoStack();
     QList<MapObject*> pastedObjects;
