@@ -558,20 +558,20 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     if (snapToGrid || snapToFineGrid) {
         int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
         const QPointF alignPixelPos =
-                renderer->tileToPixelCoords(mAlignPosition);
+                renderer->tileToScreenCoords(mAlignPosition);
         const QPointF newAlignPixelPos = alignPixelPos + diff;
 
         // Snap the position to the grid
         QPointF newTileCoords =
-                (renderer->pixelToTileCoords(newAlignPixelPos) * scale).toPoint();
+                (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
         newTileCoords /= scale;
-        diff = renderer->tileToPixelCoords(newTileCoords) - alignPixelPos;
+        diff = renderer->tileToScreenCoords(newTileCoords) - alignPixelPos;
     }
 
     int i = 0;
     foreach (MapObjectItem *objectItem, mMovingItems) {
         const QPointF newPixelPos = mOldObjectItemPositions.at(i) + diff;
-        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
+        const QPointF newPos = renderer->screenToTileCoords(newPixelPos);
         objectItem->setPos(newPixelPos);
         objectItem->mapObject()->setPosition(newPos);
 
@@ -652,7 +652,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
         const QPointF newPixelPos = mRotationOrigin + newRelPos;
-        const QPointF newPos = renderer->pixelToTileCoords(newPixelPos);
+        const QPointF newPos = renderer->screenToTileCoords(newPixelPos);
 
         const qreal newRotation = mOldObjectRotations.at(i) + angleDiff * 180 / M_PI;
 

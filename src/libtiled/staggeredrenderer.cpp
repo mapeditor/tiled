@@ -55,7 +55,7 @@ QRect StaggeredRenderer::boundingRect(const QRect &rect) const
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    QPoint topLeft = tileToPixelCoords(rect.topLeft()).toPoint();
+    QPoint topLeft = tileToScreenCoords(rect.topLeft()).toPoint();
     int width = rect.width() * tileWidth;
     int height = (tileHeight / 2) * (rect.height() + 1);
 
@@ -149,12 +149,12 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
                 drawMargins.top());
 
     // Determine the tile and pixel coordinates to start at
-    QPoint startTile = pixelToTileCoords(rect.x(), rect.y()).toPoint();
+    QPoint startTile = screenToTileCoords(rect.x(), rect.y()).toPoint();
 
     // Compensate for the layer position
     startTile -= layer->position();
 
-    QPoint startPos = tileToPixelCoords(startTile + layer->position()).toPoint();
+    QPoint startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
 
     /* Determine in which half of the tile the top-left corner of the area we
      * need to draw is. If we're in the upper half, we need to start one row
@@ -172,7 +172,7 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
     startTile.setX(qMax(0, startTile.x()));
     startTile.setY(qMax(0, startTile.y()));
 
-    startPos = tileToPixelCoords(startTile + layer->position()).toPoint();
+    startPos = tileToScreenCoords(startTile + layer->position()).toPoint();
     startPos.ry() += tileHeight;
 
     // Odd row shifting is applied in the rendering loop, so un-apply it here
@@ -211,7 +211,7 @@ void StaggeredRenderer::drawTileSelection(QPainter *painter,
     foreach (const QRect &r, region.rects()) {
         for (int y = r.top(); y <= r.bottom(); ++y) {
             for (int x = r.left(); x <= r.right(); ++x) {
-                const QPolygonF polygon = tileToPolygon(x, y);
+                const QPolygonF polygon = tileToScreenPolygon(x, y);
                 if (QRectF(polygon.boundingRect()).intersects(exposed))
                     painter->drawConvexPolygon(polygon);
             }
@@ -229,11 +229,27 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
     // TODO
 }
 
+QPointF StaggeredRenderer::tileToPixelCoords(qreal x, qreal y) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+
+    return QPointF(x * tileWidth, y * tileHeight);
+}
+
+QPointF StaggeredRenderer::pixelToTileCoords(qreal x, qreal y) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+    
+    return QPointF(x / tileWidth, y / tileHeight);
+}
+
 /**
- * Converts pixel to tile coordinates. Sub-tile return values are not
+ * Converts screen to tile coordinates. Sub-tile return values are not
  * supported by this renderer.
  */
-QPointF StaggeredRenderer::pixelToTileCoords(qreal x, qreal y) const
+QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -263,10 +279,10 @@ QPointF StaggeredRenderer::pixelToTileCoords(qreal x, qreal y) const
 }
 
 /**
- * Converts tile to pixel coordinates. Sub-tile return values are not
+ * Converts tile to screen coordinates. Sub-tile return values are not
  * supported by this renderer.
  */
-QPointF StaggeredRenderer::tileToPixelCoords(qreal x, qreal y) const
+QPointF StaggeredRenderer::tileToScreenCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -275,6 +291,24 @@ QPointF StaggeredRenderer::tileToPixelCoords(qreal x, qreal y) const
     int pixelY = int(y) * (tileHeight / 2);
 
     return QPointF(pixelX, pixelY);
+}
+
+QPointF StaggeredRenderer::screenToPixelCoords(qreal x, qreal y) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+    const QPointF tileCoords = screenToTileCoords(x, y);
+
+    return QPointF(tileCoords.x() * tileWidth,
+                   tileCoords.y() * tileHeight);
+}
+
+QPointF StaggeredRenderer::pixelToScreenCoords(qreal x, qreal y) const
+{
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
+    
+    return tileToScreenCoords(x / tileWidth, y / tileHeight);
 }
 
 QPoint StaggeredRenderer::topLeft(int x, int y) const
@@ -309,12 +343,12 @@ QPoint StaggeredRenderer::bottomRight(int x, int y) const
         return QPoint(x, y + 1);
 }
 
-QPolygonF StaggeredRenderer::tileToPolygon(int x, int y) const
+QPolygonF StaggeredRenderer::tileToScreenPolygon(int x, int y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    const QPointF topRight = tileToPixelCoords(x, y);
+    const QPointF topRight = tileToScreenCoords(x, y);
 
     QPolygonF polygon;
     polygon << QPointF(topRight.x() + tileWidth / 2,

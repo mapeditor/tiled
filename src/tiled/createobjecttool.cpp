@@ -149,7 +149,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     switch (mMode) {
     case CreateRectangle:
     case CreateEllipse: {
-        const QPointF tileCoords = renderer->pixelToTileCoords(pos);
+        const QPointF tileCoords = renderer->screenToTileCoords(pos);
 
         // Update the size of the new map object
         const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
@@ -176,7 +176,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     case CreateTile: {
         const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
         const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
-        QPointF tileCoords = renderer->pixelToTileCoords(pos + diff);
+        QPointF tileCoords = renderer->screenToTileCoords(pos + diff);
 
         if (snapToFineGrid) {
             int gridFine = Preferences::instance()->gridFine();
@@ -192,7 +192,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     }
     case CreatePolygon:
     case CreatePolyline: {
-        QPointF tileCoords = renderer->pixelToTileCoords(pos);
+        QPointF tileCoords = renderer->screenToTileCoords(pos);
 
         if (snapToFineGrid) {
             int gridFine = Preferences::instance()->gridFine();
@@ -263,9 +263,9 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
             return;
 
         const QPointF diff(-mTile->width() / 2, mTile->height() / 2);
-        tileCoords = renderer->pixelToTileCoords(event->scenePos() + diff);
+        tileCoords = renderer->screenToTileCoords(event->scenePos() + diff);
     } else {
-        tileCoords = renderer->pixelToTileCoords(event->scenePos());
+        tileCoords = renderer->screenToTileCoords(event->scenePos());
     }
 
     bool snapToGrid = Preferences::instance()->snapToGrid();

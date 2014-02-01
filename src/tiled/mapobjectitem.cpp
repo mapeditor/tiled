@@ -157,7 +157,7 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
             QPointF pixelPos = value.toPointF() + itemPos;
 
             // Calculate the new coordinates in tiles
-            QPointF tileCoords = renderer->pixelToTileCoords(pixelPos);
+            QPointF tileCoords = renderer->screenToTileCoords(pixelPos);
             const QPointF objectPos = mMapObjectItem->mapObject()->position();
             tileCoords -= objectPos;
             tileCoords.setX(qMax(tileCoords.x(), qreal(0)));
@@ -170,12 +170,12 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
                 tileCoords = tileCoords.toPoint();
             tileCoords += objectPos;
 
-            return renderer->tileToPixelCoords(tileCoords) - itemPos;
+            return renderer->tileToScreenCoords(tileCoords) - itemPos;
         }
         else if (change == ItemPositionHasChanged) {
             // Update the size of the map object
             const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
-            QPointF tileCoords = renderer->pixelToTileCoords(newPos);
+            QPointF tileCoords = renderer->screenToTileCoords(newPos);
             tileCoords -= mMapObjectItem->mapObject()->position();
             mMapObjectItem->resizeObject(QSizeF(tileCoords.x(), tileCoords.y()));
         }
@@ -221,7 +221,7 @@ void MapObjectItem::syncWithMapObject()
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF pixelPos = renderer->tileToPixelCoords(mObject->position());
+    const QPointF pixelPos = renderer->tileToScreenCoords(mObject->position());
     QRectF bounds = renderer->boundingRect(mObject);
 
     bounds.translate(-pixelPos);
@@ -240,7 +240,7 @@ void MapObjectItem::syncWithMapObject()
         prepareGeometryChange();
         mBoundingRect = bounds;
         const QPointF bottomRight = mObject->bounds().bottomRight();
-        const QPointF handlePos = renderer->tileToPixelCoords(bottomRight);
+        const QPointF handlePos = renderer->tileToScreenCoords(bottomRight);
         mResizeHandle->setPos(handlePos - pixelPos);
     }
 
