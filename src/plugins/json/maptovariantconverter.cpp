@@ -208,40 +208,6 @@ QVariant MapToVariantConverter::toVariant(const TileLayer *tileLayer) const
     return tileLayerVariant;
 }
 
-// TODO: Unduplicate this class since it's used also in mapwriter.cpp
-class TileToPixelCoordinates
-{
-public:
-    TileToPixelCoordinates(Map *map)
-    {
-        if (!map) {
-            // This is used for objects that are in object groups that are not
-            // part of a map. This happens with object groups associated with
-            // tiles, for example.
-            mMultiplierX = 1;
-            mMultiplierY = 1;
-        } else if (map->orientation() == Map::Isometric) {
-            // Isometric needs special handling, since the pixel values are
-            // based solely on the tile height.
-            mMultiplierX = map->tileHeight();
-            mMultiplierY = map->tileHeight();
-        } else {
-            mMultiplierX = map->tileWidth();
-            mMultiplierY = map->tileHeight();
-        }
-    }
-
-    QPointF operator() (qreal x, qreal y) const
-    {
-        return QPointF(x * mMultiplierX,
-                       y * mMultiplierY);
-    }
-
-private:
-    int mMultiplierX;
-    int mMultiplierY;
-};
-
 QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
 {
     QVariantMap objectGroupVariant;
@@ -265,15 +231,10 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
         if (!object->cell().isEmpty())
             objectVariant["gid"] = mGidMapper.cellToGid(object->cell());
 
-        const TileToPixelCoordinates toPixel(objectGroup->map());
-
-        const QPointF pos = toPixel(object->x(), object->y());
-        const QPointF size = toPixel(object->width(), object->height());
-
-        objectVariant["x"] = pos.x();
-        objectVariant["y"] = pos.y();
-        objectVariant["width"] = size.x();
-        objectVariant["height"] = size.y();
+        objectVariant["x"] = object->x();
+        objectVariant["y"] = object->y();
+        objectVariant["width"] = object->width();
+        objectVariant["height"] = object->height();
         objectVariant["rotation"] = object->rotation();
 
         objectVariant["visible"] = object->isVisible();
@@ -290,10 +251,9 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
         if (!polygon.isEmpty()) {
             QVariantList pointVariants;
             foreach (const QPointF &point, polygon) {
-                const QPointF pixelCoordinates = toPixel(point.x(), point.y());
                 QVariantMap pointVariant;
-                pointVariant["x"] = pixelCoordinates.x();
-                pointVariant["y"] = pixelCoordinates.y();
+                pointVariant["x"] = point.x();
+                pointVariant["y"] = point.y();
                 pointVariants.append(pointVariant);
             }
 

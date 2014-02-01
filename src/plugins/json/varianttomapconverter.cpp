@@ -312,22 +312,6 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     return tileLayer.take();
 }
 
-static QPointF pixelToTileCoordinates(Map *map, qreal x, qreal y)
-{
-    const int tileHeight = map->tileHeight();
-    const int tileWidth = map->tileWidth();
-
-    if (map->orientation() == Map::Isometric) {
-        // Isometric needs special handling, since the pixel values are based
-        // solely on the tile height.
-        return QPointF(x / tileHeight,
-                       y / tileHeight);
-    } else {
-        return QPointF(x / tileWidth,
-                       y / tileHeight);
-    }
-}
-
 ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 {
     typedef QScopedPointer<ObjectGroup> ObjectGroupPtr;
@@ -366,12 +350,10 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const qreal height = objectVariantMap["height"].toReal();
         const qreal rotation = objectVariantMap["rotation"].toReal();
 
-        const QPointF pos = pixelToTileCoordinates(mMap, x, y);
-        const QPointF size = pixelToTileCoordinates(mMap, width, height);
+        const QPointF pos(x, y);
+        const QSizeF size(width, height);
 
-        MapObject *object = new MapObject(name, type,
-                                          pos,
-                                          QSizeF(size.x(), size.y()));
+        MapObject *object = new MapObject(name, type, pos, size);
         object->setRotation(rotation);
 
         if (gid) {
@@ -442,7 +424,7 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
         const QVariantMap pointVariantMap = pointVariant.toMap();
         const qreal pointX = pointVariantMap["x"].toReal();
         const qreal pointY = pointVariantMap["y"].toReal();
-        polygon.append(pixelToTileCoordinates(mMap, pointX, pointY));
+        polygon.append(QPointF(pointX, pointY));
     }
     return polygon;
 }

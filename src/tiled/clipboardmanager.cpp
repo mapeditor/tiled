@@ -155,7 +155,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
 
     const MapRenderer *renderer = mapDocument->renderer();
     const QPointF scenePos = view->mapToScene(viewPos);
-    QPointF insertPos = renderer->screenToTileCoords(scenePos);
+    QPointF insertPos = renderer->screenToPixelCoords(scenePos);
     if (Preferences::instance()->snapToFineGrid()) {
         int gridFine = Preferences::instance()->gridFine();
         insertPos = (insertPos * gridFine).toPoint();

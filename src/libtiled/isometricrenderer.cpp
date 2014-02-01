@@ -68,7 +68,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
     const int nameHeight = object->name().isEmpty() ? 0 : 15;
 
     if (!object->cell().isEmpty()) {
-        const QPointF bottomCenter = tileToScreenCoords(object->position());
+        const QPointF bottomCenter = pixelToScreenCoords(object->position());
         const Tile *tile = object->cell().tile;
         const QSize imgSize = tile->image().size();
         const QPoint tileOffset = tile->tileset()->tileOffset();
@@ -80,7 +80,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
-        const QPolygonF screenPolygon = tileToScreenCoords(polygon);
+        const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
         return screenPolygon.boundingRect().adjusted(-extraSpace,
                                                      -extraSpace - nameHeight - 1,
                                                      extraSpace,
@@ -88,7 +88,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
     } else {
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
-        const QRectF base = tileRectToScreenPolygon(object->bounds()).boundingRect();
+        const QRectF base = pixelRectToScreenPolygon(object->bounds()).boundingRect();
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
 
         return base.adjusted(-extraSpace,
@@ -106,13 +106,13 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
         switch (object->shape()) {
         case MapObject::Ellipse:
         case MapObject::Rectangle:
-            path.addPolygon(tileRectToScreenPolygon(object->bounds()));
+            path.addPolygon(pixelRectToScreenPolygon(object->bounds()));
             break;
         case MapObject::Polygon:
         case MapObject::Polyline: {
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
-            const QPolygonF screenPolygon = tileToScreenCoords(polygon);
+            const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
             if (object->shape() == MapObject::Polygon) {
                 path.addPolygon(screenPolygon);
             } else {
@@ -281,7 +281,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     if (!object->cell().isEmpty()) {
         const Tile *tile = object->cell().tile;
         const QSize imgSize = tile->size();
-        const QPointF pos = tileToScreenCoords(object->position());
+        const QPointF pos = pixelToScreenCoords(object->position());
 
         // Draw the name before the transform is applied
         const QFontMetrics fm = painter->fontMetrics();
@@ -330,9 +330,9 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
 
         switch (object->shape()) {
         case MapObject::Ellipse: {
-            QPointF topLeft(tileToScreenCoords(object->bounds().topLeft()));
-            QPointF bottomLeft(tileToScreenCoords(object->bounds().bottomLeft()));
-            QPointF topRight(tileToScreenCoords(object->bounds().topRight()));
+            QPointF topLeft(pixelToScreenCoords(object->bounds().topLeft()));
+            QPointF bottomLeft(pixelToScreenCoords(object->bounds().bottomLeft()));
+            QPointF topRight(pixelToScreenCoords(object->bounds().topRight()));
 
             const qreal headerX = bottomLeft.x();
             const qreal headerY = topLeft.y();
@@ -343,7 +343,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QString name = fm.elidedText(object->name(), Qt::ElideRight,
                                          rect.width() + 2);
 
-            QPolygonF polygon = tileRectToScreenPolygon(object->bounds());
+            QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
 
             float tw = map()->tileWidth();
             float th = map()->tileHeight();
@@ -396,10 +396,9 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             break;
         }
         case MapObject::Rectangle: {
-
-            QPointF topLeft(tileToScreenCoords(object->bounds().topLeft()));
-            QPointF bottomLeft(tileToScreenCoords(object->bounds().bottomLeft()));
-            QPointF topRight(tileToScreenCoords(object->bounds().topRight()));
+            QPointF topLeft(pixelToScreenCoords(object->bounds().topLeft()));
+            QPointF bottomLeft(pixelToScreenCoords(object->bounds().bottomLeft()));
+            QPointF topRight(pixelToScreenCoords(object->bounds().topRight()));
 
             const qreal headerX = bottomLeft.x();
             const qreal headerY = topLeft.y();
@@ -410,7 +409,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QString name = fm.elidedText(object->name(), Qt::ElideRight,
                                          rect.width() + 2);
 
-            QPolygonF polygon = tileRectToScreenPolygon(object->bounds());
+            QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
             painter->drawPolygon(polygon);
             if (!name.isEmpty())
                 painter->drawText(QPointF(headerX, headerY - 5 + shadowOffset), name);
@@ -428,7 +427,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         case MapObject::Polygon: {
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
-            QPolygonF screenPolygon = tileToScreenCoords(polygon);
+            QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
             const QRectF polygonBoundingRect = screenPolygon.boundingRect();
 
@@ -456,7 +455,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         case MapObject::Polyline: {
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
-            QPolygonF screenPolygon = tileToScreenCoords(polygon);
+            QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
             painter->drawPolyline(screenPolygon);
 
@@ -535,6 +534,16 @@ QPointF IsometricRenderer::pixelToScreenCoords(qreal x, qreal y) const
                    (tileX + tileY) * tileHeight / 2);
 }
 
+QPolygonF IsometricRenderer::pixelRectToScreenPolygon(const QRectF &rect) const
+{
+    QPolygonF polygon;
+    polygon << QPointF(pixelToScreenCoords(rect.topLeft()));
+    polygon << QPointF(pixelToScreenCoords(rect.topRight()));
+    polygon << QPointF(pixelToScreenCoords(rect.bottomRight()));
+    polygon << QPointF(pixelToScreenCoords(rect.bottomLeft()));
+    return polygon;
+}
+
 QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRect &rect) const
 {
     const int tileWidth = map()->tileWidth();
@@ -551,15 +560,5 @@ QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRect &rect) const
     polygon << QPointF(bottomRight.x(), bottomRight.y() + tileHeight);
     polygon << QPointF(bottomLeft.x() - tileWidth / 2,
                        bottomLeft.y() + tileHeight / 2);
-    return polygon;
-}
-
-QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRectF &rect) const
-{
-    QPolygonF polygon;
-    polygon << QPointF(tileToScreenCoords(rect.topLeft()));
-    polygon << QPointF(tileToScreenCoords(rect.topRight()));
-    polygon << QPointF(tileToScreenCoords(rect.bottomRight()));
-    polygon << QPointF(tileToScreenCoords(rect.bottomLeft()));
     return polygon;
 }

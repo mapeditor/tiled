@@ -499,39 +499,6 @@ void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,
     w.writeEndElement();
 }
 
-class TileToPixelCoordinates
-{
-public:
-    TileToPixelCoordinates(Map *map)
-    {
-        if (!map) {
-            // This is used for objects that are in object groups that are not
-            // part of a map. This happens with object groups associated with
-            // tiles, for example.
-            mMultiplierX = 1;
-            mMultiplierY = 1;
-        } else if (map->orientation() == Map::Isometric) {
-            // Isometric needs special handling, since the pixel values are
-            // based solely on the tile height.
-            mMultiplierX = map->tileHeight();
-            mMultiplierY = map->tileHeight();
-        } else {
-            mMultiplierX = map->tileWidth();
-            mMultiplierY = map->tileHeight();
-        }
-    }
-
-    QPointF operator() (qreal x, qreal y) const
-    {
-        return QPointF(x * mMultiplierX,
-                       y * mMultiplierY);
-    }
-
-private:
-    int mMultiplierX;
-    int mMultiplierY;
-};
-
 void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                                    const MapObject *mapObject)
 {
@@ -548,12 +515,8 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 
-    // Convert from tile to pixel coordinates
-    const ObjectGroup *objectGroup = mapObject->objectGroup();
-    const TileToPixelCoordinates toPixel(objectGroup->map());
-
-    QPointF pos = toPixel(mapObject->x(), mapObject->y());
-    QPointF size = toPixel(mapObject->width(), mapObject->height());
+    QPointF pos = QPointF(mapObject->x(), mapObject->y());
+    QPointF size = QPointF(mapObject->width(), mapObject->height());
 
     w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
     w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
@@ -581,10 +544,9 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
         QString points;
         foreach (const QPointF &point, polygon) {
-            const QPointF pos = toPixel(point.x(), point.y());
-            points.append(QString::number(pos.x()));
+            points.append(QString::number(point.x()));
             points.append(QLatin1Char(','));
-            points.append(QString::number(pos.y()));
+            points.append(QString::number(point.y()));
             points.append(QLatin1Char(' '));
         }
         points.chop(1);
