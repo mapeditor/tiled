@@ -759,12 +759,14 @@ ImageLayer *MapReaderPrivate::readImageLayer()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const int x = atts.value(QLatin1String("x")).toString().toInt();
-    const int y = atts.value(QLatin1String("y")).toString().toInt();
+
+    // NOTE: Not sure if these should even be here
+    //    const int x = atts.value(QLatin1String("x")).toString().toInt();
+    //    const int y = atts.value(QLatin1String("y")).toString().toInt();
     const int width = atts.value(QLatin1String("width")).toString().toInt();
     const int height = atts.value(QLatin1String("height")).toString().toInt();
 
-    ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
+    ImageLayer *imageLayer = new ImageLayer(name, 0, 0, width, height);
     readLayerAttributes(imageLayer, atts);
 
     while (xml.readNextStartElement()) {
@@ -786,6 +788,13 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer *imageLayer)
     const QXmlStreamAttributes atts = xml.attributes();
     QString source = atts.value(QLatin1String("source")).toString();
     QString trans = atts.value(QLatin1String("trans")).toString();
+    QString xPos = atts.value(QLatin1String("x")).toString();
+    QString yPos = atts.value(QLatin1String("y")).toString();
+
+    if (!xPos.isEmpty() && !yPos.isEmpty()) {
+        QPointF pos(xPos.toDouble(), yPos.toDouble());
+        imageLayer->setPosition(pos);
+    }
 
     if (!trans.isEmpty()) {
         if (!trans.startsWith(QLatin1Char('#')))

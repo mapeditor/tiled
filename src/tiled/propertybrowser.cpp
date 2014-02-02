@@ -400,6 +400,8 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
+    createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
+
     addProperty(groupProperty);
 }
 
@@ -584,10 +586,12 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
     case ImageSourceProperty: {
         const QString imageSource = val.toString();
         const QColor &color = imageLayer->transparentColor();
+        const QPointF pos = imageLayer->position();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
-                                                       imageSource));
+                                                       imageSource,
+                                                       pos));
         break;
     }
     case ColorProperty: {
@@ -596,10 +600,24 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
             color = QColor();
 
         const QString &imageSource = imageLayer->imageSource();
+        const QPointF &pos = imageLayer->position();
         undoStack->push(new ChangeImageLayerProperties(mMapDocument,
                                                        imageLayer,
                                                        color,
-                                                       imageSource));
+                                                       imageSource,
+                                                       pos));
+        break;
+    }
+    case PositionProperty: {
+        QPointF pos = val.value<QPointF>();
+
+        const QColor &color = imageLayer->transparentColor();
+        const QString &imageSource = imageLayer->imageSource();
+        undoStack->push(new ChangeImageLayerProperties(mMapDocument,
+                                                       imageLayer,
+                                                       color,
+                                                       imageSource,
+                                                       pos));
         break;
     }
     default:
@@ -716,6 +734,7 @@ void PropertyBrowser::updateProperties()
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(imageLayer->imageSource());
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
+            mIdToProperty[PositionProperty]->setValue(imageLayer->position());
             break;
         }
         break;

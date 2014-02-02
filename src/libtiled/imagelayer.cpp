@@ -37,6 +37,9 @@ using namespace Tiled;
 ImageLayer::ImageLayer(const QString &name, int x, int y, int width, int height):
     Layer(ImageLayerType, name, x, y, width, height)
 {
+    // TODO: Include this information in the constructor at a later stage
+    mPos.setX(0.0);
+    mPos.setY(0.0);
 }
 
 ImageLayer::~ImageLayer()

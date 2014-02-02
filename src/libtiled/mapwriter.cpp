@@ -579,6 +579,10 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
         if (transColor.isValid())
             w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
 
+        const QPointF pos = imageLayer->position();
+        w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
+        w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
+
         w.writeEndElement();
     }
 
