@@ -121,7 +121,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                                                tilesetwidth, tilesetheight);
                 bool ok = tileset->loadFromImage(absoluteSource);
 
-                if (!tileset || !ok) {
+                if (!ok) {
                     mError = tr("Error loading tileset %1, which expands to %2. Path not found!")
                             .arg(list[0], absoluteSource);
                     delete map;
