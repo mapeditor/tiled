@@ -401,7 +401,7 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    createProperty(SizeProperty, QVariant::Point, tr("Position"), groupProperty);
+    createProperty(PositionProperty, QVariant::Point, tr("Position"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -604,7 +604,7 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
                                                        imageSource));
         break;
     }
-    case SizeProperty: {
+    case PositionProperty: {
         QPoint pos = val.value<QPoint>();
 
         undoStack->push(new ChangeImageLayerPosition(mMapDocument,
@@ -726,7 +726,7 @@ void PropertyBrowser::updateProperties()
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(imageLayer->imageSource());
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
-            mIdToProperty[SizeProperty]->setValue(imageLayer->position());
+            mIdToProperty[PositionProperty]->setValue(imageLayer->position());
             break;
         }
         break;
