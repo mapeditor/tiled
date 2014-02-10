@@ -304,34 +304,6 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-// TODO: Unduplicate this class since it's used also in mapwriter.cpp
-class TileToPixelCoordinates
-{
-public:
-    TileToPixelCoordinates(Map *map)
-    {
-        if (map->orientation() == Map::Isometric) {
-            // Isometric needs special handling, since the pixel values are
-            // based solely on the tile height.
-            mMultiplierX = map->tileHeight();
-            mMultiplierY = map->tileHeight();
-        } else {
-            mMultiplierX = map->tileWidth();
-            mMultiplierY = map->tileHeight();
-        }
-    }
-
-    QPoint operator() (qreal x, qreal y) const
-    {
-        return QPoint(qRound(x * mMultiplierX),
-                      qRound(y * mMultiplierY));
-    }
-
-private:
-    int mMultiplierX;
-    int mMultiplierY;
-};
-
 static const char *toString(MapObject::Shape shape)
 {
     switch (shape) {
@@ -355,16 +327,10 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     writer.writeKeyAndValue("type", mapObject->type());
     writer.writeKeyAndValue("shape", toString(mapObject->shape()));
 
-    const ObjectGroup *objectGroup = mapObject->objectGroup();
-    const TileToPixelCoordinates toPixel(objectGroup->map());
-
-    const QPoint pos = toPixel(mapObject->x(), mapObject->y());
-    const QPoint size = toPixel(mapObject->width(), mapObject->height());
-
-    writer.writeKeyAndValue("x", pos.x());
-    writer.writeKeyAndValue("y", pos.y());
-    writer.writeKeyAndValue("width", size.x());
-    writer.writeKeyAndValue("height", size.y());
+    writer.writeKeyAndValue("x", mapObject->x());
+    writer.writeKeyAndValue("y", mapObject->y());
+    writer.writeKeyAndValue("width", mapObject->width());
+    writer.writeKeyAndValue("height", mapObject->height());
     writer.writeKeyAndValue("rotation", mapObject->rotation());
 
     if (!mapObject->cell().isEmpty())
@@ -393,9 +359,8 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
-            const QPoint pixelCoordinates = toPixel(point.x(), point.y());
-            writer.writeKeyAndValue("x", pixelCoordinates.x());
-            writer.writeKeyAndValue("y", pixelCoordinates.y());
+            writer.writeKeyAndValue("x", point.x());
+            writer.writeKeyAndValue("y", point.y());
 
             writer.writeEndTable();
             writer.setSuppressNewlines(false);
@@ -414,9 +379,8 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
-            const QPoint pixelCoordinates = toPixel(point.x(), point.y());
-            writer.writeValue(pixelCoordinates.x());
-            writer.writeValue(pixelCoordinates.y());
+            writer.writeValue(point.x());
+            writer.writeValue(point.y());
 
             writer.writeEndTable();
             writer.setSuppressNewlines(false);
@@ -434,14 +398,14 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
         writer.writeStartTable("x");
         writer.setSuppressNewlines(true);
         foreach (const QPointF &point, polygon)
-            writer.writeValue(toPixel(point.x(), point.y()).x());
+            writer.writeValue(point.x());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);
 
         writer.writeStartTable("y");
         writer.setSuppressNewlines(true);
         foreach (const QPointF &point, polygon)
-            writer.writeValue(toPixel(point.x(), point.y()).y());
+            writer.writeValue(point.y());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);
 #endif
