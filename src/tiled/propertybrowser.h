@@ -108,6 +108,7 @@ private:
         FlippingProperty,
         DrawOrderProperty,
         TileOffsetProperty,
+        IdProperty,
         CustomProperty
     };
 

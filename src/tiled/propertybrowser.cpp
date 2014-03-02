@@ -41,6 +41,7 @@
 #include "rotatemapobject.h"
 #include "terrain.h"
 #include "terrainmodel.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
 #include "utils.h"
@@ -416,6 +417,7 @@ void PropertyBrowser::addTilesetProperties()
 void PropertyBrowser::addTileProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile"));
+    createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
     addProperty(groupProperty);
 }
 
@@ -737,8 +739,11 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         break;
     }
-    case Object::TileType:
+    case Object::TileType: {
+        const Tile *tile = static_cast<const Tile*>(mObject);
+        mIdToProperty[IdProperty]->setValue(tile->id());
         break;
+    }
     case Object::TerrainType: {
         const Terrain *terrain = static_cast<const Terrain*>(mObject);
         mIdToProperty[NameProperty]->setValue(terrain->name());
