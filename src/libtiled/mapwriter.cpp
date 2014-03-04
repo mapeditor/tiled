@@ -461,6 +461,17 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
                          QString::number(layer->width()));
         w.writeAttribute(QLatin1String("height"),
                          QString::number(layer->height()));
+
+        const TileLayer* tiledLayer = static_cast<const TileLayer*>(layer);
+        const int horizontalOffset = tiledLayer->horizontalOffset();
+        const int verticalOffset = tiledLayer->verticalOffset();
+
+        if (horizontalOffset != 0)
+            w.writeAttribute(QLatin1String("horizontalOffset"),
+                    QString::number(horizontalOffset));
+        if (verticalOffset != 0)
+            w.writeAttribute(QLatin1String("verticalOffset"),
+                    QString::number(verticalOffset));
     }
 
     const int x = layer->x();
