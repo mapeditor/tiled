@@ -102,6 +102,8 @@ private:
         RotationProperty,
         VisibleProperty,
         OpacityProperty,
+        HorizontalOffsetProperty,
+        VerticalOffsetProperty,
         ColorProperty,
         LayerFormatProperty,
         ImageSourceProperty,

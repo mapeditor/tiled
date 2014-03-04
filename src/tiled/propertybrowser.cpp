@@ -21,6 +21,7 @@
 #include "propertybrowser.h"
 
 #include "changelayer.h"
+#include "changetilelayer.h"
 #include "changeimagelayerposition.h"
 #include "changeimagelayerproperties.h"
 #include "changemapobject.h"
@@ -370,6 +371,8 @@ void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
+    createProperty(HorizontalOffsetProperty, QVariant::Int, tr("Horizontal Offset"), groupProperty);
+    createProperty(VerticalOffsetProperty, QVariant::Int, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -544,8 +547,22 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(val)
+    TileLayer* layer = static_cast<TileLayer*>(mObject);
+    QUndoCommand *command = 0;
+
+    switch (id) {
+        case HorizontalOffsetProperty:
+            command = new SetLayerHorizontalOffset(mMapDocument, layer, val.toInt());
+            break;
+        case VerticalOffsetProperty:
+            command = new SetLayerVerticalOffset(mMapDocument, layer, val.toInt());
+            break;
+        default:
+            break;
+    }
+
+    if (command)
+        mMapDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
@@ -715,8 +732,12 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
 
         switch (layer->layerType()) {
-        case Layer::TileLayerType:
+        case Layer::TileLayerType: {
+            const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
+            mIdToProperty[HorizontalOffsetProperty]->setValue(tileLayer->horizontalOffset());
+            mIdToProperty[VerticalOffsetProperty]->setValue(tileLayer->verticalOffset());
             break;
+        }
         case Layer::ObjectGroupType: {
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
             QColor color = objectGroup->color();
