@@ -104,6 +104,26 @@ public:
     TileLayer(const QString &name, int x, int y, int width, int height);
 
     /**
+     * Returns the horizontal offset of this layer.
+     */
+    int horizontalOffset() const { return mHorizontalOffset; }
+
+    /**
+     * Sets the vertical offset of this layer.
+     */
+    void setHorizontalOffset(int offset) { mHorizontalOffset = offset ; }
+
+    /**
+     * Returns the vertical offset of this layer.
+     */
+    int verticalOffset() const { return mVerticalOffset; }
+
+    /**
+     * Sets the vertical offset of this layer.
+     */
+    void setVerticalOffset(int offset) { mVerticalOffset = offset ; }
+
+    /**
      * Returns the maximum tile size of this layer.
      */
     QSize maxTileSize() const { return mMaxTileSize; }
@@ -270,6 +290,8 @@ protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
+    int mHorizontalOffset;
+    int mVerticalOffset;
     QSize mMaxTileSize;
     QMargins mOffsetMargins;
     QVector<Cell> mGrid;

@@ -37,6 +37,8 @@ using namespace Tiled;
 
 TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     Layer(TileLayerType, name, x, y, width, height),
+    mHorizontalOffset(0),
+    mVerticalOffset(0),
     mMaxTileSize(0, 0),
     mGrid(width * height)
 {
@@ -430,6 +432,8 @@ Layer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
+    clone->mHorizontalOffset = mHorizontalOffset;
+    clone->mVerticalOffset = mVerticalOffset;
     clone->mGrid = mGrid;
     clone->mMaxTileSize = mMaxTileSize;
     clone->mOffsetMargins = mOffsetMargins;
