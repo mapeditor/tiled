@@ -178,6 +178,11 @@ public:
     inline QPointF screenToTileCoords(const QPointF &point) const
     { return screenToTileCoords(point.x(), point.y()); }
 
+    QPointF tileToScreenCoords(qreal x, qreal y, const TileLayer* layer) const;
+
+    inline QPointF tileToScreenCoords(const QPointF &point, const TileLayer* layer) const
+    { return tileToScreenCoords(point.x(), point.y(), layer); }
+
     /**
      * Returns the screen position matching the given tile coordinates.
      */

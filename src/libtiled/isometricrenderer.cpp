@@ -192,7 +192,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
     QPointF tilePos = screenToTileCoords(rect.x(), rect.y());
     QPoint rowItr = QPoint((int) std::floor(tilePos.x()),
                            (int) std::floor(tilePos.y()));
-    QPointF startPos = tileToScreenCoords(rowItr);
+    QPointF startPos = tileToScreenCoords(rowItr, layer);
     startPos.rx() -= tileWidth / 2;
     startPos.ry() += tileHeight;
 
