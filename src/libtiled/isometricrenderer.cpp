@@ -42,8 +42,12 @@ QSize IsometricRenderer::mapSize() const
 {
     // Map width and height contribute equally in both directions
     const int side = map()->height() + map()->width();
-    return QSize(side * map()->tileWidth() / 2,
-                 side * map()->tileHeight() / 2);
+    const QMargins offset = tileLayersOffset();
+    const QSize padding = QSize(offset.left() + offset.right(),
+                                offset.top() + offset.bottom());
+
+    return padding + QSize(side * map()->tileWidth() / 2,
+                           side * map()->tileHeight() / 2);
 }
 
 QRect IsometricRenderer::boundingRect(const QRect &rect) const
