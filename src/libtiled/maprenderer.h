@@ -67,6 +67,12 @@ public:
     virtual ~MapRenderer() {}
 
     /**
+     * Returns the size in pixels of the max offset within all the tile layers
+     * defined on this renderer map.
+     */
+    QMargins tileLayersOffset() const;
+
+    /**
      * Returns the size in pixels of the map associated with this renderer.
      */
     virtual QSize mapSize() const = 0;
@@ -178,6 +184,10 @@ public:
     inline QPointF screenToTileCoords(const QPointF &point) const
     { return screenToTileCoords(point.x(), point.y()); }
 
+    /**
+     * Returns the tile coordinates matching the given screen position for the
+     * given layer (which may be offeseted).
+     */
     QPointF tileToScreenCoords(qreal x, qreal y, const TileLayer* layer) const;
 
     inline QPointF tileToScreenCoords(const QPointF &point, const TileLayer* layer) const
