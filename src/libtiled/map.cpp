@@ -110,6 +110,20 @@ void Map::recomputeDrawMargins()
             tileLayer->recomputeDrawMargins();
 }
 
+void Map::adjustOffset(const QMargins &offset)
+{
+    mOffset = maxMargins(offset, mOffset);
+}
+
+void Map::recomputeOffset()
+{
+    mOffset = QMargins();
+
+    foreach (Layer *layer, mLayers)
+        if (TileLayer *tileLayer = layer->asTileLayer())
+            adjustOffset(tileLayer->layerOffset());
+}
+
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
@@ -172,8 +186,10 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (TileLayer *tileLayer = layer->asTileLayer())
+    if (TileLayer *tileLayer = layer->asTileLayer()) {
         adjustDrawMargins(tileLayer->drawMargins());
+        adjustOffset(tileLayer->layerOffset());
+    }
 }
 
 Layer *Map::takeLayerAt(int index)

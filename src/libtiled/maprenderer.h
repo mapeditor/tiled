@@ -67,12 +67,6 @@ public:
     virtual ~MapRenderer() {}
 
     /**
-     * Returns the size in pixels of the max offset within all the tile layers
-     * defined on this renderer map.
-     */
-    QMargins tileLayersOffset() const;
-
-    /**
      * Returns the size in pixels of the map associated with this renderer.
      */
     virtual QSize mapSize() const = 0;

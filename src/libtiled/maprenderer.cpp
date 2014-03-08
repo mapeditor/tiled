@@ -39,28 +39,6 @@
 
 using namespace Tiled;
 
-QMargins MapRenderer::tileLayersOffset() const {
-    int maxVerticalOffset = 0;
-    int maxHorizontalOffset = 0;
-    int minHorizontalOffset = 0;
-    int minVerticalOffset = 0;
-
-    foreach (TileLayer* layer, mMap->tileLayers()) {
-        if (layer->horizontalOffset() > maxHorizontalOffset)
-            maxHorizontalOffset = layer->horizontalOffset();
-        else if (layer->horizontalOffset() < minHorizontalOffset)
-            minHorizontalOffset = layer->horizontalOffset();
-
-        if (layer->verticalOffset() > maxVerticalOffset)
-            maxVerticalOffset = layer->verticalOffset();
-        else if (layer->verticalOffset() < minVerticalOffset)
-            minVerticalOffset = layer->verticalOffset();
-    }
-
-    return QMargins(-minHorizontalOffset, maxVerticalOffset,
-                    maxHorizontalOffset, -minVerticalOffset);
-}
-
 QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
 {
     return QRectF(imageLayer->position(),

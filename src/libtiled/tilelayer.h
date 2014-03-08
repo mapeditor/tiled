@@ -124,6 +124,11 @@ public:
     void setVerticalOffset(int offset) { mVerticalOffset = offset ; }
 
     /**
+     * Returns the offsets determined by the horizontal and vertical offsets.
+     */
+    QMargins layerOffset() const; 
+
+    /**
      * Returns the maximum tile size of this layer.
      */
     QSize maxTileSize() const { return mMaxTileSize; }

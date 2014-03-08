@@ -42,7 +42,7 @@ QSize IsometricRenderer::mapSize() const
 {
     // Map width and height contribute equally in both directions
     const int side = map()->height() + map()->width();
-    const QMargins offset = tileLayersOffset();
+    const QMargins offset = map()->offset();
     const QSize padding = QSize(offset.left() + offset.right(),
                                 offset.top() + offset.bottom());
 
