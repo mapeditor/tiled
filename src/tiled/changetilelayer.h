@@ -39,7 +39,7 @@ class SetLayerHorizontalOffset : public QUndoCommand
 {
 public:
     SetLayerHorizontalOffset(MapDocument *mapDocument,
-                             TileLayer* layer,
+                             int layerIndex,
                              int offset);
 
     void undo() { setOffset(mOldHorizontalOffset); }
@@ -49,7 +49,7 @@ private:
     void setOffset(int offset);
 
     MapDocument *mMapDocument;
-    TileLayer* mLayer;
+    int mLayerIndex;
     int mOldHorizontalOffset;
     int mNewHorizontalOffset;
 };
@@ -61,7 +61,7 @@ class SetLayerVerticalOffset : public QUndoCommand
 {
 public:
     SetLayerVerticalOffset(MapDocument *mapDocument,
-                           TileLayer* layer,
+                           int layerIndex,
                            int offset);
 
     void undo() { setOffset(mOldVerticalOffset); }
@@ -71,7 +71,7 @@ private:
     void setOffset(int offset);
 
     MapDocument *mMapDocument;
-    TileLayer* mLayer;
+    int mLayerIndex;
     int mOldVerticalOffset;
     int mNewVerticalOffset;
 };

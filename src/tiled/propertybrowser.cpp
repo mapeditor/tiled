@@ -548,14 +548,17 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 {
     TileLayer* layer = static_cast<TileLayer*>(mObject);
+    const int layerIndex = mMapDocument->map()->layers().indexOf(layer);
     QUndoCommand *command = 0;
 
     switch (id) {
         case HorizontalOffsetProperty:
-            command = new SetLayerHorizontalOffset(mMapDocument, layer, val.toInt());
+            command = new SetLayerHorizontalOffset(mMapDocument, layerIndex,
+                                                   val.toInt());
             break;
         case VerticalOffsetProperty:
-            command = new SetLayerVerticalOffset(mMapDocument, layer, val.toInt());
+            command = new SetLayerVerticalOffset(mMapDocument, layerIndex,
+                                                 val.toInt());
             break;
         default:
             break;

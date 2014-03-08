@@ -20,8 +20,10 @@
 
 #include "changetilelayer.h"
 
-#include "mapdocument.h"
+#include "map.h"
 #include "tilelayer.h"
+#include "mapdocument.h"
+#include "layermodel.h"
 
 #include <QCoreApplication>
 
@@ -29,11 +31,12 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 SetLayerHorizontalOffset::SetLayerHorizontalOffset(MapDocument* mapDocument,
-                                                   TileLayer* layer,
+                                                   int layerIndex,
                                                    int offset)
     : mMapDocument(mapDocument)
-    , mLayer(layer)
-    , mOldHorizontalOffset(layer->horizontalOffset())
+    , mLayerIndex(layerIndex)
+    , mOldHorizontalOffset(
+        mMapDocument->map()->layerAt(layerIndex)->asTileLayer()->horizontalOffset())
     , mNewHorizontalOffset(offset)
 {
     setText(QCoreApplication::translate("Undo Commands",
@@ -42,16 +45,16 @@ SetLayerHorizontalOffset::SetLayerHorizontalOffset(MapDocument* mapDocument,
 
 void SetLayerHorizontalOffset::setOffset(int offset)
 {
-    mLayer->setHorizontalOffset(offset);
-    mMapDocument->emitMapChanged();
+    mMapDocument->layerModel()->setLayerOffset(mLayerIndex, offset, 0);
 }
 
 SetLayerVerticalOffset::SetLayerVerticalOffset(MapDocument* mapDocument,
-                                               TileLayer* layer,
+                                               int layerIndex,
                                                int offset)
     : mMapDocument(mapDocument)
-    , mLayer(layer)
-    , mOldVerticalOffset(layer->verticalOffset())
+    , mLayerIndex(layerIndex)
+    , mOldVerticalOffset(
+        mMapDocument->map()->layerAt(layerIndex)->asTileLayer()->horizontalOffset())
     , mNewVerticalOffset(offset)
 {
     setText(QCoreApplication::translate("Undo Commands",
@@ -60,7 +63,6 @@ SetLayerVerticalOffset::SetLayerVerticalOffset(MapDocument* mapDocument,
 
 void SetLayerVerticalOffset::setOffset(int offset)
 {
-    mLayer->setVerticalOffset(offset);
-    mMapDocument->emitMapChanged();
+    mMapDocument->layerModel()->setLayerOffset(mLayerIndex, 0, offset);
 }
 

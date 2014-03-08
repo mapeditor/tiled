@@ -210,6 +210,16 @@ void LayerModel::renameLayer(int layerIndex, const QString &name)
     emit layerChanged(layerIndex);
 }
 
+void LayerModel::setLayerOffset(int layerIndex, int horizontalOffset,
+                                int verticalOffset)
+{
+    TileLayer *layer = mMap->layerAt(layerIndex)->asTileLayer();
+    layer->setHorizontalOffset(horizontalOffset);
+    layer->setVerticalOffset(verticalOffset);
+    mMap->recomputeOffset();
+    mMapDocument->emitMapChanged();
+}
+
 void LayerModel::toggleOtherLayers(int layerIndex)
 {
     if (mMap->layerCount() <= 1) // No other layers

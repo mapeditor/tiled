@@ -128,6 +128,12 @@ public:
     void setLayerOpacity(int layerIndex, float opacity);
 
     /**
+     * Sets the horizontal and vertical offset of the tile layer at the given 
+     * index.
+     */
+    void setLayerOffset(int layerIndex, int horizontalOffset, int verticalOffset);
+
+    /**
      * Renames the layer at the given index.
      */
     void renameLayer(int index, const QString &name);
