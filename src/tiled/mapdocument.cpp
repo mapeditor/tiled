@@ -231,28 +231,31 @@ static bool intersects(const QRectF &a, const QRectF &b)
             a.top() <= b.bottom();
 }
 
-// TODO: This function does not take into account object rotation
-static bool visibleIn(const QRectF &area, MapObject *object)
+static bool visibleIn(const QRectF &area, MapObject *object,
+                      MapRenderer *renderer)
 {
-    switch (object->shape()) {
-    case MapObject::Rectangle:
-    case MapObject::Ellipse:
-        return intersects(area, object->bounds());
-    case MapObject::Polygon:
-    case MapObject::Polyline: {
-        QRectF boundingRect = object->polygon().boundingRect();
-        boundingRect.translate(object->position());
-        return intersects(area, boundingRect);
-    }
+    QRectF boundingRect = renderer->boundingRect(object);
+
+    if (object->rotation() != 0) {
+        // Rotate around object position
+        QPointF pos = renderer->pixelToScreenCoords(object->position());
+        boundingRect.translate(-pos);
+
+        QTransform transform;
+        transform.rotate(object->rotation());
+        boundingRect = transform.mapRect(boundingRect);
+
+        boundingRect.translate(pos);
     }
 
-    return true;
+    return intersects(area, boundingRect);
 }
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 {
     const QRegion movedSelection = mTileSelection.translated(offset);
-    const QRectF newArea = QRectF(-offset, size);
+    const QRect newArea = QRect(-offset, size);
+    const QRectF visibleArea = mRenderer->boundingRect(newArea);
 
     // Resize the map and each layer
     mUndoStack->beginMacro(tr("Resize Map"));
@@ -260,7 +263,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
         if (ObjectGroup *objectGroup = mMap->layerAt(i)->asObjectGroup()) {
             // Remove objects that will fall outside of the map
             foreach (MapObject *o, objectGroup->objects()) {
-                if (!visibleIn(newArea, o))
+                if (!visibleIn(visibleArea, o, mRenderer))
                     mUndoStack->push(new RemoveMapObject(this, o));
             }
         }

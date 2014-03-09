@@ -157,6 +157,8 @@ void ObjectGroup::resize(const QSize &size, const QPoint &offset)
 {
     Layer::resize(size, offset);
 
+    // FIXME: This adjustment is wrong since it applies an offset in tile
+    // coordinates to a position in pixel coordinates!
     foreach (MapObject *object, mObjects) {
         QPointF pos = object->position();
         pos.rx() += offset.x();
