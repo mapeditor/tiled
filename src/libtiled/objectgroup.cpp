@@ -1,7 +1,7 @@
 /*
  * objectgroup.cpp
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of libtiled.
@@ -34,6 +34,8 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tileset.h"
+
+#include <cmath>
 
 using namespace Tiled;
 
@@ -153,37 +155,28 @@ void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
     }
 }
 
-void ObjectGroup::offset(const QPoint &offset,
-                         const QRect &bounds,
+void ObjectGroup::offset(const QPointF &offset,
+                         const QRectF &bounds,
                          bool wrapX, bool wrapY)
 {
     foreach (MapObject *object, mObjects) {
-        const QRectF objectBounds = object->bounds();
-        if (!QRectF(bounds).contains(objectBounds.center()))
+        const QPointF objectCenter = object->bounds().center();
+        if (!bounds.contains(objectCenter))
             continue;
 
-        QPointF newPos(objectBounds.left() + offset.x(),
-                       objectBounds.top () + offset.y());
+        QPointF newCenter(objectCenter + offset);
 
         if (wrapX && bounds.width() > 0) {
-            while (newPos.x() + objectBounds.width() / 2
-                < qreal(bounds.left()))
-                newPos.rx() += qreal(bounds.width());
-            while (newPos.x() + objectBounds.width() / 2
-                > qreal(bounds.left() + bounds.width()))
-                newPos.rx() -= qreal(bounds.width());
+            qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
+            newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
         if (wrapY && bounds.height() > 0) {
-            while (newPos.y() + objectBounds.height() / 2
-                < qreal(bounds.top()))
-                newPos.ry() += qreal(bounds.height());
-            while (newPos.y() + objectBounds.height() / 2
-                > qreal(bounds.top() + bounds.height()))
-                newPos.ry() -= qreal(bounds.height());
+            qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
+            newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
 
-        object->setPosition(newPos);
+        object->setPosition(object->position() + (newCenter - objectCenter));
     }
 }
 

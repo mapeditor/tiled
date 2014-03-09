@@ -1,7 +1,7 @@
 /*
  * objectgroup.h
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of libtiled.
@@ -157,14 +157,15 @@ public:
     void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
 
     /**
-     * Offsets all objects within the group, and optionally wraps them. The
-     * object's center must be within \a bounds, and wrapping occurs if the
-     * displaced center is out of the bounds.
+     * Offsets all objects within the group by the \a offset given in pixel
+     * coordinates, and optionally wraps them. The object's center must be
+     * within \a bounds, and wrapping occurs if the displaced center is out of
+     * the bounds.
      *
-     * \sa Layer::offset()
+     * \sa TileLayer::offset()
      */
-    virtual void offset(const QPoint &offset, const QRect &bounds,
-                        bool wrapX, bool wrapY);
+    void offset(const QPointF &offset, const QRectF &bounds,
+                bool wrapX, bool wrapY);
 
     bool canMergeWith(Layer *other) const;
     Layer *mergedWith(Layer *other) const;

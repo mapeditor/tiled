@@ -240,14 +240,14 @@ public:
     void resize(const QSize &size, const QPoint &offset);
 
     /**
-     * Offsets the objects in this group by \a offset, within \bounds
-     * and optionally wraps it.
+     * Offsets the tiles in this layer within \a bounds by \a offset,
+     * and optionally wraps them.
      *
-     * \sa Layer::offset()
+     * \sa ObjectGroup::offset()
      */
-    virtual void offset(const QPoint &offset,
-                        const QRect &bounds,
-                        bool wrapX, bool wrapY);
+    void offset(const QPoint &offset,
+                const QRect &bounds,
+                bool wrapX, bool wrapY);
 
     bool canMergeWith(Layer *other) const;
     Layer *mergedWith(Layer *other) const;

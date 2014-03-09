@@ -164,6 +164,12 @@ public:
     inline QPointF tileToPixelCoords(const QPointF &point) const
     { return tileToPixelCoords(point.x(), point.y()); }
 
+    inline QRectF tileToPixelCoords(const QRectF &area) const
+    {
+        return QRectF(tileToPixelCoords(area.topLeft()),
+                      tileToPixelCoords(area.bottomRight()));
+    }
+
     /**
      * Returns the tile coordinates matching the given screen position.
      */

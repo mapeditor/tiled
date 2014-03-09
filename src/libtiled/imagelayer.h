@@ -62,10 +62,6 @@ public:
     bool referencesTileset(const Tileset *) const { return false; }
     void replaceReferencesToTileset(Tileset *, Tileset *) {}
 
-    void offset(const QPoint &/*offset*/, const QRect &/*bounds*/,
-                bool /*wrapX*/, bool /*wrapY*/)
-    {}
-
     bool canMergeWith(Layer *) const { return false; }
     Layer *mergedWith(Layer *) const { return 0; }
 

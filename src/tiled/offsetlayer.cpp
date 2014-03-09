@@ -1,7 +1,7 @@
 /*
  * offsetlayer.cpp
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
- * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,10 +21,12 @@
 
 #include "offsetlayer.h"
 
-#include "layer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "maprenderer.h"
+#include "objectgroup.h"
+#include "tilelayer.h"
 
 #include <QCoreApplication>
 
@@ -46,7 +48,24 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
     // Create the offset layer (once)
     Layer *layer = mMapDocument->map()->layerAt(mIndex);
     mOffsetLayer = layer->clone();
-    mOffsetLayer->offset(offset, bounds, wrapX, wrapY);
+
+    switch (mOffsetLayer->layerType()) {
+    case Layer::TileLayerType:
+        static_cast<TileLayer*>(mOffsetLayer)->offset(offset, bounds, wrapX, wrapY);
+        break;
+    case Layer::ObjectGroupType: {
+        // Object groups need offset and bounds converted to pixel units
+        MapRenderer *renderer = mapDocument->renderer();
+        const QPointF origin = renderer->tileToPixelCoords(QPointF());
+        const QPointF pixelOffset = renderer->tileToPixelCoords(offset) - origin;
+        const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
+        static_cast<ObjectGroup*>(mOffsetLayer)->offset(pixelOffset, pixelBounds, wrapX, wrapY);
+        break;
+    }
+    case Layer::ImageLayerType:
+        // Nothing done for the image layer at the moment
+        break;
+    }
 }
 
 OffsetLayer::~OffsetLayer()

@@ -185,12 +185,6 @@ public:
                                             Tileset *newTileset) = 0;
 
     /**
-     * Offsets the layer by the given amount, and optionally wraps it around.
-     */
-    virtual void offset(const QPoint &offset, const QRect &bounds,
-                        bool wrapX, bool wrapY) = 0;
-
-    /**
      * Returns whether this layer can merge together with the \a other layer.
      */
     virtual bool canMergeWith(Layer *other) const = 0;
