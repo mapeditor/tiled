@@ -34,6 +34,7 @@
 #include "map.h"
 #include "mapobject.h"
 #include "movelayer.h"
+#include "movemapobject.h"
 #include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "offsetlayer.h"
@@ -257,19 +258,42 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
     const QRect newArea = QRect(-offset, size);
     const QRectF visibleArea = mRenderer->boundingRect(newArea);
 
+    const QPointF origin = mRenderer->tileToPixelCoords(QPointF());
+    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset);
+    const QPointF pixelOffset = origin - newOrigin;
+
     // Resize the map and each layer
     mUndoStack->beginMacro(tr("Resize Map"));
     for (int i = 0; i < mMap->layerCount(); ++i) {
-        if (ObjectGroup *objectGroup = mMap->layerAt(i)->asObjectGroup()) {
+        Layer *layer = mMap->layerAt(i);
+
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
+            mUndoStack->push(new ResizeTileLayer(this, tileLayer, size, offset));
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
+
             // Remove objects that will fall outside of the map
             foreach (MapObject *o, objectGroup->objects()) {
-                if (!visibleIn(visibleArea, o, mRenderer))
+                if (!visibleIn(visibleArea, o, mRenderer)) {
                     mUndoStack->push(new RemoveMapObject(this, o));
+                } else {
+                    QPointF oldPos = o->position();
+                    o->setPosition(oldPos + pixelOffset);
+                    mUndoStack->push(new MoveMapObject(this, o, oldPos));
+                }
             }
+            break;
         }
-
-        mUndoStack->push(new ResizeLayer(this, i, size, offset));
+        case Layer::ImageLayerType:
+            // Currently not adjusted when resizing the map
+            break;
+        }
     }
+
     mUndoStack->push(new ResizeMap(this, size));
     mUndoStack->push(new ChangeTileSelection(this, movedSelection));
     mUndoStack->endMacro();

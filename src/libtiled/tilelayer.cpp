@@ -315,7 +315,7 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     }
 
     mGrid = newGrid;
-    Layer::resize(size, offset);
+    setSize(size);
 }
 
 void TileLayer::offset(const QPoint &offset,

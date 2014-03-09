@@ -236,10 +236,8 @@ public:
     /**
      * Resizes this tile layer to \a size, while shifting all tiles by
      * \a offset.
-     *
-     * \sa Layer::resize()
      */
-    virtual void resize(const QSize &size, const QPoint &offset);
+    void resize(const QSize &size, const QPoint &offset);
 
     /**
      * Offsets the objects in this group by \a offset, within \bounds

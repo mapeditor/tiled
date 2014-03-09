@@ -20,53 +20,54 @@
 
 #include "resizelayer.h"
 
-#include "layer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "tilelayer.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ResizeLayer::ResizeLayer(MapDocument *mapDocument,
-                         int index,
-                         const QSize &size,
-                         const QPoint &offset)
+ResizeTileLayer::ResizeTileLayer(MapDocument *mapDocument,
+                                 TileLayer *layer,
+                                 const QSize &size,
+                                 const QPoint &offset)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Resize Layer"))
     , mMapDocument(mapDocument)
-    , mIndex(index)
+    , mIndex(mapDocument->map()->layers().indexOf(layer))
     , mOriginalLayer(0)
 {
+    Q_ASSERT(mIndex != -1);
+
     // Create the resized layer (once)
-    Layer *layer = mMapDocument->map()->layerAt(mIndex);
-    mResizedLayer = layer->clone();
+    mResizedLayer = static_cast<TileLayer*>(layer->clone());
     mResizedLayer->resize(size, offset);
 }
 
-ResizeLayer::~ResizeLayer()
+ResizeTileLayer::~ResizeTileLayer()
 {
     delete mOriginalLayer;
     delete mResizedLayer;
 }
 
-void ResizeLayer::undo()
+void ResizeTileLayer::undo()
 {
     Q_ASSERT(!mResizedLayer);
-    mResizedLayer = swapLayer(mOriginalLayer);
+    mResizedLayer = static_cast<TileLayer*>(swapLayer(mOriginalLayer));
     mOriginalLayer = 0;
 }
 
-void ResizeLayer::redo()
+void ResizeTileLayer::redo()
 {
     Q_ASSERT(!mOriginalLayer);
-    mOriginalLayer = swapLayer(mResizedLayer);
+    mOriginalLayer = static_cast<TileLayer*>(swapLayer(mResizedLayer));
     mResizedLayer = 0;
 }
 
-Layer *ResizeLayer::swapLayer(Layer *layer)
+Layer *ResizeTileLayer::swapLayer(Layer *layer)
 {
     const int currentIndex = mMapDocument->currentLayerIndex();
 

@@ -28,6 +28,7 @@
 namespace Tiled {
 
 class Layer;
+class TileLayer;
 
 namespace Internal {
 
@@ -36,19 +37,19 @@ class MapDocument;
 /**
  * Undo command that resizes a map layer.
  */
-class ResizeLayer : public QUndoCommand
+class ResizeTileLayer : public QUndoCommand
 {
 public:
     /**
-     * Creates an undo command that resizes the layer at \a index to \a size,
+     * Creates an undo command that resizes the \a layer to \a size,
      * shifting the tiles by \a offset.
      */
-    ResizeLayer(MapDocument *mapDocument,
-                int index,
-                const QSize &size,
-                const QPoint &offset);
+    ResizeTileLayer(MapDocument *mapDocument,
+                    TileLayer *layer,
+                    const QSize &size,
+                    const QPoint &offset);
 
-    ~ResizeLayer();
+    ~ResizeTileLayer();
 
     void undo();
     void redo();
@@ -58,8 +59,8 @@ private:
 
     MapDocument *mMapDocument;
     int mIndex;
-    Layer *mOriginalLayer;
-    Layer *mResizedLayer;
+    TileLayer *mOriginalLayer;
+    TileLayer *mResizedLayer;
 };
 
 } // namespace Internal

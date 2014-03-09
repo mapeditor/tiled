@@ -51,12 +51,6 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y,
 {
 }
 
-void Layer::resize(const QSize &size, const QPoint & /* offset */)
-{
-    mWidth = size.width();
-    mHeight = size.height();
-}
-
 /**
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.

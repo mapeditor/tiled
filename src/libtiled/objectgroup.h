@@ -157,14 +157,6 @@ public:
     void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
 
     /**
-     * Resizes this object group to \a size, while shifting all objects by
-     * \a offset tiles.
-     *
-     * \sa Layer::resize()
-     */
-    virtual void resize(const QSize &size, const QPoint &offset);
-
-    /**
      * Offsets all objects within the group, and optionally wraps them. The
      * object's center must be within \a bounds, and wrapping occurs if the
      * displaced center is out of the bounds.
