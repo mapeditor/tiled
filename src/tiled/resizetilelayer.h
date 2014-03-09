@@ -1,5 +1,5 @@
 /*
- * resizelayer.h
+ * resizetilelayer.h
  * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.

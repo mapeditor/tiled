@@ -125,9 +125,9 @@ SOURCES += aboutdialog.cpp \
     renameterrain.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
-    resizelayer.cpp \
     resizemap.cpp \
     resizemapobject.cpp \
+    resizetilelayer.cpp \
     rotatemapobject.cpp \
     saveasimagedialog.cpp \
     selectionrectangle.cpp \
@@ -246,9 +246,9 @@ HEADERS += aboutdialog.h \
     renameterrain.h \
     resizedialog.h \
     resizehelper.h \
-    resizelayer.h \
     resizemap.h \
     resizemapobject.h \
+    resizetilelayer.h \
     rotatemapobject.h \
     saveasimagedialog.h \
     selectionrectangle.h \

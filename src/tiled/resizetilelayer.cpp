@@ -1,5 +1,5 @@
 /*
- * resizelayer.cpp
+ * resizetilelayer.cpp
  * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "resizelayer.h"
+#include "resizetilelayer.h"
 
 #include "layermodel.h"
 #include "map.h"
