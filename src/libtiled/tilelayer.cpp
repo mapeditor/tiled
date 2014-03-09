@@ -69,12 +69,12 @@ QMargins TileLayer::layerOffset() const
     if (mHorizontalOffset > 0)
         offset.setRight(mHorizontalOffset);
     else
-        offset.setLeft(mHorizontalOffset);
+        offset.setLeft(-mHorizontalOffset);
 
     if (mVerticalOffset > 0)
         offset.setTop(mVerticalOffset);
     else
-        offset.setBottom(mVerticalOffset);
+        offset.setBottom(-mVerticalOffset);
 
     return offset;
 }
