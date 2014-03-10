@@ -42,12 +42,22 @@ QSize IsometricRenderer::mapSize() const
 {
     // Map width and height contribute equally in both directions
     const int side = map()->height() + map()->width();
+    const int tileWidth = map()->tileWidth();
+    const int tileHeight = map()->tileHeight();
     const QMargins offset = map()->offset();
-    const QSize padding = QSize(offset.left() + offset.right(),
-                                offset.top() + offset.bottom());
+    const QMargins margins = map()->drawMargins();
 
-    return padding + QSize(side * map()->tileWidth() / 2,
-                           side * map()->tileHeight() / 2);
+    const QSize padding = QSize(offset.left() + offset.right() +
+                                qMax(0,
+                                     margins.left() + margins.right() -
+                                     tileWidth / 2),
+                                offset.top() + offset.bottom() +
+                                qMax(0,
+                                     margins.top() + margins.bottom() -
+                                     tileHeight / 2));
+
+    return padding + QSize(side * tileWidth / 2,
+                           side * tileHeight / 2);
 }
 
 QRect IsometricRenderer::boundingRect(const QRect &rect) const
