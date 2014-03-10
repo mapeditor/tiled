@@ -104,7 +104,7 @@ public:
      * \a painter.
      */
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
-                          QColor gridColor = Qt::black) const = 0;
+                          const Layer* layer, QColor gridColor = Qt::black) const = 0;
 
     /**
      * Draws the given \a layer using the given \a painter.

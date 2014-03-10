@@ -228,6 +228,13 @@ void MiniMap::renderMapToImage()
 
         if (tileLayer && drawTiles) {
             renderer->drawTileLayer(&painter, tileLayer);
+
+            if (drawTileGrid) {
+                Preferences *prefs = Preferences::instance();
+                renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
+                                   layer, prefs->gridColor());
+            }
+
         } else if (objGroup && drawObjects) {
             QList<MapObject*> objects = objGroup->objects();
 
@@ -243,12 +250,6 @@ void MiniMap::renderMapToImage()
         } else if (imageLayer && drawImages) {
             renderer->drawImageLayer(&painter, imageLayer);
         }
-    }
-
-    if (drawTileGrid) {
-        Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
-                           prefs->gridColor());
     }
 
     renderer->setFlags(renderFlags);

@@ -134,14 +134,23 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
 }
 
 void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                 QColor gridColor) const
+                                 const Layer* layer, QColor gridColor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    const QMargins mapOffset = map()->offset();
+    QMargins layerOffset;
+
+    if (layer->isTileLayer())
+        layerOffset = static_cast<const TileLayer*>(layer)->layerOffset();
+    else
+        layerOffset = QMargins();
 
     QRect r = rect.toAlignedRect();
-    r.adjust(-tileWidth / 2, -tileHeight / 2,
-             tileWidth / 2, tileHeight / 2);
+    r.adjust(-tileWidth / 2 - mapOffset.right() + layerOffset.right(),
+             -tileHeight / 2 - mapOffset.bottom() + layerOffset.bottom(),
+             tileWidth / 2 + mapOffset.left() + layerOffset.left(),
+             tileHeight / 2 + mapOffset.top() + layerOffset.top());
 
     const int startX = qMax(qreal(0), screenToTileCoords(r.topLeft()).x());
     const int startY = qMax(qreal(0), screenToTileCoords(r.topRight()).y());
@@ -158,13 +167,13 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     painter->setPen(gridPen);
 
     for (int y = startY; y <= endY; ++y) {
-        const QPointF start = tileToScreenCoords(startX, y);
-        const QPointF end = tileToScreenCoords(endX, y);
+        const QPointF start = tileToScreenCoords(startX, y, layer);
+        const QPointF end = tileToScreenCoords(endX, y, layer);
         painter->drawLine(start, end);
     }
     for (int x = startX; x <= endX; ++x) {
-        const QPointF start = tileToScreenCoords(x, startY);
-        const QPointF end = tileToScreenCoords(x, endY);
+        const QPointF start = tileToScreenCoords(x, startY, layer);
+        const QPointF end = tileToScreenCoords(x, endY, layer);
         painter->drawLine(start, end);
     }
 }

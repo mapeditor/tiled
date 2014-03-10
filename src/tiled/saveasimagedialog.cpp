@@ -185,6 +185,13 @@ void SaveAsImageDialog::accept()
 
         if (tileLayer) {
             renderer->drawTileLayer(&painter, tileLayer);
+
+            if (drawTileGrid) {
+                Preferences *prefs = Preferences::instance();
+                renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
+                                   layer, prefs->gridColor());
+            }
+
         } else if (objGroup) {
             QList<MapObject*> objects = objGroup->objects();
 
@@ -200,12 +207,6 @@ void SaveAsImageDialog::accept()
         } else if (imageLayer) {
             renderer->drawImageLayer(&painter, imageLayer);
         }
-    }
-
-    if (drawTileGrid) {
-        Preferences *prefs = Preferences::instance();
-        renderer->drawGrid(&painter, QRectF(QPointF(), renderer->mapSize()),
-                           prefs->gridColor());
     }
 
     // Restore the previous render flags

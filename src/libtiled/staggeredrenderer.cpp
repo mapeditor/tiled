@@ -83,7 +83,7 @@ QPainterPath StaggeredRenderer::shape(const MapObject *object) const
 }
 
 void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                 QColor gridColor) const
+                                 const Layer* layer, QColor gridColor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();

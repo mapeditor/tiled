@@ -321,6 +321,7 @@ void MapScene::disableSelectedTool()
 void MapScene::currentLayerIndexChanged()
 {
     updateCurrentLayerHighlight();
+    invalidate(sceneRect(), ForegroundLayer);
 }
 
 /**
@@ -599,7 +600,8 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
         return;
 
     Preferences *prefs = Preferences::instance();
-    mMapDocument->renderer()->drawGrid(painter, rect, prefs->gridColor());
+    Layer* layer = mMapDocument->currentLayer();
+    mMapDocument->renderer()->drawGrid(painter, rect, layer, prefs->gridColor());
 }
 
 bool MapScene::event(QEvent *event)
