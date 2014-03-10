@@ -171,6 +171,15 @@ public:
     }
 
     /**
+     * Returns the tile coordinates matching the given screen position for the
+     * given layer (which may be offeseted).
+     */
+    QPointF screenToTileCoords(qreal x, qreal y, const TileLayer* layer) const;
+
+    inline QPointF screenToTileCoords(const QPointF &point, const TileLayer* layer) const
+    { return tileToScreenCoords(point.x(), point.y(), layer); }
+
+    /**
      * Returns the tile coordinates matching the given screen position.
      */
     virtual QPointF screenToTileCoords(qreal x, qreal y) const = 0;
@@ -179,7 +188,7 @@ public:
     { return screenToTileCoords(point.x(), point.y()); }
 
     /**
-     * Returns the tile coordinates matching the given screen position for the
+     * Returns the screen position matching the given tile coordinates for the
      * given layer (which may be offeseted).
      */
     QPointF tileToScreenCoords(qreal x, qreal y, const TileLayer* layer) const;

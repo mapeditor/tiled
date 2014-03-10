@@ -55,10 +55,21 @@ void MapRenderer::drawImageLayer(QPainter *painter,
                         imageLayer->image());
 }
 
+QPointF MapRenderer::screenToTileCoords(qreal x, qreal y, const TileLayer* layer) const 
+{
+    QMargins mapOffset = mMap->offset();
+
+    return screenToTileCoords(x + layer->horizontalOffset() - mapOffset.right(),
+                              y + layer->verticalOffset() - mapOffset.top());
+}
+
 QPointF MapRenderer::tileToScreenCoords(qreal x, qreal y, const TileLayer* layer) const 
 {
+    QMargins mapOffset = mMap->offset();
     QPointF base = tileToScreenCoords(x, y);
-    return base - QPointF(layer->horizontalOffset(), layer->verticalOffset());
+
+    return base + QPointF(mapOffset.right(), mapOffset.top()) - 
+                  QPointF(layer->horizontalOffset(), layer->verticalOffset());
 }
 
 
