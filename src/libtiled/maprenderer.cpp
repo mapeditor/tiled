@@ -57,26 +57,29 @@ void MapRenderer::drawImageLayer(QPainter *painter,
 
 QPointF MapRenderer::screenToTileCoords(qreal x, qreal y, const Layer* layer) const 
 {
+    QMargins mapOffset = mMap->offset();
+    x -= mapOffset.right();
+    y -= mapOffset.top();
+
     if (layer->isTileLayer()) {
         const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
-        QMargins mapOffset = mMap->offset();
+        x += tileLayer->horizontalOffset();
+        y += tileLayer->verticalOffset();
+    } 
 
-        return screenToTileCoords(x + tileLayer->horizontalOffset() - mapOffset.right(),
-                                  y + tileLayer->verticalOffset() - mapOffset.top());
-    } else
-        return screenToTileCoords(x, y);
+    return screenToTileCoords(x, y);
 }
 
 QPointF MapRenderer::tileToScreenCoords(qreal x, qreal y, const Layer* layer) const 
 {
-    QPointF position = tileToScreenCoords(x, y);
+    QMargins mapOffset = mMap->offset();
+    QPointF position = tileToScreenCoords(x, y) +
+                       QPointF(mapOffset.right(), mapOffset.top());
 
     if (layer->isTileLayer()) {
         const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
-        QMargins mapOffset = mMap->offset();
 
-        position = position + QPointF(mapOffset.right(), mapOffset.top()) - 
-                              QPointF(tileLayer->horizontalOffset(),
+        position = position - QPointF(tileLayer->horizontalOffset(),
                                       tileLayer->verticalOffset());
     }
 
