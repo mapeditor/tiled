@@ -553,12 +553,12 @@ void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 
     switch (id) {
         case HorizontalOffsetProperty:
-            command = new SetLayerHorizontalOffset(mMapDocument, layerIndex,
-                                                   val.toInt());
+            command = new SetLayerOffset(mMapDocument, layerIndex,
+                                         val.toInt(), layer->verticalOffset());
             break;
         case VerticalOffsetProperty:
-            command = new SetLayerVerticalOffset(mMapDocument, layerIndex,
-                                                 val.toInt());
+            command = new SetLayerOffset(mMapDocument, layerIndex,
+                                         layer->horizontalOffset(), val.toInt());
             break;
         default:
             break;

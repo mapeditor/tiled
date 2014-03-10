@@ -35,46 +35,26 @@ class MapDocument;
 /**
  * Used for changing layer horizontal offset.
  */
-class SetLayerHorizontalOffset : public QUndoCommand
+class SetLayerOffset : public QUndoCommand
 {
 public:
-    SetLayerHorizontalOffset(MapDocument *mapDocument,
-                             int layerIndex,
-                             int offset);
+    SetLayerOffset(MapDocument *mapDocument, int layerIndex, 
+                   int horizontalOffset, int verticalOffset);
 
-    void undo() { setOffset(mOldHorizontalOffset); }
-    void redo() { setOffset(mNewHorizontalOffset); }
+    void undo() { setOffset(mOldHorizontalOffset, mOldVerticalOffset); }
+    void redo() { setOffset(mNewHorizontalOffset, mNewVerticalOffset); }
 
 private:
-    void setOffset(int offset);
+    void setOffset(int horizontalOffset, int verticalOffset);
 
     MapDocument *mMapDocument;
     int mLayerIndex;
     int mOldHorizontalOffset;
-    int mNewHorizontalOffset;
-};
-
-/**
- * Used for changing layer vertical offset.
- */
-class SetLayerVerticalOffset : public QUndoCommand
-{
-public:
-    SetLayerVerticalOffset(MapDocument *mapDocument,
-                           int layerIndex,
-                           int offset);
-
-    void undo() { setOffset(mOldVerticalOffset); }
-    void redo() { setOffset(mNewVerticalOffset); }
-
-private:
-    void setOffset(int offset);
-
-    MapDocument *mMapDocument;
-    int mLayerIndex;
     int mOldVerticalOffset;
+    int mNewHorizontalOffset;
     int mNewVerticalOffset;
 };
+;
 
 } // namespace Internal
 } // namespace Tiled

@@ -30,39 +30,23 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-SetLayerHorizontalOffset::SetLayerHorizontalOffset(MapDocument* mapDocument,
-                                                   int layerIndex,
-                                                   int offset)
+SetLayerOffset::SetLayerOffset(MapDocument* mapDocument, int layerIndex, 
+                               int horizontalOffset, int verticalOffset)
     : mMapDocument(mapDocument)
     , mLayerIndex(layerIndex)
     , mOldHorizontalOffset(
         mMapDocument->map()->layerAt(layerIndex)->asTileLayer()->horizontalOffset())
-    , mNewHorizontalOffset(offset)
-{
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Tile Layer Horizontal Offset"));
-}
-
-void SetLayerHorizontalOffset::setOffset(int offset)
-{
-    mMapDocument->layerModel()->setLayerOffset(mLayerIndex, offset, 0);
-}
-
-SetLayerVerticalOffset::SetLayerVerticalOffset(MapDocument* mapDocument,
-                                               int layerIndex,
-                                               int offset)
-    : mMapDocument(mapDocument)
-    , mLayerIndex(layerIndex)
     , mOldVerticalOffset(
         mMapDocument->map()->layerAt(layerIndex)->asTileLayer()->horizontalOffset())
-    , mNewVerticalOffset(offset)
+    , mNewHorizontalOffset(horizontalOffset)
+    , mNewVerticalOffset(verticalOffset)
 {
     setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Tile Layer Vertical Offset"));
+                                        "Change Tile Layer Offset"));
 }
 
-void SetLayerVerticalOffset::setOffset(int offset)
+void SetLayerOffset::setOffset(int horizontalOffset, int verticalOffset)
 {
-    mMapDocument->layerModel()->setLayerOffset(mLayerIndex, 0, offset);
+    mMapDocument->layerModel()->setLayerOffset(mLayerIndex, horizontalOffset,
+                                               verticalOffset);
 }
-
