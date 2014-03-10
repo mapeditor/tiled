@@ -175,6 +175,7 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    const QMargins mapOffset = map()->offset();
 
     if (tileWidth <= 0 || tileHeight <= 1)
         return;
@@ -184,16 +185,14 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
         rect = boundingRect(layer->bounds());
 
     QMargins drawMargins = layer->drawMargins();
-    drawMargins.setTop(drawMargins.top() - tileHeight);
-    drawMargins.setRight(drawMargins.right() - tileWidth);
 
     rect.adjust(-drawMargins.right(),
                 -drawMargins.bottom(),
-                drawMargins.left(),
-                drawMargins.top());
+                drawMargins.left() + mapOffset.left() + mapOffset.right(),
+                drawMargins.top() + mapOffset.top() + mapOffset.bottom());
 
     // Determine the tile and pixel coordinates to start at
-    QPointF tilePos = screenToTileCoords(rect.x(), rect.y());
+    QPointF tilePos = screenToTileCoords(rect.x(), rect.y(), layer);
     QPoint rowItr = QPoint((int) std::floor(tilePos.x()),
                            (int) std::floor(tilePos.y()));
     QPointF startPos = tileToScreenCoords(rowItr, layer);
