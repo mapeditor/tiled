@@ -74,7 +74,8 @@ void AbstractTileTool::mouseLeft()
 void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF tilePosF = renderer->screenToTileCoords(pos);
+    const QPointF tilePosF = renderer->screenToTileCoords(
+        pos, mapDocument()->currentLayer());
     QPoint tilePos;
 
     if (mTilePositionMethod == BetweenTiles)

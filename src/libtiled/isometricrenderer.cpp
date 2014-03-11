@@ -280,13 +280,21 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 void IsometricRenderer::drawTileSelection(QPainter *painter,
                                           const QRegion &region,
                                           const QColor &color,
-                                          const QRectF &exposed) const
+                                          const QRectF &exposed,
+                                          const TileLayer* layer) const
 {
+    const QMargins mapOffset = map()->offset();
+    QRect offsettedExposed = exposed.toAlignedRect();
+
+    offsettedExposed.adjust(0, 0,
+                mapOffset.left() + mapOffset.right(),
+                mapOffset.top() + mapOffset.bottom());
+
     painter->setBrush(color);
     painter->setPen(Qt::NoPen);
     foreach (const QRect &r, region.rects()) {
-        QPolygonF polygon = tileRectToScreenPolygon(r);
-        if (QRectF(polygon.boundingRect()).intersects(exposed))
+        QPolygonF polygon = tileRectToScreenPolygon(r, layer);
+        if (QRectF(polygon.boundingRect()).intersects(offsettedExposed))
             painter->drawConvexPolygon(polygon);
     }
 }
@@ -570,17 +578,18 @@ QPolygonF IsometricRenderer::pixelRectToScreenPolygon(const QRectF &rect) const
     return polygon;
 }
 
-QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRect &rect) const
+QPolygonF IsometricRenderer::tileRectToScreenPolygon(const QRect &rect,
+                                                     const TileLayer* layer) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
 
-    const QPointF topRight = tileToScreenCoords(rect.topRight());
-    const QPointF bottomRight = tileToScreenCoords(rect.bottomRight());
-    const QPointF bottomLeft = tileToScreenCoords(rect.bottomLeft());
+    const QPointF topRight = tileToScreenCoords(rect.topRight(), layer);
+    const QPointF bottomRight = tileToScreenCoords(rect.bottomRight(), layer);
+    const QPointF bottomLeft = tileToScreenCoords(rect.bottomLeft(), layer);
 
     QPolygonF polygon;
-    polygon << QPointF(tileToScreenCoords(rect.topLeft()));
+    polygon << QPointF(tileToScreenCoords(rect.topLeft(), layer));
     polygon << QPointF(topRight.x() + tileWidth / 2,
                        topRight.y() + tileHeight / 2);
     polygon << QPointF(bottomRight.x(), bottomRight.y() + tileHeight);

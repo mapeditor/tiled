@@ -58,7 +58,8 @@ void TileSelectionItem::paint(QPainter *painter,
 
     MapRenderer *renderer = mMapDocument->renderer();
     renderer->drawTileSelection(painter, selection, highlight,
-                                option->exposedRect);
+                                option->exposedRect,
+                                mMapDocument->currentLayer()->asTileLayer());
 }
 
 void TileSelectionItem::selectionChanged(const QRegion &newSelection,

@@ -94,7 +94,8 @@ public:
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
                            const QColor &color,
-                           const QRectF &exposed) const;
+                           const QRectF &exposed,
+                           const TileLayer* layer) const;
 
     void drawMapObject(QPainter *painter,
                        const MapObject *object,

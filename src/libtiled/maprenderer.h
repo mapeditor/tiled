@@ -124,7 +124,8 @@ public:
     virtual void drawTileSelection(QPainter *painter,
                                    const QRegion &region,
                                    const QColor &color,
-                                   const QRectF &exposed) const = 0;
+                                   const QRectF &exposed,
+                                   const TileLayer* layer) const = 0;
 
     /**
      * Draws the \a object in the given \a color using the \a painter.
@@ -177,7 +178,7 @@ public:
     QPointF screenToTileCoords(qreal x, qreal y, const Layer* layer) const;
 
     inline QPointF screenToTileCoords(const QPointF &point, const Layer* layer) const
-    { return tileToScreenCoords(point.x(), point.y(), layer); }
+    { return screenToTileCoords(point.x(), point.y(), layer); }
 
     /**
      * Returns the tile coordinates matching the given screen position.

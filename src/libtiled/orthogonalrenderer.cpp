@@ -252,7 +252,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,
                                            const QRegion &region,
                                            const QColor &color,
-                                           const QRectF &exposed) const
+                                           const QRectF &exposed,
+                                           const TileLayer* layer) const
 {
     foreach (const QRect &r, region.rects()) {
         const QRectF toFill = QRectF(boundingRect(r)).intersected(exposed);

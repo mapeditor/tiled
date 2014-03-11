@@ -203,7 +203,8 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
 void StaggeredRenderer::drawTileSelection(QPainter *painter,
                                           const QRegion &region,
                                           const QColor &color,
-                                          const QRectF &exposed) const
+                                          const QRectF &exposed,
+                                          const TileLayer* layer) const
 {
     painter->setBrush(color);
     painter->setPen(Qt::NoPen);

@@ -122,10 +122,12 @@ void BrushItem::paint(QPainter *painter,
 
     renderer->drawTileSelection(painter, insideMapRegion,
                                 insideMapHighlight,
-                                option->exposedRect);
+                                option->exposedRect,
+                                mMapDocument->currentLayer()->asTileLayer());
     renderer->drawTileSelection(painter, outsideMapRegion,
                                 outsideMapHighlight,
-                                option->exposedRect);
+                                option->exposedRect,
+                                mMapDocument->currentLayer()->asTileLayer());
 }
 
 void BrushItem::updateBoundingRect()
