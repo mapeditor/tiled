@@ -37,7 +37,7 @@ SetLayerOffset::SetLayerOffset(MapDocument* mapDocument, int layerIndex,
     , mOldHorizontalOffset(
         mMapDocument->map()->layerAt(layerIndex)->asTileLayer()->horizontalOffset())
     , mOldVerticalOffset(
-        mMapDocument->map()->layerAt(layerIndex)->asTileLayer()->horizontalOffset())
+        mMapDocument->map()->layerAt(layerIndex)->asTileLayer()->verticalOffset())
     , mNewHorizontalOffset(horizontalOffset)
     , mNewVerticalOffset(verticalOffset)
 {
