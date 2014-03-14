@@ -81,6 +81,12 @@ public:
     virtual QRect boundingRect(const QRect &rect) const = 0;
 
     /**
+     * Returns the bounding rectangle in pixels of the given \a rect, taking
+     * into account the possible offset applied to the \a layer.
+     */
+    QRectF boundingRect(const QRect &rect, const Layer *layer) const;
+
+    /**
      * Returns the bounding rectangle in pixels of the given \a object, as it
      * would be drawn by drawMapObject().
      */
@@ -91,6 +97,12 @@ public:
      * it would be drawn by drawImageLayer().
      */
     QRectF boundingRect(const ImageLayer *imageLayer) const;
+
+    /**
+     * Returns the bounding rectangle in pixels of the given \a tileLayer, as
+     * it would be drawn by drawTileLayer().
+     */
+    QRectF boundingRect(const TileLayer *tileLayer) const;
 
     /**
      * Returns the shape in pixels of the given \a object. This is used for
