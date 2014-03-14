@@ -148,26 +148,19 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
-    const QMargins mapOffset = map()->offset();
-    QMargins layerOffset;
-
-    if (layer->isTileLayer())
-        layerOffset = static_cast<const TileLayer*>(layer)->layerOffset();
-    else
-        layerOffset = QMargins();
 
     QRect r = rect.toAlignedRect();
-    r.adjust(-tileWidth / 2 - mapOffset.right() + layerOffset.right(),
-             -tileHeight / 2 - mapOffset.bottom() + layerOffset.bottom(),
-             tileWidth / 2 + mapOffset.left() + layerOffset.left(),
-             tileHeight / 2 + mapOffset.top() + layerOffset.top());
+    r.adjust(-tileWidth / 2, -tileHeight / 2,
+             tileWidth / 2, tileHeight / 2);
 
-    const int startX = qMax(qreal(0), screenToTileCoords(r.topLeft()).x());
-    const int startY = qMax(qreal(0), screenToTileCoords(r.topRight()).y());
+    const int startX = qMax(qreal(0),
+                            screenToTileCoords(r.topLeft(), layer).x());
+    const int startY = qMax(qreal(0),
+                            screenToTileCoords(r.topRight(), layer).y());
     const int endX = qMin(qreal(map()->width()),
-                          screenToTileCoords(r.bottomRight()).x());
+                          screenToTileCoords(r.bottomRight(), layer).x());
     const int endY = qMin(qreal(map()->height()),
-                          screenToTileCoords(r.bottomLeft()).y());
+                          screenToTileCoords(r.bottomLeft(), layer).y());
 
     gridColor.setAlpha(128);
 
@@ -194,7 +187,6 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
-    const QMargins mapOffset = map()->offset();
 
     if (tileWidth <= 0 || tileHeight <= 1)
         return;
@@ -204,11 +196,13 @@ void IsometricRenderer::drawTileLayer(QPainter *painter,
         rect = boundingRect(layer->bounds());
 
     QMargins drawMargins = layer->drawMargins();
+    drawMargins.setTop(drawMargins.top() - tileHeight);
+    drawMargins.setRight(drawMargins.right() - tileWidth);
 
-    rect.adjust(-drawMargins.right(),
-                -drawMargins.bottom(),
-                drawMargins.left() + mapOffset.left() + mapOffset.right(),
-                drawMargins.top() + mapOffset.top() + mapOffset.bottom());
+    rect.adjust(-drawMargins.left(), 
+                -drawMargins.top(),
+                drawMargins.right(),
+                drawMargins.bottom());
 
     // Determine the tile and pixel coordinates to start at
     QPointF tilePos = screenToTileCoords(rect.x(), rect.y(), layer);
@@ -283,18 +277,11 @@ void IsometricRenderer::drawTileSelection(QPainter *painter,
                                           const QRectF &exposed,
                                           const TileLayer* layer) const
 {
-    const QMargins mapOffset = map()->offset();
-    QRect offsettedExposed = exposed.toAlignedRect();
-
-    offsettedExposed.adjust(0, 0,
-                mapOffset.left() + mapOffset.right(),
-                mapOffset.top() + mapOffset.bottom());
-
     painter->setBrush(color);
     painter->setPen(Qt::NoPen);
     foreach (const QRect &r, region.rects()) {
         QPolygonF polygon = tileRectToScreenPolygon(r, layer);
-        if (QRectF(polygon.boundingRect()).intersects(offsettedExposed))
+        if (QRectF(polygon.boundingRect()).intersects(exposed))
             painter->drawConvexPolygon(polygon);
     }
 }

@@ -140,7 +140,8 @@ void BrushItem::updateBoundingRect()
     }
 
     const QRect bounds = mRegion.boundingRect();
-    mBoundingRect = mMapDocument->renderer()->boundingRect(bounds);
+    const Layer* layer = mMapDocument->currentLayer();
+    mBoundingRect = mMapDocument->renderer()->boundingRect(bounds, layer);
 
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {

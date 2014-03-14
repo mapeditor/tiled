@@ -76,5 +76,6 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
 void TileSelectionItem::updateBoundingRect()
 {
     const QRect b = mMapDocument->tileSelection().boundingRect();
-    mBoundingRect = mMapDocument->renderer()->boundingRect(b);
+    const Layer *layer = mMapDocument->currentLayer();
+    mBoundingRect = mMapDocument->renderer()->boundingRect(b, layer);
 }
