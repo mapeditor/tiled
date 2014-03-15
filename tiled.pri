@@ -10,3 +10,8 @@ macx {
 }
 
 CONFIG += depend_includepath
+
+
+!isEmpty(USE_FHS_PLUGIN_PATH) {
+    DEFINES += TILED_PLUGIN_DIR=\\\"$${LIBDIR}/tiled/plugins/\\\"
+}
