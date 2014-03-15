@@ -62,11 +62,16 @@ void PluginManager::loadPlugins()
         mPlugins.append(Plugin(QLatin1String("<static>"), instance));
 
     // Determine the plugin path based on the application location
+#ifndef TILED_PLUGIN_DIR
     QString pluginPath = QCoreApplication::applicationDirPath();
+#endif
+
 #ifdef Q_OS_WIN32
     pluginPath += QLatin1String("/plugins/tiled");
 #elif defined(Q_OS_MAC)
     pluginPath += QLatin1String("/../PlugIns");
+#elif defined(TILED_PLUGIN_DIR)
+    QString pluginPath = QLatin1String(TILED_PLUGIN_DIR);
 #else
     pluginPath += QLatin1String("/../lib/tiled/plugins");
 #endif
