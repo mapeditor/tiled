@@ -151,6 +151,8 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(objectsChanged(QList<MapObject*>)));
         connect(mapDocument, SIGNAL(layerChanged(int)),
                 SLOT(layerChanged(int)));
+        connect(mapDocument, SIGNAL(tileLayerChanged(TileLayer*)),
+                SLOT(tileLayerChanged(TileLayer*)));
         connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
                 SLOT(objectGroupChanged(ObjectGroup*)));
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
@@ -209,6 +211,12 @@ void PropertyBrowser::objectsChanged(const QList<MapObject *> &objects)
 void PropertyBrowser::layerChanged(int index)
 {
     if (mObject == mMapDocument->map()->layerAt(index))
+        updateProperties();
+}
+
+void PropertyBrowser::tileLayerChanged(TileLayer *tileLayer)
+{
+    if (mObject == tileLayer)
         updateProperties();
 }
 

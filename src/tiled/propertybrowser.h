@@ -81,6 +81,7 @@ private slots:
     void mapChanged();
     void objectsChanged(const QList<MapObject*> &objects);
     void layerChanged(int index);
+    void tileLayerChanged(TileLayer *tileLayer);
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);
