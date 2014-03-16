@@ -39,7 +39,7 @@
 
 using namespace Tiled;
 
-QRectF MapRenderer::boundingRect(const QRect &rect, const Layer *layer) const
+QRect MapRenderer::boundingRect(const QRect &rect, const Layer *layer) const
 {
     const QMargins mapOffset = map()->offset();
     int horizontalOffset = mapOffset.left();
@@ -64,7 +64,7 @@ QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
                   imageLayer->image().size());
 }
 
-QRectF MapRenderer::boundingRect(const TileLayer *tileLayer) const
+QRect MapRenderer::boundingRect(const TileLayer *tileLayer) const
 {
     return boundingRect(tileLayer->bounds(), tileLayer);
 }
