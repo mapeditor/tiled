@@ -49,6 +49,7 @@ public:
 
     QRect boundingRect(const QRect &rect) const;
 
+    using MapRenderer::boundingRect;
     QRectF boundingRect(const MapObject *object) const;
     QPainterPath shape(const MapObject *object) const;
 
