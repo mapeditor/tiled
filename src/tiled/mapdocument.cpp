@@ -486,6 +486,21 @@ void MapDocument::toggleOtherLayers(int index)
     mLayerModel->toggleOtherLayers(index);
 }
 
+
+/**
+ * Set the offset of the tile layer at \a layerIndex and recomputes the map's
+ * global offset. Emits the appropriate signal.
+ */
+void MapDocument::setTileLayerOffset(int layerIndex, int horizontalOffset,
+                                     int verticalOffset)
+{
+    TileLayer *layer = mMap->layerAt(layerIndex)->asTileLayer();
+    layer->setHorizontalOffset(horizontalOffset);
+    layer->setVerticalOffset(verticalOffset);
+    mMap->recomputeOffset();
+    emitTileLayerChanged(layer);
+}
+
 /**
  * Adds a tileset to this map at the given \a index. Emits the appropriate
  * signal.

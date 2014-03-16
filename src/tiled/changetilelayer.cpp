@@ -47,6 +47,6 @@ SetLayerOffset::SetLayerOffset(MapDocument* mapDocument, int layerIndex,
 
 void SetLayerOffset::setOffset(int horizontalOffset, int verticalOffset)
 {
-    mMapDocument->layerModel()->setLayerOffset(mLayerIndex, horizontalOffset,
-                                               verticalOffset);
+    mMapDocument->setTileLayerOffset(mLayerIndex, horizontalOffset,
+                                     verticalOffset);
 }

@@ -131,6 +131,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(layerRemoved(int)));
         connect(mMapDocument, SIGNAL(layerChanged(int)),
                 this, SLOT(layerChanged(int)));
+        connect(mMapDocument, SIGNAL(tileLayerChanged(TileLayer*)),
+                this, SLOT(tileLayerChanged(TileLayer*)));
         connect(mMapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
                 this, SLOT(objectGroupChanged(ObjectGroup*)));
         connect(mMapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
@@ -388,6 +390,15 @@ void MapScene::layerChanged(int index)
         multiplier = opacityFactor;
 
     layerItem->setOpacity(layer->opacity() * multiplier);
+}
+
+/**
+ * When an tile layer has changed, the global offsets may have changed, causing
+ * the map's size to change, so basically is af if the mapChanged signal was
+ * emitted. 
+ */
+void MapScene::tileLayerChanged(TileLayer *tileLayer) {
+    mapChanged();
 }
 
 /**
