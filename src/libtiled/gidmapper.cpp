@@ -30,7 +30,6 @@
 
 #include "tile.h"
 #include "tileset.h"
-#include "map.h"
 
 using namespace Tiled;
 
