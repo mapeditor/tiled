@@ -467,10 +467,10 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         const int verticalOffset = tiledLayer->verticalOffset();
 
         if (horizontalOffset != 0)
-            w.writeAttribute(QLatin1String("horizontalOffset"),
+            w.writeAttribute(QLatin1String("horizontaloffset"),
                     QString::number(horizontalOffset));
         if (verticalOffset != 0)
-            w.writeAttribute(QLatin1String("verticalOffset"),
+            w.writeAttribute(QLatin1String("verticaloffset"),
                     QString::number(verticalOffset));
     }
 
