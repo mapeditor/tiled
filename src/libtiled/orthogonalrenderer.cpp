@@ -308,7 +308,16 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
         painter->setRenderHint(QPainter::Antialiasing);
 
-        switch (object->shape()) {
+        // Trying to draw an ellipse with 0-width is causing a hang in
+        // CoreGraphics when drawing the path requested by the
+        // QCoreGraphicsPaintEngine. Draw them as rectangle instead.
+        MapObject::Shape shape = object->shape();
+        if (shape == MapObject::Ellipse &&
+                (rect.width() == qreal(0) ^ rect.height() == qreal(0))) {
+            shape = MapObject::Rectangle;
+        }
+
+        switch (shape) {
         case MapObject::Rectangle: {
             if (rect.isNull())
                 rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));

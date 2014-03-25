@@ -363,13 +363,15 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QPointF l2x = iTrans.map(l2);
             QSizeF ellipseSize(l1x.manhattanLength(), l2x.manhattanLength());
 
-            painter->save();
-            painter->setPen(pen);
-            painter->translate(polygon.at(0));
-            painter->scale(transformScale.x(), transformScale.y());
-            painter->rotate(45);
-            painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
-            painter->restore();
+            if (ellipseSize.width() > 0 && ellipseSize.height() > 0) {
+                painter->save();
+                painter->setPen(pen);
+                painter->translate(polygon.at(0));
+                painter->scale(transformScale.x(), transformScale.y());
+                painter->rotate(45);
+                painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
+                painter->restore();
+            }
 
             painter->setBrush(Qt::NoBrush);
             painter->drawPolygon(polygon);
@@ -384,12 +386,14 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawPolygon(polygon);
 
             painter->setBrush(brush);
-            painter->save();
-            painter->translate(polygon.at(0));
-            painter->scale(transformScale.x(), transformScale.y());
-            painter->rotate(45);
-            painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
-            painter->restore();
+            if (ellipseSize.width() > 0 && ellipseSize.height() > 0) {
+                painter->save();
+                painter->translate(polygon.at(0));
+                painter->scale(transformScale.x(), transformScale.y());
+                painter->rotate(45);
+                painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
+                painter->restore();
+            }
 
             if (!name.isEmpty())
                 painter->drawText(QPoint(headerX, headerY - 5), name);
