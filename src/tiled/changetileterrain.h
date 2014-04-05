@@ -39,7 +39,6 @@ class ChangeTileTerrain : public QUndoCommand
 {
 public:
     struct Change {
-        Change() {}
         Change(unsigned from, unsigned to)
             : from(from), to(to)
         {}

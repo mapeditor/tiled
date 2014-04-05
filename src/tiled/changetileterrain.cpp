@@ -112,8 +112,9 @@ bool ChangeTileTerrain::mergeWith(const QUndoCommand *other)
         Tile *tile = i.key();
         const Change &change = i.value();
 
-        if (mChanges.contains(tile))
-            mChanges[tile].to = change.to;
+        Changes::iterator tileChange = mChanges.find(tile);
+        if (tileChange != mChanges.end())
+            tileChange->to = change.to;
         else
             mChanges.insert(tile, change);
 
