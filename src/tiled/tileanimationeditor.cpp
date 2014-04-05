@@ -45,6 +45,7 @@ class FrameListModel : public QAbstractListModel
 public:
     explicit FrameListModel(QObject *parent = 0)
         : QAbstractListModel(parent)
+        , mTileset(0)
     {}
 
     int rowCount(const QModelIndex &parent) const;
