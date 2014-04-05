@@ -48,6 +48,7 @@ MiniMap::MiniMap(QWidget *parent)
     , mMapDocument(0)
     , mDragging(false)
     , mMouseMoveCursorState(false)
+    , mRedrawMapImage(false)
     , mRenderFlags(DrawTiles | DrawObjects | DrawImages | IgnoreInvisibleLayer)
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
