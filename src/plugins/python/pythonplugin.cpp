@@ -50,6 +50,7 @@ PythonPlugin::~PythonPlugin()
 
 PythonPlugin::PythonPlugin()
     : mScriptDir(QDir::homePath() + "/.tiled")
+    , pTiledCls(0)
 {
     if (!Py_IsInitialized()) {
         // PEP370
