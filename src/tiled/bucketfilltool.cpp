@@ -46,6 +46,7 @@ BucketFillTool::BucketFillTool(QObject *parent)
     , mIsActive(false)
     , mLastShiftStatus(false)
     , mIsRandom(false)
+    , mLastRandomStatus(false)
 {
 }
 
@@ -129,8 +130,10 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (mFillRegion.isEmpty())
         return;
 
-    if (mLastRandomStatus != mIsRandom)
+    if (mLastRandomStatus != mIsRandom) {
+        mLastRandomStatus = mIsRandom;
         fillRegionChanged = true;
+    }
 
     if (!mFillOverlay) {
         // Create a new overlay region
@@ -157,7 +160,6 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (fillRegionChanged) {
         // Update the brush item to draw the overlay
         brushItem()->setTileLayer(mFillOverlay);
-        mLastRandomStatus = mIsRandom;
     }
     // Create connections to know when the overlay should be cleared
     makeConnections();
