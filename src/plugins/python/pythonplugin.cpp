@@ -310,11 +310,12 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
         log(QString("-- Script used for exporting: %1\n").arg(it.key()));
 
         PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map);
-        if (!pmap) return false;
+        if (!pmap)
+            return false;
         if (!PyObject_HasAttrString(it.value(), "write")) {
             mError = "Please define class that extends tiled.Plugin and has "
                     "@classmethod write(cls, map, filename)";
-            return NULL;
+            return false;
         }
         PyObject *pinst = PyObject_CallMethod(it.value(), (char *)"write",
                                               (char *)"(Ns)", pmap, fileName.toUtf8().data());
