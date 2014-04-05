@@ -57,10 +57,12 @@ namespace Internal {
 
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
+    , mUpdating(false)
     , mObject(0)
     , mMapDocument(0)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
+    , mCustomPropertiesGroup(0)
 {
     setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
     setResizeMode(ResizeToContents);
