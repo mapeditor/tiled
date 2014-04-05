@@ -1,4 +1,21 @@
 language: cpp
+
+env:
+  global:
+   # The next declration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "J8Y+eQD0p5YPOlhBEPFgpZzhRFjXC4phiiFtGV3JaYX34wxCsyyNhMStMqIZTBL4D9lQojfLgXODBDaqT1iSHDe1oonosnyYnGBIJElez247pjuNiSSvcAbYa9RQnwfHe8JFphQHViURbv0OfqpHHyAlHy5b8nrPYWG2xmHA5nY="
+
+addons:
+  coverity_scan:
+    project:
+      name: "bjorn/tiled"
+      description: "A generic tile map editor"
+    notification_email: bjorn@lindeijer.nl
+    build_command_prepend: qmake
+    build_command: make
+    branch_pattern: coverity_scan
+
 compiler:
   - gcc
   - clang
