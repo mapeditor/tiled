@@ -144,14 +144,14 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
                 return command.name;
             if (index.column() == CommandColumn)
                 return command.command;
-        } else
+        } else {
             if (index.column() == NameColumn) {
                 if (role == Qt::EditRole)
                     return QString();
                 else
                     return tr("<new command>");
             }
-
+        }
         break;
 
     case Qt::ToolTipRole:
@@ -201,6 +201,7 @@ bool CommandDataModel::setData(const QModelIndex &index,
                     isModified = true;
                 }
             }
+            break;
         }
 
         case Qt::CheckStateRole:
@@ -208,6 +209,7 @@ bool CommandDataModel::setData(const QModelIndex &index,
                 command.isEnabled = value.toInt() > 0;
                 isModified = true;
             }
+            break;
         }
 
     } else {
@@ -248,9 +250,11 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
     Qt::ItemFlags f = QAbstractTableModel::flags(index);
 
     if (isNormalRow) {
-        f |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+        f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
+        else
+            f |= Qt::ItemIsEditable;
     } else {
         f |= Qt::ItemIsDropEnabled;
         if (index.column() == NameColumn)
