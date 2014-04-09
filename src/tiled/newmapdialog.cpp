@@ -116,6 +116,7 @@ MapDocument *NewMapDialog::createMap()
                        tileWidth, tileHeight);
 
     map->setLayerDataFormat(layerFormat);
+    map->setBackgroundColor(Qt::gray);
 
     const size_t gigabyte = 1073741824;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
