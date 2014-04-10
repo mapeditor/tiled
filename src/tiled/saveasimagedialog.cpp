@@ -153,8 +153,12 @@ void SaveAsImageDialog::accept()
 
     QImage image(mapSize, QImage::Format_ARGB32_Premultiplied);
 
-    if (includeBackgroundColor)
-        image.fill(mMapDocument->map()->backgroundColor());
+    if (includeBackgroundColor) {
+        if (mMapDocument->map()->backgroundColor().isValid())
+            image.fill(mMapDocument->map()->backgroundColor());
+        else
+            image.fill(Qt::gray);
+    }
     else
         image.fill(Qt::transparent);
 
