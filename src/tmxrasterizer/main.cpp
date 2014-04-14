@@ -70,7 +70,7 @@ static void showHelp()
             "  -t --tilesize SIZE      : The requested size in pixels at which a tile is rendered\n"
             "                            Overrides the --scale option\n"
             "  -a --anti-aliasing      : Smooth the output image using anti-aliasing\n"
-			"  -c --include-collision  : Include the layer named \"collision\" in the output image\n";
+            "  -c --include-collision  : Include the layer named \"collision\" in the output image\n";
 }
 
 static void showVersion()
