@@ -76,6 +76,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="includeBackgroundColor">
+        <property name="text">
+         <string>&amp;Include background color</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

@@ -40,6 +40,7 @@
 static const char * const VISIBLE_ONLY_KEY = "SaveAsImage/VisibleLayersOnly";
 static const char * const CURRENT_SCALE_KEY = "SaveAsImage/CurrentScale";
 static const char * const DRAW_GRID_KEY = "SaveAsImage/DrawGrid";
+static const char * const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgroundColor";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -88,10 +89,13 @@ SaveAsImageDialog::SaveAsImageDialog(MapDocument *mapDocument,
             s->value(QLatin1String(CURRENT_SCALE_KEY), true).toBool();
     const bool drawTileGrid =
             s->value(QLatin1String(DRAW_GRID_KEY), false).toBool();
+    const bool includeBackgroundColor =
+            s->value(QLatin1String(INCLUDE_BACKGROUND_COLOR), false).toBool();
 
     mUi->visibleLayersOnly->setChecked(visibleLayersOnly);
     mUi->currentZoomLevel->setChecked(useCurrentScale);
     mUi->drawTileGrid->setChecked(drawTileGrid);
+    mUi->includeBackgroundColor->setChecked(includeBackgroundColor);
 
     connect(mUi->browseButton, SIGNAL(clicked()), SLOT(browse()));
     connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
@@ -134,6 +138,7 @@ void SaveAsImageDialog::accept()
     const bool visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
     const bool useCurrentScale = mUi->currentZoomLevel->isChecked();
     const bool drawTileGrid = mUi->drawTileGrid->isChecked();
+    const bool includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
 
     MapRenderer *renderer = mMapDocument->renderer();
 
@@ -147,7 +152,16 @@ void SaveAsImageDialog::accept()
         mapSize *= mCurrentScale;
 
     QImage image(mapSize, QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::transparent);
+
+    if (includeBackgroundColor) {
+        if (mMapDocument->map()->backgroundColor().isValid())
+            image.fill(mMapDocument->map()->backgroundColor());
+        else
+            image.fill(Qt::gray);
+    }
+    else
+        image.fill(Qt::transparent);
+
     QPainter painter(&image);
 
     if (useCurrentScale && mCurrentScale != qreal(1)) {
@@ -205,6 +219,7 @@ void SaveAsImageDialog::accept()
     s->setValue(QLatin1String(VISIBLE_ONLY_KEY), visibleLayersOnly);
     s->setValue(QLatin1String(CURRENT_SCALE_KEY), useCurrentScale);
     s->setValue(QLatin1String(DRAW_GRID_KEY), drawTileGrid);
+    s->setValue(QLatin1String(INCLUDE_BACKGROUND_COLOR), includeBackgroundColor);
 
     QDialog::accept();
 }
