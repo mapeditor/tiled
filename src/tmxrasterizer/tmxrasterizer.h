@@ -41,10 +41,12 @@ public:
     qreal scale() const { return mScale; }
     int tileSize() const { return mTileSize; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
+    bool includeCollision() const { return mIncludeCollision; }
 
     void setScale(qreal scale) { mScale = scale; }
     void setTileSize(int tileSize) { mTileSize = tileSize; }
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
+    void setIncludeCollision(bool includeCollision) { mIncludeCollision = includeCollision; }
 
     int render(const QString &mapFileName, const QString &imageFileName);
 
@@ -52,6 +54,7 @@ private:
     qreal mScale;
     int mTileSize;
     bool mUseAntiAliasing;
+    bool mIncludeCollision;
 };
 
 #endif // TMXRASTERIZER_H

@@ -41,6 +41,7 @@ struct CommandLineOptions {
         , scale(0.0)
         , tileSize(0)
         , useAntiAliasing(false)
+        , includeCollision(false)
     {}
 
     bool showHelp;
@@ -50,6 +51,7 @@ struct CommandLineOptions {
     qreal scale;
     int tileSize;
     bool useAntiAliasing;
+    bool includeCollision;
 };
 
 } // anonymous namespace
@@ -62,12 +64,13 @@ static void showHelp()
             "  tmxrasterizer [options] [input file] [output file]\n"
             "\n"
             "Options:\n"
-            "  -h --help           : Display this help\n"
-            "  -v --version        : Display the version\n"
-            "  -s --scale SCALE    : The scale of the output image\n"
-            "  -t --tilesize SIZE  : The requested size in pixels at which a tile is rendered\n"
-            "                        Overrides the --scale option\n"
-            "  -a --anti-aliasing  : Smooth the output image using anti-aliasing\n";
+            "  -h --help               : Display this help\n"
+            "  -v --version            : Display the version\n"
+            "  -s --scale SCALE        : The scale of the output image\n"
+            "  -t --tilesize SIZE      : The requested size in pixels at which a tile is rendered\n"
+            "                            Overrides the --scale option\n"
+            "  -a --anti-aliasing      : Smooth the output image using anti-aliasing\n"
+			"  -c --include-collision  : Include the layer named \"collision\" in the output image\n";
 }
 
 static void showVersion()
@@ -116,6 +119,9 @@ static void parseCommandLineArguments(CommandLineOptions &options)
         } else if (arg == QLatin1String("--anti-aliasing")
                 || arg == QLatin1String("-a")) {
             options.useAntiAliasing = true;
+        } else if (arg == QLatin1String("--include-collision")
+                || arg == QLatin1String("-c")) {
+            options.includeCollision = true;
         } else if (arg.isEmpty()) {
             options.showHelp = true;
         } else if (arg.at(0) == QLatin1Char('-')) {
@@ -158,6 +164,7 @@ int main(int argc, char *argv[])
 
     TmxRasterizer w;
     w.setAntiAliasing(options.useAntiAliasing);
+    w.setIncludeCollision(options.includeCollision);
 
     if (options.tileSize > 0) {
         w.setTileSize(options.tileSize);

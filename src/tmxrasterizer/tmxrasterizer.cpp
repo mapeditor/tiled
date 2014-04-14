@@ -44,7 +44,8 @@ using namespace Tiled;
 TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
-    mUseAntiAliasing(true)
+    mUseAntiAliasing(true),
+    mIncludeCollision(false)
 {
 }
 
@@ -105,7 +106,7 @@ int TmxRasterizer::render(const QString &mapFileName,
     // Perform a similar rendering than found in saveasimagedialog.cpp
     foreach (Layer *layer, map->layers()) {
         // Exclude all object groups and collision layers
-        if (layer->isObjectGroup() || layer->name().toLower() == "collision")
+        if (layer->isObjectGroup() || (!mIncludeCollision && layer->name().toLower() == "collision"))
             continue;
 
         painter.setOpacity(layer->opacity());
