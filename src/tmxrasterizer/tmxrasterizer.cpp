@@ -37,6 +37,7 @@
 #include "staggeredrenderer.h"
 #include "tilelayer.h"
 
+
 #include <QDebug>
 
 using namespace Tiled;
@@ -45,12 +46,26 @@ TmxRasterizer::TmxRasterizer():
     mScale(1.0),
     mTileSize(0),
     mUseAntiAliasing(true),
-    mIncludeCollision(false)
+    mIgnoreVisibility(false)
 {
 }
 
 TmxRasterizer::~TmxRasterizer()
 {
+}
+
+bool TmxRasterizer::shouldDrawLayer(Layer *layer)
+{
+    if (layer->isObjectGroup())
+        return false;
+
+    if (mLayersToHide.contains(layer->name())) 
+        return false;
+
+    if (mIgnoreVisibility) 
+        return true;
+
+    return layer->isVisible();
 }
 
 int TmxRasterizer::render(const QString &mapFileName,
@@ -105,9 +120,10 @@ int TmxRasterizer::render(const QString &mapFileName,
     }
     // Perform a similar rendering than found in saveasimagedialog.cpp
     foreach (Layer *layer, map->layers()) {
-        // Exclude all object groups and collision layers
-        if (layer->isObjectGroup() || (!mIncludeCollision && layer->name().toLower() == "collision"))
+
+        if (!shouldDrawLayer(layer)) 
             continue;
+
 
         painter.setOpacity(layer->opacity());
 

@@ -29,7 +29,12 @@
 #ifndef TMXRASTERIZER_H
 #define TMXRASTERIZER_H
 
+#include "layer.h"
+
 #include <QString>
+#include <QStringList>
+
+using namespace Tiled;
 
 class TmxRasterizer
 {
@@ -41,12 +46,14 @@ public:
     qreal scale() const { return mScale; }
     int tileSize() const { return mTileSize; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
-    bool includeCollision() const { return mIncludeCollision; }
+    bool IgnoreVisibility() const { return mIgnoreVisibility; }
 
     void setScale(qreal scale) { mScale = scale; }
     void setTileSize(int tileSize) { mTileSize = tileSize; }
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
-    void setIncludeCollision(bool includeCollision) { mIncludeCollision = includeCollision; }
+    void setIgnoreVisibility(bool IgnoreVisibility) { mIgnoreVisibility = IgnoreVisibility; }
+
+    void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
 
     int render(const QString &mapFileName, const QString &imageFileName);
 
@@ -54,7 +61,11 @@ private:
     qreal mScale;
     int mTileSize;
     bool mUseAntiAliasing;
-    bool mIncludeCollision;
+    bool mIgnoreVisibility;
+    QStringList mLayersToHide;
+
+    bool shouldDrawLayer(Layer *layer);
+
 };
 
 #endif // TMXRASTERIZER_H
