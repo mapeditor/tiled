@@ -139,6 +139,11 @@ public:
     void centerViewOn(const QPointF &pos)
     { centerViewOn(pos.x(), pos.y()); }
 
+    /**
+     * Updates the order of open documents to reflect changes in the tab ordering.
+     */
+    void updateDocumentOrder();
+
 signals:
     /**
      * Emitted when the current displayed map document changed.

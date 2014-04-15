@@ -189,6 +189,7 @@ void DocumentManager::closeCurrentDocument()
 
 void DocumentManager::closeDocumentAt(int index)
 {
+    updateDocumentOrder();
     MapDocument *mapDocument = mDocuments.takeAt(index);
     QWidget *mapView = mTabWidget->widget(index);
 
@@ -205,6 +206,7 @@ void DocumentManager::closeAllDocuments()
 
 void DocumentManager::currentIndexChanged()
 {
+    updateDocumentOrder();
     if (mSceneWithTool) {
         mSceneWithTool->disableSelectedTool();
         mSceneWithTool = 0;
@@ -243,6 +245,7 @@ void DocumentManager::setSelectedTool(AbstractTool *tool)
 
 void DocumentManager::updateDocumentTab()
 {
+    updateDocumentOrder();
     MapDocument *mapDocument = static_cast<MapDocument*>(sender());
     const int index = mDocuments.indexOf(mapDocument);
 
@@ -252,6 +255,16 @@ void DocumentManager::updateDocumentTab()
 
     mTabWidget->setTabText(index, tabText);
     mTabWidget->setTabToolTip(index, mapDocument->fileName());
+}
+
+void DocumentManager::updateDocumentOrder()
+{
+    mDocuments.clear();
+    for (int i = 0; i < mTabWidget->count(); i++) {
+        MapView* mapView = static_cast<MapView*>(mTabWidget->widget(i));
+        MapDocument* mapDocument = mapView->mapScene()->mapDocument();
+        mDocuments.append(mapDocument);
+    }
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)
