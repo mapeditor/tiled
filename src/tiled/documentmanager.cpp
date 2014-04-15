@@ -54,6 +54,7 @@ DocumentManager::DocumentManager(QObject *parent)
     , mSceneWithTool(0)
 {
     mTabWidget->setDocumentMode(true);
+    mTabWidget->setMovable(true);
     mTabWidget->setTabsClosable(true);
 
     connect(mTabWidget, SIGNAL(currentChanged(int)),
