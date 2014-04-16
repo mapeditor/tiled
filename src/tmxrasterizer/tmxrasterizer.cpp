@@ -59,7 +59,7 @@ bool TmxRasterizer::shouldDrawLayer(Layer *layer)
     if (layer->isObjectGroup())
         return false;
 
-    if (mLayersToHide.contains(layer->name())) 
+    if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive)) 
         return false;
 
     if (mIgnoreVisibility) 
