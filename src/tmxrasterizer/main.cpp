@@ -41,6 +41,7 @@ struct CommandLineOptions {
         , scale(0.0)
         , tileSize(0)
         , useAntiAliasing(false)
+        , ignoreVisibility(false)
     {}
 
     bool showHelp;
@@ -50,6 +51,8 @@ struct CommandLineOptions {
     qreal scale;
     int tileSize;
     bool useAntiAliasing;
+    bool ignoreVisibility;
+    QStringList layersToHide;
 };
 
 } // anonymous namespace
@@ -62,12 +65,16 @@ static void showHelp()
             "  tmxrasterizer [options] [input file] [output file]\n"
             "\n"
             "Options:\n"
-            "  -h --help           : Display this help\n"
-            "  -v --version        : Display the version\n"
-            "  -s --scale SCALE    : The scale of the output image\n"
-            "  -t --tilesize SIZE  : The requested size in pixels at which a tile is rendered\n"
-            "                        Overrides the --scale option\n"
-            "  -a --anti-aliasing  : Smooth the output image using anti-aliasing\n";
+            "  -h --help               : Display this help\n"
+            "  -v --version            : Display the version\n"
+            "  -s --scale SCALE        : The scale of the output image\n"
+            "  -t --tilesize SIZE      : The requested size in pixels at which a tile is rendered\n"
+            "                            Overrides the --scale option\n"
+            "  -a --anti-aliasing      : Smooth the output image using anti-aliasing\n"
+            "     --ignore-visibility  : Ignore all layer visiblity flags in the map file, and render all\n"
+            "                            layers in the output (default is to omit invisible layers)\n"
+            "     --hide-layer         : Specifies a layer to omit from the output image\n"
+            "                            Can be repeated to hide multiple layers\n";
 }
 
 static void showVersion()
@@ -113,9 +120,18 @@ static void parseCommandLineArguments(CommandLineOptions &options)
                     options.showHelp = true;
                 }
             }
+        } else if (arg == QLatin1String("--hide-layer")) {
+            i++;
+            if (i >= arguments.size()) {
+                options.showHelp = true;
+            } else {
+                options.layersToHide.append(arguments.at(i));
+            }
         } else if (arg == QLatin1String("--anti-aliasing")
                 || arg == QLatin1String("-a")) {
             options.useAntiAliasing = true;
+        } else if (arg == QLatin1String("--ignore-visibility")) {
+            options.ignoreVisibility = true;
         } else if (arg.isEmpty()) {
             options.showHelp = true;
         } else if (arg.at(0) == QLatin1Char('-')) {
@@ -158,6 +174,9 @@ int main(int argc, char *argv[])
 
     TmxRasterizer w;
     w.setAntiAliasing(options.useAntiAliasing);
+    w.setIgnoreVisibility(options.ignoreVisibility);
+    w.setLayersToHide(options.layersToHide);
+
 
     if (options.tileSize > 0) {
         w.setTileSize(options.tileSize);
@@ -167,3 +186,4 @@ int main(int argc, char *argv[])
 
     return w.render(options.fileToOpen, options.fileToSave);
 }
+
