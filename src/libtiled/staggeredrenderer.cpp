@@ -59,8 +59,7 @@ QRect StaggeredRenderer::boundingRect(const QRect &rect) const
     int width = rect.width() * tileWidth;
     int height = (tileHeight / 2) * (rect.height() + 1);
 
-    if (rect.height() > 1)
-    {
+    if (rect.height() > 1) {
         width += tileWidth / 2;
         if (rect.y() % 2)
             topLeft.rx() -= tileWidth / 2;
@@ -75,8 +74,7 @@ QRectF StaggeredRenderer::boundingRect(const MapObject *object) const
 
     QRectF boundingRect;
 
-    if (!object->cell().isEmpty())
-    {
+    if (!object->cell().isEmpty()) {
         const QPointF bottomLeft = bounds.topLeft();
         const Tile *tile = object->cell().tile;
         const QSize imgSize = tile->image().size();
@@ -85,25 +83,18 @@ QRectF StaggeredRenderer::boundingRect(const MapObject *object) const
                               bottomLeft.y() + tileOffset.y() - imgSize.height(),
                               imgSize.width(),
                               imgSize.height()).adjusted(-1, -1, 1, 1);
-    }
-    else
-    {
+    } else {
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
 
-        switch (object->shape())
-        {
+        switch (object->shape()) {
             case MapObject::Ellipse:
-            case MapObject::Rectangle:
-            {
-                if (bounds.isNull())
-                {
+            case MapObject::Rectangle: {
+                if (bounds.isNull()) {
                     boundingRect = bounds.adjusted(-10 - extraSpace,
                                                    -10 - extraSpace,
                                                    10 + extraSpace + 1,
                                                    10 + extraSpace + 1);
-                }
-                else
-                {
+                } else {
                     const int nameHeight = object->name().isEmpty() ? 0 : 15;
                     boundingRect = bounds.adjusted(-extraSpace,
                                                    -nameHeight - extraSpace,
@@ -114,8 +105,7 @@ QRectF StaggeredRenderer::boundingRect(const MapObject *object) const
             }
 
             case MapObject::Polygon:
-            case MapObject::Polyline:
-            {
+            case MapObject::Polyline: {
                 const QPointF &pos = object->position();
                 const QPolygonF polygon = object->polygon().translated(pos);
                 QPolygonF screenPolygon = pixelToScreenCoords(polygon);
@@ -135,16 +125,11 @@ QPainterPath StaggeredRenderer::shape(const MapObject *object) const
 {
     QPainterPath path;
 
-    if (!object->cell().isEmpty())
-    {
+    if (!object->cell().isEmpty()) {
         path.addRect(boundingRect(object));
-    }
-    else
-    {
-        switch (object->shape())
-        {
-            case MapObject::Rectangle:
-            {
+    } else {
+        switch (object->shape()) {
+            case MapObject::Rectangle: {
                 const QRectF bounds = object->bounds();
 
                 if (bounds.isNull()) {
@@ -156,8 +141,7 @@ QPainterPath StaggeredRenderer::shape(const MapObject *object) const
             }
 
             case MapObject::Polygon:
-            case MapObject::Polyline:
-            {
+            case MapObject::Polyline: {
                 const QPointF &pos = object->position();
                 const QPolygonF polygon = object->polygon().translated(pos);
                 const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
@@ -174,8 +158,7 @@ QPainterPath StaggeredRenderer::shape(const MapObject *object) const
                 break;
             }
 
-            case MapObject::Ellipse:
-            {
+            case MapObject::Ellipse: {
                 const QRectF bounds = object->bounds();
 
                 if (bounds.isNull()) {
@@ -292,16 +275,14 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
 
     CellRenderer renderer(painter);
 
-    for (; startPos.y() < rect.bottom() && startTile.y() < layer->height(); startTile.ry()++)
-    {
+    for (; startPos.y() < rect.bottom() && startTile.y() < layer->height(); startTile.ry()++) {
         QPoint rowTile = startTile;
         QPoint rowPos = startPos;
 
         if ((startTile.y() + layer->y()) % 2)
             rowPos.rx() += tileWidth / 2;
 
-        for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++)
-        {
+        for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++) {
             const Cell &cell = layer->cellAt(rowTile);
 
             if (!cell.isEmpty())
@@ -345,15 +326,13 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
 
-    if (!object->cell().isEmpty())
-    {
+    if (!object->cell().isEmpty()) {
         const Cell &cell = object->cell();
 
         CellRenderer(painter).render(cell, QPointF(),
                                      CellRenderer::BottomLeft);
 
-        if (testFlag(ShowTileObjectOutlines))
-        {
+        if (testFlag(ShowTileObjectOutlines)) {
             const QRect rect = cell.tile->image().rect();
             QPen pen(Qt::SolidLine);
             pen.setCosmetic(true);
@@ -364,9 +343,7 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
             painter->setPen(pen);
             painter->drawRect(rect);
         }
-    }
-    else
-    {
+    } else {
         const qreal lineWidth = objectLineWidth();
         const qreal scale = painterScale();
         const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / scale;
@@ -390,15 +367,12 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
         MapObject::Shape shape = object->shape();
 
         if (shape == MapObject::Ellipse &&
-                (rect.width() == qreal(0) ^ rect.height() == qreal(0)))
-        {
+                (rect.width() == qreal(0) ^ rect.height() == qreal(0))) {
             shape = MapObject::Rectangle;
         }
 
-        switch (shape)
-        {
-            case MapObject::Rectangle:
-            {
+        switch (shape) {
+            case MapObject::Rectangle: {
                 if (rect.isNull())
                     rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
 
@@ -423,8 +397,7 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
                 break;
             }
 
-            case MapObject::Polyline:
-            {
+            case MapObject::Polyline: {
                 QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
 
                 painter->setPen(shadowPen);
@@ -436,8 +409,7 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
                 break;
             }
 
-            case MapObject::Polygon:
-            {
+            case MapObject::Polygon: {
                 QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
 
                 painter->setPen(shadowPen);
@@ -449,8 +421,7 @@ void StaggeredRenderer::drawMapObject(QPainter *painter,
                 break;
             }
 
-            case MapObject::Ellipse:
-            {
+            case MapObject::Ellipse: {
                 if (rect.isNull())
                     rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
 
