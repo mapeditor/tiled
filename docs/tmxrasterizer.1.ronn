@@ -24,6 +24,17 @@ This is very helpful for creating small-scale previews, such as mini-maps.
     Overrides the --scale option.
   * `-a` `--anti-aliasing`:
     Smooth the output image using anti-aliasing
+  * `--ignore-visibility`:
+    Ignore all layer visibility flags in the map file and render
+    all layers in the output (default is to omit invisible layers).
+  * `--hide-layer`:
+    Specifies a layer to omit from the output image.
+    Can be repeated to hide multiple layers.
+    The layername is case insensitive.
+
+    *Example*:
+
+    `tmxrasterizer` --hide-layer collision --hide-layer otherlayer [...]
 
 ## AUTHOR
 Vincent Petithory <<vincent.petithory@gmail.com>>
