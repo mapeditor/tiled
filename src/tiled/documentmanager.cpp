@@ -23,8 +23,8 @@
 
 #include "abstracttool.h"
 #include "maprenderer.h"
+#include "movabletabwidget.h"
 
-#include <QTabWidget>
 #include <QUndoGroup>
 #include <QFileInfo>
 
@@ -48,19 +48,20 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
-    , mTabWidget(new QTabWidget)
+    , mTabWidget(new MovableTabWidget)
     , mUndoGroup(new QUndoGroup(this))
     , mSelectedTool(0)
     , mSceneWithTool(0)
 {
     mTabWidget->setDocumentMode(true);
-    mTabWidget->setMovable(true);
     mTabWidget->setTabsClosable(true);
 
     connect(mTabWidget, SIGNAL(currentChanged(int)),
             SLOT(currentIndexChanged()));
     connect(mTabWidget, SIGNAL(tabCloseRequested(int)),
             SIGNAL(documentCloseRequested(int)));
+    connect(mTabWidget, SIGNAL(tabMoved(int, int)),
+            SLOT(documentTabMoved(int, int)));
 }
 
 DocumentManager::~DocumentManager()
@@ -189,7 +190,6 @@ void DocumentManager::closeCurrentDocument()
 
 void DocumentManager::closeDocumentAt(int index)
 {
-    updateDocumentOrder();
     MapDocument *mapDocument = mDocuments.takeAt(index);
     QWidget *mapView = mTabWidget->widget(index);
 
@@ -206,7 +206,6 @@ void DocumentManager::closeAllDocuments()
 
 void DocumentManager::currentIndexChanged()
 {
-    updateDocumentOrder();
     if (mSceneWithTool) {
         mSceneWithTool->disableSelectedTool();
         mSceneWithTool = 0;
@@ -245,7 +244,6 @@ void DocumentManager::setSelectedTool(AbstractTool *tool)
 
 void DocumentManager::updateDocumentTab()
 {
-    updateDocumentOrder();
     MapDocument *mapDocument = static_cast<MapDocument*>(sender());
     const int index = mDocuments.indexOf(mapDocument);
 
@@ -257,14 +255,10 @@ void DocumentManager::updateDocumentTab()
     mTabWidget->setTabToolTip(index, mapDocument->fileName());
 }
 
-void DocumentManager::updateDocumentOrder()
+void DocumentManager::documentTabMoved(int from, int to)
 {
-    mDocuments.clear();
-    for (int i = 0; i < mTabWidget->count(); i++) {
-        MapView* mapView = static_cast<MapView*>(mTabWidget->widget(i));
-        MapDocument* mapDocument = mapView->mapScene()->mapDocument();
-        mDocuments.append(mapDocument);
-    }
+    MapDocument* mapDocument = mDocuments.takeAt(from);
+    mDocuments.insert(to, mapDocument);
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)

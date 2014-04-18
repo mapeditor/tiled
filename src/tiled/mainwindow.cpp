@@ -1467,7 +1467,6 @@ void MainWindow::writeSettings()
     mSettings.endGroup();
 
     mSettings.beginGroup(QLatin1String("recentFiles"));
-    mDocumentManager->updateDocumentOrder();
     if (MapDocument *document = mDocumentManager->currentDocument())
         mSettings.setValue(QLatin1String("lastActive"), document->fileName());
 

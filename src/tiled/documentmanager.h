@@ -29,7 +29,6 @@
 #include <QList>
 #include <QPair>
 
-class QTabWidget;
 class QUndoGroup;
 
 namespace Tiled {
@@ -41,6 +40,7 @@ namespace Internal {
 class MapDocument;
 class MapScene;
 class MapView;
+class MovableTabWidget;
 
 /**
  * This class controls the open documents.
@@ -139,11 +139,6 @@ public:
     void centerViewOn(const QPointF &pos)
     { centerViewOn(pos.x(), pos.y()); }
 
-    /**
-     * Updates the order of open documents to reflect changes in the tab ordering.
-     */
-    void updateDocumentOrder();
-
 signals:
     /**
      * Emitted when the current displayed map document changed.
@@ -164,6 +159,7 @@ public slots:
 private slots:
     void currentIndexChanged();
     void updateDocumentTab();
+    void documentTabMoved(int from, int to);
 
 private:
     DocumentManager(QObject *parent = 0);
@@ -171,7 +167,7 @@ private:
 
     QList<MapDocument*> mDocuments;
 
-    QTabWidget *mTabWidget;
+    MovableTabWidget *mTabWidget;
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapScene *mSceneWithTool;
