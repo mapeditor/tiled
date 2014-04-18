@@ -71,7 +71,7 @@ static void showHelp()
             "  -t --tilesize SIZE      : The requested size in pixels at which a tile is rendered\n"
             "                            Overrides the --scale option\n"
             "  -a --anti-aliasing      : Smooth the output image using anti-aliasing\n"
-            "     --ignore-visibility  : Ignore all layer visiblity flags in the map file, and render all\n"
+            "     --ignore-visibility  : Ignore all layer visibility flags in the map file, and render all\n"
             "                            layers in the output (default is to omit invisible layers)\n"
             "     --hide-layer         : Specifies a layer to omit from the output image\n"
             "                            Can be repeated to hide multiple layers\n";
