@@ -388,15 +388,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
                 source = p->resolveReference(source, mPath);
             tileset->setTileImage(id, QPixmap::fromImage(readImage()), source);
         } else if (xml.name() == QLatin1String("objectgroup")) {
-            // A quick hack to avoid taking into account the map's tile size
-            // for object groups associated with a tile.
-            const int tileWidth = mMap->tileWidth();
-            const int tileHeight = mMap->tileHeight();
-            mMap->setTileWidth(1);
-            mMap->setTileHeight(1);
             tile->setObjectGroup(readObjectGroup());
-            mMap->setTileWidth(tileWidth);
-            mMap->setTileHeight(tileHeight);
         } else if (xml.name() == QLatin1String("animation")) {
             tile->setFrames(readAnimationFrames());
         } else {
