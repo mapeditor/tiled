@@ -289,7 +289,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     if (id == CustomProperty) {
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->push(new SetProperty(mMapDocument,
-                                        mObject,
+                                        mMapDocument->currentObjects(),
                                         property->propertyName(),
                                         val.toString()));
         return;

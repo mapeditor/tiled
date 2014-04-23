@@ -58,19 +58,24 @@ void ChangeProperties::swapProperties()
 
 
 SetProperty::SetProperty(MapDocument *mapDocument,
-                         Object *object,
+                         const QList<Object*> &objects,
                          const QString &name,
                          const QString &value,
                          QUndoCommand *parent)
     : QUndoCommand(parent)
     , mMapDocument(mapDocument)
-    , mObject(object)
+    , mObjects(objects)
     , mName(name)
     , mValue(value)
-    , mPreviousValue(object->property(name))
-    , mPropertyExisted(object->hasProperty(name))
 {
-    if (mPropertyExisted)
+    foreach (Object *obj, mObjects) {
+        ObjectProperty prop;
+        prop.existed = obj->hasProperty(mName);
+        prop.previousValue = obj->property(mName);
+        mProperties.append(prop);
+    }
+
+    if (mObjects.size() > 1 || mObjects[0]->hasProperty(mName))
         setText(QCoreApplication::translate("Undo Commands", "Set Property"));
     else
         setText(QCoreApplication::translate("Undo Commands", "Add Property"));
@@ -78,41 +83,46 @@ SetProperty::SetProperty(MapDocument *mapDocument,
 
 void SetProperty::undo()
 {
-    if (mPropertyExisted)
-        mMapDocument->setProperty(mObject, mName, mPreviousValue);
-    else
-        mMapDocument->removeProperty(mObject, mName);
+    for (int i = 0; i < mObjects.size(); ++i) {
+        if (mProperties[i].existed)
+            mMapDocument->setProperty(mObjects[i], mName, mProperties[i].previousValue);
+        else
+            mMapDocument->removeProperty(mObjects[i], mName);
+    }
 }
 
 void SetProperty::redo()
 {
-    mMapDocument->setProperty(mObject, mName, mValue);
+    foreach (Object *obj, mObjects)
+        mMapDocument->setProperty(obj, mName, mValue);
 }
 
 
 RemoveProperty::RemoveProperty(MapDocument *mapDocument,
-                               Object *object,
+                               const QList<Object*> &objects,
                                const QString &name,
                                QUndoCommand *parent)
     : QUndoCommand(parent)
     , mMapDocument(mapDocument)
-    , mObject(object)
+    , mObjects(objects)
     , mName(name)
-    , mPreviousValue(object->property(name))
 {
-    Q_ASSERT(object->hasProperty(name));
+    foreach (Object *obj, mObjects)
+        mPreviousValues.append(obj->property(mName));
 
     setText(QCoreApplication::translate("Undo Commands", "Remove Property"));
 }
 
 void RemoveProperty::undo()
 {
-    mMapDocument->setProperty(mObject, mName, mPreviousValue);
+    for (int i = 0; i < mObjects.size(); ++i)
+        mMapDocument->setProperty(mObjects[i], mName, mPreviousValues[i]);
 }
 
 void RemoveProperty::redo()
 {
-    mMapDocument->removeProperty(mObject, mName);
+    foreach (Object *obj, mObjects)
+        mMapDocument->removeProperty(obj, mName);
 }
 
 
@@ -125,6 +135,9 @@ RenameProperty::RenameProperty(MapDocument *mapDocument,
 
     const QString value = object->property(oldName);
 
-    new RemoveProperty(mapDocument, object, oldName, this);
-    new SetProperty(mapDocument, object, newName, value, this);
+    QList<Object*> objects;
+    objects.append(object);
+
+    new RemoveProperty(mapDocument, objects, oldName, this);
+    new SetProperty(mapDocument, objects, newName, value, this);
 }

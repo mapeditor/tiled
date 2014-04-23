@@ -199,7 +199,7 @@ void PropertiesDock::addProperty(const QString &name)
 
     if (!object->hasProperty(name)) {
         QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument, object, name, QString()));
+        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, QString()));
     }
 
     mPropertyBrowser->editCustomProperty(name);
@@ -214,7 +214,7 @@ void PropertiesDock::removeProperty()
 
     const QString name = item->property()->propertyName();
     QUndoStack *undoStack = mMapDocument->undoStack();
-    undoStack->push(new RemoveProperty(mMapDocument, object, name));
+    undoStack->push(new RemoveProperty(mMapDocument, mMapDocument->currentObjects(), name));
 
     // TODO: Would be nice to automatically select the next property
 }

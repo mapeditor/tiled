@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QUndoCommand>
+#include <QVector>
 
 namespace Tiled {
 namespace Internal {
@@ -69,7 +70,7 @@ public:
      * @param value        the new value of the property
      */
     SetProperty(MapDocument *mapDocument,
-                Object *object,
+                const QList<Object*> &objects,
                 const QString &name,
                 const QString &value,
                 QUndoCommand *parent = 0);
@@ -78,12 +79,15 @@ public:
     void redo();
 
 private:
+    struct ObjectProperty {
+        QString previousValue;
+        bool existed;
+    };
+    QVector<ObjectProperty> mProperties;
     MapDocument *mMapDocument;
-    Object *mObject;
+    QList<Object*> mObjects;
     QString mName;
     QString mValue;
-    QString mPreviousValue;
-    bool mPropertyExisted;
 };
 
 class RemoveProperty : public QUndoCommand
@@ -97,7 +101,7 @@ public:
      * @param name         the name of the property to be removed
      */
     RemoveProperty(MapDocument *mapDocument,
-                   Object *object,
+                   const QList<Object*> &objects,
                    const QString &name,
                    QUndoCommand *parent = 0);
 
@@ -106,9 +110,9 @@ public:
 
 private:
     MapDocument *mMapDocument;
-    Object *mObject;
+    QList<Object*> mObjects;
+    QVector<QString> mPreviousValues;
     QString mName;
-    QString mPreviousValue;
 };
 
 class RenameProperty : public QUndoCommand
