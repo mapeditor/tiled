@@ -25,6 +25,7 @@
 
 #include "layer.h"
 #include "tiled.h"
+#include "mapobject.h"
 
 #include <QList>
 #include <QObject>
@@ -217,6 +218,8 @@ public:
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
+
+    QList<Object*> currentObjects() const;
 
     /**
      * Makes sure the all tilesets which are used at the given \a map will be
