@@ -456,9 +456,8 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         mMapDocument->undoStack()->push(command);
 }
 
-void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
+QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject)
 {
-    MapObject *mapObject = static_cast<MapObject*>(mObject);
     QUndoCommand *command = 0;
 
     switch (id) {
@@ -509,8 +508,29 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
         break;
     }
 
-    if (command)
-        mMapDocument->undoStack()->push(command);
+    return command;
+}
+
+void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
+{
+    MapObject *mapObject = static_cast<MapObject*>(mObject);
+
+    QUndoCommand *command = applyMapObjectValueTo(id, val, mapObject);
+
+    mMapDocument->undoStack()->beginMacro(command->text());
+    mMapDocument->undoStack()->push(command);
+
+    //Used to share non-custom properties.
+    QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
+    if (selectedObjects.size() > 1) {
+        foreach (MapObject *obj, selectedObjects) {
+            if (obj != mapObject) {
+                mMapDocument->undoStack()->push(applyMapObjectValueTo(id, val, obj));
+            }
+        }
+    }
+
+    mMapDocument->undoStack()->endMacro();
 }
 
 void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
