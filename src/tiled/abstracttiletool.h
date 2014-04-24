@@ -118,11 +118,13 @@ protected:
 private:
     void setBrushVisible(bool visible);
     void updateBrushVisibility();
+    void updateTileId();
 
     TilePositionMethod mTilePositionMethod;
     BrushItem *mBrushItem;
     int mTileX, mTileY;
     bool mBrushVisible;
+    QString mTileId;
 };
 
 } // namespace Internal
