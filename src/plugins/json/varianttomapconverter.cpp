@@ -196,17 +196,9 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
                 tileset->setTileImage(tileIndex, QPixmap(imagePath), imagePath);
             }
             QVariantMap objectGroupVariant = tileVar["objectgroup"].toMap();
-            if (!objectGroupVariant.isEmpty()) {
-                // A quick hack to avoid taking into account the map's tile size
-                // for object groups associated with a tile.
-                const int tileWidth = mMap->tileWidth();
-                const int tileHeight = mMap->tileHeight();
-                mMap->setTileWidth(1);
-                mMap->setTileHeight(1);
+            if (!objectGroupVariant.isEmpty())
                 tile->setObjectGroup(toObjectGroup(objectGroupVariant));
-                mMap->setTileWidth(tileWidth);
-                mMap->setTileHeight(tileHeight);
-            }
+
             QVariantList frameList = tileVar["animation"].toList();
             if (!frameList.isEmpty()) {
                 QVector<Frame> frames(frameList.size());
