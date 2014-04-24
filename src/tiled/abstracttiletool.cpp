@@ -26,6 +26,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "tilelayer.h"
+#include "tile.h"
 
 #include <cmath>
 
@@ -88,6 +89,7 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
         mTileY = tilePos.y();
 
         tilePositionChanged(tilePos);
+        updateTileId();
         updateStatusInfo();
     }
 }
@@ -112,6 +114,24 @@ void AbstractTileTool::updateStatusInfo()
     } else {
         setStatusInfo(QString());
     }
+}
+
+void AbstractTileTool::updateTileId()
+{
+    int tileid = -1;
+    const TileLayer* tilelayer = currentTileLayer();
+    if (tilelayer && !tilelayer->isEmpty() && tilelayer->isTileLayer() && tilelayer->isVisible())
+    {
+        const QPoint pos = tilePosition();
+        // if the cursor is outside of the map, bail out
+        if (tilelayer->bounds().contains(pos))
+        {
+            const Cell &cell = tilelayer->cellAt(pos);
+            if (cell.tile)
+                tileid = cell.tile->id();
+        }
+    }
+    mTileId = tileid <= 0 ? QLatin1String("None") : QString(QLatin1String("%1")).arg(tileid);
 }
 
 void AbstractTileTool::setBrushVisible(bool visible)
