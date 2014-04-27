@@ -671,6 +671,19 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
     delete mCurrentTiles;
     mCurrentTiles = tiles;
 
+    // Set the selected tiles on the map document
+    if (tiles) {
+        QList<Tile*> selectedTiles;
+        for (int y = 0; y < tiles->height(); ++y) {
+            for (int x = 0; x < tiles->width(); ++x) {
+                const Cell &cell = tiles->cellAt(x, y);
+                if (!cell.isEmpty())
+                    selectedTiles.append(cell.tile);
+            }
+        }
+        mMapDocument->setSelectedTiles(selectedTiles);
+    }
+
     emit currentTilesChanged(mCurrentTiles);
 }
 

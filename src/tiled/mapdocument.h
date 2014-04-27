@@ -216,6 +216,15 @@ public:
      */
     void setSelectedObjects(const QList<MapObject*> &selectedObjects);
 
+    /**
+     * Returns the list of selected tiles.
+     */
+    const QList<Tile*> &selectedTiles() const
+    { return mSelectedTiles; }
+
+    void setSelectedTiles(const QList<Tile*> &selectedTiles)
+    { mSelectedTiles = selectedTiles; }
+
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
 
@@ -381,6 +390,7 @@ private:
     LayerModel *mLayerModel;
     QRegion mTileSelection;
     QList<MapObject*> mSelectedObjects;
+    QList<Tile*> mSelectedTiles;
     Object *mCurrentObject;             /**< Current properties object. */
     MapRenderer *mRenderer;
     int mCurrentLayerIndex;
