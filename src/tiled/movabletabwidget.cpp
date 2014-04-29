@@ -29,6 +29,6 @@ using namespace Tiled::Internal;
 MovableTabWidget::MovableTabWidget()
 {
     setMovable(true);
-    connect(tabBar(), SIGNAL(tabMoved(int, int)),
-            SIGNAL(tabMoved(int, int)));
+    connect(tabBar(), SIGNAL(tabMoved(int,int)),
+            SIGNAL(tabMoved(int,int)));
 }

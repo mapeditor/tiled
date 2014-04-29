@@ -60,8 +60,8 @@ DocumentManager::DocumentManager(QObject *parent)
             SLOT(currentIndexChanged()));
     connect(mTabWidget, SIGNAL(tabCloseRequested(int)),
             SIGNAL(documentCloseRequested(int)));
-    connect(mTabWidget, SIGNAL(tabMoved(int, int)),
-            SLOT(documentTabMoved(int, int)));
+    connect(mTabWidget, SIGNAL(tabMoved(int,int)),
+            SLOT(documentTabMoved(int,int)));
 }
 
 DocumentManager::~DocumentManager()
@@ -257,8 +257,7 @@ void DocumentManager::updateDocumentTab()
 
 void DocumentManager::documentTabMoved(int from, int to)
 {
-    MapDocument* mapDocument = mDocuments.takeAt(from);
-    mDocuments.insert(to, mapDocument);
+    mDocuments.move(from, to);
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)
