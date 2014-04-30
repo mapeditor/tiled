@@ -109,8 +109,8 @@ void AbstractTileTool::updateEnabledState()
 void AbstractTileTool::updateStatusInfo()
 {
     if (mBrushVisible) {
-        setStatusInfo(QString(QLatin1String("%1, %2"))
-                      .arg(mTileX).arg(mTileY));
+        setStatusInfo(QString(QLatin1String("%1, %2, %3"))
+                      .arg(mTileX).arg(mTileY).arg(mTileId));
     } else {
         setStatusInfo(QString());
     }
