@@ -213,8 +213,7 @@ void Zoomable::comboActivated(int index)
 
 void Zoomable::comboEdited()
 {
-    int pos = mComboRegExp.indexIn(mComboBox->currentText());
-    Q_ASSERT(pos != -1);
+    Q_ASSERT(mComboRegExp.indexIn(mComboBox->currentText()) != -1);
 
     qreal scale = qBound(mZoomFactors.first(),
                          qreal(mComboRegExp.cap(1).toDouble() / 100.f),
