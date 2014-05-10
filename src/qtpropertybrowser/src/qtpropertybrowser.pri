@@ -6,7 +6,6 @@ DEPENDPATH += $$PWD
 qtpropertybrowser-uselib:!qtpropertybrowser-buildlib {
     LIBS += -L$$QTPROPERTYBROWSER_LIBDIR -l$$QTPROPERTYBROWSER_LIBNAME
 } else {
-    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
     SOURCES += $$PWD/qtpropertybrowser.cpp \
             $$PWD/qtpropertymanager.cpp \
             $$PWD/qteditorfactory.cpp \
