@@ -101,7 +101,7 @@ void VariantPropertyManager::setValue(QtProperty *property, const QVariant &val)
     if (mValues.contains(property)) {
         if (val.type() != QVariant::String && !val.canConvert(QVariant::String))
             return;
-        QString str = qVariantValue<QString>(val);
+        QString str = val.toString();
         Data d = mValues[property];
         if (d.value == str)
             return;
@@ -122,7 +122,7 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
         if (attribute == QLatin1String("filter")) {
             if (val.type() != QVariant::String && !val.canConvert(QVariant::String))
                 return;
-            QString str = qVariantValue<QString>(val);
+            QString str = val.toString();
             Data d = mValues[property];
             if (d.filter == str)
                 return;
@@ -134,7 +134,7 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
     }
 
     if (attribute == mSuggestionsAttribute && mSuggestions.contains(property))
-        mSuggestions[property] = qVariantValue<QStringList>(val);
+        mSuggestions[property] = val.toStringList();
 
     QtVariantPropertyManager::setAttribute(property, attribute, val);
 }
