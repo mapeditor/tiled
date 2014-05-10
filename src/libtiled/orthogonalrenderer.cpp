@@ -313,7 +313,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         // QCoreGraphicsPaintEngine. Draw them as rectangle instead.
         MapObject::Shape shape = object->shape();
         if (shape == MapObject::Ellipse &&
-                (rect.width() == qreal(0) ^ rect.height() == qreal(0))) {
+                ((rect.width() == qreal(0)) ^ (rect.height() == qreal(0)))) {
             shape = MapObject::Rectangle;
         }
 
