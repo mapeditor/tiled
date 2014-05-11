@@ -25,8 +25,8 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "tilelayer.h"
 #include "tile.h"
+#include "tilelayer.h"
 
 #include <cmath>
 
@@ -89,7 +89,6 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
         mTileY = tilePos.y();
 
         tilePositionChanged(tilePos);
-        updateTileId();
         updateStatusInfo();
     }
 }
@@ -109,29 +108,20 @@ void AbstractTileTool::updateEnabledState()
 void AbstractTileTool::updateStatusInfo()
 {
     if (mBrushVisible) {
-        setStatusInfo(QString(QLatin1String("%1, %2, %3"))
-                      .arg(mTileX).arg(mTileY).arg(mTileId));
+        Tile *tile = 0;
+
+        if (const TileLayer *tileLayer = currentTileLayer()) {
+            const QPoint pos = tilePosition() - tileLayer->position();
+            if (tileLayer->contains(pos))
+                tile = tileLayer->cellAt(pos).tile;
+        }
+
+        QString tileIdString = tile ? QString::number(tile->id()) : tr("empty");
+        setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
+                      .arg(mTileX).arg(mTileY).arg(tileIdString));
     } else {
         setStatusInfo(QString());
     }
-}
-
-void AbstractTileTool::updateTileId()
-{
-    int tileid = -1;
-    const TileLayer* tilelayer = currentTileLayer();
-    if (tilelayer && !tilelayer->isEmpty() && tilelayer->isTileLayer() && tilelayer->isVisible())
-    {
-        const QPoint pos = tilePosition();
-        // if the cursor is outside of the map, bail out
-        if (tilelayer->bounds().contains(pos))
-        {
-            const Cell &cell = tilelayer->cellAt(pos);
-            if (cell.tile)
-                tileid = cell.tile->id();
-        }
-    }
-    mTileId = tileid <= 0 ? QLatin1String("None") : QString(QLatin1String("%1")).arg(tileid);
 }
 
 void AbstractTileTool::setBrushVisible(bool visible)
