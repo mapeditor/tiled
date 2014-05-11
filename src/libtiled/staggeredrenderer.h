@@ -93,16 +93,16 @@ public:
                            const QColor &color,
                            const QRectF &exposed) const;
 
-    using MapRenderer::pixelToTileCoords;
+    using OrthogonalRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;
 
-    using MapRenderer::tileToPixelCoords;
+    using OrthogonalRenderer::tileToPixelCoords;
     QPointF tileToPixelCoords(qreal x, qreal y) const;
     
-    using MapRenderer::screenToTileCoords;
+    using OrthogonalRenderer::screenToTileCoords;
     QPointF screenToTileCoords(qreal x, qreal y) const;
 
-    using MapRenderer::tileToScreenCoords;
+    using OrthogonalRenderer::tileToScreenCoords;
     QPointF tileToScreenCoords(qreal x, qreal y) const;
 
     // Functions specific to this type of renderer
