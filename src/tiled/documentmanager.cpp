@@ -23,8 +23,8 @@
 
 #include "abstracttool.h"
 #include "maprenderer.h"
+#include "movabletabwidget.h"
 
-#include <QTabWidget>
 #include <QUndoGroup>
 #include <QFileInfo>
 
@@ -48,7 +48,7 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
-    , mTabWidget(new QTabWidget)
+    , mTabWidget(new MovableTabWidget)
     , mUndoGroup(new QUndoGroup(this))
     , mSelectedTool(0)
     , mSceneWithTool(0)
@@ -60,6 +60,8 @@ DocumentManager::DocumentManager(QObject *parent)
             SLOT(currentIndexChanged()));
     connect(mTabWidget, SIGNAL(tabCloseRequested(int)),
             SIGNAL(documentCloseRequested(int)));
+    connect(mTabWidget, SIGNAL(tabMoved(int,int)),
+            SLOT(documentTabMoved(int,int)));
 }
 
 DocumentManager::~DocumentManager()
@@ -251,6 +253,11 @@ void DocumentManager::updateDocumentTab()
 
     mTabWidget->setTabText(index, tabText);
     mTabWidget->setTabToolTip(index, mapDocument->fileName());
+}
+
+void DocumentManager::documentTabMoved(int from, int to)
+{
+    mDocuments.move(from, to);
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)

@@ -29,7 +29,6 @@
 #include <QList>
 #include <QPair>
 
-class QTabWidget;
 class QUndoGroup;
 
 namespace Tiled {
@@ -41,6 +40,7 @@ namespace Internal {
 class MapDocument;
 class MapScene;
 class MapView;
+class MovableTabWidget;
 
 /**
  * This class controls the open documents.
@@ -159,6 +159,7 @@ public slots:
 private slots:
     void currentIndexChanged();
     void updateDocumentTab();
+    void documentTabMoved(int from, int to);
 
 private:
     DocumentManager(QObject *parent = 0);
@@ -166,7 +167,7 @@ private:
 
     QList<MapDocument*> mDocuments;
 
-    QTabWidget *mTabWidget;
+    MovableTabWidget *mTabWidget;
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapScene *mSceneWithTool;
