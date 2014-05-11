@@ -1,7 +1,7 @@
 /*
  * movabletabwidget.h
- * Copyright 2010, Stefan Beller <stefanbeller@googlemail.com>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2014, Sean Humeniuk <seanhumeniuk@gmail.com>
+ * Copyright 2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
