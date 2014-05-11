@@ -1545,6 +1545,7 @@ void MainWindow::retranslateUi()
     mRandomButton->setToolTip(tr("Random Mode"));
     mLayerMenu->setTitle(tr("&Layer"));
     mViewsAndToolbarsMenu->setText(tr("Views and Toolbars"));
+    mShowTileAnimationEditor->setText(tr("Tile Animation Editor"));
     mShowTileCollisionEditor->setText(tr("Tile Collision Editor"));
     mActionHandler->retranslateUi();
     mToolManager->retranslateTools();
