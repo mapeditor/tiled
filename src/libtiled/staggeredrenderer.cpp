@@ -1,6 +1,6 @@
 /*
  * staggeredrenderer.cpp
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -68,112 +68,6 @@ QRect StaggeredRenderer::boundingRect(const QRect &rect) const
     return QRect(topLeft.x(), topLeft.y(), width, height);
 }
 
-QRectF StaggeredRenderer::boundingRect(const MapObject *object) const
-{
-    const QRectF bounds = object->bounds();
-
-    QRectF boundingRect;
-
-    if (!object->cell().isEmpty()) {
-        const QPointF bottomLeft = bounds.topLeft();
-        const Tile *tile = object->cell().tile;
-        const QSize imgSize = tile->image().size();
-        const QPoint tileOffset = tile->tileset()->tileOffset();
-        boundingRect = QRectF(bottomLeft.x() + tileOffset.x(),
-                              bottomLeft.y() + tileOffset.y() - imgSize.height(),
-                              imgSize.width(),
-                              imgSize.height()).adjusted(-1, -1, 1, 1);
-    } else {
-        const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
-
-        switch (object->shape()) {
-            case MapObject::Ellipse:
-            case MapObject::Rectangle: {
-                if (bounds.isNull()) {
-                    boundingRect = bounds.adjusted(-10 - extraSpace,
-                                                   -10 - extraSpace,
-                                                   10 + extraSpace + 1,
-                                                   10 + extraSpace + 1);
-                } else {
-                    const int nameHeight = object->name().isEmpty() ? 0 : 15;
-                    boundingRect = bounds.adjusted(-extraSpace,
-                                                   -nameHeight - extraSpace,
-                                                   extraSpace + 1,
-                                                   extraSpace + 1);
-                }
-                break;
-            }
-
-            case MapObject::Polygon:
-            case MapObject::Polyline: {
-                const QPointF &pos = object->position();
-                const QPolygonF polygon = object->polygon().translated(pos);
-                QPolygonF screenPolygon = pixelToScreenCoords(polygon);
-                boundingRect = screenPolygon.boundingRect().adjusted(-extraSpace,
-                                                                     -extraSpace,
-                                                                     extraSpace + 1,
-                                                                     extraSpace + 1);
-                break;
-            }
-        }
-    }
-
-    return boundingRect;
-}
-
-QPainterPath StaggeredRenderer::shape(const MapObject *object) const
-{
-    QPainterPath path;
-
-    if (!object->cell().isEmpty()) {
-        path.addRect(boundingRect(object));
-    } else {
-        switch (object->shape()) {
-            case MapObject::Rectangle: {
-                const QRectF bounds = object->bounds();
-
-                if (bounds.isNull()) {
-                    path.addEllipse(bounds.topLeft(), 20, 20);
-                } else {
-                    path.addRoundedRect(bounds, 10, 10);
-                }
-                break;
-            }
-
-            case MapObject::Polygon:
-            case MapObject::Polyline: {
-                const QPointF &pos = object->position();
-                const QPolygonF polygon = object->polygon().translated(pos);
-                const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
-
-                if (object->shape() == MapObject::Polygon) {
-                    path.addPolygon(screenPolygon);
-                } else {
-                    for (int i = 1; i < screenPolygon.size(); ++i) {
-                        path.addPolygon(lineToPolygon(screenPolygon[i - 1],
-                                                      screenPolygon[i]));
-                    }
-                    path.setFillRule(Qt::WindingFill);
-                }
-                break;
-            }
-
-            case MapObject::Ellipse: {
-                const QRectF bounds = object->bounds();
-
-                if (bounds.isNull()) {
-                    path.addEllipse(bounds.topLeft(), 20, 20);
-                } else {
-                    path.addEllipse(bounds);
-                }
-                break;
-            }
-        }
-    }
-
-    return path;
-}
-
 void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
                                  QColor gridColor) const
 {
@@ -217,8 +111,6 @@ void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
             painter->drawPolyline(line);
         }
     }
-
-
 }
 
 void StaggeredRenderer::drawTileLayer(QPainter *painter,
@@ -314,160 +206,13 @@ void StaggeredRenderer::drawTileSelection(QPainter *painter,
     }
 }
 
-void StaggeredRenderer::drawMapObject(QPainter *painter,
-                                      const MapObject *object,
-                                      const QColor &color) const
-{
-    painter->save();
-
-    const QRectF bounds = object->bounds();
-    QRectF rect(bounds);
-
-    painter->translate(rect.topLeft());
-    rect.moveTopLeft(QPointF(0, 0));
-
-    if (!object->cell().isEmpty()) {
-        const Cell &cell = object->cell();
-
-        CellRenderer(painter).render(cell, QPointF(),
-                                     CellRenderer::BottomLeft);
-
-        if (testFlag(ShowTileObjectOutlines)) {
-            const QRect rect = cell.tile->image().rect();
-            QPen pen(Qt::SolidLine);
-            pen.setCosmetic(true);
-            painter->setPen(pen);
-            painter->drawRect(rect);
-            pen.setStyle(Qt::DotLine);
-            pen.setColor(color);
-            painter->setPen(pen);
-            painter->drawRect(rect);
-        }
-    } else {
-        const qreal lineWidth = objectLineWidth();
-        const qreal scale = painterScale();
-        const qreal shadowDist = (lineWidth == 0 ? 1 : lineWidth) / scale;
-        const QPointF shadowOffset = QPointF(shadowDist * 0.5,
-                                             shadowDist * 0.5);
-
-        QPen linePen(color, lineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        linePen.setCosmetic(true);
-        QPen shadowPen(linePen);
-        shadowPen.setColor(Qt::black);
-
-        QColor brushColor = color;
-        brushColor.setAlpha(50);
-        const QBrush fillBrush(brushColor);
-
-        painter->setRenderHint(QPainter::Antialiasing);
-
-        // Trying to draw an ellipse with 0-width is causing a hang in
-        // CoreGraphics when drawing the path requested by the
-        // QCoreGraphicsPaintEngine. Draw them as rectangle instead.
-        MapObject::Shape shape = object->shape();
-
-        if (shape == MapObject::Ellipse &&
-                (rect.width() == qreal(0) ^ rect.height() == qreal(0))) {
-            shape = MapObject::Rectangle;
-        }
-
-        switch (shape) {
-            case MapObject::Rectangle: {
-                if (rect.isNull())
-                    rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
-
-                const QFontMetrics fm = painter->fontMetrics();
-                QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                             rect.width() + 2);
-
-                // Draw the shadow
-                painter->setPen(shadowPen);
-                painter->drawRect(rect.translated(shadowOffset));
-
-                if (!name.isEmpty())
-                    painter->drawText(QPointF(0, -4 - lineWidth / 2) + shadowOffset, name);
-
-                painter->setPen(linePen);
-                painter->setBrush(fillBrush);
-                painter->drawRect(rect);
-
-                if (!name.isEmpty())
-                    painter->drawText(QPointF(0, -4 - lineWidth / 2), name);
-
-                break;
-            }
-
-            case MapObject::Polyline: {
-                QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
-
-                painter->setPen(shadowPen);
-                painter->drawPolyline(screenPolygon.translated(shadowOffset));
-
-                painter->setPen(linePen);
-                painter->setBrush(fillBrush);
-                painter->drawPolyline(screenPolygon);
-                break;
-            }
-
-            case MapObject::Polygon: {
-                QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
-
-                painter->setPen(shadowPen);
-                painter->drawPolygon(screenPolygon.translated(shadowOffset));
-
-                painter->setPen(linePen);
-                painter->setBrush(fillBrush);
-                painter->drawPolygon(screenPolygon);
-                break;
-            }
-
-            case MapObject::Ellipse: {
-                if (rect.isNull())
-                    rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
-
-                const QFontMetrics fm = painter->fontMetrics();
-                QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                             rect.width() + 2);
-
-                // Draw the shadow
-                painter->setPen(shadowPen);
-                painter->drawEllipse(rect.translated(shadowOffset));
-
-                if (!name.isEmpty())
-                    painter->drawText(QPoint(1, -5 + 1), name);
-
-                painter->setPen(linePen);
-                painter->setBrush(fillBrush);
-                painter->drawEllipse(rect);
-
-                if (!name.isEmpty())
-                    painter->drawText(QPoint(0, -5), name);
-
-                break;
-            }
-        }
-    }
-
-    painter->restore();
-}
-
 QPointF StaggeredRenderer::tileToPixelCoords(qreal x, qreal y) const
 {
-    //const int tileWidth = map()->tileWidth();
-    //const int tileHeight = map()->tileHeight();
-
-    //return QPointF(x * tileWidth, y * tileHeight);
-
     return StaggeredRenderer::tileToScreenCoords(x, y);
 }
 
 QPointF StaggeredRenderer::pixelToTileCoords(qreal x, qreal y) const
 {
-    //const int tileWidth = map()->tileWidth();
-    //const int tileHeight = map()->tileHeight();
-    
-    //return QPointF(x / tileWidth, y / tileHeight);
-
     return StaggeredRenderer::screenToTileCoords(x, y);
 }
 
@@ -517,16 +262,6 @@ QPointF StaggeredRenderer::tileToScreenCoords(qreal x, qreal y) const
     int pixelY = int(y) * (tileHeight / 2);
 
     return QPointF(pixelX, pixelY);
-}
-
-QPointF StaggeredRenderer::screenToPixelCoords(qreal x, qreal y) const
-{
-    return QPointF(x, y);
-}
-
-QPointF StaggeredRenderer::pixelToScreenCoords(qreal x, qreal y) const
-{
-    return QPointF(x, y);
 }
 
 QPoint StaggeredRenderer::topLeft(int x, int y) const

@@ -174,33 +174,25 @@ public:
      * Returns the tile coordinates matching the given screen position.
      */
     virtual QPointF screenToTileCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF screenToTileCoords(const QPointF &point) const
-    { return screenToTileCoords(point.x(), point.y()); }
+    inline QPointF screenToTileCoords(const QPointF &point) const;
 
     /**
      * Returns the screen position matching the given tile coordinates.
      */
     virtual QPointF tileToScreenCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF tileToScreenCoords(const QPointF &point) const
-    { return tileToScreenCoords(point.x(), point.y()); }
+    inline QPointF tileToScreenCoords(const QPointF &point) const;
 
     /**
      * Returns the pixel position matching the given screen position.
      */
     virtual QPointF screenToPixelCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF screenToPixelCoords(const QPointF &point) const
-    { return screenToPixelCoords(point.x(), point.y()); }
+    inline QPointF screenToPixelCoords(const QPointF &point) const;
 
     /**
      * Returns the screen position matching the given pixel position.
      */
     virtual QPointF pixelToScreenCoords(qreal x, qreal y) const = 0;
-
-    inline QPointF pixelToScreenCoords(const QPointF &point) const
-    { return pixelToScreenCoords(point.x(), point.y()); }
+    inline QPointF pixelToScreenCoords(const QPointF &point) const;
 
     qreal objectLineWidth() const { return mObjectLineWidth; }
     void setObjectLineWidth(qreal lineWidth) { mObjectLineWidth = lineWidth; }
@@ -230,6 +222,27 @@ private:
     qreal mObjectLineWidth;
     qreal mPainterScale;
 };
+
+inline QPointF MapRenderer::screenToTileCoords(const QPointF &point) const
+{
+    return screenToTileCoords(point.x(), point.y());
+}
+
+inline QPointF MapRenderer::tileToScreenCoords(const QPointF &point) const
+{
+    return tileToScreenCoords(point.x(), point.y());
+}
+
+inline QPointF MapRenderer::screenToPixelCoords(const QPointF &point) const
+{
+    return screenToPixelCoords(point.x(), point.y());
+}
+
+inline QPointF MapRenderer::pixelToScreenCoords(const QPointF &point) const
+{
+    return pixelToScreenCoords(point.x(), point.y());
+}
+
 
 /**
  * A utility class for rendering cells.

@@ -1,6 +1,6 @@
 /*
  * staggeredrenderer.h
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -29,7 +29,7 @@
 #ifndef STAGGEREDRENDERER_H
 #define STAGGEREDRENDERER_H
 
-#include "maprenderer.h"
+#include "orthogonalrenderer.h"
 
 namespace Tiled {
 
@@ -73,17 +73,14 @@ namespace Tiled {
  *     Similar problem as with stamps when offsetting at an uneven y offset.
  *
  */
-class TILEDSHARED_EXPORT StaggeredRenderer : public MapRenderer
+class TILEDSHARED_EXPORT StaggeredRenderer : public OrthogonalRenderer
 {
 public:
-    StaggeredRenderer(const Map *map) : MapRenderer(map) {}
+    StaggeredRenderer(const Map *map) : OrthogonalRenderer(map) {}
 
     QSize mapSize() const;
 
     QRect boundingRect(const QRect &rect) const;
-
-    QRectF boundingRect(const MapObject *object) const;
-    QPainterPath shape(const MapObject *object) const;
 
     void drawGrid(QPainter *painter, const QRectF &rect,
                   QColor gridColor) const;
@@ -96,10 +93,6 @@ public:
                            const QColor &color,
                            const QRectF &exposed) const;
 
-    void drawMapObject(QPainter *painter,
-                       const MapObject *object,
-                       const QColor &color) const;
-
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;
 
@@ -111,12 +104,6 @@ public:
 
     using MapRenderer::tileToScreenCoords;
     QPointF tileToScreenCoords(qreal x, qreal y) const;
-    
-    using MapRenderer::screenToPixelCoords;
-    QPointF screenToPixelCoords(qreal x, qreal y) const;
-
-    using MapRenderer::pixelToScreenCoords;
-    QPointF pixelToScreenCoords(qreal x, qreal y) const;
 
     // Functions specific to this type of renderer
     QPoint topLeft(int x, int y) const;
