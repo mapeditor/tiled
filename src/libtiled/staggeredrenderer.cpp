@@ -69,7 +69,7 @@ QRect StaggeredRenderer::boundingRect(const QRect &rect) const
 }
 
 void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                 QColor gridColor) const
+                                 const Layer* layer, QColor gridColor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -190,7 +190,8 @@ void StaggeredRenderer::drawTileLayer(QPainter *painter,
 void StaggeredRenderer::drawTileSelection(QPainter *painter,
                                           const QRegion &region,
                                           const QColor &color,
-                                          const QRectF &exposed) const
+                                          const QRectF &exposed,
+                                          const TileLayer* layer) const
 {
     painter->setBrush(color);
     painter->setPen(Qt::NoPen);

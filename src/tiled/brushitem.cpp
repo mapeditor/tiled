@@ -102,6 +102,7 @@ void BrushItem::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,
                       QWidget *)
 {
+    const TileLayer* currentLayer = mMapDocument->currentLayer()->asTileLayer();
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
@@ -114,6 +115,8 @@ void BrushItem::paint(QPainter *painter,
 
     const MapRenderer *renderer = mMapDocument->renderer();
     if (mTileLayer) {
+        mTileLayer->setHorizontalOffset(currentLayer->horizontalOffset());
+        mTileLayer->setVerticalOffset(currentLayer->verticalOffset());
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
         renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
@@ -122,10 +125,12 @@ void BrushItem::paint(QPainter *painter,
 
     renderer->drawTileSelection(painter, insideMapRegion,
                                 insideMapHighlight,
-                                option->exposedRect);
+                                option->exposedRect,
+                                currentLayer);
     renderer->drawTileSelection(painter, outsideMapRegion,
                                 outsideMapHighlight,
-                                option->exposedRect);
+                                option->exposedRect,
+                                currentLayer);
 }
 
 void BrushItem::updateBoundingRect()
@@ -138,7 +143,8 @@ void BrushItem::updateBoundingRect()
     }
 
     const QRect bounds = mRegion.boundingRect();
-    mBoundingRect = mMapDocument->renderer()->boundingRect(bounds);
+    const Layer* layer = mMapDocument->currentLayer();
+    mBoundingRect = mMapDocument->renderer()->boundingRect(bounds, layer);
 
     // Adjust for amount of pixels tiles extend at the top and to the right
     if (mTileLayer) {

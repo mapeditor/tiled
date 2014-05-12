@@ -28,6 +28,7 @@
 
 #include "maprenderer.h"
 
+#include "map.h"
 #include "imagelayer.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -38,10 +39,34 @@
 
 using namespace Tiled;
 
+QRect MapRenderer::boundingRect(const QRect &rect, const Layer *layer) const
+{
+    const QMargins mapOffset = map()->offset();
+    int horizontalOffset = mapOffset.left();
+    int verticalOffset = mapOffset.top();
+
+    if (layer->isTileLayer()) {
+        const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
+        horizontalOffset +=  tileLayer->horizontalOffset();
+        verticalOffset -= tileLayer->verticalOffset();
+    }
+
+    QRect bounds = boundingRect(rect);
+    bounds.adjust(horizontalOffset, verticalOffset,
+                  horizontalOffset, verticalOffset);
+
+    return bounds;
+}
+
 QRectF MapRenderer::boundingRect(const ImageLayer *imageLayer) const
 {
     return QRectF(imageLayer->position(),
                   imageLayer->image().size());
+}
+
+QRect MapRenderer::boundingRect(const TileLayer *tileLayer) const
+{
+    return boundingRect(tileLayer->bounds(), tileLayer);
 }
 
 void MapRenderer::drawImageLayer(QPainter *painter,
@@ -52,6 +77,37 @@ void MapRenderer::drawImageLayer(QPainter *painter,
 
     painter->drawPixmap(imageLayer->position(),
                         imageLayer->image());
+}
+
+QPointF MapRenderer::screenToTileCoords(qreal x, qreal y, const Layer* layer) const 
+{
+    QMargins mapOffset = mMap->offset();
+    x -= mapOffset.left();
+    y -= mapOffset.top();
+
+    if (layer->isTileLayer()) {
+        const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
+        x -= tileLayer->horizontalOffset();
+        y += tileLayer->verticalOffset();
+    } 
+
+    return screenToTileCoords(x, y);
+}
+
+QPointF MapRenderer::tileToScreenCoords(qreal x, qreal y, const Layer* layer) const 
+{
+    QMargins mapOffset = mMap->offset();
+    QPointF position = tileToScreenCoords(x, y) +
+                       QPointF(mapOffset.left(), mapOffset.top());
+
+    if (layer->isTileLayer()) {
+        const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
+
+        position = position - QPointF(-tileLayer->horizontalOffset(),
+                                      tileLayer->verticalOffset());
+    }
+
+    return position;
 }
 
 void MapRenderer::setFlag(RenderFlag flag, bool enabled)

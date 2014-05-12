@@ -172,6 +172,24 @@ public:
     void recomputeDrawMargins();
 
     /**
+     * Adjusts the map offset to be at least as big as the given offset.
+     * Called when a new layer is added to the map.
+     */
+    void adjustOffset(const QMargins &offset);
+
+    /**
+     * Returns the offset of the map which is calculated in base at all the
+     * offsets aplied to each tile layer.
+     */
+    QMargins offset() const { return mOffset; }
+
+    /**
+     * Recomputes the offset of the map. Needed when a layer offset gets 
+     * changed.
+     */
+    void recomputeOffset();
+
+    /**
      * Returns the number of layers of this map.
      */
     int layerCount() const
@@ -327,6 +345,7 @@ private:
     int mTileHeight;
     QColor mBackgroundColor;
     QMargins mDrawMargins;
+    QMargins mOffset;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
     LayerDataFormat mLayerDataFormat;

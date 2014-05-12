@@ -63,6 +63,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changetileanimation.cpp \
+    changetilelayer.cpp \
     changetileobjectgroup.cpp \
     changetileselection.cpp \
     changetileterrain.cpp \

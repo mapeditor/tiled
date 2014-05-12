@@ -49,10 +49,12 @@ public:
 
     QRect boundingRect(const QRect &rect) const;
 
+    using MapRenderer::boundingRect;
     QRectF boundingRect(const MapObject *object) const;
     QPainterPath shape(const MapObject *object) const;
 
-    void drawGrid(QPainter *painter, const QRectF &rect, QColor grid) const;
+    void drawGrid(QPainter *painter, const QRectF &rect, const Layer* layer, 
+                  QColor grid) const;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF()) const;
@@ -60,7 +62,8 @@ public:
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
                            const QColor &color,
-                           const QRectF &exposed) const;
+                           const QRectF &exposed,
+                           const TileLayer* layer) const;
 
     void drawMapObject(QPainter *painter,
                        const MapObject *object,
@@ -86,7 +89,8 @@ public:
 
 private:
     QPolygonF pixelRectToScreenPolygon(const QRectF &rect) const;
-    QPolygonF tileRectToScreenPolygon(const QRect &rect) const;
+    QPolygonF tileRectToScreenPolygon(const QRect &rect,
+                                      const TileLayer* layer) const;
 };
 
 } // namespace Tiled

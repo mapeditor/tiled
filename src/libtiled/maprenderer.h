@@ -81,6 +81,12 @@ public:
     virtual QRect boundingRect(const QRect &rect) const = 0;
 
     /**
+     * Returns the bounding rectangle in pixels of the given \a rect, taking
+     * into account the possible offset applied to the \a layer.
+     */
+    QRect boundingRect(const QRect &rect, const Layer *layer) const;
+
+    /**
      * Returns the bounding rectangle in pixels of the given \a object, as it
      * would be drawn by drawMapObject().
      */
@@ -91,6 +97,12 @@ public:
      * it would be drawn by drawImageLayer().
      */
     QRectF boundingRect(const ImageLayer *imageLayer) const;
+
+    /**
+     * Returns the bounding rectangle in pixels of the given \a tileLayer, as
+     * it would be drawn by drawTileLayer().
+     */
+    QRect boundingRect(const TileLayer *tileLayer) const;
 
     /**
      * Returns the shape in pixels of the given \a object. This is used for
@@ -104,7 +116,7 @@ public:
      * \a painter.
      */
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
-                          QColor gridColor = Qt::black) const = 0;
+                          const Layer* layer, QColor gridColor = Qt::black) const = 0;
 
     /**
      * Draws the given \a layer using the given \a painter.
@@ -124,7 +136,8 @@ public:
     virtual void drawTileSelection(QPainter *painter,
                                    const QRegion &region,
                                    const QColor &color,
-                                   const QRectF &exposed) const = 0;
+                                   const QRectF &exposed,
+                                   const TileLayer* layer) const = 0;
 
     /**
      * Draws the \a object in the given \a color using the \a painter.
@@ -171,10 +184,28 @@ public:
     }
 
     /**
+     * Returns the tile coordinates matching the given screen position for the
+     * given layer (which may be offeseted).
+     */
+    QPointF screenToTileCoords(qreal x, qreal y, const Layer* layer) const;
+
+    inline QPointF screenToTileCoords(const QPointF &point, const Layer* layer) const
+    { return screenToTileCoords(point.x(), point.y(), layer); }
+
+    /**
      * Returns the tile coordinates matching the given screen position.
      */
     virtual QPointF screenToTileCoords(qreal x, qreal y) const = 0;
     inline QPointF screenToTileCoords(const QPointF &point) const;
+
+    /**
+     * Returns the screen position matching the given tile coordinates for the
+     * given layer (which may be offeseted).
+     */
+    QPointF tileToScreenCoords(qreal x, qreal y, const Layer* layer) const;
+
+    inline QPointF tileToScreenCoords(const QPointF &point, const Layer* layer) const
+    { return tileToScreenCoords(point.x(), point.y(), layer); }
 
     /**
      * Returns the screen position matching the given tile coordinates.

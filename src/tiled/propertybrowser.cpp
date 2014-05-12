@@ -21,6 +21,7 @@
 #include "propertybrowser.h"
 
 #include "changelayer.h"
+#include "changetilelayer.h"
 #include "changeimagelayerposition.h"
 #include "changeimagelayerproperties.h"
 #include "changemapobject.h"
@@ -150,6 +151,8 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(objectsChanged(QList<MapObject*>)));
         connect(mapDocument, SIGNAL(layerChanged(int)),
                 SLOT(layerChanged(int)));
+        connect(mapDocument, SIGNAL(tileLayerChanged(TileLayer*)),
+                SLOT(tileLayerChanged(TileLayer*)));
         connect(mapDocument, SIGNAL(objectGroupChanged(ObjectGroup*)),
                 SLOT(objectGroupChanged(ObjectGroup*)));
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
@@ -208,6 +211,12 @@ void PropertyBrowser::objectsChanged(const QList<MapObject *> &objects)
 void PropertyBrowser::layerChanged(int index)
 {
     if (mObject == mMapDocument->map()->layerAt(index))
+        updateProperties();
+}
+
+void PropertyBrowser::tileLayerChanged(TileLayer *tileLayer)
+{
+    if (mObject == tileLayer)
         updateProperties();
 }
 
@@ -370,6 +379,8 @@ void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
+    createProperty(HorizontalOffsetProperty, QVariant::Int, tr("Horizontal Offset"), groupProperty);
+    createProperty(VerticalOffsetProperty, QVariant::Int, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -564,8 +575,25 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 
 void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(val)
+    TileLayer* layer = static_cast<TileLayer*>(mObject);
+    const int layerIndex = mMapDocument->map()->layers().indexOf(layer);
+    QUndoCommand *command = 0;
+
+    switch (id) {
+        case HorizontalOffsetProperty:
+            command = new SetLayerOffset(mMapDocument, layerIndex,
+                                         val.toInt(), layer->verticalOffset());
+            break;
+        case VerticalOffsetProperty:
+            command = new SetLayerOffset(mMapDocument, layerIndex,
+                                         layer->horizontalOffset(), val.toInt());
+            break;
+        default:
+            break;
+    }
+
+    if (command)
+        mMapDocument->undoStack()->push(command);
 }
 
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
@@ -735,8 +763,12 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
 
         switch (layer->layerType()) {
-        case Layer::TileLayerType:
+        case Layer::TileLayerType: {
+            const TileLayer* tileLayer = static_cast<const TileLayer*>(layer);
+            mIdToProperty[HorizontalOffsetProperty]->setValue(tileLayer->horizontalOffset());
+            mIdToProperty[VerticalOffsetProperty]->setValue(tileLayer->verticalOffset());
             break;
+        }
         case Layer::ObjectGroupType: {
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
             QColor color = objectGroup->color();

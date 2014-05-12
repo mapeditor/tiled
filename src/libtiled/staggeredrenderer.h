@@ -83,7 +83,7 @@ public:
     QRect boundingRect(const QRect &rect) const;
 
     void drawGrid(QPainter *painter, const QRectF &rect,
-                  QColor gridColor) const;
+                  const Layer* layer, QColor gridColor) const;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
                        const QRectF &exposed = QRectF()) const;
@@ -91,7 +91,8 @@ public:
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
                            const QColor &color,
-                           const QRectF &exposed) const;
+                           const QRectF &exposed,
+                           const TileLayer* layer) const;
 
     using OrthogonalRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const;

@@ -37,6 +37,8 @@ using namespace Tiled;
 
 TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     Layer(TileLayerType, name, x, y, width, height),
+    mHorizontalOffset(0),
+    mVerticalOffset(0),
     mMaxTileSize(0, 0),
     mGrid(width * height)
 {
@@ -58,6 +60,23 @@ static QMargins maxMargins(const QMargins &a,
                     qMax(a.top(), b.top()),
                     qMax(a.right(), b.right()),
                     qMax(a.bottom(), b.bottom()));
+}
+
+QMargins TileLayer::layerOffset() const
+{
+    QMargins offset = QMargins();
+
+    if (mHorizontalOffset > 0)
+        offset.setRight(mHorizontalOffset);
+    else
+        offset.setLeft(-mHorizontalOffset);
+
+    if (mVerticalOffset > 0)
+        offset.setTop(mVerticalOffset);
+    else
+        offset.setBottom(-mVerticalOffset);
+
+    return offset;
 }
 
 /**
@@ -430,6 +449,8 @@ Layer *TileLayer::clone() const
 TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
+    clone->mHorizontalOffset = mHorizontalOffset;
+    clone->mVerticalOffset = mVerticalOffset;
     clone->mGrid = mGrid;
     clone->mMaxTileSize = mMaxTileSize;
     clone->mOffsetMargins = mOffsetMargins;

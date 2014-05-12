@@ -91,7 +91,7 @@ public:
 
     QRectF boundingRect() const
     {
-        return mRenderer->boundingRect(mTileLayer->bounds());
+        return mRenderer->boundingRect(mTileLayer);
     }
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *)

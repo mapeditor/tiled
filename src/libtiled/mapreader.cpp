@@ -533,6 +533,18 @@ TileLayer *MapReaderPrivate::readLayer()
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(tileLayer, atts);
 
+    const QStringRef horizontalOffsetRef = atts.value(QLatin1String("horizontaloffset"));
+    const QStringRef verticalOffsetRef = atts.value(QLatin1String("verticaloffset"));
+
+    bool ok;
+    const int horizontalOffset = horizontalOffsetRef.toString().toInt(&ok);
+    if (ok)
+        tileLayer->setHorizontalOffset(horizontalOffset);
+
+    const int verticalOffset = verticalOffsetRef.toString().toInt(&ok);
+    if (ok)
+        tileLayer->setVerticalOffset(verticalOffset);
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties"))
             tileLayer->mergeProperties(readProperties());

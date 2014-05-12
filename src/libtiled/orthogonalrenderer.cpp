@@ -158,7 +158,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
 }
 
 void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
-                                  QColor gridColor) const
+                                  const Layer* layer, QColor gridColor) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
@@ -252,7 +252,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 void OrthogonalRenderer::drawTileSelection(QPainter *painter,
                                            const QRegion &region,
                                            const QColor &color,
-                                           const QRectF &exposed) const
+                                           const QRectF &exposed,
+                                           const TileLayer* layer) const
 {
     foreach (const QRect &r, region.rects()) {
         const QRectF toFill = QRectF(boundingRect(r)).intersected(exposed);

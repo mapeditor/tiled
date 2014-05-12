@@ -157,6 +157,9 @@ public:
     void removeLayer(int index);
     void toggleOtherLayers(int index);
 
+    void setTileLayerOffset(int layerIndex, int horizontalOffset,
+                            int verticalOffset);
+
     void insertTileset(int index, Tileset *tileset);
     void removeTilesetAt(int index);
     void moveTileset(int from, int to);
@@ -250,6 +253,7 @@ public:
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
     void emitTileObjectGroupChanged(Tile *tile);
     void emitTileAnimationChanged(Tile *tile);
+    void emitTileLayerChanged(TileLayer *tileLayer);
     void emitObjectGroupChanged(ObjectGroup *objectGroup);
     void emitImageLayerChanged(ImageLayer *imageLayer);
     void emitEditLayerNameRequested();
@@ -330,6 +334,11 @@ signals:
      * Emitted after the color of an object group has changed.
      */
     void objectGroupChanged(ObjectGroup *objectGroup);
+
+    /**
+     * Emitted after the offset of a tile layer have changed.
+     */
+    void tileLayerChanged(TileLayer *tileLayer);
 
     /**
      * Emitted after the image and/or the transparent color of an image layer
@@ -461,6 +470,15 @@ inline void MapDocument::emitTileAnimationChanged(Tile *tile)
 inline void MapDocument::emitObjectGroupChanged(ObjectGroup *objectGroup)
 {
     emit objectGroupChanged(objectGroup);
+}
+
+/**
+ * Emits the tileLayerChanged signal, should be called when changing the
+ * offset of a tile layer.
+ */
+inline void MapDocument::emitTileLayerChanged(TileLayer *tileLayer)
+{
+    emit tileLayerChanged(tileLayer);
 }
 
 /**
