@@ -25,6 +25,7 @@
 
 #include "layer.h"
 #include "tiled.h"
+#include "mapobject.h"
 
 #include <QList>
 #include <QObject>
@@ -215,8 +216,19 @@ public:
      */
     void setSelectedObjects(const QList<MapObject*> &selectedObjects);
 
+    /**
+     * Returns the list of selected tiles.
+     */
+    const QList<Tile*> &selectedTiles() const
+    { return mSelectedTiles; }
+
+    void setSelectedTiles(const QList<Tile*> &selectedTiles)
+    { mSelectedTiles = selectedTiles; }
+
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
+
+    QList<Object*> currentObjects() const;
 
     /**
      * Makes sure the all tilesets which are used at the given \a map will be
@@ -378,6 +390,7 @@ private:
     LayerModel *mLayerModel;
     QRegion mTileSelection;
     QList<MapObject*> mSelectedObjects;
+    QList<Tile*> mSelectedTiles;
     Object *mCurrentObject;             /**< Current properties object. */
     MapRenderer *mRenderer;
     int mCurrentLayerIndex;

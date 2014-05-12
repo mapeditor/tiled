@@ -576,6 +576,25 @@ void MapDocument::setCurrentObject(Object *object)
     emit currentObjectChanged(object);
 }
 
+QList<Object*> MapDocument::currentObjects() const
+{
+    QList<Object*> objects;
+    if (mCurrentObject) {
+        if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
+            foreach (MapObject *mapObj, mSelectedObjects) {
+                objects.append(mapObj);
+            }
+        } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
+            foreach (Tile *tile, mSelectedTiles) {
+                objects.append(tile);
+            }
+        } else {
+            objects.append(mCurrentObject);
+        }
+    }
+    return objects;
+}
+
 /**
  * Makes sure the all tilesets which are used at the given \a map will be
  * present in the map document.
