@@ -90,8 +90,8 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
         return;
 
     foreach (const QRect &rect, region.rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+        for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+            for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const Cell &cell = tileLayer->cellAt(_x - x, _y - y);
                 if (cell.isEmpty())
                     continue;
@@ -122,8 +122,8 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     const QRect regionBounds = region.boundingRect();
 
     foreach (const QRect &rect, region.rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+        for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+            for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const int stampX = (_x - regionBounds.left()) % w;
                 const int stampY = (_y - regionBounds.top()) % h;
                 const Cell &cell = stamp->cellAt(stampX, stampY);
