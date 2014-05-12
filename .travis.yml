@@ -16,12 +16,16 @@ addons:
     build_command: make
     branch_pattern: coverity_scan
 
-compiler:
-  - gcc
-  - clang
+matrix:
+    include:
+        - compiler: gcc
+        - compiler: clang
+          env: QMAKESPEC=unsupported/linux-clang
+
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq libqt4-dev libqt4-opengl-dev zlib1g-dev cppcheck
+  - qmake -version
   - Xvfb :1 &
   - xv -display :1 &
 script:
