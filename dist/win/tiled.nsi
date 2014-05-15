@@ -17,6 +17,7 @@ SetCompressor /FINAL /SOLID lzma
 !define P_NORM "tiled"                        ; Program name (normalized)
 !define ROOT_DIR "..\.."                      ; Program root directory
 !define BUILD_DIR $%TILED_BUILD_DIR%          ; Build dir
+!define SYSTEM_DIR "C:\windows\system32"
 !define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tiled"
 !define PRODUCT_REG_KEY "Tiled Map Editor"
 
@@ -187,6 +188,8 @@ File ${QT_DIR}\bin\libGLESv2.dll
 File ${QT_DIR}\bin\icuin51.dll
 File ${QT_DIR}\bin\icuuc51.dll
 File ${QT_DIR}\bin\icudt51.dll
+File ${SYSTEM_DIR}\MSVCP100.DLL
+File ${SYSTEM_DIR}\MSVCR100.DLL
 File ${ROOT_DIR}\src\tiled\images\tiled-icon.ico
 File ${ROOT_DIR}\dist\win\qt.conf
 
@@ -264,6 +267,8 @@ Delete $INSTDIR\libGLESv2.dll
 Delete $INSTDIR\icuin51.dll
 Delete $INSTDIR\icuuc51.dll
 Delete $INSTDIR\icudt51.dll
+Delete $INSTDIR\MSVCP100.DLL
+Delete $INSTDIR\MSVCR100.DLL
 Delete $INSTDIR\tiled-icon.ico
 Delete $INSTDIR\qt.conf
 Delete $INSTDIR\uninstall.exe
