@@ -26,7 +26,7 @@ defineReplace(prependAppend) {
 # Large hack to make sure this pro file does not try to compile an application
 TEMPLATE = app
 TARGET = phony_target
-CONFIG -= qt separate_debug_info gdb_dwarf_index
+CONFIG -= qt sdk separate_debug_info gdb_dwarf_index
 QT =
 LIBS =
 QMAKE_LINK = @: IGNORE THIS LINE
