@@ -36,7 +36,7 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    if (mMapDocument->tileSelection().isEmpty())
+    if (mMapDocument->selectedArea().isEmpty())
         disableBoundsSelectionCurrentArea();
     else
         mUi->boundsSelection->setCurrentIndex(1);
@@ -79,7 +79,7 @@ QRect OffsetMapDialog::affectedBoundingRect() const
         boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
         break;
     case CurrentSelectionArea: {
-        const QRegion &selection = mMapDocument->tileSelection();
+        const QRegion &selection = mMapDocument->selectedArea();
 
         Q_ASSERT_X(!selection.isEmpty(),
                    "OffsetMapDialog::affectedBoundingRect()",

@@ -254,7 +254,7 @@ static bool visibleIn(const QRectF &area, MapObject *object,
 
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 {
-    const QRegion movedSelection = mTileSelection.translated(offset);
+    const QRegion movedSelection = mSelectedArea.translated(offset);
     const QRect newArea = QRect(-offset, size);
     const QRectF visibleArea = mRenderer->boundingRect(newArea);
 
@@ -549,12 +549,12 @@ void MapDocument::moveTileset(int from, int to)
     emit tilesetMoved(from, to);
 }
 
-void MapDocument::setTileSelection(const QRegion &selection)
+void MapDocument::setSelectedArea(const QRegion &selection)
 {
-    if (mTileSelection != selection) {
-        const QRegion oldTileSelection = mTileSelection;
-        mTileSelection = selection;
-        emit tileSelectionChanged(mTileSelection, oldTileSelection);
+    if (mSelectedArea != selection) {
+        const QRegion oldSelectedArea = mSelectedArea;
+        mSelectedArea = selection;
+        emit selectedAreaChanged(mSelectedArea, oldSelectedArea);
     }
 }
 

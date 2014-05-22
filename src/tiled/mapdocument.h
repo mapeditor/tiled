@@ -197,12 +197,12 @@ public:
     /**
      * Returns the selected area of tiles.
      */
-    const QRegion &tileSelection() const { return mTileSelection; }
+    const QRegion &selectedArea() const { return mSelectedArea; }
 
     /**
      * Sets the selected area of tiles.
      */
-    void setTileSelection(const QRegion &selection);
+    void setSelectedArea(const QRegion &selection);
 
     /**
      * Returns the list of selected objects.
@@ -263,7 +263,7 @@ signals:
      * Emitted when the selected tile region changes. Sends the currently
      * selected region and the previously selected region.
      */
-    void tileSelectionChanged(const QRegion &newSelection,
+    void selectedAreaChanged(const QRegion &newSelection,
                               const QRegion &oldSelection);
 
     /**
@@ -388,7 +388,7 @@ private:
     QString mWriterPluginFileName;
     Map *mMap;
     LayerModel *mLayerModel;
-    QRegion mTileSelection;
+    QRegion mSelectedArea;
     QList<MapObject*> mSelectedObjects;
     QList<Tile*> mSelectedTiles;
     Object *mCurrentObject;             /**< Current properties object. */

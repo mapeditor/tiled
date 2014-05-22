@@ -96,14 +96,14 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
         return;
 
     const Map *map = mapDocument->map();
-    const QRegion &tileSelection = mapDocument->tileSelection();
+    const QRegion &selectedArea = mapDocument->selectedArea();
     const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
     const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(currentLayer);
     Layer *copyLayer = 0;
 
-    if (!tileSelection.isEmpty() && tileLayer) {
+    if (!selectedArea.isEmpty() && tileLayer) {
         // Copy the selected part of the layer
-        copyLayer = tileLayer->copy(tileSelection.translated(-tileLayer->x(),
+        copyLayer = tileLayer->copy(selectedArea.translated(-tileLayer->x(),
                                                              -tileLayer->y()));
     } else if (!selectedObjects.isEmpty()) {
         // Create a new object group with clones of the selected objects

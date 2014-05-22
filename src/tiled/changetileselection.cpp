@@ -47,7 +47,7 @@ void ChangeTileSelection::redo()
 
 void ChangeTileSelection::swapSelection()
 {
-    const QRegion oldSelection = mMapDocument->tileSelection();
-    mMapDocument->setTileSelection(mSelection);
+    const QRegion oldSelection = mMapDocument->selectedArea();
+    mMapDocument->setSelectedArea(mSelection);
     mSelection = oldSelection;
 }

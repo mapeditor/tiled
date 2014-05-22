@@ -175,7 +175,7 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));
-        connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
                 SLOT(updateActions()));
         connect(mapDocument, SIGNAL(selectedObjectsChanged()),
                 SLOT(updateActions()));
@@ -191,7 +191,7 @@ void MapDocumentActionHandler::selectAll()
 
     Map *map = mMapDocument->map();
     QRect all(0, 0, map->width(), map->height());
-    if (mMapDocument->tileSelection() == all)
+    if (mMapDocument->selectedArea() == all)
         return;
 
     QUndoCommand *command = new ChangeTileSelection(mMapDocument, all);
@@ -203,7 +203,7 @@ void MapDocumentActionHandler::selectNone()
     if (!mMapDocument)
         return;
 
-    if (mMapDocument->tileSelection().isEmpty())
+    if (mMapDocument->selectedArea().isEmpty())
         return;
 
     QUndoCommand *command = new ChangeTileSelection(mMapDocument, QRegion());
@@ -235,7 +235,7 @@ void MapDocumentActionHandler::cropToSelection()
     if (!mMapDocument)
         return;
 
-    const QRect bounds = mMapDocument->tileSelection().boundingRect();
+    const QRect bounds = mMapDocument->selectedArea().boundingRect();
     if (bounds.isNull())
         return;
 
@@ -353,7 +353,7 @@ void MapDocumentActionHandler::updateActions()
     if (mMapDocument) {
         map = mMapDocument->map();
         currentLayerIndex = mMapDocument->currentLayerIndex();
-        selection = mMapDocument->tileSelection();
+        selection = mMapDocument->selectedArea();
         selectedObjectsCount = mMapDocument->selectedObjects().count();
 
         if (currentLayerIndex > 0) {

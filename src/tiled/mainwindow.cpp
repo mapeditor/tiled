@@ -977,7 +977,7 @@ void MainWindow::cut()
         return;
 
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &tileSelection = mMapDocument->tileSelection();
+    const QRegion &selectedArea = mMapDocument->selectedArea();
     const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
 
     copy();
@@ -985,8 +985,8 @@ void MainWindow::cut()
     QUndoStack *stack = mMapDocument->undoStack();
     stack->beginMacro(tr("Cut"));
 
-    if (tileLayer && !tileSelection.isEmpty()) {
-        stack->push(new EraseTiles(mMapDocument, tileLayer, tileSelection));
+    if (tileLayer && !selectedArea.isEmpty()) {
+        stack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
     } else if (!selectedObjects.isEmpty()) {
         foreach (MapObject *mapObject, selectedObjects)
             stack->push(new RemoveMapObject(mMapDocument, mapObject));
@@ -1055,14 +1055,14 @@ void MainWindow::delete_()
         return;
 
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(currentLayer);
-    const QRegion &tileSelection = mMapDocument->tileSelection();
+    const QRegion &selectedArea = mMapDocument->selectedArea();
     const QList<MapObject*> &selectedObjects = mMapDocument->selectedObjects();
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Delete"));
 
-    if (tileLayer && !tileSelection.isEmpty()) {
-        undoStack->push(new EraseTiles(mMapDocument, tileLayer, tileSelection));
+    if (tileLayer && !selectedArea.isEmpty()) {
+        undoStack->push(new EraseTiles(mMapDocument, tileLayer, selectedArea));
     } else if (!selectedObjects.isEmpty()) {
         foreach (MapObject *mapObject, selectedObjects)
             undoStack->push(new RemoveMapObject(mMapDocument, mapObject));
@@ -1150,7 +1150,7 @@ void MainWindow::addExternalTileset()
                                           tr("Tiled tileset files (*.tsx)"));
     if (fileNames.isEmpty())
         return;
-    
+
     QList<Tileset *> tilesets;
 
     foreach (QString fileName, fileNames) {
@@ -1163,12 +1163,12 @@ void MainWindow::addExternalTileset()
             return;
         } else {
             int result;
-            
+
             result = QMessageBox::warning(this, tr("Error Reading Tileset"),
                                           tr("%1: %2").arg(fileName, reader.errorString()),
                                           QMessageBox::Abort | QMessageBox::Ignore,
                                           QMessageBox::Ignore);
-            
+
             if (result == QMessageBox::Abort) {
                 // On abort, clean out any already loaded tilesets.
                 qDeleteAll(tilesets);
@@ -1176,7 +1176,7 @@ void MainWindow::addExternalTileset()
             }
         }
     }
-    
+
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
     foreach (Tileset *tileset, tilesets)
@@ -1340,7 +1340,7 @@ void MainWindow::updateActions()
         map = mMapDocument->map();
         tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != 0;
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
-        selection = mMapDocument->tileSelection();
+        selection = mMapDocument->selectedArea();
     }
 
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
@@ -1579,7 +1579,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
                 SLOT(updateWindowTitle()));
         connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));
-        connect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+        connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
                 SLOT(updateActions()));
         connect(mapDocument, SIGNAL(selectedObjectsChanged()),
                 SLOT(updateActions()));
