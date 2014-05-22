@@ -101,7 +101,7 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         }
 
         if (selection != document->selectedArea()) {
-            QUndoCommand *cmd = new ChangeTileSelection(document, selection);
+            QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
             document->undoStack()->push(cmd);
         }
 

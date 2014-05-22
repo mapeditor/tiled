@@ -194,7 +194,7 @@ void MapDocumentActionHandler::selectAll()
     if (mMapDocument->selectedArea() == all)
         return;
 
-    QUndoCommand *command = new ChangeTileSelection(mMapDocument, all);
+    QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all);
     mMapDocument->undoStack()->push(command);
 }
 
@@ -206,7 +206,7 @@ void MapDocumentActionHandler::selectNone()
     if (mMapDocument->selectedArea().isEmpty())
         return;
 
-    QUndoCommand *command = new ChangeTileSelection(mMapDocument, QRegion());
+    QUndoCommand *command = new ChangeSelectedArea(mMapDocument, QRegion());
     mMapDocument->undoStack()->push(command);
 }
 

@@ -295,7 +295,7 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
     }
 
     mUndoStack->push(new ResizeMap(this, size));
-    mUndoStack->push(new ChangeTileSelection(this, movedSelection));
+    mUndoStack->push(new ChangeSelectedArea(this, movedSelection));
     mUndoStack->endMacro();
 
     // TODO: Handle layers that don't match the map size correctly

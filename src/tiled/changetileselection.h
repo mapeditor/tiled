@@ -29,14 +29,14 @@ namespace Internal {
 
 class MapDocument;
 
-class ChangeTileSelection : public QUndoCommand
+class ChangeSelectedArea: public QUndoCommand
 {
 public:
     /**
      * Creates an undo command that sets the selection of \a mapDocument to
      * the given \a selection.
      */
-    ChangeTileSelection(MapDocument *mapDocument,
+    ChangeSelectedArea(MapDocument *mapDocument,
                         const QRegion &selection);
 
     void undo();

@@ -26,7 +26,7 @@
 
 using namespace Tiled::Internal;
 
-ChangeTileSelection::ChangeTileSelection(MapDocument *mapDocument,
+ChangeSelectedArea::ChangeSelectedArea(MapDocument *mapDocument,
                                          const QRegion &newSelection)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Selection"))
@@ -35,17 +35,17 @@ ChangeTileSelection::ChangeTileSelection(MapDocument *mapDocument,
 {
 }
 
-void ChangeTileSelection::undo()
+void ChangeSelectedArea::undo()
 {
     swapSelection();
 }
 
-void ChangeTileSelection::redo()
+void ChangeSelectedArea::redo()
 {
     swapSelection();
 }
 
-void ChangeTileSelection::swapSelection()
+void ChangeSelectedArea::swapSelection()
 {
     const QRegion oldSelection = mMapDocument->selectedArea();
     mMapDocument->setSelectedArea(mSelection);
