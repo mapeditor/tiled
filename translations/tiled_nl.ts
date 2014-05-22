@@ -2711,7 +2711,7 @@ Moet het bestand vervangen worden?</translation>
         <translation>Eigenschappen Van %1 Veranderen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileselection.cpp" line="+31"/>
+        <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
         <source>Change Selection</source>
         <translation>Selectie Veranderen</translation>
     </message>

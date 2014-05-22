@@ -47,7 +47,7 @@ Cell TilePainter::cellAt(int x, int y) const
 
 void TilePainter::setCell(int x, int y, const Cell &cell)
 {
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     if (!(selection.isEmpty() || selection.contains(QPoint(x, y))))
         return;
 
@@ -256,7 +256,7 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
 
 bool TilePainter::isDrawable(int x, int y) const
 {
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     if (!(selection.isEmpty() || selection.contains(QPoint(x, y))))
         return false;
 
@@ -274,7 +274,7 @@ QRegion TilePainter::paintableRegion(const QRegion &region) const
     const QRegion bounds = QRegion(mTileLayer->bounds());
     QRegion intersection = bounds.intersected(region);
 
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     if (!selection.isEmpty())
         intersection &= selection;
 

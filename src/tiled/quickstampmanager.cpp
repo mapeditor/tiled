@@ -66,7 +66,7 @@ void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
         if (!tileLayer)
             return;
 
-        const QRegion &selection = mMapDocument->tileSelection();
+        const QRegion &selection = mMapDocument->selectedArea();
         if (selection.isEmpty())
             return;
 

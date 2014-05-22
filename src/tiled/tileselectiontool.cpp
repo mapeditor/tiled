@@ -21,7 +21,7 @@
 #include "tileselectiontool.h"
 
 #include "brushitem.h"
-#include "changetileselection.h"
+#include "changeselectedarea.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
@@ -90,7 +90,7 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mSelecting = false;
 
         MapDocument *document = mapDocument();
-        QRegion selection = document->tileSelection();
+        QRegion selection = document->selectedArea();
         const QRect area = selectedArea();
 
         switch (mSelectionMode) {
@@ -100,8 +100,8 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         case Intersect: selection &= area; break;
         }
 
-        if (selection != document->tileSelection()) {
-            QUndoCommand *cmd = new ChangeTileSelection(document, selection);
+        if (selection != document->selectedArea()) {
+            QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
             document->undoStack()->push(cmd);
         }
 

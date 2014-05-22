@@ -1,5 +1,5 @@
 /*
- * changetileselection.h
+ * changeselectedarea.h
  * Copyright 2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,8 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANGETILESELECTION_H
-#define CHANGETILESELECTION_H
+#ifndef CHANGESELECTEDAREA_H
+#define CHANGESELECTEDAREA_H
 
 #include <QRegion>
 #include <QUndoCommand>
@@ -29,14 +29,14 @@ namespace Internal {
 
 class MapDocument;
 
-class ChangeTileSelection : public QUndoCommand
+class ChangeSelectedArea: public QUndoCommand
 {
 public:
     /**
      * Creates an undo command that sets the selection of \a mapDocument to
      * the given \a selection.
      */
-    ChangeTileSelection(MapDocument *mapDocument,
+    ChangeSelectedArea(MapDocument *mapDocument,
                         const QRegion &selection);
 
     void undo();
@@ -52,4 +52,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CHANGETILESELECTION_H
+#endif // CHANGESELECTEDAREA_H

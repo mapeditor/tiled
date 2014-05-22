@@ -113,7 +113,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
             mFillRegion = regionComputer.computeFillRegion(tilePos);
         } else {
             // If holding shift, the region is the selection bounds
-            mFillRegion = mapDocument()->tileSelection();
+            mFillRegion = mapDocument()->selectedArea();
 
             // Fill region is the whole map if there is no selection
             if (mFillRegion.isEmpty())
@@ -257,7 +257,7 @@ void BucketFillTool::makeConnections()
 
     // Overlay needs be cleared if the selection changes, since
     // the overlay may be bound or may need to be bound to the selection
-    connect(mapDocument(), SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+    connect(mapDocument(), SIGNAL(selectedAreaChanged(QRegion,QRegion)),
             this, SLOT(clearOverlay()));
 }
 
@@ -272,7 +272,7 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     disconnect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                this, SLOT(clearOverlay()));
 
-    disconnect(mapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+    disconnect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
                this, SLOT(clearOverlay()));
 }
 

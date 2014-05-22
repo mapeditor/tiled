@@ -37,7 +37,7 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
-    connect(mMapDocument, SIGNAL(tileSelectionChanged(QRegion,QRegion)),
+    connect(mMapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
             this, SLOT(selectionChanged(QRegion,QRegion)));
 
     updateBoundingRect();
@@ -52,7 +52,7 @@ void TileSelectionItem::paint(QPainter *painter,
                               const QStyleOptionGraphicsItem *option,
                               QWidget *)
 {
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     QColor highlight = QApplication::palette().highlight().color();
     highlight.setAlpha(128);
 
@@ -74,6 +74,6 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
 
 void TileSelectionItem::updateBoundingRect()
 {
-    const QRect b = mMapDocument->tileSelection().boundingRect();
+    const QRect b = mMapDocument->selectedArea().boundingRect();
     mBoundingRect = mMapDocument->renderer()->boundingRect(b);
 }

@@ -1,5 +1,5 @@
 /*
- * changetileselection.cpp
+ * changeselectedarea.cpp
  * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "changetileselection.h"
+#include "changeselectedarea.h"
 
 #include "mapdocument.h"
 
@@ -26,7 +26,7 @@
 
 using namespace Tiled::Internal;
 
-ChangeTileSelection::ChangeTileSelection(MapDocument *mapDocument,
+ChangeSelectedArea::ChangeSelectedArea(MapDocument *mapDocument,
                                          const QRegion &newSelection)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Selection"))
@@ -35,19 +35,19 @@ ChangeTileSelection::ChangeTileSelection(MapDocument *mapDocument,
 {
 }
 
-void ChangeTileSelection::undo()
+void ChangeSelectedArea::undo()
 {
     swapSelection();
 }
 
-void ChangeTileSelection::redo()
+void ChangeSelectedArea::redo()
 {
     swapSelection();
 }
 
-void ChangeTileSelection::swapSelection()
+void ChangeSelectedArea::swapSelection()
 {
-    const QRegion oldSelection = mMapDocument->tileSelection();
-    mMapDocument->setTileSelection(mSelection);
+    const QRegion oldSelection = mMapDocument->selectedArea();
+    mMapDocument->setSelectedArea(mSelection);
     mSelection = oldSelection;
 }
