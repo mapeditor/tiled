@@ -64,7 +64,7 @@ SOURCES += aboutdialog.cpp \
     changeproperties.cpp \
     changetileanimation.cpp \
     changetileobjectgroup.cpp \
-    changetileselection.cpp \
+    changeselectedarea.cpp \
     changetileterrain.cpp \
     clipboardmanager.cpp \
     colorbutton.cpp \
@@ -185,7 +185,7 @@ HEADERS += aboutdialog.h \
     changeproperties.h \
     changetileanimation.h \
     changetileobjectgroup.h \
-    changetileselection.h \
+    changeselectedarea.h \
     changetileterrain.h \
     clipboardmanager.h \
     colorbutton.h \

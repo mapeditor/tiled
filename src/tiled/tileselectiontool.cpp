@@ -21,7 +21,7 @@
 #include "tileselectiontool.h"
 
 #include "brushitem.h"
-#include "changetileselection.h"
+#include "changeselectedarea.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"

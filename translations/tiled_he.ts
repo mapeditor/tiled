@@ -2717,7 +2717,7 @@ Do you want to replace it?</source>
         <translation>שינוי %1 ערכים</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileselection.cpp" line="+31"/>
+        <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
         <source>Change Selection</source>
         <translation>שינוי בחירה</translation>
     </message>

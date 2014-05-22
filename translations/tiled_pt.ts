@@ -2710,7 +2710,7 @@ Deseja substituí-lo?</translation>
         <translation>Mudar %1 Propriedades</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileselection.cpp" line="+31"/>
+        <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
         <source>Change Selection</source>
         <translation>Mudar Selecção</translation>
     </message>

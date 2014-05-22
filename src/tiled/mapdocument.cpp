@@ -25,7 +25,7 @@
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "changeproperties.h"
-#include "changetileselection.h"
+#include "changeselectedarea.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"

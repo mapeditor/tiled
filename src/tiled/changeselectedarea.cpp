@@ -1,5 +1,5 @@
 /*
- * changetileselection.cpp
+ * changeselectedarea.cpp
  * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "changetileselection.h"
+#include "changeselectedarea.h"
 
 #include "mapdocument.h"
 

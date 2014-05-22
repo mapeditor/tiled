@@ -21,7 +21,7 @@
 
 #include "mapdocumentactionhandler.h"
 
-#include "changetileselection.h"
+#include "changeselectedarea.h"
 #include "documentmanager.h"
 #include "layer.h"
 #include "map.h"

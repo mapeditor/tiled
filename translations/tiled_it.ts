@@ -2700,7 +2700,7 @@ Do you want to replace it?</source>
         <translation>Cambia Proprietà %1 </translation>
     </message>
     <message>
-        <location filename="../src/tiled/changetileselection.cpp" line="+31"/>
+        <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
         <source>Change Selection</source>
         <translation>Cambia Selezione</translation>
     </message>
