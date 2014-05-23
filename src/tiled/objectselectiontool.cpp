@@ -268,12 +268,12 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     const bool moveFast = modifiers & Qt::ShiftModifier;
     const bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
 
-    if (!moveFast) {
+    if (moveFast) {
         // TODO: This only makes sense for orthogonal maps
-        moveBy.rx() /= mapDocument()->map()->tileWidth();
-        moveBy.ry() /= mapDocument()->map()->tileHeight();
-    } else if (snapToFineGrid) {
-        moveBy /= Preferences::instance()->gridFine();
+        moveBy.rx() *= mapDocument()->map()->tileWidth();
+        moveBy.ry() *= mapDocument()->map()->tileHeight();
+        if (snapToFineGrid)
+            moveBy /= Preferences::instance()->gridFine();
     }
 
     QUndoStack *undoStack = mapDocument()->undoStack();
