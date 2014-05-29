@@ -109,8 +109,9 @@ int main(int argc, char *argv[])
         return 0;
 
     TmxViewer w;
-    w.viewMap(options.fileToOpen);
-    w.show();
+    if (!w.viewMap(options.fileToOpen))
+        return 1;
 
+    w.show();
     return a.exec();
 }

@@ -39,6 +39,7 @@
 #include "tileset.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QStyleOptionGraphicsItem>
@@ -173,12 +174,14 @@ TmxViewer::TmxViewer(QWidget *parent) :
 
 TmxViewer::~TmxViewer()
 {
-    qDeleteAll(mMap->tilesets());
+    if (mMap)
+        qDeleteAll(mMap->tilesets());
+
     delete mMap;
     delete mRenderer;
 }
 
-void TmxViewer::viewMap(const QString &fileName)
+bool TmxViewer::viewMap(const QString &fileName)
 {
     delete mRenderer;
     mRenderer = 0;
@@ -188,8 +191,10 @@ void TmxViewer::viewMap(const QString &fileName)
 
     MapReader reader;
     mMap = reader.readMap(fileName);
-    if (!mMap)
-        return; // TODO: Add error handling
+    if (!mMap) {
+        qWarning() << "Error:" << qPrintable(reader.errorString());
+        return false;
+    }
 
     switch (mMap->orientation()) {
     case Map::Isometric:
@@ -205,4 +210,6 @@ void TmxViewer::viewMap(const QString &fileName)
     }
 
     mScene->addItem(new MapItem(mMap, mRenderer));
+
+    return true;
 }
