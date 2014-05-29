@@ -34,6 +34,7 @@
 #include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "tileset.h"
 
@@ -193,6 +194,9 @@ void TmxViewer::viewMap(const QString &fileName)
     switch (mMap->orientation()) {
     case Map::Isometric:
         mRenderer = new IsometricRenderer(mMap);
+        break;
+    case Map::Staggered:
+        mRenderer = new StaggeredRenderer(mMap);
         break;
     case Map::Orthogonal:
     default:
