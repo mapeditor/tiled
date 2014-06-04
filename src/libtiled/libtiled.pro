@@ -73,8 +73,3 @@ contains(INSTALL_HEADERS, yes) {
     headers.path = $${PREFIX}/include/tiled
     INSTALLS += headers
 }
-
-macx {
-    contains(QT_CONFIG, ppc):CONFIG += x86 \
-        ppc
-}
