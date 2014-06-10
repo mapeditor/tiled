@@ -342,6 +342,7 @@ macx {
 }
 win32 {
     RC_FILE = tiled.rc
+    PRECOMPILED_HEADER = pch.h
 }
 win32:INCLUDEPATH += .
 contains(CONFIG, static) {
