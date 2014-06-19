@@ -6,35 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='http://blog.mapeditor.org/favicon.ico' rel='icon' type='image/png'/>
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
     <link href="css/fontawesome.css" rel="stylesheet">
     <link href="css/base.css" rel="stylesheet" media="screen">
     <link rel="me" href="https://plus.google.com/113047271137781766813" />
     <link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
   </head>
   <body>
-    <div id="navbar" class="navbar navbar-static-top">
-      <div class="navbar-inner">
-        <ul class="nav">
-          <li><a href="/"><i class="icon-home"></i> Home</a></li>
-          <li><a href="download.html"><i class="icon-download-alt"></i> Download</a></li>
-          <li class="active"><a href="donate.html"><i class="icon icon-heart"></i> Donate</a></li>
-        </ul>
-        <div id="social-buttons" class="pull-right">
-          <div class="g-plusone" data-size="medium" data-href="http://www.mapeditor.org"></div>
-          <!-- Place this tag after the last +1 button tag. -->
-          <script type="text/javascript">
-            (function() {
-              var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-              po.src = 'https://apis.google.com/js/plusone.js';
-              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-            })();
-          </script>
-          <iframe id="watch" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
-          <iframe id="fork" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
-        </div>
+    <nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
+      <ul class="nav navbar-nav">
+        <li><a href="/"><i class="icon-home"></i> Home</a></li>
+        <li><a href="download.html"><i class="icon-download-alt"></i> Download</a></li>
+        <li class="active"><a href="donate.html"><i class="icon icon-heart"></i> Donate</a></li>
+      </ul>
+      <div id="social-buttons" class="pull-right">
+        <div class="g-plusone" data-size="medium" data-href="http://www.mapeditor.org"></div>
+        <!-- Place this tag after the last +1 button tag. -->
+        <script type="text/javascript">
+          (function() {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/plusone.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+          })();
+        </script>
+        <iframe id="watch" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+        <iframe id="fork" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
       </div>
-    </div>
+    </nav>
 
     <div class="my-top-box" style="position: relative;">
       <div class="background">
@@ -149,24 +147,24 @@
       <div class="contents">
 
       <div class="container-fluid">
-        <div class="row-fluid">
+        <div class="row">
           <!--
           <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
           -->
-          <div class="lead span12">
+          <div class="lead col-md-12">
             <h1 style="display: none;">Tiled</h1>
             <a href="index.html"><img src="img/tiled-logo-white.png" style="margin-bottom: -40px; margin-left: 2%; width: 200px;"></a><br />
           </div>
         </div>
       </div>
       <div class="my-navigation">
-        <a class="btn btn-small" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>
-        <a class="btn btn-small" href="http://github.com/bjorn/tiled/wiki"><i class="icon-book"></i> Documentation</a>
-        <a class="btn btn-small" href="http://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
-        <a class="btn btn-small" href="http://groups.google.com/group/mapeditor" target="_blank"><i class="icon-group"></i> Mailing List</a>
+        <a class="btn btn-default btn-sm" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>
+        <a class="btn btn-default btn-sm" href="http://github.com/bjorn/tiled/wiki"><i class="icon-book"></i> Documentation</a>
+        <a class="btn btn-default btn-sm" href="http://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
+        <a class="btn btn-default btn-sm" href="http://groups.google.com/group/mapeditor" target="_blank"><i class="icon-group"></i> Mailing List</a>
         <div class="btn-group" style="text-align: left;">
-          <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-comments"></i> IRC Channel <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="top: 1.75em">
+          <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-comments"></i> IRC Channel <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="top: 1.9em">
             <li><a tabindex="-1" href="irc://irc.freenode.net/tiled">Join with IRC client</a></li>
             <li><a tabindex="-1" href="http://webchat.freenode.net/?channels=tiled" target="_blank">Join with browser</a></li>
           </ul>
@@ -181,9 +179,9 @@
 
         <h3 style="position: relative;">Donate <small style="position: absolute; right: 0px; line-height: inherit;"><a href="#why">Why donate to Tiled?</a></small></h3>
 
-        <div class="row-fluid">
-          <div class="span6">
-            <div class="well well-small" style="text-align: center;">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="well well-sm" style="text-align: center;">
               <h4>Gittip</h4>
               <p>Anonymous weekly donations,<br />a good way to support Tiled's ongoing development.</p>
               <script data-gittip-username="bjorn"
@@ -191,8 +189,8 @@
                       src="//gttp.co/v1.js"></script>
             </div>
           </div>
-          <div class="span6">
-            <div class="well well-small" style="text-align: center;">
+          <div class="col-md-6">
+            <div class="well well-sm" style="text-align: center;">
               <h4>PayPal</h4>
 
               <p>Private but not anonymous.<br />A thank-you message is guaranteed!</p>
@@ -210,7 +208,7 @@
           <li>$400 / month - Link on Tiled's front page, priority support and 8 hours dedicated development time</li>
         </ul>
 
-        <div class="well well-small" style="text-align: center;">
+        <div class="well" style="text-align: center;">
           <form style="display: inline-block; text-align: center;" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
             <input type="hidden" name="cmd" value="_s-xclick">
             <input type="hidden" name="hosted_button_id" value="2J8DVN8Y26D7S">
@@ -231,7 +229,7 @@
 
         <h3>Bank Transfer</h3>
 
-        <p>I live in Europe so if you want to do a bank transfer instead (which generally avoids additional charges), <a href="mailto:thorbjorn@lindeijer.nl">contact me</a> personally.</p>
+        <p>I live in Europe so if you want to do a bank transfer instead (which generally avoids additional charges), <a href="mailto:bjorn@lindeijer.nl">contact me</a> personally.</p>
       </div>
 
 
@@ -277,12 +275,12 @@
 
     <div id="footer">
       <div class="container-fluid">
-        <div class="row-fluid">
-          <div class="span6 tiled-copyright">
+        <div class="row">
+          <div class="col-md-6 tiled-copyright">
             Tiled - Copyright &copy; 2008-2013 Thorbj&oslash;rn Lindeijer<br />
             and <a href="http://www.ohloh.net/p/tiled-qt/contributors/summary">many other contributors</a>
           </div>
-          <div class="span6 attribution">
+          <div class="col-md-6 attribution">
             Site based on <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a> and <a href="http://fortawesome.github.com/Font-Awesome">Font Awesome</a><br />
             Header background graphics by <a href="http://www.lostgarden.com/2006/07/more-free-game-graphics.html">Daniel Cook</a>
           </div>

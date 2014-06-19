@@ -21,8 +21,8 @@
     padding: 10px;
 }
 
-.btn-large .icon-heart,
-.btn-large .icon-download-alt {
+.btn-lg .icon-heart,
+.btn-lg .icon-download-alt {
 }
 
 .btn-success, .btn-info {
@@ -34,16 +34,10 @@
     text-decoration: none;
 }
 
-.thumbnails .caption {
-    padding: 4px 8px;
-}
-
-.screenshots > li {
-  margin-bottom: 0px;
-}
-
-ul.thumbnails {
-  margin: 0px;
+.caption {
+  padding: 4px 8px;
+  margin-top: -10px;
+  color: #333;
 }
 
 .stepmap-banner {

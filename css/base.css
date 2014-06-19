@@ -68,14 +68,19 @@ body {
 }
 
 #navbar {
-    max-width: 1170px;
+    max-width: 1140px;
     margin-left: auto;
     margin-right: auto;
 }
 
 /* center the social buttons */
 #navbar #social-buttons {
-    margin-top: 10px;
+    margin-top: 16px;
+    margin-right: 10px;
+}
+
+#navbar .navbar-nav {
+    margin-left: 10px;
 }
 
 #footer {
@@ -106,21 +111,6 @@ body {
 }
 
 @media (max-width: 767px) {
-    #navbar .navbar-inner {
-        min-height: 0px;
-        padding-left: 0px;
-        padding-right: 0px;
-    }
-
-    #navbar i {
-        display: none;
-    }
-
-    #navbar .nav li a {
-        height: 10px;
-        line-height: 10px;
-    }
-
     /* center the social buttons */
     #navbar #social-buttons {
         margin-top: 5px;
@@ -137,13 +127,7 @@ body {
     }
 }
 
-@media (max-width: 650px) {
-    #fork { display: none; }
-}
-
 @media (max-width: 540px) {
-    #watch { display: none; }
-
     .container-fluid {
         margin-right: 0px;
         margin-left: 0px;

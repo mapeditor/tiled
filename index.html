@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='http://blog.mapeditor.org/favicon.ico' rel='icon' type='image/png'/>
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
     <link href="css/fontawesome.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/jquery.fancybox.css?v=2.1.4" type="text/css" media="screen" />
     <link href="css/index.css" rel="stylesheet" media="screen">
@@ -14,28 +14,26 @@
     <link rel="publisher" href="https://plus.google.com/104206952440491912596/" />
   </head>
   <body>
-    <div id="navbar" class="navbar navbar-static-top">
-      <div class="navbar-inner">
-        <ul class="nav">
-          <li class="active"><a href="/"><i class="icon-home"></i> Home</a></li>
-          <li><a href="download.html"><i class="icon-download-alt"></i> Download</a></li>
-          <li><a href="donate.html"><i class="icon-heart"></i> Donate</a></li>
-        </ul>
-        <div id="social-buttons" class="pull-right">
-          <div class="g-plusone" data-size="medium" data-href="http://www.mapeditor.org"></div>
-          <!-- Place this tag after the last +1 button tag. -->
-          <script type="text/javascript">
-            (function() {
-              var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-              po.src = 'https://apis.google.com/js/plusone.js';
-              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-            })();
-          </script>
-          <iframe id="watch" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
-          <iframe id="fork" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
-        </div>
+    <nav id="navbar" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0px">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/"><i class="icon-home"></i> Home</a></li>
+        <li><a href="download.html"><i class="icon-download-alt"></i> Download</a></li>
+        <li><a href="donate.html"><i class="icon-heart"></i> Donate</a></li>
+      </ul>
+      <div id="social-buttons" class="pull-right">
+        <div class="g-plusone" data-size="medium" data-href="http://www.mapeditor.org"></div>
+        <!-- Place this tag after the last +1 button tag. -->
+        <script type="text/javascript">
+          (function() {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/plusone.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+          })();
+        </script>
+        <iframe id="watch" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+        <iframe id="fork" src="http://ghbtns.com/github-btn.html?user=bjorn&amp;repo=tiled&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
       </div>
-    </div>
+    </nav>
 
     <!-- relative position allows positioning absolute elements inside -->
     <div class="my-top-box" style="position: relative;">
@@ -277,30 +275,30 @@
       <div class="contents">
 
       <div class="container-fluid">
-        <div class="row-fluid">
+        <div class="row">
           <!--
           <a class='g-plus-link' href='https://plus.google.com/104206952440491912596?prsrc=3' rel='publisher' style='text-decoration:none;'><img alt='' src='https://ssl.gstatic.com/images/icons/gplus-32.png' style='border:0;width:32px;height:32px;'/></a>
           -->
           <h1 style="display: none;">Tiled</h1>
-          <div class="lead span6" style="text-align: center; color: white; text-shadow: 1px 1px 2px #000000;">
+          <div class="lead col-md-6" style="text-align: center; color: white; text-shadow: 1px 1px 2px #000000;">
             <img src="img/tiled-logo-white.png" width="419" height="228" style="margin-bottom: -0.5em; margin-left: -20px;"><br />
             Your <a href="http://www.gnu.org/philosophy/free-sw.html">free</a>, easy to use and flexible tile&nbsp;map&nbsp;editor.
           </div>
 
-          <div class="span4 offset1 my-buttons">
-            <a class="btn btn-large btn-success" href="download.html"><i class="icon-download-alt"></i> Download</a>
-            <a class="btn btn-large btn-info" href="donate.html"><i class="icon-heart"></i> Donate</a>
+          <div class="col-md-4 col-md-offset-1 my-buttons">
+            <a class="btn btn-lg btn-success" href="download.html"><i class="icon-download-alt"></i> Download</a>
+            <a class="btn btn-lg btn-info" href="donate.html"><i class="icon-heart"></i> Donate</a>
           </div>
         </div>
       </div>
       <div class="my-navigation">
-        <a class="btn" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>
-        <a class="btn" href="http://github.com/bjorn/tiled/wiki"><i class="icon-book"></i> Documentation</a>
-        <a class="btn" href="http://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
-        <a class="btn" href="http://groups.google.com/group/mapeditor" target="_blank"><i class="icon-group"></i> Mailing List</a>
+        <a class="btn btn-default" href="http://blog.mapeditor.org/"><i class="icon-rss"></i> Blog</a>
+        <a class="btn btn-default" href="http://github.com/bjorn/tiled/wiki"><i class="icon-book"></i> Documentation</a>
+        <a class="btn btn-default" href="http://github.com/bjorn/tiled/issues"><i class="icon-exclamation-sign"></i> Issue Tracker</a>
+        <a class="btn btn-default" href="http://groups.google.com/group/mapeditor" target="_blank"><i class="icon-group"></i> Mailing List</a>
         <div class="btn-group" style="text-align: left;">
-          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-comments"></i> IRC Channel <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="top: 2em">
+          <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-comments"></i> IRC Channel <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="top: 2.2em">
             <li><a tabindex="-1" href="irc://irc.freenode.net/tiled">Join with IRC client</a></li>
             <li><a tabindex="-1" href="http://webchat.freenode.net/?channels=tiled" target="_blank">Join with browser</a></li>
           </ul>
@@ -311,8 +309,8 @@
     </div>
     <div class="release-box">
       <div class="container-fluid">
-        <div class="row-fluid">
-          <div class="lead span12" style="text-align: center;">
+        <div class="row">
+          <div class="lead col-md-12" style="text-align: center;">
             Current Release: 0.9.1 <small><a href="download.html#changes">See&nbsp;what's&nbsp;new&nbsp;in&nbsp;Tiled</a></small>
           </div>
         </div>
@@ -321,69 +319,65 @@
     <div class="container-fluid">
 
       <!-- Screenshots demonstrating some of the main features -->
-      <div class="row-fluid">
-        <div class="span12">
-          <div class="my-box">
-            <ul class="thumbnails screenshots">
-              <li class="span4">
-                <a href="img/screenshot-terrain.png"  class="thumbnail fancybox" rel="gallery" data-title-id="title-1">
-                  <div style="height: 200px; background-image: url(img/screenshot-terrain-thumb.png); background-position: center;"></div>
-                </a>
-                <div id="title-1" class="hidden">
-                    The terrain tool automates placement of transition tiles. This example uses tiles from the <a href="http://lpc.opengameart.org/">Liberated Pixel Cup</a> <small>(CC-BY-SA 3.0 & GPLv3)</small>.
-                </div>
-                <div class="caption">
-                  <p>Efficient tile editing tools like <strong>stamp</strong>, <strong>fill</strong> and <strong>terrain</strong> brushes.</p>
-                </div>
-              </li>
-              <li class="span4">
-                <a href="img/screenshot-objects.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-2">
-                  <div style="height: 200px; background-image: url(img/screenshot-objects-thumb.png); background-position: center;"></div>
-                </a>
-                <div id="title-2" class="hidden">
-                    Demonstrating support for custom objects alongside a tile map with background image. Graphics from <a href="http://www.spicypixel.net/2008/01/10/gfxlib-fuzed-a-free-developer-graphic-library/">GfxLib-Fuzed</a> <small>(CPL)</small>.
-                </div>
-                <div class="caption">
-                  <p><strong>Rectangle</strong>, <strong>ellipse</strong>, <strong>polygon</strong> and <strong>image</strong> objects can be placed with pixel precision.</p>
-                </div>
-              </li>
-              <li class="span4">
-                <a href="img/screenshot-isometric.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-3">
-                  <div style="height: 200px; background-image: url(img/screenshot-isometric-thumb.png); background-position: center;"></div>
-                </a>
-                <div id="title-3" class="hidden">
-                    An isometric map with a custom object, showing object shapes are projected as well. The tiles are by <a href="http://opengameart.org/content/grass-and-water-tiles">Clint Bellanger</a> <small>(CC-BY 3.0)</small>.
-                </div>
-                <div class="caption">
-                  <p>Supports <strong>orthogonal</strong>, <strong>isometric</strong> and <strong>staggered</strong> maps.</p>
-                </div>
-              </li>
-            </ul>
+      <div class="my-box">
+        <div class="row">
+          <div class="col-md-4">
+            <a href="img/screenshot-terrain.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-1">
+              <div style="height: 200px; background-image: url(img/screenshot-terrain-thumb.png); background-position: center;"></div>
+            </a>
+            <div id="title-1" class="hidden">
+                The terrain tool automates placement of transition tiles. This example uses tiles from the <a href="http://lpc.opengameart.org/">Liberated Pixel Cup</a> <small>(CC-BY-SA 3.0 &mp; GPLv3)</small>.
+            </div>
+            <div class="caption">
+              <p>Efficient tile editing tools like <strong>stamp</strong>, <strong>fill</strong> and <strong>terrain</strong> brushes.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <a href="img/screenshot-objects.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-2">
+              <div style="height: 200px; background-image: url(img/screenshot-objects-thumb.png); background-position: center;"></div>
+            </a>
+            <div id="title-2" class="hidden">
+                Demonstrating support for custom objects alongside a tile map with background image. Graphics from <a href="http://www.spicypixel.net/2008/01/10/gfxlib-fuzed-a-free-developer-graphic-library/">GfxLib-Fuzed</a> <small>(CPL)</small>.
+            </div>
+            <div class="caption">
+              <p><strong>Rectangle</strong>, <strong>ellipse</strong>, <strong>polygon</strong> and <strong>image</strong> objects can be placed with pixel precision.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <a href="img/screenshot-isometric.png" class="thumbnail fancybox" rel="gallery" data-title-id="title-3">
+              <div style="height: 200px; background-image: url(img/screenshot-isometric-thumb.png); background-position: center;"></div>
+            </a>
+            <div id="title-3" class="hidden">
+                An isometric map with a custom object, showing object shapes are projected as well. The tiles are by <a href="http://opengameart.org/content/grass-and-water-tiles">Clint Bellanger</a> <small>(CC-BY 3.0)</small>.
+            </div>
+            <div class="caption">
+              <p>Supports <strong>orthogonal</strong>, <strong>isometric</strong> and <strong>staggered</strong> maps.</p>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Sponsors -->
-      <div class="row-fluid">
-        <div class="span12">
-          <div class="my-box" style="text-align: center;">
-            <h4 class="muted">Tiled Sponsors</h4>
-            <ul class="thumbnails">
-              <li class="span4">
-                <a class="thumbnail" href="http://www.payloadz.com/go/jump?id=2605501&amp;aff_id=3494849"><img src="img/cartoonsmart_banner.jpg" /></a>
-              </li>
-              <li class="span4">
-                <a class="thumbnail" href="http://www.loomsdk.com/"><img src="img/loomsdk_banner.png" /></a>
-              </li>
-              <li class="span4">
-                <a class="thumbnail" href="http://www.cocos2d-x.org/"><img src="img/cocos2dx_banner.jpg" /></a>
-              </li>
-            </ul>
-            <ul class="thumbnails">
-              <li class="span12">
-                <a class="thumbnail" href="donate.html">Help improve Tiled,<br /> become a Tiled sponsor!</a>
-              </li>
-            </ul>
+      <div class="my-box" style="text-align: center;">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 class="text-muted">Tiled Sponsors</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <a class="thumbnail" href="http://www.payloadz.com/go/jump?id=2605501&amp;aff_id=3494849"><img src="img/cartoonsmart_banner.jpg" /></a>
+          </div>
+          <div class="col-md-4">
+            <a class="thumbnail" href="http://www.loomsdk.com/"><img src="img/loomsdk_banner.png" /></a>
+          </div>
+          <div class="col-md-4">
+            <a class="thumbnail" href="http://www.cocos2d-x.org/"><img src="img/cocos2dx_banner.jpg" /></a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <a class="thumbnail" href="donate.html">Help improve Tiled,<br /> become a Tiled sponsor!</a>
           </div>
         </div>
       </div>
@@ -392,12 +386,12 @@
 
     <div id="footer">
       <div class="container-fluid">
-        <div class="row-fluid">
-          <div class="span6 tiled-copyright">
+        <div class="row">
+          <div class="col-md-6 tiled-copyright">
             Tiled - Copyright &copy; 2008-2013 Thorbj&oslash;rn Lindeijer<br />
             and <a href="http://www.ohloh.net/p/tiled-qt/contributors/summary">many other contributors</a>
           </div>
-          <div class="span6 attribution">
+          <div class="col-md-6 attribution">
             Site based on <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a> and <a href="http://fortawesome.github.com/Font-Awesome">Font Awesome</a><br />
             Header background graphics by <a href="http://www.lostgarden.com/2006/07/more-free-game-graphics.html">Daniel Cook</a>
           </div>
