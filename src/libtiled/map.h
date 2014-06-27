@@ -83,6 +83,16 @@ public:
     };
 
     /**
+     * The render order in which tiles are rendered on screen.
+     */
+    enum RenderOrder {
+        RightDown  = 0,
+        RightUp    = 1,
+        LeftDown   = 2,
+        LeftUp  = 3
+    };
+
+    /**
      * Constructor, taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
@@ -109,6 +119,17 @@ public:
      */
     void setOrientation(Orientation orientation)
     { mOrientation = orientation; }
+
+    /**
+     * Returns the render order of the map.
+     */
+    RenderOrder renderOrder() const { return mRenderOrder; }
+
+    /**
+     * Sets the render order of the map.
+     */
+    void setRenderOrder(RenderOrder renderOrder)
+    { mRenderOrder = renderOrder; }
 
     /**
      * Returns the width of this map.
@@ -321,6 +342,7 @@ private:
     void adoptLayer(Layer *layer);
 
     Orientation mOrientation;
+    RenderOrder mRenderOrder;
     int mWidth;
     int mHeight;
     int mTileWidth;
@@ -348,6 +370,9 @@ TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
  *         the string is unrecognized.
  */
 TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
+
+TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
+TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 
 } // namespace Tiled
 

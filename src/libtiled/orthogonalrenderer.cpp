@@ -135,7 +135,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             } else {
                 for (int i = 1; i < screenPolygon.size(); ++i) {
                     path.addPolygon(lineToPolygon(screenPolygon[i - 1],
-                                                  screenPolygon[i]));
+                                    screenPolygon[i]));
                 }
                 path.setFillRule(Qt::WindingFill);
             }
@@ -209,8 +209,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     int startX = 0;
     int startY = 0;
-    int endX = layer->width();
-    int endY = layer->height();
+    int endX = layer->width() -1;
+    int endY = layer->height() -1;
 
     if (!exposed.isNull()) {
         QMargins drawMargins = layer->drawMargins();
@@ -226,18 +226,43 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
         startX = qMax((int) rect.x() / tileWidth, 0);
         startY = qMax((int) rect.y() / tileHeight, 0);
-        endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
-        endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
+        endX = qMin((int) std::ceil(rect.right()) / tileWidth, endX);
+        endY = qMin((int) std::ceil(rect.bottom()) / tileHeight, endY);
     }
 
     CellRenderer renderer(painter);
 
-    for (int y = startY; y < endY; ++y) {
-        for (int x = startX; x < endX; ++x) {
+    Map::RenderOrder renderOrder = map()->renderOrder();
+
+    int incX = 1, incY = 1;
+    switch (renderOrder) {
+    case Map::RightUp:
+        std::swap(startY, endY);
+        incY = -1;
+        break;
+    case Map::LeftDown:
+        std::swap(startX, endX);
+        incX = -1;
+        break;
+    case Map::LeftUp:
+        std::swap(startX, endX);
+        std::swap(startY, endY);
+        incX = -1;
+        incY = -1;
+        break;
+    case Map::RightDown:
+    default:
+        break;
+    }
+
+    endX += incX;
+    endY += incY;
+
+    for (int y = startY; y != endY; y += incY) {
+        for (int x = startX; x != endX; x += incX) {
             const Cell &cell = layer->cellAt(x, y);
             if (cell.isEmpty())
                 continue;
-
             renderer.render(cell,
                             QPointF(x * tileWidth, (y + 1) * tileHeight),
                             CellRenderer::BottomLeft);
