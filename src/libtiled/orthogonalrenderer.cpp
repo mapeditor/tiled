@@ -1,6 +1,6 @@
 /*
  * orthogonalrenderer.cpp
- * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbj��rn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -28,6 +28,7 @@
 
 #include "orthogonalrenderer.h"
 
+#include "ir_builder.h"
 #include "map.h"
 #include "mapobject.h"
 #include "tile.h"
@@ -232,9 +233,47 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     CellRenderer renderer(painter);
 
+    int renderOrder = map()->renderOrder();
+    /*
+     *
+     * right-down  = 0,
+            right-up    = 1,
+            left-down   = 2,
+            left-right  = 3
+     */
+
+    int j,i = 0;
+    switch (renderOrder) {
+      case Map::RenderOrder.RightDown:
+              //++y
+              j=0;
+              //++x
+              i=0;
+              break;
+      case Map::RenderOrder.RightUp:
+              //--y
+              j=1;
+              //++x
+              i=0;
+              break;
+      case Map::RenderOrder.LeftDown:
+              //++y
+              j=0;
+              //--x
+              i=1;
+              break;
+      case Map::RenderOrder.LeftRight:
+              //--y
+              j=1;
+              //--x
+              i=1;
+              break;
+      default:
+        break;
+    }
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
-            const Cell &cell = layer->cellAt(x, y);
+            const Cell &cell = layer->cellAt(abs((endX-1)*i -x), abs((endY-1)*j -y));
             if (cell.isEmpty())
                 continue;
 

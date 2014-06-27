@@ -1,6 +1,6 @@
 /*
  * map.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2010, Thorbj��rn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  *
@@ -83,6 +83,16 @@ public:
     };
 
     /**
+         * The different order in which tiles are rendered on screen.
+         */
+    enum RenderOrder {
+        RightDown  = 0,
+        RightUp    = 1,
+        LeftDown   = 2,
+        LeftUp  = 3
+    };
+
+    /**
      * Constructor, taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
@@ -109,6 +119,17 @@ public:
      */
     void setOrientation(Orientation orientation)
     { mOrientation = orientation; }
+
+    /**
+     * Returns the orientation of the map.
+     */
+    RenderOrder renderOrder() const { return mRenderOrder; }
+
+    /**
+     * Sets the orientation of the map.
+     */
+    void setRenderOrder(RenderOrder renderOrder)
+    { mRenderOrder = renderOrder; }
 
     /**
      * Returns the width of this map.
@@ -321,6 +342,7 @@ private:
     void adoptLayer(Layer *layer);
 
     Orientation mOrientation;
+    RenderOrder mRenderOrder;
     int mWidth;
     int mHeight;
     int mTileWidth;
