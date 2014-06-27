@@ -64,12 +64,19 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
 
+    mUi->renderOrderLabel->setText(QCoreApplication::translate("Tiled::Internal::MapPropertiesDialog", "Render order:"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"));
+
     mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
     mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
     mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
 
     mUi->orientation->setCurrentIndex(orientation);
     mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
+    mUi->renderOrder->setCurrentIndex(prefs->mapRenderOrder());
     mUi->mapWidth->setValue(mapWidth);
     mUi->mapHeight->setValue(mapHeight);
     mUi->tileWidth->setValue(tileWidth);
@@ -110,12 +117,15 @@ MapDocument *NewMapDialog::createMap()
             static_cast<Map::Orientation>(orientationData.toInt());
     const Map::LayerDataFormat layerFormat =
             static_cast<Map::LayerDataFormat>(mUi->layerFormat->currentIndex());
+    const Map::RenderOrder renderOrder =
+            static_cast<Map::RenderOrder>(mUi->renderOrder->currentIndex());
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
                        tileWidth, tileHeight);
 
     map->setLayerDataFormat(layerFormat);
+    map->setRenderOrder(renderOrder);
 
     const size_t gigabyte = 1073741824;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
@@ -135,6 +145,7 @@ MapDocument *NewMapDialog::createMap()
     // Store settings for next time
     Preferences *prefs = Preferences::instance();
     prefs->setLayerDataFormat(layerFormat);
+    prefs->setMapRenderOrder(renderOrder);
     QSettings *s = Preferences::instance()->settings();
     s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);

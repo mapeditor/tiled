@@ -31,12 +31,14 @@ using namespace Tiled::Internal;
 
 ChangeMapProperties::ChangeMapProperties(MapDocument *mapDocument,
                                          const QColor &backgroundColor,
-                                         Map::LayerDataFormat layerDataFormat)
+                                         Map::LayerDataFormat layerDataFormat,
+                                         Map::RenderOrder renderOrder)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Map Properties"))
     , mMapDocument(mapDocument)
     , mBackgroundColor(backgroundColor)
     , mLayerDataFormat(layerDataFormat)
+    , mRenderOrder(renderOrder)
 {
 }
 
@@ -56,11 +58,14 @@ void ChangeMapProperties::swap()
 
     const QColor backgroundColor = map->backgroundColor();
     const Map::LayerDataFormat layerDataFormat = map->layerDataFormat();
+    const Map::RenderOrder renderOrder = map->renderOrder();
 
     map->setBackgroundColor(mBackgroundColor);
     map->setLayerDataFormat(mLayerDataFormat);
+    map->setRenderOrder(mRenderOrder);
     mMapDocument->emitMapChanged();
 
     mBackgroundColor = backgroundColor;
     mLayerDataFormat = layerDataFormat;
+    mRenderOrder = renderOrder;
 }

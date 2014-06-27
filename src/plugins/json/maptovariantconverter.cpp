@@ -43,6 +43,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     mapVariant["version"] = 1.0;
     mapVariant["orientation"] = orientationToString(map->orientation());
+    mapVariant["renderorder"] = renderOrderToString(map->renderOrder());
     mapVariant["width"] = map->width();
     mapVariant["height"] = map->height();
     mapVariant["tilewidth"] = map->tileWidth();
