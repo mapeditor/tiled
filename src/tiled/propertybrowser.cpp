@@ -75,6 +75,17 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
 
+    /*
+     	RightDown  = 0,
+        RightUp    = 1,
+        LeftDown   = 2,
+        LeftUp  = 3
+     */
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "RightDown"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "RightUp"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "LeftDown"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "LeftUp"));
+
     mFlippingFlagNames.append(tr("Horizontal"));
     mFlippingFlagNames.append(tr("Vertical"));
 
@@ -317,6 +328,14 @@ void PropertyBrowser::addMapProperties()
 
     layerFormatProperty->setAttribute(QLatin1String("enumNames"), mLayerFormatNames);
 
+    QtVariantProperty *renderOrderProperty =
+    		createProperty(RenderOrderProperty,
+    				QtVariantPropertyManager::enumTypeId(),
+    				tr("Render order"),
+    				groupProperty);
+
+    renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
+
     createProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
 }
@@ -440,13 +459,25 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         Map::LayerDataFormat format = static_cast<Map::LayerDataFormat>(val.toInt());
         command = new ChangeMapProperties(mMapDocument,
                                           map->backgroundColor(),
-                                          format);
+                                          format,
+                                          map->renderOrder());
         break;
     }
+
+    case RenderOrderProperty: {
+            Map::RenderOrder renderOrder = static_cast<Map::RenderOrder>(val.toInt());
+            command = new ChangeMapProperties(mMapDocument,
+                                              map->backgroundColor(),
+                                              map->layerDataFormat(),
+                                              renderOrder);
+            break;
+        }
+
     case ColorProperty:
         command = new ChangeMapProperties(mMapDocument,
                                           val.value<QColor>(),
-                                          map->layerDataFormat());
+                                          map->layerDataFormat(),
+                                          map->renderOrder());
         break;
     default:
         break;
@@ -702,6 +733,7 @@ void PropertyBrowser::updateProperties()
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
+        mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
         QColor backgroundColor = map->backgroundColor();
         if (!backgroundColor.isValid())
             backgroundColor = Qt::darkGray;

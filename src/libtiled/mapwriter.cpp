@@ -69,6 +69,7 @@ public:
 
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
+    Map::RenderOrder mMapRenderOrder;
     bool mDtdEnabled;
 
 private:
@@ -681,6 +682,16 @@ void MapWriter::setLayerDataFormat(Map::LayerDataFormat format)
 Map::LayerDataFormat MapWriter::layerDataFormat() const
 {
     return d->mLayerDataFormat;
+}
+
+void MapWriter::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
+{
+    d->mMapRenderOrder = mapRenderOrder;
+}
+
+Map::RenderOrder MapWriter::mapRenderOrder() const
+{
+    return d->mMapRenderOrder;
 }
 
 void MapWriter::setDtdEnabled(bool enabled)

@@ -28,7 +28,6 @@
 
 #include "orthogonalrenderer.h"
 
-#include "ir_builder.h"
 #include "map.h"
 #include "mapobject.h"
 #include "tile.h"
@@ -234,9 +233,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     CellRenderer renderer(painter);
 
     int renderOrder = map()->renderOrder();
+
     /*
-     *
-     * right-down  = 0,
+			right-down  = 0,
             right-up    = 1,
             left-down   = 2,
             left-right  = 3
@@ -244,25 +243,25 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     int j,i = 0;
     switch (renderOrder) {
-      case Map::RenderOrder.RightDown:
+      case Map::RightDown:
               //++y
               j=0;
               //++x
               i=0;
               break;
-      case Map::RenderOrder.RightUp:
+      case Map::RightUp:
               //--y
               j=1;
               //++x
               i=0;
               break;
-      case Map::RenderOrder.LeftDown:
+      case Map::LeftDown:
               //++y
               j=0;
               //--x
               i=1;
               break;
-      case Map::RenderOrder.LeftRight:
+      case Map::LeftUp:
               //--y
               j=1;
               //--x
@@ -271,14 +270,19 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
       default:
         break;
     }
+
+
+    int tempX, tempY;
     for (int y = startY; y < endY; ++y) {
+    	tempY = abs( ((endY-1)*j) -y );
         for (int x = startX; x < endX; ++x) {
-            const Cell &cell = layer->cellAt(abs((endX-1)*i -x), abs((endY-1)*j -y));
+        	tempX = abs( ((endX-1)*i) -x );
+            const Cell &cell = layer->cellAt( tempX, tempY);
             if (cell.isEmpty())
                 continue;
 
             renderer.render(cell,
-                            QPointF(x * tileWidth, (y + 1) * tileHeight),
+                            QPointF(tempX * tileWidth, (tempY + 1) * tileHeight),
                             CellRenderer::BottomLeft);
         }
     }

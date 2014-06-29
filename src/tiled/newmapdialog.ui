@@ -213,6 +213,9 @@
         <property name="text">
          <string>Layer format:</string>
         </property>
+        <property name="text">
+         <string>Render order:</string>
+        </property>
         <property name="buddy">
          <cstring>layerFormat</cstring>
         </property>

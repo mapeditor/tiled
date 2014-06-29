@@ -42,6 +42,7 @@ Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
     Object(MapType),
     mOrientation(orientation),
+    mRenderOrder(RightDown),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
@@ -53,6 +54,7 @@ Map::Map(Orientation orientation,
 Map::Map(const Map &map):
     Object(map),
     mOrientation(map.mOrientation),
+    mRenderOrder(map.mRenderOrder),
     mWidth(map.mWidth),
     mHeight(map.mHeight),
     mTileWidth(map.mTileWidth),
@@ -61,6 +63,7 @@ Map::Map(const Map &map):
     mDrawMargins(map.mDrawMargins),
     mTilesets(map.mTilesets),
     mLayerDataFormat(map.mLayerDataFormat)
+
 {
     foreach (const Layer *layer, map.mLayers) {
         Layer *clone = layer->clone();

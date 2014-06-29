@@ -230,6 +230,20 @@ void Preferences::setLayerDataFormat(Map::LayerDataFormat
                         mLayerDataFormat);
 }
 
+Map::RenderOrder Preferences::mapRenderOrder() const {
+	return mMapRenderOrder;
+}
+void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder) {
+
+	if (mMapRenderOrder == mapRenderOrder)
+	        return;
+
+	mMapRenderOrder = mapRenderOrder;
+	mSettings->setValue(QLatin1String("Storage/MapRenderOrder"),
+			mMapRenderOrder);
+}
+
+
 bool Preferences::dtdEnabled() const
 {
     return mDtdEnabled;
