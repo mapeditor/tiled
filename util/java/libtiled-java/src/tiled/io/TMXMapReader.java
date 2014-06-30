@@ -309,6 +309,10 @@ public class TMXMapReader
 
         String tilesetBaseDir = xmlPath;
 
+		if (tilesetBaseDir.startsWith("file:/")) {
+			tilesetBaseDir = tilesetBaseDir.substring(6);
+		}
+
         if (basedir != null) {
             tilesetBaseDir = basedir; //makeUrl(basedir);
         }
