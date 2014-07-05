@@ -61,7 +61,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
     }
 
     // Create our map, setting width and height to 0 until we load a layer.
-    Map *map = new Map(Map::Orthogonal, 0, 0, 32, 32);
+    Map *map = new Map(Map::Orthogonal, Map::RightDown, 0, 0, 32, 32);
     map->setProperty("background_index", QString::number(backgroundIndex));
 
     // Load our Tilesets.

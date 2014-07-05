@@ -54,7 +54,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     }
 
     // default to values of the original flare alpha game.
-    Map *map = new Map(Map::Isometric, 256, 256, 64, 32);
+    Map *map = new Map(Map::Isometric, Map::RightDown, 256, 256, 64, 32);
 
     QTextStream stream (&file);
     QString line;

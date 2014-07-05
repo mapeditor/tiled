@@ -32,6 +32,7 @@
 #include <QMessageBox>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
+static const char * const RENDERORDER_KEY = "Map/RenderOrder";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
 static const char * const MAP_HEIGHT_KEY = "Map/Height";
 static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
@@ -51,6 +52,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     Preferences *prefs = Preferences::instance();
     QSettings *s = prefs->settings();
     const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
+    //const int renderOrder = s->value(QLatin1String(RENDERORDER_KEY)).toInt();
     const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
     const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
     const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
@@ -100,6 +102,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     connect(mUi->tileWidth, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->tileHeight, SIGNAL(valueChanged(int)), SLOT(refreshPixelSize()));
     connect(mUi->orientation, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
+    connect(mUi->renderOrder, SIGNAL(currentIndexChanged(int)), SLOT(refreshPixelSize()));
     refreshPixelSize();
 }
 
@@ -126,8 +129,9 @@ MapDocument *NewMapDialog::createMap()
             static_cast<Map::LayerDataFormat>(mUi->layerFormat->currentIndex());
     const Map::RenderOrder renderOrder =
                 static_cast<Map::RenderOrder>(mUi->renderOrder->currentIndex());
+    const int renderOrderIndex = mUi->renderOrder->currentIndex();
 
-    Map *map = new Map(orientation,
+    Map *map = new Map(orientation, renderOrder,
                        mapWidth, mapHeight,
                        tileWidth, tileHeight);
 
@@ -155,6 +159,7 @@ MapDocument *NewMapDialog::createMap()
     prefs->setMapRenderOrder(renderOrder);
     QSettings *s = Preferences::instance()->settings();
     s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
+    s->setValue(QLatin1String(RENDERORDER_KEY), renderOrderIndex);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
     s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
@@ -166,7 +171,18 @@ MapDocument *NewMapDialog::createMap()
 void NewMapDialog::refreshPixelSize()
 {
     const int orientation = mUi->orientation->currentIndex();
+    const int renderOrder = mUi->renderOrder->currentIndex();
+
+    /*
+         	RightDown  = 0,
+            RightUp    = 1,
+            LeftDown   = 2,
+            LeftUp  = 3
+         */
     const Map map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
+    			  (renderOrder == 0) ? Map::RightDown :
+    			  (renderOrder == 1) ? Map::RightUp :
+    			  (renderOrder == 2) ? Map::LeftDown : Map::LeftUp ,
                   mUi->mapWidth->value(),
                   mUi->mapHeight->value(),
                   mUi->tileWidth->value(),

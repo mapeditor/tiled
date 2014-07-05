@@ -96,6 +96,7 @@ public:
      * Constructor, taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
+    	RenderOrder renderorder,
         int width, int height,
         int tileWidth, int tileHeight);
 
@@ -370,6 +371,9 @@ TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
  *         the string is unrecognized.
  */
 TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
+
+TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
+TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 
 } // namespace Tiled
 

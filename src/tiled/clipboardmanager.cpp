@@ -116,7 +116,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     }
 
     // Create a temporary map to write to the clipboard
-    Map copyMap(map->orientation(),
+    Map copyMap(map->orientation(), map->renderOrder(),
                 copyLayer->width(), copyLayer->height(),
                 map->tileWidth(), map->tileHeight());
 

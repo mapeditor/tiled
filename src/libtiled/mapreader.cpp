@@ -221,7 +221,12 @@ Map *MapReaderPrivate::readMap()
                        .arg(orientationString));
     }
 
-    mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
+    const QString renderOrderString =
+                atts.value(QLatin1String("renderorder")).toString();
+    const Map::RenderOrder renderOrder =
+                renderOrderFromString(renderOrderString);
+
+    mMap = new Map(orientation, renderOrder, mapWidth, mapHeight, tileWidth, tileHeight);
     mCreatedTilesets.clear();
 
     QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));

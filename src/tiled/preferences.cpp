@@ -59,6 +59,9 @@ Preferences::Preferences()
     mLayerDataFormat = (Map::LayerDataFormat)
                        mSettings->value(QLatin1String("LayerDataFormat"),
                                         Map::Base64Zlib).toInt();
+    mMapRenderOrder = (Map::RenderOrder)
+                           mSettings->value(QLatin1String("MapRenderOrder"),
+                                            Map::RightDown).toInt();
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mSettings->endGroup();
