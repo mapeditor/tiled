@@ -83,8 +83,8 @@ public:
     };
 
     /**
-         * The different order in which tiles are rendered on screen.
-         */
+     * The render order in which tiles are rendered on screen.
+     */
     enum RenderOrder {
         RightDown  = 0,
         RightUp    = 1,
@@ -122,7 +122,7 @@ public:
     { mOrientation = orientation; }
 
     /**
-     * Returns the orientation of the map.
+     * Returns the render order of the map.
      */
     RenderOrder renderOrder() const { return mRenderOrder; }
 

@@ -232,14 +232,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     CellRenderer renderer(painter);
 
-    int renderOrder = map()->renderOrder();
-
-    /*
-			right-down  = 0,
-            right-up    = 1,
-            left-down   = 2,
-            left-right  = 3
-     */
+    Map::RenderOrder renderOrder = map()->renderOrder();
 
     int j,i = 0;
     switch (renderOrder) {
