@@ -41,19 +41,18 @@
 
 namespace Tiled {
 
-  class Tile;
-  class Tileset;
-  class ObjectGroup;
-
-  /**
-   * A tile map. Consists of a stack of layers, each can be either a TileLayer
-   * or an ObjectGroup.
-   *
-   * It also keeps track of the list of referenced tilesets.
-   */
-  class TILEDSHARED_EXPORT Map : public Object
-  {
-  public:
+class Tile;
+class Tileset;
+class ObjectGroup;
+ /**
+ * A tile map. Consists of a stack of layers, each can be either a TileLayer
+ * or an ObjectGroup.
+ *
+ * It also keeps track of the list of referenced tilesets.
+ */
+class TILEDSHARED_EXPORT Map : public Object
+{
+public:
     /**
      * The orientation of the map determines how it should be rendered. An
      * Orthogonal map is using rectangular tiles that are aligned on a
@@ -65,39 +64,39 @@ namespace Tiled {
      * version of Tiled.
      */
     enum Orientation {
-      Unknown,
-      Orthogonal,
-      Isometric,
-      Staggered
+        Unknown,
+        Orthogonal,
+        Isometric,
+        Staggered
     };
 
     /**
      * The different formats in which the tile layer data can be stored.
      */
     enum LayerDataFormat {
-      XML        = 0,
-      Base64     = 1,
-      Base64Gzip = 2,
-      Base64Zlib = 3,
-      CSV        = 4
+        XML        = 0,
+        Base64     = 1,
+        Base64Gzip = 2,
+        Base64Zlib = 3,
+        CSV        = 4
     };
 
     /**
      * The render order in which tiles are rendered on screen.
      */
     enum RenderOrder {
-      RightDown  = 0,
-      RightUp    = 1,
-      LeftDown   = 2,
-      LeftUp  = 3
+        RightDown  = 0,
+        RightUp    = 1,
+        LeftDown   = 2,
+        LeftUp  = 3
     };
 
     /**
      * Constructor, taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
-      int width, int height,
-      int tileWidth, int tileHeight);
+        int width, int height,
+        int tileWidth, int tileHeight);
 
     /**
      * Copy constructor. Makes sure that a deep-copy of the layers is created.
@@ -242,7 +241,7 @@ namespace Tiled {
      * searched.
      */
     int indexOfLayer(const QString &layerName,
-      unsigned layerTypes = Layer::AnyLayerType) const;
+                     unsigned layerTypes = Layer::AnyLayerType) const;
 
     /**
      * Adds a layer to this map, inserting it at the given index.
@@ -338,7 +337,7 @@ namespace Tiled {
     void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
-  private:
+private:
     void adoptLayer(Layer *layer);
 
     Orientation mOrientation;
@@ -354,25 +353,25 @@ namespace Tiled {
     LayerDataFormat mLayerDataFormat;
   };
 
-  /**
-   * Helper function that converts the map orientation to a string value. Useful
-   * for map writers.
-   *
-   * @return The map orientation as a lowercase string.
-   */
-  TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
+    /**
+     * Helper function that converts the map orientation to a string value. Useful
+     * for map writers.
+     *
+     * @return The map orientation as a lowercase string.
+     */
+    TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
 
-  /**
-   * Helper function that converts a string to a map orientation enumerator.
-   * Useful for map readers.
-   *
-   * @return The map orientation matching the given string, or Map::Unknown if
-   *         the string is unrecognized.
-   */
-  TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
+    /**
+     * Helper function that converts a string to a map orientation enumerator.
+     * Useful for map readers.
+     *
+     * @return The map orientation matching the given string, or Map::Unknown if
+     *         the string is unrecognized.
+     */
+    TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
 
-  TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
-  TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
+    TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
+    TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 
 } // namespace Tiled
 
