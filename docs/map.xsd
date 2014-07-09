@@ -209,7 +209,7 @@
 <xs:attributeGroup name="map">
   <xs:attribute name="version" type="xs:string" use="required"/>
   <xs:attribute name="orientation" type="orientationT" use="required"/>
-  <xs:attribute name="renderorder" type="renderorderT" use="required"/>
+  <xs:attribute name="renderorder" type="renderorderT"/>
   <xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
   <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
   <xs:attribute name="tilewidth" type="xs:nonNegativeInteger" use="required"/>
