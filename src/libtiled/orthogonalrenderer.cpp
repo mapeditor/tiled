@@ -209,8 +209,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     int startX = 0;
     int startY = 0;
-    int endX = layer->width();
-    int endY = layer->height();
+    int endX = layer->width() -1;
+    int endY = layer->height() -1;
 
     if (!exposed.isNull()) {
         QMargins drawMargins = layer->drawMargins();
@@ -237,16 +237,16 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     int incX = 1, incY = 1;
     switch (renderOrder) {
       case Map::RightUp:
-        std::swap(--startY, --endY);
+        std::swap(startY, endY);
         incY = -1;
         break;
       case Map::LeftDown:
-        std::swap(--startX, --endX);
+        std::swap(startX, endX);
         incX = -1;
         break;
       case Map::LeftUp:
-        std::swap(--startX, --endX);
-        std::swap(--startY, --endY);
+        std::swap(startX, endX);
+        std::swap(startY, endY);
         incX = -1;
         incY = -1;
         break;
@@ -254,6 +254,9 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
       default:
         break;
     }
+
+    endX += incX;
+    endY += incY;
 
     for (int y = startY; y != endY; y += incY) {
 
