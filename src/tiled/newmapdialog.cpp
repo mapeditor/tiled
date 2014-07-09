@@ -74,10 +74,10 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
         LeftUp  = 3
      */
     mUi->renderOrderLabel->setText(QCoreApplication::translate("Tiled::Internal::MapPropertiesDialog", "Render order:"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "RightDown"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "RightUp"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "LeftDown"));
-    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "LeftUp"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"));
 
     mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
     mUi->orientation->addItem(tr("Isometric"), Map::Isometric);

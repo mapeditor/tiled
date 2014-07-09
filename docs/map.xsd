@@ -46,10 +46,10 @@
 
 <xs:simpleType name="renderorderT">
   <xs:restriction base="xs:NMTOKEN">
-    <xs:enumeration value="RightDown" />
-    <xs:enumeration value="RightUp" />
-    <xs:enumeration value="LeftDown" />
-    <xs:enumeration value="LeftUp" />
+    <xs:enumeration value="right-down" />
+    <xs:enumeration value="right-up" />
+    <xs:enumeration value="left-down" />
+    <xs:enumeration value="left-up" />
   </xs:restriction>
 </xs:simpleType>
 

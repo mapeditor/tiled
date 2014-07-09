@@ -1,6 +1,6 @@
 /*
  * map.h
- * Copyright 2008-2010, Thorbj��rn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2010, Andrew G. Crowell <overkill9999@gmail.com>
  *
