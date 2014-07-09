@@ -3721,7 +3721,7 @@ _wrap_PyTiledMap__tp_init__1(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     int h;
     int tileW;
     int tileH;
-    const char *keywords[] = {"orient", "w", "h", "tileW", "tileH", NULL};
+    const char *keywords[] = {"orient", "renderOrder", "w", "h", "tileW", "tileH", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiiii", (char **) keywords, &orient, &renderOrder, &w, &h, &tileW, &tileH)) {
         {
