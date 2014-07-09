@@ -35,6 +35,7 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
 
     MapWriter writer;
     writer.setLayerDataFormat(map->layerDataFormat());
+    writer.setMapRenderOrder(map->renderOrder());
     writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeMap(map, fileName);

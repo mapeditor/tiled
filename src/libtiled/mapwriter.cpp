@@ -69,6 +69,7 @@ public:
 
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
+    Map::RenderOrder mMapRenderOrder;
     bool mDtdEnabled;
 
 private:
@@ -162,9 +163,11 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     w.writeStartElement(QLatin1String("map"));
 
     const QString orientation = orientationToString(map->orientation());
+    const QString renderorder = renderOrderToString(map->renderOrder());
 
     w.writeAttribute(QLatin1String("version"), QLatin1String("1.0"));
     w.writeAttribute(QLatin1String("orientation"), orientation);
+    w.writeAttribute(QLatin1String("renderorder"), renderorder);
     w.writeAttribute(QLatin1String("width"), QString::number(map->width()));
     w.writeAttribute(QLatin1String("height"), QString::number(map->height()));
     w.writeAttribute(QLatin1String("tilewidth"),
@@ -681,6 +684,16 @@ void MapWriter::setLayerDataFormat(Map::LayerDataFormat format)
 Map::LayerDataFormat MapWriter::layerDataFormat() const
 {
     return d->mLayerDataFormat;
+}
+
+void MapWriter::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
+{
+    d->mMapRenderOrder = mapRenderOrder;
+}
+
+Map::RenderOrder MapWriter::mapRenderOrder() const
+{
+    return d->mMapRenderOrder;
 }
 
 void MapWriter::setDtdEnabled(bool enabled)

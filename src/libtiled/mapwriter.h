@@ -105,6 +105,12 @@ public:
     Map::LayerDataFormat layerDataFormat() const;
 
     /**
+    * Sets the map render order.
+    */
+    void setMapRenderOrder(Map::RenderOrder renderOrder);
+    Map::RenderOrder mapRenderOrder() const;
+
+    /**
      * Sets whether the DTD reference is written when saving the map.
      */
     void setDtdEnabled(bool enabled);

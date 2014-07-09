@@ -60,12 +60,17 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         return 0;
     }
 
+    const QString renderOrderString = variantMap["renderorder"].toString();
+
+        Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
+
     typedef QScopedPointer<Map> MapPtr;
     MapPtr map(new Map(orientation,
                        variantMap["width"].toInt(),
                        variantMap["height"].toInt(),
                        variantMap["tilewidth"].toInt(),
                        variantMap["tileheight"].toInt()));
+    map->setRenderOrder(renderOrder);
 
     mMap = map.data();
     map->setProperties(toProperties(variantMap["properties"]));
