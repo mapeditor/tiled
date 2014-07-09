@@ -63,7 +63,6 @@ Map::Map(const Map &map):
     mDrawMargins(map.mDrawMargins),
     mTilesets(map.mTilesets),
     mLayerDataFormat(map.mLayerDataFormat)
-
 {
     foreach (const Layer *layer, map.mLayers) {
         Layer *clone = layer->clone();
