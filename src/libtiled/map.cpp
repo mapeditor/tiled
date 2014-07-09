@@ -264,16 +264,16 @@ QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
     switch (renderOrder) {
     default:
     case Map::RightDown:
-        return QLatin1String("Right Down");
+        return QLatin1String("right-down");
         break;
     case Map::RightUp:
-        return QLatin1String("Right Up");
+        return QLatin1String("right-up");
         break;
     case Map::LeftDown:
-        return QLatin1String("Left Down");
+        return QLatin1String("left-down");
         break;
     case Map::LeftUp:
-        return QLatin1String("Left Up");
+        return QLatin1String("left-up");
         break;
     }
 }
@@ -281,11 +281,11 @@ QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
 Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
 {
     Map::RenderOrder renderOrder = Map::RightDown;
-    if (string == QLatin1String("Right Up")) {
+    if (string == QLatin1String("right-up")) {
     	renderOrder = Map::RightUp;
-    } else if (string == QLatin1String("Left Down")) {
+    } else if (string == QLatin1String("left-down")) {
     	renderOrder = Map::LeftDown;
-    } else if (string == QLatin1String("Left Up")) {
+    } else if (string == QLatin1String("left-up")) {
     	renderOrder = Map::LeftUp;
     }
     return renderOrder;
