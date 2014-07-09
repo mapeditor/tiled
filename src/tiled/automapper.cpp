@@ -30,6 +30,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "maprenderer.h"
 #include "object.h"
 #include "objectgroup.h"
 #include "tile.h"
@@ -846,15 +847,19 @@ void AutoMapper::copyObjectRegion(ObjectGroup *srcLayer, int srcX, int srcY,
                                  ObjectGroup *dstLayer, int dstX, int dstY)
 {
     QUndoStack *undo = mMapDocument->undoStack();
-    const QRect rect = QRect(srcX, srcY, width, height);
-    QList<MapObject*> objects = objectsInRegion(srcLayer, rect);
+    const QRectF rect = QRectF(srcX, srcY, width, height);
+    const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect);
+    QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
+
+    QPointF pixelOffset = mMapDocument->renderer()->tileToPixelCoords(dstX, dstY);
+    pixelOffset -= pixelRect.topLeft();
 
     QList<MapObject*> clones;
     foreach (MapObject *obj, objects) {
         MapObject *clone = obj->clone();
         clones.append(clone);
-        clone->setX(clone->x() + dstX - srcX);
-        clone->setY(clone->y() + dstY - srcY);
+        clone->setX(clone->x() + pixelOffset.x());
+        clone->setY(clone->y() + pixelOffset.y());
         undo->push(new AddMapObject(mMapDocument, dstLayer, clone));
     }
 }
