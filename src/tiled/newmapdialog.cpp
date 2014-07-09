@@ -124,9 +124,10 @@ MapDocument *NewMapDialog::createMap()
                 static_cast<Map::RenderOrder>(mUi->renderOrder->currentIndex());
     const int renderOrderIndex = mUi->renderOrder->currentIndex();
 
-    Map *map = new Map(orientation, renderOrder,
+    Map *map = new Map(orientation,
                        mapWidth, mapHeight,
                        tileWidth, tileHeight);
+    map->setRenderOrder(renderOrder);
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
@@ -166,20 +167,19 @@ void NewMapDialog::refreshPixelSize()
     const int orientation = mUi->orientation->currentIndex();
     const int renderOrder = mUi->renderOrder->currentIndex();
 
-    /*
-         	RightDown  = 0,
-            RightUp    = 1,
-            LeftDown   = 2,
-            LeftUp  = 3
-         */
-    const Map map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
-    			  (renderOrder == 0) ? Map::RightDown :
-    			  (renderOrder == 1) ? Map::RightUp :
-    			  (renderOrder == 2) ? Map::LeftDown : Map::LeftUp ,
+    Map map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
                   mUi->mapWidth->value(),
                   mUi->mapHeight->value(),
                   mUi->tileWidth->value(),
                   mUi->tileHeight->value());
+
+	 Map::RenderOrder renderOrderAsEnum =
+			 	 	 (renderOrder == 0) ? Map::RightDown :
+					 (renderOrder == 1) ? Map::RightUp :
+					 (renderOrder == 2) ? Map::LeftDown : Map::LeftUp ;
+
+
+    map.setRenderOrder(renderOrderAsEnum);
 
     QSize size;
 

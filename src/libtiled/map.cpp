@@ -38,11 +38,11 @@
 
 using namespace Tiled;
 
-Map::Map(Orientation orientation, RenderOrder renderorder,
+Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
     Object(MapType),
     mOrientation(orientation),
-    mRenderOrder(renderorder),
+    mRenderOrder(RightDown),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
@@ -293,7 +293,7 @@ Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
 
 Map *Map::fromLayer(Layer *layer)
 {
-    Map *result = new Map(Unknown, RightDown, layer->width(), layer->height(), 0, 0);
+    Map *result = new Map(Unknown, layer->width(), layer->height(), 0, 0);
     result->addLayer(layer);
     return result;
 }

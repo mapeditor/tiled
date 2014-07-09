@@ -96,7 +96,6 @@ namespace Tiled {
      * Constructor, taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
-      RenderOrder renderorder,
       int width, int height,
       int tileWidth, int tileHeight);
 

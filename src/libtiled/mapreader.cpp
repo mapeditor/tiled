@@ -226,7 +226,8 @@ Map *MapReaderPrivate::readMap()
     const Map::RenderOrder renderOrder =
                 renderOrderFromString(renderOrderString);
 
-    mMap = new Map(orientation, renderOrder, mapWidth, mapHeight, tileWidth, tileHeight);
+    mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
+    mMap->setRenderOrder(renderOrder);
     mCreatedTilesets.clear();
 
     QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));

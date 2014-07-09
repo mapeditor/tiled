@@ -162,7 +162,7 @@ void TileCollisionEditor::setTile(Tile *tile)
     if (tile) {
         mMapView->setEnabled(!mTile->tileset()->isExternal());
 
-        Map *map = new Map(Map::Orthogonal, Map::RightDown, 1, 1, tile->width(), tile->height());
+        Map *map = new Map(Map::Orthogonal, 1, 1, tile->width(), tile->height());
         map->addTileset(tile->tileset());
 
         TileLayer *tileLayer = new TileLayer(QString(), 0, 0, 1, 1);

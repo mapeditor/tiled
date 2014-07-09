@@ -116,9 +116,11 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     }
 
     // Create a temporary map to write to the clipboard
-    Map copyMap(map->orientation(), map->renderOrder(),
+    Map copyMap(map->orientation(),
                 copyLayer->width(), copyLayer->height(),
                 map->tileWidth(), map->tileHeight());
+
+    copyMap.setRenderOrder(map->renderOrder());
 
     // Resolve the set of tilesets used by this layer
     foreach (Tileset *tileset, copyLayer->usedTilesets())

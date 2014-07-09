@@ -66,11 +66,11 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
 
     typedef QScopedPointer<Map> MapPtr;
     MapPtr map(new Map(orientation,
-    		           renderOrder,
                        variantMap["width"].toInt(),
                        variantMap["height"].toInt(),
                        variantMap["tilewidth"].toInt(),
                        variantMap["tileheight"].toInt()));
+    map->setRenderOrder(renderOrder);
 
     mMap = map.data();
     map->setProperties(toProperties(variantMap["properties"]));

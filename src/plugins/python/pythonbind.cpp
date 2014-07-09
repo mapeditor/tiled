@@ -3732,7 +3732,8 @@ _wrap_PyTiledMap__tp_init__1(PyTiledMap *self, PyObject *args, PyObject *kwargs,
         }
         return -1;
     }
-    self->obj = new Tiled::Map(orient, renderOrder, w, h, tileW, tileH);
+    self->obj = new Tiled::Map(orient, w, h, tileW, tileH);
+    self->obj->setRenderOrder(renderOrder);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return 0;
 }
