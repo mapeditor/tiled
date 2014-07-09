@@ -1,6 +1,6 @@
 /*
  * orthogonalrenderer.cpp
- * Copyright 2009-2011, Thorbj��rn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *

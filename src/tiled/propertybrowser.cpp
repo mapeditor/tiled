@@ -75,16 +75,10 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
 
-    /*
-     	RightDown  = 0,
-        RightUp    = 1,
-        LeftDown   = 2,
-        LeftUp  = 3
-     */
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "RightDown"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "RightUp"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "LeftDown"));
-    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "LeftUp"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Down"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Right Up"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Down"));
+    mRenderOrderNames.append(QCoreApplication::translate("PreferencesDialog", "Left Up"));
 
     mFlippingFlagNames.append(tr("Horizontal"));
     mFlippingFlagNames.append(tr("Vertical"));
