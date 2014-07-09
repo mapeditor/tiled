@@ -105,8 +105,8 @@ public:
     Map::LayerDataFormat layerDataFormat() const;
 
     /**
-    * Sets the render order data is stored.
-    */
+     * Sets the render order data is stored.
+     */
     void setMapRenderOrder(Map::RenderOrder renderOrder);
     Map::RenderOrder mapRenderOrder() const;
 

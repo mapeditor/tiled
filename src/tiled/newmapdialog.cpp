@@ -66,13 +66,6 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
 
-
-    /*
-     	RightDown  = 0,
-        RightUp    = 1,
-        LeftDown   = 2,
-        LeftUp  = 3
-     */
     mUi->renderOrderLabel->setText(QCoreApplication::translate("Tiled::Internal::MapPropertiesDialog", "Render order:"));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"));

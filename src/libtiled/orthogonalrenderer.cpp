@@ -234,13 +234,7 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     int renderOrder = map()->renderOrder();
 
-    /*
-			right-down  = 0,
-            right-up    = 1,
-            left-down   = 2,
-            left-right  = 3
-     */
-
+    //FIXME: adjust to reflect comments for pull request
     int j,i = 0;
     switch (renderOrder) {
       case Map::RightDown:
@@ -270,7 +264,6 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
       default:
         break;
     }
-
 
     int tempX, tempY;
     for (int y = startY; y < endY; ++y) {
