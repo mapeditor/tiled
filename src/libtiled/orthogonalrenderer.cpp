@@ -209,8 +209,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     int startX = 0;
     int startY = 0;
-    int endX = layer->width() - 1;
-    int endY = layer->height() - 1;
+    int endX = layer->width();
+    int endY = layer->height();
 
     if (!exposed.isNull()) {
         QMargins drawMargins = layer->drawMargins();
@@ -234,19 +234,19 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
     Map::RenderOrder renderOrder = map()->renderOrder();
 
-    int incX, incY = 1;
+    int incX = 1, incY = 1;
     switch (renderOrder) {
       case Map::RightUp:
-        std::swap(startY, endY);
+        std::swap(--startY, --endY);
         incY = -1;
         break;
       case Map::LeftDown:
-        std::swap(startX, endX);
+        std::swap(--startX, --endX);
         incX = -1;
         break;
       case Map::LeftUp:
-        std::swap(startX, endX);
-        std::swap(startY, endY);
+        std::swap(--startX, --endX);
+        std::swap(--startY, --endY);
         incX = -1;
         incY = -1;
         break;
@@ -256,8 +256,10 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
     }
 
     for (int y = startY; y != endY; y += incY) {
-      for (int x = startX; x != endX; x += incY) {
+
+      for (int x = startX; x != endX; x += incX) {
         const Cell &cell = layer->cellAt(x, y);
+
         if (cell.isEmpty())
           continue;
 
