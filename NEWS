@@ -1,3 +1,41 @@
+0.10.0 (... 2014)
+* Added object rotation (sponsored by Ben Wales)
+* Added support for explicit object ordering (sponsored by Ben Wales)
+* Added new Properties window with a rewritten properties editor
+* Added support for writing plugins in Python (by Samuli Tuomola)
+* Added image collection tilesets (sponsored by Jamie Rocks)
+* Added support for moving objects with arrow keys (sponsored by Ben Wales)
+* Added a 'snap to fine grid' option (by Xenodora)
+* Added support for JavaScript (JSONP) load/save (by Dobes Vandermeer)
+* Added more zoom levels (by Joel Leclerc)
+* Added shortcuts for finishing and canceling object creation
+* Added a tile collision editor for defining collision shapes on tiles
+* Added a tile animation editor and play defined animations
+* Allow changing properties of multiple objects/tiles simultanously (by Parker Miller)
+* Added support for changing the object line width
+* Added support for CSV-encoded layers to libtiled-java (by Alexei Bratuhin)
+* Added support for ellipse and polygon objects to libtiled-java (by Hendrik Brummermann)
+* Added terrain properties to JSON export (by Dennis Hostetler)
+* Added support for moving image layers in the Properties window (by Michael Aquilina)
+* Added option to include background image when saving as image (by Sean Humeniuk)
+* Added options to control layer visibility to tmxrasterizer (by Nathan Tolbert)
+* Added display of tile ID in status bar (by Champi080)
+* Added support for objects on staggered isometric maps (by Remco Kuijper)
+* Added support for staggered maps to tmxviewer and tmxrasterizer
+* Allow changing order of open document tabs (by Sean Humeniuk)
+* Changed object position and size units from tiles to pixels (by mauve)
+* Allow adding multiple tilesets at once (by mauve)
+* Make highlighted grid cells outside map red (by Sean Humeniuk)
+* Allow changing the drawing offset of a tileset
+* Fixed hang on Mac OS X when drawing certain ellipse objects
+* Fixed removal of polygon/polyline objects when resizing a map
+* Fixed writing of tile offset in the Lua export
+* Fixed updating of image layer when changing its image
+* Fixed start drag distance check when editing polygons and moving objects
+* Raise the Layers dock for editing a new layer's name
+* Made Tiled registering *.tmx as MIME-type (by Erik Schilling)
+* Added Traditional Chinese translation (by Yehnan Chiang)
+
 0.9.1 (27 July 2013)
 * Added saving of map background to JSON format (by Petr Viktorin)
 * Added saving of terrain information to JSON format (by Petr Viktorin)
