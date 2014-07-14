@@ -41,10 +41,12 @@ public:
      * @param mapDocument       the map document of the map
      * @param backgroundColor   the new color to apply for the background
      * @param layerDataFormat   the new layer data format
+     * @param mapRenderOrder   	the new map render order
      */
     ChangeMapProperties(MapDocument *mapDocument,
                         const QColor &backgroundColor,
-                        Map::LayerDataFormat layerDataFormat);
+                        Map::LayerDataFormat layerDataFormat,
+                        Map::RenderOrder mapRenderOrder);
 
     void undo();
     void redo();
@@ -55,6 +57,7 @@ private:
     MapDocument *mMapDocument;
     QColor mBackgroundColor;
     Map::LayerDataFormat mLayerDataFormat;
+    Map::RenderOrder mMapRenderOrder;
 };
 
 } // namespace Internal

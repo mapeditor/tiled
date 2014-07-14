@@ -42,6 +42,7 @@ Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
     Object(MapType),
     mOrientation(orientation),
+    mRenderOrder(RightDown),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
@@ -53,6 +54,7 @@ Map::Map(Orientation orientation,
 Map::Map(const Map &map):
     Object(map),
     mOrientation(map.mOrientation),
+    mRenderOrder(map.mRenderOrder),
     mWidth(map.mWidth),
     mHeight(map.mHeight),
     mTileWidth(map.mTileWidth),
@@ -254,6 +256,38 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
         orientation = Map::Staggered;
     }
     return orientation;
+}
+
+QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
+{
+    switch (renderOrder) {
+    default:
+    case Map::RightDown:
+        return QLatin1String("right-down");
+        break;
+    case Map::RightUp:
+        return QLatin1String("right-up");
+        break;
+    case Map::LeftDown:
+        return QLatin1String("left-down");
+        break;
+    case Map::LeftUp:
+        return QLatin1String("left-up");
+        break;
+    }
+}
+
+Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
+{
+    Map::RenderOrder renderOrder = Map::RightDown;
+    if (string == QLatin1String("right-up")) {
+    	renderOrder = Map::RightUp;
+    } else if (string == QLatin1String("left-down")) {
+    	renderOrder = Map::LeftDown;
+    } else if (string == QLatin1String("left-up")) {
+    	renderOrder = Map::LeftUp;
+    }
+    return renderOrder;
 }
 
 Map *Map::fromLayer(Layer *layer)

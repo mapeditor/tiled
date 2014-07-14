@@ -44,6 +44,15 @@
   </xs:restriction>
 </xs:simpleType>
 
+<xs:simpleType name="renderorderT">
+  <xs:restriction base="xs:NMTOKEN">
+    <xs:enumeration value="right-down" />
+    <xs:enumeration value="right-up" />
+    <xs:enumeration value="left-down" />
+    <xs:enumeration value="left-up" />
+  </xs:restriction>
+</xs:simpleType>
+
 <xs:simpleType name="formatT">
   <xs:restriction base="xs:NMTOKEN">
     <xs:enumeration value="png" />
@@ -200,6 +209,7 @@
 <xs:attributeGroup name="map">
   <xs:attribute name="version" type="xs:string" use="required"/>
   <xs:attribute name="orientation" type="orientationT" use="required"/>
+  <xs:attribute name="renderorder" type="renderorderT"/>
   <xs:attribute name="width" type="xs:nonNegativeInteger" use="required"/>
   <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
   <xs:attribute name="tilewidth" type="xs:nonNegativeInteger" use="required"/>
