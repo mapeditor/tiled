@@ -30,6 +30,7 @@ namespace Internal {
 class ImageMovementTool : public AbstractImageTool
 {
     Q_OBJECT
+
 public:
     explicit ImageMovementTool(QObject *parent = 0);
 
@@ -48,7 +49,6 @@ private:
     bool mMousePressed;
     QPointF mMouseStart;
     QPoint mLayerStart;
-
 };
 
 

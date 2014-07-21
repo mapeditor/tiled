@@ -31,8 +31,7 @@ namespace Internal {
 
 
 /**
- * A convenient base class for tools that work on image layers. Implements
- * the standard context menu.
+ * A convenient base class for tools that work on image layers.
  */
 class AbstractImageTool : public AbstractTool
 {

@@ -39,6 +39,7 @@ macx {
 }
 
 SOURCES += aboutdialog.cpp \
+    abstractimagetool.cpp \
     abstractobjecttool.cpp \
     abstracttiletool.cpp \
     abstracttool.cpp \
@@ -86,6 +87,7 @@ SOURCES += aboutdialog.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     imagelayeritem.cpp \
+    imagemovementtool.cpp \
     languagemanager.cpp \
     layerdock.cpp \
     layermodel.cpp \
@@ -157,11 +159,10 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp \
-    imagemovementtool.cpp \
-    abstractimagetool.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
+    abstractimagetool.h \
     abstractobjecttool.h \
     abstracttiletool.h \
     abstracttool.h \
@@ -209,6 +210,7 @@ HEADERS += aboutdialog.h \
     flipmapobjects.h \
     geometry.h \
     imagelayeritem.h \
+    imagemovementtool.h \
     languagemanager.h \
     layerdock.h \
     layermodel.h \
@@ -282,9 +284,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    imagemovementtool.h \
-    abstractimagetool.h
+    zoomable.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

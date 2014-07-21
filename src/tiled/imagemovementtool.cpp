@@ -82,7 +82,7 @@ void ImageMovementTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
                 diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
             }
 
-            layer->setPosition(mLayerStart+diff.toPoint());
+            layer->setPosition(mLayerStart + diff.toPoint());
             mapDocument()->emitImageLayerChanged(layer);
         }
 
@@ -93,26 +93,23 @@ void ImageMovementTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     mMousePressed = true;
     mMouseStart = event->scenePos();
-    ImageLayer *layer = currentImageLayer();
-    if (layer) {
+
+    if (ImageLayer *layer = currentImageLayer())
         mLayerStart = layer->position();
-    }
 }
 
 void ImageMovementTool::mouseReleased(QGraphicsSceneMouseEvent *)
 {
     mMousePressed = false;
 
-    ImageLayer *layer = currentImageLayer();
-    if (layer) {
+    if (ImageLayer *layer = currentImageLayer()) {
         QPoint layerFinish = layer->position();
         layer->setPosition(mLayerStart);
         mapDocument()->undoStack()->push(
-            new ChangeImageLayerPosition(mapDocument(),
-                                         currentImageLayer(),
-                                         layerFinish));
+                    new ChangeImageLayerPosition(mapDocument(),
+                                                 currentImageLayer(),
+                                                 layerFinish));
     }
-
 }
 
 void ImageMovementTool::languageChanged()

@@ -12,6 +12,7 @@
 * Added a tile collision editor for defining collision shapes on tiles
 * Added a tile animation editor and play defined animations
 * Allow changing properties of multiple objects/tiles simultanously (by Parker Miller)
+* Added tile rendering-order map property (by Lennert Raesch)
 * Added support for changing the object line width
 * Added support for CSV-encoded layers to libtiled-java (by Alexei Bratuhin)
 * Added support for ellipse and polygon objects to libtiled-java (by Hendrik Brummermann)
@@ -22,6 +23,7 @@
 * Added display of tile ID in status bar (by Champi080)
 * Added support for objects on staggered isometric maps (by Remco Kuijper)
 * Added support for staggered maps to tmxviewer and tmxrasterizer
+* Added a tool for moving the image of an image layer (by Mattia Basaglia)
 * Allow changing order of open document tabs (by Sean Humeniuk)
 * Changed object position and size units from tiles to pixels (by mauve)
 * Allow adding multiple tilesets at once (by mauve)

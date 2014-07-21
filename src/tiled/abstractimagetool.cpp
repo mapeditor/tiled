@@ -34,10 +34,9 @@ AbstractImageTool::AbstractImageTool(const QString &name,
                                      const QIcon &icon,
                                      const QKeySequence &shortcut,
                                      QObject *parent)
-    : AbstractTool(name,icon,shortcut,parent),
+    : AbstractTool(name, icon, shortcut, parent),
       mMapScene(0)
 {
-
 }
 
 void AbstractImageTool::activate(MapScene *scene)
