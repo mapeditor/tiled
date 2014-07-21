@@ -82,6 +82,7 @@
 #include "consoledock.h"
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
+#include "imagemovementtool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -408,6 +409,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
+    toolBar->addSeparator();
+    toolBar->addAction(mToolManager->registerTool(new ImageMovementTool(this)));
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
