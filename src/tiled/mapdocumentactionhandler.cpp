@@ -27,6 +27,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapview.h"
 #include "utils.h"
 
 #include <QAction>

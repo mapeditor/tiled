@@ -22,12 +22,10 @@
 #ifndef DOCUMENT_MANAGER_H
 #define DOCUMENT_MANAGER_H
 
-#include "mapview.h"
-#include "mapscene.h"
-#include "mapdocument.h"
-
 #include <QList>
+#include <QObject>
 #include <QPair>
+#include <QPointF>
 
 class QUndoGroup;
 
@@ -37,6 +35,7 @@ class Tileset;
 
 namespace Internal {
 
+class AbstractTool;
 class MapDocument;
 class MapScene;
 class MapView;

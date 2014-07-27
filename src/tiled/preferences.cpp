@@ -22,6 +22,7 @@
 
 #include "documentmanager.h"
 #include "languagemanager.h"
+#include "mapdocument.h"
 #include "tilesetmanager.h"
 
 #if QT_VERSION >= 0x050000

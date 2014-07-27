@@ -22,7 +22,10 @@
 #include "documentmanager.h"
 
 #include "abstracttool.h"
+#include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapscene.h"
+#include "mapview.h"
 #include "movabletabwidget.h"
 
 #include <QUndoGroup>

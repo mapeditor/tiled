@@ -50,6 +50,7 @@
 #include "maprenderer.h"
 #include "mapsdock.h"
 #include "mapscene.h"
+#include "mapview.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
 #include "pluginmanager.h"
