@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileSystemWatcher>
+#include <QStringList>
 
 using namespace Tiled::Internal;
 
