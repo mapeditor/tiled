@@ -36,6 +36,7 @@ class Tileset;
 namespace Internal {
 
 class AbstractTool;
+class FileSystemWatcher;
 class MapDocument;
 class MapScene;
 class MapView;
@@ -122,6 +123,23 @@ public:
     void closeDocumentAt(int index);
 
     /**
+     * Reloads the current document. Will not ask the user whether to save any
+     * changes!
+     *
+     * \sa reloadDocumentAt()
+     */
+    bool reloadCurrentDocument();
+
+    /**
+     * Reloads the document at the given \a index. It will lose any undo
+     * history and current selections. Will not ask the user whether to save
+     * any changes!
+     *
+     * Returns whether the map loaded successfully.
+     */
+    bool reloadDocumentAt(int index);
+
+    /**
      * Close all documents. Will not ask the user whether to save any changes!
      */
     void closeAllDocuments();
@@ -154,6 +172,11 @@ signals:
      */
     void documentAboutToClose(MapDocument *document);
 
+    /**
+     * Emitted when an error occurred while reloading the map.
+     */
+    void reloadError(const QString &error);
+
 public slots:
     void switchToLeftDocument();
     void switchToRightDocument();
@@ -162,8 +185,15 @@ public slots:
 
 private slots:
     void currentIndexChanged();
+    void fileNameChanged(const QString &fileName,
+                         const QString &oldFileName);
     void updateDocumentTab();
+    void documentSaved();
     void documentTabMoved(int from, int to);
+
+    void fileChanged(const QString &fileName);
+
+    void reloadRequested();
 
 private:
     DocumentManager(QObject *parent = 0);
@@ -175,6 +205,7 @@ private:
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapScene *mSceneWithTool;
+    FileSystemWatcher *mFileSystemWatcher;
 
     static DocumentManager *mInstance;
 };

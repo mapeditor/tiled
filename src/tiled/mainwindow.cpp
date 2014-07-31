@@ -286,6 +286,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(exportAs()));
+    connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
@@ -451,6 +452,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(mapDocumentChanged(MapDocument*)));
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
             this, SLOT(closeMapDocument(int)));
+    connect(mDocumentManager, SIGNAL(reloadError(QString)),
+            this, SLOT(reloadError(QString)));
 
     QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
     connect(switchToLeftDocument, SIGNAL(activated()),
@@ -574,7 +577,7 @@ void MainWindow::newMap()
     if (!mapDocument)
         return;
 
-    addMapDocument(mapDocument);
+    mDocumentManager->addDocument(mapDocument);
 }
 
 bool MainWindow::openFile(const QString &fileName,
@@ -590,43 +593,14 @@ bool MainWindow::openFile(const QString &fileName,
         return true;
     }
 
-    TmxMapReader tmxMapReader;
-
-    const PluginManager *pm = PluginManager::instance();
-    if (!mapReader && !tmxMapReader.supportsFile(fileName)) {
-        // Try to find a plugin that implements support for this format
-        QList<MapReaderInterface*> readers =
-                pm->interfaces<MapReaderInterface>();
-
-        foreach (MapReaderInterface *reader, readers) {
-            if (reader->supportsFile(fileName)) {
-                mapReader = reader;
-                break;
-            }
-        }
-    }
-
-    // check if we can save in that format as well
-    QString writerPluginFileName;
-    if (mapReader) {
-        if (const Plugin *plugin = pm->plugin(mapReader)) {
-            if (qobject_cast<MapWriterInterface*>(plugin->instance))
-                writerPluginFileName = plugin->fileName;
-        }
-    } else {
-        mapReader = &tmxMapReader;
-    }
-
-    Map *map = mapReader->read(fileName);
-    if (!map) {
-        QMessageBox::critical(this, tr("Error Opening Map"),
-                              mapReader->errorString());
+    QString error;
+    MapDocument *mapDocument = MapDocument::load(fileName, mapReader, &error);
+    if (!mapDocument) {
+        QMessageBox::critical(this, tr("Error Opening Map"), error);
         return false;
     }
 
-    MapDocument *mapDocument = new MapDocument(map, fileName);
-    mapDocument->setWriterPluginFileName(writerPluginFileName);
-    addMapDocument(mapDocument);
+    mDocumentManager->addDocument(mapDocument);
     setRecentFile(fileName);
     return true;
 }
@@ -957,6 +931,12 @@ void MainWindow::exportAs()
         QMessageBox::critical(this, tr("Error Saving Map"),
                               chosenWriter->errorString());
     }
+}
+
+void MainWindow::reload()
+{
+    if (confirmSave(mDocumentManager->currentDocument()))
+        mDocumentManager->reloadCurrentDocument();
 }
 
 void MainWindow::closeFile()
@@ -1527,15 +1507,6 @@ void MainWindow::updateWindowTitle()
     }
 }
 
-void MainWindow::addMapDocument(MapDocument *mapDocument)
-{
-    mDocumentManager->addDocument(mapDocument);
-
-    MapView *mapView = mDocumentManager->currentMapView();
-    connect(mapView->zoomable(), SIGNAL(scaleChanged(qreal)),
-            this, SLOT(updateZoomLabel()));
-}
-
 void MainWindow::aboutTiled()
 {
     AboutDialog aboutDialog(this);
@@ -1560,8 +1531,12 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     if (mMapDocument)
         mMapDocument->disconnect(this);
 
-    if (mZoomable)
+    if (mZoomable) {
         mZoomable->connectToComboBox(0);
+
+        disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                   this, SLOT(updateZoomLabel()));
+    }
     mZoomable = 0;
 
     mMapDocument = mapDocument;
@@ -1579,7 +1554,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mQuickStampManager->setMapDocument(mapDocument);
 
     if (mapDocument) {
-        connect(mapDocument, SIGNAL(fileNameChanged()),
+        connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
                 SLOT(updateWindowTitle()));
         connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));
@@ -1591,6 +1566,9 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
         if (MapView *mapView = mDocumentManager->currentMapView()) {
             mZoomable = mapView->zoomable();
             mZoomable->connectToComboBox(mZoomComboBox);
+
+            connect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                    this, SLOT(updateZoomLabel()));
         }
     }
 
@@ -1632,4 +1610,9 @@ void MainWindow::closeMapDocument(int index)
 {
     if (confirmSave(mDocumentManager->documents().at(index)))
         mDocumentManager->closeDocumentAt(index);
+}
+
+void MainWindow::reloadError(const QString &error)
+{
+    QMessageBox::critical(this, tr("Error Reloading Map"), error);
 }

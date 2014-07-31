@@ -1,6 +1,6 @@
 /*
  * mapdocument.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  *
  * This file is part of Tiled.
@@ -51,6 +51,7 @@
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "tileset.h"
+#include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 
 #include <QFileInfo>
@@ -152,8 +153,56 @@ bool MapDocument::save(const QString &fileName, QString *error)
 
     undoStack()->setClean();
     setFileName(fileName);
+    mLastSaved = QFileInfo(fileName).lastModified();
 
+    emit saved();
     return true;
+}
+
+MapDocument *MapDocument::load(const QString &fileName,
+                               MapReaderInterface *mapReader,
+                               QString *error)
+{
+    TmxMapReader tmxMapReader;
+
+    const PluginManager *pm = PluginManager::instance();
+    if (!mapReader && !tmxMapReader.supportsFile(fileName)) {
+        // Try to find a plugin that implements support for this format
+        QList<MapReaderInterface*> readers =
+                pm->interfaces<MapReaderInterface>();
+
+        foreach (MapReaderInterface *reader, readers) {
+            if (reader->supportsFile(fileName)) {
+                mapReader = reader;
+                break;
+            }
+        }
+    }
+
+    // check if we can save in that format as well
+    QString readerPluginFileName;
+    QString writerPluginFileName;
+    if (mapReader) {
+        if (const Plugin *plugin = pm->plugin(mapReader)) {
+            readerPluginFileName = plugin->fileName;
+            if (qobject_cast<MapWriterInterface*>(plugin->instance))
+                writerPluginFileName = plugin->fileName;
+        }
+    } else {
+        mapReader = &tmxMapReader;
+    }
+
+    Map *map = mapReader->read(fileName);
+    if (!map) {
+        if (error)
+            *error = mapReader->errorString();
+        return 0;
+    }
+
+    MapDocument *mapDocument = new MapDocument(map, fileName);
+    mapDocument->setReaderPluginFileName(readerPluginFileName);
+    mapDocument->setWriterPluginFileName(writerPluginFileName);
+    return mapDocument;
 }
 
 void MapDocument::setFileName(const QString &fileName)
@@ -161,8 +210,9 @@ void MapDocument::setFileName(const QString &fileName)
     if (mFileName == fileName)
         return;
 
+    QString oldFileName = mFileName;
     mFileName = fileName;
-    emit fileNameChanged();
+    emit fileNameChanged(fileName, oldFileName);
 }
 
 /**
