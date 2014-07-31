@@ -101,8 +101,8 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     setWidget(widget);
     retranslateUi();
 
-    connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
-            SLOT(documentCloseRequested(int)));
+    connect(DocumentManager::instance(), SIGNAL(documentAboutToClose(MapDocument*)),
+            SLOT(documentAboutToClose(MapDocument*)));
 }
 
 void ObjectsDock::setMapDocument(MapDocument *mapDoc)
@@ -209,11 +209,9 @@ void ObjectsDock::restoreExpandedGroups(MapDocument *mapDoc)
     }
 }
 
-void ObjectsDock::documentCloseRequested(int index)
+void ObjectsDock::documentAboutToClose(MapDocument *mapDocument)
 {
-    DocumentManager *documentManager = DocumentManager::instance();
-    MapDocument *mapDoc = documentManager->documents().at(index);
-    mExpandedGroups.remove(mapDoc);
+    mExpandedGroups.remove(mapDocument);
 }
 
 ///// ///// ///// ///// /////

@@ -316,8 +316,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
 
-    connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
-            SLOT(documentCloseRequested(int)));
+    connect(DocumentManager::instance(), SIGNAL(documentAboutToClose(MapDocument*)),
+            SLOT(documentAboutToClose(MapDocument*)));
 
     mTilesetMenuButton->setMenu(mTilesetMenu);
     connect(mTilesetMenu, SIGNAL(aboutToShow()), SLOT(refreshTilesetMenu()));
@@ -910,10 +910,9 @@ void TilesetDock::tileAnimationChanged(Tile *tile)
             model->tileChanged(tile);
 }
 
-void TilesetDock::documentCloseRequested(int index)
+void TilesetDock::documentAboutToClose(MapDocument *mapDocument)
 {
-    DocumentManager *documentManager = DocumentManager::instance();
-    mCurrentTilesets.remove(documentManager->documents().at(index));
+    mCurrentTilesets.remove(mapDocument);
 }
 
 void TilesetDock::refreshTilesetMenu()

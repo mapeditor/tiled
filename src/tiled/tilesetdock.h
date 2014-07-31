@@ -125,7 +125,7 @@ private slots:
     void addTiles();
     void removeTiles();
 
-    void documentCloseRequested(int index);
+    void documentAboutToClose(MapDocument *mapDocument);
 
     void refreshTilesetMenu();
 

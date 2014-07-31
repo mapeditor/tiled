@@ -149,6 +149,11 @@ signals:
      */
     void documentCloseRequested(int index);
 
+    /**
+     * Emitted when a document is about to be closed.
+     */
+    void documentAboutToClose(MapDocument *document);
+
 public slots:
     void switchToLeftDocument();
     void switchToRightDocument();

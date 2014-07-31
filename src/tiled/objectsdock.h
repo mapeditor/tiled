@@ -53,7 +53,7 @@ private slots:
     void aboutToShowMoveToMenu();
     void triggeredMoveToMenu(QAction *action);
     void objectProperties();
-    void documentCloseRequested(int index);
+    void documentAboutToClose(MapDocument *mapDocument);
 
 private:
     void retranslateUi();

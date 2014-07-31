@@ -193,9 +193,11 @@ void DocumentManager::closeCurrentDocument()
 
 void DocumentManager::closeDocumentAt(int index)
 {
-    MapDocument *mapDocument = mDocuments.takeAt(index);
-    QWidget *mapView = mTabWidget->widget(index);
+    MapDocument *mapDocument = mDocuments.at(index);
+    emit documentAboutToClose(mapDocument);
 
+    QWidget *mapView = mTabWidget->widget(index);
+    mDocuments.removeAt(index);
     mTabWidget->removeTab(index);
     delete mapView;
     delete mapDocument;
