@@ -224,6 +224,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar(new QToolBar),
     mCurrentTile(0),
     mCurrentTiles(0),
+    mNewTileset(new QAction(this)),
     mImportTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
     mPropertiesTileset(new QAction(this)),
@@ -264,6 +265,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     horizontal->addWidget(mToolBar, 1);
     vertical->addLayout(horizontal);
 
+    mNewTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
     mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
     mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
@@ -272,6 +274,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
 
+    Utils::setThemeIcon(mNewTileset, "document-new");
     Utils::setThemeIcon(mImportTileset, "document-import");
     Utils::setThemeIcon(mExportTileset, "document-export");
     Utils::setThemeIcon(mPropertiesTileset, "document-properties");
@@ -279,6 +282,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
 
+    connect(mNewTileset, SIGNAL(triggered()),
+            SIGNAL(newTileset()));
     connect(mImportTileset, SIGNAL(triggered()),
             SLOT(importTileset()));
     connect(mExportTileset, SIGNAL(triggered()),
@@ -294,6 +299,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mRemoveTiles, SIGNAL(triggered()),
             SLOT(removeTiles()));
 
+    mToolBar->addAction(mNewTileset);
     mToolBar->setIconSize(QSize(16, 16));
     mToolBar->addAction(mImportTileset);
     mToolBar->addAction(mExportTileset);
@@ -477,7 +483,9 @@ void TilesetDock::updateActions()
     }
 
     const bool tilesetIsDisplayed = view != 0;
+    const bool mapIsDisplayed = mMapDocument != 0;
 
+    mNewTileset->setEnabled(mapIsDisplayed);
     mImportTileset->setEnabled(tilesetIsDisplayed && external);
     mExportTileset->setEnabled(tilesetIsDisplayed && !external);
     mPropertiesTileset->setEnabled(tilesetIsDisplayed && !external);
@@ -705,6 +713,7 @@ void TilesetDock::setCurrentTile(Tile *tile)
 void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
+    mNewTileset->setText(tr("New Tileset"));
     mImportTileset->setText(tr("&Import Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
     mPropertiesTileset->setText(tr("Tile&set Properties"));

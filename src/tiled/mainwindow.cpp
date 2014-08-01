@@ -382,12 +382,15 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
+
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             mTileAnimationEditor, SLOT(setTile(Tile*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             mTileCollisionEditor, SLOT(setTile(Tile*)));
+    connect(mTilesetDock, SIGNAL(newTileset()),
+            this, SLOT(newTileset()));
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
