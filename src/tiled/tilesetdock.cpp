@@ -476,13 +476,16 @@ void TilesetDock::updateActions()
         }
     }
 
-    mImportTileset->setEnabled(view && external);
-    mExportTileset->setEnabled(view && !external);
-    mPropertiesTileset->setEnabled(view && !external);
-    mDeleteTileset->setEnabled(view);
-    mEditTerrain->setEnabled(view && !external);
-    mAddTiles->setEnabled(view && !hasImageSource && !external);
-    mRemoveTiles->setEnabled(view && !hasImageSource && hasSelection && !external);
+    const bool tilesetIsDisplayed = view != 0;
+
+    mImportTileset->setEnabled(tilesetIsDisplayed && external);
+    mExportTileset->setEnabled(tilesetIsDisplayed && !external);
+    mPropertiesTileset->setEnabled(tilesetIsDisplayed && !external);
+    mDeleteTileset->setEnabled(tilesetIsDisplayed);
+    mEditTerrain->setEnabled(tilesetIsDisplayed && !external);
+    mAddTiles->setEnabled(tilesetIsDisplayed && !hasImageSource && !external);
+    mRemoveTiles->setEnabled(tilesetIsDisplayed && !hasImageSource
+                             && hasSelection && !external);
 }
 
 void TilesetDock::updateCurrentTiles()
