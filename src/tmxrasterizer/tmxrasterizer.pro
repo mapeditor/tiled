@@ -18,6 +18,7 @@ win32 {
 }
 
 macx {
+    CONFIG -= app_bundle
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
