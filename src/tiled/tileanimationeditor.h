@@ -22,6 +22,7 @@
 #define TILED_INTERNAL_TILEANIMATIONEDITOR_H
 
 #include <QWidget>
+#include <QModelIndex>
 
 namespace Ui {
 class TileAnimationEditor;
@@ -60,6 +61,8 @@ protected:
 private slots:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
+
+    void addFrameForTileAt(const QModelIndex &index);
 
     void undo();
     void redo();
