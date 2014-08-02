@@ -841,6 +841,8 @@ void TilesetDock::addTiles()
     if (tiles.isEmpty())
         return;
 
+    prefs->setLastPath(Preferences::ImageFile, files.last());
+
     mMapDocument->undoStack()->push(new AddTiles(mMapDocument, tileset, tiles));
 }
 
