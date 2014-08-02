@@ -65,7 +65,7 @@ public:
     void writeTileset(const Tileset *tileset, QIODevice *device,
                       const QString &path);
 
-    bool openFile(QFile *file);
+    bool openFile(QIODevice *file);
 
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
@@ -99,7 +99,7 @@ MapWriterPrivate::MapWriterPrivate()
 {
 }
 
-bool MapWriterPrivate::openFile(QFile *file)
+bool MapWriterPrivate::openFile(QIODevice *file)
 {
     if (!file->open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
