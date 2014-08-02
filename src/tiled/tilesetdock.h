@@ -93,6 +93,8 @@ signals:
      */
     void tilesetsDropped(const QStringList &paths);
 
+    void newTileset();
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -147,6 +149,7 @@ private:
     TileLayer *mCurrentTiles;
     const Terrain *mTerrain;
 
+    QAction *mNewTileset;
     QAction *mImportTileset;
     QAction *mExportTileset;
     QAction *mPropertiesTileset;

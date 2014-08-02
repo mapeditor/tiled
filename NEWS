@@ -37,6 +37,7 @@
 * Raise the Layers dock for editing a new layer's name
 * Made Tiled registering *.tmx as MIME-type (by Erik Schilling)
 * Added Traditional Chinese translation (by Yehnan Chiang)
+* Added button to the tileset dock as shortcut to add a tileset (by Erik Schilling)
 
 0.9.1 (27 July 2013)
 * Added saving of map background to JSON format (by Petr Viktorin)
