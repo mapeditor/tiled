@@ -63,9 +63,14 @@ public:
     Qt::DropActions supportedDropActions() const;
 
     void setFrames(const Tileset *tileset, const QVector<Frame> &frames);
+    void addTileIdAsFrame(int id);
     const QVector<Frame> &frames() const;
 
 private:
+    static const int DEFAULT_DURATION = 100;
+
+    void addFrame(const Frame &frame);
+
     const Tileset *mTileset;
     QVector<Frame> mFrames;
 };
@@ -199,7 +204,7 @@ bool FrameListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         while (!stream.atEnd()) {
             Frame frame;
             stream >> frame.tileId;
-            frame.duration = 100;
+            frame.duration = DEFAULT_DURATION;
             newFrames.append(frame);
         }
     }
@@ -227,6 +232,21 @@ void FrameListModel::setFrames(const Tileset *tileset,
     endResetModel();
 }
 
+void FrameListModel::addTileIdAsFrame(int id)
+{
+    Frame frame;
+    frame.tileId = id;
+    frame.duration = DEFAULT_DURATION;
+    addFrame(frame);
+}
+
+void FrameListModel::addFrame(const Frame &frame)
+{
+    beginInsertRows(QModelIndex(), mFrames.size(), mFrames.size());
+    mFrames.append(frame);
+    endInsertRows();
+}
+
 const QVector<Frame> &FrameListModel::frames() const
 {
     return mFrames;
@@ -244,6 +264,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     mUi->setupUi(this);
     mUi->frameList->setModel(mFrameListModel);
     mUi->tilesetView->setMarkAnimatedTiles(false);
+
+    connect(mUi->tilesetView, SIGNAL(doubleClicked(QModelIndex)),
+            SLOT(addFrameForTileAt(QModelIndex)));
 
     connect(mFrameListModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             SLOT(framesEdited()));
@@ -331,6 +354,12 @@ void TileAnimationEditor::tileAnimationChanged(Tile *tile)
         return;
 
     mFrameListModel->setFrames(tile->tileset(), tile->frames());
+}
+
+void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
+{
+    const Tile *tile = mUi->tilesetView->tilesetModel()->tileAt(index);
+    mFrameListModel->addTileIdAsFrame(tile->id());
 }
 
 void TileAnimationEditor::undo()
