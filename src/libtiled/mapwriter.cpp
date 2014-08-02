@@ -46,6 +46,14 @@
 #include <QDir>
 #include <QXmlStreamWriter>
 
+#if QT_VERSION >= 0x050100
+#define HAS_QSAVEFILE_SUPPORT
+#endif
+
+#ifdef HAS_QSAVEFILE_SUPPORT
+#include <QSaveFile>
+#endif
+
 using namespace Tiled;
 using namespace Tiled::Internal;
 
@@ -65,7 +73,7 @@ public:
     void writeTileset(const Tileset *tileset, QIODevice *device,
                       const QString &path);
 
-    bool openFile(QFile *file);
+    bool openFile(QIODevice *file);
 
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
@@ -99,7 +107,7 @@ MapWriterPrivate::MapWriterPrivate()
 {
 }
 
-bool MapWriterPrivate::openFile(QFile *file)
+bool MapWriterPrivate::openFile(QIODevice *file)
 {
     if (!file->open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
@@ -634,7 +642,11 @@ void MapWriter::writeMap(const Map *map, QIODevice *device,
 
 bool MapWriter::writeMap(const Map *map, const QString &fileName)
 {
+#ifdef HAS_QSAVEFILE_SUPPORT
+    QSaveFile file(fileName);
+#else
     QFile file(fileName);
+#endif
     if (!d->openFile(&file))
         return false;
 
@@ -644,6 +656,13 @@ bool MapWriter::writeMap(const Map *map, const QString &fileName)
         d->mError = file.errorString();
         return false;
     }
+
+#ifdef HAS_QSAVEFILE_SUPPORT
+    if (!file.commit()) {
+        d->mError = file.errorString();
+        return false;
+    }
+#endif
 
     return true;
 }
