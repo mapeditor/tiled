@@ -286,6 +286,8 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
 
     Utils::restoreGeometry(this);
+
+    mUi->splitter->setSizes(QList<int>() << 128 << 512);
 }
 
 TileAnimationEditor::~TileAnimationEditor()
