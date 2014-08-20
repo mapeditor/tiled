@@ -299,14 +299,20 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     painter->translate(rect.topLeft());
     rect.moveTopLeft(QPointF(0, 0));
 
-    if (!object->cell().isEmpty()) {
-        const Cell &cell = object->cell();
+    const Cell &cell = object->cell();
 
+    if (!cell.isEmpty()) {
         CellRenderer(painter).render(cell, QPointF(),
                                      CellRenderer::BottomLeft);
 
         if (testFlag(ShowTileObjectOutlines)) {
-            const QRect rect = cell.tile->image().rect();
+            const Tile *tile = cell.tile;
+            const QSize imgSize = tile->size();
+            const QPointF tileOffset = tile->tileset()->tileOffset();
+            QRectF rect(QPointF(tileOffset.x(),
+                                tileOffset.y() - imgSize.height()),
+                        imgSize);
+
             QPen pen(Qt::SolidLine);
             pen.setCosmetic(true);
             painter->setPen(pen);

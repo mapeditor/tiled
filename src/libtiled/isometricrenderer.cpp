@@ -278,17 +278,19 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     QPen pen(Qt::black);
     pen.setCosmetic(true);
 
-    if (!object->cell().isEmpty()) {
-        const Tile *tile = object->cell().tile;
+    const Cell &cell = object->cell();
+
+    if (!cell.isEmpty()) {
+        const Tile *tile = cell.tile;
         const QSize imgSize = tile->size();
         const QPointF pos = pixelToScreenCoords(object->position());
+        const QPointF tileOffset = tile->tileset()->tileOffset();
 
         // Draw the name before the transform is applied
         const QFontMetrics fm = painter->fontMetrics();
         QString name = fm.elidedText(object->name(), Qt::ElideRight,
                                      imgSize.width() + 2);
         if (!name.isEmpty()) {
-            const QPointF tileOffset = tile->tileset()->tileOffset();
             const QPointF textPos = pos + tileOffset -
                     QPointF(imgSize.width() / 2, 5 + imgSize.height());
 
@@ -297,17 +299,21 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->drawText(textPos, name);
         }
 
-        CellRenderer(painter).render(object->cell(), pos,
+        CellRenderer(painter).render(cell, pos,
                                      CellRenderer::BottomCenter);
 
         if (testFlag(ShowTileObjectOutlines)) {
+            QRectF rect(QPointF(pos.x() - imgSize.width() / 2 + tileOffset.x(),
+                                pos.y() - imgSize.height() + tileOffset.y()),
+                        imgSize);
+
             pen.setStyle(Qt::SolidLine);
             painter->setPen(pen);
-            painter->drawRect(QRectF(QPointF(), imgSize));
+            painter->drawRect(rect);
             pen.setStyle(Qt::DotLine);
             pen.setColor(color);
             painter->setPen(pen);
-            painter->drawRect(QRectF(QPointF(), imgSize));
+            painter->drawRect(rect);
         }
     } else {
         const qreal lineWidth = objectLineWidth();
