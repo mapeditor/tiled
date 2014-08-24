@@ -25,6 +25,7 @@
 #include "mapdocument.h"
 #include "rangeset.h"
 #include "tile.h"
+#include "tileanimationdriver.h"
 #include "tiled.h"
 #include "tileset.h"
 #include "utils.h"
@@ -260,6 +261,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     , mTile(0)
     , mFrameListModel(new FrameListModel(this))
     , mApplyingChanges(false)
+    , mPreviewAnimationDriver(new TileAnimationDriver(this))
+    , mPreviewFrameIndex(0)
+    , mPreviewUnusedTime(0)
 {
     mUi->setupUi(this);
     mUi->frameList->setModel(mFrameListModel);
@@ -277,6 +281,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mFrameListModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(framesEdited()));
 
+    connect(mPreviewAnimationDriver, SIGNAL(update(int)),
+            SLOT(advancePreviewAnimation(int)));
+
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
@@ -287,7 +294,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
 
     Utils::restoreGeometry(this);
 
-    mUi->splitter->setSizes(QList<int>() << 128 << 512);
+    mUi->horizontalSplitter->setSizes(QList<int>() << 128 << 512);
 }
 
 TileAnimationEditor::~TileAnimationEditor()
@@ -323,6 +330,8 @@ void TileAnimationEditor::setTile(Tile *tile)
     } else {
         mFrameListModel->setFrames(0, QVector<Frame>());
     }
+
+    resetPreview();
 }
 
 void TileAnimationEditor::writeSettings()
@@ -335,6 +344,16 @@ void TileAnimationEditor::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
     if (event->isAccepted())
         emit closed();
+}
+
+void TileAnimationEditor::showEvent(QShowEvent *)
+{
+    mPreviewAnimationDriver->start();
+}
+
+void TileAnimationEditor::hideEvent(QHideEvent *)
+{
+    mPreviewAnimationDriver->stop();
 }
 
 void TileAnimationEditor::framesEdited()
@@ -352,6 +371,9 @@ void TileAnimationEditor::tileAnimationChanged(Tile *tile)
 {
     if (mTile != tile)
         return;
+
+    resetPreview();
+
     if (mApplyingChanges)
         return;
 
@@ -406,6 +428,47 @@ void TileAnimationEditor::delete_()
     } while (it != firstRange);
 
     undoStack->endMacro();
+}
+
+void TileAnimationEditor::advancePreviewAnimation(int ms)
+{
+    if (!mTile || !mTile->isAnimated())
+        return;
+
+    mPreviewUnusedTime += ms;
+
+    const QVector<Frame> &frames = mTile->frames();
+    Frame frame = frames.at(mPreviewFrameIndex);
+    const int previousTileId = frame.tileId;
+
+    while (frame.duration > 0 && mPreviewUnusedTime > frame.duration) {
+        mPreviewUnusedTime -= frame.duration;
+        mPreviewFrameIndex = (mPreviewFrameIndex + 1) % frames.size();
+
+        frame = frames.at(mPreviewFrameIndex);
+    }
+
+    if (previousTileId != frame.tileId) {
+        if (const Tile *tile = mTile->tileset()->tileAt(frame.tileId))
+            mUi->preview->setPixmap(tile->image());
+    }
+}
+
+void TileAnimationEditor::resetPreview()
+{
+    mPreviewFrameIndex = 0;
+    mPreviewUnusedTime = 0;
+
+    if (mTile && mTile->isAnimated()) {
+        const int tileId = mTile->frames().first().tileId;
+        if (const Tile *tile = mTile->tileset()->tileAt(tileId)) {
+            mUi->preview->setPixmap(tile->image());
+            return;
+        }
+    }
+
+    mUi->preview->setText(QApplication::translate("TileAnimationEditor",
+                                                  "Preview"));
 }
 
 } // namespace Internal

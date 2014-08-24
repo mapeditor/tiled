@@ -47,6 +47,10 @@ signals:
 
 protected:
     void updateCurrentTime(int currentTime);
+    void updateState(State newState, State oldState);
+
+private:
+    int mLastTime;
 };
 
 } // namespace Internal

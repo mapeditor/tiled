@@ -23,8 +23,9 @@
 namespace Tiled {
 namespace Internal {
 
-TileAnimationDriver::TileAnimationDriver(QObject *parent) :
-    QAbstractAnimation(parent)
+TileAnimationDriver::TileAnimationDriver(QObject *parent)
+    : QAbstractAnimation(parent)
+    , mLastTime(0)
 {
     setLoopCount(-1); // loop forever
 }
@@ -36,15 +37,21 @@ int TileAnimationDriver::duration() const
 
 void TileAnimationDriver::updateCurrentTime(int currentTime)
 {
-    static int lastTime = currentTime;
-
-    int elapsed = currentTime - lastTime;
+    int elapsed = currentTime - mLastTime;
     if (elapsed < 0)
         elapsed += 1000;
 
-    lastTime = currentTime;
+    mLastTime = currentTime;
 
     emit update(elapsed);
+}
+
+void TileAnimationDriver::updateState(State newState, State oldState)
+{
+    Q_UNUSED(oldState)
+
+    if (newState == Stopped)
+        mLastTime = 0;
 }
 
 } // namespace Internal

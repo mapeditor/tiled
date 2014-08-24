@@ -36,6 +36,7 @@ namespace Internal {
 
 class FrameListModel;
 class MapDocument;
+class TileAnimationDriver;
 
 class TileAnimationEditor : public QWidget
 {
@@ -58,6 +59,9 @@ public slots:
 protected:
     void closeEvent(QCloseEvent *);
 
+    void showEvent(QShowEvent *);
+    void hideEvent(QHideEvent *);
+
 private slots:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
@@ -68,6 +72,9 @@ private slots:
     void redo();
     void delete_();
 
+    void advancePreviewAnimation(int ms);
+    void resetPreview();
+
 private:
     Ui::TileAnimationEditor *mUi;
 
@@ -75,6 +82,10 @@ private:
     Tile *mTile;
     FrameListModel *mFrameListModel;
     bool mApplyingChanges;
+
+    TileAnimationDriver *mPreviewAnimationDriver;
+    int mPreviewFrameIndex;
+    int mPreviewUnusedTime;
 };
 
 } // namespace Internal
