@@ -33,9 +33,11 @@
 #include "tile.h"
 #include "terrain.h"
 
-#include <math.h>
 #include <QVector>
+
 #include <climits>
+#include <iterator>
+#include <math.h>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -387,13 +389,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         terrainId = mTerrain->id();
     }
 
-    // allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
-    Tile **newTerrain = new Tile*[numTiles];
-
-    // allocate a buffer of flags for each tile that may be considered (TODO: this could be retained per layer to save regular allocation)
-    char *checked = new char[numTiles];
-    memset(checked, 0, numTiles);
-
     // create a consideration list, and push the start points
     QList<QPoint> transitionList;
     int initialTiles = 0;
@@ -409,6 +404,14 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         initialTiles = 1;
     }
 
+    // allocate a buffer to build the terrain tilemap (TODO: this could be retained per layer to save regular allocation)
+    Tile **newTerrain = new Tile*[numTiles];
+
+    // allocate a buffer of flags for each tile that may be considered (TODO: this could be retained per layer to save regular allocation)
+    bool checkedTiles[numTiles];
+    for (int i = 0; i < numTiles; ++i)
+        checkedTiles[i] = false;
+
     QRect brushRect(cursorPos, cursorPos);
 
     // produce terrain with transitions using a simple, relative naive approach (considers each tile once, and doesn't allow re-consideration if selection was bad)
@@ -420,7 +423,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
         // if we have already considered this point, skip to the next
         // TODO: we might want to allow re-consideration if prior tiles... but not for now, this would risk infinite loops
-        if (checked[i])
+        if (checkedTiles[i])
             continue;
 
         const Tile *tile = currentLayer->cellAt(p).tile;
@@ -470,19 +473,19 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
             mask = 0;
 
             // depending which connections have been set, we update the preferred terrain of the tile accordingly
-            if (y > 0 && checked[i - layerWidth]) {
+            if (y > 0 && checkedTiles[i - layerWidth]) {
                 preferredTerrain = (::terrain(newTerrain[i - layerWidth]) << 16) | (preferredTerrain & 0x0000FFFF);
                 mask |= 0xFFFF0000;
             }
-            if (y < layerHeight - 1 && checked[i + layerWidth]) {
+            if (y < layerHeight - 1 && checkedTiles[i + layerWidth]) {
                 preferredTerrain = (::terrain(newTerrain[i + layerWidth]) >> 16) | (preferredTerrain & 0xFFFF0000);
                 mask |= 0x0000FFFF;
             }
-            if (x > 0 && checked[i - 1]) {
+            if (x > 0 && checkedTiles[i - 1]) {
                 preferredTerrain = ((::terrain(newTerrain[i - 1]) << 8) & 0xFF00FF00) | (preferredTerrain & 0x00FF00FF);
                 mask |= 0xFF00FF00;
             }
-            if (x < layerWidth - 1 && checked[i + 1]) {
+            if (x < layerWidth - 1 && checkedTiles[i + 1]) {
                 preferredTerrain = ((::terrain(newTerrain[i + 1]) >> 8) & 0x00FF00FF) | (preferredTerrain & 0xFF00FF00);
                 mask |= 0x00FF00FF;
             }
@@ -498,28 +501,28 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
         // add tile to the brush
         newTerrain[i] = paste;
-        checked[i] = true;
+        checkedTiles[i] = true;
 
         // expand the brush rect to fit the edit set
         brushRect |= QRect(p, p);
 
         // consider surrounding tiles if terrain constraints were not satisfied
-        if (y > 0 && !checked[i - layerWidth]) {
+        if (y > 0 && !checkedTiles[i - layerWidth]) {
             const Tile *above = currentLayer->cellAt(x, y - 1).tile;
             if (topEdge(paste) != bottomEdge(above))
                 transitionList.append(QPoint(x, y - 1));
         }
-        if (y < layerHeight - 1 && !checked[i + layerWidth]) {
+        if (y < layerHeight - 1 && !checkedTiles[i + layerWidth]) {
             const Tile *below = currentLayer->cellAt(x, y + 1).tile;
             if (bottomEdge(paste) != topEdge(below))
                 transitionList.append(QPoint(x, y + 1));
         }
-        if (x > 0 && !checked[i - 1]) {
+        if (x > 0 && !checkedTiles[i - 1]) {
             const Tile *left = currentLayer->cellAt(x - 1, y).tile;
             if (leftEdge(paste) != rightEdge(left))
                 transitionList.append(QPoint(x - 1, y));
         }
-        if (x < layerWidth - 1 && !checked[i + 1]) {
+        if (x < layerWidth - 1 && !checkedTiles[i + 1]) {
             const Tile *right = currentLayer->cellAt(x + 1, y).tile;
             if (rightEdge(paste) != leftEdge(right))
                 transitionList.append(QPoint(x + 1, y));
@@ -532,7 +535,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     for (int y = brushRect.top(); y <= brushRect.bottom(); ++y) {
         for (int x = brushRect.left(); x <= brushRect.right(); ++x) {
             int i = y*layerWidth + x;
-            if (!checked[i])
+            if (!checkedTiles[i])
                 continue;
 
             Tile *tile = newTerrain[i];
@@ -548,7 +551,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     // set the new tile layer as the brush
     brushItem()->setTileLayer(stamp);
 
-    delete[] checked;
     delete[] newTerrain;
 
     brushItem()->setTileLayerPosition(brushRect.topLeft());
