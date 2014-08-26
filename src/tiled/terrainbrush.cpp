@@ -551,14 +551,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     delete[] checked;
     delete[] newTerrain;
 
-/*
-    const QPoint tilePos = tilePosition();
-
-    if (!brushItem()->tileLayer()) {
-        brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
-    }
-*/
-
     brushItem()->setTileLayerPosition(brushRect.topLeft());
 
     mPaintX = cursorPos.x();
