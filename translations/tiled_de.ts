@@ -654,7 +654,7 @@ Zeile %1, Spalte %2</translation>
         <location line="+9"/>
         <source>Tileset tile index too high:
 &apos;%1&apos;</source>
-        <translation>Tileset Kachel Index zu niedrig:
+        <translation>Tileset Kachel Index zu hoch:
 &apos;%1&apos;</translation>
     </message>
 </context>
@@ -1754,7 +1754,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation>Objekt hervorheben</translation>
+        <translation>Objekt anheben</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1764,7 +1764,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation>Objekt hinabsenken</translation>
+        <translation>Objekt absenken</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1774,7 +1774,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
-        <translation>Objekt in den Vordergrund verschieben</translation>
+        <translation>Objekt nach ganz oben anheben</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1784,7 +1784,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+1"/>
         <source>Lower Object to Bottom</source>
-        <translation>Objekt in den Hintergrund verschieben</translation>
+        <translation>Objekt nach ganz unten absenken</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2578,8 +2578,8 @@ Bitte Format angeben.</translation>
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Objekt rotieren</numerusform>
-            <numerusform>%n Objekte rotieren</numerusform>
+            <numerusform>Objekt drehen</numerusform>
+            <numerusform>%n Objekte drehen</numerusform>
         </translation>
     </message>
     <message>
@@ -2937,8 +2937,8 @@ Bitte Format angeben.</translation>
         <location line="+81"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Objekt rotieren</numerusform>
-            <numerusform>%n Objekte rotieren</numerusform>
+            <numerusform>Objekt drehen</numerusform>
+            <numerusform>%n Objekte drehen</numerusform>
         </translation>
     </message>
 </context>
@@ -3130,7 +3130,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation>Kippung</translation>
+        <translation>Drehung</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -3361,7 +3361,7 @@ Do you want to replace it?</source>
         <location line="+93"/>
         <location line="+13"/>
         <source>Add Tiles</source>
-        <translation>Tiles hinzufügen</translation>
+        <translation>Kacheln hinzufügen</translation>
     </message>
     <message>
         <location line="-105"/>
@@ -3718,13 +3718,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+44"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
-        <translation>Objekt hervorheben</translation>
+        <translation>Objekt anheben</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+29"/>
         <source>Lower Object</source>
-        <translation>Objekt hinabsenken</translation>
+        <translation>Objekt absenken</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+33"/>
@@ -3746,19 +3746,19 @@ Do you want to replace it?</source>
         <location line="+4"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Objekt kippen</numerusform>
-            <numerusform>%n Objekte kippen</numerusform>
+            <numerusform>Objekt umdrehen</numerusform>
+            <numerusform>%n Objekte umdrehen</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation>Objekt in den Vordergrund verschieben</translation>
+        <translation>Objekt nach ganz oben anheben</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Lower Object To Bottom</source>
-        <translation>Objekt in den Hintergrund verschieben</translation>
+        <translation>Objekt nach ganz unten absenken</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
