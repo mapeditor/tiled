@@ -717,12 +717,12 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+20"/>
-        <source>Layer format:</source>
-        <translation type="unfinished">圖層格式:</translation>
+        <source>Tile layer format:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Render order:</source>
+        <source>Tile render order:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -927,7 +927,7 @@ Line %1, column %2</source>
         <translation>儲存並載入</translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+61"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+60"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+72"/>
         <source>XML</source>
         <translation>XML</translation>
@@ -957,7 +957,7 @@ Line %1, column %2</source>
         <translation>CSV</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Right Down</source>
         <translation type="unfinished"></translation>
@@ -2801,19 +2801,6 @@ Please select specific format.</source>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::MapPropertiesDialog</name>
-    <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="-11"/>
-        <source>Layer format:</source>
-        <translation>圖層格式:</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Render order:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Tiled::Internal::MapsDock</name>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
@@ -2842,7 +2829,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+6"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+2"/>
         <source>Orthogonal</source>
         <translation>正常</translation>
     </message>
@@ -3062,12 +3049,12 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+5"/>
-        <source>Layer Format</source>
+        <source>Tile Layer Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Render Order</source>
+        <source>Tile Render Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -317,7 +317,7 @@ void PropertyBrowser::addMapProperties()
     QtVariantProperty *layerFormatProperty =
             createProperty(LayerFormatProperty,
                            QtVariantPropertyManager::enumTypeId(),
-                           tr("Layer Format"),
+                           tr("Tile Layer Format"),
                            groupProperty);
 
     layerFormatProperty->setAttribute(QLatin1String("enumNames"), mLayerFormatNames);
@@ -325,7 +325,7 @@ void PropertyBrowser::addMapProperties()
     QtVariantProperty *renderOrderProperty =
             createProperty(RenderOrderProperty,
                            QtVariantPropertyManager::enumTypeId(),
-                           tr("Render Order"),
+                           tr("Tile Render Order"),
                            groupProperty);
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);

@@ -708,12 +708,12 @@ Rinda %1, kolonna %2</translation>
     </message>
     <message>
         <location line="+20"/>
-        <source>Layer format:</source>
+        <source>Tile layer format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+13"/>
-        <source>Render order:</source>
+        <source>Tile render order:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -918,7 +918,7 @@ Rinda %1, kolonna %2</translation>
         <translation>Datņu saglabāšana un ielāde</translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+61"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+60"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+72"/>
         <source>XML</source>
         <translation></translation>
@@ -948,7 +948,7 @@ Rinda %1, kolonna %2</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Right Down</source>
         <translation type="unfinished"></translation>
@@ -2810,19 +2810,6 @@ Please select specific format.</source>
     </message>
 </context>
 <context>
-    <name>Tiled::Internal::MapPropertiesDialog</name>
-    <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="-11"/>
-        <source>Layer format:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Render order:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Tiled::Internal::MapsDock</name>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
@@ -2851,7 +2838,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+6"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+2"/>
         <source>Orthogonal</source>
         <translation type="unfinished">Ortogonāla projekcija</translation>
     </message>
@@ -3077,12 +3064,12 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+5"/>
-        <source>Layer Format</source>
+        <source>Tile Layer Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Render Order</source>
+        <source>Tile Render Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3123,7 +3110,7 @@ Please select specific format.</source>
     <message>
         <location line="-64"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izmēŗs</translation>
     </message>
     <message>
         <location line="+1"/>

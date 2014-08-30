@@ -57,14 +57,12 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
                                     32).toInt();
 
-    mUi->layerFormatLabel->setText(QCoreApplication::translate("Tiled::Internal::MapPropertiesDialog", "Layer format:"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
 
-    mUi->renderOrderLabel->setText(QCoreApplication::translate("Tiled::Internal::MapPropertiesDialog", "Render order:"));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"));
     mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"));
