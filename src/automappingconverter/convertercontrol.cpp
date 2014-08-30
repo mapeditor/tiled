@@ -111,7 +111,6 @@ void ConverterControl::convertV1toV2(const QString &fileName)
     }
 
     Tiled::MapWriter writer;
-    writer.setLayerDataFormat(map->layerDataFormat());
     writer.writeMap(map, fileName);
 
     qDeleteAll(map->tilesets());

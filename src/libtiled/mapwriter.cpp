@@ -130,6 +130,7 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
 {
     mMapDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
+    mLayerDataFormat = map->layerDataFormat();
 
     QXmlStreamWriter *writer = createWriter(device);
     writer->writeStartDocument();
@@ -692,16 +693,6 @@ bool MapWriter::writeTileset(const Tileset *tileset, const QString &fileName)
 QString MapWriter::errorString() const
 {
     return d->mError;
-}
-
-void MapWriter::setLayerDataFormat(Map::LayerDataFormat format)
-{
-    d->mLayerDataFormat = format;
-}
-
-Map::LayerDataFormat MapWriter::layerDataFormat() const
-{
-    return d->mLayerDataFormat;
 }
 
 void MapWriter::setDtdEnabled(bool enabled)
