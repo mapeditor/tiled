@@ -483,7 +483,7 @@
     <message>
         <location line="+8"/>
         <source>Snap to &amp;Fine Grid</source>
-        <translation>Прилипать к сетке</translation>
+        <translation>Прилипать к мелкой сетке</translation>
     </message>
     <message>
         <location line="+8"/>
