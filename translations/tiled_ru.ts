@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU" sourcelanguage="en">
+<TS version="2.1" language="ru_RU" sourcelanguage="en">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -1032,7 +1032,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source> pixels</source>
-        <translation>пиксели</translation>
+        <translation> пиксели</translation>
     </message>
     <message>
         <location line="+16"/>

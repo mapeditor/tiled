@@ -1033,7 +1033,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="+20"/>
         <source> pixels</source>
-        <translation>pixeles</translation>
+        <translation> pixeles</translation>
     </message>
     <message>
         <location line="+16"/>
