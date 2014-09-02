@@ -1247,7 +1247,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+2"/>
         <source>Closed Hand</source>
-        <translation type="unfinished">j</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1298,7 +1298,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+7"/>
         <source>Underline</source>
-        <translation type="unfinished">Unterstrichen</translation>
+        <translation type="unfinished">Unterstreichen</translation>
     </message>
     <message>
         <location line="+7"/>
