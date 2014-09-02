@@ -44,7 +44,7 @@
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+34"/>
         <source>Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladící konzole</translation>
     </message>
 </context>
 <context>
@@ -226,7 +226,7 @@
     <message>
         <location line="+1"/>
         <source>JavaScript files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory JavaScript (*.js)</translation>
     </message>
 </context>
 <context>
@@ -287,7 +287,7 @@
     <message>
         <location line="+16"/>
         <source>Tools</source>
-        <translation type="unfinished">Nástroje</translation>
+        <translation>Nástroje</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -422,17 +422,17 @@
     <message>
         <location line="+8"/>
         <source>Snap to &amp;Fine Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Přichytávat na &amp;Jemnou mřížku</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show Tile Animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazovat animace dlaždic</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Znovu načíst</translation>
     </message>
     <message>
         <location line="-168"/>
@@ -442,7 +442,7 @@
     <message>
         <location line="-46"/>
         <source>Map &amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vlastnosti mapy</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -562,7 +562,7 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>Tile ID does not exist in tileset image: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ID dlaždice neexistuje v sadě dlaždic: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -598,7 +598,7 @@ Line %1, column %2</source>
         <location line="+29"/>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-76"/>
         <source>Invalid draw order: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatné pořadí vykreslování: %1</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -649,13 +649,15 @@ Line %1, column %2</source>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-125"/>
         <source>Tileset tile index negative:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Záporný index dlaždice:
+&apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Tileset tile index too high:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Příliš vysoký index dlaždice:
+&apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -714,12 +716,12 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát vrstvy dlaždic:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pořadí vykreslování dlaždic:</translation>
     </message>
 </context>
 <context>
@@ -737,17 +739,17 @@ Line %1, column %2</source>
     <message>
         <location line="+13"/>
         <source>Based on Tileset Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Z obrázku sady dlaždic</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Collection of Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Ze sady obrázků</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Type:</source>
-        <translation type="unfinished">Typ:</translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -781,12 +783,12 @@ Line %1, column %2</source>
     <message>
         <location line="-142"/>
         <source>Image</source>
-        <translation type="unfinished">Obrázek</translation>
+        <translation>Obrázek</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdroj:</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -956,25 +958,25 @@ Line %1, column %2</source>
         <location line="+2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Right Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Doprava a dolů</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Doprava a nahoru</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Doleva a dolů</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Doleva a nahoru</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+16"/>
@@ -1024,17 +1026,17 @@ Line %1, column %2</source>
     <message>
         <location line="+29"/>
         <source>Fine grid divisions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dílků jemné mrížky:</translation>
     </message>
     <message>
         <location line="+20"/>
         <source> pixels</source>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Object line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka čáry kolem objektů:</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1103,13 +1105,13 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+25"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Ano</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+25"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne</translation>
     </message>
 </context>
 <context>
@@ -1117,12 +1119,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1696"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Ano</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne</translation>
     </message>
 </context>
 <context>
@@ -1130,7 +1132,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+1700"/>
         <source>Clear Char</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat znak</translation>
     </message>
 </context>
 <context>
@@ -1138,7 +1140,7 @@ Line %1, column %2</source>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1146,22 +1148,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4724"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Červená</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Zelená</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Modrá</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>Αlfa</translation>
     </message>
 </context>
 <context>
@@ -1169,97 +1171,97 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-210"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Šipka</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Šipka nahoru</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Křížek</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Čekání</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>IBeam</source>
-        <translation type="unfinished"></translation>
+        <translation>Textový kurzor</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Svislá změna velikosti</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovná změna velikosti</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagonální změna velikosti &quot;\&quot;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagonální změna velikosti &quot;/&quot;</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size All</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna velikosti ve všech směrech</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Blank</source>
-        <translation type="unfinished"></translation>
+        <translation>Prázdný</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Svislé dělení</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Split Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovné dělení</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Pointing Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukazující ruka</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Zákaz</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřená ruka</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Closed Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavřená ruka</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>What&apos;s This</source>
-        <translation type="unfinished"></translation>
+        <translation>Copak je tohle</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaneprázdněný</translation>
     </message>
 </context>
 <context>
@@ -1267,12 +1269,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+209"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Výběr fontu</translation>
     </message>
 </context>
 <context>
@@ -1280,37 +1282,37 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-350"/>
         <source>Family</source>
-        <translation type="unfinished"></translation>
+        <translation>Řez</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Point Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Tučné</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurzíva</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Podtržené</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Přeškrtnuté</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Kerning</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyrovnání</translation>
     </message>
 </context>
 <context>
@@ -1318,7 +1320,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="+234"/>
         <source>Clear Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit zkratku</translation>
     </message>
 </context>
 <context>
@@ -1326,17 +1328,17 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-3533"/>
         <source>%1, %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2)</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Jazyk</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Země</translation>
     </message>
 </context>
 <context>
@@ -1344,17 +1346,17 @@ Line %1, column %2</source>
     <message>
         <location line="+409"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1362,17 +1364,17 @@ Line %1, column %2</source>
     <message>
         <location line="-319"/>
         <source>(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1, %2)</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1380,12 +1382,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-141"/>
         <source>[%1, %2, %3] (%4)</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3] (%4)</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>[%1, %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2]</translation>
     </message>
 </context>
 <context>
@@ -1393,27 +1395,27 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1701"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3×%4]</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Výška</translation>
     </message>
 </context>
 <context>
@@ -1421,27 +1423,27 @@ Line %1, column %2</source>
     <message>
         <location line="-611"/>
         <source>[(%1, %2), %3 x %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[(%1, %2), %3×%4]</translation>
     </message>
     <message>
         <location line="+120"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Výška</translation>
     </message>
 </context>
 <context>
@@ -1449,17 +1451,17 @@ Line %1, column %2</source>
     <message>
         <location line="-534"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1×%2</translation>
     </message>
     <message>
         <location line="+130"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Výška</translation>
     </message>
 </context>
 <context>
@@ -1468,32 +1470,32 @@ Line %1, column %2</source>
         <location line="+1704"/>
         <location line="+1"/>
         <source>&lt;Invalid&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;neplatná&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>[%1, %2, %3, %4]</source>
-        <translation type="unfinished"></translation>
+        <translation>[%1, %2, %3, %4]</translation>
     </message>
     <message>
         <location line="+45"/>
         <source>Horizontal Policy</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovně</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Vertical Policy</source>
-        <translation type="unfinished"></translation>
+        <translation>Svisle</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Horizontal Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovné roztažení</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Vertical Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Svislé roztažení</translation>
     </message>
 </context>
 <context>
@@ -1501,17 +1503,17 @@ Line %1, column %2</source>
     <message>
         <location line="-2280"/>
         <source>%1 x %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1×%2</translation>
     </message>
     <message>
         <location line="+96"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Výška</translation>
     </message>
 </context>
 <context>
@@ -1519,12 +1521,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qttreepropertybrowser.cpp" line="+478"/>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastnost</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Hodnota</translation>
+        <translation>Hodnota</translation>
     </message>
 </context>
 <context>
@@ -1683,7 +1685,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Použít barvu pozadí</translation>
     </message>
 </context>
 <context>
@@ -1704,13 +1706,13 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/tileanimationeditor.ui" line="+14"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor animovaných dlaždic</translation>
     </message>
     <message>
         <location line="+79"/>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="+470"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhled</translation>
     </message>
 </context>
 <context>
@@ -1736,62 +1738,62 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Překlopit vodorovně</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Překlopit svisle</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvednout objekt</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>PgUp</source>
-        <translation type="unfinished">PgUp</translation>
+        <translation>PgUp</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Snížit objekt</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>PgDown</source>
-        <translation type="unfinished">PgDown</translation>
+        <translation>PgDown</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Raise Object to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvednout objekt úplně nahoru</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lower Object to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Snížit objekt úplně dolů</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>End</source>
-        <translation type="unfinished"></translation>
+        <translation>End</translation>
     </message>
     <message numerus="yes">
         <location line="+5"/>
@@ -1813,7 +1815,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/abstracttiletool.cpp" line="+119"/>
         <source>empty</source>
-        <translation type="unfinished"></translation>
+        <translation>—</translation>
     </message>
 </context>
 <context>
@@ -1936,7 +1938,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/clipboardmanager.cpp" line="+175"/>
         <source>Paste Objects</source>
-        <translation type="unfinished">Vložit objekty</translation>
+        <translation>Vložit objekty</translation>
     </message>
 </context>
 <context>
@@ -2167,7 +2169,9 @@ Line %1, column %2</source>
         <source>%1:
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:
+
+%2</translation>
     </message>
 </context>
 <context>
@@ -2249,7 +2253,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-274"/>
         <source>File change detected. Discard changes and reload the map?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zjištěna změna souboru. Zahodit změny a znovu načíst mapu?</translation>
     </message>
 </context>
 <context>
@@ -2257,7 +2261,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/fileedit.cpp" line="+112"/>
         <source>Choose a File</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyberte soubor</translation>
     </message>
 </context>
 <context>
@@ -2266,13 +2270,13 @@ Line %1, column %2</source>
         <location filename="../src/tiled/imagemovementtool.cpp" line="+34"/>
         <location line="+83"/>
         <source>Move Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Přesunování obrázků</translation>
     </message>
     <message>
         <location line="-81"/>
         <location line="+82"/>
         <source>M</source>
-        <translation type="unfinished"></translation>
+        <translation>M</translation>
     </message>
 </context>
 <context>
@@ -2469,7 +2473,7 @@ Please select specific format.</source>
     <message>
         <location line="+647"/>
         <source>Error Reloading Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání mapy</translation>
     </message>
     <message>
         <location line="-571"/>
@@ -2490,47 +2494,47 @@ Please select specific format.</source>
         <location line="-791"/>
         <location line="+1094"/>
         <source>Views and Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Okna a lišty</translation>
     </message>
     <message>
         <location line="-1093"/>
         <location line="+1094"/>
         <source>Tile Animation Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor animovaných dlaždic</translation>
     </message>
     <message>
         <location line="-1092"/>
         <location line="+1093"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor kolizí</translation>
     </message>
     <message>
         <location line="-1066"/>
         <source>Alt+Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+Doleva</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Alt+Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+Doprava</translation>
     </message>
     <message>
         <location line="+667"/>
         <source>Add External Tileset(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat externí sady dlaždic</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2</translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
         <source>Add %n Tileset(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Přidání sady dlaždic</numerusform>
+            <numerusform>Přidání %n sad dlaždic</numerusform>
+            <numerusform>Přidání %n sad dlaždic</numerusform>
         </translation>
     </message>
     <message>
@@ -2580,10 +2584,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Otočení objektu</numerusform>
+            <numerusform>Otočení %n objektů</numerusform>
+            <numerusform>Otočení %n objektů</numerusform>
         </translation>
     </message>
     <message>
@@ -2629,16 +2633,16 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+154"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform>Duplikovat objekt</numerusform>
-            <numerusform>Duplikovat %n objekty</numerusform>
-            <numerusform>Duplikovat %n objektů</numerusform>
+        <translation>
+            <numerusform>Duplikování objektu</numerusform>
+            <numerusform>Duplikování %n objekty</numerusform>
+            <numerusform>Duplikování %n objektů</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+20"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Odstranit objekt</numerusform>
             <numerusform>Odstranit %n objekty</numerusform>
             <numerusform>Odstranit %n objektů</numerusform>
@@ -2647,7 +2651,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Přesunout objekt do vrstvy</numerusform>
             <numerusform>Přesunout %n objekty do vrstvy</numerusform>
             <numerusform>Přesunout %n objektů do vrstvy</numerusform>
@@ -2724,12 +2728,12 @@ Please select specific format.</source>
     <message>
         <location line="-6"/>
         <source>Ctrl+PgUp</source>
-        <translation type="unfinished">Ctrl+PgUp</translation>
+        <translation>Ctrl+PgUp</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+PgDown</source>
-        <translation type="unfinished">Ctrl+PgDown</translation>
+        <translation>Ctrl+PgDown</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -2769,7 +2773,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+236"/>
         <source>Duplicate %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Duplikovat objekt</numerusform>
             <numerusform>Duplikovat %n objekty</numerusform>
             <numerusform>Duplikovat %n objektů</numerusform>
@@ -2778,7 +2782,7 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Odstranit objekt</numerusform>
             <numerusform>Odstranit %n objekty</numerusform>
             <numerusform>Odstranit %n objektů</numerusform>
@@ -2787,12 +2791,12 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Duplicate Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplikovat objekty</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranit objekty</translation>
     </message>
 </context>
 <context>
@@ -2869,12 +2873,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Memory Usage Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování o paměťové náročnosti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Každá dlaždicová vrstva v této mapě zabere %L1 GB paměti. Vrstva nebyla automaticky přidána.</translation>
     </message>
     <message>
         <location line="+39"/>
@@ -2933,10 +2937,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+81"/>
         <source>Rotate %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Otočení objektu</numerusform>
+            <numerusform>Otočení %n objektů</numerusform>
+            <numerusform>Otočení %n objektů</numerusform>
         </translation>
     </message>
 </context>
@@ -3020,23 +3024,23 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertiesdock.cpp" line="+187"/>
         <source>Name:</source>
-        <translation type="unfinished">Jméno:</translation>
+        <translation>Jméno:</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+61"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat vlastnost</translation>
     </message>
     <message>
         <location line="-2"/>
         <source>Properties</source>
-        <translation type="unfinished">Vlastnosti</translation>
+        <translation>Vlastnosti</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranit vlastnost</translation>
     </message>
 </context>
 <context>
@@ -3044,52 +3048,52 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovně</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Svisle</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Top Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvrchu dolů</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Ručně</translation>
     </message>
     <message>
         <location line="+43"/>
         <source>Custom Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastní vlastnosti</translation>
     </message>
     <message>
         <location line="+185"/>
         <source>Map</source>
-        <translation type="unfinished">Mapa</translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile Layer Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát vrstvy dlaždic</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Pořadí vykreslování dlaždic</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Barva pozadí</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Object</source>
-        <translation type="unfinished">Objekt</translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3097,104 +3101,104 @@ Please select specific format.</source>
         <location line="+55"/>
         <location line="+15"/>
         <source>Name</source>
-        <translation type="unfinished">Jméno</translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location line="-91"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+19"/>
         <source>Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Viditelnost</translation>
     </message>
     <message>
         <location line="-18"/>
         <location line="+65"/>
         <source>Position</source>
-        <translation type="unfinished">Umístění</translation>
+        <translation>Umístění</translation>
     </message>
     <message>
         <location line="-64"/>
         <source>Size</source>
-        <translation type="unfinished">Velikost</translation>
+        <translation>Velikost</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočení</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrcadlení</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Neprůhlednost</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrstva dlaždic</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Object Layer</source>
-        <translation type="unfinished">Vrstva objektů</translation>
+        <translation>Vrstva objektů</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Color</source>
-        <translation type="unfinished">Barva</translation>
+        <translation>Barva</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Drawing Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Pořadí vykreslování</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Image Layer</source>
-        <translation type="unfinished">Obrázková vrstva</translation>
+        <translation>Obrázková vrstva</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Image</source>
-        <translation type="unfinished">Obrázek</translation>
+        <translation>Obrázek</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Průhledná barva</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Tileset</source>
-        <translation type="unfinished">Sada</translation>
+        <translation>Sada dlaždic</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Drawing Offset</source>
-        <translation type="unfinished">Posunutí</translation>
+        <translation>Posunutí</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Tile</source>
-        <translation type="unfinished">Dlaždice</translation>
+        <translation>Dlaždice</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Terrain</source>
-        <translation type="unfinished">Terén</translation>
+        <translation>Terén</translation>
     </message>
 </context>
 <context>
@@ -3267,7 +3271,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-57"/>
         <source>Delete Frames</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranit snímky</translation>
     </message>
 </context>
 <context>
@@ -3275,17 +3279,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+330"/>
         <source>Delete</source>
-        <translation type="unfinished">Smazat</translation>
+        <translation>Smazat</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Cut</source>
-        <translation type="unfinished">Vyjmout</translation>
+        <translation>Vyjmout</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor kolizí</translation>
     </message>
 </context>
 <context>
@@ -3333,7 +3337,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation type="unfinished">Nová sada</translation>
+        <translation>Nová sada</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3360,29 +3364,29 @@ Do you want to replace it?</source>
         <location line="+93"/>
         <location line="+13"/>
         <source>Add Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat dlaždice</translation>
     </message>
     <message>
         <location line="-105"/>
         <location line="+152"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranit dlaždice</translation>
     </message>
     <message>
         <location line="-59"/>
         <source>Could not load &quot;%1&quot;!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se načíst &quot;%1&quot;!</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedna nebo více dlaždic k odstranění jsou stále použity v mapě!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove all references to these tiles?</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranit je?</translation>
     </message>
     <message>
         <location line="-160"/>
@@ -3516,22 +3520,22 @@ Do you want to replace it?</source>
     <message>
         <location line="+41"/>
         <source>Set Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení vlastnosti</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidání vlastnosti</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranění vlastnosti</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Přejmenování vlastnosti</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
@@ -3616,7 +3620,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+22"/>
         <source>Change Drawing Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna posunutí</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+41"/>
@@ -3701,69 +3705,69 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/addremovetiles.cpp" line="+74"/>
         <source>Add Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidání dlaždic</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranění dlaždic</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
         <source>Change Image Layer Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna pozice obrázkové vrstvy</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+44"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvednutí objektu</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+29"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Snížení objektu</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+33"/>
         <source>Change Tile Animation</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna animace dlaždice</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+15"/>
         <source>Change Tile Collision</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna kolize dlaždice</translation>
     </message>
     <message>
         <location filename="../src/tiled/exchangemap.cpp" line="+38"/>
         <source>Change Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna mapy</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
         <location line="+4"/>
         <source>Flip %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Překlopení objektu</numerusform>
+            <numerusform>Překlopení %n objektů</numerusform>
+            <numerusform>Překlopení %n objektů</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvednutí objektu úplně nahoru</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Lower Object To Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Snížení objektu úplně dolů</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
         <source>Rotate Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočení objektu</translation>
     </message>
 </context>
 <context>
