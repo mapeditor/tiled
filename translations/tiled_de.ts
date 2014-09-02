@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de">
+<TS version="2.1" language="de">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -41,7 +41,7 @@
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+34"/>
         <source>Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Debug Konsole</translation>
     </message>
 </context>
 <context>
@@ -223,7 +223,7 @@
     <message>
         <location line="+1"/>
         <source>JavaScript files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">JavaScript-Dateien</translation>
     </message>
 </context>
 <context>
@@ -419,17 +419,17 @@
     <message>
         <location line="+8"/>
         <source>Snap to &amp;Fine Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Gitternetz greifen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Show Tile Animations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeige Kachel-Animationen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neu laden</translation>
     </message>
     <message>
         <location line="-109"/>
@@ -439,7 +439,7 @@
     <message>
         <location line="-105"/>
         <source>Map &amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Karten-Eigenschaften</translation>
     </message>
     <message>
         <location line="+110"/>
@@ -559,7 +559,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+6"/>
         <source>Tile ID does not exist in tileset image: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Kachel ID existiert in der Tileset-Image nicht: %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -596,7 +596,7 @@ Zeile %1, Spalte %2</translation>
         <location line="+29"/>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-76"/>
         <source>Invalid draw order: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ungültige Zeichenfolge: %1</translation>
     </message>
     <message>
         <location line="+62"/>
@@ -647,13 +647,13 @@ Zeile %1, Spalte %2</translation>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-125"/>
         <source>Tileset tile index negative:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset kachel-index ist negativ: %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Tileset tile index too high:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset tile-index ist zu hoch: %1</translation>
     </message>
 </context>
 <context>
@@ -712,12 +712,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kachel-Ebenen-Format:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kachel-Renderungsreihenfolge:</translation>
     </message>
 </context>
 <context>
@@ -735,12 +735,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+13"/>
         <source>Based on Tileset Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">basierend auf Tileset-Bild</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Collection of Images</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sammlung von Bildern</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -784,7 +784,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+15"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Quelle:</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -954,25 +954,25 @@ Zeile %1, Spalte %2</translation>
         <location line="+2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Right Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rechts unten</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rechts hoch</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Links unten</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Links oben</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+16"/>
@@ -1027,12 +1027,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+20"/>
         <source> pixels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">pixel</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Object line width:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objektlinien breite</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1101,13 +1101,13 @@ Zeile %1, Spalte %2</translation>
         <location line="+10"/>
         <location line="+25"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wahr</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+25"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Falsch</translation>
     </message>
 </context>
 <context>
@@ -1128,7 +1128,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qteditorfactory.cpp" line="+1700"/>
         <source>Clear Char</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zeichen leeren</translation>
     </message>
 </context>
 <context>
@@ -1136,7 +1136,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -1144,22 +1144,22 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4724"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rot</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grün</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blau</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Alpha</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alpha</translation>
     </message>
 </context>
 <context>
@@ -1252,7 +1252,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+2"/>
         <source>What&apos;s This</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Was ist das</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1270,7 +1270,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+20"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schriftart auswählen</translation>
     </message>
 </context>
 <context>
@@ -1278,32 +1278,32 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-350"/>
         <source>Family</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Familie</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Point Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schriftgröße</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fett</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kursiv</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unterstreichen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Durchstreichen</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1316,7 +1316,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="+234"/>
         <source>Clear Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Shortcut leeren</translation>
     </message>
 </context>
 <context>
