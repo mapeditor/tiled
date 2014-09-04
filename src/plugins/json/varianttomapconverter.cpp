@@ -339,6 +339,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
+        QString uniqueID = objectVariantMap["uniqueID"].toString();
         const int gid = objectVariantMap["gid"].toInt();
         const qreal x = objectVariantMap["x"].toReal();
         const qreal y = objectVariantMap["y"].toReal();
@@ -349,7 +350,15 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QPointF pos(x, y);
         const QSizeF size(width, height);
 
-        MapObject *object = new MapObject(name, type, pos, size);
+
+        //If the uniqueID is "", this must be an old map and this object
+        //has no UniqueID yet.  So we create it a UniqueID here.
+        if(uniqueID.isEmpty())
+        {
+            uniqueID = MapObject::createUniqueID();
+        }
+
+        MapObject *object = new MapObject(uniqueID, name, type, pos, size);
         object->setRotation(rotation);
 
         if (gid) {

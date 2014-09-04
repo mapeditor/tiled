@@ -805,6 +805,7 @@ MapObject *MapReaderPrivate::readObject()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
 
     const QXmlStreamAttributes atts = xml.attributes();
+    QString uniqueID = atts.value(QLatin1String("uniqueID")).toString();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const qreal x = atts.value(QLatin1String("x")).toString().toDouble();
@@ -817,7 +818,14 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    MapObject *object = new MapObject(name, type, pos, size);
+    //If the uniqueID is empty, this must be an old map and this object
+    //has no UniqueID yet.  So we create it a UniqueID here.
+    if(uniqueID.isEmpty())
+    {
+        uniqueID = MapObject::createUniqueID();
+    }
+
+    MapObject *object = new MapObject(uniqueID, name, type, pos, size);
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);

@@ -97,6 +97,7 @@ private slots:
 private:
     enum PropertyId {
         NameProperty,
+        UniqueIdProperty,
         TypeProperty,
         PositionProperty,
         SizeProperty,

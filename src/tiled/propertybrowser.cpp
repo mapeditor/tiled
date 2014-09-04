@@ -355,6 +355,7 @@ void PropertyBrowser::addMapObjectProperties()
     createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
     createProperty(SizeProperty, QVariant::SizeF, tr("Size"), groupProperty);
     createProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
+    createProperty(UniqueIdProperty, QVariant::String, tr("uniqueID"), groupProperty);
 
     if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
@@ -488,6 +489,7 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     switch (id) {
     case NameProperty:
     case TypeProperty:
+    case UniqueIdProperty:
         command = new ChangeMapObject(mMapDocument, mapObject,
                                       mIdToProperty[NameProperty]->value().toString(),
                                       mIdToProperty[TypeProperty]->value().toString());
@@ -742,6 +744,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[PositionProperty]->setValue(mapObject->position());
         mIdToProperty[SizeProperty]->setValue(mapObject->size());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
+        mIdToProperty[UniqueIdProperty]->setValue(mapObject->uniqueID());
 
         if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
             int flippingFlags = 0;

@@ -28,6 +28,8 @@
  */
 
 #include "mapobject.h"
+#include <QUuid>
+#include <QRegExp>
 
 using namespace Tiled;
 
@@ -41,7 +43,7 @@ MapObject::MapObject():
 {
 }
 
-MapObject::MapObject(const QString &name, const QString &type,
+MapObject::MapObject(const QString uniqueID, const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
     Object(MapObjectType),
@@ -52,7 +54,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mShape(Rectangle),
     mObjectGroup(0),
     mRotation(0.0f),
-    mVisible(true)
+    mVisible(true),
+    mUniqueID(uniqueID)
 {
 }
 
@@ -80,7 +83,8 @@ void MapObject::flip(FlipDirection direction)
 
 MapObject *MapObject::clone() const
 {
-    MapObject *o = new MapObject(mName, mType, mPos, mSize);
+    MapObject *o = new MapObject(mUniqueID, mName, mType, mPos, mSize);
+    o->setUniqueID(MapObject::createUniqueID());
     o->setProperties(properties());
     o->setPolygon(mPolygon);
     o->setShape(mShape);
@@ -88,3 +92,12 @@ MapObject *MapObject::clone() const
     o->setRotation(mRotation);
     return o;
 }
+
+QString MapObject::createUniqueID()
+{
+    QString uniqueID = QUuid::createUuid().toString();
+    QRegExp re(QString::fromLatin1("[^a-zA-Z0-9]"));
+    uniqueID.remove(re);
+    return uniqueID;
+}
+
