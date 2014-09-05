@@ -344,7 +344,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+G</source>
-        <translation>Strg+G</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+9"/>
@@ -384,7 +384,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+0</source>
-        <translation>Strg+0</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -469,7 +469,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+E</source>
-        <translation>Strg+E</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -489,7 +489,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation>Strg+Umsch+W</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
@@ -1759,7 +1759,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+0"/>
         <source>PgUp</source>
-        <translation>BildAuf</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1769,7 +1769,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+0"/>
         <source>PgDown</source>
-        <translation>BildAb</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2320,11 +2320,11 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+50"/>
         <source>Ctrl+T</source>
-        <translation>Strg+T</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Strg+=</source>
+        <source>Ctrl+=</source>
         <translation></translation>
     </message>
     <message>
@@ -2357,12 +2357,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-1060"/>
         <source>Ctrl+Shift+Tab</source>
-        <translation>Strg+Umsch+Tab</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Ctrl+Tab</source>
-        <translation>Strg+Tab</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2382,7 +2382,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation>Umsch+Z</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2542,7 +2542,7 @@ Bitte Format angeben.</translation>
         <location line="+13"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>%n Tileset hinzufügen</numerusform>
+            <numerusform>Tileset hinzufügen</numerusform>
             <numerusform>%n Tilesets hinzufügen</numerusform>
         </translation>
     </message>
@@ -2652,37 +2652,37 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+54"/>
         <source>Ctrl+Shift+A</source>
-        <translation>Strg+Umsch+A</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Ctrl+Shift+D</source>
-        <translation>Strg+Umsch+D</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Ctrl+PgUp</source>
-        <translation>Strg+BildAuf</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+PgDown</source>
-        <translation>Strg+BildAb</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+Up</source>
-        <translation>Strg+Umsch+Hoch</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
-        <translation>Strg+Umsch+Runter</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+H</source>
-        <translation>Strg+Umsch+H</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+58"/>
