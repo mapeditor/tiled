@@ -29,6 +29,7 @@
 #include "tiled.h"
 #include "tileset.h"
 #include "utils.h"
+#include "zoomable.h"
 
 #include <QAbstractListModel>
 #include <QCloseEvent>
@@ -266,8 +267,13 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     , mPreviewUnusedTime(0)
 {
     mUi->setupUi(this);
+
+    Zoomable *zoomable = new Zoomable(this);
+    zoomable->connectToComboBox(mUi->zoomComboBox);
+
     mUi->frameList->setModel(mFrameListModel);
     mUi->tilesetView->setMarkAnimatedTiles(false);
+    mUi->tilesetView->setZoomable(zoomable);
 
     connect(mUi->tilesetView, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(addFrameForTileAt(QModelIndex)));
