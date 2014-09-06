@@ -346,6 +346,18 @@ void TileAnimationEditor::closeEvent(QCloseEvent *event)
         emit closed();
 }
 
+void TileAnimationEditor::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        mUi->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
+}
+
 void TileAnimationEditor::showEvent(QShowEvent *)
 {
     mPreviewAnimationDriver->start();
