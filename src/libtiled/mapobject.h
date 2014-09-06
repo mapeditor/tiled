@@ -215,12 +215,12 @@ public:
     { mObjectGroup = objectGroup; }
 
     /**
-     * Sets the rotation of the object
+     * Sets the rotation of the object in degrees.
      */
     void setRotation(qreal rotation) { mRotation = rotation; }
 
     /**
-     * Returns the rotation of the object.
+     * Returns the rotation of the object in degrees.
      */
     qreal rotation() const { return mRotation; }
 

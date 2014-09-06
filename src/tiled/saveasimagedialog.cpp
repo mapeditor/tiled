@@ -201,8 +201,19 @@ void SaveAsImageDialog::accept()
 
             foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
+                    if (object->rotation() != qreal(0)) {
+                        QPointF origin = renderer->pixelToScreenCoords(object->position());
+                        painter.save();
+                        painter.translate(origin);
+                        painter.rotate(object->rotation());
+                        painter.translate(-origin);
+                    }
+
                     const QColor color = MapObjectItem::objectColor(object);
                     renderer->drawMapObject(&painter, object, color);
+
+                    if (object->rotation() != qreal(0))
+                        painter.restore();
                 }
             }
         } else if (imageLayer) {
