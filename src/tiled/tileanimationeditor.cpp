@@ -337,6 +337,8 @@ void TileAnimationEditor::setTile(Tile *tile)
         mFrameListModel->setFrames(0, QVector<Frame>());
     }
 
+    mUi->frameList->setEnabled(tile && !tile->tileset()->isExternal());
+
     resetPreview();
 }
 
@@ -400,6 +402,11 @@ void TileAnimationEditor::tileAnimationChanged(Tile *tile)
 
 void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
 {
+    Q_ASSERT(mTile);
+
+    if (mTile->tileset()->isExternal())
+        return;
+
     const Tile *tile = mUi->tilesetView->tilesetModel()->tileAt(index);
     mFrameListModel->addTileIdAsFrame(tile->id());
 }
@@ -418,7 +425,10 @@ void TileAnimationEditor::redo()
 
 void TileAnimationEditor::delete_()
 {
-    if (!mMapDocument)
+    if (!mMapDocument || !mTile)
+        return;
+
+    if (mTile->tileset()->isExternal())
         return;
 
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
@@ -437,8 +447,7 @@ void TileAnimationEditor::delete_()
     // Iterate backwards over the ranges in order to keep the indexes valid
     RangeSet<int>::Range firstRange = ranges.begin();
     RangeSet<int>::Range it = ranges.end();
-    if (it == firstRange) // no range
-        return;
+    Q_ASSERT(it != firstRange); // no range not possible
 
     do {
         --it;
