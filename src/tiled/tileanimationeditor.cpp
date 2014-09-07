@@ -319,6 +319,8 @@ void TileAnimationEditor::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(tileAnimationChanged(Tile*)),
                 SLOT(tileAnimationChanged(Tile*)));
+        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
+                SLOT(tilesetFileNameChanged(Tileset*)));
     }
 }
 
@@ -398,6 +400,12 @@ void TileAnimationEditor::tileAnimationChanged(Tile *tile)
         return;
 
     mFrameListModel->setFrames(tile->tileset(), tile->frames());
+}
+
+void TileAnimationEditor::tilesetFileNameChanged(Tileset *tileset)
+{
+    if (mTile && mTile->tileset() == tileset)
+        mUi->frameList->setEnabled(!tileset->isExternal());
 }
 
 void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)

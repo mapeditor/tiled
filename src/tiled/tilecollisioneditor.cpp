@@ -141,6 +141,8 @@ void TileCollisionEditor::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(tileObjectGroupChanged(Tile*)),
                 SLOT(tileObjectGroupChanged(Tile*)));
+        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
+                SLOT(tilesetFileNameChanged(Tileset*)));
     }
 }
 
@@ -256,6 +258,12 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
     dummyDocument->setCurrentLayerIndex(1);
 
     mSynchronizing = false;
+}
+
+void TileCollisionEditor::tilesetFileNameChanged(Tileset *tileset)
+{
+    if (mTile && mTile->tileset() == tileset)
+        mMapView->setEnabled(!tileset->isExternal());
 }
 
 void TileCollisionEditor::undo()
