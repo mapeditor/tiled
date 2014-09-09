@@ -166,6 +166,8 @@ static bool includeTile(const Tile *tile)
         return true;
     if (!tile->imageSource().isEmpty())
         return true;
+    if (tile->objectGroup())
+        return true;
     if (tile->isAnimated())
         return true;
 
@@ -237,6 +239,9 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             }
         }
 
+        if (ObjectGroup *objectGroup = tile->objectGroup())
+            writeObjectGroup(writer, objectGroup, "objectGroup");
+
         if (tile->isAnimated()) {
             const QVector<Frame> &frames = tile->frames();
 
@@ -287,9 +292,13 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
 }
 
 void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
-                                 const ObjectGroup *objectGroup)
+                                 const ObjectGroup *objectGroup,
+                                 const QByteArray &key)
 {
-    writer.writeStartTable();
+    if (key.isEmpty())
+        writer.writeStartTable();
+    else
+        writer.writeStartTable(key);
 
     writer.writeKeyAndValue("type", "objectgroup");
     writer.writeKeyAndValue("name", objectGroup->name());
