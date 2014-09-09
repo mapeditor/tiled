@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
+<TS version="2.1" language="fr_FR">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -16,12 +16,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste complète des contributeurs.)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste complète des contributeurs.)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Il vous est possible de modifier et de redistribuer ce programme selon les termes de la license GPL (version 2 ou supérieure). Une copie de la GPL est présente dans le fichier &apos;COPYING&apos; distribué avec Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
@@ -1709,8 +1709,8 @@ Ligne %1, colonne %2</translation>
         <translation>Editeur d&apos;animation de Tile</translation>
     </message>
     <message>
-        <location line="+79"/>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="+470"/>
+        <location line="+99"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="+505"/>
         <source>Preview</source>
         <translation>Prévisualisation</translation>
     </message>
@@ -2319,7 +2319,7 @@ Ligne %1, colonne %2</translation>
         <translation>Rétablir</translation>
     </message>
     <message>
-        <location line="+530"/>
+        <location line="+537"/>
         <source>Open Map</source>
         <translation>Ouvrir une carte</translation>
     </message>
@@ -2330,7 +2330,7 @@ Ligne %1, colonne %2</translation>
         <translation>Fichiers de cartes au format Tiled (*.tmx)</translation>
     </message>
     <message>
-        <location line="-531"/>
+        <location line="-538"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -2351,23 +2351,23 @@ Ligne %1, colonne %2</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1267"/>
+        <location line="+1274"/>
         <source>Random Mode</source>
         <translation>Mode aléatoire</translation>
     </message>
     <message>
-        <location line="-1264"/>
+        <location line="-1271"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+1262"/>
+        <location line="+1269"/>
         <source>&amp;Layer</source>
         <translation>&amp;Calques</translation>
     </message>
     <message>
-        <location line="-1060"/>
+        <location line="-1067"/>
         <source>Ctrl+Shift+Tab</source>
         <translation>Ctrl+Màj+Tab</translation>
     </message>
@@ -2402,7 +2402,7 @@ Ligne %1, colonne %2</translation>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="+128"/>
         <source>Error Opening Map</source>
         <translation>Erreur lors de l&apos;ouverture de la carte</translation>
     </message>
@@ -2486,25 +2486,25 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Erreur de mapping automatique</translation>
     </message>
     <message>
-        <location line="-791"/>
-        <location line="+1094"/>
+        <location line="-798"/>
+        <location line="+1101"/>
         <source>Views and Toolbars</source>
         <translation>Vues et Barres d&apos;outils</translation>
     </message>
     <message>
-        <location line="-1093"/>
-        <location line="+1094"/>
+        <location line="-1100"/>
+        <location line="+1101"/>
         <source>Tile Animation Editor</source>
         <translation>Editeur d&apos;animation de Tile</translation>
     </message>
     <message>
-        <location line="-1092"/>
-        <location line="+1093"/>
+        <location line="-1099"/>
+        <location line="+1100"/>
         <source>Tile Collision Editor</source>
         <translation>Editeur de Collision de Tile</translation>
     </message>
     <message>
-        <location line="-1066"/>
+        <location line="-1073"/>
         <source>Alt+Left</source>
         <translation></translation>
     </message>
@@ -2514,7 +2514,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+667"/>
+        <location line="+674"/>
         <source>Add External Tileset(s)</source>
         <translation>Ajouter des Tilesets externes</translation>
     </message>
@@ -3201,7 +3201,7 @@ Do you want to replace it?</source>
         <translation>Le fichier %1 existe déjà. Voulez-vous le remplacer ?</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+118"/>
         <source>Image</source>
         <translation>Image</translation>
     </message>
@@ -3255,7 +3255,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TileAnimationEditor</name>
     <message>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="-57"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="-56"/>
         <source>Delete Frames</source>
         <translation>Effacer les images</translation>
     </message>
@@ -3263,7 +3263,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TileCollisionEditor</name>
     <message>
-        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+330"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+338"/>
         <source>Delete</source>
         <translation>Effacer</translation>
     </message>

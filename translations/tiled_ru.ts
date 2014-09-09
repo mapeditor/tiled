@@ -16,12 +16,12 @@
     <message>
         <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Версия %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2013 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(смотрите файл AUTHORS с полным списком участников)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Вы можете модифицировать и распространять программу в рамках условий лицензии GPL (версии 2 и выше). Копия текста лицензии GPL находится в файле &apos;COPYING&apos; поставляемым с Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
@@ -1710,8 +1710,8 @@ Line %1, column %2</source>
         <translation>Редактор анимации</translation>
     </message>
     <message>
-        <location line="+79"/>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="+470"/>
+        <location line="+99"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="+505"/>
         <source>Preview</source>
         <translation>Предпросмотр</translation>
     </message>
@@ -2346,23 +2346,23 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1267"/>
+        <location line="+1274"/>
         <source>Random Mode</source>
         <translation>Случайный режим</translation>
     </message>
     <message>
-        <location line="-1264"/>
+        <location line="-1271"/>
         <source>D</source>
         <translation></translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+1262"/>
+        <location line="+1269"/>
         <source>&amp;Layer</source>
         <translation>&amp;Слой</translation>
     </message>
     <message>
-        <location line="-1060"/>
+        <location line="-1067"/>
         <source>Ctrl+Shift+Tab</source>
         <translation></translation>
     </message>
@@ -2397,7 +2397,7 @@ Line %1, column %2</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+121"/>
+        <location line="+128"/>
         <source>Error Opening Map</source>
         <translation>Ошибка открытия карты</translation>
     </message>
@@ -2508,25 +2508,25 @@ Please select specific format.</source>
         <translation>Предупреждение авто-карты</translation>
     </message>
     <message>
-        <location line="-799"/>
-        <location line="+1094"/>
+        <location line="-806"/>
+        <location line="+1101"/>
         <source>Views and Toolbars</source>
         <translation>Окна и панели</translation>
     </message>
     <message>
-        <location line="-1093"/>
-        <location line="+1094"/>
+        <location line="-1100"/>
+        <location line="+1101"/>
         <source>Tile Animation Editor</source>
         <translation>Редактор анимации</translation>
     </message>
     <message>
-        <location line="-1092"/>
-        <location line="+1093"/>
+        <location line="-1099"/>
+        <location line="+1100"/>
         <source>Tile Collision Editor</source>
         <translation>Редактор столкновений</translation>
     </message>
     <message>
-        <location line="-1066"/>
+        <location line="-1073"/>
         <source>Alt+Left</source>
         <translation>Alt+Left</translation>
     </message>
@@ -2536,7 +2536,7 @@ Please select specific format.</source>
         <translation>Alt+Right</translation>
     </message>
     <message>
-        <location line="+667"/>
+        <location line="+674"/>
         <source>Add External Tileset(s)</source>
         <translation>Добавить внешний набор тайлов</translation>
     </message>
@@ -3217,7 +3217,7 @@ Do you want to replace it?</source>
 Хотите перезаписать файл?</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+118"/>
         <source>Image</source>
         <translation>Изображение</translation>
     </message>
@@ -3271,7 +3271,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TileAnimationEditor</name>
     <message>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="-57"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="-56"/>
         <source>Delete Frames</source>
         <translation>Удалить рамки</translation>
     </message>
@@ -3279,7 +3279,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TileCollisionEditor</name>
     <message>
-        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+330"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+338"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
