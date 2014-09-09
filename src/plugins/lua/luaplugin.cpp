@@ -114,6 +114,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
     writer.writeKeyAndValue("tileheight", map->tileHeight());
+    writer.writeKeyAndValue("currentuid", map->currentId());
 
     writeProperties(writer, map->properties());
 
@@ -347,7 +348,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
                                const Tiled::MapObject *mapObject)
 {
     writer.writeStartTable();
-    writer.writeKeyAndValue("uniqueID", mapObject->uniqueID());
+    writer.writeKeyAndValue("uid", mapObject->uniqueID());
     writer.writeKeyAndValue("name", mapObject->name());
     writer.writeKeyAndValue("type", mapObject->type());
     writer.writeKeyAndValue("shape", toString(mapObject->shape()));

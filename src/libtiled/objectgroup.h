@@ -177,9 +177,11 @@ public:
     void setDrawOrder(DrawOrder drawOrder);
 
     Layer *clone() const;
+    Layer *cloneNonUnique() const;
+
 
 protected:
-    ObjectGroup *initializeClone(ObjectGroup *clone) const;
+    ObjectGroup *initializeClone(ObjectGroup *clone, bool uniqueIds) const;
 
 private:
     QList<MapObject*> mObjects;

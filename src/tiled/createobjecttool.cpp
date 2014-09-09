@@ -338,10 +338,6 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     MapObject *newMapObject = new MapObject;
     newMapObject->setPosition(pos);
 
-    //Create the ID for the new map object
-    const QString uniqueID = MapObject::createUniqueID();
-    newMapObject->setUniqueID(uniqueID);
-
     if (mMode == CreateTile)
         newMapObject->setCell(Cell(mTile));
 

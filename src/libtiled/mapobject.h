@@ -71,24 +71,19 @@ public:
 
     MapObject();
 
-    MapObject(const QString uniqueID, const QString &name, const QString &type,
+    MapObject(int uniqueID, const QString &name, const QString &type,
               const QPointF &pos,
               const QSizeF &size);
 
     /**
-     * Returns a UniqueID id for a MapObject.
-     */
-    static QString createUniqueID();
-
-    /**
      * Returns the unique id of this object.
      */
-    QString uniqueID() const { return mUniqueID; }
+    int uniqueID() const { return mUniqueID; }
 
     /**
      * Sets the unique id of this object.
      */
-    void setUniqueID(QString id) { mUniqueID = id; }
+    void setUniqueID(int id) { mUniqueID = id; }
 
     /**
      * Returns the name of this object. The name is usually just used for
@@ -265,7 +260,7 @@ private:
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
-    QString mUniqueID;
+    int mUniqueID;
 };
 
 } // namespace Tiled

@@ -3721,6 +3721,7 @@ _wrap_PyTiledMap__tp_init__1(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     int h;
     int tileW;
     int tileH;
+    //TODO get currentuid working
     const char *keywords[] = {"orient", "renderOrder", "w", "h", "tileW", "tileH", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiiii", (char **) keywords, &orient, &renderOrder, &w, &h, &tileW, &tileH)) {
@@ -5118,14 +5119,14 @@ _wrap_PyTiledMapObject__tp_init__1(PyTiledMapObject *self, PyObject *args, PyObj
     Py_ssize_t name_len;
     const char *type;
     Py_ssize_t type_len;
-    const char * uniqueID;
-    Py_ssize_t uniqueID_len;
+    //TODO Get uid working
+    int uniqueID = 0;
     PyQPointF *pos;
     PyQSizeF *size;
 
-    const char *keywords[] = {"name", "type", "uniqueID", "pos", "size", NULL};
+    const char *keywords[] = {"name", "type", "uid", "pos", "size", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#O!O!", (char **) keywords, &name, &name_len, &type, &type_len, &uniqueID, &uniqueID_len, &PyQPointF_Type, &pos, &PyQSizeF_Type, &size)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#O!O!", (char **) keywords, &name, &name_len, &type, &type_len, &PyQPointF_Type, &pos, &PyQSizeF_Type, &size)) {
         {
             PyObject *exc_type, *traceback;
             PyErr_Fetch(&exc_type, return_exception, &traceback);
@@ -5134,7 +5135,7 @@ _wrap_PyTiledMapObject__tp_init__1(PyTiledMapObject *self, PyObject *args, PyObj
         }
         return -1;
     }
-    self->obj = new Tiled::MapObject(QString::fromUtf8(uniqueID), QString::fromUtf8(name), QString::fromUtf8(type), *((PyQPointF *) pos)->obj, *((PyQSizeF *) size)->obj);
+    self->obj = new Tiled::MapObject(uniqueID, QString::fromUtf8(name), QString::fromUtf8(type), *((PyQPointF *) pos)->obj, *((PyQSizeF *) size)->obj);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return 0;
 }

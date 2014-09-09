@@ -226,8 +226,12 @@ Map *MapReaderPrivate::readMap()
     const Map::RenderOrder renderOrder =
             renderOrderFromString(renderOrderString);
 
+    const int currentId =
+            atts.value(QLatin1String("currentuid")).toString().toInt();
+
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
     mMap->setRenderOrder(renderOrder);
+    mMap->setCurrentId(currentId);
     mCreatedTilesets.clear();
 
     QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
@@ -805,7 +809,7 @@ MapObject *MapReaderPrivate::readObject()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    QString uniqueID = atts.value(QLatin1String("uniqueID")).toString();
+    int uniqueID = atts.value(QLatin1String("uid")).toString().toInt();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const qreal x = atts.value(QLatin1String("x")).toString().toDouble();
@@ -818,11 +822,11 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    //If the uniqueID is empty, this must be an old map and this object
+    //If the uniqueID is 0, this must be an old map and this object
     //has no UniqueID yet.  So we create it a UniqueID here.
-    if(uniqueID.isEmpty())
+    if(uniqueID == 0)
     {
-        uniqueID = MapObject::createUniqueID();
+        uniqueID = mMap->getNextId();
     }
 
     MapObject *object = new MapObject(uniqueID, name, type, pos, size);

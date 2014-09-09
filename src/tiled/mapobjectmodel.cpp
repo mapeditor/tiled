@@ -356,6 +356,9 @@ void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
     mObjects.insert(o, new ObjectOrGroup(o));
     endInsertRows();
     emit objectsAdded(QList<MapObject*>() << o);
+
+    const int uniqueId = mMap->getNextId();
+    o->setUniqueID(uniqueId);
 }
 
 int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)

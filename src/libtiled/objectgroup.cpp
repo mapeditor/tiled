@@ -36,6 +36,7 @@
 #include "tileset.h"
 
 #include <cmath>
+#include <map.h>
 
 using namespace Tiled;
 
@@ -191,9 +192,14 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
 
     const ObjectGroup *og = static_cast<ObjectGroup*>(other);
 
-    ObjectGroup *merged = static_cast<ObjectGroup*>(clone());
+    ObjectGroup *merged = static_cast<ObjectGroup*>(cloneNonUnique());
     foreach (const MapObject *mapObject, og->objects())
-        merged->addObject(mapObject->clone());
+    {
+        MapObject * clonedObject = mapObject->clone();
+        const int uniqueId = (mapObject->uniqueID());
+        clonedObject->setUniqueID(uniqueId);
+        merged->addObject(clonedObject);
+    }
     return merged;
 }
 
@@ -204,14 +210,27 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
  */
 Layer *ObjectGroup::clone() const
 {
-    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight));
+    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight), true);
 }
 
-ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
+Layer *ObjectGroup::cloneNonUnique() const
+{
+    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight), false);
+}
+
+ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone, bool uniqueIds) const
 {
     Layer::initializeClone(clone);
     foreach (const MapObject *object, mObjects)
-        clone->addObject(object->clone());
+    {
+        MapObject * clonedObject = object->clone();
+        if(uniqueIds)
+        {
+            const int uniqueId = mMap->getNextId();
+            clonedObject->setUniqueID(uniqueId);
+        }
+        clone->addObject(clonedObject);
+    }
     clone->setColor(mColor);
     clone->setDrawOrder(mDrawOrder);
     return clone;

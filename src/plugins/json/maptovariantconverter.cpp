@@ -49,6 +49,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     mapVariant["tilewidth"] = map->tileWidth();
     mapVariant["tileheight"] = map->tileHeight();
     mapVariant["properties"] = toVariant(map->properties());
+    mapVariant["currentuid"] = map->currentId();
 
     const QColor bgColor = map->backgroundColor();
     if (bgColor.isValid())
@@ -237,7 +238,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
         objectVariant["width"] = object->width();
         objectVariant["height"] = object->height();
         objectVariant["rotation"] = object->rotation();
-        objectVariant["uniqueID"] = object->uniqueID();
+        objectVariant["uid"] = object->uniqueID();
 
         objectVariant["visible"] = object->isVisible();
 

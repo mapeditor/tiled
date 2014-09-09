@@ -296,3 +296,9 @@ Map *Map::fromLayer(Layer *layer)
     result->addLayer(layer);
     return result;
 }
+
+int Map::getNextId()
+{
+    mCurrentId++;
+    return mCurrentId;
+}

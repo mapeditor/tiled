@@ -43,7 +43,7 @@ MapObject::MapObject():
 {
 }
 
-MapObject::MapObject(const QString uniqueID, const QString &name, const QString &type,
+MapObject::MapObject(const int uniqueID, const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
     Object(MapObjectType),
@@ -84,7 +84,6 @@ void MapObject::flip(FlipDirection direction)
 MapObject *MapObject::clone() const
 {
     MapObject *o = new MapObject(mUniqueID, mName, mType, mPos, mSize);
-    o->setUniqueID(MapObject::createUniqueID());
     o->setProperties(properties());
     o->setPolygon(mPolygon);
     o->setShape(mShape);
@@ -92,12 +91,3 @@ MapObject *MapObject::clone() const
     o->setRotation(mRotation);
     return o;
 }
-
-QString MapObject::createUniqueID()
-{
-    QString uniqueID = QUuid::createUuid().toString();
-    QRegExp re(QString::fromLatin1("[^a-zA-Z0-9]"));
-    uniqueID.remove(re);
-    return uniqueID;
-}
-

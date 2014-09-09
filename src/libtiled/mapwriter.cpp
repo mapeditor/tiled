@@ -188,6 +188,10 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
                          map->backgroundColor().name());
     }
 
+    int currentId = map->currentId();
+    w.writeAttribute(QLatin1String("currentuid"),
+                     QString::number(currentId));
+
     writeProperties(w, map->properties());
 
     mGidMapper.clear();
@@ -516,13 +520,13 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     w.writeStartElement(QLatin1String("object"));
     const QString &name = mapObject->name();
     const QString &type = mapObject->type();
-    const QString &uniqueID = mapObject->uniqueID();
+    const int &uniqueID = mapObject->uniqueID();
     if (!name.isEmpty())
         w.writeAttribute(QLatin1String("name"), name);
     if (!type.isEmpty())
         w.writeAttribute(QLatin1String("type"), type);
-    if (!uniqueID.isEmpty())
-        w.writeAttribute(QLatin1String("uniqueID"), uniqueID);
+    if (uniqueID != 0)
+        w.writeAttribute(QLatin1String("uid"), QString::number(uniqueID));
 
     if (!mapObject->cell().isEmpty()) {
         const unsigned gid = mGidMapper.cellToGid(mapObject->cell());

@@ -63,6 +63,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     const QString renderOrderString = variantMap["renderorder"].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
 
+    int currentId = variantMap["currentuid"].toString().toInt();
+
     typedef QScopedPointer<Map> MapPtr;
     MapPtr map(new Map(orientation,
                        variantMap["width"].toInt(),
@@ -70,6 +72,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
                        variantMap["tilewidth"].toInt(),
                        variantMap["tileheight"].toInt()));
     map->setRenderOrder(renderOrder);
+    map->setCurrentId(currentId);
 
     mMap = map.data();
     map->setProperties(toProperties(variantMap["properties"]));
@@ -339,7 +342,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
-        QString uniqueID = objectVariantMap["uniqueID"].toString();
+        int uniqueID = objectVariantMap["uid"].toString().toInt();
         const int gid = objectVariantMap["gid"].toInt();
         const qreal x = objectVariantMap["x"].toReal();
         const qreal y = objectVariantMap["y"].toReal();
@@ -351,11 +354,11 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QSizeF size(width, height);
 
 
-        //If the uniqueID is "", this must be an old map and this object
+        //If the uniqueID is 0, this must be an old map and this object
         //has no UniqueID yet.  So we create it a UniqueID here.
-        if(uniqueID.isEmpty())
+        if(uniqueID == 0)
         {
-            uniqueID = MapObject::createUniqueID();
+            uniqueID = mMap->getNextId();
         }
 
         MapObject *object = new MapObject(uniqueID, name, type, pos, size);
