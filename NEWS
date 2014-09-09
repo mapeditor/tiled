@@ -1,9 +1,10 @@
-0.10.0 (... 2014)
+0.10.0 (10 September 2014)
 * Added object rotation (sponsored by Ben Wales)
 * Added support for explicit object ordering (sponsored by Ben Wales)
 * Added new Properties window with a rewritten properties editor
 * Added support for writing plugins in Python (by Samuli Tuomola)
 * Added image collection tilesets (sponsored by Jamie Rocks)
+* Added map file watching and automatic reloading (sponsored by FlatRedBall.com)
 * Added support for moving objects with arrow keys (sponsored by Ben Wales)
 * Added a 'snap to fine grid' option (by Xenodora)
 * Added support for JavaScript (JSONP) load/save (by Dobes Vandermeer)
@@ -24,6 +25,7 @@
 * Added support for objects on staggered isometric maps (by Remco Kuijper)
 * Added support for staggered maps to tmxviewer and tmxrasterizer
 * Added a tool for moving the image of an image layer (by Mattia Basaglia)
+* Added button to the tileset dock as shortcut to add a tileset (by Erik Schilling)
 * Allow changing order of open document tabs (by Sean Humeniuk)
 * Changed object position and size units from tiles to pixels (by mauve)
 * Allow adding multiple tilesets at once (by mauve)
@@ -35,9 +37,10 @@
 * Fixed updating of image layer when changing its image
 * Fixed start drag distance check when editing polygons and moving objects
 * Raise the Layers dock for editing a new layer's name
+* Avoid saving truncated files when compiled against Qt 5.1 or higher (by Erik Schilling)
 * Made Tiled registering *.tmx as MIME-type (by Erik Schilling)
 * Added Traditional Chinese translation (by Yehnan Chiang)
-* Added button to the tileset dock as shortcut to add a tileset (by Erik Schilling)
+* Updated Czech, Dutch, French, German, Russian and Spanish translations
 
 0.9.1 (27 July 2013)
 * Added saving of map background to JSON format (by Petr Viktorin)
