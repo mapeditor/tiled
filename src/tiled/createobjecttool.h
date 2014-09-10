@@ -37,11 +37,11 @@ class CreateObjectTool : public AbstractObjectTool
 
 public:
     enum CreationMode {
-        CreateRectangle,
         CreateTile,
         CreatePolygon,
         CreatePolyline,
-        CreateEllipse
+        CreateEllipse,
+        CreatePolymorphic //only for refactoring purpose, will be removed
     };
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
@@ -65,7 +65,7 @@ public slots:
      */
     void setTile(Tile *tile) { mTile = tile; }
 
-private:
+protected: //all members made temporarily protected for refactoring
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     MapObject *clearNewMapObjectItem();
     void cancelNewMapObject();

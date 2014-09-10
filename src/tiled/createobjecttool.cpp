@@ -53,10 +53,6 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mMode(mode)
 {
     switch (mMode) {
-    case CreateRectangle:
-        Utils::setThemeIcon(this, "insert-rectangle");
-        break;
-
     case CreateTile:
         setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
         Utils::setThemeIcon(this, "insert-image");
@@ -147,7 +143,6 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     }
 
     switch (mMode) {
-    case CreateRectangle:
     case CreateEllipse: {
         const QPointF pixelCoords = renderer->screenToPixelCoords(pos);
 
@@ -222,7 +217,6 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     // Check if we are already creating a new map object
     if (mNewMapObjectItem) {
         switch (mMode) {
-        case CreateRectangle:
         case CreateTile:
         case CreateEllipse:
             if (event->button() == Qt::RightButton)
@@ -296,7 +290,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
-        if (mMode == CreateRectangle || mMode == CreateTile || mMode == CreateEllipse)
+        if (mMode == CreateTile || mMode == CreateEllipse)
             finishNewMapObject();
     }
 }
@@ -304,10 +298,6 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 void CreateObjectTool::languageChanged()
 {
     switch (mMode) {
-    case CreateRectangle:
-        setName(tr("Insert Rectangle"));
-        setShortcut(QKeySequence(tr("R")));
-        break;
     case CreateEllipse:
         setName(tr("Insert Ellipse"));
         setShortcut(QKeySequence(tr("C")));

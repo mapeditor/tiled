@@ -159,7 +159,8 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    createrectangleobjecttool.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -284,7 +285,8 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h
+    zoomable.h \
+    createrectangleobjecttool.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

@@ -33,6 +33,7 @@
 #include "addremovetileset.h"
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
+#include "createrectangleobjecttool.h"
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
@@ -369,8 +370,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mBucketFillTool = new BucketFillTool(this);
     CreateObjectTool *tileObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateTile, this);
-    CreateObjectTool *rectangleObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateRectangle, this);
+    CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateEllipse, this);
     CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
