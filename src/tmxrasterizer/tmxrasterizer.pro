@@ -8,10 +8,6 @@ INSTALLS += target
 TEMPLATE = app
 CONFIG += console
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
-
 win32 {
     DESTDIR = ../..
 } else {
