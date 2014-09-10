@@ -57,16 +57,27 @@ public:
         : QGraphicsItem(parent)
         , mMapObject(mapObject)
         , mRenderer(renderer)
-    {}
+    {
+        const QPointF &position = mapObject->position();
+        const QPointF pixelPos = renderer->pixelToScreenCoords(position);
+
+        QRectF boundingRect = renderer->boundingRect(mapObject);
+        boundingRect.translate(-pixelPos);
+        mBoundingRect = boundingRect;
+
+        setPos(pixelPos);
+        setRotation(mapObject->rotation());
+    }
 
     QRectF boundingRect() const
     {
-        return mRenderer->boundingRect(mMapObject);
+        return mBoundingRect;
     }
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *)
     {
         const QColor &color = mMapObject->objectGroup()->color();
+        p->translate(-pos());
         mRenderer->drawMapObject(p, mMapObject,
                                  color.isValid() ? color : Qt::darkGray);
     }
@@ -74,6 +85,7 @@ public:
 private:
     MapObject *mMapObject;
     MapRenderer *mRenderer;
+    QRectF mBoundingRect;
 };
 
 /**
@@ -118,9 +130,14 @@ public:
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
 
+        const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
+
         // Create a child item for each object
-        foreach (MapObject *object, objectGroup->objects())
-            new MapObjectItem(object, renderer, this);
+        foreach (MapObject *object, objectGroup->objects()) {
+            MapObjectItem *item = new MapObjectItem(object, renderer, this);
+            if (drawOrder == ObjectGroup::TopDownOrder)
+                item->setZValue(item->y());
+        }
     }
 
     QRectF boundingRect() const { return QRectF(); }
