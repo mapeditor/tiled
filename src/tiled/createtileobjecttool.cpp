@@ -14,6 +14,7 @@ CreateTileObjectTool::CreateTileObjectTool(QObject* parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
     Utils::setThemeIcon(this, "insert-image");
+    languageChanged();
 }
 
 void CreateTileObjectTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers){

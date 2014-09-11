@@ -52,7 +52,6 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mTile(0)
     , mMode(mode)
 {
-    languageChanged();
 }
 
 CreateObjectTool::~CreateObjectTool()

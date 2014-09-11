@@ -13,6 +13,7 @@ CreateRectangleObjectTool::CreateRectangleObjectTool(QObject* parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/insert-rectangle.png")));
     Utils::setThemeIcon(this, "insert-rectangle");
+    languageChanged();
 }
 
 void CreateRectangleObjectTool::languageChanged()

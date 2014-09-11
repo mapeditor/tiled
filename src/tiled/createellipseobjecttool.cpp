@@ -13,6 +13,7 @@ CreateEllipseObjectTool::CreateEllipseObjectTool(QObject* parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/insert-ellipse.png")));
     Utils::setThemeIcon(this, "insert-ellipse");
+    languageChanged();
 }
 
 void CreateEllipseObjectTool::languageChanged()
