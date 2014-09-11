@@ -20,7 +20,7 @@
 
 #include "createpolylineobjecttool.h"
 #include "preferences.h"
-#include "Utils.h"
+#include "utils.h"
 #include "mapdocument.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
