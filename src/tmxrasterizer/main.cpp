@@ -43,7 +43,7 @@ struct CommandLineOptions {
     CommandLineOptions()
         : showHelp(false)
         , showVersion(false)
-        , scale(0.0)
+        , scale(1.0)
         , tileSize(0)
         , useAntiAliasing(false)
         , ignoreVisibility(false)
@@ -72,7 +72,7 @@ static void showHelp()
             "Options:\n"
             "  -h --help               : Display this help\n"
             "  -v --version            : Display the version\n"
-            "  -s --scale SCALE        : The scale of the output image\n"
+            "  -s --scale SCALE        : The scale of the output image (default: 1)\n"
             "  -t --tilesize SIZE      : The requested size in pixels at which a tile is rendered\n"
             "                            Overrides the --scale option\n"
             "  -a --anti-aliasing      : Smooth the output image using anti-aliasing\n"
