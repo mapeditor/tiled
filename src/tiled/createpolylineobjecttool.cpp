@@ -21,7 +21,7 @@ void CreatePolylineObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("L")));
 }
 
-MapObject* CreatePolylineObjectTool::createNewMapObject(const QPointF&)
+MapObject* CreatePolylineObjectTool::createNewMapObject()
 {
     MapObject* newMapObject = new MapObject();
     newMapObject->setShape(MapObject::Polyline);

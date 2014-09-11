@@ -22,7 +22,7 @@ void CreateEllipseObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("C")));
 }
 
-MapObject* CreateEllipseObjectTool::createNewMapObject(const QPointF &pos)
+MapObject* CreateEllipseObjectTool::createNewMapObject()
 {
    MapObject* newMapObject = new MapObject();
     newMapObject->setShape(MapObject::Ellipse);

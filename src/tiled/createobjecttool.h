@@ -63,7 +63,7 @@ public slots:
 
 protected: //all members made temporarily protected for refactoring
     virtual void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    virtual MapObject* createNewMapObject(const QPointF &pos);
+    virtual MapObject* createNewMapObject() =0;
     virtual void cancelNewMapObject();
     virtual void finishNewMapObject();
 

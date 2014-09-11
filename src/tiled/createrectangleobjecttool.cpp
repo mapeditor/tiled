@@ -22,7 +22,7 @@ void CreateRectangleObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("R")));
 }
 
-MapObject* CreateRectangleObjectTool::createNewMapObject(const QPointF &pos)
+MapObject* CreateRectangleObjectTool::createNewMapObject()
 {
    MapObject* newMapObject = new MapObject();
     newMapObject->setShape(MapObject::Rectangle);

@@ -14,7 +14,7 @@ public:
     CreateRectangleObjectTool(QObject* parent);
     void languageChanged();
 protected:
-    MapObject* createNewMapObject(const QPointF &pos);
+    MapObject* createNewMapObject();
 };
 
 }

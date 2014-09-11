@@ -21,7 +21,7 @@ void CreatePolygonObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("P")));
 }
 
-MapObject* CreatePolygonObjectTool::createNewMapObject(const QPointF &pos)
+MapObject* CreatePolygonObjectTool::createNewMapObject()
 {
     MapObject* newMapObject = new MapObject();
     newMapObject->setShape(MapObject::Polygon);
