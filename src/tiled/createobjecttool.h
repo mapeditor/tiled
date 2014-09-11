@@ -38,9 +38,7 @@ class CreateObjectTool : public AbstractObjectTool
 public:
     enum CreationMode {
         CreateTile,
-        CreatePolygon,
-        CreatePolyline,
-        CreatePolymorphic //only for refactoring purpose, will be removed
+        CreateGeometry
     };
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
@@ -54,8 +52,7 @@ public:
                     Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);
-
-    void languageChanged();
+    void languageChanged() = 0;
 
 public slots:
     /**
@@ -65,13 +62,12 @@ public slots:
     void setTile(Tile *tile) { mTile = tile; }
 
 protected: //all members made temporarily protected for refactoring
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
+    virtual void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     virtual MapObject* createNewMapObject(const QPointF &pos);
-    MapObject *clearNewMapObjectItem();
-    void cancelNewMapObject();
-    void finishNewMapObject();
-    void finishOrCancelPolygon();
+    virtual void cancelNewMapObject();
+    virtual void finishNewMapObject();
 
+    MapObject *clearNewMapObjectItem();
     MapObjectItem *mNewMapObjectItem;
     ObjectGroup *mOverlayObjectGroup;
     MapObject *mOverlayPolygonObject;

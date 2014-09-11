@@ -9,7 +9,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 CreateScalableObjectTool::CreateScalableObjectTool(QObject* parent)
-    : CreateObjectTool(CreateObjectTool::CreatePolymorphic, parent)
+    : CreateObjectTool(CreateObjectTool::CreateGeometry, parent)
 {
 }
 

@@ -163,7 +163,10 @@ SOURCES += aboutdialog.cpp \
     createscalableobjecttool.cpp \
     createrectangleobjecttool.cpp \
     createellipseobjecttool.cpp \
-    createtileobjecttool.cpp
+    createtileobjecttool.cpp \
+    createmultipointobjecttool.cpp \
+    createpolygonobjecttool.cpp \
+    createpolylineobjecttool.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -292,7 +295,10 @@ HEADERS += aboutdialog.h \
     createscalableobjecttool.h \
     createrectangleobjecttool.h \
     createellipseobjecttool.h \
-    createtileobjecttool.h
+    createtileobjecttool.h \
+    createmultipointobjecttool.h \
+    createpolygonobjecttool.h \
+    createpolylineobjecttool.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

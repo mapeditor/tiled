@@ -27,6 +27,8 @@
 #include "createobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
+#include "createpolygonobjecttool.h"
+#include "createpolylineobjecttool.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -77,10 +79,8 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
 
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
-    CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolygon, this);
-    CreateObjectTool *polylineObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolyline, this);
+    CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
+    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);;
 
     QToolBar *toolBar = new QToolBar(this);
     toolBar->setMovable(false);

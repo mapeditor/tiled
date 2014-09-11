@@ -36,6 +36,8 @@
 #include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
 #include "createtileobjecttool.h"
+#include "createpolygonobjecttool.h"
+#include "createpolylineobjecttool.h"
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
@@ -373,10 +375,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
-    CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolygon, this);
-    CreateObjectTool *polylineObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolyline, this);
+    CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
+    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
