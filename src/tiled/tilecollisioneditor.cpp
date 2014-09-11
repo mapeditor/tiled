@@ -26,6 +26,7 @@
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
 #include "createrectangleobjecttool.h"
+#include "createellipseobjecttool.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -75,8 +76,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     mMapView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
-    CreateObjectTool *ellipseObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateEllipse, this);
+    CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreatePolygon, this);
     CreateObjectTool *polylineObjectsTool = new CreateObjectTool(

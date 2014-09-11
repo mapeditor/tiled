@@ -40,7 +40,6 @@ public:
         CreateTile,
         CreatePolygon,
         CreatePolyline,
-        CreateEllipse,
         CreatePolymorphic //only for refactoring purpose, will be removed
     };
 
@@ -67,7 +66,7 @@ public slots:
 
 protected: //all members made temporarily protected for refactoring
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    MapObject* createNewMapObject(const QPointF &pos);
+    virtual MapObject* createNewMapObject(const QPointF &pos);
     MapObject *clearNewMapObjectItem();
     void cancelNewMapObject();
     void finishNewMapObject();

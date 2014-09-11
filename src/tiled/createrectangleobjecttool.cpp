@@ -23,7 +23,7 @@ void CreateRectangleObjectTool::languageChanged()
 
 MapObject* CreateRectangleObjectTool::createNewMapObject(const QPointF &pos)
 {
-    MapObject* newMapObject = new MapObject();
+   MapObject* newMapObject = new MapObject();
     newMapObject->setShape(MapObject::Rectangle);
     return newMapObject;
 }

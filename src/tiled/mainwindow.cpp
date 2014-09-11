@@ -34,6 +34,7 @@
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
 #include "createrectangleobjecttool.h"
+#include "createellipseobjecttool.h"
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
@@ -371,8 +372,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     CreateObjectTool *tileObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreateTile, this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
-    CreateObjectTool *ellipseObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateEllipse, this);
+    CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
             CreateObjectTool::CreatePolygon, this);
     CreateObjectTool *polylineObjectsTool = new CreateObjectTool(
