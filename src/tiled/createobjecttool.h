@@ -61,7 +61,14 @@ public slots:
      */
     void setTile(Tile *tile) { mTile = tile; }
 
-protected: //all members made temporarily protected for refactoring
+protected:
+    virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
+                                       Qt::KeyboardModifiers modifiers, const bool snapToGrid, const bool snapToFineGrid);
+    virtual void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
+    virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
+
+
+
     virtual void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     virtual MapObject* createNewMapObject() =0;
     virtual void cancelNewMapObject();

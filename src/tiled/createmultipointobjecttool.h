@@ -13,9 +13,12 @@ class CreateMultipointObjectTool : public CreateObjectTool
 public:
     CreateMultipointObjectTool(QObject* parent);
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
-    void mousePressed(QGraphicsSceneMouseEvent *event);
     void languageChanged() = 0;
+
+protected:
+    void mouseMovedWhileCreatingObject(const QPointF &pos,
+                                       Qt::KeyboardModifiers modifiers, const bool snapToGrid, const bool snapToFineGrid);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
 };
 
 }

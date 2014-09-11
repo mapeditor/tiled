@@ -13,22 +13,10 @@ CreateScalableObjectTool::CreateScalableObjectTool(QObject* parent)
 {
 }
 
-void CreateScalableObjectTool::mouseMoved(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers)
+void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers,
+                                                             const bool snapToGrid, const bool snapToFineGrid)
 {
-    CreateObjectTool::mouseMoved(pos, modifiers);
-
-    if (!mNewMapObjectItem)
-        return;
-
     const MapRenderer *renderer = mapDocument()->renderer();
-
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
 
     const QPointF pixelCoords = renderer->screenToPixelCoords(pos);
 
@@ -57,21 +45,17 @@ void CreateScalableObjectTool::mouseMoved(const QPointF &pos,
     mNewMapObjectItem->resizeObject(QSizeF(newSize.x(), newSize.y()));
 }
 
-void CreateScalableObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
+void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
+                                                               const bool, const bool)
 {
-    if (mNewMapObjectItem) {
-        if (event->button() == Qt::RightButton)
-            cancelNewMapObject();
-    }
-    CreateObjectTool::mousePressed(event);
-    // Check if we are already creating a new map object
+    if (event->button() == Qt::RightButton)
+        cancelNewMapObject();
 }
 
-void CreateScalableObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
+                                                                const bool, const bool)
 {
-    CreateObjectTool::mouseReleased(event);
-    // Check if we are already creating a new map object
-    if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
+    if (event->button() == Qt::LeftButton) {
         finishNewMapObject();
     }
 }

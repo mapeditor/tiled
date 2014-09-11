@@ -24,23 +24,11 @@ CreateMultipointObjectTool::CreateMultipointObjectTool(QObject* parent)
     mOverlayObjectGroup->setColor(highlight);
 }
 
-void CreateMultipointObjectTool::mouseMoved(const QPointF &pos,
-                                            Qt::KeyboardModifiers modifiers)
+void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
+                                                               Qt::KeyboardModifiers,
+                                                               const bool snapToGrid, const bool snapToFineGrid)
 {
-    CreateObjectTool::mouseMoved(pos, modifiers);
-
-    if (!mNewMapObjectItem)
-        return;
-
     const MapRenderer *renderer = mapDocument()->renderer();
-
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
-
     QPointF tileCoords = renderer->screenToTileCoords(pos);
 
     if (snapToFineGrid) {
@@ -58,31 +46,26 @@ void CreateMultipointObjectTool::mouseMoved(const QPointF &pos,
     mOverlayPolygonItem->setPolygon(polygon);
 }
 
-void CreateMultipointObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
+void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
+                                                                 const bool, const bool)
 {
-    // Check if we are already creating a new map object
-    if (mNewMapObjectItem) {
-        if (event->button() == Qt::RightButton) {
-            finishNewMapObject();
-        } else if (event->button() == Qt::LeftButton) {
-            QPolygonF current = mNewMapObjectItem->mapObject()->polygon();
-            QPolygonF next = mOverlayPolygonObject->polygon();
+    if (event->button() == Qt::RightButton) {
+        finishNewMapObject();
+    } else if (event->button() == Qt::LeftButton) {
+        QPolygonF current = mNewMapObjectItem->mapObject()->polygon();
+        QPolygonF next = mOverlayPolygonObject->polygon();
 
-            // If the last position is still the same, ignore the click
-            if (next.last() == current.last())
-                return;
+        // If the last position is still the same, ignore the click
+        if (next.last() == current.last())
+            return;
 
-            // Assign current overlay polygon to the new object
-            mNewMapObjectItem->setPolygon(next);
+        // Assign current overlay polygon to the new object
+        mNewMapObjectItem->setPolygon(next);
 
-            // Add a new editable point to the overlay
-            next.append(next.last());
-            mOverlayPolygonItem->setPolygon(next);
-        }
-        return;
+        // Add a new editable point to the overlay
+        next.append(next.last());
+        mOverlayPolygonItem->setPolygon(next);
     }
-
-    CreateObjectTool::mousePressed(event);
 }
 
 void CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)

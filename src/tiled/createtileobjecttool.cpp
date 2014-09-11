@@ -17,18 +17,10 @@ CreateTileObjectTool::CreateTileObjectTool(QObject* parent)
     languageChanged();
 }
 
-void CreateTileObjectTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers){
-    CreateObjectTool::mouseMoved(pos, modifiers);
-    if(!mNewMapObjectItem)
-        return;
-
+void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers,
+                                                         const bool snapToGrid, const bool snapToFineGrid)
+{
     const MapRenderer *renderer = mapDocument()->renderer();
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
 
     const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
     const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
@@ -48,17 +40,18 @@ void CreateTileObjectTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers 
     mNewMapObjectItem->setZValue(10000); // sync may change it
 }
 
-void CreateTileObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
+void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
+                                                           const bool, const bool)
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
     CreateObjectTool::mousePressed(event);
 }
 
-void CreateTileObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
+                                                            const bool, const bool)
 {
-    CreateObjectTool::mouseReleased(event);
-    if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
+    if (event->button() == Qt::LeftButton) {
         finishNewMapObject();
     }
 }
@@ -69,7 +62,7 @@ void CreateTileObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("T")));
 }
 
-MapObject* CreateTileObjectTool::createNewMapObject(const QPointF &pos)
+MapObject* CreateTileObjectTool::createNewMapObject()
 {
     if(!mTile)
         return 0;
