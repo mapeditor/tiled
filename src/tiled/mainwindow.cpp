@@ -35,6 +35,7 @@
 #include "createobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createellipseobjecttool.h"
+#include "createtileobjecttool.h"
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
@@ -369,8 +370,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
-    CreateObjectTool *tileObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateTile, this);
+    CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreateObjectTool(

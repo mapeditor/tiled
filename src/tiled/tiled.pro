@@ -162,7 +162,8 @@ SOURCES += aboutdialog.cpp \
     zoomable.cpp \
     createscalableobjecttool.cpp \
     createrectangleobjecttool.cpp \
-    createellipseobjecttool.cpp
+    createellipseobjecttool.cpp \
+    createtileobjecttool.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -290,7 +291,8 @@ HEADERS += aboutdialog.h \
     zoomable.h \
     createscalableobjecttool.h \
     createrectangleobjecttool.h \
-    createellipseobjecttool.h
+    createellipseobjecttool.h \
+    createtileobjecttool.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

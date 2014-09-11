@@ -53,11 +53,6 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
     , mMode(mode)
 {
     switch (mMode) {
-    case CreateTile:
-        setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
-        Utils::setThemeIcon(this, "insert-image");
-        break;
-
     case CreatePolygon:
         setIcon(QIcon(QLatin1String(":images/24x24/insert-polygon.png")));
         // fall through
@@ -139,25 +134,6 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
     }
 
     switch (mMode) {
-    case CreateTile: {
-        const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
-        const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
-        QPointF tileCoords = renderer->screenToTileCoords(pos + diff);
-
-        if (snapToFineGrid) {
-            int gridFine = Preferences::instance()->gridFine();
-            tileCoords = (tileCoords * gridFine).toPoint();
-            tileCoords /= gridFine;
-        } else if (snapToGrid)
-            tileCoords = tileCoords.toPoint();
-        
-        QPointF pixelCoords = renderer->tileToPixelCoords(tileCoords);
-
-        mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
-        mNewMapObjectItem->syncWithMapObject();
-        mNewMapObjectItem->setZValue(10000); // sync may change it
-        break;
-    }
     case CreatePolygon:
     case CreatePolyline: {
         QPointF tileCoords = renderer->screenToTileCoords(pos);
@@ -185,10 +161,6 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     // Check if we are already creating a new map object
     if (mNewMapObjectItem) {
         switch (mMode) {
-        case CreateTile:
-            if (event->button() == Qt::RightButton)
-                cancelNewMapObject();
-            break;
         case CreatePolygon:
         case CreatePolyline:
             if (event->button() == Qt::RightButton) {
@@ -225,6 +197,9 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     const MapRenderer *renderer = mapDocument()->renderer();
     QPointF tileCoords;
 
+    /*TODO: calculate the tile offset with a polymorphic behaviour object
+     * that is instantiated by the correspondend ObjectTool
+    */
     if (mMode == CreateTile) {
         if (!mTile)
             return;
@@ -256,19 +231,11 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && mNewMapObjectItem) {
-        if (mMode == CreateTile)
-            finishNewMapObject();
-    }
 }
 
 void CreateObjectTool::languageChanged()
 {
     switch (mMode) {
-    case CreateTile:
-        setName(tr("Insert Tile"));
-        setShortcut(QKeySequence(tr("T")));
-        break;
     case CreatePolygon:
         setName(tr("Insert Polygon"));
         setShortcut(QKeySequence(tr("P")));
@@ -285,14 +252,8 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
 {
     Q_ASSERT(!mNewMapObjectItem);
 
-    if (mMode == CreateTile && !mTile)
-        return;
-
     MapObject *newMapObject = new MapObject;
     newMapObject->setPosition(pos);
-
-    if (mMode == CreateTile)
-        newMapObject->setCell(Cell(mTile));
 
     if (mMode == CreatePolygon || mMode == CreatePolyline) {
         MapObject::Shape shape = mMode == CreatePolygon ? MapObject::Polygon
@@ -312,8 +273,10 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
         mapScene()->addItem(mOverlayPolygonItem);
     }
 
-    if (mMode == CreatePolymorphic){
+    if (mMode == CreatePolymorphic || mMode == CreateTile){
         newMapObject = createNewMapObject(pos);
+        if(newMapObject == 0)
+            return;
         newMapObject->setPosition(pos);
     }
 
