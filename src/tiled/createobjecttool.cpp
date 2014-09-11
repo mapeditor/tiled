@@ -349,8 +349,10 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
         mapScene()->addItem(mOverlayPolygonItem);
     }
 
-    if (mMode == CreateEllipse)
-        newMapObject->setShape(MapObject::Ellipse);
+    if (mMode == CreatePolymorphic){
+        newMapObject = createNewMapObject(pos);
+        newMapObject->setPosition(pos);
+    }
 
     objectGroup->addObject(newMapObject);
 
@@ -404,4 +406,9 @@ void CreateObjectTool::finishOrCancelPolygon()
         finishNewMapObject();
     else
         cancelNewMapObject();
+}
+
+MapObject* CreateObjectTool::createNewMapObject(const QPointF &pos){
+    //template method for subclasses, that will be made
+    //pure virtual when refactoring is done
 }

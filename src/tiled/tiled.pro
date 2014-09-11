@@ -160,6 +160,7 @@ SOURCES += aboutdialog.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
     zoomable.cpp \
+    createscalableobjecttool.cpp \
     createrectangleobjecttool.cpp
 
 HEADERS += aboutdialog.h \
@@ -286,6 +287,7 @@ HEADERS += aboutdialog.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
     zoomable.h \
+    createscalableobjecttool.h \
     createrectangleobjecttool.h
 
 macx {
