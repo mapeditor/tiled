@@ -28,7 +28,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateRectangleObjectTool::CreateRectangleObjectTool(QObject* parent)
+CreateRectangleObjectTool::CreateRectangleObjectTool(QObject *parent)
     : CreateScalableObjectTool(parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/insert-rectangle.png")));
@@ -42,9 +42,9 @@ void CreateRectangleObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("R")));
 }
 
-MapObject* CreateRectangleObjectTool::createNewMapObject()
+MapObject *CreateRectangleObjectTool::createNewMapObject()
 {
-   MapObject* newMapObject = new MapObject();
+   MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
     return newMapObject;
 }

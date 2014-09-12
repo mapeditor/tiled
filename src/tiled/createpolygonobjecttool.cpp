@@ -28,7 +28,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreatePolygonObjectTool::CreatePolygonObjectTool(QObject* parent)
+CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     : CreateMultipointObjectTool(parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/insert-polygon.png")));
@@ -41,18 +41,16 @@ void CreatePolygonObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("P")));
 }
 
-MapObject* CreatePolygonObjectTool::createNewMapObject()
+MapObject *CreatePolygonObjectTool::createNewMapObject()
 {
-    MapObject* newMapObject = new MapObject();
+    MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Polygon);
     return newMapObject;
 }
 
 void CreatePolygonObjectTool::finishNewMapObject(){
-    if(mNewMapObjectItem->mapObject()->polygon().size() >= 3){
+    if (mNewMapObjectItem->mapObject()->polygon().size() >= 3)
         CreateObjectTool::finishNewMapObject();
-    }
-    else{
+    else
         CreateObjectTool::cancelNewMapObject();
-    }
 }

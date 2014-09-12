@@ -29,7 +29,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateTileObjectTool::CreateTileObjectTool(QObject* parent)
+CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     : CreateObjectTool(CreateObjectTool::CreateTile, parent)
 {
     setIcon(QIcon(QLatin1String(":images/24x24/insert-image.png")));
@@ -37,8 +37,8 @@ CreateTileObjectTool::CreateTileObjectTool(QObject* parent)
     languageChanged();
 }
 
-void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers,
-                                                         const bool snapToGrid, const bool snapToFineGrid)
+void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers,
+                                                         bool snapToGrid, bool snapToFineGrid)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
@@ -60,20 +60,17 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     mNewMapObjectItem->setZValue(10000); // sync may change it
 }
 
-void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
-                                                           const bool, const bool)
+void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
     CreateObjectTool::mousePressed(event);
 }
 
-void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
-                                                            const bool, const bool)
+void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
         finishNewMapObject();
-    }
 }
 
 void CreateTileObjectTool::languageChanged()
@@ -82,12 +79,12 @@ void CreateTileObjectTool::languageChanged()
     setShortcut(QKeySequence(tr("T")));
 }
 
-MapObject* CreateTileObjectTool::createNewMapObject()
+MapObject *CreateTileObjectTool::createNewMapObject()
 {
     if(!mTile)
         return 0;
 
-    MapObject* newMapObject = new MapObject();
+    MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
     newMapObject->setCell(Cell(mTile));
     return newMapObject;

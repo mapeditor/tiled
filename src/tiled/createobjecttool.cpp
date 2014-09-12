@@ -107,12 +107,10 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 
         mouseMovedWhileCreatingObject(pos, modifiers, snapToGrid, snapToFineGrid);
     }
-
 }
 
 void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-
     bool snapToGrid = Preferences::instance()->snapToGrid();
     bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
     if (event->modifiers() & Qt::ControlModifier) {
@@ -170,7 +168,7 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         snapToGrid = !snapToGrid;
         snapToFineGrid = false;
     }
-    if(mNewMapObjectItem){
+    if (mNewMapObjectItem){
         mouseReleasedWhileCreatingObject(event, snapToGrid, snapToFineGrid);
     }
 }
@@ -181,7 +179,7 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     Q_ASSERT(!mNewMapObjectItem);
 
     MapObject *newMapObject = createNewMapObject();
-    if(newMapObject == 0)
+    if (newMapObject == 0)
         return;
     newMapObject->setPosition(pos);
 
@@ -228,19 +226,17 @@ void CreateObjectTool::finishNewMapObject()
                                                       newMapObject));
 }
 
-void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers,
-                                                     const bool , const bool)
+void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers, bool, bool)
 {
    //optional override
 }
 
-void CreateObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *,
-                                                       const bool , const bool )
+void CreateObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *, bool, bool)
 {
     //optional override
 }
 
-void CreateObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *,
-                                                       const bool, const bool){
+void CreateObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *, bool, bool)
+{
     //optional override
 }

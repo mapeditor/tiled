@@ -31,14 +31,14 @@ class CreateMultipointObjectTool : public CreateObjectTool
 {
     Q_OBJECT
 public:
-    CreateMultipointObjectTool(QObject* parent);
+    CreateMultipointObjectTool(QObject *parent);
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     void languageChanged() = 0;
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, const bool snapToGrid, const bool snapToFineGrid);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
+                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
 };
 
 }

@@ -28,13 +28,13 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateScalableObjectTool::CreateScalableObjectTool(QObject* parent)
+CreateScalableObjectTool::CreateScalableObjectTool(QObject *parent)
     : CreateObjectTool(CreateObjectTool::CreateGeometry, parent)
 {
 }
 
 void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers,
-                                                             const bool snapToGrid, const bool snapToFineGrid)
+                                                             bool snapToGrid, bool snapToFineGrid)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
@@ -65,19 +65,16 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     mNewMapObjectItem->resizeObject(QSizeF(newSize.x(), newSize.y()));
 }
 
-void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
-                                                               const bool, const bool)
+void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
 }
 
-void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
-                                                                const bool, const bool)
+void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
         finishNewMapObject();
-    }
 }
 
 void CreateScalableObjectTool::languageChanged(){

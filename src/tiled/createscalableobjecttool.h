@@ -31,13 +31,13 @@ class CreateScalableObjectTool : public CreateObjectTool
 {
     Q_OBJECT
 public:
-    CreateScalableObjectTool(QObject* parent);
+    CreateScalableObjectTool(QObject *parent);
         void languageChanged();
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, const bool snapToGrid, const bool snapToFineGrid);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
+                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, const bool snapToFineGrid);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, const bool snapToFineGrid);
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, const bool snapToFineGrid);
 
 };
 

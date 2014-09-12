@@ -75,7 +75,14 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
     consoledock.cpp \
+    createellipseobjecttool.cpp \
+    createmultipointobjecttool.cpp \
     createobjecttool.cpp \
+    createpolygonobjecttool.cpp \
+    createpolylineobjecttool.cpp \
+    createrectangleobjecttool.cpp \
+    createscalableobjecttool.cpp \
+    createtileobjecttool.cpp \
     documentmanager.cpp \
     editpolygontool.cpp \
     editterraindialog.cpp \
@@ -159,14 +166,7 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp \
-    createscalableobjecttool.cpp \
-    createrectangleobjecttool.cpp \
-    createellipseobjecttool.cpp \
-    createtileobjecttool.cpp \
-    createmultipointobjecttool.cpp \
-    createpolygonobjecttool.cpp \
-    createpolylineobjecttool.cpp
+    zoomable.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -205,7 +205,14 @@ HEADERS += aboutdialog.h \
     command.h \
     commandlineparser.h \
     consoledock.h \
+    createellipseobjecttool.h \
+    createmultipointobjecttool.h \
     createobjecttool.h \
+    createpolygonobjecttool.h \
+    createpolylineobjecttool.h \
+    createrectangleobjecttool.h \
+    createscalableobjecttool.h \
+    createtileobjecttool.h \
     documentmanager.h \
     editpolygontool.h \
     editterraindialog.h \
@@ -291,14 +298,7 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h \
-    createscalableobjecttool.h \
-    createrectangleobjecttool.h \
-    createellipseobjecttool.h \
-    createtileobjecttool.h \
-    createmultipointobjecttool.h \
-    createpolygonobjecttool.h \
-    createpolylineobjecttool.h
+    zoomable.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

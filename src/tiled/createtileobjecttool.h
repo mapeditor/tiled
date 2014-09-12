@@ -36,9 +36,9 @@ public:
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, const bool snapToGrid, const bool snapToFineGrid);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
+                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
     MapObject* createNewMapObject();
 };
 

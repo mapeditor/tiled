@@ -32,7 +32,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-CreateMultipointObjectTool::CreateMultipointObjectTool(QObject* parent)
+CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
     : CreateObjectTool(CreateObjectTool::CreateGeometry, parent)
 {
     mOverlayPolygonObject = new MapObject;
@@ -91,7 +91,7 @@ void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneM
 void CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
 {
     CreateObjectTool::startNewMapObject(pos, objectGroup);
-    MapObject* newMapObject = mNewMapObjectItem->mapObject();
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
     QPolygonF polygon;
     polygon.append(QPointF());
     newMapObject->setPolygon(polygon);

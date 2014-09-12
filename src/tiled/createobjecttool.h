@@ -63,9 +63,9 @@ public slots:
 
 protected:
     virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, const bool snapToGrid, const bool snapToFineGrid);
-    virtual void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
-    virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, const bool snapToGrid, const bool snapToFineGrid);
+                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
+    virtual void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
+    virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
 
 
 

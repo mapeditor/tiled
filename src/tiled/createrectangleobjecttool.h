@@ -31,10 +31,10 @@ class CreateRectangleObjectTool : public CreateScalableObjectTool
 {
     Q_OBJECT
 public:
-    CreateRectangleObjectTool(QObject* parent);
+    CreateRectangleObjectTool(QObject *parent);
     void languageChanged();
 protected:
-    MapObject* createNewMapObject();
+    MapObject *createNewMapObject();
 };
 
 }

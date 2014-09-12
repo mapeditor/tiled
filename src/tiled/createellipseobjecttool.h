@@ -31,10 +31,10 @@ class CreateEllipseObjectTool : public CreateScalableObjectTool
 {
     Q_OBJECT
 public:
-    CreateEllipseObjectTool(QObject* parent);
+    CreateEllipseObjectTool(QObject *parent);
     void languageChanged();
 protected:
-    MapObject* createNewMapObject();
+    MapObject *createNewMapObject();
 };
 
 }

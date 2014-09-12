@@ -31,10 +31,10 @@ class CreatePolylineObjectTool: public CreateMultipointObjectTool
 {
     Q_OBJECT
 public:
-    CreatePolylineObjectTool(QObject* parent);
+    CreatePolylineObjectTool(QObject *parent);
     void languageChanged();
 protected:
-    MapObject* createNewMapObject();
+    MapObject *createNewMapObject();
     void finishNewMapObject();
 };
 
