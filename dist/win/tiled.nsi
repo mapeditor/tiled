@@ -183,13 +183,11 @@ File ${QT_DIR}\bin\Qt5Core.dll
 File ${QT_DIR}\bin\Qt5Gui.dll
 File ${QT_DIR}\bin\Qt5Widgets.dll
 File ${QT_DIR}\bin\Qt5OpenGL.dll
-File ${QT_DIR}\bin\libEGL.dll
-File ${QT_DIR}\bin\libGLESv2.dll
-File ${QT_DIR}\bin\icuin51.dll
-File ${QT_DIR}\bin\icuuc51.dll
-File ${QT_DIR}\bin\icudt51.dll
-File ${SYSTEM_DIR}\MSVCP100.DLL
-File ${SYSTEM_DIR}\MSVCR100.DLL
+File ${QT_DIR}\bin\icuin52.dll
+File ${QT_DIR}\bin\icuuc52.dll
+File ${QT_DIR}\bin\icudt52.dll
+File ${SYSTEM_DIR}\MSVCP120.DLL
+File ${SYSTEM_DIR}\MSVCR120.DLL
 File ${ROOT_DIR}\src\tiled\images\tiled-icon.ico
 File ${ROOT_DIR}\dist\win\qt.conf
 
