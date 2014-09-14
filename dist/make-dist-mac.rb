@@ -61,7 +61,7 @@ Dir.mktmpdir do |tempDir|
     end
 
     # Create dmg from the temp directory
-    dmgPath = File.join(baseDir, 'tiled-qt-' + version + '.dmg')
+    dmgPath = File.join(baseDir, 'tiled-' + version + '.dmg')
     puts "Creating dmg at #{dmgPath}"
     `hdiutil create "#{dmgPath}" -srcfolder "#{tempDir}" -volname "Tiled #{version}"`
     raise "hdiutil error #{$?}" unless $? == 0
