@@ -26,7 +26,7 @@ feature set than the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Make sure the Qt (>= 4.6) development libraries are installed:
+Make sure the Qt (>= 4.7) development libraries are installed:
 
 * In Ubuntu/Debian: `sudo apt-get install libqt4-dev libqt4-opengl-dev zlib1g-dev`
 * In Fedora:        `yum install qt-devel`

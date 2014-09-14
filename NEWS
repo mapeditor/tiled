@@ -1,4 +1,4 @@
-0.10.0 (10 September 2014)
+0.10.0 (14 September 2014)
 * Added object rotation (sponsored by Ben Wales)
 * Added support for explicit object ordering (sponsored by Ben Wales)
 * Added new Properties window with a rewritten properties editor
@@ -36,6 +36,7 @@
 * Fixed writing of tile offset in the Lua export
 * Fixed updating of image layer when changing its image
 * Fixed start drag distance check when editing polygons and moving objects
+* Fixed console output of tmxrasterizer on Windows
 * Raise the Layers dock for editing a new layer's name
 * Avoid saving truncated files when compiled against Qt 5.1 or higher (by Erik Schilling)
 * Made Tiled registering *.tmx as MIME-type (by Erik Schilling)
