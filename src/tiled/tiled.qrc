@@ -77,5 +77,6 @@
         <file>images/24x24/dice.png</file>
         <file>images/24x24/terrain-edit.png</file>
         <file>images/32x32/tiled.png</file>
+        <file>images/24x24/move-image-layer.png</file>
     </qresource>
 </RCC>

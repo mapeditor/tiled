@@ -24,7 +24,6 @@
 #include "abstractimagetool.h"
 
 namespace Tiled {
-
 namespace Internal {
 
 class ImageMovementTool : public AbstractImageTool
@@ -33,7 +32,6 @@ class ImageMovementTool : public AbstractImageTool
 
 public:
     explicit ImageMovementTool(QObject *parent = 0);
-
 
     void activate(MapScene *scene);
     void deactivate(MapScene *scene);
@@ -50,7 +48,6 @@ private:
     QPointF mMouseStart;
     QPoint mLayerStart;
 };
-
 
 } // namespace Internal
 } // namespace Tiled

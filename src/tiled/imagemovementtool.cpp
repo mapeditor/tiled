@@ -32,7 +32,7 @@ using namespace Tiled::Internal;
 
 ImageMovementTool::ImageMovementTool(QObject *parent) :
     AbstractImageTool(tr("Move Images"),
-                       QIcon(QLatin1String(":images/16x16/layer-image.png")),
+                       QIcon(QLatin1String(":images/24x24/move-image-layer.png")),
                        QKeySequence(tr("M")),
                        parent),
     mMousePressed(false)
@@ -57,36 +57,38 @@ void ImageMovementTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
 {
     AbstractImageTool::mouseMoved(pos, modifiers);
 
-    if (mMousePressed) {
-        if (ImageLayer *layer = currentImageLayer()) {
-            QPointF diff = pos - mMouseStart;
+    if (!mMousePressed)
+        return;
 
-            bool snapToGrid = Preferences::instance()->snapToGrid();
-            bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-            if (modifiers & Qt::ControlModifier) {
-                snapToGrid = !snapToGrid;
-                snapToFineGrid = false;
-            }
+    ImageLayer *layer = currentImageLayer();
+    if (!layer)
+        return;
 
-            if (snapToGrid || snapToFineGrid) {
-                MapRenderer *renderer = mapDocument()->renderer();
-                int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-                const QPointF alignScreenPos =
-                        renderer->pixelToScreenCoords(mLayerStart);
-                const QPointF newAlignPixelPos = alignScreenPos + diff;
+    QPointF diff = pos - mMouseStart;
 
-                // Snap the position to the grid
-                QPointF newTileCoords =
-                        (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
-                newTileCoords /= scale;
-                diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
-            }
-
-            layer->setPosition(mLayerStart + diff.toPoint());
-            mapDocument()->emitImageLayerChanged(layer);
-        }
-
+    bool snapToGrid = Preferences::instance()->snapToGrid();
+    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+    if (modifiers & Qt::ControlModifier) {
+        snapToGrid = !snapToGrid;
+        snapToFineGrid = false;
     }
+
+    if (snapToGrid || snapToFineGrid) {
+        MapRenderer *renderer = mapDocument()->renderer();
+        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
+        const QPointF alignScreenPos =
+                renderer->pixelToScreenCoords(mLayerStart);
+        const QPointF newAlignPixelPos = alignScreenPos + diff;
+
+        // Snap the position to the grid
+        QPointF newTileCoords =
+                (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
+        newTileCoords /= scale;
+        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
+    }
+
+    layer->setPosition(mLayerStart + diff.toPoint());
+    mapDocument()->emitImageLayerChanged(layer);
 }
 
 void ImageMovementTool::mousePressed(QGraphicsSceneMouseEvent *event)
