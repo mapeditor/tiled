@@ -185,19 +185,19 @@
                 <h4>Latest Release</h4>
                 <ul class="downloads">
                   <li>
-                    <a class="btn btn-default btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.1/tiled-0.9.1-win32-setup.exe">
+                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/releases/download/v0.10.0/tiled-0.10.0-win32-setup.exe">
                     <img src="img/os-windows.png" />
-                    Tiled 0.9.1 for Windows</a>
+                    Tiled 0.10 for Windows</a>
                   </li>
                   <li>
-                    <a class="btn btn-default btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.1/tiled-qt-0.9.1.dmg">
+                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/releases/download/v0.10.0/tiled-0.10.0.dmg">
                     <img src="img/os-apple.png" />
-                    Tiled 0.9.1 for OS X</a>
+                    Tiled 0.10 for OS X</a>
                   </li>
                   <li>
-                    <a class="btn btn-default btn-download" href="http://sourceforge.net/projects/tiled/files/tiled-qt/0.9.1/tiled-qt-0.9.1.tar.gz">
+                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/archive/v0.10.0/tiled-0.10.0.tar.gz">
                     <img src="img/os-linux.png" />
-                    Tiled 0.9.1 source</a>
+                    Tiled 0.10 source</a>
                   </li>
                 </ul>
                 <div style="clear: both;"></div>
@@ -252,6 +252,53 @@
         <div class="col-md-12">
           <div class="my-box">
             <a id="changes"></a><h3>Changes</h3>
+            <h4>0.10.0 <small>(14 September 2014)</small></h4>
+            <ul>
+              <li>Added object rotation (sponsored by Ben Wales)</li>
+              <li>Added support for explicit object ordering (sponsored by Ben Wales)</li>
+              <li>Added new Properties window with a rewritten properties editor</li>
+              <li>Added support for writing plugins in Python (by Samuli Tuomola)</li>
+              <li>Added image collection tilesets (sponsored by Jamie Rocks)</li>
+              <li>Added map file watching and automatic reloading (sponsored by FlatRedBall.com)</li>
+              <li>Added support for moving objects with arrow keys (sponsored by Ben Wales)</li>
+              <li>Added a 'snap to fine grid' option (by Xenodora)</li>
+              <li>Added support for JavaScript (JSONP) load/save (by Dobes Vandermeer)</li>
+              <li>Added more zoom levels (by Joel Leclerc)</li>
+              <li>Added shortcuts for finishing and canceling object creation</li>
+              <li>Added a tile collision editor for defining collision shapes on tiles</li>
+              <li>Added a tile animation editor and play defined animations</li>
+              <li>Allow changing properties of multiple objects/tiles simultanously (by Parker Miller)</li>
+              <li>Added tile rendering-order map property (by Lennert Raesch)</li>
+              <li>Added support for changing the object line width</li>
+              <li>Added support for CSV-encoded layers to libtiled-java (by Alexei Bratuhin)</li>
+              <li>Added support for ellipse and polygon objects to libtiled-java (by Hendrik Brummermann)</li>
+              <li>Added terrain properties to JSON export (by Dennis Hostetler)</li>
+              <li>Added support for moving image layers in the Properties window (by Michael Aquilina)</li>
+              <li>Added option to include background image when saving as image (by Sean Humeniuk)</li>
+              <li>Added options to control layer visibility to tmxrasterizer (by Nathan Tolbert)</li>
+              <li>Added display of tile ID in status bar (by Champi080)</li>
+              <li>Added support for objects on staggered isometric maps (by Remco Kuijper)</li>
+              <li>Added support for staggered maps to tmxviewer and tmxrasterizer</li>
+              <li>Added a tool for moving the image of an image layer (by Mattia Basaglia)</li>
+              <li>Added button to the tileset dock as shortcut to add a tileset (by Erik Schilling)</li>
+              <li>Allow changing order of open document tabs (by Sean Humeniuk)</li>
+              <li>Changed object position and size units from tiles to pixels (by mauve)</li>
+              <li>Allow adding multiple tilesets at once (by mauve)</li>
+              <li>Make highlighted grid cells outside map red (by Sean Humeniuk)</li>
+              <li>Allow changing the drawing offset of a tileset</li>
+              <li>Fixed hang on Mac OS X when drawing certain ellipse objects</li>
+              <li>Fixed removal of polygon/polyline objects when resizing a map</li>
+              <li>Fixed writing of tile offset in the Lua export</li>
+              <li>Fixed updating of image layer when changing its image</li>
+              <li>Fixed start drag distance check when editing polygons and moving objects</li>
+              <li>Fixed console output of tmxrasterizer on Windows</li>
+              <li>Raise the Layers dock for editing a new layer's name</li>
+              <li>Avoid saving truncated files when compiled against Qt 5.1 or higher (by Erik Schilling)</li>
+              <li>Made Tiled registering *.tmx as MIME-type (by Erik Schilling)</li>
+              <li>Added Traditional Chinese translation (by Yehnan Chiang)</li>
+              <li>Updated Czech, Dutch, French, German, Russian and Spanish translations</li>
+            </ul>
+
             <h4>0.9.1 <small>(27 July 2013)</small></h4>
             <ul>
             <li>Added saving of map background to JSON format (by Petr Viktorin)</li>
