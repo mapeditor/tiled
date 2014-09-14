@@ -1721,7 +1721,7 @@ Ligne %1, colonne %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+177"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Dupliquer %n objet</numerusform>
+            <numerusform>Dupliquer un objet</numerusform>
             <numerusform>Dupliquer %n objets</numerusform>
         </translation>
     </message>
@@ -1729,7 +1729,7 @@ Ligne %1, colonne %2</translation>
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Effacer %n objet</numerusform>
+            <numerusform>Effacer un objet</numerusform>
             <numerusform>Effacer %n objets</numerusform>
         </translation>
     </message>
@@ -1797,7 +1797,7 @@ Ligne %1, colonne %2</translation>
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Déplacer %n objet vers le calque</numerusform>
+            <numerusform>Déplacer un objet vers le calque</numerusform>
             <numerusform>Déplacer %n objets vers le calque</numerusform>
         </translation>
     </message>
@@ -2188,7 +2188,7 @@ Ligne %1, colonne %2</translation>
         <location line="+220"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Déplacer %n point</numerusform>
+            <numerusform>Déplacer un point</numerusform>
             <numerusform>Déplacer %n points</numerusform>
         </translation>
     </message>
@@ -2197,7 +2197,7 @@ Ligne %1, colonne %2</translation>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>Supprimer %n nœud</numerusform>
+            <numerusform>Supprimer un nœud</numerusform>
             <numerusform>Supprimer %n nœuds</numerusform>
         </translation>
     </message>
@@ -2527,7 +2527,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+13"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>Ajouter %n Tileset</numerusform>
+            <numerusform>Ajouter un Tileset</numerusform>
             <numerusform>Ajouter %n Tilesets</numerusform>
         </translation>
     </message>
@@ -2579,7 +2579,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Pivoter %n objet</numerusform>
+            <numerusform>Pivoter un objet</numerusform>
             <numerusform>Pivoter %n objets</numerusform>
         </translation>
     </message>
@@ -2627,7 +2627,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+154"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Dupliquer %n objet</numerusform>
+            <numerusform>Dupliquer un objet</numerusform>
             <numerusform>Dupliquer %n objets</numerusform>
         </translation>
     </message>
@@ -2635,7 +2635,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+20"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Effacer %n objet</numerusform>
+            <numerusform>Effacer un objet</numerusform>
             <numerusform>Effacer %n objets</numerusform>
         </translation>
     </message>
@@ -2643,7 +2643,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Déplacer %n objet vers le calque</numerusform>
+            <numerusform>Déplacer un objet vers le calque</numerusform>
             <numerusform>Déplacer %n objets vers le calque</numerusform>
         </translation>
     </message>
@@ -2765,7 +2765,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+236"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Dupliquer %n objet</numerusform>
+            <numerusform>Dupliquer un objet</numerusform>
             <numerusform>Dupliquer %n objets</numerusform>
         </translation>
     </message>
@@ -2773,7 +2773,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Effacer %n objet</numerusform>
+            <numerusform>Effacer un objet</numerusform>
             <numerusform>Effacer %n objets</numerusform>
         </translation>
     </message>
@@ -2918,7 +2918,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+316"/>
         <source>Move %n Object(s)</source>
         <translation>
-            <numerusform>Déplacer %n objet</numerusform>
+            <numerusform>Déplacer un objet</numerusform>
             <numerusform>Déplacer %n objets</numerusform>
         </translation>
     </message>
@@ -2926,7 +2926,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+81"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Pivoter %n objet</numerusform>
+            <numerusform>Pivoter un objet</numerusform>
             <numerusform>Pivoter %n objets</numerusform>
         </translation>
     </message>
@@ -2965,7 +2965,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Déplacer %n objet vers le calque</numerusform>
+            <numerusform>Déplacer un objet vers le calque</numerusform>
             <numerusform>Déplacer %n objets vers le calque</numerusform>
         </translation>
     </message>
@@ -3736,7 +3736,7 @@ Do you want to replace it?</source>
         <location line="+4"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Inverser %n objet</numerusform>
+            <numerusform>Inverser un objet</numerusform>
             <numerusform>Inverser %n objets</numerusform>
         </translation>
     </message>
