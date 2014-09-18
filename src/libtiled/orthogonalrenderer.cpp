@@ -34,7 +34,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 
-#include <cmath>
+#include <QtMath>
 
 using namespace Tiled;
 
@@ -168,9 +168,9 @@ void OrthogonalRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 
     const int startX = qMax(0, (int) (rect.x() / tileWidth) * tileWidth);
     const int startY = qMax(0, (int) (rect.y() / tileHeight) * tileHeight);
-    const int endX = qMin((int) std::ceil(rect.right()),
+    const int endX = qMin(qCeil(rect.right()),
                           map()->width() * tileWidth + 1);
-    const int endY = qMin((int) std::ceil(rect.bottom()),
+    const int endY = qMin(qCeil(rect.bottom()),
                           map()->height() * tileHeight + 1);
 
     gridColor.setAlpha(128);
@@ -226,8 +226,8 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
         startX = qMax((int) rect.x() / tileWidth, 0);
         startY = qMax((int) rect.y() / tileHeight, 0);
-        endX = qMin((int) std::ceil(rect.right()) / tileWidth, endX);
-        endY = qMin((int) std::ceil(rect.bottom()) / tileHeight, endY);
+        endX = qBound(0, qCeil(rect.right()) / tileWidth, endX);
+        endY = qBound(0, qCeil(rect.bottom()) / tileHeight, endY);
     }
 
     CellRenderer renderer(painter);
