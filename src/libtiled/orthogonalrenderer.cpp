@@ -34,7 +34,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 
-#include <QtMath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 
