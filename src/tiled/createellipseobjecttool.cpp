@@ -44,7 +44,7 @@ void CreateEllipseObjectTool::languageChanged()
 
 MapObject *CreateEllipseObjectTool::createNewMapObject()
 {
-   MapObject *newMapObject = new MapObject;
+    MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Ellipse);
     return newMapObject;
 }

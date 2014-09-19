@@ -46,7 +46,7 @@ CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
 
 void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
                                                                Qt::KeyboardModifiers,
-                                                               const bool snapToGrid, const bool snapToFineGrid)
+                                                               bool snapToGrid, bool snapToFineGrid)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
     QPointF tileCoords = renderer->screenToTileCoords(pos);
@@ -67,7 +67,7 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
 }
 
 void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
-                                                                 const bool, const bool)
+                                                                 bool, bool)
 {
     if (event->button() == Qt::RightButton) {
         finishNewMapObject();
