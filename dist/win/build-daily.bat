@@ -36,6 +36,9 @@ echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
 call %QTDIR%\bin\qtenv2.bat
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
 
+rem This allows the executable to run on Windows XP
+set LINK=/SUBSYSTEM:WINDOWS,5.01
+
 mkdir %TILED_BUILD_DIR%
 pushd %TILED_BUILD_DIR%
 qmake.exe -r %TILED_SOURCE_DIR%\tiled.pro "CONFIG+=release" "QMAKE_CXXFLAGS+=-DBUILD_INFO_VERSION=%COMMITNOW%"
