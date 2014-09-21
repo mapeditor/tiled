@@ -1,7 +1,7 @@
 0.10.1 (21 September 2014)
 * Fixed a crash that could happen when using the terrain tool
 * Fixed missing background color information from Lua export
-* Allow using up to 3 or 4 GB RAM on 32 or 64 bit systems respectively
+* Allow using up to 3 or 4 GB RAM on 32 or 64 bit Windows systems respectively
 
 0.10.0 (14 September 2014)
 * Added object rotation (sponsored by Ben Wales)
