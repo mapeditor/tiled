@@ -115,6 +115,20 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
     writer.writeKeyAndValue("tileheight", map->tileHeight());
 
+    const QColor &backgroundColor = map->backgroundColor();
+    if (backgroundColor.isValid()) {
+        // Example: backgroundcolor = { 255, 200, 100 }
+        writer.writeStartTable("backgroundcolor");
+        writer.setSuppressNewlines(true);
+        writer.writeValue(backgroundColor.red());
+        writer.writeValue(backgroundColor.green());
+        writer.writeValue(backgroundColor.blue());
+        if (backgroundColor.alpha() != 255)
+            writer.writeValue(backgroundColor.alpha());
+        writer.writeEndTable();
+        writer.setSuppressNewlines(false);
+    }
+
     writeProperties(writer, map->properties());
 
     writer.writeStartTable("tilesets");
