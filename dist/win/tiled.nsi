@@ -145,7 +145,7 @@ Function checkAlreadyInstalled
         ClearErrors
         ReadRegStr $R0 HKLM "${ADD_REMOVE}" "UninstallString"
 		DetailPrint "Uninstalling previously installed version"
-        ExecWait '$R0 _?=$INSTDIR'
+        ExecWait '$R0'
 		IfErrors OnError 0
 		Return
 	OnError:
@@ -262,11 +262,11 @@ Delete $INSTDIR\Qt5Widgets.dll
 Delete $INSTDIR\Qt5OpenGL.dll
 Delete $INSTDIR\libEGL.dll
 Delete $INSTDIR\libGLESv2.dll
-Delete $INSTDIR\icuin51.dll
-Delete $INSTDIR\icuuc51.dll
-Delete $INSTDIR\icudt51.dll
-Delete $INSTDIR\MSVCP100.DLL
-Delete $INSTDIR\MSVCR100.DLL
+Delete $INSTDIR\icuin52.dll
+Delete $INSTDIR\icuuc52.dll
+Delete $INSTDIR\icudt52.dll
+Delete $INSTDIR\MSVCP120.DLL
+Delete $INSTDIR\MSVCR120.DLL
 Delete $INSTDIR\tiled-icon.ico
 Delete $INSTDIR\qt.conf
 Delete $INSTDIR\uninstall.exe
