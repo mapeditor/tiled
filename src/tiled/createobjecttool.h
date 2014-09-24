@@ -37,11 +37,8 @@ class CreateObjectTool : public AbstractObjectTool
 
 public:
     enum CreationMode {
-        CreateRectangle,
         CreateTile,
-        CreatePolygon,
-        CreatePolyline,
-        CreateEllipse
+        CreateGeometry
     };
 
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
@@ -55,8 +52,7 @@ public:
                     Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);
-
-    void languageChanged();
+    void languageChanged() = 0;
 
 public slots:
     /**
@@ -65,13 +61,20 @@ public slots:
      */
     void setTile(Tile *tile) { mTile = tile; }
 
-private:
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    MapObject *clearNewMapObjectItem();
-    void cancelNewMapObject();
-    void finishNewMapObject();
-    void finishOrCancelPolygon();
+protected:
+    virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
+                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
+    virtual void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
+    virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
 
+
+
+    virtual void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
+    virtual MapObject* createNewMapObject() =0;
+    virtual void cancelNewMapObject();
+    virtual void finishNewMapObject();
+
+    MapObject *clearNewMapObjectItem();
     MapObjectItem *mNewMapObjectItem;
     ObjectGroup *mOverlayObjectGroup;
     MapObject *mOverlayPolygonObject;

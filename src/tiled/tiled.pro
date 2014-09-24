@@ -75,7 +75,14 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
     consoledock.cpp \
+    createellipseobjecttool.cpp \
+    createmultipointobjecttool.cpp \
     createobjecttool.cpp \
+    createpolygonobjecttool.cpp \
+    createpolylineobjecttool.cpp \
+    createrectangleobjecttool.cpp \
+    createscalableobjecttool.cpp \
+    createtileobjecttool.cpp \
     documentmanager.cpp \
     editpolygontool.cpp \
     editterraindialog.cpp \
@@ -198,7 +205,14 @@ HEADERS += aboutdialog.h \
     command.h \
     commandlineparser.h \
     consoledock.h \
+    createellipseobjecttool.h \
+    createmultipointobjecttool.h \
     createobjecttool.h \
+    createpolygonobjecttool.h \
+    createpolylineobjecttool.h \
+    createrectangleobjecttool.h \
+    createscalableobjecttool.h \
+    createtileobjecttool.h \
     documentmanager.h \
     editpolygontool.h \
     editterraindialog.h \
