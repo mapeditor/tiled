@@ -65,15 +65,22 @@ void MapObject::flip(FlipDirection direction)
             mCell.flippedVertically = !mCell.flippedVertically;
     }
 
-    if (!mPolygon.isEmpty()) {
-        const QPointF center2 = mPolygon.boundingRect().center() * 2;
+    flip(direction, mPolygon);
+    flip(direction, mLeftControlPoints);
+    flip(direction, mRightControlPoints);
+}
+
+void MapObject::flip(FlipDirection direction, QPolygonF &polygon)
+{
+    if (!polygon.isEmpty()) {
+        const QPointF center2 = polygon.boundingRect().center() * 2;
 
         if (direction == FlipHorizontally) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setX(center2.x() - mPolygon[i].x());
+            for (int i = 0; i < polygon.size(); ++i)
+                polygon[i].setX(center2.x() - polygon[i].x());
         } else if (direction == FlipVertically) {
-            for (int i = 0; i < mPolygon.size(); ++i)
-                mPolygon[i].setY(center2.y() - mPolygon[i].y());
+            for (int i = 0; i < polygon.size(); ++i)
+                polygon[i].setY(center2.y() - polygon[i].y());
         }
     }
 }

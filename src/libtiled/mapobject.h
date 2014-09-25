@@ -66,7 +66,9 @@ public:
         Rectangle,
         Polygon,
         Polyline,
-        Ellipse
+        Ellipse,
+        Bezierloop,
+        Bezierline
     };
 
     MapObject();
@@ -175,6 +177,34 @@ public:
     const QPolygonF &polygon() const { return mPolygon; }
 
     /**
+    * Sets the right control points associated with this object. The control points are only used
+    * when the object shape is set to either BezierLoop or BezierLine.
+    *
+    * \sa setShape()
+    */
+    void setRightControlPoints(const QPolygonF &rightControlPoints) { mRightControlPoints = rightControlPoints; }
+
+    /**
+    * Returns the right control points associated with this object. Returns an empty
+    * polygon when no control points are associated with this object.
+    */
+    const QPolygonF &rightControlPoints() const { return mRightControlPoints; }
+
+    /**
+    * Sets the left control points associated with this object. The control points are only used
+    * when the object shape is set to either BezierLoop or BezierLine.
+    *
+    * \sa setShape()
+    */
+    void setLeftControlPoints(const QPolygonF &leftControlPoints) { mLeftControlPoints = leftControlPoints; }
+
+    /**
+    * Returns the left control points associated with this object. Returns an empty
+    * polygon when no control points are associated with this object.
+    */
+    const QPolygonF &leftControlPoints() const { return mLeftControlPoints; }
+
+    /**
      * Sets the shape of the object.
      */
     void setShape(Shape shape) { mShape = shape; }
@@ -245,11 +275,15 @@ private:
     QPointF mPos;
     QSizeF mSize;
     QPolygonF mPolygon;
+    QPolygonF mRightControlPoints;
+    QPolygonF mLeftControlPoints;
     Shape mShape;
     Cell mCell;
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+
+    void flip(FlipDirection direction, QPolygonF& polygon);
 };
 
 } // namespace Tiled
