@@ -38,6 +38,8 @@
 #include "createtileobjecttool.h"
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
+#include "createbezierloopobjecttool.h"
+#include "createbezierlineobjecttool.h"
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
@@ -377,6 +379,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
+    CreateObjectTool *bezierloopObjectsTool = new CreateBezierloopObjectTool(this);
+    CreateObjectTool *bezierlineObjectsTool = new CreateBezierlineObjectTool(this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
@@ -413,6 +417,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(bezierloopObjectsTool));
+    toolBar->addAction(mToolManager->registerTool(bezierlineObjectsTool));
     toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ImageMovementTool(this)));

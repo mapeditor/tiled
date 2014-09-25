@@ -75,6 +75,10 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
     consoledock.cpp \
+    controlpointshandle.cpp \
+    createbezierlineobjecttool.cpp \
+    createbezierloopobjecttool.cpp \
+    createbezierobjecttool.cpp \
     createellipseobjecttool.cpp \
     createmultipointobjecttool.cpp \
     createobjecttool.cpp \
@@ -205,6 +209,10 @@ HEADERS += aboutdialog.h \
     command.h \
     commandlineparser.h \
     consoledock.h \
+    controlpointshandle.h \
+    createbezierlineobjecttool.h \
+    createbezierloopobjecttool.h \
+    createbezierobjecttool.h \
     createellipseobjecttool.h \
     createmultipointobjecttool.h \
     createobjecttool.h \

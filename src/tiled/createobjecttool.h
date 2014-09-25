@@ -74,7 +74,7 @@ protected:
     virtual void cancelNewMapObject();
     virtual void finishNewMapObject();
 
-    MapObject *clearNewMapObjectItem();
+    virtual MapObject *clearNewMapObjectItem();
     MapObjectItem *mNewMapObjectItem;
     ObjectGroup *mOverlayObjectGroup;
     MapObject *mOverlayPolygonObject;
