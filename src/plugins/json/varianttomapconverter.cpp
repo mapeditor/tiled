@@ -365,6 +365,8 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QVariant polylineVariant = objectVariantMap["polyline"];
         const QVariant polygonVariant = objectVariantMap["polygon"];
+        const QVariantMap bezierlineVariant = objectVariantMap["bezierline"].toMap();
+        const QVariantMap bezierloopVariant = objectVariantMap["bezierloop"].toMap();
 
         if (polygonVariant.isValid()) {
             object->setShape(MapObject::Polygon);
@@ -373,6 +375,18 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         if (polylineVariant.isValid()) {
             object->setShape(MapObject::Polyline);
             object->setPolygon(toPolygon(polylineVariant));
+        }
+        if (!bezierlineVariant.isEmpty()) {
+            object->setShape(MapObject::Bezierline);
+            object->setPolygon(toPolygon(bezierlineVariant["points"]));
+            object->setLeftControlPoints(toPolygon(bezierlineVariant["leftControlPoints"]));
+            object->setRightControlPoints(toPolygon(bezierlineVariant["rightControlPoints"]));
+        }
+        if (!bezierloopVariant.isEmpty()) {
+            object->setShape(MapObject::Bezierloop);
+            object->setPolygon(toPolygon(bezierloopVariant["points"]));
+            object->setLeftControlPoints(toPolygon(bezierloopVariant["leftControlPoints"]));
+            object->setRightControlPoints(toPolygon(bezierloopVariant["rightControlPoints"]));
         }
         if (objectVariantMap.contains("ellipse"))
             object->setShape(MapObject::Ellipse);

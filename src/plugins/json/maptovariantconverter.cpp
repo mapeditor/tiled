@@ -249,7 +249,9 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
          *   ]
          */
         const QPolygonF &polygon = object->polygon();
-        if (!polygon.isEmpty()) {
+        if (!polygon.isEmpty() &&
+                (object->shape() == MapObject::Polygon ||
+                object->shape() == MapObject::Polyline)) {
             QVariantList pointVariants;
             foreach (const QPointF &point, polygon) {
                 QVariantMap pointVariant;
@@ -263,6 +265,56 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
             else
                 objectVariant["polyline"] = pointVariants;
         }
+
+        /* Beziers are stored in this format:
+         *
+         *   "bezierloop/bezierline": {
+         *       points: [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }, ...],
+         *       leftControlPoints: [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }, ...],
+         *       rightControlPoints: [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }, ...]
+         *   }
+         */
+        if (!polygon.isEmpty() &&
+                (object->shape() == MapObject::Bezierline ||
+                object->shape() == MapObject::Bezierloop)) {
+
+            QVariantMap bezierVariant;
+
+            QVariantList pointVariants;
+            foreach (const QPointF &point, polygon) {
+                QVariantMap pointVariant;
+                pointVariant["x"] = point.x();
+                pointVariant["y"] = point.y();
+                pointVariants.append(pointVariant);
+            }
+
+            QVariantList leftControlPointVariants;
+            foreach (const QPointF &leftControlPoint, object->leftControlPoints()) {
+                QVariantMap leftControlPointVariant;
+                leftControlPointVariant["x"] = leftControlPoint.x();
+                leftControlPointVariant["y"] = leftControlPoint.y();
+                leftControlPointVariants.append(leftControlPointVariant);
+            }
+
+            QVariantList rightControlPointVariants;
+            foreach (const QPointF &rightControlPoint, object->rightControlPoints()) {
+                QVariantMap rightControlPointVariant;
+                rightControlPointVariant["x"] = rightControlPoint.x();
+                rightControlPointVariant["y"] = rightControlPoint.y();
+                rightControlPointVariants.append(rightControlPointVariant);
+            }
+
+            bezierVariant["points"] = pointVariants;
+            bezierVariant["leftControlPoints"] = leftControlPointVariants;
+            bezierVariant["rightControlPoints"] = rightControlPointVariants;
+
+            if (object->shape() == MapObject::Bezierloop)
+                objectVariant["bezierloop"] = bezierVariant;
+            else
+                objectVariant["bezierline"] = bezierVariant;
+
+        }
+
 
         if (object->shape() == MapObject::Ellipse)
             objectVariant["ellipse"] = true;

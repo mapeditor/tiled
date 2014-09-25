@@ -91,6 +91,8 @@ private:
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 
+    QString createPolygonString(const QPolygonF &polygon);
+
     QDir mMapDir;     // The directory in which the map is being saved
     GidMapper mGidMapper;
     bool mUseAbsolutePaths;
@@ -424,8 +426,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
             for (int x = 0; x < tileLayer->width(); ++x) {
                 const unsigned gid = mGidMapper.cellToGid(tileLayer->cellAt(x, y));
                 tileData.append(QString::number(gid));
-                if (x != tileLayer->width() - 1
-                    || y != tileLayer->height() - 1)
+                if (x != tileLayer->width() - 1 || y != tileLayer->height() - 1)
                     tileData.append(QLatin1String(","));
             }
             tileData.append(QLatin1String("\n"));
@@ -550,18 +551,25 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!polygon.isEmpty()) {
         if (mapObject->shape() == MapObject::Polygon)
             w.writeStartElement(QLatin1String("polygon"));
-        else
+        else if (mapObject->shape() == MapObject::Polyline)
             w.writeStartElement(QLatin1String("polyline"));
+        else if (mapObject->shape() == MapObject::Bezierloop)
+            w.writeStartElement(QLatin1String("bezierloop"));
+        else
+            w.writeStartElement(QLatin1String("bezierline"));
 
-        QString points;
-        foreach (const QPointF &point, polygon) {
-            points.append(QString::number(point.x()));
-            points.append(QLatin1Char(','));
-            points.append(QString::number(point.y()));
-            points.append(QLatin1Char(' '));
-        }
-        points.chop(1);
+        QString points = createPolygonString(polygon);
         w.writeAttribute(QLatin1String("points"), points);
+
+
+        if (mapObject->shape() == MapObject::Bezierline || mapObject->shape() == MapObject::Bezierloop) {
+            QString leftControlPoints = createPolygonString(mapObject->leftControlPoints());
+            w.writeAttribute(QLatin1String("leftControlPoints"), leftControlPoints);
+
+            QString rightControlPoints = createPolygonString(mapObject->rightControlPoints());
+            w.writeAttribute(QLatin1String("rightControlPoints"), rightControlPoints);
+        }
+
         w.writeEndElement();
     }
 
@@ -624,6 +632,18 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
     w.writeEndElement();
 }
 
+QString MapWriterPrivate::createPolygonString(const QPolygonF &polygon)
+{
+    QString points;
+    foreach (const QPointF &point, polygon) {
+        points.append(QString::number(point.x()));
+        points.append(QLatin1Char(','));
+        points.append(QString::number(point.y()));
+        points.append(QLatin1Char(' '));
+    }
+    points.chop(1);
+    return points;
+}
 
 MapWriter::MapWriter()
     : d(new MapWriterPrivate)
