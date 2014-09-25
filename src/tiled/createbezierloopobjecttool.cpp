@@ -47,10 +47,3 @@ MapObject *CreateBezierloopObjectTool::createNewMapObject()
     newMapObject->setShape(MapObject::Bezierloop);
     return newMapObject;
 }
-
-void CreateBezierloopObjectTool::finishNewMapObject(){
-    if (mNewMapObjectItem->mapObject()->polygon().size() >= 2)
-        CreateObjectTool::finishNewMapObject();
-    else
-        CreateObjectTool::cancelNewMapObject();
-}

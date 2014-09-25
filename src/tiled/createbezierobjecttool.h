@@ -43,6 +43,7 @@ protected:
     void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
 
     MapObject *clearNewMapObjectItem();
+    void finishNewMapObject();
 
 private:
     bool mMouseIsDown;

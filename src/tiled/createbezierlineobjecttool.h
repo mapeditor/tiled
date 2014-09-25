@@ -35,7 +35,6 @@ public:
     void languageChanged();
 protected:
     MapObject *createNewMapObject();
-    void finishNewMapObject();
 };
 
 }

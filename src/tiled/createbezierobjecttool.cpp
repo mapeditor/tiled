@@ -165,3 +165,10 @@ MapObject *CreateBezierObjectTool::clearNewMapObjectItem(){
 
     return CreateObjectTool::clearNewMapObjectItem();
 }
+
+void CreateBezierObjectTool::finishNewMapObject(){
+    if (mNewMapObjectItem->mapObject()->polygon().size() >= 2)
+        CreateObjectTool::finishNewMapObject();
+    else
+        CreateObjectTool::cancelNewMapObject();
+}
