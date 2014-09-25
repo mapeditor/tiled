@@ -78,13 +78,22 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                       imgSize.height()).adjusted(-1, -1 - nameHeight, 1, 1);
     } else if (!object->polygon().isEmpty()) {
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
-        const QPointF &pos = object->position();
-        const QPolygonF polygon = object->polygon().translated(pos);
-        const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
-        return screenPolygon.boundingRect().adjusted(-extraSpace,
+
+        if (object->shape() == MapObject::Polygon || object->shape() == MapObject::Polyline){
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
+            return screenPolygon.boundingRect().adjusted(-extraSpace,
                                                      -extraSpace - nameHeight - 1,
                                                      extraSpace,
                                                      extraSpace);
+        } else {
+            QPainterPath bezierShape = this->shape(object);
+            return bezierShape.boundingRect().adjusted(-extraSpace,
+                                                           -extraSpace,
+                                                           extraSpace + 1,
+                                                           extraSpace + 1);
+        }
     } else {
         // Take the bounding rect of the projected object, and then add a few
         // pixels on all sides to correct for the line width.
@@ -120,6 +129,31 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
                     path.addPolygon(lineToPolygon(screenPolygon[i - 1],
                                                   screenPolygon[i]));
                 }
+                path.setFillRule(Qt::WindingFill);
+            }
+            break;
+        }
+        case MapObject::Bezierline:
+        case MapObject::Bezierloop: {
+            if(object->polygon().size() < 2) break;
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            const QPolygonF leftControlPoints = object->leftControlPoints().translated(pos);
+            const QPolygonF rightControlPoints = object->rightControlPoints().translated(pos);
+
+            const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
+            const QPolygonF screenLeftControlPoints = pixelToScreenCoords(leftControlPoints);
+            const QPolygonF screenRightControlPoints = pixelToScreenCoords(rightControlPoints);
+
+
+            for (int i = 0; i < screenPolygon.size() -1; ++i) {
+                path.moveTo(screenPolygon[i]);
+                path.cubicTo(screenRightControlPoints[i], screenLeftControlPoints[i+1], screenPolygon[i+1]);
+            }
+            if(object->shape() == MapObject::Bezierloop){
+                int lastPointIndex = screenPolygon.size() -1;
+                path.moveTo(screenPolygon[lastPointIndex]);
+                path.cubicTo(screenRightControlPoints[lastPointIndex], screenLeftControlPoints[0], screenPolygon[0]);
                 path.setFillRule(Qt::WindingFill);
             }
             break;
@@ -474,6 +508,40 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             screenPolygon.translate(0, -shadowOffset);
 
             painter->drawPolyline(screenPolygon);
+            break;
+        }
+        case MapObject::Bezierline:
+        case MapObject::Bezierloop: {
+            if (object->polygon().size() < 2) break;
+            QPainterPath path;
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
+            const QPolygonF leftControlPoints = object->leftControlPoints().translated(pos);
+            const QPolygonF screenLeftControlPoints = pixelToScreenCoords(leftControlPoints);
+            const QPolygonF rightControlPoints = object->rightControlPoints().translated(pos);
+            const QPolygonF screenRightControlPoints = pixelToScreenCoords(rightControlPoints);
+
+            path.moveTo(screenPolygon[0]);
+            for (int i = 0; i < screenPolygon.size() -1; ++i) {
+                path.cubicTo(screenRightControlPoints[i], screenLeftControlPoints[i+1], screenPolygon[i+1]);
+            }
+            if(object->shape() == MapObject::Bezierloop){
+                int lastPointIndex = screenPolygon.size() -1;
+                path.moveTo(screenPolygon[lastPointIndex]);
+                path.cubicTo(screenRightControlPoints[lastPointIndex], screenLeftControlPoints[0], screenPolygon[0]);
+                path.setFillRule(Qt::WindingFill);
+
+                painter->fillPath(path, brush);
+
+            }
+
+            painter->drawPath(path);
+
+            pen.setColor(color);
+            painter->setPen(pen);
+            path.translate(0, -shadowOffset);
+            painter->strokePath(path, pen);
             break;
         }
         }
