@@ -24,24 +24,26 @@
 #include "createobjecttool.h"
 
 namespace Tiled {
-
 namespace Internal {
 
 class CreateScalableObjectTool : public CreateObjectTool
 {
     Q_OBJECT
+
 public:
     CreateScalableObjectTool(QObject *parent);
-        void languageChanged();
+
+    void languageChanged();
+
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, const bool snapToFineGrid);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, const bool snapToFineGrid);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, const bool snapToFineGrid);
+                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
 
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled
 
 #endif // CREATESCALABLEOBJECTTOOL_H
