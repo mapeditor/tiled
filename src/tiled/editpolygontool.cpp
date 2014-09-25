@@ -87,6 +87,70 @@ private:
     bool mSelected;
 };
 
+/**
+ * A handle that allows moving around a point of a polygon.
+ */
+class ControlPointHandle : public QGraphicsItem
+{
+public:
+    ControlPointHandle(MapObjectItem *mapObjectItem, int pointIndex, bool isRightControlPoint)
+        : QGraphicsItem()
+        , mMapObjectItem(mapObjectItem)
+        , mPointIndex(pointIndex)
+        , mIsRightControlPoint(isRightControlPoint)
+    {
+        setFlags(QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
+        setZValue(10000);
+        setCursor(Qt::SizeAllCursor);
+    }
+
+    MapObjectItem *mapObjectItem() const { return mMapObjectItem; }
+    MapObject *mapObject() const { return mMapObjectItem->mapObject(); }
+
+    int pointIndex() const { return mPointIndex; }
+
+    void setPointPosition(const QPointF &pos);
+
+    QRectF boundingRect() const;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+
+private:
+    MapObjectItem *mMapObjectItem;
+    int mPointIndex;
+    bool mIsRightControlPoint;
+    QPointF mReferencePosition;
+};
+
+/**
+ * A line that connects the bezier and control points handles
+ * to indicate which control points belong to which polygon point
+ */
+class ControlPointConnector : public QGraphicsItem
+{
+public:
+    ControlPointConnector(PointHandle* pointHandle, ControlPointHandle* controlPointHandle)
+        : QGraphicsItem(),
+          mPointHandle(pointHandle),
+          mControlPointHandle(controlPointHandle)
+    {
+
+        setFlags(QGraphicsItem::ItemIgnoresParentOpacity);
+        setZValue(10000);
+    }
+
+    QRectF boundingRect() const;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+
+private:
+    PointHandle *mPointHandle;
+    ControlPointHandle *mControlPointHandle;
+};
+
 } // namespace Internal
 } // namespace Tiled
 
@@ -119,6 +183,46 @@ void PointHandle::paint(QPainter *painter,
     }
 }
 
+void ControlPointHandle::setPointPosition(const QPointF &pos)
+{
+    MapObject *mapObject = mMapObjectItem->mapObject();
+    QPolygonF leftControlPoints = mapObject->leftControlPoints();
+    QPolygonF rightControlPoints = mapObject->rightControlPoints();
+    QPolygonF polygon = mapObject->polygon();
+
+    QPolygonF &changedControlPoints = mIsRightControlPoint ?
+                rightControlPoints : leftControlPoints;
+    changedControlPoints[mPointIndex] = pos - mapObject->position();
+    mapObjectItem()->setBezier(polygon, leftControlPoints, rightControlPoints);
+}
+
+QRectF ControlPointHandle::boundingRect() const
+{
+    return QRectF(-5, -5, 10 + 1, 10 + 1);
+}
+
+void ControlPointHandle::paint(QPainter *painter,
+                        const QStyleOptionGraphicsItem *,
+                        QWidget *)
+{
+    painter->setPen(Qt::black);
+    painter->setBrush(Qt::black);
+    painter->drawEllipse(QPointF(0,0), 3,3);
+}
+
+QRectF ControlPointConnector::boundingRect() const
+{
+    return QRectF(mPointHandle->pos(), mControlPointHandle->pos());
+}
+
+void ControlPointConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+{
+    QPen pen;
+    pen.setCosmetic(true);
+    pen.setColor(Qt::black);
+    painter->setPen(pen);
+    painter->drawLine(mPointHandle->pos(), mControlPointHandle->pos()) ;
+}
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
     : AbstractObjectTool(tr("Edit Polygons"),
@@ -128,6 +232,7 @@ EditPolygonTool::EditPolygonTool(QObject *parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
     , mClickedHandle(0)
+    , mClickedControlPointHandle(0)
     , mClickedObjectItem(0)
     , mMode(NoMode)
 {
@@ -168,9 +273,24 @@ void EditPolygonTool::deactivate(MapScene *scene)
     while (i.hasNext())
         qDeleteAll(i.next().value());
 
+    QMapIterator<MapObjectItem*, QList<ControlPointHandle*> > l(mLeftControlPointHandles);
+    while (l.hasNext())
+        qDeleteAll(l.next().value());
+    QMapIterator<MapObjectItem*, QList<ControlPointHandle*> > r(mRightControlPointHandles);
+    while (r.hasNext())
+        qDeleteAll(r.next().value());
+
+    QMapIterator<MapObjectItem*, QList<ControlPointConnector*> > c(mControlPointConnectors);
+    while (c.hasNext())
+        qDeleteAll(c.next().value());
+
     mHandles.clear();
+    mLeftControlPointHandles.clear();
+    mRightControlPointHandles.clear();
+    mControlPointConnectors.clear();
     mSelectedHandles.clear();
     mClickedHandle = 0;
+    mClickedControlPointHandle = 0;
 
     AbstractObjectTool::deactivate(scene);
 }
@@ -188,7 +308,11 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
-            if (mClickedHandle)
+            //prioritize control points over polygon handles
+            if (mClickedControlPointHandle) {
+                startMovingControlPoint();
+            }
+            else if (mClickedHandle)
                 startMoving();
             else
                 startSelecting();
@@ -202,6 +326,8 @@ void EditPolygonTool::mouseMoved(const QPointF &pos,
     case Moving:
         updateMovingItems(pos, modifiers);
         break;
+    case MovingControlPoint:
+        updateMovingControlPoint(pos, modifiers);
     case NoMode:
         break;
     }
@@ -231,6 +357,8 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
         const QList<QGraphicsItem *> items = mapScene()->items(mStart);
         mClickedObjectItem = first<MapObjectItem>(items);
         mClickedHandle = first<PointHandle>(items);
+
+        mClickedControlPointHandle = first<ControlPointHandle>(items);
         break;
     }
     case Qt::RightButton: {
@@ -301,6 +429,9 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     case Moving:
         finishMoving(event->scenePos());
         break;
+    case MovingControlPoint:
+        finishMovingControlPoint(event->scenePos());
+        break;
     }
 
     mMousePressed = false;
@@ -354,6 +485,39 @@ void EditPolygonTool::updateHandles()
         }
     }
 
+    QMutableMapIterator<MapObjectItem*, QList<ControlPointHandle*> > l(mLeftControlPointHandles);
+    while (l.hasNext()) {
+        l.next();
+        if (!selection.contains(l.key())) {
+            foreach (ControlPointHandle *handle, l.value()) {
+                delete handle;
+            }
+            l.remove();
+        }
+    }
+
+    QMutableMapIterator<MapObjectItem*, QList<ControlPointHandle*> > r(mRightControlPointHandles);
+    while (r.hasNext()) {
+        r.next();
+        if (!selection.contains(r.key())) {
+            foreach (ControlPointHandle *handle, r.value()) {
+                delete handle;
+            }
+            r.remove();
+        }
+    }
+
+    QMutableMapIterator<MapObjectItem*, QList<ControlPointConnector*> > c(mControlPointConnectors);
+    while (c.hasNext()) {
+        c.next();
+        if (!selection.contains(c.key())) {
+            foreach (ControlPointConnector *handle, c.value()) {
+                delete handle;
+            }
+            c.remove();
+        }
+    }
+
     MapRenderer *renderer = mapDocument()->renderer();
 
     foreach (MapObjectItem *item, selection) {
@@ -364,13 +528,40 @@ void EditPolygonTool::updateHandles()
         QPolygonF polygon = object->polygon();
         polygon.translate(object->position());
 
+        QPolygonF leftControlPoints = object->leftControlPoints();
+        leftControlPoints.translate(object->position());
+
+        QPolygonF rightControlPoints = object->rightControlPoints();
+        rightControlPoints.translate(object->position());
+
+
         QList<PointHandle*> pointHandles = mHandles.value(item);
+        QList<ControlPointHandle*> leftControlPointHandles = mLeftControlPointHandles.value(item);
+        QList<ControlPointHandle*> rightControlPointHandles = mRightControlPointHandles.value(item);
+        QList<ControlPointConnector*> controlPointConnectors = mControlPointConnectors.value(item);
 
         // Create missing handles
         while (pointHandles.size() < polygon.size()) {
             PointHandle *handle = new PointHandle(item, pointHandles.size());
             pointHandles.append(handle);
             mapScene()->addItem(handle);
+
+            if(item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape() == MapObject::Bezierloop) {
+                ControlPointHandle *leftControPointHandle = new ControlPointHandle(item, leftControlPointHandles.size(), false);
+                ControlPointHandle *rightControPointHandle = new ControlPointHandle(item, rightControlPointHandles.size(), true);
+                leftControlPointHandles.append(leftControPointHandle);
+                rightControlPointHandles.append(rightControPointHandle);
+
+                ControlPointConnector *leftConnection = new ControlPointConnector(handle, leftControPointHandle);
+                ControlPointConnector *rightConnection = new ControlPointConnector(handle, rightControPointHandle);
+                controlPointConnectors.append(leftConnection);
+                controlPointConnectors.append(rightConnection);
+
+                mapScene()->addItem(leftConnection);
+                mapScene()->addItem(rightConnection);
+                mapScene()->addItem(leftControPointHandle);
+                mapScene()->addItem(rightControPointHandle);
+            }
         }
 
         // Remove superfluous handles
@@ -387,9 +578,26 @@ void EditPolygonTool::updateHandles()
             const QPointF handlePos = renderer->pixelToScreenCoords(point);
             const QPointF internalHandlePos = handlePos - item->pos();
             pointHandles.at(i)->setPos(item->mapToScene(internalHandlePos));
+
+            if (item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape() == MapObject::Bezierloop) {
+                const QPointF &leftControlPoint = leftControlPoints.at(i);
+                const QPointF leftControlPointHandlePos = renderer->pixelToScreenCoords(leftControlPoint);
+                const QPointF internalLeftControlPointHandlePos = leftControlPointHandlePos - item->pos();
+                QPointF internalLeftControlPointHandlePositionPixel = item->mapToScene(internalLeftControlPointHandlePos);
+                leftControlPointHandles.at(i)->setPos(internalLeftControlPointHandlePositionPixel);
+
+                const QPointF &rightControlPoint = rightControlPoints.at(i);
+                const QPointF rightControlPointHandlePos = renderer->pixelToScreenCoords(rightControlPoint);
+                const QPointF internalRighControlPointHandlePos = rightControlPointHandlePos - item->pos();
+                QPointF internalRightControlPointHandlePositionPixel = item->mapToScene(internalRighControlPointHandlePos);
+                rightControlPointHandles.at(i)->setPos(internalRightControlPointHandlePositionPixel);
+            }
         }
 
         mHandles.insert(item, pointHandles);
+        mLeftControlPointHandles.insert(item, leftControlPointHandles);
+        mRightControlPointHandles.insert(item, rightControlPointHandles);
+        mControlPointConnectors.insert(item, controlPointConnectors);
     }
 }
 
@@ -402,6 +610,7 @@ void EditPolygonTool::objectsRemoved(const QList<MapObject *> &objects)
         // disallow other actions while moving.
         foreach (MapObject *object, objects)
             mOldPolygons.remove(object);
+
     }
 }
 
@@ -488,6 +697,11 @@ void EditPolygonTool::startMoving()
     }
 }
 
+void EditPolygonTool::startMovingControlPoint()
+{
+   mMode = MovingControlPoint;
+}
+
 void EditPolygonTool::updateMovingItems(const QPointF &pos,
                                         Qt::KeyboardModifiers modifiers)
 {
@@ -526,6 +740,31 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
     }
 }
 
+void EditPolygonTool::updateMovingControlPoint(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+{
+    QPointF newPosition = pos;
+
+    MapRenderer *renderer = mapDocument()->renderer();
+    bool snapToGrid = Preferences::instance()->snapToGrid();
+    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+    if (modifiers & Qt::ControlModifier) {
+        snapToGrid = !snapToGrid;
+        snapToFineGrid = false;
+    }
+
+    if (snapToGrid || snapToFineGrid) {
+        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
+        // Snap the position to the grid
+        QPointF newTileCoords =
+                (renderer->screenToTileCoords(newPosition) * scale).toPoint();
+        newTileCoords /= scale;
+        newPosition = renderer->tileToScreenCoords(newTileCoords);
+    }
+
+    mClickedControlPointHandle->setPos(newPosition);
+    mClickedControlPointHandle->setPointPosition(renderer->screenToPixelCoords(newPosition));
+}
+
 void EditPolygonTool::finishMoving(const QPointF &pos)
 {
     Q_ASSERT(mMode == Moving);
@@ -549,6 +788,17 @@ void EditPolygonTool::finishMoving(const QPointF &pos)
 
     mOldHandlePositions.clear();
     mOldPolygons.clear();
+}
+
+void EditPolygonTool::finishMovingControlPoint(const QPointF &pos)
+{
+    Q_ASSERT(mMode == MovingControlPoint);
+    mMode = NoMode;
+
+    if (mStart == pos)
+        return;
+
+    //TODO: implement undo for control points
 }
 
 void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
@@ -774,7 +1024,9 @@ void EditPolygonTool::joinNodes()
         MapObject *object = i.next().key();
         const RangeSet<int> &indexRanges = i.value();
 
-        const bool closed = object->shape() == MapObject::Polygon;
+        const bool closed = object->shape() == MapObject::Polygon ||
+                            object->shape() == MapObject::Bezierloop;
+
         QPolygonF oldPolygon = object->polygon();
         QPolygonF newPolygon = joinPolygonNodes(oldPolygon, indexRanges,
                                                 closed);
