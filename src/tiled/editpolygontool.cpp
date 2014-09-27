@@ -22,6 +22,7 @@
 
 #include "addremovemapobject.h"
 #include "changepolygon.h"
+#include "changebezier.h"
 #include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -131,10 +132,12 @@ private:
 class ControlPointConnector : public QGraphicsItem
 {
 public:
-    ControlPointConnector(PointHandle* pointHandle, ControlPointHandle* controlPointHandle)
-        : QGraphicsItem(),
-          mPointHandle(pointHandle),
-          mControlPointHandle(controlPointHandle)
+    ControlPointConnector(MapObjectItem *object, int pointIndex, bool isRightControlPoint)
+        : QGraphicsItem()
+        , mMapObjectItem(object)
+        , mPointIndex(pointIndex)
+        , mIsRightControlPoint(isRightControlPoint)
+
     {
 
         setFlags(QGraphicsItem::ItemIgnoresParentOpacity);
@@ -147,8 +150,9 @@ public:
                QWidget *widget = 0);
 
 private:
-    PointHandle *mPointHandle;
-    ControlPointHandle *mControlPointHandle;
+    MapObjectItem *mMapObjectItem;
+    int mPointIndex;
+    bool mIsRightControlPoint;
 };
 
 } // namespace Internal
@@ -212,16 +216,28 @@ void ControlPointHandle::paint(QPainter *painter,
 
 QRectF ControlPointConnector::boundingRect() const
 {
-    return QRectF(mPointHandle->pos(), mControlPointHandle->pos());
+    MapObject *mapObject = mMapObjectItem->mapObject();
+    QPointF point = mapObject->polygon().at(mPointIndex);
+    QPointF controlPoint = mIsRightControlPoint ?
+                mapObject->rightControlPoints().at(mPointIndex) :
+                mapObject->leftControlPoints().at(mPointIndex);
+    QPointF pos = mapObject->position();
+    return QRectF(point + pos, controlPoint + pos);
 }
 
 void ControlPointConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    MapObject *mapObject = mMapObjectItem->mapObject();
     QPen pen;
     pen.setCosmetic(true);
     pen.setColor(Qt::black);
     painter->setPen(pen);
-    painter->drawLine(mPointHandle->pos(), mControlPointHandle->pos()) ;
+    QPointF point = mapObject->polygon().at(mPointIndex);
+    QPointF controlPoint = mIsRightControlPoint ?
+                mapObject->rightControlPoints().at(mPointIndex) :
+                mapObject->leftControlPoints().at(mPointIndex);
+    QPointF pos = mapObject->position();
+    painter->drawLine(point + pos, controlPoint + pos) ;
 }
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
@@ -549,11 +565,12 @@ void EditPolygonTool::updateHandles()
             if(item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape() == MapObject::Bezierloop) {
                 ControlPointHandle *leftControPointHandle = new ControlPointHandle(item, leftControlPointHandles.size(), false);
                 ControlPointHandle *rightControPointHandle = new ControlPointHandle(item, rightControlPointHandles.size(), true);
-                leftControlPointHandles.append(leftControPointHandle);
-                rightControlPointHandles.append(rightControPointHandle);
+                ControlPointConnector *leftConnection = new ControlPointConnector(item, leftControlPointHandles.size(), false);
+                ControlPointConnector *rightConnection = new ControlPointConnector(item, rightControlPointHandles.size(), true);
 
-                ControlPointConnector *leftConnection = new ControlPointConnector(handle, leftControPointHandle);
-                ControlPointConnector *rightConnection = new ControlPointConnector(handle, rightControPointHandle);
+
+                rightControlPointHandles.append(rightControPointHandle);
+                leftControlPointHandles.append(leftControPointHandle);
                 controlPointConnectors.append(leftConnection);
                 controlPointConnectors.append(rightConnection);
 
@@ -570,6 +587,19 @@ void EditPolygonTool::updateHandles()
             if (handle->isSelected())
                 mSelectedHandles.remove(handle);
             delete handle;
+
+            //Number of polygon points is always the same as the number of controlpoints
+            if (item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape()== MapObject::Bezierloop) {
+                ControlPointHandle *leftControlPointHandle = leftControlPointHandles.takeLast();
+                ControlPointHandle *rightControlPointHandle = rightControlPointHandles.takeLast();
+                ControlPointConnector *firstConnector = controlPointConnectors.takeLast();
+                ControlPointConnector *secondConnector = controlPointConnectors.takeLast();
+
+                delete leftControlPointHandle;
+                delete rightControlPointHandle;
+                delete firstConnector;
+                delete secondConnector;
+            }
         }
 
         // Update the position of all handles
@@ -610,7 +640,6 @@ void EditPolygonTool::objectsRemoved(const QList<MapObject *> &objects)
         // disallow other actions while moving.
         foreach (MapObject *object, objects)
             mOldPolygons.remove(object);
-
     }
 }
 
@@ -699,7 +728,13 @@ void EditPolygonTool::startMoving()
 
 void EditPolygonTool::startMovingControlPoint()
 {
-   mMode = MovingControlPoint;
+    mMode = MovingControlPoint;
+
+    mOldLeftControlPoints.clear();
+    mOldRightControlPoints.clear();
+
+    mOldLeftControlPoints = mClickedControlPointHandle->mapObject()->leftControlPoints();
+    mOldRightControlPoints = mClickedControlPointHandle->mapObject()->rightControlPoints();
 }
 
 void EditPolygonTool::updateMovingItems(const QPointF &pos,
@@ -798,7 +833,19 @@ void EditPolygonTool::finishMovingControlPoint(const QPointF &pos)
     if (mStart == pos)
         return;
 
-    //TODO: implement undo for control points
+    MapObject *changedObject = mClickedControlPointHandle->mapObject();
+    QUndoStack *undoStack = mapDocument()->undoStack();
+    undoStack->beginMacro(tr("Move Control Point", ""));
+    undoStack->push(new ChangeBezier(mapDocument(),
+                                     changedObject,
+                                     changedObject->polygon(),
+                                     mOldLeftControlPoints,
+                                     mOldRightControlPoints));
+    undoStack->endMacro();
+
+    mOldLeftControlPoints.clear();
+    mOldRightControlPoints.clear();
+    mClickedControlPointHandle = 0;
 }
 
 void EditPolygonTool::showHandleContextMenu(PointHandle *clickedHandle,
@@ -866,6 +913,12 @@ void EditPolygonTool::deleteNodes()
         QPolygonF oldPolygon = object->polygon();
         QPolygonF newPolygon = oldPolygon;
 
+        QPolygonF oldLeftControlPoints = object->leftControlPoints();
+        QPolygonF newLeftControlPoints = oldLeftControlPoints;
+
+        QPolygonF oldRightControlPoints = object->rightControlPoints();
+        QPolygonF newRightControlPoints = oldRightControlPoints;
+
         // Remove points, back to front to keep the indexes valid
         RangeSet<int>::Range it = indexRanges.end();
         RangeSet<int>::Range begin = indexRanges.begin();
@@ -873,15 +926,27 @@ void EditPolygonTool::deleteNodes()
         do {
             --it;
             newPolygon.remove(it.first(), it.length());
+            if (object->shape() == MapObject::Bezierline || object->shape() == MapObject::Bezierloop) {
+                newLeftControlPoints.remove(it.first(), it.length());
+                newRightControlPoints.remove(it.first(), it.length());
+            }
         } while (it != begin);
 
         if (newPolygon.size() < 2) {
             // We've removed the entire object
             undoStack->push(new RemoveMapObject(mapDocument(), object));
         } else {
-            object->setPolygon(newPolygon);
-            undoStack->push(new ChangePolygon(mapDocument(), object,
+            if (object->shape() == MapObject::Bezierline || object->shape() == MapObject::Bezierloop) {
+                object->setPolygon(newPolygon);
+                object->setLeftControlPoints(newLeftControlPoints);
+                object->setRightControlPoints(newRightControlPoints);
+                undoStack->push(new ChangeBezier(mapDocument(), object,
+                                              oldPolygon, oldLeftControlPoints, oldRightControlPoints));
+            } else {
+                object->setPolygon(newPolygon);
+                undoStack->push(new ChangePolygon(mapDocument(), object,
                                               oldPolygon));
+            }
         }
     }
 
@@ -1037,9 +1102,25 @@ void EditPolygonTool::joinNodes()
                 macroStarted = true;
             }
 
-            object->setPolygon(newPolygon);
-            undoStack->push(new ChangePolygon(mapDocument(), object,
+            //TODO: Better interpolation method for joining beziers
+            if (object->shape() == MapObject::Bezierline || object->shape() == MapObject::Bezierloop) {
+                QPolygonF oldLeftControlPoints = object->leftControlPoints();
+                QPolygonF newLeftControlPoints = joinPolygonNodes(oldLeftControlPoints, indexRanges, closed);
+                QPolygonF oldRightControlPoints = object->rightControlPoints();
+                QPolygonF newRightControlPoints = joinPolygonNodes(oldRightControlPoints, indexRanges, closed);
+
+
+                object->setPolygon(newPolygon);
+                object->setLeftControlPoints(newLeftControlPoints);
+                object->setRightControlPoints(newRightControlPoints);
+                undoStack->push(new ChangeBezier(mapDocument(), object,
+                                              oldPolygon, oldLeftControlPoints, oldRightControlPoints));
+
+            } else {
+                object->setPolygon(newPolygon);
+                undoStack->push(new ChangePolygon(mapDocument(), object,
                                               oldPolygon));
+            }
         }
     }
 
@@ -1062,7 +1143,7 @@ void EditPolygonTool::splitSegments()
         MapObject *object = i.next().key();
         const RangeSet<int> &indexRanges = i.value();
 
-        const bool closed = object->shape() == MapObject::Polygon;
+        const bool closed = (object->shape() == MapObject::Polygon) || (object->shape() == MapObject::Bezierloop);
         QPolygonF oldPolygon = object->polygon();
         QPolygonF newPolygon = splitPolygonSegments(oldPolygon, indexRanges,
                                                     closed);
@@ -1073,9 +1154,25 @@ void EditPolygonTool::splitSegments()
                 macroStarted = true;
             }
 
-            object->setPolygon(newPolygon);
-            undoStack->push(new ChangePolygon(mapDocument(), object,
+            //TODO: Better interpolation method for splitting beziers
+            if (object->shape() == MapObject::Bezierline || object->shape() == MapObject::Bezierline) {
+                QPolygonF oldLeftControlPoints = object->leftControlPoints();
+                QPolygonF newLeftControlPoints = splitPolygonSegments(oldLeftControlPoints, indexRanges, closed);
+                QPolygonF oldRightControlPoints = object->rightControlPoints();
+                QPolygonF newRightControlPoints = splitPolygonSegments(oldRightControlPoints, indexRanges, closed);
+
+
+                object->setPolygon(newPolygon);
+                object->setLeftControlPoints(newLeftControlPoints);
+                object->setRightControlPoints(newRightControlPoints);
+                undoStack->push(new ChangeBezier(mapDocument(), object,
+                                              oldPolygon, oldLeftControlPoints, oldRightControlPoints));
+
+            } else {
+                object->setPolygon(newPolygon);
+                undoStack->push(new ChangePolygon(mapDocument(), object,
                                               oldPolygon));
+            }
         }
     }
 

@@ -105,6 +105,10 @@ private:
     MapObjectItem *mClickedObjectItem;
     QVector<QPointF> mOldHandlePositions;
     QMap<MapObject*, QPolygonF> mOldPolygons;
+
+    QPolygonF mOldLeftControlPoints; //no need for a map, since only one control point can be moved at a time
+    QPolygonF mOldRightControlPoints;
+
     QPointF mAlignPosition;
     Mode mMode;
     QPointF mStart;

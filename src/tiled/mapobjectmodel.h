@@ -97,6 +97,7 @@ public:
     void setObjectName(MapObject *o, const QString &name);
     void setObjectType(MapObject *o, const QString &type);
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
+    void setBezier(MapObject *o, const QPolygonF &points, const QPolygonF &leftControlPoints, const QPolygonF &rightControlPoints);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
     void setObjectRotation(MapObject *o, qreal rotation);

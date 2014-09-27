@@ -413,6 +413,14 @@ void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
     emit objectsChanged(QList<MapObject*>() << o);
 }
 
+void MapObjectModel::setBezier(MapObject *o, const QPolygonF &points, const QPolygonF &leftControlPoints, const QPolygonF &rightControlPoints)
+{
+    o->setPolygon(points);
+    o->setLeftControlPoints(leftControlPoints);
+    o->setRightControlPoints(rightControlPoints);
+    emit objectsChanged(QList<MapObject*>() << o);
+}
+
 void MapObjectModel::setObjectPosition(MapObject *o, const QPointF &pos)
 {
     o->setPosition(pos);

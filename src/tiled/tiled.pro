@@ -54,6 +54,7 @@ SOURCES += aboutdialog.cpp \
     automappingutils.cpp  \
     brushitem.cpp \
     bucketfilltool.cpp \
+    changebezier.cpp \
     changeimagelayerposition.cpp \
     changeimagelayerproperties.cpp \
     changelayer.cpp \
@@ -188,6 +189,7 @@ HEADERS += aboutdialog.h \
     automappingutils.h \
     brushitem.h \
     bucketfilltool.h \
+    changebezier.h \
     changeimagelayerposition.h \
     changeimagelayerproperties.h \
     changelayer.h \
