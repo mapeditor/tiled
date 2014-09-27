@@ -1392,6 +1392,8 @@ void MainWindow::updateActions()
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
+    mUi->actionExportAs->setEnabled(map);
+    mUi->actionReload->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionCloseAll->setEnabled(map);
     mUi->actionCut->setEnabled(canCopy);
