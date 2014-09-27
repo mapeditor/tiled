@@ -874,8 +874,11 @@ void MainWindow::export_()
         }
 
         if (writer) {
-            if (writer->write(mMapDocument->map(), exportFileName))
+            if (writer->write(mMapDocument->map(), exportFileName)) {
+                statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
+                                         3000);
                 return;
+            }
 
             QMessageBox::critical(this, tr("Error Exporting Map"),
                                   writer->errorString());
