@@ -66,6 +66,7 @@
     <addaction name="actionSaveAs"/>
     <addaction name="actionSaveAsImage"/>
     <addaction name="actionExport"/>
+    <addaction name="actionExportAs"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -374,12 +375,12 @@
     <string>Clear Recent Files</string>
    </property>
   </action>
-  <action name="actionExport">
+  <action name="actionExportAs">
    <property name="text">
-    <string>&amp;Export As...</string>
+    <string>E&amp;xport As...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+    <string>Ctrl+Shift+E</string>
    </property>
   </action>
   <action name="actionAddExternalTileset">
@@ -456,6 +457,14 @@
   <action name="actionReload">
    <property name="text">
     <string>Reload</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>&amp;Export</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>
