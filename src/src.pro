@@ -4,4 +4,6 @@ CONFIG   += ordered
 SUBDIRS = libtiled tiled plugins \
     tmxviewer \
     tmxrasterizer \
-    automappingconverter
+    automappingconverter \
+    tiledquickplugin \
+    tiledquick
