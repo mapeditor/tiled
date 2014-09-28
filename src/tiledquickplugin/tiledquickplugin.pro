@@ -1,6 +1,10 @@
 TEMPLATE = lib
 TARGET = tiledquickplugin
-DESTDIR = ../../qml/org/mapeditor/Tiled
+macx {
+    DESTDIR = "../../bin/Tiled Quick.app/Contents/qml/org/mapeditor/Tiled"
+} else {
+    DESTDIR = ../../qml/org/mapeditor/Tiled
+}
 QT += qml quick
 CONFIG += qt plugin
 

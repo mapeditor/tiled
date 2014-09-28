@@ -8,6 +8,10 @@ win32 {
     DESTDIR = ../../bin
 }
 
+macx {
+    TARGET = "Tiled Quick"
+}
+
 SOURCES += main.cpp
 
 RESOURCES += qml.qrc
