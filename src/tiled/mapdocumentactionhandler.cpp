@@ -28,6 +28,7 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapview.h"
+#include "objectgroup.h"
 #include "utils.h"
 
 #include <QAction>
@@ -190,13 +191,22 @@ void MapDocumentActionHandler::selectAll()
     if (!mMapDocument)
         return;
 
-    Map *map = mMapDocument->map();
-    QRect all(0, 0, map->width(), map->height());
-    if (mMapDocument->selectedArea() == all)
+    Layer *layer = mMapDocument->currentLayer();
+    if (!layer)
         return;
 
-    QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all);
-    mMapDocument->undoStack()->push(command);
+    if (TileLayer *tileLayer = layer->asTileLayer()) {
+        QRect all(tileLayer->x(), tileLayer->y(),
+                  tileLayer->width(), tileLayer->height());
+
+        if (mMapDocument->selectedArea() == all)
+            return;
+
+        QUndoCommand *command = new ChangeSelectedArea(mMapDocument, all);
+        mMapDocument->undoStack()->push(command);
+    } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+        mMapDocument->setSelectedObjects(objectGroup->objects());
+    }
 }
 
 void MapDocumentActionHandler::selectNone()

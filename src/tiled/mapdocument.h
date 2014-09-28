@@ -110,13 +110,17 @@ public:
 
     QString fileName() const { return mFileName; }
 
-    QString readerPluginFileName() const { return mReaderPluginFileName; }
-    void setReaderPluginFileName(const QString &readerPluginFileName)
-    { mReaderPluginFileName = readerPluginFileName; }
+    QString lastExportFileName() const;
+    void setLastExportFileName(const QString &fileName);
 
-    QString writerPluginFileName() const { return mWriterPluginFileName; }
-    void setWriterPluginFileName(const QString &writerPluginFileName)
-    { mWriterPluginFileName = writerPluginFileName; }
+    QString readerPluginFileName() const;
+    void setReaderPluginFileName(const QString &fileName);
+
+    QString writerPluginFileName() const;
+    void setWriterPluginFileName(const QString &fileName);
+
+    QString exportPluginFileName() const;
+    void setExportPluginFileName(const QString &fileName);
 
     QString displayName() const;
 
@@ -396,6 +400,7 @@ private:
     void deselectObjects(const QList<MapObject*> &objects);
 
     QString mFileName;
+    QString mLastExportFileName;
 
     /*
      * The filename of a plugin is unique. So it can be used to determine
@@ -406,6 +411,7 @@ private:
      */
     QString mReaderPluginFileName;
     QString mWriterPluginFileName;
+    QString mExportPluginFileName;
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
@@ -419,6 +425,46 @@ private:
     QUndoStack *mUndoStack;
     QDateTime mLastSaved;
 };
+
+inline QString MapDocument::lastExportFileName() const
+{
+    return mLastExportFileName;
+}
+
+inline void MapDocument::setLastExportFileName(const QString &fileName)
+{
+    mLastExportFileName = fileName;
+}
+
+inline QString MapDocument::readerPluginFileName() const
+{
+    return mReaderPluginFileName;
+}
+
+inline void MapDocument::setReaderPluginFileName(const QString &fileName)
+{
+    mReaderPluginFileName = fileName;
+}
+
+inline QString MapDocument::writerPluginFileName() const
+{
+    return mWriterPluginFileName;
+}
+
+inline void MapDocument::setWriterPluginFileName(const QString &fileName)
+{
+    mWriterPluginFileName = fileName;
+}
+
+inline QString MapDocument::exportPluginFileName() const
+{
+    return mExportPluginFileName;
+}
+
+inline void MapDocument::setExportPluginFileName(const QString &fileName)
+{
+    mExportPluginFileName = fileName;
+}
 
 /**
  * Emits the map changed signal. This signal should be emitted after changing

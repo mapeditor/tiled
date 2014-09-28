@@ -290,7 +290,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
-    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(exportAs()));
+    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
+    connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
@@ -852,6 +853,42 @@ void MainWindow::saveAsImage()
     dialog.exec();
 }
 
+void MainWindow::export_()
+{
+    if (!mMapDocument)
+        return;
+
+    QString exportFileName = mMapDocument->lastExportFileName();
+    QString exportPluginFileName = mMapDocument->exportPluginFileName();
+    TmxMapWriter mapWriter;
+
+    if (!exportFileName.isEmpty()) {
+        MapWriterInterface *writer = 0;
+
+        if (exportPluginFileName.isEmpty()) {
+            writer = &mapWriter;
+        } else {
+            PluginManager *pm = PluginManager::instance();
+            if (const Plugin *plugin = pm->pluginByFileName(exportPluginFileName))
+                writer = qobject_cast<MapWriterInterface*>(plugin->instance);
+        }
+
+        if (writer) {
+            if (writer->write(mMapDocument->map(), exportFileName)) {
+                statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
+                                         3000);
+                return;
+            }
+
+            QMessageBox::critical(this, tr("Error Exporting Map"),
+                                  writer->errorString());
+        }
+    }
+
+    // fall back when no succesful export happened
+    exportAs();
+}
+
 void MainWindow::exportAs()
 {
     if (!mMapDocument)
@@ -869,22 +906,26 @@ void MainWindow::exportAs()
         }
     }
 
+    Preferences *pref = Preferences::instance();
+
     QString selectedFilter =
             mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+    QString suggestedFilename = mMapDocument->lastExportFileName();
 
-    QFileInfo baseNameInfo = QFileInfo(mMapDocument->fileName());
-    QString baseName = baseNameInfo.baseName();
+    if (suggestedFilename.isEmpty()) {
+        QFileInfo baseNameInfo = QFileInfo(mMapDocument->fileName());
+        QString baseName = baseNameInfo.baseName();
 
-    QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
-    extensionFinder.indexIn(selectedFilter);
-    const QString extension = extensionFinder.cap(1);
+        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+        extensionFinder.indexIn(selectedFilter);
+        const QString extension = extensionFinder.cap(1);
 
-    Preferences *pref = Preferences::instance();
-    QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
 
-    QString suggestedFilename = lastExportedFilePath
-                                + QLatin1String("/") + baseName
-                                + QLatin1Char('.') + extension;
+        suggestedFilename = lastExportedFilePath
+                + QLatin1String("/") + baseName
+                + QLatin1Char('.') + extension;
+    }
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
                                                     suggestedFilename,
@@ -938,8 +979,15 @@ void MainWindow::exportAs()
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
-        QMessageBox::critical(this, tr("Error Saving Map"),
+        QMessageBox::critical(this, tr("Error Exporting Map"),
                               chosenWriter->errorString());
+    } else {
+        // Remember export parameters, so subsequent exports can be done faster
+        mMapDocument->setLastExportFileName(fileName);
+        QString exportPluginFileName;
+        if (const Plugin *plugin = pm->plugin(chosenWriter))
+            exportPluginFileName = plugin->fileName;
+        mMapDocument->setExportPluginFileName(exportPluginFileName);
     }
 }
 
@@ -1344,6 +1392,8 @@ void MainWindow::updateActions()
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
+    mUi->actionExportAs->setEnabled(map);
+    mUi->actionReload->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionCloseAll->setEnabled(map);
     mUi->actionCut->setEnabled(canCopy);

@@ -121,6 +121,7 @@ public slots:
     bool saveFile();
     bool saveFileAs();
     void saveAsImage();
+    void export_();
     void exportAs();
     void reload();
     void closeFile();
