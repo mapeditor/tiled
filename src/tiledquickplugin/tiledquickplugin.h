@@ -1,17 +1,15 @@
-#ifndef TILEDQUICKPLUGIN_H
-#define TILEDQUICKPLUGIN_H
+#ifndef TILEDQUICKPLUGIN_PLUGIN_H
+#define TILEDQUICKPLUGIN_PLUGIN_H
 
-#include <QQuickItem>
+#include <QQmlExtensionPlugin>
 
-class TiledQuickPlugin : public QQuickItem
+class TiledQuickPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
-    Q_DISABLE_COPY(TiledQuickPlugin)
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:
-    TiledQuickPlugin(QQuickItem *parent = 0);
-    ~TiledQuickPlugin();
+    void registerTypes(const char *uri);
 };
 
-#endif // TILEDQUICKPLUGIN_H
-
+#endif // TILEDQUICKPLUGIN_PLUGIN_H

@@ -1,16 +1,11 @@
 #include "tiledquickplugin.h"
 
-TiledQuickPlugin::TiledQuickPlugin(QQuickItem *parent):
-    QQuickItem(parent)
+#include "map.h"
+
+#include <qqml.h>
+
+void TiledQuickPlugin::registerTypes(const char *uri)
 {
-    // By default, QQuickItem does not draw anything. If you subclass
-    // QQuickItem to create a visual item, you will need to uncomment the
-    // following line and re-implement updatePaintNode()
-
-    // setFlag(ItemHasContents, true);
+    // @uri org.mapeditor.Tiled
+    qmlRegisterType<QObject>(uri, 1, 0, "TiledQuickPlugin");
 }
-
-TiledQuickPlugin::~TiledQuickPlugin()
-{
-}
-

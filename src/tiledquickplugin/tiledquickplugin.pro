@@ -1,23 +1,32 @@
+include(../libtiled/libtiled.pri)
+
 TEMPLATE = lib
 TARGET = tiledquickplugin
+QT += qml quick
+CONFIG += qt plugin
+
 macx {
     DESTDIR = "../../bin/Tiled Quick.app/Contents/qml/org/mapeditor/Tiled"
 } else {
     DESTDIR = ../../qml/org/mapeditor/Tiled
 }
-QT += qml quick
-CONFIG += qt plugin
+
+macx {
+    QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
+} else:win32 {
+    LIBS += -L$$OUT_PWD/../../lib
+} else {
+    QMAKE_LIBDIR = $$OUT_PWD/../../lib $$QMAKE_LIBDIR
+}
 
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = org.mapeditor.Tiled
 
 # Input
 SOURCES += \
-    tiledquickplugin_plugin.cpp \
     tiledquickplugin.cpp
 
 HEADERS += \
-    tiledquickplugin_plugin.h \
     tiledquickplugin.h
 
 OTHER_FILES = qmldir
@@ -37,4 +46,3 @@ unix {
     target.path = $$installPath
     INSTALLS += target qmldir
 }
-
