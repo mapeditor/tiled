@@ -13,7 +13,7 @@ ApplicationWindow {
 
     title: qsTr("Tiled")
 
-    TiledQuickPlugin {}
+    ObjectGroup {}
 
     menuBar: MenuBar {
         Menu {

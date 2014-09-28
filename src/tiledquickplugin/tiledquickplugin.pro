@@ -1,3 +1,4 @@
+include(../../tiled.pri)
 include(../libtiled/libtiled.pri)
 
 TEMPLATE = lib
@@ -17,6 +18,15 @@ macx {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
     QMAKE_LIBDIR = $$OUT_PWD/../../lib $$QMAKE_LIBDIR
+}
+
+# Make sure the Tiled executable can find libtiled
+!win32:!macx:contains(RPATH, yes) {
+    QMAKE_RPATHDIR += \$\$ORIGIN/../../../../lib
+
+    # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
+    QMAKE_LFLAGS += -Wl,-z,origin \'-Wl,-rpath,$$join(QMAKE_RPATHDIR, ":")\'
+    QMAKE_RPATHDIR =
 }
 
 TARGET = $$qtLibraryTarget($$TARGET)
