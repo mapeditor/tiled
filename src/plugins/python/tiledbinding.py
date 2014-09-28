@@ -89,7 +89,6 @@ cls_props.add_method('keys', 'QList<QString>', [])
 
 cls_map = tiled.add_class('Map')
 cls_map.add_enum('Orientation', ('Unknown','Orthogonal','Isometric'))
-cls_map.add_copy_constructor()
 cls_map.add_constructor([('Orientation','orient'), ('int','w'), ('int','h'),
     ('int','tileW'), ('int','tileH')])
 cls_map.add_method('orientation', 'Orientation', [])
@@ -126,10 +125,10 @@ cls_map.add_method('setProperty', None, [('QString','name'),
 
 cls_cell = tiled.add_class('Cell')
 cls_cell.add_constructor([param('Tiled::Tile*','tile',
-    transfer_ownership=True)])
+    transfer_ownership=False)])
 cls_cell.add_method('isEmpty', 'bool', [])
 cls_cell.add_instance_attribute('tile', retval('Tiled::Tile*', 
-    is_const=True), is_const=True)
+    is_const=False, reference_existing_object=True), is_const=True)
 
 cls_tilelayer = tiled.add_class('TileLayer', cls_layer)
 cls_tilelayer.add_constructor([('QString','name'), ('int','x'), ('int','y'),
@@ -314,22 +313,37 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
 {
         PyObject *py_retval;
         PyTiledLoggingInterface *py_LoggingInterface;
-        
+
         py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
         py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
         py_LoggingInterface->obj = cvalue;
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
-        """
+
+int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *address)
+{
+    PyObject *py_retval;
+    PyTiledMap *tmp_Map;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
+        Py_DECREF(py_retval);
+        return 0;
+    }
+    *address = tmp_Map->obj->clone();
+    Py_DECREF(py_retval);
+    return 1;
+}
+"""
     #mod.generate_c_to_python_type_converter(
     #  utils.eval_retval(retval("Tiled::LoggingInterface")),
     #  sink)
-    mod.generate_python_to_c_type_converter(
-        utils.eval_retval(retval('Tiled::Map*',caller_owns_return=True)),
-        sink)
+    # mod.generate_python_to_c_type_converter(
+    #    utils.eval_retval(retval('Tiled::Map*',caller_owns_return=True)),
+    #    sink)
     mod.generate_c_to_python_type_converter(
-        utils.eval_retval("const Tiled::Map"),
+        utils.eval_retval(retval('const Tiled::Map*',reference_existing_object=True)),
         sink)
 
     print >>fh, sink.flush()

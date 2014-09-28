@@ -3706,29 +3706,8 @@ PyTypeObject PyTiledProperties_Type = {
 
 
 
-
 static int
-_wrap_PyTiledMap__tp_init__0(PyTiledMap *self, PyObject *args, PyObject *kwargs, PyObject **return_exception)
-{
-    PyTiledMap *ctor_arg;
-    const char *keywords[] = {"ctor_arg", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "O!", (char **) keywords, &PyTiledMap_Type, &ctor_arg)) {
-        {
-            PyObject *exc_type, *traceback;
-            PyErr_Fetch(&exc_type, return_exception, &traceback);
-            Py_XDECREF(exc_type);
-            Py_XDECREF(traceback);
-        }
-        return -1;
-    }
-    self->obj = new Tiled::Map(*((PyTiledMap *) ctor_arg)->obj);
-    self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    return 0;
-}
-
-static int
-_wrap_PyTiledMap__tp_init__1(PyTiledMap *self, PyObject *args, PyObject *kwargs, PyObject **return_exception)
+_wrap_PyTiledMap__tp_init(PyTiledMap *self, PyObject *args, PyObject *kwargs)
 {
     Tiled::Map::Orientation orient;
     int w;
@@ -3738,41 +3717,11 @@ _wrap_PyTiledMap__tp_init__1(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     const char *keywords[] = {"orient", "w", "h", "tileW", "tileH", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiiii", (char **) keywords, &orient, &w, &h, &tileW, &tileH)) {
-        {
-            PyObject *exc_type, *traceback;
-            PyErr_Fetch(&exc_type, return_exception, &traceback);
-            Py_XDECREF(exc_type);
-            Py_XDECREF(traceback);
-        }
         return -1;
     }
     self->obj = new Tiled::Map(orient, w, h, tileW, tileH);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return 0;
-}
-
-int _wrap_PyTiledMap__tp_init(PyTiledMap *self, PyObject *args, PyObject *kwargs)
-{
-    int retval;
-    PyObject *error_list;
-    PyObject *exceptions[2] = {0,};
-    retval = _wrap_PyTiledMap__tp_init__0(self, args, kwargs, &exceptions[0]);
-    if (!exceptions[0]) {
-        return retval;
-    }
-    retval = _wrap_PyTiledMap__tp_init__1(self, args, kwargs, &exceptions[1]);
-    if (!exceptions[1]) {
-        Py_DECREF(exceptions[0]);
-        return retval;
-    }
-    error_list = PyList_New(2);
-    PyList_SET_ITEM(error_list, 0, PyObject_Str(exceptions[0]));
-    Py_DECREF(exceptions[0]);
-    PyList_SET_ITEM(error_list, 1, PyObject_Str(exceptions[1]));
-    Py_DECREF(exceptions[1]);
-    PyErr_SetObject(PyExc_TypeError, error_list);
-    Py_DECREF(error_list);
-    return -1;
 }
 
 
@@ -4286,18 +4235,6 @@ _wrap_PyTiledMap_tilesetCount(PyTiledMap *self)
     return py_retval;
 }
 
-
-static PyObject*
-_wrap_PyTiledMap__copy__(PyTiledMap *self)
-{
-
-    PyTiledMap *py_copy;
-    py_copy = PyObject_New(PyTiledMap, &PyTiledMap_Type);
-    py_copy->obj = new Tiled::Map(*self->obj);
-    py_copy->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    return (PyObject*) py_copy;
-}
-
 static PyMethodDef PyTiledMap_methods[] = {
     {(char *) "removeTilesetAt", (PyCFunction) _wrap_PyTiledMap_removeTilesetAt, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "orientation", (PyCFunction) _wrap_PyTiledMap_orientation, METH_NOARGS, NULL },
@@ -4323,7 +4260,6 @@ static PyMethodDef PyTiledMap_methods[] = {
     {(char *) "property", (PyCFunction) _wrap_PyTiledMap_property, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "addLayer", (PyCFunction) _wrap_PyTiledMap_addLayer, METH_KEYWORDS|METH_VARARGS, NULL },
     {(char *) "tilesetCount", (PyCFunction) _wrap_PyTiledMap_tilesetCount, METH_NOARGS, NULL },
-    {(char *) "__copy__", (PyCFunction) _wrap_PyTiledMap__copy__, METH_NOARGS, NULL},
     {NULL, NULL, 0, NULL}
 };
 
@@ -4433,8 +4369,8 @@ static PyObject* _wrap_PyTiledCell__get_tile(PyTiledCell *self, void * PYBINDGEN
         return Py_None;
     }
     py_Tile = PyObject_New(PyTiledTile, &PyTiledTile_Type);
-    py_Tile->obj = new Tiled::Tile((*self->obj->tile));
-    py_Tile->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
+    py_Tile->obj = self->obj->tile;
+    py_Tile->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Tile);
     return py_retval;
 }
@@ -4462,9 +4398,6 @@ _wrap_PyTiledCell__tp_init(PyTiledCell *self, PyObject *args, PyObject *kwargs)
     tile_ptr = (tile ? tile->obj : NULL);
     self->obj = new Tiled::Cell(tile_ptr);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    if (tile) {
-        tile->obj = NULL;
-    }
     return 0;
 }
 
@@ -6447,39 +6380,42 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
 {
         PyObject *py_retval;
         PyTiledLoggingInterface *py_LoggingInterface;
-        
+
         py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
         py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
         py_LoggingInterface->obj = cvalue;
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
-        
 
 int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *address)
 {
     PyObject *py_retval;
     PyTiledMap *tmp_Map;
-    
+
     py_retval = Py_BuildValue((char *) "(O)", value);
     if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
         Py_DECREF(py_retval);
         return 0;
     }
-    *address = new Tiled::Map(*tmp_Map->obj);
+    *address = tmp_Map->obj->clone();
     Py_DECREF(py_retval);
     return 1;
 }
 
 
-PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue)
+PyObject* _wrap_convert_c2py__Tiled__Map_const___star__(Tiled::Map const * *cvalue)
 {
     PyObject *py_retval;
     PyTiledMap *py_Map;
     
+    if (!(*cvalue)) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
     py_Map = PyObject_New(PyTiledMap, &PyTiledMap_Type);
-    py_Map->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
-    py_Map->obj = new Tiled::Map(*cvalue);
+    py_Map->obj = (Tiled::Map *) (*cvalue);
+    py_Map->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
     py_retval = Py_BuildValue((char *) "N", py_Map);
     return py_retval;
 }

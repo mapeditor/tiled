@@ -56,6 +56,8 @@ class Terrain;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
+    Q_OBJECT
+
 public:
     /**
      * Constructor.

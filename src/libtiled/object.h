@@ -29,6 +29,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <QObject>
+
 #include "properties.h"
 
 namespace Tiled {
@@ -36,8 +38,10 @@ namespace Tiled {
 /**
  * The base class for anything that can hold properties.
  */
-class TILEDSHARED_EXPORT Object
+class TILEDSHARED_EXPORT Object : public QObject
 {
+    Q_OBJECT
+
 public:
     enum TypeId {
         LayerType,
@@ -49,11 +53,6 @@ public:
     };
 
     Object(TypeId typeId) : mTypeId(typeId) {}
-
-    Object(const Object &object) :
-        mTypeId(object.mTypeId),
-        mProperties(object.mProperties)
-    {}
 
     /**
      * Virtual destructor.

@@ -97,6 +97,8 @@ public:
  */
 class TILEDSHARED_EXPORT TileLayer : public Layer
 {
+    Q_OBJECT
+
 public:
     /**
      * Constructor.

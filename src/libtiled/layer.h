@@ -51,6 +51,8 @@ class Tileset;
  */
 class TILEDSHARED_EXPORT Layer : public Object
 {
+    Q_OBJECT
+
 public:
     enum TypeFlag {
         TileLayerType   = 0x01,

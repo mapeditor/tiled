@@ -56,6 +56,8 @@ class Tile;
  */
 class TILEDSHARED_EXPORT MapObject : public Object
 {
+    Q_OBJECT
+
 public:
     /**
      * Enumerates the different object shapes. Rectangle is the default shape.

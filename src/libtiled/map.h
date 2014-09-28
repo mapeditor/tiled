@@ -53,6 +53,8 @@ class ObjectGroup;
  */
 class TILEDSHARED_EXPORT Map : public Object
 {
+    Q_OBJECT
+
 public:
     /**
      * The orientation of the map determines how it should be rendered. An
@@ -98,11 +100,6 @@ public:
     Map(Orientation orientation,
         int width, int height,
         int tileWidth, int tileHeight);
-
-    /**
-     * Copy constructor. Makes sure that a deep-copy of the layers is created.
-     */
-    Map(const Map &map);
 
     /**
      * Destructor.
@@ -322,6 +319,8 @@ public:
      * map.
      */
     bool isTilesetUsed(Tileset *tileset) const;
+
+    Map *clone() const;
 
     /**
      * Creates a new map that contains the given \a layer. The map size will be

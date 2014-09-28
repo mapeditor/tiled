@@ -46,6 +46,8 @@ class Tile;
  */
 class TILEDSHARED_EXPORT Terrain : public Object
 {
+    Q_OBJECT
+
 public:
     Terrain(int id, Tileset *tileset, QString name, int imageTileId):
         Object(TerrainType),
