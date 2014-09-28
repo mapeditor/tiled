@@ -21,22 +21,18 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("New...")
                 shortcut: StandardKey.New
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("Open...")
                 shortcut: StandardKey.Open
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("Save")
                 shortcut: StandardKey.Save
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("Save As...")
                 shortcut: StandardKey.SaveAs
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("Exit")
@@ -49,33 +45,42 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("Cut")
                 shortcut: StandardKey.Cut
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("Copy")
                 shortcut: StandardKey.Copy
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("Paste")
                 shortcut: StandardKey.Paste
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("Delete")
                 shortcut: StandardKey.Delete
-                onTriggered: Qt.quit();
             }
         }
         Menu {
             title: qsTr("Help")
             MenuItem {
                 text: qsTr("About Tiled")
-                onTriggered: Qt.quit();
             }
             MenuItem {
                 text: qsTr("About Qt")
-                onTriggered: Qt.quit();
+            }
+        }
+    }
+
+    toolBar: ToolBar {
+        RowLayout {
+            anchors.fill: parent
+            ToolButton {
+                iconName: "document-new"
+            }
+            Item { Layout.fillWidth: true }
+            CheckBox {
+                text: "Enabled"
+                checked: true
+                Layout.alignment: Qt.AlignRight
             }
         }
     }
