@@ -65,9 +65,27 @@ void MapObject::flip(FlipDirection direction)
             mCell.flippedVertically = !mCell.flippedVertically;
     }
 
+    QPolygonF polygonBeforeFlip = mPolygon;
     flip(direction, mPolygon);
-    flip(direction, mLeftControlPoints);
-    flip(direction, mRightControlPoints);
+
+    if (mShape == Bezierline || mShape == Bezierloop) {
+        for (int i = 0; i < mPolygon.size(); i++) {
+            QPointF delta = mPolygon.at(i) - polygonBeforeFlip.at(i);
+            QPointF relativeDeltaLeftControlPoint = mLeftControlPoints.at(i) - polygonBeforeFlip.at(i);
+            QPointF relativeDeltaRightControlPoint = mRightControlPoints.at(i) - polygonBeforeFlip.at(i);
+
+            if (direction == FlipHorizontally) {
+               relativeDeltaLeftControlPoint = QPointF(-2 * relativeDeltaLeftControlPoint.x(), 0);
+               relativeDeltaRightControlPoint = QPointF(-2 * relativeDeltaRightControlPoint.x(), 0);
+            } else {
+               relativeDeltaLeftControlPoint = QPointF(0, -2 * relativeDeltaLeftControlPoint.y());
+               relativeDeltaRightControlPoint = QPointF(0, -2 * relativeDeltaRightControlPoint.y());
+            }
+
+            mLeftControlPoints[i] += (delta + relativeDeltaLeftControlPoint);
+            mRightControlPoints[i] += (delta + relativeDeltaRightControlPoint);
+        }
+    }
 }
 
 void MapObject::flip(FlipDirection direction, QPolygonF &polygon)
