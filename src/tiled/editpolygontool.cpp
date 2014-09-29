@@ -132,9 +132,10 @@ private:
 class ControlPointConnector : public QGraphicsItem
 {
 public:
-    ControlPointConnector(MapObjectItem *object, int pointIndex, bool isRightControlPoint)
+    ControlPointConnector(MapObjectItem *object, MapRenderer *renderer, int pointIndex, bool isRightControlPoint)
         : QGraphicsItem()
         , mMapObjectItem(object)
+        , mRenderer(renderer)
         , mPointIndex(pointIndex)
         , mIsRightControlPoint(isRightControlPoint)
 
@@ -153,6 +154,7 @@ private:
     MapObjectItem *mMapObjectItem;
     int mPointIndex;
     bool mIsRightControlPoint;
+    MapRenderer *mRenderer;
 };
 
 } // namespace Internal
@@ -221,8 +223,14 @@ QRectF ControlPointConnector::boundingRect() const
     QPointF controlPoint = mIsRightControlPoint ?
                 mapObject->rightControlPoints().at(mPointIndex) :
                 mapObject->leftControlPoints().at(mPointIndex);
-    QPointF pos = mapObject->position();
-    return QRectF(point + pos, controlPoint + pos);
+
+    const QPointF pointPos = mRenderer->pixelToScreenCoords(point);
+    const QPointF pointScene = mMapObjectItem->mapToScene(pointPos);
+
+    const QPointF controlPointPos = mRenderer->pixelToScreenCoords(controlPoint);
+    const QPointF controlPointScene = mMapObjectItem->mapToScene(controlPointPos);
+
+    return QRectF(pointScene, controlPointScene);
 }
 
 void ControlPointConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
@@ -236,8 +244,14 @@ void ControlPointConnector::paint(QPainter *painter, const QStyleOptionGraphicsI
     QPointF controlPoint = mIsRightControlPoint ?
                 mapObject->rightControlPoints().at(mPointIndex) :
                 mapObject->leftControlPoints().at(mPointIndex);
-    QPointF pos = mapObject->position();
-    painter->drawLine(point + pos, controlPoint + pos) ;
+
+    const QPointF pointPos = mRenderer->pixelToScreenCoords(point);
+    const QPointF pointScene = mMapObjectItem->mapToScene(pointPos);
+
+    const QPointF controlPointPos = mRenderer->pixelToScreenCoords(controlPoint);
+    const QPointF controlPointScene = mMapObjectItem->mapToScene(controlPointPos);
+
+    painter->drawLine(pointScene, controlPointScene) ;
 }
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
@@ -565,8 +579,8 @@ void EditPolygonTool::updateHandles()
             if(item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape() == MapObject::Bezierloop) {
                 ControlPointHandle *leftControPointHandle = new ControlPointHandle(item, leftControlPointHandles.size(), false);
                 ControlPointHandle *rightControPointHandle = new ControlPointHandle(item, rightControlPointHandles.size(), true);
-                ControlPointConnector *leftConnection = new ControlPointConnector(item, leftControlPointHandles.size(), false);
-                ControlPointConnector *rightConnection = new ControlPointConnector(item, rightControlPointHandles.size(), true);
+                ControlPointConnector *leftConnection = new ControlPointConnector(item, renderer, leftControlPointHandles.size(), false);
+                ControlPointConnector *rightConnection = new ControlPointConnector(item, renderer, rightControlPointHandles.size(), true);
 
 
                 rightControlPointHandles.append(rightControPointHandle);
@@ -796,8 +810,12 @@ void EditPolygonTool::updateMovingControlPoint(const QPointF &pos, Qt::KeyboardM
         newPosition = renderer->tileToScreenCoords(newTileCoords);
     }
 
+    const MapObjectItem *item = mClickedControlPointHandle->mapObjectItem();
+    const QPointF newInternalPos = item->mapFromScene(newPosition);
+    const QPointF newScenePos = item->pos() + newInternalPos;
+
     mClickedControlPointHandle->setPos(newPosition);
-    mClickedControlPointHandle->setPointPosition(renderer->screenToPixelCoords(newPosition));
+    mClickedControlPointHandle->setPointPosition(renderer->screenToPixelCoords(newScenePos));
 }
 
 void EditPolygonTool::finishMoving(const QPointF &pos)
