@@ -152,9 +152,9 @@ public:
 
 private:
     MapObjectItem *mMapObjectItem;
+    MapRenderer *mRenderer;
     int mPointIndex;
     bool mIsRightControlPoint;
-    MapRenderer *mRenderer;
 };
 
 } // namespace Internal
@@ -779,12 +779,40 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     int i = 0;
     foreach (PointHandle *handle, mSelectedHandles) {
-        const MapObjectItem *item = handle->mapObjectItem();
+        MapObjectItem *item = handle->mapObjectItem();
+        MapObject *object = item->mapObject();
         const QPointF newPixelPos = mOldHandlePositions.at(i) + diff;
         const QPointF newInternalPos = item->mapFromScene(newPixelPos);
         const QPointF newScenePos = item->pos() + newInternalPos;
         handle->setPos(newPixelPos);
-        handle->setPointPosition(renderer->screenToPixelCoords(newScenePos));
+
+        int pointIndex = handle->pointIndex();
+        const QPointF oldPolygonPosition = object->polygon().at(pointIndex);
+        const QPointF newPolygonPosition = renderer->screenToPixelCoords(newScenePos);
+        handle->setPointPosition(newPolygonPosition);
+
+        if (object->shape() == MapObject::Bezierline || object->shape() == MapObject::Bezierloop) {
+            ControlPointHandle *leftControlPointHandle = mLeftControlPointHandles.value(item).at(pointIndex);
+            ControlPointHandle *rightControlPointHandle = mRightControlPointHandles.value(item).at(pointIndex);
+
+           const QPointF delta = newPolygonPosition - oldPolygonPosition;
+           const QPointF oldLeftControlPoint = object->leftControlPoints().at(pointIndex);
+           const QPointF oldRightControlPoint = object->rightControlPoints().at(pointIndex);
+
+           QPointF newLeftControlPoint = oldLeftControlPoint + delta;
+           const QPointF leftControlPointScreen = renderer->pixelToScreenCoords(newLeftControlPoint - object->position());
+           const QPointF leftControlPointScene = item->mapToScene(leftControlPointScreen);
+
+           QPointF newRightControlPoint = oldRightControlPoint + delta;
+           const QPointF rightControlPointScreen = renderer->pixelToScreenCoords(newRightControlPoint - object->position());
+           const QPointF rightControlPointScene = item->mapToScene(rightControlPointScreen);
+
+
+           leftControlPointHandle->setPointPosition(newLeftControlPoint);
+           leftControlPointHandle->setPos(leftControlPointScene);
+           rightControlPointHandle->setPointPosition(newRightControlPoint);
+           rightControlPointHandle->setPos(rightControlPointScene);
+        }
         ++i;
     }
 }
