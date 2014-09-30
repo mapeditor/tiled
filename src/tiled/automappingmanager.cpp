@@ -72,13 +72,15 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     if (!mMapDocument)
         return;
 
+    const bool automatic = touchedLayer != 0;
+
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
         const QString rulesFileName = mapPath + QLatin1String("/rules.txt");
         if (loadFile(rulesFileName)) {
             mLoaded = true;
         } else {
-            emit errorsOccurred();
+            emit errorsOccurred(automatic);
             return;
         }
     }
@@ -112,10 +114,10 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     delete passedRegion;
 
     if (!mWarning.isEmpty())
-        emit warningsOccurred();
+        emit warningsOccurred(automatic);
 
     if (!mError.isEmpty())
-        emit errorsOccurred();
+        emit errorsOccurred(automatic);
 }
 
 bool AutomappingManager::loadFile(const QString &filePath)
