@@ -165,7 +165,7 @@
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+75"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>Fout tijdens het laden van tileset &apos;%1&apos;, volledige pad &apos;%2&apos;. Bestand niet gevonden!</translation>
     </message>
@@ -180,7 +180,7 @@
         <translation>Ongeldige tile id %1.</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+71"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation>Dit is geen geldige Flare map. Er moet tenminste een &quot;header&quot; segment, een &quot;tileset&quot; segment en een tilelaag aanwezig zijn.</translation>
     </message>
@@ -1877,12 +1877,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+73"/>
-        <source>No map document found!</source>
-        <translation>Geen map document gevonden!</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+101"/>
         <source>Apply AutoMap rules</source>
         <translation>AutoMap regels toepassen</translation>
     </message>
@@ -2263,13 +2258,13 @@ Regel %1, colom %2</translation>
     <name>Tiled::Internal::ImageMovementTool</name>
     <message>
         <location filename="../src/tiled/imagemovementtool.cpp" line="+34"/>
-        <location line="+83"/>
+        <location line="+85"/>
         <source>Move Images</source>
         <translation>Afbeelding Verplaatsen</translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+82"/>
+        <location line="-83"/>
+        <location line="+84"/>
         <source>M</source>
         <translation>M</translation>
     </message>
@@ -2652,7 +2647,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+148"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+149"/>
         <source>Select &amp;All</source>
         <translation>&amp;Alles Selecteren</translation>
     </message>
@@ -2762,7 +2757,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Laag &amp;Eigenschappen...</translation>
     </message>
     <message numerus="yes">
-        <location line="+236"/>
+        <location line="+245"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Object Verdubbelen</numerusform>
@@ -3463,7 +3458,7 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+162"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+179"/>
         <source>TMX Viewer</source>
         <translation></translation>
     </message>

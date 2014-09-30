@@ -164,7 +164,7 @@
         <translation>Nepodařilo se otevřít soubor pro čtení.</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+75"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>Nepodařilo se načíst sadu dlaždic %1 (plná cesta: %2). Soubor nenalezen!</translation>
     </message>
@@ -179,7 +179,7 @@
         <translation>Chyba mapování ID dlaždice %1.</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+71"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation>Tohle nevypadá jako Flare mapa. Flare mapa obsahuje hlavičku, sekci se sadami dlaždic, a alespoň jednu vrstvu dlaždic.</translation>
     </message>
@@ -1880,12 +1880,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+73"/>
-        <source>No map document found!</source>
-        <translation>Nebyl nalezen dokument s mapou!</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+101"/>
         <source>Apply AutoMap rules</source>
         <translation>Použít pravidla automatického mapování</translation>
     </message>
@@ -2268,13 +2263,13 @@ Line %1, column %2</source>
     <name>Tiled::Internal::ImageMovementTool</name>
     <message>
         <location filename="../src/tiled/imagemovementtool.cpp" line="+34"/>
-        <location line="+83"/>
+        <location line="+85"/>
         <source>Move Images</source>
         <translation>Přesunování obrázků</translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+82"/>
+        <location line="-83"/>
+        <location line="+84"/>
         <source>M</source>
         <translation>M</translation>
     </message>
@@ -2661,7 +2656,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+148"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+149"/>
         <source>Select &amp;All</source>
         <translation>Vybrat &amp;vše</translation>
     </message>
@@ -2771,7 +2766,7 @@ Please select specific format.</source>
         <translation>&amp;Vlastnosti vrstvy...</translation>
     </message>
     <message numerus="yes">
-        <location line="+236"/>
+        <location line="+245"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Duplikovat objekt</numerusform>
@@ -3475,7 +3470,7 @@ Do you want to replace it?</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+162"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+179"/>
         <source>TMX Viewer</source>
         <translation>Prohlížeč souborů TMX</translation>
     </message>

@@ -69,11 +69,8 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 {
     mError.clear();
     mWarning.clear();
-    if (!mMapDocument) {
-        mError = tr("No map document found!") + QLatin1Char('\n');
-        emit errorsOccurred();
+    if (!mMapDocument)
         return;
-    }
 
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();

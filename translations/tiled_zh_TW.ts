@@ -165,7 +165,7 @@
         <translation>無法讀取檔案.</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+75"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>載入擴大為%2的%1 圖塊集時發生錯誤:找不到路徑!</translation>
     </message>
@@ -180,7 +180,7 @@
         <translation>映射tile id %1錯誤.</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+71"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation>看起來似乎不是有效的flare地圖。flare地圖至少含有標頭區、圖塊集區、以及一個圖層</translation>
     </message>
@@ -1877,12 +1877,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+73"/>
-        <source>No map document found!</source>
-        <translation>未找到映射文件!</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+101"/>
         <source>Apply AutoMap rules</source>
         <translation>自動映射圖層規則套用</translation>
     </message>
@@ -2260,13 +2255,13 @@ Line %1, column %2</source>
     <name>Tiled::Internal::ImageMovementTool</name>
     <message>
         <location filename="../src/tiled/imagemovementtool.cpp" line="+34"/>
-        <location line="+83"/>
+        <location line="+85"/>
         <source>Move Images</source>
         <translation>移動圖像</translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+82"/>
+        <location line="-83"/>
+        <location line="+84"/>
         <source>M</source>
         <translation>M</translation>
     </message>
@@ -2644,7 +2639,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+148"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+149"/>
         <source>Select &amp;All</source>
         <translation>選擇全部(&amp;A)</translation>
     </message>
@@ -2755,7 +2750,7 @@ Please select specific format.</source>
         <translation>圖層(&amp;P)屬性...</translation>
     </message>
     <message numerus="yes">
-        <location line="+236"/>
+        <location line="+245"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform><byte value="x1d"/>複製<byte value="x1d"/>%n個物件</numerusform>
@@ -3450,7 +3445,7 @@ Do you want to replace it?</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+162"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+179"/>
         <source>TMX Viewer</source>
         <translation>TMX檢閱器</translation>
     </message>
