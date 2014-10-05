@@ -218,7 +218,7 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
     QGraphicsItem *layerItem = 0;
 
     if (TileLayer *tl = layer->asTileLayer()) {
-        layerItem = new TileLayerItem(tl, mMapDocument->renderer());
+        layerItem = new TileLayerItem(tl, mMapDocument);
     } else if (ObjectGroup *og = layer->asObjectGroup()) {
         const ObjectGroup::DrawOrder drawOrder = og->drawOrder();
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
@@ -236,7 +236,7 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
         }
         layerItem = ogItem;
     } else if (ImageLayer *il = layer->asImageLayer()) {
-        layerItem = new ImageLayerItem(il, mMapDocument->renderer());
+        layerItem = new ImageLayerItem(il, mMapDocument);
     }
 
     Q_ASSERT(layerItem);
@@ -324,7 +324,8 @@ void MapScene::currentLayerIndexChanged()
 }
 
 /**
- * Adapts the scene rect and layers to the new map size.
+ * Adapts the scene, layers and objects to new map size, orientation or
+ * background color.
  */
 void MapScene::mapChanged()
 {
@@ -336,6 +337,9 @@ void MapScene::mapChanged()
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
     }
+
+    foreach (MapObjectItem *item, mObjectItems)
+        item->syncWithMapObject();
 
     const Map *map = mMapDocument->map();
     if (map->backgroundColor().isValid())

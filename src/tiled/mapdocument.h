@@ -209,6 +209,12 @@ public:
     MapRenderer *renderer() const { return mRenderer; }
 
     /**
+     * Creates the map renderer. Should be called after changing the map
+     * orientation.
+     */
+    void createRenderer();
+
+    /**
      * Returns the undo stack of this map document. Should be used to push any
      * commands on that modify the map.
      */

@@ -66,21 +66,12 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mMap(map),
     mLayerModel(new LayerModel(this)),
     mCurrentObject(map),
+    mRenderer(0),
     mMapObjectModel(new MapObjectModel(this)),
     mTerrainModel(new TerrainModel(this, this)),
     mUndoStack(new QUndoStack(this))
 {
-    switch (map->orientation()) {
-    case Map::Isometric:
-        mRenderer = new IsometricRenderer(map);
-        break;
-    case Map::Staggered:
-        mRenderer = new StaggeredRenderer(map);
-        break;
-    default:
-        mRenderer = new OrthogonalRenderer(map);
-        break;
-    }
+    createRenderer();
 
     mCurrentLayerIndex = (map->layerCount() == 0) ? -1 : 0;
     mLayerModel->setMapDocument(this);
@@ -911,4 +902,22 @@ void MapDocument::removeProperty(Object *object, const QString &name)
 {
     object->removeProperty(name);
     emit propertyRemoved(object, name);
+}
+
+void MapDocument::createRenderer()
+{
+    if (mRenderer)
+        delete mRenderer;
+
+    switch (mMap->orientation()) {
+    case Map::Isometric:
+        mRenderer = new IsometricRenderer(mMap);
+        break;
+    case Map::Staggered:
+        mRenderer = new StaggeredRenderer(mMap);
+        break;
+    default:
+        mRenderer = new OrthogonalRenderer(mMap);
+        break;
+    }
 }

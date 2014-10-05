@@ -1,0 +1,95 @@
+/*
+ * changemapproperty.h
+ * Copyright 2012, Emmanuel Barroga emmanuelbarroga@gmail.com
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef CHANGEMAPPROPERTY_H
+#define CHANGEMAPPROPERTY_H
+
+#include "map.h"
+
+#include <QColor>
+#include <QUndoCommand>
+
+namespace Tiled {
+namespace Internal {
+
+class MapDocument;
+
+class ChangeMapProperty : public QUndoCommand
+{
+public:
+    enum Property {
+        Orientation,
+        RenderOrder,
+        BackgroundColor,
+        LayerDataFormat
+    };
+
+    /**
+     * Constructs a command that changes the map background color.
+     *
+     * @param mapDocument       the map document of the map
+     * @param backgroundColor   the new color to apply for the background
+     */
+    ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor);
+
+    /**
+     * Constructs a command that changes the map orientation.
+     *
+     * @param mapDocument       the map document of the map
+     * @param orientation       the new map orientation
+     */
+    ChangeMapProperty(MapDocument *mapDocument, Map::Orientation orientation);
+
+    /**
+     * Constructs a command that changes the render order.
+     *
+     * @param mapDocument       the map document of the map
+     * @param renderOrder       the new map render order
+     */
+    ChangeMapProperty(MapDocument *mapDocument, Map::RenderOrder renderOrder);
+
+    /**
+     * Constructs a command that changes the layer data format.
+     *
+     * @param mapDocument       the map document of the map
+     * @param layerDataFormat   the new layer data format
+     */
+    ChangeMapProperty(MapDocument *mapDocument, Map::LayerDataFormat layerDataFormat);
+
+    void undo();
+    void redo();
+
+private:
+    void swap();
+
+    MapDocument *mMapDocument;
+    Property mProperty;
+    QColor mBackgroundColor;
+    union {
+        Map::Orientation mOrientation;
+        Map::RenderOrder mRenderOrder;
+        Map::LayerDataFormat mLayerDataFormat;
+    };
+};
+
+} // namespace Internal
+} // namespace Tiled
+
+#endif // CHANGEMAPPROPERTY_H

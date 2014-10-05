@@ -104,6 +104,7 @@ private:
         VisibleProperty,
         OpacityProperty,
         ColorProperty,
+        OrientationProperty,
         RenderOrderProperty,
         LayerFormatProperty,
         ImageSourceProperty,
@@ -154,6 +155,7 @@ private:
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
     QHash<QString, QtVariantProperty *> mNameToProperty;
 
+    QStringList mOrientationNames;
     QStringList mLayerFormatNames;
     QStringList mRenderOrderNames;
     QStringList mFlippingFlagNames;

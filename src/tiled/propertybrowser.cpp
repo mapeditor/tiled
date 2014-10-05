@@ -24,7 +24,7 @@
 #include "changeimagelayerposition.h"
 #include "changeimagelayerproperties.h"
 #include "changemapobject.h"
-#include "changemapproperties.h"
+#include "changemapproperty.h"
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
 #include "flipmapobjects.h"
@@ -68,6 +68,10 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setResizeMode(ResizeToContents);
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
+
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Orthogonal"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
 
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
@@ -314,6 +318,14 @@ void PropertyBrowser::addMapProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
 
+    QtVariantProperty *orientationProperty =
+            createProperty(OrientationProperty,
+                           QtVariantPropertyManager::enumTypeId(),
+                           tr("Orientation"),
+                           groupProperty);
+
+    orientationProperty->setAttribute(QLatin1String("enumNames"), mOrientationNames);
+
     QtVariantProperty *layerFormatProperty =
             createProperty(LayerFormatProperty,
                            QtVariantPropertyManager::enumTypeId(),
@@ -445,33 +457,26 @@ void PropertyBrowser::addTerrainProperties()
 
 void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
 {
-    Map *map = static_cast<Map*>(mObject);
     QUndoCommand *command = 0;
 
     switch (id) {
-    case LayerFormatProperty: {
-        Map::LayerDataFormat format = static_cast<Map::LayerDataFormat>(val.toInt());
-        command = new ChangeMapProperties(mMapDocument,
-                                          map->backgroundColor(),
-                                          format,
-                                          map->renderOrder());
+    case OrientationProperty: {
+        Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
+        command = new ChangeMapProperty(mMapDocument, orientation);
         break;
     }
-
+    case LayerFormatProperty: {
+        Map::LayerDataFormat format = static_cast<Map::LayerDataFormat>(val.toInt());
+        command = new ChangeMapProperty(mMapDocument, format);
+        break;
+    }
     case RenderOrderProperty: {
-            Map::RenderOrder renderOrder = static_cast<Map::RenderOrder>(val.toInt());
-            command = new ChangeMapProperties(mMapDocument,
-                                              map->backgroundColor(),
-                                              map->layerDataFormat(),
-                                              renderOrder);
-            break;
-        }
-
+        Map::RenderOrder renderOrder = static_cast<Map::RenderOrder>(val.toInt());
+        command = new ChangeMapProperty(mMapDocument, renderOrder);
+        break;
+    }
     case ColorProperty:
-        command = new ChangeMapProperties(mMapDocument,
-                                          val.value<QColor>(),
-                                          map->layerDataFormat(),
-                                          map->renderOrder());
+        command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
         break;
     default:
         break;
@@ -726,6 +731,7 @@ void PropertyBrowser::updateProperties()
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
+        mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
         QColor backgroundColor = map->backgroundColor();
