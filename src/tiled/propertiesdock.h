@@ -57,6 +57,8 @@ private slots:
     void addProperty();
     void addProperty(const QString &name);
     void removeProperty();
+    void renameProperty();
+    void renameProperty(const QString &name);
 
 private:
     void retranslateUi();
@@ -65,6 +67,7 @@ private:
     PropertyBrowser *mPropertyBrowser;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
+    QAction *mActionRenameProperty;
 };
 
 } // namespace Internal
