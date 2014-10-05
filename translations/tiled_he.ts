@@ -165,7 +165,7 @@
         <translation>לא היה ניתן לפתוח את הקובץ לכתיבה.לא היה ניתן לפתוח את הקובץ לקריאה.</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+75"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>שגיאה בטעינת סט המשבצות %1, המתרחב ל%2. הנתיב לא נמצא!</translation>
     </message>
@@ -180,7 +180,7 @@
         <translation>שגיאה במיפוי מזהה המשבצת %1.</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+71"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation>זוהי לא נראית כמפת flare תקינה. מפת Flare חייבת להכיל לפחות קטע כותרת אחד, קטע של סטי משבצות ושכבת משבצות אחת.</translation>
     </message>
@@ -1869,12 +1869,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+73"/>
-        <source>No map document found!</source>
-        <translation>לא נמצא מסמך מפה!</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+101"/>
         <source>Apply AutoMap rules</source>
         <translation>קבע חוקי מיפוי אוטומתי</translation>
     </message>
@@ -2253,13 +2248,13 @@ Line %1, column %2</source>
     <name>Tiled::Internal::ImageMovementTool</name>
     <message>
         <location filename="../src/tiled/imagemovementtool.cpp" line="+34"/>
-        <location line="+83"/>
+        <location line="+85"/>
         <source>Move Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+82"/>
+        <location line="-83"/>
+        <location line="+84"/>
         <source>M</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2641,7 +2636,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+54"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+55"/>
         <source>Ctrl+Shift+A</source>
         <translation></translation>
     </message>
@@ -2721,7 +2716,7 @@ Please select specific format.</source>
         <translation>ה&amp;צג/החבא את השכבות האחרות</translation>
     </message>
     <message numerus="yes">
-        <location line="+237"/>
+        <location line="+246"/>
         <source>Duplicate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>שכפל עצם</numerusform>
@@ -2747,7 +2742,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-248"/>
+        <location line="-257"/>
         <source>&amp;Duplicate Layer</source>
         <translation>ש&amp;כפל שכבה</translation>
     </message>
@@ -3451,7 +3446,7 @@ Do you want to replace it?</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+162"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+179"/>
         <source>TMX Viewer</source>
         <translation>מראה קבצי TMX</translation>
     </message>

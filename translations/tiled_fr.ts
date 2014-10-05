@@ -165,7 +165,7 @@
         <translation>La tentative de lecture du fichier a échoué.</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+75"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>Erreur lors du chargement du tileset %1 qui s&apos;étend sur %2. Le chemin n&apos;a pas été trouvé !</translation>
     </message>
@@ -180,7 +180,7 @@
         <translation>Erreur lors du mapping de l&apos;index de tile %1.</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+71"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation>Ceci semble ne pas être une carte valide pour Flare. A carte pour Flare contient au minimum une section &apos;header&apos;, &apos;tileset&apos; et un calque de tile.</translation>
     </message>
@@ -1877,12 +1877,7 @@ Ligne %1, colonne %2</translation>
 <context>
     <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+73"/>
-        <source>No map document found!</source>
-        <translation>Aucun document de carte n&apos;a été trouvé !</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+101"/>
         <source>Apply AutoMap rules</source>
         <translation>Appliquer les règles AutoMap</translation>
     </message>
@@ -2262,13 +2257,13 @@ Ligne %1, colonne %2</translation>
     <name>Tiled::Internal::ImageMovementTool</name>
     <message>
         <location filename="../src/tiled/imagemovementtool.cpp" line="+34"/>
-        <location line="+83"/>
+        <location line="+85"/>
         <source>Move Images</source>
         <translation>Déplacer les Images</translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+82"/>
+        <location line="-83"/>
+        <location line="+84"/>
         <source>M</source>
         <translation>M</translation>
     </message>
@@ -2651,7 +2646,7 @@ Veuillez sélectionner un format spécifique.</translation>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+148"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+149"/>
         <source>Select &amp;All</source>
         <translation>&amp;Tout sélectionner</translation>
     </message>
@@ -2762,7 +2757,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>&amp;Propriétés du calque...</translation>
     </message>
     <message numerus="yes">
-        <location line="+236"/>
+        <location line="+245"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Dupliquer un objet</numerusform>
@@ -3462,7 +3457,7 @@ Do you want to replace it?</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+162"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+179"/>
         <source>TMX Viewer</source>
         <translation>Visionneuse de fichier TMX</translation>
     </message>

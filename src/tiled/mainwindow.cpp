@@ -494,10 +494,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     readSettings();
     setupQuickStamps();
 
-    connect(mAutomappingManager, SIGNAL(warningsOccurred()),
-            this, SLOT(autoMappingWarning()));
-    connect(mAutomappingManager, SIGNAL(errorsOccurred()),
-            this, SLOT(autoMappingError()));
+    connect(mAutomappingManager, SIGNAL(warningsOccurred(bool)),
+            this, SLOT(autoMappingWarning(bool)));
+    connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
+            this, SLOT(autoMappingError(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -1272,20 +1272,28 @@ void MainWindow::editMapProperties()
     mMapDocument->emitEditCurrentObject();
 }
 
-void MainWindow::autoMappingError()
+void MainWindow::autoMappingError(bool automatic)
 {
     const QString title = tr("Automatic Mapping Error");
     QString error = mAutomappingManager->errorString();
-    if (!error.isEmpty())
-        QMessageBox::critical(this, title, error);
+    if (!error.isEmpty()) {
+        if (automatic)
+            statusBar()->showMessage(error, 3000);
+        else
+            QMessageBox::critical(this, title, error);
+    }
 }
 
-void MainWindow::autoMappingWarning()
+void MainWindow::autoMappingWarning(bool automatic)
 {
     const QString title = tr("Automatic Mapping Warning");
-    QString warnings = mAutomappingManager->warningString();
-    if (!warnings.isEmpty())
-        QMessageBox::warning(this, title, warnings);
+    QString warning = mAutomappingManager->warningString();
+    if (!warning.isEmpty()) {
+        if (automatic)
+            statusBar()->showMessage(warning, 3000);
+        else
+            QMessageBox::warning(this, title, warning);
+    }
 }
 
 void MainWindow::onAnimationEditorClosed()

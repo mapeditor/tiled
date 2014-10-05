@@ -165,7 +165,7 @@
         <translation>Не удается открыть файл для чтения.</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+75"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>Возникла ошибка при загрузке набора тайлов %1, расширяемого в %2. Путь не найден!</translation>
     </message>
@@ -180,7 +180,7 @@
         <translation>Ошибка при создании карты для тайла с id %1.</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+71"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation>Файл не соответствует спецификации Flare-карты. Flare карта состоит по крайней мере из одной секции заголовка, набора тайлов и слоя тайлов.</translation>
     </message>
@@ -1881,12 +1881,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+73"/>
-        <source>No map document found!</source>
-        <translation>Не найден файл карты!</translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+101"/>
         <source>Apply AutoMap rules</source>
         <translation>Применить правила авто-карты</translation>
     </message>
@@ -2268,13 +2263,13 @@ Line %1, column %2</source>
     <name>Tiled::Internal::ImageMovementTool</name>
     <message>
         <location filename="../src/tiled/imagemovementtool.cpp" line="+34"/>
-        <location line="+83"/>
+        <location line="+85"/>
         <source>Move Images</source>
         <translation>Переместить изображение</translation>
     </message>
     <message>
-        <location line="-81"/>
-        <location line="+82"/>
+        <location line="-83"/>
+        <location line="+84"/>
         <source>M</source>
         <translation>M</translation>
     </message>
@@ -2662,7 +2657,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+54"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+55"/>
         <source>Ctrl+Shift+A</source>
         <translation></translation>
     </message>
@@ -2737,7 +2732,7 @@ Please select specific format.</source>
         <translation>Показать/&amp;спрятать другие слои</translation>
     </message>
     <message numerus="yes">
-        <location line="+237"/>
+        <location line="+246"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Дублировать %n объект</numerusform>
@@ -2765,7 +2760,7 @@ Please select specific format.</source>
         <translation>Удалить объекты</translation>
     </message>
     <message>
-        <location line="-248"/>
+        <location line="-257"/>
         <source>&amp;Duplicate Layer</source>
         <translation>&amp;Дублировать слой</translation>
     </message>
@@ -3477,7 +3472,7 @@ Do you want to replace it?</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+162"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+179"/>
         <source>TMX Viewer</source>
         <translation></translation>
     </message>

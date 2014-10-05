@@ -61,12 +61,12 @@ signals:
     /**
      * This signal is emited after automapping was done and an error occurred.
      */
-    void errorsOccurred();
+    void errorsOccurred(bool automatic);
 
     /**
      * This signal is emited after automapping was done and a warning occurred.
      */
-    void warningsOccurred();
+    void warningsOccurred(bool automatic);
 
 public slots:
     /**
