@@ -35,6 +35,7 @@ class ImageLayer;
 class Layer;
 class MapObject;
 class ObjectGroup;
+class TileLayer;
 class Tileset;
 
 namespace Internal {
@@ -153,6 +154,7 @@ private slots:
 
     void mapChanged();
     void tilesetChanged(Tileset *tileset);
+    void tileLayerDrawMarginsChanged(TileLayer *tileLayer);
 
     void layerAdded(int index);
     void layerRemoved(int index);
