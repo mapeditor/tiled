@@ -262,6 +262,7 @@ public:
     void emitMapChanged();
     void emitRegionChanged(const QRegion &region);
     void emitRegionEdited(const QRegion &region, Layer *layer);
+    void emitTileLayerDrawMarginsChanged(TileLayer *layer);
     void emitTilesetChanged(Tileset *tileset);
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
     void emitTileObjectGroupChanged(Tile *tile);
@@ -328,6 +329,8 @@ signals:
      * If multiple layers have been edited, multiple signals will be emitted.
      */
     void regionEdited(const QRegion &region, Layer *layer);
+
+    void tileLayerDrawMarginsChanged(TileLayer *layer);
 
     /**
      * Emitted when the terrain information for the given list of tiles was
@@ -446,6 +449,11 @@ inline void MapDocument::emitRegionChanged(const QRegion &region)
 inline void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
 {
     emit regionEdited(region, layer);
+}
+
+inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
+{
+    emit tileLayerDrawMarginsChanged(layer);
 }
 
 /**

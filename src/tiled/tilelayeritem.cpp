@@ -44,7 +44,18 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer)
 void TileLayerItem::syncWithTileLayer()
 {
     prepareGeometryChange();
-    mBoundingRect = mRenderer->boundingRect(mLayer->bounds());
+
+    QRectF boundingRect = mRenderer->boundingRect(mLayer->bounds());
+    QMargins margins = mLayer->drawMargins();
+    if (const Map *map = mLayer->map()) {
+        margins.setTop(margins.top() - map->tileHeight());
+        margins.setRight(margins.right() - map->tileWidth());
+    }
+
+    mBoundingRect = boundingRect.adjusted(-margins.left(),
+                                          -margins.top(),
+                                          margins.right(),
+                                          margins.bottom());
 }
 
 QRectF TileLayerItem::boundingRect() const

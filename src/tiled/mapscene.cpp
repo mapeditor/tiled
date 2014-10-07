@@ -125,6 +125,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(mapChanged()));
         connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
                 this, SLOT(repaintRegion(QRegion)));
+        connect(mMapDocument, SIGNAL(tileLayerDrawMarginsChanged(TileLayer*)),
+                this, SLOT(tileLayerDrawMarginsChanged(TileLayer*)));
         connect(mMapDocument, SIGNAL(layerAdded(int)),
                 this, SLOT(layerAdded(int)));
         connect(mMapDocument, SIGNAL(layerRemoved(int)),
@@ -351,6 +353,13 @@ void MapScene::tilesetChanged(Tileset *tileset)
 
     if (mMapDocument->map()->tilesets().contains(tileset))
         update();
+}
+
+void MapScene::tileLayerDrawMarginsChanged(TileLayer *tileLayer)
+{
+    const int index = mMapDocument->map()->layers().indexOf(tileLayer);
+    TileLayerItem *item = static_cast<TileLayerItem*>(mLayerItems.at(index));
+    item->syncWithTileLayer();
 }
 
 void MapScene::layerAdded(int index)
