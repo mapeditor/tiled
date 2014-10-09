@@ -34,7 +34,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 
-#include <cmath>
+#include <QtCore/qmath.h>
 
 using namespace Tiled;
 
@@ -73,16 +73,18 @@ void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    const int halfTileWidth = tileWidth / 2;
+    const int halfTileHeight = tileHeight / 2;
 
     int startX = 0;
     int startY = 0;
     int endX = map()->width();
     int endY = (map()->height() + 1) / 2;
 
-    startX = qMax((int) rect.x() / tileWidth, 0);
-    startY = qMax((int) rect.y() / tileHeight, 0);
-    endX = qMin((int) std::ceil(rect.right()) / tileWidth + 1, endX);
-    endY = qMin((int) std::ceil(rect.bottom()) / tileHeight + 1, endY);
+    startX = qMax(qFloor(rect.x() / tileWidth), 0);
+    startY = qMax(qFloor(rect.y() / tileHeight), 0);
+    endX = qMin(qCeil(rect.right()) / tileWidth + 1, endX);
+    endY = qMin(qCeil(rect.bottom()) / tileHeight + 1, endY);
 
     gridColor.setAlpha(128);
 
@@ -94,18 +96,18 @@ void StaggeredRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     for (int y = startY; y < endY; ++y) {
         for (int x = startX; x < endX; ++x) {
             const QPoint topRight = QPoint(x * tileWidth,
-                                           y * tileHeight);
+                                           y * halfTileHeight * 2);
 
             QPolygon line;
-            line << QPoint(topRight.x() + tileWidth / 2,
+            line << QPoint(topRight.x() + halfTileWidth,
                            topRight.y());
             line << QPoint(topRight.x() + tileWidth,
-                           topRight.y() + tileHeight / 2);
-            line << QPoint(topRight.x() + tileWidth / 2,
+                           topRight.y() + halfTileHeight);
+            line << QPoint(topRight.x() + halfTileWidth,
                            topRight.y() + tileHeight);
             line << QPoint(topRight.x(),
-                           topRight.y() + tileHeight / 2);
-            line << QPoint(topRight.x() + tileWidth / 2,
+                           topRight.y() + halfTileHeight);
+            line << QPoint(topRight.x() + halfTileWidth,
                            topRight.y());
 
             painter->drawPolyline(line);
@@ -229,8 +231,8 @@ QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y) const
     const qreal ratio = (qreal) tileHeight / tileWidth;
 
     // Start with the coordinates of a grid-aligned tile
-    const int tileX = std::floor(x / tileWidth);
-    const int tileY = (int) std::floor(y / tileHeight) * 2;
+    const int tileX = qFloor(x / tileWidth);
+    const int tileY = qFloor(y / tileHeight) * 2;
 
     // Relative x and y position on the base square of the grid-aligned tile
     const qreal relX = x - tileX * tileWidth;
@@ -257,9 +259,11 @@ QPointF StaggeredRenderer::tileToScreenCoords(qreal x, qreal y) const
 {
     const int tileWidth = map()->tileWidth();
     const int tileHeight = map()->tileHeight();
+    const int tileX = qFloor(x);
+    const int tileY = qFloor(y);
 
-    int pixelX = int(x) * tileWidth + qAbs(int(y) % 2) * (tileWidth / 2);
-    int pixelY = int(y) * (tileHeight / 2);
+    int pixelX = tileX * tileWidth + qAbs(tileY % 2) * (tileWidth / 2);
+    int pixelY = tileY * (tileHeight / 2);
 
     return QPointF(pixelX, pixelY);
 }
