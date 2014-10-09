@@ -246,11 +246,28 @@ void PropertiesDock::renameProperty()
 
 void PropertiesDock::renameProperty(const QString &name)
 {
+    //Firt step : getting the property actual value
     QtBrowserItem *item = mPropertyBrowser->currentItem();
     if (!item)
         return;
+    QString oldvalue = item->property()->valueText();
 
-    item->property()->setPropertyName(name);
+    //Then delete the 'old' property
+    removeProperty();
+
+    //Then create a new property with the new name
+    if (name.isEmpty())
+        return;
+    Object *object = mMapDocument->currentObject();
+    if (!object)
+        return;
+
+    if (!object->hasProperty(name)) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, oldvalue));
+    }
+
+    mPropertyBrowser->editCustomProperty(name);
 }
 
 
