@@ -42,8 +42,9 @@ public:
 
     ~DrawMarginsWatcher()
     {
-        if (mTileLayer->drawMargins() != mDrawMargins)
-            mMapDocument->emitTileLayerDrawMarginsChanged(mTileLayer);
+        if (mTileLayer->map() == mMapDocument->map())
+            if (mTileLayer->drawMargins() != mDrawMargins)
+                mMapDocument->emitTileLayerDrawMarginsChanged(mTileLayer);
     }
 
 private:
