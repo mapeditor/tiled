@@ -38,7 +38,6 @@
 #include <QUndoStack>
 #include <QVBoxLayout>
 
-#include <QDebug>
 namespace Tiled {
 namespace Internal {
 
@@ -63,6 +62,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
+    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
     connect(mActionRenameProperty, SIGNAL(triggered()),
             SLOT(renameProperty()));
 
@@ -300,7 +300,7 @@ void PropertiesDock::retranslateUi()
 
     mActionAddProperty->setText(tr("Add Property"));
     mActionRemoveProperty->setText(tr("Remove Property"));
-    mActionRenameProperty->setText(tr("Rename"));
+    mActionRenameProperty->setText(tr("Rename Property"));
 }
 
 } // namespace Internal
