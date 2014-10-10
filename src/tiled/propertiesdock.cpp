@@ -60,8 +60,15 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     connect(mActionRemoveProperty, SIGNAL(triggered()),
             SLOT(removeProperty()));
 
+    mActionRenameProperty = new QAction(this);
+    mActionRenameProperty->setEnabled(false);
+    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16x16/rename.png")));
+    connect(mActionRenameProperty, SIGNAL(triggered()),
+            SLOT(renameProperty()));
+
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
+    Utils::setThemeIcon(mActionRenameProperty, "rename");
 
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
@@ -69,6 +76,7 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     toolBar->setIconSize(QSize(16, 16));
     toolBar->addAction(mActionAddProperty);
     toolBar->addAction(mActionRemoveProperty);
+    toolBar->addAction(mActionRenameProperty);
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -150,6 +158,7 @@ void PropertiesDock::currentItemChanged(QtBrowserItem *item)
     bool isCustomProperty = mPropertyBrowser->isCustomPropertyItem(item);
     bool external = isExternal(mPropertyBrowser->object());
     mActionRemoveProperty->setEnabled(isCustomProperty && !external);
+    mActionRenameProperty->setEnabled(isCustomProperty && !external);
 }
 
 void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
@@ -219,6 +228,49 @@ void PropertiesDock::removeProperty()
     // TODO: Would be nice to automatically select the next property
 }
 
+void PropertiesDock::renameProperty()
+{
+    //Getting back the current value of the property
+    QString *oldname = new QString(QLatin1String(""));
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (item)
+        *oldname = item->property()->propertyName();
+
+    QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
+    dialog->setInputMode(QInputDialog::TextInput);
+    dialog->setLabelText(tr("Name:"));
+    dialog->setTextValue(*oldname);
+    dialog->setWindowTitle(tr("Rename Property"));
+    dialog->open(this, SLOT(renameProperty(QString)));
+}
+
+void PropertiesDock::renameProperty(const QString &name)
+{
+    //Firt step : getting the property actual value
+    QtBrowserItem *item = mPropertyBrowser->currentItem();
+    if (!item)
+        return;
+    QString oldvalue = item->property()->valueText();
+
+    //Then delete the 'old' property
+    removeProperty();
+
+    //Then create a new property with the new name
+    if (name.isEmpty())
+        return;
+    Object *object = mMapDocument->currentObject();
+    if (!object)
+        return;
+
+    if (!object->hasProperty(name)) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, oldvalue));
+    }
+
+    mPropertyBrowser->editCustomProperty(name);
+}
+
+
 bool PropertiesDock::event(QEvent *event)
 {
     switch (event->type()) {
@@ -248,6 +300,7 @@ void PropertiesDock::retranslateUi()
 
     mActionAddProperty->setText(tr("Add Property"));
     mActionRemoveProperty->setText(tr("Remove Property"));
+    mActionRenameProperty->setText(tr("Rename Property"));
 }
 
 } // namespace Internal
