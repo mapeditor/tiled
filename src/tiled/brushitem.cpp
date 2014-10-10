@@ -148,9 +148,11 @@ void BrushItem::updateBoundingRect()
         drawMargins.setTop(drawMargins.top() - map->tileHeight());
         drawMargins.setRight(drawMargins.right() - map->tileWidth());
 
-        mBoundingRect.adjust(-drawMargins.left(),
-                             -drawMargins.top(),
-                             drawMargins.right(),
-                             drawMargins.bottom());
+        // Since we're also drawing a tile selection, we should not apply
+        // negative margins
+        mBoundingRect.adjust(qMin(0, -drawMargins.left()),
+                             qMin(0, -drawMargins.top()),
+                             qMax(0, drawMargins.right()),
+                             qMax(0, drawMargins.bottom()));
     }
 }
