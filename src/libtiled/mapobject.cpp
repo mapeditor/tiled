@@ -65,40 +65,22 @@ void MapObject::flip(FlipDirection direction)
             mCell.flippedVertically = !mCell.flippedVertically;
     }
 
-    QPolygonF polygonBeforeFlip = mPolygon;
-    flip(direction, mPolygon);
-
-    if (mShape == Bezierline || mShape == Bezierloop) {
-        for (int i = 0; i < mPolygon.size(); i++) {
-            QPointF delta = mPolygon.at(i) - polygonBeforeFlip.at(i);
-            QPointF relativeDeltaLeftControlPoint = mLeftControlPoints.at(i) - polygonBeforeFlip.at(i);
-            QPointF relativeDeltaRightControlPoint = mRightControlPoints.at(i) - polygonBeforeFlip.at(i);
-
-            if (direction == FlipHorizontally) {
-               relativeDeltaLeftControlPoint = QPointF(-2 * relativeDeltaLeftControlPoint.x(), 0);
-               relativeDeltaRightControlPoint = QPointF(-2 * relativeDeltaRightControlPoint.x(), 0);
-            } else {
-               relativeDeltaLeftControlPoint = QPointF(0, -2 * relativeDeltaLeftControlPoint.y());
-               relativeDeltaRightControlPoint = QPointF(0, -2 * relativeDeltaRightControlPoint.y());
-            }
-
-            mLeftControlPoints[i] += (delta + relativeDeltaLeftControlPoint);
-            mRightControlPoints[i] += (delta + relativeDeltaRightControlPoint);
-        }
-    }
+    const QPointF flipCenter = mPolygon.boundingRect().center() * 2;
+    flip(direction, mPolygon, flipCenter);
+    flip(direction, mLeftControlPoints, flipCenter);
+    flip(direction, mRightControlPoints, flipCenter);
 }
 
-void MapObject::flip(FlipDirection direction, QPolygonF &polygon)
+void MapObject::flip(FlipDirection direction, QPolygonF &polygon, QPointF flipCenter)
 {
     if (!polygon.isEmpty()) {
-        const QPointF center2 = polygon.boundingRect().center() * 2;
 
         if (direction == FlipHorizontally) {
             for (int i = 0; i < polygon.size(); ++i)
-                polygon[i].setX(center2.x() - polygon[i].x());
+                polygon[i].setX(flipCenter.x() - polygon[i].x());
         } else if (direction == FlipVertically) {
             for (int i = 0; i < polygon.size(); ++i)
-                polygon[i].setY(center2.y() - polygon[i].y());
+                polygon[i].setY(flipCenter.y() - polygon[i].y());
         }
     }
 }

@@ -283,7 +283,7 @@ private:
     qreal mRotation;
     bool mVisible;
 
-    void flip(FlipDirection direction, QPolygonF& polygon);
+    void flip(FlipDirection direction, QPolygonF& polygon, QPointF flipCenter);
 };
 
 } // namespace Tiled
