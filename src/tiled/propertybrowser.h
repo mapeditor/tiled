@@ -104,6 +104,7 @@ private:
         VisibleProperty,
         OpacityProperty,
         ColorProperty,
+        TileSizeProperty,
         OrientationProperty,
         RenderOrderProperty,
         LayerFormatProperty,

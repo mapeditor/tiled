@@ -318,6 +318,9 @@ void PropertyBrowser::addMapProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
 
+    createProperty(SizeProperty, QVariant::Size, tr("Size"), groupProperty)->setEnabled(false);
+    createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty)->setEnabled(false);
+
     QtVariantProperty *orientationProperty =
             createProperty(OrientationProperty,
                            QtVariantPropertyManager::enumTypeId(),
@@ -731,6 +734,8 @@ void PropertyBrowser::updateProperties()
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
+        mIdToProperty[SizeProperty]->setValue(map->size());
+        mIdToProperty[TileSizeProperty]->setValue(map->tileSize());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
