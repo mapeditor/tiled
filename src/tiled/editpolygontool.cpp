@@ -149,6 +149,7 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
+    void pointsWillChange();
 
 private:
     MapObjectItem *mMapObjectItem;
@@ -230,7 +231,12 @@ QRectF ControlPointConnector::boundingRect() const
     const QPointF controlPointPos = mRenderer->pixelToScreenCoords(controlPoint);
     const QPointF controlPointScene = mMapObjectItem->mapToScene(controlPointPos);
 
-    return QRectF(pointScene, controlPointScene);
+    double left = qMin(pointScene.x(), controlPointScene.x());
+    double right = qMax(pointScene.x(), controlPointScene.x());
+    double top = qMin(pointScene.y(), controlPointScene.y());
+    double bottom = qMax(pointScene.y(), controlPointScene.y());
+
+    return QRectF(left - 1, top - 1, right - left + 1, bottom - top + 1);
 }
 
 void ControlPointConnector::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
@@ -252,6 +258,11 @@ void ControlPointConnector::paint(QPainter *painter, const QStyleOptionGraphicsI
     const QPointF controlPointScene = mMapObjectItem->mapToScene(controlPointPos);
 
     painter->drawLine(pointScene, controlPointScene) ;
+}
+
+void ControlPointConnector::pointsWillChange()
+{
+    prepareGeometryChange();
 }
 
 EditPolygonTool::EditPolygonTool(QObject *parent)
@@ -838,9 +849,14 @@ void EditPolygonTool::updateMovingControlPoint(const QPointF &pos, Qt::KeyboardM
         newPosition = renderer->tileToScreenCoords(newTileCoords);
     }
 
-    const MapObjectItem *item = mClickedControlPointHandle->mapObjectItem();
+    MapObjectItem *item = mClickedControlPointHandle->mapObjectItem();
     const QPointF newInternalPos = item->mapFromScene(newPosition);
     const QPointF newScenePos = item->pos() + newInternalPos;
+
+    QList<ControlPointConnector*> controlPointConnectors = mControlPointConnectors.value(item);
+    int firstConnectorIndex = mClickedControlPointHandle->pointIndex() * 2;
+    controlPointConnectors.at(firstConnectorIndex)->pointsWillChange();
+    controlPointConnectors.at(firstConnectorIndex+1)->pointsWillChange();
 
     mClickedControlPointHandle->setPos(newPosition);
     mClickedControlPointHandle->setPointPosition(renderer->screenToPixelCoords(newScenePos));
