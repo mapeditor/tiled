@@ -512,7 +512,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         }
         case MapObject::Bezierline:
         case MapObject::Bezierloop: {
-            if (object->polygon().size() < 2) break;
+            if (object->polygon().size() < 2)
+                break;
             QPainterPath path;
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
@@ -526,7 +527,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             for (int i = 0; i < screenPolygon.size() -1; ++i) {
                 path.cubicTo(screenRightControlPoints[i], screenLeftControlPoints[i+1], screenPolygon[i+1]);
             }
-            if(object->shape() == MapObject::Bezierloop){
+            if (object->shape() == MapObject::Bezierloop) {
                 int lastPointIndex = screenPolygon.size() -1;
                 path.moveTo(screenPolygon[lastPointIndex]);
                 path.cubicTo(screenRightControlPoints[lastPointIndex], screenLeftControlPoints[0], screenPolygon[0]);

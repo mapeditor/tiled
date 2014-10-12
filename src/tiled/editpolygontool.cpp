@@ -581,13 +581,14 @@ void EditPolygonTool::updateHandles()
         QList<ControlPointHandle*> rightControlPointHandles = mRightControlPointHandles.value(item);
         QList<ControlPointConnector*> controlPointConnectors = mControlPointConnectors.value(item);
 
+        bool isBezier = (item->mapObject()->shape() == MapObject::Bezierline) || (item->mapObject()->shape() == MapObject::Bezierloop);
         // Create missing handles
         while (pointHandles.size() < polygon.size()) {
             PointHandle *handle = new PointHandle(item, pointHandles.size());
             pointHandles.append(handle);
             mapScene()->addItem(handle);
 
-            if(item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape() == MapObject::Bezierloop) {
+            if(isBezier) {
                 ControlPointHandle *leftControPointHandle = new ControlPointHandle(item, leftControlPointHandles.size(), false);
                 ControlPointHandle *rightControPointHandle = new ControlPointHandle(item, rightControlPointHandles.size(), true);
                 ControlPointConnector *leftConnection = new ControlPointConnector(item, renderer, leftControlPointHandles.size(), false);
@@ -614,7 +615,7 @@ void EditPolygonTool::updateHandles()
             delete handle;
 
             //Number of polygon points is always the same as the number of controlpoints
-            if (item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape()== MapObject::Bezierloop) {
+            if (isBezier) {
                 ControlPointHandle *leftControlPointHandle = leftControlPointHandles.takeLast();
                 ControlPointHandle *rightControlPointHandle = rightControlPointHandles.takeLast();
                 ControlPointConnector *firstConnector = controlPointConnectors.takeLast();
@@ -634,7 +635,7 @@ void EditPolygonTool::updateHandles()
             const QPointF internalHandlePos = handlePos - item->pos();
             pointHandles.at(i)->setPos(item->mapToScene(internalHandlePos));
 
-            if (item->mapObject()->shape() == MapObject::Bezierline || item->mapObject()->shape() == MapObject::Bezierloop) {
+            if (isBezier) {
                 const QPointF &leftControlPoint = leftControlPoints.at(i);
                 const QPointF leftControlPointHandlePos = renderer->pixelToScreenCoords(leftControlPoint);
                 const QPointF internalLeftControlPointHandlePos = leftControlPointHandlePos - item->pos();
@@ -754,9 +755,6 @@ void EditPolygonTool::startMoving()
 void EditPolygonTool::startMovingControlPoint()
 {
     mMode = MovingControlPoint;
-
-    mOldLeftControlPoints.clear();
-    mOldRightControlPoints.clear();
 
     mOldLeftControlPoints = mClickedControlPointHandle->mapObject()->leftControlPoints();
     mOldRightControlPoints = mClickedControlPointHandle->mapObject()->rightControlPoints();

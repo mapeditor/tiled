@@ -163,7 +163,8 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
         }
         case MapObject::Bezierline:
         case MapObject::Bezierloop: {
-            if(object->polygon().size() < 2) break;
+            if (object->polygon().size() < 2)
+                break;
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
             const QPolygonF leftControlPoints = object->leftControlPoints().translated(pos);
