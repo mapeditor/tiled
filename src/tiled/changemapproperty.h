@@ -37,6 +37,7 @@ public:
     enum Property {
         TileWidth,
         TileHeight,
+        HexSideLength,
         Orientation,
         RenderOrder,
         BackgroundColor,

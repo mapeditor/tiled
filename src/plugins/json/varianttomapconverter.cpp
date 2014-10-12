@@ -69,6 +69,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
                        variantMap["height"].toInt(),
                        variantMap["tilewidth"].toInt(),
                        variantMap["tileheight"].toInt()));
+    map->setHexSideLength(variantMap["hexsidelength"].toInt());
     map->setRenderOrder(renderOrder);
 
     mMap = map.data();

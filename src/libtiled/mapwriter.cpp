@@ -183,6 +183,11 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     w.writeAttribute(QLatin1String("tileheight"),
                      QString::number(map->tileHeight()));
 
+    if (map->hexSideLength() != 0) {
+        w.writeAttribute(QLatin1String("hexsidelength"),
+                         QString::number(map->hexSideLength()));
+    }
+
     if (map->backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
                          map->backgroundColor().name());

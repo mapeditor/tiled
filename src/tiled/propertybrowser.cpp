@@ -321,6 +321,7 @@ void PropertyBrowser::addMapProperties()
 
     createProperty(SizeProperty, QVariant::Size, tr("Size"), groupProperty)->setEnabled(false);
     createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
+    createProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
 
     QtVariantProperty *orientationProperty =
             createProperty(OrientationProperty,
@@ -476,6 +477,11 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
                                             ChangeMapProperty::TileHeight,
                                             tileSize.height());
         }
+        break;
+    }
+    case HexSideLengthProperty: {
+        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::HexSideLength,
+                                        val.toInt());
         break;
     }
     case OrientationProperty: {
@@ -751,6 +757,7 @@ void PropertyBrowser::updateProperties()
         const Map *map = static_cast<const Map*>(mObject);
         mIdToProperty[SizeProperty]->setValue(map->size());
         mIdToProperty[TileSizeProperty]->setValue(map->tileSize());
+        mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());

@@ -210,6 +210,8 @@ Map *MapReaderPrivate::readMap()
             atts.value(QLatin1String("tilewidth")).toString().toInt();
     const int tileHeight =
             atts.value(QLatin1String("tileheight")).toString().toInt();
+    const int hexSideLength =
+            atts.value(QLatin1String("hexsidelength")).toString().toInt();
 
     const QString orientationString =
             atts.value(QLatin1String("orientation")).toString();
@@ -227,6 +229,7 @@ Map *MapReaderPrivate::readMap()
             renderOrderFromString(renderOrderString);
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
+    mMap->setHexSideLength(hexSideLength);
     mMap->setRenderOrder(renderOrder);
     mCreatedTilesets.clear();
 

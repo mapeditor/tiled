@@ -45,7 +45,7 @@ struct RenderParams
     RenderParams(const Map *map)
         : tileWidth(map->tileWidth())
         , tileHeight(map->tileHeight() & ~1)
-        , sideLength(30)
+        , sideLength(map->hexSideLength())
         , rowHeight(tileHeight / 2)
         , columnWidth(tileWidth + sideLength)
         , sideOffset((tileWidth - sideLength) / 2)

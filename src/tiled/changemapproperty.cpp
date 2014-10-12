@@ -45,6 +45,10 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Tile Height"));
         break;
+    case HexSideLength:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Hex Side Length"));
+        break;
     default:
         break;
     }
@@ -115,6 +119,12 @@ void ChangeMapProperty::swap()
         const int tileHeight = map->tileHeight();
         map->setTileHeight(mIntValue);
         mIntValue = tileHeight;
+        break;
+    }
+    case HexSideLength: {
+        const int hexSideLength = map->hexSideLength();
+        map->setHexSideLength(mIntValue);
+        mIntValue = hexSideLength;
         break;
     }
     case Orientation: {
