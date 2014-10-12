@@ -232,6 +232,27 @@ bool Map::isTilesetUsed(Tileset *tileset) const
 }
 
 
+QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
+{
+    switch (staggerIndex) {
+    default:
+    case Map::StaggerOdd:
+        return QLatin1String("odd");
+        break;
+    case Map::StaggerEven:
+        return QLatin1String("even");
+        break;
+    }
+}
+
+Map::StaggerIndex Tiled::staggerIndexFromString(const QString &string)
+{
+    Map::StaggerIndex staggerIndex = Map::StaggerOdd;
+    if (string == QLatin1String("even"))
+        staggerIndex = Map::StaggerEven;
+    return staggerIndex;
+}
+
 QString Tiled::orientationToString(Map::Orientation orientation)
 {
     switch (orientation) {

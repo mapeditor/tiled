@@ -420,6 +420,9 @@ inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 }
 
 
+TILEDSHARED_EXPORT QString staggerIndexToString(Map::StaggerIndex staggerIndex);
+TILEDSHARED_EXPORT Map::StaggerIndex staggerIndexFromString(const QString &);
+
 /**
  * Helper function that converts the map orientation to a string value. Useful
  * for map writers.

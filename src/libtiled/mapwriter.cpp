@@ -183,9 +183,14 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     w.writeAttribute(QLatin1String("tileheight"),
                      QString::number(map->tileHeight()));
 
-    if (map->hexSideLength() != 0) {
+    if (map->orientation() == Map::Hexagonal) {
         w.writeAttribute(QLatin1String("hexsidelength"),
                          QString::number(map->hexSideLength()));
+    }
+
+    if (map->orientation() == Map::Staggered || map->orientation() == Map::Hexagonal) {
+        const QString staggerIndex = staggerIndexToString(map->staggerIndex());
+        w.writeAttribute(QLatin1String("staggerindex"), staggerIndex);
     }
 
     if (map->backgroundColor().isValid()) {

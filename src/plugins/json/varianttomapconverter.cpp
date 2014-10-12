@@ -60,6 +60,9 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         return 0;
     }
 
+    const QString staggerIndexString = variantMap["staggerindex"].toString();
+    Map::StaggerIndex staggerIndex = staggerIndexFromString(staggerIndexString);
+
     const QString renderOrderString = variantMap["renderorder"].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
 
@@ -70,6 +73,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
                        variantMap["tilewidth"].toInt(),
                        variantMap["tileheight"].toInt()));
     map->setHexSideLength(variantMap["hexsidelength"].toInt());
+    map->setStaggerIndex(staggerIndex);
     map->setRenderOrder(renderOrder);
 
     mMap = map.data();
