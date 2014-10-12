@@ -48,7 +48,7 @@ Map::Map(Orientation orientation,
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
     mHexSideLength(0),
-    mStaggerDirection(StaggerColumns),
+    mStaggerDirection(StaggerRows),
     mStaggerIndex(StaggerOdd),
     mLayerDataFormat(Base64Zlib)
 {
@@ -231,6 +231,27 @@ bool Map::isTilesetUsed(Tileset *tileset) const
     return false;
 }
 
+
+QString Tiled::staggerDirectionToString(Map::StaggerDirection staggerDirection)
+{
+    switch (staggerDirection) {
+    default:
+    case Map::StaggerColumns:
+        return QLatin1String("columns");
+        break;
+    case Map::StaggerRows:
+        return QLatin1String("rows");
+        break;
+    }
+}
+
+Map::StaggerDirection Tiled::staggerDirectionFromString(const QString &string)
+{
+    Map::StaggerDirection staggerDirection = Map::StaggerColumns;
+    if (string == QLatin1String("rows"))
+        staggerDirection = Map::StaggerRows;
+    return staggerDirection;
+}
 
 QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
 {

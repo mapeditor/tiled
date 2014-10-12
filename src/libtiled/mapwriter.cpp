@@ -186,6 +186,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     if (map->orientation() == Map::Hexagonal) {
         w.writeAttribute(QLatin1String("hexsidelength"),
                          QString::number(map->hexSideLength()));
+        w.writeAttribute(QLatin1String("staggerdirection"),
+                         staggerDirectionToString(map->staggerDirection()));
     }
 
     if (map->orientation() == Map::Staggered || map->orientation() == Map::Hexagonal) {

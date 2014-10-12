@@ -223,6 +223,11 @@ Map *MapReaderPrivate::readMap()
                        .arg(orientationString));
     }
 
+    const QString staggerDirectionString =
+            atts.value(QLatin1String("staggerdirection")).toString();
+    const Map::StaggerDirection staggerDirection =
+            staggerDirectionFromString(staggerDirectionString);
+
     const QString staggerIndexString =
             atts.value(QLatin1String("staggerindex")).toString();
     const Map::StaggerIndex staggerIndex =
@@ -235,6 +240,7 @@ Map *MapReaderPrivate::readMap()
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
     mMap->setHexSideLength(hexSideLength);
+    mMap->setStaggerDirection(staggerDirection);
     mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
     mCreatedTilesets.clear();

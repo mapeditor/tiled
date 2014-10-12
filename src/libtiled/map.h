@@ -95,8 +95,8 @@ public:
      * isometric staggered and hexagonal map renderers.
      */
     enum StaggerDirection {
-        StaggerRows,
-        StaggerColumns
+        StaggerColumns,
+        StaggerRows
     };
 
     /**
@@ -419,6 +419,9 @@ inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
     mStaggerIndex = staggerIndex;
 }
 
+
+TILEDSHARED_EXPORT QString staggerDirectionToString(Map::StaggerDirection staggerDirection);
+TILEDSHARED_EXPORT Map::StaggerDirection staggerDirectionFromString(const QString &);
 
 TILEDSHARED_EXPORT QString staggerIndexToString(Map::StaggerIndex staggerIndex);
 TILEDSHARED_EXPORT Map::StaggerIndex staggerIndexFromString(const QString &);
