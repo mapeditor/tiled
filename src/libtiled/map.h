@@ -177,6 +177,11 @@ public:
     void setTileHeight(int height) { mTileHeight = height; }
 
     /**
+     * Returns the size of one tile. Provided for convenience.
+     */
+    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
+
+    /**
      * Adjusts the draw margins to be at least as big as the given margins.
      * Called from tile layers when their tiles change.
      */
