@@ -36,14 +36,30 @@ namespace Tiled {
 /**
  * A hexagonal renderer.
  *
- * Only one variation of hexagonal map rendering is supported at the moment,
- * namely shifting the uneven rows to the right.
+ * Only pointy-topped hexagons are supported at the moment, shifting either the
+ * odd or the even rows to the right.
  *
  * The same problems as present when using the StaggeredRenderer happen with
  * this renderer.
  */
 class TILEDSHARED_EXPORT HexagonalRenderer : public OrthogonalRenderer
 {
+protected:
+    struct RenderParams
+    {
+        RenderParams(const Map *map);
+
+        bool stagger(int index) const { return (index & 1) ^ staggerEven; }
+
+        const int tileWidth;
+        const int tileHeight;
+        const int halfTileWidth;
+        const int sideLength;
+        const int sideOffset;
+        const int rowHeight;
+        const int staggerEven;
+    };
+
 public:
     HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
 

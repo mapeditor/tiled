@@ -38,33 +38,17 @@
 
 using namespace Tiled;
 
-namespace {
-
-struct RenderParams
+HexagonalRenderer::RenderParams::RenderParams(const Map *map)
+    : tileWidth(map->tileWidth() & ~1)
+    , tileHeight(map->tileHeight())
+    , halfTileWidth(tileWidth / 2)
+    , sideLength(map->orientation() == Map::Hexagonal ? map->hexSideLength() : 0)
+    , sideOffset((tileHeight - sideLength) / 2)
+    , rowHeight(tileHeight - sideOffset)
+    , staggerEven(map->staggerIndex())
 {
-    RenderParams(const Map *map)
-        : tileWidth(map->tileWidth() & ~1)
-        , tileHeight(map->tileHeight())
-        , halfTileWidth(tileWidth / 2)
-        , sideLength(map->hexSideLength())
-        , sideOffset((tileHeight - sideLength) / 2)
-        , rowHeight(tileHeight - sideOffset)
-        , staggerEven(map->staggerIndex())
-    {
-    }
+}
 
-    bool stagger(int index) const { return (index & 1) ^ staggerEven; }
-
-    const int tileWidth;
-    const int tileHeight;
-    const int halfTileWidth;
-    const int sideLength;
-    const int sideOffset;
-    const int rowHeight;
-    const int staggerEven;
-};
-
-} // anonymous namespace
 
 QSize HexagonalRenderer::mapSize() const
 {
