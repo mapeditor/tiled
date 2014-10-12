@@ -319,7 +319,7 @@ void PropertyBrowser::addMapProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
 
     createProperty(SizeProperty, QVariant::Size, tr("Size"), groupProperty)->setEnabled(false);
-    createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty)->setEnabled(false);
+    createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
 
     QtVariantProperty *orientationProperty =
             createProperty(OrientationProperty,
@@ -463,6 +463,20 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     QUndoCommand *command = 0;
 
     switch (id) {
+    case TileSizeProperty: {
+        const Map *map = static_cast<Map*>(mObject);
+        const QSize tileSize = val.toSize();
+        if (tileSize.width() != map->tileWidth()) {
+            command = new ChangeMapProperty(mMapDocument,
+                                            ChangeMapProperty::TileWidth,
+                                            tileSize.width());
+        } else if (tileSize.height() != map->tileHeight()) {
+            command = new ChangeMapProperty(mMapDocument,
+                                            ChangeMapProperty::TileHeight,
+                                            tileSize.height());
+        }
+        break;
+    }
     case OrientationProperty: {
         Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
         command = new ChangeMapProperty(mMapDocument, orientation);

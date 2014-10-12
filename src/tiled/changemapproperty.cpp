@@ -30,6 +30,27 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     ChangeMapProperty::Property property,
+                                     int value)
+    : mMapDocument(mapDocument)
+    , mProperty(property)
+    , mIntValue(value)
+{
+    switch (property) {
+    case TileWidth:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Tile Width"));
+        break;
+    case TileHeight:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Tile Height"));
+        break;
+    default:
+        break;
+    }
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      const QColor &backgroundColor)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Background Color"))
@@ -84,6 +105,18 @@ void ChangeMapProperty::swap()
     Map *map = mMapDocument->map();
 
     switch (mProperty) {
+    case TileWidth: {
+        const int tileWidth = map->tileWidth();
+        map->setTileWidth(mIntValue);
+        mIntValue = tileWidth;
+        break;
+    }
+    case TileHeight: {
+        const int tileHeight = map->tileHeight();
+        map->setTileHeight(mIntValue);
+        mIntValue = tileHeight;
+        break;
+    }
     case Orientation: {
         const Map::Orientation orientation = map->orientation();
         map->setOrientation(mOrientation);

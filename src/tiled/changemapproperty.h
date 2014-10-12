@@ -35,11 +35,23 @@ class ChangeMapProperty : public QUndoCommand
 {
 public:
     enum Property {
+        TileWidth,
+        TileHeight,
         Orientation,
         RenderOrder,
         BackgroundColor,
         LayerDataFormat
     };
+
+    /**
+     * Constructs a command that changes the value of the given property.
+     *
+     * Can only be used for the HexSideLength property.
+     *
+     * @param mapDocument       the map document of the map
+     * @param backgroundColor   the new color to apply for the background
+     */
+    ChangeMapProperty(MapDocument *mapDocument, Property property, int value);
 
     /**
      * Constructs a command that changes the map background color.
@@ -83,6 +95,7 @@ private:
     Property mProperty;
     QColor mBackgroundColor;
     union {
+        int mIntValue;
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;
