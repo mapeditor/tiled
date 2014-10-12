@@ -530,9 +530,7 @@ void EditPolygonTool::updateHandles()
     while (l.hasNext()) {
         l.next();
         if (!selection.contains(l.key())) {
-            foreach (ControlPointHandle *handle, l.value()) {
-                delete handle;
-            }
+            qDeleteAll(l.value());
             l.remove();
         }
     }
@@ -541,9 +539,7 @@ void EditPolygonTool::updateHandles()
     while (r.hasNext()) {
         r.next();
         if (!selection.contains(r.key())) {
-            foreach (ControlPointHandle *handle, r.value()) {
-                delete handle;
-            }
+            qDeleteAll(r.value());
             r.remove();
         }
     }
@@ -552,9 +548,7 @@ void EditPolygonTool::updateHandles()
     while (c.hasNext()) {
         c.next();
         if (!selection.contains(c.key())) {
-            foreach (ControlPointConnector *handle, c.value()) {
-                delete handle;
-            }
+            qDeleteAll(c.value());
             c.remove();
         }
     }
