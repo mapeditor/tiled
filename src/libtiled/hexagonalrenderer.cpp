@@ -49,8 +49,11 @@ struct RenderParams
         , rowHeight(tileHeight / 2)
         , columnWidth(tileWidth + sideLength)
         , sideOffset((tileWidth - sideLength) / 2)
+        , staggerEven(map->staggerIndex())
     {
     }
+
+    bool stagger(int index) const { return (index & 1) ^ staggerEven; }
 
     const int tileWidth;
     const int tileHeight;
@@ -58,6 +61,7 @@ struct RenderParams
     const int rowHeight;
     const int columnWidth;
     const int sideOffset;
+    const int staggerEven;
 };
 
 } // anonymous namespace
@@ -82,7 +86,7 @@ QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 
     if (rect.height() > 1) {
         width += p.tileWidth - p.sideOffset;
-        if (rect.y() % 2)
+        if (p.stagger(rect.y()))
             topLeft.rx() -= p.tileWidth - p.sideOffset;
     }
 
@@ -121,7 +125,7 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     startPos = tileToScreenCoords(startTile).toPoint();
 
     // Odd row shifting is applied in the rendering loop, so un-apply it here
-    if (startTile.y() % 2)
+    if (p.stagger(startTile.y()))
         startPos.rx() -= p.tileWidth - p.sideOffset;
 
     const QPoint hex[6] = {
@@ -147,7 +151,7 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
         QPoint rowTile = startTile;
         QPoint rowPos = startPos;
 
-        if (startTile.y() % 2)
+        if (p.stagger(startTile.y()))
             rowPos.rx() += p.tileWidth - p.sideOffset;
 
         for (; rowPos.x() <= rect.right() && rowTile.x() < map()->width(); rowTile.rx()++) {
@@ -155,9 +159,10 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
             lines.append(QLine(rowPos + hex[1], rowPos + hex[2]));
             lines.append(QLine(rowPos + hex[2], rowPos + hex[3]));
 
+            const bool isStaggered = p.stagger(startTile.y());
             const bool lastRow = rowTile.y() == map()->height() - 1;
-            const bool left = lastRow || (rowTile.x() == 0 && startTile.y() % 2 == 0);
-            const bool right = lastRow || (rowTile.x() == map()->width() - 1 && startTile.y() % 2 == 1);
+            const bool left = lastRow || (rowTile.x() == 0 && !isStaggered);
+            const bool right = lastRow || (rowTile.x() == map()->width() - 1 && isStaggered);
             const bool bottom = rowTile.y() >= map()->height() - 2;
 
             if (left)
@@ -225,7 +230,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
     startPos.ry() += p.tileHeight;
 
     // Odd row shifting is applied in the rendering loop, so un-apply it here
-    if ((startTile.y() + layer->y()) % 2)
+    if (p.stagger(startTile.y() + layer->y()))
         startPos.rx() -= p.tileWidth - p.sideOffset;
 
     CellRenderer renderer(painter);
@@ -234,7 +239,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
         QPoint rowTile = startTile;
         QPoint rowPos = startPos;
 
-        if ((startTile.y() + layer->y()) % 2)
+        if (p.stagger(startTile.y() + layer->y()))
             rowPos.rx() += p.tileWidth - p.sideOffset;
 
         for (; rowPos.x() < rect.right() && rowTile.x() < layer->width(); rowTile.rx()++) {
@@ -286,43 +291,42 @@ QPointF HexagonalRenderer::pixelToTileCoords(qreal x, qreal y) const
 QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y) const
 {
     const RenderParams p(map());
+    const int refOffsetY = p.staggerEven ? 0 : p.rowHeight;
 
     // Start with the coordinates of a grid-aligned tile
-    const int tileX = qFloor(x / p.columnWidth);
-    const int tileY = qFloor(y / p.tileHeight) * 2;
+    QPoint referencePoint = QPoint(qFloor(x / p.columnWidth),
+                                   qFloor((y - refOffsetY) / p.tileHeight) * 2);
+
+    if (refOffsetY)
+        ++referencePoint.ry();
 
     // Relative x and y position on the base square of the grid-aligned tile
-    const int relX = (int) x - tileX * p.columnWidth;
-    const int relY = (int) y - tileY * p.rowHeight;
+    const int relX = (int) x - referencePoint.x() * p.columnWidth;
+    const int relY = (int) y - referencePoint.y() * p.rowHeight;
 
     // Determine the nearest hexagon tile by the distance to the center
-    const int centerX = p.tileWidth / 2;
-    const int centerY = p.rowHeight;
-    const int nextCenterX = centerX + p.sideLength + p.sideOffset;
-    const int nextCenterY = p.tileHeight;
-    const int prevCenterX = centerX - p.sideLength - p.sideOffset;
-    const int prevCenterY = 0;
+    const int left = p.sideOffset - p.tileWidth / 2;
+    const int center = p.tileWidth / 2;
+    const int right = left + p.columnWidth;
 
     int nearest = 0;
     int minDist = INT_MAX;
 
-    static const QPoint offset[5] = {
-        QPoint(0,       0),
-        QPoint(0,       0 - 1),
-        QPoint(0,       0 + 1),
-        QPoint(0 - 1,   0 - 1),
-        QPoint(0 - 1,   0 + 1)
+    static const QPoint offset[4] = {
+        QPoint( 0,  0),
+        QPoint( 0, -1),
+        QPoint( 0, +1),
+        QPoint(-1,  0),
     };
 
-    const QPoint centers[5] = {
-        QPoint(centerX,     centerY),
-        QPoint(nextCenterX, prevCenterY),
-        QPoint(nextCenterX, nextCenterY),
-        QPoint(prevCenterX, prevCenterY),
-        QPoint(prevCenterX, nextCenterY)
+    const QPoint centers[4] = {
+        QPoint(right,   p.rowHeight),
+        QPoint(center,  0),
+        QPoint(center,  p.tileHeight),
+        QPoint(left,    p.rowHeight),
     };
 
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 4; ++i) {
         const QPoint &center = centers[i];
         const int dc = qAbs(center.x() - relX) + qAbs(center.y() - relY);
         if (dc < minDist) {
@@ -331,7 +335,7 @@ QPointF HexagonalRenderer::screenToTileCoords(qreal x, qreal y) const
         }
     }
 
-    return QPoint(tileX, tileY) + offset[nearest];
+    return referencePoint + offset[nearest];
 }
 
 /**
@@ -344,7 +348,10 @@ QPointF HexagonalRenderer::tileToScreenCoords(qreal x, qreal y) const
     const int tileX = qFloor(x);
     const int tileY = qFloor(y);
 
-    int pixelX = tileX * (p.columnWidth) + qAbs(tileY % 2) * (p.tileWidth - p.sideOffset);
+    int pixelX = tileX * (p.columnWidth);
+    if (p.stagger(tileY))
+        pixelX += p.tileWidth - p.sideOffset;
+
     int pixelY = tileY * (p.rowHeight);
 
     return QPointF(pixelX, pixelY);
@@ -352,7 +359,7 @@ QPointF HexagonalRenderer::tileToScreenCoords(qreal x, qreal y) const
 
 QPoint HexagonalRenderer::topLeft(int x, int y) const
 {
-    if (y % 2)
+    if ((y & 1) ^ map()->staggerIndex())
         return QPoint(x, y - 1);
     else
         return QPoint(x - 1, y - 1);
@@ -360,7 +367,7 @@ QPoint HexagonalRenderer::topLeft(int x, int y) const
 
 QPoint HexagonalRenderer::topRight(int x, int y) const
 {
-    if (y % 2)
+    if ((y & 1) ^ map()->staggerIndex())
         return QPoint(x + 1, y - 1);
     else
         return QPoint(x, y - 1);
@@ -368,7 +375,7 @@ QPoint HexagonalRenderer::topRight(int x, int y) const
 
 QPoint HexagonalRenderer::bottomLeft(int x, int y) const
 {
-    if (y % 2)
+    if ((y & 1) ^ map()->staggerIndex())
         return QPoint(x, y + 1);
     else
         return QPoint(x - 1, y + 1);
@@ -376,7 +383,7 @@ QPoint HexagonalRenderer::bottomLeft(int x, int y) const
 
 QPoint HexagonalRenderer::bottomRight(int x, int y) const
 {
-    if (y % 2)
+    if ((y & 1) ^ map()->staggerIndex())
         return QPoint(x + 1, y + 1);
     else
         return QPoint(x, y + 1);

@@ -65,6 +65,16 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 }
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     Map::StaggerIndex staggerIndex)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Stagger Index"))
+    , mMapDocument(mapDocument)
+    , mProperty(StaggerIndex)
+    , mStaggerIndex(staggerIndex)
+{
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      Map::Orientation orientation)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Orientation"))
@@ -125,6 +135,12 @@ void ChangeMapProperty::swap()
         const int hexSideLength = map->hexSideLength();
         map->setHexSideLength(mIntValue);
         mIntValue = hexSideLength;
+        break;
+    }
+    case StaggerIndex: {
+        const Map::StaggerIndex staggerIndex = map->staggerIndex();
+        map->setStaggerIndex(mStaggerIndex);
+        mStaggerIndex = staggerIndex;
         break;
     }
     case Orientation: {

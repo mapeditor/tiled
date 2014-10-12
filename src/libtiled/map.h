@@ -95,7 +95,6 @@ public:
      * isometric staggered and hexagonal map renderers.
      */
     enum StaggerDirection {
-        NoStaggering,
         StaggerRows,
         StaggerColumns
     };
@@ -106,8 +105,8 @@ public:
      * hexagonal map renderers.
      */
     enum StaggerIndex {
-        StaggerOdd,
-        StaggerEven
+        StaggerOdd  = 0,
+        StaggerEven = 1
     };
 
     /**

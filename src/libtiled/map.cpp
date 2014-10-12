@@ -48,7 +48,7 @@ Map::Map(Orientation orientation,
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
     mHexSideLength(0),
-    mStaggerDirection(NoStaggering),
+    mStaggerDirection(StaggerColumns),
     mStaggerIndex(StaggerOdd),
     mLayerDataFormat(Base64Zlib)
 {

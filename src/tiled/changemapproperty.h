@@ -38,6 +38,7 @@ public:
         TileWidth,
         TileHeight,
         HexSideLength,
+        StaggerIndex,
         Orientation,
         RenderOrder,
         BackgroundColor,
@@ -61,6 +62,14 @@ public:
      * @param backgroundColor   the new color to apply for the background
      */
     ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor);
+
+    /**
+     * Constructs a command that changes the map stagger index.
+     *
+     * @param mapDocument       the map document of the map
+     * @param orientation       the new map stagger index
+     */
+    ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
 
     /**
      * Constructs a command that changes the map orientation.
@@ -97,6 +106,7 @@ private:
     QColor mBackgroundColor;
     union {
         int mIntValue;
+        Map::StaggerIndex mStaggerIndex;
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;
