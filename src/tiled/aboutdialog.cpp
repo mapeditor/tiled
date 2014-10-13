@@ -28,6 +28,8 @@ using namespace Tiled::Internal;
 AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
 {
     setupUi(this);
+    this->setMaximumWidth(432);
+    this->setMaximumHeight(460);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     const QString html = QCoreApplication::translate(
