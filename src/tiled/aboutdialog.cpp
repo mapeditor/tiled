@@ -30,8 +30,7 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
     setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    setMaximumWidth(432);
-    setMaximumHeight(460);
+    setMaximumSize(432, 460);
 
     const QString html = QCoreApplication::translate(
             "AboutDialog",
