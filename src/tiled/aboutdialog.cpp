@@ -30,6 +30,9 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
     setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
+    setMaximumWidth(432);
+    setMaximumHeight(460);
+
     const QString html = QCoreApplication::translate(
             "AboutDialog",
             "<p align=\"center\"><font size=\"+2\"><b>Tiled Map Editor</b></font><br><i>Version %1</i></p>\n"
