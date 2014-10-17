@@ -27,6 +27,7 @@
 #include "changeproperties.h"
 #include "changeselectedarea.h"
 #include "flipmapobjects.h"
+#include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
@@ -915,6 +916,9 @@ void MapDocument::createRenderer()
         break;
     case Map::Staggered:
         mRenderer = new StaggeredRenderer(mMap);
+        break;
+    case Map::Hexagonal:
+        mRenderer = new HexagonalRenderer(mMap);
         break;
     default:
         mRenderer = new OrthogonalRenderer(mMap);

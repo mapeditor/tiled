@@ -50,6 +50,14 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     mapVariant["tileheight"] = map->tileHeight();
     mapVariant["properties"] = toVariant(map->properties());
 
+    if (map->orientation() == Map::Hexagonal) {
+        mapVariant["hexsidelength"] = map->hexSideLength();
+        mapVariant["staggerdirection"] = staggerDirectionToString(map->staggerDirection());
+    }
+
+    if (map->orientation() == Map::Hexagonal || map->orientation() == Map::Staggered)
+        mapVariant["staggerindex"] = staggerIndexToString(map->staggerIndex());
+
     const QColor bgColor = map->backgroundColor();
     if (bgColor.isValid())
         mapVariant["backgroundcolor"] = bgColor.name();

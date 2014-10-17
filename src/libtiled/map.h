@@ -60,15 +60,13 @@ public:
      * straight grid. An Isometric map uses diamond shaped tiles that are
      * aligned on an isometric projected grid. A Hexagonal map uses hexagon
      * shaped tiles that fit into each other by shifting every other row.
-     *
-     * Only Orthogonal, Isometric and Staggered maps are supported by this
-     * version of Tiled.
      */
     enum Orientation {
         Unknown,
         Orthogonal,
         Isometric,
-        Staggered
+        Staggered,
+        Hexagonal
     };
 
     /**
@@ -90,6 +88,25 @@ public:
         RightUp    = 1,
         LeftDown   = 2,
         LeftUp     = 3
+    };
+
+    /**
+     * Whether the tiles are staggered by rows or columns. Only used by the
+     * isometric staggered and hexagonal map renderers.
+     */
+    enum StaggerDirection {
+        StaggerColumns,
+        StaggerRows
+    };
+
+    /**
+     * When staggering, specifies whether the odd or the even rows/columns are
+     * shifted half a tile right/down. Only used by the isometric staggered and
+     * hexagonal map renderers.
+     */
+    enum StaggerIndex {
+        StaggerOdd  = 0,
+        StaggerEven = 1
     };
 
     /**
@@ -175,6 +192,20 @@ public:
      * Sets the height of one tile.
      */
     void setTileHeight(int height) { mTileHeight = height; }
+
+    /**
+     * Returns the size of one tile. Provided for convenience.
+     */
+    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
+
+    int hexSideLength() const;
+    void setHexSideLength(int hexSideLength);
+
+    StaggerDirection staggerDirection() const;
+    void setStaggerDirection(StaggerDirection staggerDirection);
+
+    StaggerIndex staggerIndex() const;
+    void setStaggerIndex(StaggerIndex staggerIndex);
 
     /**
      * Adjusts the draw margins to be at least as big as the given margins.
@@ -347,12 +378,53 @@ private:
     int mHeight;
     int mTileWidth;
     int mTileHeight;
+    int mHexSideLength;
+    StaggerDirection mStaggerDirection;
+    StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
     LayerDataFormat mLayerDataFormat;
 };
+
+
+inline int Map::hexSideLength() const
+{
+    return mHexSideLength;
+}
+
+inline void Map::setHexSideLength(int hexSideLength)
+{
+    mHexSideLength = hexSideLength;
+}
+
+inline Map::StaggerDirection Map::staggerDirection() const
+{
+    return mStaggerDirection;
+}
+
+inline void Map::setStaggerDirection(StaggerDirection staggerDirection)
+{
+    mStaggerDirection = staggerDirection;
+}
+
+inline Map::StaggerIndex Map::staggerIndex() const
+{
+    return mStaggerIndex;
+}
+
+inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
+{
+    mStaggerIndex = staggerIndex;
+}
+
+
+TILEDSHARED_EXPORT QString staggerDirectionToString(Map::StaggerDirection staggerDirection);
+TILEDSHARED_EXPORT Map::StaggerDirection staggerDirectionFromString(const QString &);
+
+TILEDSHARED_EXPORT QString staggerIndexToString(Map::StaggerIndex staggerIndex);
+TILEDSHARED_EXPORT Map::StaggerIndex staggerIndexFromString(const QString &);
 
 /**
  * Helper function that converts the map orientation to a string value. Useful

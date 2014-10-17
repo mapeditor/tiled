@@ -69,9 +69,13 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
 
+    mStaggerIndexNames.append(tr("Odd"));
+    mStaggerIndexNames.append(tr("Even"));
+
     mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Orthogonal"));
     mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric"));
     mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Isometric (Staggered)"));
+    mOrientationNames.append(QCoreApplication::translate("Tiled::Internal::NewMapDialog", "Hexagonal (Staggered)"));
 
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "XML"));
     mLayerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
@@ -318,6 +322,18 @@ void PropertyBrowser::addMapProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
 
+    createProperty(SizeProperty, QVariant::Size, tr("Size"), groupProperty)->setEnabled(false);
+    createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
+    createProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
+
+    QtVariantProperty *staggerIndexProperty =
+            createProperty(StaggerIndexProperty,
+                           QtVariantPropertyManager::enumTypeId(),
+                           tr("Stagger Index"),
+                           groupProperty);
+
+    staggerIndexProperty->setAttribute(QLatin1String("enumNames"), mStaggerIndexNames);
+
     QtVariantProperty *orientationProperty =
             createProperty(OrientationProperty,
                            QtVariantPropertyManager::enumTypeId(),
@@ -460,6 +476,30 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     QUndoCommand *command = 0;
 
     switch (id) {
+    case TileSizeProperty: {
+        const Map *map = static_cast<Map*>(mObject);
+        const QSize tileSize = val.toSize();
+        if (tileSize.width() != map->tileWidth()) {
+            command = new ChangeMapProperty(mMapDocument,
+                                            ChangeMapProperty::TileWidth,
+                                            tileSize.width());
+        } else if (tileSize.height() != map->tileHeight()) {
+            command = new ChangeMapProperty(mMapDocument,
+                                            ChangeMapProperty::TileHeight,
+                                            tileSize.height());
+        }
+        break;
+    }
+    case HexSideLengthProperty: {
+        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::HexSideLength,
+                                        val.toInt());
+        break;
+    }
+    case StaggerIndexProperty: {
+        Map::StaggerIndex staggerIndex = static_cast<Map::StaggerIndex>(val.toInt());
+        command = new ChangeMapProperty(mMapDocument, staggerIndex);
+        break;
+    }
     case OrientationProperty: {
         Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
         command = new ChangeMapProperty(mMapDocument, orientation);
@@ -731,6 +771,10 @@ void PropertyBrowser::updateProperties()
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
+        mIdToProperty[SizeProperty]->setValue(map->size());
+        mIdToProperty[TileSizeProperty]->setValue(map->tileSize());
+        mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
+        mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());

@@ -5,11 +5,11 @@ rem The following assumes US date format!
 
 set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
 
-set TILED_SOURCE_DIR=C:\Projects\tiled
-set TILED_BUILD_DIR=C:\Builds\tiled-daily-qt5
-set QTDIR=C:\Qt\5.3\msvc2013_opengl
+set TILED_SOURCE_DIR=E:\Projects\tiled
+set TILED_BUILD_DIR=E:\Builds\tiled-daily-qt5
+set QTDIR=E:\Qt\5.3\msvc2013_opengl
 set ARCH=32
-set MAKE=C:\Qt\Tools\QtCreator\bin\jom.exe
+set MAKE=E:\Qt\Tools\QtCreator\bin\jom.exe
 set GIT="C:\Program Files (x86)\Git\cmd\git.exe"
 set SCP="C:\Program Files (x86)\Git\bin\scp.exe"
 set DESTINATION=bjorn@files.mapeditor.org:public_html/files.mapeditor.org/public/daily/

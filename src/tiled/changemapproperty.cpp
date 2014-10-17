@@ -30,12 +30,47 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     ChangeMapProperty::Property property,
+                                     int value)
+    : mMapDocument(mapDocument)
+    , mProperty(property)
+    , mIntValue(value)
+{
+    switch (property) {
+    case TileWidth:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Tile Width"));
+        break;
+    case TileHeight:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Tile Height"));
+        break;
+    case HexSideLength:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Hex Side Length"));
+        break;
+    default:
+        break;
+    }
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      const QColor &backgroundColor)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Background Color"))
     , mMapDocument(mapDocument)
     , mProperty(BackgroundColor)
     , mBackgroundColor(backgroundColor)
+{
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     Map::StaggerIndex staggerIndex)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Stagger Index"))
+    , mMapDocument(mapDocument)
+    , mProperty(StaggerIndex)
+    , mStaggerIndex(staggerIndex)
 {
 }
 
@@ -84,6 +119,30 @@ void ChangeMapProperty::swap()
     Map *map = mMapDocument->map();
 
     switch (mProperty) {
+    case TileWidth: {
+        const int tileWidth = map->tileWidth();
+        map->setTileWidth(mIntValue);
+        mIntValue = tileWidth;
+        break;
+    }
+    case TileHeight: {
+        const int tileHeight = map->tileHeight();
+        map->setTileHeight(mIntValue);
+        mIntValue = tileHeight;
+        break;
+    }
+    case HexSideLength: {
+        const int hexSideLength = map->hexSideLength();
+        map->setHexSideLength(mIntValue);
+        mIntValue = hexSideLength;
+        break;
+    }
+    case StaggerIndex: {
+        const Map::StaggerIndex staggerIndex = map->staggerIndex();
+        map->setStaggerIndex(mStaggerIndex);
+        mStaggerIndex = staggerIndex;
+        break;
+    }
     case Orientation: {
         const Map::Orientation orientation = map->orientation();
         map->setOrientation(mOrientation);

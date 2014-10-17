@@ -210,6 +210,8 @@ Map *MapReaderPrivate::readMap()
             atts.value(QLatin1String("tilewidth")).toString().toInt();
     const int tileHeight =
             atts.value(QLatin1String("tileheight")).toString().toInt();
+    const int hexSideLength =
+            atts.value(QLatin1String("hexsidelength")).toString().toInt();
 
     const QString orientationString =
             atts.value(QLatin1String("orientation")).toString();
@@ -221,12 +223,25 @@ Map *MapReaderPrivate::readMap()
                        .arg(orientationString));
     }
 
+    const QString staggerDirectionString =
+            atts.value(QLatin1String("staggerdirection")).toString();
+    const Map::StaggerDirection staggerDirection =
+            staggerDirectionFromString(staggerDirectionString);
+
+    const QString staggerIndexString =
+            atts.value(QLatin1String("staggerindex")).toString();
+    const Map::StaggerIndex staggerIndex =
+            staggerIndexFromString(staggerIndexString);
+
     const QString renderOrderString =
             atts.value(QLatin1String("renderorder")).toString();
     const Map::RenderOrder renderOrder =
             renderOrderFromString(renderOrderString);
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
+    mMap->setHexSideLength(hexSideLength);
+    mMap->setStaggerDirection(staggerDirection);
+    mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
     mCreatedTilesets.clear();
 

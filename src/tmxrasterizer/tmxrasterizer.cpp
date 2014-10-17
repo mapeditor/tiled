@@ -28,6 +28,7 @@
 
 #include "tmxrasterizer.h"
 
+#include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "map.h"
@@ -87,6 +88,9 @@ int TmxRasterizer::render(const QString &mapFileName,
         break;
     case Map::Staggered:
         renderer = new StaggeredRenderer(map);
+        break;
+    case Map::Hexagonal:
+        renderer = new HexagonalRenderer(map);
         break;
     case Map::Orthogonal:
     default:

@@ -22,6 +22,7 @@
 #include "ui_newmapdialog.h"
 
 #include "isometricrenderer.h"
+#include "hexagonalrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "orthogonalrenderer.h"
@@ -72,6 +73,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
     mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
     mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
+    mUi->orientation->addItem(tr("Hexagonal (Staggered)"), Map::Hexagonal);
 
     mUi->orientation->setCurrentIndex(orientation);
     mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
@@ -176,6 +178,9 @@ void NewMapDialog::refreshPixelSize()
         break;
     case Map::Staggered:
         size = StaggeredRenderer(&map).mapSize();
+        break;
+    case Map::Hexagonal:
+        size = HexagonalRenderer(&map).mapSize();
         break;
     default:
         size = OrthogonalRenderer(&map).mapSize();
