@@ -28,7 +28,6 @@ namespace Internal {
 
 class MiniMap;
 class MapDocument;
-class MapView;
 
 /**
  * Shows a mini-map.

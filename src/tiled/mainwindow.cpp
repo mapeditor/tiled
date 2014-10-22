@@ -511,6 +511,8 @@ MainWindow::~MainWindow()
     mTileCollisionEditor->setTile(0);
     mTileCollisionEditor->writeSettings();
 
+    delete mQuickStampManager;
+
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
     Preferences::deleteInstance();

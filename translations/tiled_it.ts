@@ -283,7 +283,7 @@
     <message>
         <location line="+16"/>
         <source>Tools</source>
-        <translation type="unfinished">Strumenti</translation>
+        <translation>Strumenti</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -423,12 +423,12 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Animations</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra animazioni tile</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricarica</translation>
     </message>
     <message>
         <location line="-168"/>
@@ -498,7 +498,7 @@
     <message>
         <location line="+25"/>
         <source>Add new Automapping rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi nuove regole Automapping</translation>
     </message>
 </context>
 <context>
@@ -707,12 +707,12 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato livello tile:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordine di render tile:</translation>
     </message>
 </context>
 <context>
@@ -730,7 +730,7 @@ Line %1, column %2</source>
     <message>
         <location line="+13"/>
         <source>Based on Tileset Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Basato su immagine tileset</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -740,7 +740,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Type:</source>
-        <translation type="unfinished">Tipo:</translation>
+        <translation>Tipo:</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -774,12 +774,12 @@ Line %1, column %2</source>
     <message>
         <location line="-142"/>
         <source>Image</source>
-        <translation type="unfinished">Immagine</translation>
+        <translation>Immagine</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>Origine:</translation>
     </message>
     <message>
         <location line="+101"/>
@@ -995,12 +995,12 @@ Line %1, column %2</source>
     <message>
         <location line="+220"/>
         <source>Automapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Automapping</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Use Automapping, when drawing into layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa automapping, quando disegni nei livelli</translation>
     </message>
     <message>
         <location line="-239"/>
@@ -1094,13 +1094,13 @@ Line %1, column %2</source>
         <location line="+10"/>
         <location line="+25"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Vero</translation>
     </message>
     <message>
         <location line="-25"/>
         <location line="+25"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Falso</translation>
     </message>
 </context>
 <context>
@@ -1108,12 +1108,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1696"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Vero</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Falso</translation>
     </message>
 </context>
 <context>
@@ -1129,7 +1129,7 @@ Line %1, column %2</source>
     <message>
         <location line="+614"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -1137,7 +1137,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4724"/>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Rosso</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1147,12 +1147,12 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Blu</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>Alfa</translation>
     </message>
 </context>
 <context>
@@ -1175,7 +1175,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Attendi</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1245,12 +1245,12 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>What&apos;s This</source>
-        <translation type="unfinished"></translation>
+        <translation>Cos&apos;è questo</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Impegnato</translation>
     </message>
 </context>
 <context>
@@ -1263,7 +1263,7 @@ Line %1, column %2</source>
     <message>
         <location line="+20"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona font</translation>
     </message>
 </context>
 <context>
@@ -1271,7 +1271,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="-350"/>
         <source>Family</source>
-        <translation type="unfinished"></translation>
+        <translation>Famiglia</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1281,17 +1281,17 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Grassetto</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Corsivo</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Sottolinea</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1322,12 +1322,12 @@ Line %1, column %2</source>
     <message>
         <location line="+53"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingua</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Paese</translation>
     </message>
 </context>
 <context>
@@ -1340,12 +1340,12 @@ Line %1, column %2</source>
     <message>
         <location line="+71"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1358,12 +1358,12 @@ Line %1, column %2</source>
     <message>
         <location line="+37"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -1389,22 +1389,22 @@ Line %1, column %2</source>
     <message>
         <location line="+156"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Altezza</translation>
     </message>
 </context>
 <context>
