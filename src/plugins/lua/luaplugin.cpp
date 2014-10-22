@@ -335,8 +335,8 @@ void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
 
     writer.writeKeyAndValue("type", "imagelayer");
     writer.writeKeyAndValue("name", imageLayer->name());
-    writer.writeKeyAndValue("x", x);
-    writer.writeKeyAndValue("y", y);
+    writer.writeKeyAndValue("x", imageLayer->x());
+    writer.writeKeyAndValue("y", imageLayer->y());
     writer.writeKeyAndValue("visible", imageLayer->isVisible());
     writer.writeKeyAndValue("opacity", imageLayer->opacity());
 
