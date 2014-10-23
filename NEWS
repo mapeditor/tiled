@@ -1,4 +1,4 @@
-0.10.2
+0.10.2 (23 October 2014)
 * Fixed hit area for polygon nodes when editing polygons while zoomed in or out
 * Fixed another possible crash in the orthogonal renderer
 * Fixed Select All action to work for object layers
