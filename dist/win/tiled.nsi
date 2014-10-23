@@ -145,7 +145,7 @@ Function checkAlreadyInstalled
         ClearErrors
         ReadRegStr $R0 HKLM "${ADD_REMOVE}" "UninstallString"
 		DetailPrint "Uninstalling previously installed version"
-        ExecWait '$R0'
+        ExecWait '$R0 _?=$INSTDIR'
 		IfErrors OnError 0
 		Return
 	OnError:
