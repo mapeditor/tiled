@@ -127,17 +127,25 @@ void RemoveProperty::redo()
 
 
 RenameProperty::RenameProperty(MapDocument *mapDocument,
-                               Object *object,
+                               const QList<Object*> &objects,
                                const QString &oldName,
                                const QString &newName)
 {
     setText(QCoreApplication::translate("Undo Commands", "Rename Property"));
 
-    const QString value = object->property(oldName);
-
-    QList<Object*> objects;
-    objects.append(object);
-
+    // Remove the old name from all objects
     new RemoveProperty(mapDocument, objects, oldName, this);
-    new SetProperty(mapDocument, objects, newName, value, this);
+
+    // Different objects may have different values for the same property,
+    // or may not have a value at all.
+    foreach (Object *object, objects) {
+        if (!object->hasProperty(oldName))
+            continue;
+
+        QList<Object*> objects;
+        objects.append(object);
+
+        const QString value = object->property(oldName);
+        new SetProperty(mapDocument, objects, newName, value, this);
+    }
 }

@@ -234,41 +234,31 @@ void PropertiesDock::renameProperty()
     if (!item)
         return;
 
-    //Getting back the current value of the property
-    QString oldname = item->property()->propertyName();
+    const QString oldName = item->property()->propertyName();
 
     QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(tr("Name:"));
-    dialog->setTextValue(oldname);
+    dialog->setTextValue(oldName);
     dialog->setWindowTitle(tr("Rename Property"));
     dialog->open(this, SLOT(renameProperty(QString)));
 }
 
 void PropertiesDock::renameProperty(const QString &name)
 {
-    //Firt step : getting the property actual value
+    if (name.isEmpty())
+        return;
+
     QtBrowserItem *item = mPropertyBrowser->currentItem();
     if (!item)
         return;
-    QString oldvalue = item->property()->valueText();
 
-    //Then delete the 'old' property
-    removeProperty();
-
-    //Then create a new property with the new name
-    if (name.isEmpty())
-        return;
-    Object *object = mMapDocument->currentObject();
-    if (!object)
+    const QString oldName = item->property()->propertyName();
+    if (oldName == name)
         return;
 
-    if (!object->hasProperty(name)) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, oldvalue));
-    }
-
-    mPropertyBrowser->editCustomProperty(name);
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    undoStack->push(new RenameProperty(mMapDocument, mMapDocument->currentObjects(), oldName, name));
 }
 
 

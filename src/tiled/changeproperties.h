@@ -65,7 +65,7 @@ public:
      * Constructs a new 'Set Property' command.
      *
      * @param mapDocument  the map document of the object's map
-     * @param object       the object of which the property should be changed
+     * @param objects      the objects of which the property should be changed
      * @param name         the name of the property to be changed
      * @param value        the new value of the property
      */
@@ -97,7 +97,7 @@ public:
      * Constructs a new 'Remove Property' command.
      *
      * @param mapDocument  the map document of the object's map
-     * @param object       the object from which the property should be removed
+     * @param objects      the objects from which the property should be removed
      * @param name         the name of the property to be removed
      */
     RemoveProperty(MapDocument *mapDocument,
@@ -127,7 +127,7 @@ public:
      * @param newName      the new name of the property
      */
     RenameProperty(MapDocument *mapDocument,
-                   Object *object,
+                   const QList<Object*> &objects,
                    const QString &oldName,
                    const QString &newName);
 };
