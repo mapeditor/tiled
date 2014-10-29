@@ -85,6 +85,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     QToolBar *toolBar = new QToolBar(this);
     toolBar->setMovable(false);
     toolBar->setFloatable(false);
+    toolBar->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     mToolManager = new ToolManager(this);
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
