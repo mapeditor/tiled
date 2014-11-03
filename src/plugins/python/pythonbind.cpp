@@ -5120,7 +5120,6 @@ _wrap_PyTiledMapObject__tp_init__1(PyTiledMapObject *self, PyObject *args, PyObj
     const char *type;
     Py_ssize_t type_len;
     //TODO Get uid working
-    int uniqueID = 0;
     PyQPointF *pos;
     PyQSizeF *size;
 
@@ -5135,7 +5134,7 @@ _wrap_PyTiledMapObject__tp_init__1(PyTiledMapObject *self, PyObject *args, PyObj
         }
         return -1;
     }
-    self->obj = new Tiled::MapObject(uniqueID, QString::fromUtf8(name), QString::fromUtf8(type), *((PyQPointF *) pos)->obj, *((PyQSizeF *) size)->obj);
+    self->obj = new Tiled::MapObject(QString::fromUtf8(name), QString::fromUtf8(type), *((PyQPointF *) pos)->obj, *((PyQSizeF *) size)->obj);
     self->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     return 0;
 }

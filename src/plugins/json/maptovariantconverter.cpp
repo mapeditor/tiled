@@ -49,7 +49,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     mapVariant["tilewidth"] = map->tileWidth();
     mapVariant["tileheight"] = map->tileHeight();
     mapVariant["properties"] = toVariant(map->properties());
-    mapVariant["currentuid"] = map->currentId();
+    mapVariant["nextUid"] = map->currentNextUid();
 
     const QColor bgColor = map->backgroundColor();
     if (bgColor.isValid())

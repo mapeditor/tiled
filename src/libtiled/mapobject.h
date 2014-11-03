@@ -71,7 +71,7 @@ public:
 
     MapObject();
 
-    MapObject(int uniqueID, const QString &name, const QString &type,
+    MapObject(const QString &name, const QString &type,
               const QPointF &pos,
               const QSizeF &size);
 

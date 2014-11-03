@@ -188,9 +188,9 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
                          map->backgroundColor().name());
     }
 
-    int currentId = map->currentId();
-    w.writeAttribute(QLatin1String("currentuid"),
-                     QString::number(currentId));
+    int nextUid = map->currentNextUid();
+    w.writeAttribute(QLatin1String("nextUid"),
+                     QString::number(nextUid));
 
     writeProperties(w, map->properties());
 

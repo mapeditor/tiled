@@ -226,12 +226,13 @@ Map *MapReaderPrivate::readMap()
     const Map::RenderOrder renderOrder =
             renderOrderFromString(renderOrderString);
 
-    const int currentId =
-            atts.value(QLatin1String("currentuid")).toString().toInt();
+    const int nextUid =
+            atts.value(QLatin1String("nextUid")).toString().toInt();
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
     mMap->setRenderOrder(renderOrder);
-    mMap->setCurrentId(currentId);
+
+    mMap->setNextUid(nextUid);
     mCreatedTilesets.clear();
 
     QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
@@ -826,10 +827,11 @@ MapObject *MapReaderPrivate::readObject()
     //has no UniqueID yet.  So we create it a UniqueID here.
     if(uniqueID == 0)
     {
-        uniqueID = mMap->getNextId();
+        uniqueID = mMap->nextUid();
     }
 
-    MapObject *object = new MapObject(uniqueID, name, type, pos, size);
+    MapObject *object = new MapObject(name, type, pos, size);
+    object->setUniqueID(uniqueID);
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);

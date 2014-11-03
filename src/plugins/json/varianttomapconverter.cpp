@@ -63,7 +63,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     const QString renderOrderString = variantMap["renderorder"].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
 
-    int currentId = variantMap["currentuid"].toString().toInt();
+    int nextUid = variantMap["nextUid"].toString().toInt();
 
     typedef QScopedPointer<Map> MapPtr;
     MapPtr map(new Map(orientation,
@@ -72,7 +72,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
                        variantMap["tilewidth"].toInt(),
                        variantMap["tileheight"].toInt()));
     map->setRenderOrder(renderOrder);
-    map->setCurrentId(currentId);
+    map->setNextUid(nextUid);
 
     mMap = map.data();
     map->setProperties(toProperties(variantMap["properties"]));
@@ -358,10 +358,11 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         //has no UniqueID yet.  So we create it a UniqueID here.
         if(uniqueID == 0)
         {
-            uniqueID = mMap->getNextId();
+            uniqueID = mMap->nextUid();
         }
 
-        MapObject *object = new MapObject(uniqueID, name, type, pos, size);
+        MapObject *object = new MapObject(name, type, pos, size);
+        object->setUniqueID(uniqueID);
         object->setRotation(rotation);
 
         if (gid) {

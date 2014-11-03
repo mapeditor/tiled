@@ -68,6 +68,9 @@ void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
     object->setObjectGroup(this);
+    if(mMap) {
+        object->setUniqueID(mMap->nextUid());
+    }
 }
 
 int ObjectGroup::removeObject(MapObject *object)
@@ -192,14 +195,9 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
 
     const ObjectGroup *og = static_cast<ObjectGroup*>(other);
 
-    ObjectGroup *merged = static_cast<ObjectGroup*>(cloneNonUnique());
+    ObjectGroup *merged = static_cast<ObjectGroup*>(clone());
     foreach (const MapObject *mapObject, og->objects())
-    {
-        MapObject * clonedObject = mapObject->clone();
-        const int uniqueId = (mapObject->uniqueID());
-        clonedObject->setUniqueID(uniqueId);
-        merged->addObject(clonedObject);
-    }
+        merged->addObject(mapObject->clone());
     return merged;
 }
 
@@ -210,26 +208,16 @@ Layer *ObjectGroup::mergedWith(Layer *other) const
  */
 Layer *ObjectGroup::clone() const
 {
-    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight), true);
+    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight));
 }
 
-Layer *ObjectGroup::cloneNonUnique() const
-{
-    return initializeClone(new ObjectGroup(mName, mX, mY, mWidth, mHeight), false);
-}
-
-ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone, bool uniqueIds) const
+ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
 {
     Layer::initializeClone(clone);
-    foreach (const MapObject *object, mObjects)
-    {
-        MapObject * clonedObject = object->clone();
-        if(uniqueIds)
-        {
-            const int uniqueId = mMap->getNextId();
-            clonedObject->setUniqueID(uniqueId);
-        }
+    foreach (const MapObject *object, mObjects) {
+        MapObject *clonedObject = object->clone();
         clone->addObject(clonedObject);
+        clonedObject->setUniqueID(mMap->nextUid());
     }
     clone->setColor(mColor);
     clone->setDrawOrder(mDrawOrder);

@@ -114,7 +114,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
     writer.writeKeyAndValue("tileheight", map->tileHeight());
-    writer.writeKeyAndValue("currentuid", map->currentId());
+    writer.writeKeyAndValue("nextUid", map->currentNextUid());
 
     writeProperties(writer, map->properties());
 

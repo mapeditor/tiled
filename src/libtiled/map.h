@@ -338,23 +338,15 @@ public:
     void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
-    /**
-     * Returns the currentId counter.
-     */
-    int currentId() const { return mCurrentId; }
-
-    /**
-     * Sets the currentId counter.
-     */
-    void setCurrentId(int currentId) {
-        mCurrentId = currentId;
+    void setNextUid(int nextUid) {
+        if(nextUid == 0)
+            nextUid = 1;
+        mNextUid = nextUid;
     }
 
-    /**
-     * Increments the currentId counter.
-     */
-    int getNextId();
+    int nextUid() { return mNextUid++; }
 
+    int currentNextUid() const { return  mNextUid; }
 
 private:
     void adoptLayer(Layer *layer);
@@ -371,7 +363,7 @@ private:
     QList<Tileset*> mTilesets;
     LayerDataFormat mLayerDataFormat;
 
-    int mCurrentId;
+    int mNextUid;
 };
 
 /**

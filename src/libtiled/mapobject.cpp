@@ -43,7 +43,7 @@ MapObject::MapObject():
 {
 }
 
-MapObject::MapObject(const int uniqueID, const QString &name, const QString &type,
+MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
     Object(MapObjectType),
@@ -54,8 +54,7 @@ MapObject::MapObject(const int uniqueID, const QString &name, const QString &typ
     mShape(Rectangle),
     mObjectGroup(0),
     mRotation(0.0f),
-    mVisible(true),
-    mUniqueID(uniqueID)
+    mVisible(true)
 {
 }
 
@@ -83,7 +82,7 @@ void MapObject::flip(FlipDirection direction)
 
 MapObject *MapObject::clone() const
 {
-    MapObject *o = new MapObject(mUniqueID, mName, mType, mPos, mSize);
+    MapObject *o = new MapObject(mName, mType, mPos, mSize);
     o->setProperties(properties());
     o->setPolygon(mPolygon);
     o->setShape(mShape);
