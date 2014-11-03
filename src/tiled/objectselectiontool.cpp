@@ -944,7 +944,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
             const QPointF point(oldPolygon[n]);
             const QPointF newPoint(point.x() * scalingFactor.width(),
                                    point.y() * scalingFactor.height());
-            newPolygon += newPoint;
+            newPolygon[n] = newPoint;
         }
         objectItem->mapObject()->setPolygon(newPolygon);
     }

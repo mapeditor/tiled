@@ -234,7 +234,7 @@ void HexagonalRenderer::drawTileLayer(QPainter *painter,
             const Cell &cell = layer->cellAt(rowTile);
 
             if (!cell.isEmpty())
-                renderer.render(cell, rowPos, CellRenderer::BottomLeft);
+                renderer.render(cell, rowPos, QSizeF(0, 0), CellRenderer::BottomLeft);
 
             rowPos.rx() += p.tileWidth;
         }
