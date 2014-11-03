@@ -338,14 +338,23 @@ public:
     void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
+    /**
+     * Sets the next UniqueId of this map.
+     */
     void setNextUid(int nextUid) {
         if(nextUid == 0)
             nextUid = 1;
         mNextUid = nextUid;
     }
 
+    /**
+     * Returns the next UniqueId for this map.
+     */
     int nextUid() { return mNextUid++; }
 
+    /**
+     * Returns the current UniqueId for this map.
+     */
     int currentNextUid() const { return  mNextUid; }
 
 private:
