@@ -62,13 +62,16 @@ void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
     object->setObjectGroup(this);
+    if(mMap && object->uniqueID() == -1) {
+        object->setUniqueID(mMap->nextUid());
+    }
 }
 
 void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
     object->setObjectGroup(this);
-    if(mMap) {
+    if(mMap && object->uniqueID() == -1) {
         object->setUniqueID(mMap->nextUid());
     }
 }
@@ -214,11 +217,8 @@ Layer *ObjectGroup::clone() const
 ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
 {
     Layer::initializeClone(clone);
-    foreach (const MapObject *object, mObjects) {
-        MapObject *clonedObject = object->clone();
-        clone->addObject(clonedObject);
-        clonedObject->setUniqueID(mMap->nextUid());
-    }
+    foreach (const MapObject *object, mObjects)
+        clone->addObject(object->clone());
     clone->setColor(mColor);
     clone->setDrawOrder(mDrawOrder);
     return clone;

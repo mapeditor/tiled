@@ -3721,7 +3721,6 @@ _wrap_PyTiledMap__tp_init__1(PyTiledMap *self, PyObject *args, PyObject *kwargs,
     int h;
     int tileW;
     int tileH;
-    //TODO get currentuid working
     const char *keywords[] = {"orient", "renderOrder", "w", "h", "tileW", "tileH", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "iiiii", (char **) keywords, &orient, &renderOrder, &w, &h, &tileW, &tileH)) {
@@ -5119,11 +5118,9 @@ _wrap_PyTiledMapObject__tp_init__1(PyTiledMapObject *self, PyObject *args, PyObj
     Py_ssize_t name_len;
     const char *type;
     Py_ssize_t type_len;
-    //TODO Get uid working
     PyQPointF *pos;
     PyQSizeF *size;
-
-    const char *keywords[] = {"name", "type", "uid", "pos", "size", NULL};
+    const char *keywords[] = {"name", "type", "pos", "size", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "s#s#O!O!", (char **) keywords, &name, &name_len, &type, &type_len, &PyQPointF_Type, &pos, &PyQSizeF_Type, &size)) {
         {
@@ -6403,20 +6400,20 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
 {
         PyObject *py_retval;
         PyTiledLoggingInterface *py_LoggingInterface;
-        
+
         py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
         py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
         py_LoggingInterface->obj = cvalue;
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
-        
+
 
 int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *address)
 {
     PyObject *py_retval;
     PyTiledMap *tmp_Map;
-    
+
     py_retval = Py_BuildValue((char *) "(O)", value);
     if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
         Py_DECREF(py_retval);
@@ -6432,7 +6429,7 @@ PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue)
 {
     PyObject *py_retval;
     PyTiledMap *py_Map;
-    
+
     py_Map = PyObject_New(PyTiledMap, &PyTiledMap_Type);
     py_Map->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_Map->obj = new Tiled::Map(*cvalue);
