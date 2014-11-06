@@ -91,12 +91,12 @@ public:
     };
 
     /**
-     * Whether the tiles are staggered by rows or columns. Only used by the
-     * isometric staggered and hexagonal map renderers.
+     * Which axis is staggered. Only used by the isometric staggered and
+     * hexagonal map renderers.
      */
-    enum StaggerDirection {
-        StaggerColumns,
-        StaggerRows
+    enum StaggerAxis {
+        StaggerX,
+        StaggerY
     };
 
     /**
@@ -149,22 +149,22 @@ public:
     { mRenderOrder = renderOrder; }
 
     /**
-     * Returns the width of this map.
+     * Returns the width of this map in tiles.
      */
     int width() const { return mWidth; }
 
     /**
-     * Sets the width of this map.
+     * Sets the width of this map in tiles.
      */
     void setWidth(int width) { mWidth = width; }
 
     /**
-     * Returns the height of this map.
+     * Returns the height of this map in tiles.
      */
     int height() const { return mHeight; }
 
     /**
-     * Sets the height of this map.
+     * Sets the height of this map in tiles.
      */
     void setHeight(int height) { mHeight = height; }
 
@@ -201,8 +201,8 @@ public:
     int hexSideLength() const;
     void setHexSideLength(int hexSideLength);
 
-    StaggerDirection staggerDirection() const;
-    void setStaggerDirection(StaggerDirection staggerDirection);
+    StaggerAxis staggerAxis() const;
+    void setStaggerAxis(StaggerAxis staggerAxis);
 
     StaggerIndex staggerIndex() const;
     void setStaggerIndex(StaggerIndex staggerIndex);
@@ -379,7 +379,7 @@ private:
     int mTileWidth;
     int mTileHeight;
     int mHexSideLength;
-    StaggerDirection mStaggerDirection;
+    StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;
     QMargins mDrawMargins;
@@ -399,14 +399,14 @@ inline void Map::setHexSideLength(int hexSideLength)
     mHexSideLength = hexSideLength;
 }
 
-inline Map::StaggerDirection Map::staggerDirection() const
+inline Map::StaggerAxis Map::staggerAxis() const
 {
-    return mStaggerDirection;
+    return mStaggerAxis;
 }
 
-inline void Map::setStaggerDirection(StaggerDirection staggerDirection)
+inline void Map::setStaggerAxis(StaggerAxis staggerAxis)
 {
-    mStaggerDirection = staggerDirection;
+    mStaggerAxis = staggerAxis;
 }
 
 inline Map::StaggerIndex Map::staggerIndex() const
@@ -420,8 +420,8 @@ inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 }
 
 
-TILEDSHARED_EXPORT QString staggerDirectionToString(Map::StaggerDirection staggerDirection);
-TILEDSHARED_EXPORT Map::StaggerDirection staggerDirectionFromString(const QString &);
+TILEDSHARED_EXPORT QString staggerAxisToString(Map::StaggerAxis);
+TILEDSHARED_EXPORT Map::StaggerAxis staggerAxisFromString(const QString &);
 
 TILEDSHARED_EXPORT QString staggerIndexToString(Map::StaggerIndex staggerIndex);
 TILEDSHARED_EXPORT Map::StaggerIndex staggerIndexFromString(const QString &);

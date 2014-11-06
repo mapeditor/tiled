@@ -69,6 +69,9 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     setRootIsDecorated(false);
     setPropertiesWithoutValueMarked(true);
 
+    mStaggerAxisNames.append(tr("X"));
+    mStaggerAxisNames.append(tr("Y"));
+
     mStaggerIndexNames.append(tr("Odd"));
     mStaggerIndexNames.append(tr("Even"));
 
@@ -324,15 +327,6 @@ void PropertyBrowser::addMapProperties()
 
     createProperty(SizeProperty, QVariant::Size, tr("Size"), groupProperty)->setEnabled(false);
     createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
-    createProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
-
-    QtVariantProperty *staggerIndexProperty =
-            createProperty(StaggerIndexProperty,
-                           QtVariantPropertyManager::enumTypeId(),
-                           tr("Stagger Index"),
-                           groupProperty);
-
-    staggerIndexProperty->setAttribute(QLatin1String("enumNames"), mStaggerIndexNames);
 
     QtVariantProperty *orientationProperty =
             createProperty(OrientationProperty,
@@ -341,6 +335,24 @@ void PropertyBrowser::addMapProperties()
                            groupProperty);
 
     orientationProperty->setAttribute(QLatin1String("enumNames"), mOrientationNames);
+
+    createProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
+
+    QtVariantProperty *staggerAxisProperty =
+            createProperty(StaggerAxisProperty,
+                           QtVariantPropertyManager::enumTypeId(),
+                           tr("Stagger Axis"),
+                           groupProperty);
+
+    staggerAxisProperty->setAttribute(QLatin1String("enumNames"), mStaggerAxisNames);
+
+    QtVariantProperty *staggerIndexProperty =
+            createProperty(StaggerIndexProperty,
+                           QtVariantPropertyManager::enumTypeId(),
+                           tr("Stagger Index"),
+                           groupProperty);
+
+    staggerIndexProperty->setAttribute(QLatin1String("enumNames"), mStaggerIndexNames);
 
     QtVariantProperty *layerFormatProperty =
             createProperty(LayerFormatProperty,
@@ -490,19 +502,24 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         }
         break;
     }
+    case OrientationProperty: {
+        Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
+        command = new ChangeMapProperty(mMapDocument, orientation);
+        break;
+    }
     case HexSideLengthProperty: {
         command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::HexSideLength,
                                         val.toInt());
         break;
     }
+    case StaggerAxisProperty: {
+        Map::StaggerAxis staggerAxis = static_cast<Map::StaggerAxis>(val.toInt());
+        command = new ChangeMapProperty(mMapDocument, staggerAxis);
+        break;
+    }
     case StaggerIndexProperty: {
         Map::StaggerIndex staggerIndex = static_cast<Map::StaggerIndex>(val.toInt());
         command = new ChangeMapProperty(mMapDocument, staggerIndex);
-        break;
-    }
-    case OrientationProperty: {
-        Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
-        command = new ChangeMapProperty(mMapDocument, orientation);
         break;
     }
     case LayerFormatProperty: {
@@ -773,9 +790,10 @@ void PropertyBrowser::updateProperties()
         const Map *map = static_cast<const Map*>(mObject);
         mIdToProperty[SizeProperty]->setValue(map->size());
         mIdToProperty[TileSizeProperty]->setValue(map->tileSize());
-        mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
-        mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
+        mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
+        mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());
+        mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
         QColor backgroundColor = map->backgroundColor();

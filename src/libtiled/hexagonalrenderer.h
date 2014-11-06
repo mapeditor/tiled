@@ -49,15 +49,35 @@ protected:
     {
         RenderParams(const Map *map);
 
-        bool stagger(int index) const { return (index & 1) ^ staggerEven; }
+        bool stagger(int x, int y) const
+        {
+            if (staggerX)
+                return (x & 1) ^ staggerEven;
+            else
+                return (y & 1) ^ staggerEven;
+        }
+
+        bool stagger(const QPoint &point) const
+        {
+            return stagger(point.x(), point.y());
+        }
+
+        bool doStaggerX(int x) const
+        { return staggerX && (x & 1) ^ staggerEven; }
+
+        bool doStaggerY(int y) const
+        { return !staggerX && (y & 1) ^ staggerEven; }
 
         const int tileWidth;
         const int tileHeight;
-        const int halfTileWidth;
-        const int sideLength;
-        const int sideOffset;
-        const int rowHeight;
-        const int staggerEven;
+        int sideLengthX;
+        int sideOffsetX;
+        int sideLengthY;
+        int sideOffsetY;
+        int rowHeight;
+        int columnWidth;
+        const bool staggerX;
+        const bool staggerEven;
     };
 
 public:

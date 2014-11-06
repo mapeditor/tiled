@@ -52,7 +52,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     if (map->orientation() == Map::Hexagonal) {
         mapVariant["hexsidelength"] = map->hexSideLength();
-        mapVariant["staggerdirection"] = staggerDirectionToString(map->staggerDirection());
+        mapVariant["staggeraxis"] = staggerAxisToString(map->staggerAxis());
     }
 
     if (map->orientation() == Map::Hexagonal || map->orientation() == Map::Staggered)

@@ -65,6 +65,16 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
 }
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     Map::StaggerAxis staggerAxis)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Stagger Axis"))
+    , mMapDocument(mapDocument)
+    , mProperty(StaggerAxis)
+    , mStaggerAxis(staggerAxis)
+{
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
                                      Map::StaggerIndex staggerIndex)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Stagger Index"))
@@ -131,23 +141,29 @@ void ChangeMapProperty::swap()
         mIntValue = tileHeight;
         break;
     }
+    case Orientation: {
+        const Map::Orientation orientation = map->orientation();
+        map->setOrientation(mOrientation);
+        mOrientation = orientation;
+        mMapDocument->createRenderer();
+        break;
+    }
     case HexSideLength: {
         const int hexSideLength = map->hexSideLength();
         map->setHexSideLength(mIntValue);
         mIntValue = hexSideLength;
         break;
     }
+    case StaggerAxis: {
+        const Map::StaggerAxis staggerAxis = map->staggerAxis();
+        map->setStaggerAxis(mStaggerAxis);
+        mStaggerAxis = staggerAxis;
+        break;
+    }
     case StaggerIndex: {
         const Map::StaggerIndex staggerIndex = map->staggerIndex();
         map->setStaggerIndex(mStaggerIndex);
         mStaggerIndex = staggerIndex;
-        break;
-    }
-    case Orientation: {
-        const Map::Orientation orientation = map->orientation();
-        map->setOrientation(mOrientation);
-        mOrientation = orientation;
-        mMapDocument->createRenderer();
         break;
     }
     case RenderOrder: {

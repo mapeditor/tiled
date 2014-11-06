@@ -43,26 +43,36 @@ QPointF StaggeredRenderer::screenToTileCoords(qreal x, qreal y) const
 {
     const RenderParams p(map());
 
-    const int halfTileHeight = p.tileHeight / 2;
-    const qreal ratio = (qreal) p.tileHeight / p.tileWidth;
+    if (p.staggerX)
+        x -= p.staggerEven ? p.sideOffsetX : 0;
+    else
+        y -= p.staggerEven ? p.sideOffsetY : 0;
 
     // Start with the coordinates of a grid-aligned tile
-    const int tileX = qFloor(x / p.tileWidth);
-    const int tileY = qFloor(y / p.tileHeight) * 2;
+    QPoint referencePoint = QPoint(qFloor(x / p.tileWidth),
+                                   qFloor(y / p.tileHeight));
 
     // Relative x and y position on the base square of the grid-aligned tile
-    const qreal relX = x - tileX * p.tileWidth;
-    const qreal relY = y - (tileY / 2) * p.tileHeight;
+    const QPointF rel(x - referencePoint.x() * p.tileWidth,
+                      y - referencePoint.y() * p.tileHeight);
+
+    // Adjust the reference point to the correct tile coordinates
+    int &staggerAxisIndex = p.staggerX ? referencePoint.rx() : referencePoint.ry();
+    staggerAxisIndex *= 2;
+    if (p.staggerEven)
+        ++staggerAxisIndex;
+
+    const qreal y_pos = rel.x() * ((qreal) p.tileHeight / p.tileWidth);
 
     // Check whether the cursor is in any of the corners (neighboring tiles)
-    if (halfTileHeight - relX * ratio > relY)
-        return topLeft(tileX, tileY);
-    if (-halfTileHeight + relX * ratio > relY)
-        return topRight(tileX, tileY);
-    if (halfTileHeight + relX * ratio < relY)
-        return bottomLeft(tileX, tileY);
-    if (halfTileHeight * 3 - relX * ratio < relY)
-        return bottomRight(tileX, tileY);
+    if (p.sideOffsetY - y_pos > rel.y())
+        return topLeft(referencePoint.x(), referencePoint.y());
+    if (-p.sideOffsetY + y_pos > rel.y())
+        return topRight(referencePoint.x(), referencePoint.y());
+    if (p.sideOffsetY + y_pos < rel.y())
+        return bottomLeft(referencePoint.x(), referencePoint.y());
+    if (p.sideOffsetY * 3 - y_pos < rel.y())
+        return bottomRight(referencePoint.x(), referencePoint.y());
 
-    return QPoint(tileX, tileY);
+    return referencePoint;
 }

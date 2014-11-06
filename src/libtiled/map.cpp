@@ -48,7 +48,7 @@ Map::Map(Orientation orientation,
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
     mHexSideLength(0),
-    mStaggerDirection(StaggerRows),
+    mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
     mLayerDataFormat(Base64Zlib)
 {
@@ -63,7 +63,7 @@ Map::Map(const Map &map):
     mTileWidth(map.mTileWidth),
     mTileHeight(map.mTileHeight),
     mHexSideLength(map.mHexSideLength),
-    mStaggerDirection(map.mStaggerDirection),
+    mStaggerAxis(map.mStaggerAxis),
     mStaggerIndex(map.mStaggerIndex),
     mBackgroundColor(map.mBackgroundColor),
     mDrawMargins(map.mDrawMargins),
@@ -232,25 +232,25 @@ bool Map::isTilesetUsed(Tileset *tileset) const
 }
 
 
-QString Tiled::staggerDirectionToString(Map::StaggerDirection staggerDirection)
+QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {
-    switch (staggerDirection) {
+    switch (staggerAxis) {
     default:
-    case Map::StaggerColumns:
-        return QLatin1String("columns");
+    case Map::StaggerY:
+        return QLatin1String("y");
         break;
-    case Map::StaggerRows:
-        return QLatin1String("rows");
+    case Map::StaggerX:
+        return QLatin1String("x");
         break;
     }
 }
 
-Map::StaggerDirection Tiled::staggerDirectionFromString(const QString &string)
+Map::StaggerAxis Tiled::staggerAxisFromString(const QString &string)
 {
-    Map::StaggerDirection staggerDirection = Map::StaggerColumns;
-    if (string == QLatin1String("rows"))
-        staggerDirection = Map::StaggerRows;
-    return staggerDirection;
+    Map::StaggerAxis staggerAxis = Map::StaggerY;
+    if (string == QLatin1String("x"))
+        staggerAxis = Map::StaggerX;
+    return staggerAxis;
 }
 
 QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)

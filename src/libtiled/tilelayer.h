@@ -149,8 +149,7 @@ public:
      * Returns a read-only reference to the cell at the given coordinates. The
      * coordinates have to be within this layer.
      */
-    const Cell &cellAt(int x, int y) const
-    { return mGrid.at(x + y * mWidth); }
+    const Cell &cellAt(int x, int y) const;
 
     const Cell &cellAt(const QPoint &point) const
     { return cellAt(point.x(), point.y()); }
@@ -316,6 +315,12 @@ static inline bool cellInUse(const Cell &cell) { return !cell.isEmpty(); }
 inline QRegion TileLayer::region() const
 {
     return region(cellInUse);
+}
+
+inline const Cell &TileLayer::cellAt(int x, int y) const
+{
+    Q_ASSERT(contains(x, y));
+    return mGrid.at(x + y * mWidth);
 }
 
 } // namespace Tiled
