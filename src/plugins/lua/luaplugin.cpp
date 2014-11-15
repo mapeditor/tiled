@@ -27,6 +27,7 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -184,6 +185,10 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->isAnimated())
         return true;
+    if (tile->terrain() != 0xFFFFFFFF)
+        return true;
+    if (tile->terrainProbability() != -1.f)
+        return true;
 
     return false;
 }
@@ -229,6 +234,20 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
 
     writeProperties(writer, tileset->properties());
 
+    writer.writeStartTable("terrains");
+    for (int i = 0; i < tileset->terrainCount(); ++i) {
+        const Terrain *t = tileset->terrain(i);
+        writer.writeStartTable();
+
+        writer.writeKeyAndValue("name", t->name());
+        writer.writeKeyAndValue("tile", t->imageTileId());
+
+        writeProperties(writer, t->properties());
+
+        writer.writeEndTable();
+    }
+    writer.writeEndTable();
+
     writer.writeStartTable("tiles");
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
@@ -252,6 +271,19 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
                 writer.writeKeyAndValue("height", tileSize.height());
             }
         }
+
+        unsigned terrain = tile->terrain();
+        if (terrain != 0xFFFFFFFF) {
+            writer.writeStartTable("terrain");
+            writer.setSuppressNewlines(true);
+            for (int i = 0; i < 4; ++i )
+                writer.writeValue(tile->cornerTerrainId(i));
+            writer.writeEndTable();
+            writer.setSuppressNewlines(false);
+        }
+
+        if (tile->terrainProbability() != -1.f)
+            writer.writeKeyAndValue("probability", tile->terrainProbability());
 
         if (ObjectGroup *objectGroup = tile->objectGroup())
             writeObjectGroup(writer, objectGroup, "objectGroup");

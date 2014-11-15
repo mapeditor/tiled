@@ -306,7 +306,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     if (tileset->terrainCount() > 0) {
         w.writeStartElement(QLatin1String("terraintypes"));
         for (int i = 0; i < tileset->terrainCount(); ++i) {
-            Terrain* t = tileset->terrain(i);
+            const Terrain *t = tileset->terrain(i);
             w.writeStartElement(QLatin1String("terrain"));
 
             w.writeAttribute(QLatin1String("name"), t->name());
