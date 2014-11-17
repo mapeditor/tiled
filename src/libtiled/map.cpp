@@ -35,6 +35,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "mapobject.h"
 
 using namespace Tiled;
 
@@ -70,6 +71,8 @@ Map::Map(const Map &map):
     mTilesets(map.mTilesets),
     mLayerDataFormat(map.mLayerDataFormat)
 {
+    mNextUid = -1;
+
     foreach (const Layer *layer, map.mLayers) {
         Layer *clone = layer->clone();
         clone->setMap(this);
@@ -182,6 +185,14 @@ void Map::adoptLayer(Layer *layer)
 
     if (TileLayer *tileLayer = layer->asTileLayer())
         adjustDrawMargins(tileLayer->drawMargins());
+
+    if (ObjectGroup *group = layer->asObjectGroup()) {
+        foreach (MapObject *o, group->objects()) {
+            if(o->uniqueID() == -1) {
+                o->setUniqueID(this->nextUid());
+            }
+        }
+    }
 }
 
 Layer *Map::takeLayerAt(int index)

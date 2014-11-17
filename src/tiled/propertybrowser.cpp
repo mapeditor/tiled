@@ -395,6 +395,7 @@ void PropertyBrowser::addMapObjectProperties()
     createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
     createProperty(SizeProperty, QVariant::SizeF, tr("Size"), groupProperty);
     createProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
+    createProperty(IdProperty, QVariant::Int, tr("uniqueID"), groupProperty)->setEnabled(false);
 
     if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
@@ -810,6 +811,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[PositionProperty]->setValue(mapObject->position());
         mIdToProperty[SizeProperty]->setValue(mapObject->size());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
+        mIdToProperty[IdProperty]->setValue(mapObject->uniqueID());
+
 
         if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
             int flippingFlags = 0;

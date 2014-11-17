@@ -115,6 +115,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
     writer.writeKeyAndValue("tileheight", map->tileHeight());
+    writer.writeKeyAndValue("nextUid", map->currentNextUid());
 
     const QColor &backgroundColor = map->backgroundColor();
     if (backgroundColor.isValid()) {
@@ -404,6 +405,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
                                const Tiled::MapObject *mapObject)
 {
     writer.writeStartTable();
+    writer.writeKeyAndValue("uid", mapObject->uniqueID());
     writer.writeKeyAndValue("name", mapObject->name());
     writer.writeKeyAndValue("type", mapObject->type());
     writer.writeKeyAndValue("shape", toString(mapObject->shape()));

@@ -39,6 +39,7 @@ MapObject::MapObject():
     mRotation(0.0f),
     mVisible(true)
 {
+    mUniqueID = -1;
 }
 
 MapObject::MapObject(const QString &name, const QString &type,
@@ -54,6 +55,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mRotation(0.0f),
     mVisible(true)
 {
+
+    mUniqueID = -1;
 }
 
 void MapObject::flip(FlipDirection direction)

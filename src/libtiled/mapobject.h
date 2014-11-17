@@ -76,6 +76,16 @@ public:
               const QSizeF &size);
 
     /**
+     * Returns the unique id of this object.
+     */
+    int uniqueID() const { return mUniqueID; }
+
+    /**
+     * Sets the unique id of this object.
+     */
+    void setUniqueID(int id) { mUniqueID = id; }
+
+    /**
      * Returns the name of this object. The name is usually just used for
      * identification of the object in the editor.
      */
@@ -250,6 +260,7 @@ private:
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+    int mUniqueID;
 };
 
 } // namespace Tiled

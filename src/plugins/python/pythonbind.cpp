@@ -6447,20 +6447,20 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
 {
         PyObject *py_retval;
         PyTiledLoggingInterface *py_LoggingInterface;
-        
+
         py_LoggingInterface = PyObject_New(PyTiledLoggingInterface, &PyTiledLoggingInterface_Type);
         py_LoggingInterface->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
         py_LoggingInterface->obj = cvalue;
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
-        
+
 
 int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *address)
 {
     PyObject *py_retval;
     PyTiledMap *tmp_Map;
-    
+
     py_retval = Py_BuildValue((char *) "(O)", value);
     if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledMap_Type, &tmp_Map)) {
         Py_DECREF(py_retval);
@@ -6476,7 +6476,7 @@ PyObject* _wrap_convert_c2py__Tiled__Map_const(Tiled::Map const *cvalue)
 {
     PyObject *py_retval;
     PyTiledMap *py_Map;
-    
+
     py_Map = PyObject_New(PyTiledMap, &PyTiledMap_Type);
     py_Map->flags = PYBINDGEN_WRAPPER_FLAG_NONE;
     py_Map->obj = new Tiled::Map(*cvalue);
