@@ -48,7 +48,8 @@ Map::Map(Orientation orientation,
     mHeight(height),
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
-    mLayerDataFormat(Base64Zlib)
+    mLayerDataFormat(Base64Zlib),
+    mNextUid(0)
 {
 }
 
@@ -63,9 +64,9 @@ Map::Map(const Map &map):
     mBackgroundColor(map.mBackgroundColor),
     mDrawMargins(map.mDrawMargins),
     mTilesets(map.mTilesets),
-    mLayerDataFormat(map.mLayerDataFormat)
+    mLayerDataFormat(map.mLayerDataFormat),
+    mNextUid(0)
 {
-    mNextUid = -1;
 
     foreach (const Layer *layer, map.mLayers) {
         Layer *clone = layer->clone();

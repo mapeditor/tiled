@@ -62,7 +62,7 @@ void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
     object->setObjectGroup(this);
-    if(mMap && object->uniqueID() == -1) {
+    if (mMap && object->uniqueID() == -1) {
         object->setUniqueID(mMap->nextUid());
     }
 }
@@ -71,7 +71,7 @@ void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
     object->setObjectGroup(this);
-    if(mMap && object->uniqueID() == -1) {
+    if (mMap && object->uniqueID() == -1) {
         object->setUniqueID(mMap->nextUid());
     }
 }
