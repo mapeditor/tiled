@@ -52,7 +52,7 @@ Map::Map(Orientation orientation,
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
     mLayerDataFormat(Base64Zlib),
-    mNextUid(0)
+    mNextObjectId(1)
 {
 }
 
@@ -71,7 +71,7 @@ Map::Map(const Map &map):
     mDrawMargins(map.mDrawMargins),
     mTilesets(map.mTilesets),
     mLayerDataFormat(map.mLayerDataFormat),
-    mNextUid(0)
+    mNextObjectId(1)
 {
     foreach (const Layer *layer, map.mLayers) {
         Layer *clone = layer->clone();
@@ -188,8 +188,8 @@ void Map::adoptLayer(Layer *layer)
 
     if (ObjectGroup *group = layer->asObjectGroup()) {
         foreach (MapObject *o, group->objects()) {
-            if (o->uniqueID() == -1)
-                o->setUniqueID(nextUid());
+            if (o->id() == 0)
+                o->setId(takeNextObjectId());
         }
     }
 }

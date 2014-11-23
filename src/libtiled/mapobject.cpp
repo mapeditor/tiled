@@ -33,12 +33,12 @@ using namespace Tiled;
 
 MapObject::MapObject():
     Object(MapObjectType),
+    mId(0),
     mSize(0, 0),
     mShape(Rectangle),
     mObjectGroup(0),
     mRotation(0.0f),
-    mVisible(true),
-    mUniqueID(-1)
+    mVisible(true)
 {
 }
 
@@ -46,6 +46,7 @@ MapObject::MapObject(const QString &name, const QString &type,
                      const QPointF &pos,
                      const QSizeF &size):
     Object(MapObjectType),
+    mId(0),
     mName(name),
     mType(type),
     mPos(pos),
@@ -53,8 +54,7 @@ MapObject::MapObject(const QString &name, const QString &type,
     mShape(Rectangle),
     mObjectGroup(0),
     mRotation(0.0f),
-    mVisible(true),
-    mUniqueID(-1)
+    mVisible(true)
 {
 }
 

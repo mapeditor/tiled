@@ -76,14 +76,15 @@ public:
               const QSizeF &size);
 
     /**
-     * Returns the unique id of this object.
+     * Returns the id of this object. Each object gets an id assigned that is
+     * unique for the map the object is on.
      */
-    int uniqueID() const { return mUniqueID; }
+    int id() const { return mId; }
 
     /**
-     * Sets the unique id of this object.
+     * Sets the id of this object.
      */
-    void setUniqueID(int id) { mUniqueID = id; }
+    void setId(int id) { mId = id; }
 
     /**
      * Returns the name of this object. The name is usually just used for
@@ -250,6 +251,7 @@ public:
     MapObject *clone() const;
 
 private:
+    int mId;
     QString mName;
     QString mType;
     QPointF mPos;
@@ -260,7 +262,6 @@ private:
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
-    int mUniqueID;
 };
 
 } // namespace Tiled

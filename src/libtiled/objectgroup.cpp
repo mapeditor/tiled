@@ -62,16 +62,16 @@ void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
     object->setObjectGroup(this);
-    if (mMap && object->uniqueID() == -1)
-        object->setUniqueID(mMap->nextUid());
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
     object->setObjectGroup(this);
-    if (mMap && object->uniqueID() == -1)
-        object->setUniqueID(mMap->nextUid());
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 int ObjectGroup::removeObject(MapObject *object)

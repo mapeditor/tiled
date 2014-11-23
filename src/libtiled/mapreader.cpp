@@ -238,15 +238,16 @@ Map *MapReaderPrivate::readMap()
     const Map::RenderOrder renderOrder =
             renderOrderFromString(renderOrderString);
 
-    const int nextUid =
-            atts.value(QLatin1String("nextUid")).toString().toInt();
+    const int nextObjectId =
+            atts.value(QLatin1String("nextobjectid")).toString().toInt();
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
     mMap->setHexSideLength(hexSideLength);
     mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
-    mMap->setNextUid(nextUid);
+    if (nextObjectId)
+        mMap->setNextObjectId(nextObjectId);
 
     mCreatedTilesets.clear();
 
@@ -825,7 +826,7 @@ MapObject *MapReaderPrivate::readObject()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    int uniqueID = atts.value(QLatin1String("uid")).toString().toInt();
+    const int id = atts.value(QLatin1String("id")).toString().toInt();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const qreal x = atts.value(QLatin1String("x")).toString().toDouble();
@@ -838,15 +839,8 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    //If the uniqueID is 0, this must be an old map and this object
-    //has no UniqueID yet.  So we create it a UniqueID here.
-    if(uniqueID == 0)
-    {
-        uniqueID = mMap->nextUid();
-    }
-
     MapObject *object = new MapObject(name, type, pos, size);
-    object->setUniqueID(uniqueID);
+    object->setId(id);
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);

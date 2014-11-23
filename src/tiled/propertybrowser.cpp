@@ -385,6 +385,7 @@ static QStringList objectTypeNames()
 void PropertyBrowser::addMapObjectProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
+    createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
 
     QtVariantProperty *typeProperty =
@@ -395,7 +396,6 @@ void PropertyBrowser::addMapObjectProperties()
     createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
     createProperty(SizeProperty, QVariant::SizeF, tr("Size"), groupProperty);
     createProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
-    createProperty(IdProperty, QVariant::Int, tr("uniqueID"), groupProperty)->setEnabled(false);
 
     if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
         QtVariantProperty *flippingProperty =
@@ -805,13 +805,13 @@ void PropertyBrowser::updateProperties()
     }
     case Object::MapObjectType: {
         const MapObject *mapObject = static_cast<const MapObject*>(mObject);
+        mIdToProperty[IdProperty]->setValue(mapObject->id());
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(mapObject->type());
         mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
         mIdToProperty[PositionProperty]->setValue(mapObject->position());
         mIdToProperty[SizeProperty]->setValue(mapObject->size());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
-        mIdToProperty[IdProperty]->setValue(mapObject->uniqueID());
 
         if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
             int flippingFlags = 0;

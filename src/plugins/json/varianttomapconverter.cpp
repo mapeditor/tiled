@@ -69,7 +69,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     const QString renderOrderString = variantMap["renderorder"].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
 
-    int nextUid = variantMap["nextUid"].toString().toInt();
+    const int nextObjectId = variantMap["nextobjectid"].toString().toInt();
 
     typedef QScopedPointer<Map> MapPtr;
     MapPtr map(new Map(orientation,
@@ -81,7 +81,8 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     map->setStaggerAxis(staggerAxis);
     map->setStaggerIndex(staggerIndex);
     map->setRenderOrder(renderOrder);
-    map->setNextUid(nextUid);
+    if (nextObjectId)
+        map->setNextObjectId(nextObjectId);
 
     mMap = map.data();
     map->setProperties(toProperties(variantMap["properties"]));
@@ -351,7 +352,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
-        int uniqueID = objectVariantMap["uid"].toString().toInt();
+        const int id = objectVariantMap["id"].toString().toInt();
         const int gid = objectVariantMap["gid"].toInt();
         const qreal x = objectVariantMap["x"].toReal();
         const qreal y = objectVariantMap["y"].toReal();
@@ -362,16 +363,8 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QPointF pos(x, y);
         const QSizeF size(width, height);
 
-
-        //If the uniqueID is 0, this must be an old map and this object
-        //has no UniqueID yet.  So we create it a UniqueID here.
-        if(uniqueID == 0)
-        {
-            uniqueID = mMap->nextUid();
-        }
-
         MapObject *object = new MapObject(name, type, pos, size);
-        object->setUniqueID(uniqueID);
+        object->setId(id);
         object->setRotation(rotation);
 
         if (gid) {

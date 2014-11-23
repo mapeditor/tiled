@@ -49,7 +49,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     mapVariant["tilewidth"] = map->tileWidth();
     mapVariant["tileheight"] = map->tileHeight();
     mapVariant["properties"] = toVariant(map->properties());
-    mapVariant["nextUid"] = map->currentNextUid();
+    mapVariant["nextobjectid"] = map->nextObjectId();
 
     if (map->orientation() == Map::Hexagonal) {
         mapVariant["hexsidelength"] = map->hexSideLength();
@@ -236,6 +236,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
         const QString &type = object->type();
 
         objectVariant["properties"] = toVariant(object->properties());
+        objectVariant["id"] = object->id();
         objectVariant["name"] = name;
         objectVariant["type"] = type;
         if (!object->cell().isEmpty())
@@ -246,7 +247,6 @@ QVariant MapToVariantConverter::toVariant(const ObjectGroup *objectGroup) const
         objectVariant["width"] = object->width();
         objectVariant["height"] = object->height();
         objectVariant["rotation"] = object->rotation();
-        objectVariant["uid"] = object->uniqueID();
 
         objectVariant["visible"] = object->isVisible();
 

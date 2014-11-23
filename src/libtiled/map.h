@@ -370,23 +370,23 @@ public:
     { mLayerDataFormat = format; }
 
     /**
-     * Sets the next UniqueId of this map.
+     * Sets the next id to be used for objects on this map.
      */
-    void setNextUid(int nextUid) {
-        if (nextUid == 0)
-            nextUid = 1;
-        mNextUid = nextUid;
+    void setNextObjectId(int nextId)
+    {
+        Q_ASSERT(nextId > 0);
+        mNextObjectId = nextId;
     }
 
     /**
-     * Returns the next UniqueId for this map.
+     * Returns the next object id for this map.
      */
-    int nextUid() { return mNextUid++; }
+    int nextObjectId() const { return mNextObjectId; }
 
     /**
-     * Returns the current UniqueId for this map.
+     * Returns the next object id for this map and allocates a new one.
      */
-    int currentNextUid() const { return  mNextUid; }
+    int takeNextObjectId() { return mNextObjectId++; }
 
 private:
     void adoptLayer(Layer *layer);
@@ -405,8 +405,7 @@ private:
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
     LayerDataFormat mLayerDataFormat;
-
-    int mNextUid;
+    int mNextObjectId;
 };
 
 
