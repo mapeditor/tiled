@@ -37,7 +37,8 @@ MapObject::MapObject():
     mShape(Rectangle),
     mObjectGroup(0),
     mRotation(0.0f),
-    mVisible(true)
+    mVisible(true),
+    mUniqueID(-1)
 {
 }
 
@@ -52,7 +53,8 @@ MapObject::MapObject(const QString &name, const QString &type,
     mShape(Rectangle),
     mObjectGroup(0),
     mRotation(0.0f),
-    mVisible(true)
+    mVisible(true),
+    mUniqueID(-1)
 {
 }
 

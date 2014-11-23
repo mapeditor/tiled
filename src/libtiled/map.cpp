@@ -35,6 +35,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "mapobject.h"
 
 using namespace Tiled;
 
@@ -50,7 +51,8 @@ Map::Map(Orientation orientation,
     mHexSideLength(0),
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
-    mLayerDataFormat(Base64Zlib)
+    mLayerDataFormat(Base64Zlib),
+    mNextUid(0)
 {
 }
 
@@ -68,7 +70,8 @@ Map::Map(const Map &map):
     mBackgroundColor(map.mBackgroundColor),
     mDrawMargins(map.mDrawMargins),
     mTilesets(map.mTilesets),
-    mLayerDataFormat(map.mLayerDataFormat)
+    mLayerDataFormat(map.mLayerDataFormat),
+    mNextUid(0)
 {
     foreach (const Layer *layer, map.mLayers) {
         Layer *clone = layer->clone();
@@ -182,6 +185,13 @@ void Map::adoptLayer(Layer *layer)
 
     if (TileLayer *tileLayer = layer->asTileLayer())
         adjustDrawMargins(tileLayer->drawMargins());
+
+    if (ObjectGroup *group = layer->asObjectGroup()) {
+        foreach (MapObject *o, group->objects()) {
+            if (o->uniqueID() == -1)
+                o->setUniqueID(nextUid());
+        }
+    }
 }
 
 Layer *Map::takeLayerAt(int index)
