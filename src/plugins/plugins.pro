@@ -5,7 +5,8 @@ SUBDIRS = flare \
           lua \
           tengine \
           tmw \
-          replicaisland
+          replicaisland\
+          ldmz
 
 include(python/find_python.pri)
 
