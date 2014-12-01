@@ -31,12 +31,12 @@
 #include "objectgroup.h"
 
 #include "layer.h"
+#include "map.h"
 #include "mapobject.h"
 #include "tile.h"
 #include "tileset.h"
 
 #include <cmath>
-#include <map.h>
 
 using namespace Tiled;
 
