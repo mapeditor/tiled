@@ -1,0 +1,7 @@
+os: unstable
+install:
+  - set QTDIR=C:\Qt\Qt5.3.2\5.3\mingw482_32
+  - set PATH=%PATH%;%QTDIR%\bin;C:\MinGW\bin
+build_script:
+  - qmake tiled.pro
+  - mingw32-make
