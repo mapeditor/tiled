@@ -27,7 +27,7 @@ tiled into that variable. The commands to set those may look like the
 following:
 set QTDIR="C:\Qt\4.8.6"
 set MINGW="C:\MinGW"
-set VERSION="0.10.2"
+set VERSION="0.11.0"
 
 Optionally you can also set the program architecture which is then used to
 deduce the resulting installer filename. It can either be 32 or 64 and defaults
