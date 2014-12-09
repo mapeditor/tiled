@@ -28,6 +28,34 @@
     </message>
 </context>
 <context>
+    <name>Command line</name>
+    <message>
+        <location filename="../src/tiled/main.cpp" line="+202"/>
+        <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>No exporter found for target file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Failed to load source map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Failed to export map to target file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CommandDialog</name>
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
@@ -82,6 +110,24 @@
         <location line="+3"/>
         <source>Open Map</source>
         <translation>Abrir Mapa</translation>
+    </message>
+</context>
+<context>
+    <name>Csv::CsvPlugin</name>
+    <message>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>No tile layer found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>CSV files (*.csv)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -559,9 +605,9 @@ Linha %1, coluna %2</translation>
         <translation>Orientação de mapa não suportado: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+83"/>
+        <location line="+89"/>
         <location line="+21"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+84"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+88"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>Parametros de tileset inválidos para tileset &apos;%1&apos;</translation>
     </message>
@@ -595,7 +641,7 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+33"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+255"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+257"/>
         <source>Error loading image:
 &apos;%1&apos;</source>
         <translation>Erroa a carregar a imagem: &apos;%1&apos;</translation>
@@ -612,7 +658,7 @@ Linha %1, coluna %2</translation>
     </message>
     <message>
         <location line="+29"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-76"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-78"/>
         <source>Invalid draw order: %1</source>
         <translation>Ordem de desenho inválida: %1</translation>
     </message>
@@ -624,12 +670,12 @@ Linha %1, coluna %2</translation>
 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+89"/>
         <source>Invalid points data for polygon</source>
         <translation>Dados de poligono inválidos</translation>
     </message>
     <message>
-        <location line="-271"/>
+        <location line="-273"/>
         <source>Unknown encoding: %1</source>
         <translation>Codificação desconhecida: %1</translation>
     </message>
@@ -3145,7 +3191,7 @@ Por favor, selecione um formato específico.</translation>
         <translation>Objecto</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <location line="+24"/>
         <location line="+55"/>
         <location line="+15"/>
@@ -3170,13 +3216,13 @@ Por favor, selecione um formato específico.</translation>
         <translation>Posição</translation>
     </message>
     <message>
-        <location line="-132"/>
-        <location line="+68"/>
+        <location line="-133"/>
+        <location line="+69"/>
         <source>Size</source>
         <translation>Tamanho</translation>
     </message>
     <message>
-        <location line="-324"/>
+        <location line="-325"/>
         <source>X</source>
         <translation></translation>
     </message>
@@ -3221,7 +3267,7 @@ Por favor, selecione um formato específico.</translation>
         <translation>Índice Escalonado</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+46"/>
         <source>Rotation</source>
         <translation>Rotação</translation>
     </message>
@@ -3286,7 +3332,8 @@ Por favor, selecione um formato específico.</translation>
         <translation>Tile</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-87"/>
+        <location line="+88"/>
         <source>ID</source>
         <translation></translation>
     </message>
@@ -3898,6 +3945,11 @@ Deseja substituí-lo?</translation>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
         <translation>Modificar Formato de Dados da Camada</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/exchangemap.cpp" line="+38"/>
+        <source>Change Map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
