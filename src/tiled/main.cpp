@@ -29,6 +29,7 @@
 #include "mapwriterinterface.h"
 #include "preferences.h"
 #include "tiledapplication.h"
+#include "tileset.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -195,11 +196,11 @@ int main(int argc, char *argv[])
 
     PluginManager::instance()->loadPlugins();
 
-    if (commandLine.exportMap)
-    {
+    if (commandLine.exportMap) {
         // Get the path to the source file and target file
-        if (commandLine.filesToOpen().length() <= 2) {
-            qWarning() << QObject::tr("Export syntax is --export-map <tmx file> <target file>");
+        if (commandLine.filesToOpen().length() < 2) {
+            qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                 "Export syntax is --export-map [format] <tmx file> <target file>"));
             return 1;
         }
         int index = 0;
@@ -219,14 +220,16 @@ int main(int argc, char *argv[])
             }
             else if (!writer->nameFilters().filter(suffix, Qt::CaseInsensitive).isEmpty()) {
                 if (chosenWriter) {
-                    qWarning() << QObject::tr("Non-unique file extension. Can't determine correct export format.");
+                    qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                         "Non-unique file extension. Can't determine correct export format."));
                     return 1;
                 }
                 chosenWriter = writer;
             }
         }
         if (!chosenWriter) {
-            qWarning() << QObject::tr("No exporter found for target file.");
+            qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                 "No exporter found for target file."));
             return 1;
         }
 
@@ -234,16 +237,20 @@ int main(int argc, char *argv[])
         Tiled::MapReader reader;
         Tiled::Map *map = reader.readMap(sourceFile);
         if (!map) {
-            qWarning() << QObject::tr("Failed to load source map.");
+            qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                 "Failed to load source map."));
             return 1;
         }
 
         // Write out the file
         bool success = chosenWriter->write(map, targetFile);
+
+        qDeleteAll(map->tilesets());
         delete map;
 
         if (!success) {
-            qWarning() << QObject::tr("Failed to export map to target file.");
+            qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                 "Failed to export map to target file."));
             return 1;
         }
         return 0;
