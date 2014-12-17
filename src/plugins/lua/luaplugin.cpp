@@ -117,6 +117,16 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("tileheight", map->tileHeight());
     writer.writeKeyAndValue("nextobjectid", map->nextObjectId());
 
+    if (map->orientation() == Map::Hexagonal)
+        writer.writeKeyAndValue("hexsidelength", map->hexSideLength());
+
+    if (map->orientation() == Map::Staggered || map->orientation() == Map::Hexagonal) {
+        writer.writeKeyAndValue("staggeraxis",
+                                staggerAxisToString(map->staggerAxis()));
+        writer.writeKeyAndValue("staggerindex",
+                                staggerIndexToString(map->staggerIndex()));
+    }
+
     const QColor &backgroundColor = map->backgroundColor();
     if (backgroundColor.isValid()) {
         // Example: backgroundcolor = { 255, 200, 100 }
