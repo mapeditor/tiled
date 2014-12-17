@@ -248,8 +248,7 @@ public:
     const QList<Tile*> &selectedTiles() const
     { return mSelectedTiles; }
 
-    void setSelectedTiles(const QList<Tile*> &selectedTiles)
-    { mSelectedTiles = selectedTiles; }
+    void setSelectedTiles(const QList<Tile*> &selectedTiles);
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -300,6 +299,11 @@ signals:
      * Emitted when the list of selected objects changes.
      */
     void selectedObjectsChanged();
+
+    /**
+     * Emitted when the list of selected tiles from the dock changes.
+     */
+    void selectedTilesChanged();
 
     void currentObjectChanged(Object *object);
 

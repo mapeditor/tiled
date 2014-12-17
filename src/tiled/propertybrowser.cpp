@@ -189,6 +189,10 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(propertyChanged(Object*,QString)));
         connect(mapDocument, SIGNAL(propertiesChanged(Object*)),
                 SLOT(propertiesChanged(Object*)));
+        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
+                SLOT(selectedObjectsChanged()));
+        connect(mapDocument, SIGNAL(selectedTilesChanged()),
+                SLOT(selectedTilesChanged()));
     }
 }
 
@@ -253,27 +257,54 @@ void PropertyBrowser::terrainChanged(Tileset *tileset, int index)
 
 void PropertyBrowser::propertyAdded(Object *object, const QString &name)
 {
-    if (mObject != object)
+    if (!mMapDocument->currentObjects().contains(object))
         return;
+    if (mNameToProperty.keys().contains(name)) {
+        if (mObject == object) {
+            mUpdating = true;
+            mNameToProperty[name]->setValue(mObject->property(name));
+            mUpdating = false;
+        }
+    } else {
+        // Determine the property preceding the new property, if any
+        const int index = mObject->properties().keys().indexOf(name);
+        const QList<QtProperty *> properties = mCustomPropertiesGroup->subProperties();
+        QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : 0;
 
-    // Determine the property preceding the new property, if any
-    const int index = mObject->properties().keys().indexOf(name);
-    const QList<QtProperty *> properties = mCustomPropertiesGroup->subProperties();
-    QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : 0;
-
-    mUpdating = true;
-    QtVariantProperty *property = mVariantManager->addProperty(QVariant::String, name);
-    property->setValue(object->property(name));
-    mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
-    mPropertyToId.insert(property, CustomProperty);
-    mNameToProperty.insert(name, property);
-    mUpdating = false;
+        mUpdating = true;
+        QtVariantProperty *property = mVariantManager->addProperty(QVariant::String, name);
+        property->setValue(mObject->property(name));
+        mCustomPropertiesGroup->insertSubProperty(property, precedingProperty);
+        mPropertyToId.insert(property, CustomProperty);
+        mNameToProperty.insert(name, property);
+        mUpdating = false;
+    }
+    updatePropertyColor(name);
 }
 
 void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
 {
-    if (mObject == object)
-        delete mNameToProperty.take(name);
+    if (!mMapDocument->currentObjects().contains(object))
+        return;
+    if (mObject == object) {
+        bool deleteProperty = true;
+        foreach (Object *obj, mMapDocument->currentObjects()) {
+            if (mObject == obj)
+                continue;
+            if (obj->properties().contains(name)) {
+                // An other selected object still has this property, so just clear the value.
+                mUpdating = true;
+                mNameToProperty[name]->setValue(tr(""));
+                mUpdating = false;
+                deleteProperty = false;
+                break;
+            }
+        }
+        // No other selected objects have this property so delete it.
+        if (deleteProperty)
+            delete mNameToProperty.take(name);
+    }
+    updatePropertyColor(name);
 }
 
 void PropertyBrowser::propertyChanged(Object *object, const QString &name)
@@ -283,12 +314,24 @@ void PropertyBrowser::propertyChanged(Object *object, const QString &name)
         mNameToProperty[name]->setValue(object->property(name));
         mUpdating = false;
     }
+    if (mMapDocument->currentObjects().contains(object))
+        updatePropertyColor(name);
 }
 
 void PropertyBrowser::propertiesChanged(Object *object)
 {
-    if (mObject == object)
+    if (mMapDocument->currentObjects().contains(object))
         updateCustomProperties();
+}
+
+void PropertyBrowser::selectedObjectsChanged()
+{
+    updateCustomProperties();
+}
+
+void PropertyBrowser::selectedTilesChanged()
+{
+    updateCustomProperties();
 }
 
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
@@ -385,6 +428,7 @@ static QStringList objectTypeNames()
 void PropertyBrowser::addMapObjectProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object"));
+
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
 
@@ -874,12 +918,32 @@ void PropertyBrowser::updateProperties()
 
 void PropertyBrowser::updateCustomProperties()
 {
+    if (!mObject)
+        return;
+
     mUpdating = true;
 
     qDeleteAll(mNameToProperty);
     mNameToProperty.clear();
 
-    QMapIterator<QString,QString> it(mObject->properties());
+    mCombinedProperties = mObject->properties();
+    // Add properties from selected objects which mObject does not contain to mCombinedProperties.
+    foreach (Object *obj, mMapDocument->currentObjects()) {
+        if (obj == mObject)
+            continue;
+
+        QMapIterator<QString,QString> it(obj->properties());
+
+        while (it.hasNext()) {
+            it.next();
+            if (!mCombinedProperties.contains(it.key())) {
+                mCombinedProperties.insert(it.key(), tr(""));
+            }
+        }
+    }
+
+    QMapIterator<QString,QString> it(mCombinedProperties);
+
     while (it.hasNext()) {
         it.next();
         QtVariantProperty *property = createProperty(CustomProperty,
@@ -887,9 +951,43 @@ void PropertyBrowser::updateCustomProperties()
                                                      it.key(),
                                                      mCustomPropertiesGroup);
         property->setValue(it.value());
+        updatePropertyColor(it.key());
     }
 
     mUpdating = false;
+}
+
+// If there are other objects selected check if their properties are equal. If not give them a gray color.
+void PropertyBrowser::updatePropertyColor(const QString &name)
+{
+    QtVariantProperty *property = mNameToProperty.value(name);
+    if (!property)
+        return;
+
+    QString propertyName = property->propertyName();
+    QString propertyValue = property->valueText();
+
+    // If one of the objects doesn't have this property then gray out the name and value.
+    foreach (Object *obj, mMapDocument->currentObjects()) {
+        if (!obj->hasProperty(propertyName)) {
+            property->setNameColor(Qt::gray);
+            property->setValueColor(Qt::gray);
+            return;
+        }
+    }
+
+    // If one of the objects doesn't have the same property value then gray out the value.
+    foreach (Object *obj, mMapDocument->currentObjects()) {
+        if (obj == mObject)
+            continue;
+        if (obj->property(propertyName) != propertyValue) {
+            property->setValueColor(Qt::gray);
+            return;
+        }
+    }
+
+    property->setNameColor(Qt::black);
+    property->setValueColor(Qt::black);
 }
 
 } // namespace Internal

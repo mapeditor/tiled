@@ -609,6 +609,12 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
         setCurrentObject(selectedObjects.first());
 }
 
+void MapDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
+{
+    mSelectedTiles = selectedTiles;
+    emit selectedTilesChanged();
+}
+
 void MapDocument::setCurrentObject(Object *object)
 {
     if (object == mCurrentObject)
