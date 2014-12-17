@@ -25,6 +25,7 @@
 #include <QUndoCommand>
 
 #include <QtTreePropertyBrowser>
+#include "properties.h"
 
 class QtGroupPropertyManager;
 class QtVariantProperty;
@@ -166,6 +167,9 @@ private:
     QStringList mStaggerAxisNames;
     QStringList mStaggerIndexNames;
     QStringList mOrientationNames;
+
+    Properties mCombinedProperties;
+
     QStringList mLayerFormatNames;
     QStringList mRenderOrderNames;
     QStringList mFlippingFlagNames;
