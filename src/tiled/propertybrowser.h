@@ -150,6 +150,8 @@ private:
     void updateCustomProperties();
     bool mUpdating;
 
+    void updatePropertyColor(const QString &name);
+
     Object *mObject;
     MapDocument *mMapDocument;
 

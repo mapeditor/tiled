@@ -906,5 +906,38 @@ void PropertyBrowser::updateCustomProperties()
     mUpdating = false;
 }
 
+// If there are other objects selected check if their properties are equal. If not give them a gray color.
+void PropertyBrowser::updatePropertyColor(const QString &name)
+{
+    QtVariantProperty *property = mNameToProperty.value(name);
+    if (!property)
+        return;
+
+    QString propertyName = property->propertyName();
+    QString propertyValue = property->valueText();
+
+    // If one of the objects doesn't have this property then gray out the name and value.
+    foreach (Object *obj, mMapDocument->currentObjects()) {
+        if (!obj->hasProperty(propertyName)) {
+            property->setNameColor(Qt::gray);
+            property->setValueColor(Qt::gray);
+            return;
+        }
+    }
+
+    // If one of the objects doesn't have the same property value then gray out the value.
+    foreach (Object *obj, mMapDocument->currentObjects()) {
+        if (obj == mObject)
+            continue;
+        if (obj->property(propertyName) != propertyValue) {
+            property->setValueColor(Qt::gray);
+            return;
+        }
+    }
+
+    property->setNameColor(Qt::black);
+    property->setValueColor(Qt::black);
+}
+
 } // namespace Internal
 } // namespace Tiled
