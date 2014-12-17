@@ -91,6 +91,8 @@ private slots:
     void propertyRemoved(Object *object, const QString &name);
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
+    void selectedObjectsChanged();
+    void selectedTilesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
 

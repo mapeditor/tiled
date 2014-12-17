@@ -189,6 +189,10 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
                 SLOT(propertyChanged(Object*,QString)));
         connect(mapDocument, SIGNAL(propertiesChanged(Object*)),
                 SLOT(propertiesChanged(Object*)));
+        connect(mapDocument, SIGNAL(selectedObjectsChanged()),
+                SLOT(selectedObjectsChanged()));
+        connect(mapDocument, SIGNAL(selectedTilesChanged()),
+                SLOT(selectedTilesChanged()));
     }
 }
 
@@ -289,6 +293,16 @@ void PropertyBrowser::propertiesChanged(Object *object)
 {
     if (mObject == object)
         updateCustomProperties();
+}
+
+void PropertyBrowser::selectedObjectsChanged()
+{
+    updateCustomProperties();
+}
+
+void PropertyBrowser::selectedTilesChanged()
+{
+    updateCustomProperties();
 }
 
 void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
