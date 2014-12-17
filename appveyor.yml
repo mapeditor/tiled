@@ -1,7 +1,30 @@
-os: unstable
+os: MinGW
+clone_depth: 200
+
+environment:
+  global:
+    QTDIR: C:\Qt\5.3\mingw482_32
+    NSIS_ROOT: C:\nsis
+    MINGW: C:\Qt\Tools\mingw482_32
+
 install:
-  - set QTDIR=C:\Qt\Qt5.3.2\5.3\mingw482_32
-  - set PATH=%PATH%;%QTDIR%\bin;C:\MinGW\bin
+  - appveyor DownloadFile "http://sunet.dl.sourceforge.net/project/nsis/NSIS 2/2.46/nsis-2.46-setup.exe" -FileName nsissetup.exe
+  - nsissetup /S /D=%NSIS_ROOT%
+  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
+
 build_script:
-  - qmake tiled.pro
+  - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
+  - set TILED_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%
+  - set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
+  - set ARCH=32
+  - echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
+  - qmake tiled.pro "CONFIG+=release" "QMAKE_CXXFLAGS+=-DBUILD_INFO_VERSION=%COMMITNOW%"
   - mingw32-make
+
+after_build:
+  - pushd %APPVEYOR_BUILD_FOLDER%\dist\win
+  - '%NSIS_ROOT%\makensis tiled.nsi'
+
+artifacts:
+  - name: Installer
+    path: 'dist\win\tiled-*.exe'

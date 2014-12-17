@@ -39,8 +39,8 @@ RequestExecutionLevel admin
 !define MUI_ABORTWARNING
 
 ;------------- Language Selection Dialog Settings --------------
-!define MUI_LANGDLL_REGISTRY_ROOT "HKCU" 
-!define MUI_LANGDLL_REGISTRY_KEY "Software\${P}\${V}" 
+!define MUI_LANGDLL_REGISTRY_ROOT "HKCU"
+!define MUI_LANGDLL_REGISTRY_KEY "Software\${P}\${V}"
 !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
 ;-------------- Install Pages -------------
@@ -167,7 +167,7 @@ Call checkAlreadyInstalled
 SetOutPath $INSTDIR ; Set output path to the installation directory.
 WriteUninstaller $INSTDIR\uninstall.exe ; Location of the uninstaller
 
-File /oname=COPYING.txt ${ROOT_DIR}\COPYING 
+File /oname=COPYING.txt ${ROOT_DIR}\COPYING
 File /oname=AUTHORS.txt ${ROOT_DIR}\AUTHORS
 File /oname=README.txt ${ROOT_DIR}\README.md
 File /oname=NEWS.txt ${ROOT_DIR}\NEWS
@@ -186,8 +186,9 @@ File ${QT_DIR}\bin\Qt5OpenGL.dll
 File ${QT_DIR}\bin\icuin52.dll
 File ${QT_DIR}\bin\icuuc52.dll
 File ${QT_DIR}\bin\icudt52.dll
-File ${SYSTEM_DIR}\MSVCP120.DLL
-File ${SYSTEM_DIR}\MSVCR120.DLL
+File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
+File ${MINGW_DIR}\bin\libstdc++-6.dll
+File ${MINGW_DIR}\bin\libwinpthread-1.dll
 File ${ROOT_DIR}\src\tiled\images\tiled-icon.ico
 File ${ROOT_DIR}\dist\win\qt.conf
 
@@ -224,7 +225,7 @@ File /r ${ROOT_DIR}\docs\map.*
 SetOutPath $INSTDIR\util
 File /r /x .gitignore /x README /x README.txt ${ROOT_DIR}\util\*.*
 
-; Shortcuts 
+; Shortcuts
 CreateDirectory "$SMPROGRAMS\${P}"
 CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P_NORM}.exe"
 CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\uninstall.exe"
@@ -265,8 +266,9 @@ Delete $INSTDIR\libGLESv2.dll
 Delete $INSTDIR\icuin52.dll
 Delete $INSTDIR\icuuc52.dll
 Delete $INSTDIR\icudt52.dll
-Delete $INSTDIR\MSVCP120.DLL
-Delete $INSTDIR\MSVCR120.DLL
+Delete $INSTDIR\libgcc_s_dw2-1.dll
+Delete $INSTDIR\libstdc++-6.dll
+Delete $INSTDIR\libwinpthread-1.dll
 Delete $INSTDIR\tiled-icon.ico
 Delete $INSTDIR\qt.conf
 Delete $INSTDIR\uninstall.exe
