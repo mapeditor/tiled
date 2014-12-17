@@ -186,13 +186,13 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     if (map->orientation() == Map::Hexagonal) {
         w.writeAttribute(QLatin1String("hexsidelength"),
                          QString::number(map->hexSideLength()));
-        w.writeAttribute(QLatin1String("staggeraxis"),
-                         staggerAxisToString(map->staggerAxis()));
     }
 
     if (map->orientation() == Map::Staggered || map->orientation() == Map::Hexagonal) {
-        const QString staggerIndex = staggerIndexToString(map->staggerIndex());
-        w.writeAttribute(QLatin1String("staggerindex"), staggerIndex);
+        w.writeAttribute(QLatin1String("staggeraxis"),
+                         staggerAxisToString(map->staggerAxis()));
+        w.writeAttribute(QLatin1String("staggerindex"),
+                         staggerIndexToString(map->staggerIndex()));
     }
 
     if (map->backgroundColor().isValid()) {

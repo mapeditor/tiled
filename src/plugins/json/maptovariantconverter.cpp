@@ -53,11 +53,12 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     if (map->orientation() == Map::Hexagonal) {
         mapVariant["hexsidelength"] = map->hexSideLength();
-        mapVariant["staggeraxis"] = staggerAxisToString(map->staggerAxis());
     }
 
-    if (map->orientation() == Map::Hexagonal || map->orientation() == Map::Staggered)
+    if (map->orientation() == Map::Hexagonal || map->orientation() == Map::Staggered) {
+        mapVariant["staggeraxis"] = staggerAxisToString(map->staggerAxis());
         mapVariant["staggerindex"] = staggerIndexToString(map->staggerIndex());
+    }
 
     const QColor bgColor = map->backgroundColor();
     if (bgColor.isValid())
