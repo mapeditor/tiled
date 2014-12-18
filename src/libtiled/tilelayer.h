@@ -151,8 +151,7 @@ public:
      */
     const Cell &cellAt(int x, int y) const;
 
-    const Cell &cellAt(const QPoint &point) const
-    { return cellAt(point.x(), point.y()); }
+    const Cell &cellAt(const QPoint &point) const;
 
     /**
      * Sets the cell at the given coordinates.
@@ -321,6 +320,11 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     Q_ASSERT(contains(x, y));
     return mGrid.at(x + y * mWidth);
+}
+
+inline const Cell &TileLayer::cellAt(const QPoint &point) const
+{
+    return cellAt(point.x(), point.y());
 }
 
 } // namespace Tiled
