@@ -25,6 +25,8 @@ DynamicLibrary {
         "compression.h",
         "gidmapper.cpp",
         "gidmapper.h",
+        "hexagonalrenderer.cpp",
+        "hexagonalrenderer.h",
         "imagelayer.cpp",
         "imagelayer.h",
         "isometricrenderer.cpp",
