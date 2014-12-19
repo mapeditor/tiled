@@ -4,13 +4,13 @@ import qbs.Probes as Probes
 TiledPlugin {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
+    Probes.PkgConfigProbe {
+        id: pkgConfig
+        name: "python-2.7"
+    }
+
     Properties {
         condition: qbs.targetOS.contains("linux")
-
-        Probes.PkgConfigProbe {
-            id: pkgConfig
-            name: "python-2.7"
-        }
 
         cpp.cxxFlags: pkgConfig.cflags
         // This should be it, but it doesn't work because the -lpython2.7 ends
