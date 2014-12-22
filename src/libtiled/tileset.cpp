@@ -347,20 +347,17 @@ void Tileset::setTileImage(int id, const QPixmap &image,
     }
 }
 
-QList<Tile> Tileset::getTiles()
+QList<Tile> Tileset::getTileImages()
 {
     QList<Tile> list;
-    for(int i = 0; i<mTiles.count(); ++i)
+    for(int i = 0; i<mTiles.count(); i++)
         list.append(*(mTiles.at(i)));
     return list;
 }
 
-void Tileset::setTiles(QList<Tile> tiles)
+void Tileset::setTileImages(QList<Tile> tiles)
 {
-    //QList<Tile> *list = new QList<Tile>;
-    for(int i = 0; i < mTiles.count(); i++)
-        delete mTiles.at(i);
-    mTiles.clear();
+    qDeleteAll(mTiles);
     for(int i = 0; i < tiles.count(); i++)
     {
         //Tile *t = new Tile(tiles.at(i).image(), tiles.at(i).id(), this);
