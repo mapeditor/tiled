@@ -33,6 +33,18 @@
 
 using namespace Tiled;
 
+Tile::Tile(const Tile &):
+    Object(TileType),
+    mId(Tile::id()),
+    mTileset(Tile::tileset()),
+    mImage(Tile::image()),
+    mTerrain(-1),
+    mTerrainProbability(-1.f),
+    mObjectGroup(0),
+    mCurrentFrameIndex(0),
+    mUnusedTime(0)
+{}
+
 Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     Object(TileType),
     mId(id),

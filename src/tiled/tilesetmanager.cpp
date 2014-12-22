@@ -185,12 +185,36 @@ void TilesetManager::fileChanged(const QString &path)
 
 void TilesetManager::fileChangedTimeout()
 {
+    QStringList loadedImages;
     foreach (Tileset *tileset, tilesets()) {
+        QString fileName = tileset->imageSource();
+        if(!loadedImages.contains(fileName)) {
+            loadedImages.append(fileName);
+            if (mChangedFiles.contains(fileName))
+                if (tileset->loadFromImage(fileName))
+                    emit tilesetChanged(tileset);
+        }
+        else {
+            if (mChangedFiles.contains(fileName)) {
+                tileset->setTiles(findTileset(fileName)->getTiles());
+                //delete tileset;
+                //int t = mTilesets[tileset];
+                //mTilesets.erase(mTilesets.find(tileset));
+                //mTilesets.insert(findTileset(fileName), t);
+                //emit tilesetChanged(tileset);
+                //delete tileset;
+                //tileset = findTileset(fileName);
+                //*tileset = *findTileset(fileName);
+            }
+        }
+
+    }
+    /*foreach (Tileset *tileset, tilesets()) {
         QString fileName = tileset->imageSource();
         if (mChangedFiles.contains(fileName))
             if (tileset->loadFromImage(fileName))
                 emit tilesetChanged(tileset);
-    }
+    }*/
 
     mChangedFiles.clear();
 }

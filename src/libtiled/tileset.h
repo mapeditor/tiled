@@ -296,6 +296,10 @@ public:
     void setTileImage(int id, const QPixmap &image,
                       const QString &source = QString());
 
+    QList<Tile> getTiles();
+
+    void setTiles(QList<Tile> tiles);
+
     /**
      * Used by the Tile class when its terrain information changes.
      */
