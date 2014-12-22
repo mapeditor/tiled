@@ -357,7 +357,9 @@ QList<Tile> Tileset::getTileImages()
 
 void Tileset::setTileImages(QList<Tile> tiles)
 {
-    qDeleteAll(mTiles);
+    for(int i = 0; i < mTiles.count(); i++)
+        delete mTiles.at(i);
+    mTiles.clear();
     for(int i = 0; i < tiles.count(); i++)
     {
         //Tile *t = new Tile(tiles.at(i).image(), tiles.at(i).id(), this);
