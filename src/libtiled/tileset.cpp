@@ -347,28 +347,32 @@ void Tileset::setTileImage(int id, const QPixmap &image,
     }
 }
 
-QList<Tile> Tileset::getTileImages()
+QList<Tile*> *Tileset::getTileImages()
 {
-    QList<Tile> list;
-    for(int i = 0; i<mTiles.count(); i++)
-        list.append(*(mTiles.at(i)));
-    return list;
+    return &mTiles;
 }
 
-void Tileset::setTileImages(QList<Tile> tiles, Tileset tileset)
+void Tileset::setTileImages(QList<Tile*> *tiles, Tileset *tileset)
 {
     int i = 0;
-    int oldTilesetSize = mTiles.count();
-    for(; i < (tiles.count() > oldTilesetSize ? tiles.count() : oldTilesetSize); i++) {
+    int oldTilesetSize = mTiles.size();
+    QPixmap tilePixmap = tiles->at(i)->image();
+    QImage tileImage = tilePixmap.toImage();
+    for(; i < (tiles->size() > oldTilesetSize ? tiles->size() : oldTilesetSize); i++) {
         //Tile *t = new Tile(tiles.at(i).image(), tiles.at(i).id(), this);
         //list->append(tiles[i]);
         //mTiles[i] = const_cast<T*>(&(list->at(i)));
         //mTiles.append(t);
         //mTiles.append(new Tile(tiles.at(i)));
-        if(i < mTiles.count())
-            mTiles.at(i)->setImage(tiles.at(i).image());
+        if (mTransparentColor.isValid()) {
+            const QImage mask =
+                    tileImage.createMaskFromColor(mTransparentColor.rgb());
+            tilePixmap.setMask(QBitmap::fromImage(mask));
+        }
+        if(i < mTiles.size())
+            mTiles.at(i)->setImage(tilePixmap);
         else
-            mTiles.append(new Tile(tiles.at(i).image(), i, this));
+            mTiles.append(new Tile(tilePixmap, i, this));
     }
     while (i < oldTilesetSize) {
         QPixmap tilePixmap = QPixmap(mTileWidth, mTileHeight);
@@ -376,9 +380,9 @@ void Tileset::setTileImages(QList<Tile> tiles, Tileset tileset)
         mTiles.at(i)->setImage(tilePixmap);
         i++;
     }
+    mImageWidth = tileset->getImageWidth();
+    mImageHeight = tileset->getImageHeight();
     mColumnCount = columnCountForWidth(mImageWidth);
-    mImageWidth = tileset.getImageWidth();
-    mImageHeight = tileset.getImageHeight();
 }
 
 void Tileset::updateTileSize()

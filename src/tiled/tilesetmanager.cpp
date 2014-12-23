@@ -196,8 +196,7 @@ void TilesetManager::fileChangedTimeout()
         }
         else {
             if (mChangedFiles.contains(fileName)) {
-                Tileset *duplicate = loadedImages.value(fileName);
-                tileset->setTileImages(duplicate->getTileImages(), *loadedImages.value(fileName));
+                tileset->setTileImages(loadedImages.value(fileName)->getTileImages(), loadedImages.value(fileName));
                 //delete tileset;
                 //int t = mTilesets[tileset];
                 //mTilesets.erase(mTilesets.find(tileset));

@@ -56,6 +56,9 @@ class Terrain;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
+
+    Q_DISABLE_COPY(Tileset)
+
 public:
     /**
      * Constructor.
@@ -296,9 +299,9 @@ public:
     void setTileImage(int id, const QPixmap &image,
                       const QString &source = QString());
 
-    QList<Tile> getTileImages();
+    QList<Tile*> *getTileImages();
 
-    void setTileImages(QList<Tile> tiles, Tileset tileset);
+    void setTileImages(QList<Tile*> *tiles, Tileset *tileset);
 
     int getImageWidth() { return mImageWidth; }
     int getImageHeight() { return mImageHeight; }
