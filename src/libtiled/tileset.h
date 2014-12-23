@@ -298,7 +298,12 @@ public:
 
     QList<Tile> getTileImages();
 
-    void setTileImages(QList<Tile> tiles);
+    void setTileImages(QList<Tile> tiles, Tileset tileset);
+
+    int getImageWidth() { return mImageWidth; }
+    int getImageHeight() { return mImageHeight; }
+    //int getTileWidth() { return mTileWidth; }
+    //int getTileHeight() { return mTileHeight; }
 
     /**
      * Used by the Tile class when its terrain information changes.

@@ -355,19 +355,30 @@ QList<Tile> Tileset::getTileImages()
     return list;
 }
 
-void Tileset::setTileImages(QList<Tile> tiles)
+void Tileset::setTileImages(QList<Tile> tiles, Tileset tileset)
 {
-    for(int i = 0; i < mTiles.count(); i++)
-        delete mTiles.at(i);
-    mTiles.clear();
-    for(int i = 0; i < tiles.count(); i++)
-    {
+    int i = 0;
+    int oldTilesetSize = mTiles.count();
+    for(; i < (tiles.count() > oldTilesetSize ? tiles.count() : oldTilesetSize); i++) {
         //Tile *t = new Tile(tiles.at(i).image(), tiles.at(i).id(), this);
         //list->append(tiles[i]);
         //mTiles[i] = const_cast<T*>(&(list->at(i)));
         //mTiles.append(t);
-        mTiles.append(new Tile(tiles.at(i)));
+        //mTiles.append(new Tile(tiles.at(i)));
+        if(i < mTiles.count())
+            mTiles.at(i)->setImage(tiles.at(i).image());
+        else
+            mTiles.append(new Tile(tiles.at(i).image(), i, this));
     }
+    while (i < oldTilesetSize) {
+        QPixmap tilePixmap = QPixmap(mTileWidth, mTileHeight);
+        tilePixmap.fill();
+        mTiles.at(i)->setImage(tilePixmap);
+        i++;
+    }
+    mColumnCount = columnCountForWidth(mImageWidth);
+    mImageWidth = tileset.getImageWidth();
+    mImageHeight = tileset.getImageHeight();
 }
 
 void Tileset::updateTileSize()
