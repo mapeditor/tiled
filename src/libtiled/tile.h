@@ -62,7 +62,6 @@ struct Frame
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
-    Tile(const Tile &);
     Tile(const QPixmap &image, int id, Tileset *tileset);
     Tile(const QPixmap &image, const QString &imageSource,
          int id, Tileset *tileset);

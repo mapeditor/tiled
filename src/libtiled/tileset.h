@@ -56,7 +56,10 @@ class Terrain;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
-
+    /**
+     * Prevents the class from being destroyed by the scope that it was created
+     * in to prevent memory leaks.
+     */
     Q_DISABLE_COPY(Tileset)
 
 public:
@@ -299,14 +302,24 @@ public:
     void setTileImage(int id, const QPixmap &image,
                       const QString &source = QString());
 
-    QList<Tile*> *getTileImages();
+    /**
+     * Returns mTiles
+     */
+
+    QList<Tile*> *getTiles();
+
+    /**
+     * Sets the image of mTiles.
+     */
 
     void setTileImages(QList<Tile*> *tiles, Tileset *tileset);
 
+    /**
+     * Returns mImageWidth and mImageHeight
+     */
+
     int getImageWidth() { return mImageWidth; }
     int getImageHeight() { return mImageHeight; }
-    //int getTileWidth() { return mTileWidth; }
-    //int getTileHeight() { return mTileHeight; }
 
     /**
      * Used by the Tile class when its terrain information changes.
