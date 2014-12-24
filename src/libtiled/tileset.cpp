@@ -356,14 +356,16 @@ void Tileset::setTileImages(QList<Tile*> *tiles, Tileset *tileset)
 {
     int i = 0;
     int oldTilesetSize = mTiles.size();
-    QPixmap tilePixmap = tiles->at(i)->image();
-    QImage tileImage = tilePixmap.toImage();
+    QPixmap tilePixmap;
+    QImage tileImage;
     for(; i < (tiles->size() > oldTilesetSize ? tiles->size() : oldTilesetSize); i++) {
         //Tile *t = new Tile(tiles.at(i).image(), tiles.at(i).id(), this);
         //list->append(tiles[i]);
         //mTiles[i] = const_cast<T*>(&(list->at(i)));
         //mTiles.append(t);
         //mTiles.append(new Tile(tiles.at(i)));
+        tilePixmap = tiles->at(i)->image();
+        tileImage = tilePixmap.toImage();
         if (mTransparentColor.isValid()) {
             const QImage mask =
                     tileImage.createMaskFromColor(mTransparentColor.rgb());
