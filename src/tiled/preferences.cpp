@@ -24,6 +24,7 @@
 #include "languagemanager.h"
 #include "mapdocument.h"
 #include "tilesetmanager.h"
+#include "imagelayermanager.h"
 
 #if QT_VERSION >= 0x050000
 #include <QStandardPaths>
@@ -65,6 +66,7 @@ Preferences::Preferences()
                              Map::RightDown).toInt();
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
+    mReloadImageLayersOnChange = boolValue("ReloadImageLayers", true);
     mSettings->endGroup();
 
     // Retrieve interface settings
@@ -105,6 +107,8 @@ Preferences::Preferences()
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
+    ImageLayerManager *imageLayerManager = ImageLayerManager::instance();
+    imageLayerManager->setReloadImageLayersOnChange(mReloadImageLayersOnChange);
     tilesetManager->setAnimateTiles(mShowTileAnimations);
 }
 
@@ -294,6 +298,24 @@ void Preferences::setReloadTilesetsOnChanged(bool value)
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
+}
+
+bool Preferences::reloadImageLayersOnChange() const
+{
+    return mReloadImageLayersOnChange;
+}
+
+void Preferences::setReloadImageLayersOnChanged(bool value)
+{
+    if (mReloadImageLayersOnChange == value)
+        return;
+
+    mReloadImageLayersOnChange = value;
+    mSettings->setValue(QLatin1String("Storage/ReloadImageLayers"),
+                        mReloadImageLayersOnChange);
+
+    ImageLayerManager *imageLayerManager = ImageLayerManager::instance();
+    imageLayerManager->setReloadImageLayersOnChange(mReloadImageLayersOnChange);
 }
 
 void Preferences::setUseOpenGL(bool useOpenGL)

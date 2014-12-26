@@ -24,6 +24,7 @@
 
 #include "mapdocument.h"
 #include "imagelayer.h"
+#include "imagelayermanager.h"
 
 #include <QCoreApplication>
 
@@ -51,10 +52,14 @@ void ChangeImageLayerProperties::redo()
 {
     mImageLayer->setTransparentColor(mRedoColor);
 
-    if (mRedoPath.isEmpty())
+    if (mRedoPath.isEmpty()) {
         mImageLayer->resetImage();
-    else
-        mImageLayer->loadFromImage(QImage(mRedoPath), mRedoPath);
+        ImageLayerManager::instance()->removeReference(mImageLayer);
+    }
+    else {
+        mImageLayer->loadFromImage(mRedoPath);
+        ImageLayerManager::instance()->addReference(mImageLayer);
+    }
 
     mMapDocument->emitImageLayerChanged(mImageLayer);
 }
@@ -63,10 +68,14 @@ void ChangeImageLayerProperties::undo()
 {
     mImageLayer->setTransparentColor(mUndoColor);
 
-    if (mUndoPath.isEmpty())
+    if (mUndoPath.isEmpty()){
         mImageLayer->resetImage();
-    else
-        mImageLayer->loadFromImage(QImage(mUndoPath), mUndoPath);
+        ImageLayerManager::instance()->removeReference(mImageLayer);
+    }
+    else {
+        mImageLayer->loadFromImage(mUndoPath);
+        ImageLayerManager::instance()->addReference(mImageLayer);
+    }
 
     mMapDocument->emitImageLayerChanged(mImageLayer);
 }

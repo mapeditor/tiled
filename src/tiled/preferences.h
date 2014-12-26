@@ -71,6 +71,9 @@ public:
     bool reloadTilesetsOnChange() const;
     void setReloadTilesetsOnChanged(bool value);
 
+    bool reloadImageLayersOnChange() const;
+    void setReloadImageLayersOnChanged(bool value);
+
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
@@ -156,6 +159,7 @@ private:
     bool mDtdEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;
+    bool mReloadImageLayersOnChange;
     bool mUseOpenGL;
     ObjectTypes mObjectTypes;
 

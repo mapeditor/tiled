@@ -197,25 +197,10 @@ void TilesetManager::fileChangedTimeout()
         else {
             if (mChangedFiles.contains(fileName)) {
                 tileset->setTileImages(loadedImages.value(fileName)->getTiles(), loadedImages.value(fileName));
-                //delete tileset;
-                //int t = mTilesets[tileset];
-                //mTilesets.erase(mTilesets.find(tileset));
-                //mTilesets.insert(findTileset(fileName), t);
                 emit tilesetChanged(tileset);
-                //delete tileset;
-                //tileset = findTileset(fileName);
-                //*tileset = *findTileset(fileName);
             }
         }
-
     }
-    /*foreach (Tileset *tileset, tilesets()) {
-        QString fileName = tileset->imageSource();
-        if (mChangedFiles.contains(fileName))
-            if (tileset->loadFromImage(fileName))
-                emit tilesetChanged(tileset);
-    }*/
-
     mChangedFiles.clear();
 }
 

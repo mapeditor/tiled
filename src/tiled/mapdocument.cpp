@@ -29,6 +29,7 @@
 #include "flipmapobjects.h"
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
+#include "imagelayermanager.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
 #include "mapobjectmodel.h"
@@ -115,6 +116,10 @@ MapDocument::~MapDocument()
     // Unregister tileset references
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReferences(mMap->tilesets());
+    
+    //Unregister ImageLayer references
+    //ImageLayerManager *imageLayerManager = ImageLayerManager::instance();
+    //imageLayerManager->removeReference();
 
     delete mRenderer;
     delete mMap;

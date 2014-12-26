@@ -89,6 +89,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "imagemovementtool.h"
+#include "imagelayermanager.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -514,6 +515,7 @@ MainWindow::~MainWindow()
     delete mQuickStampManager;
 
     TilesetManager::deleteInstance();
+    ImageLayerManager::deleteInstance();
     DocumentManager::deleteInstance();
     Preferences::deleteInstance();
     LanguageManager::deleteInstance();
