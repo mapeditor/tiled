@@ -51,14 +51,16 @@ ChangeImageLayerProperties::ChangeImageLayerProperties(
 void ChangeImageLayerProperties::redo()
 {
     mImageLayer->setTransparentColor(mRedoColor);
+    ImageLayerManager *manager = ImageLayerManager::instance();
 
     if (mRedoPath.isEmpty()) {
         mImageLayer->resetImage();
-        ImageLayerManager::instance()->removeReference(mImageLayer);
+        manager->removeReference(mImageLayer);
     }
     else {
+        manager->removeReference(mImageLayer);
         mImageLayer->loadFromImage(mRedoPath);
-        ImageLayerManager::instance()->addReference(mImageLayer);
+        manager->addReference(mImageLayer);
     }
 
     mMapDocument->emitImageLayerChanged(mImageLayer);
@@ -67,14 +69,16 @@ void ChangeImageLayerProperties::redo()
 void ChangeImageLayerProperties::undo()
 {
     mImageLayer->setTransparentColor(mUndoColor);
+    ImageLayerManager *manager = ImageLayerManager::instance();
 
     if (mUndoPath.isEmpty()){
         mImageLayer->resetImage();
-        ImageLayerManager::instance()->removeReference(mImageLayer);
+        manager->removeReference(mImageLayer);
     }
     else {
+        manager->removeReference(mImageLayer);
         mImageLayer->loadFromImage(mUndoPath);
-        ImageLayerManager::instance()->addReference(mImageLayer);
+        manager->addReference(mImageLayer);
     }
 
     mMapDocument->emitImageLayerChanged(mImageLayer);

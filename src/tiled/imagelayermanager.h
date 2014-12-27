@@ -138,7 +138,7 @@ private:
     /**
      * Stores the ImageLayers and maps them to the number of references.
      */
-    QMap<ImageLayer*, int> mImageLayers;
+    QSet<ImageLayer*> mImageLayers;
     FileSystemWatcher *mWatcher;
     QSet<QString> mChangedFiles;
     QTimer mChangedFilesTimer;

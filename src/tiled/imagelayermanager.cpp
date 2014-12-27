@@ -77,26 +77,15 @@ ImageLayer *ImageLayerManager::findImageLayer(const QString &fileName) const
 
 void ImageLayerManager::addReference(ImageLayer *layer)
 {
-    if (mImageLayers.contains(layer)) {
-        mImageLayers[layer]++;
-    } else {
-        mImageLayers.insert(layer, 1);
-        if (!layer->imageSource().isEmpty())
-            mWatcher->addPath(layer->imageSource());
-    }
+    mImageLayers.insert(layer);
+    mWatcher->addPath(layer->imageSource());
 }
 
 void ImageLayerManager::removeReference(ImageLayer *layer)
 {
-    Q_ASSERT(mImageLayers.value(layer) > 0);
-    mImageLayers[layer]--;
-
-    if (mImageLayers.value(layer) == 0) {
+    if(mImageLayers.contains(layer)) {
         mImageLayers.remove(layer);
-        if (!layer->imageSource().isEmpty())
-            mWatcher->removePath(layer->imageSource());
-
-        delete layer;
+        mWatcher->removePath(layer->imageSource());
     }
 }
 
@@ -114,7 +103,7 @@ void ImageLayerManager::removeReferences(const QList<ImageLayer*> &layers)
 
 QList<ImageLayer*> ImageLayerManager::imageLayers() const
 {
-    return mImageLayers.keys();
+    return mImageLayers.toList();
 }
 
 void ImageLayerManager::forceImageLayersReload(ImageLayer *layer)
