@@ -118,9 +118,9 @@ MapDocument::~MapDocument()
     tilesetManager->removeReferences(mMap->tilesets());
     
     //Unregister ImageLayer references
-    ImageLayerManager *imageLayerManager = ImageLayerManager::instance();
-    foreach(Layer *layer, mMap->layers())
-        imageLayerManager->removeReference(dynamic_cast<ImageLayer*>(layer));
+    //ImageLayerManager *imageLayerManager = ImageLayerManager::instance();
+    //foreach(Layer *layer, mMap->layers())
+    //    imageLayerManager->removeReference(dynamic_cast<ImageLayer*>(layer));
 
     delete mRenderer;
     delete mMap;
