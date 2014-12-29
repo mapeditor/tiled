@@ -10,6 +10,11 @@ Product {
     Group {
         fileTagsFilter: product.type
         qbs.install: true
-        qbs.installDir: "share/tiled/translations"
+        qbs.installDir: {
+            if (qbs.targetOS.contains("windows"))
+                return "translations"
+            else
+                return "share/tiled/translations"
+        }
     }
 }

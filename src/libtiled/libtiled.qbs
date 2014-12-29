@@ -71,7 +71,12 @@ DynamicLibrary {
 
     Group {
         qbs.install: true
-        qbs.installDir: "lib"
+        qbs.installDir: {
+            if (qbs.targetOS.contains("windows"))
+                return ""
+            else
+                return "lib"
+        }
         fileTagsFilter: "dynamiclibrary"
     }
 }

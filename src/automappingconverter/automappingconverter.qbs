@@ -23,7 +23,12 @@ QtGuiApplication {
 
     Group {
         qbs.install: true
-        qbs.installDir: "bin"
+        qbs.installDir: {
+            if (qbs.targetOS.contains("windows"))
+                return ""
+            else
+                return "bin"
+        }
         fileTagsFilter: "application"
     }
 }
