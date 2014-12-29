@@ -249,6 +249,7 @@ QtGuiApplication {
         "tileanimationeditor.ui",
         "tilecollisioneditor.cpp",
         "tilecollisioneditor.h",
+        "tiled.rc",
         "tiledapplication.cpp",
         "tiledapplication.h",
         "tiled.qrc",
