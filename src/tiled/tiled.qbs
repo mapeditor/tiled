@@ -1,10 +1,11 @@
 import qbs 1.0
 
-CppApplication {
+QtGuiApplication {
     name: "tiled"
     destinationDirectory: "bin"
 
     Depends { name: "libtiled" }
+    Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "Qt"; submodules: ["widgets", "opengl"] }
 

@@ -8,5 +8,6 @@ Project {
         "src/plugins/plugins.qbs",
         "src/qtpropertybrowser/qtpropertybrowser.qbs",
         "src/tiled/tiled.qbs",
+        "translations/translations.qbs",
     ]
 }
