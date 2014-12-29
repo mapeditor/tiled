@@ -11,6 +11,7 @@ QtGuiApplication {
 
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
+    cpp.cxxPrecompiledHeader: "pch.h"
 
     files: [
         "aboutdialog.cpp",
@@ -192,6 +193,7 @@ QtGuiApplication {
         "offsetmapdialog.ui",
         "painttilelayer.cpp",
         "painttilelayer.h",
+        "pch.h",
         "pluginmanager.cpp",
         "pluginmanager.h",
         "preferences.cpp",
