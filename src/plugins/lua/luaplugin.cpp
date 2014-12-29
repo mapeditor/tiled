@@ -33,6 +33,7 @@
 #include "tileset.h"
 
 #include <QFile>
+#include <QCoreApplication>
 
 #if QT_VERSION >= 0x050100
 #define HAS_QSAVEFILE_SUPPORT
@@ -107,6 +108,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     writer.writeKeyAndValue("version", "1.1");
     writer.writeKeyAndValue("luaversion", "5.1");
+    writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
 
     const QString orientation = orientationToString(map->orientation());
 
