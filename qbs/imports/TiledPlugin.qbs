@@ -13,4 +13,10 @@ DynamicLibrary {
         else
             return "lib/tiled/plugins"
     }
+
+    Group {
+        qbs.install: true
+        qbs.installDir: "lib/tiled/plugins"
+        fileTagsFilter: "dynamiclibrary"
+    }
 }

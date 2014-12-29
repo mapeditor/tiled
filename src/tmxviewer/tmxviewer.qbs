@@ -15,4 +15,10 @@ QtGuiApplication {
         "tmxviewer.cpp",
         "tmxviewer.h",
     ]
+
+    Group {
+        qbs.install: true
+        qbs.installDir: "bin"
+        fileTagsFilter: "application"
+    }
 }

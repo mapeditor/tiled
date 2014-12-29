@@ -14,4 +14,10 @@ QtGuiApplication {
         "tmxrasterizer.cpp",
         "tmxrasterizer.h",
     ]
+
+    Group {
+        qbs.install: true
+        qbs.installDir: "bin"
+        fileTagsFilter: "application"
+    }
 }

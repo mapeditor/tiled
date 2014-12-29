@@ -10,6 +10,6 @@ Product {
     Group {
         fileTagsFilter: product.type
         qbs.install: true
-        qbs.installDir: "/usr/share/tiled/translations"
+        qbs.installDir: "share/tiled/translations"
     }
 }

@@ -20,4 +20,10 @@ QtGuiApplication {
         "converterwindow.ui",
         "main.cpp",
     ]
+
+    Group {
+        qbs.install: true
+        qbs.installDir: "bin"
+        fileTagsFilter: "application"
+    }
 }

@@ -286,4 +286,10 @@ QtGuiApplication {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Group {
+        qbs.install: true
+        qbs.installDir: "bin"
+        fileTagsFilter: "application"
+    }
 }
