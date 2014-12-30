@@ -33,14 +33,11 @@ class CreateScalableObjectTool : public CreateObjectTool
 public:
     CreateScalableObjectTool(QObject *parent);
 
-    void languageChanged();
-
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
     void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
-
 };
 
 } // namespace Internal
