@@ -25,6 +25,8 @@ DynamicLibrary {
         "compression.h",
         "gidmapper.cpp",
         "gidmapper.h",
+        "hexagonalrenderer.cpp",
+        "hexagonalrenderer.h",
         "imagelayer.cpp",
         "imagelayer.h",
         "isometricrenderer.cpp",
@@ -65,5 +67,16 @@ DynamicLibrary {
     Export {
         Depends { name: "cpp" }
         cpp.includePaths: "."
+    }
+
+    Group {
+        qbs.install: true
+        qbs.installDir: {
+            if (qbs.targetOS.contains("windows"))
+                return ""
+            else
+                return "lib"
+        }
+        fileTagsFilter: "dynamiclibrary"
     }
 }

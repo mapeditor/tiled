@@ -1,3 +1,21 @@
+0.11.0 (...)
+* Added support for hexagonal maps (offset coordinates)
+* Added 'Export' action to repeat the last export
+* Added a shortcut for the Reload action (Ctrl+R)
+* Added ability to rename custom properties (by arn00d)
+* Added unique IDs to objects (by Mark van Rij)
+* Added a CSV export plugin
+* Added visual feedback when properties differ between multiple selected objects (by Parker Miller)
+* Added command-line export (by Brandon Dillon)
+* Allow dynamically changing the map orientation and grid size
+* Suppress the standard main window context menu in the collision editor
+* Lua plugin: Write out tile terrain information
+* Lua plugin: Include Tiled version in exported file
+* Flare plugin: Fixed ability to open maps with absolute paths
+* Fixed grid rendering for staggered maps
+* Fully support building and running Tiled with Qbs
+* Updated Portuguese, Italian and Spanish translations
+
 0.10.2 (23 October 2014)
 * Fixed hit area for polygon nodes when editing polygons while zoomed in or out
 * Fixed another possible crash in the orthogonal renderer

@@ -223,10 +223,10 @@ Map *MapReaderPrivate::readMap()
                        .arg(orientationString));
     }
 
-    const QString staggerDirectionString =
-            atts.value(QLatin1String("staggerdirection")).toString();
-    const Map::StaggerDirection staggerDirection =
-            staggerDirectionFromString(staggerDirectionString);
+    const QString staggerAxisString =
+            atts.value(QLatin1String("staggeraxis")).toString();
+    const Map::StaggerAxis staggerAxis =
+            staggerAxisFromString(staggerAxisString);
 
     const QString staggerIndexString =
             atts.value(QLatin1String("staggerindex")).toString();
@@ -238,11 +238,17 @@ Map *MapReaderPrivate::readMap()
     const Map::RenderOrder renderOrder =
             renderOrderFromString(renderOrderString);
 
+    const int nextObjectId =
+            atts.value(QLatin1String("nextobjectid")).toString().toInt();
+
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
     mMap->setHexSideLength(hexSideLength);
-    mMap->setStaggerDirection(staggerDirection);
+    mMap->setStaggerAxis(staggerAxis);
     mMap->setStaggerIndex(staggerIndex);
     mMap->setRenderOrder(renderOrder);
+    if (nextObjectId)
+        mMap->setNextObjectId(nextObjectId);
+
     mCreatedTilesets.clear();
 
     QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
@@ -820,6 +826,7 @@ MapObject *MapReaderPrivate::readObject()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
 
     const QXmlStreamAttributes atts = xml.attributes();
+    const int id = atts.value(QLatin1String("id")).toString().toInt();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const qreal x = atts.value(QLatin1String("x")).toString().toDouble();
@@ -833,6 +840,7 @@ MapObject *MapReaderPrivate::readObject()
     const QSizeF size(width, height);
 
     MapObject *object = new MapObject(name, type, pos, size);
+    object->setId(id);
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);

@@ -14,13 +14,41 @@
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/tiled/aboutdialog.cpp" line="+33"/>
+        <location filename="../src/tiled/aboutdialog.cpp" line="+35"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Copyright 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(siehe AUTHORS-Datei für eine komplette Liste von Entwicklern)&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>Command line</name>
+    <message>
+        <location filename="../src/tiled/main.cpp" line="+202"/>
+        <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>No exporter found for target file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Failed to load source map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Failed to export map to target file.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -78,6 +106,24 @@
         <location line="+3"/>
         <source>Open Map</source>
         <translation>Karte öffnen</translation>
+    </message>
+</context>
+<context>
+    <name>Csv::CsvPlugin</name>
+    <message>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Konnte Datei nicht zum Schreiben öffnen.</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>No tile layer found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+40"/>
+        <source>CSV files (*.csv)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -161,7 +207,7 @@
         <translation>Datei konnte nicht zum Lesen geöffnet werden.</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+79"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
         <translation>Fehler beim Laden von Tileset %1, (%2). Pfad konnte nicht gefunden werden!</translation>
     </message>
@@ -229,7 +275,7 @@
 <context>
     <name>Lua::LuaPlugin</name>
     <message>
-        <location filename="../src/plugins/lua/luaplugin.cpp" line="+67"/>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+68"/>
         <source>Could not open file for writing.</source>
         <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
@@ -257,7 +303,7 @@
         <translation>&amp;Zuletzt benutzte Dateien</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+25"/>
         <source>&amp;Edit</source>
         <translation>&amp;Bearbeiten</translation>
     </message>
@@ -392,7 +438,17 @@
         <translation>Als &amp;Bild speichern...</translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+42"/>
+        <source>E&amp;xport As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+Shift+E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+33"/>
         <source>&amp;Delete</source>
         <translation>&amp;Löschen</translation>
     </message>
@@ -432,7 +488,17 @@
         <translation>Neu laden</translation>
     </message>
     <message>
-        <location line="-109"/>
+        <location line="+3"/>
+        <source>Ctrl+R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-117"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
@@ -462,17 +528,12 @@
         <translation>Zuletzt benutzte Dateien vergessen</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>&amp;Export As...</source>
-        <translation>&amp;Exportieren als...</translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+95"/>
         <source>Ctrl+E</source>
         <translation></translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="-82"/>
         <source>&amp;Add External Tileset...</source>
         <translation>Externes Tileset &amp;hinzufügen...</translation>
     </message>
@@ -534,15 +595,15 @@ Zeile %1, Spalte %2</translation>
         <translation>Datei nicht lesbar: %1</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+37"/>
         <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+58"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>Nicht unterstützte Kartenorientierung: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+89"/>
         <location line="+21"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+75"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+88"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>Ungültige Tileset-Parameter für Tileset &quot;%1&quot;</translation>
     </message>
@@ -576,7 +637,7 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+33"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+255"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+257"/>
         <source>Error loading image:
 &apos;%1&apos;</source>
         <translation>Fehler beim Laden des Bildes
@@ -594,7 +655,7 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+29"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-76"/>
+        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-78"/>
         <source>Invalid draw order: %1</source>
         <translation>Ungültige Zeichenreihenfolge: %1</translation>
     </message>
@@ -606,12 +667,12 @@ Zeile %1, Spalte %2</translation>
 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+87"/>
+        <location line="+89"/>
         <source>Invalid points data for polygon</source>
         <translation>Ungültige Punktdaten für ein Polygon</translation>
     </message>
     <message>
-        <location line="-271"/>
+        <location line="-273"/>
         <source>Unknown encoding: %1</source>
         <translation>Unbekannte Codierung: %1</translation>
     </message>
@@ -923,8 +984,8 @@ Zeile %1, Spalte %2</translation>
         <translation>Speichern und Laden</translation>
     </message>
     <message>
-        <location filename="../src/tiled/newmapdialog.cpp" line="+60"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+72"/>
+        <location filename="../src/tiled/newmapdialog.cpp" line="+62"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+83"/>
         <source>XML</source>
         <translation>XML</translation>
     </message>
@@ -1875,7 +1936,7 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::AutomappingManager</name>
     <message>
-        <location filename="../src/tiled/automappingmanager.cpp" line="+101"/>
+        <location filename="../src/tiled/automappingmanager.cpp" line="+103"/>
         <source>Apply AutoMap rules</source>
         <translation>AutoMap-Regeln anwenden</translation>
     </message>
@@ -2095,61 +2156,89 @@ Zeile %1, Spalte %2</translation>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::CreateEllipseObjectTool</name>
+    <message>
+        <location filename="../src/tiled/createellipseobjecttool.cpp" line="+41"/>
+        <source>Insert Ellipse</source>
+        <translation type="unfinished">Ellipse einfügen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>C</source>
+        <translation type="unfinished">C</translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::CreateObjectTool</name>
     <message>
         <location filename="../src/tiled/createobjecttool.cpp" line="+46"/>
         <source>O</source>
         <translation>O</translation>
     </message>
+</context>
+<context>
+    <name>Tiled::Internal::CreatePolygonObjectTool</name>
     <message>
-        <location line="+262"/>
-        <source>Insert Rectangle</source>
-        <translation>Rechteck einfügen</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>R</source>
-        <translation>R</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Insert Ellipse</source>
-        <translation>Ellipse einfügen</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>C</source>
-        <translation>C</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Insert Tile</source>
-        <translation>Kachel einfügen</translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+40"/>
         <source>Insert Polygon</source>
-        <translation>Polygon einfügen</translation>
+        <translation type="unfinished">Polygon einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation>P</translation>
+        <translation type="unfinished">P</translation>
     </message>
+</context>
+<context>
+    <name>Tiled::Internal::CreatePolylineObjectTool</name>
     <message>
-        <location line="+3"/>
+        <location filename="../src/tiled/createpolylineobjecttool.cpp" line="+40"/>
         <source>Insert Polyline</source>
-        <translation>Polylinie einfügen</translation>
+        <translation type="unfinished">Polylinie einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation>L</translation>
+        <translation type="unfinished">L</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CreateRectangleObjectTool</name>
+    <message>
+        <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+41"/>
+        <source>Insert Rectangle</source>
+        <translation type="unfinished">Rechteck einfügen</translation>
     </message>
     <message>
-        <location line="-8"/>
+        <location line="+1"/>
+        <source>R</source>
+        <translation type="unfinished">R</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CreateScalableObjectTool</name>
+    <message>
+        <location filename="../src/tiled/createscalableobjecttool.cpp" line="+81"/>
+        <source>Insert Rectangle</source>
+        <translation type="unfinished">Rechteck einfügen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>R</source>
+        <translation type="unfinished">R</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::CreateTileObjectTool</name>
+    <message>
+        <location filename="../src/tiled/createtileobjecttool.cpp" line="+78"/>
+        <source>Insert Tile</source>
+        <translation type="unfinished">Kachel einfügen</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>T</source>
-        <translation>T</translation>
+        <translation type="unfinished">T</translation>
     </message>
 </context>
 <context>
@@ -2167,19 +2256,19 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::EditPolygonTool</name>
     <message>
-        <location filename="../src/tiled/editpolygontool.cpp" line="+124"/>
-        <location line="+193"/>
+        <location filename="../src/tiled/editpolygontool.cpp" line="+128"/>
+        <location line="+209"/>
         <source>Edit Polygons</source>
         <translation>Polgone bearbeiten</translation>
     </message>
     <message>
-        <location line="-191"/>
-        <location line="+192"/>
+        <location line="-207"/>
+        <location line="+208"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message numerus="yes">
-        <location line="+220"/>
+        <location line="+225"/>
         <source>Move %n Point(s)</source>
         <translation>
             <numerusform>Punkt verschieben</numerusform>
@@ -2301,7 +2390,7 @@ Zeile %1, Spalte %2</translation>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+166"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+171"/>
         <location line="+8"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
@@ -2334,23 +2423,23 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1274"/>
+        <location line="+1329"/>
         <source>Random Mode</source>
         <translation>Zufallsmodus</translation>
     </message>
     <message>
-        <location line="-1271"/>
+        <location line="-1326"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+1269"/>
+        <location line="+1324"/>
         <source>&amp;Layer</source>
         <translation>&amp;Ebene</translation>
     </message>
     <message>
-        <location line="-1067"/>
+        <location line="-1126"/>
         <source>Ctrl+Shift+Tab</source>
         <translation></translation>
     </message>
@@ -2385,18 +2474,18 @@ Zeile %1, Spalte %2</translation>
         <translation></translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+130"/>
         <source>Error Opening Map</source>
         <translation>Fehler beim Öffnen der Karte</translation>
     </message>
     <message>
         <location line="+81"/>
-        <location line="+172"/>
+        <location line="+208"/>
         <source>All Files (*)</source>
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location line="-169"/>
+        <location line="-205"/>
         <location line="+68"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Tiled-Karten (*.tmx)</translation>
@@ -2408,12 +2497,11 @@ Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location line="+28"/>
-        <location line="+203"/>
         <source>Error Saving Map</source>
         <translation>Fehler beim Speichern der Karte</translation>
     </message>
     <message>
-        <location line="-149"/>
+        <location line="+54"/>
         <source>untitled.tmx</source>
         <translation>unbenannt.tmx</translation>
     </message>
@@ -2428,7 +2516,18 @@ Zeile %1, Spalte %2</translation>
         <translation>Es wurden Änderungen vorgenommen. Jetzt speichern?</translation>
     </message>
     <message>
-        <location line="+69"/>
+        <location line="+57"/>
+        <source>Exported to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <location line="+99"/>
+        <source>Error Exporting Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-52"/>
         <source>Export As...</source>
         <translation>Exportieren als...</translation>
     </message>
@@ -2455,17 +2554,17 @@ Bitte Format angeben.</translation>
         <translation>Dateiendung unbekannt.</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+54"/>
         <source>Cut</source>
         <translation>Ausschneiden</translation>
     </message>
     <message>
-        <location line="+647"/>
+        <location line="+657"/>
         <source>Error Reloading Map</source>
         <translation>Fehler beim neu Laden der Karte</translation>
     </message>
     <message>
-        <location line="-571"/>
+        <location line="-581"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
@@ -2481,7 +2580,7 @@ Bitte Format angeben.</translation>
         <translation>Fehler beim Lesen des Tilesets</translation>
     </message>
     <message>
-        <location line="+204"/>
+        <location line="+214"/>
         <source>Current layer: %1</source>
         <translation>Aktuelle Ebene: %1</translation>
     </message>
@@ -2491,30 +2590,30 @@ Bitte Format angeben.</translation>
         <translation>&lt;keine&gt;</translation>
     </message>
     <message>
-        <location line="-129"/>
+        <location line="-135"/>
         <source>Automatic Mapping Warning</source>
         <translation>Automapping-Warnung</translation>
     </message>
     <message>
-        <location line="-806"/>
-        <location line="+1101"/>
+        <location line="-859"/>
+        <location line="+1160"/>
         <source>Views and Toolbars</source>
         <translation>Ansichten und Toolbars</translation>
     </message>
     <message>
-        <location line="-1100"/>
-        <location line="+1101"/>
+        <location line="-1159"/>
+        <location line="+1160"/>
         <source>Tile Animation Editor</source>
         <translation>Kachelanimations-Editor</translation>
     </message>
     <message>
-        <location line="-1099"/>
-        <location line="+1100"/>
+        <location line="-1158"/>
+        <location line="+1159"/>
         <source>Tile Collision Editor</source>
         <translation>Kachelkollisions-Editor</translation>
     </message>
     <message>
-        <location line="-1073"/>
+        <location line="-1132"/>
         <source>Alt+Left</source>
         <translation>Alt+Links</translation>
     </message>
@@ -2524,7 +2623,7 @@ Bitte Format angeben.</translation>
         <translation>Alt+Rechts</translation>
     </message>
     <message>
-        <location line="+674"/>
+        <location line="+723"/>
         <source>Add External Tileset(s)</source>
         <translation>Externe(s) Tileset(s) hinzufügen</translation>
     </message>
@@ -2547,7 +2646,7 @@ Bitte Format angeben.</translation>
         <translation>Automapping-Fehler</translation>
     </message>
     <message>
-        <location line="+281"/>
+        <location line="+291"/>
         <source>[*]%1 - Tiled</source>
         <translation>[*]%1 - Tiled</translation>
     </message>
@@ -2555,7 +2654,7 @@ Bitte Format angeben.</translation>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+226"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+218"/>
         <source>untitled.tmx</source>
         <translation>unbenannt.tmx</translation>
     </message>
@@ -2834,18 +2933,27 @@ Bitte Format angeben.</translation>
     <name>Tiled::Internal::NewMapDialog</name>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+2"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-14"/>
         <source>Orthogonal</source>
         <translation>Orthogonal</translation>
     </message>
     <message>
         <location line="+1"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric</source>
         <translation>Isometrisch</translation>
     </message>
     <message>
         <location line="+1"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric (Staggered)</source>
         <translation>Isometrisch (gestaffelt)</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
+        <source>Hexagonal (Staggered)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+60"/>
@@ -2863,7 +2971,7 @@ Bitte Format angeben.</translation>
         <translation>Die Kachelebenen dieser Karte würden %L1 GB Arbeitsspeicher benötigen. Es wird standardmäßig keine Kachelebene angelegt.</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+49"/>
         <source>%1 x %2 pixels</source>
         <translation>%1 x %2 Pixel</translation>
     </message>
@@ -3001,18 +3109,25 @@ Bitte Format angeben.</translation>
 <context>
     <name>Tiled::Internal::PropertiesDock</name>
     <message>
-        <location filename="../src/tiled/propertiesdock.cpp" line="+187"/>
+        <location filename="../src/tiled/propertiesdock.cpp" line="+196"/>
+        <location line="+45"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <location line="+61"/>
+        <location line="-44"/>
+        <location line="+95"/>
         <source>Add Property</source>
         <translation>Eigenschaft hinzufügen</translation>
     </message>
     <message>
-        <location line="-2"/>
+        <location line="-49"/>
+        <location line="+51"/>
+        <source>Rename Property</source>
+        <translation type="unfinished">Eigenschaft umbenennen</translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
     </message>
@@ -3025,7 +3140,7 @@ Bitte Format angeben.</translation>
 <context>
     <name>Tiled::Internal::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+13"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
@@ -3055,7 +3170,7 @@ Bitte Format angeben.</translation>
         <translation>Karte</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+34"/>
         <source>Tile Layer Format</source>
         <translation type="unfinished">Ebenenformat</translation>
     </message>
@@ -3075,7 +3190,7 @@ Bitte Format angeben.</translation>
         <translation>Objekt</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <location line="+24"/>
         <location line="+55"/>
         <location line="+15"/>
@@ -3100,12 +3215,58 @@ Bitte Format angeben.</translation>
         <translation>Position</translation>
     </message>
     <message>
-        <location line="-64"/>
+        <location line="-133"/>
+        <location line="+69"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
+        <location line="-325"/>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Y</source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Odd</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Even</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+253"/>
+        <source>Tile Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Tile Side Length (Hex)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Stagger Axis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Stagger Index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+46"/>
         <source>Rotation</source>
         <translation>Drehung</translation>
     </message>
@@ -3170,7 +3331,8 @@ Bitte Format angeben.</translation>
         <translation>Kachel</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-87"/>
+        <location line="+88"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -3256,7 +3418,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::TileCollisionEditor</name>
     <message>
-        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+338"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+339"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
@@ -3454,7 +3616,7 @@ Do you want to replace it?</source>
 <context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+179"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+180"/>
         <source>TMX Viewer</source>
         <translation>TMX-Betrachter</translation>
     </message>
@@ -3637,11 +3799,6 @@ Do you want to replace it?</source>
         <translation>Terrain löschen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changemapproperties.cpp" line="+36"/>
-        <source>Change Map Properties</source>
-        <translation>Karteneigenschaften ändern</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+131"/>
         <source>Change Tile Terrain</source>
         <translation>Kachelterrain ändern</translation>
@@ -3746,6 +3903,51 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
         <source>Rotate Object</source>
         <translation>Objekt drehen</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
+        <source>Change Tile Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Tile Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Change Hex Side Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Change Background Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Change Stagger Axis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Change Stagger Index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Change Orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Change Render Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Change Layer Data Format</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -186,19 +186,22 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
     if (map->orientation() == Map::Hexagonal) {
         w.writeAttribute(QLatin1String("hexsidelength"),
                          QString::number(map->hexSideLength()));
-        w.writeAttribute(QLatin1String("staggerdirection"),
-                         staggerDirectionToString(map->staggerDirection()));
     }
 
     if (map->orientation() == Map::Staggered || map->orientation() == Map::Hexagonal) {
-        const QString staggerIndex = staggerIndexToString(map->staggerIndex());
-        w.writeAttribute(QLatin1String("staggerindex"), staggerIndex);
+        w.writeAttribute(QLatin1String("staggeraxis"),
+                         staggerAxisToString(map->staggerAxis()));
+        w.writeAttribute(QLatin1String("staggerindex"),
+                         staggerIndexToString(map->staggerIndex()));
     }
 
     if (map->backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
                          map->backgroundColor().name());
     }
+
+    w.writeAttribute(QLatin1String("nextobjectid"),
+                     QString::number(map->nextObjectId()));
 
     writeProperties(w, map->properties());
 
@@ -306,7 +309,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
     if (tileset->terrainCount() > 0) {
         w.writeStartElement(QLatin1String("terraintypes"));
         for (int i = 0; i < tileset->terrainCount(); ++i) {
-            Terrain* t = tileset->terrain(i);
+            const Terrain *t = tileset->terrain(i);
             w.writeStartElement(QLatin1String("terrain"));
 
             w.writeAttribute(QLatin1String("name"), t->name());
@@ -526,6 +529,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
                                    const MapObject *mapObject)
 {
     w.writeStartElement(QLatin1String("object"));
+    w.writeAttribute(QLatin1String("id"), QString::number(mapObject->id()));
     const QString &name = mapObject->name();
     const QString &type = mapObject->type();
     if (!name.isEmpty())

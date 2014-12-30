@@ -60,14 +60,16 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         return 0;
     }
 
-    const QString staggerDirectionString = variantMap["staggerdirection"].toString();
-    Map::StaggerDirection staggerDirection = staggerDirectionFromString(staggerDirectionString);
+    const QString staggerAxisString = variantMap["staggeraxis"].toString();
+    Map::StaggerAxis staggerAxis = staggerAxisFromString(staggerAxisString);
 
     const QString staggerIndexString = variantMap["staggerindex"].toString();
     Map::StaggerIndex staggerIndex = staggerIndexFromString(staggerIndexString);
 
     const QString renderOrderString = variantMap["renderorder"].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
+
+    const int nextObjectId = variantMap["nextobjectid"].toString().toInt();
 
     typedef QScopedPointer<Map> MapPtr;
     MapPtr map(new Map(orientation,
@@ -76,9 +78,11 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
                        variantMap["tilewidth"].toInt(),
                        variantMap["tileheight"].toInt()));
     map->setHexSideLength(variantMap["hexsidelength"].toInt());
-    map->setStaggerDirection(staggerDirection);
+    map->setStaggerAxis(staggerAxis);
     map->setStaggerIndex(staggerIndex);
     map->setRenderOrder(renderOrder);
+    if (nextObjectId)
+        map->setNextObjectId(nextObjectId);
 
     mMap = map.data();
     map->setProperties(toProperties(variantMap["properties"]));
@@ -348,6 +352,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QString name = objectVariantMap["name"].toString();
         const QString type = objectVariantMap["type"].toString();
+        const int id = objectVariantMap["id"].toString().toInt();
         const int gid = objectVariantMap["gid"].toInt();
         const qreal x = objectVariantMap["x"].toReal();
         const qreal y = objectVariantMap["y"].toReal();
@@ -359,6 +364,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         const QSizeF size(width, height);
 
         MapObject *object = new MapObject(name, type, pos, size);
+        object->setId(id);
         object->setRotation(rotation);
 
         if (gid) {

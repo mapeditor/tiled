@@ -1,15 +1,17 @@
 import qbs 1.0
 
-CppApplication {
+QtGuiApplication {
     name: "tiled"
     destinationDirectory: "bin"
 
     Depends { name: "libtiled" }
+    Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "Qt"; submodules: ["widgets", "opengl"] }
 
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
+    cpp.cxxPrecompiledHeader: "pch.h"
 
     files: [
         "aboutdialog.cpp",
@@ -191,6 +193,7 @@ CppApplication {
         "offsetmapdialog.ui",
         "painttilelayer.cpp",
         "painttilelayer.h",
+        "pch.h",
         "pluginmanager.cpp",
         "pluginmanager.h",
         "preferences.cpp",
@@ -246,6 +249,7 @@ CppApplication {
         "tileanimationeditor.ui",
         "tilecollisioneditor.cpp",
         "tilecollisioneditor.h",
+        "tiled.rc",
         "tiledapplication.cpp",
         "tiledapplication.h",
         "tiled.qrc",
@@ -285,4 +289,15 @@ CppApplication {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Group {
+        qbs.install: true
+        qbs.installDir: {
+            if (qbs.targetOS.contains("windows"))
+                return ""
+            else
+                return "bin"
+        }
+        fileTagsFilter: "application"
+    }
 }

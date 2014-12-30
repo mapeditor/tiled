@@ -50,6 +50,6 @@ private:
     QString mError;
 };
 
-} // namespace Mana
+} // namespace Tmw
 
 #endif // TMWPLUGIN_H
