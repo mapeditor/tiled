@@ -28,27 +28,27 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+202"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Exportsyntax lautet: --export-map [Format] &lt;Tmx-Datei&gt; &lt;Zieldatei&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiendung nicht eindeutig. Exportformat konnte nicht festgestellt werden.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es wurde kein Exporter für die Zieldatei gefunden.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quellkarte konnte nicht geladen werden.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Karte konnte nicht als die Zieldatei exportiert werden.</translation>
     </message>
 </context>
 <context>
@@ -113,17 +113,17 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Konnte Datei nicht zum Schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>No tile layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es wurde keine Kachelebene gefunden!</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-Dateien (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -440,12 +440,12 @@
     <message>
         <location line="+42"/>
         <source>E&amp;xport As...</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xportieren als...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+E</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -490,12 +490,12 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Export</translation>
     </message>
     <message>
         <location line="-117"/>
@@ -775,12 +775,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+20"/>
         <source>Tile layer format:</source>
-        <translation type="unfinished">Ebenenformat:</translation>
+        <translation>Kachelebenenformat:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Tile render order:</source>
-        <translation type="unfinished">Zeichenreihenfolge:</translation>
+        <translation>Kachel-Zeichenreihenfolge:</translation>
     </message>
 </context>
 <context>
@@ -2160,12 +2160,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+41"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished">Ellipse einfügen</translation>
+        <translation>Ellipse einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished">C</translation>
+        <translation>C</translation>
     </message>
 </context>
 <context>
@@ -2181,12 +2181,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+40"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished">Polygon einfügen</translation>
+        <translation>Polygon einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation type="unfinished">P</translation>
+        <translation>P</translation>
     </message>
 </context>
 <context>
@@ -2194,12 +2194,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createpolylineobjecttool.cpp" line="+40"/>
         <source>Insert Polyline</source>
-        <translation type="unfinished">Polylinie einfügen</translation>
+        <translation>Polylinie einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation type="unfinished">L</translation>
+        <translation>L</translation>
     </message>
 </context>
 <context>
@@ -2207,12 +2207,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+41"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">Rechteck einfügen</translation>
+        <translation>Rechteck einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2220,12 +2220,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createscalableobjecttool.cpp" line="+81"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">Rechteck einfügen</translation>
+        <translation>Rechteck einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2233,12 +2233,12 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+78"/>
         <source>Insert Tile</source>
-        <translation type="unfinished">Kachel einfügen</translation>
+        <translation>Kachel einfügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation type="unfinished">T</translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -2518,13 +2518,13 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+57"/>
         <source>Exported to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportiert als %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+99"/>
         <source>Error Exporting Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Exportieren der Karte</translation>
     </message>
     <message>
         <location line="-52"/>
@@ -2953,7 +2953,7 @@ Bitte Format angeben.</translation>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sechseckig (gestaffelt)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -3124,7 +3124,7 @@ Bitte Format angeben.</translation>
         <location line="-49"/>
         <location line="+51"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Eigenschaft umbenennen</translation>
+        <translation>Eigenschaft umbenennen</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -3172,12 +3172,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+34"/>
         <source>Tile Layer Format</source>
-        <translation type="unfinished">Ebenenformat</translation>
+        <translation>Kachelebenenformat</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Tile Render Order</source>
-        <translation type="unfinished">Zeichenreihenfolge</translation>
+        <translation>Kachel-Zeichenreihenfolge</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3223,47 +3223,47 @@ Bitte Format angeben.</translation>
     <message>
         <location line="-325"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Odd</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungerade</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Even</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerade</translation>
     </message>
     <message>
         <location line="+253"/>
         <source>Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelgröße</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientierung</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile Side Length (Hex)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachel-Kantenlänge (Sechseck)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Staffelachse</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Staffelindex</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -3907,47 +3907,47 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelbreite ändern</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelhöhe ändern</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Sechseck-Kantenlänge ändern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrundfarbe ändern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Staffelachse ändern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Staffelindex ändern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientierung ändern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichenreihenfolge ändern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen-Datenformat ändern</translation>
     </message>
 </context>
 <context>
