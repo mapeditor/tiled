@@ -14,7 +14,7 @@
 * Flare plugin: Fixed ability to open maps with absolute paths
 * Fixed grid rendering for staggered maps
 * Fully support building and running Tiled with Qbs
-* Updated Portuguese and Italian translations
+* Updated Portuguese, Italian and Spanish translations
 
 0.10.2 (23 October 2014)
 * Fixed hit area for polygon nodes when editing polygons while zoomed in or out
