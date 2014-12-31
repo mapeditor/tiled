@@ -54,6 +54,7 @@ DynamicLibrary {
         "properties.h",
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
+        "terrain.h",
         "tile.cpp",
         "tiled_global.h",
         "tiled.h",
