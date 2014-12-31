@@ -309,7 +309,7 @@ bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
         if (map->property("__script__") != it.key()) continue;
         log(QString("-- Script used for exporting: %1\n").arg(it.key()));
 
-        PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const(map);
+        PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const___star__(&map);
         if (!pmap)
             return false;
         if (!PyObject_HasAttrString(it.value(), "write")) {
