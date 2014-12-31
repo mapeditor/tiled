@@ -32,27 +32,27 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+202"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Export syntax is --export-map [formaat] &lt;tmx bestand&gt; &lt;doelbestand&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen unique bestandsextensie. Kan export formaat niet bepalen.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon geen exporter vinden voor doelbestand. </translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het laden van de map.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens het exporteren naar het doelbestand.</translation>
     </message>
 </context>
 <context>
@@ -117,17 +117,17 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>No tile layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon geen tilelaag vinden.</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV bestanden (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -374,12 +374,12 @@
     <message>
         <location line="+144"/>
         <source>E&amp;xport As...</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xporteren Als...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+63"/>
@@ -399,12 +399,12 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exporteren</translation>
     </message>
     <message>
         <location line="-217"/>
@@ -1232,22 +1232,22 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="-210"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Pijl</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Pijl Omhoog</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Kruis</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Wachten</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1307,22 +1307,22 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+2"/>
         <source>Open Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Hand</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Closed Hand</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesloten Hand</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>What&apos;s This</source>
-        <translation type="unfinished"></translation>
+        <translation>Wat is Dit</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezig</translation>
     </message>
 </context>
 <context>
@@ -1348,27 +1348,27 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+13"/>
         <source>Point Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Puntgrootte</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Vet</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursief</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderstreept</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Doorgestreept</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2162,12 +2162,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+41"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished">Ovaal Toevoegen</translation>
+        <translation>Ovaal Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2183,12 +2183,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+40"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished">Polygon Toevoegen</translation>
+        <translation>Polygon Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2196,12 +2196,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/createpolylineobjecttool.cpp" line="+40"/>
         <source>Insert Polyline</source>
-        <translation type="unfinished">Polylijn Toevoegen</translation>
+        <translation>Polylijn Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2209,12 +2209,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+41"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">Rechthoek Toevoegen</translation>
+        <translation>Rechthoek Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2222,12 +2222,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/createscalableobjecttool.cpp" line="+81"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">Rechthoek Toevoegen</translation>
+        <translation>Rechthoek Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2235,12 +2235,12 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+78"/>
         <source>Insert Tile</source>
-        <translation type="unfinished">Tile Toevoegen</translation>
+        <translation>Tile Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation type="unfinished">T</translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -2520,13 +2520,13 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+57"/>
         <source>Exported to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Geëxporteerd als %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+99"/>
         <source>Error Exporting Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout Bij Map Exporteren</translation>
     </message>
     <message>
         <location line="-52"/>
@@ -2910,7 +2910,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
         <source>Browse...</source>
-        <translation>&amp;Bladeren...</translation>
+        <translation>Bladeren...</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -2955,7 +2955,7 @@ Kies een specifiek bestandsformaat.</translation>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hexagonaal (Zigzag)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -3127,7 +3127,7 @@ Kies een specifiek bestandsformaat.</translation>
         <location line="-49"/>
         <location line="+51"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Eigenschap Hernoemen</translation>
+        <translation>Eigenschap Hernoemen</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -3226,47 +3226,47 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="-325"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Odd</source>
-        <translation type="unfinished"></translation>
+        <translation>Oneven</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Even</source>
-        <translation type="unfinished"></translation>
+        <translation>Even</translation>
     </message>
     <message>
         <location line="+253"/>
         <source>Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Formaat</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientatie</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile Side Length (Hex)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengte Zijkant van de Tile (Hex)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Zigzag Richting</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Zigzag Index</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -3911,47 +3911,47 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Breedte Veranderen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Hoogte Veranderen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengte Zijkant van de Tile Veranderen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Achtergrondkleur Veranderen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Zigzag Richting Veranderen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Zigzag Index Veranderen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientatie Veranderen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Tekenvolgorde Veranderen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Formaat van Tilelagen Veranderen</translation>
     </message>
 </context>
 <context>

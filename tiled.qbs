@@ -4,9 +4,13 @@ Project {
     qbsSearchPaths: "qbs"
 
     references: [
-        "src/libtiled/libtiled.qbs",
-        "src/plugins/plugins.qbs",
-        "src/qtpropertybrowser/qtpropertybrowser.qbs",
-        "src/tiled/tiled.qbs",
+        "src/automappingconverter",
+        "src/libtiled",
+        "src/plugins",
+        "src/qtpropertybrowser",
+        "src/tiled",
+        "src/tmxrasterizer",
+        "src/tmxviewer",
+        "translations",
     ]
 }

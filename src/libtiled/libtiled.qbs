@@ -68,4 +68,15 @@ DynamicLibrary {
         Depends { name: "cpp" }
         cpp.includePaths: "."
     }
+
+    Group {
+        qbs.install: true
+        qbs.installDir: {
+            if (qbs.targetOS.contains("windows"))
+                return ""
+            else
+                return "lib"
+        }
+        fileTagsFilter: "dynamiclibrary"
+    }
 }

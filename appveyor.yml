@@ -1,7 +1,57 @@
-os: unstable
+os: MinGW
+clone_depth: 200
+
+environment:
+  QTDIR: C:\Qt\5.3\mingw482_32
+  NSIS_ROOT: C:\nsis
+  MINGW: C:\Qt\Tools\mingw482_32
+
+configuration: Release
+
 install:
-  - set QTDIR=C:\Qt\Qt5.3.2\5.3\mingw482_32
-  - set PATH=%PATH%;%QTDIR%\bin;C:\MinGW\bin
+  - appveyor DownloadFile "http://sunet.dl.sourceforge.net/project/nsis/NSIS 2/2.46/nsis-2.46-setup.exe" -FileName nsissetup.exe
+  - nsissetup /S /D=%NSIS_ROOT%
+  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
+
 build_script:
-  - qmake tiled.pro
+  - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
+  - if defined APPVEYOR_REPO_TAG_NAME set VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
+  - if defined APPVEYOR_REPO_TAG_NAME set BUILD_INFO_VERSION=%VERSION%
+  - if defined APPVEYOR_REPO_TAG_NAME echo Building Tiled %VERSION%... (from %COMMITNOW%)
+  - if not defined APPVEYOR_REPO_TAG_NAME set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
+  - if not defined APPVEYOR_REPO_TAG_NAME set BUILD_INFO_VERSION=%COMMITNOW%
+  - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
+  - qmake tiled.pro "CONFIG+=release" "QMAKE_CXXFLAGS+=-DBUILD_INFO_VERSION=%BUILD_INFO_VERSION%"
   - mingw32-make
+
+after_build:
+  - pushd %APPVEYOR_BUILD_FOLDER%\dist\win
+  - set TILED_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%
+  - set ARCH=32
+  - '%NSIS_ROOT%\makensis tiled.nsi'
+  - move tiled-*-setup.exe %APPVEYOR_BUILD_FOLDER%
+
+artifacts:
+  - name: Installer
+    path: 'tiled-*-setup.exe'
+
+deploy:
+  - provider: GitHub
+    release: Tiled $(VERSION)
+    auth_token:
+      secure: 57ahePdHlJPeOX8/MqsIg5ho4x512wvAbwRA7TkXAOav/JTHvkTG5gf8k37/883r
+    artifact: /.*\.exe/
+    draft: true
+    on:
+        appveyor_repo_tag: true
+
+  - provider: FTP
+    protocol: sftp
+    host: files.mapeditor.org
+    username: bjorn
+    password:
+      secure: t5CS+3ObwLWvrtHC9FLUbFNrn08TRS4y/2abIFJfpe4=
+    folder: public_html/files.mapeditor.org/public/daily
+    on:
+        branch: master
+        appveyor_repo_tag: false

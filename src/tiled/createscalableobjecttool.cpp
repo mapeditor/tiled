@@ -76,8 +76,3 @@ void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMo
     if (event->button() == Qt::LeftButton)
         finishNewMapObject();
 }
-
-void CreateScalableObjectTool::languageChanged(){
-    setName(tr("Insert Rectangle"));
-    setShortcut(QKeySequence(tr("R")));
-}
