@@ -1,9 +1,16 @@
 import qbs 1.0
 
 Project {
+    qbsSearchPaths: "qbs"
+
     references: [
-        "src/libtiled/libtiled.qbs",
-        "src/qtpropertybrowser/qtpropertybrowser.qbs",
-        "src/tiled/tiled.qbs",
+        "src/automappingconverter",
+        "src/libtiled",
+        "src/plugins",
+        "src/qtpropertybrowser",
+        "src/tiled",
+        "src/tmxrasterizer",
+        "src/tmxviewer",
+        "translations",
     ]
 }

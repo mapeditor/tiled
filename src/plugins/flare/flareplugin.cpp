@@ -111,7 +111,11 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
             QString value = line.mid(epos + 1, -1).trimmed();
             if (key == QLatin1String("tileset")) {
                 QStringList list = value.split(QChar(','));
-                QString absoluteSource = path + QLatin1Char('/') + list[0];
+
+                QString absoluteSource(list.first());
+                if (QDir::isRelativePath(absoluteSource))
+                    absoluteSource = path + QLatin1Char('/') + absoluteSource;
+
                 int tilesetwidth = 0;
                 int tilesetheight = 0;
                 if (list.size() > 2) {

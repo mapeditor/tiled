@@ -25,6 +25,7 @@
 #include <QUndoCommand>
 
 #include <QtTreePropertyBrowser>
+#include "properties.h"
 
 class QtGroupPropertyManager;
 class QtVariantProperty;
@@ -91,6 +92,8 @@ private slots:
     void propertyRemoved(Object *object, const QString &name);
     void propertyChanged(Object *object, const QString &name);
     void propertiesChanged(Object *object);
+    void selectedObjectsChanged();
+    void selectedTilesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
 
@@ -104,6 +107,11 @@ private:
         VisibleProperty,
         OpacityProperty,
         ColorProperty,
+        TileSizeProperty,
+        OrientationProperty,
+        HexSideLengthProperty,
+        StaggerAxisProperty,
+        StaggerIndexProperty,
         RenderOrderProperty,
         LayerFormatProperty,
         ImageSourceProperty,
@@ -143,6 +151,8 @@ private:
     void updateCustomProperties();
     bool mUpdating;
 
+    void updatePropertyColor(const QString &name);
+
     Object *mObject;
     MapDocument *mMapDocument;
 
@@ -153,6 +163,12 @@ private:
     QHash<QtProperty *, PropertyId> mPropertyToId;
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
     QHash<QString, QtVariantProperty *> mNameToProperty;
+
+    QStringList mStaggerAxisNames;
+    QStringList mStaggerIndexNames;
+    QStringList mOrientationNames;
+
+    Properties mCombinedProperties;
 
     QStringList mLayerFormatNames;
     QStringList mRenderOrderNames;

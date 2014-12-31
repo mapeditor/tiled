@@ -22,10 +22,12 @@
 #include "ui_newmapdialog.h"
 
 #include "isometricrenderer.h"
+#include "hexagonalrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "orthogonalrenderer.h"
 #include "preferences.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 
 #include <QSettings>
@@ -71,6 +73,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
     mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
     mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
+    mUi->orientation->addItem(tr("Hexagonal (Staggered)"), Map::Hexagonal);
 
     mUi->orientation->setCurrentIndex(orientation);
     mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
@@ -110,7 +113,7 @@ MapDocument *NewMapDialog::createMap()
     const int tileHeight = mUi->tileHeight->value();
 
     const int orientationIndex = mUi->orientation->currentIndex();
-    QVariant orientationData = mUi->orientation->itemData(orientationIndex);
+    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
     const Map::Orientation orientation =
             static_cast<Map::Orientation>(orientationData.toInt());
     const Map::LayerDataFormat layerFormat =
@@ -156,8 +159,12 @@ MapDocument *NewMapDialog::createMap()
 
 void NewMapDialog::refreshPixelSize()
 {
-    const int orientation = mUi->orientation->currentIndex();
-    const Map map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
+    const int orientationIndex = mUi->orientation->currentIndex();
+    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
+    const Map::Orientation orientation =
+            static_cast<Map::Orientation>(orientationData.toInt());
+
+    const Map map(orientation,
                   mUi->mapWidth->value(),
                   mUi->mapHeight->value(),
                   mUi->tileWidth->value(),
@@ -165,9 +172,15 @@ void NewMapDialog::refreshPixelSize()
 
     QSize size;
 
-    switch (map.orientation()) {
+    switch (orientation) {
     case Map::Isometric:
         size = IsometricRenderer(&map).mapSize();
+        break;
+    case Map::Staggered:
+        size = StaggeredRenderer(&map).mapSize();
+        break;
+    case Map::Hexagonal:
+        size = HexagonalRenderer(&map).mapSize();
         break;
     default:
         size = OrthogonalRenderer(&map).mapSize();

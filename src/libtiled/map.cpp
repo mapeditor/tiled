@@ -35,6 +35,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "mapobject.h"
 
 using namespace Tiled;
 
@@ -47,7 +48,11 @@ Map::Map(Orientation orientation,
     mHeight(height),
     mTileWidth(tileWidth),
     mTileHeight(tileHeight),
-    mLayerDataFormat(Base64Zlib)
+    mHexSideLength(0),
+    mStaggerAxis(StaggerY),
+    mStaggerIndex(StaggerOdd),
+    mLayerDataFormat(Base64Zlib),
+    mNextObjectId(1)
 {
 }
 
@@ -156,6 +161,13 @@ void Map::adoptLayer(Layer *layer)
 
     if (TileLayer *tileLayer = layer->asTileLayer())
         adjustDrawMargins(tileLayer->drawMargins());
+
+    if (ObjectGroup *group = layer->asObjectGroup()) {
+        foreach (MapObject *o, group->objects()) {
+            if (o->id() == 0)
+                o->setId(takeNextObjectId());
+        }
+    }
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -223,6 +235,48 @@ Map *Map::clone() const
 }
 
 
+QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
+{
+    switch (staggerAxis) {
+    default:
+    case Map::StaggerY:
+        return QLatin1String("y");
+        break;
+    case Map::StaggerX:
+        return QLatin1String("x");
+        break;
+    }
+}
+
+Map::StaggerAxis Tiled::staggerAxisFromString(const QString &string)
+{
+    Map::StaggerAxis staggerAxis = Map::StaggerY;
+    if (string == QLatin1String("x"))
+        staggerAxis = Map::StaggerX;
+    return staggerAxis;
+}
+
+QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
+{
+    switch (staggerIndex) {
+    default:
+    case Map::StaggerOdd:
+        return QLatin1String("odd");
+        break;
+    case Map::StaggerEven:
+        return QLatin1String("even");
+        break;
+    }
+}
+
+Map::StaggerIndex Tiled::staggerIndexFromString(const QString &string)
+{
+    Map::StaggerIndex staggerIndex = Map::StaggerOdd;
+    if (string == QLatin1String("even"))
+        staggerIndex = Map::StaggerEven;
+    return staggerIndex;
+}
+
 QString Tiled::orientationToString(Map::Orientation orientation)
 {
     switch (orientation) {
@@ -239,6 +293,9 @@ QString Tiled::orientationToString(Map::Orientation orientation)
     case Map::Staggered:
         return QLatin1String("staggered");
         break;
+    case Map::Hexagonal:
+        return QLatin1String("hexagonal");
+        break;
     }
 }
 
@@ -251,6 +308,8 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
         orientation = Map::Isometric;
     } else if (string == QLatin1String("staggered")) {
         orientation = Map::Staggered;
+    } else if (string == QLatin1String("hexagonal")) {
+        orientation = Map::Hexagonal;
     }
     return orientation;
 }

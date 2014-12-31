@@ -169,8 +169,8 @@ public slots:
     void closeMapDocument(int index);
 
     void reloadError(const QString &error);
-    void autoMappingError();
-    void autoMappingWarning();
+    void autoMappingError(bool automatic);
+    void autoMappingWarning(bool automatic);
 
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();

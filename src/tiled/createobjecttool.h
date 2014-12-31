@@ -52,7 +52,6 @@ public:
                     Qt::KeyboardModifiers modifiers);
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);
-    void languageChanged() = 0;
 
 public slots:
     /**

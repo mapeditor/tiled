@@ -224,11 +224,15 @@ void OrthogonalRenderer::drawTileLayer(QPainter *painter,
 
         rect.translate(-layerPos);
 
-        startX = qMax((int) rect.x() / tileWidth, 0);
-        startY = qMax((int) rect.y() / tileHeight, 0);
-        endX = qBound(0, qCeil(rect.right()) / tileWidth, endX);
-        endY = qBound(0, qCeil(rect.bottom()) / tileHeight, endY);
+        startX = qMax(qFloor(rect.x() / tileWidth), 0);
+        startY = qMax(qFloor(rect.y() / tileHeight), 0);
+        endX = qMin(qCeil(rect.right()) / tileWidth, endX);
+        endY = qMin(qCeil(rect.bottom()) / tileHeight, endY);
     }
+
+    // Return immediately when there is nothing to draw
+    if (startX > endX || startY > endY)
+        return;
 
     CellRenderer renderer(painter);
 

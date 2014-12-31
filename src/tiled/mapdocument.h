@@ -209,6 +209,12 @@ public:
     MapRenderer *renderer() const { return mRenderer; }
 
     /**
+     * Creates the map renderer. Should be called after changing the map
+     * orientation.
+     */
+    void createRenderer();
+
+    /**
      * Returns the undo stack of this map document. Should be used to push any
      * commands on that modify the map.
      */
@@ -242,8 +248,7 @@ public:
     const QList<Tile*> &selectedTiles() const
     { return mSelectedTiles; }
 
-    void setSelectedTiles(const QList<Tile*> &selectedTiles)
-    { mSelectedTiles = selectedTiles; }
+    void setSelectedTiles(const QList<Tile*> &selectedTiles);
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -266,6 +271,7 @@ public:
     void emitMapChanged();
     void emitRegionChanged(const QRegion &region);
     void emitRegionEdited(const QRegion &region, Layer *layer);
+    void emitTileLayerDrawMarginsChanged(TileLayer *layer);
     void emitTilesetChanged(Tileset *tileset);
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
     void emitTileObjectGroupChanged(Tile *tile);
@@ -293,6 +299,11 @@ signals:
      * Emitted when the list of selected objects changes.
      */
     void selectedObjectsChanged();
+
+    /**
+     * Emitted when the list of selected tiles from the dock changes.
+     */
+    void selectedTilesChanged();
 
     void currentObjectChanged(Object *object);
 
@@ -332,6 +343,8 @@ signals:
      * If multiple layers have been edited, multiple signals will be emitted.
      */
     void regionEdited(const QRegion &region, Layer *layer);
+
+    void tileLayerDrawMarginsChanged(TileLayer *layer);
 
     /**
      * Emitted when the terrain information for the given list of tiles was
@@ -492,6 +505,11 @@ inline void MapDocument::emitRegionChanged(const QRegion &region)
 inline void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
 {
     emit regionEdited(region, layer);
+}
+
+inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
+{
+    emit tileLayerDrawMarginsChanged(layer);
 }
 
 /**

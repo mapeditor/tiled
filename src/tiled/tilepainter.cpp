@@ -28,6 +28,34 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+namespace {
+
+class DrawMarginsWatcher
+{
+public:
+    DrawMarginsWatcher(MapDocument *mapDocument, TileLayer *layer)
+        : mMapDocument(mapDocument)
+        , mTileLayer(layer)
+        , mDrawMargins(layer->drawMargins())
+    {
+    }
+
+    ~DrawMarginsWatcher()
+    {
+        if (mTileLayer->map() == mMapDocument->map())
+            if (mTileLayer->drawMargins() != mDrawMargins)
+                mMapDocument->emitTileLayerDrawMarginsChanged(mTileLayer);
+    }
+
+private:
+    MapDocument *mMapDocument;
+    TileLayer *mTileLayer;
+    const QMargins mDrawMargins;
+};
+
+} // anonymous namespace
+
+
 TilePainter::TilePainter(MapDocument *mapDocument, TileLayer *tileLayer)
     : mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
@@ -57,6 +85,7 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
     if (!mTileLayer->contains(layerX, layerY))
         return;
 
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCell(layerX, layerY, cell);
     mMapDocument->emitRegionChanged(QRegion(x, y, 1, 1));
 }
@@ -73,6 +102,7 @@ void TilePainter::setCells(int x, int y,
     if (region.isEmpty())
         return;
 
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCells(x - mTileLayer->x(),
                          y - mTileLayer->y(),
                          tileLayer,
@@ -88,6 +118,8 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
                                            tileLayer->height());
     if (region.isEmpty())
         return;
+
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
 
     foreach (const QRect &rect, region.rects()) {
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
@@ -116,6 +148,8 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     const QRegion region = paintableRegion(drawRegion);
     if (region.isEmpty())
         return;
+
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
 
     const int w = stamp->width();
     const int h = stamp->height();

@@ -59,7 +59,7 @@ SOURCES += aboutdialog.cpp \
     changelayer.cpp \
     changemapobject.cpp \
     changemapobjectsorder.cpp \
-    changemapproperties.cpp \
+    changemapproperty.cpp \
     changeobjectgroupproperties.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
@@ -189,7 +189,7 @@ HEADERS += aboutdialog.h \
     changelayer.h \
     changemapobject.h \
     changemapobjectsorder.h \
-    changemapproperties.h \
+    changemapproperty.h \
     changeobjectgroupproperties.h \
     changepolygon.h \
     changeproperties.h \

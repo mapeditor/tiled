@@ -62,15 +62,13 @@ public:
      * straight grid. An Isometric map uses diamond shaped tiles that are
      * aligned on an isometric projected grid. A Hexagonal map uses hexagon
      * shaped tiles that fit into each other by shifting every other row.
-     *
-     * Only Orthogonal, Isometric and Staggered maps are supported by this
-     * version of Tiled.
      */
     enum Orientation {
         Unknown,
         Orthogonal,
         Isometric,
-        Staggered
+        Staggered,
+        Hexagonal
     };
 
     /**
@@ -92,6 +90,25 @@ public:
         RightUp    = 1,
         LeftDown   = 2,
         LeftUp     = 3
+    };
+
+    /**
+     * Which axis is staggered. Only used by the isometric staggered and
+     * hexagonal map renderers.
+     */
+    enum StaggerAxis {
+        StaggerX,
+        StaggerY
+    };
+
+    /**
+     * When staggering, specifies whether the odd or the even rows/columns are
+     * shifted half a tile right/down. Only used by the isometric staggered and
+     * hexagonal map renderers.
+     */
+    enum StaggerIndex {
+        StaggerOdd  = 0,
+        StaggerEven = 1
     };
 
     /**
@@ -129,22 +146,22 @@ public:
     { mRenderOrder = renderOrder; }
 
     /**
-     * Returns the width of this map.
+     * Returns the width of this map in tiles.
      */
     int width() const { return mWidth; }
 
     /**
-     * Sets the width of this map.
+     * Sets the width of this map in tiles.
      */
     void setWidth(int width) { mWidth = width; }
 
     /**
-     * Returns the height of this map.
+     * Returns the height of this map in tiles.
      */
     int height() const { return mHeight; }
 
     /**
-     * Sets the height of this map.
+     * Sets the height of this map in tiles.
      */
     void setHeight(int height) { mHeight = height; }
 
@@ -172,6 +189,20 @@ public:
      * Sets the height of one tile.
      */
     void setTileHeight(int height) { mTileHeight = height; }
+
+    /**
+     * Returns the size of one tile. Provided for convenience.
+     */
+    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
+
+    int hexSideLength() const;
+    void setHexSideLength(int hexSideLength);
+
+    StaggerAxis staggerAxis() const;
+    void setStaggerAxis(StaggerAxis staggerAxis);
+
+    StaggerIndex staggerIndex() const;
+    void setStaggerIndex(StaggerIndex staggerIndex);
 
     /**
      * Adjusts the draw margins to be at least as big as the given margins.
@@ -337,6 +368,25 @@ public:
     void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
+    /**
+     * Sets the next id to be used for objects on this map.
+     */
+    void setNextObjectId(int nextId)
+    {
+        Q_ASSERT(nextId > 0);
+        mNextObjectId = nextId;
+    }
+
+    /**
+     * Returns the next object id for this map.
+     */
+    int nextObjectId() const { return mNextObjectId; }
+
+    /**
+     * Returns the next object id for this map and allocates a new one.
+     */
+    int takeNextObjectId() { return mNextObjectId++; }
+
 private:
     void adoptLayer(Layer *layer);
 
@@ -346,12 +396,54 @@ private:
     int mHeight;
     int mTileWidth;
     int mTileHeight;
+    int mHexSideLength;
+    StaggerAxis mStaggerAxis;
+    StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
     QList<Tileset*> mTilesets;
     LayerDataFormat mLayerDataFormat;
+    int mNextObjectId;
 };
+
+
+inline int Map::hexSideLength() const
+{
+    return mHexSideLength;
+}
+
+inline void Map::setHexSideLength(int hexSideLength)
+{
+    mHexSideLength = hexSideLength;
+}
+
+inline Map::StaggerAxis Map::staggerAxis() const
+{
+    return mStaggerAxis;
+}
+
+inline void Map::setStaggerAxis(StaggerAxis staggerAxis)
+{
+    mStaggerAxis = staggerAxis;
+}
+
+inline Map::StaggerIndex Map::staggerIndex() const
+{
+    return mStaggerIndex;
+}
+
+inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
+{
+    mStaggerIndex = staggerIndex;
+}
+
+
+TILEDSHARED_EXPORT QString staggerAxisToString(Map::StaggerAxis);
+TILEDSHARED_EXPORT Map::StaggerAxis staggerAxisFromString(const QString &);
+
+TILEDSHARED_EXPORT QString staggerIndexToString(Map::StaggerIndex staggerIndex);
+TILEDSHARED_EXPORT Map::StaggerIndex staggerIndexFromString(const QString &);
 
 /**
  * Helper function that converts the map orientation to a string value. Useful

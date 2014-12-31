@@ -28,6 +28,7 @@
 
 #include "tmxviewer.h"
 
+#include "hexagonalrenderer.h"
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
@@ -219,6 +220,9 @@ bool TmxViewer::viewMap(const QString &fileName)
         break;
     case Map::Staggered:
         mRenderer = new StaggeredRenderer(mMap);
+        break;
+    case Map::Hexagonal:
+        mRenderer = new HexagonalRenderer(mMap);
         break;
     case Map::Orthogonal:
     default:

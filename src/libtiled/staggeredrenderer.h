@@ -29,7 +29,7 @@
 #ifndef STAGGEREDRENDERER_H
 #define STAGGEREDRENDERER_H
 
-#include "orthogonalrenderer.h"
+#include "hexagonalrenderer.h"
 
 namespace Tiled {
 
@@ -73,45 +73,13 @@ namespace Tiled {
  *     Similar problem as with stamps when offsetting at an uneven y offset.
  *
  */
-class TILEDSHARED_EXPORT StaggeredRenderer : public OrthogonalRenderer
+class TILEDSHARED_EXPORT StaggeredRenderer : public HexagonalRenderer
 {
 public:
-    StaggeredRenderer(const Map *map) : OrthogonalRenderer(map) {}
+    StaggeredRenderer(const Map *map) : HexagonalRenderer(map) {}
 
-    QSize mapSize() const;
-
-    QRect boundingRect(const QRect &rect) const;
-
-    void drawGrid(QPainter *painter, const QRectF &rect,
-                  QColor gridColor) const;
-
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF()) const;
-
-    void drawTileSelection(QPainter *painter,
-                           const QRegion &region,
-                           const QColor &color,
-                           const QRectF &exposed) const;
-
-    using OrthogonalRenderer::pixelToTileCoords;
-    QPointF pixelToTileCoords(qreal x, qreal y) const;
-
-    using OrthogonalRenderer::tileToPixelCoords;
-    QPointF tileToPixelCoords(qreal x, qreal y) const;
-    
-    using OrthogonalRenderer::screenToTileCoords;
+    using HexagonalRenderer::screenToTileCoords;
     QPointF screenToTileCoords(qreal x, qreal y) const;
-
-    using OrthogonalRenderer::tileToScreenCoords;
-    QPointF tileToScreenCoords(qreal x, qreal y) const;
-
-    // Functions specific to this type of renderer
-    QPoint topLeft(int x, int y) const;
-    QPoint topRight(int x, int y) const;
-    QPoint bottomLeft(int x, int y) const;
-    QPoint bottomRight(int x, int y) const;
-
-    QPolygonF tileToScreenPolygon(int x, int y) const;
 };
 
 } // namespace Tiled

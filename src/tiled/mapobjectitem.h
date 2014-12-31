@@ -54,6 +54,9 @@ public:
     MapObjectItem(MapObject *object, MapDocument *mapDocument,
                   ObjectGroupItem *parent = 0);
 
+    enum { Type = UserType + 1 };
+    int type() const { return Type; }
+
     MapObject *mapObject() const
     { return mObject; }
 
