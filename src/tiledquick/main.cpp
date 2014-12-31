@@ -5,14 +5,18 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QQmlApplicationEngine engine;
+    QString qmlDir = QApplication::applicationDirPath();
 #ifdef Q_OS_WIN
-    engine.addImportPath(QApplication::applicationDirPath() + "/qml");
+    qmlDir += QStringLiteral("/qml");
 #else
-    engine.addImportPath(QApplication::applicationDirPath() + "/../qml");
+    qmlDir += QStringLiteral("/../qml");
 #endif
 
-    engine.load(QUrl(QStringLiteral("qrc:///main.qml")));
+    QQmlApplicationEngine engine;
+    engine.addImportPath(qmlDir);
+
+    QString mainQml(qmlDir + QStringLiteral("/tiledquick/main.qml"));
+    engine.load(QUrl::fromLocalFile(mainQml));
 
     return app.exec();
 }

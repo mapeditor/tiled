@@ -10,7 +10,6 @@ QtGuiApplication {
 
     files: [
         "main.cpp",
-        "qml.qrc",
     ]
 
     Group {
@@ -22,5 +21,14 @@ QtGuiApplication {
                 return "bin"
         }
         fileTagsFilter: "application"
+    }
+
+    Group {
+        name: "QML files"
+        qbs.install: true
+        qbs.installDir: "qml/tiledquick"
+        files: [
+            "main.qml",
+        ]
     }
 }
