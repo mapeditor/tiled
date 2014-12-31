@@ -4,6 +4,8 @@ QtGuiApplication {
     name: "tmxrasterizer"
     destinationDirectory: "bin"
 
+    consoleApplication: true
+
     Depends { name: "libtiled" }
 
     cpp.includePaths: ["."]
