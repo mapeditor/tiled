@@ -4,6 +4,10 @@ import qbs.Probes as Probes
 TiledPlugin {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
+    // Not sure how to properly support Python on Mac OS X yet
+    // (possibly requires using python-config)
+    condition: qbs.targetOS.contains("linux") || qbs.targetOS.contains("windows")
+
     Probes.PkgConfigProbe {
         id: pkgConfig
         name: "python-2.7"
