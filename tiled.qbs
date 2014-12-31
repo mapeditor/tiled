@@ -9,6 +9,8 @@ Project {
         "src/plugins",
         "src/qtpropertybrowser",
         "src/tiled",
+        "src/tiledquick",
+        "src/tiledquickplugin",
         "src/tmxrasterizer",
         "src/tmxviewer",
         "translations",
