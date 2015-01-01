@@ -10,6 +10,8 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
 
+    consoleApplication: false
+
     files: [
         "main.cpp",
         "tmxviewer.cpp",

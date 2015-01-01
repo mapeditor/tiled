@@ -20,6 +20,8 @@ QtGuiApplication {
         return []
     }
 
+    consoleApplication: false
+
     files: [
         "Info.plist",
         "aboutdialog.cpp",
