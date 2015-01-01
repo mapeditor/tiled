@@ -12,8 +12,6 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
-    cpp.frameworks: "Foundation"
-    cpp.infoPlistFile: "Info.plist"
 
     files: [
         "Info.plist",
@@ -140,8 +138,6 @@ QtGuiApplication {
         "layerdock.h",
         "layermodel.cpp",
         "layermodel.h",
-        "macsupport.h",
-        "macsupport.mm",
         "main.cpp",
         "mainwindow.cpp",
         "mainwindow.h",
@@ -293,6 +289,20 @@ QtGuiApplication {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Properties {
+        condition: qbs.targetOS.contains("osx")
+        cpp.frameworks: "Foundation"
+        cpp.infoPlistFile: "Info.plist"
+    }
+    Group {
+        name: "OS X"
+        condition: qbs.targetOS.contains("osx")
+        files: [
+            "macsupport.h",
+            "macsupport.mm",
+        ]
+    }
 
     Group {
         qbs.install: true
