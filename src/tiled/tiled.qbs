@@ -12,8 +12,11 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
+    cpp.frameworks: "Foundation"
+    cpp.infoPlistFile: "Info.plist"
 
     files: [
+        "Info.plist",
         "aboutdialog.cpp",
         "aboutdialog.h",
         "aboutdialog.ui",
@@ -138,6 +141,7 @@ QtGuiApplication {
         "layermodel.cpp",
         "layermodel.h",
         "macsupport.h",
+        "macsupport.mm",
         "main.cpp",
         "mainwindow.cpp",
         "mainwindow.h",
