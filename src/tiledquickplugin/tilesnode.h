@@ -1,5 +1,5 @@
 /*
- * tiledquickplugin.h
+ * tilesnode.h
  * Copyright 2014, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled Quick.
@@ -18,22 +18,43 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDQUICK_TILEDQUICKPLUGIN_H
-#define TILEDQUICK_TILEDQUICKPLUGIN_H
+#ifndef TILEDQUICK_TILESNODE_H
+#define TILEDQUICK_TILESNODE_H
 
-#include <QQmlExtensionPlugin>
+#include <QSGGeometryNode>
+#include <QSGTextureMaterial>
 
 namespace TiledQuick {
 
-class TiledQuickPlugin : public QQmlExtensionPlugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
-
-public:
-    void registerTypes(const char *uri);
+struct TileData {
+    float x;
+    float y;
+    float width;
+    float height;
+    float tx;
+    float ty;
 };
+
+class TilesNode : public QSGGeometryNode
+{
+public:
+    TilesNode(QSGTexture *texture, const QVector<TileData> &tileData);
+
+    QSGTexture *texture() const;
+
+private:
+    void processTileData(const QVector<TileData> &tileData);
+
+    QSGGeometry mGeometry;
+    QSGTextureMaterial mMaterial;
+    QSGOpaqueTextureMaterial mOpaqueMaterial;
+};
+
+inline QSGTexture *TilesNode::texture() const
+{
+    return mMaterial.texture();
+}
 
 } // namespace TiledQuick
 
-#endif // TILEDQUICK_TILEDQUICKPLUGIN_H
+#endif // TILEDQUICK_TILESNODE_H

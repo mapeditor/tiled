@@ -39,6 +39,22 @@
 
 using namespace Tiled;
 
+Map::Map():
+    Object(MapType),
+    mOrientation(Orthogonal),
+    mRenderOrder(RightDown),
+    mWidth(0),
+    mHeight(0),
+    mTileWidth(0),
+    mTileHeight(0),
+    mHexSideLength(0),
+    mStaggerAxis(StaggerY),
+    mStaggerIndex(StaggerOdd),
+    mLayerDataFormat(Base64Zlib),
+    mNextObjectId(1)
+{
+}
+
 Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
     Object(MapType),

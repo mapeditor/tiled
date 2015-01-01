@@ -7,8 +7,16 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: ["qml", "quick"] }
 
     files: [
+        "mapitem.cpp",
+        "mapitem.h",
+        "maploader.cpp",
+        "maploader.h",
         "tiledquickplugin.cpp",
         "tiledquickplugin.h",
+        "tilelayeritem.cpp",
+        "tilelayeritem.h",
+        "tilesnode.cpp",
+        "tilesnode.h",
     ]
 
     Group {

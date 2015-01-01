@@ -55,6 +55,12 @@ class TILEDSHARED_EXPORT Map : public Object
 {
     Q_OBJECT
 
+    Q_ENUMS(Orientation
+            LayerDataFormat
+            RenderOrder
+            StaggerAxis
+            StaggerIndex)
+
 public:
     /**
      * The orientation of the map determines how it should be rendered. An
@@ -111,8 +117,10 @@ public:
         StaggerEven = 1
     };
 
+    Map();
+
     /**
-     * Constructor, taking map orientation, size and tile size as parameters.
+     * Constructor taking map orientation, size and tile size as parameters.
      */
     Map(Orientation orientation,
         int width, int height,
