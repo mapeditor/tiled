@@ -13,6 +13,13 @@ QtGuiApplication {
     cpp.rpaths: ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
 
+    cpp.defines: {
+        var version = qbs.getEnv("BUILD_INFO_VERSION");
+        if (version != undefined)
+            return ["BUILD_INFO_VERSION=" + version]
+        return []
+    }
+
     files: [
         "Info.plist",
         "aboutdialog.cpp",
