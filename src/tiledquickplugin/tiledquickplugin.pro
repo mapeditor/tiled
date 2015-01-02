@@ -34,10 +34,18 @@ uri = org.mapeditor.Tiled
 
 # Input
 SOURCES += \
-    tiledquickplugin.cpp
+    tiledquickplugin.cpp \
+    mapitem.cpp \
+    maploader.cpp \
+    tilelayeritem.cpp \
+    tilesnode.cpp
 
 HEADERS += \
-    tiledquickplugin.h
+    tiledquickplugin.h \
+    mapitem.h \
+    maploader.h \
+    tilelayeritem.h \
+    tilesnode.h
 
 OTHER_FILES = qmldir
 

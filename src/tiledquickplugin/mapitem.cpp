@@ -103,7 +103,6 @@ void MapItem::refresh()
     if (!isComponentComplete())
         return;
 
-    // Clean up ourselves (maybe wait until the map is available?)
     qDeleteAll(mTileLayerItems);
     mTileLayerItems.clear();
 
