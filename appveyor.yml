@@ -2,16 +2,16 @@ os: MinGW
 clone_depth: 200
 
 environment:
-  QTDIR: C:\Qt\5.3\mingw482_32
+  QTDIR: C:\Qt\5.4\mingw491_32
   NSIS_ROOT: C:\nsis
-  MINGW: C:\Qt\Tools\mingw482_32
+  MINGW: C:\Qt\Tools\mingw491_32
 
 configuration: Release
 
 install:
   - appveyor DownloadFile "http://sunet.dl.sourceforge.net/project/nsis/NSIS 2/2.46/nsis-2.46-setup.exe" -FileName nsissetup.exe
   - nsissetup /S /D=%NSIS_ROOT%
-  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
+  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
@@ -21,12 +21,14 @@ build_script:
   - if not defined APPVEYOR_REPO_TAG_NAME set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
   - if not defined APPVEYOR_REPO_TAG_NAME set BUILD_INFO_VERSION=%COMMITNOW%
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
-  - qmake tiled.pro "CONFIG+=release" "QMAKE_CXXFLAGS+=-DBUILD_INFO_VERSION=%BUILD_INFO_VERSION%"
-  - mingw32-make
+  - qbs setup-toolchains --type mingw %MINGW%\bin\g++.exe mingw
+  - qbs setup-qt %QTDIR%\bin\qmake.exe qt
+  - qbs config defaultProfile qt
+  - qbs install --install-root install-root release
 
 after_build:
   - pushd %APPVEYOR_BUILD_FOLDER%\dist\win
-  - set TILED_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%
+  - set TILED_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\install-root
   - set ARCH=32
   - '%NSIS_ROOT%\makensis tiled.nsi'
   - move tiled-*-setup.exe %APPVEYOR_BUILD_FOLDER%

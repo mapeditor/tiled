@@ -2,7 +2,7 @@ import qbs 1.0
 
 QtGuiApplication {
     name: "tiled"
-    destinationDirectory: "bin"
+    targetName: name
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
@@ -12,6 +12,15 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
+
+    cpp.defines: {
+        var version = qbs.getEnv("BUILD_INFO_VERSION");
+        if (version != undefined)
+            return ["BUILD_INFO_VERSION=" + version]
+        return []
+    }
+
+    consoleApplication: false
 
     files: [
         "Info.plist",
@@ -294,6 +303,7 @@ QtGuiApplication {
         condition: qbs.targetOS.contains("osx")
         cpp.frameworks: "Foundation"
         cpp.infoPlistFile: "Info.plist"
+        targetName: "Tiled"
     }
     Group {
         name: "OS X"
@@ -307,11 +317,11 @@ QtGuiApplication {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
                 return ""
             else
                 return "bin"
         }
-        fileTagsFilter: "application"
+        fileTagsFilter: product.type
     }
 }
