@@ -2,7 +2,6 @@ import qbs 1.0
 
 QtGuiApplication {
     name: "tmxviewer"
-    destinationDirectory: "bin"
 
     Depends { name: "libtiled" }
     Depends { name: "Qt"; submodules: ["widgets"] }
@@ -21,11 +20,11 @@ QtGuiApplication {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
                 return ""
             else
                 return "bin"
         }
-        fileTagsFilter: "application"
+        fileTagsFilter: product.type
     }
 }
