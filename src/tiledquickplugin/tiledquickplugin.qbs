@@ -19,10 +19,12 @@ DynamicLibrary {
         "tilesnode.h",
     ]
 
+    property string installBase: qbs.targetOS.contains("osx") ? "Tiled Quick.app/Contents/" : ""
+
     Group {
         name: "qmldir"
         qbs.install: true
-        qbs.installDir: "qml/org/mapeditor/Tiled"
+        qbs.installDir: installBase + "qml/org/mapeditor/Tiled"
         files: [
             "qmldir",
         ]
@@ -30,7 +32,7 @@ DynamicLibrary {
 
     Group {
         qbs.install: true
-        qbs.installDir: "qml/org/mapeditor/Tiled"
+        qbs.installDir: installBase + "qml/org/mapeditor/Tiled"
         fileTagsFilter: "dynamiclibrary"
     }
 }
