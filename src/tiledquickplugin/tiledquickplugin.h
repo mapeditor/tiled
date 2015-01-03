@@ -28,7 +28,9 @@ namespace TiledQuick {
 class TiledQuickPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
+#ifndef STATIC_TILEDQUICKPLUGIN
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+#endif
 
 public:
     void registerTypes(const char *uri);
