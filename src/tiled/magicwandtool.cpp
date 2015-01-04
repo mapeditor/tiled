@@ -45,48 +45,41 @@ MagicWandTool::MagicWandTool(QObject *parent)
 {
 }
 
-/*void MagicWandTool::activate(MapScene *scene)
-{
-    AbstractTileTool::activate(scene);
-
-    mIsActive = true;
-    tilePositionChanged(tilePosition());
-}
-
-void MagicWandTool::deactivate(MapScene *scene)
-{
-    AbstractTileTool::deactivate(scene);
-
-    mFillRegion = QRegion();
-    mIsActive = false;
-}*/
-
 void MagicWandTool::tilePositionChanged(const QPoint &tilePos)
 {
-    bool shiftPressed = QApplication::keyboardModifiers() & Qt::ShiftModifier;
-
     // Make sure that a tile layer is selected
     TileLayer *tileLayer = currentTileLayer();
     if (!tileLayer)
         return;
 
     TilePainter regionComputer(mapDocument(), tileLayer);
-
-    // Get the new select region
-    if (!shiftPressed) {
-        // If not holding shift, a region is generated from the current pos
-        mSelectedRegion = regionComputer.computeFillRegion(tilePos);
-    }// else {
-
+    mSelectedRegion = regionComputer.computeFillRegion(tilePos);
     brushItem()->setTileRegion(mSelectedRegion);
 }
 
 void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    if (event->button() != Qt::LeftButton)
+        return;
+
+    const Qt::MouseButton button = event->button();
+    const Qt::KeyboardModifiers modifiers = event->modifiers();
+
     MapDocument *document = mapDocument();
 
-    if (mSelectedRegion != document->selectedArea()) {
-        QUndoCommand *cmd = new ChangeSelectedArea(document, mSelectedRegion);
+    QRegion selection = document->selectedArea();
+
+    if(modifiers == Qt::ShiftModifier)
+        selection += mSelectedRegion;
+    else if(modifiers == Qt::ControlModifier)
+        selection -= mSelectedRegion;
+    else if(modifiers == (Qt::ControlModifier | Qt::ShiftModifier))
+        selection &= mSelectedRegion;
+    else
+        selection = mSelectedRegion;
+
+    if (selection != document->selectedArea()) {
+        QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
         document->undoStack()->push(cmd);
     }
 }

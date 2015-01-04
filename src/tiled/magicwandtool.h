@@ -56,19 +56,8 @@ protected:
     //void updateStatusInfo();
 
 private:
-    enum SelectionMode {
-        Replace,
-        Add,
-        Subtract,
-        Intersect
-    };
-
-    //QRect selectedArea() const;
 
     QRegion mSelectedRegion;
-    QPoint mSelectionStart;
-    SelectionMode mSelectionMode;
-    bool mSelecting;
 };
 
 } // namespace Internal
