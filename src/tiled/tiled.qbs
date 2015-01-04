@@ -147,6 +147,8 @@ QtGuiApplication {
         "layerdock.h",
         "layermodel.cpp",
         "layermodel.h",
+        "magicwandtool.h",
+        "magicwandtool.cpp",
         "main.cpp",
         "mainwindow.cpp",
         "mainwindow.h",

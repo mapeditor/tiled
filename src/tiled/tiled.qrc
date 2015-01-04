@@ -79,5 +79,6 @@
         <file>images/32x32/tiled.png</file>
         <file>images/24x24/move-image-layer.png</file>
         <file>images/16x16/rename.png</file>
+        <file>images/22x22/stock-tool-fuzzy-select-22.png</file>
     </qresource>
 </RCC>
