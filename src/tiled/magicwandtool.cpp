@@ -78,6 +78,7 @@ void MagicWandTool::tilePositionChanged(const QPoint &tilePos)
         mSelectedRegion = regionComputer.computeFillRegion(tilePos);
     }// else {
 
+    brushItem()->setTileRegion(mSelectedRegion);
 }
 
 void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -88,157 +89,15 @@ void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)
         QUndoCommand *cmd = new ChangeSelectedArea(document, mSelectedRegion);
         document->undoStack()->push(cmd);
     }
-
-    brushItem()->setTileRegion(mSelectedRegion);
-    document->setSelectedArea(mSelectedRegion);
 }
 
 void MagicWandTool::mouseReleased(QGraphicsSceneMouseEvent *)
 {
 }
 
-/*void MagicWandTool::modifiersChanged(Qt::KeyboardModifiers)
-{
-    // Don't need to recalculate fill region if there was no fill region
-    if (!mFillOverlay)
-        return;
-
-    tilePositionChanged(tilePosition());
-}
-*/
 void MagicWandTool::languageChanged()
 {
     setName(tr("Magic Wand"));
     //setShortcut(QKeySequence(tr("W")));
     // TODO: Select a suitable shortcut.
 }
-/*
-void MagicWandTool::mapDocumentChanged(MapDocument *oldDocument,
-                                        MapDocument *newDocument)
-{
-    AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
-
-    clearConnections(oldDocument);
-
-    // Reset things that are probably invalid now
-    setStamp(0);
-    clearOverlay();
-}
-
-void MagicWandTool::setStamp(TileLayer *stamp)
-{
-    // Clear any overlay that we presently have with an old stamp
-    clearOverlay();
-
-    delete mStamp;
-    mStamp = stamp;
-
-    if (mIsRandom)
-        updateRandomList();
-
-    if (mIsActive && brushItem()->isVisible())
-        tilePositionChanged(tilePosition());
-}
-
-void MagicWandTool::clearOverlay()
-{
-    // Clear connections before clearing overlay so there is no
-    // risk of getting a callback and causing an infinite loop
-    clearConnections(mapDocument());
-
-    brushItem()->setTileLayer(0);
-    delete mFillOverlay;
-    mFillOverlay = 0;
-
-    mFillRegion = QRegion();
-    brushItem()->setTileRegion(QRegion());
-}
-
-void MagicWandTool::makeConnections()
-{
-    if (!mapDocument())
-        return;
-
-    // Overlay may need to be cleared if a region changed
-    connect(mapDocument(), SIGNAL(regionChanged(QRegion)),
-            this, SLOT(clearOverlay()));
-
-    // Overlay needs to be cleared if we switch to another layer
-    connect(mapDocument(), SIGNAL(currentLayerIndexChanged(int)),
-            this, SLOT(clearOverlay()));
-
-    // Overlay needs be cleared if the selection changes, since
-    // the overlay may be bound or may need to be bound to the selection
-    connect(mapDocument(), SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-            this, SLOT(clearOverlay()));
-}
-
-void MagicWandTool::clearConnections(MapDocument *mapDocument)
-{
-    if (!mapDocument)
-        return;
-
-    disconnect(mapDocument, SIGNAL(regionChanged(QRegion)),
-               this, SLOT(clearOverlay()));
-
-    disconnect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
-               this, SLOT(clearOverlay()));
-
-    disconnect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-               this, SLOT(clearOverlay()));
-}
-
-void MagicWandTool::setRandom(bool value)
-{
-    if (mIsRandom == value)
-        return;
-
-    mIsRandom = value;
-
-    if (mIsRandom)
-        updateRandomList();
-    else
-        mRandomList.clear();
-
-    // Don't need to recalculate fill region if there was no fill region
-    if (!mFillOverlay)
-        return;
-
-    tilePositionChanged(tilePosition());
-}
-
-TileLayer *MagicWandTool::getRandomTileLayer(const QRegion &region) const
-{
-    QRect bb = region.boundingRect();
-    TileLayer *result = new TileLayer(QString(), bb.x(), bb.y(),
-                                      bb.width(), bb.height());
-
-    if (region.isEmpty() || mRandomList.empty())
-        return result;
-
-    foreach (const QRect &rect, region.rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
-
-                result->setCell(_x - bb.x(),
-                                _y - bb.y(),
-                                mRandomList.at(rand() % mRandomList.size()));
-            }
-        }
-    }
-    return result;
-}
-
-void MagicWandTool::updateRandomList()
-{
-    mRandomList.clear();
-
-    if (!mStamp)
-        return;
-
-    for (int x = 0; x < mStamp->width(); x++)
-        for (int y = 0; y < mStamp->height(); y++)
-            if (!mStamp->cellAt(x, y).isEmpty())
-                mRandomList.append(mStamp->cellAt(x, y));
-}
-*/
