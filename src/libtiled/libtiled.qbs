@@ -3,13 +3,6 @@ import qbs 1.0
 DynamicLibrary {
     targetName: "tiled"
 
-    destinationDirectory: {
-        if (qbs.targetOS.contains("windows"))
-            return "bin"
-        else
-            return "lib"
-    }
-
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui" }
 

@@ -2,13 +2,15 @@ import qbs 1.0
 
 QtGuiApplication {
     name: "automappingconverter"
-    destinationDirectory: "bin"
+    targetName: name
 
     Depends { name: "libtiled" }
     Depends { name: "Qt"; submodules: ["widgets"] }
 
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
+
+    consoleApplication: false
 
     files: [
         "convertercontrol.cpp",
@@ -21,14 +23,19 @@ QtGuiApplication {
         "main.cpp",
     ]
 
+    Properties {
+        condition: qbs.targetOS.contains("osx")
+        targetName: "Automapping Converter"
+    }
+
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
                 return ""
             else
                 return "bin"
         }
-        fileTagsFilter: "application"
+        fileTagsFilter: product.type
     }
 }
