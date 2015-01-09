@@ -39,7 +39,7 @@ using namespace Tiled::Internal;
 MagicWandTool::MagicWandTool(QObject *parent)
     : AbstractTileTool(tr("Bucket Fill Tool"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-bucket-fill.png")),
+                               ":images/22x22/stock-tool-fuzzy-select-22.png")),
                        QKeySequence(tr("F")),
                        parent)
 {
