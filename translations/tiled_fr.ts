@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.0" language="fr_FR">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -32,27 +32,27 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+202"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>La syntaxe d&apos;export est --export-map [format] &lt;fichier tmx&gt; &lt;fichier cible&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension du fichier non-univoque. Impossible de déterminer le format d&apos;export.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun exporteur n&apos;a été trouvé pour le type de fichier cible.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger la carte source.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;exporter la carte vers le fichier cible.</translation>
     </message>
 </context>
 <context>
@@ -117,17 +117,17 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">La tentative d&apos;écriture du fichier a échoué.</translation>
+        <translation>La tentative d&apos;ouverture du fichier en écriture a échoué.</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>No tile layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun calque de Tile n&apos;a été trouvé.</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers CSV (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -414,12 +414,12 @@
     <message>
         <location line="+124"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Export</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -434,12 +434,12 @@
     <message>
         <location line="-8"/>
         <source>E&amp;xport As...</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xporter en tant que...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+13"/>
@@ -2161,12 +2161,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+41"/>
         <source>Insert Ellipse</source>
-        <translation type="unfinished">Insérer une Ellipse</translation>
+        <translation>Insérer une Ellipse</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>C</source>
-        <translation type="unfinished">C</translation>
+        <translation>C</translation>
     </message>
 </context>
 <context>
@@ -2182,12 +2182,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+40"/>
         <source>Insert Polygon</source>
-        <translation type="unfinished">Insérer un polygone</translation>
+        <translation>Insérer un polygone</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>P</source>
-        <translation type="unfinished">P</translation>
+        <translation>P</translation>
     </message>
 </context>
 <context>
@@ -2195,12 +2195,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/createpolylineobjecttool.cpp" line="+40"/>
         <source>Insert Polyline</source>
-        <translation type="unfinished">Insérer une polyligne</translation>
+        <translation>Insérer une Polyligne</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation type="unfinished">L</translation>
+        <translation>L</translation>
     </message>
 </context>
 <context>
@@ -2208,12 +2208,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+41"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">Insérer un Rectangle</translation>
+        <translation>Insérer un Rectangle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2221,12 +2221,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/createscalableobjecttool.cpp" line="+81"/>
         <source>Insert Rectangle</source>
-        <translation type="unfinished">Insérer un Rectangle</translation>
+        <translation>Insérer un Rectangle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -2234,12 +2234,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+78"/>
         <source>Insert Tile</source>
-        <translation type="unfinished">Insérer un Tile</translation>
+        <translation>Insérer un Tile</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T</source>
-        <translation type="unfinished">T</translation>
+        <translation>T</translation>
     </message>
 </context>
 <context>
@@ -2519,13 +2519,13 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+57"/>
         <source>Exported to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter vers %1</translation>
     </message>
     <message>
         <location line="+5"/>
         <location line="+99"/>
         <source>Error Exporting Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;exportation de la carte</translation>
     </message>
     <message>
         <location line="-52"/>
@@ -2955,7 +2955,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hexagonale (Quinconce)</translation>
     </message>
     <message>
         <location line="+60"/>
@@ -3126,7 +3126,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-49"/>
         <location line="+51"/>
         <source>Rename Property</source>
-        <translation type="unfinished">Renommer une propriété</translation>
+        <translation>Renommer une propriété</translation>
     </message>
     <message>
         <location line="-4"/>
@@ -3225,47 +3225,47 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-325"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Odd</source>
-        <translation type="unfinished"></translation>
+        <translation>Impair</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Even</source>
-        <translation type="unfinished"></translation>
+        <translation>Pair</translation>
     </message>
     <message>
         <location line="+253"/>
         <source>Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille des Tiles</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientation</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile Side Length (Hex)</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de côté d&apos;un Tile (Hex)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Axe de quinconce</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Index de Quinconce</translation>
     </message>
     <message>
         <location line="+46"/>
@@ -3910,47 +3910,47 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la largeur des Tiles</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la hauteur des Tiles</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la longueur de côté des Hexagones</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la couleur de fond</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier l&apos;axe de quinconce</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier l&apos;index de quinconce</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier l&apos;orientation</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Render Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier l&apos;ordre des calques</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier le format des données de calque</translation>
     </message>
 </context>
 <context>
