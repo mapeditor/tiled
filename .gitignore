@@ -11,6 +11,7 @@ ui_*.h
 *.pro.user*
 qrc_*
 docs/html
+.directory
 
 # Build artifacts on Windows
 tiled.exe
