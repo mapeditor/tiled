@@ -29,6 +29,7 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPainter>
 #include <QStyledItemDelegate>
 
 #ifndef QT_NO_OPENGL
