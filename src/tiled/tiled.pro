@@ -15,7 +15,7 @@ win32 {
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
 }
-contains(QT_CONFIG, opengl): QT += opengl
+contains(QT_CONFIG, opengl):!macx: QT += opengl
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
@@ -23,6 +23,7 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
 macx {
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
     LIBS += -framework Foundation
+    DEFINES += QT_NO_OPENGL
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
