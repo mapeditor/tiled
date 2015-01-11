@@ -758,10 +758,14 @@ void TilesetDock::exportTileset()
     if (!tileset)
         return;
 
+    Preferences *prefs = Preferences::instance();
+
     const QLatin1String extension(".tsx");
-    QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
+
+    QString suggestedFileName = prefs->lastPath(Preferences::ExternalTileset);
     suggestedFileName += QLatin1Char('/');
     suggestedFileName += tileset->name();
+
     if (!suggestedFileName.endsWith(extension))
         suggestedFileName.append(extension);
 
@@ -769,8 +773,12 @@ void TilesetDock::exportTileset()
             QFileDialog::getSaveFileName(this, tr("Export Tileset"),
                                          suggestedFileName,
                                          tr("Tiled tileset files (*.tsx)"));
+
     if (fileName.isEmpty())
         return;
+
+    prefs->setLastPath(Preferences::ExternalTileset,
+                       QFileInfo(fileName).path());
 
     TmxMapWriter writer;
 

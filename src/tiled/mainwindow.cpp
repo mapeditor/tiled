@@ -1189,13 +1189,19 @@ void MainWindow::addExternalTileset()
     if (!mMapDocument)
         return;
 
-    const QString start = fileDialogStartLocation();
+    Preferences *prefs = Preferences::instance();
+    QString start = prefs->lastPath(Preferences::ExternalTileset);
+
     const QStringList fileNames =
             QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
                                           start,
                                           tr("Tiled tileset files (*.tsx)"));
+
     if (fileNames.isEmpty())
         return;
+
+    prefs->setLastPath(Preferences::ExternalTileset,
+                       QFileInfo(fileNames.back()).path());
 
     QList<Tileset *> tilesets;
 

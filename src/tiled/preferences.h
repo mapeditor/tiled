@@ -80,7 +80,8 @@ public:
     enum FileType {
         ObjectTypesFile,
         ImageFile,
-        ExportedFile
+        ExportedFile,
+        ExternalTileset
     };
 
     QString lastPath(FileType fileType) const;
