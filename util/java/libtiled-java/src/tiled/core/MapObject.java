@@ -48,6 +48,7 @@ public class MapObject implements Cloneable
     private String imageSource = "";
     private Image image;
     private Image scaledImage;
+    private Tile tile;
 
     public MapObject(int x, int y, int width, int height) {
         bounds = new Rectangle(x, y, width, height);
@@ -116,6 +117,14 @@ public class MapObject implements Cloneable
         }
 
         scaledImage = null;
+    }
+
+    public Tile getTile(){
+        return tile;
+    }
+
+    public void setTile(Tile tile){
+        this.tile = tile;
     }
 
     /**
