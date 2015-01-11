@@ -40,7 +40,7 @@ MagicWandTool::MagicWandTool(QObject *parent)
     : AbstractTileTool(tr("Bucket Fill Tool"),
                        QIcon(QLatin1String(
                                ":images/22x22/stock-tool-fuzzy-select-22.png")),
-                       QKeySequence(tr("F")),
+                       QKeySequence(tr("W")),
                        parent)
 {
 }
@@ -91,6 +91,5 @@ void MagicWandTool::mouseReleased(QGraphicsSceneMouseEvent *)
 void MagicWandTool::languageChanged()
 {
     setName(tr("Magic Wand"));
-    //setShortcut(QKeySequence(tr("W")));
-    // TODO: Select a suitable shortcut.
+    setShortcut(QKeySequence(tr("W")));
 }
