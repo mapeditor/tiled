@@ -1,4 +1,4 @@
-0.11.0 (...)
+0.11.0 (11 January 2015)
 * Added support for hexagonal maps (offset coordinates)
 * Added 'Export' action to repeat the last export
 * Added a shortcut for the Reload action (Ctrl+R)
@@ -14,7 +14,7 @@
 * Flare plugin: Fixed ability to open maps with absolute paths
 * Fixed grid rendering for staggered maps
 * Fully support building and running Tiled with Qbs
-* Updated Portuguese, Italian and Spanish translations
+* Updated Czech, Dutch, French, German, Italian, Japanese, Portuguese and Spanish translations
 
 0.10.2 (23 October 2014)
 * Fixed hit area for polygon nodes when editing polygons while zoomed in or out
