@@ -3,43 +3,42 @@
 #include <iostream>
 
 // Qt
-#include <QtCore/QString>
-#include <QtCore/QObject>
-#include <QtCore/QVariant>
-#include <QtCore/QRegularExpression>
-#include <QtCore/QEvent>
-#include <QtCore/QVector>
-#include <QtCore/QMap>
-#include <QtCore/QtPlugin>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QTimer>
-#include <QtCore/QDebug>
+#include <QString>
+#include <QObject>
+#include <QVariant>
+#include <QEvent>
+#include <QVector>
+#include <QMap>
+#include <QtPlugin>
+#include <QCoreApplication>
+#include <QTimer>
+#include <QDebug>
 
-#include <QtGui/QImage>
-#include <QtGui/QPixmap>
-#include <QtGui/QPalette>
-#include <QtGui/QTextDocument>
+#include <QImage>
+#include <QPixmap>
+#include <QPalette>
+#include <QTextDocument>
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QUndoCommand>
+#include <QWidget>
+#include <QApplication>
+#include <QUndoCommand>
 
-#include <QtWidgets/QBoxLayout>
-#include <QtWidgets/QFrame>
+#include <QBoxLayout>
+#include <QFrame>
 
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QPinchGesture>
-#include <QtWidgets/QTreeView>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QCheckBox>
+#include <QMenu>
+#include <QPinchGesture>
+#include <QTreeView>
+#include <QPushButton>
+#include <QCheckBox>
 
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QGraphicsItem>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
 
-#include <QtWidgets/QPlainTextEdit>
-#include <QtWidgets/QFileDialog>
+#include <QPlainTextEdit>
+#include <QFileDialog>
 
 #include <qtvariantproperty.h>
 
