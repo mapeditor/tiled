@@ -340,6 +340,9 @@ static QString lastPathKey(Preferences::FileType fileType)
     case Preferences::ExportedFile:
         key.append(QLatin1String("ExportedFile"));
         break;
+    case Preferences::ExternalTileset:
+        key.append(QLatin1String("External Tileset"));
+        break;
     default:
         Q_ASSERT(false); // Getting here means invalid file type
     }
