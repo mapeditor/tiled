@@ -420,19 +420,22 @@ public class TMXMapReader
     private MapObject readMapObject(Node t) throws Exception {
         final String name = getAttributeValue(t, "name");
         final String type = getAttributeValue(t, "type");
+        final String gid = getAttributeValue(t, "gid");
         final int x = getAttribute(t, "x", 0);
         final int y = getAttribute(t, "y", 0);
         final int width = getAttribute(t, "width", 0);
         final int height = getAttribute(t, "height", 0);
-        final int gid = getAttribute(t, "gid", -1);
 
         MapObject obj = new MapObject(x, y, width, height);
-        obj.setGid(gid);
         obj.setShape(obj.getBounds());
         if (name != null)
             obj.setName(name);
         if (type != null)
             obj.setType(type);
+        if (gid != null){
+            Tile tile = getTileForTileGID(Integer.parseInt(gid));
+            obj.setTile(tile);
+        }
 
         NodeList children = t.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
