@@ -45,6 +45,7 @@ public class MapObject implements Cloneable
     private Shape shape = new Rectangle();
     private String name = "Object";
     private String type = "";
+    private int gid = -1;
     private String imageSource = "";
     private Image image;
     private Image scaledImage;
@@ -116,6 +117,14 @@ public class MapObject implements Cloneable
         }
 
         scaledImage = null;
+    }
+
+    public int getGid(){
+        return gid;
+    }
+
+    public void setGid(int gid){
+        this.gid = gid;
     }
 
     /**

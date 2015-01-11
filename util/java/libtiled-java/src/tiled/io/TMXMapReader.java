@@ -424,8 +424,10 @@ public class TMXMapReader
         final int y = getAttribute(t, "y", 0);
         final int width = getAttribute(t, "width", 0);
         final int height = getAttribute(t, "height", 0);
+        final int gid = getAttribute(t, "gid", -1);
 
         MapObject obj = new MapObject(x, y, width, height);
+        obj.setGid(gid);
         obj.setShape(obj.getBounds());
         if (name != null)
             obj.setName(name);
