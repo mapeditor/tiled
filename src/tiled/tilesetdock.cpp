@@ -760,7 +760,18 @@ void TilesetDock::exportTileset()
 
     Preferences *prefs = Preferences::instance();
 
+    const QLatin1String extension(".tsx");
+    QLatin1String empty(".");
     QString suggestedFileName = prefs->lastPath(Preferences::ExternalTileset);
+
+    for(int i = (suggestedFileName.length() - 1); suggestedFileName.at(i) != QLatin1Char('/')
+        && suggestedFileName != empty; i--)
+        suggestedFileName.remove(i, 1);
+
+    if(suggestedFileName == empty)
+        suggestedFileName += QLatin1Char('/');
+    suggestedFileName += tileset->name();
+    suggestedFileName += extension;
 
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Tileset"),
