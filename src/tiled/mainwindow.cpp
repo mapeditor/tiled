@@ -1189,7 +1189,11 @@ void MainWindow::addExternalTileset()
 
     Preferences *prefs = Preferences::instance();
 
-    const QString start = prefs->lastPath(Preferences::ExternalTileset);
+    QString start = prefs->lastPath(Preferences::ExternalTileset);
+
+    if(start.isEmpty())
+        start = fileDialogStartLocation();
+
     const QStringList fileNames =
             QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
                                           start,
