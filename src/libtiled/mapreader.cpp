@@ -331,8 +331,12 @@ Tileset *MapReaderPrivate::readTileset()
                     if (tileWidth == 0 || tileHeight == 0) {
                         xml.raiseError(tr("Invalid tileset parameters for tileset"
                                           " '%1'").arg(name));
+                        delete tileset;
+                        tileset = 0;
+                        mCreatedTilesets.removeLast();
+                    } else {
+                        readTilesetImage(tileset);
                     }
-                    readTilesetImage(tileset);
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(tileset);
                 } else {
