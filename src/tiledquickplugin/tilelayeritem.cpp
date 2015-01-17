@@ -138,7 +138,7 @@ static void drawTileLayer(QSGNode *parent,
 
             Tileset *tileset = cell.tile->tileset();
 
-            if (tileset != helper.tileset()) {
+            if (tileset != helper.tileset() || tileData.size() == TilesNode::MaxTileCount) {
                 if (!tileData.isEmpty()) {
                     parent->appendChildNode(new TilesNode(helper.texture(),
                                                           tileData));

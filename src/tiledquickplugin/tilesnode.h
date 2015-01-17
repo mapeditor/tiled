@@ -38,6 +38,10 @@ struct TileData {
 class TilesNode : public QSGGeometryNode
 {
 public:
+    enum {
+        MaxTileCount = 65536 / 6
+    };
+
     TilesNode(QSGTexture *texture, const QVector<TileData> &tileData);
 
     QSGTexture *texture() const;
