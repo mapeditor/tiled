@@ -3,6 +3,7 @@ import QtQuick.Controls 1.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import org.mapeditor.Tiled 1.0 as Tiled
+import Qt.labs.settings 1.0
 
 ApplicationWindow {
     visible: true
@@ -25,6 +26,10 @@ ApplicationWindow {
         title: "About Tiled Quick"
         text: "This is an experimental Qt Quick version of Tiled,\na generic 2D map editor"
         icon: StandardIcon.Information
+    }
+
+    Settings {
+        property alias mapSource: mapLoader.source
     }
 
     menuBar: MenuBar {
