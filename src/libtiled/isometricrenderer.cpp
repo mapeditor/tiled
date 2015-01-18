@@ -334,6 +334,9 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         // TODO: Draw the object name
         // TODO: Do something sensible to make null-sized objects usable
 
+        /* a polygon to contain object, use to draw custom object content below. */
+        QPolygonF objPolygon;
+
         switch (object->shape()) {
         case MapObject::Ellipse: {
             QPointF topLeft(pixelToScreenCoords(object->bounds().topLeft()));
@@ -350,6 +353,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
                                          rect.width() + 2);
 
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
+            objPolygon = polygon;
 
             float tw = map()->tileWidth();
             float th = map()->tileHeight();
@@ -420,6 +424,8 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
                                          rect.width() + 2);
 
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
+            objPolygon = polygon;
+
             painter->drawPolygon(polygon);
             if (!name.isEmpty())
                 painter->drawText(QPointF(headerX, headerY - 5 + shadowOffset), name);
@@ -438,6 +444,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
+            objPolygon = screenPolygon;
 
             const QRectF polygonBoundingRect = screenPolygon.boundingRect();
 
@@ -466,6 +473,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
+            objPolygon = screenPolygon;
 
             painter->drawPolyline(screenPolygon);
 
@@ -477,6 +485,15 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             break;
         }
         }
+
+        /* draw custom content for map object. */
+        painter->save();
+        const QPointF &pos = pixelToScreenCoords(object->position());
+        objPolygon.translate(-pos);
+        painter->translate(pos);
+        object->handlePaint(*painter, objPolygon);
+        painter->restore();
+
     }
 
     painter->restore();

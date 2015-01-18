@@ -353,6 +353,9 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             shape = MapObject::Rectangle;
         }
 
+        /* a polygon to contain object, use to draw custom object content below. */
+        QPolygonF objPolygon;
+
         switch (shape) {
         case MapObject::Rectangle: {
             if (rect.isNull())
@@ -374,11 +377,13 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             if (!name.isEmpty())
                 painter->drawText(QPointF(0, -4 - lineWidth / 2), name);
 
+            objPolygon = rect;
             break;
         }
 
         case MapObject::Polyline: {
             QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
+            objPolygon = screenPolygon;
 
             painter->setPen(shadowPen);
             painter->drawPolyline(screenPolygon.translated(shadowOffset));
@@ -391,6 +396,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
 
         case MapObject::Polygon: {
             QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
+            objPolygon = screenPolygon;
 
             painter->setPen(shadowPen);
             painter->drawPolygon(screenPolygon.translated(shadowOffset));
@@ -421,10 +427,20 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             if (!name.isEmpty())
                 painter->drawText(QPoint(0, -5), name);
 
+            objPolygon = rect;
             break;
         }
         }
+
+        /* draw custom content for map object. */
+        painter->save();
+        const QPointF &pos = pixelToScreenCoords(object->position());
+        objPolygon.translate(-pos);
+        painter->translate(pos);
+        object->handlePaint(*painter, objPolygon);
+        painter->restore();
     }
+
 
     painter->restore();
 }

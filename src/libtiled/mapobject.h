@@ -270,6 +270,7 @@ protected:
      */
     void cloneInternal(MapObject* newObj) const;
 
+public:
     /**
      * Paint custom in map object. default do nothing, overwrite if need.
      */
