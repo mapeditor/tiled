@@ -44,6 +44,7 @@ namespace Tiled {
 class Tile;
 class Tileset;
 class ObjectGroup;
+class CustomDataManager;
 
 /**
  * A tile map. Consists of a stack of layers, each can be either a TileLayer
@@ -406,6 +407,19 @@ private:
     QList<Tileset*> mTilesets;
     LayerDataFormat mLayerDataFormat;
     int mNextObjectId;
+
+public:
+    /**
+     * set an new CustomDataManager instance, if old instance will be delete.
+     */
+    void SetCustomDataManager(CustomDataManager* mgr);
+    /**
+     * get m_pCustomDataMgr.
+     */
+    CustomDataManager* GetCustomDataManager();
+
+private:
+    CustomDataManager* m_pCustomDataMgr;
 };
 
 
@@ -465,6 +479,23 @@ TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
 
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
+
+/**
+ * CustomDataManager is a interface class, in a plugin, can inherit CustomDataManager to hold custom data from MapReader, and write back by MapWriter.
+ * get/set CustomDataManager instance with Map::SetCustomDataManager()/GetCustomDataManager().
+ * the instance in map instance is NULL as default.
+ */
+class CustomDataManager {
+protected:
+    CustomDataManager() {}
+    virtual ~CustomDataManager() {}
+
+protected:
+    /*! clone interface, impl it to support map copy. */
+    virtual CustomDataManager* clone() const = 0;
+
+    friend class Map;
+};
 
 } // namespace Tiled
 
