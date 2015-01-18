@@ -36,6 +36,7 @@ QtGuiApplication {
         qbs.install: true
         qbs.installDir: installBase + "qml/tiledquick"
         files: [
+            "DragArea.qml",
             "main.qml",
         ]
     }

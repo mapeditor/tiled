@@ -98,6 +98,24 @@ ApplicationWindow {
         Item {
             id: mapContainer
 
+            ParallelAnimation {
+                id: containerAnimation
+
+                property alias scale: scaleAnimation.to
+                property alias x: xAnimation.to
+                property alias y: yAnimation.to
+
+                NumberAnimation { id: scaleAnimation; target: mapContainer; property: "scale"; easing.type: Easing.OutCubic; duration: 100 }
+                NumberAnimation { id: xAnimation; target: mapContainer; property: "x"; easing.type: Easing.OutCubic; duration: 100 }
+                NumberAnimation { id: yAnimation; target: mapContainer; property: "y"; easing.type: Easing.OutCubic; duration: 100 }
+            }
+
+            Component.onCompleted: {
+                containerAnimation.scale = mapContainer.scale
+                containerAnimation.x = mapContainer.x
+                containerAnimation.y = mapContainer.y
+            }
+
             Tiled.MapItem {
                 id: mapItem
                 map: mapLoader.map
@@ -112,32 +130,32 @@ ApplicationWindow {
         }
     }
 
-    PinchArea {
-        id: twoFingerPanAndZoomArea
+    DragArea {
+        id: singleFingerPanArea
         anchors.fill: parent
 
-        property real startScale
-
-        onPinchStarted: {
-            startScale = mapContainer.scale
+        onDragged: {
+            containerAnimation.stop()
+            containerAnimation.x += dx
+            containerAnimation.y += dy
+            containerAnimation.start()
         }
-        onPinchUpdated: {
-            var mapCenter = mapToItem(mapContainer, pinch.center.x, pinch.center.y)
+
+        onWheel: {
+            var scaleFactor = Math.pow(1.4, wheel.angleDelta.y / 120)
+            var scale = Math.min(8, Math.max(0.25, containerAnimation.scale * scaleFactor))
+            var anchor = mapToItem(mapContainer, wheel.x, wheel.y)
             var oldScale = mapContainer.scale
-            var newScale = Math.min(8, Math.max(0.25, startScale * pinch.scale))
-            var oldX = mapCenter.x * oldScale
-            var oldY = mapCenter.y * oldScale
-            var newX = mapCenter.x * newScale
-            var newY = mapCenter.y * newScale
-            mapContainer.x += (pinch.center.x - pinch.previousCenter.x) - (newX - oldX)
-            mapContainer.y += (pinch.center.y - pinch.previousCenter.y) - (newY - oldY)
-            mapContainer.scale = newScale
-        }
+            var oldX = anchor.x * oldScale
+            var oldY = anchor.y * oldScale
+            var newX = anchor.x * scale
+            var newY = anchor.y * scale
 
-        MouseArea {
-            id: singleFingerPanArea
-            anchors.fill: parent
-            drag.target: mapContainer
+            containerAnimation.stop()
+            containerAnimation.x = mapContainer.x - (newX - oldX)
+            containerAnimation.y = mapContainer.y - (newY - oldY)
+            containerAnimation.scale = scale
+            containerAnimation.start()
         }
     }
 
