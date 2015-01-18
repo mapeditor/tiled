@@ -129,6 +129,7 @@ static void drawTileLayer(QSGNode *parent,
     const int tileHeight = map->tileHeight();
 
     QVector<TileData> tileData;
+    tileData.reserve(TilesNode::MaxTileCount);
 
     for (int y = rect.top(); y <= rect.bottom(); ++y) {
         for (int x = rect.left(); x <= rect.right(); ++x) {
@@ -142,7 +143,7 @@ static void drawTileLayer(QSGNode *parent,
                 if (!tileData.isEmpty()) {
                     parent->appendChildNode(new TilesNode(helper.texture(),
                                                           tileData));
-                    tileData.clear();
+                    tileData.resize(0);
                 }
 
                 helper.setTileset(tileset);
