@@ -20,6 +20,8 @@
 
 #include "tilesnode.h"
 
+#include <QSGTexture>
+
 namespace TiledQuick {
 
 TilesNode::TilesNode(QSGTexture *texture, const QVector<TileData> &tileData)
@@ -28,7 +30,9 @@ TilesNode::TilesNode(QSGTexture *texture, const QVector<TileData> &tileData)
     setFlag(QSGNode::OwnedByParent);
 
     mMaterial.setTexture(texture);
+    mMaterial.setMipmapFiltering(QSGTexture::Linear);
     mOpaqueMaterial.setTexture(texture);
+    mOpaqueMaterial.setMipmapFiltering(QSGTexture::Linear);
 
     mGeometry.setDrawingMode(GL_TRIANGLES);
 
