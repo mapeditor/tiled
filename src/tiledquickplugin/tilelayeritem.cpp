@@ -198,14 +198,11 @@ void TileLayerItem::syncWithTileLayer()
 QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
                                         QQuickItem::UpdatePaintNodeData *)
 {
+    delete node;
+    node = new QSGNode;
+    node->setFlag(QSGNode::OwnedByParent);
+
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());
-
-    if (!node) {
-        node = new QSGNode;
-        node->setFlag(QSGNode::OwnedByParent);
-    }
-
-    node->removeAllChildNodes();
     drawTileLayer(node, mapItem, mLayer, mVisibleTiles);
 
     return node;
