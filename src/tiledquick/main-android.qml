@@ -31,6 +31,17 @@ ApplicationWindow {
         property alias mapSource: mapLoader.source
     }
 
+    Action {
+        id: openAction
+        text: qsTr("Open...")
+        shortcut: StandardKey.Open
+        iconName: "document-open"
+        onTriggered: {
+            fileDialog.folder = settings.mapsFolder
+            fileDialog.open()
+        }
+    }
+
     Tiled.MapLoader {
         id: mapLoader
     }
@@ -101,12 +112,8 @@ ApplicationWindow {
             spacing: 5
             Button {
                 id: button
-                text: qsTr("Open...")
                 x: 5; y: 5
-                onClicked: {
-                    fileDialog.folder = settings.mapsFolder
-                    fileDialog.open()
-                }
+                action: openAction
             }
         }
     }

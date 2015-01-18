@@ -6,9 +6,12 @@ import org.mapeditor.Tiled 1.0 as Tiled
 import Qt.labs.settings 1.0
 
 ApplicationWindow {
+    id: window
+
     visible: true
-    width: 640
-    height: 480
+
+    width: 1024
+    height: 720
 
     minimumWidth: 480
     minimumHeight: 320
@@ -18,7 +21,10 @@ ApplicationWindow {
     FileDialog {
         id: fileDialog
         nameFilters: [ "TMX files (*.tmx)", "All files (*)" ]
-        onAccepted: mapLoader.source = fileDialog.fileUrl
+        onAccepted: {
+            mapLoader.source = fileDialog.fileUrl
+            settings.mapsFolder = fileDialog.folder
+        }
     }
 
     MessageDialog {
@@ -29,31 +35,33 @@ ApplicationWindow {
     }
 
     Settings {
+        id: settings
+        property string mapsFolder
         property alias mapSource: mapLoader.source
+    }
+
+    Action {
+        id: openAction
+        text: qsTr("Open...")
+        shortcut: StandardKey.Open
+        iconName: "document-open"
+        onTriggered: {
+            fileDialog.folder = settings.mapsFolder
+            fileDialog.open()
+        }
     }
 
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
-//            MenuItem {
-//                text: qsTr("New...")
-//                shortcut: StandardKey.New
-//            }
             MenuItem {
+                action: openAction
                 text: qsTr("Open...")
                 shortcut: StandardKey.Open
                 onTriggered: {
                     fileDialog.open()
                 }
             }
-//            MenuItem {
-//                text: qsTr("Save")
-//                shortcut: StandardKey.Save
-//            }
-//            MenuItem {
-//                text: qsTr("Save As...")
-//                shortcut: StandardKey.SaveAs
-//            }
             MenuSeparator {}
             MenuItem {
                 text: qsTr("Exit")
@@ -61,30 +69,6 @@ ApplicationWindow {
                 onTriggered: Qt.quit();
             }
         }
-//        Menu {
-//            title: qsTr("Edit")
-//            MenuItem {
-//                text: qsTr("Cut")
-//                shortcut: StandardKey.Cut
-//            }
-//            MenuItem {
-//                text: qsTr("Copy")
-//                shortcut: StandardKey.Copy
-//            }
-//            MenuItem {
-//                text: qsTr("Paste")
-//                shortcut: StandardKey.Paste
-//            }
-//            MenuItem {
-//                text: qsTr("Delete")
-//                shortcut: StandardKey.Delete
-//            }
-//            MenuSeparator {}
-//            MenuItem {
-//                text: qsTr("Select All")
-//                shortcut: StandardKey.SelectAll
-//            }
-//        }
         Menu {
             title: qsTr("Help")
             MenuItem {
@@ -94,57 +78,81 @@ ApplicationWindow {
         }
     }
 
-//    toolBar: ToolBar {
-//        RowLayout {
-//            anchors.fill: parent
-//            ToolButton {
-//                iconName: "document-new"
-//            }
-//            Item { Layout.fillWidth: true }
-//            CheckBox {
-//                text: "Enabled"
-//                checked: true
-//                Layout.alignment: Qt.AlignRight
-//            }
-//        }
-//    }
+    toolBar: ToolBar {
+        RowLayout {
+            anchors.fill: parent
+            ToolButton {
+                action: openAction
+            }
+        }
+    }
 
     Tiled.MapLoader {
         id: mapLoader
     }
 
-    ScrollView {
+    Item {
+        id: mapView
         anchors.fill: parent
 
-        Flickable {
-            id: flickable
-
-            anchors.fill: parent
-
-            contentWidth: mapItem.width
-            contentHeight: mapItem.height
-
-            pixelAligned: true
+        Item {
+            id: mapContainer
 
             Tiled.MapItem {
                 id: mapItem
                 map: mapLoader.map
-                visibleArea: Qt.rect(flickable.contentX,
-                                     flickable.contentY,
-                                     flickable.width,
-                                     flickable.height);
+                visibleArea: {
+                    var scale = mapContainer.scale
+                    Qt.rect(-mapContainer.x / scale,
+                            -mapContainer.y / scale,
+                            mapView.width / scale,
+                            mapView.height / scale);
+                }
             }
         }
     }
 
-    Text {
-        text: mapLoader.status === Tiled.MapLoader.Null ? qsTr("No map file loaded") : mapLoader.error
-        anchors.centerIn: parent
+    PinchArea {
+        id: twoFingerPanAndZoomArea
+        anchors.fill: parent
+
+        property real startScale
+
+        onPinchStarted: {
+            startScale = mapContainer.scale
+        }
+        onPinchUpdated: {
+            var mapCenter = mapToItem(mapContainer, pinch.center.x, pinch.center.y)
+            var oldScale = mapContainer.scale
+            var newScale = Math.min(8, Math.max(0.25, startScale * pinch.scale))
+            var oldX = mapCenter.x * oldScale
+            var oldY = mapCenter.y * oldScale
+            var newX = mapCenter.x * newScale
+            var newY = mapCenter.y * newScale
+            mapContainer.x += (pinch.center.x - pinch.previousCenter.x) - (newX - oldX)
+            mapContainer.y += (pinch.center.y - pinch.previousCenter.y) - (newY - oldY)
+            mapContainer.scale = newScale
+        }
+
+        MouseArea {
+            id: singleFingerPanArea
+            anchors.fill: parent
+            drag.target: mapContainer
+        }
     }
 
-//    statusBar: StatusBar {
-//        RowLayout {
-//            Label { text: "Read Only" }
-//        }
-//    }
+    statusBar: StatusBar {
+        RowLayout {
+            Label {
+                text: {
+                    if (mapLoader.status === Tiled.MapLoader.Null)
+                        qsTr("No map file loaded")
+                    else if (mapLoader.status === Tiled.MapLoader.Error)
+                        mapLoader.error
+                    else
+                        mapLoader.source
+                }
+            }
+        }
+    }
 }
