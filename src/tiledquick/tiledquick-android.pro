@@ -1,4 +1,5 @@
 TEMPLATE = app
+TARGET = Tiled
 
 QT += qml quick
 
