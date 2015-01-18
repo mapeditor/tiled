@@ -35,10 +35,7 @@ TilesNode::TilesNode(QSGTexture *texture, const QVector<TileData> &tileData)
     mOpaqueMaterial.setMipmapFiltering(QSGTexture::Linear);
 
     mGeometry.setDrawingMode(GL_TRIANGLES);
-
-    // TODO: Using StaticPattern would make sense since the data is never
-    // being modified, however this is causing issues on the Raspberry Pi.
-    //mGeometry.setVertexDataPattern(QSGGeometry::StaticPattern);
+    mGeometry.setVertexDataPattern(QSGGeometry::StaticPattern);
 
     processTileData(tileData);
 
