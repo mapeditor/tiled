@@ -38,6 +38,11 @@ ApplicationWindow {
         id: settings
         property string mapsFolder
         property alias mapSource: mapLoader.source
+        property alias windowX: window.x
+        property alias windowY: window.y
+        property alias windowWidth: window.width
+        property alias windowHeight: window.height
+        property alias windowVisibility: window.visibility
     }
 
     Action {
