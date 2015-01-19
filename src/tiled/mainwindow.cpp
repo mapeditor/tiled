@@ -89,6 +89,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "imagemovementtool.h"
+#include "createcustomobjecttool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -421,6 +422,19 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
             mDocumentManager, SLOT(setSelectedTool(AbstractTool*)));
+
+    /* add create custom object tool from plugin. */
+    //<<
+    toolBar->addSeparator();
+    QList<CreateObjectToolInterface*> createObjectToolInterfaces = PluginManager::instance()->interfaces<CreateObjectToolInterface>();
+    foreach (CreateObjectToolInterface *createObjectToolInterface, createObjectToolInterfaces) {
+        QList<CreateObjectToolInfo*> infos = createObjectToolInterface->getCreateObjectTools();
+        foreach (CreateObjectToolInfo* pInfo, infos) {
+            CreateObjectTool* pTool = new CreateCustomObjectTool(pInfo, this);
+            toolBar->addAction(mToolManager->registerTool(pTool));
+        }
+    }
+    //>>
 
     statusBar()->addWidget(mStatusInfoLabel);
     connect(mToolManager, SIGNAL(statusInfoChanged(QString)),
