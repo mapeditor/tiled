@@ -202,6 +202,7 @@ SOURCES += aboutdialog.cpp \
     stampbrush.cpp \
     standardautoupdater.cpp \
     stylehelper.cpp \
+    swaptiles.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
     terrainmodel.cpp \
@@ -371,6 +372,7 @@ HEADERS += aboutdialog.h \
     stampbrush.h \
     standardautoupdater.h \
     stylehelper.h \
+    swaptiles.h \
     terrainbrush.h \
     terraindock.h \
     terrainmodel.h \

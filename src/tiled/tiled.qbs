@@ -330,6 +330,8 @@ QtGuiApplication {
         "standardautoupdater.h",
         "stylehelper.cpp",
         "stylehelper.h",
+        "swaptiles.cpp",
+        "swaptiles.h",
         "terrainbrush.cpp",
         "terrainbrush.h",
         "terraindock.cpp",
