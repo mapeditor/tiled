@@ -582,6 +582,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             Utils::setThemeIcon(tileProperties, "document-properties");
             connect(tileProperties, SIGNAL(triggered()),
                     SLOT(editTileProperties()));
+
+            // Enable "swap" if there are exactly 2 tiles selected
+            bool exactlyTwoTilesSelected =
+                    (selectionModel()->selectedIndexes().size() == 2);
+
+            QAction *tileSwap = menu.addAction(tr("Swap tiles"));
+            tileSwap->setEnabled(exactlyTwoTilesSelected);
+            connect(tileSwap, SIGNAL(triggered()),
+                    SLOT(swapTiles()));
         }
 
         menu.addSeparator();
@@ -618,6 +627,39 @@ void TilesetView::editTileProperties()
 
     mMapDocument->setCurrentObject(tile);
     mMapDocument->emitEditCurrentObject();
+}
+
+void TilesetView::swapTiles()
+{
+    if (selectionModel()->selectedIndexes().size() != 2)
+        return;
+
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
+    if (!tileLayer)
+        return;
+
+    const TilesetModel *model = tilesetModel();
+    Tile *tile1 = model->tileAt(selectionModel()->selectedIndexes()[0]);
+    Tile *tile2 = model->tileAt(selectionModel()->selectedIndexes()[1]);
+
+    for (int y = 0; y < tileLayer->height(); y++) {
+        for (int x = 0; x < tileLayer->width(); x++) {
+            const Cell &cell = tileLayer->cellAt(x, y);
+
+            if (cell.tile == tile1) {
+                Cell swapCell = cell;
+                swapCell.tile = tile2;
+                tileLayer->setCell(x, y, swapCell);
+            }
+            else if (cell.tile == tile2) {
+                Cell swapCell = cell;
+                swapCell.tile = tile1;
+                tileLayer->setCell(x, y, swapCell);
+            }
+        }
+    }
+
+    // TODO UndoStack
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)
