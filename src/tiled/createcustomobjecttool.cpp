@@ -29,6 +29,8 @@ CreateCustomObjectTool::CreateCustomObjectTool(CreateObjectToolInfo* pInfo, QObj
     setIcon(pInfo->mIcon);
     setShortcut(QKeySequence(pInfo->mShortcut));
     mObjFactory = pInfo->mFactory;
+
+    delete pInfo; //delete pInfo here, pInfo is created in plugin interface.
 }
 
 void CreateCustomObjectTool::languageChanged() {

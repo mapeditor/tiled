@@ -104,8 +104,8 @@ private:
 MapWriterPrivate::MapWriterPrivate()
     : mLayerDataFormat(Map::Base64Zlib)
     , mDtdEnabled(false)
-    , mUseAbsolutePaths(false)
     , mWriteCallback(NULL)
+    , mUseAbsolutePaths(false)
 {
 }
 
