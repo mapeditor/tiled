@@ -3564,6 +3564,11 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+16"/>
+        <source>Swap tiles</source>
+        <translation>Kacheln ver&amp;tauschen</translation>
+    </message>
+    <message>
+        <location line="+9"/>
         <source>Show &amp;Grid</source>
         <translation>&amp;Raster anzeigen</translation>
     </message>
@@ -3948,6 +3953,11 @@ Do you want to replace it?</source>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
         <translation>Ebenen-Datenformat ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/swaptiles.cpp" line="+35"/>
+        <source>Swap Tiles</source>
+        <translation>Kacheln vertauschen</translation>
     </message>
 </context>
 <context>
