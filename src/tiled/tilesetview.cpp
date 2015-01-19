@@ -24,6 +24,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
+#include "swaptiles.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
 #include "tileset.h"
@@ -642,24 +643,9 @@ void TilesetView::swapTiles()
     Tile *tile1 = model->tileAt(selectionModel()->selectedIndexes()[0]);
     Tile *tile2 = model->tileAt(selectionModel()->selectedIndexes()[1]);
 
-    for (int y = 0; y < tileLayer->height(); y++) {
-        for (int x = 0; x < tileLayer->width(); x++) {
-            const Cell &cell = tileLayer->cellAt(x, y);
-
-            if (cell.tile == tile1) {
-                Cell swapCell = cell;
-                swapCell.tile = tile2;
-                tileLayer->setCell(x, y, swapCell);
-            }
-            else if (cell.tile == tile2) {
-                Cell swapCell = cell;
-                swapCell.tile = tile1;
-                tileLayer->setCell(x, y, swapCell);
-            }
-        }
-    }
-
-    // TODO UndoStack
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoCommand *command = new SwapTiles(mMapDocument, tileLayer, tile1, tile2);
+    undoStack->push(command);
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)
