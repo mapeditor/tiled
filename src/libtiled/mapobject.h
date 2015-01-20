@@ -211,6 +211,13 @@ public:
     QRectF bounds() const { return QRectF(mPos, mSize); }
 
     /**
+     * check baseBounds and get max bounds of a MapObject, default return baseBounds.
+     * if sub-class has a extra bounds than base MapObject,
+     * inherit to return a large enough bounds.
+     */
+    virtual QRectF adjustBounds(const QRectF& baseBounds) const { return baseBounds; }
+
+    /**
      * Sets the tile that is associated with this object. The object will
      * display as the tile image.
      *

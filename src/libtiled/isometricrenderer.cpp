@@ -91,9 +91,12 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
         const QRectF base = pixelRectToScreenPolygon(object->bounds()).boundingRect();
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
 
-        return base.adjusted(-extraSpace,
-                             -extraSpace - nameHeight - 1,
-                             extraSpace, extraSpace);
+        // here use adjustBounds() to avoid left pixel while custom object moving.
+        const QRectF bounds = object->adjustBounds(base);
+
+        return bounds.adjusted(-extraSpace,
+                               -extraSpace - nameHeight - 1,
+                               extraSpace, extraSpace);
     }
 }
 
