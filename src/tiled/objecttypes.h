@@ -73,7 +73,7 @@ class ObjectTypesReader
 public:
     ObjectTypes readObjectTypes(const QString &fileName);
 
-    void readObjectTypeProperty(QXmlStreamReader& xml, const Properties& props);
+    void readObjectTypeProperty(QXmlStreamReader& xml, Properties& props);
 
     QString errorString() const { return mError; }
 

@@ -130,7 +130,7 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
     return objectTypes;
 }
 
-void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader& xml, const Properties& props) {
+void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader& xml, Properties& props) {
     
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
@@ -143,7 +143,7 @@ void ObjectTypesReader::readObjectTypeProperty(QXmlStreamReader& xml, const Prop
 
     // TODO: allow for real typed properties. Only strings for now
 
-    properties->insert(name, defaultValue);
+    props.insert(name, defaultValue);
 }
 
 } // namespace Internal
