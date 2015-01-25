@@ -92,8 +92,9 @@ Preferences::Preferences()
     mSettings->endGroup();
 
     const int count = qMin(names.size(), colors.size());
+    Properties props;
     for (int i = 0; i < count; ++i)
-        mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
+        mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i)), props));
 
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
