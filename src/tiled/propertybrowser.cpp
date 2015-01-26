@@ -947,11 +947,6 @@ void PropertyBrowser::updateCustomProperties()
     }
 
     // Add Default properties
-    /*
-    foreach(const QString& key, mCombinedProperties.keys()) {
-        qDebug().nospace() << key;
-    }
-    */
     const ObjectType *curType = NULL;
     ObjectTypes defObjTypes = Preferences::instance()->objectTypes();
     foreach (const ObjectType &type, defObjTypes) {
@@ -969,8 +964,8 @@ void PropertyBrowser::updateCustomProperties()
         while (it.hasNext()) {
             it.next();
             if (!mCombinedProperties.contains(it.key())) {
-                mObject->setProperty(it.key(), it.value());
-                mCombinedProperties.insert(it.key(), it.value());
+                mObject->setProperty(it.key(), it.value()); // set the actual property
+                mCombinedProperties.insert(it.key(), it.value()); // add to view
             }
         }
     }
