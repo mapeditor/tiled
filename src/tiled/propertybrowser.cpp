@@ -969,6 +969,7 @@ void PropertyBrowser::updateCustomProperties()
         while (it.hasNext()) {
             it.next();
             if (!mCombinedProperties.contains(it.key())) {
+                mObject->setProperty(it.key(), it.value());
                 mCombinedProperties.insert(it.key(), it.value());
             }
         }
