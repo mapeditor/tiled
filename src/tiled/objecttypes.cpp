@@ -90,27 +90,29 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
         return objectTypes;
     }
 
-    while (reader.readNextStartElement()) {
-        if (reader.name() == QLatin1String("objecttype")) {
-            const QXmlStreamAttributes atts = reader.attributes();
+    while(!reader.atEnd()) {
+        while (reader.readNextStartElement()) {
+            if (reader.name() == QLatin1String("objecttype")) {
+                const QXmlStreamAttributes atts = reader.attributes();
 
-            const QString name(atts.value(QLatin1String("name")).toString());
-            const QColor color(atts.value(QLatin1String("color")).toString());
+                const QString name(atts.value(QLatin1String("name")).toString());
+                const QColor color(atts.value(QLatin1String("color")).toString());
 
-            // read the custom properties
-            Properties props;
+                //qDebug().nospace() << name;
 
-            while (reader.readNextStartElement()) {
-                if (reader.name() == QLatin1String("property"))
-                    readObjectTypeProperty(reader, props);
-                reader.skipCurrentElement();
+                // read the custom properties
+                Properties props;                                
+                while (reader.readNextStartElement()) {
+                    if (reader.name() == QLatin1String("property")){
+                        readObjectTypeProperty(reader, props);
+                    }
+                    reader.skipCurrentElement();
+                }
+                objectTypes.append(ObjectType(name, color, props));
             }
+        }    
+    }   
 
-            objectTypes.append(ObjectType(name, color, props));
-        }
-
-        reader.skipCurrentElement();
-    }
 
     // readNextStartElement() leaves the stream in
     // an invalid state at the end. A single readNext()
