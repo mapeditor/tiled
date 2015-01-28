@@ -160,10 +160,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->exportObjectTypesButton, SIGNAL(clicked()),
             SLOT(exportObjectTypes()));
 
+    /*
     connect(mObjectTypesModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             SLOT(applyObjectTypes()));
     connect(mObjectTypesModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
             SLOT(applyObjectTypes()));
+    */
 
     connect(mUi->autoMapWhileDrawing, SIGNAL(toggled(bool)),
             SLOT(useAutomappingDrawingToggled(bool)));
@@ -244,11 +246,13 @@ void PreferencesDialog::objectTypeIndexClicked(const QModelIndex &index)
     }
 }
 
+/*
 void PreferencesDialog::applyObjectTypes()
 {
     Preferences *prefs = Preferences::instance();
     prefs->setObjectTypes(mObjectTypesModel->objectTypes());
 }
+*/
 
 void PreferencesDialog::importObjectTypes()
 {
@@ -267,7 +271,7 @@ void PreferencesDialog::importObjectTypes()
     ObjectTypes objectTypes = reader.readObjectTypes(fileName);
 
     if (reader.errorString().isEmpty()) {
-        prefs->setObjectTypes(objectTypes);
+        prefs->setObjectTypes(fileName, objectTypes);
         mObjectTypesModel->setObjectTypes(objectTypes);
     } else {
         QMessageBox::critical(this, tr("Error Reading Object Types"),

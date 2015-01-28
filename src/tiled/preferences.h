@@ -75,7 +75,7 @@ public:
     void setUseOpenGL(bool useOpenGL);
 
     const ObjectTypes &objectTypes() const { return mObjectTypes; }
-    void setObjectTypes(const ObjectTypes &objectTypes);
+    void setObjectTypes(const QString& fileName, const ObjectTypes &objectTypes);
 
     enum FileType {
         ObjectTypesFile,

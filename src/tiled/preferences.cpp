@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #endif
 
+#include <QDebug>
 #include <QFileInfo>
 #include <QSettings>
 
@@ -84,17 +85,36 @@ Preferences::Preferences()
     mSettings->endGroup();
 
     // Retrieve defined object types
+    const QString objDefFile = mSettings->value(QLatin1String("ObjectTypesDefinition")).toString();
+
+    if (!objDefFile.isEmpty()) { // we have a file reference
+        
+        ObjectTypesReader reader;
+        ObjectTypes objectTypes = reader.readObjectTypes(objDefFile);
+
+        mObjectTypes = objectTypes;
+
+        qDebug().nospace() << "ObjectTypes found: " << objDefFile;
+
+        emit objectTypesChanged();
+
+    } else
+        qDebug().nospace() << "No ObjectTypes specified.";
+
+    /*
     mSettings->beginGroup(QLatin1String("ObjectTypes"));
     const QStringList names =
             mSettings->value(QLatin1String("Names")).toStringList();
     const QStringList colors =
             mSettings->value(QLatin1String("Colors")).toStringList();
     mSettings->endGroup();
+    
 
     const int count = qMin(names.size(), colors.size());
     Properties props;
     for (int i = 0; i < count; ++i)
         mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i)), props));
+    */
 
     mSettings->beginGroup(QLatin1String("Automapping"));
     mAutoMapDrawing = boolValue("WhileDrawing");
@@ -308,10 +328,11 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     emit useOpenGLChanged(mUseOpenGL);
 }
 
-void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
+void Preferences::setObjectTypes(const QString& fileName, const ObjectTypes &objectTypes)
 {
     mObjectTypes = objectTypes;
 
+    /*
     QStringList names;
     QStringList colors;
     foreach (const ObjectType &objectType, objectTypes) {
@@ -323,6 +344,9 @@ void Preferences::setObjectTypes(const ObjectTypes &objectTypes)
     mSettings->setValue(QLatin1String("Names"), names);
     mSettings->setValue(QLatin1String("Colors"), colors);
     mSettings->endGroup();
+    */
+    
+    mSettings->setValue(QLatin1String("ObjectTypesDefinition"), fileName);
 
     emit objectTypesChanged();
 }

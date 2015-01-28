@@ -964,7 +964,11 @@ void PropertyBrowser::updateCustomProperties()
         while (it.hasNext()) {
             it.next();
             if (!mCombinedProperties.contains(it.key())) {
-                mObject->setProperty(it.key(), it.value()); // set the actual property
+                /*
+                    TODO: set the actual property on the object. Does this makes sense? What is the usecase that makes the most sense?
+                    mObject->setProperty(it.key(), it.value()); 
+                */
+                
                 mCombinedProperties.insert(it.key(), it.value()); // add to view
             }
         }
