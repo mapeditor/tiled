@@ -30,6 +30,7 @@
 #include "tilelayer.h"
 #include "tile.h"
 #include "utils.h"
+#include "tileset.h"
 #include "preferences.h"
 
 #include <math.h>
