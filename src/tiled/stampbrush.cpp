@@ -28,9 +28,13 @@
 #include "mapscene.h"
 #include "painttilelayer.h"
 #include "tilelayer.h"
+#include "tile.h"
+#include "utils.h"
+#include "preferences.h"
 
 #include <math.h>
 #include <QVector>
+#include <QMap>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -346,11 +350,112 @@ void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
                                               stamp->height())))
         return;
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
-                            whereX, whereY, stamp);
-    paint->setMergeable(mergeable);
-    mapDocument()->undoStack()->push(paint);
-    mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
+    //auto layer tiles based on their pre-extention.
+    //route the tiles to the correct layer based on the pre-extention.
+    if (Preferences::instance()->autoLayerTiles()) {
+
+        const int stampWidth = stamp->width();
+        const int stampHeight = stamp->height();
+
+        //used for sorting the tiles out of the stamp.
+        QMap<QString, TileLayer*> layerLookup;
+
+        /*
+         * All this code is doing is taking a stamp which is a tile layer and then seperating the tiles into
+         * layers which match the pre-extention in which the tileset they originate from.
+         */
+
+        if (!mapDocument()->currentLayer())
+            return;
+
+        //here we are just getting each cell in the stamp and sorting them by their pre-extention type.
+        //tiles with no pre-extention
+        for (int x = 0; x < stampWidth; x++) {
+            for (int y = 0; y < stampHeight; y++) {
+
+                const Cell cell = stamp->cellAt(x, y);
+                if (!cell.isEmpty()) {
+
+                    Tile *tile = cell.tile;
+                    if (!tile) {
+                        return;
+                    }
+
+                    QString tilesetName = tile->tileset()->name();
+                    QString preExt = Utils::parsePreExtension(tilesetName);
+
+                    if (!layerLookup.contains(preExt)) {
+                        QString tempName = QLatin1String("pre-ext-");
+                        tempName.append(tilesetName);
+                        layerLookup.insert(preExt, new TileLayer(tempName, stamp->x(), stamp->y(), stamp->width(), stamp->height()));
+                    }
+
+                    layerLookup[preExt]->setCell(x, y, cell);
+                }
+            }
+        }
+
+        Map *map = mapDocument()->map();
+        const int layerCount = map->layerCount();
+
+        //here we loop through each of our new layers which were created by sorting.
+        for (int i = 0; i < layerLookup.size(); i++) {
+
+            //store the layer extention name. could be nothing.
+            const QString extName = layerLookup.keys()[i];
+
+            //this is the layer which we will be putting the new tiles.
+            //if no layer was found for the extName we simply put them in the currently selected layer.
+            QString outputLayerName = mapDocument()->currentLayer()->name();
+
+            //loop through each of layers in the map.
+            for (int l = 0; l < layerCount; l++) {
+
+                Layer* layer = map->layerAt(l);
+                //make sure the layer is a tile layer.
+                if (layer->isTileLayer()) {
+
+                    TileLayer* tileLayer = layer->asTileLayer();
+                    const QString tileLayerName = tileLayer->name();
+
+                    //make sure the name is the same name as the pre-extention name.
+                    if (tileLayerName.compare(extName, Qt::CaseInsensitive) == 0) {
+                        outputLayerName = tileLayerName;
+                        break;
+                    }
+
+                }
+            }
+
+            int index = map->indexOfLayer(outputLayerName, Layer::TileLayerType);
+
+            TileLayer* outputLayer = map->layerAt(index)->asTileLayer();
+            TileLayer* sourceLayer = layerLookup[extName];
+
+            if (!sourceLayer) {
+                return;
+            }
+
+            //we either have the current layer as the output index or the new layer in which to put some tiles.
+            PaintTileLayer *paint = new PaintTileLayer(mapDocument(), outputLayer,
+                                    whereX, whereY, sourceLayer);
+
+            paint->setMergeable(mergeable);
+
+            mapDocument()->undoStack()->push(paint);
+            mapDocument()->emitRegionEdited(brushItem()->tileRegion(), outputLayer);
+        }
+    }
+    else {
+
+        PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
+                                whereX, whereY, stamp);
+
+        paint->setMergeable(mergeable);
+
+        mapDocument()->undoStack()->push(paint);
+        mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
+    }
 }
 
 /**

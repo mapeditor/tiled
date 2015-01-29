@@ -99,6 +99,10 @@ Preferences::Preferences()
     mAutoMapDrawing = boolValue("WhileDrawing");
     mSettings->endGroup();
 
+    mSettings->beginGroup(QLatin1String("AutoLayer"));
+    mAutoLayerTiles = boolValue("AutoLayerTiles");
+    mSettings->endGroup();
+
     mSettings->beginGroup(QLatin1String("MapsDirectory"));
     mMapsDirectory = stringValue("Current");
     mSettings->endGroup();
@@ -121,6 +125,16 @@ void Preferences::setShowGrid(bool showGrid)
     mSettings->setValue(QLatin1String("Interface/ShowGrid"), mShowGrid);
     emit showGridChanged(mShowGrid);
 }
+
+void Preferences::setAutoLayerTiles(bool autoLayer)
+{
+    if (mAutoLayerTiles == autoLayer)
+        return;
+
+    mAutoLayerTiles = autoLayer;
+    mSettings->setValue(QLatin1String("AutoLayer/AutoLayerTiles"), mAutoLayerTiles);
+}
+
 
 void Preferences::setShowTileObjectOutlines(bool enabled)
 {
