@@ -54,6 +54,7 @@ private slots:
     void objectLineWidthChanged(double lineWidth);
     void useOpenGLToggled(bool useOpenGL);
     void useAutomappingDrawingToggled(bool enabled);
+    void useAutoLayerToggled(bool enabled);
 
     void addObjectType();
     void selectedObjectTypesChanged();

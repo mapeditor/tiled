@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>421</width>
+    <width>423</width>
     <height>383</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <enum>QLayout::SetFixedSize</enum>
    </property>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="tabAutoLayer">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -305,6 +305,24 @@
        </property>
       </widget>
      </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>AutoLayer</string>
+      </attribute>
+      <widget class="QCheckBox" name="autoLayerEnabled">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>121</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Enable Auto Layer</string>
+       </property>
+      </widget>
+     </widget>
     </widget>
    </item>
    <item>
@@ -327,7 +345,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>tabAutoLayer</tabstop>
   <tabstop>enableDtd</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>languageCombo</tabstop>
