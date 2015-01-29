@@ -65,6 +65,14 @@ void setThemeIcon(T *t, const char *name)
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
+/**
+ * @brief parsePreExtention parses a pre-extention from a file name. Expected to be in the format of Foo.bar.png
+ * which makes the extention of the file .png but the pre-extention would be 'bar'.
+ * @param input = string to parse the pre-extention from.
+ * @return the pre extention or an empty string if none was able to be parsed.
+ */
+QString parsePreExtension(QString input);
+
 } // namespace Utils
 } // namespace Tiled
 

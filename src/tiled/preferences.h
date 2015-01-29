@@ -92,6 +92,9 @@ public:
     QString mapsDirectory() const;
     void setMapsDirectory(const QString &path);
 
+    bool autoLayerTiles() const { return mAutoLayerTiles; }
+    void setAutoLayerTiles(bool enabled);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -160,6 +163,8 @@ private:
     ObjectTypes mObjectTypes;
 
     bool mAutoMapDrawing;
+
+    bool mAutoLayerTiles;
 
     QString mMapsDirectory;
 

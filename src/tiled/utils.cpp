@@ -85,5 +85,44 @@ void saveGeometry(QWidget *widget)
     settings->setValue(key, widget->saveGeometry());
 }
 
+/**
+ * Takes a tileset name and splits it based on the '.'
+ * We should have 2 or more '.' in the sentence to parse a valid name.
+ * basically if we have 2 items we return the last item from the results of the split.
+ * if it's greater than 2 we return (n-1) from the split result.
+ * Also note that it returns nothing if the split results in less than 2 items.
+ */
+QString parsePreExtension(QString input)
+{
+
+    if (input.isNull() || input.isEmpty() || input.size() == 0) {
+        return QString();
+    }
+
+
+    const QLatin1Char splitToken = QLatin1Char('.');
+    const QStringList stringList = input.split(splitToken);
+    const int itemCount = stringList.size();
+
+    int tokenCount = 0;
+
+    //count the number of tokens.
+    for (int i = 0; i < input.size(); i++) {
+
+        if (input.at(i) == splitToken) {
+            tokenCount++;
+        }
+    }
+
+    if (tokenCount < 1 || itemCount < 2) {
+        return QString();
+    }
+
+    if (itemCount == 2) {
+        return stringList.at(1);
+    }
+    return stringList.at(itemCount - 1);
+}
+
 } // namespace Utils
 } // namespace Tiled

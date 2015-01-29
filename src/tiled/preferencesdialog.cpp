@@ -167,6 +167,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     connect(mUi->autoMapWhileDrawing, SIGNAL(toggled(bool)),
             SLOT(useAutomappingDrawingToggled(bool)));
+
+    connect(mUi->autoLayerEnabled, SIGNAL(toggled(bool)),
+            SLOT(useAutoLayerToggled(bool)));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -316,6 +319,7 @@ void PreferencesDialog::fromPreferences()
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
     mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
+    mUi->autoLayerEnabled->setChecked(prefs->autoLayerTiles());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }
 
@@ -326,9 +330,15 @@ void PreferencesDialog::toPreferences()
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
     prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
+    prefs->setAutoLayerTiles(mUi->autoLayerEnabled->isChecked());
 }
 
 void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)
 {
     Preferences::instance()->setAutomappingDrawing(enabled);
+}
+
+void PreferencesDialog::useAutoLayerToggled(bool enabled)
+{
+    Preferences::instance()->setAutoLayerTiles(enabled);
 }
