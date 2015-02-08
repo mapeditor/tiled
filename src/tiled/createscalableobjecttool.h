@@ -35,9 +35,9 @@ public:
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
+                                       Qt::KeyboardModifiers modifiers);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
 };
 
 } // namespace Internal

@@ -142,6 +142,7 @@ SOURCES += aboutdialog.cpp \
     rotatemapobject.cpp \
     saveasimagedialog.cpp \
     selectionrectangle.cpp \
+    snaphelper.cpp \
     stampbrush.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
@@ -273,6 +274,7 @@ HEADERS += aboutdialog.h \
     rotatemapobject.h \
     saveasimagedialog.h \
     selectionrectangle.h \
+    snaphelper.h \
     stampbrush.h \
     terrainbrush.h \
     terraindock.h \

@@ -19,11 +19,12 @@
  */
 
 #include "createscalableobjecttool.h"
-#include "preferences.h"
-#include "utils.h"
+
 #include "mapdocument.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "snaphelper.h"
+#include "utils.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -33,8 +34,7 @@ CreateScalableObjectTool::CreateScalableObjectTool(QObject *parent)
 {
 }
 
-void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers,
-                                                             bool snapToGrid, bool snapToFineGrid)
+void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
@@ -52,28 +52,18 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
         newSize.setY(max);
     }
 
-    if (snapToFineGrid || snapToGrid) {
-        QPointF newTileSize = renderer->pixelToTileCoords(newSize);
-        if (snapToFineGrid) {
-            int gridFine = Preferences::instance()->gridFine();
-            newTileSize = (newTileSize * gridFine).toPoint();
-            newTileSize /= gridFine;
-        } else {
-            newTileSize = newTileSize.toPoint();
-        }
-        newSize = renderer->tileToPixelCoords(newTileSize);
-    }
+    SnapHelper(renderer, modifiers).snap(newSize);
 
     mNewMapObjectItem->resizeObject(QSizeF(newSize.x(), newSize.y()));
 }
 
-void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
+void CreateScalableObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
 }
 
-void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
+void CreateScalableObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         finishNewMapObject();

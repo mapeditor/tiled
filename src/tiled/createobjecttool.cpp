@@ -29,7 +29,7 @@
 #include "mapscene.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
-#include "preferences.h"
+#include "snaphelper.h"
 #include "tile.h"
 #include "utils.h"
 
@@ -97,29 +97,14 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
-    if (mNewMapObjectItem){
-        bool snapToGrid = Preferences::instance()->snapToGrid();
-        bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-        if (modifiers & Qt::ControlModifier) {
-            snapToGrid = !snapToGrid;
-            snapToFineGrid = false;
-        }
-
-        mouseMovedWhileCreatingObject(pos, modifiers, snapToGrid, snapToFineGrid);
-    }
+    if (mNewMapObjectItem)
+        mouseMovedWhileCreatingObject(pos, modifiers);
 }
 
 void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (event->modifiers() & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
-
     if (mNewMapObjectItem) {
-        mousePressedWhileCreatingObject(event, snapToGrid, snapToFineGrid);
+        mousePressedWhileCreatingObject(event);
         return;
     }
 
@@ -148,31 +133,15 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         pixelCoords = renderer->screenToPixelCoords(event->scenePos());
     }
 
-    if (snapToFineGrid || snapToGrid) {
-        QPointF tileCoords = renderer->pixelToTileCoords(pixelCoords);
-        if (snapToFineGrid) {
-            int gridFine = Preferences::instance()->gridFine();
-            tileCoords = (tileCoords * gridFine).toPoint();
-            tileCoords /= gridFine;
-        } else {
-            tileCoords = tileCoords.toPoint();
-        }
-        pixelCoords = renderer->tileToPixelCoords(tileCoords);
-    }
+    SnapHelper(renderer, event->modifiers()).snap(pixelCoords);
 
     startNewMapObject(pixelCoords, objectGroup);
 }
 
 void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (event->modifiers() & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
     if (mNewMapObjectItem)
-        mouseReleasedWhileCreatingObject(event, snapToGrid, snapToFineGrid);
+        mouseReleasedWhileCreatingObject(event);
 }
 
 void CreateObjectTool::startNewMapObject(const QPointF &pos,
@@ -228,17 +197,17 @@ void CreateObjectTool::finishNewMapObject()
                                                       newMapObject));
 }
 
-void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers, bool, bool)
+void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers)
 {
-   //optional override
+    // optional override
 }
 
-void CreateObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *, bool, bool)
+void CreateObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *)
 {
-    //optional override
+    // optional override
 }
 
-void CreateObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *, bool, bool)
+void CreateObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *)
 {
-    //optional override
+    // optional override
 }

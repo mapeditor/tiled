@@ -27,7 +27,7 @@
 #include "maprenderer.h"
 #include "mapview.h"
 #include "objectgroup.h"
-#include "preferences.h"
+#include "snaphelper.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
@@ -147,7 +147,6 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     // Determine where to insert the objects
     const MapRenderer *renderer = mapDocument->renderer();
     const QPointF center = objectGroup->objectsBoundingRect().center();
-    const QPointF tileCenter = renderer->pixelToTileCoords(center);
 
     // Take the mouse position if the mouse is on the view, otherwise
     // take the center of the view.
@@ -158,15 +157,8 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         viewPos = QPoint(view->width() / 2, view->height() / 2);
 
     const QPointF scenePos = view->mapToScene(viewPos);
-    QPointF insertPos = renderer->screenToTileCoords(scenePos) - tileCenter;
-    if (Preferences::instance()->snapToFineGrid()) {
-        int gridFine = Preferences::instance()->gridFine();
-        insertPos = (insertPos * gridFine).toPoint();
-        insertPos /= gridFine;
-    } else if (Preferences::instance()->snapToGrid()) {
-        insertPos = insertPos.toPoint();
-    }
-    const QPointF offset = renderer->tileToPixelCoords(insertPos);
+    QPointF insertPos = renderer->screenToPixelCoords(scenePos) - center;
+    SnapHelper(renderer).snap(insertPos);
 
     QUndoStack *undoStack = mapDocument->undoStack();
     QList<MapObject*> pastedObjects;
@@ -178,7 +170,7 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
             continue;
 
         MapObject *objectClone = mapObject->clone();
-        objectClone->setPosition(objectClone->position() + offset);
+        objectClone->setPosition(objectClone->position() + insertPos);
         pastedObjects.append(objectClone);
         undoStack->push(new AddMapObject(mapDocument,
                                          currentObjectGroup,

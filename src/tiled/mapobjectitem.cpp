@@ -32,6 +32,7 @@
 #include "objectgroupitem.h"
 #include "preferences.h"
 #include "resizemapobject.h"
+#include "snaphelper.h"
 #include "tile.h"
 #include "zoomable.h"
 
@@ -145,28 +146,11 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
         MapRenderer *renderer = mMapObjectItem->mapDocument()->renderer();
 
         if (change == ItemPositionChange) {
-            bool snapToGrid = Preferences::instance()->snapToGrid();
-            bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-            if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-                snapToGrid = !snapToGrid;
-                snapToFineGrid = false;
-            }
-
             QPointF newSize = value.toPointF();
             newSize.setX(qMax(newSize.x(), qreal(0)));
             newSize.setY(qMax(newSize.y(), qreal(0)));
 
-            if (snapToFineGrid || snapToGrid) {
-                QPointF newTileSize = renderer->pixelToTileCoords(newSize);
-                if (snapToFineGrid) {
-                    int gridFine = Preferences::instance()->gridFine();
-                    newTileSize = (newTileSize * gridFine).toPoint();
-                    newTileSize /= gridFine;
-                } else {
-                    newTileSize = newTileSize.toPoint();
-                }
-                newSize = renderer->tileToPixelCoords(newTileSize);
-            }
+            SnapHelper(renderer, QApplication::keyboardModifiers()).snap(newSize);
 
             return newSize;
         }

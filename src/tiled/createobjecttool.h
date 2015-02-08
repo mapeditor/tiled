@@ -62,14 +62,13 @@ public slots:
 
 protected:
     virtual void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
-    virtual void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
-    virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
-
+                                               Qt::KeyboardModifiers modifiers);
+    virtual void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
 
 
     virtual void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    virtual MapObject* createNewMapObject() =0;
+    virtual MapObject *createNewMapObject() = 0;
     virtual void cancelNewMapObject();
     virtual void finishNewMapObject();
 

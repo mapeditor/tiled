@@ -33,6 +33,7 @@
 #include "raiselowerhelper.h"
 #include "rotatemapobject.h"
 #include "selectionrectangle.h"
+#include "snaphelper.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
@@ -548,24 +549,16 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mStart;
 
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
+    SnapHelper snapHelper(renderer, modifiers);
 
-    if (snapToGrid || snapToFineGrid) {
-        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignScreenPos =
-                renderer->pixelToScreenCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignScreenPos + diff;
+    if (snapHelper.snaps()) {
+        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition);
+        const QPointF newAlignScreenPos = alignScreenPos + diff;
 
-        // Snap the position to the grid
-        QPointF newTileCoords =
-                (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
-        newTileCoords /= scale;
-        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
+        QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos);
+        snapHelper.snap(newAlignPixelPos);
+
+        diff = renderer->pixelToScreenCoords(newAlignPixelPos) - alignScreenPos;
     }
 
     int i = 0;

@@ -241,6 +241,8 @@ QtGuiApplication {
         "saveasimagedialog.ui",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
+        "snaphelper.cpp",
+        "snaphelper.h",
         "stampbrush.cpp",
         "stampbrush.h",
         "terrainbrush.cpp",

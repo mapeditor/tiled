@@ -19,11 +19,12 @@
 */
 
 #include "imagemovementtool.h"
-#include "imagelayer.h"
+
 #include "changeimagelayerposition.h"
+#include "imagelayer.h"
 #include "mapdocument.h"
-#include "preferences.h"
 #include "maprenderer.h"
+#include "snaphelper.h"
 
 #include <QUndoStack>
 
@@ -64,30 +65,10 @@ void ImageMovementTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers mod
     if (!layer)
         return;
 
-    QPointF diff = pos - mMouseStart;
+    QPointF newPosition = mLayerStart + (pos - mMouseStart);
+    SnapHelper(mapDocument()->renderer(), modifiers).snap(newPosition);
 
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
-
-    if (snapToGrid || snapToFineGrid) {
-        MapRenderer *renderer = mapDocument()->renderer();
-        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignScreenPos =
-                renderer->pixelToScreenCoords(mLayerStart);
-        const QPointF newAlignPixelPos = alignScreenPos + diff;
-
-        // Snap the position to the grid
-        QPointF newTileCoords =
-                (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
-        newTileCoords /= scale;
-        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
-    }
-
-    layer->setPosition(mLayerStart + diff.toPoint());
+    layer->setPosition(newPosition.toPoint());
     mapDocument()->emitImageLayerChanged(layer);
 }
 
