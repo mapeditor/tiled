@@ -44,16 +44,21 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
 
     const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
     const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
-    QPointF tileCoords = renderer->screenToTileCoords(pos + diff);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
 
-    if (snapToFineGrid) {
-        int gridFine = Preferences::instance()->gridFine();
-        tileCoords = (tileCoords * gridFine).toPoint();
-        tileCoords /= gridFine;
-    } else if (snapToGrid)
-        tileCoords = tileCoords.toPoint();
+    if (snapToFineGrid || snapToGrid) {
+        QPointF tileCoords = renderer->pixelToTileCoords(pixelCoords);
 
-    QPointF pixelCoords = renderer->tileToPixelCoords(tileCoords);
+        if (snapToFineGrid) {
+            int gridFine = Preferences::instance()->gridFine();
+            tileCoords = (tileCoords * gridFine).toPoint();
+            tileCoords /= gridFine;
+        } else {
+            tileCoords = tileCoords.toPoint();
+        }
+
+        pixelCoords = renderer->tileToPixelCoords(tileCoords);
+    }
 
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
@@ -64,7 +69,6 @@ void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEv
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
-    CreateObjectTool::mousePressed(event);
 }
 
 void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)

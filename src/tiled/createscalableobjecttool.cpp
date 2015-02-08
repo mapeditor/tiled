@@ -44,23 +44,25 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
     const QPointF objectPos = mNewMapObjectItem->mapObject()->position();
     QPointF newSize(qMax(qreal(0), pixelCoords.x() - objectPos.x()),
                     qMax(qreal(0), pixelCoords.y() - objectPos.y()));
-    QPointF newTileSize = renderer->pixelToTileCoords(newSize);
-
-    if (snapToFineGrid) {
-        int gridFine = Preferences::instance()->gridFine();
-        newTileSize = (newTileSize * gridFine).toPoint();
-        newTileSize /= gridFine;
-    } else if (snapToGrid)
-        newTileSize = newTileSize.toPoint();
 
     // Holding shift creates circle or square
     if (modifiers & Qt::ShiftModifier) {
-        qreal max = qMax(newTileSize.x(), newTileSize.y());
-        newTileSize.setX(max);
-        newTileSize.setY(max);
+        qreal max = qMax(newSize.x(), newSize.y());
+        newSize.setX(max);
+        newSize.setY(max);
     }
 
-    newSize = renderer->tileToPixelCoords(newTileSize);
+    if (snapToFineGrid || snapToGrid) {
+        QPointF newTileSize = renderer->pixelToTileCoords(newSize);
+        if (snapToFineGrid) {
+            int gridFine = Preferences::instance()->gridFine();
+            newTileSize = (newTileSize * gridFine).toPoint();
+            newTileSize /= gridFine;
+        } else {
+            newTileSize = newTileSize.toPoint();
+        }
+        newSize = renderer->tileToPixelCoords(newTileSize);
+    }
 
     mNewMapObjectItem->resizeObject(QSizeF(newSize.x(), newSize.y()));
 }

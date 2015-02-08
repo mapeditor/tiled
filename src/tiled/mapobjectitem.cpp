@@ -152,33 +152,30 @@ QVariant ResizeHandle::itemChange(GraphicsItemChange change,
                 snapToFineGrid = false;
             }
 
-            // Calculate the absolute pixel position
-            const QPointF itemPos = mMapObjectItem->pos();
-            QPointF pixelPos = value.toPointF() + itemPos;
+            QPointF newSize = value.toPointF();
+            newSize.setX(qMax(newSize.x(), qreal(0)));
+            newSize.setY(qMax(newSize.y(), qreal(0)));
 
-            // Calculate the new coordinates in pixels
-            QPointF tileCoords = renderer->screenToTileCoords(pixelPos);
-            const QPointF objectPos = mMapObjectItem->mapObject()->position();
-            const QPointF objectTilePos = renderer->pixelToTileCoords(objectPos);
-            tileCoords -= objectTilePos;
-            tileCoords.setX(qMax(tileCoords.x(), qreal(0)));
-            tileCoords.setY(qMax(tileCoords.y(), qreal(0)));
-            if (snapToFineGrid) {
-                int gridFine = Preferences::instance()->gridFine();
-                tileCoords = (tileCoords * gridFine).toPoint();
-                tileCoords /= gridFine;
-            } else if (snapToGrid)
-                tileCoords = tileCoords.toPoint();
-            tileCoords += objectTilePos;
+            if (snapToFineGrid || snapToGrid) {
+                QPointF newTileSize = renderer->pixelToTileCoords(newSize);
+                if (snapToFineGrid) {
+                    int gridFine = Preferences::instance()->gridFine();
+                    newTileSize = (newTileSize * gridFine).toPoint();
+                    newTileSize /= gridFine;
+                } else {
+                    newTileSize = newTileSize.toPoint();
+                }
+                newSize = renderer->tileToPixelCoords(newTileSize);
+            }
 
-            return renderer->tileToScreenCoords(tileCoords) - itemPos;
+            return newSize;
         }
         else if (change == ItemPositionHasChanged) {
             // Update the size of the map object
             const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
-            QPointF tileCoords = renderer->screenToPixelCoords(newPos);
-            tileCoords -= mMapObjectItem->mapObject()->position();
-            mMapObjectItem->resizeObject(QSizeF(tileCoords.x(), tileCoords.y()));
+            QPointF pixelCoords = renderer->screenToPixelCoords(newPos);
+            pixelCoords -= mMapObjectItem->mapObject()->position();
+            mMapObjectItem->resizeObject(QSizeF(pixelCoords.x(), pixelCoords.y()));
         }
     }
 

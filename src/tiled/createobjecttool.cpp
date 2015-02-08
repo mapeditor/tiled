@@ -73,7 +73,7 @@ void CreateObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Enter:
     case Qt::Key_Return:
         if (mNewMapObjectItem) {
-                finishNewMapObject();
+            finishNewMapObject();
             return;
         }
         break;
@@ -118,7 +118,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         snapToFineGrid = false;
     }
 
-    if(mNewMapObjectItem){
+    if (mNewMapObjectItem) {
         mousePressedWhileCreatingObject(event, snapToGrid, snapToFineGrid);
         return;
     }
@@ -133,7 +133,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     const MapRenderer *renderer = mapDocument()->renderer();
-    QPointF tileCoords;
+    QPointF pixelCoords;
 
     /*TODO: calculate the tile offset with a polymorphic behaviour object
      * that is instantiated by the correspondend ObjectTool
@@ -143,19 +143,22 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
             return;
 
         const QPointF diff(-mTile->width() / 2, mTile->height() / 2);
-        tileCoords = renderer->screenToTileCoords(event->scenePos() + diff);
+        pixelCoords = renderer->screenToPixelCoords(event->scenePos() + diff);
     } else {
-        tileCoords = renderer->screenToTileCoords(event->scenePos());
+        pixelCoords = renderer->screenToPixelCoords(event->scenePos());
     }
 
+    if (snapToFineGrid || snapToGrid) {
+        QPointF tileCoords = renderer->pixelToTileCoords(pixelCoords);
         if (snapToFineGrid) {
-        int gridFine = Preferences::instance()->gridFine();
-        tileCoords = (tileCoords * gridFine).toPoint();
-        tileCoords /= gridFine;
-    } else if (snapToGrid)
-        tileCoords = tileCoords.toPoint();
-    
-    const QPointF pixelCoords = renderer->tileToPixelCoords(tileCoords);
+            int gridFine = Preferences::instance()->gridFine();
+            tileCoords = (tileCoords * gridFine).toPoint();
+            tileCoords /= gridFine;
+        } else {
+            tileCoords = tileCoords.toPoint();
+        }
+        pixelCoords = renderer->tileToPixelCoords(tileCoords);
+    }
 
     startNewMapObject(pixelCoords, objectGroup);
 }
@@ -168,9 +171,8 @@ void CreateObjectTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         snapToGrid = !snapToGrid;
         snapToFineGrid = false;
     }
-    if (mNewMapObjectItem){
+    if (mNewMapObjectItem)
         mouseReleasedWhileCreatingObject(event, snapToGrid, snapToFineGrid);
-    }
 }
 
 void CreateObjectTool::startNewMapObject(const QPointF &pos,

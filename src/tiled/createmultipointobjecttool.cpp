@@ -49,16 +49,21 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
                                                                bool snapToGrid, bool snapToFineGrid)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    QPointF tileCoords = renderer->screenToTileCoords(pos);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
 
-    if (snapToFineGrid) {
-        int gridFine = Preferences::instance()->gridFine();
-        tileCoords = (tileCoords * gridFine).toPoint();
-        tileCoords /= gridFine;
-    } else if (snapToGrid)
-        tileCoords = tileCoords.toPoint();
+    if (snapToFineGrid || snapToGrid) {
+        QPointF tileCoords = renderer->pixelToTileCoords(pixelCoords);
 
-    QPointF pixelCoords = renderer->tileToPixelCoords(tileCoords);
+        if (snapToFineGrid) {
+            int gridFine = Preferences::instance()->gridFine();
+            tileCoords = (tileCoords * gridFine).toPoint();
+            tileCoords /= gridFine;
+        } else {
+            tileCoords = tileCoords.toPoint();
+        }
+        pixelCoords = renderer->tileToPixelCoords(tileCoords);
+    }
+
     pixelCoords -= mNewMapObjectItem->mapObject()->position();
 
     QPolygonF polygon = mOverlayPolygonObject->polygon();
