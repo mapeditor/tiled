@@ -87,6 +87,7 @@ void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
                            copy->width(), copy->height(),
                            map->tileWidth(), map->tileHeight());
 
+    copyMap->setRenderOrder(map->renderOrder());
     copyMap->addLayer(copy);
 
     // Add tileset references to map and tileset manager

@@ -93,6 +93,8 @@ signals:
      */
     void tilesetsDropped(const QStringList &paths);
 
+    void newTileset();
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -125,7 +127,7 @@ private slots:
     void addTiles();
     void removeTiles();
 
-    void documentCloseRequested(int index);
+    void documentAboutToClose(MapDocument *mapDocument);
 
     void refreshTilesetMenu();
 
@@ -147,6 +149,7 @@ private:
     TileLayer *mCurrentTiles;
     const Terrain *mTerrain;
 
+    QAction *mNewTileset;
     QAction *mImportTileset;
     QAction *mExportTileset;
     QAction *mPropertiesTileset;

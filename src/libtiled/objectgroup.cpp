@@ -31,6 +31,7 @@
 #include "objectgroup.h"
 
 #include "layer.h"
+#include "map.h"
 #include "mapobject.h"
 #include "tile.h"
 #include "tileset.h"
@@ -61,12 +62,16 @@ void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
     object->setObjectGroup(this);
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
     object->setObjectGroup(this);
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 int ObjectGroup::removeObject(MapObject *object)

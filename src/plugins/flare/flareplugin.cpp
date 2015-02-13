@@ -99,6 +99,8 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     map->setTileWidth(value.toInt());
                 else if (key == QLatin1String("tileheight"))
                     map->setTileHeight(value.toInt());
+                else if (key == QLatin1String("orientation"))
+                    map->setOrientation(orientationFromString(value));
                 else
                     map->setProperty(key, value);
             }
@@ -109,7 +111,11 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
             QString value = line.mid(epos + 1, -1).trimmed();
             if (key == QLatin1String("tileset")) {
                 QStringList list = value.split(QChar(','));
-                QString absoluteSource = path + QLatin1Char('/') + list[0];
+
+                QString absoluteSource(list.first());
+                if (QDir::isRelativePath(absoluteSource))
+                    absoluteSource = path + QLatin1Char('/') + absoluteSource;
+
                 int tilesetwidth = 0;
                 int tilesetheight = 0;
                 if (list.size() > 2) {
@@ -209,11 +215,30 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     mapobject->setType(value);
                 } else if (key == QLatin1String("location")) {
                     QStringList loc = value.split(QChar(','));
-                    mapobject->setPosition(QPointF(loc[0].toFloat(), loc[1].toFloat()));
-                    if (loc.size() > 3)
-                        mapobject->setSize(loc[2].toInt(), loc[3].toInt());
-                    else
-                        mapobject->setSize(1, 1);
+                    float x,y;
+                    int w,h;
+                    if (map->orientation() == Map::Orthogonal) {
+                        x = loc[0].toFloat()*map->tileWidth();
+                        y = loc[1].toFloat()*map->tileHeight();
+                        if (loc.size() > 3) {
+                            w = loc[2].toInt()*map->tileWidth();
+                            h = loc[3].toInt()*map->tileHeight();
+                        } else {
+                            w = map->tileWidth();
+                            h = map->tileHeight();
+                        }
+                    } else {
+                        x = loc[0].toFloat()*map->tileHeight();
+                        y = loc[1].toFloat()*map->tileHeight();
+                        if (loc.size() > 3) {
+                            w = loc[2].toInt()*map->tileHeight();
+                            h = loc[3].toInt()*map->tileHeight();
+                        } else {
+                            w = h = map->tileHeight();
+                        }
+                    }
+                    mapobject->setPosition(QPointF(x, y));
+                    mapobject->setSize(w, h);
                 } else {
                     mapobject->setProperty(key, value);
                 }
@@ -267,6 +292,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "height=" << mapHeight << "\n";
     out << "tilewidth=" << map->tileWidth() << "\n";
     out << "tileheight=" << map->tileHeight() << "\n";
+    out << "orientation=" << orientationToString(map->orientation()) << "\n";
 
     // write all properties for this map
     Properties::const_iterator it = map->properties().constBegin();
@@ -325,8 +351,20 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     }
 
                     out << "type=" << o->type() << "\n";
-                    out << "location=" << o->x() << "," << o->y();
-                    out << "," << o->width() << "," << o->height() << "\n";
+                    int x,y,w,h;
+                    if (map->orientation() == Map::Orthogonal) {
+                        x = o->x()/map->tileWidth();
+                        y = o->y()/map->tileHeight();
+                        w = o->width()/map->tileWidth();
+                        h = o->height()/map->tileHeight();
+                    } else {
+                        x = o->x()/map->tileHeight();
+                        y = o->y()/map->tileHeight();
+                        w = o->width()/map->tileHeight();
+                        h = o->height()/map->tileHeight();
+                    }
+                    out << "location=" << x << "," << y;
+                    out << "," << w << "," << h << "\n";
 
                     // write all properties for this object
                     Properties::const_iterator it = o->properties().constBegin();

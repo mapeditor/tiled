@@ -6,10 +6,7 @@ TARGET = tmxrasterizer
 target.path = $${PREFIX}/bin
 INSTALLS += target
 TEMPLATE = app
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+CONFIG += console
 
 win32 {
     DESTDIR = ../..
@@ -18,6 +15,7 @@ win32 {
 }
 
 macx {
+    CONFIG -= app_bundle
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib

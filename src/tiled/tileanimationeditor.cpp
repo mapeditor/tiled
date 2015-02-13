@@ -25,9 +25,11 @@
 #include "mapdocument.h"
 #include "rangeset.h"
 #include "tile.h"
+#include "tileanimationdriver.h"
 #include "tiled.h"
 #include "tileset.h"
 #include "utils.h"
+#include "zoomable.h"
 
 #include <QAbstractListModel>
 #include <QCloseEvent>
@@ -63,9 +65,14 @@ public:
     Qt::DropActions supportedDropActions() const;
 
     void setFrames(const Tileset *tileset, const QVector<Frame> &frames);
+    void addTileIdAsFrame(int id);
     const QVector<Frame> &frames() const;
 
 private:
+    static const int DEFAULT_DURATION = 100;
+
+    void addFrame(const Frame &frame);
+
     const Tileset *mTileset;
     QVector<Frame> mFrames;
 };
@@ -199,7 +206,7 @@ bool FrameListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         while (!stream.atEnd()) {
             Frame frame;
             stream >> frame.tileId;
-            frame.duration = 100;
+            frame.duration = DEFAULT_DURATION;
             newFrames.append(frame);
         }
     }
@@ -227,6 +234,21 @@ void FrameListModel::setFrames(const Tileset *tileset,
     endResetModel();
 }
 
+void FrameListModel::addTileIdAsFrame(int id)
+{
+    Frame frame;
+    frame.tileId = id;
+    frame.duration = DEFAULT_DURATION;
+    addFrame(frame);
+}
+
+void FrameListModel::addFrame(const Frame &frame)
+{
+    beginInsertRows(QModelIndex(), mFrames.size(), mFrames.size());
+    mFrames.append(frame);
+    endInsertRows();
+}
+
 const QVector<Frame> &FrameListModel::frames() const
 {
     return mFrames;
@@ -240,10 +262,21 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     , mTile(0)
     , mFrameListModel(new FrameListModel(this))
     , mApplyingChanges(false)
+    , mPreviewAnimationDriver(new TileAnimationDriver(this))
+    , mPreviewFrameIndex(0)
+    , mPreviewUnusedTime(0)
 {
     mUi->setupUi(this);
+
+    Zoomable *zoomable = new Zoomable(this);
+    zoomable->connectToComboBox(mUi->zoomComboBox);
+
     mUi->frameList->setModel(mFrameListModel);
     mUi->tilesetView->setMarkAnimatedTiles(false);
+    mUi->tilesetView->setZoomable(zoomable);
+
+    connect(mUi->tilesetView, SIGNAL(doubleClicked(QModelIndex)),
+            SLOT(addFrameForTileAt(QModelIndex)));
 
     connect(mFrameListModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             SLOT(framesEdited()));
@@ -254,6 +287,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mFrameListModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             SLOT(framesEdited()));
 
+    connect(mPreviewAnimationDriver, SIGNAL(update(int)),
+            SLOT(advancePreviewAnimation(int)));
+
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
@@ -263,6 +299,8 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
 
     Utils::restoreGeometry(this);
+
+    mUi->horizontalSplitter->setSizes(QList<int>() << 128 << 512);
 }
 
 TileAnimationEditor::~TileAnimationEditor()
@@ -281,6 +319,8 @@ void TileAnimationEditor::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, SIGNAL(tileAnimationChanged(Tile*)),
                 SLOT(tileAnimationChanged(Tile*)));
+        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
+                SLOT(tilesetFileNameChanged(Tileset*)));
     }
 }
 
@@ -298,6 +338,10 @@ void TileAnimationEditor::setTile(Tile *tile)
     } else {
         mFrameListModel->setFrames(0, QVector<Frame>());
     }
+
+    mUi->frameList->setEnabled(tile && !tile->tileset()->isExternal());
+
+    resetPreview();
 }
 
 void TileAnimationEditor::writeSettings()
@@ -310,6 +354,28 @@ void TileAnimationEditor::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
     if (event->isAccepted())
         emit closed();
+}
+
+void TileAnimationEditor::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        mUi->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
+}
+
+void TileAnimationEditor::showEvent(QShowEvent *)
+{
+    mPreviewAnimationDriver->start();
+}
+
+void TileAnimationEditor::hideEvent(QHideEvent *)
+{
+    mPreviewAnimationDriver->stop();
 }
 
 void TileAnimationEditor::framesEdited()
@@ -327,10 +393,30 @@ void TileAnimationEditor::tileAnimationChanged(Tile *tile)
 {
     if (mTile != tile)
         return;
+
+    resetPreview();
+
     if (mApplyingChanges)
         return;
 
     mFrameListModel->setFrames(tile->tileset(), tile->frames());
+}
+
+void TileAnimationEditor::tilesetFileNameChanged(Tileset *tileset)
+{
+    if (mTile && mTile->tileset() == tileset)
+        mUi->frameList->setEnabled(!tileset->isExternal());
+}
+
+void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
+{
+    Q_ASSERT(mTile);
+
+    if (mTile->tileset()->isExternal())
+        return;
+
+    const Tile *tile = mUi->tilesetView->tilesetModel()->tileAt(index);
+    mFrameListModel->addTileIdAsFrame(tile->id());
 }
 
 void TileAnimationEditor::undo()
@@ -347,7 +433,10 @@ void TileAnimationEditor::redo()
 
 void TileAnimationEditor::delete_()
 {
-    if (!mMapDocument)
+    if (!mMapDocument || !mTile)
+        return;
+
+    if (mTile->tileset()->isExternal())
         return;
 
     QItemSelectionModel *selectionModel = mUi->frameList->selectionModel();
@@ -366,8 +455,7 @@ void TileAnimationEditor::delete_()
     // Iterate backwards over the ranges in order to keep the indexes valid
     RangeSet<int>::Range firstRange = ranges.begin();
     RangeSet<int>::Range it = ranges.end();
-    if (it == firstRange) // no range
-        return;
+    Q_ASSERT(it != firstRange); // no range not possible
 
     do {
         --it;
@@ -375,6 +463,47 @@ void TileAnimationEditor::delete_()
     } while (it != firstRange);
 
     undoStack->endMacro();
+}
+
+void TileAnimationEditor::advancePreviewAnimation(int ms)
+{
+    if (!mTile || !mTile->isAnimated())
+        return;
+
+    mPreviewUnusedTime += ms;
+
+    const QVector<Frame> &frames = mTile->frames();
+    Frame frame = frames.at(mPreviewFrameIndex);
+    const int previousTileId = frame.tileId;
+
+    while (frame.duration > 0 && mPreviewUnusedTime > frame.duration) {
+        mPreviewUnusedTime -= frame.duration;
+        mPreviewFrameIndex = (mPreviewFrameIndex + 1) % frames.size();
+
+        frame = frames.at(mPreviewFrameIndex);
+    }
+
+    if (previousTileId != frame.tileId) {
+        if (const Tile *tile = mTile->tileset()->tileAt(frame.tileId))
+            mUi->preview->setPixmap(tile->image());
+    }
+}
+
+void TileAnimationEditor::resetPreview()
+{
+    mPreviewFrameIndex = 0;
+    mPreviewUnusedTime = 0;
+
+    if (mTile && mTile->isAnimated()) {
+        const int tileId = mTile->frames().first().tileId;
+        if (const Tile *tile = mTile->tileset()->tileAt(tileId)) {
+            mUi->preview->setPixmap(tile->image());
+            return;
+        }
+    }
+
+    mUi->preview->setText(QApplication::translate("TileAnimationEditor",
+                                                  "Preview"));
 }
 
 } // namespace Internal

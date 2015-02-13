@@ -69,6 +69,8 @@ public:
     QString m_statusTip;
     QString m_whatsThis;
     QString m_name;
+    QColor m_nameColor;
+    QColor m_valueColor;
     bool m_enabled;
     bool m_modified;
 
@@ -245,6 +247,26 @@ QString QtProperty::propertyName() const
 }
 
 /*!
+    Returns the property's name color.
+
+    \sa setNameColor()
+*/
+QColor QtProperty::nameColor() const
+{
+    return d_ptr->m_nameColor;
+}
+
+/*!
+    Returns the property's value color.
+
+    \sa setValueColor()
+*/
+QColor QtProperty::valueColor() const
+{
+    return d_ptr->m_valueColor;
+}
+
+/*!
     Returns whether the property is enabled.
 
     \sa setEnabled()
@@ -368,6 +390,38 @@ void QtProperty::setPropertyName(const QString &text)
         return;
 
     d_ptr->m_name = text;
+    propertyChanged();
+}
+
+/*!
+    \fn void QtProperty::setNameColor(const QColor &color)
+
+    Sets the property's name color to the given \a color.
+
+    \sa nameColor()
+*/
+void QtProperty::setNameColor(const QColor &color)
+{
+    if (d_ptr->m_nameColor == color)
+        return;
+
+    d_ptr->m_nameColor = color;
+    propertyChanged();
+}
+
+/*!
+    \fn void QtProperty::setValueColor(const QColor &color)
+
+    Sets the property's value color to the given \a color.
+
+    \sa valueColor()
+*/
+void QtProperty::setValueColor(const QColor &color)
+{
+    if (d_ptr->m_valueColor == color)
+        return;
+
+    d_ptr->m_valueColor = color;
     propertyChanged();
 }
 

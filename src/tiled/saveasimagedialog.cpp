@@ -115,6 +115,11 @@ static bool objectLessThan(const MapObject *a, const MapObject *b)
     return a->y() < b->y();
 }
 
+static bool smoothTransform(qreal scale)
+{
+    return scale != qreal(1) && scale < qreal(2);
+}
+
 void SaveAsImageDialog::accept()
 {
     const QString fileName = mUi->fileNameEdit->text();
@@ -164,14 +169,17 @@ void SaveAsImageDialog::accept()
 
     QPainter painter(&image);
 
-    if (useCurrentScale && mCurrentScale != qreal(1)) {
-        painter.setRenderHints(QPainter::SmoothPixmapTransform |
-                               QPainter::HighQualityAntialiasing);
+    if (useCurrentScale) {
+        if (smoothTransform(mCurrentScale)) {
+            painter.setRenderHints(QPainter::SmoothPixmapTransform |
+                                   QPainter::HighQualityAntialiasing);
+        }
         painter.setTransform(QTransform::fromScale(mCurrentScale,
                                                    mCurrentScale));
         renderer->setPainterScale(mCurrentScale);
-    } else
+    } else {
         renderer->setPainterScale(1);
+    }
 
     foreach (const Layer *layer, mMapDocument->map()->layers()) {
         if (visibleLayersOnly && !layer->isVisible())
@@ -193,8 +201,19 @@ void SaveAsImageDialog::accept()
 
             foreach (const MapObject *object, objects) {
                 if (object->isVisible()) {
+                    if (object->rotation() != qreal(0)) {
+                        QPointF origin = renderer->pixelToScreenCoords(object->position());
+                        painter.save();
+                        painter.translate(origin);
+                        painter.rotate(object->rotation());
+                        painter.translate(-origin);
+                    }
+
                     const QColor color = MapObjectItem::objectColor(object);
                     renderer->drawMapObject(&painter, object, color);
+
+                    if (object->rotation() != qreal(0))
+                        painter.restore();
                 }
             }
         } else if (imageLayer) {

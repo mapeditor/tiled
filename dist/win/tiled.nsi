@@ -39,8 +39,8 @@ RequestExecutionLevel admin
 !define MUI_ABORTWARNING
 
 ;------------- Language Selection Dialog Settings --------------
-!define MUI_LANGDLL_REGISTRY_ROOT "HKCU" 
-!define MUI_LANGDLL_REGISTRY_KEY "Software\${P}\${V}" 
+!define MUI_LANGDLL_REGISTRY_ROOT "HKCU"
+!define MUI_LANGDLL_REGISTRY_KEY "Software\${P}\${V}"
 !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
 ;-------------- Install Pages -------------
@@ -167,7 +167,7 @@ Call checkAlreadyInstalled
 SetOutPath $INSTDIR ; Set output path to the installation directory.
 WriteUninstaller $INSTDIR\uninstall.exe ; Location of the uninstaller
 
-File /oname=COPYING.txt ${ROOT_DIR}\COPYING 
+File /oname=COPYING.txt ${ROOT_DIR}\COPYING
 File /oname=AUTHORS.txt ${ROOT_DIR}\AUTHORS
 File /oname=README.txt ${ROOT_DIR}\README.md
 File /oname=NEWS.txt ${ROOT_DIR}\NEWS
@@ -183,13 +183,12 @@ File ${QT_DIR}\bin\Qt5Core.dll
 File ${QT_DIR}\bin\Qt5Gui.dll
 File ${QT_DIR}\bin\Qt5Widgets.dll
 File ${QT_DIR}\bin\Qt5OpenGL.dll
-File ${QT_DIR}\bin\libEGL.dll
-File ${QT_DIR}\bin\libGLESv2.dll
-File ${QT_DIR}\bin\icuin51.dll
-File ${QT_DIR}\bin\icuuc51.dll
-File ${QT_DIR}\bin\icudt51.dll
-File ${SYSTEM_DIR}\MSVCP100.DLL
-File ${SYSTEM_DIR}\MSVCR100.DLL
+File ${QT_DIR}\bin\icuin53.dll
+File ${QT_DIR}\bin\icuuc53.dll
+File ${QT_DIR}\bin\icudt53.dll
+File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
+File ${MINGW_DIR}\bin\libstdc++-6.dll
+File ${MINGW_DIR}\bin\libwinpthread-1.dll
 File ${ROOT_DIR}\src\tiled\images\tiled-icon.ico
 File ${ROOT_DIR}\dist\win\qt.conf
 
@@ -226,13 +225,13 @@ File /r ${ROOT_DIR}\docs\map.*
 SetOutPath $INSTDIR\util
 File /r /x .gitignore /x README /x README.txt ${ROOT_DIR}\util\*.*
 
-; Shortcuts 
+; Shortcuts
 CreateDirectory "$SMPROGRAMS\${P}"
 CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P_NORM}.exe"
 CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 ; File associations
-${RegisterExtension} "$INSTDIR\${P_NORM}" ".tmx" "Tiled.tmx"
+${RegisterExtension} "$INSTDIR\${P_NORM}.exe" ".tmx" "Tiled.tmx"
 
 ; Add version number to Registry
 WriteRegStr HKLM "Software\${PRODUCT_REG_KEY}" "Version" "${V}"
@@ -264,11 +263,12 @@ Delete $INSTDIR\Qt5Widgets.dll
 Delete $INSTDIR\Qt5OpenGL.dll
 Delete $INSTDIR\libEGL.dll
 Delete $INSTDIR\libGLESv2.dll
-Delete $INSTDIR\icuin51.dll
-Delete $INSTDIR\icuuc51.dll
-Delete $INSTDIR\icudt51.dll
-Delete $INSTDIR\MSVCP100.DLL
-Delete $INSTDIR\MSVCR100.DLL
+Delete $INSTDIR\icuin53.dll
+Delete $INSTDIR\icuuc53.dll
+Delete $INSTDIR\icudt53.dll
+Delete $INSTDIR\libgcc_s_dw2-1.dll
+Delete $INSTDIR\libstdc++-6.dll
+Delete $INSTDIR\libwinpthread-1.dll
 Delete $INSTDIR\tiled-icon.ico
 Delete $INSTDIR\qt.conf
 Delete $INSTDIR\uninstall.exe

@@ -29,13 +29,14 @@
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "preferences.h"
 #include "rangeset.h"
 #include "selectionrectangle.h"
+#include "snaphelper.h"
 #include "utils.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
+#include <QGraphicsView>
 #include <QMenu>
 #include <QPainter>
 #include <QPalette>
@@ -64,6 +65,9 @@ public:
         setZValue(10000);
         setCursor(Qt::SizeAllCursor);
     }
+
+    enum { Type = UserType + 2 };
+    int type() const { return Type; }
 
     MapObjectItem *mapObjectItem() const { return mMapObjectItem; }
     MapObject *mapObject() const { return mMapObjectItem->mapObject(); }
@@ -211,10 +215,18 @@ template <class T>
 static T *first(const QList<QGraphicsItem *> &items)
 {
     foreach (QGraphicsItem *item, items) {
-        if (T *t = dynamic_cast<T*>(item))
+        if (T *t = qgraphicsitem_cast<T*>(item))
             return t;
     }
     return 0;
+}
+
+static QTransform viewTransform(QGraphicsSceneMouseEvent *event)
+{
+    if (QWidget *widget = event->widget())
+        if (QGraphicsView *view = static_cast<QGraphicsView*>(widget->parent()))
+            return view->transform();
+    return QTransform();
 }
 
 void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -228,13 +240,21 @@ void EditPolygonTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mStart = event->scenePos();
         mScreenStart = event->screenPos();
 
-        const QList<QGraphicsItem *> items = mapScene()->items(mStart);
+        const QList<QGraphicsItem *> items = mapScene()->items(mStart,
+                                                               Qt::IntersectsItemShape,
+                                                               Qt::DescendingOrder,
+                                                               viewTransform(event));
+
         mClickedObjectItem = first<MapObjectItem>(items);
         mClickedHandle = first<PointHandle>(items);
         break;
     }
     case Qt::RightButton: {
-        QList<QGraphicsItem *> items = mapScene()->items(event->scenePos());
+        const QList<QGraphicsItem *> items = mapScene()->items(event->scenePos(),
+                                                               Qt::IntersectsItemShape,
+                                                               Qt::DescendingOrder,
+                                                               viewTransform(event));
+
         PointHandle *clickedHandle = first<PointHandle>(items);
         if (clickedHandle || !mSelectedHandles.isEmpty()) {
             showHandleContextMenu(clickedHandle,
@@ -294,7 +314,7 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         }
         break;
     case Selecting:
-        updateSelection(event->scenePos(), event->modifiers());
+        updateSelection(event);
         mapScene()->removeItem(mSelectionRectangle);
         mMode = NoMode;
         break;
@@ -405,10 +425,9 @@ void EditPolygonTool::objectsRemoved(const QList<MapObject *> &objects)
     }
 }
 
-void EditPolygonTool::updateSelection(const QPointF &pos,
-                                      Qt::KeyboardModifiers modifiers)
+void EditPolygonTool::updateSelection(QGraphicsSceneMouseEvent *event)
 {
-    QRectF rect = QRectF(mStart, pos).normalized();
+    QRectF rect = QRectF(mStart, event->scenePos()).normalized();
 
     // Make sure the rect has some contents, otherwise intersects returns false
     rect.setWidth(qMax(qreal(1), rect.width()));
@@ -420,7 +439,10 @@ void EditPolygonTool::updateSelection(const QPointF &pos,
         // Allow selecting some map objects only when there aren't any selected
         QSet<MapObjectItem*> selectedItems;
 
-        foreach (QGraphicsItem *item, mapScene()->items(rect)) {
+        foreach (QGraphicsItem *item, mapScene()->items(rect,
+                                                        Qt::IntersectsItemShape,
+                                                        Qt::DescendingOrder,
+                                                        viewTransform(event))) {
             MapObjectItem *mapObjectItem = dynamic_cast<MapObjectItem*>(item);
             if (mapObjectItem)
                 selectedItems.insert(mapObjectItem);
@@ -429,7 +451,7 @@ void EditPolygonTool::updateSelection(const QPointF &pos,
 
         QSet<MapObjectItem*> newSelection;
 
-        if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier)) {
+        if (event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier)) {
             newSelection = oldSelection | selectedItems;
         } else {
             newSelection = selectedItems;
@@ -441,12 +463,15 @@ void EditPolygonTool::updateSelection(const QPointF &pos,
         // Update the selected handles
         QSet<PointHandle*> selectedHandles;
 
-        foreach (QGraphicsItem *item, mapScene()->items(rect)) {
+        foreach (QGraphicsItem *item, mapScene()->items(rect,
+                                                        Qt::IntersectsItemShape,
+                                                        Qt::DescendingOrder,
+                                                        viewTransform(event))) {
             if (PointHandle *handle = dynamic_cast<PointHandle*>(item))
                 selectedHandles.insert(handle);
         }
 
-        if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier))
+        if (event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier))
             setSelectedHandles(mSelectedHandles | selectedHandles);
         else
             setSelectedHandles(selectedHandles);
@@ -494,24 +519,16 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mStart;
 
-    bool snapToGrid = Preferences::instance()->snapToGrid();
-    bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
-    if (modifiers & Qt::ControlModifier) {
-        snapToGrid = !snapToGrid;
-        snapToFineGrid = false;
-    }
+    SnapHelper snapHelper(renderer, modifiers);
 
-    if (snapToGrid || snapToFineGrid) {
-        int scale = snapToFineGrid ? Preferences::instance()->gridFine() : 1;
-        const QPointF alignScreenPos =
-                renderer->pixelToScreenCoords(mAlignPosition);
-        const QPointF newAlignPixelPos = alignScreenPos + diff;
+    if (snapHelper.snaps()) {
+        const QPointF alignScreenPos = renderer->pixelToScreenCoords(mAlignPosition);
+        const QPointF newAlignScreenPos = alignScreenPos + diff;
 
-        // Snap the position to the grid
-        QPointF newTileCoords =
-                (renderer->screenToTileCoords(newAlignPixelPos) * scale).toPoint();
-        newTileCoords /= scale;
-        diff = renderer->tileToScreenCoords(newTileCoords) - alignScreenPos;
+        QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos);
+        snapHelper.snap(newAlignPixelPos);
+
+        diff = renderer->pixelToScreenCoords(newAlignPixelPos) - alignScreenPos;
     }
 
     int i = 0;

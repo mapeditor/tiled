@@ -1,3 +1,83 @@
+0.11.0 (11 January 2015)
+* Added support for hexagonal maps (offset coordinates)
+* Added 'Export' action to repeat the last export
+* Added a shortcut for the Reload action (Ctrl+R)
+* Added ability to rename custom properties (by arn00d)
+* Added unique IDs to objects (by Mark van Rij)
+* Added a CSV export plugin
+* Added visual feedback when properties differ between multiple selected objects (by Parker Miller)
+* Added command-line export (by Brandon Dillon)
+* Allow dynamically changing the map orientation and grid size
+* Suppress the standard main window context menu in the collision editor
+* Lua plugin: Write out tile terrain information
+* Lua plugin: Include Tiled version in exported file
+* Flare plugin: Fixed ability to open maps with absolute paths
+* Fixed grid rendering for staggered maps
+* Fully support building and running Tiled with Qbs
+* Updated Czech, Dutch, French, German, Italian, Japanese, Portuguese and Spanish translations
+
+0.10.2 (23 October 2014)
+* Fixed hit area for polygon nodes when editing polygons while zoomed in or out
+* Fixed another possible crash in the orthogonal renderer
+* Fixed Select All action to work for object layers
+* Fixed map pixel size preview for staggered maps
+* Fixed repainting issues when tiles extend beyond their layer boundaries
+* Fixed repainting issues when using tiles smaller than the grid size
+* Display errors non-modal when applying automatic automapping rules
+* Flare plugin: Fixed coordinate format for import and export (by Justin Jacobs)
+* Lua plugin: Write out Image layer position
+* Small updates to the Italian translation (by Omnomnobot)
+
+0.10.1 (21 September 2014)
+* Fixed a crash that could happen when using the terrain tool
+* Fixed missing background color information from Lua export
+* Allow using up to 3 or 4 GB RAM on 32 or 64 bit Windows systems respectively
+
+0.10.0 (14 September 2014)
+* Added object rotation (sponsored by Ben Wales)
+* Added support for explicit object ordering (sponsored by Ben Wales)
+* Added new Properties window with a rewritten properties editor
+* Added support for writing plugins in Python (by Samuli Tuomola)
+* Added image collection tilesets (sponsored by Jamie Rocks)
+* Added map file watching and automatic reloading (sponsored by FlatRedBall.com)
+* Added support for moving objects with arrow keys (sponsored by Ben Wales)
+* Added a 'snap to fine grid' option (by Xenodora)
+* Added support for JavaScript (JSONP) load/save (by Dobes Vandermeer)
+* Added more zoom levels (by Joel Leclerc)
+* Added shortcuts for finishing and canceling object creation
+* Added a tile collision editor for defining collision shapes on tiles
+* Added a tile animation editor and play defined animations
+* Allow changing properties of multiple objects/tiles simultanously (by Parker Miller)
+* Added tile rendering-order map property (by Lennert Raesch)
+* Added support for changing the object line width
+* Added support for CSV-encoded layers to libtiled-java (by Alexei Bratuhin)
+* Added support for ellipse and polygon objects to libtiled-java (by Hendrik Brummermann)
+* Added terrain properties to JSON export (by Dennis Hostetler)
+* Added support for moving image layers in the Properties window (by Michael Aquilina)
+* Added option to include background image when saving as image (by Sean Humeniuk)
+* Added options to control layer visibility to tmxrasterizer (by Nathan Tolbert)
+* Added display of tile ID in status bar (by Champi080)
+* Added support for objects on staggered isometric maps (by Remco Kuijper)
+* Added support for staggered maps to tmxviewer and tmxrasterizer
+* Added a tool for moving the image of an image layer (by Mattia Basaglia)
+* Added button to the tileset dock as shortcut to add a tileset (by Erik Schilling)
+* Allow changing order of open document tabs (by Sean Humeniuk)
+* Changed object position and size units from tiles to pixels (by mauve)
+* Allow adding multiple tilesets at once (by mauve)
+* Make highlighted grid cells outside map red (by Sean Humeniuk)
+* Allow changing the drawing offset of a tileset
+* Fixed hang on Mac OS X when drawing certain ellipse objects
+* Fixed removal of polygon/polyline objects when resizing a map
+* Fixed writing of tile offset in the Lua export
+* Fixed updating of image layer when changing its image
+* Fixed start drag distance check when editing polygons and moving objects
+* Fixed console output of tmxrasterizer on Windows
+* Raise the Layers dock for editing a new layer's name
+* Avoid saving truncated files when compiled against Qt 5.1 or higher (by Erik Schilling)
+* Made Tiled registering *.tmx as MIME-type (by Erik Schilling)
+* Added Traditional Chinese translation (by Yehnan Chiang)
+* Updated Czech, Dutch, French, German, Russian and Spanish translations
+
 0.9.1 (27 July 2013)
 * Added saving of map background to JSON format (by Petr Viktorin)
 * Added saving of terrain information to JSON format (by Petr Viktorin)

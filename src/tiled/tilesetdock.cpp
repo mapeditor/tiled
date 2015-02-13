@@ -224,6 +224,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar(new QToolBar),
     mCurrentTile(0),
     mCurrentTiles(0),
+    mNewTileset(new QAction(this)),
     mImportTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
     mPropertiesTileset(new QAction(this)),
@@ -264,6 +265,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     horizontal->addWidget(mToolBar, 1);
     vertical->addLayout(horizontal);
 
+    mNewTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
     mImportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-import.png")));
     mExportTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-export.png")));
     mPropertiesTileset->setIcon(QIcon(QLatin1String(":images/16x16/document-properties.png")));
@@ -272,6 +274,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
 
+    Utils::setThemeIcon(mNewTileset, "document-new");
     Utils::setThemeIcon(mImportTileset, "document-import");
     Utils::setThemeIcon(mExportTileset, "document-export");
     Utils::setThemeIcon(mPropertiesTileset, "document-properties");
@@ -279,6 +282,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
 
+    connect(mNewTileset, SIGNAL(triggered()),
+            SIGNAL(newTileset()));
     connect(mImportTileset, SIGNAL(triggered()),
             SLOT(importTileset()));
     connect(mExportTileset, SIGNAL(triggered()),
@@ -294,6 +299,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(mRemoveTiles, SIGNAL(triggered()),
             SLOT(removeTiles()));
 
+    mToolBar->addAction(mNewTileset);
     mToolBar->setIconSize(QSize(16, 16));
     mToolBar->addAction(mImportTileset);
     mToolBar->addAction(mExportTileset);
@@ -316,8 +322,8 @@ TilesetDock::TilesetDock(QWidget *parent):
     connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
 
-    connect(DocumentManager::instance(), SIGNAL(documentCloseRequested(int)),
-            SLOT(documentCloseRequested(int)));
+    connect(DocumentManager::instance(), SIGNAL(documentAboutToClose(MapDocument*)),
+            SLOT(documentAboutToClose(MapDocument*)));
 
     mTilesetMenuButton->setMenu(mTilesetMenu);
     connect(mTilesetMenu, SIGNAL(aboutToShow()), SLOT(refreshTilesetMenu()));
@@ -476,13 +482,18 @@ void TilesetDock::updateActions()
         }
     }
 
-    mImportTileset->setEnabled(view && external);
-    mExportTileset->setEnabled(view && !external);
-    mPropertiesTileset->setEnabled(view && !external);
-    mDeleteTileset->setEnabled(view);
-    mEditTerrain->setEnabled(view && !external);
-    mAddTiles->setEnabled(view && !hasImageSource && !external);
-    mRemoveTiles->setEnabled(view && !hasImageSource && hasSelection && !external);
+    const bool tilesetIsDisplayed = view != 0;
+    const bool mapIsDisplayed = mMapDocument != 0;
+
+    mNewTileset->setEnabled(mapIsDisplayed);
+    mImportTileset->setEnabled(tilesetIsDisplayed && external);
+    mExportTileset->setEnabled(tilesetIsDisplayed && !external);
+    mPropertiesTileset->setEnabled(tilesetIsDisplayed && !external);
+    mDeleteTileset->setEnabled(tilesetIsDisplayed);
+    mEditTerrain->setEnabled(tilesetIsDisplayed && !external);
+    mAddTiles->setEnabled(tilesetIsDisplayed && !hasImageSource && !external);
+    mRemoveTiles->setEnabled(tilesetIsDisplayed && !hasImageSource
+                             && hasSelection && !external);
 }
 
 void TilesetDock::updateCurrentTiles()
@@ -702,6 +713,7 @@ void TilesetDock::setCurrentTile(Tile *tile)
 void TilesetDock::retranslateUi()
 {
     setWindowTitle(tr("Tilesets"));
+    mNewTileset->setText(tr("New Tileset"));
     mImportTileset->setText(tr("&Import Tileset"));
     mExportTileset->setText(tr("&Export Tileset As..."));
     mPropertiesTileset->setText(tr("Tile&set Properties"));
@@ -829,6 +841,8 @@ void TilesetDock::addTiles()
     if (tiles.isEmpty())
         return;
 
+    prefs->setLastPath(Preferences::ImageFile, files.last());
+
     mMapDocument->undoStack()->push(new AddTiles(mMapDocument, tileset, tiles));
 }
 
@@ -910,10 +924,9 @@ void TilesetDock::tileAnimationChanged(Tile *tile)
             model->tileChanged(tile);
 }
 
-void TilesetDock::documentCloseRequested(int index)
+void TilesetDock::documentAboutToClose(MapDocument *mapDocument)
 {
-    DocumentManager *documentManager = DocumentManager::instance();
-    mCurrentTilesets.remove(documentManager->documents().at(index));
+    mCurrentTilesets.remove(mapDocument);
 }
 
 void TilesetDock::refreshTilesetMenu()

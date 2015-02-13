@@ -1,20 +1,34 @@
 import qbs 1.0
 
-CppApplication {
+QtGuiApplication {
     name: "tiled"
-    destinationDirectory: "bin"
+    targetName: name
 
     Depends { name: "libtiled" }
+    Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "Qt"; submodules: ["widgets", "opengl"] }
 
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
+    cpp.cxxPrecompiledHeader: "pch.h"
+
+    cpp.defines: {
+        var version = qbs.getEnv("BUILD_INFO_VERSION");
+        if (version != undefined)
+            return ["BUILD_INFO_VERSION=" + version]
+        return []
+    }
+
+    consoleApplication: false
 
     files: [
+        "Info.plist",
         "aboutdialog.cpp",
         "aboutdialog.h",
         "aboutdialog.ui",
+        "abstractimagetool.cpp",
+        "abstractimagetool.h",
         "abstractobjecttool.cpp",
         "abstractobjecttool.h",
         "abstracttiletool.cpp",
@@ -53,20 +67,20 @@ CppApplication {
         "changemapobject.h",
         "changemapobjectsorder.cpp",
         "changemapobjectsorder.h",
-        "changemapproperties.cpp",
-        "changemapproperties.h",
+        "changemapproperty.cpp",
+        "changemapproperty.h",
         "changeobjectgroupproperties.cpp",
         "changeobjectgroupproperties.h",
         "changepolygon.cpp",
         "changepolygon.h",
         "changeproperties.cpp",
         "changeproperties.h",
+        "changeselectedarea.cpp",
+        "changeselectedarea.h",
         "changetileanimation.cpp",
         "changetileanimation.h",
         "changetileobjectgroup.cpp",
         "changetileobjectgroup.h",
-        "changeselectedarea.cpp",
-        "changeselectedarea.h",
         "changetileterrain.cpp",
         "changetileterrain.h",
         "clipboardmanager.cpp",
@@ -86,8 +100,22 @@ CppApplication {
         "commandlineparser.h",
         "consoledock.cpp",
         "consoledock.h",
+        "createellipseobjecttool.cpp",
+        "createellipseobjecttool.h",
+        "createmultipointobjecttool.cpp",
+        "createmultipointobjecttool.h",
         "createobjecttool.cpp",
         "createobjecttool.h",
+        "createpolygonobjecttool.cpp",
+        "createpolygonobjecttool.h",
+        "createpolylineobjecttool.cpp",
+        "createpolylineobjecttool.h",
+        "createrectangleobjecttool.cpp",
+        "createrectangleobjecttool.h",
+        "createscalableobjecttool.cpp",
+        "createscalableobjecttool.h",
+        "createtileobjecttool.cpp",
+        "createtileobjecttool.h",
         "documentmanager.cpp",
         "documentmanager.h",
         "editpolygontool.cpp",
@@ -111,13 +139,14 @@ CppApplication {
         "geometry.h",
         "imagelayeritem.cpp",
         "imagelayeritem.h",
+        "imagemovementtool.cpp",
+        "imagemovementtool.h",
         "languagemanager.cpp",
         "languagemanager.h",
         "layerdock.cpp",
         "layerdock.h",
         "layermodel.cpp",
         "layermodel.h",
-        "macsupport.h",
         "main.cpp",
         "mainwindow.cpp",
         "mainwindow.h",
@@ -140,6 +169,8 @@ CppApplication {
         "minimapdock.cpp",
         "minimapdock.h",
         "minimap.h",
+        "movabletabwidget.cpp",
+        "movabletabwidget.h",
         "movelayer.cpp",
         "movelayer.h",
         "movemapobject.cpp",
@@ -171,6 +202,7 @@ CppApplication {
         "offsetmapdialog.ui",
         "painttilelayer.cpp",
         "painttilelayer.h",
+        "pch.h",
         "pluginmanager.cpp",
         "pluginmanager.h",
         "preferences.cpp",
@@ -209,6 +241,8 @@ CppApplication {
         "saveasimagedialog.ui",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
+        "snaphelper.cpp",
+        "snaphelper.h",
         "stampbrush.cpp",
         "stampbrush.h",
         "terrainbrush.cpp",
@@ -226,6 +260,7 @@ CppApplication {
         "tileanimationeditor.ui",
         "tilecollisioneditor.cpp",
         "tilecollisioneditor.h",
+        "tiled.rc",
         "tiledapplication.cpp",
         "tiledapplication.h",
         "tiled.qrc",
@@ -265,4 +300,30 @@ CppApplication {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Properties {
+        condition: qbs.targetOS.contains("osx")
+        cpp.frameworks: "Foundation"
+        cpp.infoPlistFile: "Info.plist"
+        targetName: "Tiled"
+    }
+    Group {
+        name: "OS X"
+        condition: qbs.targetOS.contains("osx")
+        files: [
+            "macsupport.h",
+            "macsupport.mm",
+        ]
+    }
+
+    Group {
+        qbs.install: true
+        qbs.installDir: {
+            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
+                return ""
+            else
+                return "bin"
+        }
+        fileTagsFilter: product.type
+    }
 }

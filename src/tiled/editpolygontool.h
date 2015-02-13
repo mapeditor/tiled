@@ -77,8 +77,7 @@ private:
     void setSelectedHandle(PointHandle *handle)
     { setSelectedHandles(QSet<PointHandle*>() << handle); }
 
-    void updateSelection(const QPointF &pos,
-                         Qt::KeyboardModifiers modifiers);
+    void updateSelection(QGraphicsSceneMouseEvent *event);
 
     void startSelecting();
 

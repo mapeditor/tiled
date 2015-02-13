@@ -76,6 +76,17 @@ public:
               const QSizeF &size);
 
     /**
+     * Returns the id of this object. Each object gets an id assigned that is
+     * unique for the map the object is on.
+     */
+    int id() const { return mId; }
+
+    /**
+     * Sets the id of this object.
+     */
+    void setId(int id) { mId = id; }
+
+    /**
      * Returns the name of this object. The name is usually just used for
      * identification of the object in the editor.
      */
@@ -215,12 +226,12 @@ public:
     { mObjectGroup = objectGroup; }
 
     /**
-     * Sets the rotation of the object
+     * Sets the rotation of the object in degrees.
      */
     void setRotation(qreal rotation) { mRotation = rotation; }
 
     /**
-     * Returns the rotation of the object.
+     * Returns the rotation of the object in degrees.
      */
     qreal rotation() const { return mRotation; }
 
@@ -240,6 +251,7 @@ public:
     MapObject *clone() const;
 
 private:
+    int mId;
     QString mName;
     QString mType;
     QPointF mPos;

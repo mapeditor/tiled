@@ -1,6 +1,6 @@
 /*
  * mapdocument.h
- * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com
  *
@@ -27,6 +27,7 @@
 #include "tiled.h"
 #include "mapobject.h"
 
+#include <QDateTime>
 #include <QList>
 #include <QObject>
 #include <QRegion>
@@ -43,6 +44,7 @@ namespace Tiled {
 class Map;
 class MapObject;
 class MapRenderer;
+class MapReaderInterface;
 class Terrain;
 class Tile;
 class Tileset;
@@ -98,15 +100,33 @@ public:
      */
     bool save(const QString &fileName, QString *error = 0);
 
+    /**
+     * Loads a map and returns a MapDocument instance on success. Returns 0
+     * on error and sets the \a error message.
+     */
+    static MapDocument *load(const QString &fileName,
+                             MapReaderInterface *mapReader = 0,
+                             QString *error = 0);
+
     QString fileName() const { return mFileName; }
 
-    QString writerPluginFileName() const { return mWriterPluginFileName; }
-    void setWriterPluginFileName(const QString &writerPluginFileName)
-    { mWriterPluginFileName = writerPluginFileName; }
+    QString lastExportFileName() const;
+    void setLastExportFileName(const QString &fileName);
+
+    QString readerPluginFileName() const;
+    void setReaderPluginFileName(const QString &fileName);
+
+    QString writerPluginFileName() const;
+    void setWriterPluginFileName(const QString &fileName);
+
+    QString exportPluginFileName() const;
+    void setExportPluginFileName(const QString &fileName);
 
     QString displayName() const;
 
     bool isModified() const;
+
+    QDateTime lastSaved() const { return mLastSaved; }
 
     /**
      * Returns the map instance. Be aware that directly modifying the map will
@@ -189,6 +209,12 @@ public:
     MapRenderer *renderer() const { return mRenderer; }
 
     /**
+     * Creates the map renderer. Should be called after changing the map
+     * orientation.
+     */
+    void createRenderer();
+
+    /**
      * Returns the undo stack of this map document. Should be used to push any
      * commands on that modify the map.
      */
@@ -222,8 +248,7 @@ public:
     const QList<Tile*> &selectedTiles() const
     { return mSelectedTiles; }
 
-    void setSelectedTiles(const QList<Tile*> &selectedTiles)
-    { mSelectedTiles = selectedTiles; }
+    void setSelectedTiles(const QList<Tile*> &selectedTiles);
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -246,6 +271,7 @@ public:
     void emitMapChanged();
     void emitRegionChanged(const QRegion &region);
     void emitRegionEdited(const QRegion &region, Layer *layer);
+    void emitTileLayerDrawMarginsChanged(TileLayer *layer);
     void emitTilesetChanged(Tileset *tileset);
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
     void emitTileObjectGroupChanged(Tile *tile);
@@ -256,8 +282,11 @@ public:
     void emitEditCurrentObject();
 
 signals:
-    void fileNameChanged();
+    void fileNameChanged(const QString &fileName,
+                         const QString &oldFileName);
     void modifiedChanged();
+
+    void saved();
 
     /**
      * Emitted when the selected tile region changes. Sends the currently
@@ -270,6 +299,11 @@ signals:
      * Emitted when the list of selected objects changes.
      */
     void selectedObjectsChanged();
+
+    /**
+     * Emitted when the list of selected tiles from the dock changes.
+     */
+    void selectedTilesChanged();
 
     void currentObjectChanged(Object *object);
 
@@ -309,6 +343,8 @@ signals:
      * If multiple layers have been edited, multiple signals will be emitted.
      */
     void regionEdited(const QRegion &region, Layer *layer);
+
+    void tileLayerDrawMarginsChanged(TileLayer *layer);
 
     /**
      * Emitted when the terrain information for the given list of tiles was
@@ -377,15 +413,18 @@ private:
     void deselectObjects(const QList<MapObject*> &objects);
 
     QString mFileName;
+    QString mLastExportFileName;
 
     /*
      * The filename of a plugin is unique. So it can be used to determine
-     * the right plugin to be used for saving the map again.
+     * the right plugin to be used for saving or reloading the map.
      * The nameFilter of a plugin can not be used, since it's translatable.
      * The filename of a plugin must not change while maps are open using this
      * plugin.
      */
+    QString mReaderPluginFileName;
     QString mWriterPluginFileName;
+    QString mExportPluginFileName;
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
@@ -397,7 +436,48 @@ private:
     MapObjectModel *mMapObjectModel;
     TerrainModel *mTerrainModel;
     QUndoStack *mUndoStack;
+    QDateTime mLastSaved;
 };
+
+inline QString MapDocument::lastExportFileName() const
+{
+    return mLastExportFileName;
+}
+
+inline void MapDocument::setLastExportFileName(const QString &fileName)
+{
+    mLastExportFileName = fileName;
+}
+
+inline QString MapDocument::readerPluginFileName() const
+{
+    return mReaderPluginFileName;
+}
+
+inline void MapDocument::setReaderPluginFileName(const QString &fileName)
+{
+    mReaderPluginFileName = fileName;
+}
+
+inline QString MapDocument::writerPluginFileName() const
+{
+    return mWriterPluginFileName;
+}
+
+inline void MapDocument::setWriterPluginFileName(const QString &fileName)
+{
+    mWriterPluginFileName = fileName;
+}
+
+inline QString MapDocument::exportPluginFileName() const
+{
+    return mExportPluginFileName;
+}
+
+inline void MapDocument::setExportPluginFileName(const QString &fileName)
+{
+    mExportPluginFileName = fileName;
+}
 
 /**
  * Emits the map changed signal. This signal should be emitted after changing
@@ -425,6 +505,11 @@ inline void MapDocument::emitRegionChanged(const QRegion &region)
 inline void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
 {
     emit regionEdited(region, layer);
+}
+
+inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
+{
+    emit tileLayerDrawMarginsChanged(layer);
 }
 
 /**

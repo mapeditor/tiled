@@ -8,7 +8,7 @@
             # currently here for reference, only 2.7 is tested
             HAVE_PYTHON = yes
             QMAKE_CXXFLAGS = `python-config --cflags`
-            QMAKE_LFLAGS = `python-config --libs`
+            QMAKE_LFLAGS = `python-config --ldflags`
         }
     }
 

@@ -12,6 +12,8 @@ be set on the map, its layers, the tiles or on the objects. Its map format
 (TMX) is relatively easy to understand and allows a map to use multiple
 tilesets while also allowing each tileset to grow or shrink as necessary later.
 
+[![Build Status](http://img.shields.io/travis/bjorn/tiled.svg)](https://travis-ci.org/bjorn/tiled) [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
+
 About the Qt Version
 -------------------------------------------------------------------------------
 
@@ -24,7 +26,7 @@ feature set than the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Make sure the Qt (>= 4.6) development libraries are installed:
+Make sure the Qt (>= 4.7) development libraries are installed:
 
 * In Ubuntu/Debian: `sudo apt-get install libqt4-dev libqt4-opengl-dev zlib1g-dev`
 * In Fedora:        `yum install qt-devel`

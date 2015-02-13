@@ -24,6 +24,7 @@
 #include "terraindock.h"
 
 #include "documentmanager.h"
+#include "mapdocument.h"
 #include "terrain.h"
 #include "terrainmodel.h"
 #include "terrainview.h"

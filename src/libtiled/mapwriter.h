@@ -99,12 +99,6 @@ public:
     QString errorString() const;
 
     /**
-     * Sets the format in which the tile layer data is stored.
-     */
-    void setLayerDataFormat(Map::LayerDataFormat format);
-    Map::LayerDataFormat layerDataFormat() const;
-
-    /**
      * Sets whether the DTD reference is written when saving the map.
      */
     void setDtdEnabled(bool enabled);

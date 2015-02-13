@@ -39,7 +39,9 @@ public:
     /**
      * Constructor
      */
-    MovableTabWidget();
+    explicit MovableTabWidget(QWidget *parent = 0);
+
+    void moveTab(int from, int to);
 
 signals:
     /**

@@ -210,6 +210,8 @@ Map *MapReaderPrivate::readMap()
             atts.value(QLatin1String("tilewidth")).toString().toInt();
     const int tileHeight =
             atts.value(QLatin1String("tileheight")).toString().toInt();
+    const int hexSideLength =
+            atts.value(QLatin1String("hexsidelength")).toString().toInt();
 
     const QString orientationString =
             atts.value(QLatin1String("orientation")).toString();
@@ -221,7 +223,32 @@ Map *MapReaderPrivate::readMap()
                        .arg(orientationString));
     }
 
+    const QString staggerAxisString =
+            atts.value(QLatin1String("staggeraxis")).toString();
+    const Map::StaggerAxis staggerAxis =
+            staggerAxisFromString(staggerAxisString);
+
+    const QString staggerIndexString =
+            atts.value(QLatin1String("staggerindex")).toString();
+    const Map::StaggerIndex staggerIndex =
+            staggerIndexFromString(staggerIndexString);
+
+    const QString renderOrderString =
+            atts.value(QLatin1String("renderorder")).toString();
+    const Map::RenderOrder renderOrder =
+            renderOrderFromString(renderOrderString);
+
+    const int nextObjectId =
+            atts.value(QLatin1String("nextobjectid")).toString().toInt();
+
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
+    mMap->setHexSideLength(hexSideLength);
+    mMap->setStaggerAxis(staggerAxis);
+    mMap->setStaggerIndex(staggerIndex);
+    mMap->setRenderOrder(renderOrder);
+    if (nextObjectId)
+        mMap->setNextObjectId(nextObjectId);
+
     mCreatedTilesets.clear();
 
     QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
@@ -304,8 +331,12 @@ Tileset *MapReaderPrivate::readTileset()
                     if (tileWidth == 0 || tileHeight == 0) {
                         xml.raiseError(tr("Invalid tileset parameters for tileset"
                                           " '%1'").arg(name));
+                        delete tileset;
+                        tileset = 0;
+                        mCreatedTilesets.removeLast();
+                    } else {
+                        readTilesetImage(tileset);
                     }
-                    readTilesetImage(tileset);
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(tileset);
                 } else {
@@ -799,6 +830,7 @@ MapObject *MapReaderPrivate::readObject()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
 
     const QXmlStreamAttributes atts = xml.attributes();
+    const int id = atts.value(QLatin1String("id")).toString().toInt();
     const QString name = atts.value(QLatin1String("name")).toString();
     const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
     const qreal x = atts.value(QLatin1String("x")).toString().toDouble();
@@ -812,6 +844,7 @@ MapObject *MapReaderPrivate::readObject()
     const QSizeF size(width, height);
 
     MapObject *object = new MapObject(name, type, pos, size);
+    object->setId(id);
 
     bool ok;
     const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);

@@ -121,7 +121,9 @@ public slots:
     bool saveFile();
     bool saveFileAs();
     void saveAsImage();
+    void export_();
     void exportAs();
+    void reload();
     void closeFile();
     void closeAllFiles();
 
@@ -166,8 +168,9 @@ public slots:
     void mapDocumentChanged(MapDocument *mapDocument);
     void closeMapDocument(int index);
 
-    void autoMappingError();
-    void autoMappingWarning();
+    void reloadError(const QString &error);
+    void autoMappingError(bool automatic);
+    void autoMappingWarning(bool automatic);
 
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
@@ -203,7 +206,6 @@ private:
     void writeSettings();
     void readSettings();
 
-    void addMapDocument(MapDocument *mapDocument);
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
 

@@ -21,7 +21,16 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
    </layout>
@@ -32,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -57,6 +66,8 @@
     <addaction name="actionSaveAs"/>
     <addaction name="actionSaveAsImage"/>
     <addaction name="actionExport"/>
+    <addaction name="actionExportAs"/>
+    <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
@@ -364,12 +375,12 @@
     <string>Clear Recent Files</string>
    </property>
   </action>
-  <action name="actionExport">
+  <action name="actionExportAs">
    <property name="text">
-    <string>&amp;Export As...</string>
+    <string>E&amp;xport As...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+    <string>Ctrl+Shift+E</string>
    </property>
   </action>
   <action name="actionAddExternalTileset">
@@ -441,6 +452,22 @@
    </property>
    <property name="text">
     <string>Show Tile Animations</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>Reload</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>&amp;Export</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>

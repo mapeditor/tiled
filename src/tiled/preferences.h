@@ -59,6 +59,9 @@ public:
     Map::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
 
+    Map::RenderOrder mapRenderOrder() const;
+    void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
+
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
 
@@ -149,6 +152,7 @@ private:
     bool mShowTilesetGrid;
 
     Map::LayerDataFormat mLayerDataFormat;
+    Map::RenderOrder mMapRenderOrder;
     bool mDtdEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;

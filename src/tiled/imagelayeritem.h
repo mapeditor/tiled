@@ -26,10 +26,11 @@
 
 namespace Tiled {
 
-class MapRenderer;
 class ImageLayer;
 
 namespace Internal {
+
+class MapDocument;
 
 /**
  * A graphics item displaying an image layer in a QGraphicsView.
@@ -40,10 +41,10 @@ public:
     /**
      * Constructor.
      *
-     * @param layer    the image layer to be displayed
-     * @param renderer the map renderer to use to render the layer
+     * @param layer       the image layer to be displayed
+     * @param mapDocument the map document owning the map of this layer
      */
-    ImageLayerItem(ImageLayer *layer, MapRenderer *renderer);
+    ImageLayerItem(ImageLayer *layer, MapDocument *mapDocument);
 
     /**
      * Updates the size and position of this item. Should be called when the
@@ -63,7 +64,7 @@ public:
 
 private:
     ImageLayer *mLayer;
-    MapRenderer *mRenderer;
+    MapDocument *mMapDocument;
     QRectF mBoundingRect;
 };
 

@@ -26,6 +26,7 @@
 namespace Tiled {
 
 class Tile;
+class Tileset;
 
 namespace Internal {
 
@@ -66,6 +67,7 @@ private slots:
     void setSelectedTool(AbstractTool*);
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
+    void tilesetFileNameChanged(Tileset *);
 
     void undo();
     void redo();

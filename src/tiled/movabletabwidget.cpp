@@ -26,9 +26,15 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-MovableTabWidget::MovableTabWidget()
+MovableTabWidget::MovableTabWidget(QWidget *parent)
+    : QTabWidget(parent)
 {
     setMovable(true);
     connect(tabBar(), SIGNAL(tabMoved(int,int)),
             SIGNAL(tabMoved(int,int)));
+}
+
+void MovableTabWidget::moveTab(int from, int to)
+{
+    tabBar()->moveTab(from, to);
 }

@@ -33,6 +33,11 @@
 #include "addremovetileset.h"
 #include "clipboardmanager.h"
 #include "createobjecttool.h"
+#include "createrectangleobjecttool.h"
+#include "createellipseobjecttool.h"
+#include "createtileobjecttool.h"
+#include "createpolygonobjecttool.h"
+#include "createpolylineobjecttool.h"
 #include "documentmanager.h"
 #include "editpolygontool.h"
 #include "eraser.h"
@@ -50,6 +55,7 @@
 #include "maprenderer.h"
 #include "mapsdock.h"
 #include "mapscene.h"
+#include "mapview.h"
 #include "newmapdialog.h"
 #include "newtilesetdialog.h"
 #include "pluginmanager.h"
@@ -82,6 +88,7 @@
 #include "consoledock.h"
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
+#include "imagemovementtool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -283,7 +290,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
     connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
-    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(exportAs()));
+    connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
+    connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
+    connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
     connect(mUi->actionClose, SIGNAL(triggered()), SLOT(closeFile()));
     connect(mUi->actionCloseAll, SIGNAL(triggered()), SLOT(closeAllFiles()));
     connect(mUi->actionQuit, SIGNAL(triggered()), SLOT(close()));
@@ -364,27 +373,25 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
-    CreateObjectTool *tileObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateTile, this);
-    CreateObjectTool *rectangleObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateRectangle, this);
-    CreateObjectTool *ellipseObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreateEllipse, this);
-    CreateObjectTool *polygonObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolygon, this);
-    CreateObjectTool *polylineObjectsTool = new CreateObjectTool(
-            CreateObjectTool::CreatePolyline, this);
+    CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
+    CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
+    CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
+    CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
+    CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
 
     connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
     connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
             this, SLOT(setStampBrush(const TileLayer*)));
+
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             mTileAnimationEditor, SLOT(setTile(Tile*)));
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             mTileCollisionEditor, SLOT(setTile(Tile*)));
+    connect(mTilesetDock, SIGNAL(newTileset()),
+            this, SLOT(newTileset()));
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
@@ -408,6 +415,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polylineObjectsTool));
     toolBar->addAction(mToolManager->registerTool(tileObjectsTool));
+    toolBar->addSeparator();
+    toolBar->addAction(mToolManager->registerTool(new ImageMovementTool(this)));
 
     mDocumentManager->setSelectedTool(mToolManager->selectedTool());
     connect(mToolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
@@ -447,6 +456,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(mapDocumentChanged(MapDocument*)));
     connect(mDocumentManager, SIGNAL(documentCloseRequested(int)),
             this, SLOT(closeMapDocument(int)));
+    connect(mDocumentManager, SIGNAL(reloadError(QString)),
+            this, SLOT(reloadError(QString)));
 
     QShortcut *switchToLeftDocument = new QShortcut(tr("Alt+Left"), this);
     connect(switchToLeftDocument, SIGNAL(activated()),
@@ -472,14 +483,21 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
 
+#if defined(Q_OS_OSX) && QT_VERSION >= 0x050000
+    // This works around the problem that the shortcut for the Delete menu action
+    // is not working on OS X for whatever reason.
+    foreach (QKeySequence key, QKeySequence::keyBindings(QKeySequence::Delete))
+        new QShortcut(key, this, SLOT(delete_()));
+#endif
+
     updateActions();
     readSettings();
     setupQuickStamps();
 
-    connect(mAutomappingManager, SIGNAL(warningsOccurred()),
-            this, SLOT(autoMappingWarning()));
-    connect(mAutomappingManager, SIGNAL(errorsOccurred()),
-            this, SLOT(autoMappingError()));
+    connect(mAutomappingManager, SIGNAL(warningsOccurred(bool)),
+            this, SLOT(autoMappingWarning(bool)));
+    connect(mAutomappingManager, SIGNAL(errorsOccurred(bool)),
+            this, SLOT(autoMappingError(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -492,6 +510,8 @@ MainWindow::~MainWindow()
     mTileAnimationEditor->writeSettings();
     mTileCollisionEditor->setTile(0);
     mTileCollisionEditor->writeSettings();
+
+    delete mQuickStampManager;
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -570,7 +590,7 @@ void MainWindow::newMap()
     if (!mapDocument)
         return;
 
-    addMapDocument(mapDocument);
+    mDocumentManager->addDocument(mapDocument);
 }
 
 bool MainWindow::openFile(const QString &fileName,
@@ -586,43 +606,14 @@ bool MainWindow::openFile(const QString &fileName,
         return true;
     }
 
-    TmxMapReader tmxMapReader;
-
-    const PluginManager *pm = PluginManager::instance();
-    if (!mapReader && !tmxMapReader.supportsFile(fileName)) {
-        // Try to find a plugin that implements support for this format
-        QList<MapReaderInterface*> readers =
-                pm->interfaces<MapReaderInterface>();
-
-        foreach (MapReaderInterface *reader, readers) {
-            if (reader->supportsFile(fileName)) {
-                mapReader = reader;
-                break;
-            }
-        }
-    }
-
-    // check if we can save in that format as well
-    QString writerPluginFileName;
-    if (mapReader) {
-        if (const Plugin *plugin = pm->plugin(mapReader)) {
-            if (qobject_cast<MapWriterInterface*>(plugin->instance))
-                writerPluginFileName = plugin->fileName;
-        }
-    } else {
-        mapReader = &tmxMapReader;
-    }
-
-    Map *map = mapReader->read(fileName);
-    if (!map) {
-        QMessageBox::critical(this, tr("Error Opening Map"),
-                              mapReader->errorString());
+    QString error;
+    MapDocument *mapDocument = MapDocument::load(fileName, mapReader, &error);
+    if (!mapDocument) {
+        QMessageBox::critical(this, tr("Error Opening Map"), error);
         return false;
     }
 
-    MapDocument *mapDocument = new MapDocument(map, fileName);
-    mapDocument->setWriterPluginFileName(writerPluginFileName);
-    addMapDocument(mapDocument);
+    mDocumentManager->addDocument(mapDocument);
     setRecentFile(fileName);
     return true;
 }
@@ -864,6 +855,42 @@ void MainWindow::saveAsImage()
     dialog.exec();
 }
 
+void MainWindow::export_()
+{
+    if (!mMapDocument)
+        return;
+
+    QString exportFileName = mMapDocument->lastExportFileName();
+    QString exportPluginFileName = mMapDocument->exportPluginFileName();
+    TmxMapWriter mapWriter;
+
+    if (!exportFileName.isEmpty()) {
+        MapWriterInterface *writer = 0;
+
+        if (exportPluginFileName.isEmpty()) {
+            writer = &mapWriter;
+        } else {
+            PluginManager *pm = PluginManager::instance();
+            if (const Plugin *plugin = pm->pluginByFileName(exportPluginFileName))
+                writer = qobject_cast<MapWriterInterface*>(plugin->instance);
+        }
+
+        if (writer) {
+            if (writer->write(mMapDocument->map(), exportFileName)) {
+                statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
+                                         3000);
+                return;
+            }
+
+            QMessageBox::critical(this, tr("Error Exporting Map"),
+                                  writer->errorString());
+        }
+    }
+
+    // fall back when no succesful export happened
+    exportAs();
+}
+
 void MainWindow::exportAs()
 {
     if (!mMapDocument)
@@ -881,22 +908,26 @@ void MainWindow::exportAs()
         }
     }
 
+    Preferences *pref = Preferences::instance();
+
     QString selectedFilter =
             mSettings.value(QLatin1String("lastUsedExportFilter")).toString();
+    QString suggestedFilename = mMapDocument->lastExportFileName();
 
-    QFileInfo baseNameInfo = QFileInfo(mMapDocument->fileName());
-    QString baseName = baseNameInfo.baseName();
+    if (suggestedFilename.isEmpty()) {
+        QFileInfo baseNameInfo = QFileInfo(mMapDocument->fileName());
+        QString baseName = baseNameInfo.baseName();
 
-    QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
-    extensionFinder.indexIn(selectedFilter);
-    const QString extension = extensionFinder.cap(1);
+        QRegExp extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
+        extensionFinder.indexIn(selectedFilter);
+        const QString extension = extensionFinder.cap(1);
 
-    Preferences *pref = Preferences::instance();
-    QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
+        QString lastExportedFilePath = pref->lastPath(Preferences::ExportedFile);
 
-    QString suggestedFilename = lastExportedFilePath
-                                + QLatin1String("/") + baseName
-                                + QLatin1Char('.') + extension;
+        suggestedFilename = lastExportedFilePath
+                + QLatin1String("/") + baseName
+                + QLatin1Char('.') + extension;
+    }
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
                                                     suggestedFilename,
@@ -950,9 +981,22 @@ void MainWindow::exportAs()
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
-        QMessageBox::critical(this, tr("Error Saving Map"),
+        QMessageBox::critical(this, tr("Error Exporting Map"),
                               chosenWriter->errorString());
+    } else {
+        // Remember export parameters, so subsequent exports can be done faster
+        mMapDocument->setLastExportFileName(fileName);
+        QString exportPluginFileName;
+        if (const Plugin *plugin = pm->plugin(chosenWriter))
+            exportPluginFileName = plugin->fileName;
+        mMapDocument->setExportPluginFileName(exportPluginFileName);
     }
+}
+
+void MainWindow::reload()
+{
+    if (confirmSave(mDocumentManager->currentDocument()))
+        mDocumentManager->reloadCurrentDocument();
 }
 
 void MainWindow::closeFile()
@@ -1230,20 +1274,28 @@ void MainWindow::editMapProperties()
     mMapDocument->emitEditCurrentObject();
 }
 
-void MainWindow::autoMappingError()
+void MainWindow::autoMappingError(bool automatic)
 {
     const QString title = tr("Automatic Mapping Error");
     QString error = mAutomappingManager->errorString();
-    if (!error.isEmpty())
-        QMessageBox::critical(this, title, error);
+    if (!error.isEmpty()) {
+        if (automatic)
+            statusBar()->showMessage(error, 3000);
+        else
+            QMessageBox::critical(this, title, error);
+    }
 }
 
-void MainWindow::autoMappingWarning()
+void MainWindow::autoMappingWarning(bool automatic)
 {
     const QString title = tr("Automatic Mapping Warning");
-    QString warnings = mAutomappingManager->warningString();
-    if (!warnings.isEmpty())
-        QMessageBox::warning(this, title, warnings);
+    QString warning = mAutomappingManager->warningString();
+    if (!warning.isEmpty()) {
+        if (automatic)
+            statusBar()->showMessage(warning, 3000);
+        else
+            QMessageBox::warning(this, title, warning);
+    }
 }
 
 void MainWindow::onAnimationEditorClosed()
@@ -1350,6 +1402,8 @@ void MainWindow::updateActions()
     mUi->actionSaveAs->setEnabled(map);
     mUi->actionSaveAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
+    mUi->actionExportAs->setEnabled(map);
+    mUi->actionReload->setEnabled(map);
     mUi->actionClose->setEnabled(map);
     mUi->actionCloseAll->setEnabled(map);
     mUi->actionCut->setEnabled(canCopy);
@@ -1523,15 +1577,6 @@ void MainWindow::updateWindowTitle()
     }
 }
 
-void MainWindow::addMapDocument(MapDocument *mapDocument)
-{
-    mDocumentManager->addDocument(mapDocument);
-
-    MapView *mapView = mDocumentManager->currentMapView();
-    connect(mapView->zoomable(), SIGNAL(scaleChanged(qreal)),
-            this, SLOT(updateZoomLabel()));
-}
-
 void MainWindow::aboutTiled()
 {
     AboutDialog aboutDialog(this);
@@ -1556,8 +1601,12 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     if (mMapDocument)
         mMapDocument->disconnect(this);
 
-    if (mZoomable)
+    if (mZoomable) {
         mZoomable->connectToComboBox(0);
+
+        disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                   this, SLOT(updateZoomLabel()));
+    }
     mZoomable = 0;
 
     mMapDocument = mapDocument;
@@ -1575,7 +1624,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mQuickStampManager->setMapDocument(mapDocument);
 
     if (mapDocument) {
-        connect(mapDocument, SIGNAL(fileNameChanged()),
+        connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
                 SLOT(updateWindowTitle()));
         connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));
@@ -1587,6 +1636,9 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
         if (MapView *mapView = mDocumentManager->currentMapView()) {
             mZoomable = mapView->zoomable();
             mZoomable->connectToComboBox(mZoomComboBox);
+
+            connect(mZoomable, SIGNAL(scaleChanged(qreal)),
+                    this, SLOT(updateZoomLabel()));
         }
     }
 
@@ -1628,4 +1680,9 @@ void MainWindow::closeMapDocument(int index)
 {
     if (confirmSave(mDocumentManager->documents().at(index)))
         mDocumentManager->closeDocumentAt(index);
+}
+
+void MainWindow::reloadError(const QString &error)
+{
+    QMessageBox::critical(this, tr("Error Reloading Map"), error);
 }

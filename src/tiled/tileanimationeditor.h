@@ -22,6 +22,7 @@
 #define TILED_INTERNAL_TILEANIMATIONEDITOR_H
 
 #include <QWidget>
+#include <QModelIndex>
 
 namespace Ui {
 class TileAnimationEditor;
@@ -30,11 +31,13 @@ class TileAnimationEditor;
 namespace Tiled {
 
 class Tile;
+class Tileset;
 
 namespace Internal {
 
 class FrameListModel;
 class MapDocument;
+class TileAnimationDriver;
 
 class TileAnimationEditor : public QWidget
 {
@@ -56,14 +59,24 @@ public slots:
 
 protected:
     void closeEvent(QCloseEvent *);
+    void changeEvent(QEvent *e);
+
+    void showEvent(QShowEvent *);
+    void hideEvent(QHideEvent *);
 
 private slots:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
+    void tilesetFileNameChanged(Tileset *);
+
+    void addFrameForTileAt(const QModelIndex &index);
 
     void undo();
     void redo();
     void delete_();
+
+    void advancePreviewAnimation(int ms);
+    void resetPreview();
 
 private:
     Ui::TileAnimationEditor *mUi;
@@ -72,6 +85,10 @@ private:
     Tile *mTile;
     FrameListModel *mFrameListModel;
     bool mApplyingChanges;
+
+    TileAnimationDriver *mPreviewAnimationDriver;
+    int mPreviewFrameIndex;
+    int mPreviewUnusedTime;
 };
 
 } // namespace Internal

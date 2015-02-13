@@ -16,6 +16,7 @@ win32 {
     lessThan(QT_MAJOR_VERSION, 5) {
         INCLUDEPATH += ../zlib
     }
+    QMAKE_PROJECT_NAME = libtiled
 } else {
     # On other platforms it is necessary to link to zlib explicitly
     LIBS += -lz
@@ -42,7 +43,8 @@ SOURCES += compression.cpp \
     staggeredrenderer.cpp \
     tile.cpp \
     tilelayer.cpp \
-    tileset.cpp
+    tileset.cpp \
+    hexagonalrenderer.cpp
 HEADERS += compression.h \
     gidmapper.h \
     imagelayer.h \
@@ -66,7 +68,8 @@ HEADERS += compression.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
-    logginginterface.h
+    logginginterface.h \
+    hexagonalrenderer.h
 
 contains(INSTALL_HEADERS, yes) {
     headers.files = $${HEADERS}

@@ -214,7 +214,12 @@ void TerrainBrush::capture()
 
     // TODO: we need to know which corner the mouse is closest to...
 
-    const Cell &cell = tileLayer->cellAt(tilePosition());
+    const QPoint &position = tilePosition();
+
+    if (!tileLayer->contains(position))
+        return;
+
+    const Cell &cell = tileLayer->cellAt(position);
     if (!cell.tile)
         return;
 
@@ -545,14 +550,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     delete[] checked;
     delete[] newTerrain;
-
-/*
-    const QPoint tilePos = tilePosition();
-
-    if (!brushItem()->tileLayer()) {
-        brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
-    }
-*/
 
     brushItem()->setTileLayerPosition(brushRect.topLeft());
 
