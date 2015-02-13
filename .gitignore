@@ -31,3 +31,16 @@ tests/test_mapreader
 
 # Ronn html outputs
 docs/*.1.html
+
+#qmake some
+.qmake.stash
+.localized
+
+#visual studio
+debug
+release
+*.ilk
+*.pdb
+*_manifest.rc
+*_manifest.res
+*.embed.manifest

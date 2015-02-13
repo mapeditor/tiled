@@ -34,6 +34,7 @@
 #include <QImage>
 
 class QFile;
+class QXmlStreamReader;
 
 namespace Tiled {
 
@@ -43,6 +44,13 @@ class Tileset;
 namespace Internal {
 class MapReaderPrivate;
 }
+
+/**
+ * Define a callback func type, useful to handle read custom data (eg. resource ref) from origin tmx file.
+ * these custom data can hold and write with CustomXmlElementWriteCallback.
+ * Return true if element read success, otherwise false.
+ */
+typedef bool (*CustomXmlElementReadCallback)(QXmlStreamReader& xml, const QString& xmlFilePath, const Tiled::Map* map);
 
 /**
  * A fast QXmlStreamReader based reader for the TMX and TSX formats.
@@ -122,6 +130,13 @@ protected:
 private:
     friend class Internal::MapReaderPrivate;
     Internal::MapReaderPrivate *d;
+
+public:
+    /**
+     *  Set a CustomXmlElementReadCallback to write custom data.
+     */
+    void SetCustomXmlElementReadCallback(CustomXmlElementReadCallback callback);
+
 };
 
 } // namespace Tiled

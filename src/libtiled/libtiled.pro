@@ -69,7 +69,8 @@ HEADERS += compression.h \
     tilelayer.h \
     tileset.h \
     logginginterface.h \
-    hexagonalrenderer.h
+    hexagonalrenderer.h \
+    createobjecttoolinterface.h
 
 contains(INSTALL_HEADERS, yes) {
     headers.files = $${HEADERS}

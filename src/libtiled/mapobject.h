@@ -40,6 +40,16 @@
 #include <QString>
 #include <QRectF>
 
+class QPainter;
+
+namespace Tiled {
+    class MapObject;
+}
+/**
+ * Define a factory for Tiled::MapObject.
+ */
+typedef Tiled::MapObject* (*MapObjectFactory)(void);
+
 namespace Tiled {
 
 class ObjectGroup;
@@ -201,6 +211,13 @@ public:
     QRectF bounds() const { return QRectF(mPos, mSize); }
 
     /**
+     * check baseBounds and get max bounds of a MapObject, default return baseBounds.
+     * if sub-class has a extra bounds than base MapObject,
+     * inherit to return a large enough bounds.
+     */
+    virtual QRectF adjustBounds(const QRectF& baseBounds) const { return baseBounds; }
+
+    /**
      * Sets the tile that is associated with this object. The object will
      * display as the tile image.
      *
@@ -247,8 +264,25 @@ public:
     /**
      * Returns a duplicate of this object. The caller is responsible for the
      * ownership of this newly created object.
+     *
+     * if this is an instance of sub-class from MapObject(eg. created with CreateByType()),
+     * must inherit and return new object as a sub-class instance,
+     * and call cloneInternal(MapObject*) at end of clone(), to clone base MapObject data.
      */
-    MapObject *clone() const;
+    virtual MapObject *clone() const;
+
+protected:
+    /**
+     * clone base data to newObj, default called in clone(), if sub-class inherited clone(), should call this method at end of clone.
+     */
+    void cloneInternal(MapObject* newObj) const;
+
+public:
+    /**
+     * Paint custom in map object. default do nothing, overwrite if need.
+     */
+    virtual void handlePaint(QPainter& painter, const QPolygonF& defaultPolygon = QPolygonF()) const;
+
 
 private:
     int mId;
@@ -262,6 +296,17 @@ private:
     ObjectGroup *mObjectGroup;
     qreal mRotation;
     bool mVisible;
+
+public:
+    /**
+     * Register a custom factory of MapObject (or sub-class), with type.
+     */
+    static void RegisterCreateFunc(const QString& type, MapObjectFactory factoryFunc);
+    /**
+     * Create a MapObject (or sub-class) with given type, name, pos, and size.
+     * Return the new object instance.
+     */
+    static MapObject* CreateByType(const QString& name, const QString& type, const QPointF& pos, const QSizeF& size);
 };
 
 } // namespace Tiled

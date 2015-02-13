@@ -78,6 +78,7 @@ public:
     QString mError;
     Map::LayerDataFormat mLayerDataFormat;
     bool mDtdEnabled;
+    CustomXmlElementWriteCallback mWriteCallback;
 
 private:
     void writeMap(QXmlStreamWriter &w, const Map *map);
@@ -103,6 +104,7 @@ private:
 MapWriterPrivate::MapWriterPrivate()
     : mLayerDataFormat(Map::Base64Zlib)
     , mDtdEnabled(false)
+    , mWriteCallback(NULL)
     , mUseAbsolutePaths(false)
 {
 }
@@ -211,6 +213,11 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
         writeTileset(w, tileset, firstGid);
         mGidMapper.insert(firstGid, tileset);
         firstGid += tileset->tileCount();
+    }
+
+    /* here callback for writing custom data, ignore if mWriteCallback is NULL as default. */
+    if (mWriteCallback) {
+        mWriteCallback(w, map);
     }
 
     foreach (const Layer *layer, map->layers()) {
@@ -719,4 +726,9 @@ void MapWriter::setDtdEnabled(bool enabled)
 bool MapWriter::isDtdEnabled() const
 {
     return d->mDtdEnabled;
+}
+
+void MapWriter::SetCustomXmlElementWriteCallback(CustomXmlElementWriteCallback callback)
+{
+    d->mWriteCallback = callback;
 }

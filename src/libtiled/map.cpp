@@ -37,6 +37,15 @@
 #include "tileset.h"
 #include "mapobject.h"
 
+/* convenient macro to delete object with NULL check. */
+#define SAFE_DELETE(_obj)       \
+    do {                        \
+        if ((_obj) != NULL) {   \
+            delete (_obj);      \
+            (_obj) = NULL;      \
+        }                       \
+    } while (0);
+
 using namespace Tiled;
 
 Map::Map(Orientation orientation,
@@ -52,7 +61,8 @@ Map::Map(Orientation orientation,
     mStaggerAxis(StaggerY),
     mStaggerIndex(StaggerOdd),
     mLayerDataFormat(Base64Zlib),
-    mNextObjectId(1)
+    mNextObjectId(1),
+    m_pCustomDataMgr(NULL)
 {
 }
 
@@ -78,11 +88,16 @@ Map::Map(const Map &map):
         clone->setMap(this);
         mLayers.append(clone);
     }
+
+    if (map.m_pCustomDataMgr) {
+        m_pCustomDataMgr = map.m_pCustomDataMgr->clone();
+    }
 }
 
 Map::~Map()
 {
     qDeleteAll(mLayers);
+    SAFE_DELETE(m_pCustomDataMgr);
 }
 
 static QMargins maxMargins(const QMargins &a,
@@ -358,4 +373,13 @@ Map *Map::fromLayer(Layer *layer)
     Map *result = new Map(Unknown, layer->width(), layer->height(), 0, 0);
     result->addLayer(layer);
     return result;
+}
+
+void Map::SetCustomDataManager(CustomDataManager* mgr) {
+    SAFE_DELETE(m_pCustomDataMgr);
+    m_pCustomDataMgr = mgr;
+}
+
+CustomDataManager* Map::GetCustomDataManager() {
+    return m_pCustomDataMgr;
 }

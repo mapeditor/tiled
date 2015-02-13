@@ -64,7 +64,8 @@ public:
     MapReaderPrivate(MapReader *mapReader):
         p(mapReader),
         mMap(0),
-        mReadingExternalTileset(false)
+        mReadingExternalTileset(false),
+        mReadCallback(NULL)
     {}
 
     Map *readMap(QIODevice *device, const QString &path);
@@ -123,6 +124,7 @@ private:
     bool mReadingExternalTileset;
 
     QXmlStreamReader xml;
+    CustomXmlElementReadCallback mReadCallback;
 };
 
 } // namespace Internal
@@ -266,6 +268,10 @@ Map *MapReaderPrivate::readMap()
             mMap->addLayer(readObjectGroup());
         else if (xml.name() == QLatin1String("imagelayer"))
             mMap->addLayer(readImageLayer());
+        else if (mReadCallback && mReadCallback(xml, mPath, mMap))
+        {
+            /* read custom data. */
+        }
         else
             readUnknownElement();
     }
@@ -843,7 +849,7 @@ MapObject *MapReaderPrivate::readObject()
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    MapObject *object = new MapObject(name, type, pos, size);
+    MapObject* object = MapObject::CreateByType(name, type, pos, size);
     object->setId(id);
 
     bool ok;
@@ -1051,4 +1057,8 @@ Tileset *MapReader::readExternalTileset(const QString &source,
         d->mCreatedTilesets.append(tileset);
 
     return tileset;
+}
+
+void MapReader::SetCustomXmlElementReadCallback(CustomXmlElementReadCallback callback) {
+    d->mReadCallback = callback;
 }

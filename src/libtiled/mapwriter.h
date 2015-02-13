@@ -36,6 +36,7 @@
 #include <QString>
 
 class QIODevice;
+class QXmlStreamWriter;
 
 namespace Tiled {
 
@@ -45,6 +46,12 @@ class Tileset;
 namespace Internal {
 class MapWriterPrivate;
 }
+
+/**
+ * Define a callback func type, useful to handle write(save) custom data (eg. resource ref) to origin tmx file.
+ * all the custom data will be write after <tileset> and before all <layer>.
+ */
+typedef void (*CustomXmlElementWriteCallback)(QXmlStreamWriter& writer, const Tiled::Map* map);
 
 /**
  * A QXmlStreamWriter based writer for the TMX and TSX formats.
@@ -106,6 +113,12 @@ public:
 
 private:
     Internal::MapWriterPrivate *d;
+
+public:
+    /**
+     *  Set a CustomXmlElementWriteCallback to write custom data.
+     */
+    void SetCustomXmlElementWriteCallback(CustomXmlElementWriteCallback callback);
 };
 
 } // namespace Tiled

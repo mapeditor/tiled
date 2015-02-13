@@ -28,6 +28,11 @@
  */
 
 #include "mapobject.h"
+#include <QPainter>
+
+namespace Tiled {
+    static QMap<QString, MapObjectFactory> s_mapObjFactoryMap;
+}
 
 using namespace Tiled;
 
@@ -83,10 +88,43 @@ void MapObject::flip(FlipDirection direction)
 MapObject *MapObject::clone() const
 {
     MapObject *o = new MapObject(mName, mType, mPos, mSize);
-    o->setProperties(properties());
-    o->setPolygon(mPolygon);
-    o->setShape(mShape);
-    o->setCell(mCell);
-    o->setRotation(mRotation);
+    cloneInternal(o);
     return o;
+}
+
+void MapObject::cloneInternal(MapObject* newObj) const {
+    newObj->setName(mName);
+    newObj->setType(mType);
+    newObj->setPosition(mPos);
+    newObj->setSize(mSize);
+    newObj->setProperties(properties());
+    newObj->setPolygon(mPolygon);
+    newObj->setShape(mShape);
+    newObj->setCell(mCell);
+    newObj->setRotation(mRotation);
+}
+
+void MapObject::handlePaint(QPainter& painter, const QPolygonF& defaultPolygon) const {
+    Q_UNUSED(painter);
+    Q_UNUSED(defaultPolygon);
+}
+
+void MapObject::RegisterCreateFunc(const QString& type, MapObjectFactory factoryFunc) {
+    s_mapObjFactoryMap[type] = factoryFunc;
+}
+
+MapObject* MapObject::CreateByType(const QString& name, const QString& type, const QPointF& pos, const QSizeF& size) {
+    MapObjectFactory factoryFunc = s_mapObjFactoryMap[type];
+    if (factoryFunc) {
+        /* custom object. */
+        MapObject* obj = factoryFunc();
+        obj->setName(name);
+        obj->setType(type);
+        obj->setPosition(pos);
+        obj->setSize(size);
+        return obj;
+    }
+
+    /* default object. */
+    return new MapObject(name, type, pos, size);
 }
