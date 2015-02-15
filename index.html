@@ -307,18 +307,42 @@
 
       </div>
     </div>
-    <div class="release-box">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="lead col-md-12" style="text-align: center;">
-            <!--
-            <p>Current Release: 0.11.0 <small><a href="download.html#changes">See&nbsp;what's&nbsp;new&nbsp;in&nbsp;Tiled</a></small></p>
-            -->
-            <p>Blog: <a href="http://blog.mapeditor.org/">Request for patrons to boost further Tiled development</a></p>
+
+    <!--
+    <p>Current Release: 0.11.0 <small><a href="download.html#changes">See&nbsp;what's&nbsp;new&nbsp;in&nbsp;Tiled</a></small></p>
+    <p>Blog: <a href="http://blog.mapeditor.org/">Request for patrons to boost further Tiled development</a></p>
+    -->
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-md-8 col-md-offset-2">
+          <div class="container-fluid">
+            <div class="my-box" style="border: 2px solid #ff945a; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);">
+              <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-12">
+                  <b>Support my work on Tiled!</b> - <a href="https://www.patreon.com/bjorn">Why?</a> - First goal: Work on Tiled for one full day a week.
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <a class="btn btn-default btn-sm btn-info" href="https://www.patreon.com/bjorn" style="margin-left: 10px; margin-top: -6px; float: right; min-width: 100px;">Pledge Now</a>
+                  <div style="float: right; margin-left: 10px;"><b id="patreon-status"></b></div>
+                  <a href="https://www.patreon.com/bjorn">
+                    <div class="progress" style="margin-bottom: 0px;">
+                      <div class="progress-bar progress-bar-warning progress-bar-striped" id="goal-progressbar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%; background-image: linear-gradient(to bottom, #FF945A 0px, #FE5900 100%);">
+                        <span id="goal-percentage"></span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
+
     <div class="container-fluid">
 
       <!-- Screenshots demonstrating some of the main features -->
@@ -445,6 +469,27 @@
       ga('create', 'UA-380618-1', 'mapeditor.org');
       ga('require', 'displayfeatures');
       ga('send', 'pageview');
+    </script>
+    <script>
+      $.ajax({
+        url: "http://patreon.mapeditor.org",
+        context: document.body,
+        dataType: "json",
+        //error: function(jqXHR, textStatus, errorThrown) {
+        //  console.error("Error while fetching Patreon status");
+        //},
+      })
+      .done(function(data) {
+        var earnings = data.earnings;
+        var goal = 500;
+        var percentage = Math.min(100, Math.round(earnings / goal * 100)) + "%";
+
+        $("#patreon-status").text("$" + earnings + " / $" + goal);
+        $("#goal-percentage").text(percentage);
+        $("#goal-progressbar").css("width", percentage);
+      })
+      //.always(function() {
+      //});
     </script>
   </body>
 </html>
