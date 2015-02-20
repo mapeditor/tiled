@@ -769,9 +769,11 @@ void TilesetDock::exportTileset()
         suggestedFileName.remove(i, 1);
 
     if(suggestedFileName == empty)
+        QString suggestedFileName = QFileInfo(mMapDocument->fileName()).path();
         suggestedFileName += QLatin1Char('/');
     suggestedFileName += tileset->name();
-    suggestedFileName += extension;
+    if (!suggestedFileName.endsWith(extension))
+        suggestedFileName += extension;
 
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Tileset"),

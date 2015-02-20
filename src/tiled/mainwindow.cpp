@@ -1191,7 +1191,7 @@ void MainWindow::addExternalTileset()
 
     QString start = prefs->lastPath(Preferences::ExternalTileset);
 
-    if(start.isEmpty())
+    if (start.isEmpty())
         start = fileDialogStartLocation();
 
     const QStringList fileNames =
