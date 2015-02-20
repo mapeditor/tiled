@@ -69,11 +69,11 @@ void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     QRegion selection = document->selectedArea();
 
-    if(modifiers == Qt::ShiftModifier)
+    if (modifiers == Qt::ShiftModifier)
         selection += mSelectedRegion;
-    else if(modifiers == Qt::ControlModifier)
+    else if (modifiers == Qt::ControlModifier)
         selection -= mSelectedRegion;
-    else if(modifiers == (Qt::ControlModifier | Qt::ShiftModifier))
+    else if (modifiers == (Qt::ControlModifier | Qt::ShiftModifier))
         selection &= mSelectedRegion;
     else
         selection = mSelectedRegion;

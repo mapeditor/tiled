@@ -53,8 +53,6 @@ public:
 protected:
     void tilePositionChanged(const QPoint &tilePos);
 
-    //void updateStatusInfo();
-
 private:
 
     QRegion mSelectedRegion;
