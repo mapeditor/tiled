@@ -110,7 +110,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
         // Get the new fill region
         if (!shiftPressed) {
             // If not holding shift, a region is generated from the current pos
-            mFillRegion = regionComputer.computeFillRegion(tilePos);
+            mFillRegion = regionComputer.computePaintableFillRegion(tilePos);
         } else {
             // If holding shift, the region is the selection bounds
             mFillRegion = mapDocument()->selectedArea();
