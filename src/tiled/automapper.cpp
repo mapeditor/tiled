@@ -469,22 +469,10 @@ void AutoMapper::autoMap(QRegion *where)
                 TileLayer *dstTileLayer = dstLayer->asTileLayer();
                 if (dstTileLayer)
                     dstTileLayer->erase(region);
-                else {
-                    // Region has to be put into object space
-                    const int w = mMapDocument->map()->tileWidth();
-                    const int h = mMapDocument->map()->tileHeight();
-                    const QRect& tilesRect = region.boundingRect();
-                    QRect objRect;
-                    objRect.setTop(tilesRect.top() * h);
-                    objRect.setLeft(tilesRect.left() * w);
-                    objRect.setBottom((tilesRect.bottom() + 1) * h);
-                    objRect.setRight((tilesRect.right() + 1) * w);
-                    QRegion objRegion;
-                    objRegion += objRect;
+                else
                     eraseRegionObjectGroup(mMapDocument,
                                            dstLayer->asObjectGroup(),
-                                           objRegion);
-                }
+                                           region);
             }
         }
     }

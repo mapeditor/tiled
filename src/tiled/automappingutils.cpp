@@ -25,7 +25,6 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "objectgroup.h"
-#include "tile.h"
 
 #include <QUndoStack>
 
@@ -43,10 +42,7 @@ void eraseRegionObjectGroup(MapDocument *mapDocument,
         // tile objects. polygons and polylines are not covered correctly by this
         // erase method (we are in fact deleting too many objects)
         // TODO2: toAlignedRect may even break rects.
-		
-		// Note: intersects returns false in some conditions so check if corners are contained 
-        const QRect& objRect = obj->bounds().toAlignedRect();
-        if (where.intersects(objRect) || where.contains(objRect.topLeft()) || where.contains(objRect.bottomLeft()))
+        if (where.intersects(obj->bounds().toAlignedRect()))
             undo->push(new RemoveMapObject(mapDocument, obj));
     }
 }
@@ -77,8 +73,7 @@ const QList<MapObject*> objectsInRegion(ObjectGroup *layer,
         // QRegion::intersects() returns false for empty regions even if they are
         // contained within the region, so we also check for containment of the
         // top left to include the case of zero size objects.
-        // (Also, for Tile objects we need to check the bottom left)
-        if (where.intersects(rect) || where.contains(rect.topLeft()) || where.contains(rect.bottomLeft()))
+        if (where.intersects(rect) || where.contains(rect.topLeft()))
             ret += obj;
     }
     return ret;
