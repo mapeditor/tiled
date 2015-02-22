@@ -22,6 +22,7 @@
 #include "aboutdialog.h"
 
 #include <QCoreApplication>
+#include <QDesktopServices>
 
 using namespace Tiled::Internal;
 
@@ -42,4 +43,11 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
             .arg(QApplication::applicationVersion());
 
     textBrowser->setHtml(html);
+
+    connect(donateButton, SIGNAL(clicked()), SLOT(donate()));
+}
+
+void AboutDialog::donate()
+{
+    QDesktopServices::openUrl(QUrl(QLatin1String("http://www.mapeditor.org/donate")));
 }
