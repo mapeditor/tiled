@@ -28,6 +28,7 @@
  */
 
 #include "mapobject.h"
+#include "tile.h"
 
 using namespace Tiled;
 
@@ -56,6 +57,23 @@ MapObject::MapObject(const QString &name, const QString &type,
     mRotation(0.0f),
     mVisible(true)
 {
+}
+
+QRectF MapObject::boundsUseTile() const
+{
+    if (mCell.isEmpty()) {
+        // No tile so just use regular bounds
+        return bounds();
+    }
+
+    // Using the tile for determing boundary
+    // Note the position given is the bottom-left corner so correct for that
+    QRectF rect;
+    rect.setLeft(mPos.x());
+    rect.setTop(mPos.y() - mCell.tile->height());
+    rect.setWidth(mCell.tile->width());
+    rect.setHeight(mCell.tile->height());
+    return rect;
 }
 
 void MapObject::flip(FlipDirection direction)

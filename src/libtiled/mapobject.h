@@ -201,6 +201,11 @@ public:
     QRectF bounds() const { return QRectF(mPos, mSize); }
 
     /**
+     * Shortcut to getting a QRectF from position() and size() that uses cell tile if present.
+     */
+    QRectF boundsUseTile() const;
+
+    /**
      * Sets the tile that is associated with this object. The object will
      * display as the tile image.
      *
