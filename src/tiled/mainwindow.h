@@ -148,6 +148,7 @@ public slots:
     void updateWindowTitle();
     void updateActions();
     void updateZoomLabel();
+    void becomePatron();
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();

@@ -125,6 +125,7 @@ SOURCES += aboutdialog.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
+    patreondialog.cpp \
     pluginmanager.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
@@ -257,6 +258,7 @@ HEADERS += aboutdialog.h \
     offsetlayer.h \
     offsetmapdialog.h \
     painttilelayer.h \
+    patreondialog.h \
     pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
@@ -316,6 +318,7 @@ FORMS += aboutdialog.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
     offsetmapdialog.ui \
+    patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
     saveasimagedialog.ui \

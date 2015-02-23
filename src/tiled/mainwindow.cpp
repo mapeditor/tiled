@@ -63,6 +63,7 @@
 #include "objectselectiontool.h"
 #include "objectgroup.h"
 #include "offsetmapdialog.h"
+#include "patreondialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
@@ -331,8 +332,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
 
+    connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
-    connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
             SLOT(newTilesets(QStringList)));
@@ -1583,6 +1584,12 @@ void MainWindow::updateWindowTitle()
         setWindowFilePath(QString());
         setWindowModified(false);
     }
+}
+
+void MainWindow::becomePatron()
+{
+    PatreonDialog patreonDialog(this);
+    patreonDialog.exec();
 }
 
 void MainWindow::aboutTiled()

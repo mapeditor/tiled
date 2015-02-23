@@ -106,6 +106,18 @@ Preferences::Preferences()
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
     tilesetManager->setAnimateTiles(mShowTileAnimations);
+
+    // Keeping track of some usage information
+    mSettings->beginGroup(QLatin1String("Install"));
+    mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
+    mRunCount = intValue("RunCount", 0) + 1;
+    mIsPatron = boolValue("IsPatron");
+    if (!mFirstRun.isValid()) {
+        mFirstRun = QDate::currentDate();
+        mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
+    }
+    mSettings->setValue(QLatin1String("RunCount"), mRunCount);
+    mSettings->endGroup();
 }
 
 Preferences::~Preferences()
@@ -410,6 +422,17 @@ void Preferences::setMapsDirectory(const QString &path)
     mSettings->setValue(QLatin1String("MapsDirectory/Current"), path);
 
     emit mapsDirectoryChanged();
+}
+
+void Preferences::setPatron(bool isPatron)
+{
+    if (mIsPatron == isPatron)
+        return;
+
+    mIsPatron = isPatron;
+    mSettings->setValue(QLatin1String("Install/IsPatron"), isPatron);
+
+    emit isPatronChanged();
 }
 
 bool Preferences::boolValue(const char *key, bool defaultValue) const
