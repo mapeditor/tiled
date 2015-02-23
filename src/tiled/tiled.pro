@@ -143,6 +143,7 @@ SOURCES += aboutdialog.cpp \
     rotatemapobject.cpp \
     saveasimagedialog.cpp \
     selectionrectangle.cpp \
+    snaphelper.cpp \
     stampbrush.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
@@ -168,7 +169,8 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    magicwandtool.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -274,6 +276,7 @@ HEADERS += aboutdialog.h \
     rotatemapobject.h \
     saveasimagedialog.h \
     selectionrectangle.h \
+    snaphelper.h \
     stampbrush.h \
     terrainbrush.h \
     terraindock.h \
@@ -300,7 +303,8 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h
+    zoomable.h \
+    magicwandtool.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm

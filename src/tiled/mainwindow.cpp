@@ -89,6 +89,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "imagemovementtool.h"
+#include "magicwandtool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -407,6 +408,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
@@ -1187,13 +1189,19 @@ void MainWindow::addExternalTileset()
     if (!mMapDocument)
         return;
 
-    const QString start = fileDialogStartLocation();
+    Preferences *prefs = Preferences::instance();
+    QString start = prefs->lastPath(Preferences::ExternalTileset);
+
     const QStringList fileNames =
             QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
                                           start,
                                           tr("Tiled tileset files (*.tsx)"));
+
     if (fileNames.isEmpty())
         return;
+
+    prefs->setLastPath(Preferences::ExternalTileset,
+                       QFileInfo(fileNames.back()).path());
 
     QList<Tileset *> tilesets;
 

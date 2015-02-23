@@ -1,6 +1,6 @@
 /*
- * createtileobjecttool.h
- * Copyright 2014, Martin Ziel <martin.ziel.com>
+ * snaphelper.h
+ * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,34 +18,30 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATETILEOBJECTTOOL_H
-#define CREATETILEOBJECTTOOL_H
+#ifndef SNAPHELPER_H
+#define SNAPHELPER_H
 
-#include "createobjecttool.h"
+#include "maprenderer.h"
 
 namespace Tiled {
-
 namespace Internal {
 
-class CreateTileObjectTool : public CreateObjectTool
+class SnapHelper
 {
-    Q_OBJECT
-
 public:
-    CreateTileObjectTool(QObject *parent);
+    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = 0);
 
-    void languageChanged();
+    bool snaps() const { return mSnapToGrid || mSnapToFineGrid; }
 
-protected:
-    void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+    void snap(QPointF &pixelPos) const;
 
-    MapObject *createNewMapObject();
+private:
+    const MapRenderer *mRenderer;
+    bool mSnapToGrid;
+    bool mSnapToFineGrid;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CREATETILEOBJECTTOOL_H
+#endif // SNAPHELPER_H

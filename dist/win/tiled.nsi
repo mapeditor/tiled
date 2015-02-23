@@ -231,7 +231,7 @@ CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P_NORM}.exe"
 CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 ; File associations
-${RegisterExtension} "$INSTDIR\${P_NORM}" ".tmx" "Tiled.tmx"
+${RegisterExtension} "$INSTDIR\${P_NORM}.exe" ".tmx" "Tiled.tmx"
 
 ; Add version number to Registry
 WriteRegStr HKLM "Software\${PRODUCT_REG_KEY}" "Version" "${V}"

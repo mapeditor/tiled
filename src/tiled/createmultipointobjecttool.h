@@ -30,6 +30,7 @@ namespace Internal {
 class CreateMultipointObjectTool : public CreateObjectTool
 {
     Q_OBJECT
+
 public:
     CreateMultipointObjectTool(QObject *parent);
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
@@ -37,11 +38,11 @@ public:
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
+                                       Qt::KeyboardModifiers modifiers);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled
 
 #endif // CREATEMULTIPOINTBJECTTOOL_H
