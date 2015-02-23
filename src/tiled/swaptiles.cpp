@@ -25,6 +25,8 @@
 
 #include <QCoreApplication>
 
+#include <limits.h>
+
 namespace Tiled {
 namespace Internal {
 
@@ -42,21 +44,50 @@ SwapTiles::SwapTiles(MapDocument *mapDocument,
 
 void SwapTiles::swap()
 {
+    // Remember smallest and largest x/y to give emitRegionChanged() the smallest possible rectangle
+    int minXChanged = INT_MAX;
+    int minYChanged = INT_MAX;
+    int maxXChanged = INT_MIN;
+    int maxYChanged = INT_MIN;
+
     for (int y = 0; y < mTileLayer->height(); y++) {
         for (int x = 0; x < mTileLayer->width(); x++) {
-            const Cell &cell = mTileLayer->cellAt(x, y);
+            bool tileSwapped = false;
 
+            const Cell &cell = mTileLayer->cellAt(x, y);
             if (cell.tile == mTile1) {
                 Cell swapCell = cell;
                 swapCell.tile = mTile2;
                 mTileLayer->setCell(x, y, swapCell);
+
+                tileSwapped = true;
             }
             else if (cell.tile == mTile2) {
                 Cell swapCell = cell;
                 swapCell.tile = mTile1;
                 mTileLayer->setCell(x, y, swapCell);
+
+                tileSwapped = true;
+            }
+
+            if (tileSwapped) {
+                if (x < minXChanged) minXChanged = x;
+                if (y < minYChanged) minYChanged = y;
+                if (x > maxXChanged) maxXChanged = x;
+                if (y > maxYChanged) maxYChanged = y;
             }
         }
+    }
+
+    // We changed at least one tile? Call emitRegionChanged() to redraw
+    if (minXChanged != INT_MAX) {
+        QRegion regionChanged(
+            minXChanged,
+            minYChanged,
+            maxXChanged - minXChanged + 1,
+            maxYChanged - minYChanged + 1
+        );
+        mMapDocument->emitRegionChanged(regionChanged);
     }
 }
 

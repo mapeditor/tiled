@@ -588,7 +588,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             bool exactlyTwoTilesSelected =
                     (selectionModel()->selectedIndexes().size() == 2);
 
-            QAction *tileSwap = menu.addAction(tr("Swap tiles"));
+            QAction *tileSwap = menu.addAction(tr("&Swap Tiles"));
             tileSwap->setEnabled(exactlyTwoTilesSelected);
             connect(tileSwap, SIGNAL(triggered()),
                     SLOT(swapTiles()));
@@ -632,7 +632,8 @@ void TilesetView::editTileProperties()
 
 void TilesetView::swapTiles()
 {
-    if (selectionModel()->selectedIndexes().size() != 2)
+    const QModelIndexList selectedIndexes = selectionModel()->selectedIndexes();
+    if (selectedIndexes.size() != 2)
         return;
 
     TileLayer *tileLayer = dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
@@ -640,8 +641,8 @@ void TilesetView::swapTiles()
         return;
 
     const TilesetModel *model = tilesetModel();
-    Tile *tile1 = model->tileAt(selectionModel()->selectedIndexes()[0]);
-    Tile *tile2 = model->tileAt(selectionModel()->selectedIndexes()[1]);
+    Tile *tile1 = model->tileAt(selectedIndexes[0]);
+    Tile *tile2 = model->tileAt(selectedIndexes[1]);
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     QUndoCommand *command = new SwapTiles(mMapDocument, tileLayer, tile1, tile2);

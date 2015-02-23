@@ -3564,7 +3564,7 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+16"/>
-        <source>Swap tiles</source>
+        <source>&amp;Swap Tiles</source>
         <translation>Kacheln ver&amp;tauschen</translation>
     </message>
     <message>
