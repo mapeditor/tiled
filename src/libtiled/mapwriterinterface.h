@@ -73,7 +73,7 @@ public:
      * Returns the absolute paths for the files that will be written by
      * the map writer.
      */
-    virtual QStringList outputFiles(const Map * /*map*/, const QString &/*fileName*/) const { return QStringList(); }
+    virtual QStringList outputFiles(const Map * /*map*/, const QString &fileName) const { return QStringList(fileName); }
 
 protected:
     /**
