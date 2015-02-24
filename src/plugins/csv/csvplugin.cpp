@@ -45,27 +45,21 @@ CsvPlugin::CsvPlugin()
 
 bool CsvPlugin::write(const Map *map, const QString &fileName)
 {
-    // Extract file name without extension and path
-    QFileInfo fileInfo(fileName);
-    fileInfo.setCaching(false);
-    const QString fileNameWoExtension = fileInfo.baseName();
-    const QString filePath = fileInfo.path();
+    // Get file paths for each layer
+    QStringList layerPaths = outputFiles(map, fileName);
 
     // Traverse all tile layers
+    uint currentLayer = 0u;
     foreach (const Layer *layer, map->layers()) {
         if (layer->layerType() != Layer::TileLayerType)
             continue;
             
-        // Get the output file name for this layer
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-        const QString layerName = tileLayer->name();
-        const QString layerFileName = fileNameWoExtension + QString("_") + layerName + QString(".csv");
-        const QString layerFileNameWPath = QDir(filePath).filePath(layerFileName);
-            
+
 #ifdef HAS_QSAVEFILE_SUPPORT
-        QSaveFile file(layerFileNameWPath);
+        QSaveFile file(layerPaths[currentLayer]);
 #else
-        QFile file(layerFileName);
+        QFile file(layerPaths[currentLayer]);
 #endif
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             mError = tr("Could not open file for writing.");
@@ -102,18 +96,46 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
             return false;
         }
 #endif
+
+        ++currentLayer;
     }
     return true;
-}
-
-QString CsvPlugin::nameFilter() const
-{
-    return tr("CSV files (*.csv)");
 }
 
 QString CsvPlugin::errorString() const
 {
     return mError;
+}
+
+QStringList CsvPlugin::outputFiles(const Tiled::Map *map, const QString &fileName) const
+{
+    QStringList result;
+
+    // Extract file name without extension and path
+    QFileInfo fileInfo(fileName);
+    const QString fileNameWoExtension = fileInfo.completeBaseName();
+    const QString path = fileInfo.path();
+
+    // Loop layers to calculate the path for the exported file
+    foreach (const Layer *layer, map->layers()) {
+        if (layer->layerType() != Layer::TileLayerType)
+            continue;
+
+        // Get the output file name for this layer
+        const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
+        const QString layerName = tileLayer->name();
+        const QString layerFileName = fileNameWoExtension + QString("_") + layerName + QString(".csv");
+        const QString layerFilePath = QDir(path).filePath(layerFileName);
+
+        result.append(layerFilePath);
+    }
+
+    return result;
+}
+
+QString CsvPlugin::nameFilter() const
+{
+    return tr("CSV files (*.csv)");
 }
 
 #if QT_VERSION < 0x050000

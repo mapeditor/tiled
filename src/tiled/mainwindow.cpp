@@ -978,6 +978,43 @@ void MainWindow::exportAs()
         return;
     }
 
+    // Some writers could save to multiple files at the same time.
+    // For example CSV saves each layer into a separate file.
+    // Warn user if we overwrite existing files.
+    QStringList outputFiles = chosenWriter->outputFiles(mMapDocument->map(), fileName);
+    if (outputFiles.size() > 0)
+    {
+        // Check if any output file already exists
+        bool overwriteHappens = false;
+        QStringList::ConstIterator filesIt = outputFiles.cbegin();
+        const QStringList::ConstIterator filesEnd = outputFiles.cend();
+        for (; filesIt != filesEnd; ++filesIt)
+        {
+            QFile file(*filesIt);
+            if (file.exists())
+            {
+                overwriteHappens = true;
+                break;
+            }
+        }
+
+        // If overwrite happens, warn the user and get confirmation before executing the writer
+        if (overwriteHappens)
+        {
+            const QMessageBox::StandardButton reply = QMessageBox::warning(
+                this,
+                tr("Overwrite files"),
+                tr("Some export files already exist.\nDo you want to replace them?"),
+                QMessageBox::Yes | QMessageBox::No,
+                QMessageBox::No);
+
+            if (QMessageBox::Yes != reply)
+            {
+                return;
+            }
+        }
+    }
+
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
