@@ -73,7 +73,7 @@ void PatreonDialog::updatePatreonStatus()
             "<p>Keep an eye out for exclusive updates in the Activity feed on "
             "my Patreon page to find out what I've been up to in the time I "
             "could spend on Tiled thanks to your support!</p>\n"
-            "<p><i>Thorbjørn Lindeijer</i></p></body></html>"));
+            "<p><i>Thorbj&oslash;rn Lindeijer</i></p></body></html>"));
 
         ui->alreadyPatron->setText(tr("I'm no longer a patron"));
     } else {
@@ -87,7 +87,7 @@ void PatreonDialog::updatePatreonStatus()
             "<p>Every little bit helps. Tiled has a lot of users and if each "
             "would contribute a small donation each month I will have time to "
             "make sure Tiled keeps getting better.</p>\n"
-            "<p><i>Thorbjørn Lindeijer</i></p></body></html>"));
+            "<p><i>Thorbj&oslash;rn Lindeijer</i></p></body></html>"));
 
         ui->alreadyPatron->setText(tr("I'm already a patron!"));
     }
