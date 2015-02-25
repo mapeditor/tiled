@@ -155,7 +155,7 @@
     <message>
         <location line="+12"/>
         <source>Droidcraft map files (*.dat)</source>
-        <translation></translation>
+        <translation>Droidcraft map файлы (*.dat)</translation>
     </message>
 </context>
 <context>
@@ -2495,7 +2495,7 @@ Line %1, column %2</source>
         <location line="-205"/>
         <location line="+68"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation></translation>
+        <translation>Tiled map файлы (*.tmx)</translation>
     </message>
     <message>
         <location line="-51"/>
@@ -2578,7 +2578,7 @@ Please select specific format.</source>
     <message>
         <location line="+88"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation></translation>
+        <translation>Tiled tileset файлы (*.tsx)</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -3619,7 +3619,7 @@ Do you want to replace it?</source>
     <message>
         <location line="+25"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation></translation>
+        <translation>TMW-eAthena collision файлы (*.wlk)</translation>
     </message>
 </context>
 <context>
