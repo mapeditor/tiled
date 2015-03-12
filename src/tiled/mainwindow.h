@@ -68,6 +68,7 @@ class TileCollisionEditor;
 class TilesetDock;
 class ToolManager;
 class Zoomable;
+class CellPropertiesTool;
 
 /**
  * The main editor window.
@@ -253,6 +254,7 @@ private:
     DocumentManager *mDocumentManager;
     QuickStampManager *mQuickStampManager;
     ToolManager *mToolManager;
+    CellPropertiesTool *mCellPropertiesTool;
 };
 
 } // namespace Internal

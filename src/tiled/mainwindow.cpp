@@ -84,6 +84,7 @@
 #include "utils.h"
 #include "zoomable.h"
 #include "commandbutton.h"
+#include "cellpropertiestool.h"
 #include "objectsdock.h"
 #include "minimapdock.h"
 #include "consoledock.h"
@@ -138,6 +139,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
     , mQuickStampManager(new QuickStampManager(this))
+    , mCellPropertiesTool(new CellPropertiesTool(this))
     , mToolManager(new ToolManager(this))
 {
     mUi->setupUi(this);
@@ -411,6 +413,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
+    toolBar->addAction(mToolManager->registerTool(mCellPropertiesTool));
     toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
@@ -517,6 +520,7 @@ MainWindow::~MainWindow()
     mTileCollisionEditor->writeSettings();
 
     delete mQuickStampManager;
+    delete mCellPropertiesTool;
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1639,6 +1643,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mToolManager->setMapDocument(mapDocument);
     mAutomappingManager->setMapDocument(mapDocument);
     mQuickStampManager->setMapDocument(mapDocument);
+    mCellPropertiesTool->setMapDocument(mapDocument);
 
     if (mapDocument) {
         connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),

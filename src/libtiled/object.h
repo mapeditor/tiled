@@ -45,7 +45,8 @@ public:
         MapType,
         TerrainType,
         TilesetType,
-        TileType
+        TileType,
+        CellType
     };
 
     Object(TypeId typeId) : mTypeId(typeId) {}

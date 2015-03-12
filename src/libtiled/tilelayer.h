@@ -47,10 +47,11 @@ class Tileset;
 /**
  * A cell on a tile layer grid.
  */
-class Cell
+class Cell : public Object
 {
 public:
     Cell() :
+        Object(CellType),
         tile(0),
         flippedHorizontally(false),
         flippedVertically(false),
@@ -58,6 +59,7 @@ public:
     {}
 
     explicit Cell(Tile *tile) :
+        Object(CellType),
         tile(tile),
         flippedHorizontally(false),
         flippedVertically(false),
@@ -152,6 +154,16 @@ public:
     const Cell &cellAt(int x, int y) const;
 
     const Cell &cellAt(const QPoint &point) const;
+
+    /**
+     * Returns a read-write pointer to the cell at the given coordinates. The
+     * coordinates have to be within this layer.
+     */
+     Cell *getCellAt(int x, int y)
+     { return &mGrid[x + y * mWidth]; }
+
+     Cell *getCellAt(QPoint &point)
+     { return getCellAt(point.x(), point.y()); }
 
     /**
      * Sets the cell at the given coordinates.

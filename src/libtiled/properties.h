@@ -40,6 +40,7 @@ class TILEDSHARED_EXPORT Properties : public QMap<QString,QString>
 {
 public:
     void merge(const Properties &other);
+    void uniqueMerge(const Properties &other);
 };
 
 } // namespace Tiled

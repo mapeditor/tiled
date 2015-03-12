@@ -47,6 +47,7 @@
 #include <QFileInfo>
 #include <QVector>
 #include <QXmlStreamReader>
+#include <QString>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -90,7 +91,11 @@ private:
     void decodeBinaryLayerData(TileLayer *tileLayer,
                                const QStringRef &text,
                                const QStringRef &compression);
+    void decodeBinaryCellPropertyData(TileLayer *tileLayer,
+                                      const QStringRef &text,
+                                      const QStringRef &compression);
     void decodeCSVLayerData(TileLayer *tileLayer, const QString &text);
+    void readLayerCellProperties(TileLayer *tileLayer);
 
     /**
      * Returns the cell for the given global tile ID. Errors are raised with
@@ -569,13 +574,62 @@ TileLayer *MapReaderPrivate::readLayer()
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == QLatin1String("data"))
             readLayerData(tileLayer);
+        else if (xml.name() == "cell")
+            readLayerCellProperties(tileLayer);
         else
             readUnknownElement();
     }
 
     return tileLayer;
 }
+void MapReaderPrivate::readLayerCellProperties(TileLayer *tileLayer)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("cell"));
+    const QXmlStreamAttributes atts = xml.attributes();
+    QStringRef encoding = atts.value(QLatin1String("encoding"));
+    QStringRef compression = atts.value(QLatin1String("compression"));
 
+    int x = 0;
+    int y = 0;
+
+    //insert code here to handle encoded and compressed data
+    // this will finalize the addition of cell properties to Tiled map cells
+    // QString foo = xml.isCharacters();
+    while (xml.readNext() != QXmlStreamReader::Invalid) {
+        if (xml.isEndElement())
+            break;
+        else if (xml.isStartElement()) {
+            const QXmlStreamAttributes atts = xml.attributes();
+            Properties p;
+            QXmlStreamAttributes::const_iterator it = atts.constBegin();
+            QXmlStreamAttributes::const_iterator it_end = atts.constEnd();
+
+            for (; it != it_end; ++it) {
+                p.insert(it->name().toString(),it->value().toString());
+            }
+
+            tileLayer->getCellAt(x,y)->setProperties( p );
+            x++;
+
+            if (x >= tileLayer->width()) {
+                x = 0;
+                y++;
+            }
+            xml.skipCurrentElement();
+        } else if (xml.isCharacters() && !xml.isWhitespace()) {
+            if (encoding == QLatin1String("base64"))
+                decodeBinaryCellPropertyData(tileLayer,xml.text(),compression);
+            else {
+                xml.raiseError(tr("Unknown encoding: %1")
+                               .arg(encoding.toString()));
+                continue;
+            }
+
+        }
+
+
+    }
+}
 void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("data"));
@@ -625,6 +679,9 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
                 }
 
                 xml.skipCurrentElement();
+            } else if (xml.name() == QLatin1String("properties")) {
+                xml.raiseError(tr("Reading Properties"));
+                tileLayer->getCellAt(x, y)->mergeProperties(readProperties());
             } else {
                 readUnknownElement();
             }
@@ -640,6 +697,67 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
                                .arg(encoding.toString()));
                 continue;
             }
+        }
+    }
+}
+
+void MapReaderPrivate::decodeBinaryCellPropertyData(TileLayer *tileLayer,
+                                             const QStringRef &text,
+                                             const QStringRef &compression)
+{
+
+#if QT_VERSION < 0x040800
+    const QString textData = QString::fromRawData(text.unicode(), text.size());
+    const QByteArray latin1Text = textData.toLatin1();
+#else
+    const QByteArray latin1Text = text.toLatin1();
+#endif
+    QByteArray tileData = QByteArray::fromBase64(latin1Text);
+
+    if (compression == QLatin1String("zlib")
+        || compression == QLatin1String("gzip")) {
+        tileData = decompress(tileData);
+    } else if (!compression.isEmpty()) {
+        xml.raiseError(tr("Compression method '%1' not supported")
+                       .arg(compression.toString()));
+        return;
+    }
+
+    int x = 0;
+    int y = 0;
+
+    const QString sWork = QString::fromAscii(tileData);
+    QStringList qslWork = sWork.split(QLatin1String("\n"));
+
+    QStringList::const_iterator cIt;
+    for (cIt = qslWork.constBegin(); cIt != qslWork.constEnd(); ++cIt)
+    {
+        QString str = QString::fromLatin1((*cIt).toLatin1().constData());
+        str.remove(QLatin1String("\n"));
+        str.remove(QLatin1String("properties:{"));
+        str.remove(QLatin1String("}"));
+
+//** Need to handle the decoding of the JSON object that cell properties get encoded to
+        Properties p;
+
+        QStringList::const_iterator it;
+        QStringList atts = str.split(QLatin1String(","));
+        if (atts.count() > 0 && !atts.isEmpty()) {
+            for (it = atts.constBegin(); it != atts.constEnd(); ++it)
+            {
+                QStringList tmp = QString::fromLatin1((*it).toLatin1().constData()).split(QLatin1String(":"));
+                if (!tmp.isEmpty() && tmp.size() > 1) {
+                    tmp[0].remove(QLatin1String("\""));
+                    tmp[1].remove(QLatin1String("\""));
+                    p.insert(tmp[0],tmp[1]);
+                    tileLayer->getCellAt(x,y)->setProperties( p );
+                }
+            }
+        }
+        x++;
+        if (x == tileLayer->width()) {
+            x = 0;
+            y++;
         }
     }
 }
