@@ -253,8 +253,8 @@ private:
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
     QuickStampManager *mQuickStampManager;
-    ToolManager *mToolManager;
     CellPropertiesTool *mCellPropertiesTool;
+    ToolManager *mToolManager;
 };
 
 } // namespace Internal

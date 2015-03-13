@@ -135,6 +135,9 @@ void PropertyBrowser::setObject(Object *object)
     case Object::TilesetType:           addTilesetProperties(); break;
     case Object::TileType:              addTileProperties(); break;
     case Object::TerrainType:           addTerrainProperties(); break;
+
+    // Cell has no builtin properties
+    case Object::CellType:              /*addCellProperties();*/ break;
     }
 
     // Add a node for the custom properties
@@ -361,6 +364,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TilesetType:   applyTilesetValue(id, val); break;
     case Object::TileType:      break;
     case Object::TerrainType:   applyTerrainValue(id, val); break;
+    case Object::CellType:      break;
     }
 }
 
@@ -909,6 +913,11 @@ void PropertyBrowser::updateProperties()
     case Object::TerrainType: {
         const Terrain *terrain = static_cast<const Terrain*>(mObject);
         mIdToProperty[NameProperty]->setValue(terrain->name());
+        break;
+    }
+    case Object::CellType: {
+        // Nothing particular here.
+        // const Cell *cell = static_cast<const Cell*>(mObject);
         break;
     }
     }
