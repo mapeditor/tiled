@@ -346,6 +346,22 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
             writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
     }
     writer.writeEndTable();
+    writer.writeStartTable("cellproperties");
+    for (int y = 0; y < tileLayer->height(); ++y) {
+        if (y > 0)
+            writer.prepareNewLine();
+
+        for (int x = 0; x < tileLayer->width(); ++x) {
+            Cell cell = tileLayer->cellAt(x, y);
+            writer.writeStartTable();
+            for (Properties::const_iterator i = cell.properties().begin(); i != cell.properties().end(); i++)
+            {
+                writer.writeQuotedKeyAndValue(i.key(), i.value());
+            }
+            writer.writeEndTable();
+        }
+    }
+    writer.writeEndTable();
 
     writer.writeEndTable();
 }
