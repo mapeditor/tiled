@@ -160,7 +160,14 @@ public:
      * coordinates have to be within this layer.
      */
      Cell *getCellAt(int x, int y)
-     { return &mGrid[x + y * mWidth]; }
+     {
+         int pos = x + y * mWidth;
+         if (pos < 0 || pos >= mGrid.size())
+         {
+             return NULL;
+         }
+         return &mGrid[pos];
+     }
 
      Cell *getCellAt(QPoint &point)
      { return getCellAt(point.x(), point.y()); }
