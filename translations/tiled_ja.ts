@@ -21,8 +21,8 @@
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled マップエディタ&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;著作権 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(AUTHORSというファイルが貢献者の完全なリストを持っています。)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;このプログラムはGPLの条件（バージョン2またはそれ以降のバージョン）に応じて変更して再配布することもできる。GPLのコピーはTiled一緒に配布COPYINGファイルに含まれています。&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;著作権 2008-2014 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(このプロジェクトへの全貢献者の一覧については、AUTHORS ファイルを参照してください。)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;このプログラムは GPL (バージョン 2 またはそれ以降のバージョン) の定める条件の下で改変または再頒布することができます。GPL のコピーは Tiled と一緒に配布された COPYING ファイルを参照してください。&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </translation>
     </message>
