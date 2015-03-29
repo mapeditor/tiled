@@ -13,6 +13,8 @@ Product {
         qbs.installDir: {
             if (qbs.targetOS.contains("windows"))
                 return "translations"
+            else if (qbs.targetOS.contains("osx"))
+                return "Tiled.app/Contents/Translations"
             else
                 return "share/tiled/translations"
         }

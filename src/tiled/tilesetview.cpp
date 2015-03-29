@@ -559,13 +559,13 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
 
     if (tile) {
-        // Select this tile to make sure it is clear that only a single tile is
-        // being edited.
-        selectionModel()->setCurrentIndex(index,
-                                          QItemSelectionModel::SelectCurrent |
-                                          QItemSelectionModel::Clear);
-
         if (mEditTerrain) {
+            // Select this tile to make sure it is clear that only a single
+            // tile is being used.
+            selectionModel()->setCurrentIndex(index,
+                                              QItemSelectionModel::SelectCurrent |
+                                              QItemSelectionModel::Clear);
+
             QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
             addTerrain->setEnabled(!isExternal);
             connect(addTerrain, SIGNAL(triggered()), SLOT(createNewTerrain()));

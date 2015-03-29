@@ -22,6 +22,8 @@ in C++, using the Qt application framework.
     Only check validity of arguments
   * `--disable-opengl`:
     Disables hardware accelerated rendering
+  * `--export-map` [format] <tmx file> <target file>:
+    Export the specified tmx file to target
 
 ## AUTHORS
 <https://github.com/bjorn/tiled/blob/master/AUTHORS>

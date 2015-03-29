@@ -1,6 +1,8 @@
 /*
- * createtileobjecttool.h
- * Copyright 2014, Martin Ziel <martin.ziel.com>
+ * magicwandtool.h
+ * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -18,34 +20,45 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATETILEOBJECTTOOL_H
-#define CREATETILEOBJECTTOOL_H
 
-#include "createobjecttool.h"
+#ifndef MAGICWANDTOOL_H
+#define MAGICWANDTOOL_H
+
+
+#include "abstracttiletool.h"
+
+#include "tilelayer.h"
 
 namespace Tiled {
-
 namespace Internal {
 
-class CreateTileObjectTool : public CreateObjectTool
+class MapDocument;
+
+/**
+ * Implements a tool that bucket fills (flood fills) a region with a repeatable
+ * stamp.
+ */
+class MagicWandTool : public AbstractTileTool
 {
     Q_OBJECT
 
 public:
-    CreateTileObjectTool(QObject *parent);
+    MagicWandTool(QObject *parent = 0);
+
+    void mousePressed(QGraphicsSceneMouseEvent *event);
+    void mouseReleased(QGraphicsSceneMouseEvent *event);
 
     void languageChanged();
 
 protected:
-    void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+    void tilePositionChanged(const QPoint &tilePos);
 
-    MapObject *createNewMapObject();
+private:
+
+    QRegion mSelectedRegion;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CREATETILEOBJECTTOOL_H
+#endif // MAGICWANDTOOL_H

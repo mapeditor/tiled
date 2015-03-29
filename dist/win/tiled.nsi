@@ -183,9 +183,9 @@ File ${QT_DIR}\bin\Qt5Core.dll
 File ${QT_DIR}\bin\Qt5Gui.dll
 File ${QT_DIR}\bin\Qt5Widgets.dll
 File ${QT_DIR}\bin\Qt5OpenGL.dll
-File ${QT_DIR}\bin\icuin52.dll
-File ${QT_DIR}\bin\icuuc52.dll
-File ${QT_DIR}\bin\icudt52.dll
+File ${QT_DIR}\bin\icuin53.dll
+File ${QT_DIR}\bin\icuuc53.dll
+File ${QT_DIR}\bin\icudt53.dll
 File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
 File ${MINGW_DIR}\bin\libstdc++-6.dll
 File ${MINGW_DIR}\bin\libwinpthread-1.dll
@@ -231,7 +231,7 @@ CreateShortCut  "$SMPROGRAMS\${P}\${P}.lnk" "$INSTDIR\${P_NORM}.exe"
 CreateShortCut  "$SMPROGRAMS\${P}\uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 ; File associations
-${RegisterExtension} "$INSTDIR\${P_NORM}" ".tmx" "Tiled.tmx"
+${RegisterExtension} "$INSTDIR\${P_NORM}.exe" ".tmx" "Tiled.tmx"
 
 ; Add version number to Registry
 WriteRegStr HKLM "Software\${PRODUCT_REG_KEY}" "Version" "${V}"
@@ -263,9 +263,9 @@ Delete $INSTDIR\Qt5Widgets.dll
 Delete $INSTDIR\Qt5OpenGL.dll
 Delete $INSTDIR\libEGL.dll
 Delete $INSTDIR\libGLESv2.dll
-Delete $INSTDIR\icuin52.dll
-Delete $INSTDIR\icuuc52.dll
-Delete $INSTDIR\icudt52.dll
+Delete $INSTDIR\icuin53.dll
+Delete $INSTDIR\icuuc53.dll
+Delete $INSTDIR\icudt53.dll
 Delete $INSTDIR\libgcc_s_dw2-1.dll
 Delete $INSTDIR\libstdc++-6.dll
 Delete $INSTDIR\libwinpthread-1.dll

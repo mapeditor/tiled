@@ -19,13 +19,15 @@
  */
 
 #include "createmultipointobjecttool.h"
-#include "preferences.h"
-#include "utils.h"
+
 #include "mapdocument.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
-#include "objectgroup.h"
 #include "mapscene.h"
+#include "objectgroup.h"
+#include "snaphelper.h"
+#include "utils.h"
+
 #include <QApplication>
 #include <QPalette>
 
@@ -45,20 +47,13 @@ CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
 }
 
 void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
-                                                               Qt::KeyboardModifiers,
-                                                               bool snapToGrid, bool snapToFineGrid)
+                                                               Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
-    QPointF tileCoords = renderer->screenToTileCoords(pos);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos);
 
-    if (snapToFineGrid) {
-        int gridFine = Preferences::instance()->gridFine();
-        tileCoords = (tileCoords * gridFine).toPoint();
-        tileCoords /= gridFine;
-    } else if (snapToGrid)
-        tileCoords = tileCoords.toPoint();
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-    QPointF pixelCoords = renderer->tileToPixelCoords(tileCoords);
     pixelCoords -= mNewMapObjectItem->mapObject()->position();
 
     QPolygonF polygon = mOverlayPolygonObject->polygon();
@@ -66,8 +61,7 @@ void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &po
     mOverlayPolygonItem->setPolygon(polygon);
 }
 
-void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event,
-                                                                 bool, bool)
+void CreateMultipointObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
         finishNewMapObject();

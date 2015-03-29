@@ -15,7 +15,7 @@ win32 {
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
 }
-contains(QT_CONFIG, opengl): QT += opengl
+contains(QT_CONFIG, opengl):!macx: QT += opengl
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
@@ -23,6 +23,7 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
 macx {
     QMAKE_LIBDIR += $$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks
     LIBS += -framework Foundation
+    DEFINES += QT_NO_OPENGL
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../lib
 } else {
@@ -124,6 +125,7 @@ SOURCES += aboutdialog.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
+    patreondialog.cpp \
     pluginmanager.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
@@ -141,6 +143,7 @@ SOURCES += aboutdialog.cpp \
     rotatemapobject.cpp \
     saveasimagedialog.cpp \
     selectionrectangle.cpp \
+    snaphelper.cpp \
     stampbrush.cpp \
     terrainbrush.cpp \
     terraindock.cpp \
@@ -166,7 +169,8 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    magicwandtool.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -254,6 +258,7 @@ HEADERS += aboutdialog.h \
     offsetlayer.h \
     offsetmapdialog.h \
     painttilelayer.h \
+    patreondialog.h \
     pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
@@ -272,6 +277,7 @@ HEADERS += aboutdialog.h \
     rotatemapobject.h \
     saveasimagedialog.h \
     selectionrectangle.h \
+    snaphelper.h \
     stampbrush.h \
     terrainbrush.h \
     terraindock.h \
@@ -298,7 +304,8 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h
+    zoomable.h \
+    magicwandtool.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
@@ -311,6 +318,7 @@ FORMS += aboutdialog.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
     offsetmapdialog.ui \
+    patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
     saveasimagedialog.ui \

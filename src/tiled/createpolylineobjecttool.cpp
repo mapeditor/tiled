@@ -19,11 +19,10 @@
  */
 
 #include "createpolylineobjecttool.h"
-#include "preferences.h"
-#include "utils.h"
-#include "mapdocument.h"
+
+#include "mapobject.h"
 #include "mapobjectitem.h"
-#include "maprenderer.h"
+#include "utils.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;

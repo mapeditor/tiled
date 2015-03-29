@@ -1,4 +1,15 @@
-0.11.0 (...)
+0.12.0 (...)
+* Added a Magic Wand selection tool (by Henry Jia)
+* Added a Donate button to the About dialog
+* Added a Patreon dialog to the Help menu
+* Remember the directory used for external tilesets (by Henry Jia)
+* Don't set a window icon on Mac OS X
+* Fixed grid snapping being applied for staggered maps even when not enabled
+* Fixed infinite memory allocation loop on invalid tile size in TMX file
+* Fixed file icon associated with TMX files on Windows
+* Updated Russian translation
+
+0.11.0 (11 January 2015)
 * Added support for hexagonal maps (offset coordinates)
 * Added 'Export' action to repeat the last export
 * Added a shortcut for the Reload action (Ctrl+R)
@@ -14,7 +25,7 @@
 * Flare plugin: Fixed ability to open maps with absolute paths
 * Fixed grid rendering for staggered maps
 * Fully support building and running Tiled with Qbs
-* Updated Portuguese, Italian and Spanish translations
+* Updated Czech, Dutch, French, German, Italian, Japanese, Portuguese and Spanish translations
 
 0.10.2 (23 October 2014)
 * Fixed hit area for polygon nodes when editing polygons while zoomed in or out

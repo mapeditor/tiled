@@ -1,6 +1,6 @@
 /*
- * createtileobjecttool.h
- * Copyright 2014, Martin Ziel <martin.ziel.com>
+ * patreondialog.h
+ * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,34 +18,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CREATETILEOBJECTTOOL_H
-#define CREATETILEOBJECTTOOL_H
+#ifndef PATREONDIALOG_H
+#define PATREONDIALOG_H
 
-#include "createobjecttool.h"
+#include <QDialog>
+
+namespace Ui {
+class PatreonDialog;
+}
 
 namespace Tiled {
-
 namespace Internal {
 
-class CreateTileObjectTool : public CreateObjectTool
+class PatreonDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    CreateTileObjectTool(QObject *parent);
+    explicit PatreonDialog(QWidget *parent = 0);
+    ~PatreonDialog();
 
-    void languageChanged();
+private slots:
+    void openPatreonPage();
+    void togglePatreonStatus();
+    void updatePatreonStatus();
 
-protected:
-    void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-
-    MapObject *createNewMapObject();
+private:
+    Ui::PatreonDialog *ui;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // CREATETILEOBJECTTOOL_H
+#endif // PATREONDIALOG_H

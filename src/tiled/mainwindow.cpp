@@ -63,6 +63,7 @@
 #include "objectselectiontool.h"
 #include "objectgroup.h"
 #include "offsetmapdialog.h"
+#include "patreondialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
@@ -89,6 +90,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "imagemovementtool.h"
+#include "magicwandtool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -150,9 +152,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
 
+#ifndef Q_OS_MAC
     QIcon tiledIcon(QLatin1String(":images/16x16/tiled.png"));
     tiledIcon.addFile(QLatin1String(":images/32x32/tiled.png"));
     setWindowIcon(tiledIcon);
+#endif
 
     // Add larger icon versions for actions used in the tool bar
     QIcon newIcon = mUi->actionNew->icon();
@@ -330,8 +334,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
 
+    connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
-    connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
             SLOT(newTilesets(QStringList)));
@@ -407,6 +411,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
@@ -1187,13 +1192,19 @@ void MainWindow::addExternalTileset()
     if (!mMapDocument)
         return;
 
-    const QString start = fileDialogStartLocation();
+    Preferences *prefs = Preferences::instance();
+    QString start = prefs->lastPath(Preferences::ExternalTileset);
+
     const QStringList fileNames =
             QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
                                           start,
                                           tr("Tiled tileset files (*.tsx)"));
+
     if (fileNames.isEmpty())
         return;
+
+    prefs->setLastPath(Preferences::ExternalTileset,
+                       QFileInfo(fileNames.back()).path());
 
     QList<Tileset *> tilesets;
 
@@ -1575,6 +1586,12 @@ void MainWindow::updateWindowTitle()
         setWindowFilePath(QString());
         setWindowModified(false);
     }
+}
+
+void MainWindow::becomePatron()
+{
+    PatreonDialog patreonDialog(this);
+    patreonDialog.exec();
 }
 
 void MainWindow::aboutTiled()

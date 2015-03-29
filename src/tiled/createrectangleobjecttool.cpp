@@ -19,11 +19,9 @@
  */
 
 #include "createrectangleobjecttool.h"
-#include "preferences.h"
+
+#include "mapobject.h"
 #include "utils.h"
-#include "mapdocument.h"
-#include "mapobjectitem.h"
-#include "maprenderer.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -44,7 +42,7 @@ void CreateRectangleObjectTool::languageChanged()
 
 MapObject *CreateRectangleObjectTool::createNewMapObject()
 {
-   MapObject *newMapObject = new MapObject;
+    MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
     return newMapObject;
 }
