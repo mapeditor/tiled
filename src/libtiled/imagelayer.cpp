@@ -49,6 +49,11 @@ void ImageLayer::resetImage()
     mImageSource.clear();
 }
 
+bool ImageLayer::loadFromImage(const QString &fileName)
+{
+    return loadFromImage(QImage(fileName), fileName);
+}
+
 bool ImageLayer::loadFromImage(const QImage &image, const QString &fileName)
 {
     mImageSource = fileName;

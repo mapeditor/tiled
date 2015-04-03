@@ -113,6 +113,8 @@ public:
      * @return <code>true</code> if loading was successful, otherwise
      *         returns <code>false</code>
      */
+    bool loadFromImage(const QString &fileName);
+
     bool loadFromImage(const QImage &image, const QString &fileName);
 
     /**
