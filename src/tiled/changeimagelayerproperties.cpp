@@ -84,3 +84,7 @@ void ChangeImageLayerProperties::undo()
     mMapDocument->emitImageLayerChanged(mImageLayer);
 }
 
+ChangeImageLayerProperties::~ChangeImageLayerProperties()
+{
+    ImageLayerManager::instance()->removeReference(mImageLayer);
+}

@@ -55,6 +55,9 @@ public:
     void redo();
 
 private:
+
+    ~ChangeImageLayerProperties();
+
     MapDocument *mMapDocument;
     ImageLayer *mImageLayer;
     const QColor mUndoColor;
