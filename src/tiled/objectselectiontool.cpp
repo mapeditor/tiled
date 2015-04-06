@@ -215,11 +215,11 @@ public:
         }
     }
     
-    void setResizingOrigin(QPointF scalingOrigin) { mResizingOrigin = scalingOrigin; }
-    QPointF getResizingOrigin() const { return mResizingOrigin; }
+    void setResizingOrigin(QPointF resizingOrigin) { mResizingOrigin = resizingOrigin; }
+    QPointF resizingOrigin() const { return mResizingOrigin; }
     
-    bool getResizingLimitHorizontal() const { return mResizingLimitHorizontal; }
-    bool getResizingLimitVertical() const { return mResizingLimitVertical; }
+    bool resizingLimitHorizontal() const { return mResizingLimitHorizontal; }
+    bool resizingLimitVertical() const { return mResizingLimitVertical; }
     
     QRectF boundingRect() const;
     
@@ -815,9 +815,9 @@ void ObjectSelectionTool::startResizing()
     mMovingItems = mapScene()->selectedObjectItems();
     mMode = Resizing;
 
-    mResizingOrigin = mClickedResizeHandle->getResizingOrigin();
-    mResizingLimitHorizontal = mClickedResizeHandle->getResizingLimitHorizontal();
-    mResizingLimitVertical = mClickedResizeHandle->getResizingLimitVertical();
+    mResizingOrigin = mClickedResizeHandle->resizingOrigin();
+    mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
+    mResizingLimitVertical = mClickedResizeHandle->resizingLimitVertical();
 
     mStart = mClickedResizeHandle->pos();
 
