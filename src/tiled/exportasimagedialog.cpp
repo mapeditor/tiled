@@ -160,16 +160,41 @@ void ExportAsImageDialog::accept()
     if (useCurrentScale)
         mapSize *= mCurrentScale;
 
-    QImage image(mapSize, QImage::Format_ARGB32_Premultiplied);
+    QImage image;
 
-    if (includeBackgroundColor) {
-        if (mMapDocument->map()->backgroundColor().isValid())
-            image.fill(mMapDocument->map()->backgroundColor());
-        else
-            image.fill(Qt::gray);
+    try {
+        image = QImage(mapSize, QImage::Format_ARGB32_Premultiplied);
+
+        if (includeBackgroundColor) {
+            if (mMapDocument->map()->backgroundColor().isValid())
+                image.fill(mMapDocument->map()->backgroundColor());
+            else
+                image.fill(Qt::gray);
+        } else {
+            image.fill(Qt::transparent);
+        }
+    } catch (const std::bad_alloc &) {
+        QMessageBox::critical(this,
+                              tr("Out of Memory"),
+                              tr("Could not allocate sufficient memory for the image. "
+                                 "Try reducing the zoom level or using a 64-bit version of Tiled."));
+        return;
     }
-    else
-        image.fill(Qt::transparent);
+
+    if (image.isNull()) {
+        const size_t gigabyte = 1073741824;
+        const size_t memory = size_t(mapSize.width()) * size_t(mapSize.height()) * 4;
+        const double gigabytes = (double) memory / gigabyte;
+
+        QMessageBox::critical(this,
+                              tr("Image too Big"),
+                              tr("The resulting image would be %1 x %2 pixels and take %3 GB of memory. "
+                                 "Tiled is unable to create such an image. Try reducing the zoom level.")
+                              .arg(mapSize.width())
+                              .arg(mapSize.height())
+                              .arg(gigabytes, 0, 'f', 2));
+        return;
+    }
 
     QPainter painter(&image);
 
