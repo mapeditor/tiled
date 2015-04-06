@@ -64,9 +64,9 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
-    <addaction name="actionSaveAsImage"/>
     <addaction name="actionExport"/>
     <addaction name="actionExportAs"/>
+    <addaction name="actionExportAsImage"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -333,9 +333,9 @@
     <string>Ctrl+0</string>
    </property>
   </action>
-  <action name="actionSaveAsImage">
+  <action name="actionExportAsImage">
    <property name="text">
-    <string>Save As &amp;Image...</string>
+    <string>Export As &amp;Image...</string>
    </property>
   </action>
   <action name="actionCut">

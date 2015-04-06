@@ -1,6 +1,6 @@
 /*
  * mainwindow.cpp
- * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
@@ -42,6 +42,7 @@
 #include "editpolygontool.h"
 #include "eraser.h"
 #include "erasetiles.h"
+#include "exportasimagedialog.h"
 #include "bucketfilltool.h"
 #include "filltiles.h"
 #include "languagemanager.h"
@@ -68,7 +69,6 @@
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
 #include "quickstampmanager.h"
-#include "saveasimagedialog.h"
 #include "stampbrush.h"
 #include "terrainbrush.h"
 #include "tilelayer.h"
@@ -293,7 +293,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(clearRecentFiles()));
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
-    connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
+    connect(mUi->actionExportAsImage, SIGNAL(triggered()), SLOT(exportAsImage()));
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
     connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
@@ -847,19 +847,6 @@ bool MainWindow::confirmAllSave()
     return true;
 }
 
-void MainWindow::saveAsImage()
-{
-    if (!mMapDocument)
-        return;
-
-    MapView *mapView = mDocumentManager->currentMapView();
-    SaveAsImageDialog dialog(mMapDocument,
-                             mMapDocument->fileName(),
-                             mapView->zoomable()->scale(),
-                             this);
-    dialog.exec();
-}
-
 void MainWindow::export_()
 {
     if (!mMapDocument)
@@ -996,6 +983,19 @@ void MainWindow::exportAs()
             exportPluginFileName = plugin->fileName;
         mMapDocument->setExportPluginFileName(exportPluginFileName);
     }
+}
+
+void MainWindow::exportAsImage()
+{
+    if (!mMapDocument)
+        return;
+
+    MapView *mapView = mDocumentManager->currentMapView();
+    ExportAsImageDialog dialog(mMapDocument,
+                               mMapDocument->fileName(),
+                               mapView->zoomable()->scale(),
+                               this);
+    dialog.exec();
 }
 
 void MainWindow::reload()
@@ -1411,7 +1411,7 @@ void MainWindow::updateActions()
 
     mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
-    mUi->actionSaveAsImage->setEnabled(map);
+    mUi->actionExportAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
     mUi->actionExportAs->setEnabled(map);
     mUi->actionReload->setEnabled(map);

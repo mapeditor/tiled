@@ -1,6 +1,6 @@
 /*
- * saveasimagedialog.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * exportasimagedialog.h
+ * Copyright 2009-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -24,7 +24,7 @@
 #include <QDialog>
 
 namespace Ui {
-class SaveAsImageDialog;
+class ExportAsImageDialog;
 }
 
 namespace Tiled {
@@ -33,23 +33,23 @@ namespace Internal {
 class MapDocument;
 
 /**
- * The dialog for saving a map as an image.
+ * The dialog for exporting a map as an image.
  */
-class SaveAsImageDialog : public QDialog
+class ExportAsImageDialog : public QDialog
 {
     Q_OBJECT
 
 public:
     /**
-     * Creates a Save As Image dialog. The suggested name for the image will
+     * Creates an Export As Image dialog. The suggested name for the image will
      * be based on the given \a fileName. Use \a currentScale to specify the
      * current zoom level of the map view.
      */
-    SaveAsImageDialog(MapDocument *mapDocument,
-                      const QString &fileName,
-                      qreal currentScale,
-                      QWidget *parent = 0);
-    ~SaveAsImageDialog();
+    ExportAsImageDialog(MapDocument *mapDocument,
+                        const QString &fileName,
+                        qreal currentScale,
+                        QWidget *parent = 0);
+    ~ExportAsImageDialog();
 
 public:
     void accept();
@@ -59,7 +59,7 @@ private slots:
     void updateAcceptEnabled();
 
 private:
-    Ui::SaveAsImageDialog *mUi;
+    Ui::ExportAsImageDialog *mUi;
     MapDocument *mMapDocument;
     qreal mCurrentScale;
     static QString mPath;

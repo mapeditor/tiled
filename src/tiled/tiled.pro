@@ -89,6 +89,7 @@ SOURCES += aboutdialog.cpp \
     editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
+    exportasimagedialog.cpp \
     fileedit.cpp \
     filesystemwatcher.cpp \
     filltiles.cpp \
@@ -141,7 +142,6 @@ SOURCES += aboutdialog.cpp \
     resizemapobject.cpp \
     resizetilelayer.cpp \
     rotatemapobject.cpp \
-    saveasimagedialog.cpp \
     selectionrectangle.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
@@ -222,6 +222,7 @@ HEADERS += aboutdialog.h \
     editterraindialog.h \
     eraser.h \
     erasetiles.h \
+    exportasimagedialog.h \
     fileedit.h \
     filesystemwatcher.h \
     filltiles.h \
@@ -275,7 +276,6 @@ HEADERS += aboutdialog.h \
     resizemapobject.h \
     resizetilelayer.h \
     rotatemapobject.h \
-    saveasimagedialog.h \
     selectionrectangle.h \
     snaphelper.h \
     stampbrush.h \
@@ -314,6 +314,7 @@ macx {
 FORMS += aboutdialog.ui \
     commanddialog.ui \
     editterraindialog.ui \
+    exportasimagedialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
@@ -321,7 +322,6 @@ FORMS += aboutdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
-    saveasimagedialog.ui \
     tileanimationeditor.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
