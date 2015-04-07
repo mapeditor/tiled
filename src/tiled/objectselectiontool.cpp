@@ -406,7 +406,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         updateRotatingItems(pos, modifiers);
         break;
     case Resizing:
-        if (mMovingItems.size() == 1) {
+        if (mMovingObjects.size() == 1) {
             updateResizingSingleItem(pos, modifiers);
         } else {
             updateResizingItems(pos, modifiers);
@@ -551,7 +551,7 @@ void ObjectSelectionTool::updateHandles()
         mRotationOriginIndicator->setPos(mRotationOrigin);
         
         // Resizing handles.
-        // If there is only one object seleced, align to its orientation.
+        // If there is only one object selected, align to its orientation.
         if (items.size() == 1) {
             QRectF itemRect = item->boundingRect().adjusted(1, 1, -1, -1);
             
@@ -585,7 +585,6 @@ void ObjectSelectionTool::updateHandles()
         mResizeHandles[BottomRight]->setResizingOrigin(topLeft);
     }
 
-    mSelectionBoundingRect = boundingRect;
     setHandlesVisible(showHandles);
     mRotationOriginIndicator->setVisible(showHandles);
 }
@@ -606,18 +605,18 @@ void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
     // Abort move/rotate to avoid crashing...
     // TODO: This should really not be allowed to happen in the first place.
     int i = 0;
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        MapObject *object = objectItem->mapObject();
-        if (!objects.contains(object)) {
-            object->setPosition(mOldObjectPositions.at(i));
-            objectItem->setPos(mOldObjectItemPositions.at(i));
+    foreach (const MovingObject &object, mMovingObjects) {
+        MapObject *mapObject = object.item->mapObject();
+        if (!objects.contains(mapObject)) {
+            mapObject->setPosition(object.oldPosition);
+            object.item->setPos(object.oldItemPosition);
             if (mMode == Rotating)
-                objectItem->setObjectRotation(mOldObjectRotations.at(i));
+                object.item->setObjectRotation(object.oldRotation);
         }
         ++i;
     }
 
-    mMovingItems.clear();
+    mMovingObjects.clear();
 }
 
 void ObjectSelectionTool::updateSelection(const QPointF &pos,
@@ -651,26 +650,18 @@ void ObjectSelectionTool::startSelecting()
 
 void ObjectSelectionTool::startMoving()
 {
-    mMovingItems = mapScene()->selectedObjectItems();
 
     // Move only the clicked item, if it was not part of the selection
-    if (!mMovingItems.contains(mClickedObjectItem)) {
-        mMovingItems.clear();
-        mMovingItems.insert(mClickedObjectItem);
-        mapScene()->setSelectedObjectItems(mMovingItems);
-    }
+    if (!mapScene()->selectedObjectItems().contains(mClickedObjectItem))
+        mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>() << mClickedObjectItem);
+
+    saveSelectionState();
 
     mMode = Moving;
+    mAlignPosition = mMovingObjects.first().item->mapObject()->position();
 
-    // Remember the current object positions
-    mOldObjectItemPositions.clear();
-    mOldObjectPositions.clear();
-    mAlignPosition = (*mMovingItems.begin())->mapObject()->position();
-
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        const QPointF &pos = objectItem->mapObject()->position();
-        mOldObjectItemPositions += objectItem->pos();
-        mOldObjectPositions += pos;
+    foreach (const MovingObject &object, mMovingObjects) {
+        const QPointF &pos = object.oldPosition;
         if (pos.x() < mAlignPosition.x())
             mAlignPosition.setX(pos.x());
         if (pos.y() < mAlignPosition.y())
@@ -689,18 +680,15 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
 
     diff = snapToGrid(diff, modifiers);
 
-    int i = 0;
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        const QPointF newPixelPos = mOldObjectItemPositions.at(i) + diff;
+    foreach (const MovingObject &object, mMovingObjects) {
+        const QPointF newPixelPos = object.oldItemPosition + diff;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
-        objectItem->setPos(newPixelPos);
-        objectItem->mapObject()->setPosition(newPos);
+        object.item->setPos(newPixelPos);
+        object.item->mapObject()->setPosition(newPos);
 
-        ObjectGroup *objectGroup = objectItem->mapObject()->objectGroup();
+        ObjectGroup *objectGroup = object.item->mapObject()->objectGroup();
         if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
-            objectItem->setZValue(newPixelPos.y());
-
-        ++i;
+            object.item->setZValue(newPixelPos.y());
     }
 }
 
@@ -714,38 +702,22 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
         return;
 
     QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Move %n Object(s)", "", mMovingItems.size()));
-    int i = 0;
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        MapObject *object = objectItem->mapObject();
-        const QPointF oldPos = mOldObjectPositions.at(i);
-        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
-        ++i;
+    undoStack->beginMacro(tr("Move %n Object(s)", "", mMovingObjects.size()));
+    foreach (const MovingObject &object, mMovingObjects) {
+        undoStack->push(new MoveMapObject(mapDocument(),
+                                          object.item->mapObject(),
+                                          object.oldPosition));
     }
     undoStack->endMacro();
 
-    mOldObjectItemPositions.clear();
-    mOldObjectPositions.clear();
-    mMovingItems.clear();
+    mMovingObjects.clear();
 }
 
 void ObjectSelectionTool::startRotating()
 {
-    mMovingItems = mapScene()->selectedObjectItems();
     mMode = Rotating;
 
-    // Remember the current object positions and orientations
-    mOldObjectItemPositions.clear();
-    mOldObjectPositions.clear();
-    mOldObjectRotations.clear();
-
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        MapObject *object = objectItem->mapObject();
-        mOldObjectItemPositions += objectItem->pos();
-        mOldObjectPositions += object->position();
-        mOldObjectRotations += object->rotation();
-    }
-
+    saveSelectionState();
     setHandlesVisible(false);
 }
 
@@ -765,9 +737,8 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
     if (modifiers & Qt::ControlModifier)
         angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
 
-    int i = 0;
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mRotationOrigin;
+    foreach (const MovingObject &object, mMovingObjects) {
+        const QPointF oldRelPos = object.oldItemPosition - mRotationOrigin;
         const qreal sn = std::sin(angleDiff);
         const qreal cs = std::cos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
@@ -775,13 +746,11 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         const QPointF newPixelPos = mRotationOrigin + newRelPos;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
-        const qreal newRotation = mOldObjectRotations.at(i) + angleDiff * 180 / M_PI;
+        const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
 
-        objectItem->setPos(newPixelPos);
-        objectItem->mapObject()->setPosition(newPos);
-        objectItem->setObjectRotation(newRotation);
-
-        ++i;
+        object.item->setPos(newPixelPos);
+        object.item->mapObject()->setPosition(newPos);
+        object.item->setObjectRotation(newRotation);
     }
 }
 
@@ -795,28 +764,20 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
         return;
 
     QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Rotate %n Object(s)", "", mMovingItems.size()));
-    int i = 0;
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        MapObject *object = objectItem->mapObject();
-        const QPointF oldPos = mOldObjectPositions.at(i);
-        const qreal oldRotation = mOldObjectRotations.at(i);
-        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
-        undoStack->push(new RotateMapObject(mapDocument(), object, oldRotation));
-        ++i;
+    undoStack->beginMacro(tr("Rotate %n Object(s)", "", mMovingObjects.size()));
+    foreach (const MovingObject &object, mMovingObjects) {
+        MapObject *mapObject = object.item->mapObject();
+        undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
+        undoStack->push(new RotateMapObject(mapDocument(), mapObject, object.oldRotation));
     }
     undoStack->endMacro();
 
-    mOldObjectItemPositions.clear();
-    mOldObjectPositions.clear();
-    mOldObjectRotations.clear();
-    mMovingItems.clear();
+    mMovingObjects.clear();
 }
 
 
 void ObjectSelectionTool::startResizing()
 {
-    mMovingItems = mapScene()->selectedObjectItems();
     mMode = Resizing;
 
     mResizingOrigin = mClickedResizeHandle->resizingOrigin();
@@ -825,19 +786,7 @@ void ObjectSelectionTool::startResizing()
 
     mStart = mClickedResizeHandle->pos();
 
-    // Remember the current object positions and sizes.
-    mOldObjectItemPositions.clear();
-    mOldObjectPositions.clear();
-    mOldObjectSizes.clear();
-
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        MapObject *object = objectItem->mapObject();
-        mOldObjectItemPositions += objectItem->pos();
-        mOldObjectPositions += object->position();
-        mOldObjectSizes += object->size();
-        mOldObjectPolygons += object->polygon();
-    }
-
+    saveSelectionState();
     setHandlesVisible(false);
 }
 
@@ -860,24 +809,23 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         scale = (qMax((qreal)0, diff.x() / startDiff.x())
                 + qMax((qreal)0, diff.y() / startDiff.y())) / 2;
 
-    int i = 0;
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        const QPointF oldRelPos = mOldObjectItemPositions.at(i) - mResizingOrigin;
+    foreach (const MovingObject &object, mMovingObjects) {
+        const QPointF oldRelPos = object.oldItemPosition - mResizingOrigin;
         const QPointF scaledRelPos(oldRelPos.x() * scale,
                                    oldRelPos.y() * scale);
         const QPointF newScreenPos = mResizingOrigin + scaledRelPos;
         const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
-        const QSizeF origSize = mOldObjectSizes.at(i);
+        const QSizeF origSize = object.oldSize;
         const QSizeF newSize(origSize.width() * scale,
                              origSize.height() * scale);
         
-        if (objectItem->mapObject()->polygon().isEmpty() == false) {
+        if (object.item->mapObject()->polygon().isEmpty() == false) {
             // For polygons, we have to scale in object space.
-            qreal rotation = objectItem->rotation() * M_PI / -180;
+            qreal rotation = object.item->rotation() * M_PI / -180;
             const qreal sn = std::sin(rotation);
             const qreal cs = std::cos(rotation);
             
-            const QPolygonF &oldPolygon = mOldObjectPolygons.at(i);
+            const QPolygonF &oldPolygon = object.oldPolygon;
             QPolygonF newPolygon(oldPolygon.size());
             for (int n = 0; n < oldPolygon.size(); ++n) {
                 const QPointF oldPoint(oldPolygon[n]);
@@ -888,21 +836,19 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                                        scaledPoint.y() * cs + scaledPoint.x() * sn);
                 newPolygon += newPoint;
             }
-            objectItem->mapObject()->setPolygon(newPolygon);
+            object.item->mapObject()->setPolygon(newPolygon);
         }
         
-        objectItem->resizeObject(newSize);
-        objectItem->setPos(newScreenPos);
-        objectItem->mapObject()->setPosition(newPos);
-        
-        ++i;
+        object.item->resizeObject(newSize);
+        object.item->setPos(newScreenPos);
+        object.item->mapObject()->setPosition(newPos);
     }
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
                                                    Qt::KeyboardModifiers modifiers)
 {
-    MapObjectItem *objectItem = *mMovingItems.begin();
+    const MovingObject &object = mMovingObjects.first();
     MapRenderer *renderer = mapDocument()->renderer();
     QPointF diff = pos - mResizingOrigin;
     QPointF startDiff = mStart - mResizingOrigin;
@@ -911,12 +857,14 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
 
     // Most calculations in this function occur in object space, so 
     // we transform the scaling factors from world space.
-    qreal rotation = objectItem->rotation() * M_PI / -180;
+    qreal rotation = object.item->rotation() * M_PI / -180;
     const qreal sn = std::sin(rotation);
     const qreal cs = std::cos(rotation);
 
-    diff = QPointF(diff.x() * cs - diff.y() * sn, diff.x() * sn + diff.y() * cs);
-    startDiff = QPointF(startDiff.x() * cs - startDiff.y() * sn, startDiff.x() * sn + startDiff.y() * cs);
+    diff = QPointF(diff.x() * cs - diff.y() * sn,
+                   diff.x() * sn + diff.y() * cs);
+    startDiff = QPointF(startDiff.x() * cs - startDiff.y() * sn,
+                        startDiff.x() * sn + startDiff.y() * cs);
 
     // Calculate scaling factor.
     QSizeF scalingFactor(qMax((qreal)0, diff.x() / startDiff.x()),
@@ -929,7 +877,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
     
     // Convert relative position into object space, scale,
     // and then convert back to world space.
-    const QPointF oldRelPos = mOldObjectItemPositions.at(0) - mResizingOrigin;
+    const QPointF oldRelPos = object.oldItemPosition - mResizingOrigin;
     const QPointF objectRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                oldRelPos.x() * sn + oldRelPos.y() * cs);
     const QPointF scaledRelPos(objectRelPos.x() * scalingFactor.width(),
@@ -938,25 +886,22 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
                             scaledRelPos.x() * -sn + scaledRelPos.y() * cs);
     const QPointF newScreenPos = mResizingOrigin + newRelPos;
     const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
-    const QSizeF origSize = mOldObjectSizes.at(0);
-    const QSizeF newSize(origSize.width() * scalingFactor.width(),
-                         origSize.height() * scalingFactor.height());
+    const QSizeF newSize(object.oldSize.width() * scalingFactor.width(),
+                         object.oldSize.height() * scalingFactor.height());
     
-    if (objectItem->mapObject()->polygon().isEmpty() == false) {
-        const QPolygonF &oldPolygon = mOldObjectPolygons.at(0);
-        QPolygonF newPolygon(oldPolygon.size());
-        for (int n = 0; n < oldPolygon.size(); ++n) {
-            const QPointF point(oldPolygon[n]);
-            const QPointF newPoint(point.x() * scalingFactor.width(),
-                                   point.y() * scalingFactor.height());
-            newPolygon[n] = newPoint;
+    if (!object.oldPolygon.isEmpty()) {
+        QPolygonF newPolygon(object.oldPolygon.size());
+        for (int n = 0; n < object.oldPolygon.size(); ++n) {
+            const QPointF point(object.oldPolygon[n]);
+            newPolygon[n] = QPointF(point.x() * scalingFactor.width(),
+                                    point.y() * scalingFactor.height());
         }
-        objectItem->mapObject()->setPolygon(newPolygon);
+        object.item->mapObject()->setPolygon(newPolygon);
     }
     
-    objectItem->resizeObject(newSize);
-    objectItem->setPos(newScreenPos);
-    objectItem->mapObject()->setPosition(newPos);
+    object.item->resizeObject(newSize);
+    object.item->setPos(newScreenPos);
+    object.item->mapObject()->setPosition(newPos);
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
@@ -969,29 +914,37 @@ void ObjectSelectionTool::finishResizing(const QPointF &pos)
         return;
 
     QUndoStack *undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(tr("Resize %n Object(s)", "", mMovingItems.size()));
-    int i = 0;
-    foreach (MapObjectItem *objectItem, mMovingItems) {
-        MapObject *object = objectItem->mapObject();
-        const QPointF oldPos = mOldObjectPositions.at(i);
-        const QSizeF oldSize = mOldObjectSizes.at(i);
-        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
-        undoStack->push(new ResizeMapObject(mapDocument(), object, oldSize));
+    undoStack->beginMacro(tr("Resize %n Object(s)", "", mMovingObjects.size()));
+    foreach (const MovingObject &object, mMovingObjects) {
+        MapObject *mapObject = object.item->mapObject();
+        undoStack->push(new MoveMapObject(mapDocument(), mapObject, object.oldPosition));
+        undoStack->push(new ResizeMapObject(mapDocument(), mapObject, object.oldSize));
         
-        if (object->polygon().isEmpty() == false) {
-            const QPolygonF oldPolygon = mOldObjectPolygons.at(i);
-            undoStack->push(new ChangePolygon(mapDocument(), object, oldPolygon));
-        }
-        
-        ++i;
+        if (!object.oldPolygon.isEmpty())
+            undoStack->push(new ChangePolygon(mapDocument(), mapObject, object.oldPolygon));
     }
     undoStack->endMacro();
 
-    mOldObjectItemPositions.clear();
-    mOldObjectPositions.clear();
-    mOldObjectSizes.clear();
-    mOldObjectPolygons.clear();
-    mMovingItems.clear();
+    mMovingObjects.clear();
+}
+
+void ObjectSelectionTool::saveSelectionState()
+{
+    mMovingObjects.clear();
+
+    // Remember the initial state before moving, resizing or rotating
+    foreach (MapObjectItem *item, mapScene()->selectedObjectItems()) {
+        MapObject *mapObject = item->mapObject();
+        MovingObject object = {
+            item,
+            item->pos(),
+            mapObject->position(),
+            mapObject->size(),
+            mapObject->polygon(),
+            mapObject->rotation()
+        };
+        mMovingObjects.append(object);
+    }
 }
 
 const QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,

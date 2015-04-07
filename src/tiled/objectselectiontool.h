@@ -93,8 +93,21 @@ private:
                              Qt::KeyboardModifiers modifiers);
     void finishResizing(const QPointF &pos);
     
+    void saveSelectionState();
+
     const QPointF snapToGrid(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
+
+    struct MovingObject
+    {
+        MapObjectItem *item;
+        QPointF oldItemPosition;
+
+        QPointF oldPosition;
+        QSizeF oldSize;
+        QPolygonF oldPolygon;
+        qreal oldRotation;
+    };
 
     SelectionRectangle *mSelectionRectangle;
     QGraphicsItem *mRotationOriginIndicator;
@@ -104,14 +117,10 @@ private:
     MapObjectItem *mClickedObjectItem;
     CornerHandle *mClickedCornerHandle;
     ResizeHandle *mClickedResizeHandle;
-    QSet<MapObjectItem*> mMovingItems;
-    QVector<QPointF> mOldObjectItemPositions;
-    QVector<QPointF> mOldObjectPositions;
-    QVector<QSizeF> mOldObjectSizes;
-    QVector<QPolygonF> mOldObjectPolygons;
-    QVector<qreal> mOldObjectRotations;
+
+    QList<MovingObject> mMovingObjects;
+
     QPointF mAlignPosition;
-    QRectF mSelectionBoundingRect;
     QPointF mRotationOrigin;
     QPointF mResizingOrigin;
     bool mResizingLimitHorizontal;
