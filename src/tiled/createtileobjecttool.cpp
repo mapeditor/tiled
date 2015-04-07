@@ -51,6 +51,7 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
     mNewMapObjectItem->setZValue(10000); // sync may change it
+    mNewMapObjectItem->setOpacity(0.75);
 }
 
 void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
@@ -63,6 +64,13 @@ void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseE
 {
     if (event->button() == Qt::LeftButton)
         finishNewMapObject();
+}
+
+void CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
+{
+    CreateObjectTool::startNewMapObject(pos, objectGroup);
+    if (mNewMapObjectItem)
+        mNewMapObjectItem->setOpacity(0.75);
 }
 
 void CreateTileObjectTool::languageChanged()
