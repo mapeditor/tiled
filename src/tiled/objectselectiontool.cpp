@@ -88,10 +88,14 @@ enum AnchorPosition {
     TopRight,
     BottomLeft,
     BottomRight,
-    TopMiddle,
-    CenterLeft,
-    CenterRight,
-    BottomMiddle
+
+    Top,
+    Left,
+    Right,
+    Bottom,
+
+    CornerAnchorCount = 4,
+    AnchorCount = 8,
 };
 
 static QPainterPath createArrow()
@@ -167,7 +171,7 @@ private:
 const QPainterPath CornerHandle::mArrow = createArrow();
 
 void CornerHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                           QWidget *)
+                         QWidget *)
 {
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setBrush(Qt::white);
@@ -208,9 +212,9 @@ public:
         case TopRight:      setCursor(Qt::SizeBDiagCursor); break;
         case BottomLeft:    setCursor(Qt::SizeBDiagCursor); break;
         case BottomRight:   setCursor(Qt::SizeFDiagCursor); break;
-        case TopMiddle:     setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
-        case CenterLeft:    setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
-        case CenterRight:   setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        case Top:           setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
+        case Left:          setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        case Right:         setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
         default:            setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
         }
     }
@@ -261,9 +265,9 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mClickedResizeHandle(0)
     , mMode(NoMode)
 {
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < CornerAnchorCount; ++i)
         mCornerHandles[i] = new CornerHandle(static_cast<AnchorPosition>(i));
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < AnchorCount; ++i)
         mResizeHandles[i] = new ResizeHandle(static_cast<AnchorPosition>(i));
 }
 
@@ -272,9 +276,9 @@ ObjectSelectionTool::~ObjectSelectionTool()
     delete mSelectionRectangle;
     delete mRotationOriginIndicator;
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < CornerAnchorCount; ++i)
         delete mCornerHandles[i];
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < AnchorCount; ++i)
         delete mResizeHandles[i];
 }
 
@@ -293,18 +297,18 @@ void ObjectSelectionTool::activate(MapScene *scene)
             this, SLOT(objectsRemoved(QList<MapObject*>)));
 
     scene->addItem(mRotationOriginIndicator);
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < CornerAnchorCount; ++i)
         scene->addItem(mCornerHandles[i]);
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < AnchorCount; ++i)
         scene->addItem(mResizeHandles[i]);
 }
 
 void ObjectSelectionTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mRotationOriginIndicator);
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < CornerAnchorCount; ++i)
         scene->removeItem(mCornerHandles[i]);
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < AnchorCount; ++i)
         scene->removeItem(mResizeHandles[i]);
 
     disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
@@ -562,14 +566,14 @@ void ObjectSelectionTool::updateHandles()
         QPointF right = (topRight + bottomRight) / 2;
         QPointF bottom = (bottomLeft + bottomRight) / 2;
         
-        mResizeHandles[TopMiddle]->setPos(top);
-        mResizeHandles[TopMiddle]->setResizingOrigin(bottom);
-        mResizeHandles[CenterLeft]->setPos(left);
-        mResizeHandles[CenterLeft]->setResizingOrigin(right);
-        mResizeHandles[CenterRight]->setPos(right);
-        mResizeHandles[CenterRight]->setResizingOrigin(left);
-        mResizeHandles[BottomMiddle]->setPos(bottom);
-        mResizeHandles[BottomMiddle]->setResizingOrigin(top);
+        mResizeHandles[Top]->setPos(top);
+        mResizeHandles[Top]->setResizingOrigin(bottom);
+        mResizeHandles[Left]->setPos(left);
+        mResizeHandles[Left]->setResizingOrigin(right);
+        mResizeHandles[Right]->setPos(right);
+        mResizeHandles[Right]->setResizingOrigin(left);
+        mResizeHandles[Bottom]->setPos(bottom);
+        mResizeHandles[Bottom]->setResizingOrigin(top);
         
         mResizeHandles[TopLeft]->setPos(topLeft);
         mResizeHandles[TopLeft]->setResizingOrigin(bottomRight);
@@ -588,9 +592,9 @@ void ObjectSelectionTool::updateHandles()
 
 void ObjectSelectionTool::setHandlesVisible(bool visible)
 {
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < CornerAnchorCount; ++i)
         mCornerHandles[i]->setVisible(visible);
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < AnchorCount; ++i)
         mResizeHandles[i]->setVisible(visible);
 }
 
