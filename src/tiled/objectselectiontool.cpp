@@ -293,6 +293,8 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
     connect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
             this, SLOT(updateHandles()));
+    connect(mapDocument(), SIGNAL(mapChanged()),
+            this, SLOT(updateHandles()));
     connect(scene, SIGNAL(selectedObjectItemsChanged()),
             this, SLOT(updateHandles()));
 
@@ -315,6 +317,8 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
         scene->removeItem(mResizeHandles[i]);
 
     disconnect(mapDocument(), SIGNAL(objectsChanged(QList<MapObject*>)),
+               this, SLOT(updateHandles()));
+    disconnect(mapDocument(), SIGNAL(mapChanged()),
                this, SLOT(updateHandles()));
     disconnect(scene, SIGNAL(selectedObjectItemsChanged()),
                this, SLOT(updateHandles()));
