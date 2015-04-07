@@ -36,12 +36,15 @@
 #include "rotatemapobject.h"
 #include "selectionrectangle.h"
 #include "snaphelper.h"
+#include "tile.h"
+#include "tileset.h"
 
 #include <QApplication>
 #include <QGraphicsItem>
-#include <QKeyEvent>
-#include <QUndoStack>
 #include <QGraphicsView>
+#include <QKeyEvent>
+#include <QTransform>
+#include <QUndoStack>
 
 #include <cmath>
 
@@ -84,15 +87,15 @@ public:
 };
 
 enum AnchorPosition {
-    TopLeft,
-    TopRight,
-    BottomLeft,
-    BottomRight,
+    TopLeftAnchor,
+    TopRightAnchor,
+    BottomLeftAnchor,
+    BottomRightAnchor,
 
-    Top,
-    Left,
-    Right,
-    Bottom,
+    TopAnchor,
+    LeftAnchor,
+    RightAnchor,
+    BottomAnchor,
 
     CornerAnchorCount = 4,
     AnchorCount = 8,
@@ -149,10 +152,10 @@ public:
         setZValue(10000 + 1);
 
         switch (corner) {
-        case TopLeft:       setRotation(180);   break;
-        case TopRight:      setRotation(-90);   break;
-        case BottomLeft:    setRotation(90);    break;
-        default:            break; // BottomRight
+        case TopLeftAnchor:     setRotation(180);   break;
+        case TopRightAnchor:    setRotation(-90);   break;
+        case BottomLeftAnchor:  setRotation(90);    break;
+        default:                break; // BottomRight
         }
     }
 
@@ -207,14 +210,14 @@ public:
         mResizingLimitHorizontal = false;
         mResizingLimitVertical = false;
         
-        switch(anchorPosition) {
-        case TopLeft:       setCursor(Qt::SizeFDiagCursor); break;
-        case TopRight:      setCursor(Qt::SizeBDiagCursor); break;
-        case BottomLeft:    setCursor(Qt::SizeBDiagCursor); break;
-        case BottomRight:   setCursor(Qt::SizeFDiagCursor); break;
-        case Top:           setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
-        case Left:          setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
-        case Right:         setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        switch (anchorPosition) {
+        case TopLeftAnchor:       setCursor(Qt::SizeFDiagCursor); break;
+        case TopRightAnchor:      setCursor(Qt::SizeBDiagCursor); break;
+        case BottomLeftAnchor:    setCursor(Qt::SizeBDiagCursor); break;
+        case BottomRightAnchor:   setCursor(Qt::SizeFDiagCursor); break;
+        case TopAnchor:           setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
+        case LeftAnchor:          setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
+        case RightAnchor:         setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
         default:            setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
         }
     }
@@ -515,50 +518,132 @@ void ObjectSelectionTool::languageChanged()
     setShortcut(QKeySequence(tr("S")));
 }
 
+// TODO: Check whether this function should be moved into MapObject::bounds
+static void align(QRectF &r, Alignment alignment)
+{
+    switch (alignment) {
+    case TopLeft:       break;
+    case Top:           r.translate(-r.width() / 2, 0);                 break;
+    case TopRight:      r.translate(-r.width(), 0);                     break;
+    case Left:          r.translate(0, -r.height() / 2);                break;
+    case Center:        r.translate(-r.width() / 2, -r.height() / 2);   break;
+    case Right:         r.translate(-r.width(), -r.height() / 2);       break;
+    case BottomLeft:    r.translate(0, -r.height());                    break;
+    case Bottom:        r.translate(-r.width() / 2, -r.height());       break;
+    case BottomRight:   r.translate(-r.width(), -r.height());           break;
+    }
+}
+
+// This function returns the actual bounds of the object, as opposed to the
+// bounds of its visualization that the MapRenderer::boundingRect function
+// returns.
+//
+// Before calculating the final bounding rectangle, the object is transformed
+// by the given transformation.
+//
+static QRectF objectBounds(const MapObject *object,
+                           const MapRenderer *renderer,
+                           const QTransform &transform)
+{
+    if (!object->cell().isEmpty()) {
+        // Tile objects can have a tile offset, which is scaled along with the image
+        const Tile *tile = object->cell().tile;
+        const QSize imgSize = tile->image().size();
+        const QPointF position = renderer->pixelToScreenCoords(object->position());
+
+        const QPoint tileOffset = tile->tileset()->tileOffset();
+        const QSizeF objectSize = object->size();
+        const qreal scaleX = imgSize.width() > 0 ? objectSize.width() / imgSize.width() : 0;
+        const qreal scaleY = imgSize.height() > 0 ? objectSize.height() / imgSize.height() : 0;
+
+        QRectF bounds(position.x() + (tileOffset.x() * scaleX),
+                      position.y() + (tileOffset.y() * scaleY),
+                      objectSize.width(),
+                      objectSize.height());
+
+        align(bounds, object->alignment());
+
+        return transform.mapRect(bounds);
+    } else {
+        switch (object->shape()) {
+        case MapObject::Ellipse:
+        case MapObject::Rectangle: {
+            QRectF bounds(object->bounds());
+            align(bounds, object->alignment());
+            QPolygonF screenPolygon = renderer->pixelToScreenCoords(bounds);
+            return transform.map(screenPolygon).boundingRect();
+        }
+        case MapObject::Polygon:
+        case MapObject::Polyline: {
+            // Alignment is irrelevant for polygon objects since they have no size
+            const QPointF &pos = object->position();
+            const QPolygonF polygon = object->polygon().translated(pos);
+            QPolygonF screenPolygon = renderer->pixelToScreenCoords(polygon);
+            return transform.map(screenPolygon).boundingRect();
+        }
+        }
+    }
+
+    return QRectF();
+}
+
+static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
+{
+    QTransform transform;
+    if (object->rotation() != 0) {
+        const QPointF pos = renderer->pixelToScreenCoords(object->position());
+        transform.translate(pos.x(), pos.y());
+        transform.rotate(object->rotation());
+        transform.translate(-pos.x(), -pos.y());
+    }
+    return transform;
+}
+
 void ObjectSelectionTool::updateHandles()
 {
     if (mMode == Moving || mMode == Rotating)
         return;
 
-    const QSet<MapObjectItem*> &items = mapScene()->selectedObjectItems();
-    const bool showHandles = items.size() > 0;
-    QRectF boundingRect;
+    const QList<MapObject*> &objects = mapDocument()->selectedObjects();
+    const bool showHandles = objects.size() > 0;
 
     if (showHandles) {
-        QSetIterator<MapObjectItem*> iter(items);
-        MapObjectItem *item = iter.next();
-        boundingRect = item->mapToScene(item->boundingRect()).boundingRect();
+        MapRenderer *renderer = mapDocument()->renderer();
+        QRectF boundingRect = objectBounds(objects.first(), renderer,
+                                            objectTransform(objects.first(), renderer));
 
-        while (iter.hasNext()) {
-            item = iter.next();
-            boundingRect |= item->mapToScene(item->boundingRect()).boundingRect();
+        for (int i = 1; i < objects.size(); ++i) {
+            MapObject *object = objects.at(i);
+            boundingRect |= objectBounds(object, renderer,
+                                         objectTransform(object, renderer));
         }
 
-        boundingRect = boundingRect.adjusted(1, 1, -1, -1);
-        
         QPointF topLeft = boundingRect.topLeft();
         QPointF topRight = boundingRect.topRight();
         QPointF bottomLeft = boundingRect.bottomLeft();
         QPointF bottomRight = boundingRect.bottomRight();
-        
-        mCornerHandles[TopLeft]->setPos(topLeft);
-        mCornerHandles[TopRight]->setPos(topRight);
-        mCornerHandles[BottomLeft]->setPos(bottomLeft);
-        mCornerHandles[BottomRight]->setPos(bottomRight);
+
+        mCornerHandles[TopLeftAnchor]->setPos(topLeft);
+        mCornerHandles[TopRightAnchor]->setPos(topRight);
+        mCornerHandles[BottomLeftAnchor]->setPos(bottomLeft);
+        mCornerHandles[BottomRightAnchor]->setPos(bottomRight);
 
         // TODO: Might be nice to make it configurable
         mRotationOrigin = boundingRect.center();
         mRotationOriginIndicator->setPos(mRotationOrigin);
-        
+
         // Resizing handles.
+
         // If there is only one object selected, align to its orientation.
-        if (items.size() == 1) {
-            QRectF itemRect = item->boundingRect().adjusted(1, 1, -1, -1);
-            
-            topLeft = item->mapToScene(itemRect.topLeft());
-            topRight = item->mapToScene(itemRect.topRight());
-            bottomLeft = item->mapToScene(itemRect.bottomLeft());
-            bottomRight = item->mapToScene(itemRect.bottomRight());
+        if (objects.size() == 1 && objects.first()->rotation() != qreal(0)) {
+            MapObject *object = objects.first();
+            QRectF bounds = objectBounds(object, renderer, QTransform());
+
+            QTransform transform(objectTransform(object, renderer));
+            topLeft = transform.map(bounds.topLeft());
+            topRight = transform.map(bounds.topRight());
+            bottomLeft = transform.map(bounds.bottomLeft());
+            bottomRight = transform.map(bounds.bottomRight());
         }
         
         QPointF top = (topLeft + topRight) / 2;
@@ -566,23 +651,23 @@ void ObjectSelectionTool::updateHandles()
         QPointF right = (topRight + bottomRight) / 2;
         QPointF bottom = (bottomLeft + bottomRight) / 2;
         
-        mResizeHandles[Top]->setPos(top);
-        mResizeHandles[Top]->setResizingOrigin(bottom);
-        mResizeHandles[Left]->setPos(left);
-        mResizeHandles[Left]->setResizingOrigin(right);
-        mResizeHandles[Right]->setPos(right);
-        mResizeHandles[Right]->setResizingOrigin(left);
-        mResizeHandles[Bottom]->setPos(bottom);
-        mResizeHandles[Bottom]->setResizingOrigin(top);
+        mResizeHandles[TopAnchor]->setPos(top);
+        mResizeHandles[TopAnchor]->setResizingOrigin(bottom);
+        mResizeHandles[LeftAnchor]->setPos(left);
+        mResizeHandles[LeftAnchor]->setResizingOrigin(right);
+        mResizeHandles[RightAnchor]->setPos(right);
+        mResizeHandles[RightAnchor]->setResizingOrigin(left);
+        mResizeHandles[BottomAnchor]->setPos(bottom);
+        mResizeHandles[BottomAnchor]->setResizingOrigin(top);
         
-        mResizeHandles[TopLeft]->setPos(topLeft);
-        mResizeHandles[TopLeft]->setResizingOrigin(bottomRight);
-        mResizeHandles[TopRight]->setPos(topRight);
-        mResizeHandles[TopRight]->setResizingOrigin(bottomLeft);
-        mResizeHandles[BottomLeft]->setPos(bottomLeft);
-        mResizeHandles[BottomLeft]->setResizingOrigin(topRight);
-        mResizeHandles[BottomRight]->setPos(bottomRight);
-        mResizeHandles[BottomRight]->setResizingOrigin(topLeft);
+        mResizeHandles[TopLeftAnchor]->setPos(topLeft);
+        mResizeHandles[TopLeftAnchor]->setResizingOrigin(bottomRight);
+        mResizeHandles[TopRightAnchor]->setPos(topRight);
+        mResizeHandles[TopRightAnchor]->setResizingOrigin(bottomLeft);
+        mResizeHandles[BottomLeftAnchor]->setPos(bottomLeft);
+        mResizeHandles[BottomLeftAnchor]->setResizingOrigin(topRight);
+        mResizeHandles[BottomRightAnchor]->setPos(bottomRight);
+        mResizeHandles[BottomRightAnchor]->setResizingOrigin(topLeft);
     }
 
     setHandlesVisible(showHandles);
