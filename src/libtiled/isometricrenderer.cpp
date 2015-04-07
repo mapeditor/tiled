@@ -65,8 +65,6 @@ QRect IsometricRenderer::boundingRect(const QRect &rect) const
 
 QRectF IsometricRenderer::boundingRect(const MapObject *object) const
 {
-    const int nameHeight = object->name().isEmpty() ? 0 : 15;
-
     if (!object->cell().isEmpty()) {
         const QPointF bottomCenter = pixelToScreenCoords(object->position());
         const Tile *tile = object->cell().tile;
@@ -78,14 +76,14 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
         return QRectF(bottomCenter.x() + (tileOffset.x() * scale.width()) - objectSize.width() / 2,
                       bottomCenter.y() + (tileOffset.y() * scale.height()) - objectSize.height(),
                       objectSize.width(),
-                      objectSize.height()).adjusted(-1, -1 - nameHeight, 1, 1);
+                      objectSize.height()).adjusted(-1, -1, 1, 1);
     } else if (!object->polygon().isEmpty()) {
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
         const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
         return screenPolygon.boundingRect().adjusted(-extraSpace,
-                                                     -extraSpace - nameHeight - 1,
+                                                     -extraSpace - 1,
                                                      extraSpace,
                                                      extraSpace);
     } else {
@@ -95,7 +93,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
         const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
 
         return base.adjusted(-extraSpace,
-                             -extraSpace - nameHeight - 1,
+                             -extraSpace - 1,
                              extraSpace, extraSpace);
     }
 }
@@ -289,19 +287,6 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         const QPointF pos = pixelToScreenCoords(object->position());
         const QPointF tileOffset = tile->tileset()->tileOffset();
 
-        // Draw the name before the transform is applied
-        const QFontMetrics fm = painter->fontMetrics();
-        QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                     imgSize.width() + 2);
-        if (!name.isEmpty()) {
-            const QPointF textPos = pos + tileOffset -
-                    QPointF(imgSize.width() / 2, 5 + imgSize.height());
-
-            painter->drawText(textPos + QPointF(1, 1), name);
-            painter->setPen(color);
-            painter->drawText(textPos, name);
-        }
-
         CellRenderer(painter).render(cell, pos, object->size(),
                                      CellRenderer::BottomCenter);
 
@@ -334,24 +319,10 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);
 
-        // TODO: Draw the object name
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
         case MapObject::Ellipse: {
-            QPointF topLeft(pixelToScreenCoords(object->bounds().topLeft()));
-            QPointF bottomLeft(pixelToScreenCoords(object->bounds().bottomLeft()));
-            QPointF topRight(pixelToScreenCoords(object->bounds().topRight()));
-
-            const qreal headerX = bottomLeft.x();
-            const qreal headerY = topLeft.y();
-
-            QRectF rect(bottomLeft, topRight);
-
-            const QFontMetrics fm = painter->fontMetrics();
-            QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                         rect.width() + 2);
-
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
 
             float tw = map()->tileWidth();
@@ -385,9 +356,6 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->setBrush(Qt::NoBrush);
             painter->drawPolygon(polygon);
 
-            if (!name.isEmpty())
-                painter->drawText(QPoint(headerX, headerY - 5), name);
-
             pen.setColor(color);
             painter->setPen(pen);
             painter->setBrush(Qt::NoBrush);
@@ -403,53 +371,23 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
                 painter->drawEllipse(QRectF(QPointF(0, 0), ellipseSize));
                 painter->restore();
             }
-
-            if (!name.isEmpty())
-                painter->drawText(QPoint(headerX, headerY - 5), name);
             break;
         }
         case MapObject::Rectangle: {
-            QPointF topLeft(pixelToScreenCoords(object->bounds().topLeft()));
-            QPointF bottomLeft(pixelToScreenCoords(object->bounds().bottomLeft()));
-            QPointF topRight(pixelToScreenCoords(object->bounds().topRight()));
-
-            const qreal headerX = bottomLeft.x();
-            const qreal headerY = topLeft.y();
-
-            QRectF rect(bottomLeft, topRight);
-
-            const QFontMetrics fm = painter->fontMetrics();
-            QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                         rect.width() + 2);
-
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
             painter->drawPolygon(polygon);
-            if (!name.isEmpty())
-                painter->drawText(QPointF(headerX, headerY - 5 + shadowOffset), name);
 
             pen.setColor(color);
             painter->setPen(pen);
             painter->setBrush(brush);
             polygon.translate(0, -shadowOffset);
-
             painter->drawPolygon(polygon);
-            if (!name.isEmpty())
-                painter->drawText(QPointF(headerX, headerY - 5), name);
             break;
         }
         case MapObject::Polygon: {
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
-
-            const QRectF polygonBoundingRect = screenPolygon.boundingRect();
-
-            const QFontMetrics fm = painter->fontMetrics();
-            QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                         polygonBoundingRect.width() + 2);
-
-            if (!name.isEmpty())
-                painter->drawText(QPointF(polygonBoundingRect.left(), polygonBoundingRect.top() - 5 + shadowOffset), name);
 
             painter->drawPolygon(screenPolygon);
 
@@ -459,9 +397,6 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             screenPolygon.translate(0, -shadowOffset);
 
             painter->drawPolygon(screenPolygon);
-
-            if (!name.isEmpty())
-                painter->drawText(QPointF(polygonBoundingRect.left(), polygonBoundingRect.top() - 5), name);
 
             break;
         }

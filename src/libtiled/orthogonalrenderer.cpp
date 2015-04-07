@@ -85,9 +85,8 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                                                10 + extraSpace + 1,
                                                10 + extraSpace + 1);
             } else {
-                const int nameHeight = object->name().isEmpty() ? 0 : 15;
                 boundingRect = bounds.adjusted(-extraSpace,
-                                               -nameHeight - extraSpace,
+                                               -extraSpace,
                                                extraSpace + 1,
                                                extraSpace + 1);
             }
@@ -362,22 +361,13 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             if (rect.isNull())
                 rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
 
-            const QFontMetrics fm = painter->fontMetrics();
-            QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                         rect.width() + 2);
-
             // Draw the shadow
             painter->setPen(shadowPen);
             painter->drawRect(rect.translated(shadowOffset));
-            if (!name.isEmpty())
-                painter->drawText(QPointF(0, -4 - lineWidth / 2) + shadowOffset, name);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawRect(rect);
-            if (!name.isEmpty())
-                painter->drawText(QPointF(0, -4 - lineWidth / 2), name);
-
             break;
         }
 
@@ -409,22 +399,13 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             if (rect.isNull())
                 rect = QRectF(QPointF(-10, -10), QSizeF(20, 20));
 
-            const QFontMetrics fm = painter->fontMetrics();
-            QString name = fm.elidedText(object->name(), Qt::ElideRight,
-                                         rect.width() + 2);
-
             // Draw the shadow
             painter->setPen(shadowPen);
             painter->drawEllipse(rect.translated(shadowOffset));
-            if (!name.isEmpty())
-                painter->drawText(QPoint(1, -5 + 1), name);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawEllipse(rect);
-            if (!name.isEmpty())
-                painter->drawText(QPoint(0, -5), name);
-
             break;
         }
         }

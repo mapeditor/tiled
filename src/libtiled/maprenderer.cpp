@@ -105,7 +105,7 @@ CellRenderer::CellRenderer(QPainter *painter)
  * For performance reasons, the actual drawing is delayed until a different
  * kind of tile has to be drawn. For this reason it is necessary to call
  * flush when finished doing drawCell calls. This function is also called by
- * the destructor so usually an explicit call it not needed.
+ * the destructor so usually an explicit call is not needed.
  */
 void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &cellSize, Origin origin)
 {
