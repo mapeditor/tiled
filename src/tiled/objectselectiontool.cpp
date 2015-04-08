@@ -810,7 +810,7 @@ void ObjectSelectionTool::startMoving()
     saveSelectionState();
 
     mMode = Moving;
-    mAlignPosition = mMovingObjects.first().item->mapObject()->position();
+    mAlignPosition = mMovingObjects.first().oldPosition;
 
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF &pos = object.oldPosition;
@@ -954,10 +954,13 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 
     mOriginIndicator->setPos(resizingOrigin);
 
-    QPointF diff = pos - resizingOrigin;
-    QPointF startDiff = mStart - resizingOrigin;
+    QPointF pixelPos = renderer->screenToPixelCoords(pos);
+    SnapHelper snapHelper(renderer, modifiers);
+    snapHelper.snap(pixelPos);
+    QPointF snappedScreenPos = renderer->pixelToScreenCoords(pixelPos);
 
-    diff = snapToGrid(diff, modifiers);
+    QPointF diff = snappedScreenPos - resizingOrigin;
+    QPointF startDiff = mStart - resizingOrigin;
 
     // Calculate the scaling factor.
     qreal scale;
@@ -1017,10 +1020,13 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
 
     mOriginIndicator->setPos(resizingOrigin);
 
-    QPointF diff = pos - resizingOrigin;
-    QPointF startDiff = mStart - resizingOrigin;
+    QPointF pixelPos = renderer->screenToPixelCoords(pos);
+    SnapHelper snapHelper(renderer, modifiers);
+    snapHelper.snap(pixelPos);
+    QPointF snappedScreenPos = renderer->pixelToScreenCoords(pixelPos);
 
-    diff = snapToGrid(diff, modifiers);
+    QPointF diff = snappedScreenPos - resizingOrigin;
+    QPointF startDiff = mStart - resizingOrigin;
 
     // Most calculations in this function occur in object space, so 
     // we transform the scaling factors from world space.
