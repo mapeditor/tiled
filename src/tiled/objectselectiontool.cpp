@@ -86,6 +86,7 @@ public:
     }
 };
 
+
 enum AnchorPosition {
     TopLeftAnchor,
     TopRightAnchor,
@@ -101,19 +102,20 @@ enum AnchorPosition {
     AnchorCount = 8,
 };
 
-static QPainterPath createArrow()
+
+static QPainterPath createRotateArrow()
 {
-    const qreal arrowHeadPos = 10;
-    const qreal arrowHeadLength = 4;
-    const qreal arrowHeadWidth = 4;
-    const qreal arcWidth = 2;
-    const qreal outerArcSize = arrowHeadPos + arcWidth - arrowHeadLength;
-    const qreal innerArcSize = arrowHeadPos - arcWidth - arrowHeadLength;
+    const qreal arrowHeadPos = 12;
+    const qreal arrowHeadLength = 4.5;
+    const qreal arrowHeadWidth = 5;
+    const qreal bodyWidth = 1.5;
+    const qreal outerArcSize = arrowHeadPos + bodyWidth - arrowHeadLength;
+    const qreal innerArcSize = arrowHeadPos - bodyWidth - arrowHeadLength;
 
     QPainterPath path;
     path.moveTo(arrowHeadPos, 0);
     path.lineTo(arrowHeadPos + arrowHeadWidth, arrowHeadLength);
-    path.lineTo(arrowHeadPos + arcWidth, arrowHeadLength);
+    path.lineTo(arrowHeadPos + bodyWidth, arrowHeadLength);
     path.arcTo(QRectF(arrowHeadLength - outerArcSize,
                       arrowHeadLength - outerArcSize,
                       outerArcSize * 2,
@@ -122,7 +124,7 @@ static QPainterPath createArrow()
     path.lineTo(arrowHeadLength, arrowHeadPos + arrowHeadWidth);
     path.lineTo(0, arrowHeadPos);
     path.lineTo(arrowHeadLength, arrowHeadPos - arrowHeadWidth);
-    path.lineTo(arrowHeadLength, arrowHeadPos - arcWidth);
+    path.lineTo(arrowHeadLength, arrowHeadPos - bodyWidth);
     path.arcTo(QRectF(arrowHeadLength - innerArcSize,
                       arrowHeadLength - innerArcSize,
                       innerArcSize * 2,
@@ -131,95 +133,138 @@ static QPainterPath createArrow()
     path.lineTo(arrowHeadPos - arrowHeadWidth, arrowHeadLength);
     path.closeSubpath();
 
-    path.translate(0, 0);
+    return path;
+}
+
+static QPainterPath createResizeArrow()
+{
+    const qreal arrowLength = 16;
+    const qreal arrowHeadLength = 4.5;
+    const qreal arrowHeadWidth = 5;
+    const qreal bodyWidth = 1.5;
+
+    QPainterPath path;
+    path.moveTo(arrowHeadWidth, 0);
+    path.lineTo(arrowHeadWidth *2, arrowHeadLength);
+    path.lineTo(arrowHeadWidth + bodyWidth, arrowHeadLength);
+    path.lineTo(arrowHeadWidth + bodyWidth, arrowLength - arrowHeadLength);
+    path.lineTo(arrowHeadWidth *2, arrowLength - arrowHeadLength);
+    path.lineTo(arrowHeadWidth, arrowLength);
+    path.lineTo(0, arrowLength - arrowHeadLength);
+    path.lineTo(arrowHeadWidth - bodyWidth, arrowLength - arrowHeadLength);
+    path.lineTo(arrowHeadWidth - bodyWidth, arrowHeadLength);
+    path.lineTo(0, arrowHeadLength);
+    path.closeSubpath();
 
     return path;
 }
 
+
+
 /**
- * Corner rotation handle.
+ * Shared superclass for rotation and resizing handles.
  */
-class CornerHandle : public QGraphicsItem
+class Handle : public QGraphicsItem
 {
 public:
-    CornerHandle(AnchorPosition corner, QGraphicsItem *parent = 0)
+    Handle(QGraphicsItem *parent = 0)
         : QGraphicsItem(parent)
+        , mUnderMouse(false)
     {
         setFlags(QGraphicsItem::ItemIgnoresTransformations |
                  QGraphicsItem::ItemIgnoresParentOpacity);
-        setOpacity(0.5);
         setAcceptHoverEvents(true);
-        setZValue(10000 + 1);
-
-        switch (corner) {
-        case TopLeftAnchor:     setRotation(180);   break;
-        case TopRightAnchor:    setRotation(-90);   break;
-        case BottomLeftAnchor:  setRotation(90);    break;
-        default:                break; // BottomRight
-        }
+        setCursor(Qt::ArrowCursor);
     }
 
-    QRectF boundingRect() const { return mArrow.boundingRect(); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-
 protected:
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *) { setOpacity(1); }
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) { setOpacity(0.5); }
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *) { mUnderMouse = true; update(); }
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) { mUnderMouse = false; update(); }
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
-private:
-    static const QPainterPath mArrow;
+    bool mUnderMouse;
 };
 
-const QPainterPath CornerHandle::mArrow = createArrow();
+QVariant Handle::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemVisibleHasChanged && value.toBool())
+        mUnderMouse = isUnderMouse();
+    return QGraphicsItem::itemChange(change, value);
+}
+
+
+/**
+ * Corner rotation handle.
+ */
+class CornerHandle : public Handle
+{
+public:
+    CornerHandle(AnchorPosition corner, QGraphicsItem *parent = 0)
+        : Handle(parent)
+        , mArrow(createRotateArrow())
+    {
+        setZValue(10000 + 1);
+
+        QTransform transform;
+
+        switch (corner) {
+        case TopLeftAnchor:     transform.rotate(180);  break;
+        case TopRightAnchor:    transform.rotate(-90);  break;
+        case BottomLeftAnchor:  transform.rotate(90);   break;
+        default:                break; // BottomRight
+        }
+
+        mArrow = transform.map(mArrow);
+    }
+
+    QRectF boundingRect() const { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+
+private:
+    QPainterPath mArrow;
+};
 
 void CornerHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                          QWidget *)
 {
+    QPen pen(mUnderMouse ? Qt::black : Qt::lightGray, 1);
+    QColor brush(mUnderMouse ? Qt::white : Qt::black);
+
     painter->setRenderHint(QPainter::Antialiasing);
-    painter->setBrush(Qt::white);
+    painter->setPen(pen);
+    painter->setBrush(brush);
     painter->drawPath(mArrow);
 }
 
-QVariant CornerHandle::itemChange(GraphicsItemChange change,
-                                  const QVariant &value)
-{
-    if (change == ItemVisibleHasChanged) {
-        if (value.toBool())
-            setOpacity(isUnderMouse() ? 1 : 0.5);
-    }
-    return QGraphicsItem::itemChange(change, value);
-}
 
 /**
  * A resize handle that allows resizing of map objects.
  */
-class ResizeHandle : public QGraphicsItem
+class ResizeHandle : public Handle
 {
 public:
     ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = 0)
-        : QGraphicsItem(parent)
+        : Handle(parent)
+        , mResizingLimitHorizontal(false)
+        , mResizingLimitVertical(false)
+        , mArrow(createResizeArrow())
     {
-        setFlags(QGraphicsItem::ItemIgnoresTransformations |
-                 QGraphicsItem::ItemIgnoresParentOpacity);
-        setAcceptHoverEvents(true);
-        setCursor(Qt::SizeFDiagCursor);
         setZValue(10000 + 2);
-        
-        mResizingOrigin = QPointF(0, 0);
-        mResizingLimitHorizontal = false;
-        mResizingLimitVertical = false;
-        
+
+        QTransform transform;
+
         switch (anchorPosition) {
-        case TopLeftAnchor:       setCursor(Qt::SizeFDiagCursor); break;
-        case TopRightAnchor:      setCursor(Qt::SizeBDiagCursor); break;
-        case BottomLeftAnchor:    setCursor(Qt::SizeBDiagCursor); break;
-        case BottomRightAnchor:   setCursor(Qt::SizeFDiagCursor); break;
-        case TopAnchor:           setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
-        case LeftAnchor:          setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
-        case RightAnchor:         setCursor(Qt::SizeHorCursor); mResizingLimitVertical = true; break;
-        default:            setCursor(Qt::SizeVerCursor); mResizingLimitHorizontal = true; break;
+        case TopLeftAnchor:     transform.rotate(-45); break;
+        case TopRightAnchor:    transform.rotate(45); break;
+        case BottomLeftAnchor:  transform.rotate(45); break;
+        case BottomRightAnchor: transform.rotate(-45); break;
+        case TopAnchor:         mResizingLimitHorizontal = true; break;
+        case LeftAnchor:        transform.rotate(90); mResizingLimitVertical = true; break;
+        case RightAnchor:       transform.rotate(90); mResizingLimitVertical = true; break;
+        default:                mResizingLimitHorizontal = true; break;
         }
+
+        mArrow = transform.map(mArrow);
     }
     
     void setResizingOrigin(QPointF resizingOrigin) { mResizingOrigin = resizingOrigin; }
@@ -229,27 +274,34 @@ public:
     bool resizingLimitVertical() const { return mResizingLimitVertical; }
     
     QRectF boundingRect() const;
-    
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-   
+
 private:
     QPointF mResizingOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
+    QPainterPath mArrow;
 };
 
 QRectF ResizeHandle::boundingRect() const
 {
-    return QRectF(-5, -5, 10 + 1, 10 + 1);
+    QRectF bounds = mArrow.boundingRect().adjusted(-1, -1, 1, 1);
+    bounds.moveCenter(QPointF(0, 0));
+    return bounds;
 }
 
 void ResizeHandle::paint(QPainter *painter,
-                   const QStyleOptionGraphicsItem *,
-                   QWidget *)
+                         const QStyleOptionGraphicsItem *,
+                         QWidget *)
 {
-    painter->setBrush(Qt::white);
-    painter->setPen(Qt::black);
-    painter->drawRect(QRectF(-5, -5, 10, 10));
+    QPen pen(mUnderMouse ? Qt::black : Qt::lightGray, 1);
+    QColor brush(mUnderMouse ? Qt::white : Qt::black);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->translate(-mArrow.boundingRect().center());
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    painter->drawPath(mArrow);
 }
 
 } // namespace Internal
@@ -413,11 +465,10 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         updateRotatingItems(pos, modifiers);
         break;
     case Resizing:
-        if (mMovingObjects.size() == 1) {
+        if (mMovingObjects.size() == 1)
             updateResizingSingleItem(pos, modifiers);
-        } else {
+        else
             updateResizingItems(pos, modifiers);
-        }
         break;
     case NoMode:
         break;
@@ -473,6 +524,10 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
     switch (mMode) {
     case NoMode:
+        if (mClickedCornerHandle || mClickedResizeHandle) {
+            // Don't change selection as a result of clicking on a handle
+            break;
+        }
         if (mClickedObjectItem) {
             QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
             const Qt::KeyboardModifiers modifiers = event->modifiers();
@@ -627,16 +682,11 @@ void ObjectSelectionTool::updateHandles()
         QPointF bottomLeft = boundingRect.bottomLeft();
         QPointF bottomRight = boundingRect.bottomRight();
 
-        mCornerHandles[TopLeftAnchor]->setPos(topLeft);
-        mCornerHandles[TopRightAnchor]->setPos(topRight);
-        mCornerHandles[BottomLeftAnchor]->setPos(bottomLeft);
-        mCornerHandles[BottomRightAnchor]->setPos(bottomRight);
-
         // TODO: Might be nice to make it configurable
         mRotationOrigin = boundingRect.center();
         mRotationOriginIndicator->setPos(mRotationOrigin);
 
-        // Resizing handles.
+        qreal handleRotation = 0;
 
         // If there is only one object selected, align to its orientation.
         if (objects.size() == 1 && objects.first()->rotation() != qreal(0)) {
@@ -648,8 +698,14 @@ void ObjectSelectionTool::updateHandles()
             topRight = transform.map(bounds.topRight());
             bottomLeft = transform.map(bounds.bottomLeft());
             bottomRight = transform.map(bounds.bottomRight());
+            handleRotation = object->rotation();
         }
-        
+
+        mCornerHandles[TopLeftAnchor]->setPos(topLeft);
+        mCornerHandles[TopRightAnchor]->setPos(topRight);
+        mCornerHandles[BottomLeftAnchor]->setPos(bottomLeft);
+        mCornerHandles[BottomRightAnchor]->setPos(bottomRight);
+
         QPointF top = (topLeft + topRight) / 2;
         QPointF left = (topLeft + bottomLeft) / 2;
         QPointF right = (topRight + bottomRight) / 2;
@@ -672,6 +728,11 @@ void ObjectSelectionTool::updateHandles()
         mResizeHandles[BottomLeftAnchor]->setResizingOrigin(topRight);
         mResizeHandles[BottomRightAnchor]->setPos(bottomRight);
         mResizeHandles[BottomRightAnchor]->setResizingOrigin(topLeft);
+
+        for (int i = 0; i < CornerAnchorCount; ++i)
+            mCornerHandles[i]->setRotation(handleRotation);
+        for (int i = 0; i < AnchorCount; ++i)
+            mResizeHandles[i]->setRotation(handleRotation);
     }
 
     setHandlesVisible(showHandles);
@@ -739,7 +800,6 @@ void ObjectSelectionTool::startSelecting()
 
 void ObjectSelectionTool::startMoving()
 {
-
     // Move only the clicked item, if it was not part of the selection
     if (!mapScene()->selectedObjectItems().contains(mClickedObjectItem))
         mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>() << mClickedObjectItem);
@@ -877,6 +937,7 @@ void ObjectSelectionTool::startResizing()
 
     saveSelectionState();
     setHandlesVisible(false);
+    mRotationOriginIndicator->setVisible(false);
 }
 
 void ObjectSelectionTool::updateResizingItems(const QPointF &pos,

@@ -154,11 +154,6 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
         return;
     newMapObject->setPosition(pos);
 
-    if (mMode == CreateTile) {
-        if (newMapObject->cell().isEmpty() == false) {
-            newMapObject->setSize(newMapObject->cell().tile->size());
-        }
-    }
     objectGroup->addObject(newMapObject);
 
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument());
