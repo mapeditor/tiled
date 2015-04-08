@@ -110,7 +110,7 @@ private:
     };
 
     SelectionRectangle *mSelectionRectangle;
-    QGraphicsItem *mRotationOriginIndicator;
+    QGraphicsItem *mOriginIndicator;
     CornerHandle *mCornerHandles[4];
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
@@ -121,8 +121,8 @@ private:
     QList<MovingObject> mMovingObjects;
 
     QPointF mAlignPosition;
-    QPointF mRotationOrigin;
-    QPointF mResizingOrigin;
+    QPointF mSelectionCenter;
+    QPointF mOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
     Mode mMode;

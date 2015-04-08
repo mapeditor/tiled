@@ -313,7 +313,7 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
           QKeySequence(tr("S")),
           parent)
     , mSelectionRectangle(new SelectionRectangle)
-    , mRotationOriginIndicator(new RotationOriginIndicator)
+    , mOriginIndicator(new RotationOriginIndicator)
     , mMousePressed(false)
     , mClickedObjectItem(0)
     , mClickedCornerHandle(0)
@@ -329,7 +329,7 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
 ObjectSelectionTool::~ObjectSelectionTool()
 {
     delete mSelectionRectangle;
-    delete mRotationOriginIndicator;
+    delete mOriginIndicator;
 
     for (int i = 0; i < CornerAnchorCount; ++i)
         delete mCornerHandles[i];
@@ -353,7 +353,7 @@ void ObjectSelectionTool::activate(MapScene *scene)
     connect(mapDocument(), SIGNAL(objectsRemoved(QList<MapObject*>)),
             this, SLOT(objectsRemoved(QList<MapObject*>)));
 
-    scene->addItem(mRotationOriginIndicator);
+    scene->addItem(mOriginIndicator);
     for (int i = 0; i < CornerAnchorCount; ++i)
         scene->addItem(mCornerHandles[i]);
     for (int i = 0; i < AnchorCount; ++i)
@@ -362,7 +362,7 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
 void ObjectSelectionTool::deactivate(MapScene *scene)
 {
-    scene->removeItem(mRotationOriginIndicator);
+    scene->removeItem(mOriginIndicator);
     for (int i = 0; i < CornerAnchorCount; ++i)
         scene->removeItem(mCornerHandles[i]);
     for (int i = 0; i < AnchorCount; ++i)
@@ -682,9 +682,7 @@ void ObjectSelectionTool::updateHandles()
         QPointF bottomLeft = boundingRect.bottomLeft();
         QPointF bottomRight = boundingRect.bottomRight();
 
-        // TODO: Might be nice to make it configurable
-        mRotationOrigin = boundingRect.center();
-        mRotationOriginIndicator->setPos(mRotationOrigin);
+        mSelectionCenter = boundingRect.center();
 
         qreal handleRotation = 0;
 
@@ -698,8 +696,13 @@ void ObjectSelectionTool::updateHandles()
             topRight = transform.map(bounds.topRight());
             bottomLeft = transform.map(bounds.bottomLeft());
             bottomRight = transform.map(bounds.bottomRight());
+
+            mSelectionCenter = transform.map(bounds.center());
+
             handleRotation = object->rotation();
         }
+
+        mOriginIndicator->setPos(mSelectionCenter);
 
         mCornerHandles[TopLeftAnchor]->setPos(topLeft);
         mCornerHandles[TopRightAnchor]->setPos(topRight);
@@ -736,7 +739,7 @@ void ObjectSelectionTool::updateHandles()
     }
 
     setHandlesVisible(showHandles);
-    mRotationOriginIndicator->setVisible(showHandles);
+    mOriginIndicator->setVisible(showHandles);
 }
 
 void ObjectSelectionTool::setHandlesVisible(bool visible)
@@ -818,7 +821,7 @@ void ObjectSelectionTool::startMoving()
     }
 
     setHandlesVisible(false);
-    mRotationOriginIndicator->setVisible(false);
+    mOriginIndicator->setVisible(false);
 }
 
 void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
@@ -865,6 +868,7 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
 void ObjectSelectionTool::startRotating()
 {
     mMode = Rotating;
+    mOrigin = mOriginIndicator->pos();
 
     saveSelectionState();
     setHandlesVisible(false);
@@ -875,8 +879,8 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 {
     MapRenderer *renderer = mapDocument()->renderer();
 
-    const QPointF startDiff = mRotationOrigin - mStart;
-    const QPointF currentDiff = mRotationOrigin - pos;
+    const QPointF startDiff = mOrigin - mStart;
+    const QPointF currentDiff = mOrigin - pos;
 
     const qreal startAngle = std::atan2(startDiff.y(), startDiff.x());
     const qreal currentAngle = std::atan2(currentDiff.y(), currentDiff.x());
@@ -887,12 +891,12 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
 
     foreach (const MovingObject &object, mMovingObjects) {
-        const QPointF oldRelPos = object.oldItemPosition - mRotationOrigin;
+        const QPointF oldRelPos = object.oldItemPosition - mOrigin;
         const qreal sn = std::sin(angleDiff);
         const qreal cs = std::cos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
-        const QPointF newPixelPos = mRotationOrigin + newRelPos;
+        const QPointF newPixelPos = mOrigin + newRelPos;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
@@ -929,7 +933,7 @@ void ObjectSelectionTool::startResizing()
 {
     mMode = Resizing;
 
-    mResizingOrigin = mClickedResizeHandle->resizingOrigin();
+    mOrigin = mClickedResizeHandle->resizingOrigin();
     mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
     mResizingLimitVertical = mClickedResizeHandle->resizingLimitVertical();
 
@@ -937,15 +941,21 @@ void ObjectSelectionTool::startResizing()
 
     saveSelectionState();
     setHandlesVisible(false);
-    mRotationOriginIndicator->setVisible(false);
 }
 
 void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                                               Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-    QPointF diff = pos - mResizingOrigin;
-    QPointF startDiff = mStart - mResizingOrigin;
+
+    QPointF resizingOrigin = mOrigin;
+    if (modifiers & Qt::ShiftModifier)
+        resizingOrigin = mSelectionCenter;
+
+    mOriginIndicator->setPos(resizingOrigin);
+
+    QPointF diff = pos - resizingOrigin;
+    QPointF startDiff = mStart - resizingOrigin;
 
     diff = snapToGrid(diff, modifiers);
 
@@ -960,10 +970,10 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                 + qMax((qreal)0, diff.y() / startDiff.y())) / 2;
 
     foreach (const MovingObject &object, mMovingObjects) {
-        const QPointF oldRelPos = object.oldItemPosition - mResizingOrigin;
+        const QPointF oldRelPos = object.oldItemPosition - resizingOrigin;
         const QPointF scaledRelPos(oldRelPos.x() * scale,
                                    oldRelPos.y() * scale);
-        const QPointF newScreenPos = mResizingOrigin + scaledRelPos;
+        const QPointF newScreenPos = resizingOrigin + scaledRelPos;
         const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
         const QSizeF origSize = object.oldSize;
         const QSizeF newSize(origSize.width() * scale,
@@ -1000,8 +1010,15 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
 {
     const MovingObject &object = mMovingObjects.first();
     MapRenderer *renderer = mapDocument()->renderer();
-    QPointF diff = pos - mResizingOrigin;
-    QPointF startDiff = mStart - mResizingOrigin;
+
+    QPointF resizingOrigin = mOrigin;
+    if (modifiers & Qt::ShiftModifier)
+        resizingOrigin = mSelectionCenter;
+
+    mOriginIndicator->setPos(resizingOrigin);
+
+    QPointF diff = pos - resizingOrigin;
+    QPointF startDiff = mStart - resizingOrigin;
 
     diff = snapToGrid(diff, modifiers);
 
@@ -1027,14 +1044,14 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
     
     // Convert relative position into object space, scale,
     // and then convert back to world space.
-    const QPointF oldRelPos = object.oldItemPosition - mResizingOrigin;
+    const QPointF oldRelPos = object.oldItemPosition - resizingOrigin;
     const QPointF objectRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                oldRelPos.x() * sn + oldRelPos.y() * cs);
     const QPointF scaledRelPos(objectRelPos.x() * scalingFactor.width(),
                                objectRelPos.y() * scalingFactor.height());
     const QPointF newRelPos(scaledRelPos.x() * cs + scaledRelPos.y() * sn,
                             scaledRelPos.x() * -sn + scaledRelPos.y() * cs);
-    const QPointF newScreenPos = mResizingOrigin + newRelPos;
+    const QPointF newScreenPos = resizingOrigin + newRelPos;
     const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
     const QSizeF newSize(object.oldSize.width() * scalingFactor.width(),
                          object.oldSize.height() * scalingFactor.height());
