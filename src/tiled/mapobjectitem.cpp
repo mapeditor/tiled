@@ -309,6 +309,13 @@ void MapObjectItem::setPolygon(const QPolygonF &polygon)
     syncWithMapObject();
 }
 
+void MapObjectItem::setBezier(const QPolygonF &polygon, const QPolygonF &leftControlPoints, const QPolygonF &rightControlPoints)
+{
+    mObject->setRightControlPoints(rightControlPoints);
+    mObject->setLeftControlPoints(leftControlPoints);
+    this->setPolygon(polygon);
+}
+
 QColor MapObjectItem::objectColor(const MapObject *object)
 {
     // See if this object type has a color associated with it

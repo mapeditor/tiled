@@ -108,6 +108,9 @@ private:
     ObjectGroup *readObjectGroup();
     MapObject *readObject();
     QPolygonF readPolygon();
+    QPolygonF readLeftControlPoints();
+    QPolygonF readRightControlPoints();
+    QPolygonF readPolygonWithAttributeName(const QString attributeName);
     QVector<Frame> readAnimationFrames();
 
     Properties readProperties();
@@ -863,13 +866,28 @@ MapObject *MapReaderPrivate::readObject()
             object->mergeProperties(readProperties());
         } else if (xml.name() == QLatin1String("polygon")) {
             object->setPolygon(readPolygon());
+            xml.skipCurrentElement();
             object->setShape(MapObject::Polygon);
         } else if (xml.name() == QLatin1String("polyline")) {
             object->setPolygon(readPolygon());
+            xml.skipCurrentElement();
             object->setShape(MapObject::Polyline);
         } else if (xml.name() == QLatin1String("ellipse")) {
             xml.skipCurrentElement();
             object->setShape(MapObject::Ellipse);
+        } else if (xml.name() == QLatin1String("bezierloop")) {
+            object->setPolygon(readPolygon());
+            object->setLeftControlPoints(readLeftControlPoints());
+            object->setRightControlPoints(readRightControlPoints());
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Bezierloop);
+
+        } else if (xml.name() == QLatin1String("bezierline")) {
+            object->setPolygon(readPolygon());
+            object->setLeftControlPoints(readLeftControlPoints());
+            object->setRightControlPoints(readRightControlPoints());
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Bezierline);
         } else {
             readUnknownElement();
         }
@@ -881,10 +899,27 @@ MapObject *MapReaderPrivate::readObject()
 QPolygonF MapReaderPrivate::readPolygon()
 {
     Q_ASSERT(xml.isStartElement() && (xml.name() == QLatin1String("polygon") ||
-                                      xml.name() == QLatin1String("polyline")));
+                                      xml.name() == QLatin1String("polyline") ||
+                                      xml.name() == QLatin1String("bezierloop") ||
+                                      xml.name() == QLatin1String("bezierline")));
 
+    return readPolygonWithAttributeName(QLatin1String("points"));
+}
+
+QPolygonF MapReaderPrivate::readLeftControlPoints()
+{
+    return readPolygonWithAttributeName(QLatin1String("leftControlPoints"));
+}
+
+QPolygonF MapReaderPrivate::readRightControlPoints()
+{
+    return readPolygonWithAttributeName(QLatin1String("rightControlPoints"));
+}
+
+QPolygonF MapReaderPrivate::readPolygonWithAttributeName(const QString attributeName)
+{
     const QXmlStreamAttributes atts = xml.attributes();
-    const QString points = atts.value(QLatin1String("points")).toString();
+    const QString points = atts.value(attributeName).toString();
     const QStringList pointsList = points.split(QLatin1Char(' '),
                                                 QString::SkipEmptyParts);
 
@@ -911,7 +946,6 @@ QPolygonF MapReaderPrivate::readPolygon()
     if (!ok)
         xml.raiseError(tr("Invalid points data for polygon"));
 
-    xml.skipCurrentElement();
     return polygon;
 }
 

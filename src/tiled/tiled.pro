@@ -55,6 +55,7 @@ SOURCES += aboutdialog.cpp \
     automappingutils.cpp  \
     brushitem.cpp \
     bucketfilltool.cpp \
+    changebezier.cpp \
     changeimagelayerposition.cpp \
     changeimagelayerproperties.cpp \
     changelayer.cpp \
@@ -76,6 +77,10 @@ SOURCES += aboutdialog.cpp \
     commanddialog.cpp \
     commandlineparser.cpp \
     consoledock.cpp \
+    controlpointshandle.cpp \
+    createbezierlineobjecttool.cpp \
+    createbezierloopobjecttool.cpp \
+    createbezierobjecttool.cpp \
     createellipseobjecttool.cpp \
     createmultipointobjecttool.cpp \
     createobjecttool.cpp \
@@ -188,6 +193,7 @@ HEADERS += aboutdialog.h \
     automappingutils.h \
     brushitem.h \
     bucketfilltool.h \
+    changebezier.h \
     changeimagelayerposition.h \
     changeimagelayerproperties.h \
     changelayer.h \
@@ -209,6 +215,10 @@ HEADERS += aboutdialog.h \
     command.h \
     commandlineparser.h \
     consoledock.h \
+    controlpointshandle.h \
+    createbezierlineobjecttool.h \
+    createbezierloopobjecttool.h \
+    createbezierobjecttool.h \
     createellipseobjecttool.h \
     createmultipointobjecttool.h \
     createobjecttool.h \

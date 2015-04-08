@@ -98,6 +98,11 @@ public:
     void setPolygon(const QPolygonF &polygon);
 
     /**
+    * Sets new bezier points on the associated object.
+    */
+   void setBezier(const QPolygonF &polygon, const QPolygonF &leftControlPoints, const QPolygonF &rightControlPoints);
+
+    /**
      * A helper function to determine the color of a map object. The color is
      * determined first of all by the object type, and otherwise by the group
      * that the object is in. If still no color is defined, it defaults to
@@ -116,6 +121,8 @@ private:
     QRectF mBoundingRect;
     QString mName;      // Copy of the name, so we know when it changes
     QPolygonF mPolygon; // Copy of the polygon, for the same reason
+    QPolygonF mRightControlPoints; //Copy of the right control points, for the same reason
+    QPolygonF mLeftControlPoints; //Copy of the left control points, for the same reason
     QColor mColor;      // Cached color of the object
     bool mIsEditable;
     bool mSyncing;

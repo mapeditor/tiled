@@ -33,6 +33,8 @@ namespace Internal {
 
 class MapObjectItem;
 class PointHandle;
+class ControlPointHandle;
+class ControlPointConnector;
 class SelectionRectangle;
 
 /**
@@ -70,7 +72,8 @@ private:
     enum Mode {
         NoMode,
         Selecting,
-        Moving
+        Moving,
+        MovingControlPoint
     };
 
     void setSelectedHandles(const QSet<PointHandle*> &handles);
@@ -86,14 +89,25 @@ private:
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
+    void startMovingControlPoint();
+    void updateMovingControlPoint(const QPointF &pos,
+                           Qt::KeyboardModifiers modifiers);
+    void finishMovingControlPoint(const QPointF &pos);
+    void updateReferencePointsForMovingPointHandle(MapObjectItem* key, int pointIndex, QPointF handlePositionPixel);
+
     void showHandleContextMenu(PointHandle *clickedHandle, QPoint screenPos);
 
     SelectionRectangle *mSelectionRectangle;
     bool mMousePressed;
     PointHandle *mClickedHandle;
+    ControlPointHandle *mClickedControlPointHandle;
     MapObjectItem *mClickedObjectItem;
     QVector<QPointF> mOldHandlePositions;
     QMap<MapObject*, QPolygonF> mOldPolygons;
+
+    QPolygonF mOldLeftControlPoints; //no need for a map, since only one control point can be moved at a time
+    QPolygonF mOldRightControlPoints;
+
     QPointF mAlignPosition;
     Mode mMode;
     QPointF mStart;
@@ -102,6 +116,9 @@ private:
 
     /// The list of handles associated with each selected map object
     QMap<MapObjectItem*, QList<PointHandle*> > mHandles;
+    QMap<MapObjectItem*, QList<ControlPointHandle*> > mLeftControlPointHandles;
+    QMap<MapObjectItem*, QList<ControlPointHandle*> > mRightControlPointHandles;
+    QMap<MapObjectItem*, QList<ControlPointConnector*> > mControlPointConnectors;
     QSet<PointHandle*> mSelectedHandles;
 };
 
