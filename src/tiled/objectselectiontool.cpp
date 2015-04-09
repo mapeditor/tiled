@@ -1011,8 +1011,13 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 
     mOriginIndicator->setPos(resizingOrigin);
 
+    /* Alternative toggle snap modifier, since Control is taken by the preserve
+     * aspect ratio option.
+     */
+    SnapHelper snapHelper(renderer);
+    if (modifiers & Qt::AltModifier)
+        snapHelper.toggleSnap();
     QPointF pixelPos = renderer->screenToPixelCoords(pos);
-    SnapHelper snapHelper(renderer, modifiers);
     snapHelper.snap(pixelPos);
     QPointF snappedScreenPos = renderer->pixelToScreenCoords(pixelPos);
 
@@ -1024,7 +1029,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
          * to handle different scaling on X and Y axis as well as to improve
          * handling of 0-sized objects.
          */
-        updateResizingSingleItem(resizingOrigin, snappedScreenPos);
+        updateResizingSingleItem(resizingOrigin, snappedScreenPos, modifiers);
         return;
     }
 
@@ -1038,8 +1043,8 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     } else if (mResizingLimitVertical) {
         scale = qMax((qreal)0.01, diff.x() / startDiff.x());
     } else {
-        scale = (qMax((qreal)0.01, diff.x() / startDiff.x()) +
-                 qMax((qreal)0.01, diff.y() / startDiff.y())) / 2;
+        scale = qMin(qMax((qreal)0.01, diff.x() / startDiff.x()),
+                     qMax((qreal)0.01, diff.y() / startDiff.y()));
     }
 
     foreach (const MovingObject &object, mMovingObjects) {
@@ -1079,7 +1084,8 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
-                                                   const QPointF &screenPos)
+                                                   const QPointF &screenPos,
+                                                   Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
     const MovingObject &object = mMovingObjects.first();
@@ -1108,6 +1114,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
      * are not affected by isometric projection apart from their position.
      */
     const bool pixelSpace = resizeInPixelSpace(mapObject);
+    const bool preserveAspect = modifiers & Qt::ControlModifier;
 
     if (pixelSpace) {
         origin = renderer->screenToPixelCoords(origin);
@@ -1115,8 +1122,6 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
         start = renderer->screenToPixelCoords(start);
         oldPos = object.oldPosition;
     }
-
-    const QPointF relPos = pos - origin;
 
     QPointF newPos = oldPos;
     QSizeF newSize = object.oldSize;
@@ -1126,11 +1131,12 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
      * and ellipse objects. This allows scaling up a 0-sized object without
      * dealing with infinite scaling factor issues.
      *
-     * For obvious reasons this can't work on polygons or polylines.
+     * For obvious reasons this can't work on polygons or polylines, nor when
+     * preserving the aspect ratio.
      */
     if (mClickedResizeHandle->resizingOrigin() == resizingOrigin &&
             (mapObject->shape() == MapObject::Rectangle ||
-             mapObject->shape() == MapObject::Ellipse)) {
+             mapObject->shape() == MapObject::Ellipse) && !preserveAspect) {
 
         QRectF newBounds = QRectF(newPos, newSize);
         align(newBounds, mapObject->alignment());
@@ -1168,15 +1174,21 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
         newSize = newBounds.size();
         newPos = newBounds.topLeft();
     } else {
+        const QPointF relPos = pos - origin;
         const QPointF startDiff = start - origin;
 
         QSizeF scalingFactor(qMax((qreal)0.01, relPos.x() / startDiff.x()),
                              qMax((qreal)0.01, relPos.y() / startDiff.y()));
 
-        if (mResizingLimitHorizontal)
-            scalingFactor.setWidth(1);
-        if (mResizingLimitVertical)
-            scalingFactor.setHeight(1);
+        if (mResizingLimitHorizontal) {
+            scalingFactor.setWidth(preserveAspect ? scalingFactor.height() : 1);
+        } else if (mResizingLimitVertical) {
+            scalingFactor.setHeight(preserveAspect ? scalingFactor.width() : 1);
+        } else if (preserveAspect) {
+            qreal scale = qMin(scalingFactor.width(), scalingFactor.height());
+            scalingFactor.setWidth(scale);
+            scalingFactor.setHeight(scale);
+        }
 
         QPointF oldRelPos = oldPos - origin;
         newPos = origin + QPointF(oldRelPos.x() * scalingFactor.width(),

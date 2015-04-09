@@ -31,6 +31,8 @@ class SnapHelper
 public:
     SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = 0);
 
+    void toggleSnap();
+
     bool snaps() const { return mSnapToGrid || mSnapToFineGrid; }
 
     void snap(QPointF &pixelPos) const;

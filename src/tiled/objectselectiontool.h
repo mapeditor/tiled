@@ -90,7 +90,8 @@ private:
     void updateResizingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
     void updateResizingSingleItem(const QPointF &resizingOrigin,
-                                  const QPointF &screenPos);
+                                  const QPointF &screenPos,
+                                  Qt::KeyboardModifiers modifiers);
     void finishResizing(const QPointF &pos);
     
     void saveSelectionState();
