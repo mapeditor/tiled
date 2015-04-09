@@ -28,6 +28,9 @@
  */
 
 #include "mapobject.h"
+
+#include "map.h"
+#include "objectgroup.h"
 #include "tile.h"
 
 using namespace Tiled;
@@ -68,12 +71,33 @@ QRectF MapObject::boundsUseTile() const
 
     // Using the tile for determing boundary
     // Note the position given is the bottom-left corner so correct for that
-    QRectF rect;
-    rect.setLeft(mPos.x());
-    rect.setTop(mPos.y() - mCell.tile->height());
-    rect.setWidth(mCell.tile->width());
-    rect.setHeight(mCell.tile->height());
-    return rect;
+    return QRectF(QPointF(mPos.x(),
+                          mPos.y() - mCell.tile->height()),
+                  mCell.tile->size());
+}
+
+/*
+ * This is somewhat of a workaround for dealing with the ways different objects
+ * align.
+ *
+ * Traditional rectangle objects have top-left alignment.
+ * Tile objects have bottom-left alignment on orthogonal maps, but
+ * bottom-center alignment on isometric maps.
+ *
+ * Eventually, the object alignment should probably be configurable. For
+ * backwards compatibility, it will need to be configurable on a per-object
+ * level.
+ */
+Alignment MapObject::alignment() const
+{
+    if (mCell.isEmpty()) {
+        return TopLeft;
+    } else if (mObjectGroup) {
+        if (Map *map = mObjectGroup->map())
+            if (map->orientation() == Map::Isometric)
+                return Bottom;
+    }
+    return BottomLeft;
 }
 
 void MapObject::flip(FlipDirection direction)

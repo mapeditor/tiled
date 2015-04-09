@@ -87,5 +87,6 @@ MapObject *CreateTileObjectTool::createNewMapObject()
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
     newMapObject->setCell(Cell(mTile));
+    newMapObject->setSize(mTile->size());
     return newMapObject;
 }
