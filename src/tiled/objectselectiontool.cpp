@@ -188,7 +188,8 @@ protected:
 QVariant Handle::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == ItemVisibleHasChanged && value.toBool())
-        mUnderMouse = isUnderMouse();
+        if (mUnderMouse)
+            mUnderMouse = isUnderMouse();
     return QGraphicsItem::itemChange(change, value);
 }
 
@@ -249,7 +250,8 @@ public:
         , mResizingLimitVertical(false)
         , mArrow(createResizeArrow())
     {
-        setZValue(10000 + 2);
+        // The bottom right anchor takes precedence
+        setZValue(10000 + 1 + (anchorPosition < TopAnchor ? anchorPosition + 1 : 0));
 
         QTransform transform;
 
@@ -593,13 +595,13 @@ static void align(QRectF &r, Alignment alignment)
     }
 }
 
-// This function returns the actual bounds of the object, as opposed to the
-// bounds of its visualization that the MapRenderer::boundingRect function
-// returns.
-//
-// Before calculating the final bounding rectangle, the object is transformed
-// by the given transformation.
-//
+/* This function returns the actual bounds of the object, as opposed to the
+ * bounds of its visualization that the MapRenderer::boundingRect function
+ * returns.
+ *
+ * Before calculating the final bounding rectangle, the object is transformed
+ * by the given transformation.
+ */
 static QRectF objectBounds(const MapObject *object,
                            const MapRenderer *renderer,
                            const QTransform &transform)
@@ -981,7 +983,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         const QSizeF origSize = object.oldSize;
         const QSizeF newSize(origSize.width() * scale,
                              origSize.height() * scale);
-        
+
         if (object.item->mapObject()->polygon().isEmpty() == false) {
             // For polygons, we have to scale in object space.
             qreal rotation = object.item->rotation() * M_PI / -180;
