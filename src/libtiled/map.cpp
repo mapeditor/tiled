@@ -35,17 +35,49 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "mapobject.h"
 
 using namespace Tiled;
 
 Map::Map(Orientation orientation,
          int width, int height, int tileWidth, int tileHeight):
+    Object(MapType),
     mOrientation(orientation),
+    mRenderOrder(RightDown),
     mWidth(width),
     mHeight(height),
     mTileWidth(tileWidth),
-    mTileHeight(tileHeight)
+    mTileHeight(tileHeight),
+    mHexSideLength(0),
+    mStaggerAxis(StaggerY),
+    mStaggerIndex(StaggerOdd),
+    mLayerDataFormat(Base64Zlib),
+    mNextObjectId(1)
 {
+}
+
+Map::Map(const Map &map):
+    Object(map),
+    mOrientation(map.mOrientation),
+    mRenderOrder(map.mRenderOrder),
+    mWidth(map.mWidth),
+    mHeight(map.mHeight),
+    mTileWidth(map.mTileWidth),
+    mTileHeight(map.mTileHeight),
+    mHexSideLength(map.mHexSideLength),
+    mStaggerAxis(map.mStaggerAxis),
+    mStaggerIndex(map.mStaggerIndex),
+    mBackgroundColor(map.mBackgroundColor),
+    mDrawMargins(map.mDrawMargins),
+    mTilesets(map.mTilesets),
+    mLayerDataFormat(map.mLayerDataFormat),
+    mNextObjectId(1)
+{
+    foreach (const Layer *layer, map.mLayers) {
+        Layer *clone = layer->clone();
+        clone->setMap(this);
+        mLayers.append(clone);
+    }
 }
 
 Map::~Map()
@@ -74,20 +106,35 @@ void Map::adjustDrawMargins(const QMargins &margins)
                               mDrawMargins);
 }
 
-int Map::layerCount(Layer::Type type) const
+/**
+ * Recomputes the draw margins for this map and each of its tile layers. Needed
+ * after the tile offset of a tileset has changed for example.
+ *
+ * \sa TileLayer::recomputeDrawMargins
+ */
+void Map::recomputeDrawMargins()
+{
+    mDrawMargins = QMargins();
+
+    foreach (Layer *layer, mLayers)
+        if (TileLayer *tileLayer = layer->asTileLayer())
+            tileLayer->recomputeDrawMargins();
+}
+
+int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
     foreach (Layer *layer, mLayers)
-       if (layer->type() == type)
+       if (layer->layerType() == type)
            count++;
     return count;
 }
 
-QList<Layer*> Map::layers(Layer::Type type) const
+QList<Layer*> Map::layers(Layer::TypeFlag type) const
 {
     QList<Layer*> layers;
     foreach (Layer *layer, mLayers)
-        if (layer->type() == type)
+        if (layer->layerType() == type)
             layers.append(layer);
     return layers;
 }
@@ -116,11 +163,11 @@ void Map::addLayer(Layer *layer)
     mLayers.append(layer);
 }
 
-int Map::indexOfLayer(const QString &layerName, uint layertypes) const
+int Map::indexOfLayer(const QString &layerName, unsigned layertypes) const
 {
     for (int index = 0; index < mLayers.size(); index++)
         if (layerAt(index)->name() == layerName
-                && (layertypes & layerAt(index)->type()))
+                && (layertypes & layerAt(index)->layerType()))
             return index;
 
     return -1;
@@ -136,8 +183,15 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+    if (TileLayer *tileLayer = layer->asTileLayer())
         adjustDrawMargins(tileLayer->drawMargins());
+
+    if (ObjectGroup *group = layer->asObjectGroup()) {
+        foreach (MapObject *o, group->objects()) {
+            if (o->id() == 0)
+                o->setId(takeNextObjectId());
+        }
+    }
 }
 
 Layer *Map::takeLayerAt(int index)
@@ -187,17 +241,48 @@ bool Map::isTilesetUsed(Tileset *tileset) const
     return false;
 }
 
-Map *Map::clone() const
+
+QString Tiled::staggerAxisToString(Map::StaggerAxis staggerAxis)
 {
-    Map *o = new Map(mOrientation, mWidth, mHeight, mTileWidth, mTileHeight);
-    o->mDrawMargins = mDrawMargins;
-    foreach (const Layer *layer, mLayers)
-        o->addLayer(layer->clone());
-    o->mTilesets = mTilesets;
-    o->setProperties(properties());
-    return o;
+    switch (staggerAxis) {
+    default:
+    case Map::StaggerY:
+        return QLatin1String("y");
+        break;
+    case Map::StaggerX:
+        return QLatin1String("x");
+        break;
+    }
 }
 
+Map::StaggerAxis Tiled::staggerAxisFromString(const QString &string)
+{
+    Map::StaggerAxis staggerAxis = Map::StaggerY;
+    if (string == QLatin1String("x"))
+        staggerAxis = Map::StaggerX;
+    return staggerAxis;
+}
+
+QString Tiled::staggerIndexToString(Map::StaggerIndex staggerIndex)
+{
+    switch (staggerIndex) {
+    default:
+    case Map::StaggerOdd:
+        return QLatin1String("odd");
+        break;
+    case Map::StaggerEven:
+        return QLatin1String("even");
+        break;
+    }
+}
+
+Map::StaggerIndex Tiled::staggerIndexFromString(const QString &string)
+{
+    Map::StaggerIndex staggerIndex = Map::StaggerOdd;
+    if (string == QLatin1String("even"))
+        staggerIndex = Map::StaggerEven;
+    return staggerIndex;
+}
 
 QString Tiled::orientationToString(Map::Orientation orientation)
 {
@@ -215,6 +300,9 @@ QString Tiled::orientationToString(Map::Orientation orientation)
     case Map::Staggered:
         return QLatin1String("staggered");
         break;
+    case Map::Hexagonal:
+        return QLatin1String("hexagonal");
+        break;
     }
 }
 
@@ -227,8 +315,42 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
         orientation = Map::Isometric;
     } else if (string == QLatin1String("staggered")) {
         orientation = Map::Staggered;
+    } else if (string == QLatin1String("hexagonal")) {
+        orientation = Map::Hexagonal;
     }
     return orientation;
+}
+
+QString Tiled::renderOrderToString(Map::RenderOrder renderOrder)
+{
+    switch (renderOrder) {
+    default:
+    case Map::RightDown:
+        return QLatin1String("right-down");
+        break;
+    case Map::RightUp:
+        return QLatin1String("right-up");
+        break;
+    case Map::LeftDown:
+        return QLatin1String("left-down");
+        break;
+    case Map::LeftUp:
+        return QLatin1String("left-up");
+        break;
+    }
+}
+
+Map::RenderOrder Tiled::renderOrderFromString(const QString &string)
+{
+    Map::RenderOrder renderOrder = Map::RightDown;
+    if (string == QLatin1String("right-up")) {
+        renderOrder = Map::RightUp;
+    } else if (string == QLatin1String("left-down")) {
+        renderOrder = Map::LeftDown;
+    } else if (string == QLatin1String("left-up")) {
+        renderOrder = Map::LeftUp;
+    }
+    return renderOrder;
 }
 
 Map *Map::fromLayer(Layer *layer)

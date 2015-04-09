@@ -34,6 +34,11 @@ namespace Internal {
 
 class MapDocument;
 
+/**
+ * Provides a tree view on the objects present on a map. Also has member
+ * functions to modify objects that emit the appropriate signals to allow
+ * the UI to update.
+ */
 class MapObjectModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -81,14 +86,12 @@ public:
     MapObject *toMapObject(const QModelIndex &index) const;
     ObjectGroup *toLayer(const QModelIndex &index) const;
 
-    int toRow(const ObjectGroup *objectGroup) const;
-    int toRow(const MapObject *mapObject) const;
-
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
 
     void insertObject(ObjectGroup *og, int index, MapObject *o);
     int removeObject(ObjectGroup *og, MapObject *o);
+    void moveObjects(ObjectGroup *og, int from, int to, int count);
     void emitObjectsChanged(const QList<MapObject *> &objects);
 
     void setObjectName(MapObject *o, const QString &name);
@@ -96,11 +99,12 @@ public:
     void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
     void setObjectPosition(MapObject *o, const QPointF &pos);
     void setObjectSize(MapObject *o, const QSizeF &size);
+    void setObjectRotation(MapObject *o, qreal rotation);
+    void setObjectVisible(MapObject *o, bool visible);
 
 signals:
     void objectsAdded(const QList<MapObject *> &objects);
     void objectsChanged(const QList<MapObject *> &objects);
-    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
     void objectsRemoved(const QList<MapObject *> &objects);
 
 private slots:

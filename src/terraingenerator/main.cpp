@@ -24,7 +24,12 @@
 #include "tile.h"
 #include "tileset.h"
 
+#if QT_VERSION >= 0x050000
+#include <QGuiApplication>
+#else
 #include <QApplication>
+#endif
+
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -65,7 +70,7 @@ static void showHelp()
 static void showVersion()
 {
     qWarning() << "Terrain Generator"
-               << qPrintable(QApplication::applicationVersion());
+               << qPrintable(QCoreApplication::applicationVersion());
 }
 
 static void parseCommandLineArguments(CommandLineOptions &options)
@@ -224,7 +229,11 @@ static bool isEmpty(const QImage &image)
 
 int main(int argc, char *argv[])
 {
+#if QT_VERSION >= 0x050000
+    QGuiApplication a(argc, argv);
+#else
     QApplication a(argc, argv);
+#endif
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("TerrainGenerator"));
@@ -335,16 +344,13 @@ int main(int argc, char *argv[])
     // TODO: This step should be more configurable
     foreach (Terrain *terrain, terrains) {
         if (!hasTerrain(targetTileset, terrain->name())) {
-            Tile *terrainTile = terrain->paletteImage();
+            Tile *terrainTile = terrain->imageTile();
             QPixmap terrainImage = terrainTile->image();
 
             Tile *newTerrainTile = targetTileset->addTile(terrainImage);
 
-            Terrain *newTerrain = new Terrain(targetTileset->terrainCount(),
-                                              targetTileset,
-                                              terrain->name(),
-                                              newTerrainTile->id());
-            targetTileset->addTerrain(newTerrain);
+            Terrain *newTerrain =  targetTileset->addTerrain(terrain->name(),
+                                                             newTerrainTile->id());
 
             // WARNING: This assumes the terrain tile has this terrain on all
             // its corners.
@@ -485,7 +491,7 @@ int main(int argc, char *argv[])
 
             // Draw the lowest terrain to avoid pixel gaps
             QString baseTerrain = terrainList.first();
-            QPixmap baseImage = terrains[baseTerrain]->paletteImage()->image();
+            QPixmap baseImage = terrains[baseTerrain]->imageTile()->image();
             painter.drawPixmap(0, 0, baseImage);
 
             foreach (const QString &terrainName, terrainList) {

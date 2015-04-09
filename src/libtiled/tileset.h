@@ -1,7 +1,7 @@
 /*
  * tileset.h
  * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyrigth 2009, Edward Hutchins <eah1@yahoo.com>
+ * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of libtiled.
  *
@@ -37,6 +37,7 @@
 #include <QVector>
 #include <QPoint>
 #include <QString>
+#include <QPixmap>
 
 class QImage;
 class QPixmap;
@@ -49,8 +50,10 @@ class Terrain;
 /**
  * A tileset, representing a set of tiles.
  *
- * This class currently only supports loading tiles from a tileset image, using
- * loadFromImage(). There is no way to add or remove arbitrary tiles.
+ * This class is meant to be used by either loading tiles from a tileset image
+ * (using loadFromImage) or by adding/removing individual tiles (using
+ * addTile, insertTiles and removeTiles). These two use-cases are not meant to
+ * be mixed.
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
@@ -66,6 +69,7 @@ public:
      */
     Tileset(const QString &name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0):
+        Object(TilesetType),
         mName(name),
         mTileWidth(tileWidth),
         mTileHeight(tileHeight),
@@ -73,7 +77,8 @@ public:
         mMargin(margin),
         mImageWidth(0),
         mImageHeight(0),
-        mColumnCount(0)
+        mColumnCount(0),
+        mTerrainDistancesDirty(false)
     {
         Q_ASSERT(tileSpacing >= 0);
         Q_ASSERT(margin >= 0);
@@ -111,14 +116,19 @@ public:
     bool isExternal() const { return !mFileName.isEmpty(); }
 
     /**
-     * Returns the width of the tiles in this tileset.
+     * Returns the maximum width of the tiles in this tileset.
      */
     int tileWidth() const { return mTileWidth; }
 
     /**
-     * Returns the height of the tiles in this tileset.
+     * Returns the maximum height of the tiles in this tileset.
      */
     int tileHeight() const { return mTileHeight; }
+
+    /**
+     * Returns the maximum size of the tiles in this tileset.
+     */
+    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
 
     /**
      * Returns the spacing between the tiles in the tileset image.
@@ -157,13 +167,6 @@ public:
      * Returns the number of tiles in this tileset.
      */
     int tileCount() const { return mTiles.size(); }
-
-    /**
-     * Adds a tile to this tileset with the given image.
-     *
-     * @return the created Tile instance.
-     */
-    Tile *addTile(const QPixmap &image);
 
     /**
      * Removes (and deletes) the last tile from this set.
@@ -214,6 +217,11 @@ public:
     bool loadFromImage(const QImage &image, const QString &fileName);
 
     /**
+     * Convenience override that loads the image using the QImage constructor.
+     */
+    bool loadFromImage(const QString &fileName);
+
+    /**
      * This checks if there is a similar tileset in the given list.
      * It is needed for replacing this tileset by its similar copy.
      */
@@ -249,26 +257,72 @@ public:
     int terrainCount() const { return mTerrainTypes.size(); }
 
     /**
-     * Returns the number of tiles in this tileset.
+     * Returns the terrain type at the given \a index.
      */
-    Terrain *terrain(int terrain) const { return terrain >= 0 ? mTerrainTypes[terrain] : NULL; }
+    Terrain *terrain(int index) const { return index >= 0 ? mTerrainTypes[index] : 0; }
 
     /**
-     * Add a new terrain type.
+     * Adds a new terrain type.
+     *
+     * @param name      the name of the terrain
+     * @param imageTile the id of the tile that represents the terrain visually
+     * @return the created Terrain instance
      */
-    void addTerrain(Terrain *terrain);
+    Terrain *addTerrain(const QString &name, int imageTileId);
+
+    /**
+     * Adds the \a terrain type at the given \a index.
+     *
+     * The terrain should already have this tileset associated with it.
+     */
+    void insertTerrain(int index, Terrain *terrain);
+
+    /**
+     * Removes the terrain type at the given \a index and returns it. The
+     * caller becomes responsible for the lifetime of the terrain type.
+     *
+     * This will cause the terrain ids of subsequent terrains to shift up to
+     * fill the space and the terrain information of all tiles in this tileset
+     * will be updated accordingly.
+     */
+    Terrain *takeTerrainAt(int index);
+
+    /**
+     * Returns the transition penalty(/distance) between 2 terrains. -1 if no
+     * transition is possible.
+     */
+    int terrainTransitionPenalty(int terrainType0, int terrainType1);
+
+    /**
+     * Adds a new tile to the end of the tileset.
+     */
+    Tile *addTile(const QPixmap &image, const QString &source = QString());
+
+    void insertTiles(int index, const QList<Tile*> &tiles);
+    void removeTiles(int index, int count);
+
+    /**
+     * Sets the \a image to be used for the tile with the given \a id.
+     */
+    void setTileImage(int id, const QPixmap &image,
+                      const QString &source = QString());
+
+    /**
+     * Used by the Tile class when its terrain information changes.
+     */
+    void markTerrainDistancesDirty() { mTerrainDistancesDirty = true; }
+
+private:
+    /**
+     * Sets tile size to the maximum size.
+     */
+    void updateTileSize();
 
     /**
      * Calculates the transition distance matrix for all terrain types.
      */
-    void calculateTerrainDistances();
+    void recalculateTerrainDistances();
 
-    /**
-     * Returns the transition penalty(/distance) between 2 terrains. -1 if no transition is possible.
-     */
-    int terrainTransitionPenalty(int terrainType0, int terrainType1);
-
-private:
     QString mName;
     QString mFileName;
     QString mImageSource;
@@ -283,6 +337,7 @@ private:
     int mColumnCount;
     QList<Tile*> mTiles;
     QList<Terrain*> mTerrainTypes;
+    bool mTerrainDistancesDirty;
 };
 
 } // namespace Tiled

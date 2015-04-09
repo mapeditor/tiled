@@ -52,10 +52,8 @@ private slots:
     void updateActions();
     void aboutToShowMoveToMenu();
     void triggeredMoveToMenu(QAction *action);
-    void duplicateObjects();
-    void removeObjects();
     void objectProperties();
-    void documentCloseRequested(int index);
+    void documentAboutToClose(MapDocument *mapDocument);
 
 private:
     void retranslateUi();
@@ -63,10 +61,9 @@ private:
     void saveExpandedGroups(MapDocument *mapDoc);
     void restoreExpandedGroups(MapDocument *mapDoc);
 
-    QAction *mActionDuplicateObjects;
-    QAction *mActionRemoveObjects;
+    QAction *mActionNewLayer;
     QAction *mActionObjectProperties;
-    QAction *mActionMoveToLayer;
+    QAction *mActionMoveToGroup;
 
     ObjectsView *mObjectsView;
     MapDocument *mMapDocument;
@@ -84,20 +81,21 @@ public:
     QSize sizeHint() const;
 
     void setMapDocument(MapDocument *mapDoc);
-    MapObjectModel *model() const { return mMapObjectModel; }
+
+    MapObjectModel *model() const;
 
 protected slots:
     virtual void selectionChanged(const QItemSelection &selected,
                                   const QItemSelection &deselected);
 
 private slots:
+    void onPressed(const QModelIndex &index);
     void onActivated(const QModelIndex &index);
     void selectedObjectsChanged();
 
 private:
     MapDocument *mMapDocument;
     bool mSynching;
-    MapObjectModel *mMapObjectModel;
 };
 
 } // namespace Internal

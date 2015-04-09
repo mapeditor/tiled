@@ -28,16 +28,19 @@
 
 #include "tmxviewer.h"
 
+#include "hexagonalrenderer.h"
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "mapreader.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "tileset.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QStyleOptionGraphicsItem>
@@ -55,16 +58,27 @@ public:
         : QGraphicsItem(parent)
         , mMapObject(mapObject)
         , mRenderer(renderer)
-    {}
+    {
+        const QPointF &position = mapObject->position();
+        const QPointF pixelPos = renderer->pixelToScreenCoords(position);
+
+        QRectF boundingRect = renderer->boundingRect(mapObject);
+        boundingRect.translate(-pixelPos);
+        mBoundingRect = boundingRect;
+
+        setPos(pixelPos);
+        setRotation(mapObject->rotation());
+    }
 
     QRectF boundingRect() const
     {
-        return mRenderer->boundingRect(mMapObject);
+        return mBoundingRect;
     }
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *)
     {
         const QColor &color = mMapObject->objectGroup()->color();
+        p->translate(-pos());
         mRenderer->drawMapObject(p, mMapObject,
                                  color.isValid() ? color : Qt::darkGray);
     }
@@ -72,6 +86,7 @@ public:
 private:
     MapObject *mMapObject;
     MapRenderer *mRenderer;
+    QRectF mBoundingRect;
 };
 
 /**
@@ -116,9 +131,14 @@ public:
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
 
+        const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
+
         // Create a child item for each object
-        foreach (MapObject *object, objectGroup->objects())
-            new MapObjectItem(object, renderer, this);
+        foreach (MapObject *object, objectGroup->objects()) {
+            MapObjectItem *item = new MapObjectItem(object, renderer, this);
+            if (drawOrder == ObjectGroup::TopDownOrder)
+                item->setZValue(item->y());
+        }
     }
 
     QRectF boundingRect() const { return QRectF(); }
@@ -172,12 +192,14 @@ TmxViewer::TmxViewer(QWidget *parent) :
 
 TmxViewer::~TmxViewer()
 {
-    qDeleteAll(mMap->tilesets());
+    if (mMap)
+        qDeleteAll(mMap->tilesets());
+
     delete mMap;
     delete mRenderer;
 }
 
-void TmxViewer::viewMap(const QString &fileName)
+bool TmxViewer::viewMap(const QString &fileName)
 {
     delete mRenderer;
     mRenderer = 0;
@@ -187,12 +209,20 @@ void TmxViewer::viewMap(const QString &fileName)
 
     MapReader reader;
     mMap = reader.readMap(fileName);
-    if (!mMap)
-        return; // TODO: Add error handling
+    if (!mMap) {
+        qWarning() << "Error:" << qPrintable(reader.errorString());
+        return false;
+    }
 
     switch (mMap->orientation()) {
     case Map::Isometric:
         mRenderer = new IsometricRenderer(mMap);
+        break;
+    case Map::Staggered:
+        mRenderer = new StaggeredRenderer(mMap);
+        break;
+    case Map::Hexagonal:
+        mRenderer = new HexagonalRenderer(mMap);
         break;
     case Map::Orthogonal:
     default:
@@ -201,4 +231,6 @@ void TmxViewer::viewMap(const QString &fileName)
     }
 
     mScene->addItem(new MapItem(mMap, mRenderer));
+
+    return true;
 }

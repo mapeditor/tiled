@@ -1,6 +1,6 @@
 /*
  * objectselectiontool.h
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -25,9 +25,13 @@
 
 #include <QSet>
 
+class QGraphicsItem;
+
 namespace Tiled {
 namespace Internal {
 
+class CornerHandle;
+class ResizeHandle;
 class MapObjectItem;
 class SelectionRectangle;
 
@@ -39,6 +43,10 @@ public:
     explicit ObjectSelectionTool(QObject *parent = 0);
     ~ObjectSelectionTool();
 
+    void activate(MapScene *scene);
+    void deactivate(MapScene *scene);
+
+    void keyPressed(QKeyEvent *);
     void mouseEntered();
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers);
@@ -48,11 +56,19 @@ public:
 
     void languageChanged();
 
+private slots:
+    void updateHandles();
+    void setHandlesVisible(bool visible);
+
+    void objectsRemoved(const QList<MapObject *> &);
+
 private:
     enum Mode {
         NoMode,
         Selecting,
-        Moving
+        Moving,
+        Rotating,
+        Resizing
     };
 
     void updateSelection(const QPointF &pos,
@@ -65,15 +81,53 @@ private:
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
 
+    void startRotating();
+    void updateRotatingItems(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+    void finishRotating(const QPointF &pos);
+
+    void startResizing();
+    void updateResizingItems(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+    void updateResizingSingleItem(const QPointF &resizingOrigin,
+                                  const QPointF &screenPos,
+                                  Qt::KeyboardModifiers modifiers);
+    void finishResizing(const QPointF &pos);
+    
+    void saveSelectionState();
+
+    const QPointF snapToGrid(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+
+    struct MovingObject
+    {
+        MapObjectItem *item;
+        QPointF oldItemPosition;
+
+        QPointF oldPosition;
+        QSizeF oldSize;
+        QPolygonF oldPolygon;
+        qreal oldRotation;
+    };
+
     SelectionRectangle *mSelectionRectangle;
+    QGraphicsItem *mOriginIndicator;
+    CornerHandle *mCornerHandles[4];
+    ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
     MapObjectItem *mClickedObjectItem;
-    QSet<MapObjectItem*> mMovingItems;
-    QVector<QPointF> mOldObjectItemPositions;
-    QVector<QPointF> mOldObjectPositions;
+    CornerHandle *mClickedCornerHandle;
+    ResizeHandle *mClickedResizeHandle;
+
+    QList<MovingObject> mMovingObjects;
+
     QPointF mAlignPosition;
+    QPointF mOrigin;
+    bool mResizingLimitHorizontal;
+    bool mResizingLimitVertical;
     Mode mMode;
     QPointF mStart;
+    QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 };
 

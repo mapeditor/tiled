@@ -21,21 +21,14 @@
 #ifndef AUTOMAPPINGMANAGER_H
 #define AUTOMAPPINGMANAGER_H
 
+#include <QObject>
 #include <QRegion>
-#include <QSet>
 #include <QString>
-#include <QTimer>
 #include <QVector>
-
-class QFileSystemWatcher;
-class QObject;
 
 namespace Tiled {
 
 class Layer;
-class Map;
-class TileLayer;
-class Tileset;
 
 namespace Internal {
 
@@ -46,26 +39,17 @@ class MapDocument;
  * This class is a superior class to the AutoMapper and AutoMapperWrapper class.
  * It uses these classes to do the whole automapping process.
  */
-class AutomappingManager: public QObject
+class AutomappingManager : public QObject
 {
     Q_OBJECT
 
 public:
     /**
-     * Requests the AutomaticMapping manager. When the manager doesn't exist
-     * yet, it will be created.
+     * Constructor.
      */
-    static AutomappingManager *instance();
+    AutomappingManager(QObject *parent = 0);
 
-    /**
-     * Deletes the AutomaticMapping manager instance, when it exists.
-     */
-    static void deleteInstance();
-
-    /**
-     * This triggers an automapping on the whole current map document.
-     */
-    void autoMap();
+    ~AutomappingManager();
 
     void setMapDocument(MapDocument *mapDocument);
 
@@ -77,27 +61,24 @@ signals:
     /**
      * This signal is emited after automapping was done and an error occurred.
      */
-    void errorsOccurred();
+    void errorsOccurred(bool automatic);
 
     /**
      * This signal is emited after automapping was done and a warning occurred.
      */
-    void warningsOccurred();
+    void warningsOccurred(bool automatic);
 
 public slots:
-    void autoMap(QRegion where, Layer *touchedLayer);
+    /**
+     * This triggers an automapping on the whole current map document.
+     */
+    void autoMap();
+
+private slots:
+    void autoMap(const QRegion &where, Layer *touchedLayer);
 
 private:
     Q_DISABLE_COPY(AutomappingManager)
-
-    /**
-     * Constructor. Only used by the AutomaticMapping manager itself.
-     */
-    AutomappingManager(QObject *parent);
-
-    ~AutomappingManager();
-
-    static AutomappingManager *mInstance;
 
     /**
      * This function parses a rules file.
@@ -118,7 +99,7 @@ private:
      * touching the \a touchedLayer
      * If layer is 0, all Automappers are used.
      */
-    void autoMapInternal(QRegion where, Layer *touchedLayer);
+    void autoMapInternal(const QRegion &where, Layer *touchedLayer);
 
     /**
      * deletes all its data structures

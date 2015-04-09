@@ -30,15 +30,25 @@ package tiled.io;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.io.*;
+import java.awt.Polygon;
+import java.awt.geom.Ellipse2D;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
+
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,7 +60,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import tiled.core.*;
+
+import tiled.core.AnimatedTile;
+import tiled.core.Map;
+import tiled.core.MapLayer;
+import tiled.core.MapObject;
+import tiled.core.ObjectGroup;
+import tiled.core.Tile;
+import tiled.core.TileLayer;
+import tiled.core.TileSet;
 import tiled.util.Base64;
 import tiled.util.BasicTileCutter;
 import tiled.util.ImageHelper;
@@ -64,6 +82,13 @@ public class TMXMapReader
     private String xmlPath;
     private String error;
     private final EntityResolver entityResolver = new MapEntityResolver();
+    private TreeMap<Integer, TileSet> tilesetPerFirstGid;
+    public final TMXMapReaderSettings settings = new TMXMapReaderSettings();
+    private final HashMap<String, TileSet> cachedTilesets = new HashMap<String, TileSet>();
+
+    public static final class TMXMapReaderSettings {
+        public boolean reuseCachedTilesets = false;
+    }
 
     public TMXMapReader() {
     }
@@ -299,7 +324,7 @@ public class TMXMapReader
             try {
                 InputStream in = new URL(makeUrl(filename)).openStream();
                 ext = unmarshalTilesetFile(in, filename);
-                ext.setFirstGid(firstGid);
+                setFirstGidForTileset(ext, firstGid);
             } catch (FileNotFoundException fnf) {
                 error = "Could not find external tileset file " + filename;
             }
@@ -316,11 +341,24 @@ public class TMXMapReader
             final int tileSpacing = getAttribute(t, "spacing", 0);
             final int tileMargin = getAttribute(t, "margin", 0);
 
-            TileSet set = new TileSet();
+            final String name = getAttributeValue(t, "name");
 
-            set.setName(getAttributeValue(t, "name"));
+            TileSet set;
+            if (settings.reuseCachedTilesets) {
+                set = cachedTilesets.get(name);
+                if (set != null) {
+                    setFirstGidForTileset(set, firstGid);
+                    return set;
+                }
+                set = new TileSet();
+                cachedTilesets.put(name, set);
+            } else {
+                set = new TileSet();
+            }
+
+            set.setName(name);
             set.setBaseDir(basedir);
-            set.setFirstGid(firstGid);
+            setFirstGidForTileset(set, firstGid);
 
             boolean hasTilesetImage = false;
             NodeList children = t.getChildNodes();
@@ -382,16 +420,22 @@ public class TMXMapReader
     private MapObject readMapObject(Node t) throws Exception {
         final String name = getAttributeValue(t, "name");
         final String type = getAttributeValue(t, "type");
+        final String gid = getAttributeValue(t, "gid");
         final int x = getAttribute(t, "x", 0);
         final int y = getAttribute(t, "y", 0);
         final int width = getAttribute(t, "width", 0);
         final int height = getAttribute(t, "height", 0);
 
         MapObject obj = new MapObject(x, y, width, height);
+        obj.setShape(obj.getBounds());
         if (name != null)
             obj.setName(name);
         if (type != null)
             obj.setType(type);
+        if (gid != null){
+            Tile tile = getTileForTileGID(Integer.parseInt(gid));
+            obj.setTile(tile);
+        }
 
         NodeList children = t.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
@@ -405,6 +449,17 @@ public class TMXMapReader
                     obj.setImageSource(source);
                 }
                 break;
+            } else if ("ellipse".equalsIgnoreCase(child.getNodeName())) {
+                obj.setShape(new Ellipse2D.Double(x, y, width, height));
+            } else if ("polygon".equalsIgnoreCase(child.getNodeName()) || "polyline".equalsIgnoreCase(child.getNodeName())) {
+                Polygon shape = new Polygon();
+                final String pointsAttribute = getAttributeValue(child, "points");
+                StringTokenizer st = new StringTokenizer(pointsAttribute, ", ");
+                while (st.hasMoreElements()) {
+                    shape.addPoint(x + Integer.parseInt(st.nextToken()), y + Integer.parseInt(st.nextToken()));
+                }
+                obj.setShape(shape);
+                obj.setBounds(shape.getBounds());
             }
         }
 
@@ -483,7 +538,6 @@ public class TMXMapReader
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if ("image".equalsIgnoreCase(child.getNodeName())) {
-                int id = getAttribute(child, "id", -1);
                 Image img = unmarshalImage(child, baseDir);
                 tile.setImage(img);
             } else if ("animation".equalsIgnoreCase(child.getNodeName())) {
@@ -555,8 +609,9 @@ public class TMXMapReader
             String nodeName = child.getNodeName();
             if ("data".equalsIgnoreCase(nodeName)) {
                 String encoding = getAttributeValue(child, "encoding");
+                String comp = getAttributeValue(child, "compression");
 
-                if (encoding != null && "base64".equalsIgnoreCase(encoding)) {
+                if ("base64".equalsIgnoreCase(encoding)) {
                     Node cdata = child.getFirstChild();
                     if (cdata != null) {
                         char[] enc = cdata.getNodeValue().trim().toCharArray();
@@ -564,12 +619,13 @@ public class TMXMapReader
                         ByteArrayInputStream bais = new ByteArrayInputStream(dec);
                         InputStream is;
 
-                        String comp = getAttributeValue(child, "compression");
-
                         if ("gzip".equalsIgnoreCase(comp)) {
-                            is = new GZIPInputStream(bais);
+                            final int len = layerWidth * layerHeight * 4;
+                            is = new GZIPInputStream(bais, len);
                         } else if ("zlib".equalsIgnoreCase(comp)) {
                             is = new InflaterInputStream(bais);
+                        } else if (comp != null && !comp.isEmpty()) {
+                            throw new IOException("Unrecognized compression method \"" + comp + "\" for map layer " + ml.getName());
                         } else {
                             is = bais;
                         }
@@ -582,14 +638,31 @@ public class TMXMapReader
                                 tileId |= is.read() << 16;
                                 tileId |= is.read() << 24;
 
-                                TileSet ts = map.findTileSetForTileGID(tileId);
-                                if (ts != null) {
-                                    ml.setTileAt(x, y,
-                                            ts.getTile(tileId - ts.getFirstGid()));
-                                } else {
-                                    ml.setTileAt(x, y, null);
-                                }
+                                setTileAtFromTileId(ml, y, x, tileId);
                             }
+                        }
+                    }
+                } else if ("csv".equalsIgnoreCase(encoding)) {
+                    String csvText = child.getTextContent();
+                    
+                    if (comp != null && !comp.isEmpty()) {
+                        throw new IOException("Unrecognized compression method \"" + comp + "\" for map layer " + ml.getName() + " and encoding " + encoding);
+                    }
+                    
+                    String[] csvTileIds = csvText
+                            .trim()    // trim 'space', 'tab', 'newline'. pay attention to additional unicode chars like \u2028, \u2029, \u0085 if necessary
+                            .split("[\\s]*,[\\s]*");
+                    
+                    if (csvTileIds.length != ml.getHeight() * ml.getWidth()) {
+                        throw new IOException("Number of tiles does not match the layer's width and height");
+                    }
+                    
+                    for (int y = 0; y < ml.getHeight(); y++) {
+                        for (int x = 0; x < ml.getWidth(); x++) {
+                            String sTileId = csvTileIds[x + y * ml.getHeight()];
+                            int tileId = Integer.parseInt(sTileId);
+                            
+                            setTileAtFromTileId(ml, y, x, tileId);
                         }
                     }
                 } else {
@@ -600,13 +673,7 @@ public class TMXMapReader
                     {
                         if ("tile".equalsIgnoreCase(dataChild.getNodeName())) {
                             int tileId = getAttribute(dataChild, "gid", -1);
-                            TileSet ts = map.findTileSetForTileGID(tileId);
-                            if (ts != null) {
-                                ml.setTileAt(x, y,
-                                        ts.getTile(tileId - ts.getFirstGid()));
-                            } else {
-                                ml.setTileAt(x, y, null);
-                            }
+                            setTileAtFromTileId(ml, y, x, tileId);
 
                             x++;
                             if (x == ml.getWidth()) {
@@ -646,6 +713,31 @@ public class TMXMapReader
         ml.setVisible(visible == 1);
 
         return ml;
+    }
+
+    /**
+     * Helper method to set the tile based on its global id.
+     * @param ml    tile layer
+     * @param y        y-coordinate
+     * @param x        x-coordinate
+     * @param tileId    global id of the tile as read from the file
+     */
+    private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileId) {
+        ml.setTileAt(x, y, getTileForTileGID(tileId));
+    }
+    
+    /**
+     * Helper method to get the tile based on its global id
+     * @param tileId    global id of the tile
+     * @return    <ul><li>{@link Tile} object corresponding to the global id, if found</li><li><code>null</code>, otherwise</li></ul>
+     */
+    private Tile getTileForTileGID(int tileId) {
+        Tile tile = null;
+        java.util.Map.Entry<Integer, TileSet> ts = findTileSetForTileGID(tileId);
+        if (ts != null) {
+            tile = ts.getValue().getTile(tileId - ts.getKey());
+        }
+        return tile;
     }
 
     private void buildMap(Document doc) throws Exception {
@@ -704,6 +796,7 @@ public class TMXMapReader
         readProperties(mapNode.getChildNodes(), map.getProperties());
 
         // Load tilesets first, in case order is munged
+        tilesetPerFirstGid = new TreeMap<Integer, TileSet>();
         NodeList l = doc.getElementsByTagName("tileset");
             for (int i = 0; (item = l.item(i)) != null; i++) {
                     map.addTileset(unmarshalTileset(item));
@@ -726,6 +819,7 @@ public class TMXMapReader
                 }
             }
         }
+        tilesetPerFirstGid = null;
     }
 
     private Map unmarshal(InputStream in) throws Exception {
@@ -748,6 +842,7 @@ public class TMXMapReader
         }
 
         buildMap(doc);
+
         return map;
     }
 
@@ -848,5 +943,22 @@ public class TMXMapReader
         }
 
         return false;
+    }
+
+    /**
+     * Get the tile set and its corresponding firstgid that matches the given
+     * global tile id.
+     *
+     *
+     * @param gid a global tile id
+     * @return the tileset containing the tile with the given global tile id,
+     *         or <code>null</code> when no such tileset exists
+     */
+    private java.util.Map.Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
+        return tilesetPerFirstGid.floorEntry(gid);
+    }
+
+    private void setFirstGidForTileset(TileSet tileset, int firstGid) {
+        tilesetPerFirstGid.put(firstGid, tileset);
     }
 }

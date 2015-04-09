@@ -107,18 +107,6 @@ public class Tile
     }
 
     /**
-     * Returns the global tile id by adding the tile id to the map-assigned.
-     *
-     * @return id
-     */
-    public int getGid() {
-        if (tileset != null) {
-            return id + tileset.getFirstGid();
-        }
-        return id;
-    }
-
-    /**
      * Returns the {@link tiled.core.TileSet} that this tile is part of.
      *
      * @return TileSet
@@ -151,6 +139,7 @@ public class Tile
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return "Tile " + id + " (" + getWidth() + "x" + getHeight() + ")";
     }

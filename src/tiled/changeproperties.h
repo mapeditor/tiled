@@ -25,9 +25,12 @@
 
 #include <QString>
 #include <QUndoCommand>
+#include <QVector>
 
 namespace Tiled {
 namespace Internal {
+
+class MapDocument;
 
 class ChangeProperties : public QUndoCommand
 {
@@ -35,11 +38,13 @@ public:
     /**
      * Constructs a new 'Change Properties' command.
      *
+     * @param mapDocument  the map document of the object's map
      * @param kind         the kind of properties (Map, Layer, Object, etc.)
      * @param object       the object of which the properties should be changed
      * @param newProperties the new properties that should be applied
      */
-    ChangeProperties(const QString &kind,
+    ChangeProperties(MapDocument *mapDocument,
+                     const QString &kind,
                      Object *object,
                      const Properties &newProperties);
     void undo();
@@ -48,8 +53,83 @@ public:
 private:
     void swapProperties();
 
+    MapDocument *mMapDocument;
     Object *mObject;
     Properties mNewProperties;
+};
+
+class SetProperty : public QUndoCommand
+{
+public:
+    /**
+     * Constructs a new 'Set Property' command.
+     *
+     * @param mapDocument  the map document of the object's map
+     * @param objects      the objects of which the property should be changed
+     * @param name         the name of the property to be changed
+     * @param value        the new value of the property
+     */
+    SetProperty(MapDocument *mapDocument,
+                const QList<Object*> &objects,
+                const QString &name,
+                const QString &value,
+                QUndoCommand *parent = 0);
+
+    void undo();
+    void redo();
+
+private:
+    struct ObjectProperty {
+        QString previousValue;
+        bool existed;
+    };
+    QVector<ObjectProperty> mProperties;
+    MapDocument *mMapDocument;
+    QList<Object*> mObjects;
+    QString mName;
+    QString mValue;
+};
+
+class RemoveProperty : public QUndoCommand
+{
+public:
+    /**
+     * Constructs a new 'Remove Property' command.
+     *
+     * @param mapDocument  the map document of the object's map
+     * @param objects      the objects from which the property should be removed
+     * @param name         the name of the property to be removed
+     */
+    RemoveProperty(MapDocument *mapDocument,
+                   const QList<Object*> &objects,
+                   const QString &name,
+                   QUndoCommand *parent = 0);
+
+    void undo();
+    void redo();
+
+private:
+    MapDocument *mMapDocument;
+    QList<Object*> mObjects;
+    QVector<QString> mPreviousValues;
+    QString mName;
+};
+
+class RenameProperty : public QUndoCommand
+{
+public:
+    /**
+     * Constructs a new 'Rename Property' command.
+     *
+     * @param mapDocument  the map document of the object's map
+     * @param object       the object of which the property should be renamed
+     * @param oldName      the old name of the property
+     * @param newName      the new name of the property
+     */
+    RenameProperty(MapDocument *mapDocument,
+                   const QList<Object*> &objects,
+                   const QString &oldName,
+                   const QString &newName);
 };
 
 } // namespace Internal

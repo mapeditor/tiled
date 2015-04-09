@@ -1,6 +1,6 @@
 /*
  * tile.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of libtiled.
@@ -31,11 +31,14 @@
 #define TILE_H
 
 #include "object.h"
-#include "tileset.h"
 
 #include <QPixmap>
 
 namespace Tiled {
+
+class ObjectGroup;
+class Terrain;
+class Tileset;
 
 /**
  * Convenience function for creating tile terrain information.
@@ -60,17 +63,33 @@ inline unsigned makeTerrain(int topLeft,
            (bottomRight & 0xFF);
 }
 
+/**
+ * Returns the given \a terrain with the \a corner modified to \a terrainId.
+ */
+inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
+{
+    unsigned mask = 0xFF << (3 - corner) * 8;
+    unsigned insert = terrainId << (3 - corner) * 8;
+    return (terrain & ~mask) | (insert & mask);
+}
+
+/**
+ * A single frame of an animated tile.
+ */
+struct Frame
+{
+    int tileId;
+    int duration;
+};
 
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
-    Tile(const QPixmap &image, int id, Tileset *tileset):
-        mId(id),
-        mTileset(tileset),
-        mImage(image),
-        mTerrain(-1),
-        mTerrainProbability(-1.f)
-    {}
+    Tile(const QPixmap &image, int id, Tileset *tileset);
+    Tile(const QPixmap &image, const QString &imageSource,
+         int id, Tileset *tileset);
+
+    ~Tile();
 
     /**
      * Returns ID of this tile within its tileset.
@@ -87,10 +106,22 @@ public:
      */
     const QPixmap &image() const { return mImage; }
 
+    const QPixmap &currentFrameImage() const;
+
     /**
      * Sets the image of this tile.
      */
     void setImage(const QPixmap &image) { mImage = image; }
+
+    /**
+     * Returns the file name of the external image that represents this tile.
+     * When this tile doesn't refer to an external image, an empty string is
+     * returned.
+     */
+    const QString &imageSource() const { return mImageSource; }
+
+    void setImageSource(const QString &imageSource)
+    { mImageSource = imageSource; }
 
     /**
      * Returns the width of this tile.
@@ -110,36 +141,28 @@ public:
     /**
      * Returns the Terrain of a given corner.
      */
-    Terrain *terrainAtCorner(int corner) const { return mTileset->terrain(cornerTerrainId(corner)); }
+    Terrain *terrainAtCorner(int corner) const;
 
     /**
      * Returns the terrain id at a given corner.
      */
-    int cornerTerrainId(int corner) const { unsigned int t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+    int cornerTerrainId(int corner) const { unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
 
     /**
      * Set the terrain type of a given corner.
      */
     void setCornerTerrain(int corner, int terrainId)
-    {
-        unsigned int mask = 0xFF << (3 - corner)*8;
-        unsigned int insert = terrainId << (3 - corner)*8;
-        mTerrain = (mTerrain & ~mask) | (insert & mask);
-    }
+    { setTerrain(setTerrainCorner(mTerrain, corner, terrainId)); }
 
     /**
-     * Functions to get various terrain type information from tiles.
+     * Returns the terrain for each corner of this tile.
      */
-    unsigned short topEdge() const { return terrain() >> 16; }
-    unsigned short bottomEdge() const { return terrain() & 0xFFFF; }
-    unsigned short leftEdge() const { return((terrain() >> 16) & 0xFF00) | ((terrain() >> 8) & 0xFF); }
-    unsigned short rightEdge() const { return ((terrain() >> 8) & 0xFF00) | (terrain() & 0xFF); }
-    unsigned int terrain() const { return this == NULL ? 0xFFFFFFFF : mTerrain; } // HACK: NULL Tile has 'none' terrain type.
+    unsigned terrain() const { return mTerrain; }
 
     /**
-     * Sets the terrain information of this tile.
+     * Set the terrain for each corner of the tile.
      */
-    void setTerrain(unsigned terrain) { mTerrain = terrain; }
+    void setTerrain(unsigned terrain);
 
     /**
      * Returns the probability of this terrain type appearing while painting (0-100%).
@@ -151,13 +174,55 @@ public:
      */
     void setTerrainProbability(float probability) { mTerrainProbability = probability; }
 
+    ObjectGroup *objectGroup() const;
+    void setObjectGroup(ObjectGroup *objectGroup);
+    ObjectGroup *swapObjectGroup(ObjectGroup *objectGroup);
+
+    const QVector<Frame> &frames() const;
+    void setFrames(const QVector<Frame> &frames);
+    bool isAnimated() const;
+    int currentFrameIndex() const;
+    bool advanceAnimation(int ms);
+
 private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
-    unsigned int mTerrain;
+    QString mImageSource;
+    unsigned mTerrain;
     float mTerrainProbability;
+    ObjectGroup *mObjectGroup;
+
+    QVector<Frame> mFrames;
+    int mCurrentFrameIndex;
+    int mUnusedTime;
+
+    friend class Tileset; // To allow changing the tile id
 };
+
+/**
+ * @return The group of objects associated with this tile. This is generally
+ *         expected to be used for editing collision shapes.
+ */
+inline ObjectGroup *Tile::objectGroup() const
+{
+    return mObjectGroup;
+}
+
+inline const QVector<Frame> &Tile::frames() const
+{
+    return mFrames;
+}
+
+inline bool Tile::isAnimated() const
+{
+    return !mFrames.isEmpty();
+}
+
+inline int Tile::currentFrameIndex() const
+{
+    return mCurrentFrameIndex;
+}
 
 } // namespace Tiled
 

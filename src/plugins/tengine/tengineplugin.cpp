@@ -20,8 +20,6 @@
 
 #include "tengineplugin.h"
 
-#include "math.h"
-
 #include "map.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -33,7 +31,8 @@
 #include <QTextStream>
 #include <QHash>
 #include <QList>
-#include <QMessageBox>
+
+#include <math.h>
 
 using namespace Tengine;
 
@@ -137,7 +136,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 // Search the cached tiles for a match
                 bool foundInCache = false;
                 QString displayString;
-                for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); i++) {
+                for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); ++i) {
                     displayString = i.key();
                     currentTile["display"] = displayString;
                     if (currentTile == i.value()) {
@@ -151,7 +150,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                     while (true) {
                         // First try to use the ASCII characters
                         if (asciiDisplay < ASCII_MAX) {
-                            displayString = QString(QChar::fromAscii(asciiDisplay));
+                            displayString = QString(QChar::fromLatin1(asciiDisplay));
                             asciiDisplay++;
                         // Then fall back onto integers
                         } else {
@@ -182,7 +181,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
     // Write the definitions to the file
     out << "-- defineTile section" << endl;
-    for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); i++) {
+    for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); ++i) {
         QString displayString = i.key();
         // Only print the emptyTile definition if there were empty tiles
         if (displayString == QLatin1String("?") && numEmptyTiles == 0) {
@@ -342,4 +341,6 @@ QString TenginePlugin::constructAdditionalTable(Tiled::Properties props, QList<Q
     return tableString;
 }
 
+#if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(Tengine, TenginePlugin)
+#endif

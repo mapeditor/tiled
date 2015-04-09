@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
-    <height>392</height>
+    <width>421</width>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,59 +33,20 @@
           <string>Saving and Loading</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>&amp;Store tile layer data as:</string>
-            </property>
-            <property name="buddy">
-             <cstring>layerDataCombo</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="layerDataCombo">
-            <item>
-             <property name="text">
-              <string>XML</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Base64 (uncompressed)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Base64 (gzip compressed)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Base64 (zlib compressed)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>CSV</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QCheckBox" name="reloadTilesetImages">
-            <property name="text">
-             <string>&amp;Reload tileset images when they change</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
+          <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="enableDtd">
             <property name="toolTip">
              <string>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</string>
             </property>
             <property name="text">
              <string>Include &amp;DTD reference in saved maps</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="reloadTilesetImages">
+            <property name="text">
+             <string>&amp;Reload tileset images when they change</string>
             </property>
            </widget>
           </item>
@@ -98,7 +59,7 @@
           <string>Interface</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="3" column="0" colspan="4">
+          <item row="5" column="0" colspan="4">
            <widget class="QCheckBox" name="openGL">
             <property name="text">
              <string>Hardware &amp;accelerated drawing (OpenGL)</string>
@@ -120,6 +81,9 @@
             <property name="text">
              <string>Grid color:</string>
             </property>
+            <property name="buddy">
+             <cstring>gridColor</cstring>
+            </property>
            </widget>
           </item>
           <item row="2" column="3">
@@ -140,6 +104,52 @@
           </item>
           <item row="0" column="3">
            <widget class="QComboBox" name="languageCombo"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Fine grid divisions:</string>
+            </property>
+            <property name="buddy">
+             <cstring>gridFine</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QSpinBox" name="gridFine">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>128</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3">
+           <widget class="QDoubleSpinBox" name="objectLineWidth">
+            <property name="suffix">
+             <string> pixels</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="minimum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>2.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Object line width:</string>
+            </property>
+            <property name="buddy">
+             <cstring>objectLineWidth</cstring>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -318,19 +328,20 @@
  </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>layerDataCombo</tabstop>
   <tabstop>enableDtd</tabstop>
   <tabstop>reloadTilesetImages</tabstop>
   <tabstop>languageCombo</tabstop>
   <tabstop>gridColor</tabstop>
+  <tabstop>gridFine</tabstop>
+  <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
-  <tabstop>objectTypesTable</tabstop>
-  <tabstop>addObjectTypeButton</tabstop>
-  <tabstop>removeObjectTypeButton</tabstop>
+  <tabstop>buttonBox</tabstop>
   <tabstop>importObjectTypesButton</tabstop>
   <tabstop>exportObjectTypesButton</tabstop>
   <tabstop>autoMapWhileDrawing</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>removeObjectTypeButton</tabstop>
+  <tabstop>addObjectTypeButton</tabstop>
+  <tabstop>objectTypesTable</tabstop>
  </tabstops>
  <resources>
   <include location="tiled.qrc"/>
@@ -343,8 +354,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>304</x>
-     <y>303</y>
+     <x>313</x>
+     <y>373</y>
     </hint>
     <hint type="destinationlabel">
      <x>315</x>

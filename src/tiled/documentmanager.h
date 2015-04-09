@@ -22,14 +22,11 @@
 #ifndef DOCUMENT_MANAGER_H
 #define DOCUMENT_MANAGER_H
 
-#include "mapview.h"
-#include "mapscene.h"
-#include "mapdocument.h"
-
 #include <QList>
+#include <QObject>
 #include <QPair>
+#include <QPointF>
 
-class QTabWidget;
 class QUndoGroup;
 
 namespace Tiled {
@@ -38,9 +35,12 @@ class Tileset;
 
 namespace Internal {
 
+class AbstractTool;
+class FileSystemWatcher;
 class MapDocument;
 class MapScene;
 class MapView;
+class MovableTabWidget;
 
 /**
  * This class controls the open documents.
@@ -83,6 +83,12 @@ public:
     MapScene *currentMapScene() const;
 
     /**
+     * Returns the map view that displays the given document, or 0 when there
+     * is none.
+     */
+    MapView *viewForDocument(MapDocument *mapDocument) const;
+
+    /**
      * Returns the number of map documents.
      */
     int documentCount() const { return mDocuments.size(); }
@@ -97,6 +103,7 @@ public:
      * Switches to the map document at the given \a index.
      */
     void switchToDocument(int index);
+    void switchToDocument(MapDocument *mapDocument);
 
     /**
      * Adds the new or opened \a mapDocument to the document manager.
@@ -108,6 +115,29 @@ public:
      * any changes!
      */
     void closeCurrentDocument();
+
+    /**
+     * Closes the document at the given \a index. Will not ask the user whether
+     * to save any changes!
+     */
+    void closeDocumentAt(int index);
+
+    /**
+     * Reloads the current document. Will not ask the user whether to save any
+     * changes!
+     *
+     * \sa reloadDocumentAt()
+     */
+    bool reloadCurrentDocument();
+
+    /**
+     * Reloads the document at the given \a index. It will lose any undo
+     * history and current selections. Will not ask the user whether to save
+     * any changes!
+     *
+     * Returns whether the map loaded successfully.
+     */
+    bool reloadDocumentAt(int index);
 
     /**
      * Close all documents. Will not ask the user whether to save any changes!
@@ -122,7 +152,9 @@ public:
     /**
      * Centers the current map on the tile coordinates \a x, \a y.
      */
-    void centerViewOn(int x, int y);
+    void centerViewOn(qreal x, qreal y);
+    void centerViewOn(const QPointF &pos)
+    { centerViewOn(pos.x(), pos.y()); }
 
 signals:
     /**
@@ -135,14 +167,33 @@ signals:
      */
     void documentCloseRequested(int index);
 
+    /**
+     * Emitted when a document is about to be closed.
+     */
+    void documentAboutToClose(MapDocument *document);
+
+    /**
+     * Emitted when an error occurred while reloading the map.
+     */
+    void reloadError(const QString &error);
+
 public slots:
     void switchToLeftDocument();
     void switchToRightDocument();
 
+    void setSelectedTool(AbstractTool *tool);
+
 private slots:
     void currentIndexChanged();
-    void setSelectedTool(AbstractTool *tool);
+    void fileNameChanged(const QString &fileName,
+                         const QString &oldFileName);
     void updateDocumentTab();
+    void documentSaved();
+    void documentTabMoved(int from, int to);
+
+    void fileChanged(const QString &fileName);
+
+    void reloadRequested();
 
 private:
     DocumentManager(QObject *parent = 0);
@@ -150,10 +201,11 @@ private:
 
     QList<MapDocument*> mDocuments;
 
-    QTabWidget *mTabWidget;
+    MovableTabWidget *mTabWidget;
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
     MapScene *mSceneWithTool;
+    FileSystemWatcher *mFileSystemWatcher;
 
     static DocumentManager *mInstance;
 };

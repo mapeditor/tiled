@@ -106,6 +106,7 @@ public class TileLayer extends MapLayer
      * @param angle The Euler angle (0-360) to rotate the layer array data by.
      * @see MapLayer#rotate(int)
      */
+    @Override
     public void rotate(int angle) {
         Tile[][] trans;
         int xtrans = 0, ytrans = 0;
@@ -155,6 +156,7 @@ public class TileLayer extends MapLayer
      *
      * @param dir the axial orientation to mirror around
      */
+    @Override
     public void mirror(int dir) {
         Tile[][] mirror = new Tile[bounds.height][bounds.width];
         for (int y = 0; y < bounds.height; y++) {
@@ -187,6 +189,7 @@ public class TileLayer extends MapLayer
         return false;
     }
 
+    @Override
     public boolean isEmpty() {
         for (int p = 0; p < 2; p++) {
             for (int y = 0; y < bounds.height; y++) {
@@ -207,6 +210,7 @@ public class TileLayer extends MapLayer
      * @param bounds new new bounds of this tile layer (in tiles)
      * @see MapLayer#setBounds
      */
+    @Override
     protected void setBounds(Rectangle bounds) {
         super.setBounds(bounds);
         map = new Tile[bounds.height][bounds.width];
@@ -226,6 +230,7 @@ public class TileLayer extends MapLayer
      * @return A new MapLayer that represents the difference between this
      *         layer, and the argument, or <b>null</b> if no difference exists.
      */
+    @Override
     public MapLayer createDiff(MapLayer ml) {
         if (ml == null) { return null; }
 
@@ -336,9 +341,7 @@ public class TileLayer extends MapLayer
         }
     }
 
-    /**
-     * @inheritDoc MapLayer#mergeOnto(MapLayer)
-     */
+    @Override
     public void mergeOnto(MapLayer other) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
             for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
@@ -357,6 +360,7 @@ public class TileLayer extends MapLayer
      * @param other
      * @param mask
      */
+    @Override
     public void maskedMergeOnto(MapLayer other, Area mask) {
         Rectangle boundBox = mask.getBounds();
 
@@ -377,6 +381,7 @@ public class TileLayer extends MapLayer
      * @see MapLayer#mergeOnto
      * @param other
      */
+    @Override
     public void copyFrom(MapLayer other) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
             for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
@@ -392,6 +397,7 @@ public class TileLayer extends MapLayer
      * @param other
      * @param mask
      */
+    @Override
     public void maskedCopyFrom(MapLayer other, Area mask) {
         Rectangle boundBox = mask.getBounds();
 
@@ -411,6 +417,7 @@ public class TileLayer extends MapLayer
      * @see MapLayer#mergeOnto
      * @param other the layer to copy this layer to
      */
+    @Override
     public void copyTo(MapLayer other) {
         for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
             for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
@@ -426,6 +433,7 @@ public class TileLayer extends MapLayer
      * @return a clone of this layer, as complete as possible
      * @exception CloneNotSupportedException
      */
+    @Override
     public Object clone() throws CloneNotSupportedException {
         TileLayer clone = (TileLayer) super.clone();
 
@@ -456,6 +464,7 @@ public class TileLayer extends MapLayer
      * @param dx     the shift in x direction
      * @param dy     the shift in y direction
      */
+    @Override
     public void resize(int width, int height, int dx, int dy) {
         Tile[][] newMap = new Tile[height][width];
         HashMap<Object, Properties> newTileInstanceProperties = new HashMap<Object, Properties>();

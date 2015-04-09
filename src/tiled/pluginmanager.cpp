@@ -20,6 +20,8 @@
 
 #include "pluginmanager.h"
 
+#include "mapwriterinterface.h"
+
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -60,11 +62,16 @@ void PluginManager::loadPlugins()
         mPlugins.append(Plugin(QLatin1String("<static>"), instance));
 
     // Determine the plugin path based on the application location
+#ifndef TILED_PLUGIN_DIR
     QString pluginPath = QCoreApplication::applicationDirPath();
+#endif
+
 #ifdef Q_OS_WIN32
     pluginPath += QLatin1String("/plugins/tiled");
 #elif defined(Q_OS_MAC)
     pluginPath += QLatin1String("/../PlugIns");
+#elif defined(TILED_PLUGIN_DIR)
+    QString pluginPath = QLatin1String(TILED_PLUGIN_DIR);
 #else
     pluginPath += QLatin1String("/../lib/tiled/plugins");
 #endif
@@ -86,4 +93,26 @@ void PluginManager::loadPlugins()
 
         mPlugins.append(Plugin(pluginFile, instance));
     }
+}
+
+const Plugin *PluginManager::pluginByFileName(const QString &pluginFileName) const
+{
+    foreach (const Plugin &plugin, mPlugins)
+        if (pluginFileName == plugin.fileName)
+            return &plugin;
+
+    return 0;
+}
+
+const Plugin *PluginManager::pluginByNameFilter(const QString &pluginFilter) const
+{
+    foreach (const Plugin &plugin, mPlugins) {
+        MapWriterInterface *writer =
+                qobject_cast<MapWriterInterface*>(plugin.instance);
+
+        if (writer && writer->nameFilters().contains(pluginFilter))
+            return &plugin;
+    }
+
+    return 0;
 }

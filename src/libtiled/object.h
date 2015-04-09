@@ -39,10 +39,31 @@ namespace Tiled {
 class TILEDSHARED_EXPORT Object
 {
 public:
+    enum TypeId {
+        LayerType,
+        MapObjectType,
+        MapType,
+        TerrainType,
+        TilesetType,
+        TileType
+    };
+
+    Object(TypeId typeId) : mTypeId(typeId) {}
+
+    Object(const Object &object) :
+        mTypeId(object.mTypeId),
+        mProperties(object.mProperties)
+    {}
+
     /**
      * Virtual destructor.
      */
     virtual ~Object() {}
+
+    /**
+     * Returns the type of this object.
+     */
+    TypeId typeId() const { return mTypeId; }
 
     /**
      * Returns the properties of this object.
@@ -71,12 +92,25 @@ public:
     { return mProperties.value(name); }
 
     /**
+     * Returns whether this object has a property with the given \a name.
+     */
+    bool hasProperty(const QString &name) const
+    { return mProperties.contains(name); }
+
+    /**
      * Sets the value of the object's \a name property to \a value.
      */
     void setProperty(const QString &name, const QString &value)
     { mProperties.insert(name, value); }
 
+    /**
+     * Removes the property with the given \a name.
+     */
+    void removeProperty(const QString &name)
+    { mProperties.remove(name); }
+
 private:
+    TypeId mTypeId;
     Properties mProperties;
 };
 

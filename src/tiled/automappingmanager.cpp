@@ -29,13 +29,10 @@
 #include "preferences.h"
 
 #include <QFileInfo>
-#include <QFileSystemWatcher>
 #include <QTextStream>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
-
-AutomappingManager *AutomappingManager::mInstance = 0;
 
 AutomappingManager::AutomappingManager(QObject *parent)
     : QObject(parent)
@@ -47,20 +44,6 @@ AutomappingManager::AutomappingManager(QObject *parent)
 AutomappingManager::~AutomappingManager()
 {
     cleanUp();
-}
-
-AutomappingManager *AutomappingManager::instance()
-{
-    if (!mInstance)
-        mInstance = new AutomappingManager(0);
-
-    return mInstance;
-}
-
-void AutomappingManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = 0;
 }
 
 void AutomappingManager::autoMap()
@@ -75,21 +58,21 @@ void AutomappingManager::autoMap()
     autoMapInternal(QRect(0, 0, w, h), 0);
 }
 
-void AutomappingManager::autoMap(QRegion where, Layer *touchedLayer)
+void AutomappingManager::autoMap(const QRegion &where, Layer *touchedLayer)
 {
     if (Preferences::instance()->automappingDrawing())
         autoMapInternal(where, touchedLayer);
 }
 
-void AutomappingManager::autoMapInternal(QRegion where, Layer *touchedLayer)
+void AutomappingManager::autoMapInternal(const QRegion &where,
+                                         Layer *touchedLayer)
 {
     mError.clear();
     mWarning.clear();
-    if (!mMapDocument) {
-        mError = tr("No map document found!") + QLatin1Char('\n');
-        emit errorsOccurred();
+    if (!mMapDocument)
         return;
-    }
+
+    const bool automatic = touchedLayer != 0;
 
     if (!mLoaded) {
         const QString mapPath = QFileInfo(mMapDocument->fileName()).path();
@@ -97,7 +80,7 @@ void AutomappingManager::autoMapInternal(QRegion where, Layer *touchedLayer)
         if (loadFile(rulesFileName)) {
             mLoaded = true;
         } else {
-            emit errorsOccurred();
+            emit errorsOccurred(automatic);
             return;
         }
     }
@@ -131,10 +114,10 @@ void AutomappingManager::autoMapInternal(QRegion where, Layer *touchedLayer)
     delete passedRegion;
 
     if (!mWarning.isEmpty())
-        emit warningsOccurred();
+        emit warningsOccurred(automatic);
 
     if (!mError.isEmpty())
-        emit errorsOccurred();
+        emit errorsOccurred(automatic);
 }
 
 bool AutomappingManager::loadFile(const QString &filePath)
@@ -215,16 +198,16 @@ void AutomappingManager::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
-    if (mMapDocument)
+    if (mMapDocument) {
         connect(mMapDocument, SIGNAL(regionEdited(QRegion,Layer*)),
                 this, SLOT(autoMap(QRegion,Layer*)));
+    }
+
     mLoaded = false;
 }
 
 void AutomappingManager::cleanUp()
 {
-    foreach (const AutoMapper *autoMapper, mAutoMappers) {
-        delete autoMapper;
-    }
+    qDeleteAll(mAutoMappers);
     mAutoMappers.clear();
 }

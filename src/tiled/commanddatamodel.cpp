@@ -53,7 +53,7 @@ CommandDataModel::CommandDataModel()
         Command command(false);
 #ifdef Q_WS_X11
         command.command = QLatin1String("gedit %mapfile");
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
         command.command = QLatin1String("open -t %mapfile");
 #endif
         if (!command.command.isEmpty()) {
@@ -144,14 +144,14 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
                 return command.name;
             if (index.column() == CommandColumn)
                 return command.command;
-        } else
+        } else {
             if (index.column() == NameColumn) {
                 if (role == Qt::EditRole)
                     return QString();
                 else
                     return tr("<new command>");
             }
-
+        }
         break;
 
     case Qt::ToolTipRole:
@@ -201,6 +201,7 @@ bool CommandDataModel::setData(const QModelIndex &index,
                     isModified = true;
                 }
             }
+            break;
         }
 
         case Qt::CheckStateRole:
@@ -208,6 +209,7 @@ bool CommandDataModel::setData(const QModelIndex &index,
                 command.isEnabled = value.toInt() > 0;
                 isModified = true;
             }
+            break;
         }
 
     } else {
@@ -231,10 +233,12 @@ bool CommandDataModel::setData(const QModelIndex &index,
             mCommands[index.row()] = command;
 
         // Reset if there could be new rows or reordering, else emit dataChanged
-        if (shouldAppend || index.column() == NameColumn)
-            reset();
-        else
+        if (shouldAppend || index.column() == NameColumn) {
+            beginResetModel();
+            endResetModel();
+        } else {
             emit dataChanged(index, index);
+        }
     }
 
     return isModified;
@@ -246,9 +250,11 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
     Qt::ItemFlags f = QAbstractTableModel::flags(index);
 
     if (isNormalRow) {
-        f |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+        f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
+        else
+            f |= Qt::ItemIsEditable;
     } else {
         f |= Qt::ItemIsDropEnabled;
         if (index.column() == NameColumn)
@@ -306,7 +312,7 @@ QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
             connect(mapper, SIGNAL(mapped(int)), SLOT(execute(int)));
         }
 
-#if defined(Q_WS_X11) || defined(Q_WS_MAC)
+#if defined(Q_WS_X11) || defined(Q_OS_MAC)
         {
             QAction *action = menu->addAction(tr("Execute in Terminal"));
             QSignalMapper *mapper = new QSignalMapper(action);

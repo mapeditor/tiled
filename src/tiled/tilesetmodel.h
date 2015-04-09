@@ -36,7 +36,16 @@ namespace Internal {
  */
 class TilesetModel : public QAbstractListModel
 {
+    Q_OBJECT
+
 public:
+    /**
+     * The TerrainRole allows querying the terrain info.
+     */
+    enum UserRoles {
+        TerrainRole = Qt::UserRole
+    };
+
     /**
      * Constructor.
      *
@@ -45,7 +54,7 @@ public:
     TilesetModel(Tileset *tileset, QObject *parent = 0);
 
     /**
-     * Returns the number of rows. This is equal to the number of tiles.
+     * Returns the number of rows.
      */
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
@@ -61,6 +70,8 @@ public:
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const;
 
+
+
     /**
      * Returns a small size hint, to prevent the headers from affecting the
      * minimum width and height of the sections.
@@ -68,10 +79,23 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
 
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
+    QStringList mimeTypes() const;
+    QMimeData *mimeData(const QModelIndexList &indexes) const;
+
     /**
      * Returns the tile at the given index.
      */
     Tile *tileAt(const QModelIndex &index) const;
+
+    int tileIndexAt(const QModelIndex &index) const;
+
+    /**
+     * Returns the index of the given \a tile. The tile is required to be from
+     * the tileset used by this model.
+     */
+    QModelIndex tileIndex(const Tile *tile) const;
 
     /**
      * Returns the tileset associated with this model.
@@ -84,9 +108,29 @@ public:
     void setTileset(Tileset *tileset);
 
     /**
-     * Performs a reset() on the model
+     * Performs a reset on the model.
      */
-    void tilesetChanged() { reset(); }
+    void tilesetChanged();
+
+public slots:
+    /**
+     * Should be called when anything changes about the given \a tiles that
+     * affects their display in any views on this model.
+     *
+     * Tiles that are not from the tileset displayed by this model are simply
+     * ignored. All tiles in the list are assumed to be from the same tileset.
+     *
+     * \sa MapDocument::tileTerrainChanged
+     */
+    void tilesChanged(const QList<Tile*> &tiles);
+
+    /**
+     * Should be called when anything changes about the given \a tile that
+     * affects its display in any views on this model.
+     *
+     * \sa MapDocument::tileAnimationChanged
+     */
+    void tileChanged(Tile *tile);
 
 private:
     Tileset *mTileset;

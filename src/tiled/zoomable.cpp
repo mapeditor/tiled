@@ -22,6 +22,7 @@
 
 #include <QComboBox>
 #include <QLineEdit>
+#include <QPinchGesture>
 #include <QValidator>
 
 #include <cmath>
@@ -29,6 +30,8 @@
 using namespace Tiled::Internal;
 
 static const qreal zoomFactors[] = {
+    0.015625,
+    0.03125,
     0.0625,
     0.125,
     0.25,
@@ -39,7 +42,19 @@ static const qreal zoomFactors[] = {
     1.5,
     2.0,
     3.0,
-    4.0
+    4.0,
+    5.5,
+    8.0,
+    11.0,
+    16.0,
+    23.0,
+    32.0,
+    45.0,
+    64.0,
+    90.0,
+    128.0,
+    180.0,
+    256.0
 };
 const int zoomFactorCount = sizeof(zoomFactors) / sizeof(zoomFactors[0]);
 
@@ -53,6 +68,7 @@ static QString scaleToString(qreal scale)
 Zoomable::Zoomable(QObject *parent)
     : QObject(parent)
     , mScale(1)
+    , mGestureStartScale(0)
     , mComboBox(0)
     , mComboRegExp(QLatin1String("^\\s*(\\d+)\\s*%?\\s*$"))
     , mComboValidator(0)
@@ -102,6 +118,31 @@ void Zoomable::handleWheelDelta(int delta)
 
         // Round to at most four digits after the decimal point
         setScale(std::floor(scale * 10000 + 0.5) / 10000);
+    }
+}
+
+void Zoomable::handlePinchGesture(QPinchGesture *pinch)
+{
+    if (!(pinch->changeFlags() & QPinchGesture::ScaleFactorChanged))
+        return;
+
+    switch (pinch->state()) {
+    case Qt::NoGesture:
+        break;
+    case Qt::GestureStarted:
+        mGestureStartScale = mScale;
+        // fall through
+    case Qt::GestureUpdated: {
+        qreal factor = pinch->scaleFactor();
+        qreal scale = qBound(mZoomFactors.first(),
+                             mGestureStartScale * factor,
+                             mZoomFactors.back());
+        setScale(std::floor(scale * 10000 + 0.5) / 10000);
+        break;
+    }
+    case Qt::GestureFinished:
+    case Qt::GestureCanceled:
+        break;
     }
 }
 
@@ -174,6 +215,7 @@ void Zoomable::comboEdited()
 {
     int pos = mComboRegExp.indexIn(mComboBox->currentText());
     Q_ASSERT(pos != -1);
+    Q_UNUSED(pos)
 
     qreal scale = qBound(mZoomFactors.first(),
                          qreal(mComboRegExp.cap(1).toDouble() / 100.f),

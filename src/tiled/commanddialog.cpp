@@ -20,7 +20,9 @@
 
 #include "commanddialog.h"
 #include "ui_commanddialog.h"
+
 #include "commanddatamodel.h"
+#include "utils.h"
 
 #include <QShortcut>
 #include <QMenu>
@@ -40,10 +42,12 @@ CommandDialog::CommandDialog(QWidget *parent)
     mUi->saveBox->setChecked(mUi->treeView->model()->saveBeforeExecute());
 
     setWindowTitle(tr("Edit Commands"));
+    Utils::restoreGeometry(this);
 }
 
 CommandDialog::~CommandDialog()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 
@@ -66,10 +70,17 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     setColumnWidth(0, 200);
     QHeaderView *h = header();
     h->setStretchLastSection(false);
+#if QT_VERSION >= 0x050000
+    h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
+    h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::EnabledColumn,
+                            QHeaderView::ResizeToContents);
+#else
     h->setResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
     h->setResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
     h->setResizeMode(CommandDataModel::EnabledColumn,
                      QHeaderView::ResizeToContents);
+#endif
 
     // Allow deletion via keyboard
     QShortcut *d = new QShortcut(QKeySequence::Delete, this);

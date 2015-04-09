@@ -81,14 +81,14 @@ ObjectTypes ObjectTypesReader::readObjectTypes(const QString &fileName)
 
     QXmlStreamReader reader(&file);
 
-    if (!reader.readNextStartElement() || reader.name() != "objecttypes") {
+    if (!reader.readNextStartElement() || reader.name() != QLatin1String("objecttypes")) {
         mError = QCoreApplication::translate(
                     "ObjectTypes", "File doesn't contain object types.");
         return objectTypes;
     }
 
     while (reader.readNextStartElement()) {
-        if (reader.name() == "objecttype") {
+        if (reader.name() == QLatin1String("objecttype")) {
             const QXmlStreamAttributes atts = reader.attributes();
 
             const QString name(atts.value(QLatin1String("name")).toString());

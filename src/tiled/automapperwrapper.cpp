@@ -52,9 +52,8 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         mLayersBefore << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
     }
 
-    foreach (AutoMapper *a, autoMapper) {
+    foreach (AutoMapper *a, autoMapper)
         a->autoMap(where);
-    }
 
     foreach (const QString &layerName, touchedLayers) {
         const int layerindex = map->indexOfLayer(layerName);

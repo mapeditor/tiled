@@ -22,15 +22,26 @@
 
 #include "luatablewriter.h"
 
+#include "imagelayer.h"
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
+#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 
 #include <QFile>
+#include <QCoreApplication>
+
+#if QT_VERSION >= 0x050100
+#define HAS_QSAVEFILE_SUPPORT
+#endif
+
+#ifdef HAS_QSAVEFILE_SUPPORT
+#include <QSaveFile>
+#endif
 
 /**
  * See below for an explanation of the different formats. One of these needs
@@ -49,7 +60,11 @@ LuaPlugin::LuaPlugin()
 
 bool LuaPlugin::write(const Map *map, const QString &fileName)
 {
+#ifdef HAS_QSAVEFILE_SUPPORT
+    QSaveFile file(fileName);
+#else
     QFile file(fileName);
+#endif
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -62,7 +77,19 @@ bool LuaPlugin::write(const Map *map, const QString &fileName)
     writeMap(writer, map);
     writer.writeEndDocument();
 
-    return !writer.hasError();
+    if (file.error() != QFile::NoError) {
+        mError = file.errorString();
+        return false;
+    }
+
+#ifdef HAS_QSAVEFILE_SUPPORT
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+#endif
+
+    return true;
 }
 
 QString LuaPlugin::nameFilter() const
@@ -81,6 +108,7 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     writer.writeKeyAndValue("version", "1.1");
     writer.writeKeyAndValue("luaversion", "5.1");
+    writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
 
     const QString orientation = orientationToString(map->orientation());
 
@@ -89,13 +117,38 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
     writer.writeKeyAndValue("tileheight", map->tileHeight());
+    writer.writeKeyAndValue("nextobjectid", map->nextObjectId());
+
+    if (map->orientation() == Map::Hexagonal)
+        writer.writeKeyAndValue("hexsidelength", map->hexSideLength());
+
+    if (map->orientation() == Map::Staggered || map->orientation() == Map::Hexagonal) {
+        writer.writeKeyAndValue("staggeraxis",
+                                staggerAxisToString(map->staggerAxis()));
+        writer.writeKeyAndValue("staggerindex",
+                                staggerIndexToString(map->staggerIndex()));
+    }
+
+    const QColor &backgroundColor = map->backgroundColor();
+    if (backgroundColor.isValid()) {
+        // Example: backgroundcolor = { 255, 200, 100 }
+        writer.writeStartTable("backgroundcolor");
+        writer.setSuppressNewlines(true);
+        writer.writeValue(backgroundColor.red());
+        writer.writeValue(backgroundColor.green());
+        writer.writeValue(backgroundColor.blue());
+        if (backgroundColor.alpha() != 255)
+            writer.writeValue(backgroundColor.alpha());
+        writer.writeEndTable();
+        writer.setSuppressNewlines(false);
+    }
 
     writeProperties(writer, map->properties());
 
     writer.writeStartTable("tilesets");
 
     mGidMapper.clear();
-    uint firstGid = 1;
+    unsigned firstGid = 1;
     foreach (Tileset *tileset, map->tilesets()) {
         writeTileset(writer, tileset, firstGid);
         mGidMapper.insert(firstGid, tileset);
@@ -104,11 +157,18 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeEndTable();
 
     writer.writeStartTable("layers");
-    foreach (Layer *layer, map->layers()) {
-        if (TileLayer *tileLayer = layer->asTileLayer())
-            writeTileLayer(writer, tileLayer);
-        else if (ObjectGroup *objectGroup = layer->asObjectGroup())
-            writeObjectGroup(writer, objectGroup);
+    foreach (const Layer *layer, map->layers()) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            writeTileLayer(writer, static_cast<const TileLayer*>(layer));
+            break;
+        case Layer::ObjectGroupType:
+            writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
+            break;
+        case Layer::ImageLayerType:
+            writeImageLayer(writer, static_cast<const ImageLayer*>(layer));
+            break;
+        }
     }
     writer.writeEndTable();
 
@@ -128,8 +188,26 @@ void LuaPlugin::writeProperties(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
+static bool includeTile(const Tile *tile)
+{
+    if (!tile->properties().isEmpty())
+        return true;
+    if (!tile->imageSource().isEmpty())
+        return true;
+    if (tile->objectGroup())
+        return true;
+    if (tile->isAnimated())
+        return true;
+    if (tile->terrain() != 0xFFFFFFFF)
+        return true;
+    if (tile->terrainProbability() != 1.f)
+        return true;
+
+    return false;
+}
+
 void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
-                             uint firstGid)
+                             unsigned firstGid)
 {
     writer.writeStartTable();
 
@@ -149,34 +227,98 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     writer.writeKeyAndValue("spacing", tileset->tileSpacing());
     writer.writeKeyAndValue("margin", tileset->margin());
 
-    const QString rel = mMapDir.relativeFilePath(tileset->imageSource());
-    writer.writeKeyAndValue("image", rel);
-    writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
-    writer.writeKeyAndValue("imageheight", tileset->imageHeight());
+    if (!tileset->imageSource().isEmpty()) {
+        const QString rel = mMapDir.relativeFilePath(tileset->imageSource());
+        writer.writeKeyAndValue("image", rel);
+        writer.writeKeyAndValue("imagewidth", tileset->imageWidth());
+        writer.writeKeyAndValue("imageheight", tileset->imageHeight());
+    }
 
     if (tileset->transparentColor().isValid()) {
-        writer.writeKeyAndValue("transparentColor",
+        writer.writeKeyAndValue("transparentcolor",
                                 tileset->transparentColor().name());
     }
 
+    const QPoint offset = tileset->tileOffset();
+    writer.writeStartTable("tileoffset");
+    writer.writeKeyAndValue("x", offset.x());
+    writer.writeKeyAndValue("y", offset.y());
+    writer.writeEndTable();
+
     writeProperties(writer, tileset->properties());
+
+    writer.writeStartTable("terrains");
+    for (int i = 0; i < tileset->terrainCount(); ++i) {
+        const Terrain *t = tileset->terrain(i);
+        writer.writeStartTable();
+
+        writer.writeKeyAndValue("name", t->name());
+        writer.writeKeyAndValue("tile", t->imageTileId());
+
+        writeProperties(writer, t->properties());
+
+        writer.writeEndTable();
+    }
+    writer.writeEndTable();
 
     writer.writeStartTable("tiles");
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
-        const Properties properties = tile->properties();
 
-        // Include enties for those tiles that have properties set on them
-        if (!properties.isEmpty()) {
-            writer.writeStartTable();
-            writer.writeKeyAndValue("id", i);
+        // For brevity only write tiles with interesting properties
+        if (!includeTile(tile))
+            continue;
+
+        writer.writeStartTable();
+        writer.writeKeyAndValue("id", i);
+
+        if (!tile->properties().isEmpty())
             writeProperties(writer, tile->properties());
-            writer.writeEndTable();
-        }
-    }
-    writer.writeEndTable();
 
-    writer.writeEndTable();
+        if (!tile->imageSource().isEmpty()) {
+            const QString src = mMapDir.relativeFilePath(tile->imageSource());
+            const QSize tileSize = tile->size();
+            writer.writeKeyAndValue("image", src);
+            if (!tileSize.isNull()) {
+                writer.writeKeyAndValue("width", tileSize.width());
+                writer.writeKeyAndValue("height", tileSize.height());
+            }
+        }
+
+        unsigned terrain = tile->terrain();
+        if (terrain != 0xFFFFFFFF) {
+            writer.writeStartTable("terrain");
+            writer.setSuppressNewlines(true);
+            for (int i = 0; i < 4; ++i )
+                writer.writeValue(tile->cornerTerrainId(i));
+            writer.writeEndTable();
+            writer.setSuppressNewlines(false);
+        }
+
+        if (tile->terrainProbability() != 1.f)
+            writer.writeKeyAndValue("probability", tile->terrainProbability());
+
+        if (ObjectGroup *objectGroup = tile->objectGroup())
+            writeObjectGroup(writer, objectGroup, "objectGroup");
+
+        if (tile->isAnimated()) {
+            const QVector<Frame> &frames = tile->frames();
+
+            writer.writeStartTable("animation");
+            foreach (const Frame &frame, frames) {
+                writer.writeStartTable();
+                writer.writeKeyAndValue("tileid", QString::number(frame.tileId));
+                writer.writeKeyAndValue("duration", QString::number(frame.duration));
+                writer.writeEndTable();
+            }
+            writer.writeEndTable(); // animation
+        }
+
+        writer.writeEndTable(); // tile
+    }
+    writer.writeEndTable(); // tiles
+
+    writer.writeEndTable(); // tileset
 }
 
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
@@ -209,9 +351,14 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
 }
 
 void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
-                                 const ObjectGroup *objectGroup)
+                                 const ObjectGroup *objectGroup,
+                                 const QByteArray &key)
 {
-    writer.writeStartTable();
+    if (key.isEmpty())
+        writer.writeStartTable();
+    else
+        writer.writeStartTable(key);
+
     writer.writeKeyAndValue("type", "objectgroup");
     writer.writeKeyAndValue("name", objectGroup->name());
     writer.writeKeyAndValue("visible", objectGroup->isVisible());
@@ -226,54 +373,63 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
-// TODO: Unduplicate this class since it's used also in mapwriter.cpp
-class TileToPixelCoordinates
+void LuaPlugin::writeImageLayer(LuaTableWriter &writer,
+                                const ImageLayer *imageLayer)
 {
-public:
-    TileToPixelCoordinates(Map *map)
-    {
-        if (map->orientation() == Map::Isometric) {
-            // Isometric needs special handling, since the pixel values are
-            // based solely on the tile height.
-            mMultiplierX = map->tileHeight();
-            mMultiplierY = map->tileHeight();
-        } else {
-            mMultiplierX = map->tileWidth();
-            mMultiplierY = map->tileHeight();
-        }
+    writer.writeStartTable();
+
+    writer.writeKeyAndValue("type", "imagelayer");
+    writer.writeKeyAndValue("name", imageLayer->name());
+    writer.writeKeyAndValue("x", imageLayer->x());
+    writer.writeKeyAndValue("y", imageLayer->y());
+    writer.writeKeyAndValue("visible", imageLayer->isVisible());
+    writer.writeKeyAndValue("opacity", imageLayer->opacity());
+
+    const QString rel = mMapDir.relativeFilePath(imageLayer->imageSource());
+    writer.writeKeyAndValue("image", rel);
+
+    if (imageLayer->transparentColor().isValid()) {
+        writer.writeKeyAndValue("transparentcolor",
+                                imageLayer->transparentColor().name());
     }
 
-    QPoint operator() (qreal x, qreal y) const
-    {
-        return QPoint(qRound(x * mMultiplierX),
-                      qRound(y * mMultiplierY));
-    }
+    writeProperties(writer, imageLayer->properties());
 
-private:
-    int mMultiplierX;
-    int mMultiplierY;
-};
+    writer.writeEndTable();
+}
+
+static const char *toString(MapObject::Shape shape)
+{
+    switch (shape) {
+    case MapObject::Rectangle:
+        return "rectangle";
+    case MapObject::Polygon:
+        return "polygon";
+    case MapObject::Polyline:
+        return "polyline";
+    case MapObject::Ellipse:
+        return "ellipse";
+    }
+    return "unknown";
+}
 
 void LuaPlugin::writeMapObject(LuaTableWriter &writer,
                                const Tiled::MapObject *mapObject)
 {
     writer.writeStartTable();
+    writer.writeKeyAndValue("id", mapObject->id());
     writer.writeKeyAndValue("name", mapObject->name());
     writer.writeKeyAndValue("type", mapObject->type());
+    writer.writeKeyAndValue("shape", toString(mapObject->shape()));
 
-    const ObjectGroup *objectGroup = mapObject->objectGroup();
-    const TileToPixelCoordinates toPixel(objectGroup->map());
+    writer.writeKeyAndValue("x", mapObject->x());
+    writer.writeKeyAndValue("y", mapObject->y());
+    writer.writeKeyAndValue("width", mapObject->width());
+    writer.writeKeyAndValue("height", mapObject->height());
+    writer.writeKeyAndValue("rotation", mapObject->rotation());
 
-    const QPoint pos = toPixel(mapObject->x(), mapObject->y());
-    const QPoint size = toPixel(mapObject->width(), mapObject->height());
-
-    writer.writeKeyAndValue("x", pos.x());
-    writer.writeKeyAndValue("y", pos.y());
-    writer.writeKeyAndValue("width", size.x());
-    writer.writeKeyAndValue("height", size.y());
-
-    if (Tile *tile = mapObject->tile())
-        writer.writeKeyAndValue("gid", mGidMapper.cellToGid(Cell(tile)));
+    if (!mapObject->cell().isEmpty())
+        writer.writeKeyAndValue("gid", mGidMapper.cellToGid(mapObject->cell()));
 
     writer.writeKeyAndValue("visible", mapObject->isVisible());
 
@@ -298,9 +454,8 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
-            const QPoint pixelCoordinates = toPixel(point.x(), point.y());
-            writer.writeKeyAndValue("x", pixelCoordinates.x());
-            writer.writeKeyAndValue("y", pixelCoordinates.y());
+            writer.writeKeyAndValue("x", point.x());
+            writer.writeKeyAndValue("y", point.y());
 
             writer.writeEndTable();
             writer.setSuppressNewlines(false);
@@ -319,9 +474,8 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
-            const QPoint pixelCoordinates = toPixel(point.x(), point.y());
-            writer.writeValue(pixelCoordinates.x());
-            writer.writeValue(pixelCoordinates.y());
+            writer.writeValue(point.x());
+            writer.writeValue(point.y());
 
             writer.writeEndTable();
             writer.setSuppressNewlines(false);
@@ -339,14 +493,14 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
         writer.writeStartTable("x");
         writer.setSuppressNewlines(true);
         foreach (const QPointF &point, polygon)
-            writer.writeValue(toPixel(point.x(), point.y()).x());
+            writer.writeValue(point.x());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);
 
         writer.writeStartTable("y");
         writer.setSuppressNewlines(true);
         foreach (const QPointF &point, polygon)
-            writer.writeValue(toPixel(point.x(), point.y()).y());
+            writer.writeValue(point.y());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);
 #endif
@@ -359,4 +513,6 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
     writer.writeEndTable();
 }
 
+#if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(Lua, LuaPlugin)
+#endif

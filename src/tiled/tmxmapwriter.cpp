@@ -20,6 +20,7 @@
 
 #include "tmxmapwriter.h"
 
+#include "map.h"
 #include "mapwriter.h"
 #include "preferences.h"
 
@@ -33,7 +34,6 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
     Preferences *prefs = Preferences::instance();
 
     MapWriter writer;
-    writer.setLayerDataFormat(prefs->layerDataFormat());
     writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeMap(map, fileName);
@@ -69,7 +69,6 @@ QByteArray TmxMapWriter::toByteArray(const Map *map)
     buffer.open(QIODevice::WriteOnly);
 
     MapWriter writer;
-    writer.setLayerDataFormat(MapWriter::Base64Zlib);
     writer.writeMap(map, &buffer);
 
     return bytes;

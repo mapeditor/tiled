@@ -28,6 +28,34 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+namespace {
+
+class DrawMarginsWatcher
+{
+public:
+    DrawMarginsWatcher(MapDocument *mapDocument, TileLayer *layer)
+        : mMapDocument(mapDocument)
+        , mTileLayer(layer)
+        , mDrawMargins(layer->drawMargins())
+    {
+    }
+
+    ~DrawMarginsWatcher()
+    {
+        if (mTileLayer->map() == mMapDocument->map())
+            if (mTileLayer->drawMargins() != mDrawMargins)
+                mMapDocument->emitTileLayerDrawMarginsChanged(mTileLayer);
+    }
+
+private:
+    MapDocument *mMapDocument;
+    TileLayer *mTileLayer;
+    const QMargins mDrawMargins;
+};
+
+} // anonymous namespace
+
+
 TilePainter::TilePainter(MapDocument *mapDocument, TileLayer *tileLayer)
     : mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
@@ -47,7 +75,7 @@ Cell TilePainter::cellAt(int x, int y) const
 
 void TilePainter::setCell(int x, int y, const Cell &cell)
 {
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     if (!(selection.isEmpty() || selection.contains(QPoint(x, y))))
         return;
 
@@ -57,6 +85,7 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
     if (!mTileLayer->contains(layerX, layerY))
         return;
 
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCell(layerX, layerY, cell);
     mMapDocument->emitRegionChanged(QRegion(x, y, 1, 1));
 }
@@ -73,6 +102,7 @@ void TilePainter::setCells(int x, int y,
     if (region.isEmpty())
         return;
 
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCells(x - mTileLayer->x(),
                          y - mTileLayer->y(),
                          tileLayer,
@@ -89,9 +119,11 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
     if (region.isEmpty())
         return;
 
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+
     foreach (const QRect &rect, region.rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+        for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+            for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const Cell &cell = tileLayer->cellAt(_x - x, _y - y);
                 if (cell.isEmpty())
                     continue;
@@ -117,13 +149,15 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     if (region.isEmpty())
         return;
 
+    DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
+
     const int w = stamp->width();
     const int h = stamp->height();
     const QRect regionBounds = region.boundingRect();
 
     foreach (const QRect &rect, region.rects()) {
-        for (int _x = rect.left(); _x <= rect.right(); ++_x) {
-            for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+        for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
+            for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const int stampX = (_x - regionBounds.left()) % w;
                 const int stampY = (_y - regionBounds.top()) % h;
                 const Cell &cell = stamp->cellAt(stampX, stampY);
@@ -150,22 +184,22 @@ void TilePainter::erase(const QRegion &region)
     mMapDocument->emitRegionChanged(paintable);
 }
 
-QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
+static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin)
 {
     // Create that region that will hold the fill
     QRegion fillRegion;
 
     // Silently quit if parameters are unsatisfactory
-    if (!isDrawable(fillOrigin.x(), fillOrigin.y()))
+    if (!layer->contains(fillOrigin))
         return fillRegion;
 
     // Cache cell that we will match other cells against
-    const Cell matchCell = cellAt(fillOrigin.x(), fillOrigin.y());
+    const Cell matchCell = layer->cellAt(fillOrigin);
 
     // Grab map dimensions for later use.
-    const int mapWidth = mMapDocument->map()->width();
-    const int mapHeight = mMapDocument->map()->height();
-    const int mapSize = mapWidth * mapHeight;
+    const int layerWidth = layer->width();
+    const int layerHeight = layer->height();
+    const int layerSize = layerWidth * layerHeight;
 
     // Create a queue to hold cells that need filling
     QList<QPoint> fillPositions;
@@ -173,25 +207,23 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
 
     // Create an array that will store which cells have been processed
     // This is faster than checking if a given cell is in the region/list
-    QVector<quint8> processedCellsVec(mapSize);
+    QVector<quint8> processedCellsVec(layerSize);
     quint8 *processedCells = processedCellsVec.data();
 
     // Loop through queued positions and fill them, while at the same time
     // checking adjacent positions to see if they should be added
     while (!fillPositions.empty()) {
         const QPoint currentPoint = fillPositions.takeFirst();
-        const int startOfLine = currentPoint.y() * mapWidth;
+        const int startOfLine = currentPoint.y() * layerWidth;
 
         // Seek as far left as we can
         int left = currentPoint.x();
-        while (cellAt(left - 1, currentPoint.y()) == matchCell &&
-               isDrawable(left - 1, currentPoint.y()))
+        while (left > 0 && layer->cellAt(left - 1, currentPoint.y()) == matchCell)
             --left;
 
         // Seek as far right as we can
         int right = currentPoint.x();
-        while (cellAt(right + 1, currentPoint.y()) == matchCell &&
-               isDrawable(right + 1, currentPoint.y()))
+        while (right + 1 < layerWidth && layer->cellAt(right + 1, currentPoint.y()) == matchCell)
             ++right;
 
         // Add cells between left and right to the region
@@ -216,9 +248,8 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
             // Check cell above
             if (fillPoint.y() > 0) {
                 QPoint aboveCell(fillPoint.x(), fillPoint.y() - 1);
-                if (!processedCells[aboveCell.y()*mapWidth + aboveCell.x()] &&
-                    cellAt(aboveCell.x(), aboveCell.y()) == matchCell &&
-                    isDrawable(aboveCell.x(), aboveCell.y()))
+                if (!processedCells[aboveCell.y() * layerWidth + aboveCell.x()] &&
+                    layer->cellAt(aboveCell) == matchCell)
                 {
                     // Do not add the above cell to the queue if its
                     // x-adjacent cell was added.
@@ -226,17 +257,18 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
                         fillPositions.append(aboveCell);
 
                     lastAboveCell = true;
-                } else lastAboveCell = false;
+                } else {
+                    lastAboveCell = false;
+                }
 
-                processedCells[aboveCell.y() * mapWidth + aboveCell.x()] = 1;
+                processedCells[aboveCell.y() * layerWidth + aboveCell.x()] = 1;
             }
 
             // Check cell below
-            if (fillPoint.y() + 1 < mapHeight) {
+            if (fillPoint.y() + 1 < layerHeight) {
                 QPoint belowCell(fillPoint.x(), fillPoint.y() + 1);
-                if (!processedCells[belowCell.y()*mapWidth + belowCell.x()] &&
-                    cellAt(belowCell.x(), belowCell.y()) == matchCell &&
-                    isDrawable(belowCell.x(), belowCell.y()))
+                if (!processedCells[belowCell.y() * layerWidth + belowCell.x()] &&
+                    layer->cellAt(belowCell) == matchCell)
                 {
                     // Do not add the below cell to the queue if its
                     // x-adjacent cell was added.
@@ -244,9 +276,11 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
                         fillPositions.append(belowCell);
 
                     lastBelowCell = true;
-                } else lastBelowCell = false;
+                } else {
+                    lastBelowCell = false;
+                }
 
-                processedCells[belowCell.y() * mapWidth + belowCell.x()] = 1;
+                processedCells[belowCell.y() * layerWidth + belowCell.x()] = 1;
             }
         }
     }
@@ -254,9 +288,27 @@ QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
     return fillRegion;
 }
 
+QRegion TilePainter::computePaintableFillRegion(const QPoint &fillOrigin) const
+{
+    QRegion region = fillRegion(mTileLayer, fillOrigin - mTileLayer->position());
+    region.translate(mTileLayer->position());
+
+    const QRegion &selection = mMapDocument->selectedArea();
+    if (!selection.isEmpty())
+        region &= selection;
+
+    return region;
+}
+
+QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
+{
+    QRegion region = fillRegion(mTileLayer, fillOrigin - mTileLayer->position());
+    return region.translated(mTileLayer->position());
+}
+
 bool TilePainter::isDrawable(int x, int y) const
 {
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     if (!(selection.isEmpty() || selection.contains(QPoint(x, y))))
         return false;
 
@@ -274,7 +326,7 @@ QRegion TilePainter::paintableRegion(const QRegion &region) const
     const QRegion bounds = QRegion(mTileLayer->bounds());
     QRegion intersection = bounds.intersected(region);
 
-    const QRegion &selection = mMapDocument->tileSelection();
+    const QRegion &selection = mMapDocument->selectedArea();
     if (!selection.isEmpty())
         intersection &= selection;
 

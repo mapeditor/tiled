@@ -1,7 +1,7 @@
 /*
  * objectgroup.cpp
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of libtiled.
@@ -36,16 +36,20 @@
 #include "tile.h"
 #include "tileset.h"
 
+#include <cmath>
+
 using namespace Tiled;
 
 ObjectGroup::ObjectGroup()
     : Layer(ObjectGroupType, QString(), 0, 0, 0, 0)
+    , mDrawOrder(TopDownOrder)
 {
 }
 
 ObjectGroup::ObjectGroup(const QString &name,
                          int x, int y, int width, int height)
     : Layer(ObjectGroupType, name, x, y, width, height)
+    , mDrawOrder(TopDownOrder)
 {
 }
 
@@ -58,12 +62,16 @@ void ObjectGroup::addObject(MapObject *object)
 {
     mObjects.append(object);
     object->setObjectGroup(this);
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 void ObjectGroup::insertObject(int index, MapObject *object)
 {
     mObjects.insert(index, object);
     object->setObjectGroup(this);
+    if (mMap && object->id() == 0)
+        object->setId(mMap->takeNextObjectId());
 }
 
 int ObjectGroup::removeObject(MapObject *object)
@@ -80,6 +88,28 @@ void ObjectGroup::removeObjectAt(int index)
 {
     MapObject *object = mObjects.takeAt(index);
     object->setObjectGroup(0);
+}
+
+void ObjectGroup::moveObjects(int from, int to, int count)
+{
+    // It's an error when 'to' lies within the moving range of objects
+    Q_ASSERT(count >= 0);
+    Q_ASSERT(to <= from || to >= from + count);
+
+    // Nothing to be done when 'to' is the start or the end of the range, or
+    // when the number of objects to be moved is 0.
+    if (to == from || to == from + count || count == 0)
+        return;
+
+    const QList<MapObject*> movingObjects = mObjects.mid(from, count);
+    mObjects.erase(mObjects.begin() + from,
+                   mObjects.begin() + from + count);
+
+    if (to > from)
+        to -= count;
+
+    for (int i = 0; i < count; ++i)
+        mObjects.insert(to + i, movingObjects.at(i));
 }
 
 QRectF ObjectGroup::objectsBoundingRect() const
@@ -100,7 +130,7 @@ QSet<Tileset*> ObjectGroup::usedTilesets() const
     QSet<Tileset*> tilesets;
 
     foreach (const MapObject *object, mObjects)
-        if (const Tile *tile = object->tile())
+        if (const Tile *tile = object->cell().tile)
             tilesets.insert(tile->tileset());
 
     return tilesets;
@@ -109,7 +139,7 @@ QSet<Tileset*> ObjectGroup::usedTilesets() const
 bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 {
     foreach (const MapObject *object, mObjects) {
-        const Tile *tile = object->tile();
+        const Tile *tile = object->cell().tile;
         if (tile && tile->tileset() == tileset)
             return true;
     }
@@ -121,61 +151,43 @@ void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
     foreach (MapObject *object, mObjects) {
-        const Tile *tile = object->tile();
-        if (tile && tile->tileset() == oldTileset)
-            object->setTile(newTileset->tileAt(tile->id()));
+        const Tile *tile = object->cell().tile;
+        if (tile && tile->tileset() == oldTileset) {
+            Cell cell = object->cell();
+            cell.tile = newTileset->tileAt(tile->id());
+            object->setCell(cell);
+        }
     }
 }
 
-void ObjectGroup::resize(const QSize &size, const QPoint &offset)
-{
-    Layer::resize(size, offset);
-
-    foreach (MapObject *object, mObjects) {
-        QPointF pos = object->position();
-        pos.rx() += offset.x();
-        pos.ry() += offset.y();
-        object->setPosition(pos);
-    }
-}
-
-void ObjectGroup::offset(const QPoint &offset,
-                         const QRect &bounds,
+void ObjectGroup::offset(const QPointF &offset,
+                         const QRectF &bounds,
                          bool wrapX, bool wrapY)
 {
     foreach (MapObject *object, mObjects) {
-        const QRectF objectBounds = object->bounds();
-        if (!QRectF(bounds).contains(objectBounds.center()))
+        const QPointF objectCenter = object->bounds().center();
+        if (!bounds.contains(objectCenter))
             continue;
 
-        QPointF newPos(objectBounds.left() + offset.x(),
-                       objectBounds.top () + offset.y());
+        QPointF newCenter(objectCenter + offset);
 
         if (wrapX && bounds.width() > 0) {
-            while (newPos.x() + objectBounds.width() / 2
-                < qreal(bounds.left()))
-                newPos.rx() += qreal(bounds.width());
-            while (newPos.x() + objectBounds.width() / 2
-                > qreal(bounds.left() + bounds.width()))
-                newPos.rx() -= qreal(bounds.width());
+            qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
+            newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
         if (wrapY && bounds.height() > 0) {
-            while (newPos.y() + objectBounds.height() / 2
-                < qreal(bounds.top()))
-                newPos.ry() += qreal(bounds.height());
-            while (newPos.y() + objectBounds.height() / 2
-                > qreal(bounds.top() + bounds.height()))
-                newPos.ry() -= qreal(bounds.height());
+            qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
+            newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
 
-        object->setPosition(newPos);
+        object->setPosition(object->position() + (newCenter - objectCenter));
     }
 }
 
 bool ObjectGroup::canMergeWith(Layer *other) const
 {
-    return dynamic_cast<ObjectGroup*>(other) != 0;
+    return other->isObjectGroup();
 }
 
 Layer *ObjectGroup::mergedWith(Layer *other) const
@@ -206,5 +218,35 @@ ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
     foreach (const MapObject *object, mObjects)
         clone->addObject(object->clone());
     clone->setColor(mColor);
+    clone->setDrawOrder(mDrawOrder);
     return clone;
+}
+
+
+QString Tiled::drawOrderToString(ObjectGroup::DrawOrder drawOrder)
+{
+    switch (drawOrder) {
+    default:
+    case ObjectGroup::UnknownOrder:
+        return QLatin1String("unknown");
+        break;
+    case ObjectGroup::TopDownOrder:
+        return QLatin1String("topdown");
+        break;
+    case ObjectGroup::IndexOrder:
+        return QLatin1String("index");
+        break;
+    }
+}
+
+ObjectGroup::DrawOrder Tiled::drawOrderFromString(const QString &string)
+{
+    ObjectGroup::DrawOrder drawOrder = ObjectGroup::UnknownOrder;
+
+    if (string == QLatin1String("topdown"))
+        drawOrder = ObjectGroup::TopDownOrder;
+    else if (string == QLatin1String("index"))
+        drawOrder = ObjectGroup::IndexOrder;
+
+    return drawOrder;
 }

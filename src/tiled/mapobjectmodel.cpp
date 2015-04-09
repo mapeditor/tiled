@@ -28,6 +28,8 @@
 #include "objectgroup.h"
 #include "renamelayer.h"
 
+#include <QCoreApplication>
+
 #define GROUPS_IN_DISPLAY_ORDER 1
 
 using namespace Tiled;
@@ -65,9 +67,9 @@ QModelIndex MapObjectModel::index(int row, int column,
 
 QModelIndex MapObjectModel::parent(const QModelIndex &index) const
 {
-    MapObject *mapObject = toMapObject(index);
-    if (mapObject)
+    if (MapObject *mapObject = toMapObject(index))
         return this->index(mapObject->objectGroup());
+
     return QModelIndex();
 }
 
@@ -134,9 +136,13 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
         switch (role) {
         case Qt::CheckStateRole: {
             Qt::CheckState c = static_cast<Qt::CheckState>(value.toInt());
-            mapObject->setVisible(c == Qt::Checked);
-            emit dataChanged(index, index);
-            emit objectsChanged(QList<MapObject*>() << mapObject);
+            const bool visible = (c == Qt::Checked);
+            if (visible != mapObject->isVisible()) {
+                QUndoCommand *command = new SetMapObjectVisible(mMapDocument,
+                                                                mapObject,
+                                                                visible);
+                mMapDocument->undoStack()->push(command);
+            }
             return true;
         }
         case Qt::EditRole: {
@@ -256,6 +262,7 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument)
         mMapDocument->disconnect(this);
 
+    beginResetModel();
     mMapDocument = mapDocument;
     mMap = 0;
 
@@ -287,7 +294,7 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
         }
     }
 
-    reset();
+    endResetModel();
 }
 
 void MapObjectModel::layerAdded(int index)
@@ -353,14 +360,28 @@ void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
 
 int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)
 {
-    emit objectsAboutToBeRemoved(QList<MapObject*>() << o);
+    QList<MapObject*> objects;
+    objects << o;
+
     const int row = og->objects().indexOf(o);
     beginRemoveRows(index(og), row, row);
     og->removeObjectAt(row);
     delete mObjects.take(o);
     endRemoveRows();
-    emit objectsRemoved(QList<MapObject*>() << o);
+    emit objectsRemoved(objects);
     return row;
+}
+
+void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
+{
+    const QModelIndex parent = index(og);
+    if (!beginMoveRows(parent, from, from + count - 1, parent, to)) {
+        Q_ASSERT(false); // The code should never attempt this
+        return;
+    }
+
+    og->moveObjects(from, to, count);
+    endMoveRows();
 }
 
 // ObjectGroup color changed
@@ -401,5 +422,19 @@ void MapObjectModel::setObjectPosition(MapObject *o, const QPointF &pos)
 void MapObjectModel::setObjectSize(MapObject *o, const QSizeF &size)
 {
     o->setSize(size);
+    emit objectsChanged(QList<MapObject*>() << o);
+}
+
+void MapObjectModel::setObjectRotation(MapObject *o, qreal rotation)
+{
+    o->setRotation(rotation);
+    emit objectsChanged(QList<MapObject*>() << o);
+}
+
+void MapObjectModel::setObjectVisible(MapObject *o, bool visible)
+{
+    o->setVisible(visible);
+    QModelIndex index = this->index(o);
+    emit dataChanged(index, index);
     emit objectsChanged(QList<MapObject*>() << o);
 }

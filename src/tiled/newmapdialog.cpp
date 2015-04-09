@@ -22,13 +22,16 @@
 #include "ui_newmapdialog.h"
 
 #include "isometricrenderer.h"
+#include "hexagonalrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "orthogonalrenderer.h"
 #include "preferences.h"
+#include "staggeredrenderer.h"
 #include "tilelayer.h"
 
 #include <QSettings>
+#include <QMessageBox>
 
 static const char * const ORIENTATION_KEY = "Map/Orientation";
 static const char * const MAP_WIDTH_KEY = "Map/Width";
@@ -47,7 +50,8 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Restore previously used settings
-    QSettings *s = Preferences::instance()->settings();
+    Preferences *prefs = Preferences::instance();
+    QSettings *s = prefs->settings();
     const int orientation = s->value(QLatin1String(ORIENTATION_KEY)).toInt();
     const int mapWidth = s->value(QLatin1String(MAP_WIDTH_KEY), 100).toInt();
     const int mapHeight = s->value(QLatin1String(MAP_HEIGHT_KEY), 100).toInt();
@@ -55,11 +59,25 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
                                     32).toInt();
 
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"));
+    mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "CSV"));
+
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Down"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Right Up"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Down"));
+    mUi->renderOrder->addItem(QCoreApplication::translate("PreferencesDialog", "Left Up"));
+
     mUi->orientation->addItem(tr("Orthogonal"), Map::Orthogonal);
     mUi->orientation->addItem(tr("Isometric"), Map::Isometric);
     mUi->orientation->addItem(tr("Isometric (Staggered)"), Map::Staggered);
+    mUi->orientation->addItem(tr("Hexagonal (Staggered)"), Map::Hexagonal);
 
     mUi->orientation->setCurrentIndex(orientation);
+    mUi->layerFormat->setCurrentIndex(prefs->layerDataFormat());
+    mUi->renderOrder->setCurrentIndex(prefs->mapRenderOrder());
     mUi->mapWidth->setValue(mapWidth);
     mUi->mapHeight->setValue(mapHeight);
     mUi->tileWidth->setValue(tileWidth);
@@ -95,18 +113,40 @@ MapDocument *NewMapDialog::createMap()
     const int tileHeight = mUi->tileHeight->value();
 
     const int orientationIndex = mUi->orientation->currentIndex();
-    QVariant orientationData = mUi->orientation->itemData(orientationIndex);
+    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
     const Map::Orientation orientation =
             static_cast<Map::Orientation>(orientationData.toInt());
+    const Map::LayerDataFormat layerFormat =
+            static_cast<Map::LayerDataFormat>(mUi->layerFormat->currentIndex());
+    const Map::RenderOrder renderOrder =
+            static_cast<Map::RenderOrder>(mUi->renderOrder->currentIndex());
 
     Map *map = new Map(orientation,
                        mapWidth, mapHeight,
                        tileWidth, tileHeight);
 
-    // Add one filling tile layer to new maps
-    map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0, mapWidth, mapHeight));
+    map->setLayerDataFormat(layerFormat);
+    map->setRenderOrder(renderOrder);
+
+    const size_t gigabyte = 1073741824;
+    const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
+
+    // Add a tile layer to new maps of reasonable size
+    if (memory < gigabyte) {
+        map->addLayer(new TileLayer(tr("Tile Layer 1"), 0, 0,
+                                    mapWidth, mapHeight));
+    } else {
+        const double gigabytes = (double) memory / gigabyte;
+        QMessageBox::warning(this, tr("Memory Usage Warning"),
+                             tr("Tile layers for this map will consume %L1 GB "
+                                "of memory each. Not creating one by default.")
+                             .arg(gigabytes, 0, 'f', 2));
+    }
 
     // Store settings for next time
+    Preferences *prefs = Preferences::instance();
+    prefs->setLayerDataFormat(layerFormat);
+    prefs->setMapRenderOrder(renderOrder);
     QSettings *s = Preferences::instance()->settings();
     s->setValue(QLatin1String(ORIENTATION_KEY), orientationIndex);
     s->setValue(QLatin1String(MAP_WIDTH_KEY), mapWidth);
@@ -119,8 +159,12 @@ MapDocument *NewMapDialog::createMap()
 
 void NewMapDialog::refreshPixelSize()
 {
-    const int orientation = mUi->orientation->currentIndex();
-    const Map map((orientation == 0) ? Map::Orthogonal : Map::Isometric,
+    const int orientationIndex = mUi->orientation->currentIndex();
+    const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
+    const Map::Orientation orientation =
+            static_cast<Map::Orientation>(orientationData.toInt());
+
+    const Map map(orientation,
                   mUi->mapWidth->value(),
                   mUi->mapHeight->value(),
                   mUi->tileWidth->value(),
@@ -128,9 +172,15 @@ void NewMapDialog::refreshPixelSize()
 
     QSize size;
 
-    switch (map.orientation()) {
+    switch (orientation) {
     case Map::Isometric:
         size = IsometricRenderer(&map).mapSize();
+        break;
+    case Map::Staggered:
+        size = StaggeredRenderer(&map).mapSize();
+        break;
+    case Map::Hexagonal:
+        size = HexagonalRenderer(&map).mapSize();
         break;
     default:
         size = OrthogonalRenderer(&map).mapSize();

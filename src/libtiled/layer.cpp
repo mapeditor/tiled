@@ -36,10 +36,11 @@
 
 using namespace Tiled;
 
-Layer::Layer(Type type, const QString &name, int x, int y,
+Layer::Layer(TypeFlag type, const QString &name, int x, int y,
              int width, int height) :
+    Object(LayerType),
     mName(name),
-    mType(type),
+    mLayerType(type),
     mX(x),
     mY(y),
     mWidth(width),
@@ -48,12 +49,6 @@ Layer::Layer(Type type, const QString &name, int x, int y,
     mVisible(true),
     mMap(0)
 {
-}
-
-void Layer::resize(const QSize &size, const QPoint & /* offset */)
-{
-    mWidth = size.width();
-    mHeight = size.height();
 }
 
 /**

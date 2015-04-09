@@ -1,6 +1,6 @@
 /*
  * mainwindow.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
@@ -25,6 +25,7 @@
 #define MAINWINDOW_H
 
 #include "mapdocument.h"
+#include "consoledock.h"
 
 #include <QMainWindow>
 #include <QSessionManager>
@@ -46,19 +47,26 @@ class MapReaderInterface;
 
 namespace Internal {
 
-class ClipboardManager;
+class AutomappingManager;
+class BucketFillTool;
+class CommandButton;
 class DocumentManager;
 class LayerDock;
 class MapDocumentActionHandler;
 class MapScene;
-class StampBrush;
-class BucketFillTool;
-class TerrainBrush;
-class TilesetDock;
-class TerrainDock;
+class MapsDock;
 class MapView;
-class CommandButton;
+class MiniMapDock;
 class ObjectsDock;
+class PropertiesDock;
+class QuickStampManager;
+class StampBrush;
+class TerrainBrush;
+class TerrainDock;
+class TileAnimationEditor;
+class TileCollisionEditor;
+class TilesetDock;
+class ToolManager;
 class Zoomable;
 
 /**
@@ -72,7 +80,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
+    MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~MainWindow();
 
     void commitData(QSessionManager &manager);
@@ -112,8 +120,10 @@ public slots:
     void openFile();
     bool saveFile();
     bool saveFileAs();
-    void saveAsImage();
+    void export_();
     void exportAs();
+    void exportAsImage();
+    void reload();
     void closeFile();
     void closeAllFiles();
 
@@ -129,44 +139,54 @@ public slots:
 
     bool newTileset(const QString &path = QString());
     void newTilesets(const QStringList &paths);
+    void reloadTilesets();
     void addExternalTileset();
     void resizeMap();
     void offsetMap();
     void editMapProperties();
-    void autoMap();
 
     void updateWindowTitle();
     void updateActions();
     void updateZoomLabel();
+    void becomePatron();
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();
 
-    void editLayerProperties();
+    void flipHorizontally() { flip(FlipHorizontally); }
+    void flipVertically() { flip(FlipVertically); }
+    void rotateLeft() { rotate(RotateLeft); }
+    void rotateRight() { rotate(RotateRight); }
 
-    void flipStampHorizontally();
-    void flipStampVertically();
-    void rotateStampLeft();
-    void rotateStampRight();
+    void flip(FlipDirection direction);
+    void rotate(RotateDirection direction);
 
     void setStampBrush(const TileLayer *tiles);
     void setTerrainBrush(const Terrain *terrain);
+    void saveQuickStamp(int index);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
     void closeMapDocument(int index);
 
-    void autoMappingError();
-    void autoMappingWarning();
+    void reloadError(const QString &error);
+    void autoMappingError(bool automatic);
+    void autoMappingWarning(bool automatic);
+
+    void onAnimationEditorClosed();
+    void onCollisionEditorClosed();
+
 private:
     /**
-      * Asks the user whether the current map should be saved when necessary.
+      * Asks the user whether the given \a mapDocument should be saved, when
+      * necessary. If it needs to ask, also makes sure that it is the current
+      * document.
       *
       * @return <code>true</code> when any unsaved data is either discarded or
       *         saved, <code>false</code> when the user cancelled or saving
       *         failed.
       */
-    bool confirmSave();
+    bool confirmSave(MapDocument *mapDocument);
 
     /**
       * Checks all maps for changes, if so, ask if to save these changes.
@@ -187,18 +207,10 @@ private:
     void writeSettings();
     void readSettings();
 
-    void addMapDocument(MapDocument *mapDocument);
     QStringList recentFiles() const;
     QString fileDialogStartLocation() const;
 
-    /**
-     * Add the given file to the recent files list.
-     */
     void setRecentFile(const QString &fileName);
-
-    /**
-     * Update the recent files menu.
-     */
     void updateRecentFiles();
 
     void retranslateUi();
@@ -207,9 +219,14 @@ private:
     MapDocument *mMapDocument;
     MapDocumentActionHandler *mActionHandler;
     LayerDock *mLayerDock;
+    MapsDock *mMapsDock;
     ObjectsDock *mObjectsDock;
     TilesetDock *mTilesetDock;
     TerrainDock *mTerrainDock;
+    MiniMapDock* mMiniMapDock;
+    ConsoleDock *mConsoleDock;
+    TileAnimationEditor *mTileAnimationEditor;
+    TileCollisionEditor *mTileCollisionEditor;
     QLabel *mCurrentLayerLabel;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
@@ -222,16 +239,20 @@ private:
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
 
-    ClipboardManager *mClipboardManager;
-
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];
 
     QMenu *mLayerMenu;
+    QAction *mViewsAndToolbarsMenu;
+    QAction *mShowTileAnimationEditor;
+    QAction *mShowTileCollisionEditor;
 
     void setupQuickStamps();
 
+    AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
+    QuickStampManager *mQuickStampManager;
+    ToolManager *mToolManager;
 };
 
 } // namespace Internal

@@ -5,8 +5,6 @@ isEmpty(TARGET) {
 TEMPLATE = lib
 CONFIG += plugin
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
-INCLUDEPATH += $$PWD/../tiled
-DEPENDPATH += $$PWD/../tiled
 win32 {
     DESTDIR = $$OUT_PWD/../../../plugins/tiled
 } else:macx {
@@ -21,15 +19,15 @@ INSTALLS += target
 
 include(../libtiled/libtiled.pri)
 macx {
-    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../../bin/Tiled.app/Contents/Frameworks
+    QMAKE_LIBDIR += $$OUT_PWD/../../../bin/Tiled.app/Contents/Frameworks
 } else:win32 {
     LIBS += -L$$OUT_PWD/../../../lib
 } else {
-    QMAKE_LIBDIR_FLAGS += -L$$OUT_PWD/../../../lib
+    QMAKE_LIBDIR += $$OUT_PWD/../../../lib
 }
 
 # Set rpath so that the plugin will resolve libtiled correctly
-!win32:!macx {
+!win32:!macx:contains(RPATH, yes) {
     QMAKE_RPATHDIR += \$\$ORIGIN/../..
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually

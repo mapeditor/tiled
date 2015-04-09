@@ -1,3 +1,2 @@
 INCLUDEPATH += $$PWD
-DEPENDPATH += $$PWD
 LIBS *= -ltiled

@@ -113,7 +113,10 @@ private:
      */
     struct Option
     {
-        Option() {}
+        Option()
+            : callback(0)
+            , data(0)
+        {}
 
         Option(Callback callback,
                void *data,

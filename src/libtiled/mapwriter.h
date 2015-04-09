@@ -30,6 +30,7 @@
 #ifndef MAPWRITER_H
 #define MAPWRITER_H
 
+#include "map.h"
 #include "tiled_global.h"
 
 #include <QString>
@@ -96,23 +97,6 @@ public:
      * Returns the error message for the last occurred error.
      */
     QString errorString() const;
-
-    /**
-     * The different formats in which the tile layer data can be stored.
-     */
-    enum LayerDataFormat {
-        XML        = 0,
-        Base64     = 1,
-        Base64Gzip = 2,
-        Base64Zlib = 3,
-        CSV        = 4
-    };
-
-    /**
-     * Sets the format in which the tile layer data is stored.
-     */
-    void setLayerDataFormat(LayerDataFormat format);
-    LayerDataFormat layerDataFormat() const;
 
     /**
      * Sets whether the DTD reference is written when saving the map.

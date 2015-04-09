@@ -47,10 +47,10 @@ void test_MapReader::loadMap()
 
     QCOMPARE(mapObject->name(), QLatin1String("Some object"));
     QCOMPARE(mapObject->type(), QLatin1String("WARP"));
-    QCOMPARE(mapObject->x(), qreal(200) / qreal(map->tileWidth()));
-    QCOMPARE(mapObject->y(), qreal(200) / qreal(map->tileHeight()));
-    QCOMPARE(mapObject->width(), qreal(128) / qreal(map->tileWidth()));
-    QCOMPARE(mapObject->height(), qreal(64) / qreal(map->tileHeight()));
+    QCOMPARE(mapObject->x(), qreal(200));
+    QCOMPARE(mapObject->y(), qreal(200));
+    QCOMPARE(mapObject->width(), qreal(128));
+    QCOMPARE(mapObject->height(), qreal(64));
 }
 
 QTEST_MAIN(test_MapReader)

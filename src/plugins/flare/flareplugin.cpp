@@ -25,12 +25,17 @@
 #include "gidmapper.h"
 #include "map.h"
 #include "mapobject.h"
+#include "mapreader.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "objectgroup.h"
 
 #include <QFile>
+#include <QFileInfo>
+#include <QDir>
+#include <QSettings>
+#include <QStringList>
 #include <QTextStream>
 
 using namespace Flare;
@@ -38,6 +43,223 @@ using namespace Tiled;
 
 FlarePlugin::FlarePlugin()
 {
+}
+
+Tiled::Map *FlarePlugin::read(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open (QIODevice::ReadOnly)) {
+        mError = tr("Could not open file for reading.");
+        return 0;
+    }
+
+    // default to values of the original flare alpha game.
+    Map *map = new Map(Map::Isometric, 256, 256, 64, 32);
+
+    QTextStream stream (&file);
+    QString line;
+    QString sectionName;
+    bool newsection = false;
+    QString path = QFileInfo(file).absolutePath();
+    int base = 10;
+    GidMapper gidMapper;
+    int gid = 1;
+    TileLayer *tilelayer = 0;
+    ObjectGroup *objectgroup = 0;
+    MapObject *mapobject = 0;
+    bool tilesetsSectionFound = false;
+    bool headerSectionFound = false;
+    bool tilelayerSectionFound = false; // tile layer or objects
+
+    while (!stream.atEnd()) {
+        line = stream.readLine();
+
+        if (!line.length())
+            continue;
+
+        QChar startsWith = line.at(0);
+
+        if (startsWith == QChar('[')) {
+            sectionName = line.mid(1, line.indexOf(QChar(']')) - 1);
+            newsection = true;
+            continue;
+        }
+        if (sectionName == QLatin1String("header")) {
+            headerSectionFound = true;
+            //get map properties
+            int epos = line.indexOf(QChar('='));
+            if (epos != -1) {
+                QString key = line.left(epos).trimmed();
+                QString value = line.mid(epos + 1, -1).trimmed();
+                if (key == QLatin1String("width"))
+                    map->setWidth(value.toInt());
+                else if (key == QLatin1String("height"))
+                    map->setHeight(value.toInt());
+                else if (key == QLatin1String("tilewidth"))
+                    map->setTileWidth(value.toInt());
+                else if (key == QLatin1String("tileheight"))
+                    map->setTileHeight(value.toInt());
+                else if (key == QLatin1String("orientation"))
+                    map->setOrientation(orientationFromString(value));
+                else
+                    map->setProperty(key, value);
+            }
+        } else if (sectionName == QLatin1String("tilesets")) {
+            tilesetsSectionFound = true;
+            int epos = line.indexOf(QChar('='));
+            QString key = line.left(epos).trimmed();
+            QString value = line.mid(epos + 1, -1).trimmed();
+            if (key == QLatin1String("tileset")) {
+                QStringList list = value.split(QChar(','));
+
+                QString absoluteSource(list.first());
+                if (QDir::isRelativePath(absoluteSource))
+                    absoluteSource = path + QLatin1Char('/') + absoluteSource;
+
+                int tilesetwidth = 0;
+                int tilesetheight = 0;
+                if (list.size() > 2) {
+                    tilesetwidth = list[1].toInt();
+                    tilesetheight = list[2].toInt();
+                }
+
+                Tileset *tileset = new Tileset(QFileInfo(absoluteSource).fileName(),
+                                               tilesetwidth, tilesetheight);
+                bool ok = tileset->loadFromImage(absoluteSource);
+
+                if (!ok) {
+                    mError = tr("Error loading tileset %1, which expands to %2. Path not found!")
+                            .arg(list[0], absoluteSource);
+                    delete map;
+                    return 0;
+                } else {
+                    if (list.size() > 4)
+                        tileset->setTileOffset(QPoint(list[3].toInt(),list[4].toInt()));
+
+                    gidMapper.insert(gid, tileset);
+                    if (list.size() > 5) {
+                        gid += list[5].toInt();
+                    } else {
+                        gid += tileset->tileCount();
+                    }
+                    map->addTileset(tileset);
+                }
+            }
+        } else if (sectionName == QLatin1String("layer")) {
+            if (!tilesetsSectionFound) {
+                mError = tr("No tilesets section found before layer section.");
+                delete map;
+                return 0;
+            }
+            tilelayerSectionFound = true;
+            int epos = line.indexOf(QChar('='));
+            if (epos != -1) {
+                QString key = line.left(epos).trimmed();
+                QString value = line.mid(epos + 1, -1).trimmed();
+
+                if (key == QLatin1String("type")) {
+                    tilelayer = new TileLayer(value, 0, 0,
+                                              map->width(),map->height());
+                    map->addLayer(tilelayer);
+                } else if (key == QLatin1String("format")) {
+                    if (value == QLatin1String("dec")) {
+                        base = 10;
+                    } else if (value == QLatin1String("hex")) {
+                        base = 16;
+                    }
+                } else if (key == QLatin1String("data")) {
+                    for (int y=0; y < map->height(); y++) {
+                        line = stream.readLine();
+                        QStringList l = line.split(QChar(','));
+                        for (int x=0; x < qMin(map->width(), l.size()); x++) {
+                            bool ok;
+                            int tileid = l[x].toInt(0, base);
+                            Cell c = gidMapper.gidToCell(tileid, ok);
+                            if (!ok) {
+                                mError += tr("Error mapping tile id %1.").arg(tileid);
+                                delete map;
+                                return 0;
+                            }
+                            tilelayer->setCell(x, y, c);
+                        }
+                    }
+                } else {
+                    tilelayer->setProperty(key, value);
+                }
+            }
+        } else {
+            if (newsection) {
+                if (map->indexOfLayer(sectionName) == -1) {
+                    objectgroup = new ObjectGroup(sectionName, 0,0,map->width(), map->height());
+                    map->addLayer(objectgroup);
+                } else {
+                    objectgroup = dynamic_cast<ObjectGroup*>(map->layerAt(map->indexOfLayer(sectionName)));
+                }
+                mapobject = new MapObject();
+                objectgroup->addObject(mapobject);
+                newsection = false;
+            }
+            if (!mapobject)
+                continue;
+
+            if (startsWith == QChar('#')) {
+                QString name = line.mid(1).trimmed();
+                mapobject->setName(name);
+            }
+
+            int epos = line.indexOf(QChar('='));
+            if (epos != -1) {
+                QString key = line.left(epos).trimmed();
+                QString value = line.mid(epos + 1, -1).trimmed();
+                if (key == QLatin1String("type")) {
+                    mapobject->setType(value);
+                } else if (key == QLatin1String("location")) {
+                    QStringList loc = value.split(QChar(','));
+                    float x,y;
+                    int w,h;
+                    if (map->orientation() == Map::Orthogonal) {
+                        x = loc[0].toFloat()*map->tileWidth();
+                        y = loc[1].toFloat()*map->tileHeight();
+                        if (loc.size() > 3) {
+                            w = loc[2].toInt()*map->tileWidth();
+                            h = loc[3].toInt()*map->tileHeight();
+                        } else {
+                            w = map->tileWidth();
+                            h = map->tileHeight();
+                        }
+                    } else {
+                        x = loc[0].toFloat()*map->tileHeight();
+                        y = loc[1].toFloat()*map->tileHeight();
+                        if (loc.size() > 3) {
+                            w = loc[2].toInt()*map->tileHeight();
+                            h = loc[3].toInt()*map->tileHeight();
+                        } else {
+                            w = h = map->tileHeight();
+                        }
+                    }
+                    mapobject->setPosition(QPointF(x, y));
+                    mapobject->setSize(w, h);
+                } else {
+                    mapobject->setProperty(key, value);
+                }
+            }
+        }
+    }
+
+    if (!headerSectionFound || !tilesetsSectionFound || !tilelayerSectionFound) {
+        mError = tr("This seems to be no valid flare map. "
+                    "A Flare map consists of at least a header "
+                    "section, a tileset section and one tile layer.");
+        delete map;
+        return 0;
+    }
+
+    return map;
+}
+
+bool FlarePlugin::supportsFile(const QString &fileName) const
+{
+    return QFileInfo(fileName).suffix() == QLatin1String("txt");
 }
 
 QString FlarePlugin::nameFilter() const
@@ -52,13 +274,6 @@ QString FlarePlugin::errorString() const
 
 bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-    if (!checkOneLayerWithName(map, QLatin1String("background")))
-        return false;
-    if (!checkOneLayerWithName(map, QLatin1String("object")))
-        return false;
-    if (!checkOneLayerWithName(map, QLatin1String("collision")))
-        return false;
-
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         mError = tr("Could not open file for writing.");
@@ -75,6 +290,9 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     out << "[header]\n";
     out << "width=" << mapWidth << "\n";
     out << "height=" << mapHeight << "\n";
+    out << "tilewidth=" << map->tileWidth() << "\n";
+    out << "tileheight=" << map->tileHeight() << "\n";
+    out << "orientation=" << orientationToString(map->orientation()) << "\n";
 
     // write all properties for this map
     Properties::const_iterator it = map->properties().constBegin();
@@ -84,8 +302,22 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
     out << "\n";
 
-    GidMapper gidMapper(map->tilesets());
+    QDir mapDir = QFileInfo(fileName).absoluteDir();
 
+    out << "[tilesets]\n";
+    foreach (Tileset *ts, map->tilesets()) {
+        const QString &imageSource = ts->imageSource();
+        QString source = mapDir.relativeFilePath(imageSource);
+        out << "tileset=" << source
+            << "," << ts->tileWidth()
+            << "," << ts->tileHeight()
+            << "," << ts->tileOffset().x()
+            << "," << ts->tileOffset().y()
+            << "\n";
+    }
+    out << "\n";
+
+    GidMapper gidMapper(map->tilesets());
     // write layers
     foreach (Layer *layer, map->layers()) {
         if (TileLayer *tileLayer = layer->asTileLayer()) {
@@ -119,8 +351,20 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
                     }
 
                     out << "type=" << o->type() << "\n";
-                    out << "location=" << o->x() << "," << o->y();
-                    out << "," << o->width() << "," << o->height() << "\n";
+                    int x,y,w,h;
+                    if (map->orientation() == Map::Orthogonal) {
+                        x = o->x()/map->tileWidth();
+                        y = o->y()/map->tileHeight();
+                        w = o->width()/map->tileWidth();
+                        h = o->height()/map->tileHeight();
+                    } else {
+                        x = o->x()/map->tileHeight();
+                        y = o->y()/map->tileHeight();
+                        w = o->width()/map->tileHeight();
+                        h = o->height()/map->tileHeight();
+                    }
+                    out << "location=" << x << "," << y;
+                    out << "," << w << "," << h << "\n";
 
                     // write all properties for this object
                     Properties::const_iterator it = o->properties().constBegin();
@@ -137,23 +381,6 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     return true;
 }
 
-bool FlarePlugin::checkOneLayerWithName(const Tiled::Map *map,
-                                        const QString &name)
-{
-    int count = 0;
-    foreach (const Layer *layer, map->layers())
-        if (layer->name() == name)
-            count++;
-
-    if (count == 0) {
-        mError = tr("No \"%1\" layer found!").arg(name);
-        return false;
-    } else if (count > 1) {
-        mError = tr("Multiple \"%1\" layers found!").arg(name);
-        return false;
-    }
-
-    return true;
-}
-
+#if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(Flare, FlarePlugin)
+#endif

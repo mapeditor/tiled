@@ -26,6 +26,9 @@
 
 #include <QApplication>
 #include <QCursor>
+#include <QGesture>
+#include <QGestureEvent>
+#include <QPinchGesture>
 #include <QWheelEvent>
 #include <QScrollBar>
 
@@ -35,9 +38,10 @@
 
 using namespace Tiled::Internal;
 
-MapView::MapView(QWidget *parent)
+MapView::MapView(QWidget *parent, Mode mode)
     : QGraphicsView(parent)
     , mHandScrolling(false)
+    , mMode(mode)
     , mZoomable(new Zoomable(this))
 {
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
@@ -55,7 +59,8 @@ MapView::MapView(QWidget *parent)
 
     /* Since Qt 4.5, setting this attribute yields significant repaint
      * reduction when the view is being resized. */
-    v->setAttribute(Qt::WA_StaticContents);
+    if (mMode == StaticContents)
+        v->setAttribute(Qt::WA_StaticContents);
 
     /* Since Qt 4.6, mouse tracking is disabled when no graphics item uses
      * hover events. We need to set it since our scene wants the events. */
@@ -63,6 +68,11 @@ MapView::MapView(QWidget *parent)
 
     // Adjustment for antialiasing is done by the items that need it
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);
+
+    grabGesture(Qt::PinchGesture);
+
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     connect(mZoomable, SIGNAL(scaleChanged(qreal)), SLOT(adjustScale(qreal)));
 }
@@ -100,8 +110,11 @@ void MapView::setUseOpenGL(bool useOpenGL)
     }
 
     QWidget *v = viewport();
-    v->setAttribute(Qt::WA_StaticContents);
+    if (mMode == StaticContents)
+        v->setAttribute(Qt::WA_StaticContents);
     v->setMouseTracking(true);
+#else
+    Q_UNUSED(useOpenGL)
 #endif
 }
 
@@ -131,6 +144,13 @@ bool MapView::event(QEvent *e)
             e->ignore();
             return false;
         }
+    } else if (e->type() == QEvent::Gesture) {
+        QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(e);
+        if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture)) {
+            QPinchGesture *pinch = static_cast<QPinchGesture *>(gesture);
+            if (pinch->changeFlags() & QPinchGesture::ScaleFactorChanged)
+                handlePinchGesture(pinch);
+        }
     }
 
     return QGraphicsView::event(e);
@@ -156,12 +176,7 @@ void MapView::wheelEvent(QWheelEvent *event)
 
         mZoomable->handleWheelDelta(event->delta());
 
-        // Place the last known mouse scene pos below the mouse again
-        QWidget *view = viewport();
-        QPointF viewCenterScenePos = mapToScene(view->rect().center());
-        QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mLastMousePos));
-        QPointF diff = viewCenterScenePos - mouseScenePos;
-        centerOn(mLastMouseScenePos + diff);
+        adjustCenterFromMousePosition(mLastMousePos);
 
         // Restore the centering anchor
         setTransformationAnchor(QGraphicsView::AnchorViewCenter);
@@ -169,6 +184,10 @@ void MapView::wheelEvent(QWheelEvent *event)
     }
 
     QGraphicsView::wheelEvent(event);
+
+    // When scrolling the mouse does not move, but the view below it does.
+    // This affects the mouse scene position, which needs to be updated.
+    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
 }
 
 /**
@@ -216,4 +235,26 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
     QGraphicsView::mouseMoveEvent(event);
     mLastMousePos = event->globalPos();
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+}
+
+void MapView::handlePinchGesture(QPinchGesture *pinch)
+{
+    setTransformationAnchor(QGraphicsView::NoAnchor);
+
+    mZoomable->handlePinchGesture(pinch);
+
+    QPoint centerPoint = pinch->hotSpot().toPoint();
+    adjustCenterFromMousePosition(centerPoint);
+
+    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+}
+
+void MapView::adjustCenterFromMousePosition(QPoint &mousePos)
+{
+    // Place the last known mouse scene pos below the mouse again
+    QWidget *view = viewport();
+    QPointF viewCenterScenePos = mapToScene(view->rect().center());
+    QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
+    QPointF diff = viewCenterScenePos - mouseScenePos;
+    centerOn(mLastMouseScenePos + diff);
 }

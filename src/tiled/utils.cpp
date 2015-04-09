@@ -20,8 +20,11 @@
 
 #include "utils.h"
 
+#include "preferences.h"
+
 #include <QAction>
 #include <QCoreApplication>
+#include <QSettings>
 #include <QImageReader>
 #include <QImageWriter>
 #include <QMenu>
@@ -53,6 +56,33 @@ QString readableImageFormatsFilter()
 QString writableImageFormatsFilter()
 {
     return toImageFileFilter(QImageWriter::supportedImageFormats());
+}
+
+
+/**
+ * Restores a widget's geometry.
+ * Requires the widget to have its object name set.
+ */
+void restoreGeometry(QWidget *widget)
+{
+    Q_ASSERT(!widget->objectName().isEmpty());
+
+    const QString key = widget->objectName() + QLatin1String("/Geometry");
+    const QSettings *settings = Internal::Preferences::instance()->settings();
+    widget->restoreGeometry(settings->value(key).toByteArray());
+}
+
+/**
+ * Saves a widget's geometry.
+ * Requires the widget to have its object name set.
+ */
+void saveGeometry(QWidget *widget)
+{
+    Q_ASSERT(!widget->objectName().isEmpty());
+
+    const QString key = widget->objectName() + QLatin1String("/Geometry");
+    QSettings *settings = Internal::Preferences::instance()->settings();
+    settings->setValue(key, widget->saveGeometry());
 }
 
 } // namespace Utils

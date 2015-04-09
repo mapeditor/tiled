@@ -22,15 +22,104 @@
 #include "documentmanager.h"
 
 #include "abstracttool.h"
+#include "filesystemwatcher.h"
+#include "map.h"
+#include "mapdocument.h"
 #include "maprenderer.h"
-#include "toolmanager.h"
+#include "mapscene.h"
+#include "mapview.h"
+#include "movabletabwidget.h"
+#include "pluginmanager.h"
+#include "tmxmapreader.h"
+#include "zoomable.h"
 
-#include <QTabWidget>
 #include <QUndoGroup>
 #include <QFileInfo>
 
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QDialogButtonBox>
+#include <QScrollBar>
+
 using namespace Tiled;
 using namespace Tiled::Internal;
+
+namespace Tiled {
+namespace Internal {
+
+class FileChangedWarning : public QWidget
+{
+    Q_OBJECT
+
+public:
+    FileChangedWarning(QWidget *parent = 0)
+        : QWidget(parent)
+        , mLabel(new QLabel(this))
+        , mButtons(new QDialogButtonBox(QDialogButtonBox::Yes |
+                                        QDialogButtonBox::No,
+                                        Qt::Horizontal,
+                                        this))
+    {
+        mLabel->setText(tr("File change detected. Discard changes and reload the map?"));
+
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout->addWidget(mLabel);
+        layout->addStretch(1);
+        layout->addWidget(mButtons);
+        setLayout(layout);
+
+        connect(mButtons, SIGNAL(accepted()), SIGNAL(reload()));
+        connect(mButtons, SIGNAL(rejected()), SIGNAL(ignore()));
+    }
+
+signals:
+    void reload();
+    void ignore();
+
+private:
+    QLabel *mLabel;
+    QDialogButtonBox *mButtons;
+};
+
+class MapViewContainer : public QWidget
+{
+    Q_OBJECT
+
+public:
+    MapViewContainer(MapView *mapView, QWidget *parent = 0)
+        : QWidget(parent)
+        , mMapView(mapView)
+        , mWarning(new FileChangedWarning)
+    {
+        mWarning->setVisible(false);
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout->setMargin(0);
+        layout->setSpacing(0);
+        layout->addWidget(mapView);
+        layout->addWidget(mWarning);
+        setLayout(layout);
+
+        connect(mWarning, SIGNAL(reload()), SIGNAL(reload()));
+        connect(mWarning, SIGNAL(ignore()), mWarning, SLOT(hide()));
+    }
+
+    MapView *mapView() const { return mMapView; }
+
+    void setFileChangedWarningVisible(bool visible)
+    { mWarning->setVisible(visible); }
+
+signals:
+    void reload();
+
+private:
+    MapView *mMapView;
+    FileChangedWarning *mWarning;
+};
+
+} // namespace Internal
+} // namespace Tiled
 
 DocumentManager *DocumentManager::mInstance = 0;
 
@@ -49,10 +138,11 @@ void DocumentManager::deleteInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
-    , mTabWidget(new QTabWidget)
+    , mTabWidget(new MovableTabWidget)
     , mUndoGroup(new QUndoGroup(this))
     , mSelectedTool(0)
     , mSceneWithTool(0)
+    , mFileSystemWatcher(new FileSystemWatcher(this))
 {
     mTabWidget->setDocumentMode(true);
     mTabWidget->setTabsClosable(true);
@@ -61,11 +151,11 @@ DocumentManager::DocumentManager(QObject *parent)
             SLOT(currentIndexChanged()));
     connect(mTabWidget, SIGNAL(tabCloseRequested(int)),
             SIGNAL(documentCloseRequested(int)));
+    connect(mTabWidget, SIGNAL(tabMoved(int,int)),
+            SLOT(documentTabMoved(int,int)));
 
-    ToolManager *toolManager = ToolManager::instance();
-    setSelectedTool(toolManager->selectedTool());
-    connect(toolManager, SIGNAL(selectedToolChanged(AbstractTool*)),
-            SLOT(setSelectedTool(AbstractTool*)));
+    connect(mFileSystemWatcher, SIGNAL(fileChanged(QString)),
+            SLOT(fileChanged(QString)));
 }
 
 DocumentManager::~DocumentManager()
@@ -91,7 +181,10 @@ MapDocument *DocumentManager::currentDocument() const
 
 MapView *DocumentManager::currentMapView() const
 {
-    return static_cast<MapView*>(mTabWidget->currentWidget());
+    if (QWidget *widget = mTabWidget->currentWidget())
+        return static_cast<MapViewContainer*>(widget)->mapView();
+
+    return 0;
 }
 
 MapScene *DocumentManager::currentMapScene() const
@@ -100,6 +193,15 @@ MapScene *DocumentManager::currentMapScene() const
         return mapView->mapScene();
 
     return 0;
+}
+
+MapView *DocumentManager::viewForDocument(MapDocument *mapDocument) const
+{
+    const int index = mDocuments.indexOf(mapDocument);
+    if (index == -1)
+        return 0;
+
+    return static_cast<MapViewContainer*>(mTabWidget->widget(index))->mapView();
 }
 
 int DocumentManager::findDocument(const QString &fileName) const
@@ -120,6 +222,13 @@ int DocumentManager::findDocument(const QString &fileName) const
 void DocumentManager::switchToDocument(int index)
 {
     mTabWidget->setCurrentIndex(index);
+}
+
+void DocumentManager::switchToDocument(MapDocument *mapDocument)
+{
+    const int index = mDocuments.indexOf(mapDocument);
+    if (index != -1)
+        switchToDocument(index);
 }
 
 void DocumentManager::switchToLeftDocument()
@@ -150,18 +259,26 @@ void DocumentManager::addDocument(MapDocument *mapDocument)
     mDocuments.append(mapDocument);
     mUndoGroup->addStack(mapDocument->undoStack());
 
-    MapView *view = new MapView(mTabWidget);
+    if (!mapDocument->fileName().isEmpty())
+        mFileSystemWatcher->addPath(mapDocument->fileName());
+
+    MapView *view = new MapView;
     MapScene *scene = new MapScene(view); // scene is owned by the view
+    MapViewContainer *container = new MapViewContainer(view, mTabWidget);
 
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
     const int documentIndex = mDocuments.size() - 1;
 
-    mTabWidget->addTab(view, mapDocument->displayName());
+    mTabWidget->addTab(container, mapDocument->displayName());
     mTabWidget->setTabToolTip(documentIndex, mapDocument->fileName());
-    connect(mapDocument, SIGNAL(fileNameChanged()), SLOT(updateDocumentTab()));
+    connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
+            SLOT(fileNameChanged(QString,QString)));
     connect(mapDocument, SIGNAL(modifiedChanged()), SLOT(updateDocumentTab()));
+    connect(mapDocument, SIGNAL(saved()), SLOT(documentSaved()));
+
+    connect(container, SIGNAL(reload()), SLOT(reloadRequested()));
 
     switchToDocument(documentIndex);
     centerViewOn(0, 0);
@@ -173,12 +290,76 @@ void DocumentManager::closeCurrentDocument()
     if (index == -1)
         return;
 
-    MapDocument *mapDocument = mDocuments.takeAt(index);
-    MapView *mapView = currentMapView();
+    closeDocumentAt(index);
+}
 
+void DocumentManager::closeDocumentAt(int index)
+{
+    MapDocument *mapDocument = mDocuments.at(index);
+    emit documentAboutToClose(mapDocument);
+
+    QWidget *mapViewContainer = mTabWidget->widget(index);
+    mDocuments.removeAt(index);
     mTabWidget->removeTab(index);
-    delete mapView;
+    delete mapViewContainer;
+
+    if (!mapDocument->fileName().isEmpty())
+        mFileSystemWatcher->removePath(mapDocument->fileName());
+
     delete mapDocument;
+}
+
+bool DocumentManager::reloadCurrentDocument()
+{
+    const int index = mTabWidget->currentIndex();
+    if (index == -1)
+        return false;
+
+    return reloadDocumentAt(index);
+}
+
+bool DocumentManager::reloadDocumentAt(int index)
+{
+    MapDocument *oldDocument = mDocuments.at(index);
+
+    // Try to find the interface that was used for reading this map
+    QString readerPluginName = oldDocument->readerPluginFileName();
+    MapReaderInterface *reader = 0;
+    if (!readerPluginName.isEmpty()) {
+        PluginManager *pm = PluginManager::instance();
+        if (const Plugin *plugin = pm->pluginByFileName(readerPluginName))
+            reader = qobject_cast<MapReaderInterface*>(plugin->instance);
+    }
+
+    QString error;
+    MapDocument *newDocument = MapDocument::load(oldDocument->fileName(),
+                                                 reader, &error);
+    if (!newDocument) {
+        emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
+        return false;
+    }
+
+    // Remember current view state
+    MapView *mapView = viewForDocument(oldDocument);
+    const int layerIndex = oldDocument->currentLayerIndex();
+    const qreal scale = mapView->zoomable()->scale();
+    const int horizontalPosition = mapView->horizontalScrollBar()->sliderPosition();
+    const int verticalPosition = mapView->verticalScrollBar()->sliderPosition();
+
+    // Replace old tab
+    addDocument(newDocument);
+    closeDocumentAt(index);
+    mTabWidget->moveTab(mDocuments.size() - 1, index);
+
+    // Restore previous view state
+    mapView = currentMapView();
+    mapView->zoomable()->setScale(scale);
+    mapView->horizontalScrollBar()->setSliderPosition(horizontalPosition);
+    mapView->verticalScrollBar()->setSliderPosition(verticalPosition);
+    if (layerIndex > 0 && layerIndex < newDocument->map()->layerCount())
+        newDocument->setCurrentLayerIndex(layerIndex);
+
+    return true;
 }
 
 void DocumentManager::closeAllDocuments()
@@ -218,11 +399,22 @@ void DocumentManager::setSelectedTool(AbstractTool *tool)
     if (mSceneWithTool) {
         mSceneWithTool->disableSelectedTool();
 
-        if (mSelectedTool) {
-            mSceneWithTool->setSelectedTool(mSelectedTool);
+        if (tool) {
+            mSceneWithTool->setSelectedTool(tool);
             mSceneWithTool->enableSelectedTool();
         }
     }
+}
+
+void DocumentManager::fileNameChanged(const QString &fileName,
+                                      const QString &oldFileName)
+{
+    if (!fileName.isEmpty())
+        mFileSystemWatcher->addPath(fileName);
+    if (!oldFileName.isEmpty())
+        mFileSystemWatcher->removePath(oldFileName);
+
+    updateDocumentTab();
 }
 
 void DocumentManager::updateDocumentTab()
@@ -238,11 +430,61 @@ void DocumentManager::updateDocumentTab()
     mTabWidget->setTabToolTip(index, mapDocument->fileName());
 }
 
-void DocumentManager::centerViewOn(int x, int y)
+void DocumentManager::documentSaved()
+{
+    MapDocument *document = static_cast<MapDocument*>(sender());
+    const int index = mDocuments.indexOf(document);
+    Q_ASSERT(index != -1);
+
+    QWidget *widget = mTabWidget->widget(index);
+    MapViewContainer *container = static_cast<MapViewContainer*>(widget);
+    container->setFileChangedWarningVisible(false);
+}
+
+void DocumentManager::documentTabMoved(int from, int to)
+{
+    mDocuments.move(from, to);
+}
+
+void DocumentManager::fileChanged(const QString &fileName)
+{
+    const int index = findDocument(fileName);
+
+    // Most likely the file was removed
+    if (index == -1)
+        return;
+
+    MapDocument *document = mDocuments.at(index);
+
+    // Ignore change event when it seems to be our own save
+    if (QFileInfo(fileName).lastModified() == document->lastSaved())
+        return;
+
+    // Automatically reload when there are no unsaved changes
+    if (!document->isModified()) {
+        reloadDocumentAt(index);
+        return;
+    }
+
+    QWidget *widget = mTabWidget->widget(index);
+    MapViewContainer *container = static_cast<MapViewContainer*>(widget);
+    container->setFileChangedWarningVisible(true);
+}
+
+void DocumentManager::reloadRequested()
+{
+    int index = mTabWidget->indexOf(static_cast<MapViewContainer*>(sender()));
+    Q_ASSERT(index != -1);
+    reloadDocumentAt(index);
+}
+
+void DocumentManager::centerViewOn(qreal x, qreal y)
 {
     MapView *view = currentMapView();
     if (!view)
         return;
 
-    view->centerOn(currentDocument()->renderer()->tileToPixelCoords(x, y));
+    view->centerOn(currentDocument()->renderer()->pixelToScreenCoords(x, y));
 }
+
+#include "documentmanager.moc"

@@ -1,6 +1,6 @@
 /*
  * Lua Tiled Plugin
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -45,14 +45,14 @@ public:
     void writeEndTable();
 
     void writeValue(int value);
-    void writeValue(uint value);
+    void writeValue(unsigned value);
     void writeValue(const QByteArray &value);
     void writeValue(const QString &value);
 
     void writeUnquotedValue(const QByteArray &value);
 
     void writeKeyAndValue(const QByteArray &key, int value);
-    void writeKeyAndValue(const QByteArray &key, uint value);
+    void writeKeyAndValue(const QByteArray &key, unsigned value);
     void writeKeyAndValue(const QByteArray &key, double value);
     void writeKeyAndValue(const QByteArray &key, bool value);
     void writeKeyAndValue(const QByteArray &key, const char *value);
@@ -70,12 +70,14 @@ public:
 
     bool hasError() const { return m_error; }
 
+    static QString quote(const QString &str);
+
 private:
     void prepareNewValue();
     void writeIndent();
 
     void writeNewline();
-    void write(const char *bytes, uint length);
+    void write(const char *bytes, unsigned length);
     void write(const char *bytes);
     void write(const QByteArray &bytes);
     void write(char c);
@@ -92,16 +94,16 @@ private:
 inline void LuaTableWriter::writeValue(int value)
 { writeUnquotedValue(QByteArray::number(value)); }
 
-inline void LuaTableWriter::writeValue(uint value)
+inline void LuaTableWriter::writeValue(unsigned value)
 { writeUnquotedValue(QByteArray::number(value)); }
 
 inline void LuaTableWriter::writeValue(const QString &value)
-{ writeValue(value.toUtf8()); }
+{ writeUnquotedValue(quote(value).toUtf8()); }
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, int value)
 { writeKeyAndUnquotedValue(key, QByteArray::number(value)); }
 
-inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, uint value)
+inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, unsigned value)
 { writeKeyAndUnquotedValue(key, QByteArray::number(value)); }
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, double value)
@@ -111,7 +113,7 @@ inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, bool value)
 { writeKeyAndUnquotedValue(key, value ? "true" : "false"); }
 
 inline void LuaTableWriter::writeKeyAndValue(const QByteArray &key, const QString &value)
-{ writeKeyAndValue(key, value.toUtf8()); }
+{ writeKeyAndUnquotedValue(key, quote(value).toUtf8()); }
 
 inline void LuaTableWriter::write(const char *bytes)
 { write(bytes, qstrlen(bytes)); }

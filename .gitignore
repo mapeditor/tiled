@@ -1,6 +1,5 @@
 build
-bin/tiled
-bin/tmxviewer
+bin
 lib/tiled/plugins/*
 lib/*.so*
 Makefile*
@@ -15,7 +14,9 @@ docs/html
 
 # Build artifacts on Windows
 tiled.exe
+tmxrasterizer.exe
 tmxviewer.exe
+automappingconverter.exe
 *.dll
 *.obj
 *.a
@@ -23,4 +24,10 @@ tmxviewer.exe
 *.exp
 *.intermediate.manifest
 
+# Build artifacts on Mac
+translations/phony_target.app
+
 tests/test_mapreader
+
+# Ronn html outputs
+docs/*.1.html

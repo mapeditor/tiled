@@ -310,24 +310,6 @@ public class Map implements Iterable<MapLayer>
     }
 
     /**
-     * Get the tile set that matches the given global tile id, only to be used
-     * when loading a map.
-     *
-     * @param gid a global tile id
-     * @return the tileset containing the tile with the given global tile id,
-     *         or <code>null</code> when no such tileset exists
-     */
-    public TileSet findTileSetForTileGID(int gid) {
-        TileSet has = null;
-        for (TileSet tileset : tileSets) {
-            if (tileset.getFirstGid() <= gid) {
-                has = tileset;
-            }
-        }
-        return has;
-    }
-
-    /**
      * Returns width of map in tiles.
      *
      * @return int
@@ -423,6 +405,7 @@ public class Map implements Iterable<MapLayer>
      *
      * @return string describing map
      */
+    @Override
     public String toString() {
         return "Map[" + bounds.width + "x" + bounds.height + "x" +
             getLayerCount() + "][" + tileWidth + "x" +

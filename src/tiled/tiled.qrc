@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>images/about-tiled-logo.png</file>
-        <file>images/tiled-icon-16.png</file>
-        <file>images/tiled-icon-32.png</file>
+        <file>images/16x16/add.png</file>
+        <file>images/16x16/remove.png</file>
         <file>images/16x16/application-exit.png</file>
         <file>images/16x16/document-export.png</file>
         <file>images/16x16/document-import.png</file>
@@ -20,13 +20,17 @@
         <file>images/16x16/edit-delete.png</file>
         <file>images/16x16/edit-paste.png</file>
         <file>images/16x16/edit-redo.png</file>
-        <file>images/16x16/edit-rename.png</file>
         <file>images/16x16/edit-undo.png</file>
         <file>images/16x16/go-down.png</file>
         <file>images/16x16/go-up.png</file>
         <file>images/16x16/help-about.png</file>
         <file>images/16x16/window-close.png</file>
         <file>images/16x16/stock-duplicate-16.png</file>
+        <file>images/16x16/terrain.png</file>
+        <file>images/16x16/terminal.png</file>
+        <file>images/16x16/terminal-green.png</file>
+        <file>images/16x16/terminal-red.png</file>
+        <file>images/16x16/tiled.png</file>
         <file>images/16x16/zoom-in.png</file>
         <file>images/16x16/zoom-original.png</file>
         <file>images/16x16/zoom-out.png</file>
@@ -53,13 +57,16 @@
         <file>images/24x24/go-down.png</file>
         <file>images/24x24/go-up.png</file>
         <file>images/24x24/help-about.png</file>
+        <file>images/24x24/insert-ellipse.png</file>
         <file>images/24x24/insert-image.png</file>
         <file>images/24x24/insert-object.png</file>
         <file>images/24x24/insert-polygon.png</file>
         <file>images/24x24/insert-polyline.png</file>
+        <file>images/24x24/insert-rectangle.png</file>
         <file>images/24x24/zoom-in.png</file>
         <file>images/24x24/zoom-original.png</file>
         <file>images/24x24/zoom-out.png</file>
+        <file>images/24x24/terrain.png</file>
         <file>images/24x24/tool-edit-polygons.png</file>
         <file>images/22x22/stock-tool-bucket-fill.png</file>
         <file>images/16x16/layer-image.png</file>
@@ -69,5 +76,9 @@
         <file>images/16x16/show_hide_others.png</file>
         <file>images/24x24/dice.png</file>
         <file>images/24x24/terrain-edit.png</file>
+        <file>images/32x32/tiled.png</file>
+        <file>images/24x24/move-image-layer.png</file>
+        <file>images/16x16/rename.png</file>
+        <file>images/22x22/stock-tool-fuzzy-select-22.png</file>
     </qresource>
 </RCC>

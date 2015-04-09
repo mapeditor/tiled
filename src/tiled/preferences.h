@@ -21,10 +21,11 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 
-#include <QObject>
 #include <QColor>
+#include <QDate>
+#include <QObject>
 
-#include "mapwriter.h"
+#include "map.h"
 #include "objecttypes.h"
 
 class QSettings;
@@ -45,14 +46,22 @@ public:
     static void deleteInstance();
 
     bool showGrid() const { return mShowGrid; }
+    bool showTileObjectOutlines() const { return mShowTileObjectOutlines; }
+    bool showTileAnimations() const { return mShowTileAnimations; }
     bool snapToGrid() const { return mSnapToGrid; }
+    bool snapToFineGrid() const { return mSnapToFineGrid; }
     QColor gridColor() const { return mGridColor; }
+    int gridFine() const { return mGridFine; }
+    qreal objectLineWidth() const { return mObjectLineWidth; }
 
     bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
 
-    MapWriter::LayerDataFormat layerDataFormat() const;
-    void setLayerDataFormat(MapWriter::LayerDataFormat layerDataFormat);
+    Map::LayerDataFormat layerDataFormat() const;
+    void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
+
+    Map::RenderOrder mapRenderOrder() const;
+    void setMapRenderOrder(Map::RenderOrder mapRenderOrder);
 
     bool dtdEnabled() const;
     void setDtdEnabled(bool enabled);
@@ -72,7 +81,8 @@ public:
     enum FileType {
         ObjectTypesFile,
         ImageFile,
-        ExportedFile
+        ExportedFile,
+        ExternalTileset
     };
 
     QString lastPath(FileType fileType) const;
@@ -80,6 +90,15 @@ public:
 
     bool automappingDrawing() const { return mAutoMapDrawing; }
     void setAutomappingDrawing(bool enabled);
+
+    QString mapsDirectory() const;
+    void setMapsDirectory(const QString &path);
+
+    QDate firstRun() const;
+    int runCount() const;
+
+    bool isPatron() const;
+    void setPatron(bool isPatron);
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
@@ -89,15 +108,25 @@ public:
 
 public slots:
     void setShowGrid(bool showGrid);
+    void setShowTileObjectOutlines(bool enabled);
+    void setShowTileAnimations(bool enabled);
     void setSnapToGrid(bool snapToGrid);
+    void setSnapToFineGrid(bool snapToFineGrid);
     void setGridColor(QColor gridColor);
+    void setGridFine(int gridFine);
+    void setObjectLineWidth(qreal lineWidth);
     void setHighlightCurrentLayer(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
 
 signals:
     void showGridChanged(bool showGrid);
+    void showTileObjectOutlinesChanged(bool enabled);
+    void showTileAnimationsChanged(bool enabled);
     void snapToGridChanged(bool snapToGrid);
+    void snapToFineGridChanged(bool snapToFineGrid);
     void gridColorChanged(QColor gridColor);
+    void gridFineChanged(int gridFine);
+    void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
 
@@ -105,19 +134,35 @@ signals:
 
     void objectTypesChanged();
 
+    void mapsDirectoryChanged();
+
+    void isPatronChanged();
+
 private:
     Preferences();
     ~Preferences();
 
+    bool boolValue(const char *key, bool def = false) const;
+    QColor colorValue(const char *key, const QColor &def = QColor()) const;
+    QString stringValue(const char *key, const QString &def = QString()) const;
+    int intValue(const char *key, int defaultValue) const;
+    qreal realValue(const char *key, qreal defaultValue) const;
+
     QSettings *mSettings;
 
     bool mShowGrid;
+    bool mShowTileObjectOutlines;
+    bool mShowTileAnimations;
     bool mSnapToGrid;
+    bool mSnapToFineGrid;
     QColor mGridColor;
+    int mGridFine;
+    qreal mObjectLineWidth;
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
 
-    MapWriter::LayerDataFormat mLayerDataFormat;
+    Map::LayerDataFormat mLayerDataFormat;
+    Map::RenderOrder mMapRenderOrder;
     bool mDtdEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;
@@ -126,8 +171,30 @@ private:
 
     bool mAutoMapDrawing;
 
+    QString mMapsDirectory;
+
+    QDate mFirstRun;
+    int mRunCount;
+    bool mIsPatron;
+
     static Preferences *mInstance;
 };
+
+
+inline QDate Preferences::firstRun() const
+{
+    return mFirstRun;
+}
+
+inline int Preferences::runCount() const
+{
+    return mRunCount;
+}
+
+inline bool Preferences::isPatron() const
+{
+    return mIsPatron;
+}
 
 } // namespace Internal
 } // namespace Tiled

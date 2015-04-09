@@ -29,7 +29,6 @@
 
 #include "tilelayer.h"
 
-#include "layer.h"
 #include "map.h"
 #include "tile.h"
 #include "tileset.h"
@@ -43,29 +42,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
 {
     Q_ASSERT(width >= 0);
     Q_ASSERT(height >= 0);
-}
-
-QRegion TileLayer::region() const
-{
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            if (!cellAt(x, y).isEmpty()) {
-                const int rangeStart = x;
-                for (++x; x <= mWidth; ++x) {
-                    if (x == mWidth || cellAt(x, y).isEmpty()) {
-                        const int rangeEnd = x;
-                        region += QRect(rangeStart + mX, y + mY,
-                                        rangeEnd - rangeStart, 1);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return region;
 }
 
 static QSize maxSize(const QSize &a,
@@ -84,20 +60,56 @@ static QMargins maxMargins(const QMargins &a,
                     qMax(a.bottom(), b.bottom()));
 }
 
+/**
+ * Recomputes the draw margins. Needed after the tile offset of a tileset
+ * has changed for example.
+ *
+ * Generally you want to call Map::recomputeDrawMargins instead.
+ */
+void TileLayer::recomputeDrawMargins()
+{
+    QSize maxTileSize(0, 0);
+    QMargins offsetMargins;
+
+    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
+        const Cell &cell = mGrid.at(i);
+        if (const Tile *tile = cell.tile) {
+            QSize size = tile->size();
+
+            if (cell.flippedAntiDiagonally)
+                size.transpose();
+
+            const QPoint offset = tile->tileset()->tileOffset();
+
+            maxTileSize = maxSize(size, maxTileSize);
+            offsetMargins = maxMargins(QMargins(-offset.x(),
+                                                 -offset.y(),
+                                                 offset.x(),
+                                                 offset.y()),
+                                        offsetMargins);
+        }
+    }
+
+    mMaxTileSize = maxTileSize;
+    mOffsetMargins = offsetMargins;
+
+    if (mMap)
+        mMap->adjustDrawMargins(drawMargins());
+}
+
 void TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
     if (cell.tile) {
-        int width = cell.tile->width();
-        int height = cell.tile->height();
+        QSize size = cell.tile->size();
 
         if (cell.flippedAntiDiagonally)
-            std::swap(width, height);
+            size.transpose();
 
         const QPoint offset = cell.tile->tileset()->tileOffset();
 
-        mMaxTileSize = maxSize(QSize(width, height), mMaxTileSize);
+        mMaxTileSize = maxSize(size, mMaxTileSize);
         mOffsetMargins = maxMargins(QMargins(-offset.x(),
                                              -offset.y(),
                                              offset.x(),
@@ -263,19 +275,6 @@ bool TileLayer::referencesTileset(const Tileset *tileset) const
     return false;
 }
 
-QRegion TileLayer::tilesetReferences(Tileset *tileset) const
-{
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y)
-        for (int x = 0; x < mWidth; ++x)
-            if (const Tile *tile = cellAt(x, y).tile)
-                if (tile->tileset() == tileset)
-                    region += QRegion(x + mX, y + mY, 1, 1);
-
-    return region;
-}
-
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
@@ -297,6 +296,9 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
 
 void TileLayer::resize(const QSize &size, const QPoint &offset)
 {
+    if (this->size() == size && offset.isNull())
+        return;
+
     QVector<Cell> newGrid(size.width() * size.height());
 
     // Copy over the preserved part
@@ -313,7 +315,7 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     }
 
     mGrid = newGrid;
-    Layer::resize(size, offset);
+    setSize(size);
 }
 
 void TileLayer::offset(const QPoint &offset,
@@ -363,7 +365,7 @@ void TileLayer::offset(const QPoint &offset,
 
 bool TileLayer::canMergeWith(Layer *other) const
 {
-    return dynamic_cast<TileLayer*>(other) != 0;
+    return other->isTileLayer();
 }
 
 Layer *TileLayer::mergedWith(Layer *other) const

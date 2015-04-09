@@ -1,6 +1,6 @@
 /*
  * mapobject.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  *
@@ -32,6 +32,8 @@
 #define MAPOBJECT_H
 
 #include "object.h"
+#include "tiled.h"
+#include "tilelayer.h"
 
 #include <QPolygonF>
 #include <QSizeF>
@@ -63,25 +65,26 @@ public:
     enum Shape {
         Rectangle,
         Polygon,
-        Polyline
+        Polyline,
+        Ellipse
     };
 
-    /**
-     * Default constructor.
-     */
     MapObject();
 
-    /**
-     * Constructor.
-     */
     MapObject(const QString &name, const QString &type,
               const QPointF &pos,
               const QSizeF &size);
 
     /**
-     * Destructor.
+     * Returns the id of this object. Each object gets an id assigned that is
+     * unique for the map the object is on.
      */
-    ~MapObject() {}
+    int id() const { return mId; }
+
+    /**
+     * Sets the id of this object.
+     */
+    void setId(int id) { mId = id; }
 
     /**
      * Returns the name of this object. The name is usually just used for
@@ -198,17 +201,22 @@ public:
     QRectF bounds() const { return QRectF(mPos, mSize); }
 
     /**
+     * Shortcut to getting a QRectF from position() and size() that uses cell tile if present.
+     */
+    QRectF boundsUseTile() const;
+
+    /**
      * Sets the tile that is associated with this object. The object will
      * display as the tile image.
      *
      * \warning The object shape is ignored for tile objects!
      */
-    void setTile(Tile *tile) { mTile = tile; }
+    void setCell(const Cell &cell) { mCell = cell; }
 
     /**
      * Returns the tile associated with this object.
      */
-    Tile *tile() const { return mTile; }
+    const Cell &cell() const { return mCell; }
 
     /**
      * Returns the object group this object belongs to.
@@ -223,23 +231,43 @@ public:
     { mObjectGroup = objectGroup; }
 
     /**
+     * Returns the rotation of the object in degrees.
+     */
+    qreal rotation() const { return mRotation; }
+
+    /**
+     * Sets the rotation of the object in degrees.
+     */
+    void setRotation(qreal rotation) { mRotation = rotation; }
+
+    Alignment alignment() const;
+
+    bool isVisible() const { return mVisible; }
+    void setVisible(bool visible) { mVisible = visible; }
+
+    /**
+     * Flip this object in the given \a direction. This doesn't change the size
+     * of the object.
+     */
+    void flip(FlipDirection direction);
+
+    /**
      * Returns a duplicate of this object. The caller is responsible for the
      * ownership of this newly created object.
      */
     MapObject *clone() const;
 
-    bool isVisible() const { return mVisible; }
-    void setVisible(bool visible) { mVisible = visible; }
-
 private:
+    int mId;
     QString mName;
     QString mType;
     QPointF mPos;
     QSizeF mSize;
     QPolygonF mPolygon;
     Shape mShape;
-    Tile *mTile;
+    Cell mCell;
     ObjectGroup *mObjectGroup;
+    qreal mRotation;
     bool mVisible;
 };
 

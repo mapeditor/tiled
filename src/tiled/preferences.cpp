@@ -22,9 +22,15 @@
 
 #include "documentmanager.h"
 #include "languagemanager.h"
+#include "mapdocument.h"
 #include "tilesetmanager.h"
 
+#if QT_VERSION >= 0x050000
+#include <QStandardPaths>
+#else
 #include <QDesktopServices>
+#endif
+
 #include <QFileInfo>
 #include <QSettings>
 
@@ -47,32 +53,34 @@ void Preferences::deleteInstance()
 }
 
 Preferences::Preferences()
-    : mSettings(new QSettings)
+    : mSettings(new QSettings(this))
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
-    mLayerDataFormat = (MapWriter::LayerDataFormat)
-                       mSettings->value(QLatin1String("LayerDataFormat"),
-                                        MapWriter::Base64Zlib).toInt();
-    mDtdEnabled = mSettings->value(QLatin1String("DtdEnabled")).toBool();
-    mReloadTilesetsOnChange =
-            mSettings->value(QLatin1String("ReloadTilesets"), true).toBool();
+    mLayerDataFormat = (Map::LayerDataFormat)
+            mSettings->value(QLatin1String("LayerDataFormat"),
+                             Map::Base64Zlib).toInt();
+    mMapRenderOrder = (Map::RenderOrder)
+            mSettings->value(QLatin1String("MapRenderOrder"),
+                             Map::RightDown).toInt();
+    mDtdEnabled = boolValue("DtdEnabled");
+    mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mSettings->endGroup();
 
     // Retrieve interface settings
     mSettings->beginGroup(QLatin1String("Interface"));
-    mShowGrid = mSettings->value(QLatin1String("ShowGrid"), false).toBool();
-    mSnapToGrid = mSettings->value(QLatin1String("SnapToGrid"),
-                                   false).toBool();
-    mGridColor = QColor(mSettings->value(QLatin1String("GridColor"),
-                                  QColor(Qt::black).name()).toString());
-    mHighlightCurrentLayer = mSettings->value(QLatin1String("HighlightCurrentLayer"),
-                                              false).toBool();
-    mShowTilesetGrid = mSettings->value(QLatin1String("ShowTilesetGrid"),
-                                        true).toBool();
-    mLanguage = mSettings->value(QLatin1String("Language"),
-                                 QString()).toString();
-    mUseOpenGL = mSettings->value(QLatin1String("OpenGL"), false).toBool();
+    mShowGrid = boolValue("ShowGrid");
+    mShowTileObjectOutlines = boolValue("ShowTileObjectOutlines");
+    mShowTileAnimations = boolValue("ShowTileAnimations", true);
+    mSnapToGrid = boolValue("SnapToGrid");
+    mSnapToFineGrid = boolValue("SnapToFineGrid");
+    mGridColor = colorValue("GridColor", Qt::black);
+    mGridFine = intValue("GridFine", 4);
+    mObjectLineWidth = realValue("ObjectLineWidth", 2);
+    mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
+    mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
+    mLanguage = stringValue("Language");
+    mUseOpenGL = boolValue("OpenGL");
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -88,17 +96,32 @@ Preferences::Preferences()
         mObjectTypes.append(ObjectType(names.at(i), QColor(colors.at(i))));
 
     mSettings->beginGroup(QLatin1String("Automapping"));
-    mAutoMapDrawing = mSettings->value(QLatin1String("WhileDrawing"),
-                                       false).toBool();
+    mAutoMapDrawing = boolValue("WhileDrawing");
+    mSettings->endGroup();
+
+    mSettings->beginGroup(QLatin1String("MapsDirectory"));
+    mMapsDirectory = stringValue("Current");
     mSettings->endGroup();
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
+    tilesetManager->setAnimateTiles(mShowTileAnimations);
+
+    // Keeping track of some usage information
+    mSettings->beginGroup(QLatin1String("Install"));
+    mFirstRun = mSettings->value(QLatin1String("FirstRun")).toDate();
+    mRunCount = intValue("RunCount", 0) + 1;
+    mIsPatron = boolValue("IsPatron");
+    if (!mFirstRun.isValid()) {
+        mFirstRun = QDate::currentDate();
+        mSettings->setValue(QLatin1String("FirstRun"), mFirstRun.toString(Qt::ISODate));
+    }
+    mSettings->setValue(QLatin1String("RunCount"), mRunCount);
+    mSettings->endGroup();
 }
 
 Preferences::~Preferences()
 {
-    delete mSettings;
 }
 
 void Preferences::setShowGrid(bool showGrid)
@@ -111,6 +134,32 @@ void Preferences::setShowGrid(bool showGrid)
     emit showGridChanged(mShowGrid);
 }
 
+void Preferences::setShowTileObjectOutlines(bool enabled)
+{
+    if (mShowTileObjectOutlines == enabled)
+        return;
+
+    mShowTileObjectOutlines = enabled;
+    mSettings->setValue(QLatin1String("Interface/ShowTileObjectOutlines"),
+                        mShowTileObjectOutlines);
+    emit showTileObjectOutlinesChanged(mShowTileObjectOutlines);
+}
+
+void Preferences::setShowTileAnimations(bool enabled)
+{
+    if (mShowTileAnimations == enabled)
+        return;
+
+    mShowTileAnimations = enabled;
+    mSettings->setValue(QLatin1String("Interface/ShowTileAnimations"),
+                        mShowTileAnimations);
+
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->setAnimateTiles(mShowTileAnimations);
+
+    emit showTileAnimationsChanged(mShowTileAnimations);
+}
+
 void Preferences::setSnapToGrid(bool snapToGrid)
 {
     if (mSnapToGrid == snapToGrid)
@@ -121,6 +170,16 @@ void Preferences::setSnapToGrid(bool snapToGrid)
     emit snapToGridChanged(mSnapToGrid);
 }
 
+void Preferences::setSnapToFineGrid(bool snapToFineGrid)
+{
+    if (mSnapToFineGrid == snapToFineGrid)
+        return;
+
+    mSnapToFineGrid = snapToFineGrid;
+    mSettings->setValue(QLatin1String("Interface/SnapToFineGrid"), mSnapToFineGrid);
+    emit snapToFineGridChanged(mSnapToFineGrid);
+}
+
 void Preferences::setGridColor(QColor gridColor)
 {
     if (mGridColor == gridColor)
@@ -129,6 +188,24 @@ void Preferences::setGridColor(QColor gridColor)
     mGridColor = gridColor;
     mSettings->setValue(QLatin1String("Interface/GridColor"), mGridColor.name());
     emit gridColorChanged(mGridColor);
+}
+
+void Preferences::setGridFine(int gridFine)
+{
+    if (mGridFine == gridFine)
+        return;
+    mGridFine = gridFine;
+    mSettings->setValue(QLatin1String("Interface/GridFine"), mGridFine);
+    emit gridFineChanged(mGridFine);
+}
+
+void Preferences::setObjectLineWidth(qreal lineWidth)
+{
+    if (mObjectLineWidth == lineWidth)
+        return;
+    mObjectLineWidth = lineWidth;
+    mSettings->setValue(QLatin1String("Interface/ObjectLineWidth"), mObjectLineWidth);
+    emit objectLineWidthChanged(mObjectLineWidth);
 }
 
 void Preferences::setHighlightCurrentLayer(bool highlight)
@@ -153,12 +230,12 @@ void Preferences::setShowTilesetGrid(bool showTilesetGrid)
     emit showTilesetGridChanged(mShowTilesetGrid);
 }
 
-MapWriter::LayerDataFormat Preferences::layerDataFormat() const
+Map::LayerDataFormat Preferences::layerDataFormat() const
 {
     return mLayerDataFormat;
 }
 
-void Preferences::setLayerDataFormat(MapWriter::LayerDataFormat
+void Preferences::setLayerDataFormat(Map::LayerDataFormat
                                      layerDataFormat)
 {
     if (mLayerDataFormat == layerDataFormat)
@@ -168,6 +245,22 @@ void Preferences::setLayerDataFormat(MapWriter::LayerDataFormat
     mSettings->setValue(QLatin1String("Storage/LayerDataFormat"),
                         mLayerDataFormat);
 }
+
+Map::RenderOrder Preferences::mapRenderOrder() const
+{
+    return mMapRenderOrder;
+}
+
+void Preferences::setMapRenderOrder(Map::RenderOrder mapRenderOrder)
+{
+    if (mMapRenderOrder == mapRenderOrder)
+        return;
+
+    mMapRenderOrder = mapRenderOrder;
+    mSettings->setValue(QLatin1String("Storage/MapRenderOrder"),
+                        mMapRenderOrder);
+}
+
 
 bool Preferences::dtdEnabled() const
 {
@@ -259,6 +352,9 @@ static QString lastPathKey(Preferences::FileType fileType)
     case Preferences::ExportedFile:
         key.append(QLatin1String("ExportedFile"));
         break;
+    case Preferences::ExternalTileset:
+        key.append(QLatin1String("ExternalTileset"));
+        break;
     default:
         Q_ASSERT(false); // Getting here means invalid file type
     }
@@ -286,9 +382,15 @@ QString Preferences::lastPath(FileType fileType) const
             path = QFileInfo(mapDocument->fileName()).path();
     }
 
-    if (path.isEmpty())
+    if (path.isEmpty()) {
+#if QT_VERSION >= 0x050000
+        path = QStandardPaths::writableLocation(
+                    QStandardPaths::DocumentsLocation);
+#else
         path = QDesktopServices::storageLocation(
                     QDesktopServices::DocumentsLocation);
+#endif
+    }
 
     return path;
 }
@@ -305,4 +407,60 @@ void Preferences::setAutomappingDrawing(bool enabled)
 {
     mAutoMapDrawing = enabled;
     mSettings->setValue(QLatin1String("Automapping/WhileDrawing"), enabled);
+}
+
+QString Preferences::mapsDirectory() const
+{
+    return mMapsDirectory;
+}
+
+void Preferences::setMapsDirectory(const QString &path)
+{
+    if (mMapsDirectory == path)
+        return;
+    mMapsDirectory = path;
+    mSettings->setValue(QLatin1String("MapsDirectory/Current"), path);
+
+    emit mapsDirectoryChanged();
+}
+
+void Preferences::setPatron(bool isPatron)
+{
+    if (mIsPatron == isPatron)
+        return;
+
+    mIsPatron = isPatron;
+    mSettings->setValue(QLatin1String("Install/IsPatron"), isPatron);
+
+    emit isPatronChanged();
+}
+
+bool Preferences::boolValue(const char *key, bool defaultValue) const
+{
+    return mSettings->value(QLatin1String(key), defaultValue).toBool();
+}
+
+QColor Preferences::colorValue(const char *key, const QColor &def) const
+{
+    const QString name = mSettings->value(QLatin1String(key),
+                                          def.name()).toString();
+    if (!QColor::isValidColor(name))
+        return QColor();
+
+    return QColor(name);
+}
+
+QString Preferences::stringValue(const char *key, const QString &def) const
+{
+    return mSettings->value(QLatin1String(key), def).toString();
+}
+
+int Preferences::intValue(const char *key, int defaultValue) const
+{
+    return mSettings->value(QLatin1String(key), defaultValue).toInt();
+}
+
+qreal Preferences::realValue(const char *key, qreal defaultValue) const
+{
+    return mSettings->value(QLatin1String(key), defaultValue).toReal();
 }

@@ -31,6 +31,7 @@ class TileLayer;
 
 namespace Internal {
 
+class AbstractTool;
 class MapDocument;
 
 /**
@@ -43,17 +44,8 @@ class QuickStampManager: public QObject
     Q_OBJECT
 
 public:
-    /**
-     * Returns the quick stamp manager instance. Creates the instance when it
-     * doesn't exist yet.
-     */
-    static QuickStampManager *instance();
-
-    /**
-     * Deletes the tool manager instance. Should only be called on application
-     * exit.
-     */
-    static void deleteInstance();
+    QuickStampManager(QObject *parent = 0);
+    ~QuickStampManager();
 
     /**
      * Return the keys which should be used.
@@ -76,7 +68,7 @@ public:
 
 public slots:
     void selectQuickStamp(int index);
-    void saveQuickStamp(int index);
+    void saveQuickStamp(int index, AbstractTool *selectedTool);
     void setMapDocument(MapDocument *mapDocument);
 
 signals:
@@ -85,13 +77,8 @@ signals:
 private:
     Q_DISABLE_COPY(QuickStampManager)
 
-    QuickStampManager();
-    ~QuickStampManager();
-
     void cleanQuickStamps();
     void eraseQuickStamp(int index);
-
-    static QuickStampManager *mInstance;
 
     QVector<Map*> mQuickStamps;
     MapDocument *mMapDocument;

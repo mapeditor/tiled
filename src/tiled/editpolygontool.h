@@ -77,8 +77,7 @@ private:
     void setSelectedHandle(PointHandle *handle)
     { setSelectedHandles(QSet<PointHandle*>() << handle); }
 
-    void updateSelection(const QPointF &pos,
-                         Qt::KeyboardModifiers modifiers);
+    void updateSelection(QGraphicsSceneMouseEvent *event);
 
     void startSelecting();
 
@@ -98,6 +97,7 @@ private:
     QPointF mAlignPosition;
     Mode mMode;
     QPointF mStart;
+    QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
 
     /// The list of handles associated with each selected map object

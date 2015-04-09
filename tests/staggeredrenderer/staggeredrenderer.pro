@@ -2,7 +2,6 @@ include(../../src/libtiled/libtiled.pri)
 
 CONFIG += qtestlib
 TEMPLATE = app
-DEPENDPATH += .
 
 macx {
     LIBS += -L$$OUT_PWD/../../bin/Tiled.app/Contents/Frameworks

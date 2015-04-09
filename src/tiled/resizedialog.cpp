@@ -22,6 +22,8 @@
 #include "resizedialog.h"
 #include "ui_resizedialog.h"
 
+#include "utils.h"
+
 using namespace Tiled::Internal;
 
 ResizeDialog::ResizeDialog(QWidget *parent)
@@ -40,10 +42,13 @@ ResizeDialog::ResizeDialog(QWidget *parent)
 
     connect(mUi->resizeHelper, SIGNAL(offsetBoundsChanged(QRect)),
                                SLOT(updateOffsetBounds(QRect)));
+
+    Utils::restoreGeometry(this);
 }
 
 ResizeDialog::~ResizeDialog()
 {
+    Utils::saveGeometry(this);
     delete mUi;
 }
 

@@ -1,6 +1,6 @@
 /*
  * tilesetmanager.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of Tiled.
@@ -36,6 +36,7 @@ class Tileset;
 namespace Internal {
 
 class FileSystemWatcher;
+class TileAnimationDriver;
 
 /**
  * A tileset specification that uniquely identifies a certain tileset. Does not
@@ -113,13 +114,22 @@ public:
     QList<Tileset*> tilesets() const;
 
     /**
+     * Forces a tileset to reload.
+     */
+    void forceTilesetReload(Tileset *tileset);
+
+    /**
      * Sets whether tilesets are automatically reloaded when their tileset
      * image changes.
      */
     void setReloadTilesetsOnChange(bool enabled);
+    bool reloadTilesetsOnChange() const;
 
-    bool reloadTilesetsOnChange() const
-    { return mReloadTilesetsOnChange; }
+    /**
+     * Sets whether tile animations are running.
+     */
+    void setAnimateTiles(bool enabled);
+    bool animateTiles() const;
 
 signals:
     /**
@@ -127,9 +137,18 @@ signals:
      */
     void tilesetChanged(Tileset *tileset);
 
+    /**
+     * Emitted when any images of the tiles in the given \a tileset have
+     * changed. This is used to trigger repaints for displaying tile
+     * animations.
+     */
+    void repaintTileset(Tileset *tileset);
+
 private slots:
     void fileChanged(const QString &path);
     void fileChangedTimeout();
+
+    void advanceTileAnimations(int ms);
 
 private:
     Q_DISABLE_COPY(TilesetManager)
@@ -151,10 +170,14 @@ private:
      */
     QMap<Tileset*, int> mTilesets;
     FileSystemWatcher *mWatcher;
+    TileAnimationDriver *mAnimationDriver;
     QSet<QString> mChangedFiles;
     QTimer mChangedFilesTimer;
     bool mReloadTilesetsOnChange;
 };
+
+inline bool TilesetManager::reloadTilesetsOnChange() const
+{ return mReloadTilesetsOnChange; }
 
 } // namespace Internal
 } // namespace Tiled

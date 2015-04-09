@@ -29,6 +29,7 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPainter>
 #include <QStyledItemDelegate>
 
 #ifndef QT_NO_OPENGL
@@ -124,7 +125,11 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     mUi->objectTypesTable->setItemDelegateForColumn(1, new ColorDelegate(this));
 
     QHeaderView *horizontalHeader = mUi->objectTypesTable->horizontalHeader();
+#if QT_VERSION >= 0x050000
+    horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
+#else
     horizontalHeader->setResizeMode(QHeaderView::Stretch);
+#endif
 
     Utils::setThemeIcon(mUi->addObjectTypeButton, "add");
     Utils::setThemeIcon(mUi->removeObjectTypeButton, "remove");
@@ -136,6 +141,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
     connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
             Preferences::instance(), SLOT(setGridColor(QColor)));
+    connect(mUi->gridFine, SIGNAL(valueChanged(int)),
+            Preferences::instance(), SLOT(setGridFine(int)));
+    connect(mUi->objectLineWidth, SIGNAL(valueChanged(double)),
+            SLOT(objectLineWidthChanged(double)));
 
     connect(mUi->objectTypesTable->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -171,9 +180,7 @@ void PreferencesDialog::changeEvent(QEvent *e)
     QDialog::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange: {
-            const int formatIndex = mUi->layerDataCombo->currentIndex();
             mUi->retranslateUi(this);
-            mUi->layerDataCombo->setCurrentIndex(formatIndex);
             mUi->languageCombo->setItemText(0, tr("System default"));
         }
         break;
@@ -187,6 +194,11 @@ void PreferencesDialog::languageSelected(int index)
     const QString language = mUi->languageCombo->itemData(index).toString();
     Preferences *prefs = Preferences::instance();
     prefs->setLanguage(language);
+}
+
+void PreferencesDialog::objectLineWidthChanged(double lineWidth)
+{
+    Preferences::instance()->setObjectLineWidth(lineWidth);
 }
 
 void PreferencesDialog::useOpenGLToggled(bool useOpenGL)
@@ -295,33 +307,14 @@ void PreferencesDialog::fromPreferences()
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
 
-    int formatIndex = 0;
-    switch (prefs->layerDataFormat()) {
-    case MapWriter::XML:
-        formatIndex = 0;
-        break;
-    case MapWriter::Base64:
-        formatIndex = 1;
-        break;
-    case MapWriter::Base64Gzip:
-        formatIndex = 2;
-        break;
-    default:
-    case MapWriter::Base64Zlib:
-        formatIndex = 3;
-        break;
-    case MapWriter::CSV:
-        formatIndex = 4;
-        break;
-    }
-    mUi->layerDataCombo->setCurrentIndex(formatIndex);
-
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
     if (languageIndex == -1)
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
+    mUi->gridFine->setValue(prefs->gridFine());
+    mUi->objectLineWidth->setValue(prefs->objectLineWidth());
     mUi->autoMapWhileDrawing->setChecked(prefs->automappingDrawing());
     mObjectTypesModel->setObjectTypes(prefs->objectTypes());
 }
@@ -332,25 +325,7 @@ void PreferencesDialog::toPreferences()
 
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
-    prefs->setLayerDataFormat(layerDataFormat());
     prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
-}
-
-MapWriter::LayerDataFormat PreferencesDialog::layerDataFormat() const
-{
-    switch (mUi->layerDataCombo->currentIndex()) {
-    case 0:
-        return MapWriter::XML;
-    case 1:
-        return MapWriter::Base64;
-    case 2:
-        return MapWriter::Base64Gzip;
-    case 3:
-    default:
-        return MapWriter::Base64Zlib;
-    case 4:
-        return MapWriter::CSV;
-    }
 }
 
 void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)

@@ -23,7 +23,10 @@
 
 #include "map.h"
 #include "tile.h"
+#include "tiled.h"
 #include "tileset.h"
+
+#include <QMimeData>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -40,7 +43,7 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     const int tiles = mTileset->tileCount();
-    const int columns = mTileset->columnCount();
+    const int columns = columnCount();
 
     int rows = 1;
     if (columns > 0) {
@@ -54,14 +57,23 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
 
 int TilesetModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mTileset->columnCount();
+    if (parent.isValid())
+        return 0;
+    if (mTileset->columnCount())
+        return mTileset->columnCount();
+    // TODO: Non-table tilesets should use a different model.
+    // For now use an arbitrary number of columns.
+    return 5;
 }
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole) {
+    if (role == Qt::DecorationRole) {
         if (Tile *tile = tileAt(index))
             return tile->image();
+    } else if (role == TerrainRole) {
+        if (Tile *tile = tileAt(index))
+            return tile->terrain();
     }
 
     return QVariant();
@@ -76,19 +88,117 @@ QVariant TilesetModel::headerData(int /* section */,
     return QVariant();
 }
 
+Qt::ItemFlags TilesetModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+
+    if (index.isValid())
+        defaultFlags |= Qt::ItemIsDragEnabled;
+
+    return defaultFlags;
+}
+
+QStringList TilesetModel::mimeTypes() const
+{
+    QStringList types;
+    types << QLatin1String(TILES_MIMETYPE);
+    return types;
+}
+
+QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
+{
+    QMimeData *mimeData = new QMimeData;
+    QByteArray encodedData;
+
+    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+    foreach (const QModelIndex &index, indexes) {
+        if (index.isValid())
+            stream << tileIndexAt(index);
+    }
+
+    mimeData->setData(QLatin1String(TILES_MIMETYPE), encodedData);
+    return mimeData;
+}
+
 Tile *TilesetModel::tileAt(const QModelIndex &index) const
 {
     if (!index.isValid())
         return 0;
 
-    const int i = index.column() + index.row() * mTileset->columnCount();
+    const int i = index.column() + index.row() * columnCount();
     return mTileset->tileAt(i);
+}
+
+int TilesetModel::tileIndexAt(const QModelIndex &index) const
+{
+    Q_ASSERT(index.isValid());
+    return index.column() + index.row() * columnCount();
+}
+
+QModelIndex TilesetModel::tileIndex(const Tile *tile) const
+{
+    Q_ASSERT(tile->tileset() == mTileset);
+
+    const int columnCount = TilesetModel::columnCount();
+    const int id = tile->id();
+    const int row = id / columnCount;
+    const int column = id % columnCount;
+
+    return index(row, column);
 }
 
 void TilesetModel::setTileset(Tileset *tileset)
 {
     if (mTileset == tileset)
         return;
+
+    beginResetModel();
     mTileset = tileset;
-    reset();
+    endResetModel();
+}
+
+void TilesetModel::tilesetChanged()
+{
+    beginResetModel();
+    endResetModel();
+}
+
+void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
+{
+    if (tiles.first()->tileset() != mTileset)
+        return;
+
+    QModelIndex topLeft;
+    QModelIndex bottomRight;
+
+    foreach (const Tile *tile, tiles) {
+        const QModelIndex i = tileIndex(tile);
+
+        if (!topLeft.isValid()) {
+            topLeft = i;
+            bottomRight = i;
+            continue;
+        }
+
+        if (i.row() < topLeft.row() || i.column() < topLeft.column())
+            topLeft = index(qMin(topLeft.row(), i.row()),
+                            qMin(topLeft.column(), i.column()));
+
+        if (i.row() > bottomRight.row() || i.column() > bottomRight.column())
+            bottomRight = index(qMax(bottomRight.row(), i.row()),
+                                qMax(bottomRight.column(), i.column()));
+    }
+
+    if (topLeft.isValid())
+        emit dataChanged(topLeft, bottomRight);
+}
+
+void TilesetModel::tileChanged(Tile *tile)
+{
+    if (tile->tileset() != mTileset)
+        return;
+
+    const QModelIndex i = tileIndex(tile);
+    emit dataChanged(i, i);
 }

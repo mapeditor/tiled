@@ -30,6 +30,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "maprenderer.h"
 #include "object.h"
 #include "objectgroup.h"
 #include "tile.h"
@@ -140,26 +141,26 @@ bool AutoMapper::setupRuleMapTileLayers()
             if (layerName.endsWith(QLatin1String("input"),
                                  Qt::CaseInsensitive) || treatAsBoth) {
                 if (mLayerInputRegions) {
-                    error += tr("'input regions layer must not occur more than once.")
+                    error += tr("'regions_input' layer must not occur more than once.")
                             + QLatin1Char('\n');
                 }
                 if (layer->isTileLayer()) {
                     mLayerInputRegions = layer->asTileLayer();
                 } else {
-                    error += tr("regions layer must be tile layer!")
+                    error += tr("'regions_*' layers must be tile layers.")
                             + QLatin1Char('\n');
                 }
             }
             if (layerName.endsWith(QLatin1String("output"),
                                  Qt::CaseInsensitive) || treatAsBoth) {
                 if (mLayerOutputRegions) {
-                    error += tr("'output regions layer must not occur more than once.")
+                    error += tr("'regions_output' layer must not occur more than once.")
                             + QLatin1Char('\n');
                 }
                 if (layer->isTileLayer()) {
                     mLayerOutputRegions = layer->asTileLayer();
                 } else {
-                    error += tr("regions layer must be tile layer!")
+                    error += tr("'regions_*' layers must be tile layers.")
                             + QLatin1Char('\n');
                 }
             }
@@ -194,7 +195,7 @@ bool AutoMapper::setupRuleMapTileLayers()
                                                   Qt::CaseInsensitive);
 
             if (!layer->isTileLayer()) {
-                error += tr("'input' and 'inputnot' layers must be tile layers!")
+                error += tr("'input_*' and 'inputnot_*' layers must be tile layers.")
                         + QLatin1Char('\n');
                 continue;
             }
@@ -226,7 +227,7 @@ bool AutoMapper::setupRuleMapTileLayers()
             else
                 mTouchedObjectGroups.insert(name);
 
-            Layer::Type type = layer->type();
+            Layer::TypeFlag type = layer->layerType();
             int layerIndex = mMapWork->indexOfLayer(name, type);
 
             bool found = false;
@@ -250,10 +251,10 @@ bool AutoMapper::setupRuleMapTileLayers()
     }
 
     if (!mLayerInputRegions)
-        error += tr("No input regions layer found!") + QLatin1Char('\n');
+        error += tr("No 'regions' or 'regions_input' layer found.") + QLatin1Char('\n');
 
     if (!mLayerOutputRegions)
-        error += tr("No output regions layer found!") + QLatin1Char('\n');
+        error += tr("No 'regions' or 'regions_output' layer found.") + QLatin1Char('\n');
 
     if (mInputRules.isEmpty())
         error += tr("No input_<name> layer found!") + QLatin1Char('\n');
@@ -389,7 +390,7 @@ bool AutoMapper::setupCorrectIndexes()
             if (index >= mMapWork->layerCount() || index == -1 ||
                     name != mMapWork->layerAt(index)->name()) {
 
-                int newIndex = mMapWork->indexOfLayer(name, layerKey->type());
+                int newIndex = mMapWork->indexOfLayer(name, layerKey->layerType());
                 Q_ASSERT(newIndex != -1);
 
                 translationTable->insert(layerKey, newIndex);
@@ -404,6 +405,7 @@ bool AutoMapper::setupCorrectIndexes()
 bool AutoMapper::setupTilesets(Map *src, Map *dst)
 {
     QList<Tileset*> existingTilesets = dst->tilesets();
+    TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of dst map
     foreach (Tileset *tileset, src->tilesets()) {
@@ -427,13 +429,13 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
             Properties properties = replacementTile->properties();
             properties.merge(tileset->tileAt(i)->properties());
 
-            undoStack->push(new ChangeProperties(tr("Tile"),
+            undoStack->push(new ChangeProperties(mMapDocument,
+                                                 tr("Tile"),
                                                  replacementTile,
                                                  properties));
         }
         src->replaceTileset(tileset, replacement);
 
-        TilesetManager *tilesetManager = TilesetManager::instance();
         tilesetManager->addReference(replacement);
         tilesetManager->removeReference(tileset);
     }
@@ -656,44 +658,40 @@ static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
  * If all positions of the region are considered "good" return true.
  *
  * Now there are several cases to distinguish:
- * - setLayer is 0:
- *      obviously there should be no automapping.
- *      So here no rule should be applied. return false
- * - setLayer is not 0:
- *      - both listYes and listNo are empty:
- *          This should not happen, because with that configuration, absolutely
- *          no condition is given.
- *          return false, assuming this is an errornous rule being applied
+ *  - both listYes and listNo are empty:
+ *      This should not happen, because with that configuration, absolutely
+ *      no condition is given.
+ *      return false, assuming this is an errornous rule being applied
  *
- *      - both listYes and listNo are not empty:
- *          When comparing a tile at a certain position of tile layer setLayer
- *          to all available tiles in listYes, there must be at least
- *          one layer, in which there is a match of tiles of setLayer and
- *           listYes to consider this position good.
- *          In listNo there must not be a match to consider this position
- *          good.
- *          If there are no tiles within all available tiles within all layers
- *          of one list, all tiles in setLayer are considered good,
- *          while inspecting this list.
- *          All available tiles are all tiles within the whole rule region in
- *          all tile layers of the list.
+ *  - both listYes and listNo are not empty:
+ *      When comparing a tile at a certain position of tile layer setLayer
+ *      to all available tiles in listYes, there must be at least
+ *      one layer, in which there is a match of tiles of setLayer and
+ *      listYes to consider this position good.
+ *      In listNo there must not be a match to consider this position
+ *      good.
+ *      If there are no tiles within all available tiles within all layers
+ *      of one list, all tiles in setLayer are considered good,
+ *      while inspecting this list.
+ *      All available tiles are all tiles within the whole rule region in
+ *      all tile layers of the list.
  *
- *      - either of both lists are not empty
- *          When comparing a certain position of tile layer setLayer
- *          to all Tiles at the corresponding position this can happen:
- *          A tile of setLayer matches a tile of a layer in the list. Then this
- *          is considered as good, if the layer is from the listYes.
- *          Otherwise it is considered bad.
+ *  - either of both lists are not empty
+ *      When comparing a certain position of tile layer setLayer
+ *      to all Tiles at the corresponding position this can happen:
+ *      A tile of setLayer matches a tile of a layer in the list. Then this
+ *      is considered as good, if the layer is from the listYes.
+ *      Otherwise it is considered bad.
  *
- *          Exception, when having only the listYes:
- *          if at the examined position there are no tiles within all Layers
- *          of the listYes, all tiles except all used tiles within
- *          the layers of that list are considered good.
+ *      Exception, when having only the listYes:
+ *      if at the examined position there are no tiles within all Layers
+ *      of the listYes, all tiles except all used tiles within
+ *      the layers of that list are considered good.
  *
- *          This exception was added to have a better functionality
- *          (need of less layers.)
- *          It was not added to the case, when having only listNo layers to
- *          avoid total symmetrie between those lists.
+ *      This exception was added to have a better functionality
+ *      (need of less layers.)
+ *      It was not added to the case, when having only listNo layers to
+ *      avoid total symmetrie between those lists.
  *
  * If all positions are considered good, return true.
  * return false otherwise.
@@ -729,11 +727,6 @@ static bool compareLayerTo(const TileLayer *setLayer,
 
                 const Cell &c1 = setLayer->cellAt(x + offset.x(),
                                                   y + offset.y());
-
-                // when there is no tile in setLayer,
-                // there should be no rule at all
-                if (c1.isEmpty())
-                    return false;
 
                 // ruleDefined will be set when there is a tile in at least
                 // one layer. if there is a tile in at least one layer, only
@@ -854,15 +847,19 @@ void AutoMapper::copyObjectRegion(ObjectGroup *srcLayer, int srcX, int srcY,
                                  ObjectGroup *dstLayer, int dstX, int dstY)
 {
     QUndoStack *undo = mMapDocument->undoStack();
-    const QRect rect = QRect(srcX, srcY, width, height);
-    QList<MapObject*> objects = objectsInRegion(srcLayer, rect);
+    const QRectF rect = QRectF(srcX, srcY, width, height);
+    const QRectF pixelRect = mMapDocument->renderer()->tileToPixelCoords(rect);
+    QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
+
+    QPointF pixelOffset = mMapDocument->renderer()->tileToPixelCoords(dstX, dstY);
+    pixelOffset -= pixelRect.topLeft();
 
     QList<MapObject*> clones;
     foreach (MapObject *obj, objects) {
         MapObject *clone = obj->clone();
         clones.append(clone);
-        clone->setX(clone->x() + dstX - srcX);
-        clone->setY(clone->y() + dstY - srcY);
+        clone->setX(clone->x() + pixelOffset.x());
+        clone->setY(clone->y() + pixelOffset.y());
         undo->push(new AddMapObject(mMapDocument, dstLayer, clone));
     }
 }

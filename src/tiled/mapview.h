@@ -22,6 +22,7 @@
 #define MAPVIEW_H
 
 #include <QGraphicsView>
+#include <QPinchGesture>
 
 namespace Tiled {
 namespace Internal {
@@ -41,7 +42,20 @@ class MapView : public QGraphicsView
     Q_OBJECT
 
 public:
-    MapView(QWidget *parent = 0);
+    /**
+     * Using Qt::WA_StaticContents gives a performance boost in certain
+     * resizing operations. There is however a problem with it when used in
+     * child windows, so this option allows it to be turned off in that case.
+     *
+     * See https://codereview.qt-project.org/#change,74595 for my attempt at
+     * fixing the problem in Qt.
+     */
+    enum Mode {
+        StaticContents,
+        NoStaticContents,
+    };
+
+    MapView(QWidget *parent = 0, Mode mode = StaticContents);
     ~MapView();
 
     MapScene *mapScene() const;
@@ -62,6 +76,10 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
+    void handlePinchGesture(QPinchGesture *pinch);
+
+    void adjustCenterFromMousePosition(QPoint &mousePos);
+
 private slots:
     void adjustScale(qreal scale);
     void setUseOpenGL(bool useOpenGL);
@@ -70,6 +88,7 @@ private:
     QPoint mLastMousePos;
     QPointF mLastMouseScenePos;
     bool mHandScrolling;
+    Mode mMode;
     Zoomable *mZoomable;
 };
 

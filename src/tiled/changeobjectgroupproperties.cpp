@@ -31,28 +31,32 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 ChangeObjectGroupProperties::ChangeObjectGroupProperties(
-    MapDocument *mapDocument,
-    ObjectGroup *objectGroup,
-    const QColor &color)
+        MapDocument *mapDocument,
+        ObjectGroup *objectGroup,
+        const QColor &newColor,
+        ObjectGroup::DrawOrder newDrawOrder)
     : QUndoCommand(
         QCoreApplication::translate(
             "Undo Commands", "Change Object Layer Properties"))
     , mMapDocument(mapDocument)
     , mObjectGroup(objectGroup)
     , mUndoColor(objectGroup->color())
-    , mRedoColor(color)
+    , mRedoColor(newColor)
+    , mUndoDrawOrder(objectGroup->drawOrder())
+    , mRedoDrawOrder(newDrawOrder)
 {
 }
 
 void ChangeObjectGroupProperties::redo()
 {
     mObjectGroup->setColor(mRedoColor);
-    mMapDocument->mapObjectModel()->emitObjectsChanged(mObjectGroup->objects());
-
+    mObjectGroup->setDrawOrder(mRedoDrawOrder);
+    mMapDocument->emitObjectGroupChanged(mObjectGroup);
 }
 
 void ChangeObjectGroupProperties::undo()
 {
     mObjectGroup->setColor(mUndoColor);
-    mMapDocument->mapObjectModel()->emitObjectsChanged(mObjectGroup->objects());
+    mObjectGroup->setDrawOrder(mUndoDrawOrder);
+    mMapDocument->emitObjectGroupChanged(mObjectGroup);
 }

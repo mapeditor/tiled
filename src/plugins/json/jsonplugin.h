@@ -41,7 +41,12 @@ class JSONSHARED_EXPORT JsonPlugin
         , public Tiled::MapWriterInterface
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapReaderInterface Tiled::MapWriterInterface)
+    Q_INTERFACES(Tiled::MapReaderInterface)
+    Q_INTERFACES(Tiled::MapWriterInterface)
+#if QT_VERSION >= 0x050000
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
+#endif
 
 public:
     JsonPlugin();
@@ -54,7 +59,7 @@ public:
     bool write(const Tiled::Map *map, const QString &fileName);
 
     // Both interfaces
-    QString nameFilter() const;
+    QStringList nameFilters() const;
     QString errorString() const;
 
 private:

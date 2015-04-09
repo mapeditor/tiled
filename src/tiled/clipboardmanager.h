@@ -27,11 +27,13 @@ class QClipboard;
 
 namespace Tiled {
 
+class ObjectGroup;
 class Map;
 
 namespace Internal {
 
 class MapDocument;
+class MapView;
 
 /**
  * The clipboard manager deals with interaction with the clipboard.
@@ -41,7 +43,16 @@ class ClipboardManager : public QObject
     Q_OBJECT
 
 public:
-    ClipboardManager(QObject *parent = 0);
+    /**
+     * Returns the clipboard manager instance. Creates the instance when it
+     * doesn't exist yet.
+     */
+    static ClipboardManager *instance();
+
+    /**
+     * Deletes the clipboard manager instance if it exists.
+     */
+    static void deleteInstance();
 
     /**
      * Returns whether the clipboard has a map.
@@ -65,6 +76,20 @@ public:
      */
     void copySelection(const MapDocument *mapDocument);
 
+    enum PasteMode {
+        Standard,
+        NoTileObjects,
+    };
+
+    /**
+     * Convenience method that deals with some of the logic related to pasting
+     * a group of objects.
+     */
+    void pasteObjectGroup(const ObjectGroup *objectGroup,
+                          MapDocument *mapDocument,
+                          const MapView *view,
+                          PasteMode mode = Standard);
+
 signals:
     /**
      * Emitted when whether the clip has a map changed.
@@ -75,8 +100,14 @@ private slots:
     void updateHasMap();
 
 private:
+    ClipboardManager();
+
+    Q_DISABLE_COPY(ClipboardManager)
+
     QClipboard *mClipboard;
     bool mHasMap;
+
+    static ClipboardManager *mInstance;
 };
 
 #endif // CLIPBOARDMANAGER_H

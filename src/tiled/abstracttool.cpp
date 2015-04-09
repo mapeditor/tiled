@@ -1,6 +1,6 @@
 /*
  * abstracttool.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of Tiled.
@@ -22,7 +22,8 @@
 #include "abstracttool.h"
 
 #include "mapdocument.h"
-#include "mapdocumentactionhandler.h"
+
+#include <QKeyEvent>
 
 using namespace Tiled::Internal;
 
@@ -32,12 +33,9 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mName(name)
     , mIcon(icon)
     , mShortcut(shortcut)
-    , mEnabled(true)
+    , mEnabled(false)
     , mMapDocument(0)
 {
-    MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
-    connect(handler, SIGNAL(mapDocumentChanged(MapDocument*)),
-            SLOT(setMapDocument(MapDocument*)));
 }
 
 /**
@@ -61,9 +59,9 @@ void AbstractTool::setEnabled(bool enabled)
     emit enabledChanged(mEnabled);
 }
 
-void AbstractTool::updateEnabledState()
+void AbstractTool::keyPressed(QKeyEvent *event)
 {
-    setEnabled(mMapDocument != 0);
+    event->ignore();
 }
 
 void AbstractTool::setMapDocument(MapDocument *mapDocument)
@@ -91,3 +89,7 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     updateEnabledState();
 }
 
+void AbstractTool::updateEnabledState()
+{
+    setEnabled(mMapDocument != 0);
+}

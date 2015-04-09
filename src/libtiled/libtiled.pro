@@ -13,8 +13,10 @@ macx {
 DLLDESTDIR = ../..
 
 win32 {
-    # It is enough to include zlib, since the symbols are available in Qt
-    INCLUDEPATH += ../zlib
+    lessThan(QT_MAJOR_VERSION, 5) {
+        INCLUDEPATH += ../zlib
+    }
+    QMAKE_PROJECT_NAME = libtiled
 } else {
     # On other platforms it is necessary to link to zlib explicitly
     LIBS += -lz
@@ -24,8 +26,9 @@ DEFINES += QT_NO_CAST_FROM_ASCII \
     QT_NO_CAST_TO_ASCII
 DEFINES += TILED_LIBRARY
 contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
-OBJECTS_DIR = .obj
+
 SOURCES += compression.cpp \
+    gidmapper.cpp \
     imagelayer.cpp \
     isometricrenderer.cpp \
     layer.cpp \
@@ -38,30 +41,38 @@ SOURCES += compression.cpp \
     orthogonalrenderer.cpp \
     properties.cpp \
     staggeredrenderer.cpp \
+    tile.cpp \
     tilelayer.cpp \
     tileset.cpp \
-    gidmapper.cpp
+    hexagonalrenderer.cpp
 HEADERS += compression.h \
+    gidmapper.h \
     imagelayer.h \
     isometricrenderer.h \
     layer.h \
     map.h \
     mapobject.h \
     mapreader.h \
+    mapreaderinterface.h \
     maprenderer.h \
     mapwriter.h \
+    mapwriterinterface.h \
     object.h \
     objectgroup.h \
     orthogonalrenderer.h \
     properties.h \
     staggeredrenderer.h \
+    terrain.h \
     tile.h \
+    tiled.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
-    gidmapper.h \
-    terrain.h
-macx {
-    contains(QT_CONFIG, ppc):CONFIG += x86 \
-        ppc
+    logginginterface.h \
+    hexagonalrenderer.h
+
+contains(INSTALL_HEADERS, yes) {
+    headers.files = $${HEADERS}
+    headers.path = $${PREFIX}/include/tiled
+    INSTALLS += headers
 }

@@ -113,16 +113,26 @@ void ResizeHelper::paintEvent(QPaintEvent *)
 
     painter.translate(origX, origY);
     painter.scale(mScale, mScale);
+
+    QPen pen(Qt::black);
+    pen.setCosmetic(true);
+
+    painter.setPen(pen);
     painter.drawRect(QRect(QPoint(0, 0), mNewSize));
 
-    painter.setPen(Qt::white);
+    pen.setColor(Qt::white);
+
+    painter.setPen(pen);
     painter.setBrush(Qt::white);
     painter.setOpacity(0.5);
     painter.drawRect(oldRect);
 
+    pen.setColor(Qt::black);
+    pen.setStyle(Qt::DashLine);
+
     painter.setOpacity(1.0);
     painter.setBrush(Qt::NoBrush);
-    painter.setPen(Qt::DashLine);
+    painter.setPen(pen);
     painter.drawRect(oldRect);
 }
 

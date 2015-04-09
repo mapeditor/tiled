@@ -25,46 +25,40 @@
 
 class QAction;
 class QActionGroup;
-class QToolBar;
 
 namespace Tiled {
 namespace Internal {
 
 class AbstractTool;
+class MapDocument;
 
 /**
- * The tool manager provides a central place to register editing tools. In
- * return, it provides the tool bar that shows you all the tools and allows you
- * to select them.
+ * The tool manager provides a central place to register editing tools.
+ *
+ * It creates actions for the tools that can be placed on a tool bar. All the
+ * actions are put into a QActionGroup to make sure only one tool can be
+ * selected at a time.
  */
 class ToolManager : public QObject
 {
     Q_OBJECT
 
 public:
-    /**
-     * Returns the tool manager instance. Creates the instance when it doesn't
-     * exist yet.
-     */
-    static ToolManager *instance();
+    ToolManager(QObject *parent = 0);
+    ~ToolManager();
 
     /**
-     * Deletes the tool manager instance. Should only be called on application
-     * exit.
+     * Sets the MapDocument on which the registered tools will operate.
      */
-    static void deleteInstance();
+    void setMapDocument(MapDocument *mapDocument);
 
     /**
-     * Registers a new tool. It will be added to the tools tool bar. The tool
-     * manager does not take ownership over the tool.
+     * Registers a new tool. The tool manager does not take ownership over the
+     * tool.
+     *
+     * @return The action for activating the tool.
      */
-    void registerTool(AbstractTool *tool);
-
-    /**
-     * Adds a separator to the tool bar between the last registered tool and
-     * the next tool that is registered.
-     */
-    void addSeparator();
+    QAction *registerTool(AbstractTool *tool);
 
     /**
      * Selects the given tool. It should be previously added using
@@ -77,10 +71,7 @@ public:
      */
     AbstractTool *selectedTool() const { return mSelectedTool; }
 
-    /**
-     * Returns a tool bar with all tools added to it.
-     */
-    QToolBar *toolBar() const { return mToolBar; }
+    void retranslateTools();
 
 signals:
     void selectedToolChanged(AbstractTool *tool);
@@ -93,25 +84,19 @@ signals:
 
 private slots:
     void actionTriggered(QAction *action);
-    void languageChanged();
     void toolEnabledChanged(bool enabled);
     void selectEnabledTool();
 
 private:
     Q_DISABLE_COPY(ToolManager)
 
-    ToolManager();
-    ~ToolManager();
-
     AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
 
-    static ToolManager *mInstance;
-
-    QToolBar *mToolBar;
     QActionGroup *mActionGroup;
     AbstractTool *mSelectedTool;
     AbstractTool *mPreviouslyDisabledTool;
+    MapDocument *mMapDocument;
 };
 
 } // namespace Internal

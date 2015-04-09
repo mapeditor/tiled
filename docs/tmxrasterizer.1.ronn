@@ -1,0 +1,44 @@
+tmxrasterizer(1) -- renders a tile map to an image
+========================================
+
+## SYNOPSIS
+
+`tmxrasterizer` [<OPTIONS>] [INPUT FILE] [OUTPUT FILE]
+
+## DESCRIPTION
+
+This application can be used to render maps created by the Tiled Map Editor to
+an image.
+This is very helpful for creating small-scale previews, such as mini-maps.
+
+## OPTIONS
+
+  * `-h` `--help`:
+    Displays the help
+  * `-v` `--version`:
+    Displays the version
+  * `-s` `--scale` SIZE:
+    The scale of the output image
+  * `-t` `--tilesize` SIZE:
+    The requested size in pixels at which a tile is rendered.
+    Overrides the --scale option.
+  * `-a` `--anti-aliasing`:
+    Smooth the output image using anti-aliasing
+  * `--ignore-visibility`:
+    Ignore all layer visibility flags in the map file and render
+    all layers in the output (default is to omit invisible layers).
+  * `--hide-layer`:
+    Specifies a layer to omit from the output image.
+    Can be repeated to hide multiple layers.
+    The layername is case insensitive.
+
+    *Example*:
+
+    `tmxrasterizer` --hide-layer collision --hide-layer otherlayer [...]
+
+## AUTHOR
+Vincent Petithory <<vincent.petithory@gmail.com>>
+
+## SEE ALSO
+
+tiled(1), tmxviewer(1), <http://www.mapeditor.org/>

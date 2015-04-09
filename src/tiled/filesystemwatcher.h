@@ -50,6 +50,10 @@ signals:
     void fileChanged(const QString &path);
     void directoryChanged(const QString &path);
 
+private slots:
+    void onFileChanged(const QString &path);
+    void onDirectoryChanged(const QString &path);
+
 private:
     QFileSystemWatcher *mWatcher;
     QMap<QString, int> mWatchCount;

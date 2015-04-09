@@ -1,6 +1,6 @@
 /*
  * mapdocument.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Jeff Bland <jeff@teamphobic.com>
  *
  * This file is part of Tiled.
@@ -25,7 +25,9 @@
 #include "addremovemapobject.h"
 #include "addremovetileset.h"
 #include "changeproperties.h"
-#include "changetileselection.h"
+#include "changeselectedarea.h"
+#include "flipmapobjects.h"
+#include "hexagonalrenderer.h"
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "layermodel.h"
@@ -33,17 +35,24 @@
 #include "map.h"
 #include "mapobject.h"
 #include "movelayer.h"
+#include "movemapobject.h"
+#include "movemapobjecttogroup.h"
 #include "objectgroup.h"
 #include "offsetlayer.h"
 #include "orthogonalrenderer.h"
 #include "painttilelayer.h"
-#include "resizelayer.h"
+#include "pluginmanager.h"
 #include "resizemap.h"
+#include "resizetilelayer.h"
+#include "rotatemapobject.h"
 #include "staggeredrenderer.h"
+#include "terrain.h"
+#include "terrainmodel.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "tileset.h"
+#include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 
 #include <QFileInfo>
@@ -57,20 +66,13 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mFileName(fileName),
     mMap(map),
     mLayerModel(new LayerModel(this)),
+    mCurrentObject(map),
+    mRenderer(0),
     mMapObjectModel(new MapObjectModel(this)),
+    mTerrainModel(new TerrainModel(this, this)),
     mUndoStack(new QUndoStack(this))
 {
-    switch (map->orientation()) {
-    case Map::Isometric:
-        mRenderer = new IsometricRenderer(map);
-        break;
-    case Map::Staggered:
-        mRenderer = new StaggeredRenderer(map);
-        break;
-    default:
-        mRenderer = new OrthogonalRenderer(map);
-        break;
-    }
+    createRenderer();
 
     mCurrentLayerIndex = (map->layerCount() == 0) ? -1 : 0;
     mLayerModel->setMapDocument(this);
@@ -88,10 +90,18 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
             SIGNAL(objectsAdded(QList<MapObject*>)));
     connect(mMapObjectModel, SIGNAL(objectsChanged(QList<MapObject*>)),
             SIGNAL(objectsChanged(QList<MapObject*>)));
-    connect(mMapObjectModel, SIGNAL(objectsAboutToBeRemoved(QList<MapObject*>)),
-            SIGNAL(objectsAboutToBeRemoved(QList<MapObject*>)));
     connect(mMapObjectModel, SIGNAL(objectsRemoved(QList<MapObject*>)),
             SLOT(onObjectsRemoved(QList<MapObject*>)));
+
+    connect(mMapObjectModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+            SLOT(onMapObjectModelRowsInserted(QModelIndex,int,int)));
+    connect(mMapObjectModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+            SLOT(onMapObjectModelRowsInsertedOrRemoved(QModelIndex,int,int)));
+    connect(mMapObjectModel, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+            SLOT(onObjectsMoved(QModelIndex,int,int,QModelIndex,int)));
+
+    connect(mTerrainModel, SIGNAL(terrainRemoved(Terrain*)),
+            SLOT(onTerrainRemoved(Terrain*)));
 
     connect(mUndoStack, SIGNAL(cleanChanged(bool)), SIGNAL(modifiedChanged()));
 
@@ -117,18 +127,74 @@ bool MapDocument::save(QString *error)
 
 bool MapDocument::save(const QString &fileName, QString *error)
 {
-    TmxMapWriter mapWriter;
+    PluginManager *pm = PluginManager::instance();
 
-    if (!mapWriter.write(map(), fileName)) {
+    MapWriterInterface *chosenWriter = 0;
+    if (const Plugin *plugin = pm->pluginByFileName(mWriterPluginFileName))
+        chosenWriter = qobject_cast<MapWriterInterface*>(plugin->instance);
+
+    TmxMapWriter mapWriter;
+    if (!chosenWriter)
+        chosenWriter = &mapWriter;
+
+    if (!chosenWriter->write(map(), fileName)) {
         if (error)
-            *error = mapWriter.errorString();
+            *error = chosenWriter->errorString();
         return false;
     }
 
     undoStack()->setClean();
     setFileName(fileName);
+    mLastSaved = QFileInfo(fileName).lastModified();
 
+    emit saved();
     return true;
+}
+
+MapDocument *MapDocument::load(const QString &fileName,
+                               MapReaderInterface *mapReader,
+                               QString *error)
+{
+    TmxMapReader tmxMapReader;
+
+    const PluginManager *pm = PluginManager::instance();
+    if (!mapReader && !tmxMapReader.supportsFile(fileName)) {
+        // Try to find a plugin that implements support for this format
+        QList<MapReaderInterface*> readers =
+                pm->interfaces<MapReaderInterface>();
+
+        foreach (MapReaderInterface *reader, readers) {
+            if (reader->supportsFile(fileName)) {
+                mapReader = reader;
+                break;
+            }
+        }
+    }
+
+    // check if we can save in that format as well
+    QString readerPluginFileName;
+    QString writerPluginFileName;
+    if (mapReader) {
+        if (const Plugin *plugin = pm->plugin(mapReader)) {
+            readerPluginFileName = plugin->fileName;
+            if (qobject_cast<MapWriterInterface*>(plugin->instance))
+                writerPluginFileName = plugin->fileName;
+        }
+    } else {
+        mapReader = &tmxMapReader;
+    }
+
+    Map *map = mapReader->read(fileName);
+    if (!map) {
+        if (error)
+            *error = mapReader->errorString();
+        return 0;
+    }
+
+    MapDocument *mapDocument = new MapDocument(map, fileName);
+    mapDocument->setReaderPluginFileName(readerPluginFileName);
+    mapDocument->setWriterPluginFileName(writerPluginFileName);
+    return mapDocument;
 }
 
 void MapDocument::setFileName(const QString &fileName)
@@ -136,8 +202,9 @@ void MapDocument::setFileName(const QString &fileName)
     if (mFileName == fileName)
         return;
 
+    QString oldFileName = mFileName;
     mFileName = fileName;
-    emit fileNameChanged();
+    emit fileNameChanged(fileName, oldFileName);
 }
 
 /**
@@ -164,6 +231,8 @@ bool MapDocument::isModified() const
 void MapDocument::setCurrentLayerIndex(int index)
 {
     Q_ASSERT(index >= -1 && index < mMap->layerCount());
+
+    const bool changed = mCurrentLayerIndex != index;
     mCurrentLayerIndex = index;
 
     /* This function always sends the following signal, even if the index
@@ -177,6 +246,9 @@ void MapDocument::setCurrentLayerIndex(int index)
      * layer index does.
      */
     emit currentLayerIndexChanged(mCurrentLayerIndex);
+
+    if (changed && mCurrentLayerIndex != -1)
+        setCurrentObject(currentLayer());
 }
 
 Layer *MapDocument::currentLayer() const
@@ -187,28 +259,85 @@ Layer *MapDocument::currentLayer() const
     return mMap->layerAt(mCurrentLayerIndex);
 }
 
+/**
+ * Custom intersects check necessary because QRectF::intersects wants a
+ * non-empty area of overlap, but we should also consider overlap with empty
+ * area as intersection.
+ *
+ * Results for rectangles with negative size are undefined.
+ */
+static bool intersects(const QRectF &a, const QRectF &b)
+{
+    return a.right() >= b.left() &&
+            a.bottom() >= b.top() &&
+            a.left() <= b.right() &&
+            a.top() <= b.bottom();
+}
+
+static bool visibleIn(const QRectF &area, MapObject *object,
+                      MapRenderer *renderer)
+{
+    QRectF boundingRect = renderer->boundingRect(object);
+
+    if (object->rotation() != 0) {
+        // Rotate around object position
+        QPointF pos = renderer->pixelToScreenCoords(object->position());
+        boundingRect.translate(-pos);
+
+        QTransform transform;
+        transform.rotate(object->rotation());
+        boundingRect = transform.mapRect(boundingRect);
+
+        boundingRect.translate(pos);
+    }
+
+    return intersects(area, boundingRect);
+}
+
 void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
 {
-    const QRegion movedSelection = mTileSelection.translated(offset);
-    const QRectF newArea = QRectF(-offset, size);
+    const QRegion movedSelection = mSelectedArea.translated(offset);
+    const QRect newArea = QRect(-offset, size);
+    const QRectF visibleArea = mRenderer->boundingRect(newArea);
+
+    const QPointF origin = mRenderer->tileToPixelCoords(QPointF());
+    const QPointF newOrigin = mRenderer->tileToPixelCoords(-offset);
+    const QPointF pixelOffset = origin - newOrigin;
 
     // Resize the map and each layer
     mUndoStack->beginMacro(tr("Resize Map"));
     for (int i = 0; i < mMap->layerCount(); ++i) {
-        if (ObjectGroup *objectGroup = mMap->layerAt(i)->asObjectGroup()) {
+        Layer *layer = mMap->layerAt(i);
+
+        switch (layer->layerType()) {
+        case Layer::TileLayerType: {
+            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
+            mUndoStack->push(new ResizeTileLayer(this, tileLayer, size, offset));
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
+
             // Remove objects that will fall outside of the map
             foreach (MapObject *o, objectGroup->objects()) {
-                if (!(newArea.contains(o->position())
-                      || newArea.intersects(o->bounds()))) {
+                if (!visibleIn(visibleArea, o, mRenderer)) {
                     mUndoStack->push(new RemoveMapObject(this, o));
+                } else {
+                    QPointF oldPos = o->position();
+                    o->setPosition(oldPos + pixelOffset);
+                    mUndoStack->push(new MoveMapObject(this, o, oldPos));
                 }
             }
+            break;
         }
-
-        mUndoStack->push(new ResizeLayer(this, i, size, offset));
+        case Layer::ImageLayerType:
+            // Currently not adjusted when resizing the map
+            break;
+        }
     }
+
     mUndoStack->push(new ResizeMap(this, size));
-    mUndoStack->push(new ChangeTileSelection(this, movedSelection));
+    mUndoStack->push(new ChangeSelectedArea(this, movedSelection));
     mUndoStack->endMacro();
 
     // TODO: Handle layers that don't match the map size correctly
@@ -236,10 +365,53 @@ void MapDocument::offsetMap(const QList<int> &layerIndexes,
 }
 
 /**
+ * Flips the selected objects in the given \a direction.
+ */
+void MapDocument::flipSelectedObjects(FlipDirection direction)
+{
+    if (mSelectedObjects.isEmpty())
+        return;
+
+    mUndoStack->push(new FlipMapObjects(this, mSelectedObjects, direction));
+}
+
+/**
+ * Rotates the selected objects.
+ */
+void MapDocument::rotateSelectedObjects(RotateDirection direction)
+{
+    if (mSelectedObjects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Rotate %n Object(s)", "",
+                              mSelectedObjects.size()));
+
+    // TODO: Rotate them properly as a group
+    foreach (MapObject *mapObject, mSelectedObjects) {
+        const qreal oldRotation = mapObject->rotation();
+        qreal newRotation = oldRotation;
+
+        if (direction == RotateLeft) {
+            newRotation -= 90;
+            if (newRotation < -180)
+                newRotation += 360;
+        } else {
+            newRotation += 90;
+            if (newRotation > 180)
+                newRotation -= 360;
+        }
+
+        mapObject->setRotation(newRotation);
+        mUndoStack->push(new RotateMapObject(this, mapObject, oldRotation));
+    }
+    mUndoStack->endMacro();
+}
+
+/**
  * Adds a layer of the given type to the top of the layer stack. After adding
  * the new layer, emits editLayerNameRequested().
  */
-void MapDocument::addLayer(Layer::Type layerType)
+void MapDocument::addLayer(Layer::TypeFlag layerType)
 {
     Layer *layer = 0;
     QString name;
@@ -257,8 +429,6 @@ void MapDocument::addLayer(Layer::Type layerType)
         name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
         layer = new ImageLayer(name, 0, 0, mMap->width(), mMap->height());
         break;
-    case Layer::AnyLayerType:
-        break; // Q_ASSERT below will fail.
     }
     Q_ASSERT(layer);
 
@@ -364,10 +534,27 @@ void MapDocument::toggleOtherLayers(int index)
  */
 void MapDocument::insertTileset(int index, Tileset *tileset)
 {
+    emit tilesetAboutToBeAdded(index);
     mMap->insertTileset(index, tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
     emit tilesetAdded(index, tileset);
+}
+
+static bool isFromTileset(Object *object, Tileset *tileset)
+{
+    if (!object)
+        return false;
+
+    if (object->typeId() == Object::TileType
+            && tileset == static_cast<Tile*>(object)->tileset())
+        return true;
+
+    if (object->typeId() == Object::TerrainType
+            && tileset == static_cast<Terrain*>(object)->tileset())
+        return true;
+
+    return false;
 }
 
 /**
@@ -379,9 +566,16 @@ void MapDocument::insertTileset(int index, Tileset *tileset)
  */
 void MapDocument::removeTilesetAt(int index)
 {
+    emit tilesetAboutToBeRemoved(index);
+
     Tileset *tileset = mMap->tilesets().at(index);
+
+    if (tileset == mCurrentObject || isFromTileset(mCurrentObject, tileset))
+        setCurrentObject(0);
+
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset);
+
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReference(tileset);
 }
@@ -397,12 +591,12 @@ void MapDocument::moveTileset(int from, int to)
     emit tilesetMoved(from, to);
 }
 
-void MapDocument::setTileSelection(const QRegion &selection)
+void MapDocument::setSelectedArea(const QRegion &selection)
 {
-    if (mTileSelection != selection) {
-        const QRegion oldTileSelection = mTileSelection;
-        mTileSelection = selection;
-        emit tileSelectionChanged(mTileSelection, oldTileSelection);
+    if (mSelectedArea != selection) {
+        const QRegion oldSelectedArea = mSelectedArea;
+        mSelectedArea = selection;
+        emit selectedAreaChanged(mSelectedArea, oldSelectedArea);
     }
 }
 
@@ -410,6 +604,43 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
 {
     mSelectedObjects = selectedObjects;
     emit selectedObjectsChanged();
+
+    if (selectedObjects.size() == 1)
+        setCurrentObject(selectedObjects.first());
+}
+
+void MapDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
+{
+    mSelectedTiles = selectedTiles;
+    emit selectedTilesChanged();
+}
+
+void MapDocument::setCurrentObject(Object *object)
+{
+    if (object == mCurrentObject)
+        return;
+
+    mCurrentObject = object;
+    emit currentObjectChanged(object);
+}
+
+QList<Object*> MapDocument::currentObjects() const
+{
+    QList<Object*> objects;
+    if (mCurrentObject) {
+        if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
+            foreach (MapObject *mapObj, mSelectedObjects) {
+                objects.append(mapObj);
+            }
+        } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
+            foreach (Tile *tile, mSelectedTiles) {
+                objects.append(tile);
+            }
+        } else {
+            objects.append(mCurrentObject);
+        }
+    }
+    return objects;
 }
 
 /**
@@ -444,7 +675,8 @@ void MapDocument::unifyTilesets(Map *map)
             Tile *replacementTile = replacement->tileAt(i);
             Properties properties = replacementTile->properties();
             properties.merge(tileset->tileAt(i)->properties());
-            undoCommands.append(new ChangeProperties(tr("Tile"),
+            undoCommands.append(new ChangeProperties(this,
+                                                     tr("Tile"),
                                                      replacementTile,
                                                      properties));
         }
@@ -462,22 +694,15 @@ void MapDocument::unifyTilesets(Map *map)
 }
 
 /**
- * Emits the map changed signal. This signal should be emitted after changing
- * the map size or its tile size.
+ * Emits the tileset changed signal. This signal is currently used when adding
+ * or removing tiles from a tileset.
+ *
+ * @todo Emit more specific signals.
  */
-void MapDocument::emitMapChanged()
+void MapDocument::emitTilesetChanged(Tileset *tileset)
 {
-    emit mapChanged();
-}
-
-void MapDocument::emitRegionChanged(const QRegion &region)
-{
-    emit regionChanged(region);
-}
-
-void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
-{
-    emit regionEdited(region, layer);
+    Q_ASSERT(mMap->tilesets().contains(tileset));
+    emit tilesetChanged(tileset);
 }
 
 /**
@@ -491,6 +716,47 @@ void MapDocument::onObjectsRemoved(const QList<MapObject*> &objects)
     emit objectsRemoved(objects);
 }
 
+void MapDocument::onMapObjectModelRowsInserted(const QModelIndex &parent,
+                                               int first, int last)
+{
+    ObjectGroup *objectGroup = mMapObjectModel->toObjectGroup(parent);
+    if (!objectGroup) // we're not dealing with insertion of objects
+        return;
+
+    emit objectsInserted(objectGroup, first, last);
+    onMapObjectModelRowsInsertedOrRemoved(parent, first, last);
+}
+
+void MapDocument::onMapObjectModelRowsInsertedOrRemoved(const QModelIndex &parent,
+                                                        int first, int last)
+{
+    Q_UNUSED(first)
+
+    ObjectGroup *objectGroup = mMapObjectModel->toObjectGroup(parent);
+    if (!objectGroup)
+        return;
+
+    // Inserting or removing objects changes the index of any that come after
+    const int lastIndex = objectGroup->objectCount() - 1;
+    if (last < lastIndex)
+        emit objectsIndexChanged(objectGroup, last + 1, lastIndex);
+}
+
+void MapDocument::onObjectsMoved(const QModelIndex &parent, int start, int end,
+                                 const QModelIndex &destination, int row)
+{
+    if (parent != destination)
+        return;
+
+    ObjectGroup *objectGroup = mMapObjectModel->toObjectGroup(parent);
+
+    // Determine the full range over which object indexes changed
+    const int first = qMin(start, row);
+    const int last = qMax(end, row - 1);
+
+    emit objectsIndexChanged(objectGroup, first, last);
+}
+
 void MapDocument::onLayerAdded(int index)
 {
     emit layerAdded(index);
@@ -502,8 +768,12 @@ void MapDocument::onLayerAdded(int index)
 
 void MapDocument::onLayerAboutToBeRemoved(int index)
 {
+    Layer *layer = mMap->layerAt(index);
+    if (layer == mCurrentObject)
+        setCurrentObject(0);
+
     // Deselect any objects on this layer when necessary
-    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(mMap->layerAt(index)))
+    if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer))
         deselectObjects(og->objects());
     emit layerAboutToBeRemoved(index);
 }
@@ -523,8 +793,19 @@ void MapDocument::onLayerRemoved(int index)
         emit currentLayerIndexChanged(mCurrentLayerIndex);
 }
 
+void MapDocument::onTerrainRemoved(Terrain *terrain)
+{
+    if (terrain == mCurrentObject)
+        setCurrentObject(0);
+}
+
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
 {
+    // Unset the current object when it was part of this list of objects
+    if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType)
+        if (objects.contains(static_cast<MapObject*>(mCurrentObject)))
+            setCurrentObject(0);
+
     int removedCount = 0;
     foreach (MapObject *object, objects)
         removedCount += mSelectedObjects.removeAll(object);
@@ -544,4 +825,109 @@ void MapDocument::setTilesetName(Tileset *tileset, const QString &name)
 {
     tileset->setName(name);
     emit tilesetNameChanged(tileset);
+}
+
+void MapDocument::setTilesetTileOffset(Tileset *tileset,
+                                       const QPoint &tileOffset)
+{
+    tileset->setTileOffset(tileOffset);
+    mMap->recomputeDrawMargins();
+    emit tilesetTileOffsetChanged(tileset);
+}
+
+void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Duplicate %n Object(s)", "", objects.size()));
+
+    QList<MapObject*> clones;
+    foreach (const MapObject *mapObject, objects) {
+        MapObject *clone = mapObject->clone();
+        clones.append(clone);
+        mUndoStack->push(new AddMapObject(this,
+                                          mapObject->objectGroup(),
+                                          clone));
+    }
+
+    mUndoStack->endMacro();
+    setSelectedObjects(clones);
+}
+
+void MapDocument::removeObjects(const QList<MapObject *> &objects)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Remove %n Object(s)", "", objects.size()));
+    foreach (MapObject *mapObject, objects)
+        mUndoStack->push(new RemoveMapObject(this, mapObject));
+    mUndoStack->endMacro();
+}
+
+void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
+                                     ObjectGroup *objectGroup)
+{
+    if (objects.isEmpty())
+        return;
+
+    mUndoStack->beginMacro(tr("Move %n Object(s) to Layer", "",
+                              objects.size()));
+
+    foreach (MapObject *mapObject, objects) {
+        if (mapObject->objectGroup() == objectGroup)
+            continue;
+
+        mUndoStack->push(new MoveMapObjectToGroup(this,
+                                                  mapObject,
+                                                  objectGroup));
+    }
+    mUndoStack->endMacro();
+}
+
+void MapDocument::setProperty(Object *object,
+                              const QString &name,
+                              const QString &value)
+{
+    const bool hadProperty = object->hasProperty(name);
+    object->setProperty(name, value);
+
+    if (hadProperty)
+        emit propertyChanged(object, name);
+    else
+        emit propertyAdded(object, name);
+}
+
+void MapDocument::setProperties(Object *object, const Properties &properties)
+{
+    object->setProperties(properties);
+    emit propertiesChanged(object);
+}
+
+void MapDocument::removeProperty(Object *object, const QString &name)
+{
+    object->removeProperty(name);
+    emit propertyRemoved(object, name);
+}
+
+void MapDocument::createRenderer()
+{
+    if (mRenderer)
+        delete mRenderer;
+
+    switch (mMap->orientation()) {
+    case Map::Isometric:
+        mRenderer = new IsometricRenderer(mMap);
+        break;
+    case Map::Staggered:
+        mRenderer = new StaggeredRenderer(mMap);
+        break;
+    case Map::Hexagonal:
+        mRenderer = new HexagonalRenderer(mMap);
+        break;
+    default:
+        mRenderer = new OrthogonalRenderer(mMap);
+        break;
+    }
 }

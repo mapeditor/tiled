@@ -28,8 +28,14 @@
 
 package tiled.io.xml;
 
+/**
+ * an XMLWriterException is thrown if an error occurs while writing the xml-structure of a .tmx file.
+ */
 public class XMLWriterException extends RuntimeException
 {
+
+    private static final long serialVersionUID = 1629373837269498797L;
+
     public XMLWriterException(String error) {
         super(error);
     }

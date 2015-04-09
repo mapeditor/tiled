@@ -21,8 +21,6 @@
 #ifndef PREFERENCESDIALOG_H
 #define PREFERENCESDIALOG_H
 
-#include "mapwriter.h"
-
 #include <QDialog>
 
 class QModelIndex;
@@ -53,6 +51,7 @@ protected:
 
 private slots:
     void languageSelected(int index);
+    void objectLineWidthChanged(double lineWidth);
     void useOpenGLToggled(bool useOpenGL);
     void useAutomappingDrawingToggled(bool enabled);
 
@@ -67,8 +66,6 @@ private slots:
 private:
     void fromPreferences();
     void toPreferences();
-
-    MapWriter::LayerDataFormat layerDataFormat() const;
 
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;

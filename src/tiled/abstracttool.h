@@ -1,6 +1,6 @@
 /*
  * abstracttool.h
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2009-2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
  *
  * This file is part of Tiled.
@@ -30,6 +30,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 class QEvent;
+class QKeyEvent;
 
 namespace Tiled {
 namespace Internal {
@@ -88,6 +89,8 @@ public:
      */
     virtual void deactivate(MapScene *scene) = 0;
 
+    virtual void keyPressed(QKeyEvent *);
+
     /**
      * Called when the mouse entered the scene. This is usually an appropriate
      * time to make a hover item visible.
@@ -127,6 +130,9 @@ public:
      */
     virtual void languageChanged() = 0;
 
+public slots:
+    void setMapDocument(MapDocument *mapDocument);
+
 protected:
     /**
      * Can be used to respond to the map document changing.
@@ -153,9 +159,6 @@ protected slots:
 signals:
     void statusInfoChanged(const QString &statusInfo);
     void enabledChanged(bool enabled);
-
-private slots:
-    void setMapDocument(MapDocument *mapDocument);
 
 private:
     QString mName;

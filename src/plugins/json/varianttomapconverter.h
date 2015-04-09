@@ -48,7 +48,7 @@ class VariantToMapConverter
     Q_DECLARE_TR_FUNCTIONS(MapReader)
 
 public:
-    VariantToMapConverter() {}
+    VariantToMapConverter() : mMap(0) {}
 
     /**
      * Tries to convert the given \a variant to a Map instance. The \a mapDir
@@ -70,6 +70,7 @@ private:
     Tiled::Layer *toLayer(const QVariant &variant);
     Tiled::TileLayer *toTileLayer(const QVariantMap &variantMap);
     Tiled::ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
+    Tiled::ImageLayer *toImageLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
 

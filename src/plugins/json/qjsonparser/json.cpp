@@ -99,10 +99,10 @@ JsonReader::~JsonReader()
  */
 bool JsonReader::parse(const QByteArray &ba)
 {
-    int mib = 106; // utf-8
-
     QTextCodec *codec = QTextCodec::codecForUtfText(ba, 0); // try BOM detection
     if (!codec) {
+        int mib = 106; // utf-8
+
         if (ba.length() > 3) { // auto-detect
             const char *data = ba.constData();
             if (data[0] != 0) {

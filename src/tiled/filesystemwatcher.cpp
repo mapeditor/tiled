@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileSystemWatcher>
+#include <QStringList>
 
 using namespace Tiled::Internal;
 
@@ -31,9 +32,9 @@ FileSystemWatcher::FileSystemWatcher(QObject *parent) :
     mWatcher(new QFileSystemWatcher(this))
 {
     connect(mWatcher, SIGNAL(fileChanged(QString)),
-            SIGNAL(fileChanged(QString)));
+            SLOT(onFileChanged(QString)));
     connect(mWatcher, SIGNAL(directoryChanged(QString)),
-            SIGNAL(directoryChanged(QString)));
+            SLOT(onDirectoryChanged(QString)));
 }
 
 void FileSystemWatcher::addPath(const QString &path)
@@ -68,4 +69,21 @@ void FileSystemWatcher::removePath(const QString &path)
         mWatchCount.erase(entry);
         mWatcher->removePath(path);
     }
+}
+
+void FileSystemWatcher::onFileChanged(const QString &path)
+{
+    // If the file was replaced, the watcher is automatically removed and needs
+    // to be re-added to keep watching it for changes. This happens commonly
+    // with applications that do atomic saving.
+    if (!mWatcher->files().contains(path))
+        if (QFile::exists(path))
+            mWatcher->addPath(path);
+
+    emit fileChanged(path);
+}
+
+void FileSystemWatcher::onDirectoryChanged(const QString &path)
+{
+    emit directoryChanged(path);
 }

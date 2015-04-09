@@ -306,8 +306,8 @@ void StampBrush::endCapture()
 
     // Intersect with the layer and translate to layer coordinates
     QRect captured = capturedArea();
-    captured.intersect(QRect(tileLayer->x(), tileLayer->y(),
-                             tileLayer->width(), tileLayer->height()));
+    captured &= QRect(tileLayer->x(), tileLayer->y(),
+                      tileLayer->width(), tileLayer->height());
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());

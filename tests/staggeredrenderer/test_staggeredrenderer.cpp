@@ -21,11 +21,11 @@ private slots:
     void boundingRect_data();
     void boundingRect();
 
-    void pixelToTileCoords_data();
-    void pixelToTileCoords();
+    void screenToTileCoords_data();
+    void screenToTileCoords();
 
-    void tileToPixelCoords_data();
-    void tileToPixelCoords();
+    void tileToScreenCoords_data();
+    void tileToScreenCoords();
 
     void relativeCoordinates();
 
@@ -84,9 +84,9 @@ void test_StaggeredRenderer::boundingRect()
     QCOMPARE(renderer.boundingRect(tileRect), boundingRect);
 }
 
-void test_StaggeredRenderer::pixelToTileCoords_data()
+void test_StaggeredRenderer::screenToTileCoords_data()
 {
-    QTest::addColumn<QPointF>("pixelCoords");
+    QTest::addColumn<QPointF>("screenCoords");
     QTest::addColumn<QPointF>("tileCoords");
 
     QTest::newRow("10,16") << QPointF(10, 16) << QPointF(0, 0);
@@ -96,19 +96,19 @@ void test_StaggeredRenderer::pixelToTileCoords_data()
     QTest::newRow("32,-16") << QPointF(32, -16) << QPointF(0, -2);
 }
 
-void test_StaggeredRenderer::pixelToTileCoords()
+void test_StaggeredRenderer::screenToTileCoords()
 {
-    QFETCH(QPointF, pixelCoords);
+    QFETCH(QPointF, screenCoords);
     QFETCH(QPointF, tileCoords);
 
     StaggeredRenderer renderer(mMap);
-    QCOMPARE(renderer.pixelToTileCoords(pixelCoords), tileCoords);
+    QCOMPARE(renderer.screenToTileCoords(screenCoords), tileCoords);
 }
 
-void test_StaggeredRenderer::tileToPixelCoords_data()
+void test_StaggeredRenderer::tileToScreenCoords_data()
 {
     QTest::addColumn<QPointF>("tileCoords");
-    QTest::addColumn<QPointF>("pixelCoords");
+    QTest::addColumn<QPointF>("screenCoords");
 
     QTest::newRow("0,0") << QPointF(0, 0) << QPointF(0, 0);
     QTest::newRow("1,0") << QPointF(1, 0) << QPointF(64, 0);
@@ -116,13 +116,13 @@ void test_StaggeredRenderer::tileToPixelCoords_data()
     QTest::newRow("-1,-1") << QPointF(-1, -1) << QPointF(-32, -16);
 }
 
-void test_StaggeredRenderer::tileToPixelCoords()
+void test_StaggeredRenderer::tileToScreenCoords()
 {
     QFETCH(QPointF, tileCoords);
-    QFETCH(QPointF, pixelCoords);
+    QFETCH(QPointF, screenCoords);
 
     StaggeredRenderer renderer(mMap);
-    QCOMPARE(renderer.tileToPixelCoords(tileCoords), pixelCoords);
+    QCOMPARE(renderer.tileToScreenCoords(tileCoords), screenCoords);
 }
 
 void test_StaggeredRenderer::relativeCoordinates()

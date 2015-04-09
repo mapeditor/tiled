@@ -24,19 +24,23 @@
 #define TILESETDOCK_H
 
 #include <QDockWidget>
+#include <QList>
 #include <QMap>
 
+class QAction;
+class QActionGroup;
 class QComboBox;
+class QMenu;
+class QModelIndex;
+class QSignalMapper;
 class QStackedWidget;
 class QTabBar;
 class QToolBar;
-class QAction;
-class QSignalMapper;
 class QToolButton;
-class QMenu;
 
 namespace Tiled {
 
+class Terrain;
 class Tile;
 class TileLayer;
 class Tileset;
@@ -89,6 +93,8 @@ signals:
      */
     void tilesetsDropped(const QStringList &paths);
 
+    void newTileset();
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -96,13 +102,18 @@ protected:
     void dropEvent(QDropEvent *);
 
 private slots:
-    void insertTilesetView(int index, Tileset *tileset);
+    void selectionChanged();
     void updateActions();
     void updateCurrentTiles();
+    void updateCurrentTile();
+    void indexPressed(const QModelIndex &index);
+
+    void tilesetAdded(int index, Tileset *tileset);
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
     void tilesetNameChanged(Tileset *tileset);
+    void tileAnimationChanged(Tile *tile);
 
     void removeTileset();
     void removeTileset(int index);
@@ -112,9 +123,11 @@ private slots:
     void importTileset();
     void exportTileset();
 
-    void renameTileset();
+    void editTerrain();
+    void addTiles();
+    void removeTiles();
 
-    void documentCloseRequested(int index);
+    void documentAboutToClose(MapDocument *mapDocument);
 
     void refreshTilesetMenu();
 
@@ -124,25 +137,32 @@ private:
     void retranslateUi();
 
     Tileset *currentTileset() const;
+    TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
     MapDocument *mMapDocument;
+    QList<Tileset*> mTilesets;
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;
     Tile *mCurrentTile;
     TileLayer *mCurrentTiles;
+    const Terrain *mTerrain;
 
+    QAction *mNewTileset;
     QAction *mImportTileset;
     QAction *mExportTileset;
     QAction *mPropertiesTileset;
     QAction *mDeleteTileset;
-    QAction *mRenameTileset;
+    QAction *mEditTerrain;
+    QAction *mAddTiles;
+    QAction *mRemoveTiles;
 
     QMap<MapDocument *, QString> mCurrentTilesets;
 
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
+    QActionGroup *mTilesetActionGroup;
     QSignalMapper *mTilesetMenuMapper; //needed due to dynamic content
 
     Zoomable *mZoomable;

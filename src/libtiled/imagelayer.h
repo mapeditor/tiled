@@ -62,10 +62,6 @@ public:
     bool referencesTileset(const Tileset *) const { return false; }
     void replaceReferencesToTileset(Tileset *, Tileset *) {}
 
-    void offset(const QPoint &/*offset*/, const QRect &/*bounds*/,
-                bool /*wrapX*/, bool /*wrapY*/)
-    {}
-
     bool canMergeWith(Layer *) const { return false; }
     Layer *mergedWith(Layer *) const { return 0; }
 
@@ -73,7 +69,7 @@ public:
      * Returns the transparent color, or an invalid color if no transparent
      * color is used.
      */
-    QColor transparentColor() const { return mTransparentColor; }
+    const QColor &transparentColor() const { return mTransparentColor; }
 
     /**
      * Sets the transparent color. Pixels with this color will be masked out
@@ -84,7 +80,7 @@ public:
     /**
      *  Sets image source file name
      */
-    void setSource(const QString source) { mImageSource = source; }
+    void setSource(const QString &source) { mImageSource = source; }
 
     /**
      * Returns the file name of the layer image.
@@ -107,8 +103,9 @@ public:
     void resetImage();
 
     /**
-     * Load this layer from the given \a image. This will replace
-     * existing layer image.
+     * Load this layer from the given \a image. This will replace the existing
+     * image. The \a fileName becomes the new imageSource, regardless of
+     * whether the image could be loaded.
      *
      * @param image    the image to load the layer from
      * @param fileName the file name of the image, which will be remembered

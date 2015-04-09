@@ -24,71 +24,17 @@
 
 #include <QAction>
 #include <QActionGroup>
-#include <QEvent>
-#include <QToolBar>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-namespace {
-
-/**
- * A tool bar that emits a signal when the application language changes.
- */
-class ToolBar : public QToolBar
-{
-    Q_OBJECT
-
-public:
-    ToolBar(QWidget *parent = 0)
-        : QToolBar(parent)
-    {}
-
-signals:
-    void languageChanged();
-
-protected:
-    void changeEvent(QEvent *event)
-    {
-        QToolBar::changeEvent(event);
-        switch (event->type()) {
-        case QEvent::LanguageChange:
-            emit languageChanged();
-            break;
-        default:
-            break;
-        }
-    }
-};
-
-} // anonymous namespace
-
-ToolManager *ToolManager::mInstance = 0;
-
-ToolManager *ToolManager::instance()
-{
-    if (!mInstance)
-        mInstance = new ToolManager;
-    return mInstance;
-}
-
-void ToolManager::deleteInstance()
-{
-    delete mInstance;
-    mInstance = 0;
-}
-
-ToolManager::ToolManager()
-    : mToolBar(new ToolBar)
+ToolManager::ToolManager(QObject *parent)
+    : QObject(parent)
     , mActionGroup(new QActionGroup(this))
     , mSelectedTool(0)
     , mPreviouslyDisabledTool(0)
+    , mMapDocument(0)
 {
-    mToolBar->setObjectName(QLatin1String("toolsToolBar"));
-    mToolBar->setWindowTitle(tr("Tools"));
-    connect(mToolBar, SIGNAL(languageChanged()),
-            this, SLOT(languageChanged()));
-
     mActionGroup->setExclusive(true);
     connect(mActionGroup, SIGNAL(triggered(QAction*)),
             this, SLOT(actionTriggered(QAction*)));
@@ -96,11 +42,25 @@ ToolManager::ToolManager()
 
 ToolManager::~ToolManager()
 {
-    delete mToolBar;
 }
 
-void ToolManager::registerTool(AbstractTool *tool)
+void ToolManager::setMapDocument(MapDocument *mapDocument)
 {
+    if (mMapDocument == mapDocument)
+        return;
+
+    mMapDocument = mapDocument;
+
+    foreach (QAction *action, mActionGroup->actions()) {
+        AbstractTool *tool = action->data().value<AbstractTool*>();
+        tool->setMapDocument(mapDocument);
+    }
+}
+
+QAction *ToolManager::registerTool(AbstractTool *tool)
+{
+    tool->setMapDocument(mMapDocument);
+
     QAction *toolAction = new QAction(tool->icon(), tool->name(), this);
     toolAction->setShortcut(tool->shortcut());
     toolAction->setData(QVariant::fromValue<AbstractTool*>(tool));
@@ -110,7 +70,6 @@ void ToolManager::registerTool(AbstractTool *tool)
                                                   tool->shortcut().toString()));
     toolAction->setEnabled(tool->isEnabled());
     mActionGroup->addAction(toolAction);
-    mToolBar->addAction(toolAction);
 
     connect(tool, SIGNAL(enabledChanged(bool)),
             this, SLOT(toolEnabledChanged(bool)));
@@ -120,11 +79,8 @@ void ToolManager::registerTool(AbstractTool *tool)
         setSelectedTool(tool);
         toolAction->setChecked(true);
     }
-}
 
-void ToolManager::addSeparator()
-{
-    mToolBar->addSeparator();
+    return toolAction;
 }
 
 void ToolManager::selectTool(AbstractTool *tool)
@@ -150,7 +106,7 @@ void ToolManager::actionTriggered(QAction *action)
     setSelectedTool(action->data().value<AbstractTool*>());
 }
 
-void ToolManager::languageChanged()
+void ToolManager::retranslateTools()
 {
     // Allow the tools to adapt to the new language
     foreach (QAction *action, mActionGroup->actions()) {
@@ -231,5 +187,3 @@ void ToolManager::setSelectedTool(AbstractTool *tool)
                 this, SIGNAL(statusInfoChanged(QString)));
     }
 }
-
-#include "toolmanager.moc"

@@ -44,7 +44,7 @@ public:
     explicit TmxViewer(QWidget *parent = 0);
     ~TmxViewer();
 
-    void viewMap(const QString &fileName);
+    bool viewMap(const QString &fileName);
 
 private:
     QGraphicsScene *mScene;
