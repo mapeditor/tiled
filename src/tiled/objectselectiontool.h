@@ -87,10 +87,10 @@ private:
     void finishRotating(const QPointF &pos);
 
     void startResizing();
-    void updateResizingSingleItem(const QPointF &pos,
-                                  Qt::KeyboardModifiers modifiers);
     void updateResizingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
+    void updateResizingSingleItem(const QPointF &resizingOrigin,
+                                  const QPointF &screenPos);
     void finishResizing(const QPointF &pos);
     
     void saveSelectionState();

@@ -246,6 +246,7 @@ class ResizeHandle : public Handle
 public:
     ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = 0)
         : Handle(parent)
+        , mAnchorPosition(anchorPosition)
         , mResizingLimitHorizontal(false)
         , mResizingLimitVertical(false)
         , mArrow(createResizeArrow())
@@ -268,6 +269,8 @@ public:
 
         mArrow = transform.map(mArrow);
     }
+
+    AnchorPosition anchorPosition() const { return mAnchorPosition; }
     
     void setResizingOrigin(QPointF resizingOrigin) { mResizingOrigin = resizingOrigin; }
     QPointF resizingOrigin() const { return mResizingOrigin; }
@@ -279,6 +282,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
 private:
+    AnchorPosition mAnchorPosition;
     QPointF mResizingOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
@@ -467,10 +471,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         updateRotatingItems(pos, modifiers);
         break;
     case Resizing:
-        if (mMovingObjects.size() == 1)
-            updateResizingSingleItem(pos, modifiers);
-        else
-            updateResizingItems(pos, modifiers);
+        updateResizingItems(pos, modifiers);
         break;
     case NoMode:
         break;
@@ -579,20 +580,59 @@ void ObjectSelectionTool::languageChanged()
     setShortcut(QKeySequence(tr("S")));
 }
 
-// TODO: Check whether this function should be moved into MapObject::bounds
-static void align(QRectF &r, Alignment alignment)
+static QPointF alignmentOffset(QRectF &r, Alignment alignment)
 {
     switch (alignment) {
     case TopLeft:       break;
-    case Top:           r.translate(-r.width() / 2, 0);                 break;
-    case TopRight:      r.translate(-r.width(), 0);                     break;
-    case Left:          r.translate(0, -r.height() / 2);                break;
-    case Center:        r.translate(-r.width() / 2, -r.height() / 2);   break;
-    case Right:         r.translate(-r.width(), -r.height() / 2);       break;
-    case BottomLeft:    r.translate(0, -r.height());                    break;
-    case Bottom:        r.translate(-r.width() / 2, -r.height());       break;
-    case BottomRight:   r.translate(-r.width(), -r.height());           break;
+    case Top:           return QPointF(r.width() / 2, 0);               break;
+    case TopRight:      return QPointF(r.width(), 0);                   break;
+    case Left:          return QPointF(0, r.height() / 2);              break;
+    case Center:        return QPointF(r.width() / 2, r.height() / 2);  break;
+    case Right:         return QPointF(r.width(), r.height() / 2);      break;
+    case BottomLeft:    return QPointF(0, r.height());                  break;
+    case Bottom:        return QPointF(r.width() / 2, r.height());      break;
+    case BottomRight:   return QPointF(r.width(), r.height());          break;
     }
+    return QPointF();
+}
+
+// TODO: Check whether this function should be moved into MapObject::bounds
+static void align(QRectF &r, Alignment alignment)
+{
+    r.translate(-alignmentOffset(r, alignment));
+}
+
+static void unalign(QRectF &r, Alignment alignment)
+{
+    r.translate(alignmentOffset(r, alignment));
+}
+
+static QRectF pixelBounds(const MapObject *object)
+{
+    Q_ASSERT(object->cell().isEmpty()); // tile objects only have screen bounds
+
+    switch (object->shape()) {
+    case MapObject::Ellipse:
+    case MapObject::Rectangle: {
+        QRectF bounds(object->bounds());
+        align(bounds, object->alignment());
+        return bounds;
+    }
+    case MapObject::Polygon:
+    case MapObject::Polyline: {
+        // Alignment is irrelevant for polygon objects since they have no size
+        const QPointF &pos = object->position();
+        const QPolygonF polygon = object->polygon().translated(pos);
+        return polygon.boundingRect();
+    }
+    }
+
+    return QRectF();
+}
+
+static bool resizeInPixelSpace(const MapObject *object)
+{
+    return object->cell().isEmpty();
 }
 
 /* This function returns the actual bounds of the object, as opposed to the
@@ -689,19 +729,34 @@ void ObjectSelectionTool::updateHandles()
         qreal handleRotation = 0;
 
         // If there is only one object selected, align to its orientation.
-        if (objects.size() == 1 && objects.first()->rotation() != qreal(0)) {
+        if (objects.size() == 1) {
             MapObject *object = objects.first();
-            QRectF bounds = objectBounds(object, renderer, QTransform());
-
-            QTransform transform(objectTransform(object, renderer));
-            topLeft = transform.map(bounds.topLeft());
-            topRight = transform.map(bounds.topRight());
-            bottomLeft = transform.map(bounds.bottomLeft());
-            bottomRight = transform.map(bounds.bottomRight());
-
-            mSelectionCenter = transform.map(bounds.center());
 
             handleRotation = object->rotation();
+
+            if (resizeInPixelSpace(object)) {
+                QRectF bounds = pixelBounds(object);
+
+                QTransform transform(objectTransform(object, renderer));
+                topLeft = transform.map(renderer->pixelToScreenCoords(bounds.topLeft()));
+                topRight = transform.map(renderer->pixelToScreenCoords(bounds.topRight()));
+                bottomLeft = transform.map(renderer->pixelToScreenCoords(bounds.bottomLeft()));
+                bottomRight = transform.map(renderer->pixelToScreenCoords(bounds.bottomRight()));
+                mSelectionCenter = transform.map(renderer->pixelToScreenCoords(bounds.center()));
+
+                // Ugly hack to make handles appear nicer in this case
+                if (mapDocument()->map()->orientation() == Map::Isometric)
+                    handleRotation += 45;
+            } else {
+                QRectF bounds = objectBounds(object, renderer, QTransform());
+
+                QTransform transform(objectTransform(object, renderer));
+                topLeft = transform.map(bounds.topLeft());
+                topRight = transform.map(bounds.topRight());
+                bottomLeft = transform.map(bounds.bottomLeft());
+                bottomRight = transform.map(bounds.bottomRight());
+                mSelectionCenter = transform.map(bounds.center());
+            }
         }
 
         mOriginIndicator->setPos(mSelectionCenter);
@@ -964,15 +1019,28 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     QPointF diff = snappedScreenPos - resizingOrigin;
     QPointF startDiff = mStart - resizingOrigin;
 
-    // Calculate the scaling factor.
+    if (mMovingObjects.size() == 1) {
+        /* For single items the resizing is performed in object space in order
+         * to handle different scaling on X and Y axis as well as to improve
+         * handling of 0-sized objects.
+         */
+        updateResizingSingleItem(resizingOrigin, snappedScreenPos);
+        return;
+    }
+
+    /* Calculate the scaling factor. Minimum is 1% to protect against making
+     * everything 0-sized and non-recoverable (it's still possibly to run into
+     * problems by repeatedly scaling down to 1%, but that's asking for it)
+     */
     qreal scale;
-    if (mResizingLimitHorizontal)
-        scale = qMax((qreal)0, diff.y() / startDiff.y());
-    else if (mResizingLimitVertical)
-        scale = qMax((qreal)0, diff.x() / startDiff.x());
-    else
-        scale = (qMax((qreal)0, diff.x() / startDiff.x())
-                + qMax((qreal)0, diff.y() / startDiff.y())) / 2;
+    if (mResizingLimitHorizontal) {
+        scale = qMax((qreal)0.01, diff.y() / startDiff.y());
+    } else if (mResizingLimitVertical) {
+        scale = qMax((qreal)0.01, diff.x() / startDiff.x());
+    } else {
+        scale = (qMax((qreal)0.01, diff.x() / startDiff.x()) +
+                 qMax((qreal)0.01, diff.y() / startDiff.y())) / 2;
+    }
 
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF oldRelPos = object.oldItemPosition - resizingOrigin;
@@ -1010,73 +1078,132 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     }
 }
 
-void ObjectSelectionTool::updateResizingSingleItem(const QPointF &pos,
-                                                   Qt::KeyboardModifiers modifiers)
+void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
+                                                   const QPointF &screenPos)
 {
+    const MapRenderer *renderer = mapDocument()->renderer();
     const MovingObject &object = mMovingObjects.first();
-    MapRenderer *renderer = mapDocument()->renderer();
+    MapObject *mapObject = object.item->mapObject();
 
-    QPointF resizingOrigin = mOrigin;
-    if (modifiers & Qt::ShiftModifier)
-        resizingOrigin = mSelectionCenter;
+    /* These transformations undo and redo the object rotation, which is always
+     * applied in screen space.
+     */
+    QTransform unrotate;
+    unrotate.translate(object.oldItemPosition.x(), object.oldItemPosition.y());
+    unrotate.rotate(-object.oldRotation);
+    unrotate.translate(-object.oldItemPosition.x(), -object.oldItemPosition.y());
 
-    mOriginIndicator->setPos(resizingOrigin);
+    QTransform rotate;
+    rotate.translate(object.oldItemPosition.x(), object.oldItemPosition.y());
+    rotate.rotate(object.oldRotation);
+    rotate.translate(-object.oldItemPosition.x(), -object.oldItemPosition.y());
 
-    QPointF pixelPos = renderer->screenToPixelCoords(pos);
-    SnapHelper snapHelper(renderer, modifiers);
-    snapHelper.snap(pixelPos);
-    QPointF snappedScreenPos = renderer->pixelToScreenCoords(pixelPos);
+    QPointF origin = resizingOrigin * unrotate;
+    QPointF pos = screenPos * unrotate;
+    QPointF start = mStart * unrotate;
+    QPointF oldPos = object.oldItemPosition;
 
-    QPointF diff = snappedScreenPos - resizingOrigin;
-    QPointF startDiff = mStart - resizingOrigin;
+    /* In order for the resizing to work somewhat sanely in isometric mode,
+     * the resizing is performed in pixel space except for tile objects, which
+     * are not affected by isometric projection apart from their position.
+     */
+    const bool pixelSpace = resizeInPixelSpace(mapObject);
 
-    // Most calculations in this function occur in object space, so 
-    // we transform the scaling factors from world space.
-    qreal rotation = object.item->rotation() * M_PI / -180;
-    const qreal sn = std::sin(rotation);
-    const qreal cs = std::cos(rotation);
-
-    diff = QPointF(diff.x() * cs - diff.y() * sn,
-                   diff.x() * sn + diff.y() * cs);
-    startDiff = QPointF(startDiff.x() * cs - startDiff.y() * sn,
-                        startDiff.x() * sn + startDiff.y() * cs);
-
-    // Calculate scaling factor.
-    QSizeF scalingFactor(qMax((qreal)0, diff.x() / startDiff.x()),
-                         qMax((qreal)0, diff.y() / startDiff.y()));
-
-    if (mResizingLimitHorizontal)
-        scalingFactor.setWidth(1);
-    if (mResizingLimitVertical)
-        scalingFactor.setHeight(1);
-    
-    // Convert relative position into object space, scale,
-    // and then convert back to world space.
-    const QPointF oldRelPos = object.oldItemPosition - resizingOrigin;
-    const QPointF objectRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
-                               oldRelPos.x() * sn + oldRelPos.y() * cs);
-    const QPointF scaledRelPos(objectRelPos.x() * scalingFactor.width(),
-                               objectRelPos.y() * scalingFactor.height());
-    const QPointF newRelPos(scaledRelPos.x() * cs + scaledRelPos.y() * sn,
-                            scaledRelPos.x() * -sn + scaledRelPos.y() * cs);
-    const QPointF newScreenPos = resizingOrigin + newRelPos;
-    const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
-    const QSizeF newSize(object.oldSize.width() * scalingFactor.width(),
-                         object.oldSize.height() * scalingFactor.height());
-    
-    if (!object.oldPolygon.isEmpty()) {
-        QPolygonF newPolygon(object.oldPolygon.size());
-        for (int n = 0; n < object.oldPolygon.size(); ++n) {
-            const QPointF point(object.oldPolygon[n]);
-            newPolygon[n] = QPointF(point.x() * scalingFactor.width(),
-                                    point.y() * scalingFactor.height());
-        }
-        object.item->mapObject()->setPolygon(newPolygon);
+    if (pixelSpace) {
+        origin = renderer->screenToPixelCoords(origin);
+        pos = renderer->screenToPixelCoords(pos);
+        start = renderer->screenToPixelCoords(start);
+        oldPos = object.oldPosition;
     }
-    
+
+    const QPointF relPos = pos - origin;
+
+    QPointF newPos = oldPos;
+    QSizeF newSize = object.oldSize;
+
+    /* In case one of the anchors was used as-is, the desired size can be
+     * derived directly from the distance from the origin for rectangle
+     * and ellipse objects. This allows scaling up a 0-sized object without
+     * dealing with infinite scaling factor issues.
+     *
+     * For obvious reasons this can't work on polygons or polylines.
+     */
+    if (mClickedResizeHandle->resizingOrigin() == resizingOrigin &&
+            (mapObject->shape() == MapObject::Rectangle ||
+             mapObject->shape() == MapObject::Ellipse)) {
+
+        QRectF newBounds = QRectF(newPos, newSize);
+        align(newBounds, mapObject->alignment());
+
+        switch (mClickedResizeHandle->anchorPosition()) {
+        case LeftAnchor:
+        case TopLeftAnchor:
+        case BottomLeftAnchor:
+            newBounds.setLeft(qMin(pos.x(), origin.x())); break;
+        case RightAnchor:
+        case TopRightAnchor:
+        case BottomRightAnchor:
+            newBounds.setRight(qMax(pos.x(), origin.x())); break;
+        default:
+            // nothing to do on this axis
+            break;
+        }
+
+        switch (mClickedResizeHandle->anchorPosition()) {
+        case TopAnchor:
+        case TopLeftAnchor:
+        case TopRightAnchor:
+            newBounds.setTop(qMin(pos.y(), origin.y())); break;
+        case BottomAnchor:
+        case BottomLeftAnchor:
+        case BottomRightAnchor:
+            newBounds.setBottom(qMax(pos.y(), origin.y())); break;
+        default:
+            // nothing to do on this axis
+            break;
+        }
+
+        unalign(newBounds, mapObject->alignment());
+
+        newSize = newBounds.size();
+        newPos = newBounds.topLeft();
+    } else {
+        const QPointF startDiff = start - origin;
+
+        QSizeF scalingFactor(qMax((qreal)0.01, relPos.x() / startDiff.x()),
+                             qMax((qreal)0.01, relPos.y() / startDiff.y()));
+
+        if (mResizingLimitHorizontal)
+            scalingFactor.setWidth(1);
+        if (mResizingLimitVertical)
+            scalingFactor.setHeight(1);
+
+        QPointF oldRelPos = oldPos - origin;
+        newPos = origin + QPointF(oldRelPos.x() * scalingFactor.width(),
+                                  oldRelPos.y() * scalingFactor.height());
+
+        newSize.rwidth() *= scalingFactor.width();
+        newSize.rheight() *= scalingFactor.height();
+
+        if (!object.oldPolygon.isEmpty()) {
+            QPolygonF newPolygon(object.oldPolygon.size());
+            for (int n = 0; n < object.oldPolygon.size(); ++n) {
+                const QPointF &point = object.oldPolygon[n];
+                newPolygon[n] = QPointF(point.x() * scalingFactor.width(),
+                                        point.y() * scalingFactor.height());
+            }
+            mapObject->setPolygon(newPolygon);
+        }
+    }
+
+    if (pixelSpace)
+        newPos = renderer->pixelToScreenCoords(newPos);
+
+    newPos = renderer->screenToPixelCoords(newPos * rotate);
+
     object.item->resizeObject(newSize);
-    object.item->setPos(newScreenPos);
-    object.item->mapObject()->setPosition(newPos);
+    object.item->setPos(renderer->pixelToScreenCoords(newPos));
+    mapObject->setPosition(newPos);
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
