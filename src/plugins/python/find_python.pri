@@ -16,11 +16,7 @@
         exists(C:/Python27/include/Python.h) {
             HAVE_PYTHON = yes
             QMAKE_CXXFLAGS += -IC:/Python27/include/
-            CONFIG(debug, debug|release) {
-                QMAKE_LIBS += -LC:/Python27/libs -lpython27_d
-            } else {
-                QMAKE_LIBS += -LC:/Python27/libs -lpython27
-            }
+            QMAKE_LIBS += -LC:/Python27/libs -lpython27
         }
     }
 }
