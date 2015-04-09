@@ -59,34 +59,6 @@ using namespace Tiled::Internal;
 namespace Tiled {
 namespace Internal {
 
-/**
- * Rotation origin indicator.
- */
-class RotationOriginIndicator : public QGraphicsItem
-{
-public:
-    RotationOriginIndicator(QGraphicsItem *parent = 0)
-        : QGraphicsItem(parent)
-    {
-        setFlags(QGraphicsItem::ItemIgnoresTransformations |
-                 QGraphicsItem::ItemIgnoresParentOpacity);
-        setZValue(10000 + 1);
-        setOpacity(0.5);
-    }
-
-    QRectF boundingRect() const { return QRectF(-9, -9, 18, 18); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
-    {
-        static const QLine lines[] = {
-            QLine(-8,0, 8,0),
-            QLine(0,-8, 0,8),
-        };
-        painter->setPen(QPen(Qt::DashLine));
-        painter->drawLines(lines, sizeof(lines) / sizeof(lines[0]));
-    }
-};
-
-
 enum AnchorPosition {
     TopLeftAnchor,
     TopRightAnchor,
@@ -191,6 +163,39 @@ QVariant Handle::itemChange(GraphicsItemChange change, const QVariant &value)
         if (mUnderMouse)
             mUnderMouse = isUnderMouse();
     return QGraphicsItem::itemChange(change, value);
+}
+
+
+/**
+ * Rotation origin indicator.
+ */
+class OriginIndicator : public Handle
+{
+public:
+    OriginIndicator(QGraphicsItem *parent = 0)
+        : Handle(parent)
+    {
+        setFlag(QGraphicsItem::ItemIsMovable);
+        setZValue(10000 + 1);
+    }
+
+    QRectF boundingRect() const { return QRectF(-9, -9, 18, 18); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+};
+
+void OriginIndicator::paint(QPainter *painter,
+                            const QStyleOptionGraphicsItem *,
+                            QWidget *)
+{
+    static const QLine lines[] = {
+        QLine(-8,0, 8,0),
+        QLine(0,-8, 0,8),
+    };
+    painter->setPen(QPen(mUnderMouse ? Qt::white : Qt::lightGray, 1, Qt::DashLine));
+    painter->drawLines(lines, sizeof(lines) / sizeof(lines[0]));
+    painter->translate(1, 1);
+    painter->setPen(QPen(Qt::black, 1, Qt::DashLine));
+    painter->drawLines(lines, sizeof(lines) / sizeof(lines[0]));
 }
 
 
@@ -319,7 +324,7 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
           QKeySequence(tr("S")),
           parent)
     , mSelectionRectangle(new SelectionRectangle)
-    , mOriginIndicator(new RotationOriginIndicator)
+    , mOriginIndicator(new OriginIndicator)
     , mMousePressed(false)
     , mClickedObjectItem(0)
     , mClickedCornerHandle(0)
@@ -723,8 +728,7 @@ void ObjectSelectionTool::updateHandles()
         QPointF topRight = boundingRect.topRight();
         QPointF bottomLeft = boundingRect.bottomLeft();
         QPointF bottomRight = boundingRect.bottomRight();
-
-        mSelectionCenter = boundingRect.center();
+        QPointF center = boundingRect.center();
 
         qreal handleRotation = 0;
 
@@ -742,7 +746,7 @@ void ObjectSelectionTool::updateHandles()
                 topRight = transform.map(renderer->pixelToScreenCoords(bounds.topRight()));
                 bottomLeft = transform.map(renderer->pixelToScreenCoords(bounds.bottomLeft()));
                 bottomRight = transform.map(renderer->pixelToScreenCoords(bounds.bottomRight()));
-                mSelectionCenter = transform.map(renderer->pixelToScreenCoords(bounds.center()));
+                center = transform.map(renderer->pixelToScreenCoords(bounds.center()));
 
                 // Ugly hack to make handles appear nicer in this case
                 if (mapDocument()->map()->orientation() == Map::Isometric)
@@ -755,11 +759,11 @@ void ObjectSelectionTool::updateHandles()
                 topRight = transform.map(bounds.topRight());
                 bottomLeft = transform.map(bounds.bottomLeft());
                 bottomRight = transform.map(bounds.bottomRight());
-                mSelectionCenter = transform.map(bounds.center());
+                center = transform.map(bounds.center());
             }
         }
 
-        mOriginIndicator->setPos(mSelectionCenter);
+        mOriginIndicator->setPos(center);
 
         mCornerHandles[TopLeftAnchor]->setPos(topLeft);
         mCornerHandles[TopRightAnchor]->setPos(topRight);
@@ -989,8 +993,8 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
 void ObjectSelectionTool::startResizing()
 {
     mMode = Resizing;
+    mOrigin = mOriginIndicator->pos();
 
-    mOrigin = mClickedResizeHandle->resizingOrigin();
     mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
     mResizingLimitVertical = mClickedResizeHandle->resizingLimitVertical();
 
@@ -1005,9 +1009,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 {
     MapRenderer *renderer = mapDocument()->renderer();
 
-    QPointF resizingOrigin = mOrigin;
+    QPointF resizingOrigin = mClickedResizeHandle->resizingOrigin();
     if (modifiers & Qt::ShiftModifier)
-        resizingOrigin = mSelectionCenter;
+        resizingOrigin = mOrigin;
 
     mOriginIndicator->setPos(resizingOrigin);
 

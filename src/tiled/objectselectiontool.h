@@ -122,7 +122,6 @@ private:
     QList<MovingObject> mMovingObjects;
 
     QPointF mAlignPosition;
-    QPointF mSelectionCenter;
     QPointF mOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
