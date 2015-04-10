@@ -81,6 +81,8 @@ QtGuiApplication {
         "changetileanimation.h",
         "changetileobjectgroup.cpp",
         "changetileobjectgroup.h",
+        "changetileprobability.cpp",
+        "changetileprobability.h",
         "changetileterrain.cpp",
         "changetileterrain.h",
         "clipboardmanager.cpp",

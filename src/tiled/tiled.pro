@@ -66,6 +66,7 @@ SOURCES += aboutdialog.cpp \
     changeproperties.cpp \
     changetileanimation.cpp \
     changetileobjectgroup.cpp \
+    changetileprobability.cpp \
     changeselectedarea.cpp \
     changetileterrain.cpp \
     clipboardmanager.cpp \
@@ -199,6 +200,7 @@ HEADERS += aboutdialog.h \
     changeproperties.h \
     changetileanimation.h \
     changetileobjectgroup.h \
+    changetileprobability.h \
     changeselectedarea.h \
     changetileterrain.h \
     clipboardmanager.h \

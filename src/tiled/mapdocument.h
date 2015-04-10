@@ -269,15 +269,21 @@ public:
     void unifyTilesets(Map *map);
 
     void emitMapChanged();
+
     void emitRegionChanged(const QRegion &region);
     void emitRegionEdited(const QRegion &region, Layer *layer);
+
     void emitTileLayerDrawMarginsChanged(TileLayer *layer);
     void emitTilesetChanged(Tileset *tileset);
+
+    void emitTileProbabilityChanged(Tile *tile);
     void emitTileTerrainChanged(const QList<Tile*> &tiles);
     void emitTileObjectGroupChanged(Tile *tile);
     void emitTileAnimationChanged(Tile *tile);
+
     void emitObjectGroupChanged(ObjectGroup *objectGroup);
     void emitImageLayerChanged(ImageLayer *imageLayer);
+
     void emitEditLayerNameRequested();
     void emitEditCurrentObject();
 
@@ -346,31 +352,13 @@ signals:
 
     void tileLayerDrawMarginsChanged(TileLayer *layer);
 
-    /**
-     * Emitted when the terrain information for the given list of tiles was
-     * changed. All the tiles are guaranteed to be from the same tileset.
-     */
     void tileTerrainChanged(const QList<Tile*> &tiles);
-
-    /**
-     * Emitted when the object group associated with a tile changes.
-     */
+    void tileProbabilityChanged(Tile *tile);
     void tileObjectGroupChanged(Tile *tile);
-
-    /**
-     * Emitted when the animation of a tile changes.
-     */
     void tileAnimationChanged(Tile *tile);
 
-    /**
-     * Emitted after the color of an object group has changed.
-     */
     void objectGroupChanged(ObjectGroup *objectGroup);
 
-    /**
-     * Emitted after the image and/or the transparent color of an image layer
-     * have changed.
-     */
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void tilesetAboutToBeAdded(int index);
@@ -510,6 +498,14 @@ inline void MapDocument::emitRegionEdited(const QRegion &region, Layer *layer)
 inline void MapDocument::emitTileLayerDrawMarginsChanged(TileLayer *layer)
 {
     emit tileLayerDrawMarginsChanged(layer);
+}
+
+/**
+ * Emits the signal notifying about the terrain probability of a tile changing.
+ */
+inline void MapDocument::emitTileProbabilityChanged(Tile *tile)
+{
+    emit tileProbabilityChanged(tile);
 }
 
 /**
