@@ -535,14 +535,14 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         return;
 
     switch (mAction) {
-    case NoAction:
+    case NoAction: {
         if (mClickedRotateHandle || mClickedResizeHandle) {
             // Don't change selection as a result of clicking on a handle
             break;
         }
+        const Qt::KeyboardModifiers modifiers = event->modifiers();
         if (mClickedObjectItem) {
             QSet<MapObjectItem*> selection = mapScene()->selectedObjectItems();
-            const Qt::KeyboardModifiers modifiers = event->modifiers();
             if (modifiers & (Qt::ShiftModifier | Qt::ControlModifier)) {
                 if (selection.contains(mClickedObjectItem))
                     selection.remove(mClickedObjectItem);
@@ -553,10 +553,11 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                 selection.insert(mClickedObjectItem);
             }
             mapScene()->setSelectedObjectItems(selection);
-        } else {
+        } else if (!(modifiers & Qt::ShiftModifier)) {
             mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>());
         }
         break;
+    }
     case Selecting:
         updateSelection(event->scenePos(), event->modifiers());
         mapScene()->removeItem(mSelectionRectangle);
@@ -718,7 +719,7 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
 
 void ObjectSelectionTool::updateHandles()
 {
-    if (mAction == Moving || mAction == Rotating)
+    if (mAction == Moving || mAction == Rotating || mAction == Resizing)
         return;
 
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
