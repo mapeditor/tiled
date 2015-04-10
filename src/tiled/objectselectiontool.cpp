@@ -202,10 +202,10 @@ void OriginIndicator::paint(QPainter *painter,
 /**
  * Corner rotation handle.
  */
-class CornerHandle : public Handle
+class RotateHandle : public Handle
 {
 public:
-    CornerHandle(AnchorPosition corner, QGraphicsItem *parent = 0)
+    RotateHandle(AnchorPosition corner, QGraphicsItem *parent = 0)
         : Handle(parent)
         , mArrow(createRotateArrow())
     {
@@ -230,7 +230,7 @@ private:
     QPainterPath mArrow;
 };
 
-void CornerHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+void RotateHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                          QWidget *)
 {
     QPen pen(mUnderMouse ? Qt::black : Qt::lightGray, 1);
@@ -327,12 +327,14 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mOriginIndicator(new OriginIndicator)
     , mMousePressed(false)
     , mClickedObjectItem(0)
-    , mClickedCornerHandle(0)
+    , mClickedRotateHandle(0)
     , mClickedResizeHandle(0)
-    , mMode(NoMode)
+    , mResizingLimitHorizontal(false)
+    , mResizingLimitVertical(false)
+    , mAction(NoAction)
 {
     for (int i = 0; i < CornerAnchorCount; ++i)
-        mCornerHandles[i] = new CornerHandle(static_cast<AnchorPosition>(i));
+        mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
     for (int i = 0; i < AnchorCount; ++i)
         mResizeHandles[i] = new ResizeHandle(static_cast<AnchorPosition>(i));
 }
@@ -343,7 +345,7 @@ ObjectSelectionTool::~ObjectSelectionTool()
     delete mOriginIndicator;
 
     for (int i = 0; i < CornerAnchorCount; ++i)
-        delete mCornerHandles[i];
+        delete mRotateHandles[i];
     for (int i = 0; i < AnchorCount; ++i)
         delete mResizeHandles[i];
 }
@@ -366,7 +368,7 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
     scene->addItem(mOriginIndicator);
     for (int i = 0; i < CornerAnchorCount; ++i)
-        scene->addItem(mCornerHandles[i]);
+        scene->addItem(mRotateHandles[i]);
     for (int i = 0; i < AnchorCount; ++i)
         scene->addItem(mResizeHandles[i]);
 }
@@ -375,7 +377,7 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mOriginIndicator);
     for (int i = 0; i < CornerAnchorCount; ++i)
-        scene->removeItem(mCornerHandles[i]);
+        scene->removeItem(mRotateHandles[i]);
     for (int i = 0; i < AnchorCount; ++i)
         scene->removeItem(mResizeHandles[i]);
 
@@ -391,7 +393,7 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
 
 void ObjectSelectionTool::keyPressed(QKeyEvent *event)
 {
-    if (mMode != NoMode) {
+    if (mAction != NoAction) {
         event->ignore();
         return;
     }
@@ -449,14 +451,14 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
-    if (mMode == NoMode && mMousePressed) {
+    if (mAction == NoAction && mMousePressed) {
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
             // Holding shift makes sure we'll start a selection operation
             if (mClickedObjectItem && !(modifiers & Qt::ShiftModifier))
                 startMoving();
-            else if (mClickedCornerHandle)
+            else if (mClickedRotateHandle)
                 startRotating();
             else if (mClickedResizeHandle)
                 startResizing();
@@ -465,7 +467,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         }
     }
 
-    switch (mMode) {
+    switch (mAction) {
     case Selecting:
         mSelectionRectangle->setRectangle(QRectF(mStart, pos).normalized());
         break;
@@ -478,7 +480,7 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     case Resizing:
         updateResizingItems(pos, modifiers);
         break;
-    case NoMode:
+    case NoAction:
         break;
     }
 }
@@ -492,7 +494,7 @@ static QGraphicsView *findView(QGraphicsSceneEvent *event)
 
 void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mMode != NoMode) // Ignore additional presses during select/move
+    if (mAction != NoAction) // Ignore additional presses during select/move
         return;
 
     switch (event->button()) {
@@ -501,20 +503,20 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mStart = event->scenePos();
         mScreenStart = event->screenPos();
 
-        CornerHandle *clickedCornerHandle = 0;
+        RotateHandle *clickedRotateHandle = 0;
         ResizeHandle *clickedResizeHandle = 0;
 
         if (QGraphicsView *view = findView(event)) {
             QGraphicsItem *clickedItem = mapScene()->itemAt(event->scenePos(),
                                                             view->transform());
 
-            clickedCornerHandle = dynamic_cast<CornerHandle*>(clickedItem);
+            clickedRotateHandle = dynamic_cast<RotateHandle*>(clickedItem);
             clickedResizeHandle = dynamic_cast<ResizeHandle*>(clickedItem);
         }
 
-        mClickedCornerHandle = clickedCornerHandle;
+        mClickedRotateHandle = clickedRotateHandle;
         mClickedResizeHandle = clickedResizeHandle;
-        if (!clickedCornerHandle && !clickedResizeHandle)
+        if (!clickedRotateHandle && !clickedResizeHandle)
             mClickedObjectItem = topMostObjectItemAt(mStart);
 
         break;
@@ -530,9 +532,9 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() != Qt::LeftButton)
         return;
 
-    switch (mMode) {
-    case NoMode:
-        if (mClickedCornerHandle || mClickedResizeHandle) {
+    switch (mAction) {
+    case NoAction:
+        if (mClickedRotateHandle || mClickedResizeHandle) {
             // Don't change selection as a result of clicking on a handle
             break;
         }
@@ -556,7 +558,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     case Selecting:
         updateSelection(event->scenePos(), event->modifiers());
         mapScene()->removeItem(mSelectionRectangle);
-        mMode = NoMode;
+        mAction = NoAction;
         break;
     case Moving:
         finishMoving(event->scenePos());
@@ -571,7 +573,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
     mMousePressed = false;
     mClickedObjectItem = 0;
-    mClickedCornerHandle = 0;
+    mClickedRotateHandle = 0;
 }
 
 void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -707,7 +709,7 @@ static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
 
 void ObjectSelectionTool::updateHandles()
 {
-    if (mMode == Moving || mMode == Rotating)
+    if (mAction == Moving || mAction == Rotating)
         return;
 
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
@@ -765,10 +767,10 @@ void ObjectSelectionTool::updateHandles()
 
         mOriginIndicator->setPos(center);
 
-        mCornerHandles[TopLeftAnchor]->setPos(topLeft);
-        mCornerHandles[TopRightAnchor]->setPos(topRight);
-        mCornerHandles[BottomLeftAnchor]->setPos(bottomLeft);
-        mCornerHandles[BottomRightAnchor]->setPos(bottomRight);
+        mRotateHandles[TopLeftAnchor]->setPos(topLeft);
+        mRotateHandles[TopRightAnchor]->setPos(topRight);
+        mRotateHandles[BottomLeftAnchor]->setPos(bottomLeft);
+        mRotateHandles[BottomRightAnchor]->setPos(bottomRight);
 
         QPointF top = (topLeft + topRight) / 2;
         QPointF left = (topLeft + bottomLeft) / 2;
@@ -794,7 +796,7 @@ void ObjectSelectionTool::updateHandles()
         mResizeHandles[BottomRightAnchor]->setResizingOrigin(topLeft);
 
         for (int i = 0; i < CornerAnchorCount; ++i)
-            mCornerHandles[i]->setRotation(handleRotation);
+            mRotateHandles[i]->setRotation(handleRotation);
         for (int i = 0; i < AnchorCount; ++i)
             mResizeHandles[i]->setRotation(handleRotation);
     }
@@ -806,14 +808,14 @@ void ObjectSelectionTool::updateHandles()
 void ObjectSelectionTool::setHandlesVisible(bool visible)
 {
     for (int i = 0; i < CornerAnchorCount; ++i)
-        mCornerHandles[i]->setVisible(visible);
+        mRotateHandles[i]->setVisible(visible);
     for (int i = 0; i < AnchorCount; ++i)
         mResizeHandles[i]->setVisible(visible);
 }
 
 void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
 {
-    if (mMode != Moving && mMode != Rotating)
+    if (mAction != Moving && mAction != Rotating)
         return;
 
     // Abort move/rotate to avoid crashing...
@@ -824,7 +826,7 @@ void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
         if (!objects.contains(mapObject)) {
             mapObject->setPosition(object.oldPosition);
             object.item->setPos(object.oldItemPosition);
-            if (mMode == Rotating)
+            if (mAction == Rotating)
                 object.item->setObjectRotation(object.oldRotation);
         }
         ++i;
@@ -858,7 +860,7 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
 
 void ObjectSelectionTool::startSelecting()
 {
-    mMode = Selecting;
+    mAction = Selecting;
     mapScene()->addItem(mSelectionRectangle);
 }
 
@@ -870,7 +872,7 @@ void ObjectSelectionTool::startMoving()
 
     saveSelectionState();
 
-    mMode = Moving;
+    mAction = Moving;
     mAlignPosition = mMovingObjects.first().oldPosition;
 
     foreach (const MovingObject &object, mMovingObjects) {
@@ -907,8 +909,8 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
 
 void ObjectSelectionTool::finishMoving(const QPointF &pos)
 {
-    Q_ASSERT(mMode == Moving);
-    mMode = NoMode;
+    Q_ASSERT(mAction == Moving);
+    mAction = NoAction;
     updateHandles();
 
     if (mStart == pos) // Move is a no-op
@@ -928,7 +930,7 @@ void ObjectSelectionTool::finishMoving(const QPointF &pos)
 
 void ObjectSelectionTool::startRotating()
 {
-    mMode = Rotating;
+    mAction = Rotating;
     mOrigin = mOriginIndicator->pos();
 
     saveSelectionState();
@@ -970,8 +972,8 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 
 void ObjectSelectionTool::finishRotating(const QPointF &pos)
 {
-    Q_ASSERT(mMode == Rotating);
-    mMode = NoMode;
+    Q_ASSERT(mAction == Rotating);
+    mAction = NoAction;
     updateHandles();
 
     if (mStart == pos) // No rotation at all
@@ -992,7 +994,7 @@ void ObjectSelectionTool::finishRotating(const QPointF &pos)
 
 void ObjectSelectionTool::startResizing()
 {
-    mMode = Resizing;
+    mAction = Resizing;
     mOrigin = mOriginIndicator->pos();
 
     mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
@@ -1224,8 +1226,8 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
 {
-    Q_ASSERT(mMode == Resizing);
-    mMode = NoMode;
+    Q_ASSERT(mAction == Resizing);
+    mAction = NoAction;
     updateHandles();
 
     if (mStart == pos) // No scaling at all

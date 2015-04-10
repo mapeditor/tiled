@@ -30,7 +30,7 @@ class QGraphicsItem;
 namespace Tiled {
 namespace Internal {
 
-class CornerHandle;
+class RotateHandle;
 class ResizeHandle;
 class MapObjectItem;
 class SelectionRectangle;
@@ -63,8 +63,8 @@ private slots:
     void objectsRemoved(const QList<MapObject *> &);
 
 private:
-    enum Mode {
-        NoMode,
+    enum Action {
+        NoAction,
         Selecting,
         Moving,
         Rotating,
@@ -112,11 +112,11 @@ private:
 
     SelectionRectangle *mSelectionRectangle;
     QGraphicsItem *mOriginIndicator;
-    CornerHandle *mCornerHandles[4];
+    RotateHandle *mRotateHandles[4];
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
     MapObjectItem *mClickedObjectItem;
-    CornerHandle *mClickedCornerHandle;
+    RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;
 
     QList<MovingObject> mMovingObjects;
@@ -125,7 +125,7 @@ private:
     QPointF mOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
-    Mode mMode;
+    Action mAction;
     QPointF mStart;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
