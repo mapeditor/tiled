@@ -39,6 +39,7 @@ class Map;
 class MapObject;
 class ObjectGroup;
 class TileLayer;
+class Tile;
 class Tileset;
 
 namespace Internal {
