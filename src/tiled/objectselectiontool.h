@@ -58,7 +58,7 @@ public:
 
 private slots:
     void updateHandles();
-    void setHandlesVisible(bool visible);
+    void updateHandleVisibility();
 
     void objectsRemoved(const QList<MapObject *> &);
 
@@ -69,6 +69,11 @@ private:
         Moving,
         Rotating,
         Resizing
+    };
+
+    enum Mode {
+        Resize,
+        Rotate,
     };
 
     void updateSelection(const QPointF &pos,
@@ -94,6 +99,7 @@ private:
                                   Qt::KeyboardModifiers modifiers);
     void finishResizing(const QPointF &pos);
     
+    void setMode(Mode mode);
     void saveSelectionState();
 
     const QPointF snapToGrid(const QPointF &pos,
@@ -125,6 +131,7 @@ private:
     QPointF mOrigin;
     bool mResizingLimitHorizontal;
     bool mResizingLimitVertical;
+    Mode mMode;
     Action mAction;
     QPointF mStart;
     QPoint mScreenStart;
