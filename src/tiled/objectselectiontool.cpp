@@ -456,14 +456,16 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
             // Holding shift makes sure we'll start a selection operation
-            if (mClickedObjectItem && !(modifiers & Qt::ShiftModifier))
-                startMoving();
-            else if (mClickedRotateHandle)
+            if ((mClickedObjectItem || modifiers & Qt::AltModifier) &&
+                    !(modifiers & Qt::ShiftModifier)) {
+                startMoving(modifiers);
+            } else if (mClickedRotateHandle) {
                 startRotating();
-            else if (mClickedResizeHandle)
+            } else if (mClickedResizeHandle) {
                 startResizing();
-            else
+            } else {
                 startSelecting();
+            }
         }
     }
 
@@ -574,6 +576,7 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     mMousePressed = false;
     mClickedObjectItem = 0;
     mClickedRotateHandle = 0;
+    mClickedResizeHandle = 0;
 }
 
 void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -864,11 +867,13 @@ void ObjectSelectionTool::startSelecting()
     mapScene()->addItem(mSelectionRectangle);
 }
 
-void ObjectSelectionTool::startMoving()
+void ObjectSelectionTool::startMoving(Qt::KeyboardModifiers modifiers)
 {
     // Move only the clicked item, if it was not part of the selection
-    if (!mapScene()->selectedObjectItems().contains(mClickedObjectItem))
-        mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>() << mClickedObjectItem);
+    if (mClickedObjectItem && !(modifiers & Qt::AltModifier)) {
+        if (!mapScene()->selectedObjectItems().contains(mClickedObjectItem))
+            mapScene()->setSelectedObjectItems(QSet<MapObjectItem*>() << mClickedObjectItem);
+    }
 
     saveSelectionState();
 
