@@ -698,16 +698,22 @@ static QRectF objectBounds(const MapObject *object,
     return QRectF();
 }
 
-static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
+static QTransform rotateAt(const QPointF &position, qreal rotation)
 {
     QTransform transform;
+    transform.translate(position.x(), position.y());
+    transform.rotate(rotation);
+    transform.translate(-position.x(), -position.y());
+    return transform;
+}
+
+static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
+{
     if (object->rotation() != 0) {
         const QPointF pos = renderer->pixelToScreenCoords(object->position());
-        transform.translate(pos.x(), pos.y());
-        transform.rotate(object->rotation());
-        transform.translate(-pos.x(), -pos.y());
+        return rotateAt(pos, object->rotation());
     }
-    return transform;
+    return QTransform();
 }
 
 void ObjectSelectionTool::updateHandles()
@@ -1105,15 +1111,8 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     /* These transformations undo and redo the object rotation, which is always
      * applied in screen space.
      */
-    QTransform unrotate;
-    unrotate.translate(object.oldItemPosition.x(), object.oldItemPosition.y());
-    unrotate.rotate(-object.oldRotation);
-    unrotate.translate(-object.oldItemPosition.x(), -object.oldItemPosition.y());
-
-    QTransform rotate;
-    rotate.translate(object.oldItemPosition.x(), object.oldItemPosition.y());
-    rotate.rotate(object.oldRotation);
-    rotate.translate(-object.oldItemPosition.x(), -object.oldItemPosition.y());
+    QTransform unrotate = rotateAt(object.oldItemPosition, -object.oldRotation);
+    QTransform rotate = rotateAt(object.oldItemPosition, object.oldRotation);
 
     QPointF origin = resizingOrigin * unrotate;
     QPointF pos = screenPos * unrotate;
