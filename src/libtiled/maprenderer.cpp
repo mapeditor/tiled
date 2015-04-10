@@ -153,7 +153,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &ce
     fragment.scaleX = scale.width() * (flippedHorizontally ? -1 : 1);
     fragment.scaleY = scale.height() * (flippedVertically ? -1 : 1);
 
-    if (mIsOpenGL || (fragment.scaleX == 1 && fragment.scaleY == 1)) {
+    if (mIsOpenGL || (fragment.scaleX > 0 && fragment.scaleY > 0)) {
         mTile = cell.tile;
         mFragments.append(fragment);
         return;
