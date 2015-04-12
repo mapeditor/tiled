@@ -1,6 +1,7 @@
 /*
  * main.cpp
  * Copyright 2012, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2015, Przemysław Grzywacz <nexather@gmail.com>
  *
  * This file is part of the Terrain Generator tool.
  *
@@ -45,13 +46,17 @@ struct CommandLineOptions {
         : showHelp(false)
         , showVersion(false)
         , overwrite(false)
+        , embedImage(false)
     {}
 
     bool showHelp;
     bool showVersion;
     bool overwrite;
+    bool embedImage;
     QString target;
     QStringList sources;
+    QStringList terrainPriority;
+    QList<QStringList> combineList;
 };
 
 } // anonymous namespace
@@ -60,11 +65,21 @@ static void showHelp()
 {
     // TODO: Make translatable
     qWarning() <<
-            "Usage: terraingenerator [options] [target] [sources...]\n\n"
+            "Usage: terraingenerator [options]\n\n"
             "Options:\n"
-            "  -h --help      : Display this help\n"
-            "  -v --version   : Display the version\n"
-            "     --overwrite : Target is overwritten rather than extended";
+            "  -h --help        : Display this help.\n"
+            "  -v --version     : Display the version.\n"
+            "     --overwrite   : Target is overwritten rather than extended.\n"
+            "  -e --embed-image : Tile images will be embedded in the TSX file instead\n"
+            "                     of being saved as a separated PNG file.\n"
+            "  -c --combine T1[ T2 [Tn ...]]\n"
+            "                   : Specify the terrains to combine together (all combinations).\n"
+            "  -s --source TS1[ TS2 [TSn ...]]\n"
+            "                   : Add source tilesets, order is not important.\n"
+            "  -o --output OUT  : Specify output tileset filename.\n"
+            "  -p --priority T1[ T2 [Tn ...]]\n"
+            "                   : Add terrain names to priority list (T1 < T2 < Tn).\n"
+    ;
 }
 
 static void showVersion()
@@ -73,28 +88,116 @@ static void showVersion()
                << qPrintable(QCoreApplication::applicationVersion());
 }
 
-static void parseCommandLineArguments(CommandLineOptions &options)
+static bool parseCommandLineArguments(CommandLineOptions &options)
 {
     const QStringList arguments = QCoreApplication::arguments();
+    bool inPriority = false;
+    bool inSource = false;
+    bool inCombine = false;
+    int argCount = 0;
 
     for (int i = 1; i < arguments.size(); ++i) {
         const QString &arg = arguments.at(i);
+
+        // Process source option.
+        if (inSource) {
+            if (arg.at(0) == QLatin1Char('-')) {
+                // Some other option is starting here.
+                if (argCount == 0) {
+                    qWarning() << "Missing arguments for --source option.";
+                }
+                inSource = false;
+            } else {
+                // Append the source file.
+                argCount++;
+                options.sources.append(arg);
+                continue;
+            }
+        }
+
+        // Process priority option.
+        if (inPriority) {
+            if (arg.at(0) == QLatin1Char('-')) {
+                // Some other option is starting here.
+                if (argCount == 0) {
+                    qWarning() << "Missing arguments for --priority option.";
+                }
+                inPriority = false;
+            } else {
+                // Append the terrain name.
+                argCount++;
+                options.terrainPriority.append(arg);
+                continue;
+            }
+        }
+
+        // Process combine option.
+        if (inCombine) {
+            if (arg.at(0) == QLatin1Char('-')) {
+                // Some other option is starting here.
+                if (argCount == 0) {
+                    qWarning() << "Missing arguments for --combine option.";
+                }
+                inCombine = false;
+            } else {
+                // Append the terrain name.
+                argCount++;
+                options.combineList.last().append(arg);
+                continue;
+            }
+        }
+
+        // Process other options.
         if (arg == QLatin1String("--help") || arg == QLatin1String("-h")) {
             options.showHelp = true;
         } else if (arg == QLatin1String("--version")
                 || arg == QLatin1String("-v")) {
             options.showVersion = true;
+        } else if (arg == QLatin1String("-o")
+                || arg == QLatin1String("--output")) {
+            i++;
+            if (i >= arguments.size()) {
+                qWarning() << "Missing argument to" << arg << "option";
+                return false;
+            }
+            const QString& arg2 = arguments.at(i);
+            if (arg2.at(0) == QLatin1Char('-')) {
+                i--;
+                qWarning() << "Missing argument to" << arg << "option";
+                return false;
+            } else {
+                options.target = arg2;
+            }
         } else if (arg == QLatin1String("--overwrite")) {
             options.overwrite = true;
+        } else if (arg == QLatin1String("-e")
+                || arg == QLatin1String("--embed-image")) {
+            options.embedImage = true;
+        } else if (arg == QLatin1String("-c")
+                || arg == QLatin1String("--combine")) {
+            // What follows is a list of terrain names to combine together.
+            inCombine = true;
+            options.combineList.append(QStringList());
+            argCount = 0;
+        } else if (arg == QLatin1String("-p")
+                || arg == QLatin1String("--priority")) {
+            // What follows is a list of terrain names.
+            inPriority = true;
+            argCount = 0;
+        } else if (arg == QLatin1String("-s")
+                || arg == QLatin1String("--source")) {
+            // What follows is a list of input tilesets.
+            inSource = true;
+            argCount = 0;
         } else if (arg.at(0) == QLatin1Char('-')) {
             qWarning() << "Unknown option" << arg;
             options.showHelp = true;
-        } else if (options.target.isEmpty()) {
-            options.target = arg;
         } else {
-            options.sources.append(arg);
+            qWarning() << "Unknown argument" << arg;
         }
     }
+
+    return true;
 }
 
 static bool hasTerrain(Tileset *tileset, const QString &name)
@@ -240,7 +343,11 @@ int main(int argc, char *argv[])
     a.setApplicationVersion(QLatin1String("1.0"));
 
     CommandLineOptions options;
-    parseCommandLineArguments(options);
+
+    if (!parseCommandLineArguments(options)) {
+        // Something went wrong, abort.
+        return 1;
+    }
 
     if (options.showVersion)
         showVersion();
@@ -256,6 +363,13 @@ int main(int argc, char *argv[])
     }
     if (options.sources.isEmpty()) {
         qWarning() << "Error: No source tilesets provided";
+        showHelp();
+        return 1;
+    }
+
+    // Check terrain priorities.
+    if (options.terrainPriority.isEmpty()) {
+        qWarning("Error: No terrain priorities set (option -p).");
         showHelp();
         return 1;
     }
@@ -284,6 +398,7 @@ int main(int argc, char *argv[])
         sources.append(targetTileset);
     }
 
+    // Read source tilesets.
     foreach (const QString &sourceFileName, options.sources) {
         Tileset *source = reader.readTileset(sourceFileName);
         if (!source) {
@@ -319,26 +434,49 @@ int main(int argc, char *argv[])
             if (!terrains.contains(terrain->name()))
                 terrains.insert(terrain->name(), terrain);
 
-    // Assign terrain priority based on the order in which we encounter
-    // them (this will determine drawing order).
-    QStringList terrainOrder;
-    terrainOrder << "LavaRock";
-    terrainOrder << "Dirt2";
-    terrainOrder << "Dirt";
-    terrainOrder << "Sand";
-    terrainOrder << "Water";
-    terrainOrder << "Hole";
-    terrainOrder << "Grass";
-    terrainOrder << "PlowedSoil";
-    terrainOrder << "Lava";
+    // Check if there is anything to combine.
+    if (options.combineList.size() == 0) {
+        qWarning() << "No terrain specified to combine (-c option).";
+    } else {
+        // Dump the combine lists.
+        qWarning() << "Terrains to combine:";
+        foreach (const QStringList &combine, options.combineList) {
+            if (combine.isEmpty()) {
+                qFatal("Empty combine set");
+            }
+            qWarning() << combine;
+
+            // Make sure every terrain from this set was defined.
+            foreach (const QString &terrainName, combine)
+                if (!terrains.contains(terrainName))
+                    qFatal("Terrain %s is in combine list, however it wasn't defined by any tileset.",
+                           qPrintable(terrainName));
+        }
+    }
+
+    // Setup terrain priorities.
     TerrainLessThan lessThan;
     int priority = 0;
-    foreach (const QString &terrainName, terrainOrder) {
+    foreach (const QString &terrainName, options.terrainPriority) {
         lessThan.terrainPriority.insert(terrainName, priority);
         ++priority;
     }
 
     qDebug() << "Terrains found:" << terrains.keys();
+
+    // Check if all terrains from priority list were found and loaded.
+    foreach (const QString &terrainName, lessThan.terrainPriority.keys())
+        if (!terrains.contains(terrainName))
+            qWarning() << "Terrain" << terrainName << "from priority list not found.";
+
+    // Add terrain names not specified from command line.
+    foreach (const QString &terrainName, terrains.keys()) {
+        if (!lessThan.terrainPriority.contains(terrainName)) {
+            qWarning() << "No priority set for" << terrainName;
+            lessThan.terrainPriority.insert(terrainName, priority);
+            ++priority;
+        }
+    }
 
     // Add terrains that are not defined in the target tileset yet
     // TODO: This step should be more configurable
@@ -360,107 +498,25 @@ int main(int argc, char *argv[])
         }
     }
 
-    QList<Terrain*> terrainList;// = targetTileset->terrains();
-    terrainList.append(terrains["Dirt"]);
-    terrainList.append(terrains["Darkdirt"]);
-    terrainList.append(terrains["Water"]);
-    terrainList.append(terrains["Grass"]);
-
-    // Construct a vector with all terrain combinations to process
-    // TODO: This step should be more configurable
+    // Prepare a list of terrain combinations.
     QVector<TileTerrainNames> process;
-    foreach (Terrain *topLeft, terrainList) {
-        foreach (Terrain *topRight, terrainList) {
-            foreach (Terrain *bottomLeft, terrainList) {
-                foreach (Terrain *bottomRight, terrainList) {
-                    process.append(TileTerrainNames(topLeft->name(),
-                                                    topRight->name(),
-                                                    bottomLeft->name(),
-                                                    bottomRight->name()));
-                }
-            }
+    foreach (const QStringList& combine, options.combineList) {
+        QList<Terrain*> terrainList;
+        // get the terrains to combine
+        foreach (const QString& terrainName, combine) {
+            terrainList.append(terrains[terrainName]);
         }
-    }
 
-    terrainList.clear();
-    terrainList.append(terrains["Darkdirt"]);
-    terrainList.append(terrains["Grass"]);
-    terrainList.append(terrains["Lavarock"]);
-    foreach (Terrain *topLeft, terrainList) {
-        foreach (Terrain *topRight, terrainList) {
-            foreach (Terrain *bottomLeft, terrainList) {
-                foreach (Terrain *bottomRight, terrainList) {
-                    process.append(TileTerrainNames(topLeft->name(),
-                                                    topRight->name(),
-                                                    bottomLeft->name(),
-                                                    bottomRight->name()));
-                }
-            }
-        }
-    }
-
-    terrainList.clear();
-    terrainList.append(terrains["Lava"]);
-    terrainList.append(terrains["Lavarock"]);
-    foreach (Terrain *topLeft, terrainList) {
-        foreach (Terrain *topRight, terrainList) {
-            foreach (Terrain *bottomLeft, terrainList) {
-                foreach (Terrain *bottomRight, terrainList) {
-                    process.append(TileTerrainNames(topLeft->name(),
-                                                    topRight->name(),
-                                                    bottomLeft->name(),
-                                                    bottomRight->name()));
-                }
-            }
-        }
-    }
-
-
-
-    terrainList.clear();
-    terrainList.append(terrains["PlowedSoil"]);
-    terrainList.append(terrains["Grass"]);
-    foreach (Terrain *topLeft, terrainList) {
-        foreach (Terrain *topRight, terrainList) {
-            foreach (Terrain *bottomLeft, terrainList) {
-                foreach (Terrain *bottomRight, terrainList) {
-                    process.append(TileTerrainNames(topLeft->name(),
-                                                    topRight->name(),
-                                                    bottomLeft->name(),
-                                                    bottomRight->name()));
-                }
-            }
-        }
-    }
-
-    terrainList.clear();
-    terrainList.append(terrains["Dirt"]);
-    terrainList.append(terrains["Hole"]);
-    terrainList.append(terrains["Grass"]);
-    foreach (Terrain *topLeft, terrainList) {
-        foreach (Terrain *topRight, terrainList) {
-            foreach (Terrain *bottomLeft, terrainList) {
-                foreach (Terrain *bottomRight, terrainList) {
-                    process.append(TileTerrainNames(topLeft->name(),
-                                                    topRight->name(),
-                                                    bottomLeft->name(),
-                                                    bottomRight->name()));
-                }
-            }
-        }
-    }
-
-    terrainList.clear();
-    terrainList.append(terrains["Sand"]);
-    terrainList.append(terrains["Water"]);
-    foreach (Terrain *topLeft, terrainList) {
-        foreach (Terrain *topRight, terrainList) {
-            foreach (Terrain *bottomLeft, terrainList) {
-                foreach (Terrain *bottomRight, terrainList) {
-                    process.append(TileTerrainNames(topLeft->name(),
-                                                    topRight->name(),
-                                                    bottomLeft->name(),
-                                                    bottomRight->name()));
+        // Construct a vector with all terrain combinations to process
+        foreach (Terrain *topLeft, terrainList) {
+            foreach (Terrain *topRight, terrainList) {
+                foreach (Terrain *bottomLeft, terrainList) {
+                    foreach (Terrain *bottomRight, terrainList) {
+                        process.append(TileTerrainNames(topLeft->name(),
+                                                        topRight->name(),
+                                                        bottomLeft->name(),
+                                                        bottomRight->name()));
+                    }
                 }
             }
         }
@@ -521,30 +577,37 @@ int main(int argc, char *argv[])
     if (targetTileset->tileCount() == 0)
         qFatal("Target tileset is empty");
 
-    int columns = qMin(16, targetTileset->tileCount());
-    int rows = targetTileset->tileCount() / 16;
-    if (targetTileset->tileCount() % 16 > 0)
-        ++rows;
+    if (options.embedImage) {
+        // Make sure there is no source name, this way the image will be saved in the TSX file.
+        targetTileset->setImageSource(QString());
+    } else {
+        // Save the target tileset image as separate file.
+        int columns = qMin(16, targetTileset->tileCount());
+        int rows = targetTileset->tileCount() / 16;
+        if (targetTileset->tileCount() % 16 > 0)
+            ++rows;
 
-    // Save the target tileset image
-    QImage image(targetTileset->tileWidth() * columns,
-                 targetTileset->tileHeight() * rows,
-                 QImage::Format_ARGB32);
+        qWarning() << "Writing external tileset image.";
+        // Save the target tileset image
+        QImage image(targetTileset->tileWidth() * columns,
+                     targetTileset->tileHeight() * rows,
+                     QImage::Format_ARGB32);
 
-    image.fill(Qt::transparent);
-    QPainter painter(&image);
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
 
-    foreach (Tile *tile, targetTileset->tiles()) {
-        int x = (tile->id() % 16) * targetTileset->tileWidth();
-        int y = (tile->id() / 16) * targetTileset->tileHeight();
-        painter.drawPixmap(x, y, tile->image());
+        foreach (Tile *tile, targetTileset->tiles()) {
+            int x = (tile->id() % 16) * targetTileset->tileWidth();
+            int y = (tile->id() / 16) * targetTileset->tileHeight();
+            painter.drawPixmap(x, y, tile->image());
+        }
+
+        QString imageFileName = QFileInfo(options.target).completeBaseName();
+        imageFileName += ".png";
+        image.save(imageFileName);
+
+        targetTileset->setImageSource(imageFileName);
     }
-
-    QString imageFileName = QFileInfo(options.target).completeBaseName();
-    imageFileName += ".png";
-    image.save(imageFileName);
-
-    targetTileset->setImageSource(imageFileName);
 
     // Save the target tileset
     MapWriter writer;
