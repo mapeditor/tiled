@@ -5,6 +5,7 @@ TEMPLATE = app
 TARGET = terraingenerator
 target.path = $${PREFIX}/bin
 INSTALLS += target
+CONFIG += console
 TEMPLATE = app
 win32 {
     DESTDIR = ../..
