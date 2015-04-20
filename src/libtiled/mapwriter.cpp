@@ -109,7 +109,7 @@ MapWriterPrivate::MapWriterPrivate()
 
 bool MapWriterPrivate::openFile(QIODevice *file)
 {
-    if (!file->open(QIODevice::WriteOnly)) {
+    if (!file->open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
