@@ -24,6 +24,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
+#include "swaptiles.h"
 #include "tmxmapwriter.h"
 #include "tile.h"
 #include "tileset.h"
@@ -582,6 +583,15 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             Utils::setThemeIcon(tileProperties, "document-properties");
             connect(tileProperties, SIGNAL(triggered()),
                     SLOT(editTileProperties()));
+
+            // Enable "swap" if there are exactly 2 tiles selected
+            bool exactlyTwoTilesSelected =
+                    (selectionModel()->selectedIndexes().size() == 2);
+
+            QAction *tileSwap = menu.addAction(tr("&Swap Tiles"));
+            tileSwap->setEnabled(exactlyTwoTilesSelected);
+            connect(tileSwap, SIGNAL(triggered()),
+                    SLOT(swapTiles()));
         }
 
         menu.addSeparator();
@@ -618,6 +628,25 @@ void TilesetView::editTileProperties()
 
     mMapDocument->setCurrentObject(tile);
     mMapDocument->emitEditCurrentObject();
+}
+
+void TilesetView::swapTiles()
+{
+    const QModelIndexList selectedIndexes = selectionModel()->selectedIndexes();
+    if (selectedIndexes.size() != 2)
+        return;
+
+    TileLayer *tileLayer = dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
+    if (!tileLayer)
+        return;
+
+    const TilesetModel *model = tilesetModel();
+    Tile *tile1 = model->tileAt(selectedIndexes[0]);
+    Tile *tile2 = model->tileAt(selectedIndexes[1]);
+
+    QUndoStack *undoStack = mMapDocument->undoStack();
+    QUndoCommand *command = new SwapTiles(mMapDocument, tileLayer, tile1, tile2);
+    undoStack->push(command);
 }
 
 void TilesetView::setDrawGrid(bool drawGrid)

@@ -252,6 +252,8 @@ QtGuiApplication {
         "snaphelper.h",
         "stampbrush.cpp",
         "stampbrush.h",
+        "swaptiles.cpp",
+        "swaptiles.h",
         "terrainbrush.cpp",
         "terrainbrush.h",
         "terraindock.cpp",

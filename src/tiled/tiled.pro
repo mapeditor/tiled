@@ -134,6 +134,7 @@ SOURCES += aboutdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
     quickstampmanager.cpp \
+    swaptiles.cpp \
     raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \

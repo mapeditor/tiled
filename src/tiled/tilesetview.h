@@ -126,6 +126,7 @@ private slots:
     void createNewTerrain();
     void selectTerrainImage();
     void editTileProperties();
+    void swapTiles();
     void setDrawGrid(bool drawGrid);
 
     void adjustScale();
