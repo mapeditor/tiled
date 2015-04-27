@@ -1,12 +1,22 @@
 0.12.0 (...)
+* Added support for resizing any object as well as multiselection (with mauve)
+* Added Control modifier for preserving aspect ratio while resizing
+* Added Shift modifier for resizing with origin in the middle
+* Added Alt modifier for suppressing selection changes when starting to drag
 * Added a Magic Wand selection tool (by Henry Jia)
+* Added tile probability attribute to tile properties view
 * Added a Donate button to the About dialog
 * Added a Patreon dialog to the Help menu
 * Remember the directory used for external tilesets (by Henry Jia)
 * Don't set a window icon on Mac OS X
+* Changed the way tile probability is applied (now it's relative)
+* Fixed object selection behavior when Shift is held while clicking on nothing
 * Fixed grid snapping being applied for staggered maps even when not enabled
 * Fixed infinite memory allocation loop on invalid tile size in TMX file
 * Fixed file icon associated with TMX files on Windows
+* Fixed automapping of tile objects
+* Fixed 'Export as Image' to handle out of memory errors
+* Fixed TMX files to be written in native line endings
 * Updated Russian translation
 
 0.11.0 (11 January 2015)
