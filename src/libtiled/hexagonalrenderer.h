@@ -49,19 +49,6 @@ protected:
     {
         RenderParams(const Map *map);
 
-        bool stagger(int x, int y) const
-        {
-            if (staggerX)
-                return (x & 1) ^ staggerEven;
-            else
-                return (y & 1) ^ staggerEven;
-        }
-
-        bool stagger(const QPoint &point) const
-        {
-            return stagger(point.x(), point.y());
-        }
-
         bool doStaggerX(int x) const
         { return staggerX && (x & 1) ^ staggerEven; }
 
