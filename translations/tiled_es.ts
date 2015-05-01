@@ -3192,7 +3192,7 @@ Por favor seleccione un formato específico.</translation>
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;¡Con tu ayuda puedo continuar mejorando Tiled!&lt;/h3&gt;
-&lt;p&gt;Considera mostrar tu apoyo como mi patrozinador. Tu apoyo haría una gran diferencia para mí, el desarrollador princiapl e mantenedor de Tiled. Podría gastar menos tiempo trabajando por dinero en otras cosas y usar más de tiempo para trabajar en Tiled.&lt;/p&gt;
+&lt;p&gt;Considera mostrar tu apoyo como mi patrocinador. Tu apoyo haría una gran diferencia para mí, el desarrollador princiapl e mantenedor de Tiled. Podría gastar menos tiempo trabajando por dinero en otras cosas y usar más de tiempo para trabajar en Tiled.&lt;/p&gt;
 &lt;p&gt;Toda aportación ayuda. Tiled tiene muchos usuarios y si cada uno de ellos hiciera una pequeña donación al mes, yo tendría más tiempo para seguir mejorando Tiled.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
