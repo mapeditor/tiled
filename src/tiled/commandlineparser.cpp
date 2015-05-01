@@ -72,8 +72,8 @@ bool CommandLineParser::parse(const QStringList &arguments)
         if (arg.length() == 1) {
             // Traditionally a single hyphen means read file from stdin,
             // write file to stdout. This isn't supported right now.
-            qWarning().nospace() << "Bad argument " << index
-                                 << ": lonely hyphen";
+            qWarning().nospace() << tr("Bad argument ") << index
+                                 << tr(": lonely hyphen");
             showHelp();
             return false;
         }
@@ -87,7 +87,7 @@ bool CommandLineParser::parse(const QStringList &arguments)
             }
 
             if (!handleLongOption(arg)) {
-                qWarning().nospace() << "Unknown long argument " << index
+                qWarning().nospace() << tr("Unknown long argument ") << index
                                      << ": " << arg;
                 mShowHelp = true;
                 break;
@@ -100,7 +100,7 @@ bool CommandLineParser::parse(const QStringList &arguments)
         for (int i = 1; i < arg.length(); ++i) {
             const QChar c = arg.at(i);
             if (!handleShortOption(c)) {
-                qWarning().nospace() << "Unknown short argument " << index
+                qWarning().nospace() << tr("Unknown short argument ") << index
                                      << '.' << i << ": " << c;
                 mShowHelp = true;
                 break;
@@ -118,13 +118,11 @@ bool CommandLineParser::parse(const QStringList &arguments)
 
 void CommandLineParser::showHelp()
 {
-    // TODO: Make translatable
-    qWarning().nospace() << "Usage:\n"
-                         << "  " << qPrintable(mCurrentProgramName)
-                         << " [options] [files...]\n\n"
-                         << "Options:";
+    qWarning().nospace() << tr("Usage:\n  " << qPrintable(mCurrentProgramName)
+                         << " [options] [files...]\n\n")
+                         << tr("Options") << ":";
 
-    qWarning("  -h %-*s : Display this help", mLongestArgument, "--help");
+    qWarning("  -h %-*s : " + qPrintable(tr("Display this help")), mLongestArgument, "--help");
 
     foreach (const Option &option, mOptions) {
         if (!option.shortName.isNull()) {

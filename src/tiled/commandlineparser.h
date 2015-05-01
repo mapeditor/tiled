@@ -22,6 +22,7 @@
 #ifndef COMMANDLINEPARSER_H
 #define COMMANDLINEPARSER_H
 
+#include <QCoreApplication>
 #include <QStringList>
 #include <QVector>
 
@@ -54,6 +55,8 @@ void MemberFunctionCall(void *object)
  */
 class CommandLineParser
 {
+
+    Q_DECLARE_TR_FUNCTIONS(CommandLineParser);
 
 public:
     CommandLineParser();
