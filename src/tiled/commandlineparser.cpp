@@ -118,13 +118,13 @@ bool CommandLineParser::parse(const QStringList &arguments)
 
 void CommandLineParser::showHelp()
 {
-    // TODO: Make translatable
-    qWarning().nospace() << "Usage:\n"
+    qWarning().nospace() << QObject::tr("Usage") << ":\n"
                          << "  " << qPrintable(mCurrentProgramName)
-                         << " [options] [files...]\n\n"
-                         << "Options:";
+                         << " [" << QObject::tr("options") << "]"
+						 << " [" << QObject::tr("files") << "...]\n\n"
+                         << QObject::tr("Options") << ":";
 
-    qWarning("  -h %-*s : Display this help", mLongestArgument, "--help");
+    qWarning("  -h %-*s : " + QObject::tr("Display this help").toUtf8(), mLongestArgument, "--help");
 
     foreach (const Option &option, mOptions) {
         if (!option.shortName.isNull()) {
