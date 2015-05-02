@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -11,7 +9,7 @@
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Faire un don</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -22,14 +20,10 @@
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2015 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Copyright 2008-2015 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste complète des contributeurs.)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;Il vous est possible de modifier et de redistribuer ce programme selon les termes de la license GPL (version 2 ou supérieure). Une copie de la GPL est présente dans le fichier &apos;COPYING&apos; distribué avec Tiled.&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
-</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -213,47 +207,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en tant qu&apos;image</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished">Emplacement</translation>
+        <translation>Emplacement</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished">Nom :</translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Rechercher...</translation>
+        <translation>&amp;Rechercher...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished">Configuration</translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished">&amp;Inclure uniquement les calques visibles</translation>
+        <translation>Inclure uniquement les calques &amp;visibles</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished">Utiliser le &amp;zoom actuel</translation>
+        <translation>Utiliser le niveau de &amp;zoom courant</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished">&amp;Afficher la grille</translation>
+        <translation>&amp;Dessiner la grille</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished">&amp;Inclure la couleur d&apos;arrière-plan</translation>
+        <translation>&amp;Inclure la couleur de fond</translation>
     </message>
 </context>
 <context>
@@ -430,7 +424,12 @@
         <translation>&amp;Redimensionner la carte...</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+9"/>
+        <source>Map &amp;Properties</source>
+        <translation>&amp;Propriétés de la carte</translation>
+    </message>
+    <message>
+        <location line="+5"/>
         <source>AutoMap</source>
         <translation>AutoMap</translation>
     </message>
@@ -460,14 +459,69 @@
         <translation>&amp;Nouveau...</translation>
     </message>
     <message>
-        <location line="+193"/>
-        <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <location line="+9"/>
+        <source>New &amp;Tileset...</source>
+        <translation>Nouveau &amp;Tileset...</translation>
     </message>
     <message>
-        <location line="-13"/>
+        <location line="+9"/>
+        <source>&amp;Close</source>
+        <translation>&amp;Fermer</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Zoom In</source>
+        <translation>Zoomer</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Zoom Out</source>
+        <translation>Dézoomer</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Normal Size</source>
+        <translation>Taille Normale</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+0</source>
+        <translation>Ctrl+0</translation>
+    </message>
+    <message>
+        <location line="+142"/>
+        <source>Become a Patron</source>
+        <translation>Devenir un mécène</translation>
+    </message>
+    <message>
+        <location line="-125"/>
+        <source>Cu&amp;t</source>
+        <translation>&amp;Couper</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&amp;Offset Map...</source>
+        <translation>&amp;Gérer le décalage de la carte...</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Offsets everything in a layer</source>
+        <translation>Décalage du calque</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Pre&amp;ferences...</source>
+        <translation>&amp;Préférences...</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Clear Recent Files</source>
+        <translation>Effacer les fichiers récemment ouverts</translation>
+    </message>
+    <message>
+        <location line="+87"/>
         <source>Ctrl+R</source>
-        <translation></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location line="+5"/>
@@ -487,7 +541,7 @@
     <message>
         <location line="-50"/>
         <source>Export As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en tant qu&apos;&amp;Image...</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -497,7 +551,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location line="+13"/>
@@ -512,7 +566,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation></translation>
+        <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -553,66 +607,6 @@
         <location line="+5"/>
         <source>Reload</source>
         <translation>Recharger</translation>
-    </message>
-    <message>
-        <location line="-168"/>
-        <source>New &amp;Tileset...</source>
-        <translation>Nouveau &amp;Tileset...</translation>
-    </message>
-    <message>
-        <location line="-46"/>
-        <source>Map &amp;Properties</source>
-        <translation>&amp;Propriétés de la carte</translation>
-    </message>
-    <message>
-        <location line="+55"/>
-        <source>&amp;Close</source>
-        <translation>&amp;Fermer</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Zoom In</source>
-        <translation>Zoomer</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Zoom Out</source>
-        <translation>Dézoomer</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Normal Size</source>
-        <translation>Taille Normale</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+0</source>
-        <translation>Ctrl+0</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Cu&amp;t</source>
-        <translation>&amp;Couper</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>&amp;Offset Map...</source>
-        <translation>&amp;Gérer le décalage de la carte...</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Offsets everything in a layer</source>
-        <translation>Décalage du calque</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Pre&amp;ferences...</source>
-        <translation>&amp;Préférences...</translation>
-    </message>
-    <message>
-        <location line="+12"/>
-        <source>Clear Recent Files</source>
-        <translation>Effacer les fichiers récemment ouverts</translation>
     </message>
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
@@ -1031,22 +1025,22 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Devenir un mécène</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Visit https://www.patreon.com/bjorn</source>
-        <translation type="unfinished"></translation>
+        <translation>Visitez  https://www.patreon.com/bjorn</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Je suis déjà un mécène !</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>Peut-être plus tard</translation>
     </message>
 </context>
 <context>
@@ -1814,18 +1808,12 @@ Ligne %1, colonne %2</translation>
     <message numerus="yes">
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+177"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Dupliquer un objet</numerusform>
-            <numerusform>Dupliquer %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Dupliquer un objet</numerusform><numerusform>Dupliquer %n objets</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Effacer un objet</numerusform>
-            <numerusform>Effacer %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Effacer un objet</numerusform><numerusform>Effacer %n objets</numerusform></translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1890,10 +1878,7 @@ Ligne %1, colonne %2</translation>
     <message numerus="yes">
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Déplacer un objet vers le calque</numerusform>
-            <numerusform>Déplacer %n objets vers le calque</numerusform>
-        </translation>
+        <translation><numerusform>Déplacer un objet vers le calque</numerusform><numerusform>Déplacer %n objets vers le calque</numerusform></translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2291,19 +2276,13 @@ Ligne %1, colonne %2</translation>
     <message numerus="yes">
         <location line="+217"/>
         <source>Move %n Point(s)</source>
-        <translation>
-            <numerusform>Déplacer un point</numerusform>
-            <numerusform>Déplacer %n points</numerusform>
-        </translation>
+        <translation><numerusform>Déplacer un point</numerusform><numerusform>Déplacer %n points</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation>
-            <numerusform>Supprimer un nœud</numerusform>
-            <numerusform>Supprimer %n nœuds</numerusform>
-        </translation>
+        <translation><numerusform>Supprimer un nœud</numerusform><numerusform>Supprimer %n nœuds</numerusform></translation>
     </message>
     <message>
         <location line="-40"/>
@@ -2351,43 +2330,44 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+63"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en tant qu&apos;image</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished">Le fichier %1 existe déjà. Voulez-vous le remplacer ?</translation>
+        <translation>%1 existe déjà.
+Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Plus de mémoire</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas assez de mémoire disponible pour l&apos;image. Essayez de réduire le niveau de zoom ou utiliser une version 64-bit de Tiled.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Image too Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Image trop grande</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;image obtenue serait de %1 x %2 pixels et utiliserait %3 Go mémoire. Tiled ne peut pas créer une telle image. Essayez de réduire le niveau de zoom.</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Image</source>
-        <translation type="unfinished">Image</translation>
+        <translation>Image</translation>
     </message>
 </context>
 <context>
@@ -2458,13 +2438,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/magicwandtool.cpp" line="+40"/>
         <location line="+52"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>Baguette Magique</translation>
     </message>
     <message>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -2482,18 +2462,7 @@ Do you want to replace it?</source>
         <translation>Rétablir</translation>
     </message>
     <message>
-        <location line="+536"/>
-        <source>Open Map</source>
-        <translation>Ouvrir une carte</translation>
-    </message>
-    <message>
-        <location line="-17"/>
-        <location line="+68"/>
-        <source>Tiled map files (*.tmx)</source>
-        <translation>Fichiers de cartes au format Tiled (*.tmx)</translation>
-    </message>
-    <message>
-        <location line="-537"/>
+        <location line="+50"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -2576,7 +2545,18 @@ Do you want to replace it?</source>
         <translation>Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location line="-147"/>
+        <location line="-192"/>
+        <location line="+68"/>
+        <source>Tiled map files (*.tmx)</source>
+        <translation>Fichiers de cartes au format Tiled (*.tmx)</translation>
+    </message>
+    <message>
+        <location line="-51"/>
+        <source>Open Map</source>
+        <translation>Ouvrir une carte</translation>
+    </message>
+    <message>
+        <location line="+28"/>
         <source>Error Saving Map</source>
         <translation>Erreur lors de la sauvegarde de la carte</translation>
     </message>
@@ -2649,7 +2629,18 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+90"/>
+        <source>Tiled tileset files (*.tsx)</source>
+        <translation>Tiled - Tilesets externes (*.tsx)</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <location line="+6"/>
+        <source>Error Reading Tileset</source>
+        <translation>Erreur lors de la lecture du Tileset</translation>
+    </message>
+    <message>
+        <location line="+80"/>
         <source>Automatic Mapping Warning</source>
         <translation>Avertissement de mapping automatique</translation>
     </message>
@@ -2679,12 +2670,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-1144"/>
         <source>Alt+Left</source>
-        <translation></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location line="+7"/>
         <source>Alt+Right</source>
-        <translation></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location line="+725"/>
@@ -2699,10 +2690,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+13"/>
         <source>Add %n Tileset(s)</source>
-        <translation>
-            <numerusform>Ajouter un Tileset</numerusform>
-            <numerusform>Ajouter %n Tilesets</numerusform>
-        </translation>
+        <translation><numerusform>Ajouter un Tileset</numerusform><numerusform>Ajouter %n Tilesets</numerusform></translation>
     </message>
     <message>
         <location line="+200"/>
@@ -2718,17 +2706,6 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+144"/>
         <source>[*]%1 - Tiled</source>
         <translation>[*]%1 - Tiled</translation>
-    </message>
-    <message>
-        <location line="-380"/>
-        <source>Tiled tileset files (*.tsx)</source>
-        <translation>Tiled - Tilesets externes (*.tsx)</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <location line="+6"/>
-        <source>Error Reading Tileset</source>
-        <translation>Erreur lors de la lecture du Tileset</translation>
     </message>
 </context>
 <context>
@@ -2751,10 +2728,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>Pivoter un objet</numerusform>
-            <numerusform>Pivoter %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Pivoter un objet</numerusform><numerusform>Pivoter %n objets</numerusform></translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2799,32 +2773,48 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+154"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Dupliquer un objet</numerusform>
-            <numerusform>Dupliquer %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Dupliquer un objet</numerusform><numerusform>Dupliquer %n objets</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+20"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Effacer un objet</numerusform>
-            <numerusform>Effacer %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Effacer un objet</numerusform><numerusform>Effacer %n objets</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Déplacer un objet vers le calque</numerusform>
-            <numerusform>Déplacer %n objets vers le calque</numerusform>
-        </translation>
+        <translation><numerusform>Déplacer un objet vers le calque</numerusform><numerusform>Déplacer %n objets vers le calque</numerusform></translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+149"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+55"/>
+        <source>Ctrl+Shift+A</source>
+        <translation>Ctrl+Shift+A</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Ctrl+Shift+D</source>
+        <translation>Ctrl+Shift+D</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Ctrl+Shift+Up</source>
+        <translation>Ctrl+Shift+Up</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Ctrl+Shift+Down</source>
+        <translation>Ctrl+Shift+Down</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Ctrl+Shift+H</source>
+        <translation>Ctrl+Shift+H</translation>
+    </message>
+    <message>
+        <location line="+58"/>
         <source>Select &amp;All</source>
         <translation>&amp;Tout sélectionner</translation>
     </message>
@@ -2834,28 +2824,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Tout &amp;désélectionner</translation>
     </message>
     <message>
-        <location line="-95"/>
-        <source>Ctrl+Shift+A</source>
-        <translation>Ctrl+Shift+A</translation>
-    </message>
-    <message>
-        <location line="+100"/>
-        <source>&amp;Duplicate Layer</source>
-        <translation>&amp;Dupliquer le calque</translation>
-    </message>
-    <message>
-        <location line="-91"/>
-        <source>Ctrl+Shift+D</source>
-        <translation>Ctrl+Shift+D</translation>
-    </message>
-    <message>
-        <location line="+27"/>
-        <source>Ctrl+Shift+H</source>
-        <translatorcomment>Do not translate shortcuts!!   Ne surtout pas traduire les raccourcis !! Utiliser les mêmes idiomes anglais si le raccourcis devait être changé.</translatorcomment>
-        <translation>Ctrl+Shift+H</translation>
-    </message>
-    <message>
-        <location line="+60"/>
+        <location line="+1"/>
         <source>&amp;Crop to Selection</source>
         <translation>&amp;Rogner vers la sélection</translation>
     </message>
@@ -2870,42 +2839,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Ajouter un calque d&apos;&amp;objet</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Add &amp;Image Layer</source>
-        <translation>Ajouter un calque d&apos;&amp;image</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Merge Layer Down</source>
-        <translation>&amp;Fusionner le calque vers le bas</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Remove Layer</source>
-        <translation>&amp;Supprimer le calque</translation>
-    </message>
-    <message>
-        <location line="-76"/>
-        <source>Ctrl+Shift+Up</source>
-        <translation>Ctrl+Shift+Up</translation>
-    </message>
-    <message>
-        <location line="-6"/>
-        <source>Ctrl+PgUp</source>
-        <translation>Ctrl+PgUp</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Ctrl+PgDown</source>
-        <translation>Ctrl+PgDown</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Ctrl+Shift+Down</source>
-        <translation>Ctrl+Shift+Down</translation>
-    </message>
-    <message>
-        <location line="+72"/>
+        <location line="+5"/>
         <source>Select Pre&amp;vious Layer</source>
         <translation>Sélectionner le calque précé&amp;dent</translation>
     </message>
@@ -2929,26 +2863,15 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>Show/&amp;Hide all Other Layers</source>
         <translation>Montrer/Cac&amp;her tous les autres calques</translation>
     </message>
-    <message>
-        <location line="+1"/>
-        <source>Layer &amp;Properties...</source>
-        <translation>&amp;Propriétés du calque...</translation>
-    </message>
     <message numerus="yes">
-        <location line="+245"/>
+        <location line="+246"/>
         <source>Duplicate %n Object(s)</source>
-        <translation>
-            <numerusform>Dupliquer un objet</numerusform>
-            <numerusform>Dupliquer %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Dupliquer un objet</numerusform><numerusform>Dupliquer %n objets</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation>
-            <numerusform>Effacer un objet</numerusform>
-            <numerusform>Effacer %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Effacer un objet</numerusform><numerusform>Effacer %n objets</numerusform></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2959,6 +2882,41 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+1"/>
         <source>Remove Objects</source>
         <translation>Effacer les objets</translation>
+    </message>
+    <message>
+        <location line="-257"/>
+        <source>&amp;Duplicate Layer</source>
+        <translation>&amp;Dupliquer le calque</translation>
+    </message>
+    <message>
+        <location line="-80"/>
+        <source>Ctrl+PgUp</source>
+        <translation>Ctrl+PgUp</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Ctrl+PgDown</source>
+        <translation>Ctrl+PgDown</translation>
+    </message>
+    <message>
+        <location line="+76"/>
+        <source>Add &amp;Image Layer</source>
+        <translation>Ajouter un calque d&apos;&amp;image</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Merge Layer Down</source>
+        <translation>&amp;Fusionner le calque vers le bas</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Remove Layer</source>
+        <translation>&amp;Supprimer le calque</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Layer &amp;Properties...</source>
+        <translation>&amp;Propriétés du calque...</translation>
     </message>
 </context>
 <context>
@@ -3099,26 +3057,17 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-162"/>
         <location line="+510"/>
         <source>Move %n Object(s)</source>
-        <translation>
-            <numerusform>Déplacer un objet</numerusform>
-            <numerusform>Déplacer %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Déplacer un objet</numerusform><numerusform>Déplacer %n objets</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+63"/>
         <source>Rotate %n Object(s)</source>
-        <translation>
-            <numerusform>Pivoter un objet</numerusform>
-            <numerusform>Pivoter %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Pivoter un objet</numerusform><numerusform>Pivoter %n objets</numerusform></translation>
     </message>
     <message numerus="yes">
         <location line="+247"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
 </context>
 <context>
@@ -3154,10 +3103,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation>
-            <numerusform>Déplacer un objet vers le calque</numerusform>
-            <numerusform>Déplacer %n objets vers le calque</numerusform>
-        </translation>
+        <translation><numerusform>Déplacer un objet vers le calque</numerusform><numerusform>Déplacer %n objets vers le calque</numerusform></translation>
     </message>
 </context>
 <context>
@@ -3167,14 +3113,14 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Je ne suis plus un mécène</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3183,12 +3129,12 @@ Veuillez sélectionner un format spécifique.</translation>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Je suis déjà un mécène !</translation>
     </message>
 </context>
 <context>
@@ -3459,12 +3405,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+4"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Probabilité</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Relative chance this tile will be picked while painting terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Chance relative d&apos;utiliser ce tile lors de l&apos;édition de terrain</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3569,7 +3515,6 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+645"/>
         <source>Remove Tileset</source>
-        <translatorcomment>Tile et Tileset ne sont pas traduits. De ce fait, il prennent une majuscule car ces mots sont anglais et sont des notions importantes du logiciel.</translatorcomment>
         <translation>Effacer le Tileset</translation>
     </message>
     <message>
@@ -3660,12 +3605,7 @@ Veuillez sélectionner un format spécifique.</translation>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+580"/>
-        <source>Tile &amp;Properties...</source>
-        <translation>&amp;Propriétés des tiles...</translation>
-    </message>
-    <message>
-        <location line="-11"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+569"/>
         <source>Add Terrain Type</source>
         <translation>Ajouter un type de terrain</translation>
     </message>
@@ -3675,7 +3615,12 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Définir l&apos;image du terrain</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+6"/>
+        <source>Tile &amp;Properties...</source>
+        <translation>&amp;Propriétés des tiles...</translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Show &amp;Grid</source>
         <translation>Afficher la &amp;grille</translation>
     </message>
@@ -3756,6 +3701,16 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Supprimer un objet</translation>
     </message>
     <message>
+        <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
+        <source>Add Tileset</source>
+        <translation>Ajouter un Tileset</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/addremovetileset.h" line="+78"/>
+        <source>Remove Tileset</source>
+        <translation>Supprimer un Tileset</translation>
+    </message>
+    <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+36"/>
         <source>Change Object</source>
         <translation>Modifier un objet</translation>
@@ -3811,6 +3766,16 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Déplacer l&apos;objet</translation>
     </message>
     <message>
+        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+41"/>
+        <source>Move Object to Layer</source>
+        <translation>Déplacer l&apos;objet vers le calque</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/movetileset.cpp" line="+31"/>
+        <source>Move Tileset</source>
+        <translation>Déplacer un Tileset</translation>
+    </message>
+    <message>
         <location filename="../src/tiled/offsetlayer.cpp" line="+42"/>
         <source>Offset Layer</source>
         <translation>Décaler le calque</translation>
@@ -3841,21 +3806,6 @@ Veuillez sélectionner un format spécifique.</translation>
         <translation>Redimensionner l&apos;objet</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
-        <source>Add Tileset</source>
-        <translation>Ajouter un Tileset</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/addremovetileset.h" line="+78"/>
-        <source>Remove Tileset</source>
-        <translation>Supprimer un Tileset</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/movetileset.cpp" line="+31"/>
-        <source>Move Tileset</source>
-        <translation>Déplacer un Tileset</translation>
-    </message>
-    <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="-688"/>
         <source>Import Tileset</source>
         <translation>Importer un Tileset</translation>
@@ -3874,16 +3824,6 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+22"/>
         <source>Change Drawing Offset</source>
         <translation>Modifier l&apos;ordre d&apos;affichage</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+41"/>
-        <source>Move Object to Layer</source>
-        <translation>Déplacer l&apos;objet vers le calque</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
-        <source>Change Image Layer Properties</source>
-        <translation>Modifier les propriétés du calque d&apos;image</translation>
     </message>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
@@ -3909,6 +3849,11 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="+10"/>
         <source>Remove Terrain</source>
         <translation>Supprimer un terrain</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/changeimagelayerproperties.cpp" line="+39"/>
+        <source>Change Image Layer Properties</source>
+        <translation>Modifier les propriétés du calque d&apos;image</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileterrain.cpp" line="+131"/>
@@ -3991,10 +3936,7 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
         <location line="+4"/>
         <source>Flip %n Object(s)</source>
-        <translation>
-            <numerusform>Inverser un objet</numerusform>
-            <numerusform>Inverser %n objets</numerusform>
-        </translation>
+        <translation><numerusform>Inverser un objet</numerusform><numerusform>Inverser %n objets</numerusform></translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
@@ -4059,7 +4001,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+38"/>
         <source>Change Tile Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la probabilité du Tile</translation>
     </message>
 </context>
 <context>
