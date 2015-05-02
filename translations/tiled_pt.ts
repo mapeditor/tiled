@@ -3188,9 +3188,9 @@ Por favor, selecione um formato específico.</translation>
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
-&lt;h3&gt;Com a sua ajuda eu posso continuar a melhorar o Tiled!&lt;/ h3&gt;
-&lt;p&gt;Por favor, considere me apoiar como patrono. Seu apoio iria fazer uma grande diferença para mim, o principal desenvolvedor e mantenedor do Tiled. Eu poderia trabalhar menor por dinheiro noutro lugar e passar mais tempo trabalhando no Tiled.&lt;/ P&gt;
-&lt;p&gt;Cada pequena coisa ajuda. O Tiled tem muitos utilizadores e se cada um contribuisse com uma pequena doação cada mês eu irei tempo para que o Tiled fique cada vez melhor. &lt;/ P&gt;
+&lt;h3&gt;Com a sua ajuda eu posso continuar a melhorar o Tiled!&lt;/h3&gt;
+&lt;p&gt;Por favor, considere me apoiar como patrono. Seu apoio iria fazer uma grande diferença para mim, o principal desenvolvedor e mantenedor do Tiled. Eu poderia trabalhar menor por dinheiro noutro lugar e passar mais tempo trabalhando no Tiled.&lt;/p&gt;
+&lt;p&gt;Cada pequena coisa ajuda. O Tiled tem muitos utilizadores e se cada um contribuisse com uma pequena doação cada mês eu irei tempo para que o Tiled fique cada vez melhor.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
