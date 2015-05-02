@@ -11,7 +11,7 @@
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Doar</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -37,27 +37,27 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+202"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Sintaxe de exportação é --export-map [formato] &lt;ficheiro tmx&gt; &lt;ficheiro de destino&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extensão de arquivo não-exclusivo. Não é possível determinar formato de exportação correto.</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sem exportador encontrado para arquivo de destino.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Failed to load source map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao carregar o mapa de origem.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to export map to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falha ao exportar mapa para o arquivo de destino.</translation>
     </message>
 </context>
 <context>
@@ -122,17 +122,17 @@
     <message>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossivel abrir ficheiro para escrita.</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>No tile layer found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer de tiles não encontrada.</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>CSV files (*.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficheiros CSV (*.csv)</translation>
     </message>
 </context>
 <context>
@@ -213,47 +213,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar Como Imagem</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished">Localização</translation>
+        <translation>Localização</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished">Nome:</translation>
+        <translation>Nome:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Explorar...</translation>
+        <translation>&amp;Explorar...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished">Preferências</translation>
+        <translation>Preferências</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished">Apenas incluir &amp;camadas visíveis</translation>
+        <translation>Apenas incluir &amp;camadas visíveis</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished">Usar o nivel de &amp;aumentação corrente</translation>
+        <translation>Usar o nivel de &amp;aumentação corrente</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished">&amp;Desenhar tile como grelha</translation>
+        <translation>&amp;Desenhar tile como grelha</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished">&amp;Incluir cor de fundo</translation>
+        <translation>&amp;Incluir cor de fundo</translation>
     </message>
 </context>
 <context>
@@ -437,7 +437,7 @@
     <message>
         <location line="+142"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Torne-se um Patrono</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -587,7 +587,7 @@
     <message>
         <location line="+8"/>
         <source>Export As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1032,22 +1032,22 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Torne-se um Patrono</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Visit https://www.patreon.com/bjorn</source>
-        <translation type="unfinished"></translation>
+        <translation>Visite https://www.patreon.com/bjorn</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Já sou um Patrono!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>Talvez mais tarde</translation>
     </message>
 </context>
 <context>
@@ -2351,44 +2351,44 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+63"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar como Imagem</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished">%1 já existe.
+        <translation>%1 já existe.
 Deseja substituí-lo?</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Memória Esgotada</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível alocar memória suficiente para a imagem. Tente reduzir o nível de zoom ou usando uma versão do Tiled de 64 bits.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Image too Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Imagem muito Grande</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation type="unfinished"></translation>
+        <translation>A imagem resultante seria %1 x %2 pixels e usaria %3 GB de memória. O Tiled é incapaz de criar tal imagem. Tente reduzir o nível de zoom.</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Image</source>
-        <translation type="unfinished">Imagem</translation>
+        <translation>Imagem</translation>
     </message>
 </context>
 <context>
@@ -2459,13 +2459,13 @@ Deseja substituí-lo?</translation>
         <location filename="../src/tiled/magicwandtool.cpp" line="+40"/>
         <location line="+52"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>Varinha Mágica</translation>
     </message>
     <message>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -3115,9 +3115,9 @@ Por favor, selecione um formato específico.</translation>
     <message numerus="yes">
         <location line="+247"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Redimensionar %n Objecto</numerusform>
+            <numerusform>Redimensionar %n Objectos</numerusform>
         </translation>
     </message>
 </context>
@@ -3169,12 +3169,16 @@ Por favor, selecione um formato específico.</translation>
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Obrigado pelo apoio!&lt;/h3&gt;
+&lt;p&gt;Seu apoio como patrono faz uma grande diferença para mim como o principal desenvolvedor e mantenedor do Tiled. Ele me permite gastar menos tempo de trabalho para o seu dinheiro em outro lugar e passar mais tempo trabalhando no Tiled.&lt;/p&gt;
+&lt;p&gt;Mantenha-se atento para atualizações exclusivas no Activity feed na minha página Patreon para descobrir o que eu estive a fazer no tempo que eu pude gastar no Tiled graças para seu apoio!&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Já não sou um patrono</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3183,12 +3187,16 @@ Por favor, selecione um formato específico.</translation>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Com a sua ajuda eu posso continuar a melhorar o Tiled!&lt;/ h3&gt;
+&lt;p&gt;Por favor, considere me apoiar como patrono. Seu apoio iria fazer uma grande diferença para mim, o principal desenvolvedor e mantenedor do Tiled. Eu poderia trabalhar menor por dinheiro noutro lugar e passar mais tempo trabalhando no Tiled.&lt;/ P&gt;
+&lt;p&gt;Cada pequena coisa ajuda. O Tiled tem muitos utilizadores e se cada um contribuisse com uma pequena doação cada mês eu irei tempo para que o Tiled fique cada vez melhor. &lt;/ P&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Já sou um Patrono!</translation>
     </message>
 </context>
 <context>
@@ -3459,12 +3467,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+4"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Probabilidade</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Relative chance this tile will be picked while painting terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Possibilidade relativa de esta tile ser escolhida ao pintar o terreno</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4058,7 +4066,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+38"/>
         <source>Change Tile Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Mudar a Probabilidade do Tile</translation>
     </message>
 </context>
 <context>
