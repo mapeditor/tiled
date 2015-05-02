@@ -91,17 +91,17 @@ CommandLineHandler::CommandLineHandler()
     option<&CommandLineHandler::showVersion>(
                 QLatin1Char('v'),
                 QLatin1String("--version"),
-                QLatin1String("Display the version"));
+                tr("Display the version"));
 
     option<&CommandLineHandler::justQuit>(
                 QChar(),
                 QLatin1String("--quit"),
-                QLatin1String("Only check validity of arguments"));
+                tr("Only check validity of arguments"));
 
     option<&CommandLineHandler::setDisableOpenGL>(
                 QChar(),
                 QLatin1String("--disable-opengl"),
-                QLatin1String("Disable hardware accelerated rendering"));
+                tr("Disable hardware accelerated rendering"));
 
     option<&CommandLineHandler::setExportMap>(
                 QChar(),
