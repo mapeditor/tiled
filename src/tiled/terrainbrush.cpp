@@ -424,10 +424,16 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
         // get the tileset for this tile
         Tileset *tileset = 0;
-        if (terrainTileset) // if we are painting a terrain, then we'll use the terrains tileset
+        if (terrainTileset) {
+            // if we are painting a terrain, then we'll use the terrains tileset
             tileset = terrainTileset;
-        else if (tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
+        } else if (tile) {
+            // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
             tileset = tile->tileset();
+        } else {
+            // no tile here and we're erasing terrain, not much we can do
+            continue;
+        }
 
         // calculate the ideal tile for this position
         unsigned preferredTerrain = 0xFFFFFFFF;
