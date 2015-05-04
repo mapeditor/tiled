@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="fr">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -20,10 +22,13 @@
         <location filename="../src/tiled/aboutdialog.cpp" line="+36"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Tiled Map Editor&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;Copyright 2008-2015 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(see the AUTHORS file for a full list of contributors)&lt;/p&gt;
-&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;You may modify and redistribute this program under the terms of the GPL (version 2 or later). A copy of the GPL is contained in the &apos;COPYING&apos; file distributed with Tiled.&lt;/p&gt;
 &lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"/>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+2&quot;&gt;&lt;b&gt;Editeur de cartes Tiled&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;i&gt;Version %1&lt;/i&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Copyright 2008-2015 Thorbj&amp;oslash;rn Lindeijer&lt;br&gt;(Voir le fichier AUTHORS pour la liste complète des contributeurs)&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Vous avez la possibilité de modifier ou redistribuer ce programme selon les termes de la GPL (version 2 ou supérieure). Une copie de la GPL est contenue dans le fichier &apos;COPYING&apos; distribué avec Tiled.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;http://www.mapeditor.org/&quot;&gt;http://www.mapeditor.org/&lt;/a&gt;&lt;/p</translation>
     </message>
 </context>
 <context>
@@ -521,7 +526,7 @@
     <message>
         <location line="+87"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"/>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -551,7 +556,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+E</source>
-        <translation type="unfinished"/>
+        <translation></translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1808,12 +1813,18 @@ Ligne %1, colonne %2</translation>
     <message numerus="yes">
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+177"/>
         <source>Duplicate %n Object(s)</source>
-        <translation><numerusform>Dupliquer un objet</numerusform><numerusform>Dupliquer %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Dupliquer un objet</numerusform>
+            <numerusform>Dupliquer %n objets</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
-        <translation><numerusform>Effacer un objet</numerusform><numerusform>Effacer %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Effacer un objet</numerusform>
+            <numerusform>Effacer %n objets</numerusform>
+        </translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1878,7 +1889,10 @@ Ligne %1, colonne %2</translation>
     <message numerus="yes">
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation><numerusform>Déplacer un objet vers le calque</numerusform><numerusform>Déplacer %n objets vers le calque</numerusform></translation>
+        <translation>
+            <numerusform>Déplacer un objet vers le calque</numerusform>
+            <numerusform>Déplacer %n objets vers le calque</numerusform>
+        </translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2276,13 +2290,19 @@ Ligne %1, colonne %2</translation>
     <message numerus="yes">
         <location line="+217"/>
         <source>Move %n Point(s)</source>
-        <translation><numerusform>Déplacer un point</numerusform><numerusform>Déplacer %n points</numerusform></translation>
+        <translation>
+            <numerusform>Déplacer un point</numerusform>
+            <numerusform>Déplacer %n points</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
-        <translation><numerusform>Supprimer un nœud</numerusform><numerusform>Supprimer %n nœuds</numerusform></translation>
+        <translation>
+            <numerusform>Supprimer un nœud</numerusform>
+            <numerusform>Supprimer %n nœuds</numerusform>
+        </translation>
     </message>
     <message>
         <location line="-40"/>
@@ -2444,7 +2464,7 @@ Voulez-vous le remplacer ?</translation>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation type="unfinished"/>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2670,12 +2690,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-1144"/>
         <source>Alt+Left</source>
-        <translation type="unfinished"/>
+        <translation></translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Alt+Right</source>
-        <translation type="unfinished"/>
+        <translation></translation>
     </message>
     <message>
         <location line="+725"/>
@@ -2690,7 +2710,10 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+13"/>
         <source>Add %n Tileset(s)</source>
-        <translation><numerusform>Ajouter un Tileset</numerusform><numerusform>Ajouter %n Tilesets</numerusform></translation>
+        <translation>
+            <numerusform>Ajouter un Tileset</numerusform>
+            <numerusform>Ajouter %n Tilesets</numerusform>
+        </translation>
     </message>
     <message>
         <location line="+200"/>
@@ -2728,7 +2751,10 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
-        <translation><numerusform>Pivoter un objet</numerusform><numerusform>Pivoter %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Pivoter un objet</numerusform>
+            <numerusform>Pivoter %n objets</numerusform>
+        </translation>
     </message>
     <message>
         <location line="+35"/>
@@ -2773,17 +2799,26 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+154"/>
         <source>Duplicate %n Object(s)</source>
-        <translation><numerusform>Dupliquer un objet</numerusform><numerusform>Dupliquer %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Dupliquer un objet</numerusform>
+            <numerusform>Dupliquer %n objets</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location line="+20"/>
         <source>Remove %n Object(s)</source>
-        <translation><numerusform>Effacer un objet</numerusform><numerusform>Effacer %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Effacer un objet</numerusform>
+            <numerusform>Effacer %n objets</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation><numerusform>Déplacer un objet vers le calque</numerusform><numerusform>Déplacer %n objets vers le calque</numerusform></translation>
+        <translation>
+            <numerusform>Déplacer un objet vers le calque</numerusform>
+            <numerusform>Déplacer %n objets vers le calque</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -2866,12 +2901,18 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+246"/>
         <source>Duplicate %n Object(s)</source>
-        <translation><numerusform>Dupliquer un objet</numerusform><numerusform>Dupliquer %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Dupliquer un objet</numerusform>
+            <numerusform>Dupliquer %n objets</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
-        <translation><numerusform>Effacer un objet</numerusform><numerusform>Effacer %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Effacer un objet</numerusform>
+            <numerusform>Effacer %n objets</numerusform>
+        </translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3057,17 +3098,26 @@ Veuillez sélectionner un format spécifique.</translation>
         <location line="-162"/>
         <location line="+510"/>
         <source>Move %n Object(s)</source>
-        <translation><numerusform>Déplacer un objet</numerusform><numerusform>Déplacer %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Déplacer un objet</numerusform>
+            <numerusform>Déplacer %n objets</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location line="+63"/>
         <source>Rotate %n Object(s)</source>
-        <translation><numerusform>Pivoter un objet</numerusform><numerusform>Pivoter %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Pivoter un objet</numerusform>
+            <numerusform>Pivoter %n objets</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location line="+247"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation>
+            <numerusform>Redimensionner %n objet</numerusform>
+            <numerusform>Redimensionner %n objets</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -3103,7 +3153,10 @@ Veuillez sélectionner un format spécifique.</translation>
     <message numerus="yes">
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
-        <translation><numerusform>Déplacer un objet vers le calque</numerusform><numerusform>Déplacer %n objets vers le calque</numerusform></translation>
+        <translation>
+            <numerusform>Déplacer un objet vers le calque</numerusform>
+            <numerusform>Déplacer %n objets vers le calque</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -3113,9 +3166,13 @@ Veuillez sélectionner un format spécifique.</translation>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Thank you for support!&lt;/h3&gt;
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
-&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I've been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
+&lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Merci pour votre soutien !&lt;/h3&gt;
+&lt;p&gt;Votre soutien fait une grande différence pour moi en tant que développeur principal de Tiled. Cela me permet de passer moins de temps à gagner de l&apos;argent autre part et plus de temps à travailler sur Tiled.&lt;/p&gt;
+&lt;p&gt;Garder un oeil sur les nouveautés exclusives dans le flux d&apos;activité sur ma page Patreon afin de découvrir ce que j&apos;ai effectué grâce au temps que j&apos;ai pu passer à travailler sur Tiled grâce à votre soutien !&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -3129,7 +3186,11 @@ Veuillez sélectionner un format spécifique.</translation>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Avec votre aide, je peux continuer à améliorer Tiled !&lt;/h3&gt;
+&lt;p&gt;Vous pouvez soutenir ce projet en devenant un mécène. Votre soutien peut faire une grande différence pour moi, le développeur principal de Tiled. Cela me permettrais de passer moins de temps à gagner de l&apos;argent autre part et plus de temps à travailler sur Tiled.&lt;/p&gt;
+&lt;p&gt;Même le plus petit de vos dons peut m&apos;aider. Tiled est utilisé par un grand nombre de personnes et si chacun contribuait par un don, même modeste, chaque mois, je pourrais dégager du temps pour m&apos;assurer que Tiled s&apos;améliore sans cesse.&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -3936,7 +3997,10 @@ Veuillez sélectionner un format spécifique.</translation>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
         <location line="+4"/>
         <source>Flip %n Object(s)</source>
-        <translation><numerusform>Inverser un objet</numerusform><numerusform>Inverser %n objets</numerusform></translation>
+        <translation>
+            <numerusform>Inverser un objet</numerusform>
+            <numerusform>Inverser %n objets</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
