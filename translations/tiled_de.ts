@@ -11,7 +11,7 @@
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Spenden</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -209,47 +209,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportieren als Bild</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished">Pfad</translation>
+        <translation>Pfad</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Durchsuchen...</translation>
+        <translation>&amp;Durchsuchen...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished">Einstellungen</translation>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished">Nur &amp;sichtbare Ebenen rendern</translation>
+        <translation>Nur &amp;sichtbare Ebenen rendern</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished">Benutze aktuelle &amp;Zoomeinstellung</translation>
+        <translation>Benutze aktuelle &amp;Zoomeinstellung</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished">Kachelraster &amp;zeichnen</translation>
+        <translation>Kachelraster &amp;zeichnen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished">Hintergrundfarbe m&amp;itrendern</translation>
+        <translation>Hintergrundfarbe m&amp;itrendern</translation>
     </message>
 </context>
 <context>
@@ -488,7 +488,7 @@
     <message>
         <location line="+142"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Werde Unterstützer</translation>
     </message>
     <message>
         <location line="-95"/>
@@ -563,7 +563,7 @@
     <message>
         <location line="+93"/>
         <source>Export As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportieren als B&amp;ild...</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1029,22 +1029,22 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützer werden</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Visit https://www.patreon.com/bjorn</source>
-        <translation type="unfinished"></translation>
+        <translation>Besuche https://www.patreon.com/bjorn</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ich bin bereits ein Unterstützer!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>Vielleicht später</translation>
     </message>
 </context>
 <context>
@@ -2350,43 +2350,44 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+63"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportieren als Bild</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished">Die Datei %1 existiert bereits. Soll sie ersetzt werden?</translation>
+        <translation>Die Datei %1 existiert bereits.
+Soll sie ersetzt werden?</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht genügend Speicher</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es konnte nicht genügend Speicher für das Bild reserviert werden. Versuche den Zoomfaktor zu verringern oder benutze die 64-bit Version von Tiled.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Image too Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild zu groß</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das exportiere Bild würde %1 x %2 Pixel groß sein und %3 GB an Speicher benötigen. Tiled kann ein solches Bild nicht erzeugen. Versuche den Zoomfaktor zu verringern.</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Image</source>
-        <translation type="unfinished">Bild</translation>
+        <translation>Bild</translation>
     </message>
 </context>
 <context>
@@ -2457,13 +2458,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/magicwandtool.cpp" line="+40"/>
         <location line="+52"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>Zauberstab</translation>
     </message>
     <message>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -3113,9 +3114,9 @@ Bitte Format angeben.</translation>
     <message numerus="yes">
         <location line="+247"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Größe von %n Objekt ändern</numerusform>
+            <numerusform>Größe von %n Objekten ändern</numerusform>
         </translation>
     </message>
 </context>
@@ -3167,12 +3168,16 @@ Bitte Format angeben.</translation>
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Viel Dank für Deine Unterstützung&lt;/h3&gt;
+&lt;p&gt;Deine Unterstützung macht einen großen Unterschied für mich als Haupt-Entwickler von Tiled. Sie erlaubt es mir weniger Zeit damit zu verbringen Geld anderweitig zu verdienen und somit mehr Zeit in Tiled selbst zu stecken.&lt;/p&gt;
+&lt;p&gt;Behalte den Aktivitäten-Feed meiner Patreon Seite im Auge um informiert zu werden, was ich in dieser Zeit Dank Deiner Unterstützung erreicht habe!&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Ich bin kein Unterstützer mehr</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3181,12 +3186,16 @@ Bitte Format angeben.</translation>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Mit Deiner Hilfe kann ich weitermachen Tiled zu verbessern!&lt;/h3&gt;
+&lt;p&gt;Bitte überlege mich zu unterstützen. Deine Unterstützung würde einen großen Unterschied für mich als Haupt-Entwickler von Tiled machen. Ich könnte weniger Zeit damit verbringen Geld anderweitig zu verdienen und somit mehr Zeit in Tiled selbst stecken.&lt;/p&gt;
+&lt;p&gt;Jede Kleinigkeit hilft. Tiled hat sehr viele Benutzer. Würde jeder jeden Monat eine kleine Spende beitragen hätte ich Zeit sicherzugehen, dass Tiled immer besser wird.&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ich bin bereits Unterstützer!</translation>
     </message>
 </context>
 <context>
@@ -3457,12 +3466,12 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+4"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Wahrscheinlichkeit</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Relative chance this tile will be picked while painting terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Relative Wahrscheinlichkeit, dass beim Malen vom Terrain diese Kachel gewählt wird</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4056,7 +4065,7 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+38"/>
         <source>Change Tile Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachel Wahrscheinlichkeit bearbeiten</translation>
     </message>
 </context>
 <context>
