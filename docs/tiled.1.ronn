@@ -23,7 +23,9 @@ in C++, using the Qt application framework.
   * `--disable-opengl`:
     Disables hardware accelerated rendering
   * `--export-map` [format] <tmx file> <target file>:
-    Export the specified tmx file to target
+    Exports the specified tmx file to target
+  * `--export-formats`:
+    Prints a list of supported export formats
 
 ## AUTHORS
 <https://github.com/bjorn/tiled/blob/master/AUTHORS>

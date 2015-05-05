@@ -65,6 +65,7 @@ private:
     void justQuit();
     void setDisableOpenGL();
     void setExportMap();
+    void showExportFormats();
 
     // Convenience wrapper around registerOption
     template <void (CommandLineHandler::*memberFunction)()>
@@ -107,6 +108,11 @@ CommandLineHandler::CommandLineHandler()
                 QChar(),
                 QLatin1String("--export-map"),
                 QLatin1String("Export the specified tmx file to target"));
+
+    option<&CommandLineHandler::showExportFormats>(
+                QChar(),
+                QLatin1String("--export-formats"),
+                QLatin1String("Print a list of supported export formats"));
 }
 
 void CommandLineHandler::showVersion()
@@ -132,6 +138,21 @@ void CommandLineHandler::setDisableOpenGL()
 void CommandLineHandler::setExportMap()
 {
     exportMap = true;
+}
+
+void CommandLineHandler::showExportFormats()
+{
+    PluginManager *pluginManager = PluginManager::instance();
+    pluginManager->loadPlugins();
+
+    qWarning() << "Export formats:";
+    QList<Tiled::MapWriterInterface*> writers = pluginManager->interfaces<Tiled::MapWriterInterface>();
+    foreach (Tiled::MapWriterInterface *writer, writers) {
+        foreach (const QString &filter, writer->nameFilters())
+            qWarning() << " " << filter;
+    }
+
+    quit = true;
 }
 
 int main(int argc, char *argv[])
