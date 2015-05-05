@@ -187,14 +187,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     PropertiesDock *propertiesDock = new PropertiesDock(this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+    addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
-    addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
@@ -1568,7 +1568,7 @@ void MainWindow::readSettings()
     if (!geom.isEmpty())
         restoreGeometry(geom);
     else
-        resize(1000, 700);
+        resize(1200, 700);
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
     mSettings.endGroup();

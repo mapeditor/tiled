@@ -25,23 +25,24 @@
 #include "mapobject.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
-#include "objectgroup.h"
-#include "utils.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
+#include "preferences.h"
+#include "utils.h"
 
-#include <QBoxLayout>
 #include <QApplication>
+#include <QBoxLayout>
 #include <QContextMenuEvent>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
-#include <QLineEdit>
-#include <QToolButton>
 #include <QMenu>
-#include <QSlider>
+#include <QSettings>
 #include <QToolBar>
+#include <QToolButton>
 #include <QUrl>
-#include <QUndoStack>
+
+static const char FIRST_SECTION_SIZE_KEY[] = "ObjectsDock/FirstSectionSize";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -221,9 +222,6 @@ ObjectsView::ObjectsView(QWidget *parent)
     , mMapDocument(0)
     , mSynching(false)
 {
-    setRootIsDecorated(true);
-    setHeaderHidden(false);
-    setItemsExpandable(true);
     setUniformRowHeights(true);
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -231,6 +229,9 @@ ObjectsView::ObjectsView(QWidget *parent)
 
     connect(this, SIGNAL(pressed(QModelIndex)), SLOT(onPressed(QModelIndex)));
     connect(this, SIGNAL(activated(QModelIndex)), SLOT(onActivated(QModelIndex)));
+
+    connect(header(), SIGNAL(sectionResized(int,int,int)),
+            this, SLOT(onSectionResized(int)));
 }
 
 QSize ObjectsView::sizeHint() const
@@ -251,12 +252,10 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
     if (mMapDocument) {
         setModel(mMapDocument->mapObjectModel());
 
-        // 2 equal-sized columns, user can't adjust
-#if QT_VERSION >= 0x050000
-        header()->setSectionResizeMode(0, QHeaderView::Stretch);
-#else
-        header()->setResizeMode(0, QHeaderView::Stretch);
-#endif
+        const QSettings *settings = Preferences::instance()->settings();
+        const int firstSectionSize =
+                settings->value(QLatin1String(FIRST_SECTION_SIZE_KEY), 200).toInt();
+        header()->resizeSection(0, firstSectionSize);
 
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
@@ -284,6 +283,16 @@ void ObjectsView::onActivated(const QModelIndex &index)
         mMapDocument->setCurrentObject(mapObject);
         mMapDocument->emitEditCurrentObject();
     }
+}
+
+void ObjectsView::onSectionResized(int logicalIndex)
+{
+    if (logicalIndex != 0)
+        return;
+
+    QSettings *settings = Preferences::instance()->settings();
+    settings->setValue(QLatin1String(FIRST_SECTION_SIZE_KEY),
+                       header()->sectionSize(0));
 }
 
 void ObjectsView::selectionChanged(const QItemSelection &selected,
