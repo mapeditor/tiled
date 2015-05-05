@@ -84,13 +84,14 @@ public:
 
     MapObjectModel *model() const;
 
-protected slots:
-    virtual void selectionChanged(const QItemSelection &selected,
-                                  const QItemSelection &deselected);
+protected:
+    void selectionChanged(const QItemSelection &selected,
+                          const QItemSelection &deselected);
 
 private slots:
     void onPressed(const QModelIndex &index);
     void onActivated(const QModelIndex &index);
+    void onSectionResized(int logicalIndex);
     void selectedObjectsChanged();
 
 private:
