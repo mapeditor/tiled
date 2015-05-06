@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="cs_CZ">
+<TS version="2.0" language="cs_CZ">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -11,7 +11,7 @@
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>Přispět na vývoj</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -212,47 +212,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat jako obrázek</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished">Umístění</translation>
+        <translation>Umístění</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished">Jméno:</translation>
+        <translation>Jméno:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">&amp;Vybrat...</translation>
+        <translation>&amp;Vybrat...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished">Nastavení</translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished">Pouze &amp;viditelné vrstvy</translation>
+        <translation>Pouze &amp;viditelné vrstvy</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished">Použít aktuální &amp;zoom</translation>
+        <translation>Použít aktuální &amp;zoom</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished">&amp;Zobrazovat mířížku</translation>
+        <translation>&amp;Zobrazovat mřížku</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished">&amp;Použít barvu pozadí</translation>
+        <translation>&amp;Použít barvu pozadí</translation>
     </message>
 </context>
 <context>
@@ -461,7 +461,7 @@
     <message>
         <location line="+193"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Stát se Patronem</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -486,7 +486,7 @@
     <message>
         <location line="-50"/>
         <source>Export As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat jako &amp;obrázek...</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -1031,22 +1031,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Stát se Patronem</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Visit https://www.patreon.com/bjorn</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít https://www.patreon.com/bjorn</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Už jsem patron!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>Možná později</translation>
     </message>
 </context>
 <context>
@@ -2357,43 +2357,44 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+63"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat jako obrázek</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished">%1 už existuje. Má se přepsat?</translation>
+        <translation>%1 už existuje.
+Má se přepsat?</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedostatek paměti</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pro tento obrázek se nepodařilo alokovat dostatek paměti. Zkuste menší zoom, nebo 64-bitovou verzi Tiled.</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Image too Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek je příliš velký</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek by měl %1x%2 pixelů a zabral by %3 GB paměti. Tiled s tak velkým obrázkem nemůže pracovat. Zkuste menší zoom.</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Image</source>
-        <translation type="unfinished">Obrázek</translation>
+        <translation>Obrázek</translation>
     </message>
 </context>
 <context>
@@ -2464,13 +2465,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/magicwandtool.cpp" line="+40"/>
         <location line="+52"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>Kouzelná hůlka</translation>
     </message>
     <message>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -3128,10 +3129,10 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+247"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Změna velikosti objektu</numerusform>
+            <numerusform>Změna velikosti %n objektů</numerusform>
+            <numerusform>Změna velikosti %n objektů</numerusform>
         </translation>
     </message>
 </context>
@@ -3184,12 +3185,16 @@ Please select specific format.</source>
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;Díky za podporu!&lt;/h3&gt;
+&lt;p&gt;Vaše patronská podpora mi, jako hlavnímu vývojářovi programu Tiled, dává možnost méně pracovat jinde, a místo toho vylepšovat Tiled.&lt;/p&gt;
+&lt;p&gt;Na stránce &quot;Activity feed&quot; na Patreonu si můžete přečíst, na co jsem využil čas, který jsem díky Vám mohl věnovat tomuto editoru!&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>Už nejsem patron</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3198,12 +3203,16 @@ Please select specific format.</source>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;S Vaší pomocí můžu Tiled dál vylepšovat!&lt;/h3&gt;
+&lt;p&gt;Prosím, podpořte mě jako patron. Vaše patronská podpora mi, jako hlavnímu vývojářovi programu Tiled, dává možnost méně pracovat jinde, a místo toho vylepšovat Tiled.&lt;/p&gt;
+&lt;p&gt;I malý příspěvek pomůže. Tiled má hodně uživatelů; když každý dá trošku každý měsíc, budu moci Tiled dál vyvíjet.&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>Už jsem patron!</translation>
     </message>
 </context>
 <context>
@@ -3474,12 +3483,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Pravděpodobnost</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Relative chance this tile will be picked while painting terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>Relativní pravděpodobnost vybrání této dlaždice při kreslení terénu</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4074,7 +4083,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+38"/>
         <source>Change Tile Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna pravděpodobnosti dlaždice</translation>
     </message>
 </context>
 <context>
