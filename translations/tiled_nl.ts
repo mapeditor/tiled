@@ -3189,7 +3189,7 @@ Kies een specifiek bestandsformaat.</translation>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Met uw hulp kan ik Tiled verder verbeteren!&lt;/h3&gt;
 &lt;p&gt;Overweeg alstublieft om mij als Patron te ondersteunen. Uw steun zou een wereld van verschil maken voor mij, de hoofdontwikkelaar van Tiled. Ik zou korter kunnen gaan werken om zodoende meer tijd aan Tiled te kunnen besteden.&lt;/p&gt;
 &lt;p&gt;Alle beetjes helpen. Tiled heeft vele gebruikers en als iedereen iedere maand een kleine donatie zou doen kan ik ervoor zorgen dat Tiled alsmaar beter wordt!&lt;/p&gt;
