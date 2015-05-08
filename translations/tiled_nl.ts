@@ -3198,7 +3198,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation>Ik ondersteun Tiled!</translation>
+        <translation>Ik ondersteun Tiled al!</translation>
     </message>
 </context>
 <context>
