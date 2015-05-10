@@ -66,6 +66,7 @@ SOURCES += aboutdialog.cpp \
     changeproperties.cpp \
     changetileanimation.cpp \
     changetileobjectgroup.cpp \
+    changetileprobability.cpp \
     changeselectedarea.cpp \
     changetileterrain.cpp \
     clipboardmanager.cpp \
@@ -89,6 +90,7 @@ SOURCES += aboutdialog.cpp \
     editterraindialog.cpp \
     eraser.cpp \
     erasetiles.cpp \
+    exportasimagedialog.cpp \
     fileedit.cpp \
     filesystemwatcher.cpp \
     filltiles.cpp \
@@ -125,6 +127,7 @@ SOURCES += aboutdialog.cpp \
     offsetlayer.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
+    patreondialog.cpp \
     pluginmanager.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
@@ -140,7 +143,6 @@ SOURCES += aboutdialog.cpp \
     resizemapobject.cpp \
     resizetilelayer.cpp \
     rotatemapobject.cpp \
-    saveasimagedialog.cpp \
     selectionrectangle.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
@@ -168,7 +170,8 @@ SOURCES += aboutdialog.cpp \
     utils.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
-    zoomable.cpp
+    zoomable.cpp \
+    magicwandtool.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -197,6 +200,7 @@ HEADERS += aboutdialog.h \
     changeproperties.h \
     changetileanimation.h \
     changetileobjectgroup.h \
+    changetileprobability.h \
     changeselectedarea.h \
     changetileterrain.h \
     clipboardmanager.h \
@@ -220,6 +224,7 @@ HEADERS += aboutdialog.h \
     editterraindialog.h \
     eraser.h \
     erasetiles.h \
+    exportasimagedialog.h \
     fileedit.h \
     filesystemwatcher.h \
     filltiles.h \
@@ -256,6 +261,7 @@ HEADERS += aboutdialog.h \
     offsetlayer.h \
     offsetmapdialog.h \
     painttilelayer.h \
+    patreondialog.h \
     pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
@@ -272,7 +278,6 @@ HEADERS += aboutdialog.h \
     resizemapobject.h \
     resizetilelayer.h \
     rotatemapobject.h \
-    saveasimagedialog.h \
     selectionrectangle.h \
     snaphelper.h \
     stampbrush.h \
@@ -301,7 +306,8 @@ HEADERS += aboutdialog.h \
     utils.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
-    zoomable.h
+    zoomable.h \
+    magicwandtool.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
@@ -310,13 +316,14 @@ macx {
 FORMS += aboutdialog.ui \
     commanddialog.ui \
     editterraindialog.ui \
+    exportasimagedialog.ui \
     mainwindow.ui \
     newmapdialog.ui \
     newtilesetdialog.ui \
     offsetmapdialog.ui \
+    patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
-    saveasimagedialog.ui \
     tileanimationeditor.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/

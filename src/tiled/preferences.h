@@ -21,8 +21,9 @@
 #ifndef PREFERENCES_H
 #define PREFERENCES_H
 
-#include <QObject>
 #include <QColor>
+#include <QDate>
+#include <QObject>
 
 #include "map.h"
 #include "objecttypes.h"
@@ -80,7 +81,8 @@ public:
     enum FileType {
         ObjectTypesFile,
         ImageFile,
-        ExportedFile
+        ExportedFile,
+        ExternalTileset
     };
 
     QString lastPath(FileType fileType) const;
@@ -91,6 +93,12 @@ public:
 
     QString mapsDirectory() const;
     void setMapsDirectory(const QString &path);
+
+    QDate firstRun() const;
+    int runCount() const;
+
+    bool isPatron() const;
+    void setPatron(bool isPatron);
 
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
@@ -128,6 +136,8 @@ signals:
 
     void mapsDirectoryChanged();
 
+    void isPatronChanged();
+
 private:
     Preferences();
     ~Preferences();
@@ -163,8 +173,28 @@ private:
 
     QString mMapsDirectory;
 
+    QDate mFirstRun;
+    int mRunCount;
+    bool mIsPatron;
+
     static Preferences *mInstance;
 };
+
+
+inline QDate Preferences::firstRun() const
+{
+    return mFirstRun;
+}
+
+inline int Preferences::runCount() const
+{
+    return mRunCount;
+}
+
+inline bool Preferences::isPatron() const
+{
+    return mIsPatron;
+}
 
 } // namespace Internal
 } // namespace Tiled

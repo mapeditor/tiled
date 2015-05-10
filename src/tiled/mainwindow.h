@@ -1,6 +1,6 @@
 /*
  * mainwindow.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
@@ -120,9 +120,9 @@ public slots:
     void openFile();
     bool saveFile();
     bool saveFileAs();
-    void saveAsImage();
     void export_();
     void exportAs();
+    void exportAsImage();
     void reload();
     void closeFile();
     void closeAllFiles();
@@ -148,6 +148,7 @@ public slots:
     void updateWindowTitle();
     void updateActions();
     void updateZoomLabel();
+    void becomePatron();
     void aboutTiled();
     void openRecentFile();
     void clearRecentFiles();

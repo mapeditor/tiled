@@ -131,7 +131,7 @@ bool AutomappingManager::loadFile(const QString &filePath)
                   + QLatin1Char('\n');
         return false;
     }
-    if (!rulesFile.open(QIODevice::ReadOnly)) {
+    if (!rulesFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         mError += tr("Error opening rules file:\n%1").arg(filePath)
                   + QLatin1Char('\n');
         return false;

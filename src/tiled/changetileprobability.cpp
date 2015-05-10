@@ -1,5 +1,5 @@
 /*
- * snaphelper.h
+ * changetileprobability.cpp
  * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,32 +18,35 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SNAPHELPER_H
-#define SNAPHELPER_H
+#include "changetileprobability.h"
 
-#include "maprenderer.h"
+#include "mapdocument.h"
+#include "tile.h"
+
+#include <QCoreApplication>
 
 namespace Tiled {
 namespace Internal {
 
-class SnapHelper
+ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
+                                             Tile *tile,
+                                             float probability)
+    : mMapDocument(mapDocument)
+    , mTile(tile)
+    , mProbability(probability)
 {
-public:
-    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = 0);
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
+}
 
-    void toggleSnap();
-
-    bool snaps() const { return mSnapToGrid || mSnapToFineGrid; }
-
-    void snap(QPointF &pixelPos) const;
-
-private:
-    const MapRenderer *mRenderer;
-    bool mSnapToGrid;
-    bool mSnapToFineGrid;
-};
+void ChangeTileProbability::swap()
+{
+    float probability = mTile->terrainProbability();
+    mTile->setTerrainProbability(mProbability);
+    mProbability = probability;
+    mMapDocument->emitTileProbabilityChanged(mTile);
+}
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // SNAPHELPER_H

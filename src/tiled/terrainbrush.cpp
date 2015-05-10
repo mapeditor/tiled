@@ -296,29 +296,25 @@ static Tile *findBestTile(Tileset *tileset, unsigned terrain, unsigned considera
 
     // choose a candidate at random, with consideration for terrain probability
     if (!matches.isEmpty()) {
-        float random = ((float)rand() / RAND_MAX) * 100.f;
-        float total = 0, unassigned = 0;
-
-        // allow the tiles with assigned probability to take their share
+        // determine the range of probability
+        float sum = 0.f;
         for (int i = 0; i < matches.size(); ++i) {
-            float probability = matches[i]->terrainProbability();
-            if (probability < 0.f) {
-                ++unassigned;
-                continue;
-            }
-            if (random < total + probability)
-                return matches[i];
-            total += probability;
+            float probability = matches.at(i)->terrainProbability();
+            if (probability > 0.f)
+                sum += probability;
         }
 
-        // divide the remaining percentile by the numer of unassigned tiles
-        float remainingShare = (100.f - total) / (float)unassigned;
+        float random = ((float)rand() / RAND_MAX) * sum;
+
+        // determine which match was hit
+        sum = 0.f;
         for (int i = 0; i < matches.size(); ++i) {
-            if (matches[i]->terrainProbability() >= 0.f)
-                continue;
-            if (random < total + remainingShare)
-                return matches[i];
-            total += remainingShare;
+            float probability = matches.at(i)->terrainProbability();
+            if (probability > 0.f) {
+                sum += probability;
+                if (random <= sum)
+                    return matches[i];
+            }
         }
     }
 
@@ -428,10 +424,16 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
         // get the tileset for this tile
         Tileset *tileset = 0;
-        if (terrainTileset) // if we are painting a terrain, then we'll use the terrains tileset
+        if (terrainTileset) {
+            // if we are painting a terrain, then we'll use the terrains tileset
             tileset = terrainTileset;
-        else if (tile) // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
+        } else if (tile) {
+            // if we're erasing terrain, use the individual tiles tileset (to search for transitions)
             tileset = tile->tileset();
+        } else {
+            // no tile here and we're erasing terrain, not much we can do
+            continue;
+        }
 
         // calculate the ideal tile for this position
         unsigned preferredTerrain = 0xFFFFFFFF;

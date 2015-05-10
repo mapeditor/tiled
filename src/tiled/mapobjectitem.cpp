@@ -32,7 +32,6 @@
 #include "objectgroupitem.h"
 #include "preferences.h"
 #include "resizemapobject.h"
-#include "snaphelper.h"
 #include "tile.h"
 #include "zoomable.h"
 
@@ -48,136 +47,15 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-namespace Tiled {
-namespace Internal {
-
-/**
- * Some handle item that indicates a point on an object can be dragged.
- */
-class Handle : public QGraphicsItem
-{
-public:
-    Handle(MapObjectItem *mapObjectItem)
-        : QGraphicsItem(mapObjectItem)
-        , mMapObjectItem(mapObjectItem)
-    {
-        setFlags(QGraphicsItem::ItemIsMovable |
-                 QGraphicsItem::ItemSendsGeometryChanges |
-                 QGraphicsItem::ItemIgnoresTransformations |
-                 QGraphicsItem::ItemIgnoresParentOpacity);
-    }
-
-    QRectF boundingRect() const;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
-
-protected:
-    MapObjectItem *mMapObjectItem;
-};
-
-/**
- * A resize handle that allows resizing of a map object.
- */
-class ResizeHandle : public Handle
-{
-public:
-    ResizeHandle(MapObjectItem *mapObjectItem)
-        : Handle(mapObjectItem)
-    {
-        setCursor(Qt::SizeFDiagCursor);
-    }
-
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
-private:
-    QSizeF mOldSize;
-};
-
-} // namespace Internal
-} // namespace Tiled
-
-
-QRectF Handle::boundingRect() const
-{
-    return QRectF(-5, -5, 10 + 1, 10 + 1);
-}
-
-void Handle::paint(QPainter *painter,
-                   const QStyleOptionGraphicsItem *,
-                   QWidget *)
-{
-    painter->setBrush(mMapObjectItem->color());
-    painter->setPen(Qt::black);
-    painter->drawRect(QRectF(-5, -5, 10, 10));
-}
-
-
-void ResizeHandle::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    // Remember the old size since we may resize the object
-    if (event->button() == Qt::LeftButton)
-        mOldSize = mMapObjectItem->mapObject()->size();
-
-    Handle::mousePressEvent(event);
-}
-
-void ResizeHandle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    Handle::mouseReleaseEvent(event);
-
-    // If we resized the object, create an undo command
-    MapObject *obj = mMapObjectItem->mapObject();
-    if (event->button() == Qt::LeftButton && mOldSize != obj->size()) {
-        MapDocument *document = mMapObjectItem->mapDocument();
-        QUndoCommand *cmd = new ResizeMapObject(document, obj, mOldSize);
-        document->undoStack()->push(cmd);
-    }
-}
-
-QVariant ResizeHandle::itemChange(GraphicsItemChange change,
-                                  const QVariant &value)
-{
-    if (!mMapObjectItem->mSyncing) {
-        MapRenderer *renderer = mMapObjectItem->mapDocument()->renderer();
-
-        if (change == ItemPositionChange) {
-            QPointF newSize = value.toPointF();
-            newSize.setX(qMax(newSize.x(), qreal(0)));
-            newSize.setY(qMax(newSize.y(), qreal(0)));
-
-            SnapHelper(renderer, QApplication::keyboardModifiers()).snap(newSize);
-
-            return newSize;
-        }
-        else if (change == ItemPositionHasChanged) {
-            // Update the size of the map object
-            const QPointF newPos = value.toPointF() + mMapObjectItem->pos();
-            QPointF pixelCoords = renderer->screenToPixelCoords(newPos);
-            pixelCoords -= mMapObjectItem->mapObject()->position();
-            mMapObjectItem->resizeObject(QSizeF(pixelCoords.x(), pixelCoords.y()));
-        }
-    }
-
-    return Handle::itemChange(change, value);
-}
-
-
 MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
                              ObjectGroupItem *parent):
     QGraphicsItem(parent),
     mObject(object),
     mMapDocument(mapDocument),
     mIsEditable(false),
-    mSyncing(false),
-    mResizeHandle(new ResizeHandle(this))
+    mSyncing(false)
 {
     syncWithMapObject();
-    mResizeHandle->setVisible(false);
 }
 
 void MapObjectItem::syncWithMapObject()
@@ -193,7 +71,6 @@ void MapObjectItem::syncWithMapObject()
     if (mColor != color) {
         mColor = color;
         update();
-        mResizeHandle->update();
     }
 
     QString toolTip = mName;
@@ -221,9 +98,6 @@ void MapObjectItem::syncWithMapObject()
         // Notify the graphics scene about the geometry change in advance
         prepareGeometryChange();
         mBoundingRect = bounds;
-        const QPointF bottomRight = mObject->bounds().bottomRight();
-        const QPointF handlePos = renderer->pixelToScreenCoords(bottomRight);
-        mResizeHandle->setPos(handlePos - pixelPos);
     }
 
     mSyncing = false;
@@ -237,9 +111,6 @@ void MapObjectItem::setEditable(bool editable)
         return;
 
     mIsEditable = editable;
-
-    const bool handlesVisible = mIsEditable && mObject->cell().isEmpty();
-    mResizeHandle->setVisible(handlesVisible && mObject->polygon().isEmpty());
 
     if (mIsEditable)
         setCursor(Qt::SizeAllCursor);

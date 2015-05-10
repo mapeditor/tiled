@@ -1,20 +1,111 @@
 Main developer and maintainer:
 
-Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+Thorbjørn Lindeijer <bjorn@lindeijer.nl>
 
-Contributors:
 
-Andrew G. Crowell (added additional ways to access layer related actions)
-Christian Henz    (added handling of non-encoded map data)
-Dennis Honeyman   (implemented the nice about dialog and CSV layer support)
-Edward Hutchins   (added automatic reloading of changed tileset images)
-Jeff Bland        (added Offset Map feature, fill tool and running commands)
-Michael Woerister (improvements to the object properties dialog)
-Roderic Morris    (added many icons and initial object group support)
-Stefan Beller     (added the automap feature, quick stamps, lines/circles
-                   support for multiple maps, random mode for stamp tool and
-                   bucketfill tool)
-Alexander Kuhrt <alex@qrt.de>
+Other contributors:
+
+Stefan Beller
+Samuli Tuomola
+Jeff Bland
+Erik Schilling
+Petr Viktorin
+Martin Ziel
+Mauricio Muñoz Lucero
+Parker Miller
+seeseekey
+Roderic Morris
+Yohann Ferreira
+mauve
+Alex Vega (semtiko)
+Hiroki Utsunomiya
+Porfírio Ribeiro
+Sean Humeniuk
+Ben Longbons
+Jonatas de Moraes Junior
+Manu Evans
+Mikolai Fajer
+zhaosting
+Oskar Wiksten
+Tamir Atias (KonoM)
+Tim Baker
+Hendrik Brummermann
+Mohammad Mehdi Salem Naraghi
+Andrew G. Crowell
+Clint Bellanger
+Dennis Honeyman
+Michael Woerister
+Sebastian Pidek
+Yehnan Chiang
+Alexander Kuhrt
+Andreas Abraham
+Champi080
+Christian Henz
+Christoph Schnackenberg
+Christophe Conceicao
+Dale Kim
+HenryJia
+Janis Kirsteins
+Kenney Phillis
+Maus
+Nathan Tolbert
+Omnomnobot
+Pierre-David Bélanger
+Wodann
+juniperbrew
+tolbert
+wayfu
+zigal
+Aban
+Adam Rippon
+Alessandro Portale
+Alex Koz
+Alexei Bratuhin
+Andrew Motrenko
+Antonio Ricci
+Bin Wu
+Brandon Dillon
+Dennis Hostetler
+Dmitry Marakasov
+Dobes Vandermeer
+Edward Hutchins
+Emmanuel Barroga
+Eric Kidd
+Firas Assaad
+Flyte
+Gornova
+Gregory Nickonov
+Hanmac
+Harri Berglund
+Harry Hsiao
+Ian Langworth
+Jared Adams
+Joel Leclerc
+Juan Rodriguez
+Justin Jacobs
+Kody Kurtz
+Kyle Delaney
+Lennert Raesch
+MHendricks
+Mark van Rij
+Mattia Basaglia
+Michael Aquilina
+Michael Williams
+Porfirio
+Postremus
+Przemysław Grzywacz
+Roberto Raggi
+Sébastien BURILLARD
+Todd Carnes
+Vincent Petithory
+Vsevolod Klementjev
+Wade Brainerd
+Xenodora
+arntro-4
+devnewton
+leeonix
+mhussa
+
 
 Translators:
 
@@ -37,6 +128,7 @@ Thorbjørn Lindeijer      (Dutch)
 Yohann Ferreira          (French)
 Zhao Sting               (Chinese)
 
+
 Acknowledgements:
 
 Most of the icons are from the GNOME and GIMP icon themes (GPL)
@@ -51,6 +143,7 @@ http://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
 The rename icon for tilesets is a strong modified version of the
 'new Tileset' icon by Stefan Beller (GPL, CC-BY-SA3)
 
+
 Tilesets:
 
 perspective_walls.png - (C) Clint Bellanger, released as Public Domain
@@ -59,3 +152,4 @@ tmw_desert_spacing.png - (C) The Mana World Development Team, GPL
 sewer_tileset.png - (C) Blues Brothers RPG developers, GPL
 Replica Island - (C) Chris Pruett and Genki Mine, Apache (except hotspots.png)
 hexmini.png - Public Domain, http://opengameart.org/content/pixel-hex-tilesets-enhanced
+

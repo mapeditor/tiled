@@ -5,7 +5,6 @@ TEMPLATE = app
 TARGET = tmxrasterizer
 target.path = $${PREFIX}/bin
 INSTALLS += target
-TEMPLATE = app
 CONFIG += console
 
 win32 {

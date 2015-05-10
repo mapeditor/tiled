@@ -231,14 +231,16 @@ public:
     { mObjectGroup = objectGroup; }
 
     /**
+     * Returns the rotation of the object in degrees.
+     */
+    qreal rotation() const { return mRotation; }
+
+    /**
      * Sets the rotation of the object in degrees.
      */
     void setRotation(qreal rotation) { mRotation = rotation; }
 
-    /**
-     * Returns the rotation of the object in degrees.
-     */
-    qreal rotation() const { return mRotation; }
+    Alignment alignment() const;
 
     bool isVisible() const { return mVisible; }
     void setVisible(bool visible) { mVisible = visible; }

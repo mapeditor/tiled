@@ -1,6 +1,6 @@
 /*
- * saveasimagedialog.cpp
- * Copyright 2009-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * exportasimagedialog.cpp
+ * Copyright 2009-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,8 +18,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "saveasimagedialog.h"
-#include "ui_saveasimagedialog.h"
+#include "exportasimagedialog.h"
+#include "ui_exportasimagedialog.h"
 
 #include "map.h"
 #include "mapdocument.h"
@@ -45,19 +45,22 @@ static const char * const INCLUDE_BACKGROUND_COLOR = "SaveAsImage/IncludeBackgro
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-QString SaveAsImageDialog::mPath;
+QString ExportAsImageDialog::mPath;
 
-SaveAsImageDialog::SaveAsImageDialog(MapDocument *mapDocument,
-                                     const QString &fileName,
-                                     qreal currentScale,
-                                     QWidget *parent)
+ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
+                                         const QString &fileName,
+                                         qreal currentScale,
+                                         QWidget *parent)
     : QDialog(parent)
-    , mUi(new Ui::SaveAsImageDialog)
+    , mUi(new Ui::ExportAsImageDialog)
     , mMapDocument(mapDocument)
     , mCurrentScale(currentScale)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    QPushButton *saveButton = mUi->buttonBox->button(QDialogButtonBox::Save);
+    saveButton->setText(tr("Export"));
 
     // Default to the last chosen location
     QString suggestion = mPath;
@@ -101,10 +104,11 @@ SaveAsImageDialog::SaveAsImageDialog(MapDocument *mapDocument,
     connect(mUi->fileNameEdit, SIGNAL(textChanged(QString)),
             this, SLOT(updateAcceptEnabled()));
 
+
     Utils::restoreGeometry(this);
 }
 
-SaveAsImageDialog::~SaveAsImageDialog()
+ExportAsImageDialog::~ExportAsImageDialog()
 {
     Utils::saveGeometry(this);
     delete mUi;
@@ -120,7 +124,7 @@ static bool smoothTransform(qreal scale)
     return scale != qreal(1) && scale < qreal(2);
 }
 
-void SaveAsImageDialog::accept()
+void ExportAsImageDialog::accept()
 {
     const QString fileName = mUi->fileNameEdit->text();
     if (fileName.isEmpty())
@@ -129,7 +133,7 @@ void SaveAsImageDialog::accept()
     if (QFile::exists(fileName)) {
         const QMessageBox::StandardButton button =
                 QMessageBox::warning(this,
-                                     tr("Save as Image"),
+                                     tr("Export as Image"),
                                      tr("%1 already exists.\n"
                                         "Do you want to replace it?")
                                      .arg(QFileInfo(fileName).fileName()),
@@ -156,16 +160,41 @@ void SaveAsImageDialog::accept()
     if (useCurrentScale)
         mapSize *= mCurrentScale;
 
-    QImage image(mapSize, QImage::Format_ARGB32_Premultiplied);
+    QImage image;
 
-    if (includeBackgroundColor) {
-        if (mMapDocument->map()->backgroundColor().isValid())
-            image.fill(mMapDocument->map()->backgroundColor());
-        else
-            image.fill(Qt::gray);
+    try {
+        image = QImage(mapSize, QImage::Format_ARGB32_Premultiplied);
+
+        if (includeBackgroundColor) {
+            if (mMapDocument->map()->backgroundColor().isValid())
+                image.fill(mMapDocument->map()->backgroundColor());
+            else
+                image.fill(Qt::gray);
+        } else {
+            image.fill(Qt::transparent);
+        }
+    } catch (const std::bad_alloc &) {
+        QMessageBox::critical(this,
+                              tr("Out of Memory"),
+                              tr("Could not allocate sufficient memory for the image. "
+                                 "Try reducing the zoom level or using a 64-bit version of Tiled."));
+        return;
     }
-    else
-        image.fill(Qt::transparent);
+
+    if (image.isNull()) {
+        const size_t gigabyte = 1073741824;
+        const size_t memory = size_t(mapSize.width()) * size_t(mapSize.height()) * 4;
+        const double gigabytes = (double) memory / gigabyte;
+
+        QMessageBox::critical(this,
+                              tr("Image too Big"),
+                              tr("The resulting image would be %1 x %2 pixels and take %3 GB of memory. "
+                                 "Tiled is unable to create such an image. Try reducing the zoom level.")
+                              .arg(mapSize.width())
+                              .arg(mapSize.height())
+                              .arg(gigabytes, 0, 'f', 2));
+        return;
+    }
 
     QPainter painter(&image);
 
@@ -243,10 +272,10 @@ void SaveAsImageDialog::accept()
     QDialog::accept();
 }
 
-void SaveAsImageDialog::browse()
+void ExportAsImageDialog::browse()
 {
     // Don't confirm overwrite here, since we'll confirm when the user presses
-    // the Save button
+    // the Export button
     const QString filter = Utils::writableImageFormatsFilter();
     QString f = QFileDialog::getSaveFileName(this, tr("Image"),
                                              mUi->fileNameEdit->text(),
@@ -258,7 +287,7 @@ void SaveAsImageDialog::browse()
     }
 }
 
-void SaveAsImageDialog::updateAcceptEnabled()
+void ExportAsImageDialog::updateAcceptEnabled()
 {
     QPushButton *saveButton = mUi->buttonBox->button(QDialogButtonBox::Save);
     saveButton->setEnabled(!mUi->fileNameEdit->text().isEmpty());

@@ -1,7 +1,6 @@
 /*
- * aboutdialog.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
+ * patreondialog.h
+ * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -19,27 +18,36 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
+#ifndef PATREONDIALOG_H
+#define PATREONDIALOG_H
 
 #include <QDialog>
-#include "ui_aboutdialog.h"
+
+namespace Ui {
+class PatreonDialog;
+}
 
 namespace Tiled {
 namespace Internal {
 
-class AboutDialog : public QDialog, private Ui::AboutDialog
+class PatreonDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    AboutDialog(QWidget *parent = 0);
+    explicit PatreonDialog(QWidget *parent = 0);
+    ~PatreonDialog();
 
 private slots:
-    void donate();
+    void openPatreonPage();
+    void togglePatreonStatus();
+    void updatePatreonStatus();
+
+private:
+    Ui::PatreonDialog *ui;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // ABOUTDIALOG_H
+#endif // PATREONDIALOG_H

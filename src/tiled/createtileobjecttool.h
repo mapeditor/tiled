@@ -42,6 +42,7 @@ protected:
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
     void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
 
+    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
     MapObject *createNewMapObject();
 };
 

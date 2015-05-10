@@ -1,7 +1,8 @@
 /*
- * aboutdialog.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
+ * magicwandtool.h
+ * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
+ * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011, Stefan Beller <stefanbeller@googlemail.com>
  *
  * This file is part of Tiled.
  *
@@ -19,27 +20,45 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
 
-#include <QDialog>
-#include "ui_aboutdialog.h"
+#ifndef MAGICWANDTOOL_H
+#define MAGICWANDTOOL_H
+
+
+#include "abstracttiletool.h"
+
+#include "tilelayer.h"
 
 namespace Tiled {
 namespace Internal {
 
-class AboutDialog : public QDialog, private Ui::AboutDialog
+class MapDocument;
+
+/**
+ * Implements a tool that bucket fills (flood fills) a region with a repeatable
+ * stamp.
+ */
+class MagicWandTool : public AbstractTileTool
 {
     Q_OBJECT
 
 public:
-    AboutDialog(QWidget *parent = 0);
+    MagicWandTool(QObject *parent = 0);
 
-private slots:
-    void donate();
+    void mousePressed(QGraphicsSceneMouseEvent *event);
+    void mouseReleased(QGraphicsSceneMouseEvent *event);
+
+    void languageChanged();
+
+protected:
+    void tilePositionChanged(const QPoint &tilePos);
+
+private:
+
+    QRegion mSelectedRegion;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // ABOUTDIALOG_H
+#endif // MAGICWANDTOOL_H
