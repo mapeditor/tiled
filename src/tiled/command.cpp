@@ -32,12 +32,18 @@ QString Command::finalCommand() const
 {
     QString finalCommand = command;
 
-    // Perform map filename replacement
+    // Perform variable replacement
     MapDocument *mapDocument = DocumentManager::instance()->currentDocument();
     if (mapDocument) {
         const QString fileName = mapDocument->fileName();
+
         finalCommand.replace(QLatin1String("%mapfile"),
                              QString(QLatin1String("\"%1\"")).arg(fileName));
+    }
+    MapObject *currentObject = dynamic_cast<MapObject *>(mapDocument->currentObject());
+    if (currentObject) {
+        finalCommand.replace(QLatin1String("%objecttype"),
+                             QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
     }
 
     return finalCommand;
