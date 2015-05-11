@@ -28,7 +28,6 @@
  */
 
 #include "mapobject.h"
-#include "tile.h"
 
 #include "map.h"
 #include "objectgroup.h"
@@ -99,7 +98,6 @@ Alignment MapObject::alignment() const
                 return Bottom;
     }
     return BottomLeft;
->>>>>>> 188afff35124c6a1d092f86a42d6aa5324d32575
 }
 
 void MapObject::flip(FlipDirection direction)
