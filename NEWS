@@ -1,4 +1,4 @@
-0.12.0 (...)
+0.12.0 (13 May 2015)
 * Added support for resizing any object as well as multiselection (with mauve)
 * Added Control modifier for preserving aspect ratio while resizing
 * Added Shift modifier for resizing with origin in the middle
@@ -7,9 +7,11 @@
 * Added tile probability attribute to tile properties view
 * Added a Donate button to the About dialog
 * Added a Patreon dialog to the Help menu
+* Added an --export-formats command line option
 * Remember the directory used for external tilesets (by Henry Jia)
 * Don't set a window icon on Mac OS X
 * Changed the way tile probability is applied (now it's relative)
+* Fixed a crash in the terrain brush
 * Fixed object selection behavior when Shift is held while clicking on nothing
 * Fixed grid snapping being applied for staggered maps even when not enabled
 * Fixed infinite memory allocation loop on invalid tile size in TMX file
@@ -17,7 +19,10 @@
 * Fixed automapping of tile objects
 * Fixed 'Export as Image' to handle out of memory errors
 * Fixed TMX files to be written in native line endings
-* Updated Russian translation
+* Fixed .desktop file missing %f argument for passing files (by Ying-Chun Liu)
+* Fixed cursor position resetting when editing object type
+* Added Arabic (Algeria) translation (by Damene Abdelkader)
+* Updated, Czech, Dutch, French, German, Italian, Portuguese, Russian and Spanish translations
 
 0.11.0 (11 January 2015)
 * Added support for hexagonal maps (offset coordinates)
