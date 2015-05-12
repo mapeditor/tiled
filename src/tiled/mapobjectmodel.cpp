@@ -393,6 +393,9 @@ void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects)
 
 void MapObjectModel::setObjectName(MapObject *o, const QString &name)
 {
+    if (o->name() == name)
+        return;
+
     o->setName(name);
     QModelIndex index = this->index(o);
     emit dataChanged(index, index);
@@ -401,6 +404,9 @@ void MapObjectModel::setObjectName(MapObject *o, const QString &name)
 
 void MapObjectModel::setObjectType(MapObject *o, const QString &type)
 {
+    if (o->type() == type)
+        return;
+
     o->setType(type);
     QModelIndex index = this->index(o, 1);
     emit dataChanged(index, index);
@@ -409,30 +415,45 @@ void MapObjectModel::setObjectType(MapObject *o, const QString &type)
 
 void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
 {
+    if (o->polygon() == polygon)
+        return;
+
     o->setPolygon(polygon);
     emit objectsChanged(QList<MapObject*>() << o);
 }
 
 void MapObjectModel::setObjectPosition(MapObject *o, const QPointF &pos)
 {
+    if (o->position() == pos)
+        return;
+
     o->setPosition(pos);
     emit objectsChanged(QList<MapObject*>() << o);
 }
 
 void MapObjectModel::setObjectSize(MapObject *o, const QSizeF &size)
 {
+    if (o->size() == size)
+        return;
+
     o->setSize(size);
     emit objectsChanged(QList<MapObject*>() << o);
 }
 
 void MapObjectModel::setObjectRotation(MapObject *o, qreal rotation)
 {
+    if (o->rotation() == rotation)
+        return;
+
     o->setRotation(rotation);
     emit objectsChanged(QList<MapObject*>() << o);
 }
 
 void MapObjectModel::setObjectVisible(MapObject *o, bool visible)
 {
+    if (o->isVisible() == visible)
+        return;
+
     o->setVisible(visible);
     QModelIndex index = this->index(o);
     emit dataChanged(index, index);
