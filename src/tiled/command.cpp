@@ -39,11 +39,12 @@ QString Command::finalCommand() const
 
         finalCommand.replace(QLatin1String("%mapfile"),
                              QString(QLatin1String("\"%1\"")).arg(fileName));
-    }
-    MapObject *currentObject = dynamic_cast<MapObject *>(mapDocument->currentObject());
-    if (currentObject) {
-        finalCommand.replace(QLatin1String("%objecttype"),
-                             QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
+
+        MapObject *currentObject = dynamic_cast<MapObject *>(mapDocument->currentObject());
+        if (currentObject) {
+            finalCommand.replace(QLatin1String("%objecttype"),
+                                 QString(QLatin1String("\"%1\"")).arg(currentObject->type()));
+        }
     }
 
     return finalCommand;
