@@ -334,6 +334,7 @@ Tileset *MapReaderPrivate::readTileset()
                         delete tileset;
                         tileset = 0;
                         mCreatedTilesets.removeLast();
+                        break;
                     } else {
                         readTilesetImage(tileset);
                     }
