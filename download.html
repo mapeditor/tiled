@@ -189,19 +189,19 @@
                 <h4>Latest Release</h4>
                 <ul class="downloads">
                   <li>
-                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/releases/download/v0.11.0/tiled-0.11.0-win32-setup.exe">
+                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/releases/download/v0.12.0/tiled-0.12.0-win32-setup.exe">
                     <img src="img/os-windows.png" />
-                    Tiled 0.11.0 for Windows</a>
+                    Tiled 0.12.0 for Windows</a>
                   </li>
                   <li>
-                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/releases/download/v0.11.0/tiled-0.11.0.dmg">
+                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/releases/download/v0.12.0/tiled-0.12.0.dmg">
                     <img src="img/os-apple.png" />
-                    Tiled 0.11.0 for OS X</a>
+                    Tiled 0.12.0 for OS X</a>
                   </li>
                   <li>
-                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/archive/v0.11.0/tiled-0.11.0.tar.gz">
+                    <a class="btn btn-default btn-download" href="https://github.com/bjorn/tiled/archive/v0.12.0/tiled-0.12.0.tar.gz">
                     <img src="img/os-linux.png" />
-                    Tiled 0.11.0 source</a>
+                    Tiled 0.12.0 source</a>
                   </li>
                 </ul>
                 <div style="clear: both;"></div>
@@ -256,6 +256,34 @@
         <div class="col-md-12">
           <div class="my-box">
             <a id="changes"></a><h3>Changes</h3>
+            <h4>0.12.0 <small>(14 March 2015)</small></h4>
+            <ul>
+              <li>Added support for resizing any object as well as multiselection (with mauve)</li>
+              <li>Added Control modifier for preserving aspect ratio while resizing</li>
+              <li>Added Shift modifier for resizing with origin in the middle</li>
+              <li>Added Alt modifier for suppressing selection changes when starting to drag</li>
+              <li>Added a Magic Wand selection tool (by Henry Jia)</li>
+              <li>Added tile probability attribute to tile properties view</li>
+              <li>Added a Donate button to the About dialog</li>
+              <li>Added a Patreon dialog to the Help menu</li>
+              <li>Added an --export-formats command line option</li>
+              <li>Remember the directory used for external tilesets (by Henry Jia)</li>
+              <li>Don't set a window icon on Mac OS X</li>
+              <li>Changed the way tile probability is applied (now it's relative)</li>
+              <li>Fixed a crash in the terrain brush</li>
+              <li>Fixed object selection behavior when Shift is held while clicking on nothing</li>
+              <li>Fixed grid snapping being applied for staggered maps even when not enabled</li>
+              <li>Fixed infinite memory allocation loop on invalid tile size in TMX file</li>
+              <li>Fixed file icon associated with TMX files on Windows</li>
+              <li>Fixed automapping of tile objects (by Seanba)</li>
+              <li>Fixed 'Export as Image' to handle out of memory errors</li>
+              <li>Fixed TMX files to be written in native line endings</li>
+              <li>Fixed .desktop file missing %f argument for passing files (by Ying-Chun Liu)</li>
+              <li>Fixed cursor position resetting when editing object type</li>
+              <li>Added Arabic (Algeria) translation (by Damene Abdelkader)</li>
+              <li>Updated, Czech, Dutch, French, German, Italian, Japanese, Portuguese, Russian and Spanish translations</li>
+            </ul>
+
             <h4>0.11.0 <small>(11 January 2015)</small></h4>
             <ul>
               <li>Added support for hexagonal maps (offset coordinates)</li>
