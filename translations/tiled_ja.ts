@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ja_JP">
+<TS version="2.0" language="ja_JP">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -11,7 +11,7 @@
     <message>
         <location line="+83"/>
         <source>Donate</source>
-        <translation type="unfinished"></translation>
+        <translation>寄付</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -213,47 +213,47 @@
     <message>
         <location filename="../src/tiled/exportasimagedialog.ui" line="+14"/>
         <source>Export As Image</source>
-        <translation type="unfinished"></translation>
+        <translation>画像でエクスポート</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished">場所</translation>
+        <translation>場所</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Name:</source>
-        <translation type="unfinished">名前:</translation>
+        <translation>名前:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Browse...</source>
-        <translation type="unfinished">参照(&amp;B)...</translation>
+        <translation>参照(&amp;B)...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation type="unfinished">設定</translation>
+        <translation>設定</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation type="unfinished">表示レイヤーのみ(&amp;v)</translation>
+        <translation>表示レイヤーのみ(&amp;v)</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Use current &amp;zoom level</source>
-        <translation type="unfinished">現在表示している拡大率(&amp;z)</translation>
+        <translation>現在表示している拡大率(&amp;z)</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished">タイルのグリッドを描画(&amp;D)</translation>
+        <translation>タイルのグリッドを描画(&amp;D)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Include background color</source>
-        <translation type="unfinished">背景色を含む (&amp;I)</translation>
+        <translation>背景色を含む (&amp;I)</translation>
     </message>
 </context>
 <context>
@@ -462,7 +462,7 @@
     <message>
         <location line="+193"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>パトロンになる</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -487,7 +487,7 @@
     <message>
         <location line="-50"/>
         <source>Export As &amp;Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>画像でエクスポート(&amp;I)...</translation>
     </message>
     <message>
         <location line="+42"/>
@@ -1030,22 +1030,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished"></translation>
+        <translation>パトロンになろう</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Visit https://www.patreon.com/bjorn</source>
-        <translation type="unfinished"></translation>
+        <translation>https://www.patreon.com/bjorn へアクセス</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>私は既にパトロンです!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>また今度</translation>
     </message>
 </context>
 <context>
@@ -2347,44 +2347,44 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/exportasimagedialog.cpp" line="+63"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポート</translation>
     </message>
     <message>
         <location line="+73"/>
         <source>Export as Image</source>
-        <translation type="unfinished"></translation>
+        <translation>画像でエクスポート</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
-        <translation type="unfinished">%1 は既に存在します。
+        <translation>%1 は既に存在します。
 上書きしてよろしいですか?</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Out of Memory</source>
-        <translation type="unfinished"></translation>
+        <translation>メモリ不足</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>画像用のメモリが確保に失敗しました。表示を縮小するか、64ビット版のTiledを使用してください。</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Image too Big</source>
-        <translation type="unfinished"></translation>
+        <translation>画像が大きすぎます</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 x %2 pxの生成画像が %3 GBのメモリを使用します。Tiledはこの画像を生成できません。表示を縮小してください。</translation>
     </message>
     <message>
         <location line="+89"/>
         <source>Image</source>
-        <translation type="unfinished">画像</translation>
+        <translation>画像</translation>
     </message>
 </context>
 <context>
@@ -2455,13 +2455,13 @@ Do you want to replace it?</source>
         <location filename="../src/tiled/magicwandtool.cpp" line="+40"/>
         <location line="+52"/>
         <source>Magic Wand</source>
-        <translation type="unfinished"></translation>
+        <translation>自動選択ツール</translation>
     </message>
     <message>
         <location line="-49"/>
         <location line="+50"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>W</translation>
     </message>
 </context>
 <context>
@@ -3102,8 +3102,8 @@ Please select specific format.</source>
     <message numerus="yes">
         <location line="+247"/>
         <source>Resize %n Object(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%nつのオブジェクトを拡縮</numerusform>
         </translation>
     </message>
 </context>
@@ -3154,12 +3154,16 @@ Please select specific format.</source>
 &lt;p&gt;Your support as a patron makes a big difference to me as the main developer and maintainer of Tiled. It allows me to spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Keep an eye out for exclusive updates in the Activity feed on my Patreon page to find out what I&apos;ve been up to in the time I could spend on Tiled thanks to your support!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;ご支援頂きありがとうございます！&lt;/h3&gt;
+&lt;p&gt;あなたのパトロンとしてのご支援はTiledのメイン開発者やメンテナにとってとても重要です。それは私がより多くの時間をTiledの開発に費やすことを可能にします。&lt;/p&gt;
+&lt;p&gt;PatreonのページのActivityボタンを押すとパトロンの方々のご支援で何ができたのかを受信できます。あなたのご支援ありがとうございました！&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m no longer a patron</source>
-        <translation type="unfinished"></translation>
+        <translation>しばらく支援していない</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3168,12 +3172,16 @@ Please select specific format.</source>
 &lt;p&gt;Please consider supporting me as a patron. Your support would make a big difference to me, the main developer and maintainer of Tiled. I could spend less time working for money elsewhere and spend more time working on Tiled instead.&lt;/p&gt;
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
+&lt;h3&gt;あなたのご支援で私はTiledを開発できます!&lt;/h3&gt;
+&lt;p&gt;パトロンになって私をご支援していただければ幸いに思います。あなたのサポートはTiledの開発やメンテナンスにとても重要です。寄付金によってより多くの時間をTiledの開発に費やすことができます。&lt;/p&gt;
+&lt;p&gt;塵も積もれば山となります。Tiledのたくさんのユーザーさんがそれぞれ少しずつ毎月寄付して頂けばTiledをより良くすることができます。&lt;/p&gt;
+&lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished"></translation>
+        <translation>もう寄付したよ!</translation>
     </message>
 </context>
 <context>
@@ -3444,12 +3452,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>確率</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Relative chance this tile will be picked while painting terrain</source>
-        <translation type="unfinished"></translation>
+        <translation>地形ブラシで描画するときにこのタイルが選ばれる確率</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4042,7 +4050,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+38"/>
         <source>Change Tile Probability</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルの確率を変更</translation>
     </message>
 </context>
 <context>
