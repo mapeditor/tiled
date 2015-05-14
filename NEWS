@@ -16,7 +16,7 @@
 * Fixed grid snapping being applied for staggered maps even when not enabled
 * Fixed infinite memory allocation loop on invalid tile size in TMX file
 * Fixed file icon associated with TMX files on Windows
-* Fixed automapping of tile objects
+* Fixed automapping of tile objects (by Seanba)
 * Fixed 'Export as Image' to handle out of memory errors
 * Fixed TMX files to be written in native line endings
 * Fixed .desktop file missing %f argument for passing files (by Ying-Chun Liu)
