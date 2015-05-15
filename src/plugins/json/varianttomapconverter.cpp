@@ -170,6 +170,14 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setProperties(toProperties(variantMap["properties"]));
 
+    // Read terrains
+    QVariantList terrainsVariantList = variantMap["terrains"].toList();
+    for (int i = 0; i < terrainsVariantList.count(); ++i) {
+        QVariantMap terrainMap = terrainsVariantList[i].toMap();
+        tileset->addTerrain(terrainMap["name"].toString(),
+                            terrainMap["tile"].toInt());
+    }
+
     // Read tile terrain and external image information
     const QVariantMap tilesVariantMap = variantMap["tiles"].toMap();
     QVariantMap::const_iterator it = tilesVariantMap.constBegin();
@@ -179,6 +187,7 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
         if (tileIndex < 0) {
             mError = tr("Tileset tile index negative:\n'%1'").arg(tileIndex);
         }
+
         if (tileIndex >= tileset->tileCount()) {
             // Extend the tileset to fit the tile
             if (tileIndex >= tilesVariantMap.count()) {
@@ -189,19 +198,19 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
                 mError = tr("Tileset tile index too high:\n'%1'").arg(tileIndex);
                 return 0;
             }
-            int i;
-            for (i=tileset->tileCount(); i <= tileIndex; i++)
+            for (int i = tileset->tileCount(); i <= tileIndex; i++)
                 tileset->addTile(QPixmap());
         }
+
         Tile *tile = tileset->tileAt(tileIndex);
         if (tile) {
             const QVariantMap tileVar = it.value().toMap();
             QList<QVariant> terrains = tileVar["terrain"].toList();
             if (terrains.count() == 4) {
                 for (int i = 0; i < 4; ++i) {
-                    int terrainID = terrains.at(i).toInt(&ok);
-                    if (ok && terrainID >= 0 && terrainID < tileset->terrainCount())
-                        tile->setCornerTerrain(i, terrainID);
+                    int terrainId = terrains.at(i).toInt(&ok);
+                    if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
+                        tile->setCornerTerrain(i, terrainId);
                 }
             }
             float terrainProbability = tileVar["probability"].toFloat(&ok);
@@ -239,14 +248,6 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
             const Properties properties = toProperties(propertiesVar);
             tileset->tileAt(tileIndex)->setProperties(properties);
         }
-    }
-
-    // Read terrains
-    QVariantList terrainsVariantList = variantMap["terrains"].toList();
-    for (int i = 0; i < terrainsVariantList.count(); ++i) {
-        QVariantMap terrainMap = terrainsVariantList[i].toMap();
-        tileset->addTerrain(terrainMap["name"].toString(),
-                            terrainMap["tile"].toInt());
     }
 
     mGidMapper.insert(firstGid, tileset.data());
