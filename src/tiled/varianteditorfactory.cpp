@@ -69,8 +69,11 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
         // Add support for "suggestions" attribute that adds a QCompleter to the QLineEdit
         QVariant suggestions = manager->attributeValue(property, QLatin1String("suggestions"));
         if (!suggestions.toStringList().isEmpty()) {
-            if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor))
-                lineEdit->setCompleter(new QCompleter(suggestions.toStringList(), lineEdit));
+            if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+                QCompleter *completer = new QCompleter(suggestions.toStringList(), lineEdit);
+                completer->setCaseSensitivity(Qt::CaseInsensitive);
+                lineEdit->setCompleter(completer);
+            }
         }
     }
 

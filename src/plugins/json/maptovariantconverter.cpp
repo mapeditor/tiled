@@ -145,7 +145,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
                 terrainIds << QVariant(tile->cornerTerrainId(j));
             tileVariant["terrain"] = terrainIds;
         }
-        if (tile->terrainProbability() != -1.f)
+        if (tile->terrainProbability() != 1.f)
             tileVariant["probability"] = tile->terrainProbability();
         if (!tile->imageSource().isEmpty()) {
             const QString rel = mMapDir.relativeFilePath(tile->imageSource());

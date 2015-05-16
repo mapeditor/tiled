@@ -113,6 +113,8 @@ void MapView::setUseOpenGL(bool useOpenGL)
     if (mMode == StaticContents)
         v->setAttribute(Qt::WA_StaticContents);
     v->setMouseTracking(true);
+#else
+    Q_UNUSED(useOpenGL)
 #endif
 }
 

@@ -39,6 +39,7 @@ class Map;
 class MapObject;
 class ObjectGroup;
 class TileLayer;
+class Tile;
 class Tileset;
 
 namespace Internal {
@@ -86,6 +87,7 @@ private slots:
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
     void tilesetChanged(Tileset *tileset);
+    void tileChanged(Tile *tile);
     void terrainChanged(Tileset *tileset, int index);
 
     void propertyAdded(Object *object, const QString &name);
@@ -118,6 +120,7 @@ private:
         FlippingProperty,
         DrawOrderProperty,
         TileOffsetProperty,
+        TileProbabilityProperty,
         IdProperty,
         CustomProperty
     };
@@ -140,6 +143,7 @@ private:
     void applyObjectGroupValue(PropertyId id, const QVariant &val);
     void applyImageLayerValue(PropertyId id, const QVariant &val);
     void applyTilesetValue(PropertyId id, const QVariant &val);
+    void applyTileValue(PropertyId id, const QVariant &val);
     void applyTerrainValue(PropertyId id, const QVariant &val);
 
     QtVariantProperty *createProperty(PropertyId id,

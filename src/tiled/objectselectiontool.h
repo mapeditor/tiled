@@ -30,7 +30,8 @@ class QGraphicsItem;
 namespace Tiled {
 namespace Internal {
 
-class CornerHandle;
+class RotateHandle;
+class ResizeHandle;
 class MapObjectItem;
 class SelectionRectangle;
 
@@ -57,16 +58,22 @@ public:
 
 private slots:
     void updateHandles();
-    void setHandlesVisible(bool visible);
+    void updateHandleVisibility();
 
     void objectsRemoved(const QList<MapObject *> &);
 
 private:
-    enum Mode {
-        NoMode,
+    enum Action {
+        NoAction,
         Selecting,
         Moving,
-        Rotating
+        Rotating,
+        Resizing
+    };
+
+    enum Mode {
+        Resize,
+        Rotate,
     };
 
     void updateSelection(const QPointF &pos,
@@ -74,7 +81,7 @@ private:
 
     void startSelecting();
 
-    void startMoving();
+    void startMoving(Qt::KeyboardModifiers modifiers);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
     void finishMoving(const QPointF &pos);
@@ -84,20 +91,48 @@ private:
                              Qt::KeyboardModifiers modifiers);
     void finishRotating(const QPointF &pos);
 
+    void startResizing();
+    void updateResizingItems(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+    void updateResizingSingleItem(const QPointF &resizingOrigin,
+                                  const QPointF &screenPos,
+                                  Qt::KeyboardModifiers modifiers);
+    void finishResizing(const QPointF &pos);
+    
+    void setMode(Mode mode);
+    void saveSelectionState();
+
+    const QPointF snapToGrid(const QPointF &pos,
+                             Qt::KeyboardModifiers modifiers);
+
+    struct MovingObject
+    {
+        MapObjectItem *item;
+        QPointF oldItemPosition;
+
+        QPointF oldPosition;
+        QSizeF oldSize;
+        QPolygonF oldPolygon;
+        qreal oldRotation;
+    };
+
     SelectionRectangle *mSelectionRectangle;
-    QGraphicsItem *mRotationOriginIndicator;
-    CornerHandle *mCornerHandles[4];
+    QGraphicsItem *mOriginIndicator;
+    RotateHandle *mRotateHandles[4];
+    ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
     MapObjectItem *mClickedObjectItem;
-    CornerHandle *mClickedCornerHandle;
-    QSet<MapObjectItem*> mMovingItems;
-    QVector<QPointF> mOldObjectItemPositions;
-    QVector<QPointF> mOldObjectPositions;
-    QVector<qreal> mOldObjectRotations;
+    RotateHandle *mClickedRotateHandle;
+    ResizeHandle *mClickedResizeHandle;
+
+    QList<MovingObject> mMovingObjects;
+
     QPointF mAlignPosition;
-    QRectF mSelectionBoundingRect;
-    QPointF mRotationOrigin;
+    QPointF mOrigin;
+    bool mResizingLimitHorizontal;
+    bool mResizingLimitVertical;
     Mode mMode;
+    Action mAction;
     QPointF mStart;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;

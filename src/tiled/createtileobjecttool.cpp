@@ -19,12 +19,13 @@
  */
 
 #include "createtileobjecttool.h"
-#include "preferences.h"
-#include "utils.h"
+
 #include "mapdocument.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "snaphelper.h"
 #include "tile.h"
+#include "utils.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -37,40 +38,39 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     languageChanged();
 }
 
-void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers,
-                                                         bool snapToGrid, bool snapToFineGrid)
+void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
     const MapRenderer *renderer = mapDocument()->renderer();
 
     const QSize imgSize = mNewMapObjectItem->mapObject()->cell().tile->size();
     const QPointF diff(-imgSize.width() / 2, imgSize.height() / 2);
-    QPointF tileCoords = renderer->screenToTileCoords(pos + diff);
+    QPointF pixelCoords = renderer->screenToPixelCoords(pos + diff);
 
-    if (snapToFineGrid) {
-        int gridFine = Preferences::instance()->gridFine();
-        tileCoords = (tileCoords * gridFine).toPoint();
-        tileCoords /= gridFine;
-    } else if (snapToGrid)
-        tileCoords = tileCoords.toPoint();
-
-    QPointF pixelCoords = renderer->tileToPixelCoords(tileCoords);
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
 
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
     mNewMapObjectItem->setZValue(10000); // sync may change it
+    mNewMapObjectItem->setOpacity(0.75);
 }
 
-void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
+void CreateTileObjectTool::mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
         cancelNewMapObject();
-    CreateObjectTool::mousePressed(event);
 }
 
-void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool, bool)
+void CreateTileObjectTool::mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         finishNewMapObject();
+}
+
+void CreateTileObjectTool::startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup)
+{
+    CreateObjectTool::startNewMapObject(pos, objectGroup);
+    if (mNewMapObjectItem)
+        mNewMapObjectItem->setOpacity(0.75);
 }
 
 void CreateTileObjectTool::languageChanged()
@@ -81,11 +81,12 @@ void CreateTileObjectTool::languageChanged()
 
 MapObject *CreateTileObjectTool::createNewMapObject()
 {
-    if(!mTile)
+    if (!mTile)
         return 0;
 
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
     newMapObject->setCell(Cell(mTile));
+    newMapObject->setSize(mTile->size());
     return newMapObject;
 }

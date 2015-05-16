@@ -12,7 +12,7 @@ be set on the map, its layers, the tiles or on the objects. Its map format
 (TMX) is relatively easy to understand and allows a map to use multiple
 tilesets while also allowing each tileset to grow or shrink as necessary later.
 
-[![Build Status](http://img.shields.io/travis/bjorn/tiled.svg)](https://travis-ci.org/bjorn/tiled) [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
+[![Build Status](http://img.shields.io/travis/bjorn/tiled.svg?style=plastic)](https://travis-ci.org/bjorn/tiled) [![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=52019)](https://www.bountysource.com/trackers/52019-tiled?utm_source=52019&utm_medium=shield&utm_campaign=TRACKER_BADGE)
 
 About the Qt Version
 -------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ Make sure the Qt (>= 4.7) development libraries are installed:
 * In Ubuntu/Debian: `sudo apt-get install libqt4-dev libqt4-opengl-dev zlib1g-dev`
 * In Fedora:        `yum install qt-devel`
 * In Arch Linux:    `pacman -S qt`
-* In Mac OS X with [Homebrew](http://mxcl.github.io/homebrew/): `brew install qt`
+* In Mac OS X with [Homebrew](http://brew.sh/): `brew install qt`
 
 Now you can compile by running:
 

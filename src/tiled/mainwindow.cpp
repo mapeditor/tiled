@@ -1,6 +1,6 @@
 /*
  * mainwindow.cpp
- * Copyright 2008-2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2008, Roderic Morris <roderic@ccs.neu.edu>
  * Copyright 2009-2010, Jeff Bland <jksb@member.fsf.org>
  * Copyright 2009, Dennis Honeyman <arcticuno@gmail.com>
@@ -42,6 +42,7 @@
 #include "editpolygontool.h"
 #include "eraser.h"
 #include "erasetiles.h"
+#include "exportasimagedialog.h"
 #include "bucketfilltool.h"
 #include "filltiles.h"
 #include "languagemanager.h"
@@ -63,11 +64,11 @@
 #include "objectselectiontool.h"
 #include "objectgroup.h"
 #include "offsetmapdialog.h"
+#include "patreondialog.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
 #include "quickstampmanager.h"
-#include "saveasimagedialog.h"
 #include "stampbrush.h"
 #include "terrainbrush.h"
 #include "tilelayer.h"
@@ -89,6 +90,7 @@
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
 #include "imagemovementtool.h"
+#include "magicwandtool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -150,9 +152,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QIcon redoIcon(QLatin1String(":images/16x16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16x16/edit-undo.png"));
 
+#ifndef Q_OS_MAC
     QIcon tiledIcon(QLatin1String(":images/16x16/tiled.png"));
     tiledIcon.addFile(QLatin1String(":images/32x32/tiled.png"));
     setWindowIcon(tiledIcon);
+#endif
 
     // Add larger icon versions for actions used in the tool bar
     QIcon newIcon = mUi->actionNew->icon();
@@ -183,14 +187,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     PropertiesDock *propertiesDock = new PropertiesDock(this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
+    addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
     addDockWidget(Qt::LeftDockWidgetArea, undoDock);
     addDockWidget(Qt::LeftDockWidgetArea, mMapsDock);
     addDockWidget(Qt::RightDockWidgetArea, mObjectsDock);
     addDockWidget(Qt::RightDockWidgetArea, mMiniMapDock);
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
-    addDockWidget(Qt::RightDockWidgetArea, propertiesDock);
-    addDockWidget(Qt::RightDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
@@ -289,7 +293,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(clearRecentFiles()));
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
-    connect(mUi->actionSaveAsImage, SIGNAL(triggered()), SLOT(saveAsImage()));
+    connect(mUi->actionExportAsImage, SIGNAL(triggered()), SLOT(exportAsImage()));
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
     connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
     connect(mUi->actionReload, SIGNAL(triggered()), SLOT(reload()));
@@ -330,8 +334,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
 
+    connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
-    connect(mUi->actionAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     connect(mTilesetDock, SIGNAL(tilesetsDropped(QStringList)),
             SLOT(newTilesets(QStringList)));
@@ -407,6 +411,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(mBucketFillTool));
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
@@ -842,19 +847,6 @@ bool MainWindow::confirmAllSave()
     return true;
 }
 
-void MainWindow::saveAsImage()
-{
-    if (!mMapDocument)
-        return;
-
-    MapView *mapView = mDocumentManager->currentMapView();
-    SaveAsImageDialog dialog(mMapDocument,
-                             mMapDocument->fileName(),
-                             mapView->zoomable()->scale(),
-                             this);
-    dialog.exec();
-}
-
 void MainWindow::export_()
 {
     if (!mMapDocument)
@@ -991,6 +983,19 @@ void MainWindow::exportAs()
             exportPluginFileName = plugin->fileName;
         mMapDocument->setExportPluginFileName(exportPluginFileName);
     }
+}
+
+void MainWindow::exportAsImage()
+{
+    if (!mMapDocument)
+        return;
+
+    MapView *mapView = mDocumentManager->currentMapView();
+    ExportAsImageDialog dialog(mMapDocument,
+                               mMapDocument->fileName(),
+                               mapView->zoomable()->scale(),
+                               this);
+    dialog.exec();
 }
 
 void MainWindow::reload()
@@ -1187,13 +1192,19 @@ void MainWindow::addExternalTileset()
     if (!mMapDocument)
         return;
 
-    const QString start = fileDialogStartLocation();
+    Preferences *prefs = Preferences::instance();
+    QString start = prefs->lastPath(Preferences::ExternalTileset);
+
     const QStringList fileNames =
             QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
                                           start,
                                           tr("Tiled tileset files (*.tsx)"));
+
     if (fileNames.isEmpty())
         return;
+
+    prefs->setLastPath(Preferences::ExternalTileset,
+                       QFileInfo(fileNames.back()).path());
 
     QList<Tileset *> tilesets;
 
@@ -1400,7 +1411,7 @@ void MainWindow::updateActions()
 
     mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
-    mUi->actionSaveAsImage->setEnabled(map);
+    mUi->actionExportAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
     mUi->actionExportAs->setEnabled(map);
     mUi->actionReload->setEnabled(map);
@@ -1557,7 +1568,7 @@ void MainWindow::readSettings()
     if (!geom.isEmpty())
         restoreGeometry(geom);
     else
-        resize(1000, 700);
+        resize(1200, 700);
     restoreState(mSettings.value(QLatin1String("state"),
                                  QByteArray()).toByteArray());
     mSettings.endGroup();
@@ -1575,6 +1586,12 @@ void MainWindow::updateWindowTitle()
         setWindowFilePath(QString());
         setWindowModified(false);
     }
+}
+
+void MainWindow::becomePatron()
+{
+    PatreonDialog patreonDialog(this);
+    patreonDialog.exec();
 }
 
 void MainWindow::aboutTiled()

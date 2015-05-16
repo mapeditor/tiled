@@ -108,7 +108,7 @@ ObjectGroup *AbstractObjectTool::currentObjectGroup() const
 MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
 {
     foreach (QGraphicsItem *item, mMapScene->items(pos)) {
-        if (MapObjectItem *objectItem = dynamic_cast<MapObjectItem*>(item))
+        if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
             return objectItem;
     }
     return 0;

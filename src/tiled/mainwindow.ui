@@ -64,9 +64,9 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
-    <addaction name="actionSaveAsImage"/>
     <addaction name="actionExport"/>
     <addaction name="actionExportAs"/>
+    <addaction name="actionExportAsImage"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -88,8 +88,8 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionBecomePatron"/>
     <addaction name="actionAbout"/>
-    <addaction name="actionAboutQt"/>
    </widget>
    <widget class="QMenu" name="menuMap">
     <property name="title">
@@ -333,9 +333,9 @@
     <string>Ctrl+0</string>
    </property>
   </action>
-  <action name="actionSaveAsImage">
+  <action name="actionExportAsImage">
    <property name="text">
-    <string>Save As &amp;Image...</string>
+    <string>Export As &amp;Image...</string>
    </property>
   </action>
   <action name="actionCut">
@@ -468,6 +468,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionBecomePatron">
+   <property name="text">
+    <string>Become a Patron</string>
    </property>
   </action>
  </widget>

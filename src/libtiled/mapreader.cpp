@@ -331,8 +331,13 @@ Tileset *MapReaderPrivate::readTileset()
                     if (tileWidth == 0 || tileHeight == 0) {
                         xml.raiseError(tr("Invalid tileset parameters for tileset"
                                           " '%1'").arg(name));
+                        delete tileset;
+                        tileset = 0;
+                        mCreatedTilesets.removeLast();
+                        break;
+                    } else {
+                        readTilesetImage(tileset);
                     }
-                    readTilesetImage(tileset);
                 } else if (xml.name() == QLatin1String("terraintypes")) {
                     readTilesetTerrainTypes(tileset);
                 } else {
@@ -847,8 +852,17 @@ MapObject *MapReaderPrivate::readObject()
     if (ok)
         object->setRotation(rotation);
 
-    if (gid)
+    if (gid) {
         object->setCell(cellForGid(gid));
+        
+        if (object->cell().isEmpty() == false) {
+            const QSizeF &tileSize = object->cell().tile->size();
+            if (width == 0)
+                object->setWidth(tileSize.width());
+            if (height == 0)
+                object->setHeight(tileSize.height());
+        }
+    }
 
     const int visible = visibleRef.toString().toInt(&ok);
     if (ok)

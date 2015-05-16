@@ -30,19 +30,23 @@ namespace Internal {
 class CreateTileObjectTool : public CreateObjectTool
 {
     Q_OBJECT
+
 public:
-    CreateTileObjectTool(QObject* parent);
+    CreateTileObjectTool(QObject *parent);
+
     void languageChanged();
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers, bool snapToGrid, bool snapToFineGrid);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event, bool snapToGrid, bool snapToFineGrid);
-    MapObject* createNewMapObject();
+                                       Qt::KeyboardModifiers modifiers);
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+
+    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
+    MapObject *createNewMapObject();
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled
 
 #endif // CREATETILEOBJECTTOOL_H

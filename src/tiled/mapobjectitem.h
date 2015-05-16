@@ -119,10 +119,6 @@ private:
     QColor mColor;      // Cached color of the object
     bool mIsEditable;
     bool mSyncing;
-    ResizeHandle *mResizeHandle;
-
-    friend class Handle;
-    friend class ResizeHandle;
 };
 
 } // namespace Internal

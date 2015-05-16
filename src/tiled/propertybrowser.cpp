@@ -27,6 +27,7 @@
 #include "changemapproperty.h"
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
+#include "changetileprobability.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
 #include "map.h"
@@ -176,6 +177,9 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, SIGNAL(tilesetTileOffsetChanged(Tileset*)),
                 SLOT(tilesetChanged(Tileset*)));
 
+        connect(mapDocument, SIGNAL(tileProbabilityChanged(Tile*)),
+                SLOT(tileChanged(Tile*)));
+
         TerrainModel *terrainModel = mapDocument->terrainModel();
         connect(terrainModel, SIGNAL(terrainChanged(Tileset*,int)),
                 SLOT(terrainChanged(Tileset*,int)));
@@ -246,6 +250,12 @@ void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)
 void PropertyBrowser::tilesetChanged(Tileset *tileset)
 {
     if (mObject == tileset)
+        updateProperties();
+}
+
+void PropertyBrowser::tileChanged(Tile *tile)
+{
+    if (mObject == tile)
         updateProperties();
 }
 
@@ -359,7 +369,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::MapObjectType: applyMapObjectValue(id, val); break;
     case Object::LayerType:     applyLayerValue(id, val); break;
     case Object::TilesetType:   applyTilesetValue(id, val); break;
-    case Object::TileType:      break;
+    case Object::TileType:      applyTileValue(id, val); break;
     case Object::TerrainType:   applyTerrainValue(id, val); break;
     }
 }
@@ -518,6 +528,15 @@ void PropertyBrowser::addTileProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile"));
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
+
+    QtProperty *probabilityProperty = createProperty(TileProbabilityProperty,
+                                                     QVariant::Double,
+                                                     tr("Probability"),
+                                                     groupProperty);
+
+    probabilityProperty->setToolTip(tr("Relative chance this tile will be "
+                                       "picked while painting terrain"));
+
     addProperty(groupProperty);
 }
 
@@ -794,6 +813,17 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
     }
 }
 
+void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
+{
+    Tile *tile = static_cast<Tile*>(mObject);
+
+    if (id == TileProbabilityProperty) {
+        QUndoStack *undoStack = mMapDocument->undoStack();
+        undoStack->push(new ChangeTileProbability(mMapDocument,
+                                                  tile, val.toFloat()));
+    }
+}
+
 void PropertyBrowser::applyTerrainValue(PropertyId id, const QVariant &val)
 {
     Terrain *terrain = static_cast<Terrain*>(mObject);
@@ -904,6 +934,7 @@ void PropertyBrowser::updateProperties()
     case Object::TileType: {
         const Tile *tile = static_cast<const Tile*>(mObject);
         mIdToProperty[IdProperty]->setValue(tile->id());
+        mIdToProperty[TileProbabilityProperty]->setValue(tile->terrainProbability());
         break;
     }
     case Object::TerrainType: {

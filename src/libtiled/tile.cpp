@@ -39,7 +39,7 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mTileset(tileset),
     mImage(image),
     mTerrain(-1),
-    mTerrainProbability(-1.f),
+    mTerrainProbability(1.f),
     mObjectGroup(0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)
@@ -53,7 +53,7 @@ Tile::Tile(const QPixmap &image, const QString &imageSource,
     mImage(image),
     mImageSource(imageSource),
     mTerrain(-1),
-    mTerrainProbability(-1.f),
+    mTerrainProbability(1.f),
     mObjectGroup(0),
     mCurrentFrameIndex(0),
     mUnusedTime(0)

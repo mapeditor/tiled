@@ -41,6 +41,18 @@ enum RotateDirection {
     RotateRight
 };
 
+enum Alignment {
+    TopLeft,
+    Top,
+    TopRight,
+    Left,
+    Center,
+    Right,
+    BottomLeft,
+    Bottom,
+    BottomRight
+};
+
 static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
 

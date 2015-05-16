@@ -19,11 +19,9 @@
  */
 
 #include "createellipseobjecttool.h"
-#include "preferences.h"
+
+#include "mapobject.h"
 #include "utils.h"
-#include "mapdocument.h"
-#include "mapobjectitem.h"
-#include "maprenderer.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;

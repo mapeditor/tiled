@@ -6,7 +6,11 @@ DynamicLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui" }
 
-    cpp.dynamicLibraries: ["z"]
+    Properties {
+        condition: !qbs.targetOS.contains("windows")
+        cpp.dynamicLibraries: base.concat(["z"])
+    }
+
     cpp.defines: [
         "TILED_LIBRARY",
         "QT_NO_CAST_FROM_ASCII",
@@ -60,6 +64,11 @@ DynamicLibrary {
 
     Export {
         Depends { name: "cpp" }
+        Depends {
+            name: "Qt"
+            submodules: ["gui"]
+        }
+
         cpp.includePaths: "."
     }
 
