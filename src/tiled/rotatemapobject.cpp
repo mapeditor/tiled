@@ -30,12 +30,24 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 RotateMapObject::RotateMapObject(MapDocument *mapDocument,
-                MapObject *mapObject,
-                qreal oldRotation)
+                                 MapObject *mapObject,
+                                 qreal oldRotation)
     : mMapDocument(mapDocument)
     , mMapObject(mapObject)
     , mOldRotation(oldRotation)
     , mNewRotation(mapObject->rotation())
+{
+    setText(QCoreApplication::translate("Undo Commands", "Rotate Object"));
+}
+
+RotateMapObject::RotateMapObject(MapDocument *mapDocument,
+                                 MapObject *mapObject,
+                                 qreal newRotation,
+                                 qreal oldRotation)
+    : mMapDocument(mapDocument)
+    , mMapObject(mapObject)
+    , mOldRotation(oldRotation)
+    , mNewRotation(newRotation)
 {
     setText(QCoreApplication::translate("Undo Commands", "Rotate Object"));
 }
