@@ -169,11 +169,6 @@ void MapObjectItem::resizeObject(const QSizeF &size)
     syncWithMapObject();
 }
 
-void MapObjectItem::setObjectRotation(qreal angle)
-{
-    mMapDocument->mapObjectModel()->setObjectRotation(mObject, angle);
-}
-
 void MapObjectItem::setPolygon(const QPolygonF &polygon)
 {
     mObject->setPolygon(polygon);

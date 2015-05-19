@@ -39,6 +39,11 @@ public:
                     MapObject *mapObject,
                     const QSizeF &oldSize);
 
+    ResizeMapObject(MapDocument *mapDocument,
+                    MapObject *mapObject,
+                    const QSizeF &newSize,
+                    const QSizeF &oldSize);
+
     void undo();
     void redo();
 

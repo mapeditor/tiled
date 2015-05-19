@@ -38,6 +38,11 @@ public:
                     MapObject *mapObject,
                     qreal oldRotation);
 
+    RotateMapObject(MapDocument *mapDocument,
+                    MapObject *mapObject,
+                    qreal newRotation,
+                    qreal oldRotation);
+
     void undo();
     void redo();
 

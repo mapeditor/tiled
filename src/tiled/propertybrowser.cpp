@@ -622,21 +622,21 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         command = new SetMapObjectVisible(mMapDocument, mapObject, val.toBool());
         break;
     case PositionProperty: {
+        const QPointF newPos = val.toPointF();
         const QPointF oldPos = mapObject->position();
-        mapObject->setPosition(val.toPointF());
-        command = new MoveMapObject(mMapDocument, mapObject, oldPos);
+        command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
         break;
     }
     case SizeProperty: {
+        const QSizeF newSize = val.toSizeF();
         const QSizeF oldSize = mapObject->size();
-        mapObject->setSize(val.toSizeF());
-        command = new ResizeMapObject(mMapDocument, mapObject, oldSize);
+        command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
         break;
     }
     case RotationProperty: {
+        const qreal newRotation = val.toDouble();
         const qreal oldRotation = mapObject->rotation();
-        mapObject->setRotation(val.toDouble());
-        command = new RotateMapObject(mMapDocument, mapObject, oldRotation);
+        command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
         break;
     }
     case FlippingProperty: {
