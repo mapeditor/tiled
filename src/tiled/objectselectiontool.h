@@ -23,7 +23,9 @@
 
 #include "abstractobjecttool.h"
 
+#include <QList>
 #include <QSet>
+#include <QVector>
 
 class QGraphicsItem;
 
@@ -105,6 +107,8 @@ private:
     const QPointF snapToGrid(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
 
+    QList<MapObject*> changingObjects() const;
+
     struct MovingObject
     {
         MapObjectItem *item;
@@ -125,7 +129,7 @@ private:
     RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;
 
-    QList<MovingObject> mMovingObjects;
+    QVector<MovingObject> mMovingObjects;
 
     QPointF mAlignPosition;
     QPointF mOrigin;
