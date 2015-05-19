@@ -529,11 +529,11 @@ void PropertyBrowser::addTileProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile"));
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
 
-    QtProperty *probabilityProperty = createProperty(TileProbabilityProperty,
-                                                     QVariant::Double,
-                                                     tr("Probability"),
-                                                     groupProperty);
-
+    QtVariantProperty *probabilityProperty = createProperty(TileProbabilityProperty,
+                                                            QVariant::Double,
+                                                            tr("Probability"),
+                                                            groupProperty);
+    probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be "
                                        "picked while painting terrain"));
 
