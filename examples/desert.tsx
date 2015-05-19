@@ -37,22 +37,22 @@
  <tile id="27" terrain="1,0,1,1"/>
  <tile id="28" terrain="0,1,1,1"/>
  <tile id="29" terrain="0,0,0,0"/>
- <tile id="30" terrain="0,0,0,0" probability="0.5"/>
- <tile id="31" terrain="0,0,0,0" probability="0.5"/>
+ <tile id="30" terrain="0,0,0,0" probability="0.01"/>
+ <tile id="31" terrain="0,0,0,0" probability="0.01"/>
  <tile id="32" terrain="0,2,0,2"/>
  <tile id="33" terrain="2,2,2,2"/>
  <tile id="34" terrain="2,0,2,0"/>
  <tile id="35" terrain="2,2,2,0"/>
  <tile id="36" terrain="2,2,0,2"/>
- <tile id="37" terrain="0,0,0,0" probability="0.5"/>
- <tile id="38" terrain="0,0,0,0" probability="0.5"/>
- <tile id="39" terrain="0,0,0,0" probability="0.5"/>
+ <tile id="37" terrain="0,0,0,0" probability="0.01"/>
+ <tile id="38" terrain="0,0,0,0" probability="0.01"/>
+ <tile id="39" terrain="0,0,0,0" probability="0.01"/>
  <tile id="40" terrain="0,2,0,0"/>
  <tile id="41" terrain="2,2,0,0"/>
  <tile id="42" terrain="2,0,0,0"/>
  <tile id="43" terrain="2,0,2,2"/>
  <tile id="44" terrain="0,2,2,2"/>
  <tile id="45" terrain="0,0,0,0" probability="0"/>
- <tile id="46" terrain="0,0,0,0" probability="0.5"/>
- <tile id="47" terrain="0,0,0,0" probability="0.5"/>
+ <tile id="46" terrain="0,0,0,0" probability="0.01"/>
+ <tile id="47" terrain="0,0,0,0" probability="0.01"/>
 </tileset>
