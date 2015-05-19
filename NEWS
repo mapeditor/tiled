@@ -1,3 +1,8 @@
+0.12.1 (19 May 2015)
+* Fixed updating of map view when changing objects from properties view
+* Fixed updating of Properties view while objects are moved/resized
+* Fixed terrain information getting lost when reading JSON maps
+
 0.12.0 (14 May 2015)
 * Added support for resizing any object as well as multiselection (with mauve)
 * Added Control modifier for preserving aspect ratio while resizing

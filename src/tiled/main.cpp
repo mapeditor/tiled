@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 #ifdef BUILD_INFO_VERSION
     a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
 #else
-    a.setApplicationVersion(QLatin1String("0.12.0"));
+    a.setApplicationVersion(QLatin1String("0.12.1"));
 #endif
 
 #ifdef Q_OS_MAC
