@@ -388,6 +388,9 @@ void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
 // FIXME: layerChanged should let the scene know that objects need redrawing
 void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects)
 {
+    if (objects.isEmpty())
+        return;
+
     emit objectsChanged(objects);
 }
 

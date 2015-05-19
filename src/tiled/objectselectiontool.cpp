@@ -834,10 +834,16 @@ void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
         return;
 
     // Abort move/rotate/resize to avoid crashing...
-    // TODO: This should really not be allowed to happen in the first place.
-    foreach (const MovingObject &object, mMovingObjects) {
+    // TODO: This should really not be allowed to happen in the first place
+    // since it breaks the undo history, for example.
+    for (int i = mMovingObjects.size() - 1; i >= 0; --i) {
+        const MovingObject &object = mMovingObjects.at(i);
         MapObject *mapObject = object.item->mapObject();
-        if (!objects.contains(mapObject)) {
+
+        if (objects.contains(mapObject)) {
+            // Avoid referencing the removed object
+            mMovingObjects.removeAt(i);
+        } else {
             mapObject->setPosition(object.oldPosition);
             mapObject->setSize(object.oldSize);
             mapObject->setPolygon(object.oldPolygon);
