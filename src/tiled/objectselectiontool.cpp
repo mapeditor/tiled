@@ -842,7 +842,7 @@ void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
 
         if (objects.contains(mapObject)) {
             // Avoid referencing the removed object
-            mMovingObjects.removeAt(i);
+            mMovingObjects.remove(i);
         } else {
             mapObject->setPosition(object.oldPosition);
             mapObject->setSize(object.oldSize);
