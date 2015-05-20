@@ -351,15 +351,15 @@ mimeiconscalable.files += images/scalable/application-x-tiled.svg
 INSTALLS += mimeiconscalable
 
 mimeinfofile.path = $${PREFIX}/share/mime/packages/
-mimeinfofile.files += ../../docs/mime/tiled.xml
+mimeinfofile.files += ../../mime/tiled.xml
 INSTALLS += mimeinfofile
 
 desktopfile.path = $${PREFIX}/share/applications/
-desktopfile.files += ../../docs/tiled.desktop
+desktopfile.files += ../../tiled.desktop
 INSTALLS += desktopfile
 
 manpage.path = $${PREFIX}/share/man/man1/
-manpage.files += ../../docs/tiled.1
+manpage.files += ../../man/tiled.1
 INSTALLS += manpage
 
 RESOURCES += tiled.qrc
