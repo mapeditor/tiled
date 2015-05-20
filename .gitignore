@@ -10,7 +10,7 @@ moc_*.cpp
 ui_*.h
 *.pro.user*
 qrc_*
-docs/html
+html
 
 # Build artifacts on Windows
 tiled.exe
@@ -30,4 +30,4 @@ translations/phony_target.app
 tests/test_mapreader
 
 # Ronn html outputs
-docs/*.1.html
+man/*.1.html
