@@ -25,7 +25,7 @@ The `tilewidth` and `tileheight` properties determine the general grid size of t
 
 A map contains three different kinds of layers. Tile layers were once the only type, and are simply called `layer`, object layers have the `objectgroup` tag and image layers use the `imagelayer` tag. The order in which these layers appear is the order in which the layers are rendered by Tiled.
 
-Can contain: properties, tileset, layer, objectgroup, imagelayer
+Can contain: [properties](#properties), [tileset](#tileset), [layer](#layer), [objectgroup](#objectgroup), [imagelayer](#imagelayer)
 
 ## &lt;tileset> ##
 
@@ -37,7 +37,9 @@ Can contain: properties, tileset, layer, objectgroup, imagelayer
 * <b>spacing:</b> The spacing in pixels between the tiles in this tileset (applies to the tileset image).
 * <b>margin:</b> The margin around the tiles in this tileset (applies to the tileset image).
 
-Can contain: tileoffset (since 0.8.0), properties (since 0.8.0), image, terraintypes (since 0.9.0), tile
+If there are multiple `<tileset>` elements, they are in ascending order of their `firstgid` attribute. The first tileset always has a `firstgid` value of 1 and it can be assumed that there are no gaps in the valid range of global tile IDs.
+
+Can contain: [tileoffset](#tileoffset) (since 0.8), [properties](#properties) (since 0.8), [image](#image), [terraintypes](#terraintypes) (since 0.9), [tile](#tile)
 
 ### &lt;tileoffset>####
 
@@ -48,7 +50,7 @@ This element is used to specify an offset in pixels, to be applied when drawing 
 
 ### &lt;image> ####
 
-* <b>format:</b> Used for embedded images, in combination with a `data` child element. Valid values are file extensions like `png`, `gif`, `jpg`, `bmp`, etc. (since 0.9.0)
+* <b>format:</b> Used for embedded images, in combination with a `data` child element. Valid values are file extensions like `png`, `gif`, `jpg`, `bmp`, etc. (since 0.9)
 * <i>id:</i> Used by some versions of Tiled Java. Deprecated and unsupported by Tiled Qt.
 * <b>source:</b> The reference to the tileset image file (Tiled supports most common image formats).
 * <b>trans:</b> Defines a specific color that is treated as transparent (example value: "#FF00FF" for magenta). Up until Tiled 0.10, this value is written out without a `#` but this is planned to change.
@@ -57,32 +59,32 @@ This element is used to specify an offset in pixels, to be applied when drawing 
 
 As of the current version of Tiled Qt, each tileset has a single image associated with it, which is cut into smaller tiles based on the attributes defined on the tileset element. Later versions may add support for adding multiple images to a single tileset, as is possible in Tiled Java.
 
-Can contain: data (since 0.9.0)
+Can contain: [data](#data) (since 0.9)
 
 ### &lt;terraintypes> ###
 
 This element defines an array of terrain types, which can be referenced from the `terrain` attribute of the `tile` element.
 
-Can contain: terrain
+Can contain: [terrain](#terrain)
 
 #### &lt;terrain> ####
 
 * <b>name:</b> The name of the terrain type.
 * <b>tile:</b> The local tile-id of the tile that represents the terrain visually.
 
-Can contain: properties
+Can contain: [properties](#properties)
 
 ### &lt;tile> ###
 
 * <b>id:</b> The local tile ID within its tileset.
-* <b>terrain:</b> Defines the terrain type of each corner of the tile, given as comma-separated indexes in the terrain types array in the order top-left, top-right, bottom-left, bottom-right. Leaving out a value means that corner has no terrain. (optional) (since 0.9.0)
-* <b>probability:</b> A percentage indicating the probability that this tile is chosen when it competes with others while editing with the terrain tool. (optional) (since 0.9.0)
+* <b>terrain:</b> Defines the terrain type of each corner of the tile, given as comma-separated indexes in the terrain types array in the order top-left, top-right, bottom-left, bottom-right. Leaving out a value means that corner has no terrain. (optional) (since 0.9)
+* <b>probability:</b> A percentage indicating the probability that this tile is chosen when it competes with others while editing with the terrain tool. (optional) (since 0.9)
 
-Can contain: properties, image (since 0.9.0), objectgroup (since 0.10.0)
+Can contain: [properties](#properties), [image](#image) (since 0.9), [objectgroup](#objectgroup) (since 0.10)
 
 ## &lt;layer> ##
 
-All \<tileset> tags shall occur before the first \<layer> tag so that parsers may rely on having the tilesets before needing to resolve tiles.
+All `<tileset>` tags shall occur before the first `<layer>` tag so that parsers may rely on having the tilesets before needing to resolve tiles.
 
 * <b>name:</b> The name of the layer.
 * <i>x:</i> The x coordinate of the layer in tiles. Defaults to 0 and can no longer be changed in Tiled Qt.
@@ -92,7 +94,7 @@ All \<tileset> tags shall occur before the first \<layer> tag so that parsers ma
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
 * <b>visible:</b> Whether the layer is shown (1) or hidden (0). Defaults to 1.
 
-Can contain: properties, data
+Can contain: [properties](#properties), [data](#data)
 
 ### &lt;data> ###
 
@@ -105,11 +107,11 @@ The base64-encoded and optionally compressed layer data is somewhat more complic
 
 Whatever format you choose for your layer data, you will always end up with so called "global tile IDs" (gids). They are global, since they may refer to a tile from any of the tilesets used by the map. In order to find out from which tileset the tile is you need to find the tileset with the highest `firstgid` that is still lower or equal than the gid. The tilesets are always stored with increasing `firstgid`s.
 
-Can contain: tile
+Can contain: [tile](#tile)
 
 #### Tile flipping ####
 
-When you use the tile flipping feature added in Tiled Qt 0.7.0, the highest two bits of the gid store the flipped state. Bit 32 is used for storing whether the tile is horizontally flipped and bit 31 is used for the vertically flipped tiles. And since Tiled Qt 0.8.0, bit 30 means whether the tile is flipped (anti) diagonally, enabling tile rotation. These bits have to be read and cleared <i>before</i> you can find out which tileset a tile belongs to.
+When you use the tile flipping feature added in Tiled Qt 0.7, the highest two bits of the gid store the flipped state. Bit 32 is used for storing whether the tile is horizontally flipped and bit 31 is used for the vertically flipped tiles. And since Tiled Qt 0.8, bit 30 means whether the tile is flipped (anti) diagonally, enabling tile rotation. These bits have to be read and cleared <i>before</i> you can find out which tileset a tile belongs to.
 
 When rendering a tile, the order of operation matters. The diagonal flip (x/y axis swap) is done first, followed by the horizontal and vertical flips.
 
@@ -182,20 +184,20 @@ Not to be confused with the `tile` element inside a `tileset`, this element defi
 
 The object group is in fact a map layer, and is hence called "object layer" in Tiled Qt.
 
-Can contain: properties, object
+Can contain: [properties](#properties), [object](#object)
 
 ### &lt;object> ###
 
-* <b>id:</b> Unique ID of the object. Each object that is placed on a map gets a unique id. Even if an object was deleted, no object gets the same ID. Can not be changed in Tiled Qt. (since Tiled 0.11.0)
+* <b>id:</b> Unique ID of the object. Each object that is placed on a map gets a unique id. Even if an object was deleted, no object gets the same ID. Can not be changed in Tiled Qt. (since Tiled 0.11)
 * <b>name:</b> The name of the object. An arbitrary string.
 * <b>type:</b> The type of the object. An arbitrary string.
 * <b>x:</b> The x coordinate of the object in pixels.
 * <b>y:</b> The y coordinate of the object in pixels.
 * <b>width:</b> The width of the object in pixels (defaults to 0).
 * <b>height:</b> The height of the object in pixels (defaults to 0).
-* <b>rotation:</b> The rotation of the object in degrees clockwise (defaults to 0). (since 0.10.0)
+* <b>rotation:</b> The rotation of the object in degrees clockwise (defaults to 0). (since 0.10)
 * <b>gid:</b> An reference to a tile (optional).
-* <b>visible:</b> Whether the object is shown (1) or hidden (0). Defaults to 1. (since 0.9.0)
+* <b>visible:</b> Whether the object is shown (1) or hidden (0). Defaults to 1. (since 0.9)
 
 While tile layers are very suitable for anything repetitive aligned to the tile grid, sometimes you want to annotate your map with other information, not necessarily aligned to the grid. Hence the objects have their coordinates and size in pixels, but you can still easily align that to the grid when you want to.
 
@@ -203,11 +205,11 @@ You generally use objects to add custom information to your tile map, such as sp
 
 When the object has a `gid` set, then it is represented by the image of the tile with that global ID. Currently that means `width` and `height` are ignored for such objects. The image alignment currently depends on the map orientation. In orthogonal orientation it's aligned to the bottom-left while in isometric it's aligned to the bottom-center.
 
-Can contain: properties, ellipse (since 0.9.0), polygon, polyline, <i>image</i>
+Can contain: [properties](#properties), [ellipse](#ellipse) (since 0.9), [polygon](#polygon), [polyline](#polyline), <i>image</i>
 
 ### &lt;ellipse> ###
 
-Used to mark an object as an ellipse. The regular x, y, width, height attributes are used to determine the size of the ellipse.
+Used to mark an object as an ellipse. The existing `x`, `y`, `width` and `height` attributes are used to determine the size of the ellipse.
 
 ### &lt;polygon> ###
 
@@ -233,11 +235,11 @@ A `polyline` follows the same placement definition as a `polygon` object.
 
 A layer consisting of a single image.
 
-Can contain: properties, image
+Can contain: [properties](#properties), [image](#image)
 
 ## &lt;properties> ##
 
-Can contain: property
+Can contain: [property](#property)
 
 Wraps any number of custom properties. Can be used as a child of the `map`, `tile` (when part of a `tileset`), `layer`, `objectgroup` and `object` elements.
 
