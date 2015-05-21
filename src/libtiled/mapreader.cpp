@@ -649,13 +649,7 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer *tileLayer,
                                              const QStringRef &text,
                                              const QStringRef &compression)
 {
-#if QT_VERSION < 0x040800
-    const QString textData = QString::fromRawData(text.unicode(), text.size());
-    const QByteArray latin1Text = textData.toLatin1();
-#else
-    const QByteArray latin1Text = text.toLatin1();
-#endif
-    QByteArray tileData = QByteArray::fromBase64(latin1Text);
+    QByteArray tileData = QByteArray::fromBase64(text.toLatin1());
     const int size = (tileLayer->width() * tileLayer->height()) * 4;
 
     if (compression == QLatin1String("zlib")
