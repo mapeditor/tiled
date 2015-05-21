@@ -371,6 +371,14 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         if (gid) {
             bool ok;
             object->setCell(mGidMapper.gidToCell(gid, ok));
+
+            if (!object->cell().isEmpty()) {
+                const QSizeF &tileSize = object->cell().tile->size();
+                if (width == 0)
+                    object->setWidth(tileSize.width());
+                if (height == 0)
+                    object->setHeight(tileSize.height());
+            }
         }
 
         if (objectVariantMap.contains("visible"))

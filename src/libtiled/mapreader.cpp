@@ -854,8 +854,8 @@ MapObject *MapReaderPrivate::readObject()
 
     if (gid) {
         object->setCell(cellForGid(gid));
-        
-        if (object->cell().isEmpty() == false) {
+
+        if (!object->cell().isEmpty()) {
             const QSizeF &tileSize = object->cell().tile->size();
             if (width == 0)
                 object->setWidth(tileSize.width());
