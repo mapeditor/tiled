@@ -324,8 +324,8 @@ void MapDocument::resizeMap(const QSize &size, const QPoint &offset)
                     mUndoStack->push(new RemoveMapObject(this, o));
                 } else {
                     QPointF oldPos = o->position();
-                    o->setPosition(oldPos + pixelOffset);
-                    mUndoStack->push(new MoveMapObject(this, o, oldPos));
+                    QPointF newPos = oldPos + pixelOffset;
+                    mUndoStack->push(new MoveMapObject(this, o, newPos, oldPos));
                 }
             }
             break;

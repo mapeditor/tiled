@@ -430,8 +430,8 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     foreach (MapObjectItem *objectItem, items) {
         MapObject *object = objectItem->mapObject();
         const QPointF oldPos = object->position();
-        object->setPosition(oldPos + moveBy);
-        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
+        const QPointF newPos = oldPos + moveBy;
+        undoStack->push(new MoveMapObject(mapDocument(), object, newPos, oldPos));
         ++i;
     }
     undoStack->endMacro();
