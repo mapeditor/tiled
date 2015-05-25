@@ -58,12 +58,18 @@ These libraries typically include only a TMX parser, but no rendering support. T
 ### PHP
 * [PHP TMX Viewer](https://github.com/sebbu2/php-tmx-viewer) by sebbu : render the map as an image (allow some modifications as well)
 
+### Pike
+* [TMX parser](https://gitorious.org/tmx-parser): a simple loader for TMX maps (CSV format only).
+
 ### Python
 * [pytmxlib](http://pytmxlib.readthedocs.org/en/latest/): library for programmatic manipulation of TMX maps
 * [python-tmx](http://python-tmx.nongnu.org): a simple library for reading and writing TMX files.
 
 ### Ruby
 * [tmx gem](https://github.com/shawn42/tmx) by erisdiscord
+
+### Vala
+* [librpg](https://github.com/JumpLink/librpg) A library to load and handle spritesets (own format) and orthogonal TMX maps.
 
 ## Support by Framework
 
@@ -76,9 +82,9 @@ Following entries are integrated solutions for specific game engines. They are t
 * [allegro_tiled](https://github.com/dradtke/allegro_tiled) integrates Tiled support with [Allegro 5](http://alleg.sourceforge.net/).
 
 ### cocos2d
-* [tiled2cocos](http://bitbucket.org/maikg/tiled2cocos/src/) converts TMX files to a [cocos2d (Python)](http://cocos2d.org/) MapLayer
+* [cocos2d (Python)](http://python.cocos2d.org/) supports loading [Tiled maps](http://python.cocos2d.org/doc/programming_guide/tiled_map.html) through its `cocos.tiles` module.
 * [cocos2d-x (C++)](http://www.cocos2d-x.org/) supports loading TMX maps through the [CCTMXTiledMap](http://www.cocos2d-x.org/reference/native-cpp/V2.1.4/da/d68/classcocos2d_1_1_c_c_t_m_x_tiled_map.html) class.
-* [cocos2d-objc (Objective-C, Swift)](http://www.cocos2d-objc.org/) (previously known as: cocos2d-iphone, cocos2d-swift, cocos2d-spritebuilder) supports loading TMX maps through [CCTiledMap](http://www.cocos2d-objc.org/docs/api/Classes/CCTiledMap.html)
+* [cocos2d-objc (Objective-C, Swift)](http://www.cocos2d-objc.org/) (previously known as: cocos2d-iphone, cocos2d-swift, cocos2d-spritebuilder) supports loading TMX maps through [CCTiledMap](http://cocos2d.spritebuilder.com/docs/api/Classes/CCTiledMap.html)
 * [TilemapKit](http://tilemapkit.com) is an actively maintained tilemapping framework for Cocos2D. It supports all TMX tilemap types, including staggered iso and all hex variations.
 
 ### Construct 2 - Scirra
@@ -133,9 +139,6 @@ Following entries are integrated solutions for specific game engines. They are t
 ### Node.js
 * [node-tmx-parser](https://github.com/andrewrk/node-tmx-parser) - loads the TMX file into a JavaScript object
 
-### Pike
-* [TMX parser](https://gitorious.org/tmx-parser): a simple loader for TMX maps (CSV format only).
-
 ### Pygame
 * [Pygame map loader](http://www.pygame.org/project/1158/) by dr0id
 * [PyTMX](https://github.com/bitcraft/PyTMX) by Leif Theden (bitcraft)
@@ -177,9 +180,6 @@ Following entries are integrated solutions for specific game engines. They are t
 
 ### Unreal Engine 4
 * [Paper2D](https://forums.unrealengine.com/showthread.php?3539-Project-Paper2D) provides built-in support for tile maps and tile sets, importing JSON exported from Tiled.
-
-### Vala
-* [librpg](https://github.com/JumpLink/librpg) A library to load and handle spritesets (own format) and orthogonal TMX maps.
 
 ### XNA
 * [FlatRedBall Engine TMXGlue tool](http://www.flatredball.com/frb/docs/index.php?title=Kain%27s_Tavern#Tiled_Map_Editor.2C_TMX.2C_Glue_and_you.) by Domenic Datti loads TMX maps into the FlatRedBall engine, complete with node networks, pathfinding, and shapecollection support via object layers.
