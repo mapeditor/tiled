@@ -1,3 +1,6 @@
+* Fixed install of man pages for included tools
+* Fixed a crash when reading an invalid TMX file
+
 0.12.2 (22 May 2015)
 * Fixed updating of map view when moving objects with arrow keys
 * Fixed compatibility issue with tile objects affecting the JSON format
