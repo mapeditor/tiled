@@ -646,8 +646,8 @@ void EditPolygonTool::deleteNodes()
             // We've removed the entire object
             undoStack->push(new RemoveMapObject(mapDocument(), object));
         } else {
-            object->setPolygon(newPolygon);
             undoStack->push(new ChangePolygon(mapDocument(), object,
+                                              newPolygon,
                                               oldPolygon));
         }
     }
@@ -802,8 +802,8 @@ void EditPolygonTool::joinNodes()
                 macroStarted = true;
             }
 
-            object->setPolygon(newPolygon);
             undoStack->push(new ChangePolygon(mapDocument(), object,
+                                              newPolygon,
                                               oldPolygon));
         }
     }
@@ -838,8 +838,8 @@ void EditPolygonTool::splitSegments()
                 macroStarted = true;
             }
 
-            object->setPolygon(newPolygon);
             undoStack->push(new ChangePolygon(mapDocument(), object,
+                                              newPolygon,
                                               oldPolygon));
         }
     }

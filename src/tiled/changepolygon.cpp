@@ -40,6 +40,18 @@ ChangePolygon::ChangePolygon(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands", "Change Polygon"));
 }
 
+ChangePolygon::ChangePolygon(MapDocument *mapDocument,
+                             MapObject *mapObject,
+                             const QPolygonF &newPolygon,
+                             const QPolygonF &oldPolygon)
+    : mMapDocument(mapDocument)
+    , mMapObject(mapObject)
+    , mOldPolygon(oldPolygon)
+    , mNewPolygon(newPolygon)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Polygon"));
+}
+
 void ChangePolygon::undo()
 {
     mMapDocument->mapObjectModel()->setObjectPolygon(mMapObject, mOldPolygon);
