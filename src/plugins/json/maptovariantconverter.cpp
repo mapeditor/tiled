@@ -104,6 +104,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
     tilesetVariant["tileheight"] = tileset->tileHeight();
     tilesetVariant["spacing"] = tileset->tileSpacing();
     tilesetVariant["margin"] = tileset->margin();
+    tilesetVariant["tilecount"] = tileset->tileCount();
     tilesetVariant["properties"] = toVariant(tileset->properties());
 
     const QPoint offset = tileset->tileOffset();

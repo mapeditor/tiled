@@ -261,6 +261,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
     }
     writer.writeEndTable();
 
+    writer.writeKeyAndValue("tilecount", tileset->tileCount());
     writer.writeStartTable("tiles");
     for (int i = 0; i < tileset->tileCount(); ++i) {
         const Tile *tile = tileset->tileAt(i);
