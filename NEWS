@@ -1,3 +1,4 @@
+0.12.3 (...)
 * Fixed updating of map view when rotating objects with Z key
 * Fixed updating of map view when joining, splitting or deleting polygon nodes
 * Fixed a crash when reading an invalid TMX file
