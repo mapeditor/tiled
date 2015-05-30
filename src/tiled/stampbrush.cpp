@@ -62,6 +62,7 @@ void StampBrush::tilePositionChanged(const QPoint &)
     updatePosition();
     switch (mBrushBehavior) {
     case Paint:
+        // TODO: This could be optimized to emit only one 'regionEdited' signal
         foreach (const QPoint &p, pointsOnLine(x, y, mStampX, mStampY))
             doPaint(true, p.x(), p.y());
         break;
@@ -347,10 +348,16 @@ void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
-                            whereX, whereY, stamp);
+                                               whereX, whereY, stamp);
     paint->setMergeable(mergeable);
     mapDocument()->undoStack()->push(paint);
-    mapDocument()->emitRegionEdited(brushItem()->tileRegion(), tileLayer);
+
+    // Since doPaint may be called with different coordinates than the current
+    // location of the brush preview, the region needs to be translated to get
+    // the correct edit region.
+    QRegion editRegion = brushItem()->tileRegion();
+    editRegion.translate(whereX - mStampX, whereY - mStampY);
+    mapDocument()->emitRegionEdited(editRegion, tileLayer);
 }
 
 /**
