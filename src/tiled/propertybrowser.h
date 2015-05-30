@@ -122,7 +122,8 @@ private:
         TileOffsetProperty,
         TileProbabilityProperty,
         IdProperty,
-        CustomProperty
+        CustomProperty,
+        SingleSheetProperty
     };
 
     void addMapProperties();
