@@ -45,6 +45,11 @@ public:
                   MapObject *mapObject,
                   const QPolygonF &oldPolygon);
 
+    ChangePolygon(MapDocument *mapDocument,
+                  MapObject *mapObject,
+                  const QPolygonF &newPolygon,
+                  const QPolygonF &oldPolygon);
+
     void undo();
     void redo();
 

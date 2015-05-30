@@ -401,8 +401,8 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
                 newRotation -= 360;
         }
 
-        mapObject->setRotation(newRotation);
-        mUndoStack->push(new RotateMapObject(this, mapObject, oldRotation));
+        mUndoStack->push(new RotateMapObject(this, mapObject,
+                                             newRotation, oldRotation));
     }
     mUndoStack->endMacro();
 }

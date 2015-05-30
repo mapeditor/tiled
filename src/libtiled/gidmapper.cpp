@@ -72,11 +72,14 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
     } else {
         // Find the tileset containing this tile
         QMap<unsigned, Tileset*>::const_iterator i = mFirstGidToTileset.upperBound(gid);
-        --i; // Navigate one tileset back since upper bound finds the next
-        int tileId = gid - i.key();
-        const Tileset *tileset = i.value();
+        if (i == mFirstGidToTileset.begin()) {
+            // Invalid global tile ID, since it lies before the first tileset
+            ok = false;
+        } else {
+            --i; // Navigate one tileset back since upper bound finds the next
+            int tileId = gid - i.key();
+            const Tileset *tileset = i.value();
 
-        if (tileset) {
             const int columnCount = mTilesetColumnCounts.value(tileset);
             if (columnCount > 0 && columnCount != tileset->columnCount()) {
                 // Correct tile index for changes in image width
@@ -86,11 +89,9 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
             }
 
             result.tile = tileset->tileAt(tileId);
-        } else {
-            result.tile = 0;
-        }
 
-        ok = true;
+            ok = true;
+        }
     }
 
     return result;
