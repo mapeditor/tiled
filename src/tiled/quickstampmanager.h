@@ -1,6 +1,7 @@
 /*
  * quickstampmanager.h
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2014-2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -33,6 +34,8 @@ namespace Internal {
 
 class AbstractTool;
 class MapDocument;
+class TileStamp;
+class TileStampModel;
 
 /**
  * Implements a manager which handles lots of copy&paste slots.
@@ -52,8 +55,8 @@ public:
      * Note: To store a tile layer <Ctrl> is added. The given keys will work
      * for recalling the stored values
      */
-    static QList<int> keys() {
-        QList<int> keys;
+    static QList<Qt::Key> keys() {
+        QList<Qt::Key> keys;
         keys << Qt::Key_1
              << Qt::Key_2
              << Qt::Key_3
@@ -66,6 +69,8 @@ public:
         return keys;
     }
 
+    TileStampModel *tileStampModel() const;
+
 public slots:
     void selectQuickStamp(int index);
     void saveQuickStamp(int index, AbstractTool *selectedTool);
@@ -77,11 +82,11 @@ signals:
 private:
     Q_DISABLE_COPY(QuickStampManager)
 
-    void cleanQuickStamps();
     void eraseQuickStamp(int index);
 
-    QVector<Map*> mQuickStamps;
+    QVector<TileStamp *> mQuickStamps;
     MapDocument *mMapDocument;
+    TileStampModel *mTileStampModel;
 };
 
 } // namespace Tiled::Internal

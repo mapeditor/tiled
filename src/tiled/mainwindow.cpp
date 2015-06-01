@@ -76,6 +76,7 @@
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
+#include "tilestampsdock.h"
 #include "terraindock.h"
 #include "toolmanager.h"
 #include "tmxmapreader.h"
@@ -185,6 +186,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
     PropertiesDock *propertiesDock = new PropertiesDock(this);
+    TileStampsDock *tileStampsDock = new TileStampsDock(mQuickStampManager, this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
@@ -195,6 +197,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::RightDockWidgetArea, tileStampsDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
@@ -206,6 +209,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
     mConsoleDock->setVisible(false);
+    tileStampsDock->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 
@@ -399,6 +403,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
+
+    connect(tileStampsDock, SIGNAL(setStampBrush(const TileLayer*)),
+            this, SLOT(setStampBrush(const TileLayer*)));
 
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
@@ -1665,7 +1672,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
 void MainWindow::setupQuickStamps()
 {
-    QList<int> keys = QuickStampManager::keys();
+    QList<Qt::Key> keys = QuickStampManager::keys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
     QSignalMapper *saveMapper = new QSignalMapper(this);

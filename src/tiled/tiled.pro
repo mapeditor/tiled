@@ -163,6 +163,9 @@ SOURCES += aboutdialog.cpp \
     tilesetmanager.cpp \
     tilesetmodel.cpp \
     tilesetview.cpp \
+    tilestamp.cpp \
+    tilestampmodel.cpp \
+    tilestampsdock.cpp \
     tmxmapreader.cpp \
     tmxmapwriter.cpp \
     toolmanager.cpp \
@@ -298,6 +301,9 @@ HEADERS += aboutdialog.h \
     tilesetmanager.h \
     tilesetmodel.h \
     tilesetview.h \
+    tilestamp.h \
+    tilestampmodel.h \
+    tilestampsdock.h \
     tmxmapreader.h \
     tmxmapwriter.h \
     toolmanager.h \

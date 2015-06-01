@@ -1,6 +1,7 @@
 /*
  * quickstampmanager.cpp
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2014-2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -29,20 +30,24 @@
 #include "tileselectiontool.h"
 #include "tileset.h"
 #include "tilesetmanager.h"
+#include "tilestamp.h"
+#include "tilestampmodel.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
 QuickStampManager::QuickStampManager(QObject *parent)
     : QObject(parent)
+    , mQuickStamps(keys().length())
     , mMapDocument(0)
+    , mTileStampModel(new TileStampModel(this))
 {
-    mQuickStamps.resize(keys().length());
 }
 
 QuickStampManager::~QuickStampManager()
 {
-    cleanQuickStamps();
+    for (int i = 0; i < mQuickStamps.size(); i++)
+        eraseQuickStamp(i);
 }
 
 void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
@@ -98,23 +103,29 @@ void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
     }
 
     eraseQuickStamp(index);
-    mQuickStamps[index] = copyMap;
-}
 
-void QuickStampManager::cleanQuickStamps()
-{
-    for (int i = 0; i < mQuickStamps.size(); i++)
-        eraseQuickStamp(i);
+    TileStamp *stamp = new TileStamp;
+    stamp->setName(tr("Quickstamp %1").arg(index));
+    stamp->addVariation(copyMap);
+    stamp->setQuickStampIndex(index);
+
+    mTileStampModel->addStamp(stamp);
+
+    mQuickStamps[index] = stamp;
 }
 
 void QuickStampManager::eraseQuickStamp(int index)
 {
-    if (Map *quickStamp = mQuickStamps.at(index)) {
-        // Decrease reference to tilesets
-        TilesetManager *tilesetManager = TilesetManager::instance();
-        tilesetManager->removeReferences(quickStamp->tilesets());
-        delete quickStamp;
+    if (TileStamp *stamp = mQuickStamps.at(index)) {
+        mTileStampModel->removeStamp(stamp);
+        delete stamp;
+        mQuickStamps[index] = 0;
     }
+}
+
+TileStampModel *QuickStampManager::tileStampModel() const
+{
+    return mTileStampModel;
 }
 
 void QuickStampManager::selectQuickStamp(int index)
@@ -122,9 +133,12 @@ void QuickStampManager::selectQuickStamp(int index)
     if (!mMapDocument)
         return;
 
-    if (Map *stampMap = mQuickStamps.at(index)) {
-        mMapDocument->unifyTilesets(stampMap);
-        emit setStampBrush(static_cast<TileLayer*>(stampMap->layerAt(0)));
+    if (TileStamp *stamp = mQuickStamps.at(index)) {
+        // todo: set TileStamp as the brush, so that variations can be chosen while painting
+        if (Map *map = stamp->randomVariation()) {
+            mMapDocument->unifyTilesets(map);
+            emit setStampBrush(static_cast<TileLayer*>(map->layerAt(0)));
+        }
     }
 }
 
