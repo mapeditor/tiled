@@ -40,6 +40,7 @@ TileStampsDock::TileStampsDock(QuickStampManager *stampManager, QWidget *parent)
 
     QListView *stampsView = new QListView(this);
     stampsView->setModel(mTileStampModel);
+    stampsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);

@@ -20,6 +20,7 @@
 
 #include "tilestampmodel.h"
 
+#include "thumbnailrenderer.h"
 #include "tilestamp.h"
 
 namespace Tiled {
@@ -96,9 +97,17 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
             case Qt::DisplayRole:
             case Qt::EditRole:
                 return stamp->name();
-            case Qt::DecorationRole:
-                // todo: cache a thumbnail (say 32x32)
+            case Qt::DecorationRole: {
+                Map *map = stamp->variations().first().map;
+                QPixmap thumbnail = mThumbnailCache.value(map);
+                if (thumbnail.isNull()) {
+                    ThumbnailRenderer renderer(map);
+                    thumbnail = QPixmap::fromImage(renderer.render(QSize(32, 32)));
+                    mThumbnailCache.insert(map, thumbnail);
+                }
+                return thumbnail;
                 break;
+            }
             }
         }
     }
@@ -156,6 +165,9 @@ void TileStampModel::removeStamp(TileStamp *stamp)
     beginRemoveRows(QModelIndex(), index, index);
     mStamps.removeAt(index);
     endRemoveRows();
+
+    foreach (const TileStampVariation &variation, stamp->variations())
+        mThumbnailCache.remove(variation.map);
 }
 
 } // namespace Internal

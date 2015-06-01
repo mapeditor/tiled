@@ -105,7 +105,7 @@ void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
     eraseQuickStamp(index);
 
     TileStamp *stamp = new TileStamp;
-    stamp->setName(tr("Quickstamp %1").arg(index));
+    stamp->setName(tr("Quickstamp %1").arg(index + 1));
     stamp->addVariation(copyMap);
     stamp->setQuickStampIndex(index);
 

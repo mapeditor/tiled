@@ -260,6 +260,8 @@ QtGuiApplication {
         "terrainmodel.h",
         "terrainview.cpp",
         "terrainview.h",
+        "thumbnailrenderer.cpp",
+        "thumbnailrenderer.h",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",
         "tileanimationeditor.cpp",

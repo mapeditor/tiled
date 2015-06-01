@@ -199,10 +199,9 @@ void ExportAsImageDialog::accept()
     QPainter painter(&image);
 
     if (useCurrentScale) {
-        if (smoothTransform(mCurrentScale)) {
-            painter.setRenderHints(QPainter::SmoothPixmapTransform |
-                                   QPainter::HighQualityAntialiasing);
-        }
+        if (smoothTransform(mCurrentScale))
+            painter.setRenderHints(QPainter::SmoothPixmapTransform);
+
         painter.setTransform(QTransform::fromScale(mCurrentScale,
                                                    mCurrentScale));
         renderer->setPainterScale(mCurrentScale);

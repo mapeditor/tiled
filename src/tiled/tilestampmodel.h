@@ -24,6 +24,9 @@
 #include <QAbstractItemModel>
 
 namespace Tiled {
+
+class Map;
+
 namespace Internal {
 
 class TileStamp;
@@ -61,6 +64,8 @@ public:
 
 private:
     QList<TileStamp *> mStamps;
+
+    mutable QHash<Map *, QPixmap> mThumbnailCache;
 };
 
 
