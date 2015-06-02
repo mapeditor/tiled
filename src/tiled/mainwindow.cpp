@@ -921,9 +921,11 @@ void MainWindow::exportAs()
                 + QLatin1Char('.') + extension;
     }
 
+    // No need to confirm overwrite here since it'll be prompted below
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
                                                     suggestedFilename,
-                                                    filter, &selectedFilter);
+                                                    filter, &selectedFilter,
+                                                    QFileDialog::DontConfirmOverwrite);
     if (fileName.isEmpty())
         return;
 
@@ -968,6 +970,37 @@ void MainWindow::exportAs()
                               tr("The given filename does not have any known "
                                  "file extension."));
         return;
+    }
+
+    // Check if writer will overwrite existing files here because some writers could save to multiple
+    // files at the same time. For example CSV saves each layer into a separate file.
+    QStringList outputFiles = chosenWriter->outputFiles(mMapDocument->map(), fileName);
+    if (outputFiles.size() > 0) {
+        // Check if any output file already exists
+        QString message = tr("Some export files already exist:\n");
+        bool overwriteHappens = false;
+
+        foreach (const QString &outputFile, outputFiles) {
+            QFile file(outputFile);
+            if (file.exists()) {
+                overwriteHappens = true;
+                message += QLatin1String("\t") + outputFile + QLatin1String("\n");
+            }
+        }
+        message += tr("\nDo you want to replace them?");
+
+        // If overwrite happens, warn the user and get confirmation before executing the writer
+        if (overwriteHappens) {
+            const QMessageBox::StandardButton reply = QMessageBox::warning(
+                this,
+                tr("Overwrite files"),
+                message,
+                QMessageBox::Yes | QMessageBox::No,
+                QMessageBox::No);
+
+            if (QMessageBox::Yes != reply)
+                return;
+        }
     }
 
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);

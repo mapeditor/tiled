@@ -69,6 +69,12 @@ public:
      */
     virtual QString errorString() const = 0;
 
+    /**
+     * Returns the absolute paths for the files that will be written by
+     * the map writer.
+     */
+    virtual QStringList outputFiles(const Map * /*map*/, const QString &fileName) const { return QStringList(fileName); }
+
 protected:
     /**
      * Returns the name filter of this map writer.
