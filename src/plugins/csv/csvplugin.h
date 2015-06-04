@@ -40,12 +40,12 @@ public:
     CsvPlugin();
 
     // MapWriterInterface
-    virtual bool write(const Tiled::Map *map, const QString &fileName);
-    virtual QString errorString() const;
-    virtual QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const;
+    bool write(const Tiled::Map *map, const QString &fileName);
+    QString errorString() const;
+    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const;
 
 protected:
-    virtual QString nameFilter() const;
+    QString nameFilter() const;
 
 private:
     QString mError;

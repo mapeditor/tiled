@@ -57,9 +57,9 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
 
 #ifdef HAS_QSAVEFILE_SUPPORT
-        QSaveFile file(layerPaths[currentLayer]);
+        QSaveFile file(layerPaths.at(currentLayer));
 #else
-        QFile file(layerPaths[currentLayer]);
+        QFile file(layerPaths.at(currentLayer));
 #endif
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             mError = tr("Could not open file for writing.");
@@ -113,7 +113,7 @@ QStringList CsvPlugin::outputFiles(const Tiled::Map *map, const QString &fileNam
 
     // Extract file name without extension and path
     QFileInfo fileInfo(fileName);
-    const QString fileNameWoExtension = fileInfo.completeBaseName();
+    const QString base = fileInfo.completeBaseName() + QLatin1String("_");
     const QString path = fileInfo.path();
 
     // Loop layers to calculate the path for the exported file
@@ -122,13 +122,17 @@ QStringList CsvPlugin::outputFiles(const Tiled::Map *map, const QString &fileNam
             continue;
 
         // Get the output file name for this layer
-        const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-        const QString layerName = tileLayer->name();
-        const QString layerFileName = fileNameWoExtension + QString("_") + layerName + QString(".csv");
+        const QString layerName = layer->name();
+        const QString layerFileName = base + layerName + QLatin1String(".csv");
         const QString layerFilePath = QDir(path).filePath(layerFileName);
 
         result.append(layerFilePath);
     }
+
+    // If there was only one tile layer, there's no need to change the name
+    // (also keeps behavior backwards compatible)
+    if (result.size() == 1)
+        result[0] = fileName;
 
     return result;
 }

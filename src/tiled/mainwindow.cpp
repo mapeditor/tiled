@@ -929,8 +929,6 @@ void MainWindow::exportAs()
     if (fileName.isEmpty())
         return;
 
-    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
-
     MapWriterInterface *chosenWriter = 0;
 
     // If a specific filter was selected, use that writer
@@ -972,37 +970,41 @@ void MainWindow::exportAs()
         return;
     }
 
-    // Check if writer will overwrite existing files here because some writers could save to multiple
-    // files at the same time. For example CSV saves each layer into a separate file.
-    QStringList outputFiles = chosenWriter->outputFiles(mMapDocument->map(), fileName);
+    // Check if writer will overwrite existing files here because some writers
+    // could save to multiple files at the same time. For example CSV saves
+    // each layer into a separate file.
+    QStringList outputFiles = chosenWriter->outputFiles(mMapDocument->map(),
+                                                        fileName);
     if (outputFiles.size() > 0) {
         // Check if any output file already exists
-        QString message = tr("Some export files already exist:\n");
+        QString message =
+                tr("Some export files already exist:") + QLatin1String("\n\n");
+
         bool overwriteHappens = false;
 
         foreach (const QString &outputFile, outputFiles) {
-            QFile file(outputFile);
-            if (file.exists()) {
+            if (QFile::exists(outputFile)) {
                 overwriteHappens = true;
-                message += QLatin1String("\t") + outputFile + QLatin1String("\n");
+                message += outputFile + QLatin1Char('\n');
             }
         }
-        message += tr("\nDo you want to replace them?");
+        message += QLatin1Char('\n') + tr("Do you want to replace them?");
 
         // If overwrite happens, warn the user and get confirmation before executing the writer
         if (overwriteHappens) {
             const QMessageBox::StandardButton reply = QMessageBox::warning(
                 this,
-                tr("Overwrite files"),
+                tr("Overwrite Files"),
                 message,
                 QMessageBox::Yes | QMessageBox::No,
                 QMessageBox::No);
 
-            if (QMessageBox::Yes != reply)
+            if (reply != QMessageBox::Yes)
                 return;
         }
     }
 
+    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
