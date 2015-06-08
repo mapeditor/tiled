@@ -66,6 +66,7 @@ public:
     const QVector<TileStampVariation> &variations() const;
     void addVariation(Map *map, qreal probability = 1.0);
     Map *takeVariation(int index);
+    void deleteVariation(int index);
     bool isEmpty() const;
 
     int quickStampIndex() const;

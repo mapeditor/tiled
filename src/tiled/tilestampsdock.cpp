@@ -25,8 +25,7 @@
 #include "tilestamp.h"
 #include "tilestampmodel.h"
 
-#include <QEvent>
-#include <QTreeView>
+#include <QKeyEvent>
 #include <QVBoxLayout>
 
 namespace Tiled {
@@ -39,7 +38,7 @@ TileStampsDock::TileStampsDock(QuickStampManager *stampManager, QWidget *parent)
     setObjectName(QLatin1String("TileStampsDock"));
     retranslateUi();
 
-    QTreeView *stampsView = new QTreeView(this);
+    TileStampsView *stampsView = new TileStampsView(this);
     stampsView->setModel(mTileStampModel);
     stampsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
@@ -86,6 +85,41 @@ void TileStampsDock::retranslateUi()
     setWindowTitle(tr("Tile Stamps"));
 }
 
+
+TileStampsView::TileStampsView(QWidget *parent)
+    : QTreeView(parent)
+{
+}
+
+QSize TileStampsView::sizeHint() const
+{
+    return QSize(130, 100);
+}
+
+void TileStampsView::contextMenuEvent(QContextMenuEvent *)
+{
+    // todo
+}
+
+void TileStampsView::keyPressEvent(QKeyEvent *event)
+{
+    MapDocument *mapDocument = DocumentManager::instance()->currentDocument();
+    if (!mapDocument)
+        return;
+
+    const QModelIndex index = currentIndex();
+    if (!index.isValid())
+        return;
+
+    TileStampModel *tileStampModel = static_cast<TileStampModel *>(model());
+
+    if (event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace) {
+        tileStampModel->removeRow(index.row(), index.parent());
+        return;
+    }
+
+    QTreeView::keyPressEvent(event);
+}
+
 } // namespace Internal
 } // namespace Tiled
-

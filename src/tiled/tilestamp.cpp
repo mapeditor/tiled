@@ -143,12 +143,19 @@ void TileStamp::addVariation(Map *map, qreal probability)
 }
 
 /**
- * Removes the variation map at \a index. Ownership of the map is passed to the
+ * Takes the variation map at \a index. Ownership of the map is passed to the
  * caller, who also has to make sure to handle tileset reference counting.
  */
 Map *TileStamp::takeVariation(int index)
 {
     return d->variations.takeAt(index).map;
+}
+
+void TileStamp::deleteVariation(int index)
+{
+    Map *map = takeVariation(index);
+    TilesetManager::instance()->removeReferences(map->tilesets());
+    delete map;
 }
 
 /**

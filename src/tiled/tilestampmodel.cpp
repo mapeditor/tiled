@@ -58,7 +58,9 @@ int TileStampModel::rowCount(const QModelIndex &parent) const
         return mStamps.size();
     } else if (isStamp(parent)) {
         const TileStamp &stamp = mStamps.at(parent.row());
-        return stamp.variations().size();
+        const int count = stamp.variations().size();
+        // it does not make much sense to expand single variations
+        return count == 1 ? 0 : count;
     }
 
     return 0;
@@ -108,6 +110,14 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
     return false;
 }
 
+static QPixmap renderThumbnail(const ThumbnailRenderer &renderer)
+{
+    return QPixmap::fromImage(renderer.render(QSize(64, 64))
+                              .scaled(32, 32,
+                                      Qt::IgnoreAspectRatio,
+                                      Qt::SmoothTransformation));
+}
+
 QVariant TileStampModel::data(const QModelIndex &index, int role) const
 {
     if (isStamp(index)) {
@@ -122,7 +132,7 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 QPixmap thumbnail = mThumbnailCache.value(map);
                 if (thumbnail.isNull()) {
                     ThumbnailRenderer renderer(map);
-                    thumbnail = QPixmap::fromImage(renderer.render(QSize(32, 32)));
+                    thumbnail = renderThumbnail(renderer);
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;
@@ -138,7 +148,7 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 QPixmap thumbnail = mThumbnailCache.value(map);
                 if (thumbnail.isNull()) {
                     ThumbnailRenderer renderer(map);
-                    thumbnail = QPixmap::fromImage(renderer.render(QSize(32, 32)));
+                    thumbnail = renderThumbnail(renderer);
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;
@@ -165,6 +175,33 @@ Qt::ItemFlags TileStampModel::flags(const QModelIndex &index) const
             (validParent && index.column() == 1))  // and variation probability
         rc |= Qt::ItemIsEditable;
     return rc;
+}
+
+bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (parent.isValid()) {
+        // removing variations
+        TileStamp &stamp = mStamps[parent.row()];
+        beginRemoveRows(parent, row, row + count - 1);
+        for (; count > 0; --count)
+            stamp.deleteVariation(row);
+        endRemoveRows();
+
+        // remove stamp if all its variations were removed
+        if (stamp.variations().isEmpty()) {
+            beginRemoveRows(QModelIndex(), parent.row(), parent.row());
+            mStamps.removeAt(row);
+            endRemoveRows();
+        }
+    } else {
+        // removing stamps
+        beginRemoveRows(parent, row, row + count - 1);
+        for (; count > 0; --count)
+            mStamps.removeAt(row);
+        endRemoveRows();
+    }
+
+    return true;
 }
 
 const TileStamp &TileStampModel::stampAt(const QModelIndex &index) const
@@ -209,7 +246,8 @@ void TileStampModel::addStamp(const TileStamp &stamp)
 void TileStampModel::removeStamp(const TileStamp &stamp)
 {
     int index = mStamps.indexOf(stamp);
-    Q_ASSERT(index != -1);
+    if (index == -1)
+        return;
 
     beginRemoveRows(QModelIndex(), index, index);
     mStamps.removeAt(index);

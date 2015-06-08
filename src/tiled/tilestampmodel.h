@@ -50,6 +50,8 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    bool removeRows(int row, int count, const QModelIndex &parent);
+
     /**
      * Returns the stamp at the given \a index.
      */

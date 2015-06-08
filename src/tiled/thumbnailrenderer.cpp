@@ -66,7 +66,7 @@ static bool smoothTransform(qreal scale)
     return scale != qreal(1) && scale < qreal(2);
 }
 
-QImage ThumbnailRenderer::render(const QSize &size)
+QImage ThumbnailRenderer::render(const QSize &size) const
 {
     QImage image(size, QImage::Format_ARGB32_Premultiplied);
 

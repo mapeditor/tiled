@@ -22,6 +22,7 @@
 #define TILED_INTERNAL_TILESTAMPSDOCK_H
 
 #include <QDockWidget>
+#include <QTreeView>
 
 namespace Tiled {
 
@@ -53,6 +54,25 @@ private:
     void retranslateUi();
 
     TileStampModel *mTileStampModel;
+};
+
+
+/**
+ * This view makes sure the size hint makes sense and implements the context
+ * menu.
+ */
+class TileStampsView : public QTreeView
+{
+    Q_OBJECT
+
+public:
+    explicit TileStampsView(QWidget *parent = 0);
+
+    QSize sizeHint() const;
+
+protected:
+    void contextMenuEvent(QContextMenuEvent *);
+    void keyPressEvent(QKeyEvent *);
 };
 
 } // namespace Internal

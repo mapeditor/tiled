@@ -37,7 +37,7 @@ class ThumbnailRenderer
 public:
     ThumbnailRenderer(Map *map);
 
-    QImage render(const QSize &size);
+    QImage render(const QSize &size) const;
 
     bool visibleLayersOnly() const;
     void setVisibleLayersOnly(bool visibleLayersOnly);
