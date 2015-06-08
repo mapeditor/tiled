@@ -24,6 +24,7 @@
 
 #include "abstracttiletool.h"
 #include "tilelayer.h"
+#include "tilestamp.h"
 
 namespace Tiled {
 
@@ -54,27 +55,25 @@ public:
     void languageChanged();
 
     /**
-     * Sets the stamp that is drawn when painting. The stamp brush takes
-     * ownership over the stamp layer.
+     * Sets the stamp that is drawn when painting.
      */
-    void setStamp(TileLayer *stamp);
+    void setStamp(const TileStamp &stamp);
 
     /**
-     * This returns the actual tile layer which is used to define the current
-     * state.
+     * This returns the current tile stamp used for painting.
      */
-    TileLayer *stamp() const { return mStamp; }
+    const TileStamp &stamp() const { return mStamp; }
 
 public slots:
     void setRandom(bool value);
 
 signals:
     /**
-     * Emitted when the currently selected tiles changed. The stamp brush emits
+     * Emitted when a stamp was captured from the map. The stamp brush emits
      * this signal instead of setting its stamp directly so that the fill tool
      * also gets the new stamp.
      */
-    void currentTilesChanged(const TileLayer *tiles);
+    void stampCaptured(const TileStamp &stamp);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos);
@@ -97,17 +96,9 @@ private:
     void endCapture();
     QRect capturedArea() const;
 
-    /**
-     * updates the variables mStampX and mStampY depending on the mouse pointers
-     * position.
-     */
     void updatePosition();
 
-    /**
-     * mStamp is a tile layer in which is the selection the user made
-     * either by rightclicking (Capture) or at the tilesetdock
-     */
-    TileLayer *mStamp;
+    TileStamp mStamp;
 
     QPoint mCaptureStart;
     int mStampX, mStampY;

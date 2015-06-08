@@ -27,7 +27,7 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "painttilelayer.h"
-#include "tilelayer.h"
+#include "tilestamp.h"
 
 #include <math.h>
 #include <QVector>
@@ -41,7 +41,6 @@ StampBrush::StampBrush(QObject *parent)
                                ":images/22x22/stock-tool-clone.png")),
                        QKeySequence(tr("B")),
                        parent)
-    , mStamp(0)
     , mStampX(0), mStampY(0)
     , mBrushBehavior(Free)
     , mStampReferenceX(0)
@@ -52,7 +51,6 @@ StampBrush::StampBrush(QObject *parent)
 
 StampBrush::~StampBrush()
 {
-    delete mStamp;
 }
 
 void StampBrush::tilePositionChanged(const QPoint &)
@@ -148,8 +146,15 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void StampBrush::configureBrush(const QVector<QPoint> &list)
 {
-    if (!mStamp)
+    if (mStamp.isEmpty())
         return;
+
+    Map *variation = mStamp.randomVariation();
+    if (!variation)
+        return;
+
+    mapDocument()->unifyTilesets(variation); // todo: this is ugly
+    TileLayer *brush = static_cast<TileLayer*>(variation->layerAt(0));
 
     QRegion reg;
     QRegion stampRegion;
@@ -157,7 +162,7 @@ void StampBrush::configureBrush(const QVector<QPoint> &list)
     if (mIsRandom)
         stampRegion = brushItem()->tileLayer()->region();
     else
-        stampRegion = mStamp->region();
+        stampRegion = brush->region();
 
     Map *map = mapDocument()->map();
 
@@ -175,9 +180,8 @@ void StampBrush::configureBrush(const QVector<QPoint> &list)
                 stamp->merge(p, newStamp);
                 delete newStamp;
             } else {
-                stamp->merge(p, mStamp);
+                stamp->merge(p, brush);
             }
-
         }
     }
 
@@ -187,7 +191,7 @@ void StampBrush::configureBrush(const QVector<QPoint> &list)
 
 void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    if (!mStamp)
+    if (mStamp.isEmpty())
         return;
 
     if (modifiers & Qt::ShiftModifier) {
@@ -208,10 +212,13 @@ void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
         // do not update brushItems tilelayer by setStamp
         break;
     default:
-        if (mIsRandom)
+        if (mIsRandom) {
             setRandomStamp();
-        else
-            brushItem()->setTileLayer(mStamp);
+        } else {
+            Map *variation = mStamp.randomVariation();
+            TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
+            brushItem()->setTileLayer(tileLayer);
+        }
 
         updatePosition();
     }
@@ -230,7 +237,7 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
 
     // Reset the brush, since it probably became invalid
     brushItem()->setTileRegion(QRegion());
-    setStamp(0);
+    setStamp(TileStamp());
 }
 
 TileLayer *StampBrush::getRandomTileLayer() const
@@ -247,28 +254,35 @@ void StampBrush::updateRandomList()
 {
     mRandomList.clear();
 
-    if (!mStamp)
+    if (mStamp.isEmpty())
         return;
 
-    for (int x = 0; x < mStamp->width(); x++)
-        for (int y = 0; y < mStamp->height(); y++)
-            if (!mStamp->cellAt(x, y).isEmpty())
-                mRandomList.append(mStamp->cellAt(x, y));
+    // todo: Consider how this can make sense in the random mode
+    Map *variation = mStamp.randomVariation();
+    TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
+
+    for (int x = 0; x < tileLayer->width(); x++)
+        for (int y = 0; y < tileLayer->height(); y++)
+            if (!tileLayer->cellAt(x, y).isEmpty())
+                mRandomList.append(tileLayer->cellAt(x, y));
 }
 
-void StampBrush::setStamp(TileLayer *stamp)
+void StampBrush::setStamp(const TileStamp &stamp)
 {
     if (mStamp == stamp)
         return;
 
-    delete mStamp;
     mStamp = stamp;
 
     if (mIsRandom) {
         updateRandomList();
         setRandomStamp();
+    } else if (!stamp.isEmpty()) {
+        Map *variation = mStamp.randomVariation();
+        TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
+        brushItem()->setTileLayer(tileLayer);
     } else {
-        brushItem()->setTileLayer(mStamp);
+        brushItem()->setTileLayer(0);
     }
 
     updatePosition();
@@ -292,7 +306,7 @@ void StampBrush::beginCapture()
 
     mCaptureStart = tilePosition();
 
-    setStamp(0);
+    setStamp(TileStamp());
 }
 
 void StampBrush::endCapture()
@@ -312,10 +326,21 @@ void StampBrush::endCapture()
 
     if (captured.isValid()) {
         captured.translate(-tileLayer->x(), -tileLayer->y());
+        Map *map = tileLayer->map();
         TileLayer *capture = tileLayer->copy(captured);
-        emit currentTilesChanged(capture);
-        // A copy will have been created, so delete this version
-        delete capture;
+        Map *stamp = new Map(map->orientation(),
+                             capture->width(),
+                             capture->height(),
+                             map->tileWidth(),
+                             map->tileHeight());
+
+        // Add tileset references to map
+        foreach (Tileset *tileset, capture->usedTilesets())
+            stamp->addTileset(tileset);
+
+        stamp->addLayer(capture);
+
+        emit stampCaptured(TileStamp(stamp));
     } else {
         updatePosition();
     }
@@ -361,7 +386,7 @@ void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
 }
 
 /**
- * Updates the position of the brush item.
+ * Updates the position of the brush item based on the mouse position.
  */
 void StampBrush::updatePosition()
 {
@@ -376,12 +401,13 @@ void StampBrush::updatePosition()
         mStampY = tilePos.y();
     }
 
-    if (mIsRandom || !mStamp) {
+    if (mIsRandom || mStamp.isEmpty()) {
         mStampX = tilePos.x();
         mStampY = tilePos.y();
     } else {
-        mStampX = tilePos.x() - mStamp->width() / 2;
-        mStampY = tilePos.y() - mStamp->height() / 2;
+        Map *variation = mStamp.randomVariation();
+        mStampX = tilePos.x() - variation->width() / 2;
+        mStampY = tilePos.y() - variation->height() / 2;
     }
     brushItem()->setTileLayerPosition(QPoint(mStampX, mStampY));
 }
@@ -393,8 +419,10 @@ void StampBrush::setRandom(bool value)
     if (mIsRandom) {
         updateRandomList();
         setRandomStamp();
-    } else {
-        brushItem()->setTileLayer(mStamp);
+    } else if (!mStamp.isEmpty()) {
+        Map *variation = mStamp.randomVariation();
+        TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
+        brushItem()->setTileLayer(tileLayer);
     }
 }
 

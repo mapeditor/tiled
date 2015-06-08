@@ -24,6 +24,7 @@
 #include "imagelayer.h"
 #include "isometricrenderer.h"
 #include "map.h"
+#include "mapobject.h"
 #include "mapobjectitem.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"

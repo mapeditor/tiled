@@ -51,25 +51,26 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     /**
-     * Returns the stamp at the given \a index, or 0 if there is no stamp.
+     * Returns the stamp at the given \a index.
      */
-    TileStamp *stampAt(const QModelIndex &index) const;
+    const TileStamp &stampAt(const QModelIndex &index) const;
+    bool isStamp(const QModelIndex &index) const;
 
     const TileStampVariation *variationAt(const QModelIndex &index) const;
 
-    const QList<TileStamp *> &stamps() const;
+    const QList<TileStamp> &stamps() const;
 
-    void addStamp(TileStamp *stamp);
-    void removeStamp(TileStamp *stamp);
+    void addStamp(const TileStamp &stamp);
+    void removeStamp(const TileStamp &stamp);
 
 private:
-    QList<TileStamp *> mStamps;
+    QList<TileStamp> mStamps;
 
     mutable QHash<Map *, QPixmap> mThumbnailCache;
 };
 
 
-inline const QList<TileStamp *> &TileStampModel::stamps() const
+inline const QList<TileStamp> &TileStampModel::stamps() const
 {
     return mStamps;
 }

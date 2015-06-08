@@ -25,7 +25,8 @@
 #include "tilestamp.h"
 #include "tilestampmodel.h"
 
-#include <QListView>
+#include <QEvent>
+#include <QTreeView>
 #include <QVBoxLayout>
 
 namespace Tiled {
@@ -38,7 +39,7 @@ TileStampsDock::TileStampsDock(QuickStampManager *stampManager, QWidget *parent)
     setObjectName(QLatin1String("TileStampsDock"));
     retranslateUi();
 
-    QListView *stampsView = new QListView(this);
+    QTreeView *stampsView = new QTreeView(this);
     stampsView->setModel(mTileStampModel);
     stampsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
@@ -72,12 +73,11 @@ void TileStampsDock::currentRowChanged(const QModelIndex &index)
     if (!mapDocument)
         return;
 
-    if (TileStamp *stamp = mTileStampModel->stampAt(index)) {
-        // todo: set TileStamp as the brush, so that variations can be chosen while painting
-        if (Map *map = stamp->randomVariation()) {
-            mapDocument->unifyTilesets(map);
-            emit setStampBrush(static_cast<TileLayer*>(map->layerAt(0)));
-        }
+    if (mTileStampModel->isStamp(index)) {
+        emit setStamp(mTileStampModel->stampAt(index));
+    } else if (const TileStampVariation *variation = mTileStampModel->variationAt(index)) {
+        // single variation clicked, use it specifically
+        emit setStamp(TileStamp(new Map(*variation->map)));
     }
 }
 

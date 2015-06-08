@@ -49,6 +49,7 @@ namespace Internal {
 
 class MapDocument;
 class TilesetView;
+class TileStamp;
 class Zoomable;
 
 /**
@@ -86,7 +87,7 @@ signals:
     /**
      * Emitted when the currently selected tiles changed.
      */
-    void currentTilesChanged(const TileLayer *tiles);
+    void stampCaptured(const TileStamp &);
 
     /**
      * Emitted when files are dropped at the tileset dock.

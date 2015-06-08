@@ -41,7 +41,6 @@ BucketFillTool::BucketFillTool(QObject *parent)
                                ":images/22x22/stock-tool-bucket-fill.png")),
                        QKeySequence(tr("F")),
                        parent)
-    , mStamp(0)
     , mFillOverlay(0)
     , mIsActive(false)
     , mLastShiftStatus(false)
@@ -52,7 +51,6 @@ BucketFillTool::BucketFillTool(QObject *parent)
 
 BucketFillTool::~BucketFillTool()
 {
-    delete mStamp;
     delete mFillOverlay;
 }
 
@@ -82,15 +80,22 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (!tileLayer)
         return;
 
+    // todo: When there are multiple variations, it would make sense to choose
+    // random variations while filling. When the variations have different
+    // sizes, probably the bounding box of all variations should be used.
+    TileLayer *stampLayer = 0;
+    if (Map *variation = mStamp.randomVariation())
+        stampLayer = static_cast<TileLayer*>(variation->layerAt(0));
+
     // Skip filling if the stamp is empty
-    if (!mStamp || mStamp->isEmpty())
+    if (!stampLayer || stampLayer->isEmpty())
         return;
 
     TilePainter regionComputer(mapDocument(), tileLayer);
     // If the stamp is a single tile, ignore it when making the region
-    if (mStamp->width() == 1 && mStamp->height() == 1 && !shiftPressed &&
-            mStamp->cellAt(0, 0) == regionComputer.cellAt(tilePos.x(),
-                                                           tilePos.y()))
+    if (stampLayer->width() == 1 && stampLayer->height() == 1 && !shiftPressed &&
+            stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos.x(),
+                                                              tilePos.y()))
         return;
 
     // This clears the connections so we don't get callbacks
@@ -149,7 +154,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     TilePainter tilePainter(mapDocument(), mFillOverlay);
     if (!mIsRandom) {
         if (fillRegionChanged)
-            tilePainter.drawStamp(mStamp, mFillRegion);
+            tilePainter.drawStamp(stampLayer, mFillRegion);
     } else {
         TileLayer *stamp = getRandomTileLayer(mFillRegion);
         tilePainter.drawStamp(stamp, mFillRegion);
@@ -209,16 +214,15 @@ void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
     clearConnections(oldDocument);
 
     // Reset things that are probably invalid now
-    setStamp(0);
+    setStamp(TileStamp());
     clearOverlay();
 }
 
-void BucketFillTool::setStamp(TileLayer *stamp)
+void BucketFillTool::setStamp(const TileStamp &stamp)
 {
     // Clear any overlay that we presently have with an old stamp
     clearOverlay();
 
-    delete mStamp;
     mStamp = stamp;
 
     if (mIsRandom)
@@ -321,12 +325,17 @@ void BucketFillTool::updateRandomList()
 {
     mRandomList.clear();
 
-    if (!mStamp)
+    // todo: Consider what to do with the random mode in relationship with
+    // tile stamps with variations.
+    TileLayer *stampLayer = 0;
+    if (Map *variation = mStamp.randomVariation())
+        stampLayer = static_cast<TileLayer*>(variation->layerAt(0));
+
+    if (!stampLayer)
         return;
 
-    for (int x = 0; x < mStamp->width(); x++)
-        for (int y = 0; y < mStamp->height(); y++)
-            if (!mStamp->cellAt(x, y).isEmpty())
-                mRandomList.append(mStamp->cellAt(x, y));
+    for (int x = 0; x < stampLayer->width(); x++)
+        for (int y = 0; y < stampLayer->height(); y++)
+            if (!stampLayer->cellAt(x, y).isEmpty())
+                mRandomList.append(stampLayer->cellAt(x, y));
 }
-

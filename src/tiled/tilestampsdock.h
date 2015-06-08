@@ -30,6 +30,7 @@ class TileLayer;
 namespace Internal {
 
 class QuickStampManager;
+class TileStamp;
 class TileStampModel;
 
 class TileStampsDock : public QDockWidget
@@ -40,7 +41,7 @@ public:
     TileStampsDock(QuickStampManager *stampManager, QWidget *parent = 0);
 
 signals:
-    void setStampBrush(const TileLayer*);
+    void setStamp(const TileStamp &);
 
 protected:
     void changeEvent(QEvent *e);

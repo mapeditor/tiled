@@ -20,43 +20,198 @@
 
 #include "tilestamp.h"
 
+#include "tilelayer.h"
 #include "tilesetmanager.h"
 
 namespace Tiled {
 namespace Internal {
 
-TileStamp::TileStamp()
-    : mQuickStampIndex(-1)
+class TileStampData : public QSharedData
 {
-}
+public:
+    TileStampData();
+    TileStampData(const TileStampData &other);
+    ~TileStampData();
 
-TileStamp::~TileStamp()
+    QString name;
+    QVector<TileStampVariation> variations;
+    int quickStampIndex;
+};
+
+TileStampData::TileStampData()
+    : quickStampIndex(-1)
+{}
+
+TileStampData::TileStampData(const TileStampData &other)
+    : QSharedData(other)
+    , name(other.name)
+    , variations(other.variations)
+    , quickStampIndex(-1)
 {
     TilesetManager *tilesetManager = TilesetManager::instance();
 
-    // Decrease reference to tilesets and delete maps
-    foreach (const TileStampVariation &variation, mVariations) {
+    // deep-copy the map data
+    for (int i = 0; i < variations.size(); ++i) {
+        TileStampVariation &variation = variations[i];
+        variation.map = new Map(*variation.map);
+        tilesetManager->addReferences(variation.map->tilesets());
+    }
+}
+
+TileStampData::~TileStampData()
+{
+    TilesetManager *tilesetManager = TilesetManager::instance();
+
+    // decrease reference to tilesets and delete maps
+    foreach (const TileStampVariation &variation, variations) {
         tilesetManager->removeReferences(variation.map->tilesets());
         delete variation.map;
     }
 }
 
-void TileStamp::addVariation(Map *map, qreal probability)
+
+TileStamp::TileStamp()
+    : d(new TileStampData)
 {
-    mVariations.append(TileStampVariation(map, probability));
 }
 
+TileStamp::TileStamp(Map *map)
+    : d(new TileStampData)
+{
+    addVariation(map);
+}
+
+TileStamp::TileStamp(const TileStamp &other)
+    : d(other.d)
+{
+}
+
+TileStamp TileStamp::operator=(const TileStamp &other)
+{
+    d = other.d;
+    return *this;
+}
+
+bool TileStamp::operator==(const TileStamp &other)
+{
+    return d == other.d;
+}
+
+TileStamp::~TileStamp()
+{
+    // destructor needs to be here, where TileStampData is defined
+}
+
+QString TileStamp::name() const
+{
+    return d->name;
+}
+
+void TileStamp::setName(const QString &name)
+{
+    d->name = name;
+}
+
+qreal TileStamp::probability(int index) const
+{
+    return d->variations.at(index).probability;
+}
+
+void TileStamp::setProbability(int index, qreal probability)
+{
+    d->variations[index].probability = probability;
+}
+
+const QVector<TileStampVariation> &TileStamp::variations() const
+{
+    return d->variations;
+}
+
+/**
+ * Adds a variation \a map to this tile stamp with a given \a probability.
+ *
+ * The tile stamp takes ownership over the map.
+ */
+void TileStamp::addVariation(Map *map, qreal probability)
+{
+    Q_ASSERT(map);
+
+    // increase tileset reference counts to keep them alive
+    TilesetManager::instance()->addReferences(map->tilesets());
+
+    d->variations.append(TileStampVariation(map, probability));
+}
+
+/**
+ * Removes the variation map at \a index. Ownership of the map is passed to the
+ * caller, who also has to make sure to handle tileset reference counting.
+ */
 Map *TileStamp::takeVariation(int index)
 {
-    return mVariations.takeAt(index).map;
+    return d->variations.takeAt(index).map;
+}
+
+/**
+ * A stamp is considered empty when it has no variations.
+ */
+bool TileStamp::isEmpty() const
+{
+    return d->variations.isEmpty();
+}
+
+int TileStamp::quickStampIndex() const
+{
+    return d->quickStampIndex;
+}
+
+void TileStamp::setQuickStampIndex(int quickStampIndex)
+{
+    d->quickStampIndex = quickStampIndex;
 }
 
 Map *TileStamp::randomVariation() const
 {
-    if (mVariations.isEmpty())
+    if (d->variations.isEmpty())
         return 0;
 
-    return mVariations.at(rand() % mVariations.size()).map; // todo: take probability into account
+    return d->variations.at(rand() % d->variations.size()).map; // todo: take probability into account
+}
+
+/**
+ * Returns a new stamp where all variations have been flipped in the given
+ * \a direction.
+ */
+TileStamp TileStamp::flipped(FlipDirection direction) const
+{
+    TileStamp flipped(*this);
+    flipped.d.detach();
+
+    foreach (const TileStampVariation &variation, flipped.variations()) {
+        TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        layer->flip(direction);
+    }
+
+    return flipped;
+}
+
+/**
+ * Returns a new stamp where all variations have been rotated in the given
+ * \a direction.
+ */
+TileStamp TileStamp::rotated(RotateDirection direction) const
+{
+    TileStamp rotated(*this);
+    rotated.d.detach();
+
+    foreach (const TileStampVariation &variation, rotated.variations()) {
+        TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        layer->rotate(direction);
+
+        variation.map->setWidth(layer->width());
+        variation.map->setHeight(layer->height());
+    }
+
+    return rotated;
 }
 
 } // namespace Internal

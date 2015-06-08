@@ -77,14 +77,14 @@ public slots:
     void setMapDocument(MapDocument *mapDocument);
 
 signals:
-    void setStampBrush(const TileLayer*);
+    void setStamp(const TileStamp &stamp);
 
 private:
     Q_DISABLE_COPY(QuickStampManager)
 
     void eraseQuickStamp(int index);
 
-    QVector<TileStamp *> mQuickStamps;
+    QVector<TileStamp> mQuickStamps;
     MapDocument *mMapDocument;
     TileStampModel *mTileStampModel;
 };

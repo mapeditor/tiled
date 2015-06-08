@@ -42,6 +42,7 @@
 #include "tilesetmodel.h"
 #include "tilesetview.h"
 #include "tilesetmanager.h"
+#include "tilestamp.h"
 #include "tmxmapwriter.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -693,9 +694,19 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
             }
         }
         mMapDocument->setSelectedTiles(selectedTiles);
-    }
 
-    emit currentTilesChanged(mCurrentTiles);
+        // Create a tile stamp with these tiles
+        Map *map = mMapDocument->map();
+        Map *stamp = new Map(map->orientation(),
+                             mCurrentTiles->width(),
+                             mCurrentTiles->height(),
+                             map->tileWidth(),
+                             map->tileHeight());
+        stamp->addLayer(mCurrentTiles->clone());
+        stamp->addTileset(currentTileset());
+
+        emit stampCaptured(TileStamp(stamp));
+    }
 }
 
 void TilesetDock::setCurrentTile(Tile *tile)

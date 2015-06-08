@@ -55,17 +55,16 @@ void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
     if (!mMapDocument)
         return;
 
-    const Map *map = mMapDocument->map();
-
     // The source of the saved stamp depends on which tool is selected
-    TileLayer *copy = 0;
-    if (dynamic_cast<StampBrush*>(selectedTool)) {
-        TileLayer *stamp = (static_cast<StampBrush*>(selectedTool))->stamp();
-        if (!stamp)
-            return;
+    TileStamp stamp;
 
-        copy = static_cast<TileLayer*>(stamp->clone());
+    if (StampBrush *stampBrush = dynamic_cast<StampBrush*>(selectedTool)) {
+        stamp = stampBrush->stamp();
+    } else if (BucketFillTool *fillTool = dynamic_cast<BucketFillTool*>(selectedTool)) {
+        stamp = fillTool->stamp();
     } else if (dynamic_cast<TileSelectionTool*>(selectedTool)) {
+        TileLayer *copy = 0;
+
         const TileLayer *tileLayer =
                 dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
         if (!tileLayer)
@@ -77,37 +76,32 @@ void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
 
         copy = tileLayer->copy(selection.translated(-tileLayer->x(),
                                                     -tileLayer->y()));
-    } else if (dynamic_cast<BucketFillTool*>(selectedTool)) {
-        TileLayer *stamp = (static_cast<BucketFillTool*>(selectedTool))->stamp();
-        if (!stamp)
+
+        if (!copy)
             return;
 
-        copy = static_cast<TileLayer*>(stamp->clone());
+        const Map *map = mMapDocument->map();
+        Map *copyMap = new Map(map->orientation(),
+                               copy->width(), copy->height(),
+                               map->tileWidth(), map->tileHeight());
+
+        copyMap->setRenderOrder(map->renderOrder());
+        copyMap->addLayer(copy);
+
+        // Add tileset references to map
+        foreach (Tileset *tileset, copy->usedTilesets())
+            copyMap->addTileset(tileset);
+
+        stamp.addVariation(copyMap);
     }
 
-    if (!copy)
+    if (stamp.isEmpty())
         return;
 
-    Map *copyMap = new Map(map->orientation(),
-                           copy->width(), copy->height(),
-                           map->tileWidth(), map->tileHeight());
-
-    copyMap->setRenderOrder(map->renderOrder());
-    copyMap->addLayer(copy);
-
-    // Add tileset references to map and tileset manager
-    TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, copy->usedTilesets()) {
-        copyMap->addTileset(tileset);
-        tilesetManager->addReference(tileset);
-    }
+    stamp.setName(tr("Quickstamp %1").arg(index + 1));
+    stamp.setQuickStampIndex(index);
 
     eraseQuickStamp(index);
-
-    TileStamp *stamp = new TileStamp;
-    stamp->setName(tr("Quickstamp %1").arg(index + 1));
-    stamp->addVariation(copyMap);
-    stamp->setQuickStampIndex(index);
 
     mTileStampModel->addStamp(stamp);
 
@@ -116,10 +110,12 @@ void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
 
 void QuickStampManager::eraseQuickStamp(int index)
 {
-    if (TileStamp *stamp = mQuickStamps.at(index)) {
-        mTileStampModel->removeStamp(stamp);
-        delete stamp;
-        mQuickStamps[index] = 0;
+    const TileStamp stamp = mQuickStamps.at(index);
+    if (!stamp.isEmpty()) {
+        mQuickStamps[index] = TileStamp();
+
+        if (!mQuickStamps.contains(stamp))
+            mTileStampModel->removeStamp(stamp);
     }
 }
 
@@ -133,13 +129,9 @@ void QuickStampManager::selectQuickStamp(int index)
     if (!mMapDocument)
         return;
 
-    if (TileStamp *stamp = mQuickStamps.at(index)) {
-        // todo: set TileStamp as the brush, so that variations can be chosen while painting
-        if (Map *map = stamp->randomVariation()) {
-            mMapDocument->unifyTilesets(map);
-            emit setStampBrush(static_cast<TileLayer*>(map->layerAt(0)));
-        }
-    }
+    const TileStamp &stamp = mQuickStamps.at(index);
+    if (!stamp.isEmpty())
+        emit setStamp(stamp);
 }
 
 void QuickStampManager::setMapDocument(MapDocument *mapDocument)

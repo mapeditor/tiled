@@ -22,7 +22,9 @@
 #define TILED_INTERNAL_TILESTAMP_H
 
 #include "map.h"
+#include "tiled.h"
 
+#include <QSharedData>
 #include <QString>
 #include <QVector>
 
@@ -39,11 +41,20 @@ struct TileStampVariation
     qreal probability;
 };
 
+class TileStampData;
+
 
 class TileStamp
 {
 public:
     TileStamp();
+    explicit TileStamp(Map *map);
+
+    TileStamp(const TileStamp &other);
+    TileStamp operator=(const TileStamp &other);
+
+    bool operator==(const TileStamp &other);
+
     ~TileStamp();
 
     QString name() const;
@@ -55,53 +66,19 @@ public:
     const QVector<TileStampVariation> &variations() const;
     void addVariation(Map *map, qreal probability = 1.0);
     Map *takeVariation(int index);
+    bool isEmpty() const;
 
     int quickStampIndex() const;
     void setQuickStampIndex(int quickStampIndex);
 
     Map *randomVariation() const;
 
+    TileStamp flipped(FlipDirection direction) const;
+    TileStamp rotated(RotateDirection direction) const;
+
 private:
-    QString mName;
-    QVector<TileStampVariation> mVariations;
-    int mQuickStampIndex;
+    QExplicitlySharedDataPointer<TileStampData> d;
 };
-
-
-inline QString TileStamp::name() const
-{
-    return mName;
-}
-
-inline void TileStamp::setName(const QString &name)
-{
-    mName = name;
-}
-
-inline qreal TileStamp::probability(int index) const
-{
-    return mVariations.at(index).probability;
-}
-
-inline void TileStamp::setProbability(int index, qreal probability)
-{
-    mVariations[index].probability = probability;
-}
-
-inline const QVector<TileStampVariation> &TileStamp::variations() const
-{
-    return mVariations;
-}
-
-inline int TileStamp::quickStampIndex() const
-{
-    return mQuickStampIndex;
-}
-
-inline void TileStamp::setQuickStampIndex(int quickStampIndex)
-{
-    mQuickStampIndex = quickStampIndex;
-}
 
 } // namespace Internal
 } // namespace Tiled

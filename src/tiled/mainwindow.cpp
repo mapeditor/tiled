@@ -387,10 +387,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
 
-    connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
-    connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
+    connect(mTilesetDock, SIGNAL(stampCaptured(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
+    connect(mStampBrush, SIGNAL(stampCaptured(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
 
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
@@ -404,8 +404,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
 
-    connect(tileStampsDock, SIGNAL(setStampBrush(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
+    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
 
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
@@ -1088,17 +1088,20 @@ void MainWindow::paste()
     mMapDocument->unifyTilesets(map.data());
     Layer *layer = map->layerAt(0);
 
-    if (TileLayer *tileLayer = layer->asTileLayer()) {
+    if (layer->isTileLayer()) {
         // Reset selection and paste into the stamp brush
         mActionHandler->selectNone();
-        setStampBrush(tileLayer);
+        Map *stamp = map.take(); // TileStamp will take ownership
+        setStamp(TileStamp(stamp));
+        tilesetManager->removeReferences(stamp->tilesets());
         mToolManager->selectTool(mStampBrush);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = mDocumentManager->currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view);
     }
 
-    tilesetManager->removeReferences(map->tilesets());
+    if (map)
+        tilesetManager->removeReferences(map->tilesets());
 }
 
 void MainWindow::delete_()
@@ -1467,11 +1470,10 @@ void MainWindow::updateZoomLabel()
 void MainWindow::flip(FlipDirection direction)
 {
     if (mStampBrush->isEnabled()) {
-        if (TileLayer *stamp = mStampBrush->stamp()) {
-            stamp = static_cast<TileLayer*>(stamp->clone());
-            stamp->flip(direction);
-            setStampBrush(stamp);
-        }
+        const TileStamp &stamp = mStampBrush->stamp();
+        if (!stamp.isEmpty())
+            setStamp(stamp.flipped(direction));
+
     } else if (mMapDocument) {
         mMapDocument->flipSelectedObjects(direction);
     }
@@ -1480,27 +1482,26 @@ void MainWindow::flip(FlipDirection direction)
 void MainWindow::rotate(RotateDirection direction)
 {
     if (mStampBrush->isEnabled()) {
-        if (TileLayer *stamp = mStampBrush->stamp()) {
-            stamp = static_cast<TileLayer*>(stamp->clone());
-            stamp->rotate(direction);
-            setStampBrush(stamp);
-        }
+        const TileStamp &stamp = mStampBrush->stamp();
+        if (!stamp.isEmpty())
+            setStamp(stamp.rotated(direction));
+
     } else if (mMapDocument) {
         mMapDocument->rotateSelectedObjects(direction);
     }
 }
 
 /**
- * Sets the stamp brush, which is used by both the stamp brush and the bucket
+ * Sets the current stamp, which is used by both the stamp brush and the bucket
  * fill tool.
  */
-void MainWindow::setStampBrush(const TileLayer *tiles)
+void MainWindow::setStamp(const TileStamp &stamp)
 {
-    if (!tiles)
+    if (stamp.isEmpty())
         return;
 
-    mStampBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
-    mBucketFillTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
+    mStampBrush->setStamp(stamp);
+    mBucketFillTool->setStamp(stamp);
 
     // When selecting a new stamp, it makes sense to switch to a stamp tool
     AbstractTool *selectedTool = mToolManager->selectedTool();
@@ -1696,8 +1697,8 @@ void MainWindow::setupQuickStamps()
     connect(saveMapper, SIGNAL(mapped(int)),
             this, SLOT(saveQuickStamp(int)));
 
-    connect(mQuickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
+    connect(mQuickStampManager, SIGNAL(setStamp(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
 }
 
 void MainWindow::closeMapDocument(int index)

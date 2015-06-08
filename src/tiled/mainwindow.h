@@ -66,6 +66,7 @@ class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionEditor;
 class TilesetDock;
+class TileStamp;
 class ToolManager;
 class Zoomable;
 
@@ -161,7 +162,7 @@ public slots:
     void flip(FlipDirection direction);
     void rotate(RotateDirection direction);
 
-    void setStampBrush(const TileLayer *tiles);
+    void setStamp(const TileStamp &stamp);
     void setTerrainBrush(const Terrain *terrain);
     void saveQuickStamp(int index);
     void updateStatusInfoLabel(const QString &statusInfo);

@@ -26,6 +26,7 @@
 #include "abstracttiletool.h"
 
 #include "tilelayer.h"
+#include "tilestamp.h"
 
 namespace Tiled {
 namespace Internal {
@@ -55,16 +56,14 @@ public:
     void languageChanged();
 
     /**
-     * Sets the stamp that is drawn when filling. The BucketFillTool takes
-     * ownership over the stamp layer.
+     * Sets the stamp that is drawn when filling.
      */
-    void setStamp(TileLayer *stamp);
+    void setStamp(const TileStamp &stamp);
 
     /**
-     * This returns the actual tile layer which is used to define the current
-     * state.
+     * This returns the current stamp used for filling.
      */
-    TileLayer *stamp() const { return mStamp; }
+    const TileStamp &stamp() const { return mStamp; }
 
 public slots:
     void setRandom(bool value);
@@ -82,7 +81,7 @@ private:
     void makeConnections();
     void clearConnections(MapDocument *mapDocument);
 
-    TileLayer *mStamp;
+    TileStamp mStamp;
     TileLayer *mFillOverlay;
     QRegion mFillRegion;
 
