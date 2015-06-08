@@ -25,6 +25,7 @@
 #include "tilestamp.h"
 #include "tilestampmodel.h"
 
+#include <QHeaderView>
 #include <QKeyEvent>
 #include <QVBoxLayout>
 
@@ -41,6 +42,9 @@ TileStampsDock::TileStampsDock(QuickStampManager *stampManager, QWidget *parent)
     TileStampsView *stampsView = new TileStampsView(this);
     stampsView->setModel(mTileStampModel);
     stampsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    stampsView->header()->setStretchLastSection(false);
+    stampsView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+    stampsView->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
