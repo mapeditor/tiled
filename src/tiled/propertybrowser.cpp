@@ -676,7 +676,10 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
     if (selectedObjects.size() > 1) {
         foreach (MapObject *obj, selectedObjects) {
             if (obj != mapObject) {
-                mMapDocument->undoStack()->push(applyMapObjectValueTo(id, val, obj));
+                QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj);
+                if (cmd != 0) {
+                    mMapDocument->undoStack()->push(cmd);
+                }
             }
         }
     }
