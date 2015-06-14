@@ -48,10 +48,12 @@
 
 #include <QMimeData>
 #include <QAction>
+#include <QBitmap>
 #include <QDropEvent>
 #include <QComboBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QImage>
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -827,9 +829,16 @@ void TilesetDock::addTiles()
     int id = tileset->tileCount();
 
     foreach (const QString &file, files) {
-        const QPixmap image(file);
-        if (!image.isNull()) {
-            tiles.append(new Tile(image, file, id, tileset));
+        const QImage tileImage(file);
+        if (!tileImage.isNull()) {
+            QPixmap tilePixmap = QPixmap::fromImage(tileImage);
+            if (tileset->transparentColor().isValid())
+            {
+                const QBitmap mask =
+                        tilePixmap.createMaskFromColor(tileset->transparentColor().rgb());
+                tilePixmap.setMask(mask);
+            }
+            tiles.append(new Tile(tilePixmap, file, id, tileset));
             ++id;
         } else {
             QMessageBox warning(QMessageBox::Warning,

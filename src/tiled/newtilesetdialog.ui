@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>387</width>
-    <height>314</height>
+    <height>345</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -114,34 +114,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QCheckBox" name="useTransparentColor">
-        <property name="text">
-         <string>Use transparent color:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="Tiled::Internal::ColorButton" name="colorButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>13</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0" colspan="5">
+      <item row="1" column="0" colspan="4">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="1" column="1">
          <widget class="QSpinBox" name="tileHeight">
@@ -279,6 +252,52 @@
        <widget class="QLineEdit" name="image"/>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="transparencyGroupBox">
+     <property name="title">
+      <string>Transparency</string>
+     </property>
+     <widget class="QWidget" name="horizontalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>19</x>
+        <y>20</y>
+        <width>451</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QCheckBox" name="useTransparentColor">
+         <property name="text">
+          <string>Use transparent color:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Tiled::Internal::ColorButton" name="colorButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>17</width>
+           <height>17</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
