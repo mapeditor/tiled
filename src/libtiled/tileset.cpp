@@ -331,6 +331,10 @@ void Tileset::setTileImage(int id, const QPixmap &image,
     tile->setImage(image);
     tile->setImageSource(source);
 
+    // apply transparency color
+    const QBitmap mask = tile->mImage.createMaskFromColor(transparentColor().rgb());
+    tile->mImage.setMask(mask);
+
     if (previousImageSize != newImageSize) {
         // Update our max. tile size
         if (previousImageSize.height() == mTileHeight ||

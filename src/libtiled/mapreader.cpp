@@ -314,6 +314,15 @@ Tileset *MapReaderPrivate::readTileset()
             tileset = new Tileset(name, tileWidth, tileHeight,
                                   tileSpacing, margin);
 
+            QString trans = atts.value(QLatin1String("trans")).toString();
+            if (!trans.isEmpty()) {
+                if (!trans.startsWith(QLatin1Char('#')))
+                    trans.prepend(QLatin1Char('#'));
+                const QColor transColor = QColor(trans);
+                if (transColor.isValid())
+                    tileset->setTransparentColor(QColor(transColor));
+            }
+
             mCreatedTilesets.append(tileset);
 
             while (xml.readNextStartElement()) {
@@ -456,13 +465,6 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString source = atts.value(QLatin1String("source")).toString();
-    QString trans = atts.value(QLatin1String("trans")).toString();
-
-    if (!trans.isEmpty()) {
-        if (!trans.startsWith(QLatin1Char('#')))
-            trans.prepend(QLatin1Char('#'));
-        tileset->setTransparentColor(QColor(trans));
-    }
 
     if (!source.isEmpty())
         source = p->resolveReference(source, mPath);
