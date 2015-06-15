@@ -82,7 +82,7 @@ private:
     void clearConnections(MapDocument *mapDocument);
 
     TileStamp mStamp;
-    TileLayer *mFillOverlay;
+    SharedTileLayer mFillOverlay;
     QRegion mFillRegion;
 
     bool mIsActive;
@@ -115,10 +115,9 @@ private:
     void updateRandomList();
 
     /**
-     * Returns a tile layer having random tiles placed at \a region.The
-     * caller is responsible for the returned tile layer.
+     * Fills the given \a region in the given \a tileLayer with random tiles.
      */
-    TileLayer *getRandomTileLayer(const QRegion &region) const;
+    void randomFill(TileLayer *tileLayer, const QRegion &region) const;
 };
 
 } // namespace Internal

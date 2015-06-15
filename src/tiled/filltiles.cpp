@@ -32,20 +32,19 @@ using namespace Tiled::Internal;
 FillTiles::FillTiles(MapDocument *mapDocument,
                      TileLayer *tileLayer,
                      const QRegion &fillRegion,
-                     const TileLayer *fillStamp)
+                     const SharedTileLayer &fillStamp)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Fill Area"))
     , mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
     , mFillRegion(fillRegion)
     , mOriginalCells(tileLayer->copy(mFillRegion))
-    , mFillStamp(static_cast<TileLayer*>(fillStamp->clone()))
+    , mFillStamp(fillStamp)
 {
 }
 
 FillTiles::~FillTiles()
 {
     delete mOriginalCells;
-    delete mFillStamp;
 }
 
 void FillTiles::undo()
@@ -61,5 +60,5 @@ void FillTiles::undo()
 void FillTiles::redo()
 {
     TilePainter painter(mMapDocument, mTileLayer);
-    painter.drawStamp(mFillStamp, mFillRegion);
+    painter.drawStamp(mFillStamp.data(), mFillRegion);
 }

@@ -41,10 +41,7 @@ StampBrush::StampBrush(QObject *parent)
                                ":images/22x22/stock-tool-clone.png")),
                        QKeySequence(tr("B")),
                        parent)
-    , mStampX(0), mStampY(0)
     , mBrushBehavior(Free)
-    , mStampReferenceX(0)
-    , mStampReferenceY(0)
     , mIsRandom(false)
 {
 }
@@ -53,36 +50,21 @@ StampBrush::~StampBrush()
 {
 }
 
-void StampBrush::tilePositionChanged(const QPoint &)
+void StampBrush::tilePositionChanged(const QPoint &pos)
 {
-    const int x = mStampX;
-    const int y = mStampY;
-    updatePosition();
-    switch (mBrushBehavior) {
-    case Paint:
-        // TODO: This could be optimized to emit only one 'regionEdited' signal
-        foreach (const QPoint &p, pointsOnLine(x, y, mStampX, mStampY))
-            doPaint(true, p.x(), p.y());
-        break;
-    case LineStartSet:
-        configureBrush(pointsOnLine(mStampReferenceX, mStampReferenceY,
-                                    mStampX, mStampY));
-        break;
-    case CircleMidSet:
-        configureBrush(pointsOnEllipse(mStampReferenceX, mStampReferenceY,
-                                       mStampX, mStampY));
-        break;
-    case Capture:
-        brushItem()->setTileRegion(capturedArea());
-        break;
-    case Line:
-    case Circle:
-        updatePosition();
-        break;
-    case Free:
-        updatePosition();
-        break;
+    if (mBrushBehavior == Paint) {
+        // Draw a line from the previous point to avoid gaps, skipping the
+        // first point, since it was painted when the mouse was pressed, or the
+        // last time the mouse was moved.
+        QVector<QPoint> points = pointsOnLine(mPrevTilePosition, pos);
+        points.remove(0);
+
+        drawPreviewLayer(points, true);
+        doPaint(Mergeable);
     }
+
+    updatePreview();
+    mPrevTilePosition = pos;
 }
 
 void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -93,22 +75,19 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         switch (mBrushBehavior) {
         case Line:
-            mStampReferenceX = mStampX;
-            mStampReferenceY = mStampY;
+            mStampReference = tilePosition();
             mBrushBehavior = LineStartSet;
             break;
         case Circle:
-            mStampReferenceX = mStampX;
-            mStampReferenceY = mStampY;
+            mStampReference = tilePosition();
             mBrushBehavior = CircleMidSet;
             break;
         case LineStartSet:
-            doPaint(false, 0, 0);
-            mStampReferenceX = mStampX;
-            mStampReferenceY = mStampY;
+            doPaint();
+            mStampReference = tilePosition();
             break;
         case CircleMidSet:
-            doPaint(false, 0, 0);
+            doPaint();
             break;
         case Paint:
             beginPaint();
@@ -136,57 +115,16 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
         }
         break;
     case Paint:
-        if (event->button() == Qt::LeftButton)
+        if (event->button() == Qt::LeftButton) {
             mBrushBehavior = Free;
+
+            // allow going over different variations by repeatedly clicking
+            updatePreview();
+        }
     default:
         // do nothing?
         break;
     }
-}
-
-void StampBrush::configureBrush(const QVector<QPoint> &list)
-{
-    if (mStamp.isEmpty())
-        return;
-
-    Map *variation = mStamp.randomVariation();
-    if (!variation)
-        return;
-
-    mapDocument()->unifyTilesets(variation); // todo: this is ugly
-    TileLayer *brush = static_cast<TileLayer*>(variation->layerAt(0));
-
-    QRegion reg;
-    QRegion stampRegion;
-
-    if (mIsRandom)
-        stampRegion = brushItem()->tileLayer()->region();
-    else
-        stampRegion = brush->region();
-
-    Map *map = mapDocument()->map();
-
-    TileLayer *stamp = new TileLayer(QString(), 0, 0,
-                                     map->width(), map->height());
-
-    foreach (const QPoint p, list) {
-        const QRegion update = stampRegion.translated(p.x() - mStampX,
-                                                      p.y() - mStampY);
-        if (!reg.intersects(update)) {
-            reg += update;
-
-            if (mIsRandom) {
-                TileLayer *newStamp = getRandomTileLayer();
-                stamp->merge(p, newStamp);
-                delete newStamp;
-            } else {
-                stamp->merge(p, brush);
-            }
-        }
-    }
-
-    brushItem()->setTileLayer(stamp);
-    delete stamp;
 }
 
 void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -195,33 +133,15 @@ void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
         return;
 
     if (modifiers & Qt::ShiftModifier) {
-        mBrushBehavior = Line;
-        if (modifiers & Qt::ControlModifier) {
+        if (modifiers & Qt::ControlModifier)
             mBrushBehavior = Circle;
-            // while finding the mid point, there is no need to show
-            // the (maybe bigger than 1x1) stamp
-            brushItem()->setTileLayer(0);
-            brushItem()->setTileRegion(QRect(tilePosition(), QSize(1, 1)));
-        }
+        else
+            mBrushBehavior = Line;
     } else {
         mBrushBehavior = Free;
     }
 
-    switch (mBrushBehavior) {
-    case Circle:
-        // do not update brushItems tilelayer by setStamp
-        break;
-    default:
-        if (mIsRandom) {
-            setRandomStamp();
-        } else {
-            Map *variation = mStamp.randomVariation();
-            TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
-            brushItem()->setTileLayer(tileLayer);
-        }
-
-        updatePosition();
-    }
+    updatePreview();
 }
 
 void StampBrush::languageChanged()
@@ -240,16 +160,10 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
     setStamp(TileStamp());
 }
 
-TileLayer *StampBrush::getRandomTileLayer() const
-{
-    if (mRandomList.empty())
-        return 0;
-
-    TileLayer *ret = new TileLayer(QString(), 0, 0, 1, 1);
-    ret->setCell(0, 0, mRandomList.at(rand() % mRandomList.size()));
-    return ret;
-}
-
+/**
+ * Updates the list used random stamps.
+ * This is done by taking all non-null tiles from the original stamp mStamp.
+ */
 void StampBrush::updateRandomList()
 {
     mRandomList.clear();
@@ -257,14 +171,13 @@ void StampBrush::updateRandomList()
     if (mStamp.isEmpty())
         return;
 
-    // todo: Consider how this can make sense in the random mode
-    Map *variation = mStamp.randomVariation();
-    TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
-
-    for (int x = 0; x < tileLayer->width(); x++)
-        for (int y = 0; y < tileLayer->height(); y++)
-            if (!tileLayer->cellAt(x, y).isEmpty())
-                mRandomList.append(tileLayer->cellAt(x, y));
+    foreach (const TileStampVariation &variation, mStamp.variations()) {
+        TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        for (int x = 0; x < tileLayer->width(); x++)
+            for (int y = 0; y < tileLayer->height(); y++)
+                if (!tileLayer->cellAt(x, y).isEmpty())
+                    mRandomList.append(tileLayer->cellAt(x, y));
+    }
 }
 
 void StampBrush::setStamp(const TileStamp &stamp)
@@ -274,18 +187,10 @@ void StampBrush::setStamp(const TileStamp &stamp)
 
     mStamp = stamp;
 
-    if (mIsRandom) {
+    if (mIsRandom)
         updateRandomList();
-        setRandomStamp();
-    } else if (!stamp.isEmpty()) {
-        Map *variation = mStamp.randomVariation();
-        TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
-        brushItem()->setTileLayer(tileLayer);
-    } else {
-        brushItem()->setTileLayer(0);
-    }
 
-    updatePosition();
+    updatePreview();
 }
 
 void StampBrush::beginPaint()
@@ -294,7 +199,7 @@ void StampBrush::beginPaint()
         return;
 
     mBrushBehavior = Paint;
-    doPaint(false, mStampX, mStampY);
+    doPaint();
 }
 
 void StampBrush::beginCapture()
@@ -342,7 +247,7 @@ void StampBrush::endCapture()
 
         emit stampCaptured(TileStamp(stamp));
     } else {
-        updatePosition();
+        updatePreview();
     }
 }
 
@@ -356,79 +261,183 @@ QRect StampBrush::capturedArea() const
     return captured;
 }
 
-void StampBrush::doPaint(bool mergeable, int whereX, int whereY)
+/**
+ * Merges the tile layer of its brush item into the current map.
+ *
+ * \a flags can be set to Mergeable, which applies to the undo command.
+ *
+ * \a offsetX and \a offsetY give an offset where to merge the brush items tile
+ * layer into the current map.
+ *
+ * Returns the edited region.
+ */
+void StampBrush::doPaint(int flags, int offsetX, int offsetY)
 {
-    TileLayer *stamp = brushItem()->tileLayer();
-
-    if (!stamp)
+    TileLayer *preview = mPreviewLayer.data();
+    if (!preview)
         return;
 
     // This method shouldn't be called when current layer is not a tile layer
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
-    if (!tileLayer->bounds().intersects(QRect(whereX, whereY,
-                                              stamp->width(),
-                                              stamp->height())))
+    if (!tileLayer->bounds().intersects(QRect(preview->x() + offsetX,
+                                              preview->y() + offsetY,
+                                              preview->width(),
+                                              preview->height())))
         return;
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(), tileLayer,
-                                               whereX, whereY, stamp);
-    paint->setMergeable(mergeable);
+    PaintTileLayer *paint = new PaintTileLayer(mapDocument(),tileLayer,
+                                               preview->x() + offsetX,
+                                               preview->y() + offsetY,
+                                               preview);
+    paint->setMergeable(flags & Mergeable);
     mapDocument()->undoStack()->push(paint);
 
     // Since doPaint may be called with different coordinates than the current
     // location of the brush preview, the region needs to be translated to get
     // the correct edit region.
     QRegion editRegion = brushItem()->tileRegion();
-    editRegion.translate(whereX - mStampX, whereY - mStampY);
+    editRegion.translate(offsetX, offsetY);
     mapDocument()->emitRegionEdited(editRegion, tileLayer);
+}
+
+struct PaintOperation {
+    QPoint pos;
+    TileLayer *stamp;
+};
+
+/**
+ * Draws the preview layer.
+ * It tries to put at all given points a stamp of the current stamp at the
+ * corresponding position.
+ * It also takes care, that no overlaps appear.
+ * So it will check for every point if it can place a stamp there without
+ * overlap.
+ */
+void StampBrush::drawPreviewLayer(const QVector<QPoint> &list, bool allowOverlap)
+{
+    mPreviewLayer.clear();
+
+    if (mStamp.isEmpty())
+        return;
+
+    if (mIsRandom) {
+        if (mRandomList.empty())
+            return;
+
+        QRegion paintedRegion;
+        foreach (const QPoint p, list)
+            paintedRegion += QRect(p, QSize(1, 1));
+
+        QRect bounds = paintedRegion.boundingRect();
+        TileLayer *preview = new TileLayer(QString(),
+                                           bounds.x(), bounds.y(),
+                                           bounds.width(), bounds.height());
+
+        foreach (const QPoint p, list) {
+            // todo: take into account tile probability
+            const Cell &cell = mRandomList.at(rand() % mRandomList.size());
+            preview->setCell(p.x() - bounds.left(),
+                             p.y() - bounds.top(),
+                             cell);
+        }
+
+        mPreviewLayer = SharedTileLayer(preview);
+    } else {
+        QRegion paintedRegion;
+        QVector<PaintOperation> operations;
+        QHash<TileLayer *, QRegion> regionCache;
+
+        foreach (const QPoint p, list) {
+            Map *variation = mStamp.randomVariation();
+            TileLayer *stamp = static_cast<TileLayer*>(variation->layerAt(0));
+
+            QRegion stampRegion;
+            if (regionCache.contains(stamp)) {
+                stampRegion = regionCache.value(stamp);
+            } else {
+                stampRegion = stamp->region();
+                regionCache.insert(stamp, stampRegion);
+            }
+
+            QPoint centered(p.x() - stamp->width() / 2,
+                            p.y() - stamp->height() / 2);
+
+            const QRegion region = stampRegion.translated(centered.x(),
+                                                          centered.y());
+            if (allowOverlap || !paintedRegion.intersects(region)) {
+                paintedRegion += region;
+
+                PaintOperation op = { centered, stamp };
+                operations.append(op);
+            }
+        }
+
+        QRect bounds = paintedRegion.boundingRect();
+        TileLayer *preview = new TileLayer(QString(),
+                                           bounds.x(), bounds.y(),
+                                           bounds.width(), bounds.height());
+
+        foreach (const PaintOperation &op, operations)
+            preview->merge(op.pos - bounds.topLeft(), op.stamp);
+
+        mPreviewLayer = SharedTileLayer(preview);
+    }
 }
 
 /**
  * Updates the position of the brush item based on the mouse position.
  */
-void StampBrush::updatePosition()
+void StampBrush::updatePreview()
 {
-    if (mIsRandom)
-        setRandomStamp();
+    QRegion tileRegion;
 
-    const QPoint tilePos = tilePosition();
-
-    if (!brushItem()->tileLayer()) {
-        brushItem()->setTileRegion(QRect(tilePos, QSize(1, 1)));
-        mStampX = tilePos.x();
-        mStampY = tilePos.y();
-    }
-
-    if (mIsRandom || mStamp.isEmpty()) {
-        mStampX = tilePos.x();
-        mStampY = tilePos.y();
+    if (mBrushBehavior == Capture) {
+        mPreviewLayer.clear();
+        tileRegion = capturedArea();
+    } else if (mStamp.isEmpty()) {
+        mPreviewLayer.clear();
+        tileRegion = QRect(tilePosition(), QSize(1, 1));
     } else {
-        Map *variation = mStamp.randomVariation();
-        mStampX = tilePos.x() - variation->width() / 2;
-        mStampY = tilePos.y() - variation->height() / 2;
+        switch (mBrushBehavior) {
+        case LineStartSet:
+            drawPreviewLayer(pointsOnLine(mStampReference, tilePosition()));
+            break;
+        case CircleMidSet:
+            drawPreviewLayer(pointsOnEllipse(mStampReference, tilePosition()));
+            break;
+        case Capture:
+            // already handled above
+            break;
+        case Circle:
+            // while finding the mid point, there is no need to show
+            // the (maybe bigger than 1x1) stamp
+            mPreviewLayer.clear();
+            tileRegion = QRect(tilePosition(), QSize(1, 1));
+            break;
+        case Line:
+        case Free:
+        case Paint:
+            drawPreviewLayer(QVector<QPoint>() << tilePosition());
+            break;
+        }
     }
-    brushItem()->setTileLayerPosition(QPoint(mStampX, mStampY));
+
+    brushItem()->setTileLayer(mPreviewLayer);
+    if (!tileRegion.isEmpty())
+        brushItem()->setTileRegion(tileRegion);
 }
 
 void StampBrush::setRandom(bool value)
 {
+    if (mIsRandom == value)
+        return;
+
     mIsRandom = value;
 
-    if (mIsRandom) {
+    if (mIsRandom)
         updateRandomList();
-        setRandomStamp();
-    } else if (!mStamp.isEmpty()) {
-        Map *variation = mStamp.randomVariation();
-        TileLayer *tileLayer = static_cast<TileLayer*>(variation->layerAt(0));
-        brushItem()->setTileLayer(tileLayer);
-    }
-}
 
-void StampBrush::setRandomStamp()
-{
-    TileLayer *t = getRandomTileLayer();
-    brushItem()->setTileLayer(t);
-    delete t;
+    updatePreview();
 }

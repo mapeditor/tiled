@@ -22,12 +22,11 @@
 #ifndef BRUSHITEM_H
 #define BRUSHITEM_H
 
+#include "tilelayer.h"
+
 #include <QGraphicsItem>
 
 namespace Tiled {
-
-class TileLayer;
-
 namespace Internal {
 
 class MapDocument;
@@ -50,18 +49,20 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
     /**
+     * Clears the tile layer and region set on this item.
+     */
+    void clear();
+
+    /**
      * Sets a tile layer representing this brush. When no tile layer is set,
      * the brush only draws the selection color.
-     *
-     * The BrushItem does not take ownership over the tile layer, but makes a
-     * personal copy of the tile layer.
      */
-    void setTileLayer(const TileLayer *tileLayer);
+    void setTileLayer(const SharedTileLayer &tileLayer);
 
     /**
      * Returns the current tile layer.
      */
-    TileLayer *tileLayer() const { return mTileLayer; }
+    const SharedTileLayer &tileLayer() const { return mTileLayer; }
 
     /**
      * Changes the position of the tile layer, if one is set.
@@ -89,10 +90,15 @@ private:
     void updateBoundingRect();
 
     MapDocument *mMapDocument;
-    TileLayer *mTileLayer;
+    SharedTileLayer mTileLayer;
     QRegion mRegion;
     QRectF mBoundingRect;
 };
+
+inline void BrushItem::clear()
+{
+    setTileLayer(SharedTileLayer());
+}
 
 } // namespace Internal
 } // namespace Tiled

@@ -107,15 +107,18 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
 {
     QVector<QPoint> ret;
 
-    bool steep = qAbs(y1 - y0) > qAbs(x1 - x0);
+    const bool steep = qAbs(y1 - y0) > qAbs(x1 - x0);
     if (steep) {
         qSwap(x0, y0);
         qSwap(x1, y1);
     }
-    if (x0 > x1) {
+
+    const bool reverse = x0 > x1;
+    if (reverse) {
         qSwap(x0, x1);
         qSwap(y0, y1);
     }
+
     const int deltax = x1 - x0;
     const int deltay = qAbs(y1 - y0);
     int error = deltax / 2;
@@ -138,6 +141,9 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
              error = error + deltax;
         }
     }
+
+    if (reverse)
+        std::reverse(ret.begin(), ret.end());
 
     return ret;
 }

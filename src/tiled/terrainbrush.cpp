@@ -83,9 +83,6 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
             updateBrush(p);
             doPaint(true, p.x(), p.y());
         }
-        // HACK-ish: because the line may traverse in the reverse direction, updateBrush() leaves these at the line start point
-        mPaintX = pos.x();
-        mPaintY = pos.y();
         break;
     }
     case LineStartSet: {
@@ -181,7 +178,7 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     // Reset the brush, since it probably became invalid
-    brushItem()->setTileLayer(0);
+    brushItem()->clear();
 
     // Don't use setTerrain since we do not want to update the brush right now
     mTerrain = firstTerrain(newDocument);
@@ -229,7 +226,7 @@ void TerrainBrush::capture()
 
 void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
 {
-    TileLayer *stamp = brushItem()->tileLayer();
+    TileLayer *stamp = brushItem()->tileLayer().data();
 
     if (!stamp)
         return;
@@ -529,18 +526,24 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // create a stamp for the terrain block
-    TileLayer *stamp = new TileLayer(QString(), 0, 0, brushRect.width(), brushRect.height());
+    SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(),
+                                                          brushRect.left(),
+                                                          brushRect.top(),
+                                                          brushRect.width(),
+                                                          brushRect.height()));
 
     for (int y = brushRect.top(); y <= brushRect.bottom(); ++y) {
         for (int x = brushRect.left(); x <= brushRect.right(); ++x) {
-            int i = y*layerWidth + x;
+            int i = y * layerWidth + x;
             if (!checked[i])
                 continue;
 
             Tile *tile = newTerrain[i];
-            if (tile)
-                stamp->setCell(x - brushRect.left(), y - brushRect.top(), Cell(tile));
-            else {
+            if (tile) {
+                stamp->setCell(x - brushRect.left(),
+                               y - brushRect.top(),
+                               Cell(tile));
+            } else {
                 // TODO: we need to do something to erase tiles where checked[i] is true, and newTerrain[i] is NULL
                 // is there an eraser stamp? investigate how the eraser works...
             }
@@ -552,8 +555,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     delete[] checked;
     delete[] newTerrain;
-
-    brushItem()->setTileLayerPosition(brushRect.topLeft());
 
     mPaintX = cursorPos.x();
     mPaintY = cursorPos.y();

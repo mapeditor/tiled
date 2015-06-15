@@ -22,6 +22,7 @@
 #define FILLTILES_H
 
 #include "undocommands.h"
+#include "tilelayer.h"
 
 #include <QRegion>
 #include <QUndoCommand>
@@ -46,7 +47,7 @@ public:
     FillTiles(MapDocument *mapDocument,
               TileLayer *tileLayer,
               const QRegion &fillRegion,
-              const TileLayer *fillStamp);
+              const SharedTileLayer &fillStamp);
     ~FillTiles();
 
     void undo();
@@ -57,7 +58,7 @@ private:
     TileLayer *mTileLayer;
     QRegion mFillRegion;
     TileLayer *mOriginalCells;
-    TileLayer *mFillStamp;
+    SharedTileLayer mFillStamp;
 };
 
 } // namespace Internal

@@ -38,6 +38,7 @@
 #include <QMargins>
 #include <QString>
 #include <QVector>
+#include <QSharedPointer>
 
 namespace Tiled {
 
@@ -326,6 +327,8 @@ inline const Cell &TileLayer::cellAt(const QPoint &point) const
 {
     return cellAt(point.x(), point.y());
 }
+
+typedef QSharedPointer<TileLayer> SharedTileLayer;
 
 } // namespace Tiled
 

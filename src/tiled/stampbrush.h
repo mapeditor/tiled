@@ -82,36 +82,27 @@ protected:
                             MapDocument *newDocument);
 
 private:
-    void beginPaint();
+    enum PaintFlags {
+        Mergeable               = 0x1,
+    };
 
-    /**
-     * Merges the tile layer of its brush item into the current map.
-     * mergeable determines if this can be merged with similar actions for undo.
-     * whereX and whereY give an offset where to merge the brush items tilelayer
-     * into the current map.
-     */
-    void doPaint(bool mergeable, int whereX, int whereY);
+    void beginPaint();
+    void doPaint(int flags = 0, int offsetX = 0, int offsetY = 0);
 
     void beginCapture();
     void endCapture();
     QRect capturedArea() const;
 
-    void updatePosition();
+    void updatePreview();
 
     TileStamp mStamp;
+    SharedTileLayer mPreviewLayer;
 
     QPoint mCaptureStart;
-    int mStampX, mStampY;
+    QPoint mPrevTilePosition;
 
-    /**
-     * This updates the brush item.
-     * It tries to put at all given points a stamp of the current stamp at the
-     * corresponding position.
-     * It also takes care, that no overlaps appear.
-     * So it will check for every point if it can place a stamp there without
-     * overlap.
-     */
-    void configureBrush(const QVector<QPoint> &list);
+    void drawPreviewLayer(const QVector<QPoint> &list,
+                          bool allowOverlap = false);
 
     /**
      * There are several options how the stamp utility can be used.
@@ -139,27 +130,12 @@ private:
      * When drawing lines, this point will be one end.
      * When drawing circles this will be the midpoint.
      */
-    int mStampReferenceX, mStampReferenceY;
+    QPoint mStampReference;
 
     bool mIsRandom;
     QList<Cell> mRandomList;
 
-    /**
-     * Returns a tile layer containing one tile randomly choosen
-     * from mRandomList.
-     */
-    TileLayer *getRandomTileLayer() const;
-
-    /**
-     * Updates the list used random stamps.
-     * This is done by taking all non-null tiles from the original stamp mStamp.
-     */
     void updateRandomList();
-
-    /**
-     * Sets the stamp to a random stamp.
-     */
-    void setRandomStamp();
 };
 
 } // namespace Internal
