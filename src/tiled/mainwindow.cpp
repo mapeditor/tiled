@@ -1527,6 +1527,11 @@ void MainWindow::saveQuickStamp(int index)
     mQuickStampManager->saveQuickStamp(index, mToolManager->selectedTool());
 }
 
+void MainWindow::extendQuickStamp(int index)
+{
+    mQuickStampManager->extendQuickStamp(index, mToolManager->selectedTool());
+}
+
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 {
     mStatusInfoLabel->setText(statusInfo);
@@ -1646,7 +1651,6 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mTileCollisionEditor->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
     mAutomappingManager->setMapDocument(mapDocument);
-    mQuickStampManager->setMapDocument(mapDocument);
 
     if (mapDocument) {
         connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
@@ -1677,25 +1681,33 @@ void MainWindow::setupQuickStamps()
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
     QSignalMapper *saveMapper = new QSignalMapper(this);
+    QSignalMapper *extendMapper = new QSignalMapper(this);
 
     for (int i = 0; i < keys.length(); i++) {
+        Qt::Key key = keys.at(i);
+
         // Set up shortcut for selecting this quick stamp
-        QShortcut *selectStamp = new QShortcut(this);
-        selectStamp->setKey(keys.value(i));
+        QShortcut *selectStamp = new QShortcut(key, this);
         connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
         selectMapper->setMapping(selectStamp, i);
 
         // Set up shortcut for saving this quick stamp
-        QShortcut *saveStamp = new QShortcut(this);
-        saveStamp->setKey(QKeySequence(Qt::CTRL + keys.value(i)));
+        QShortcut *saveStamp = new QShortcut(Qt::CTRL + key, this);
         connect(saveStamp, SIGNAL(activated()), saveMapper, SLOT(map()));
         saveMapper->setMapping(saveStamp, i);
+
+        // Set up shortcut for extending this quick stamp
+        QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, this);
+        connect(extendStamp, SIGNAL(activated()), extendMapper, SLOT(map()));
+        extendMapper->setMapping(extendStamp, i);
     }
 
     connect(selectMapper, SIGNAL(mapped(int)),
             mQuickStampManager, SLOT(selectQuickStamp(int)));
     connect(saveMapper, SIGNAL(mapped(int)),
             this, SLOT(saveQuickStamp(int)));
+    connect(extendMapper, SIGNAL(mapped(int)),
+            this, SLOT(extendQuickStamp(int)));
 
     connect(mQuickStampManager, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));

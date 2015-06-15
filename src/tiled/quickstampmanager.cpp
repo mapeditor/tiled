@@ -23,6 +23,7 @@
 
 #include "abstracttool.h"
 #include "bucketfilltool.h"
+#include "documentmanager.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "stampbrush.h"
@@ -39,7 +40,6 @@ using namespace Tiled::Internal;
 QuickStampManager::QuickStampManager(QObject *parent)
     : QObject(parent)
     , mQuickStamps(keys().length())
-    , mMapDocument(0)
     , mTileStampModel(new TileStampModel(this))
 {
 }
@@ -50,62 +50,76 @@ QuickStampManager::~QuickStampManager()
         eraseQuickStamp(i);
 }
 
-void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
+static TileStamp stampFromContext(AbstractTool *selectedTool)
 {
-    if (!mMapDocument)
-        return;
-
-    // The source of the saved stamp depends on which tool is selected
     TileStamp stamp;
 
     if (StampBrush *stampBrush = dynamic_cast<StampBrush*>(selectedTool)) {
+        // take the stamp from the stamp brush
         stamp = stampBrush->stamp();
     } else if (BucketFillTool *fillTool = dynamic_cast<BucketFillTool*>(selectedTool)) {
+        // take the stamp from the fill tool
         stamp = fillTool->stamp();
-    } else if (dynamic_cast<TileSelectionTool*>(selectedTool)) {
-        TileLayer *copy = 0;
-
+    } else if (MapDocument *mapDocument = DocumentManager::instance()->currentDocument()) {
+        // try making a stamp from the current tile selection
         const TileLayer *tileLayer =
-                dynamic_cast<TileLayer*>(mMapDocument->currentLayer());
+                dynamic_cast<TileLayer*>(mapDocument->currentLayer());
         if (!tileLayer)
-            return;
+            return stamp;
 
-        const QRegion &selection = mMapDocument->selectedArea();
+        QRegion selection = mapDocument->selectedArea();
         if (selection.isEmpty())
-            return;
+            return stamp;
 
-        copy = tileLayer->copy(selection.translated(-tileLayer->x(),
-                                                    -tileLayer->y()));
+        selection.translate(-tileLayer->position());
+        QScopedPointer<TileLayer> copy(tileLayer->copy(selection));
 
-        if (!copy)
-            return;
+        if (copy->size().isEmpty())
+            return stamp;
 
-        const Map *map = mMapDocument->map();
+        const Map *map = mapDocument->map();
         Map *copyMap = new Map(map->orientation(),
                                copy->width(), copy->height(),
                                map->tileWidth(), map->tileHeight());
-
-        copyMap->setRenderOrder(map->renderOrder());
-        copyMap->addLayer(copy);
 
         // Add tileset references to map
         foreach (Tileset *tileset, copy->usedTilesets())
             copyMap->addTileset(tileset);
 
+        copyMap->setRenderOrder(map->renderOrder());
+        copyMap->addLayer(copy.take());
+
         stamp.addVariation(copyMap);
     }
 
+    return stamp;
+}
+
+void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
+{
+    TileStamp stamp = stampFromContext(selectedTool);
     if (stamp.isEmpty())
         return;
 
-    stamp.setName(tr("Quickstamp %1").arg(index + 1));
-    stamp.setQuickStampIndex(index);
+    saveQuickStamp(index, stamp);
+}
 
-    eraseQuickStamp(index);
+void QuickStampManager::extendQuickStamp(int index, AbstractTool *selectedTool)
+{
+    TileStamp stamp = stampFromContext(selectedTool);
+    if (stamp.isEmpty())
+        return;
 
-    mTileStampModel->addStamp(stamp);
+    TileStamp quickStamp = mQuickStamps[index];
+    if (stamp == quickStamp) // avoid easy mistake of adding duplicates
+        return;
 
-    mQuickStamps[index] = stamp;
+    foreach (const TileStampVariation &variation, stamp.variations()) {
+        quickStamp.addVariation(new Map(*variation.map),
+                                variation.probability);
+    }
+
+    saveQuickStamp(index, quickStamp);
 }
 
 void QuickStampManager::eraseQuickStamp(int index)
@@ -119,6 +133,19 @@ void QuickStampManager::eraseQuickStamp(int index)
     }
 }
 
+void QuickStampManager::saveQuickStamp(int index, TileStamp stamp)
+{
+    stamp.setName(tr("Quickstamp %1").arg(index + 1));
+    stamp.setQuickStampIndex(index);
+
+    // make sure existing quickstamp is removed from stamp model
+    eraseQuickStamp(index);
+
+    mTileStampModel->addStamp(stamp);
+
+    mQuickStamps[index] = stamp;
+}
+
 TileStampModel *QuickStampManager::tileStampModel() const
 {
     return mTileStampModel;
@@ -126,15 +153,7 @@ TileStampModel *QuickStampManager::tileStampModel() const
 
 void QuickStampManager::selectQuickStamp(int index)
 {
-    if (!mMapDocument)
-        return;
-
     const TileStamp &stamp = mQuickStamps.at(index);
     if (!stamp.isEmpty())
         emit setStamp(stamp);
-}
-
-void QuickStampManager::setMapDocument(MapDocument *mapDocument)
-{
-    mMapDocument = mapDocument;
 }

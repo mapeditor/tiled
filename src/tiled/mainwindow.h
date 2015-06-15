@@ -165,6 +165,7 @@ public slots:
     void setStamp(const TileStamp &stamp);
     void setTerrainBrush(const Terrain *terrain);
     void saveQuickStamp(int index);
+    void extendQuickStamp(int index);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
