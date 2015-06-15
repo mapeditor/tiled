@@ -148,7 +148,13 @@ void TileStamp::addVariation(Map *map, qreal probability)
  */
 Map *TileStamp::takeVariation(int index)
 {
+#if QT_VERSION >= 0x050200
     return d->variations.takeAt(index).map;
+#else
+    Map *variation = d->variations.at(index).map;
+    d->variations.remove(index);
+    return variation;
+#endif
 }
 
 void TileStamp::deleteVariation(int index)

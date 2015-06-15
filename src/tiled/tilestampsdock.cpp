@@ -43,8 +43,13 @@ TileStampsDock::TileStampsDock(QuickStampManager *stampManager, QWidget *parent)
     stampsView->setModel(mTileStampModel);
     stampsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     stampsView->header()->setStretchLastSection(false);
+#if QT_VERSION >= 0x050000
     stampsView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
     stampsView->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+#else
+    stampsView->header()->setResizeMode(0, QHeaderView::Stretch);
+    stampsView->header()->setResizeMode(1, QHeaderView::ResizeToContents);
+#endif
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
