@@ -83,7 +83,7 @@ private:
     void readTilesetTile(Tileset *tileset);
     void readTilesetImage(Tileset *tileset);
     void readTilesetTerrainTypes(Tileset *tileset);
-    QImage readImage();
+    QImage readImage(Tileset *tileset);
 
     TileLayer *readLayer();
     void readLayerData(TileLayer *tileLayer);
@@ -314,15 +314,6 @@ Tileset *MapReaderPrivate::readTileset()
             tileset = new Tileset(name, tileWidth, tileHeight,
                                   tileSpacing, margin);
 
-            QString trans = atts.value(QLatin1String("trans")).toString();
-            if (!trans.isEmpty()) {
-                if (!trans.startsWith(QLatin1Char('#')))
-                    trans.prepend(QLatin1Char('#'));
-                const QColor transColor = QColor(trans);
-                if (transColor.isValid())
-                    tileset->setTransparentColor(QColor(transColor));
-            }
-
             mCreatedTilesets.append(tileset);
 
             while (xml.readNextStartElement()) {
@@ -427,7 +418,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
             QString source = xml.attributes().value(QLatin1String("source")).toString();
             if (!source.isEmpty())
                 source = p->resolveReference(source, mPath);
-            tileset->setTileImage(id, QPixmap::fromImage(readImage()), source);
+            tileset->setTileImage(id, QPixmap::fromImage(readImage(tileset)), source);
         } else if (xml.name() == QLatin1String("objectgroup")) {
             tile->setObjectGroup(readObjectGroup());
         } else if (xml.name() == QLatin1String("animation")) {
@@ -465,6 +456,13 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString source = atts.value(QLatin1String("source")).toString();
+    QString trans = atts.value(QLatin1String("trans")).toString();
+
+    if (!trans.isEmpty()) {
+        if (!trans.startsWith(QLatin1Char('#')))
+            trans.prepend(QLatin1Char('#'));
+        tileset->setTransparentColor(QColor(trans));
+    }
 
     if (!source.isEmpty())
         source = p->resolveReference(source, mPath);
@@ -473,17 +471,26 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
     const int width = atts.value(QLatin1String("width")).toString().toInt();
     mGidMapper.setTilesetWidth(tileset, width);
 
-    if (!tileset->loadFromImage(readImage(), source))
+    if (!tileset->loadFromImage(readImage(tileset), source))
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
 }
 
-QImage MapReaderPrivate::readImage()
+QImage MapReaderPrivate::readImage(Tileset *tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
     const QXmlStreamAttributes atts = xml.attributes();
     QString source = atts.value(QLatin1String("source")).toString();
     QString format = atts.value(QLatin1String("format")).toString();
+
+    QString trans = atts.value(QLatin1String("trans")).toString();
+    if (!trans.isEmpty()) {
+        if (!trans.startsWith(QLatin1Char('#')))
+            trans.prepend(QLatin1Char('#'));
+        QColor transColor= QColor(trans);
+        if (transColor.isValid())
+            tileset->setTransparentColor(QColor(trans));
+    }
 
     if (source.isEmpty()) {
         while (xml.readNextStartElement()) {

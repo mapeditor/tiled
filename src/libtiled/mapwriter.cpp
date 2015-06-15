@@ -263,10 +263,6 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                      QString::number(tileset->tileWidth()));
     w.writeAttribute(QLatin1String("tileheight"),
                      QString::number(tileset->tileHeight()));
-    const QColor transColor = tileset->transparentColor();
-    if (transColor.isValid())
-        w.writeAttribute(QLatin1String("trans"),
-                     transColor.name().mid(1));
     const int tileSpacing = tileset->tileSpacing();
     const int margin = tileset->margin();
     if (tileSpacing != 0)
@@ -297,6 +293,10 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
         if (!mUseAbsolutePaths)
             source = mMapDir.relativeFilePath(source);
         w.writeAttribute(QLatin1String("source"), source);
+
+        const QColor transColor = tileset->transparentColor();
+        if (transColor.isValid())
+            w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
 
         if (tileset->imageWidth() > 0)
             w.writeAttribute(QLatin1String("width"),
@@ -351,6 +351,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                                      QString::number(tileSize.width()));
                     w.writeAttribute(QLatin1String("height"),
                                      QString::number(tileSize.height()));
+                   const QColor transColor = tileset->transparentColor();
+                   if (transColor.isValid())
+                       w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
                 }
 
                 if (tile->imageSource().isEmpty()) {
