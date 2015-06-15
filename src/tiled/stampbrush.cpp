@@ -271,7 +271,7 @@ QRect StampBrush::capturedArea() const
  *
  * Returns the edited region.
  */
-void StampBrush::doPaint(int flags, int offsetX, int offsetY)
+void StampBrush::doPaint(int flags)
 {
     TileLayer *preview = mPreviewLayer.data();
     if (!preview)
@@ -281,15 +281,15 @@ void StampBrush::doPaint(int flags, int offsetX, int offsetY)
     TileLayer *tileLayer = currentTileLayer();
     Q_ASSERT(tileLayer);
 
-    if (!tileLayer->bounds().intersects(QRect(preview->x() + offsetX,
-                                              preview->y() + offsetY,
+    if (!tileLayer->bounds().intersects(QRect(preview->x(),
+                                              preview->y(),
                                               preview->width(),
                                               preview->height())))
         return;
 
     PaintTileLayer *paint = new PaintTileLayer(mapDocument(),tileLayer,
-                                               preview->x() + offsetX,
-                                               preview->y() + offsetY,
+                                               preview->x(),
+                                               preview->y(),
                                                preview);
     paint->setMergeable(flags & Mergeable);
     mapDocument()->undoStack()->push(paint);
@@ -297,9 +297,7 @@ void StampBrush::doPaint(int flags, int offsetX, int offsetY)
     // Since doPaint may be called with different coordinates than the current
     // location of the brush preview, the region needs to be translated to get
     // the correct edit region.
-    QRegion editRegion = brushItem()->tileRegion();
-    editRegion.translate(offsetX, offsetY);
-    mapDocument()->emitRegionEdited(editRegion, tileLayer);
+    mapDocument()->emitRegionEdited(preview->region(), tileLayer);
 }
 
 struct PaintOperation {

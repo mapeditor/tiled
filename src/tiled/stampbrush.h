@@ -87,7 +87,7 @@ private:
     };
 
     void beginPaint();
-    void doPaint(int flags = 0, int offsetX = 0, int offsetY = 0);
+    void doPaint(int flags = 0);
 
     void beginCapture();
     void endCapture();
