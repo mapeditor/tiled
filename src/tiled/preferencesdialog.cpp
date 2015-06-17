@@ -167,6 +167,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     connect(mUi->autoMapWhileDrawing, SIGNAL(toggled(bool)),
             SLOT(useAutomappingDrawingToggled(bool)));
+    connect(mUi->openLastFiles, SIGNAL(toggled(bool)), SLOT(openLastFilesToggled(bool)));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -304,6 +305,7 @@ void PreferencesDialog::fromPreferences()
     const Preferences *prefs = Preferences::instance();
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
+    mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
 
@@ -326,9 +328,15 @@ void PreferencesDialog::toPreferences()
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
     prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
+    prefs->setOpenLastFilesOnStartup(mUi->openLastFiles->isChecked());
 }
 
 void PreferencesDialog::useAutomappingDrawingToggled(bool enabled)
 {
     Preferences::instance()->setAutomappingDrawing(enabled);
+}
+
+void PreferencesDialog::openLastFilesToggled(bool enabled)
+{
+    Preferences::instance()->setOpenLastFilesOnStartup(enabled);
 }
