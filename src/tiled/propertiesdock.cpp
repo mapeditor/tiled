@@ -223,9 +223,16 @@ void PropertiesDock::removeProperty()
 
     const QString name = item->property()->propertyName();
     QUndoStack *undoStack = mMapDocument->undoStack();
+    QList<QtBrowserItem *> items = item->parent()->children();
+    if (items.count() > 1) {
+        int currentItemIndex = items.indexOf(item);
+        if (item == items.last()) {
+            mPropertyBrowser->setCurrentItem(items.at(currentItemIndex - 1));
+        } else {
+            mPropertyBrowser->setCurrentItem(items.at(currentItemIndex + 1));
+        }
+    }
     undoStack->push(new RemoveProperty(mMapDocument, mMapDocument->currentObjects(), name));
-
-    // TODO: Would be nice to automatically select the next property
 }
 
 void PropertiesDock::renameProperty()
