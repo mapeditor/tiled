@@ -303,6 +303,7 @@ void PreferencesDialog::fromPreferences()
 {
     const Preferences *prefs = Preferences::instance();
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
+    mUi->reloadImageLayerImages->setChecked(prefs->reloadImageLayersOnChange());
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
@@ -324,6 +325,7 @@ void PreferencesDialog::toPreferences()
     Preferences *prefs = Preferences::instance();
 
     prefs->setReloadTilesetsOnChanged(mUi->reloadTilesetImages->isChecked());
+    prefs->setReloadImageLayersOnChanged(mUi->reloadImageLayerImages->isChecked());
     prefs->setDtdEnabled(mUi->enableDtd->isChecked());
     prefs->setAutomappingDrawing(mUi->autoMapWhileDrawing->isChecked());
 }

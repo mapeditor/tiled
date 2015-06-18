@@ -171,7 +171,8 @@ SOURCES += aboutdialog.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
     zoomable.cpp \
-    magicwandtool.cpp
+    magicwandtool.cpp \
+    imagelayermanager.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -307,7 +308,8 @@ HEADERS += aboutdialog.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
     zoomable.h \
-    magicwandtool.h
+    magicwandtool.h \
+    imagelayermanager.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
