@@ -54,7 +54,7 @@ class TILEDSHARED_EXPORT MapReader
 {
 public:
     MapReader();
-    ~MapReader();
+    virtual ~MapReader();
 
     /**
      * Reads a TMX map from the given \a device. Optionally a \a path can
