@@ -269,7 +269,8 @@ bool PropertiesDock::event(QEvent *event)
     case QEvent::ShortcutOverride: {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent->matches(QKeySequence::Delete) || keyEvent->key() == Qt::Key_Backspace) {
-            removeProperty();
+            if (event->type() == QEvent::KeyPress)
+                removeProperty();
             event->accept();
             return true;
         }
