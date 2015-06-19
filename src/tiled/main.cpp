@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
     if (!commandLine.filesToOpen().isEmpty()) {
         foreach (const QString &fileName, commandLine.filesToOpen())
             w.openFile(fileName);
-    } else {
+    } else if (Preferences::instance()->openLastFilesOnStartup()) {
         w.openLastFiles();
     }
 

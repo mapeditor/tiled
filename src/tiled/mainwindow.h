@@ -98,7 +98,6 @@ public:
 
     /**
      * Attempt to open the previously opened file.
-     * TODO: Opening last file should be optional
      */
     void openLastFiles();
 
