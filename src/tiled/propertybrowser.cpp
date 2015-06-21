@@ -107,45 +107,10 @@ void PropertyBrowser::setObject(Object *object)
     if (mObject == object)
         return;
 
-    // Destroy all previous properties
-    mVariantManager->clear();
-    mGroupManager->clear();
-    mPropertyToId.clear();
-    mIdToProperty.clear();
-    mNameToProperty.clear();
-    mCustomPropertiesGroup = 0;
-
+    removeProperties();
     mObject = object;
 
-    if (!mObject)
-        return;
-
-    mUpdating = true;
-
-    // Add the built-in properties for each object type
-    switch (object->typeId()) {
-    case Object::MapType:               addMapProperties(); break;
-    case Object::MapObjectType:         addMapObjectProperties(); break;
-    case Object::LayerType:
-        switch (static_cast<Layer*>(object)->layerType()) {
-        case Layer::TileLayerType:      addTileLayerProperties();   break;
-        case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
-        case Layer::ImageLayerType:     addImageLayerProperties();  break;
-        }
-        break;
-    case Object::TilesetType:           addTilesetProperties(); break;
-    case Object::TileType:              addTileProperties(); break;
-    case Object::TerrainType:           addTerrainProperties(); break;
-    }
-
-    // Add a node for the custom properties
-    mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
-    addProperty(mCustomPropertiesGroup);
-
-    mUpdating = false;
-
-    updateProperties();
-    updateCustomProperties();
+    addProperties();
 }
 
 void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
@@ -214,6 +179,14 @@ void PropertyBrowser::editCustomProperty(const QString &name)
     const QList<QtBrowserItem*> propertyItems = items(property);
     if (!propertyItems.isEmpty())
         editItem(propertyItems.first());
+}
+
+bool PropertyBrowser::event(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+
+    return QtTreePropertyBrowser::event(event);
 }
 
 void PropertyBrowser::mapChanged()
@@ -855,6 +828,49 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
         mNameToProperty.insert(name, property);
 
     return property;
+}
+
+void PropertyBrowser::addProperties()
+{
+    if (!mObject)
+        return;
+
+    mUpdating = true;
+
+    // Add the built-in properties for each object type
+    switch (mObject->typeId()) {
+    case Object::MapType:               addMapProperties(); break;
+    case Object::MapObjectType:         addMapObjectProperties(); break;
+    case Object::LayerType:
+        switch (static_cast<Layer*>(mObject)->layerType()) {
+        case Layer::TileLayerType:      addTileLayerProperties();   break;
+        case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
+        case Layer::ImageLayerType:     addImageLayerProperties();  break;
+        }
+        break;
+    case Object::TilesetType:           addTilesetProperties(); break;
+    case Object::TileType:              addTileProperties(); break;
+    case Object::TerrainType:           addTerrainProperties(); break;
+    }
+
+    // Add a node for the custom properties
+    mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
+    addProperty(mCustomPropertiesGroup);
+
+    mUpdating = false;
+
+    updateProperties();
+    updateCustomProperties();
+}
+
+void PropertyBrowser::removeProperties()
+{
+    mVariantManager->clear();
+    mGroupManager->clear();
+    mPropertyToId.clear();
+    mIdToProperty.clear();
+    mNameToProperty.clear();
+    mCustomPropertiesGroup = 0;
 }
 
 void PropertyBrowser::updateProperties()
