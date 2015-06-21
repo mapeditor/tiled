@@ -84,16 +84,18 @@ protected:
 private:
     enum PaintFlags {
         Mergeable               = 0x1,
+        SuppressRegionEdited    = 0x2
     };
 
     void beginPaint();
-    void doPaint(int flags = 0);
+    QRegion doPaint(int flags = 0);
 
     void beginCapture();
     void endCapture();
     QRect capturedArea() const;
 
     void updatePreview();
+    void updatePreview(QPoint tilePos);
 
     TileStamp mStamp;
     SharedTileLayer mPreviewLayer;
@@ -101,8 +103,7 @@ private:
     QPoint mCaptureStart;
     QPoint mPrevTilePosition;
 
-    void drawPreviewLayer(const QVector<QPoint> &list,
-                          bool allowOverlap = false);
+    void drawPreviewLayer(const QVector<QPoint> &list);
 
     /**
      * There are several options how the stamp utility can be used.

@@ -57,13 +57,22 @@ void StampBrush::tilePositionChanged(const QPoint &pos)
         // first point, since it was painted when the mouse was pressed, or the
         // last time the mouse was moved.
         QVector<QPoint> points = pointsOnLine(mPrevTilePosition, pos);
-        points.remove(0);
+        QRegion editedRegion;
 
-        drawPreviewLayer(points, true);
-        doPaint(Mergeable);
+        for (int i = 1; i < points.size(); ++i) {
+            drawPreviewLayer(QVector<QPoint>() << points.at(i));
+
+            // Only update the brush item for the last drawn piece
+            if (i == points.size() - 1)
+                brushItem()->setTileLayer(mPreviewLayer);
+
+            editedRegion |= doPaint(Mergeable | SuppressRegionEdited);
+        }
+
+        mapDocument()->emitRegionEdited(editedRegion, currentTileLayer());
+    } else {
+        updatePreview();
     }
-
-    updatePreview();
     mPrevTilePosition = pos;
 }
 
@@ -271,11 +280,11 @@ QRect StampBrush::capturedArea() const
  *
  * Returns the edited region.
  */
-void StampBrush::doPaint(int flags)
+QRegion StampBrush::doPaint(int flags)
 {
     TileLayer *preview = mPreviewLayer.data();
     if (!preview)
-        return;
+        return QRegion();
 
     // This method shouldn't be called when current layer is not a tile layer
     TileLayer *tileLayer = currentTileLayer();
@@ -285,19 +294,20 @@ void StampBrush::doPaint(int flags)
                                               preview->y(),
                                               preview->width(),
                                               preview->height())))
-        return;
+        return QRegion();
 
-    PaintTileLayer *paint = new PaintTileLayer(mapDocument(),tileLayer,
+    PaintTileLayer *paint = new PaintTileLayer(mapDocument(),
+                                               tileLayer,
                                                preview->x(),
                                                preview->y(),
                                                preview);
     paint->setMergeable(flags & Mergeable);
     mapDocument()->undoStack()->push(paint);
 
-    // Since doPaint may be called with different coordinates than the current
-    // location of the brush preview, the region needs to be translated to get
-    // the correct edit region.
-    mapDocument()->emitRegionEdited(preview->region(), tileLayer);
+    QRegion editedRegion = preview->region();
+    if (! (flags & SuppressRegionEdited))
+        mapDocument()->emitRegionEdited(editedRegion, tileLayer);
+    return editedRegion;
 }
 
 struct PaintOperation {
@@ -313,7 +323,7 @@ struct PaintOperation {
  * So it will check for every point if it can place a stamp there without
  * overlap.
  */
-void StampBrush::drawPreviewLayer(const QVector<QPoint> &list, bool allowOverlap)
+void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
 {
     mPreviewLayer.clear();
 
@@ -364,7 +374,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list, bool allowOverlap
 
             const QRegion region = stampRegion.translated(centered.x(),
                                                           centered.y());
-            if (allowOverlap || !paintedRegion.intersects(region)) {
+            if (!paintedRegion.intersects(region)) {
                 paintedRegion += region;
 
                 PaintOperation op = { centered, stamp };
@@ -389,6 +399,11 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list, bool allowOverlap
  */
 void StampBrush::updatePreview()
 {
+    updatePreview(tilePosition());
+}
+
+void StampBrush::updatePreview(QPoint tilePos)
+{
     QRegion tileRegion;
 
     if (mBrushBehavior == Capture) {
@@ -396,14 +411,14 @@ void StampBrush::updatePreview()
         tileRegion = capturedArea();
     } else if (mStamp.isEmpty()) {
         mPreviewLayer.clear();
-        tileRegion = QRect(tilePosition(), QSize(1, 1));
+        tileRegion = QRect(tilePos, QSize(1, 1));
     } else {
         switch (mBrushBehavior) {
         case LineStartSet:
-            drawPreviewLayer(pointsOnLine(mStampReference, tilePosition()));
+            drawPreviewLayer(pointsOnLine(mStampReference, tilePos));
             break;
         case CircleMidSet:
-            drawPreviewLayer(pointsOnEllipse(mStampReference, tilePosition()));
+            drawPreviewLayer(pointsOnEllipse(mStampReference, tilePos));
             break;
         case Capture:
             // already handled above
@@ -412,12 +427,12 @@ void StampBrush::updatePreview()
             // while finding the mid point, there is no need to show
             // the (maybe bigger than 1x1) stamp
             mPreviewLayer.clear();
-            tileRegion = QRect(tilePosition(), QSize(1, 1));
+            tileRegion = QRect(tilePos, QSize(1, 1));
             break;
         case Line:
         case Free:
         case Paint:
-            drawPreviewLayer(QVector<QPoint>() << tilePosition());
+            drawPreviewLayer(QVector<QPoint>() << tilePos);
             break;
         }
     }
