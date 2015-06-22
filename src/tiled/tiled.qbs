@@ -12,6 +12,7 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
+    cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
         var version = qbs.getEnv("BUILD_INFO_VERSION");

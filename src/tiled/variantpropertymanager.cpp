@@ -24,9 +24,18 @@
 namespace Tiled {
 namespace Internal {
 
-class FilePathPropertyType
-{
-};
+class FilePathPropertyType {};
+
+} // namespace Tiled
+} // namespace Internal
+
+// Needs to be up here rather than at the bottom of the file to make a
+// static_assert in qMetaTypeId work (as of C++11)
+Q_DECLARE_METATYPE(Tiled::Internal::FilePathPropertyType)
+
+
+namespace Tiled {
+namespace Internal {
 
 int VariantPropertyManager::filePathTypeId()
 {
@@ -160,4 +169,3 @@ void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 } // namespace Internal
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::Internal::FilePathPropertyType)

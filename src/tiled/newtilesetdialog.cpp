@@ -26,12 +26,11 @@
 #include "utils.h"
 
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QImage>
 #include <QMessageBox>
+#include <QScopedPointer>
 #include <QSettings>
-#include <QFileInfo>
-
-#include <memory>
 
 static const char * const TYPE_KEY = "Tileset/Type";
 static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
@@ -131,7 +130,7 @@ void NewTilesetDialog::tryAccept()
 
     const QString name = mUi->name->text();
 
-    std::auto_ptr<Tileset> tileset;
+    QScopedPointer<Tileset> tileset;
 
     if (tilesetType(mUi) == TilesetImage) {
         const QString image = mUi->image->text();
@@ -176,7 +175,7 @@ void NewTilesetDialog::tryAccept()
 
     s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
 
-    mNewTileset = tileset.release();
+    mNewTileset = tileset.take();
     accept();
 }
 
