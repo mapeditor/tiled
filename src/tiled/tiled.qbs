@@ -320,7 +320,7 @@ QtGuiApplication {
     Properties {
         condition: qbs.targetOS.contains("osx")
         cpp.frameworks: "Foundation"
-        cpp.infoPlistFile: "Info.plist"
+        bundle.infoPlistFile: "Info.plist"
         targetName: "Tiled"
     }
     Group {
