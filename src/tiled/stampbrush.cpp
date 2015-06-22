@@ -142,10 +142,19 @@ void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
         return;
 
     if (modifiers & Qt::ShiftModifier) {
-        if (modifiers & Qt::ControlModifier)
-            mBrushBehavior = Circle;
-        else
-            mBrushBehavior = Line;
+        if (modifiers & Qt::ControlModifier) {
+            if (mBrushBehavior == LineStartSet) {
+                mBrushBehavior = CircleMidSet;
+            } else {
+                mBrushBehavior = Circle;
+            }
+        } else {
+            if (mBrushBehavior == CircleMidSet) {
+                mBrushBehavior = LineStartSet;
+            } else {
+                mBrushBehavior = Line;
+            }
+        }
     } else {
         mBrushBehavior = Free;
     }
