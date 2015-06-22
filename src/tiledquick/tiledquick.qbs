@@ -4,7 +4,13 @@ QtGuiApplication {
     name: "tiledquick"
     targetName: name
 
-    Depends { name: "Qt"; submodules: ["qml", "quick", "widgets"] }
+    condition: Qt.core.versionMajor >= 5
+
+    Depends { name: "Qt.core" }     // for the Qt version check
+    Depends {
+        condition: Qt.core.versionMajor >= 5
+        name: "Qt"; submodules: ["quick", "widgets"]
+    }
 
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]

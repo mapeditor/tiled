@@ -3,8 +3,14 @@ import qbs 1.0
 DynamicLibrary {
     targetName: "tiledquickplugin"
 
+    condition: Qt.core.versionMajor >= 5
+
     Depends { name: "libtiled" }
-    Depends { name: "Qt"; submodules: ["qml", "quick"] }
+    Depends { name: "Qt.core" }     // for the Qt version check
+    Depends {
+        condition: Qt.core.versionMajor >= 5
+        name: "Qt"; submodules: ["qml", "quick"]
+    }
 
     files: [
         "mapitem.cpp",
