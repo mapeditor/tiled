@@ -149,9 +149,9 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     mGidMapper.clear();
     unsigned firstGid = 1;
-    foreach (Tileset *tileset, map->tilesets()) {
-        writeTileset(writer, tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset);
+    foreach (const SharedTileset &tileset, map->tilesets()) {
+        writeTileset(writer, tileset.data(), firstGid);
+        mGidMapper.insert(firstGid, tileset.data());
         firstGid += tileset->tileCount();
     }
     writer.writeEndTable();

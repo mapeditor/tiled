@@ -58,12 +58,12 @@ public:
      */
     ~ImageLayer();
 
-    QSet<Tileset*> usedTilesets() const { return QSet<Tileset*>(); }
-    bool referencesTileset(const Tileset *) const { return false; }
-    void replaceReferencesToTileset(Tileset *, Tileset *) {}
+    QSet<SharedTileset> usedTilesets() const override { return QSet<SharedTileset>(); }
+    bool referencesTileset(const Tileset *) const override { return false; }
+    void replaceReferencesToTileset(Tileset *, Tileset *) override {}
 
-    bool canMergeWith(Layer *) const { return false; }
-    Layer *mergedWith(Layer *) const { return 0; }
+    bool canMergeWith(Layer *) const override { return false; }
+    Layer *mergedWith(Layer *) const override { return 0; }
 
     /**
      * Returns the transparent color, or an invalid color if no transparent
@@ -120,9 +120,7 @@ public:
      */
     bool isEmpty() const;
 
-    Layer *clone() const;
-
-    virtual ImageLayer *asImageLayer() { return this; }
+    Layer *clone() const override;
 
 protected:
     ImageLayer *initializeClone(ImageLayer *clone) const;

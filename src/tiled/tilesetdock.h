@@ -23,6 +23,8 @@
 #ifndef TILESETDOCK_H
 #define TILESETDOCK_H
 
+#include "tileset.h"
+
 #include <QDockWidget>
 #include <QList>
 #include <QMap>
@@ -109,7 +111,7 @@ private slots:
     void updateCurrentTile();
     void indexPressed(const QModelIndex &index);
 
-    void tilesetAdded(int index, Tileset *tileset);
+    void tilesetAdded(int index, const SharedTileset &tileset);
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
@@ -137,12 +139,15 @@ private:
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
 
-    Tileset *currentTileset() const;
+    SharedTileset currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
     MapDocument *mMapDocument;
-    QList<Tileset*> mTilesets;
+
+    // Shared tileset references because the dock wants to add new tiles
+    QVector<SharedTileset> mTilesets;
+
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;

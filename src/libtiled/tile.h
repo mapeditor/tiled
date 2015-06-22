@@ -33,6 +33,7 @@
 #include "object.h"
 
 #include <QPixmap>
+#include <QWeakPointer>
 
 namespace Tiled {
 
@@ -62,9 +63,14 @@ struct Frame
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
-    Tile(const QPixmap &image, int id, Tileset *tileset);
-    Tile(const QPixmap &image, const QString &imageSource,
-         int id, Tileset *tileset);
+    Tile(const QPixmap &image,
+         int id,
+         const QWeakPointer<Tileset> &tileset);
+
+    Tile(const QPixmap &image,
+         const QString &imageSource,
+         int id,
+         const QWeakPointer<Tileset> &tileset);
 
     ~Tile();
 
@@ -76,7 +82,12 @@ public:
     /**
      * Returns the tileset that this tile is part of.
      */
-    Tileset *tileset() const { return mTileset; }
+    Tileset *tileset() const { return mTileset.data(); }
+
+    /**
+     * Returns the tileset that this tile is part of as a shared pointer.
+     */
+    QSharedPointer<Tileset> sharedTileset() const { return mTileset; }
 
     /**
      * Returns the image of this tile.
@@ -114,6 +125,11 @@ public:
      * Returns the size of this tile.
      */
     QSize size() const { return mImage.size(); }
+
+    /**
+     * Returns the drawing offset of the tile (in pixels).
+     */
+    QPoint offset() const;
 
     /**
      * Returns the Terrain of a given corner.
@@ -163,7 +179,7 @@ public:
 
 private:
     int mId;
-    Tileset *mTileset;
+    QWeakPointer<Tileset> mTileset;
     QPixmap mImage;
     QString mImageSource;
     unsigned mTerrain;

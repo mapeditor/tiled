@@ -22,6 +22,7 @@
 
 #include "terrainmodel.h"
 
+#include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "renameterrain.h"
@@ -43,7 +44,7 @@ TerrainModel::TerrainModel(MapDocument *mapDocument,
 {
     connect(mapDocument, SIGNAL(tilesetAboutToBeAdded(int)),
             this, SLOT(tilesetAboutToBeAdded(int)));
-    connect(mapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
+    connect(mapDocument, SIGNAL(tilesetAdded(int,SharedTileset)),
             this, SLOT(tilesetAdded()));
     connect(mapDocument, SIGNAL(tilesetAboutToBeRemoved(int)),
             this, SLOT(tilesetAboutToBeRemoved(int)));
@@ -72,7 +73,7 @@ QModelIndex TerrainModel::index(int row, int column, const QModelIndex &parent) 
 
 QModelIndex TerrainModel::index(Tileset *tileset) const
 {
-    int row = mMapDocument->map()->tilesets().indexOf(tileset);
+    int row = indexOf(mMapDocument->map()->tilesets(), tileset);
     Q_ASSERT(row != -1);
     return createIndex(row, 0);
 }
@@ -180,7 +181,7 @@ Tileset *TerrainModel::tilesetAt(const QModelIndex &index) const
     if (index.row() >= mMapDocument->map()->tilesetCount())
         return 0;
 
-    return mMapDocument->map()->tilesetAt(index.row());
+    return mMapDocument->map()->tilesetAt(index.row()).data();
 }
 
 Terrain *TerrainModel::terrainAt(const QModelIndex &index) const

@@ -182,7 +182,9 @@ void EditTerrainDialog::eraseTerrainToggled(bool checked)
 
 void EditTerrainDialog::addTerrainType(Tile *tile)
 {
-    Terrain *terrain = new Terrain(mTileset->terrainCount(), mTileset,
+    SharedTileset tileset = tile->sharedTileset();
+    Terrain *terrain = new Terrain(tileset->terrainCount(),
+                                   tileset,
                                    QString(), tile ? tile->id() : -1);
     terrain->setName(tr("New Terrain"));
 

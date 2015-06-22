@@ -34,6 +34,17 @@
 
 using namespace ReplicaIsland;
 
+
+static Tiled::SharedTileset tilesetForLayer(int type, int tileIndex,
+                                            const QVector<Tiled::SharedTileset> &typeTilesets,
+                                            const QVector<Tiled::SharedTileset> &tileIndexTilesets)
+{
+    if (type == 0)
+        return tileIndexTilesets[tileIndex];
+    else
+        return typeTilesets[type];
+}
+
 ReplicaIslandPlugin::ReplicaIslandPlugin()
 {
 }
@@ -65,7 +76,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
     map->setProperty("background_index", QString::number(backgroundIndex));
 
     // Load our Tilesets.
-    QList<Tileset *> typeTilesets, tileIndexTilesets;
+    QVector<SharedTileset> typeTilesets, tileIndexTilesets;
     loadTilesetsFromResources(map, typeTilesets, tileIndexTilesets);
 
     // Load each of our layers.
@@ -102,7 +113,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         map->addLayer(layer);
 
         // Look up the tileset for this layer.
-        Tileset *tileset =
+        SharedTileset tileset =
             tilesetForLayer(type, tileIndex, typeTilesets, tileIndexTilesets);
 
         // Read our tile data all at once.
@@ -138,12 +149,12 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
 }
 
 void ReplicaIslandPlugin::loadTilesetsFromResources(
-    Tiled::Map *map,
-    QList<Tiled::Tileset *> &typeTilesets,
-    QList<Tiled::Tileset *> &tileIndexTilesets)
+        Tiled::Map *map,
+        QVector<Tiled::SharedTileset> &typeTilesets,
+        QVector<Tiled::SharedTileset> &tileIndexTilesets)
 {
     // Create tilesets for type 0 to 3, inclusive.
-    typeTilesets.append(NULL); // Use a tileIndexTileset.
+    typeTilesets.append(Tiled::SharedTileset()); // Use a tileIndexTileset.
     typeTilesets.append(loadTilesetFromResource("collision_map"));
     typeTilesets.append(loadTilesetFromResource("objects"));
     typeTilesets.append(loadTilesetFromResource("hotspots"));
@@ -161,35 +172,24 @@ void ReplicaIslandPlugin::loadTilesetsFromResources(
     addTilesetsToMap(map, tileIndexTilesets);    
 }
 
-Tiled::Tileset *
+Tiled::SharedTileset
 ReplicaIslandPlugin::loadTilesetFromResource(const QString &name)
 {
     using namespace Tiled;
 
-    Tileset *tileset = new Tileset(name, 32, 32);
-    tileset->loadFromImage(QImage(":/" + name + ".png"), name + ".png");
+    SharedTileset tileset(new Tileset(name, 32, 32));
+    loadFromImage(tileset, QImage(":/" + name + ".png"), name + ".png");
     return tileset;
 }
 
 void ReplicaIslandPlugin::addTilesetsToMap(Tiled::Map *map,
-                                           const QList<Tiled::Tileset *> &tilesets)
+                                           const QVector<Tiled::SharedTileset> &tilesets)
 {
     using namespace Tiled;
 
-    QList<Tileset *>::const_iterator i = tilesets.begin();
-    for (; i != tilesets.end(); ++i)
-        if (*i)
-            map->addTileset(*i);
-}
-
-Tiled::Tileset *ReplicaIslandPlugin::tilesetForLayer(int type, int tileIndex,
-                                                     const QList<Tiled::Tileset *> &typeTilesets,
-                                                     const QList<Tiled::Tileset *> &tileIndexTilesets)
-{
-    if (type == 0)
-        return tileIndexTilesets[tileIndex];
-    else
-        return typeTilesets[type];
+    for (const Tiled::SharedTileset &tileset : tilesets)
+        if (tileset)
+            map->addTileset(tileset);
 }
 
 QString ReplicaIslandPlugin::layerTypeToName(char type)

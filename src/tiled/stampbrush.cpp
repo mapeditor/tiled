@@ -258,7 +258,7 @@ void StampBrush::endCapture()
                              map->tileHeight());
 
         // Add tileset references to map
-        foreach (Tileset *tileset, capture->usedTilesets())
+        foreach (const SharedTileset &tileset, capture->usedTilesets())
             stamp->addTileset(tileset);
 
         stamp->addLayer(capture);

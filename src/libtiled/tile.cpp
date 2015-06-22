@@ -33,7 +33,9 @@
 
 using namespace Tiled;
 
-Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
+Tile::Tile(const QPixmap &image,
+           int id,
+           const QWeakPointer<Tileset> &tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
@@ -45,8 +47,10 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mUnusedTime(0)
 {}
 
-Tile::Tile(const QPixmap &image, const QString &imageSource,
-           int id, Tileset *tileset):
+Tile::Tile(const QPixmap &image,
+           const QString &imageSource,
+           int id,
+           const QWeakPointer<Tileset> &tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
@@ -72,15 +76,20 @@ const QPixmap &Tile::currentFrameImage() const
 {
     if (isAnimated()) {
         const Frame &frame = mFrames.at(mCurrentFrameIndex);
-        return mTileset->tileAt(frame.tileId)->image();
+        return mTileset.data()->tileAt(frame.tileId)->image();
     } else {
         return mImage;
     }
 }
 
+QPoint Tile::offset() const
+{
+    return mTileset.data()->tileOffset();
+}
+
 Terrain *Tile::terrainAtCorner(int corner) const
 {
-    return mTileset->terrain(cornerTerrainId(corner));
+    return mTileset.data()->terrain(cornerTerrainId(corner));
 }
 
 void Tile::setTerrain(unsigned terrain)
@@ -89,7 +98,7 @@ void Tile::setTerrain(unsigned terrain)
         return;
 
     mTerrain = terrain;
-    mTileset->markTerrainDistancesDirty();
+    mTileset.data()->markTerrainDistancesDirty();
 }
 
 /**

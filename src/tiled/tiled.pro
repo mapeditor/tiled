@@ -209,6 +209,7 @@ HEADERS += aboutdialog.h \
     changetileterrain.h \
     clipboardmanager.h \
     colorbutton.h \
+    containerhelpers.h \
     commandbutton.h \
     commanddatamodel.h \
     commanddialog.h \

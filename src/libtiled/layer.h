@@ -31,6 +31,7 @@
 #define LAYER_H
 
 #include "object.h"
+#include "tileset.h"
 
 #include <QPixmap>
 #include <QRect>
@@ -44,7 +45,6 @@ class Map;
 class ImageLayer;
 class ObjectGroup;
 class TileLayer;
-class Tileset;
 
 /**
  * A map layer.
@@ -170,7 +170,7 @@ public:
     /**
      * Computes and returns the set of tilesets used by this layer.
      */
-    virtual QSet<Tileset*> usedTilesets() const = 0;
+    virtual QSet<SharedTileset> usedTilesets() const = 0;
 
     /**
      * Returns whether this layer is referencing the given tileset.

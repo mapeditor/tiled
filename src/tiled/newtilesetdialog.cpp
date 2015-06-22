@@ -22,7 +22,6 @@
 #include "ui_newtilesetdialog.h"
 
 #include "preferences.h"
-#include "tileset.h"
 #include "utils.h"
 
 #include <QFileDialog>
@@ -61,8 +60,7 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     QDialog(parent),
     mPath(path),
     mUi(new Ui::NewTilesetDialog),
-    mNameWasEdited(false),
-    mNewTileset(0)
+    mNameWasEdited(false)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -115,10 +113,10 @@ void NewTilesetDialog::setTileHeight(int height)
     mUi->tileHeight->setValue(height);
 }
 
-Tileset *NewTilesetDialog::createTileset()
+SharedTileset NewTilesetDialog::createTileset()
 {
     if (exec() != QDialog::Accepted)
-        return 0;
+        return SharedTileset();
 
     return mNewTileset;
 }
@@ -130,7 +128,7 @@ void NewTilesetDialog::tryAccept()
 
     const QString name = mUi->name->text();
 
-    QScopedPointer<Tileset> tileset;
+    SharedTileset tileset;
 
     if (tilesetType(mUi) == TilesetImage) {
         const QString image = mUi->image->text();
@@ -149,7 +147,7 @@ void NewTilesetDialog::tryAccept()
             tileset->setTransparentColor(transparentColor);
 
         if (!image.isEmpty()) {
-            if (!tileset->loadFromImage(image)) {
+            if (!loadFromImage(tileset, image)) {
                 QMessageBox::critical(this, tr("Error"),
                                       tr("Failed to load tileset image '%1'.")
                                       .arg(image));
@@ -175,7 +173,7 @@ void NewTilesetDialog::tryAccept()
 
     s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
 
-    mNewTileset = tileset.take();
+    mNewTileset = tileset;
     accept();
 }
 

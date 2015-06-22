@@ -45,7 +45,7 @@ bool TmxMapWriter::write(const Map *map, const QString &fileName)
     return result;
 }
 
-bool TmxMapWriter::writeTileset(const Tileset *tileset,
+bool TmxMapWriter::writeTileset(const Tileset &tileset,
                                 const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();

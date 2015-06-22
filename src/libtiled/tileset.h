@@ -36,6 +36,7 @@
 #include <QList>
 #include <QVector>
 #include <QPoint>
+#include <QSharedPointer>
 #include <QString>
 #include <QPixmap>
 
@@ -44,7 +45,10 @@ class QImage;
 namespace Tiled {
 
 class Tile;
+class Tileset;
 class Terrain;
+
+typedef QSharedPointer<Tileset> SharedTileset;
 
 /**
  * A tileset, representing a set of tiles.
@@ -56,6 +60,14 @@ class Terrain;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
+    friend Tile *appendTile(SharedTileset &tileset,
+                            const QPixmap &image,
+                            const QString &source);
+
+    friend bool loadFromImage(SharedTileset &tileset,
+                              const QImage &image,
+                              const QString &fileName);
+
 public:
     /**
      * Constructor.
@@ -195,31 +207,10 @@ public:
     void setTransparentColor(const QColor &c) { mTransparentColor = c; }
 
     /**
-     * Load this tileset from the given tileset \a image. This will replace
-     * existing tile images in this tileset with new ones. If the new image
-     * contains more tiles than exist in the tileset new tiles will be
-     * appended, if there are fewer tiles the excess images will be blanked.
-     *
-     * The tile width and height of this tileset must be higher than 0.
-     *
-     * @param image    the image to load the tiles from
-     * @param fileName the file name of the image, which will be remembered
-     *                 as the image source of this tileset.
-     * @return <code>true</code> if loading was successful, otherwise
-     *         returns <code>false</code>
-     */
-    bool loadFromImage(const QImage &image, const QString &fileName);
-
-    /**
-     * Convenience override that loads the image using the QImage constructor.
-     */
-    bool loadFromImage(const QString &fileName);
-
-    /**
      * This checks if there is a similar tileset in the given list.
      * It is needed for replacing this tileset by its similar copy.
      */
-    Tileset *findSimilarTileset(const QList<Tileset*> &tilesets) const;
+    SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 
     /**
      * Returns the file name of the external image that contains the tiles in
@@ -251,15 +242,6 @@ public:
     Terrain *terrain(int index) const { return index >= 0 ? mTerrainTypes[index] : 0; }
 
     /**
-     * Adds a new terrain type.
-     *
-     * @param name      the name of the terrain
-     * @param imageTile the id of the tile that represents the terrain visually
-     * @return the created Terrain instance
-     */
-    Terrain *addTerrain(const QString &name, int imageTileId);
-
-    /**
      * Adds the \a terrain type at the given \a index.
      *
      * The terrain should already have this tileset associated with it.
@@ -280,12 +262,7 @@ public:
      * Returns the transition penalty(/distance) between 2 terrains. -1 if no
      * transition is possible.
      */
-    int terrainTransitionPenalty(int terrainType0, int terrainType1);
-
-    /**
-     * Adds a new tile to the end of the tileset.
-     */
-    Tile *addTile(const QPixmap &image, const QString &source = QString());
+    int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
 
     void insertTiles(int index, const QList<Tile*> &tiles);
     void removeTiles(int index, int count);
@@ -328,6 +305,28 @@ private:
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
 };
+
+
+Tile *appendTile(SharedTileset &tileset,
+                 const QPixmap &image,
+                 const QString &source = QString());
+
+bool loadFromImage(SharedTileset &tileset,
+                   const QImage &image,
+                   const QString &fileName);
+
+Terrain *appendTerrain(SharedTileset &tileset,
+                       const QString &name,
+                       int imageTileId);
+
+
+/**
+ * Convenience override that loads the image using the QImage constructor.
+ */
+inline bool loadFromImage(SharedTileset &tileset, const QString &fileName)
+{
+    return loadFromImage(tileset, QImage(fileName), fileName);
+}
 
 } // namespace Tiled
 

@@ -166,7 +166,7 @@ void TileCollisionEditor::setTile(Tile *tile)
         mMapView->setEnabled(!mTile->tileset()->isExternal());
 
         Map *map = new Map(Map::Orthogonal, 1, 1, tile->width(), tile->height());
-        map->addTileset(tile->tileset());
+        map->addTileset(tile->sharedTileset());
 
         TileLayer *tileLayer = new TileLayer(QString(), 0, 0, 1, 1);
         tileLayer->setCell(0, 0, Cell(tile));
@@ -306,10 +306,6 @@ void TileCollisionEditor::paste()
     QScopedPointer<Map> map(clipboardManager->map());
     if (!map)
         return;
-
-    // Clean up the tilesets, we're not interested in them (would make sense
-    // to avoid loading them in the first place).
-    qDeleteAll(map->tilesets());
 
     // We can currently only handle maps with a single layer
     if (map->layerCount() != 1)

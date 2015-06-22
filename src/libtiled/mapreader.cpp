@@ -68,7 +68,7 @@ public:
     {}
 
     Map *readMap(QIODevice *device, const QString &path);
-    Tileset *readTileset(QIODevice *device, const QString &path);
+    SharedTileset readTileset(QIODevice *device, const QString &path);
 
     bool openFile(QFile *file);
 
@@ -79,10 +79,10 @@ private:
 
     Map *readMap();
 
-    Tileset *readTileset();
-    void readTilesetTile(Tileset *tileset);
-    void readTilesetImage(Tileset *tileset);
-    void readTilesetTerrainTypes(Tileset *tileset);
+    SharedTileset readTileset();
+    void readTilesetTile(SharedTileset &tileset);
+    void readTilesetImage(SharedTileset &tileset);
+    void readTilesetTerrainTypes(SharedTileset &tileset);
     QImage readImage();
 
     TileLayer *readLayer();
@@ -118,7 +118,6 @@ private:
     QString mError;
     QString mPath;
     Map *mMap;
-    QList<Tileset*> mCreatedTilesets;
     GidMapper mGidMapper;
     bool mReadingExternalTileset;
 
@@ -146,11 +145,11 @@ Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
     return map;
 }
 
-Tileset *MapReaderPrivate::readTileset(QIODevice *device, const QString &path)
+SharedTileset MapReaderPrivate::readTileset(QIODevice *device, const QString &path)
 {
     mError.clear();
     mPath = path;
-    Tileset *tileset = 0;
+    SharedTileset tileset;
     mReadingExternalTileset = true;
 
     xml.setDevice(device);
@@ -249,8 +248,6 @@ Map *MapReaderPrivate::readMap()
     if (nextObjectId)
         mMap->setNextObjectId(nextObjectId);
 
-    mCreatedTilesets.clear();
-
     QStringRef bgColorString = atts.value(QLatin1String("backgroundcolor"));
     if (!bgColorString.isEmpty())
         mMap->setBackgroundColor(QColor(bgColorString.toString()));
@@ -272,10 +269,6 @@ Map *MapReaderPrivate::readMap()
 
     // Clean up in case of error
     if (xml.hasError()) {
-        // The tilesets are not owned by the map
-        qDeleteAll(mCreatedTilesets);
-        mCreatedTilesets.clear();
-
         delete mMap;
         mMap = 0;
     }
@@ -283,7 +276,7 @@ Map *MapReaderPrivate::readMap()
     return mMap;
 }
 
-Tileset *MapReaderPrivate::readTileset()
+SharedTileset MapReaderPrivate::readTileset()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tileset"));
 
@@ -292,7 +285,7 @@ Tileset *MapReaderPrivate::readTileset()
     const unsigned firstGid =
             atts.value(QLatin1String("firstgid")).toString().toUInt();
 
-    Tileset *tileset = 0;
+    SharedTileset tileset;
 
     if (source.isEmpty()) { // Not an external tileset
         const QString name =
@@ -311,10 +304,8 @@ Tileset *MapReaderPrivate::readTileset()
             xml.raiseError(tr("Invalid tileset parameters for tileset"
                               " '%1'").arg(name));
         } else {
-            tileset = new Tileset(name, tileWidth, tileHeight,
-                                  tileSpacing, margin);
-
-            mCreatedTilesets.append(tileset);
+            tileset.reset(new Tileset(name, tileWidth, tileHeight,
+                                      tileSpacing, margin));
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("tile")) {
@@ -331,9 +322,7 @@ Tileset *MapReaderPrivate::readTileset()
                     if (tileWidth == 0 || tileHeight == 0) {
                         xml.raiseError(tr("Invalid tileset parameters for tileset"
                                           " '%1'").arg(name));
-                        delete tileset;
-                        tileset = 0;
-                        mCreatedTilesets.removeLast();
+                        tileset.reset();
                         break;
                     } else {
                         readTilesetImage(tileset);
@@ -359,12 +348,12 @@ Tileset *MapReaderPrivate::readTileset()
     }
 
     if (tileset && !mReadingExternalTileset)
-        mGidMapper.insert(firstGid, tileset);
+        mGidMapper.insert(firstGid, tileset.data());
 
     return tileset;
 }
 
-void MapReaderPrivate::readTilesetTile(Tileset *tileset)
+void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tile"));
 
@@ -390,7 +379,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     // For tilesets without image source, consecutive tile IDs are allowed (for
     // tiles with individual images)
     if (id == tileset->tileCount())
-        tileset->addTile(QPixmap());
+        appendTile(tileset, QPixmap());
 
     Tile *tile = tileset->tileAt(id);
 
@@ -450,7 +439,7 @@ void MapReaderPrivate::readTilesetTile(Tileset *tileset)
     }
 }
 
-void MapReaderPrivate::readTilesetImage(Tileset *tileset)
+void MapReaderPrivate::readTilesetImage(SharedTileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
@@ -469,9 +458,9 @@ void MapReaderPrivate::readTilesetImage(Tileset *tileset)
 
     // Set the width that the tileset had when the map was saved
     const int width = atts.value(QLatin1String("width")).toString().toInt();
-    mGidMapper.setTilesetWidth(tileset, width);
+    mGidMapper.setTilesetWidth(tileset.data(), width);
 
-    if (!tileset->loadFromImage(readImage(), source))
+    if (!loadFromImage(tileset, readImage(), source))
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
 }
 
@@ -511,7 +500,7 @@ QImage MapReaderPrivate::readImage()
     return QImage();
 }
 
-void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
+void MapReaderPrivate::readTilesetTerrainTypes(SharedTileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("terraintypes"));
 
@@ -521,7 +510,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(Tileset *tileset)
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toString().toInt();
 
-            Terrain *terrain = tileset->addTerrain(name, tile);
+            Terrain *terrain = appendTerrain(tileset, name, tile);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))
@@ -1006,18 +995,18 @@ Map *MapReader::readMap(const QString &fileName)
     return readMap(&file, QFileInfo(fileName).absolutePath());
 }
 
-Tileset *MapReader::readTileset(QIODevice *device, const QString &path)
+SharedTileset MapReader::readTileset(QIODevice *device, const QString &path)
 {
     return d->readTileset(device, path);
 }
 
-Tileset *MapReader::readTileset(const QString &fileName)
+SharedTileset MapReader::readTileset(const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))
-        return 0;
+        return SharedTileset();
 
-    Tileset *tileset = readTileset(&file, QFileInfo(fileName).absolutePath());
+    SharedTileset tileset = readTileset(&file, QFileInfo(fileName).absolutePath());
     if (tileset)
         tileset->setFileName(fileName);
 
@@ -1043,16 +1032,14 @@ QImage MapReader::readExternalImage(const QString &source)
     return QImage(source);
 }
 
-Tileset *MapReader::readExternalTileset(const QString &source,
-                                        QString *error)
+SharedTileset MapReader::readExternalTileset(const QString &source,
+                                             QString *error)
 {
     MapReader reader;
 
-    Tileset *tileset = reader.readTileset(source);
+    SharedTileset tileset = reader.readTileset(source);
     if (!tileset)
         *error = reader.errorString();
-    else
-        d->mCreatedTilesets.append(tileset);
 
     return tileset;
 }

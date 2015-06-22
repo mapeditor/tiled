@@ -24,7 +24,6 @@
 #include "filesystemwatcher.h"
 #include "tileanimationdriver.h"
 #include "tile.h"
-#include "tileset.h"
 
 #include <QImage>
 
@@ -72,18 +71,18 @@ void TilesetManager::deleteInstance()
     mInstance = 0;
 }
 
-Tileset *TilesetManager::findTileset(const QString &fileName) const
+SharedTileset TilesetManager::findTileset(const QString &fileName) const
 {
-    foreach (Tileset *tileset, tilesets())
+    foreach (const SharedTileset &tileset, tilesets())
         if (tileset->fileName() == fileName)
             return tileset;
 
-    return 0;
+    return SharedTileset();
 }
 
-Tileset *TilesetManager::findTileset(const TilesetSpec &spec) const
+SharedTileset TilesetManager::findTileset(const TilesetSpec &spec) const
 {
-    foreach (Tileset *tileset, tilesets()) {
+    foreach (const SharedTileset &tileset, tilesets()) {
         if (tileset->imageSource() == spec.imageSource
             && tileset->tileWidth() == spec.tileWidth
             && tileset->tileHeight() == spec.tileHeight
@@ -94,10 +93,10 @@ Tileset *TilesetManager::findTileset(const TilesetSpec &spec) const
         }
     }
 
-    return 0;
+    return SharedTileset();
 }
 
-void TilesetManager::addReference(Tileset *tileset)
+void TilesetManager::addReference(const SharedTileset &tileset)
 {
     if (mTilesets.contains(tileset)) {
         mTilesets[tileset]++;
@@ -108,7 +107,7 @@ void TilesetManager::addReference(Tileset *tileset)
     }
 }
 
-void TilesetManager::removeReference(Tileset *tileset)
+void TilesetManager::removeReference(const SharedTileset &tileset)
 {
     Q_ASSERT(mTilesets.value(tileset) > 0);
     mTilesets[tileset]--;
@@ -117,36 +116,34 @@ void TilesetManager::removeReference(Tileset *tileset)
         mTilesets.remove(tileset);
         if (!tileset->imageSource().isEmpty())
             mWatcher->removePath(tileset->imageSource());
-
-        delete tileset;
     }
 }
 
-void TilesetManager::addReferences(const QList<Tileset*> &tilesets)
+void TilesetManager::addReferences(const QVector<SharedTileset> &tilesets)
 {
-    foreach (Tileset *tileset, tilesets)
+    foreach (const SharedTileset &tileset, tilesets)
         addReference(tileset);
 }
 
-void TilesetManager::removeReferences(const QList<Tileset*> &tilesets)
+void TilesetManager::removeReferences(const QVector<SharedTileset> &tilesets)
 {
-    foreach (Tileset *tileset, tilesets)
+    foreach (const SharedTileset &tileset, tilesets)
         removeReference(tileset);
 }
 
-QList<Tileset*> TilesetManager::tilesets() const
+QList<SharedTileset> TilesetManager::tilesets() const
 {
     return mTilesets.keys();
 }
 
-void TilesetManager::forceTilesetReload(Tileset *tileset)
+void TilesetManager::forceTilesetReload(SharedTileset &tileset)
 {
     if (!mTilesets.contains(tileset))
         return;
 
     QString fileName = tileset->imageSource();
-    if (tileset->loadFromImage(fileName))
-        emit tilesetChanged(tileset);
+    if (loadFromImage(tileset, fileName))
+        emit tilesetChanged(tileset.data());
 }
 
 void TilesetManager::setReloadTilesetsOnChange(bool enabled)
@@ -185,11 +182,11 @@ void TilesetManager::fileChanged(const QString &path)
 
 void TilesetManager::fileChangedTimeout()
 {
-    foreach (Tileset *tileset, tilesets()) {
+    for (SharedTileset &tileset : tilesets()) {
         QString fileName = tileset->imageSource();
         if (mChangedFiles.contains(fileName))
-            if (tileset->loadFromImage(fileName))
-                emit tilesetChanged(tileset);
+            if (loadFromImage(tileset, fileName))
+                emit tilesetChanged(tileset.data());
     }
 
     mChangedFiles.clear();
@@ -199,13 +196,13 @@ void TilesetManager::advanceTileAnimations(int ms)
 {
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
-    foreach (Tileset *tileset, tilesets()) {
+    foreach (const SharedTileset &tileset, tilesets()) {
         bool imageChanged = false;
 
         foreach (Tile *tile, tileset->tiles())
             imageChanged |= tile->advanceAnimation(ms);
 
         if (imageChanged)
-            emit repaintTileset(tileset);
+            emit repaintTileset(tileset.data());
     }
 }

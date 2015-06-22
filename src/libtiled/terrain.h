@@ -36,6 +36,7 @@
 #include <QMetaType>
 #include <QString>
 #include <QVector>
+#include <QWeakPointer>
 
 namespace Tiled {
 
@@ -47,7 +48,10 @@ class Tile;
 class TILEDSHARED_EXPORT Terrain : public Object
 {
 public:
-    Terrain(int id, Tileset *tileset, QString name, int imageTileId):
+    Terrain(int id,
+            const QWeakPointer<Tileset> &tileset,
+            QString name,
+            int imageTileId):
         Object(TerrainType),
         mId(id),
         mTileset(tileset),
@@ -69,7 +73,12 @@ public:
     /**
      * Returns the tileset this terrain type belongs to.
      */
-    Tileset *tileset() const { return mTileset; }
+    Tileset *tileset() const { return mTileset.data(); }
+
+    /**
+     * Returns the tileset this terrain type belongs to as a shared pointer.
+     */
+    QSharedPointer<Tileset> sharedTileset() const { return mTileset; }
 
     /**
      * Returns the name of this terrain type.
@@ -95,7 +104,7 @@ public:
      * Returns a Tile that represents this terrain type in the terrain palette.
      */
     Tile *imageTile() const
-    { return mImageTileId >= 0 ? mTileset->tileAt(mImageTileId) : 0; }
+    { return mImageTileId >= 0 ? mTileset.data()->tileAt(mImageTileId) : 0; }
 
     /**
      * Returns the transition penalty(/distance) from this terrain type to another terrain type.
@@ -114,7 +123,7 @@ public:
 
 private:
     int mId;
-    Tileset *mTileset;
+    QWeakPointer<Tileset> mTileset;
     QString mName;
     int mImageTileId;
     QVector<int> mTransitionDistance;

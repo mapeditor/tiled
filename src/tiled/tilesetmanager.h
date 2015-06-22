@@ -22,6 +22,8 @@
 #ifndef TILESETMANAGER_H
 #define TILESETMANAGER_H
 
+#include "tileset.h"
+
 #include <QObject>
 #include <QList>
 #include <QMap>
@@ -30,9 +32,6 @@
 #include <QTimer>
 
 namespace Tiled {
-
-class Tileset;
-
 namespace Internal {
 
 class FileSystemWatcher;
@@ -76,47 +75,47 @@ public:
      * Searches for a tileset matching the given file name.
      * @return a tileset matching the given file name, or 0 if none exists
      */
-    Tileset *findTileset(const QString &fileName) const;
+    SharedTileset findTileset(const QString &fileName) const;
 
     /**
      * Searches for a tileset matching the given specification.
      * @return a tileset matching the given specification, or 0 if none exists
      */
-    Tileset *findTileset(const TilesetSpec &spec) const;
+    SharedTileset findTileset(const TilesetSpec &spec) const;
 
     /**
-     * Adds a tileset reference. This will make sure the tileset doesn't get
-     * deleted.
+     * Adds a tileset reference. This will make sure the tileset is watched for
+     * changes and can be found using findTileset().
      */
-    void addReference(Tileset *tileset);
+    void addReference(const SharedTileset &tileset);
 
     /**
-     * Removes a tileset reference. This needs to be done before a tileset can
-     * be deleted.
+     * Removes a tileset reference. When the last reference has been removed,
+     * the tileset is no longer watched for changes.
      */
-    void removeReference(Tileset *tileset);
+    void removeReference(const SharedTileset &tileset);
 
     /**
      * Convenience method to add references to multiple tilesets.
      * @see addReference
      */
-    void addReferences(const QList<Tileset*> &tilesets);
+    void addReferences(const QVector<SharedTileset> &tilesets);
 
     /**
      * Convenience method to remove references from multiple tilesets.
      * @see removeReference
      */
-    void removeReferences(const QList<Tileset*> &tilesets);
+    void removeReferences(const QVector<SharedTileset> &tilesets);
 
     /**
      * Returns all currently available tilesets.
      */
-    QList<Tileset*> tilesets() const;
+    QList<SharedTileset> tilesets() const;
 
     /**
      * Forces a tileset to reload.
      */
-    void forceTilesetReload(Tileset *tileset);
+    void forceTilesetReload(SharedTileset &tileset);
 
     /**
      * Sets whether tilesets are automatically reloaded when their tileset
@@ -168,7 +167,7 @@ private:
     /**
      * Stores the tilesets and maps them to the number of references.
      */
-    QMap<Tileset*, int> mTilesets;
+    QMap<SharedTileset, int> mTilesets;
     FileSystemWatcher *mWatcher;
     TileAnimationDriver *mAnimationDriver;
     QSet<QString> mChangedFiles;

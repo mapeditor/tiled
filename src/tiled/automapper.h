@@ -21,11 +21,11 @@
 #ifndef AUTOMAPPER_H
 #define AUTOMAPPER_H
 
-#include <QMap>
+#include "tileset.h"
+
 #include <QList>
-
+#include <QMap>
 #include <QRegion>
-
 #include <QSet>
 #include <QString>
 #include <QVector>
@@ -37,7 +37,6 @@ class Map;
 class MapObject;
 class ObjectGroup;
 class TileLayer;
-class Tileset;
 
 namespace Internal {
 
@@ -277,7 +276,7 @@ private:
      * when they still are unused
      * they will be added while setupTilesets().
      */
-    QVector<Tileset*> mAddedTilesets;
+    QVector<SharedTileset> mAddedTilesets;
 
     /**
      * description see: mAddedTilesets, just described by Strings
@@ -355,11 +354,9 @@ private:
     bool mNoOverlappingRules;
 
     QSet<QString> mTouchedTileLayers;
-
     QSet<QString> mTouchedObjectGroups;
 
     QString mError;
-
     QString mWarning;
 };
 

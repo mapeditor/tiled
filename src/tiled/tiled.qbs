@@ -103,6 +103,7 @@ QtGuiApplication {
         "commandlineparser.h",
         "consoledock.cpp",
         "consoledock.h",
+        "containerhelpers.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createmultipointobjecttool.cpp",

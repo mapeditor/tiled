@@ -21,13 +21,12 @@
 #ifndef ADDREMOVETILESET_H
 #define ADDREMOVETILESET_H
 
+#include "tileset.h"
+
 #include <QCoreApplication>
 #include <QUndoCommand>
 
 namespace Tiled {
-
-class Tileset;
-
 namespace Internal {
 
 class MapDocument;
@@ -38,7 +37,10 @@ class MapDocument;
 class AddRemoveTileset : public QUndoCommand
 {
 public:
-    AddRemoveTileset(MapDocument *mapDocument, int index, Tileset *tileset);
+    AddRemoveTileset(MapDocument *mapDocument,
+                     int index,
+                     const SharedTileset &tileset);
+
     ~AddRemoveTileset();
 
 protected:
@@ -47,7 +49,7 @@ protected:
 
 private:
     MapDocument *mMapDocument;
-    Tileset *mTileset;
+    SharedTileset mTileset;
     int mIndex;
 };
 
@@ -57,7 +59,7 @@ private:
 class AddTileset : public AddRemoveTileset
 {
 public:
-    AddTileset(MapDocument *mapDocument, Tileset *tileset);
+    AddTileset(MapDocument *mapDocument, const SharedTileset &tileset);
 
     void undo()
     { removeTileset(); }
@@ -72,12 +74,7 @@ public:
 class RemoveTileset : public AddRemoveTileset
 {
 public:
-    RemoveTileset(MapDocument *mapDocument, int index, Tileset *tileset)
-        : AddRemoveTileset(mapDocument, index, tileset)
-    {
-        setText(QCoreApplication::translate("Undo Commands",
-                                            "Remove Tileset"));
-    }
+    RemoveTileset(MapDocument *mapDocument, int index);
 
     void undo()
     { addTileset(); }

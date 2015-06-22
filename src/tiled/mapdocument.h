@@ -25,6 +25,7 @@
 
 #include "layer.h"
 #include "tiled.h"
+#include "tileset.h"
 #include "mapobject.h"
 
 #include <QDateTime>
@@ -47,7 +48,6 @@ class MapRenderer;
 class MapReaderInterface;
 class Terrain;
 class Tile;
-class Tileset;
 
 namespace Internal {
 
@@ -177,7 +177,7 @@ public:
     void removeLayer(int index);
     void toggleOtherLayers(int index);
 
-    void insertTileset(int index, Tileset *tileset);
+    void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
     void moveTileset(int from, int to);
     void setTilesetFileName(Tileset *tileset, const QString &fileName);
@@ -362,7 +362,7 @@ signals:
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void tilesetAboutToBeAdded(int index);
-    void tilesetAdded(int index, Tileset *tileset);
+    void tilesetAdded(int index, const SharedTileset &tileset);
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);

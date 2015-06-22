@@ -1076,11 +1076,8 @@ void MainWindow::paste()
         return;
 
     // We can currently only handle maps with a single layer
-    if (map->layerCount() != 1) {
-        // Need to clean up the tilesets since they didn't get an owner
-        qDeleteAll(map->tilesets());
+    if (map->layerCount() != 1)
         return;
-    }
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(map->tilesets());
@@ -1171,7 +1168,7 @@ bool MainWindow::newTileset(const QString &path)
     newTileset.setTileWidth(map->tileWidth());
     newTileset.setTileHeight(map->tileHeight());
 
-    if (Tileset *tileset = newTileset.createTileset()) {
+    if (SharedTileset tileset = newTileset.createTileset()) {
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
         prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
         return true;
@@ -1193,7 +1190,8 @@ void MainWindow::reloadTilesets()
         return;
 
     TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, map->tilesets())
+    QVector<SharedTileset> tilesets = map->tilesets();
+    for (SharedTileset &tileset : tilesets)
         tilesetManager->forceTilesetReload(tileset);
 }
 
@@ -1216,12 +1214,12 @@ void MainWindow::addExternalTileset()
     prefs->setLastPath(Preferences::ExternalTileset,
                        QFileInfo(fileNames.back()).path());
 
-    QList<Tileset *> tilesets;
+    QVector<SharedTileset> tilesets;
 
     foreach (QString fileName, fileNames) {
         TmxMapReader reader;
-        if (Tileset *tileset = reader.readTileset(fileName)) {
-            tilesets += tileset;
+        if (SharedTileset tileset = reader.readTileset(fileName)) {
+            tilesets.append(tileset);
         } else if (fileNames.size() == 1) {
             QMessageBox::critical(this, tr("Error Reading Tileset"),
                                   reader.errorString());
@@ -1234,17 +1232,14 @@ void MainWindow::addExternalTileset()
                                           QMessageBox::Abort | QMessageBox::Ignore,
                                           QMessageBox::Ignore);
 
-            if (result == QMessageBox::Abort) {
-                // On abort, clean out any already loaded tilesets.
-                qDeleteAll(tilesets);
+            if (result == QMessageBox::Abort)
                 return;
-            }
         }
     }
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
-    foreach (Tileset *tileset, tilesets)
+    foreach (const SharedTileset &tileset, tilesets)
         undoStack->push(new AddTileset(mMapDocument, tileset));
     undoStack->endMacro();
 }

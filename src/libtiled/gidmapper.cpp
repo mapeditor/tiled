@@ -42,11 +42,11 @@ GidMapper::GidMapper()
 {
 }
 
-GidMapper::GidMapper(const QList<Tileset *> &tilesets)
+GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
 {
     unsigned firstGid = 1;
-    foreach (Tileset *tileset, tilesets) {
-        insert(firstGid, tileset);
+    foreach (const SharedTileset &tileset, tilesets) {
+        insert(firstGid, tileset.data());
         firstGid += tileset->tileCount();
     }
 }

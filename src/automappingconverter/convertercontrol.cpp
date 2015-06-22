@@ -86,7 +86,7 @@ QString ConverterControl::automappingRuleFileVersion(const QString &fileName)
 void ConverterControl::convertV1toV2(const QString &fileName)
 {
     Tiled::MapReader reader;
-    Tiled::Map *map = reader.readMap(fileName);
+    QScopedPointer<Tiled::Map> map(reader.readMap(fileName));
 
     if (!map) {
         qWarning() << "Error at conversion of " << fileName << ":\n"
@@ -111,8 +111,5 @@ void ConverterControl::convertV1toV2(const QString &fileName)
     }
 
     Tiled::MapWriter writer;
-    writer.writeMap(map, fileName);
-
-    qDeleteAll(map->tilesets());
-    delete map;
+    writer.writeMap(map.data(), fileName);
 }

@@ -26,6 +26,7 @@
 #include "addremovetileset.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
+#include "containerhelpers.h"
 #include "flipmapobjects.h"
 #include "hexagonalrenderer.h"
 #include "imagelayer.h"
@@ -532,7 +533,7 @@ void MapDocument::toggleOtherLayers(int index)
  * Adds a tileset to this map at the given \a index. Emits the appropriate
  * signal.
  */
-void MapDocument::insertTileset(int index, Tileset *tileset)
+void MapDocument::insertTileset(int index, const SharedTileset &tileset)
 {
     emit tilesetAboutToBeAdded(index);
     mMap->insertTileset(index, tileset);
@@ -568,13 +569,13 @@ void MapDocument::removeTilesetAt(int index)
 {
     emit tilesetAboutToBeRemoved(index);
 
-    Tileset *tileset = mMap->tilesets().at(index);
+    SharedTileset tileset = mMap->tilesets().at(index);
 
-    if (tileset == mCurrentObject || isFromTileset(mCurrentObject, tileset))
+    if (tileset.data() == mCurrentObject || isFromTileset(mCurrentObject, tileset.data()))
         setCurrentObject(0);
 
     mMap->removeTilesetAt(index);
-    emit tilesetRemoved(tileset);
+    emit tilesetRemoved(tileset.data());
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->removeReference(tileset);
@@ -585,7 +586,7 @@ void MapDocument::moveTileset(int from, int to)
     if (from == to)
         return;
 
-    Tileset *tileset = mMap->tilesets().at(from);
+    SharedTileset tileset = mMap->tilesets().at(from);
     mMap->removeTilesetAt(from);
     mMap->insertTileset(to, tileset);
     emit tilesetMoved(from, to);
@@ -654,15 +655,15 @@ QList<Object*> MapDocument::currentObjects() const
 void MapDocument::unifyTilesets(Map *map)
 {
     QList<QUndoCommand*> undoCommands;
-    QList<Tileset*> existingTilesets = mMap->tilesets();
+    const QVector<SharedTileset> &existingTilesets = mMap->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of this map
-    foreach (Tileset *tileset, map->tilesets()) {
+    foreach (const SharedTileset &tileset, map->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
-        Tileset *replacement = tileset->findSimilarTileset(existingTilesets);
+        SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
         if (!replacement) {
             undoCommands.append(new AddTileset(this, tileset));
             continue;
@@ -701,7 +702,7 @@ void MapDocument::unifyTilesets(Map *map)
  */
 void MapDocument::emitTilesetChanged(Tileset *tileset)
 {
-    Q_ASSERT(mMap->tilesets().contains(tileset));
+    Q_ASSERT(contains(mMap->tilesets(), tileset));
     emit tilesetChanged(tileset);
 }
 

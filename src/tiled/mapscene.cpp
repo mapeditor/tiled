@@ -24,6 +24,7 @@
 #include "mapscene.h"
 
 #include "abstracttool.h"
+#include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -355,7 +356,7 @@ void MapScene::tilesetChanged(Tileset *tileset)
     if (!mMapDocument)
         return;
 
-    if (mMapDocument->map()->tilesets().contains(tileset))
+    if (contains(mMapDocument->map()->tilesets(), tileset))
         update();
 }
 
