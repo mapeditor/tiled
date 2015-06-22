@@ -80,6 +80,9 @@ public:
      */
     void editCustomProperty(const QString &name);
 
+protected:
+    bool event(QEvent *event);
+
 private slots:
     void mapChanged();
     void objectsChanged(const QList<MapObject*> &objects);
@@ -151,8 +154,11 @@ private:
                                       const QString &name,
                                       QtProperty *parent);
 
+    void addProperties();
+    void removeProperties();
     void updateProperties();
     void updateCustomProperties();
+    void retranslateUi();
     bool mUpdating;
 
     void updatePropertyColor(const QString &name);
@@ -183,6 +189,12 @@ private:
 inline Object *PropertyBrowser::object() const
 {
     return mObject;
+}
+
+inline void PropertyBrowser::retranslateUi()
+{
+    removeProperties();
+    addProperties();
 }
 
 } // namespace Internal
