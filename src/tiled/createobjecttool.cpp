@@ -121,7 +121,7 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
     QPointF pixelCoords;
 
     /*TODO: calculate the tile offset with a polymorphic behaviour object
-     * that is instantiated by the correspondend ObjectTool
+     * that is instantiated by the corresponded ObjectTool
     */
     if (mMode == CreateTile) {
         if (!mTile)

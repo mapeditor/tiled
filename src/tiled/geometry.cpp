@@ -28,7 +28,7 @@ namespace Tiled {
  * (x1,y1) determines the radius.
  *
  * It is adapted from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
- * here is the orginal: http://homepage.smc.edu/kennedy_john/belipse.pdf
+ * here is the original: http://homepage.smc.edu/kennedy_john/belipse.pdf
  */
 QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 {
@@ -99,7 +99,7 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 /**
  * Returns the lists of points on a line from (x0,y0) to (x1,y1).
  *
- * This is an implementation of bresenhams line algorithm, initially copied
+ * This is an implementation of Bresenham's line algorithm, initially copied
  * from http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Optimization
  * changed to C++ syntax.
  */

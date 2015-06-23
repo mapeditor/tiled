@@ -105,7 +105,7 @@ private:
 
     /**
      * mStamp is a tile layer in which is the selection the user made
-     * either by rightclicking (Capture) or at the tilesetdock
+     * either by right clicking (Capture) or at the tileset dock
      */
     TileLayer *mStamp;
 
@@ -154,7 +154,7 @@ private:
     QList<Cell> mRandomList;
 
     /**
-     * Returns a tile layer containing one tile randomly choosen
+     * Returns a tile layer containing one tile randomly chosen
      * from mRandomList.
      */
     TileLayer *getRandomTileLayer() const;

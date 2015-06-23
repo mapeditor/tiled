@@ -57,7 +57,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
 
     foreach (const QString &layerName, touchedLayers) {
         const int layerindex = map->indexOfLayer(layerName);
-        // layerindex exists, because AutoMapper is still alive, dont check
+        // layer index exists, because AutoMapper is still alive, don't check
         Q_ASSERT(layerindex != -1);
         mLayersAfter << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
     }

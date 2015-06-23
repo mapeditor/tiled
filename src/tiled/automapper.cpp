@@ -641,7 +641,7 @@ static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
  * automapping.
  * In this function a certain region (of the set layer) is compared to
  * several other layers (ruleSet and ruleNotSet).
- * This comparision will determine if a rule of automapping matches,
+ * This comparison will determine if a rule of automapping matches,
  * so if this rule is applied at this region given
  * by a QRegion and Offset given by a QPoint.
  *
@@ -691,7 +691,7 @@ static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
  *      This exception was added to have a better functionality
  *      (need of less layers.)
  *      It was not added to the case, when having only listNo layers to
- *      avoid total symmetrie between those lists.
+ *      avoid total symmetry between those lists.
  *
  * If all positions are considered good, return true.
  * return false otherwise.

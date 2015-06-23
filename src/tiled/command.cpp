@@ -120,7 +120,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
 #elif defined(Q_OS_MAC)
         // The only way I know to launch a Terminal with a command on mac is
         // to make a .command file and open it. The client command invoke the
-        // exectuable directly (rather than using open) in order to get std
+        // executable directly (rather than using open) in order to get std
         // output in the terminal. Otherwise, you can use the Console
         // application to see the output.
 
