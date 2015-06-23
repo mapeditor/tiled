@@ -361,7 +361,7 @@ QMimeData *CommandDataModel::mimeData(const QModelIndexList &indices) const
 
     // Ptr is used if command is dragged onto another command
     // We could store the index instead, the only difference would be that if
-    // the item is moved or deleted shomehow during the drag, the ptr approach
+    // the item is moved or deleted somehow during the drag, the ptr approach
     // will result in a no-op instead of moving the wrong thing.
     const Command *addr = &command;
     mimeData->setData(QLatin1String(commandMimeType),
@@ -402,7 +402,7 @@ bool CommandDataModel::dropMimeData(const QMimeData *data, Qt::DropAction, int,
             if (addr == &mCommands[srcRow]) {
 
                 // If a command is dropped on another command,
-                // move the src command into the positon of the dst command.
+                // move the src command into the position of the dst command.
                 if (dstRow < mCommands.size())
                     return move(srcRow, dstRow);
 

@@ -59,12 +59,12 @@ public:
 
 signals:
     /**
-     * This signal is emited after automapping was done and an error occurred.
+     * This signal is emitted after automapping was done and an error occurred.
      */
     void errorsOccurred(bool automatic);
 
     /**
-     * This signal is emited after automapping was done and a warning occurred.
+     * This signal is emitted after automapping was done and a warning occurred.
      */
     void warningsOccurred(bool automatic);
 
@@ -82,13 +82,13 @@ private:
 
     /**
      * This function parses a rules file.
-     * For each path which is a rule, (fileextension is tmx) an AutoMapper
+     * For each path which is a rule, (file extension is tmx) an AutoMapper
      * object is setup.
      *
-     * If a fileextension is txt, this file will be opened and searched for
+     * If a file extension is txt, this file will be opened and searched for
      * rules again.
      *
-     * @return if the loading was successful: return true if it suceeded.
+     * @return if the loading was successful: return true if it succeeded.
      */
     bool loadFile(const QString &filePath);
 

@@ -40,7 +40,7 @@ public:
      *
      * @param mapDocument   the map document of the layer's map
      * @param imageLayer    the image layer to modify
-     * @param newPos        the new positon of the image layer
+     * @param newPos        the new position of the image layer
      */
     ChangeImageLayerPosition(MapDocument *mapDocument,
                              ImageLayer *imageLayer,

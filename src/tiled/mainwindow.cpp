@@ -879,7 +879,7 @@ void MainWindow::export_()
         }
     }
 
-    // fall back when no succesful export happened
+    // fall back when no successful export happened
     exportAs();
 }
 

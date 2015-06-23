@@ -112,7 +112,7 @@ public:
     /**
      * This needs to be called directly before the autoMap call.
      * It sets up some data structures which change rapidly, so it is quite
-     * painful to keep these datastructures up to date all time. (indices of
+     * painful to keep these data structures up to date all time. (indices of
      * layers of the working map)
      */
     bool prepareAutoMap();
@@ -123,7 +123,7 @@ public:
     void autoMap(QRegion *where);
 
     /**
-     * This cleans all datastructures, which are setup via prepareAutoMap,
+     * This cleans all data structures, which are setup via prepareAutoMap,
      * so the auto mapper becomes ready for its next automatic mapping.
      */
     void cleanAll();
@@ -144,7 +144,7 @@ public:
 private:
     /**
      * Reads the map properties of the rulesmap.
-     * @return returns true when anything is ok, false when errors occured.
+     * @return returns true when anything is ok, false when errors occurred.
      */
     bool setupRuleMapProperties();
 
@@ -152,14 +152,14 @@ private:
 
     /**
      * Searches the rules layer for regions and stores these in \a rules.
-     * @return returns true when anything is ok, false when errors occured.
+     * @return returns true when anything is ok, false when errors occurred.
      */
     bool setupRuleList();
 
     /**
      * Sets up the layers in the rules map, which are used for automapping.
      * The layers are detected and put in the internal data structures
-     * @return returns true when anything is ok, false when errors occured.
+     * @return returns true when anything is ok, false when errors occurred.
      */
     bool setupRuleMapTileLayers();
 
@@ -179,7 +179,7 @@ private:
 
     /**
      * sets up the tilesets which are used in automapping.
-     * @return returns true when anything is ok, false when errors occured.
+     * @return returns true when anything is ok, false when errors occurred.
      *        (in that case will be a msg box anyway)
      */
     bool setupTilesets(Map *src, Map *dst);
@@ -238,13 +238,13 @@ private:
     QRect applyRule(const int ruleIndex, const QRect &where);
 
     /**
-     * Cleans up the data structes filled by setupRuleMapLayers(),
+     * Cleans up the data structures filled by setupRuleMapLayers(),
      * so the next rule can be processed.
      */
     void cleanUpRuleMapLayers();
 
     /**
-     * Cleans up the data structes filled by setupTilesets(),
+     * Cleans up the data structures filled by setupTilesets(),
      * so the next rule can be processed.
      */
     void cleanTilesets();
@@ -285,12 +285,12 @@ private:
     QList<QString> mAddedTileLayers;
 
     /**
-     * Points to the tilelayer, which defines the inputregions.
+     * Points to the tilelayer, which defines the input regions.
      */
     TileLayer *mLayerInputRegions;
 
     /**
-     * Points to the tilelayer, which defines the outputregions.
+     * Points to the tilelayer, which defines the output regions.
      */
     TileLayer *mLayerOutputRegions;
 
