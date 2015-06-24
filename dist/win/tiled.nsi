@@ -8,15 +8,33 @@ CRCCheck force
 XPStyle on
 SetCompressor /FINAL /SOLID lzma
 
+!ifndef QT_DIR
 !define QT_DIR $%QTDIR%                       ; Qt Installation directory
+!endif
+
+!ifndef MINGW_DIR
 !define MINGW_DIR $%MINGW%                    ; MinGW Installation directory
+!endif
+
+!ifndef V
 !define V $%VERSION%                          ; Program version
+!endif
+
+!ifndef ARCH
 !define ARCH $%ARCH%                          ; Architecture 32 or 64
+!endif
 
 !define P "Tiled"                             ; Program name
 !define P_NORM "tiled"                        ; Program name (normalized)
+
+!ifndef ROOT_DIR
 !define ROOT_DIR "..\.."                      ; Program root directory
+!endif
+
+!ifndef BUILD_DIR
 !define BUILD_DIR $%TILED_BUILD_DIR%          ; Build dir
+!endif
+
 !define SYSTEM_DIR "C:\windows\system32"
 !define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tiled"
 !define PRODUCT_REG_KEY "Tiled Map Editor"
