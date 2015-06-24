@@ -18,13 +18,12 @@ NSISSetup {
             return 32;
     }
 
-    targetName: "tiled-" + version + "-win" + bits + "-setup"
-    version: project.version
+    targetName: "tiled-" + project.version + "-win" + bits + "-setup"
 
     nsis.defines: [
         "QT_DIR=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
         "MINGW_DIR=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."),
-        "V=" + version,
+        "V=" + project.version,
         "ARCH=" + qbs.architecture,
         "ROOT_DIR=" + project.sourceDirectory,
         "BUILD_DIR=" + qbs.installRoot
