@@ -1,4 +1,3 @@
-os: MinGW
 clone_depth: 200
 
 environment:
@@ -9,7 +8,7 @@ environment:
 configuration: Release
 
 install:
-  - appveyor DownloadFile "http://sunet.dl.sourceforge.net/project/nsis/NSIS 2/2.46/nsis-2.46-setup.exe" -FileName nsissetup.exe
+  - appveyor DownloadFile "http://sourceforge.net/projects/nsis/files/NSIS%202/2.46/nsis-2.46-setup.exe/download?use_mirror=kent&download=#" -FileName nsissetup.exe
   - nsissetup /S /D=%NSIS_ROOT%
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
 
