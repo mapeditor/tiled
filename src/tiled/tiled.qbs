@@ -248,6 +248,8 @@ QtGuiApplication {
         "rotatemapobject.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
+        "selectsametiletool.cpp",
+        "selectsametiletool.h",
         "snaphelper.cpp",
         "snaphelper.h",
         "stampbrush.cpp",

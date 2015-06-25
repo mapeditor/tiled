@@ -91,6 +91,7 @@
 #include "tilecollisioneditor.h"
 #include "imagemovementtool.h"
 #include "magicwandtool.h"
+#include "selectsametiletool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -412,6 +413,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
