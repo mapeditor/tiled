@@ -585,22 +585,19 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
     QStringRef encoding = atts.value(QLatin1String("encoding"));
     QStringRef compression = atts.value(QLatin1String("compression"));
 
-    bool respect = true; // TODO: init from preferences
-    if (respect) {
-        if (encoding.isEmpty())
-            mMap->setLayerDataFormat(Map::XML);
-        else if (encoding == QLatin1String("csv"))
-            mMap->setLayerDataFormat(Map::CSV);
-        else if (encoding == QLatin1String("base64")) {
-            if (compression.isEmpty())
-                mMap->setLayerDataFormat(Map::Base64);
-            else if (compression == QLatin1String("gzip"))
-                mMap->setLayerDataFormat(Map::Base64Gzip);
-            else if (compression == QLatin1String("zlib"))
-                mMap->setLayerDataFormat(Map::Base64Zlib);
-        }
-        // else, error handled below
+    if (encoding.isEmpty()) {
+        mMap->setLayerDataFormat(Map::XML);
+    } else if (encoding == QLatin1String("csv")) {
+        mMap->setLayerDataFormat(Map::CSV);
+    } else if (encoding == QLatin1String("base64")) {
+        if (compression.isEmpty())
+            mMap->setLayerDataFormat(Map::Base64);
+        else if (compression == QLatin1String("gzip"))
+            mMap->setLayerDataFormat(Map::Base64Gzip);
+        else if (compression == QLatin1String("zlib"))
+            mMap->setLayerDataFormat(Map::Base64Zlib);
     }
+    // else, error handled below
 
     int x = 0;
     int y = 0;
