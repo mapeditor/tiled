@@ -144,6 +144,7 @@ SOURCES += aboutdialog.cpp \
     resizetilelayer.cpp \
     rotatemapobject.cpp \
     selectionrectangle.cpp \
+    selectsametiletool.cpp \
     snaphelper.cpp \
     stampbrush.cpp \
     terrainbrush.cpp \
@@ -279,6 +280,7 @@ HEADERS += aboutdialog.h \
     resizetilelayer.h \
     rotatemapobject.h \
     selectionrectangle.h \
+    selectsametiletool.h \
     snaphelper.h \
     stampbrush.h \
     terrainbrush.h \
