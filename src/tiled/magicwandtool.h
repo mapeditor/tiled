@@ -35,8 +35,7 @@ namespace Internal {
 class MapDocument;
 
 /**
- * Implements a tool that bucket fills (flood fills) a region with a repeatable
- * stamp.
+ * Implements a tool that selects a region of connected similar tiles on the layer.
  */
 class MagicWandTool : public AbstractTileTool
 {
