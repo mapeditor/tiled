@@ -126,7 +126,7 @@ int CommandDataModel::rowCount(const QModelIndex &parent) const
 
 int CommandDataModel::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 3;
+    return parent.isValid() ? 0 : 4;
 }
 
 QVariant CommandDataModel::data(const QModelIndex &index, int role) const
@@ -144,6 +144,8 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
                 return command.name;
             if (index.column() == CommandColumn)
                 return command.command;
+            if (index.column() == WorkingDirColumn)
+                return command.workingDir;
         } else {
             if (index.column() == NameColumn) {
                 if (role == Qt::EditRole)
@@ -160,6 +162,8 @@ QVariant CommandDataModel::data(const QModelIndex &index, int role) const
                 return tr("Set a name for this command");
             if (index.column() == CommandColumn)
                 return tr("Set the shell command to execute");
+            if (index.column() == WorkingDirColumn)
+                return tr("Set the working directory for this command");
             if (index.column() == EnabledColumn)
                 return tr("Show or hide this command in the command list");
         } else
@@ -198,6 +202,9 @@ bool CommandDataModel::setData(const QModelIndex &index,
                     isModified = true;
                 } else if (index.column() == CommandColumn) {
                     command.command = value.toString();
+                    isModified = true;
+                } else if (index.column() == WorkingDirColumn) {
+                    command.workingDir = value.toString();
                     isModified = true;
                 }
             }
@@ -250,7 +257,9 @@ Qt::ItemFlags CommandDataModel::flags(const QModelIndex &index) const
     Qt::ItemFlags f = QAbstractTableModel::flags(index);
 
     if (isNormalRow) {
-        f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+        // no reasons to support support 'Drag&Drop' for working dir
+        if (index.column() != WorkingDirColumn)
+            f |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         if (index.column() == EnabledColumn)
             f |= Qt::ItemIsUserCheckable;
         else
@@ -270,9 +279,10 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal)
         return QVariant();
 
-    const char *sectionLabels[3] = {
+    const char *sectionLabels[4] = {
         QT_TR_NOOP("Name"),
         QT_TR_NOOP("Command"),
+        QT_TR_NOOP("Working directory"),
         QT_TR_NOOP("Enable") };
 
     return tr(sectionLabels[section]);

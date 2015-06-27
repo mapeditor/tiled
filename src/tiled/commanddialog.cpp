@@ -73,11 +73,13 @@ CommandTreeView::CommandTreeView(QWidget *parent)
 #if QT_VERSION >= 0x050000
     h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
     h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setSectionResizeMode(CommandDataModel::WorkingDirColumn, QHeaderView::Stretch);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn,
                             QHeaderView::ResizeToContents);
 #else
     h->setResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
     h->setResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
+    h->setResizeMode(CommandDataModel::WorkingDirColumn, QHeaderView::Stretch);
     h->setResizeMode(CommandDataModel::EnabledColumn,
                      QHeaderView::ResizeToContents);
 #endif

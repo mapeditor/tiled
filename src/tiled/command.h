@@ -36,19 +36,37 @@ struct Command
 {
     Command(bool isEnabled = true,
             const QString &name = QString(),
-            const QString &command = QString())
+            const QString &command = QString(),
+            const QString &workingDir = QString())
         : isEnabled(isEnabled)
         , name(name)
-        , command(command) {}
+        , command(command)
+        , workingDir(workingDir) {}
 
     bool isEnabled;
     QString name;
     QString command;
+    QString workingDir;
 
     /**
      * Returns the final command with replaced tokens.
      */
     QString finalCommand() const;
+
+    /**
+     * Returns the final working directory with replaced tokens.
+     */
+    QString finalWorkingDir() const;
+
+    /**
+     * Returns executable path without filename.
+     */
+    QString executablePath() const;
+
+    /**
+     * Returns executable full filename.
+     */
+    QString executableFileName() const;
 
     /**
      * Executes the command in the operating system shell or terminal
@@ -82,6 +100,7 @@ private:
 
     QString mName;
     QString mFinalCommand;
+    QString mFinalWorkingDir;
 
 #ifdef Q_OS_MAC
     QTemporaryFile mFile;

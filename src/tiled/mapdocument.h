@@ -109,6 +109,7 @@ public:
                              QString *error = 0);
 
     QString fileName() const { return mFileName; }
+    QString path() const;
 
     QString lastExportFileName() const;
     void setLastExportFileName(const QString &fileName);

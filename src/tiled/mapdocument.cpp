@@ -197,6 +197,11 @@ MapDocument *MapDocument::load(const QString &fileName,
     return mapDocument;
 }
 
+QString MapDocument::path() const
+{
+    return QFileInfo(mFileName).path();
+}
+
 void MapDocument::setFileName(const QString &fileName)
 {
     if (mFileName == fileName)

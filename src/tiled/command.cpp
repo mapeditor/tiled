@@ -22,6 +22,7 @@
 #include "documentmanager.h"
 #include "mapdocument.h"
 
+#include <QDir>
 #include <QMessageBox>
 #include <QSettings>
 
@@ -50,6 +51,46 @@ QString Command::finalCommand() const
     return finalCommand;
 }
 
+QString Command::finalWorkingDir() const
+{
+    QString finalWorkingDir = workingDir;
+
+    MapDocument *mapDoc = DocumentManager::instance()->currentDocument();
+    if (mapDoc) {
+        const QString mapPath = mapDoc->path();
+        finalWorkingDir.replace(QLatin1String("%executablepath"),
+                                QLatin1String("\"%1\"")).arg(executablePath());
+        finalWorkingDir.replace(QLatin1String("%mappath"),
+                                QLatin1String("\"%1\"")).arg(mapPath);
+
+    }
+    return finalWorkingDir;
+}
+
+QString Command::executableFileName() const
+{
+    QString finalCmd = finalCommand();
+    QString executableFilename;
+    QStringList stringsToCheck;
+    stringsToCheck << QLatin1String("'") << QLatin1String("\"") << QLatin1String("\\\"");
+    foreach (const QString &s, stringsToCheck) {
+        if (finalCmd.contains(s)) {
+            executableFilename = finalCmd.mid(1, finalCmd.lastIndexOf(s));
+            return executableFilename;
+        }
+    }
+    executableFilename = finalCmd.mid(0, finalCmd.indexOf(QLatin1String(" ")));
+    return executableFilename;
+}
+
+QString Command::executablePath() const
+{
+    QString executableFilename(executableFileName());
+    if (executableFilename.contains(QDir::separator()))
+        return QFileInfo(executableFilename).path();
+    return QString();
+}
+
 void Command::execute(bool inTerminal) const
 {
     // Save if save option is unset or true
@@ -71,6 +112,7 @@ QVariant Command::toQVariant() const
     hash[QLatin1String("Enabled")] = isEnabled;
     hash[QLatin1String("Name")] = name;
     hash[QLatin1String("Command")] = command;
+    hash[QLatin1String("WorkingDir")] = workingDir;
     return hash;
 }
 
@@ -81,6 +123,7 @@ Command Command::fromQVariant(const QVariant &variant)
     const QString namePref = QLatin1String("Name");
     const QString commandPref = QLatin1String("Command");
     const QString enablePref = QLatin1String("Enabled");
+    const QString workingDirPref = QLatin1String("WorkingDir");
 
     Command command;
     if (hash.contains(enablePref))
@@ -89,6 +132,8 @@ Command Command::fromQVariant(const QVariant &variant)
         command.name = hash[namePref].toString();
     if (hash.contains(commandPref))
         command.command = hash[commandPref].toString();
+    if (hash.contains(workingDirPref))
+        command.workingDir = hash[workingDirPref].toString();
 
     return command;
 }
@@ -97,6 +142,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
     : QProcess(DocumentManager::instance())
     , mName(command.name)
     , mFinalCommand(command.finalCommand())
+    , mFinalWorkingDir(command.finalWorkingDir())
 #ifdef Q_OS_MAC
     , mFile(QLatin1String("tiledXXXXXX.command"))
 #endif
@@ -155,6 +201,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
 
     connect(this, SIGNAL(finished(int)), SLOT(deleteLater()));
 
+    setWorkingDirectory(mFinalWorkingDir);
     start(mFinalCommand);
 }
 
