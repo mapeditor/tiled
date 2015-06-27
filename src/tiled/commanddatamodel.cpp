@@ -51,7 +51,7 @@ CommandDataModel::CommandDataModel()
         // Disable default commands by default so user gets an informative
         // warning when clicking the command button for the first time
         Command command(false);
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
         command.command = QLatin1String("gedit %mapfile");
 #elif defined(Q_OS_MAC)
         command.command = QLatin1String("open -t %mapfile");
@@ -312,7 +312,7 @@ QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
             connect(mapper, SIGNAL(mapped(int)), SLOT(execute(int)));
         }
 
-#if defined(Q_WS_X11) || defined(Q_OS_MAC)
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
         {
             QAction *action = menu->addAction(tr("Execute in Terminal"));
             QSignalMapper *mapper = new QSignalMapper(action);

@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
      * X11 native graphics system has performance problems with drawing the
      * tile grid.
      */
-#ifdef Q_WS_X11
+#if QT_VERSION < 0x050000 && defined(Q_WS_X11)
     QApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 

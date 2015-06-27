@@ -109,7 +109,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal)
 
     // Modify the command to run in a terminal
     if (inTerminal) {
-#ifdef Q_WS_X11
+#ifdef Q_OS_LINUX
         static bool hasGnomeTerminal = QProcess::execute(
                                     QLatin1String("which gnome-terminal")) == 0;
 
