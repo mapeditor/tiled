@@ -2,14 +2,13 @@ clone_depth: 200
 
 environment:
   QTDIR: C:\Qt\5.4\mingw491_32
-  NSIS_ROOT: C:\nsis
   MINGW: C:\Qt\Tools\mingw491_32
 
 configuration: Release
 
 install:
   - appveyor DownloadFile "http://kent.dl.sourceforge.net/project/nsis/NSIS 2/2.46/nsis-2.46-setup.exe" -FileName nsissetup.exe
-  - nsissetup /S /D=%NSIS_ROOT%
+  - nsissetup /S
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin;C:\Qt\Tools\QtCreator\bin
 
 build_script:
@@ -23,13 +22,11 @@ build_script:
   - qbs setup-toolchains --type mingw %MINGW%\bin\g++.exe mingw
   - qbs setup-qt %QTDIR%\bin\qmake.exe qt
   - qbs config defaultProfile qt
-  - qbs install --install-root install-root release
+  - qbs install --all-products --install-root install-root release
 
 after_build:
-  - pushd %APPVEYOR_BUILD_FOLDER%\dist\win
-  - set TILED_BUILD_DIR=%APPVEYOR_BUILD_FOLDER%\install-root
-  - set ARCH=32
-  - '%NSIS_ROOT%\makensis tiled.nsi'
+  - cd qt-release
+  - cd dist*
   - move tiled-*-setup.exe %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
