@@ -4,11 +4,9 @@ import qbs.Probes as Probes
 TiledPlugin {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
-    condition: false // broken due to introduction of SharedTileset
-
     // Not sure how to properly support Python on Mac OS X yet
     // (possibly requires using python-config)
-//    condition: qbs.targetOS.contains("linux") || qbs.targetOS.contains("windows")
+    condition: qbs.targetOS.contains("linux") || qbs.targetOS.contains("windows")
 
     Probes.PkgConfigProbe {
         id: pkgConfig
