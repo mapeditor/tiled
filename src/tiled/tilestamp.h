@@ -65,6 +65,7 @@ public:
 
     const QVector<TileStampVariation> &variations() const;
     void addVariation(Map *map, qreal probability = 1.0);
+    void addVariation(const TileStampVariation &variation);
     Map *takeVariation(int index);
     void deleteVariation(int index);
     bool isEmpty() const;
@@ -80,6 +81,15 @@ public:
 private:
     QExplicitlySharedDataPointer<TileStampData> d;
 };
+
+
+/**
+ * Adds a \a variation to this tile stamp.
+ */
+inline void TileStamp::addVariation(const TileStampVariation &variation)
+{
+    addVariation(new Map(*variation.map), variation.probability);
+}
 
 } // namespace Internal
 } // namespace Tiled

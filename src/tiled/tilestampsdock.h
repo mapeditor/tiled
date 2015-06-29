@@ -30,30 +30,42 @@ class TileLayer;
 
 namespace Internal {
 
-class QuickStampManager;
 class TileStamp;
+class TileStampManager;
 class TileStampModel;
+class TileStampView;
 
 class TileStampsDock : public QDockWidget
 {
     Q_OBJECT
 
 public:
-    TileStampsDock(QuickStampManager *stampManager, QWidget *parent = 0);
+    TileStampsDock(TileStampManager *stampManager, QWidget *parent = 0);
 
 signals:
     void setStamp(const TileStamp &);
 
 protected:
     void changeEvent(QEvent *e);
+    void keyPressEvent(QKeyEvent *);
 
 private slots:
     void currentRowChanged(const QModelIndex &index);
+    void showContextMenu(QPoint pos);
+
+    void delete_();
+    void addVariation();
 
 private:
     void retranslateUi();
 
+    TileStampManager *mTileStampManager;
     TileStampModel *mTileStampModel;
+    TileStampView *mTileStampView;
+
+    QAction *mNewStamp;
+    QAction *mAddVariation;
+    QAction *mDelete;
 };
 
 
@@ -61,18 +73,14 @@ private:
  * This view makes sure the size hint makes sense and implements the context
  * menu.
  */
-class TileStampsView : public QTreeView
+class TileStampView : public QTreeView
 {
     Q_OBJECT
 
 public:
-    explicit TileStampsView(QWidget *parent = 0);
+    explicit TileStampView(QWidget *parent = 0);
 
     QSize sizeHint() const;
-
-protected:
-    void contextMenuEvent(QContextMenuEvent *);
-    void keyPressEvent(QKeyEvent *);
 };
 
 } // namespace Internal

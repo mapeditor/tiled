@@ -59,7 +59,6 @@ class MapView;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
-class QuickStampManager;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
@@ -67,6 +66,7 @@ class TileAnimationEditor;
 class TileCollisionEditor;
 class TilesetDock;
 class TileStamp;
+class TileStampManager;
 class ToolManager;
 class Zoomable;
 
@@ -164,8 +164,6 @@ public slots:
 
     void setStamp(const TileStamp &stamp);
     void setTerrainBrush(const Terrain *terrain);
-    void saveQuickStamp(int index);
-    void extendQuickStamp(int index);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
@@ -253,8 +251,8 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
-    QuickStampManager *mQuickStampManager;
     ToolManager *mToolManager;
+    TileStampManager *mTileStampManager;
 };
 
 } // namespace Internal

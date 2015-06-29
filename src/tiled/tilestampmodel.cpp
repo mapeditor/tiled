@@ -69,7 +69,7 @@ int TileStampModel::rowCount(const QModelIndex &parent) const
 int TileStampModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return 2; // stamp | probability //| delete
+    return 2; // stamp | probability
 }
 
 QVariant TileStampModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -78,7 +78,6 @@ QVariant TileStampModel::headerData(int section, Qt::Orientation orientation, in
         switch (section) {
         case 0: return tr("Stamp");
         case 1: return tr("Probability");
-//        case 2: return tr("Delete");
         }
     }
     return QVariant();
@@ -182,22 +181,37 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
     if (parent.isValid()) {
         // removing variations
         TileStamp &stamp = mStamps[parent.row()];
-        beginRemoveRows(parent, row, row + count - 1);
-        for (; count > 0; --count)
+
+        // if only one stamp is left, we make all variation rows disappear
+        if (stamp.variations().size() - count == 1)
+            beginRemoveRows(parent, 0, count);
+        else
+            beginRemoveRows(parent, row, row + count - 1);
+
+        for (; count > 0; --count) {
+            mThumbnailCache.remove(stamp.variations().at(row).map);
             stamp.deleteVariation(row);
+        }
         endRemoveRows();
 
-        // remove stamp if all its variations were removed
         if (stamp.variations().isEmpty()) {
+            // remove stamp since all its variations were removed
             beginRemoveRows(QModelIndex(), parent.row(), parent.row());
-            mStamps.removeAt(row);
+            mStamps.removeAt(parent.row());
             endRemoveRows();
+        } else if (row == 0) {
+            // preview on stamp row needs update
+            const QModelIndex modelIndex = index(parent.row(), 0);
+            emit dataChanged(modelIndex, modelIndex);
         }
     } else {
         // removing stamps
         beginRemoveRows(parent, row, row + count - 1);
-        for (; count > 0; --count)
+        for (; count > 0; --count) {
+            for (const TileStampVariation &variation : mStamps.at(row).variations())
+                mThumbnailCache.remove(variation.map);
             mStamps.removeAt(row);
+        }
         endRemoveRows();
     }
 
@@ -253,8 +267,27 @@ void TileStampModel::removeStamp(const TileStamp &stamp)
     mStamps.removeAt(index);
     endRemoveRows();
 
-    foreach (const TileStampVariation &variation, stamp.variations())
+    for (const TileStampVariation &variation : stamp.variations())
         mThumbnailCache.remove(variation.map);
+}
+
+void TileStampModel::addVariation(const TileStamp &stamp,
+                                  const TileStampVariation &variation)
+{
+    int index = mStamps.indexOf(stamp);
+    if (index == -1)
+        return;
+
+    const int variationCount = stamp.variations().length();
+
+    if (variationCount == 1)
+        beginInsertRows(TileStampModel::index(index, 0), 0, 1);
+    else
+        beginInsertRows(TileStampModel::index(index, 0),
+                        variationCount, variationCount);
+
+    mStamps[index].addVariation(variation);
+    endInsertRows();
 }
 
 } // namespace Internal

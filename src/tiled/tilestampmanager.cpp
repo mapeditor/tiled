@@ -1,5 +1,5 @@
 /*
- * quickstampmanager.cpp
+ * tilestampmanager.cpp
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
  * Copyright 2014-2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
@@ -19,7 +19,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "quickstampmanager.h"
+#include "tilestampmanager.h"
 
 #include "abstracttool.h"
 #include "bucketfilltool.h"
@@ -33,21 +33,23 @@
 #include "tilesetmanager.h"
 #include "tilestamp.h"
 #include "tilestampmodel.h"
+#include "toolmanager.h"
 
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-QuickStampManager::QuickStampManager(QObject *parent)
+TileStampManager::TileStampManager(const ToolManager &toolManager,
+                                   QObject *parent)
     : QObject(parent)
-    , mQuickStamps(keys().length())
+    , mQuickStamps(quickStampKeys().length())
     , mTileStampModel(new TileStampModel(this))
+    , mToolManager(toolManager)
 {
 }
 
-QuickStampManager::~QuickStampManager()
+TileStampManager::~TileStampManager()
 {
-    for (int i = 0; i < mQuickStamps.size(); i++)
-        eraseQuickStamp(i);
+    // needs to be over here where the TileStamp type is complete
 }
 
 static TileStamp stampFromContext(AbstractTool *selectedTool)
@@ -95,34 +97,48 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
     return stamp;
 }
 
-void QuickStampManager::saveQuickStamp(int index, AbstractTool *selectedTool)
+void TileStampManager::newStamp()
 {
-    TileStamp stamp = stampFromContext(selectedTool);
+    TileStamp stamp = stampFromContext(mToolManager.selectedTool());
+    if (stamp.isEmpty())
+        return;
+
+    mTileStampModel->addStamp(stamp);
+}
+
+void TileStampManager::addVariation(const TileStamp &targetStamp)
+{
+    TileStamp stamp = stampFromContext(mToolManager.selectedTool());
+    if (stamp.isEmpty())
+        return;
+
+    if (stamp == targetStamp) // avoid easy mistake of adding duplicates
+        return;
+
+    foreach (const TileStampVariation &variation, stamp.variations())
+        mTileStampModel->addVariation(targetStamp, variation);
+}
+
+void TileStampManager::saveQuickStamp(int index)
+{
+    TileStamp stamp = stampFromContext(mToolManager.selectedTool());
     if (stamp.isEmpty())
         return;
 
     saveQuickStamp(index, stamp);
 }
 
-void QuickStampManager::extendQuickStamp(int index, AbstractTool *selectedTool)
+void TileStampManager::extendQuickStamp(int index)
 {
-    TileStamp stamp = stampFromContext(selectedTool);
-    if (stamp.isEmpty())
-        return;
-
     TileStamp quickStamp = mQuickStamps[index];
-    if (stamp == quickStamp) // avoid easy mistake of adding duplicates
-        return;
 
-    foreach (const TileStampVariation &variation, stamp.variations()) {
-        quickStamp.addVariation(new Map(*variation.map),
-                                variation.probability);
-    }
-
-    saveQuickStamp(index, quickStamp);
+    if (quickStamp.isEmpty())
+        saveQuickStamp(index);
+    else
+        addVariation(quickStamp);
 }
 
-void QuickStampManager::eraseQuickStamp(int index)
+void TileStampManager::eraseQuickStamp(int index)
 {
     const TileStamp stamp = mQuickStamps.at(index);
     if (!stamp.isEmpty()) {
@@ -133,7 +149,7 @@ void QuickStampManager::eraseQuickStamp(int index)
     }
 }
 
-void QuickStampManager::saveQuickStamp(int index, TileStamp stamp)
+void TileStampManager::saveQuickStamp(int index, TileStamp stamp)
 {
     stamp.setName(tr("Quickstamp %1").arg(index + 1));
     stamp.setQuickStampIndex(index);
@@ -146,12 +162,7 @@ void QuickStampManager::saveQuickStamp(int index, TileStamp stamp)
     mQuickStamps[index] = stamp;
 }
 
-TileStampModel *QuickStampManager::tileStampModel() const
-{
-    return mTileStampModel;
-}
-
-void QuickStampManager::selectQuickStamp(int index)
+void TileStampManager::selectQuickStamp(int index)
 {
     const TileStamp &stamp = mQuickStamps.at(index);
     if (!stamp.isEmpty())

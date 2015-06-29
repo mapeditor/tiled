@@ -1,5 +1,5 @@
 /*
- * quickstampmanager.h
+ * tilestampmanager.h
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
  * Copyright 2014-2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
@@ -19,8 +19,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QUICKSTAMPMANAGER_H
-#define QUICKSTAMPMANAGER_H
+#ifndef TILESTAMPMANAGER_H
+#define TILESTAMPMANAGER_H
 
 #include <QObject>
 #include <QVector>
@@ -32,64 +32,78 @@ class TileLayer;
 
 namespace Internal {
 
-class AbstractTool;
 class MapDocument;
 class TileStamp;
 class TileStampModel;
+class ToolManager;
 
 /**
  * Implements a manager which handles lots of copy&paste slots.
  * Ctrl + <1..9> will store tile layers, and just <1..9> will recall these
  * tile layers.
  */
-class QuickStampManager: public QObject
+class TileStampManager : public QObject
 {
     Q_OBJECT
 
 public:
-    QuickStampManager(QObject *parent = 0);
-    ~QuickStampManager();
+    TileStampManager(const ToolManager &toolManager, QObject *parent = 0);
+    ~TileStampManager();
 
-    /**
-     * Return the keys which should be used.
-     * Note: To store a tile layer <Ctrl> is added. The given keys will work
-     * for recalling the stored values
-     */
-    static QList<Qt::Key> keys() {
-        QList<Qt::Key> keys;
-        keys << Qt::Key_1
-             << Qt::Key_2
-             << Qt::Key_3
-             << Qt::Key_4
-             << Qt::Key_5
-             << Qt::Key_6
-             << Qt::Key_7
-             << Qt::Key_8
-             << Qt::Key_9;
-        return keys;
-    }
+    static QList<Qt::Key> quickStampKeys();
 
     TileStampModel *tileStampModel() const;
 
 public slots:
+    void newStamp();
+    void addVariation(const TileStamp &targetStamp);
+
     void selectQuickStamp(int index);
-    void saveQuickStamp(int index, AbstractTool *selectedTool);
-    void extendQuickStamp(int index, AbstractTool *selectedTool);
+    void saveQuickStamp(int index);
+    void extendQuickStamp(int index);
 
 signals:
     void setStamp(const TileStamp &stamp);
 
 private:
-    Q_DISABLE_COPY(QuickStampManager)
+    Q_DISABLE_COPY(TileStampManager)
 
     void eraseQuickStamp(int index);
     void saveQuickStamp(int index, TileStamp stamp);
 
     QVector<TileStamp> mQuickStamps;
     TileStampModel *mTileStampModel;
+
+    const ToolManager &mToolManager;
 };
+
+
+/**
+ * Returns the keys used for quickly accessible tile stamps.
+ * Note: To store a tile layer <Ctrl> is added. The given keys will work
+ * for recalling the stored values.
+ */
+inline QList<Qt::Key> TileStampManager::quickStampKeys()
+{
+    QList<Qt::Key> keys;
+    keys << Qt::Key_1
+         << Qt::Key_2
+         << Qt::Key_3
+         << Qt::Key_4
+         << Qt::Key_5
+         << Qt::Key_6
+         << Qt::Key_7
+         << Qt::Key_8
+         << Qt::Key_9;
+    return keys;
+}
+
+inline TileStampModel *TileStampManager::tileStampModel() const
+{
+    return mTileStampModel;
+}
 
 } // namespace Tiled::Internal
 } // namespace Tiled
 
-#endif // QUICKSTAMPMANAGER_H
+#endif // TILESTAMPMANAGER_H

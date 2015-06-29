@@ -133,7 +133,6 @@ SOURCES += aboutdialog.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
     propertybrowser.cpp \
-    quickstampmanager.cpp \
     raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
@@ -165,6 +164,7 @@ SOURCES += aboutdialog.cpp \
     tilesetmodel.cpp \
     tilesetview.cpp \
     tilestamp.cpp \
+    tilestampmanager.cpp \
     tilestampmodel.cpp \
     tilestampsdock.cpp \
     tmxmapreader.cpp \
@@ -272,7 +272,6 @@ HEADERS += aboutdialog.h \
     preferences.h \
     propertiesdock.h \
     propertybrowser.h \
-    quickstampmanager.h \
     raiselowerhelper.h \
     rangeset.h \
     renamelayer.h \
@@ -305,6 +304,7 @@ HEADERS += aboutdialog.h \
     tilesetmodel.h \
     tilesetview.h \
     tilestamp.h \
+    tilestampmanager.h \
     tilestampmodel.h \
     tilestampsdock.h \
     tmxmapreader.h \

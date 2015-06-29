@@ -68,7 +68,6 @@
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
-#include "quickstampmanager.h"
 #include "stampbrush.h"
 #include "terrainbrush.h"
 #include "tilelayer.h"
@@ -76,6 +75,7 @@
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
+#include "tilestampmanager.h"
 #include "tilestampsdock.h"
 #include "terraindock.h"
 #include "toolmanager.h"
@@ -138,8 +138,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mStatusInfoLabel(new QLabel)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
-    , mQuickStampManager(new QuickStampManager(this))
     , mToolManager(new ToolManager(this))
+    , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -186,7 +186,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
     PropertiesDock *propertiesDock = new PropertiesDock(this);
-    TileStampsDock *tileStampsDock = new TileStampsDock(mQuickStampManager, this);
+    TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
@@ -523,7 +523,7 @@ MainWindow::~MainWindow()
     mTileCollisionEditor->setTile(0);
     mTileCollisionEditor->writeSettings();
 
-    delete mQuickStampManager;
+    delete mTileStampManager;
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -1517,16 +1517,6 @@ void MainWindow::setTerrainBrush(const Terrain *terrain)
         mToolManager->selectTool(mTerrainBrush);
 }
 
-void MainWindow::saveQuickStamp(int index)
-{
-    mQuickStampManager->saveQuickStamp(index, mToolManager->selectedTool());
-}
-
-void MainWindow::extendQuickStamp(int index)
-{
-    mQuickStampManager->extendQuickStamp(index, mToolManager->selectedTool());
-}
-
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
 {
     mStatusInfoLabel->setText(statusInfo);
@@ -1672,7 +1662,7 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
 void MainWindow::setupQuickStamps()
 {
-    QList<Qt::Key> keys = QuickStampManager::keys();
+    QList<Qt::Key> keys = TileStampManager::quickStampKeys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
     QSignalMapper *saveMapper = new QSignalMapper(this);
@@ -1698,13 +1688,13 @@ void MainWindow::setupQuickStamps()
     }
 
     connect(selectMapper, SIGNAL(mapped(int)),
-            mQuickStampManager, SLOT(selectQuickStamp(int)));
+            mTileStampManager, SLOT(selectQuickStamp(int)));
     connect(saveMapper, SIGNAL(mapped(int)),
-            this, SLOT(saveQuickStamp(int)));
+            mTileStampManager, SLOT(saveQuickStamp(int)));
     connect(extendMapper, SIGNAL(mapped(int)),
-            this, SLOT(extendQuickStamp(int)));
+            mTileStampManager, SLOT(extendQuickStamp(int)));
 
-    connect(mQuickStampManager, SIGNAL(setStamp(TileStamp)),
+    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
             this, SLOT(setStamp(TileStamp)));
 }
 
