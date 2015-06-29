@@ -321,7 +321,7 @@ SharedTileset MapReaderPrivate::readTileset()
                     if (tileWidth == 0 || tileHeight == 0) {
                         xml.raiseError(tr("Invalid tileset parameters for tileset"
                                           " '%1'").arg(name));
-                        tileset.reset();
+                        tileset.clear();
                         break;
                     } else {
                         readTilesetImage(tileset);

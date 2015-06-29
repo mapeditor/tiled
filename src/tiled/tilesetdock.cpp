@@ -583,7 +583,7 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
     const int index = indexOf(mTilesets, tileset);
     Q_ASSERT(index != -1);
 
-    mTilesets.removeAt(index);
+    mTilesets.remove(index);
     mTabBar->removeTab(index);
     delete tilesetViewAt(index);
 
@@ -603,7 +603,13 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
 
 void TilesetDock::tilesetMoved(int from, int to)
 {
+#if QT_VERSION >= 0x050200
     mTilesets.insert(to, mTilesets.takeAt(from));
+#else
+    SharedTileset tileset = mTilesets.at(from);
+    mTilesets.remove(from);
+    mTilesets.insert(to, tileset);
+#endif
 
     // Move the related tileset views
     QWidget *widget = mViewStack->widget(from);

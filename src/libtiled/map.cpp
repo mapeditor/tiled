@@ -223,7 +223,7 @@ int Map::indexOfTileset(const SharedTileset &tileset) const
 
 void Map::removeTilesetAt(int index)
 {
-    mTilesets.removeAt(index);
+    mTilesets.remove(index);
 }
 
 void Map::replaceTileset(const SharedTileset &oldTileset,

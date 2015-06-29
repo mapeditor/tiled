@@ -278,7 +278,7 @@ void TileStampModel::addVariation(const TileStamp &stamp,
     if (index == -1)
         return;
 
-    const int variationCount = stamp.variations().length();
+    const int variationCount = stamp.variations().size();
 
     if (variationCount == 1)
         beginInsertRows(TileStampModel::index(index, 0), 0, 1);
