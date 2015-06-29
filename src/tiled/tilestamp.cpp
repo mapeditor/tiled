@@ -23,6 +23,8 @@
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 
+#include <QMap>
+
 namespace Tiled {
 namespace Internal {
 
@@ -187,7 +189,23 @@ Map *TileStamp::randomVariation() const
     if (d->variations.isEmpty())
         return 0;
 
-    return d->variations.at(rand() % d->variations.size()).map; // todo: take probability into account
+    QMap<qreal, const TileStampVariation *> probabilityThresholds;
+    qreal sum = 0.0;
+    for (const TileStampVariation &variation : d->variations) {
+        sum += variation.probability;
+        probabilityThresholds.insert(sum, &variation);
+    }
+
+    qreal random = ((qreal)rand() / RAND_MAX) * sum;
+    auto it = probabilityThresholds.lowerBound(random);
+
+    const TileStampVariation *variation;
+    if (it != probabilityThresholds.end())
+        variation = it.value();
+    else
+        variation = &d->variations.last(); // floating point may have failed us
+
+    return variation->map;
 }
 
 /**
