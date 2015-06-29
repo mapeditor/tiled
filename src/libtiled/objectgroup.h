@@ -142,7 +142,7 @@ public:
     /**
      * Computes and returns the set of tilesets used by this object group.
      */
-    QSet<Tileset*> usedTilesets() const;
+    QSet<SharedTileset> usedTilesets() const override;
 
     /**
      * Returns whether any tile objects in this object group reference tiles

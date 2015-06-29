@@ -44,6 +44,9 @@ ToolManager::~ToolManager()
 {
 }
 
+/**
+ * Sets the MapDocument on which the registered tools will operate.
+ */
 void ToolManager::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
@@ -57,6 +60,12 @@ void ToolManager::setMapDocument(MapDocument *mapDocument)
     }
 }
 
+/**
+ * Registers a new tool. The tool manager does not take ownership over the
+ * tool.
+ *
+ * @return The action for activating the tool.
+ */
 QAction *ToolManager::registerTool(AbstractTool *tool)
 {
     tool->setMapDocument(mMapDocument);
@@ -83,6 +92,9 @@ QAction *ToolManager::registerTool(AbstractTool *tool)
     return toolAction;
 }
 
+/**
+ * Selects the given tool. It should be previously added using registerTool().
+ */
 void ToolManager::selectTool(AbstractTool *tool)
 {
     if (tool && !tool->isEnabled()) // Refuse to select disabled tools

@@ -266,7 +266,6 @@ int main(int argc, char *argv[])
         // Write out the file
         bool success = chosenWriter->write(map, targetFile);
 
-        qDeleteAll(map->tilesets());
         delete map;
 
         if (!success) {

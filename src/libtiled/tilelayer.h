@@ -38,11 +38,11 @@
 #include <QMargins>
 #include <QString>
 #include <QVector>
+#include <QSharedPointer>
 
 namespace Tiled {
 
 class Tile;
-class Tileset;
 
 /**
  * A cell on a tile layer grid.
@@ -206,7 +206,7 @@ public:
     /**
      * Computes and returns the set of tilesets used by this tile layer.
      */
-    QSet<Tileset*> usedTilesets() const;
+    QSet<SharedTileset> usedTilesets() const override;
 
     /**
      * Returns whether this tile layer has any cell for which the given
@@ -326,6 +326,8 @@ inline const Cell &TileLayer::cellAt(const QPoint &point) const
 {
     return cellAt(point.x(), point.y());
 }
+
+typedef QSharedPointer<TileLayer> SharedTileLayer;
 
 } // namespace Tiled
 

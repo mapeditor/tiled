@@ -24,6 +24,7 @@
 
 #include "abstracttiletool.h"
 #include "tilelayer.h"
+#include "tilestamp.h"
 
 namespace Tiled {
 
@@ -54,27 +55,25 @@ public:
     void languageChanged();
 
     /**
-     * Sets the stamp that is drawn when painting. The stamp brush takes
-     * ownership over the stamp layer.
+     * Sets the stamp that is drawn when painting.
      */
-    void setStamp(TileLayer *stamp);
+    void setStamp(const TileStamp &stamp);
 
     /**
-     * This returns the actual tile layer which is used to define the current
-     * state.
+     * This returns the current tile stamp used for painting.
      */
-    TileLayer *stamp() const { return mStamp; }
+    const TileStamp &stamp() const { return mStamp; }
 
 public slots:
     void setRandom(bool value);
 
 signals:
     /**
-     * Emitted when the currently selected tiles changed. The stamp brush emits
+     * Emitted when a stamp was captured from the map. The stamp brush emits
      * this signal instead of setting its stamp directly so that the fill tool
      * also gets the new stamp.
      */
-    void currentTilesChanged(const TileLayer *tiles);
+    void stampCaptured(const TileStamp &stamp);
 
 protected:
     void tilePositionChanged(const QPoint &tilePos);
@@ -83,44 +82,29 @@ protected:
                             MapDocument *newDocument);
 
 private:
-    void beginPaint();
+    enum PaintFlags {
+        Mergeable               = 0x1,
+        SuppressRegionEdited    = 0x2
+    };
 
-    /**
-     * Merges the tile layer of its brush item into the current map.
-     * mergeable determines if this can be merged with similar actions for undo.
-     * whereX and whereY give an offset where to merge the brush items tilelayer
-     * into the current map.
-     */
-    void doPaint(bool mergeable, int whereX, int whereY);
+    void beginPaint();
+    QRegion doPaint(int flags = 0);
 
     void beginCapture();
     void endCapture();
     QRect capturedArea() const;
 
-    /**
-     * updates the variables mStampX and mStampY depending on the mouse pointers
-     * position.
-     */
-    void updatePosition();
+    void updatePreview();
+    void updatePreview(QPoint tilePos);
 
-    /**
-     * mStamp is a tile layer in which is the selection the user made
-     * either by right clicking (Capture) or at the tileset dock
-     */
-    TileLayer *mStamp;
+    TileStamp mStamp;
+    SharedTileLayer mPreviewLayer;
+    QVector<SharedTileset> mMissingTilesets;
 
     QPoint mCaptureStart;
-    int mStampX, mStampY;
+    QPoint mPrevTilePosition;
 
-    /**
-     * This updates the brush item.
-     * It tries to put at all given points a stamp of the current stamp at the
-     * corresponding position.
-     * It also takes care, that no overlaps appear.
-     * So it will check for every point if it can place a stamp there without
-     * overlap.
-     */
-    void configureBrush(const QVector<QPoint> &list);
+    void drawPreviewLayer(const QVector<QPoint> &list);
 
     /**
      * There are several options how the stamp utility can be used.
@@ -148,27 +132,12 @@ private:
      * When drawing lines, this point will be one end.
      * When drawing circles this will be the midpoint.
      */
-    int mStampReferenceX, mStampReferenceY;
+    QPoint mStampReference;
 
     bool mIsRandom;
     QList<Cell> mRandomList;
 
-    /**
-     * Returns a tile layer containing one tile randomly chosen
-     * from mRandomList.
-     */
-    TileLayer *getRandomTileLayer() const;
-
-    /**
-     * Updates the list used random stamps.
-     * This is done by taking all non-null tiles from the original stamp mStamp.
-     */
     void updateRandomList();
-
-    /**
-     * Sets the stamp to a random stamp.
-     */
-    void setRandomStamp();
 };
 
 } // namespace Internal

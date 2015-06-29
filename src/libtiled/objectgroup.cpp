@@ -34,7 +34,6 @@
 #include "map.h"
 #include "mapobject.h"
 #include "tile.h"
-#include "tileset.h"
 
 #include <cmath>
 
@@ -125,13 +124,13 @@ bool ObjectGroup::isEmpty() const
     return mObjects.isEmpty();
 }
 
-QSet<Tileset*> ObjectGroup::usedTilesets() const
+QSet<SharedTileset> ObjectGroup::usedTilesets() const
 {
-    QSet<Tileset*> tilesets;
+    QSet<SharedTileset> tilesets;
 
     foreach (const MapObject *object, mObjects)
         if (const Tile *tile = object->cell().tile)
-            tilesets.insert(tile->tileset());
+            tilesets.insert(tile->sharedTileset());
 
     return tilesets;
 }

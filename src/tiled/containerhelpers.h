@@ -1,6 +1,6 @@
 /*
- * geometry.h
- * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
+ *
+ * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,26 +18,24 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#ifndef CONTAINERHELPERS_H
+#define CONTAINERHELPERS_H
 
-#include <QPoint>
-#include <QRegion>
-#include <QVector>
+#include <algorithm>
 
-namespace Tiled {
+template<typename Container, typename Value>
+inline int indexOf(const Container &container, Value value)
+{
+    auto it = std::find(container.begin(), container.end(), value);
+    return it == container.end() ? -1 : std::distance(container.begin(), it);
+}
 
-QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1);
-QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1);
+template<typename Container, typename Value>
+inline bool contains(const Container &container, Value value)
+{
+    return std::find(container.begin(),
+                     container.end(),
+                     value) != container.end();
+}
 
-inline QVector<QPoint> pointsOnEllipse(QPoint a, QPoint b)
-{ return pointsOnEllipse(a.x(), a.y(), b.x(), b.y()); }
-
-inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b)
-{ return pointsOnLine(a.x(), a.y(), b.x(), b.y()); }
-
-QList<QRegion> coherentRegions(const QRegion &region);
-
-} // namespace Tiled
-
-#endif // GEOMETRY_H
+#endif // CONTAINERHELPERS_H

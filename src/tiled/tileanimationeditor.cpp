@@ -338,7 +338,7 @@ void TileAnimationEditor::setTile(Tile *tile)
                                                       mUi->tilesetView);
         mUi->tilesetView->setModel(tilesetModel);
     } else {
-        mFrameListModel->setFrames(0, QVector<Frame>());
+        mFrameListModel->setFrames(nullptr, QVector<Frame>());
     }
 
     mUi->frameList->setEnabled(tile && !tile->tileset()->isExternal());

@@ -21,6 +21,8 @@
 #ifndef NEWTILESETDIALOG_H
 #define NEWTILESETDIALOG_H
 
+#include "tileset.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -28,9 +30,6 @@ class NewTilesetDialog;
 }
 
 namespace Tiled {
-
-class Tileset;
-
 namespace Internal {
 
 /**
@@ -56,7 +55,7 @@ public:
      * Shows the dialog and returns the created tileset. Returns 0 if the
      * dialog was cancelled.
      */
-    Tileset *createTileset();
+    SharedTileset createTileset();
 
 private slots:
     void browse();
@@ -69,7 +68,7 @@ private:
     QString mPath;
     Ui::NewTilesetDialog *mUi;
     bool mNameWasEdited;
-    Tileset *mNewTileset;
+    SharedTileset mNewTileset;
 };
 
 } // namespace Internal

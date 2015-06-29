@@ -116,7 +116,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &pos, const QSizeF &ce
     const QSizeF size = image.size();
     const QSizeF objectSize = (cellSize == QSizeF(0,0)) ? size : cellSize;
     const QSizeF scale(objectSize.width() / size.width(), objectSize.height() / size.height());
-    const QPoint offset = cell.tile->tileset()->tileOffset();
+    const QPoint offset = cell.tile->offset();
     const QPointF sizeHalf = QPointF(objectSize.width() / 2, objectSize.height() / 2);
 
     QPainter::PixmapFragment fragment;

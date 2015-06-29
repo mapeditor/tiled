@@ -31,7 +31,6 @@
 
 #include "map.h"
 #include "tile.h"
-#include "tileset.h"
 
 using namespace Tiled;
 
@@ -79,7 +78,7 @@ void TileLayer::recomputeDrawMargins()
             if (cell.flippedAntiDiagonally)
                 size.transpose();
 
-            const QPoint offset = tile->tileset()->tileOffset();
+            const QPoint offset = tile->offset();
 
             maxTileSize = maxSize(size, maxTileSize);
             offsetMargins = maxMargins(QMargins(-offset.x(),
@@ -107,7 +106,7 @@ void TileLayer::setCell(int x, int y, const Cell &cell)
         if (cell.flippedAntiDiagonally)
             size.transpose();
 
-        const QPoint offset = cell.tile->tileset()->tileOffset();
+        const QPoint offset = cell.tile->offset();
 
         mMaxTileSize = maxSize(size, mMaxTileSize);
         mOffsetMargins = maxMargins(QMargins(-offset.x(),
@@ -254,13 +253,13 @@ void TileLayer::rotate(RotateDirection direction)
 }
 
 
-QSet<Tileset*> TileLayer::usedTilesets() const
+QSet<SharedTileset> TileLayer::usedTilesets() const
 {
-    QSet<Tileset*> tilesets;
+    QSet<SharedTileset> tilesets;
 
     for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
         if (const Tile *tile = mGrid.at(i).tile)
-            tilesets.insert(tile->tileset());
+            tilesets.insert(tile->sharedTileset());
 
     return tilesets;
 }

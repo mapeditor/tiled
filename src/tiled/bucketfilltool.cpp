@@ -23,6 +23,7 @@
 
 #include "bucketfilltool.h"
 
+#include "addremovetileset.h"
 #include "brushitem.h"
 #include "filltiles.h"
 #include "tilepainter.h"
@@ -41,8 +42,6 @@ BucketFillTool::BucketFillTool(QObject *parent)
                                ":images/22x22/stock-tool-bucket-fill.png")),
                        QKeySequence(tr("F")),
                        parent)
-    , mStamp(0)
-    , mFillOverlay(0)
     , mIsActive(false)
     , mLastShiftStatus(false)
     , mIsRandom(false)
@@ -52,8 +51,6 @@ BucketFillTool::BucketFillTool(QObject *parent)
 
 BucketFillTool::~BucketFillTool()
 {
-    delete mStamp;
-    delete mFillOverlay;
 }
 
 void BucketFillTool::activate(MapScene *scene)
@@ -74,6 +71,9 @@ void BucketFillTool::deactivate(MapScene *scene)
 
 void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 {
+    if (mStamp.isEmpty())
+        return;
+
     bool shiftPressed = QApplication::keyboardModifiers() & Qt::ShiftModifier;
     bool fillRegionChanged = false;
 
@@ -82,15 +82,21 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (!tileLayer)
         return;
 
+    // todo: When there are multiple variations, it would make sense to choose
+    // random variations while filling. When the variations have different
+    // sizes, probably the bounding box of all variations should be used.
+    Map *variation = mStamp.randomVariation();
+    TileLayer *stampLayer = static_cast<TileLayer*>(variation->layerAt(0));
+
     // Skip filling if the stamp is empty
-    if (!mStamp || mStamp->isEmpty())
+    if (!stampLayer || stampLayer->isEmpty())
         return;
 
     TilePainter regionComputer(mapDocument(), tileLayer);
     // If the stamp is a single tile, ignore it when making the region
-    if (mStamp->width() == 1 && mStamp->height() == 1 && !shiftPressed &&
-            mStamp->cellAt(0, 0) == regionComputer.cellAt(tilePos.x(),
-                                                           tilePos.y()))
+    if (stampLayer->width() == 1 && stampLayer->height() == 1 && !shiftPressed &&
+            stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos.x(),
+                                                              tilePos.y()))
         return;
 
     // This clears the connections so we don't get callbacks
@@ -138,22 +144,24 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (!mFillOverlay) {
         // Create a new overlay region
         const QRect fillBounds = mFillRegion.boundingRect();
-        mFillOverlay = new TileLayer(QString(),
-                                     fillBounds.x(),
-                                     fillBounds.y(),
-                                     fillBounds.width(),
-                                     fillBounds.height());
+        mFillOverlay = SharedTileLayer(new TileLayer(QString(),
+                                                     fillBounds.x(),
+                                                     fillBounds.y(),
+                                                     fillBounds.width(),
+                                                     fillBounds.height()));
     }
 
     // Paint the new overlay
-    TilePainter tilePainter(mapDocument(), mFillOverlay);
     if (!mIsRandom) {
-        if (fillRegionChanged)
-            tilePainter.drawStamp(mStamp, mFillRegion);
+        if (fillRegionChanged) {
+            mMissingTilesets.clear();
+            mapDocument()->unifyTilesets(variation, mMissingTilesets);
+
+            TilePainter tilePainter(mapDocument(), mFillOverlay.data());
+            tilePainter.drawStamp(stampLayer, mFillRegion);
+        }
     } else {
-        TileLayer *stamp = getRandomTileLayer(mFillRegion);
-        tilePainter.drawStamp(stamp, mFillRegion);
-        delete stamp;
+        randomFill(mFillOverlay.data(), mFillRegion);
         fillRegionChanged = true;
     }
 
@@ -176,6 +184,13 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
                                          currentTileLayer(),
                                          mFillRegion,
                                          brushItem()->tileLayer());
+
+    if (!mMissingTilesets.isEmpty()) {
+        for (const SharedTileset &tileset : mMissingTilesets)
+            new AddTileset(mapDocument(), tileset, fillTiles);
+
+        mMissingTilesets.clear();
+    }
 
     QRegion fillRegion(mFillRegion);
     mapDocument()->undoStack()->push(fillTiles);
@@ -209,16 +224,15 @@ void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
     clearConnections(oldDocument);
 
     // Reset things that are probably invalid now
-    setStamp(0);
+    setStamp(TileStamp());
     clearOverlay();
 }
 
-void BucketFillTool::setStamp(TileLayer *stamp)
+void BucketFillTool::setStamp(const TileStamp &stamp)
 {
     // Clear any overlay that we presently have with an old stamp
     clearOverlay();
 
-    delete mStamp;
     mStamp = stamp;
 
     if (mIsRandom)
@@ -234,9 +248,8 @@ void BucketFillTool::clearOverlay()
     // risk of getting a callback and causing an infinite loop
     clearConnections(mapDocument());
 
-    brushItem()->setTileLayer(0);
-    delete mFillOverlay;
-    mFillOverlay = 0;
+    brushItem()->clear();
+    mFillOverlay.clear();
 
     mFillRegion = QRegion();
     brushItem()->setTileRegion(QRegion());
@@ -295,38 +308,35 @@ void BucketFillTool::setRandom(bool value)
     tilePositionChanged(tilePosition());
 }
 
-TileLayer *BucketFillTool::getRandomTileLayer(const QRegion &region) const
+void BucketFillTool::randomFill(TileLayer *tileLayer, const QRegion &region) const
 {
-    QRect bb = region.boundingRect();
-    TileLayer *result = new TileLayer(QString(), bb.x(), bb.y(),
-                                      bb.width(), bb.height());
-
     if (region.isEmpty() || mRandomList.empty())
-        return result;
+        return;
 
     foreach (const QRect &rect, region.rects()) {
         for (int _x = rect.left(); _x <= rect.right(); ++_x) {
             for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
 
-                result->setCell(_x - bb.x(),
-                                _y - bb.y(),
-                                mRandomList.at(rand() % mRandomList.size()));
+                // todo: take into account tile probability
+                tileLayer->setCell(_x - tileLayer->x(),
+                                   _y - tileLayer->y(),
+                                   mRandomList.at(rand() % mRandomList.size()));
             }
         }
     }
-    return result;
 }
 
 void BucketFillTool::updateRandomList()
 {
     mRandomList.clear();
+    mMissingTilesets.clear();
 
-    if (!mStamp)
-        return;
-
-    for (int x = 0; x < mStamp->width(); x++)
-        for (int y = 0; y < mStamp->height(); y++)
-            if (!mStamp->cellAt(x, y).isEmpty())
-                mRandomList.append(mStamp->cellAt(x, y));
+    foreach (const TileStampVariation &variation, mStamp.variations()) {
+        TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
+        for (int x = 0; x < tileLayer->width(); x++)
+            for (int y = 0; y < tileLayer->height(); y++)
+                if (!tileLayer->cellAt(x, y).isEmpty())
+                    mRandomList.append(tileLayer->cellAt(x, y));
+    }
 }
-

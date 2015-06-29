@@ -35,7 +35,6 @@
 #include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
 #include "tilesetmanager.h"
 
 #include <QDebug>
@@ -404,17 +403,17 @@ bool AutoMapper::setupCorrectIndexes()
 // because here mAddedTileset is modified.
 bool AutoMapper::setupTilesets(Map *src, Map *dst)
 {
-    QList<Tileset*> existingTilesets = dst->tilesets();
+    const QVector<SharedTileset> &existingTilesets = dst->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of dst map
-    foreach (Tileset *tileset, src->tilesets()) {
+    foreach (const SharedTileset &tileset, src->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
         QUndoStack *undoStack = mMapDocument->undoStack();
 
-        Tileset *replacement = tileset->findSimilarTileset(existingTilesets);
+        SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
         if (!replacement) {
             mAddedTilesets.append(tileset);
             undoStack->push(new AddTileset(mMapDocument, tileset));
@@ -872,16 +871,16 @@ void AutoMapper::cleanAll()
 
 void AutoMapper::cleanTilesets()
 {
-    foreach (Tileset *tileset, mAddedTilesets) {
-        if (mMapWork->isTilesetUsed(tileset))
+    foreach (const SharedTileset &tileset, mAddedTilesets) {
+        if (mMapWork->isTilesetUsed(tileset.data()))
             continue;
 
-        const int layerIndex = mMapWork->indexOfTileset(tileset);
-        if (layerIndex == -1)
+        const int index = mMapWork->indexOfTileset(tileset);
+        if (index == -1)
             continue;
 
         QUndoStack *undo = mMapDocument->undoStack();
-        undo->push(new RemoveTileset(mMapDocument, layerIndex, tileset));
+        undo->push(new RemoveTileset(mMapDocument, index));
     }
     mAddedTilesets.clear();
 }

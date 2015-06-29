@@ -66,7 +66,7 @@ public:
 
 private:
     Tiled::Properties toProperties(const QVariant &variant);
-    Tiled::Tileset *toTileset(const QVariant &variant);
+    Tiled::SharedTileset toTileset(const QVariant &variant);
     Tiled::Layer *toLayer(const QVariant &variant);
     Tiled::TileLayer *toTileLayer(const QVariantMap &variantMap);
     Tiled::ObjectGroup *toObjectGroup(const QVariantMap &variantMap);

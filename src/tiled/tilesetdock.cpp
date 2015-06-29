@@ -25,6 +25,7 @@
 #include "addremovemapobject.h"
 #include "addremovetiles.h"
 #include "addremovetileset.h"
+#include "containerhelpers.h"
 #include "documentmanager.h"
 #include "editterraindialog.h"
 #include "erasetiles.h"
@@ -38,10 +39,10 @@
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
 #include "tilesetmanager.h"
+#include "tilestamp.h"
 #include "tmxmapwriter.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -372,7 +373,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         mTilesets = mMapDocument->map()->tilesets();
 
-        foreach (Tileset *tileset, mTilesets) {
+        foreach (const SharedTileset &tileset, mTilesets) {
             TilesetView *view = new TilesetView;
             view->setMapDocument(mMapDocument);
             view->setZoomable(mZoomable);
@@ -460,7 +461,7 @@ void TilesetDock::updateActions()
     if (index > -1) {
         view = tilesetViewAt(index);
         if (view) {
-            Tileset *tileset = mTilesets.at(index);
+            Tileset *tileset = mTilesets.at(index).data();
 
             if (!view->model()) {
                 // Lazily set up the model
@@ -558,7 +559,7 @@ void TilesetDock::tilesetAdded(int index, Tileset *tileset)
     view->setMapDocument(mMapDocument);
     view->setZoomable(mZoomable);
 
-    mTilesets.insert(index, tileset);
+    mTilesets.insert(index, tileset->sharedPointer());
     mTabBar->insertTab(index, tileset->name());
     mViewStack->insertWidget(index, view);
 
@@ -568,7 +569,7 @@ void TilesetDock::tilesetAdded(int index, Tileset *tileset)
 void TilesetDock::tilesetChanged(Tileset *tileset)
 {
     // Update the affected tileset model, if it exists
-    const int index = mTilesets.indexOf(tileset);
+    const int index = indexOf(mTilesets, tileset);
     if (index < 0)
         return;
 
@@ -579,7 +580,7 @@ void TilesetDock::tilesetChanged(Tileset *tileset)
 void TilesetDock::tilesetRemoved(Tileset *tileset)
 {
     // Delete the related tileset view
-    const int index = mTilesets.indexOf(tileset);
+    const int index = indexOf(mTilesets, tileset);
     Q_ASSERT(index != -1);
 
     mTilesets.removeAt(index);
@@ -614,7 +615,7 @@ void TilesetDock::tilesetMoved(int from, int to)
     const int start = qMin(from, to);
     const int end = qMax(from, to);
     for (int i = start; i <= end; ++i) {
-        const Tileset *tileset = mTilesets.at(i);
+        const SharedTileset &tileset = mTilesets.at(i);
         if (mTabBar->tabText(i) != tileset->name())
             mTabBar->setTabText(i, tileset->name());
     }
@@ -636,7 +637,7 @@ void TilesetDock::removeTileset()
  */
 void TilesetDock::removeTileset(int index)
 {
-    Tileset *tileset = mTilesets.at(index);
+    Tileset *tileset = mTilesets.at(index).data();
     const bool inUse = mMapDocument->map()->isTilesetUsed(tileset);
 
     // If the tileset is in use, warn the user and confirm removal
@@ -655,7 +656,7 @@ void TilesetDock::removeTileset(int index)
             return;
     }
 
-    QUndoCommand *remove = new RemoveTileset(mMapDocument, index, tileset);
+    QUndoCommand *remove = new RemoveTileset(mMapDocument, index);
     QUndoStack *undoStack = mMapDocument->undoStack();
 
     if (inUse) {
@@ -693,9 +694,19 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
             }
         }
         mMapDocument->setSelectedTiles(selectedTiles);
-    }
 
-    emit currentTilesChanged(mCurrentTiles);
+        // Create a tile stamp with these tiles
+        Map *map = mMapDocument->map();
+        Map *stamp = new Map(map->orientation(),
+                             tiles->width(),
+                             tiles->height(),
+                             map->tileWidth(),
+                             map->tileHeight());
+        stamp->addLayer(tiles->clone());
+        stamp->addTilesets(tiles->usedTilesets());
+
+        emit stampCaptured(TileStamp(stamp));
+    }
 }
 
 void TilesetDock::setCurrentTile(Tile *tile)
@@ -727,9 +738,9 @@ Tileset *TilesetDock::currentTileset() const
 {
     const int index = mTabBar->currentIndex();
     if (index == -1)
-        return 0;
+        return nullptr;
 
-    return mTilesets.at(index);
+    return mTilesets.at(index).data();
 }
 
 TilesetView *TilesetDock::currentTilesetView() const
@@ -782,9 +793,10 @@ void TilesetDock::exportTileset()
 
     TmxMapWriter writer;
 
-    if (writer.writeTileset(tileset, fileName)) {
+    if (writer.writeTileset(*tileset, fileName)) {
         QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                       tileset, fileName);
+                                                       tileset,
+                                                       fileName);
         mMapDocument->undoStack()->push(command);
     }
 }
@@ -796,7 +808,8 @@ void TilesetDock::importTileset()
         return;
 
     QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                   tileset, QString());
+                                                   tileset,
+                                                   QString());
     mMapDocument->undoStack()->push(command);
 }
 
@@ -851,7 +864,9 @@ void TilesetDock::addTiles()
 
     prefs->setLastPath(Preferences::ImageFile, files.last());
 
-    mMapDocument->undoStack()->push(new AddTiles(mMapDocument, tileset, tiles));
+    mMapDocument->undoStack()->push(new AddTiles(mMapDocument,
+                                                 tileset,
+                                                 tiles));
 }
 
 void TilesetDock::removeTiles()
@@ -919,7 +934,7 @@ void TilesetDock::removeTiles()
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)
 {
-    const int index = mTilesets.indexOf(tileset);
+    const int index = indexOf(mTilesets, tileset);
     Q_ASSERT(index != -1);
 
     mTabBar->setTabText(index, tileset->name());

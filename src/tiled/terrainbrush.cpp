@@ -83,9 +83,6 @@ void TerrainBrush::tilePositionChanged(const QPoint &pos)
             updateBrush(p);
             doPaint(true, p.x(), p.y());
         }
-        // HACK-ish: because the line may traverse in the reverse direction, updateBrush() leaves these at the line start point
-        mPaintX = pos.x();
-        mPaintY = pos.y();
         break;
     }
     case LineStartSet: {
@@ -168,7 +165,7 @@ static Terrain *firstTerrain(MapDocument *mapDocument)
     if (!mapDocument)
         return 0;
 
-    foreach (Tileset *tileset, mapDocument->map()->tilesets())
+    foreach (const SharedTileset &tileset, mapDocument->map()->tilesets())
         if (tileset->terrainCount() > 0)
             return tileset->terrain(0);
 
@@ -181,7 +178,7 @@ void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     // Reset the brush, since it probably became invalid
-    brushItem()->setTileLayer(0);
+    brushItem()->clear();
 
     // Don't use setTerrain since we do not want to update the brush right now
     mTerrain = firstTerrain(newDocument);
@@ -229,7 +226,7 @@ void TerrainBrush::capture()
 
 void TerrainBrush::doPaint(bool mergeable, int whereX, int whereY)
 {
-    TileLayer *stamp = brushItem()->tileLayer();
+    TileLayer *stamp = brushItem()->tileLayer().data();
 
     if (!stamp)
         return;
@@ -256,7 +253,7 @@ static inline unsigned makeTerrain(int t)
     return t << 24 | t << 16 | t << 8 | t;
 }
 
-static Tile *findBestTile(Tileset *tileset, unsigned terrain, unsigned considerationMask)
+static Tile *findBestTile(const Tileset &tileset, unsigned terrain, unsigned considerationMask)
 {
     // we should have hooked 0xFFFFFFFF terrains outside this function
     Q_ASSERT(terrain != 0xFFFFFFFF);
@@ -269,15 +266,15 @@ static Tile *findBestTile(Tileset *tileset, unsigned terrain, unsigned considera
     int penalty = INT_MAX;
 
     // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
-    foreach (Tile *t, tileset->tiles()) {
+    foreach (Tile *t, tileset.tiles()) {
         if ((t->terrain() & considerationMask) != (terrain & considerationMask))
             continue;
 
         // calculate the tile transition penalty based on shortest distance to target terrain type
-        int tr = tileset->terrainTransitionPenalty(t->terrain() >> 24, terrain >> 24);
-        int tl = tileset->terrainTransitionPenalty((t->terrain() >> 16) & 0xFF, (terrain >> 16) & 0xFF);
-        int br = tileset->terrainTransitionPenalty((t->terrain() >> 8) & 0xFF, (terrain >> 8) & 0xFF);
-        int bl = tileset->terrainTransitionPenalty(t->terrain() & 0xFF, terrain & 0xFF);
+        int tr = tileset.terrainTransitionPenalty(t->terrain() >> 24, terrain >> 24);
+        int tl = tileset.terrainTransitionPenalty((t->terrain() >> 16) & 0xFF, (terrain >> 16) & 0xFF);
+        int br = tileset.terrainTransitionPenalty((t->terrain() >> 8) & 0xFF, (terrain >> 8) & 0xFF);
+        int bl = tileset.terrainTransitionPenalty(t->terrain() & 0xFF, terrain & 0xFF);
 
         // if there is no path to the destination terrain, this isn't a useful transition
         if (tr < 0 || tl < 0 || br < 0 || bl < 0)
@@ -493,7 +490,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         // find the most appropriate tile in the tileset
         Tile *paste = 0;
         if (preferredTerrain != 0xFFFFFFFF) {
-            paste = findBestTile(tileset, preferredTerrain, mask);
+            paste = findBestTile(*tileset, preferredTerrain, mask);
             if (!paste)
                 continue;
         }
@@ -529,18 +526,24 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     }
 
     // create a stamp for the terrain block
-    TileLayer *stamp = new TileLayer(QString(), 0, 0, brushRect.width(), brushRect.height());
+    SharedTileLayer stamp = SharedTileLayer(new TileLayer(QString(),
+                                                          brushRect.left(),
+                                                          brushRect.top(),
+                                                          brushRect.width(),
+                                                          brushRect.height()));
 
     for (int y = brushRect.top(); y <= brushRect.bottom(); ++y) {
         for (int x = brushRect.left(); x <= brushRect.right(); ++x) {
-            int i = y*layerWidth + x;
+            int i = y * layerWidth + x;
             if (!checked[i])
                 continue;
 
             Tile *tile = newTerrain[i];
-            if (tile)
-                stamp->setCell(x - brushRect.left(), y - brushRect.top(), Cell(tile));
-            else {
+            if (tile) {
+                stamp->setCell(x - brushRect.left(),
+                               y - brushRect.top(),
+                               Cell(tile));
+            } else {
                 // TODO: we need to do something to erase tiles where checked[i] is true, and newTerrain[i] is NULL
                 // is there an eraser stamp? investigate how the eraser works...
             }
@@ -552,8 +555,6 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     delete[] checked;
     delete[] newTerrain;
-
-    brushItem()->setTileLayerPosition(brushRect.topLeft());
 
     mPaintX = cursorPos.x();
     mPaintY = cursorPos.y();

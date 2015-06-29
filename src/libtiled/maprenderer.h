@@ -67,6 +67,11 @@ public:
     virtual ~MapRenderer() {}
 
     /**
+     * Returns the map this renderer is associated with.
+     */
+    const Map *map() const;
+
+    /**
      * Returns the size in pixels of the map associated with this renderer.
      */
     virtual QSize mapSize() const = 0;
@@ -209,12 +214,6 @@ public:
 
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
-protected:
-    /**
-     * Returns the map this renderer is associated with.
-     */
-    const Map *map() const { return mMap; }
-
 private:
     const Map *mMap;
 
@@ -222,6 +221,11 @@ private:
     qreal mObjectLineWidth;
     qreal mPainterScale;
 };
+
+inline const Map *MapRenderer::map() const
+{
+    return mMap;
+}
 
 inline QPointF MapRenderer::screenToTileCoords(const QPointF &point) const
 {

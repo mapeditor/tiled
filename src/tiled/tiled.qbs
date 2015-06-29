@@ -12,6 +12,7 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
+    cpp.cxxLanguageVersion: "c++11"
 
     cpp.defines: {
         var version = qbs.getEnv("BUILD_INFO_VERSION");
@@ -102,6 +103,7 @@ QtGuiApplication {
         "commandlineparser.h",
         "consoledock.cpp",
         "consoledock.h",
+        "containerhelpers.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createmultipointobjecttool.cpp",
@@ -224,8 +226,6 @@ QtGuiApplication {
         "propertiesdock.h",
         "propertybrowser.cpp",
         "propertybrowser.h",
-        "quickstampmanager.cpp",
-        "quickstampmanager.h",
         "raiselowerhelper.cpp",
         "raiselowerhelper.h",
         "rangeset.h",
@@ -262,6 +262,8 @@ QtGuiApplication {
         "terrainmodel.h",
         "terrainview.cpp",
         "terrainview.h",
+        "thumbnailrenderer.cpp",
+        "thumbnailrenderer.h",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",
         "tileanimationeditor.cpp",
@@ -291,6 +293,14 @@ QtGuiApplication {
         "tilesetmodel.h",
         "tilesetview.cpp",
         "tilesetview.h",
+        "tilestamp.cpp",
+        "tilestamp.h",
+        "tilestampmanager.cpp",
+        "tilestampmanager.h",
+        "tilestampmodel.cpp",
+        "tilestampmodel.h",
+        "tilestampsdock.cpp",
+        "tilestampsdock.h",
         "tmxmapreader.cpp",
         "tmxmapreader.h",
         "tmxmapwriter.cpp",
@@ -313,7 +323,7 @@ QtGuiApplication {
     Properties {
         condition: qbs.targetOS.contains("osx")
         cpp.frameworks: "Foundation"
-        cpp.infoPlistFile: "Info.plist"
+        bundle.infoPlistFile: "Info.plist"
         targetName: "Tiled"
     }
     Group {
