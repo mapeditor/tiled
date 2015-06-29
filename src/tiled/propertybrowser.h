@@ -123,6 +123,9 @@ private:
         FlippingProperty,
         DrawOrderProperty,
         TileOffsetProperty,
+        SourceImageProperty,
+        MarginProperty,
+        SpacingProperty,
         TileProbabilityProperty,
         IdProperty,
         CustomProperty
