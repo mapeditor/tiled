@@ -494,6 +494,21 @@ void PropertyBrowser::addTilesetProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
+
+    // Next properties we should add only for non 'Collection of Images' tilesets
+    const Tileset *currentTileset = dynamic_cast<const Tileset*>(mObject);
+    if (!currentTileset->imageSource().isEmpty()) {
+        QtVariantProperty *srcImgProperty =
+                createProperty(SourceImageProperty, QVariant::String, tr("Source Image"), groupProperty);
+        QtVariantProperty *tileSizeProperty = createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
+        QtVariantProperty *marginProperty = createProperty(MarginProperty, QVariant::Int, tr("Margin"), groupProperty);
+        QtVariantProperty *spacingProperty = createProperty(SpacingProperty, QVariant::Int, tr("Spacing"), groupProperty);
+        // Make these properties read-only
+        srcImgProperty->setEnabled(false);
+        tileSizeProperty->setEnabled(false);
+        marginProperty->setEnabled(false);
+        spacingProperty->setEnabled(false);
+    }
     addProperty(groupProperty);
 }
 
@@ -946,6 +961,12 @@ void PropertyBrowser::updateProperties()
         const Tileset *tileset = static_cast<const Tileset*>(mObject);
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
+        if (!tileset->imageSource().isEmpty()) {
+            mIdToProperty[SourceImageProperty]->setValue(tileset->imageSource());
+            mIdToProperty[TileSizeProperty]->setValue(tileset->tileSize());
+            mIdToProperty[MarginProperty]->setValue(tileset->margin());
+            mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
+        }
         break;
     }
     case Object::TileType: {
