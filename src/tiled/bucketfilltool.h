@@ -84,6 +84,7 @@ private:
     TileStamp mStamp;
     SharedTileLayer mFillOverlay;
     QRegion mFillRegion;
+    QVector<SharedTileset> mMissingTilesets;
 
     bool mIsActive;
     bool mLastShiftStatus;

@@ -47,7 +47,8 @@ public:
     FillTiles(MapDocument *mapDocument,
               TileLayer *tileLayer,
               const QRegion &fillRegion,
-              const SharedTileLayer &fillStamp);
+              const SharedTileLayer &fillStamp,
+              QUndoCommand *parent = 0);
     ~FillTiles();
 
     void undo();

@@ -32,8 +32,10 @@ using namespace Tiled::Internal;
 FillTiles::FillTiles(MapDocument *mapDocument,
                      TileLayer *tileLayer,
                      const QRegion &fillRegion,
-                     const SharedTileLayer &fillStamp)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Fill Area"))
+                     const SharedTileLayer &fillStamp,
+                     QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Fill Area"),
+                   parent)
     , mMapDocument(mapDocument)
     , mTileLayer(tileLayer)
     , mFillRegion(fillRegion)
@@ -55,10 +57,14 @@ void FillTiles::undo()
                      boundingRect.y(),
                      mOriginalCells,
                      mFillRegion);
+
+    QUndoCommand::undo(); // undo child commands
 }
 
 void FillTiles::redo()
 {
+    QUndoCommand::redo(); // redo child commands
+
     TilePainter painter(mMapDocument, mTileLayer);
     painter.drawStamp(mFillStamp.data(), mFillRegion);
 }

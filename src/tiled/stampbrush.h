@@ -99,6 +99,7 @@ private:
 
     TileStamp mStamp;
     SharedTileLayer mPreviewLayer;
+    QVector<SharedTileset> mMissingTilesets;
 
     QPoint mCaptureStart;
     QPoint mPrevTilePosition;

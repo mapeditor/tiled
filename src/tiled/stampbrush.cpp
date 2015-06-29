@@ -21,6 +21,7 @@
 
 #include "stampbrush.h"
 
+#include "addremovetileset.h"
 #include "brushitem.h"
 #include "geometry.h"
 #include "map.h"
@@ -185,12 +186,14 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
 void StampBrush::updateRandomList()
 {
     mRandomList.clear();
+    mMissingTilesets.clear();
 
     if (mStamp.isEmpty())
         return;
 
     foreach (const TileStampVariation &variation, mStamp.variations()) {
         TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
         for (int x = 0; x < tileLayer->width(); x++)
             for (int y = 0; y < tileLayer->height(); y++)
                 if (!tileLayer->cellAt(x, y).isEmpty())
@@ -310,6 +313,14 @@ QRegion StampBrush::doPaint(int flags)
                                                preview->x(),
                                                preview->y(),
                                                preview);
+
+    if (!mMissingTilesets.isEmpty()) {
+        for (const SharedTileset &tileset : mMissingTilesets)
+            new AddTileset(mapDocument(), tileset, paint);
+
+        mMissingTilesets.clear();
+    }
+
     paint->setMergeable(flags & Mergeable);
     mapDocument()->undoStack()->push(paint);
 
@@ -348,9 +359,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
             paintedRegion += QRect(p, QSize(1, 1));
 
         QRect bounds = paintedRegion.boundingRect();
-        TileLayer *preview = new TileLayer(QString(),
-                                           bounds.x(), bounds.y(),
-                                           bounds.width(), bounds.height());
+        SharedTileLayer preview(new TileLayer(QString(),
+                                              bounds.x(), bounds.y(),
+                                              bounds.width(), bounds.height()));
 
         foreach (const QPoint p, list) {
             // todo: take into account tile probability
@@ -360,14 +371,18 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                              cell);
         }
 
-        mPreviewLayer = SharedTileLayer(preview);
+        mPreviewLayer = preview;
     } else {
+        mMissingTilesets.clear();
+
         QRegion paintedRegion;
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;
 
         foreach (const QPoint p, list) {
             Map *variation = mStamp.randomVariation();
+            mapDocument()->unifyTilesets(variation, mMissingTilesets);
+
             TileLayer *stamp = static_cast<TileLayer*>(variation->layerAt(0));
 
             QRegion stampRegion;
@@ -392,14 +407,14 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         }
 
         QRect bounds = paintedRegion.boundingRect();
-        TileLayer *preview = new TileLayer(QString(),
-                                           bounds.x(), bounds.y(),
-                                           bounds.width(), bounds.height());
+        SharedTileLayer preview(new TileLayer(QString(),
+                                              bounds.x(), bounds.y(),
+                                              bounds.width(), bounds.height()));
 
         foreach (const PaintOperation &op, operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
 
-        mPreviewLayer = SharedTileLayer(preview);
+        mPreviewLayer = preview;
     }
 }
 

@@ -29,8 +29,10 @@ using namespace Tiled::Internal;
 
 AddRemoveTileset::AddRemoveTileset(MapDocument *mapDocument,
                                    int index,
-                                   const SharedTileset &tileset)
-    : mMapDocument(mapDocument)
+                                   const SharedTileset &tileset,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
     , mTileset(tileset)
     , mIndex(index)
 {
@@ -54,10 +56,12 @@ void AddRemoveTileset::addTileset()
 }
 
 
-AddTileset::AddTileset(MapDocument *mapDocument, const SharedTileset &tileset)
+AddTileset::AddTileset(MapDocument *mapDocument, const SharedTileset &tileset,
+                       QUndoCommand *parent)
     : AddRemoveTileset(mapDocument,
                        mapDocument->map()->tilesets().size(),
-                       tileset)
+                       tileset,
+                       parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Tileset"));
 }
