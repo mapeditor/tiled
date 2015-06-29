@@ -494,6 +494,8 @@ void PropertyBrowser::addTilesetProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
+    createProperty(ColorProperty, QVariant::Color, tr("Transparency Color"), groupProperty)->setEnabled(false);
+
     addProperty(groupProperty);
 }
 
@@ -946,6 +948,7 @@ void PropertyBrowser::updateProperties()
         const Tileset *tileset = static_cast<const Tileset*>(mObject);
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
+        mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
         break;
     }
     case Object::TileType: {

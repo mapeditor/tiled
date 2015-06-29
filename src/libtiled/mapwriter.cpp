@@ -351,6 +351,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                                      QString::number(tileSize.width()));
                     w.writeAttribute(QLatin1String("height"),
                                      QString::number(tileSize.height()));
+                   const QColor transColor = tileset->transparentColor();
+                   if (transColor.isValid())
+                       w.writeAttribute(QLatin1String("trans"), transColor.name().mid(1));
                 }
 
                 if (tile->imageSource().isEmpty()) {
