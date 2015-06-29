@@ -157,11 +157,23 @@ void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 
 void TilesetManager::setAnimateTiles(bool enabled)
 {
-    // TODO: Avoid running the driver when there are no animated tiles
-    if (enabled)
-        mAnimationDriver->start();
-    else
+    if ((enabled && mAnimationDriver->state() == QAbstractAnimation::Running)
+        || (!enabled && mAnimationDriver->state() == QAbstractAnimation::Stopped))
+        return;
+
+    if (enabled) {
+        // At first check if we have animated tiles to avoid driver starting when we have no animated tiles
+        foreach (Tileset *t, mTilesets.keys()) {
+            foreach (Tile *tile, t->tiles()) {
+                if (tile->isAnimated()) {
+                    mAnimationDriver->start();
+                    return;
+                }
+            }
+        }
+    } else {
         mAnimationDriver->stop();
+    }
 }
 
 bool TilesetManager::animateTiles() const
