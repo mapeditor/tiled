@@ -177,8 +177,8 @@ ReplicaIslandPlugin::loadTilesetFromResource(const QString &name)
 {
     using namespace Tiled;
 
-    SharedTileset tileset(new Tileset(name, 32, 32));
-    loadFromImage(tileset, QImage(":/" + name + ".png"), name + ".png");
+    SharedTileset tileset(Tileset::create(name, 32, 32));
+    tileset->loadFromImage(QImage(":/" + name + ".png"), name + ".png");
     return tileset;
 }
 

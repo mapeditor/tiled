@@ -38,7 +38,6 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
 #include "terrain.h"
 
 #include <QCoreApplication>
@@ -304,8 +303,8 @@ SharedTileset MapReaderPrivate::readTileset()
             xml.raiseError(tr("Invalid tileset parameters for tileset"
                               " '%1'").arg(name));
         } else {
-            tileset.reset(new Tileset(name, tileWidth, tileHeight,
-                                      tileSpacing, margin));
+            tileset = Tileset::create(name, tileWidth, tileHeight,
+                                      tileSpacing, margin);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("tile")) {
@@ -379,7 +378,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
     // For tilesets without image source, consecutive tile IDs are allowed (for
     // tiles with individual images)
     if (id == tileset->tileCount())
-        appendTile(tileset, QPixmap());
+        tileset->addTile(QPixmap());
 
     Tile *tile = tileset->tileAt(id);
 
@@ -390,7 +389,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
                 int t = quadrants[i].isEmpty() ? -1 : quadrants[i].toInt();
-                tile->setCornerTerrain(i, t);
+                tile->setCornerTerrainId(i, t);
             }
         }
     }
@@ -460,7 +459,7 @@ void MapReaderPrivate::readTilesetImage(SharedTileset &tileset)
     const int width = atts.value(QLatin1String("width")).toString().toInt();
     mGidMapper.setTilesetWidth(tileset.data(), width);
 
-    if (!loadFromImage(tileset, readImage(), source))
+    if (!tileset->loadFromImage(readImage(), source))
         xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
 }
 
@@ -510,7 +509,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(SharedTileset &tileset)
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toString().toInt();
 
-            Terrain *terrain = appendTerrain(tileset, name, tile);
+            Terrain *terrain = tileset->addTerrain(name, tile);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))

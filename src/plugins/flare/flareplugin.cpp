@@ -123,9 +123,9 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                     tilesetheight = list[2].toInt();
                 }
 
-                SharedTileset tileset(new Tileset(QFileInfo(absoluteSource).fileName(),
-                                                  tilesetwidth, tilesetheight));
-                bool ok = loadFromImage(tileset, absoluteSource);
+                SharedTileset tileset(Tileset::create(QFileInfo(absoluteSource).fileName(),
+                                                      tilesetwidth, tilesetheight));
+                bool ok = tileset->loadFromImage(absoluteSource);
 
                 if (!ok) {
                     mError = tr("Error loading tileset %1, which expands to %2. Path not found!")

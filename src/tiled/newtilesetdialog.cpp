@@ -139,15 +139,15 @@ void NewTilesetDialog::tryAccept()
         const int spacing = mUi->spacing->value();
         const int margin = mUi->margin->value();
 
-        tileset.reset(new Tileset(name,
+        tileset = Tileset::create(name,
                                   tileWidth, tileHeight,
-                                  spacing, margin));
+                                  spacing, margin);
 
         if (useTransparentColor)
             tileset->setTransparentColor(transparentColor);
 
         if (!image.isEmpty()) {
-            if (!loadFromImage(tileset, image)) {
+            if (!tileset->loadFromImage(image)) {
                 QMessageBox::critical(this, tr("Error"),
                                       tr("Failed to load tileset image '%1'.")
                                       .arg(image));
@@ -168,7 +168,7 @@ void NewTilesetDialog::tryAccept()
         s->setValue(QLatin1String(SPACING_KEY), spacing);
         s->setValue(QLatin1String(MARGIN_KEY), margin);
     } else {
-        tileset.reset(new Tileset(name, 1, 1));
+        tileset = Tileset::create(name, 1, 1);
     }
 
     s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());

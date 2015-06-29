@@ -52,7 +52,6 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
-#include "tileset.h"
 #include "tmxmapreader.h"
 #include "tmxmapwriter.h"
 
@@ -539,7 +538,7 @@ void MapDocument::insertTileset(int index, const SharedTileset &tileset)
     mMap->insertTileset(index, tileset);
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReference(tileset);
-    emit tilesetAdded(index, tileset);
+    emit tilesetAdded(index, tileset.data());
 }
 
 static bool isFromTileset(Object *object, Tileset *tileset)

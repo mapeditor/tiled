@@ -142,9 +142,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         return SharedTileset();
     }
 
-    SharedTileset tileset(new Tileset(name,
-                                      tileWidth, tileHeight,
-                                      spacing, margin));
+    SharedTileset tileset(Tileset::create(name,
+                                          tileWidth, tileHeight,
+                                          spacing, margin));
 
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
 
@@ -156,7 +156,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     if (!imageVariant.isNull()) {
         QString imagePath = resolvePath(mMapDir, imageVariant);
-        if (!loadFromImage(tileset, imagePath)) {
+        if (!tileset->loadFromImage(imagePath)) {
             mError = tr("Error loading tileset image:\n'%1'").arg(imagePath);
             return SharedTileset();
         }
@@ -168,9 +168,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariantList terrainsVariantList = variantMap["terrains"].toList();
     for (int i = 0; i < terrainsVariantList.count(); ++i) {
         QVariantMap terrainMap = terrainsVariantList[i].toMap();
-        appendTerrain(tileset,
-                      terrainMap["name"].toString(),
-                      terrainMap["tile"].toInt());
+        tileset->addTerrain(terrainMap["name"].toString(),
+                            terrainMap["tile"].toInt());
     }
 
     // Read tile terrain and external image information
@@ -194,7 +193,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                 return SharedTileset();
             }
             for (int i = tileset->tileCount(); i <= tileIndex; i++)
-                appendTile(tileset, QPixmap());
+                tileset->addTile(QPixmap());
         }
 
         Tile *tile = tileset->tileAt(tileIndex);
@@ -205,7 +204,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                 for (int i = 0; i < 4; ++i) {
                     int terrainId = terrains.at(i).toInt(&ok);
                     if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
-                        tile->setCornerTerrain(i, terrainId);
+                        tile->setCornerTerrainId(i, terrainId);
                 }
             }
             float terrainProbability = tileVar["probability"].toFloat(&ok);

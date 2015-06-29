@@ -60,23 +60,33 @@ typedef QSharedPointer<Tileset> SharedTileset;
  */
 class TILEDSHARED_EXPORT Tileset : public Object
 {
-    friend Tile *appendTile(SharedTileset &tileset,
-                            const QPixmap &image,
-                            const QString &source);
-
-    friend bool loadFromImage(SharedTileset &tileset,
-                              const QImage &image,
-                              const QString &fileName);
-
 public:
     /**
-     * Constructor.
+     * Creates a new tileset with the given parameters. Using this function
+     * makes sure the internal weak pointer is initialized, which enables the
+     * sharedPointer() function.
      *
      * @param name        the name of the tileset
      * @param tileWidth   the width of the tiles in the tileset
      * @param tileHeight  the height of the tiles in the tileset
      * @param tileSpacing the spacing between the tiles in the tileset image
      * @param margin      the margin around the tiles in the tileset image
+     */
+    static SharedTileset create(const QString &name,
+                                int tileWidth,
+                                int tileHeight,
+                                int tileSpacing = 0,
+                                int margin = 0)
+    {
+        SharedTileset tileset(new Tileset(name, tileWidth, tileHeight,
+                                          tileSpacing, margin));
+        tileset->mWeakPointer = tileset;
+        return tileset;
+    }
+
+private:
+    /**
+     * Private constructor. Use create() instead.
      */
     Tileset(const QString &name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0):
@@ -95,6 +105,7 @@ public:
         Q_ASSERT(margin >= 0);
     }
 
+public:
     /**
      * Destructor.
      */
@@ -206,6 +217,9 @@ public:
      */
     void setTransparentColor(const QColor &c) { mTransparentColor = c; }
 
+    bool loadFromImage(const QImage &image, const QString &fileName);
+    bool loadFromImage(const QString &fileName);
+
     /**
      * This checks if there is a similar tileset in the given list.
      * It is needed for replacing this tileset by its similar copy.
@@ -241,6 +255,8 @@ public:
      */
     Terrain *terrain(int index) const { return index >= 0 ? mTerrainTypes[index] : 0; }
 
+    Terrain *addTerrain(const QString &name, int imageTileId);
+
     /**
      * Adds the \a terrain type at the given \a index.
      *
@@ -264,6 +280,8 @@ public:
      */
     int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
 
+    Tile *addTile(const QPixmap &image, const QString &source = QString());
+
     void insertTiles(int index, const QList<Tile*> &tiles);
     void removeTiles(int index, int count);
 
@@ -277,6 +295,8 @@ public:
      * Used by the Tile class when its terrain information changes.
      */
     void markTerrainDistancesDirty() { mTerrainDistancesDirty = true; }
+
+    SharedTileset sharedPointer() const;
 
 private:
     /**
@@ -304,28 +324,22 @@ private:
     QList<Tile*> mTiles;
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
+
+    QWeakPointer<Tileset> mWeakPointer;
 };
-
-
-Tile *appendTile(SharedTileset &tileset,
-                 const QPixmap &image,
-                 const QString &source = QString());
-
-bool loadFromImage(SharedTileset &tileset,
-                   const QImage &image,
-                   const QString &fileName);
-
-Terrain *appendTerrain(SharedTileset &tileset,
-                       const QString &name,
-                       int imageTileId);
 
 
 /**
  * Convenience override that loads the image using the QImage constructor.
  */
-inline bool loadFromImage(SharedTileset &tileset, const QString &fileName)
+inline bool Tileset::loadFromImage(const QString &fileName)
 {
-    return loadFromImage(tileset, QImage(fileName), fileName);
+    return loadFromImage(QImage(fileName), fileName);
+}
+
+inline SharedTileset Tileset::sharedPointer() const
+{
+    return SharedTileset(mWeakPointer);
 }
 
 } // namespace Tiled

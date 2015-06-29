@@ -362,7 +362,7 @@ signals:
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void tilesetAboutToBeAdded(int index);
-    void tilesetAdded(int index, const SharedTileset &tileset);
+    void tilesetAdded(int index, Tileset *tileset);
     void tilesetAboutToBeRemoved(int index);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);

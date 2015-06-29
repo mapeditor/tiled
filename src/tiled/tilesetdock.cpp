@@ -382,8 +382,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
             mViewStack->addWidget(view);
         }
 
-        connect(mMapDocument, SIGNAL(tilesetAdded(int,SharedTileset)),
-                SLOT(tilesetAdded(int,SharedTileset)));
+        connect(mMapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
+                SLOT(tilesetAdded(int,Tileset*)));
         connect(mMapDocument, SIGNAL(tilesetRemoved(Tileset*)),
                 SLOT(tilesetRemoved(Tileset*)));
         connect(mMapDocument, SIGNAL(tilesetMoved(int,int)),
@@ -553,13 +553,13 @@ void TilesetDock::indexPressed(const QModelIndex &index)
         mMapDocument->setCurrentObject(tile);
 }
 
-void TilesetDock::tilesetAdded(int index, const SharedTileset &tileset)
+void TilesetDock::tilesetAdded(int index, Tileset *tileset)
 {
     TilesetView *view = new TilesetView;
     view->setMapDocument(mMapDocument);
     view->setZoomable(mZoomable);
 
-    mTilesets.insert(index, tileset);
+    mTilesets.insert(index, tileset->sharedPointer());
     mTabBar->insertTab(index, tileset->name());
     mViewStack->insertWidget(index, view);
 
@@ -698,12 +698,12 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
         // Create a tile stamp with these tiles
         Map *map = mMapDocument->map();
         Map *stamp = new Map(map->orientation(),
-                             mCurrentTiles->width(),
-                             mCurrentTiles->height(),
+                             tiles->width(),
+                             tiles->height(),
                              map->tileWidth(),
                              map->tileHeight());
-        stamp->addLayer(mCurrentTiles->clone());
-        stamp->addTileset(currentTileset());
+        stamp->addLayer(tiles->clone());
+        stamp->addTilesets(tiles->usedTilesets());
 
         emit stampCaptured(TileStamp(stamp));
     }
@@ -734,13 +734,13 @@ void TilesetDock::retranslateUi()
     mRemoveTiles->setText(tr("Remove Tiles"));
 }
 
-SharedTileset TilesetDock::currentTileset() const
+Tileset *TilesetDock::currentTileset() const
 {
     const int index = mTabBar->currentIndex();
     if (index == -1)
-        return SharedTileset();
+        return nullptr;
 
-    return mTilesets.at(index);
+    return mTilesets.at(index).data();
 }
 
 TilesetView *TilesetDock::currentTilesetView() const
@@ -755,17 +755,17 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
 
 void TilesetDock::editTilesetProperties()
 {
-    SharedTileset tileset = currentTileset();
+    Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
-    mMapDocument->setCurrentObject(tileset.data());
+    mMapDocument->setCurrentObject(tileset);
     mMapDocument->emitEditCurrentObject();
 }
 
 void TilesetDock::exportTileset()
 {
-    SharedTileset tileset = currentTileset();
+    Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
@@ -795,7 +795,7 @@ void TilesetDock::exportTileset()
 
     if (writer.writeTileset(*tileset, fileName)) {
         QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                       tileset.data(),
+                                                       tileset,
                                                        fileName);
         mMapDocument->undoStack()->push(command);
     }
@@ -803,29 +803,29 @@ void TilesetDock::exportTileset()
 
 void TilesetDock::importTileset()
 {
-    SharedTileset tileset = currentTileset();
+    Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
     QUndoCommand *command = new SetTilesetFileName(mMapDocument,
-                                                   tileset.data(),
+                                                   tileset,
                                                    QString());
     mMapDocument->undoStack()->push(command);
 }
 
 void TilesetDock::editTerrain()
 {
-    SharedTileset tileset = currentTileset();
+    Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
-    EditTerrainDialog editTerrainDialog(mMapDocument, tileset.data(), this);
+    EditTerrainDialog editTerrainDialog(mMapDocument, tileset, this);
     editTerrainDialog.exec();
 }
 
 void TilesetDock::addTiles()
 {
-    SharedTileset tileset = currentTileset();
+    Tileset *tileset = currentTileset();
     if (!tileset)
         return;
 
@@ -865,7 +865,7 @@ void TilesetDock::addTiles()
     prefs->setLastPath(Preferences::ImageFile, files.last());
 
     mMapDocument->undoStack()->push(new AddTiles(mMapDocument,
-                                                 tileset.data(),
+                                                 tileset,
                                                  tiles));
 }
 

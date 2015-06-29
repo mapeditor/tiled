@@ -33,7 +33,6 @@
 #include "tiled_global.h"
 
 #include "layer.h"
-#include "tileset.h"
 
 #include <QColor>
 #include <QPixmap>

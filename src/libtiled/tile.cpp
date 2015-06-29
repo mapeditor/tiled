@@ -35,7 +35,7 @@ using namespace Tiled;
 
 Tile::Tile(const QPixmap &image,
            int id,
-           const QWeakPointer<Tileset> &tileset):
+           Tileset *tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
@@ -50,7 +50,7 @@ Tile::Tile(const QPixmap &image,
 Tile::Tile(const QPixmap &image,
            const QString &imageSource,
            int id,
-           const QWeakPointer<Tileset> &tileset):
+           Tileset *tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
@@ -69,6 +69,14 @@ Tile::~Tile()
 }
 
 /**
+ * Returns the tileset that this tile is part of as a shared pointer.
+ */
+QSharedPointer<Tileset> Tile::sharedTileset() const
+{
+    return mTileset->sharedPointer();
+}
+
+/**
  * Returns the image for rendering this tile, taking into account tile
  * animations.
  */
@@ -76,29 +84,38 @@ const QPixmap &Tile::currentFrameImage() const
 {
     if (isAnimated()) {
         const Frame &frame = mFrames.at(mCurrentFrameIndex);
-        return mTileset.data()->tileAt(frame.tileId)->image();
+        return mTileset->tileAt(frame.tileId)->image();
     } else {
         return mImage;
     }
 }
 
+/**
+ * Returns the drawing offset of the tile (in pixels).
+ */
 QPoint Tile::offset() const
 {
-    return mTileset.data()->tileOffset();
+    return mTileset->tileOffset();
 }
 
+/**
+ * Returns the Terrain of a given corner.
+ */
 Terrain *Tile::terrainAtCorner(int corner) const
 {
-    return mTileset.data()->terrain(cornerTerrainId(corner));
+    return mTileset->terrain(cornerTerrainId(corner));
 }
 
+/**
+ * Set the terrain for each corner of the tile.
+ */
 void Tile::setTerrain(unsigned terrain)
 {
     if (mTerrain == terrain)
         return;
 
     mTerrain = terrain;
-    mTileset.data()->markTerrainDistancesDirty();
+    mTileset->markTerrainDistancesDirty();
 }
 
 /**

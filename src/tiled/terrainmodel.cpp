@@ -44,7 +44,7 @@ TerrainModel::TerrainModel(MapDocument *mapDocument,
 {
     connect(mapDocument, SIGNAL(tilesetAboutToBeAdded(int)),
             this, SLOT(tilesetAboutToBeAdded(int)));
-    connect(mapDocument, SIGNAL(tilesetAdded(int,SharedTileset)),
+    connect(mapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
             this, SLOT(tilesetAdded()));
     connect(mapDocument, SIGNAL(tilesetAboutToBeRemoved(int)),
             this, SLOT(tilesetAboutToBeRemoved(int)));

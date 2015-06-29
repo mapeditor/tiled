@@ -111,7 +111,7 @@ private slots:
     void updateCurrentTile();
     void indexPressed(const QModelIndex &index);
 
-    void tilesetAdded(int index, const SharedTileset &tileset);
+    void tilesetAdded(int index, Tileset *tileset);
     void tilesetChanged(Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
     void tilesetMoved(int from, int to);
@@ -139,7 +139,7 @@ private:
     void setCurrentTiles(TileLayer *tiles);
     void retranslateUi();
 
-    SharedTileset currentTileset() const;
+    Tileset *currentTileset() const;
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
