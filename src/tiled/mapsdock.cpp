@@ -41,6 +41,26 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+/**
+ * Class represents the file system model with disabled dragging of directories.
+ */
+class FileSystemModel : public QFileSystemModel
+{
+public:
+    explicit FileSystemModel(QObject *parent = 0):
+        QFileSystemModel(parent)
+    {
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &i) const override
+    {
+        Qt::ItemFlags flags = QFileSystemModel::flags(i);
+        if (isDir(i))
+            flags &= ~Qt::ItemIsDragEnabled;
+        return flags;
+    }
+};
+
 MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
     : QDockWidget(parent)
     , mDirectoryEdit(new QLineEdit)
@@ -138,7 +158,7 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     if (!mapsDir.exists())
         mapsDir.setPath(QDir::currentPath());
 
-    mFSModel = new QFileSystemModel(this);
+    mFSModel = new FileSystemModel(this);
     mFSModel->setRootPath(mapsDir.absolutePath());
 
     PluginManager *pm = PluginManager::instance();
@@ -190,12 +210,6 @@ void MapsView::mousePressEvent(QMouseEvent *event)
     if (index.isValid()) {
         // Prevent drag-and-drop starting when clicking on an unselected item.
         setDragEnabled(selectionModel()->isSelected(index));
-
-        // Hack: disable dragging folders.
-        // FIXME: the correct way to do this would be to override the flags()
-        // method of QFileSystemModel.
-        if (model()->isDir(index))
-            setDragEnabled(false);
     }
 
     QTreeView::mousePressEvent(event);
