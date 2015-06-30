@@ -284,6 +284,7 @@ public:
 
     void insertTiles(int index, const QList<Tile*> &tiles);
     void removeTiles(int index, int count);
+	void fixTileIDs();
 
     /**
      * Sets the \a image to be used for the tile with the given \a id.

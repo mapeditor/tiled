@@ -339,6 +339,15 @@ void Tileset::removeTiles(int index, int count)
     updateTileSize();
 }
 
+void Tileset::fixTileIDs()
+{
+	int i = 0;
+	 foreach (Tile *tile, mTiles) {
+		 tile->mId = i;
+		 i++;
+	 }
+}
+
 void Tileset::setTileImage(int id, const QPixmap &image,
                            const QString &source)
 {

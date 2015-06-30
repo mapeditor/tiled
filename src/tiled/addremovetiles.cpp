@@ -84,5 +84,46 @@ RemoveTiles::RemoveTiles(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands", "Remove Tiles"));
 }
 
+MoveTiles::MoveTiles(MapDocument *mapDocument,
+					 Tileset *tileset,
+					 int index,
+					 int count,
+					 Direction eDirection,
+					 const QList<Tile *> &tiles)
+: mMapDocument(mapDocument)
+	, mTileset(tileset)
+	, mIndex(index)
+	, mCount(count)
+	, mTiles(tiles)
+	, mDirection(eDirection)
+{
+	setText(QCoreApplication::translate("Undo Commands", "Move Tiles"));
+}
+
+void MoveTiles::redo()
+{
+	moveTiles();
+}
+
+void MoveTiles::undo()
+{
+	moveTiles();
+}
+
+void MoveTiles::moveTiles()
+{
+	mTiles = mTileset->tiles().mid(mIndex, mCount);
+	mTileset->removeTiles(mIndex, mCount);
+
+	mIndex = (mDirection == Left) ? mIndex - 1 : mIndex + 1;
+
+	mTileset->insertTiles(mIndex, mTiles);
+
+	mTileset->fixTileIDs();
+	mMapDocument->emitTilesetChanged(mTileset);
+
+	mDirection = (mDirection == Left) ? Right : Left;
+}
+
 } // namespace Internal
 } // namespace Tiled

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * tilesetdock.h
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
@@ -28,6 +28,8 @@
 #include <QDockWidget>
 #include <QList>
 #include <QMap>
+
+#include "addremovetiles.h"
 
 class QAction;
 class QActionGroup;
@@ -129,6 +131,9 @@ private slots:
     void editTerrain();
     void addTiles();
     void removeTiles();
+	void moveTilesLeft();
+	void moveTilesRight();
+	void moveTiles(MoveTiles::Direction eDirection);
 
     void documentAboutToClose(MapDocument *mapDocument);
 
@@ -163,6 +168,8 @@ private:
     QAction *mEditTerrain;
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+	QAction *mMoveTilesLeft;
+	QAction *mMoveTilesRight;
 
     QMap<MapDocument *, QString> mCurrentTilesets;
 
