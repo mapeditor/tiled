@@ -21,6 +21,8 @@
 #ifndef PYTHONPLUGIN_H
 #define PYTHONPLUGIN_H
 
+#include <cmath> // included before Python.h to fix ::hypot not declared issue
+
 #include <Python.h>
 
 #include "mapwriterinterface.h"
