@@ -98,7 +98,7 @@ public:
     int cornerTerrainId(int corner) const;
     void setCornerTerrainId(int corner, int terrainId);
 
-    unsigned terrain() const;
+    inline unsigned terrain() const;
     void setTerrain(unsigned terrain);
 
     float terrainProbability() const;

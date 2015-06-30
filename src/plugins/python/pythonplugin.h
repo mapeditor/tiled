@@ -22,7 +22,6 @@
 #define PYTHONPLUGIN_H
 
 #include <Python.h>
-#include <QtCore/qglobal.h>
 
 #include "mapwriterinterface.h"
 #include "mapreaderinterface.h"
