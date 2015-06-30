@@ -298,6 +298,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(clearRecentFiles()));
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
+    connect(mUi->actionSaveAll, SIGNAL(triggered()), SLOT(saveAll()));
     connect(mUi->actionExportAsImage, SIGNAL(triggered()), SLOT(exportAsImage()));
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
     connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
@@ -823,6 +824,29 @@ bool MainWindow::saveFileAs()
     mMapDocument->setWriterPluginFileName(writerPluginFilename);
 
     return saveFile(fileName);
+}
+
+void MainWindow::saveAll()
+{
+    foreach (MapDocument *mapDoc, mDocumentManager->documents()) {
+        if (!mapDoc->isModified())
+            continue;
+
+        QString fileName(mapDoc->fileName());
+        QString error;
+
+        if (fileName.isEmpty()) {
+            mDocumentManager->switchToDocument(mapDoc);
+            if (!saveFileAs())
+                return;
+        } else if (!mapDoc->save(fileName, &error)) {
+            mDocumentManager->switchToDocument(mapDoc);
+            QMessageBox::critical(this, tr("Error Saving Map"), error);
+            return;
+        }
+
+        setRecentFile(fileName);
+    }
 }
 
 bool MainWindow::confirmSave(MapDocument *mapDocument)
@@ -1453,6 +1477,7 @@ void MainWindow::updateActions()
 
     mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
+    mUi->actionSaveAll->setEnabled(map);
     mUi->actionExportAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
     mUi->actionExportAs->setEnabled(map);

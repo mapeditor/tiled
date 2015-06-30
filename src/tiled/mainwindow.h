@@ -120,6 +120,7 @@ public slots:
     void openFile();
     bool saveFile();
     bool saveFileAs();
+    void saveAll();
     void export_(); // 'export' is a reserved word
     void exportAs();
     void exportAsImage();
