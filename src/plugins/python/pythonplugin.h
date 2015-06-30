@@ -21,7 +21,9 @@
 #ifndef PYTHONPLUGIN_H
 #define PYTHONPLUGIN_H
 
+#ifdef __MINGW32__
 #include <cmath> // included before Python.h to fix ::hypot not declared issue
+#endif
 
 #include <Python.h>
 
