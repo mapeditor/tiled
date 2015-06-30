@@ -1,4 +1,4 @@
-﻿/*
+/*
  * tilesetdock.cpp
  * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
@@ -236,8 +236,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mTilesetMenuButton(new TilesetMenuButton(this)),
     mTilesetMenu(new QMenu(this)),
     mTilesetActionGroup(new QActionGroup(this)),
-	mMoveTilesLeft(new QAction(this)),
-	mMoveTilesRight(new QAction(this)),
     mTilesetMenuMapper(0)
 {
     setObjectName(QLatin1String("TilesetDock"));
@@ -276,8 +274,6 @@ TilesetDock::TilesetDock(QWidget *parent):
     mEditTerrain->setIcon(QIcon(QLatin1String(":images/16x16/terrain.png")));
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16x16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16x16/remove.png")));
-	mMoveTilesLeft->setIcon(QIcon(QLatin1String(":images/24x24/go-left.png")));
-	mMoveTilesRight->setIcon(QIcon(QLatin1String(":images/24x24/go-right.png")));
 
     Utils::setThemeIcon(mNewTileset, "document-new");
     Utils::setThemeIcon(mImportTileset, "document-import");
@@ -303,10 +299,6 @@ TilesetDock::TilesetDock(QWidget *parent):
             SLOT(addTiles()));
     connect(mRemoveTiles, SIGNAL(triggered()),
             SLOT(removeTiles()));
-	connect(mMoveTilesLeft, SIGNAL(triggered()),
-		SLOT(moveTilesLeft()));
-	connect(mMoveTilesRight, SIGNAL(triggered()),
-		SLOT(moveTilesRight()));
 
     mToolBar->addAction(mNewTileset);
     mToolBar->setIconSize(QSize(16, 16));
@@ -317,13 +309,10 @@ TilesetDock::TilesetDock(QWidget *parent):
     mToolBar->addAction(mEditTerrain);
     mToolBar->addAction(mAddTiles);
     mToolBar->addAction(mRemoveTiles);
-	mToolBar->addAction(mMoveTilesLeft);
-	mToolBar->addAction(mMoveTilesRight);
 
     mZoomable = new Zoomable(this);
     mZoomComboBox = new QComboBox;
     mZoomable->connectToComboBox(mZoomComboBox);
-   
     horizontal->addWidget(mZoomComboBox);
 
     connect(mViewStack, SIGNAL(currentChanged(int)),
@@ -506,10 +495,6 @@ void TilesetDock::updateActions()
     mAddTiles->setEnabled(tilesetIsDisplayed && !hasImageSource && !external);
     mRemoveTiles->setEnabled(tilesetIsDisplayed && !hasImageSource
                              && hasSelection && !external);
-	mMoveTilesLeft->setEnabled(tilesetIsDisplayed && !hasImageSource
-		&& hasSelection && !external);
-	mMoveTilesRight->setEnabled(tilesetIsDisplayed && !hasImageSource
-		&& hasSelection && !external);
 }
 
 void TilesetDock::updateCurrentTiles()
@@ -753,8 +738,6 @@ void TilesetDock::retranslateUi()
     mEditTerrain->setText(tr("Edit &Terrain Information"));
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
-	mMoveTilesLeft->setText(tr("Move Tiles Left"));
-	mMoveTilesRight->setText(tr("Move Tiles Right"));
 }
 
 Tileset *TilesetDock::currentTileset() const
@@ -953,63 +936,6 @@ void TilesetDock::removeTiles()
     // Clear the current tiles, will be referencing the removed tiles
     setCurrentTiles(0);
     setCurrentTile(0);
-}
-
-void TilesetDock::moveTilesLeft()
-{
-	moveTiles(MoveTiles::Left);
-}
-
-void TilesetDock::moveTilesRight()
-{
-	moveTiles(MoveTiles::Right);
-}
-
-void TilesetDock::moveTiles(MoveTiles::Direction eDirection)
-{
-	TilesetView *view = currentTilesetView();
-	if (!view)
-		return;
-	if (!view->selectionModel()->hasSelection())
-		return;
-
-	TileLayer* pTiles = (TileLayer*)(mCurrentTiles->clone());
-
-	const QModelIndexList indexes = view->selectionModel()->selectedIndexes();
-	const TilesetModel *model = view->tilesetModel();
-	RangeSet<int> tileIds;
-	QList<Tile*> tiles;
-
-	foreach (const QModelIndex &index, indexes) {
-		if (Tile *tile = model->tileAt(index)) {
-			tileIds.insert(tile->id());
-			tiles.append(tile);
-		}
-	}
-
-	// Iterate backwards over the ranges in order to keep the indexes valid
-	RangeSet<int>::Range firstRange = tileIds.begin();
-	RangeSet<int>::Range it = tileIds.end();
-	if (it == firstRange) // no range
-		return;
-
-	QUndoStack *undoStack = mMapDocument->undoStack();
-	undoStack->beginMacro(tr("Move Tiles"));
-
-	Tileset *tileset = view->tilesetModel()->tileset();
-	do {
-		--it;
-		undoStack->push(new MoveTiles(mMapDocument, tileset,
-			it.first(), it.length(), eDirection));
-	} while (it != firstRange);
-
-	undoStack->endMacro();
-
-	setCurrentTiles(pTiles);
-
-	foreach (const Tile* index, tiles) {
-		view->selectionModel()->select(model->tileIndex(index), QItemSelectionModel::Select);
-	}
 }
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)

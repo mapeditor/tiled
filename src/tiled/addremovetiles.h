@@ -93,32 +93,6 @@ public:
     { removeTiles(); }
 };
 
-class MoveTiles : public QUndoCommand
-{
-public:
-	enum Direction { Right, Left };
-
-    MoveTiles(MapDocument *mapDocument,
-		Tileset *tileset,
-		int index,
-		int count,
-		Direction eDirection,
-		const QList<Tile*> &tiles = QList<Tile*>());
-
-protected:
-	void undo();
-	void redo();
-	void moveTiles();
-
-private:
-	MapDocument *mMapDocument;
-	Tileset *mTileset;
-	int mIndex;
-	int mCount;
-	QList<Tile*> mTiles;
-	Direction mDirection;
-};
-
 } // namespace Internal
 } // namespace Tiled
 
