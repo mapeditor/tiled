@@ -53,6 +53,9 @@ using namespace Tiled::Internal;
 namespace Tiled {
 namespace Internal {
 
+	QString mTilesetSourceFiles[MAX_TILESET_SOURCE_FILES];
+	int mNumTilesetSourceFiles;
+
 class MapReaderPrivate
 {
     Q_DECLARE_TR_FUNCTIONS(MapReader)
@@ -198,6 +201,8 @@ void MapReaderPrivate::readUnknownElement()
 Map *MapReaderPrivate::readMap()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("map"));
+
+	mNumTilesetSourceFiles = 0;
 
     const QXmlStreamAttributes atts = xml.attributes();
     const int mapWidth =
@@ -491,7 +496,9 @@ QImage MapReaderPrivate::readImage()
         xml.skipCurrentElement();
 
         source = p->resolveReference(source, mPath);
-        QImage image = p->readExternalImage(source);
+		QImage image = p->readExternalImage(source);
+		mTilesetSourceFiles[mNumTilesetSourceFiles] = source;
+		mNumTilesetSourceFiles++;
         if (image.isNull())
             xml.raiseError(tr("Error loading image:\n'%1'").arg(source));
         return image;
@@ -979,7 +986,9 @@ MapReader::~MapReader()
 
 Map *MapReader::readMap(QIODevice *device, const QString &path)
 {
-    return d->readMap(device, path);
+	mNumTilesetSourceFiles = 0;
+
+	return d->readMap(device, path);
 }
 
 Map *MapReader::readMap(const QString &fileName)
@@ -1038,4 +1047,14 @@ SharedTileset MapReader::readExternalTileset(const QString &source,
         *error = reader.errorString();
 
     return tileset;
+}
+
+int MapReader::GetNumTilesetSourceFiles()
+{
+	return mNumTilesetSourceFiles;
+}
+
+QString* MapReader::GetTilesetSourceFiles()
+{
+	return mTilesetSourceFiles;
 }

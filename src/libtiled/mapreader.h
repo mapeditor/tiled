@@ -36,6 +36,8 @@
 
 class QFile;
 
+#define MAX_TILESET_SOURCE_FILES 2048
+
 namespace Tiled {
 
 class Map;
@@ -94,6 +96,9 @@ public:
      * Returns the error message for the last occurred error.
      */
     QString errorString() const;
+
+	int GetNumTilesetSourceFiles();
+	QString* GetTilesetSourceFiles();
 
 protected:
     /**
