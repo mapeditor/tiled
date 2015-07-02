@@ -449,6 +449,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
     mShowTileCollisionEditor->setCheckable(true);
+    mShowTileCollisionEditor->setShortcut(tr("Ctrl+Shift+O"));
+    mShowTileCollisionEditor->setShortcutContext(Qt::ApplicationShortcut);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
