@@ -29,16 +29,13 @@ DynamicLibrary {
 
     Group {
         name: "qmldir"
-        qbs.install: true
-        qbs.installDir: installBase + "qml/org/mapeditor/Tiled"
-        files: [
-            "qmldir",
-        ]
+        files: "qmldir"
+        fileTags: "qmldir"
     }
 
     Group {
         qbs.install: true
         qbs.installDir: installBase + "qml/org/mapeditor/Tiled"
-        fileTagsFilter: "dynamiclibrary"
+        fileTagsFilter: ["dynamiclibrary", "qmldir"]
     }
 }
