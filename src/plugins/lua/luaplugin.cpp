@@ -34,14 +34,7 @@
 
 #include <QFile>
 #include <QCoreApplication>
-
-#if QT_VERSION >= 0x050100
-#define HAS_QSAVEFILE_SUPPORT
-#endif
-
-#ifdef HAS_QSAVEFILE_SUPPORT
 #include <QSaveFile>
-#endif
 
 /**
  * See below for an explanation of the different formats. One of these needs
@@ -60,11 +53,8 @@ LuaPlugin::LuaPlugin()
 
 bool LuaPlugin::write(const Map *map, const QString &fileName)
 {
-#ifdef HAS_QSAVEFILE_SUPPORT
     QSaveFile file(fileName);
-#else
-    QFile file(fileName);
-#endif
+
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -82,12 +72,10 @@ bool LuaPlugin::write(const Map *map, const QString &fileName)
         return false;
     }
 
-#ifdef HAS_QSAVEFILE_SUPPORT
     if (!file.commit()) {
         mError = file.errorString();
         return false;
     }
-#endif
 
     return true;
 }
@@ -513,7 +501,3 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
 
     writer.writeEndTable();
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Lua, LuaPlugin)
-#endif

@@ -6,9 +6,7 @@ TARGET = tmxviewer
 target.path = $${PREFIX}/bin
 INSTALLS += target
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+QT += widgets
 
 win32 {
     DESTDIR = ../..

@@ -25,7 +25,7 @@
 #include "tilelayer.h"
 
 #include <QDataStream>
-#include <QFile>
+#include <QSaveFile>
 
 using namespace Tmw;
 
@@ -57,7 +57,7 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
 
-    QFile file(fileName);
+    QSaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -79,6 +79,11 @@ bool TmwPlugin::write(const Tiled::Map *map, const QString &fileName)
         }
     }
 
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
     return true;
 }
 
@@ -91,7 +96,3 @@ QString TmwPlugin::errorString() const
 {
     return mError;
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Tmw, TmwPlugin)
-#endif

@@ -12,9 +12,8 @@ win32 {
     DESTDIR = ../../bin
 }
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+QT += widgets
+
 contains(QT_CONFIG, opengl):!macx: QT += opengl
 
 DEFINES += QT_NO_CAST_FROM_ASCII \

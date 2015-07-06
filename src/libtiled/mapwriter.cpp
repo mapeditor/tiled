@@ -41,18 +41,11 @@
 #include "tileset.h"
 #include "terrain.h"
 
-#include <QCoreApplication>
 #include <QBuffer>
+#include <QCoreApplication>
 #include <QDir>
-#include <QXmlStreamWriter>
-
-#if QT_VERSION >= 0x050100
-#define HAS_QSAVEFILE_SUPPORT
-#endif
-
-#ifdef HAS_QSAVEFILE_SUPPORT
 #include <QSaveFile>
-#endif
+#include <QXmlStreamWriter>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -662,11 +655,7 @@ void MapWriter::writeMap(const Map *map, QIODevice *device,
 
 bool MapWriter::writeMap(const Map *map, const QString &fileName)
 {
-#ifdef HAS_QSAVEFILE_SUPPORT
     QSaveFile file(fileName);
-#else
-    QFile file(fileName);
-#endif
     if (!d->openFile(&file))
         return false;
 
@@ -677,12 +666,10 @@ bool MapWriter::writeMap(const Map *map, const QString &fileName)
         return false;
     }
 
-#ifdef HAS_QSAVEFILE_SUPPORT
     if (!file.commit()) {
         d->mError = file.errorString();
         return false;
     }
-#endif
 
     return true;
 }

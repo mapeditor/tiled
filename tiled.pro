@@ -2,9 +2,12 @@
 isEmpty(QT_VERSION) {
     error("QT_VERSION not defined. Tiled does not work with Qt 3.")
 }
-contains(QT_VERSION, ^4\\.[0-7]\\..*) {
-    message("Cannot build Tiled with Qt version $$QT_VERSION")
-    error("Use at least Qt 4.8")
+
+include(tiled.pri)
+
+!minQtVersion(5, 1, 0) {
+    message("Cannot build Tiled with Qt version $${QT_VERSION}")
+    error("Use at least Qt 5.1.0.")
 }
 
 TEMPLATE  = subdirs

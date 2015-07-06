@@ -28,12 +28,7 @@
 
 #include "tmxrasterizer.h"
 
-#if QT_VERSION >= 0x050000
 #include <QGuiApplication>
-#else
-#include <QApplication>
-#endif
-
 #include <QDebug>
 #include <QStringList>
 
@@ -155,11 +150,7 @@ static void parseCommandLineArguments(CommandLineOptions &options)
 
 int main(int argc, char *argv[])
 {
-#if QT_VERSION >= 0x050000
     QGuiApplication a(argc, argv);
-#else
-    QApplication a(argc, argv);
-#endif
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
     a.setApplicationName(QLatin1String("TmxRasterizer"));

@@ -53,13 +53,8 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     mTileStampView->setModel(mTileStampModel);
     mTileStampView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     mTileStampView->header()->setStretchLastSection(false);
-#if QT_VERSION >= 0x050000
     mTileStampView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
     mTileStampView->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-#else
-    mTileStampView->header()->setResizeMode(0, QHeaderView::Stretch);
-    mTileStampView->header()->setResizeMode(1, QHeaderView::ResizeToContents);
-#endif
 
     mTileStampView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(mTileStampView, SIGNAL(customContextMenuRequested(QPoint)),

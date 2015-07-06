@@ -28,6 +28,7 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QSaveFile>
 
 using namespace Droidcraft;
 
@@ -125,14 +126,18 @@ bool DroidcraftPlugin::write(const Tiled::Map *map, const QString &fileName)
     QByteArray compressed = compress(uncompressed, Gzip);
 
     // Write QByteArray
-    QFile file(fileName);
+    QSaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
     file.write(compressed);
-    file.close();
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
 
     return true;
 }
@@ -146,7 +151,3 @@ QString DroidcraftPlugin::errorString() const
 {
     return mError;
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Droidcraft, DroidcraftPlugin)
-#endif

@@ -28,15 +28,8 @@
 
 #include <QFile>
 #include <QFileInfo>
-#include <QTextStream>
-
-#if QT_VERSION >= 0x050100
-#define HAS_QSAVEFILE_SUPPORT
-#endif
-
-#ifdef HAS_QSAVEFILE_SUPPORT
 #include <QSaveFile>
-#endif
+#include <QTextStream>
 
 using namespace Json;
 
@@ -84,11 +77,8 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
 
 bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-#ifdef HAS_QSAVEFILE_SUPPORT
     QSaveFile file(fileName);
-#else
-    QFile file(fileName);
-#endif
+
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -131,12 +121,10 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
 
-#ifdef HAS_QSAVEFILE_SUPPORT
     if (!file.commit()) {
         mError = file.errorString();
         return false;
     }
-#endif
 
     return true;
 }
@@ -159,7 +147,3 @@ QString JsonPlugin::errorString() const
 {
     return mError;
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Json, JsonPlugin)
-#endif

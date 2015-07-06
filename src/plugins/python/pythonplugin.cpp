@@ -22,16 +22,8 @@
 
 #include "map.h"
 
-#include <stdlib.h>
-#include <list>
-#include <string>
-#include <iostream>
-
 #include <QDateTime>
 #include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QTextStream>
 #include <QDirIterator>
 
 using namespace Python;
@@ -393,7 +385,3 @@ QString PythonPlugin::errorString() const
 {
     return mError;
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Python, PythonPlugin)
-#endif

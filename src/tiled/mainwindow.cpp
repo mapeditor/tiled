@@ -500,7 +500,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
 
-#if defined(Q_OS_OSX) && QT_VERSION >= 0x050000
+#if defined(Q_OS_OSX)
     // This works around the problem that the shortcut for the Delete menu action
     // is not working on OS X for whatever reason.
     foreach (QKeySequence key, QKeySequence::keyBindings(QKeySequence::Delete))

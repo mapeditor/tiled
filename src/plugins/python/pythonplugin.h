@@ -48,11 +48,9 @@ class Q_DECL_EXPORT PythonPlugin
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapReaderInterface Tiled::MapWriterInterface Tiled::LoggingInterface)
-#if QT_VERSION >= 0x050000
     Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
     Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
     Q_PLUGIN_METADATA(IID "org.mapeditor.LoggingInterface" FILE "plugin.json")
-#endif
 
 signals:
     void info(QString s);

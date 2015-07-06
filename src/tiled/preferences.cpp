@@ -25,11 +25,7 @@
 #include "mapdocument.h"
 #include "tilesetmanager.h"
 
-#if QT_VERSION >= 0x050000
 #include <QStandardPaths>
-#else
-#include <QDesktopServices>
-#endif
 
 #include <QFileInfo>
 #include <QSettings>
@@ -388,13 +384,8 @@ QString Preferences::lastPath(FileType fileType) const
     }
 
     if (path.isEmpty()) {
-#if QT_VERSION >= 0x050000
         path = QStandardPaths::writableLocation(
                     QStandardPaths::DocumentsLocation);
-#else
-        path = QDesktopServices::storageLocation(
-                    QDesktopServices::DocumentsLocation);
-#endif
     }
 
     return path;

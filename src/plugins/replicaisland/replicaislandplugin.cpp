@@ -30,7 +30,7 @@
 #include <QtEndian>
 #include <QFile>
 #include <QFileInfo>
-#include <QTemporaryFile>
+#include <QSaveFile>
 
 using namespace ReplicaIsland;
 
@@ -235,14 +235,14 @@ bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
     using namespace Tiled;
 
     // Open up a temporary file for saving the level.
-    QTemporaryFile temp;
-    if (!temp.open()) {
-        mError = tr("Cannot open temporary file for writing!");
+    QSaveFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        mError = tr("Could not open file for writing.");
         return false;
     }
 
     // Create an output stream for serializing data.
-    QDataStream out(&temp);
+    QDataStream out(&file);
     out.setByteOrder(QDataStream::LittleEndian);
     out.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
@@ -267,12 +267,8 @@ bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
             return false;
     }
 
-    // Overwrite our destination file with our temporary file.  We only
-    // do this once we know we've saved a valid map.
-    temp.close();
-    QFile::remove(fileName);
-    if (!QFile::copy(temp.fileName(), fileName)) {
-        mError = tr("Couldn't overwrite old version; may be deleted!");
+    if (!file.commit()) {
+        mError = file.errorString();
         return false;
     }
 
@@ -319,7 +315,3 @@ bool ReplicaIslandPlugin::writeLayer(QDataStream &out, Tiled::TileLayer *layer)
 
     return true;
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(ReplicaIsland, ReplicaIslandPlugin)
-#endif

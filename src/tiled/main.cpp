@@ -157,15 +157,6 @@ void CommandLineHandler::showExportFormats()
 
 int main(int argc, char *argv[])
 {
-    /*
-     * On X11, Tiled uses the 'raster' graphics system by default, because the
-     * X11 native graphics system has performance problems with drawing the
-     * tile grid.
-     */
-#if QT_VERSION < 0x050000 && defined(Q_WS_X11)
-    QApplication::setGraphicsSystem(QLatin1String("raster"));
-#endif
-
     TiledApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
@@ -180,10 +171,8 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
-#if QT_VERSION >= 0x050100
     // Enable support for highres images (added in Qt 5.1, but off by default)
     a.setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
 
 #ifndef Q_OS_WIN
     QString baseName = QApplication::style()->objectName();

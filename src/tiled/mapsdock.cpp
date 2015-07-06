@@ -189,11 +189,7 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     setRootIndex(mFSModel->index(mapsDir.absolutePath()));
     
     header()->setStretchLastSection(false);
-#if QT_VERSION >= 0x050000
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
-#else
-    header()->setResizeMode(0, QHeaderView::Stretch);
-#endif
 
     connect(this, SIGNAL(activated(QModelIndex)),
             SLOT(onActivated(QModelIndex)));
