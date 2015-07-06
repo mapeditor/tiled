@@ -59,7 +59,7 @@ public slots:
     void addVariation(const TileStamp &targetStamp);
 
     void selectQuickStamp(int index);
-    void saveQuickStamp(int index);
+    void createQuickStamp(int index);
     void extendQuickStamp(int index);
 
 signals:
@@ -69,7 +69,7 @@ private:
     Q_DISABLE_COPY(TileStampManager)
 
     void eraseQuickStamp(int index);
-    void saveQuickStamp(int index, TileStamp stamp);
+    void setQuickStamp(int index, TileStamp stamp);
 
     QVector<TileStamp> mQuickStamps;
     TileStampModel *mTileStampModel;

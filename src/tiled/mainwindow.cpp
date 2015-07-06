@@ -1729,7 +1729,7 @@ void MainWindow::setupQuickStamps()
     QList<Qt::Key> keys = TileStampManager::quickStampKeys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
-    QSignalMapper *saveMapper = new QSignalMapper(this);
+    QSignalMapper *createMapper = new QSignalMapper(this);
     QSignalMapper *extendMapper = new QSignalMapper(this);
 
     for (int i = 0; i < keys.length(); i++) {
@@ -1740,10 +1740,10 @@ void MainWindow::setupQuickStamps()
         connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
         selectMapper->setMapping(selectStamp, i);
 
-        // Set up shortcut for saving this quick stamp
-        QShortcut *saveStamp = new QShortcut(Qt::CTRL + key, this);
-        connect(saveStamp, SIGNAL(activated()), saveMapper, SLOT(map()));
-        saveMapper->setMapping(saveStamp, i);
+        // Set up shortcut for creating this quick stamp
+        QShortcut *createStamp = new QShortcut(Qt::CTRL + key, this);
+        connect(createStamp, SIGNAL(activated()), createMapper, SLOT(map()));
+        createMapper->setMapping(createStamp, i);
 
         // Set up shortcut for extending this quick stamp
         QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, this);
@@ -1753,8 +1753,8 @@ void MainWindow::setupQuickStamps()
 
     connect(selectMapper, SIGNAL(mapped(int)),
             mTileStampManager, SLOT(selectQuickStamp(int)));
-    connect(saveMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(saveQuickStamp(int)));
+    connect(createMapper, SIGNAL(mapped(int)),
+            mTileStampManager, SLOT(createQuickStamp(int)));
     connect(extendMapper, SIGNAL(mapped(int)),
             mTileStampManager, SLOT(extendQuickStamp(int)));
 

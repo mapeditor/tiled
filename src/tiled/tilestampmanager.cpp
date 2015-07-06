@@ -119,13 +119,13 @@ void TileStampManager::addVariation(const TileStamp &targetStamp)
         mTileStampModel->addVariation(targetStamp, variation);
 }
 
-void TileStampManager::saveQuickStamp(int index)
+void TileStampManager::createQuickStamp(int index)
 {
     TileStamp stamp = stampFromContext(mToolManager.selectedTool());
     if (stamp.isEmpty())
         return;
 
-    saveQuickStamp(index, stamp);
+    setQuickStamp(index, stamp);
 }
 
 void TileStampManager::extendQuickStamp(int index)
@@ -133,7 +133,7 @@ void TileStampManager::extendQuickStamp(int index)
     TileStamp quickStamp = mQuickStamps[index];
 
     if (quickStamp.isEmpty())
-        saveQuickStamp(index);
+        createQuickStamp(index);
     else
         addVariation(quickStamp);
 }
@@ -149,7 +149,7 @@ void TileStampManager::eraseQuickStamp(int index)
     }
 }
 
-void TileStampManager::saveQuickStamp(int index, TileStamp stamp)
+void TileStampManager::setQuickStamp(int index, TileStamp stamp)
 {
     stamp.setName(tr("Quickstamp %1").arg(index + 1));
     stamp.setQuickStampIndex(index);
