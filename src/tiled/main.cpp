@@ -37,12 +37,6 @@
 #include <QStyle>
 #include <QStyleFactory>
 
-#ifdef STATIC_BUILD
-Q_IMPORT_PLUGIN(qgif)
-Q_IMPORT_PLUGIN(qjpeg)
-Q_IMPORT_PLUGIN(qtiff)
-#endif
-
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
 
