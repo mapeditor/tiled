@@ -1178,10 +1178,10 @@ void MainWindow::newTilesets(const QStringList &paths)
 
 void MainWindow::reloadTilesets()
 {
-    Map *map = mMapDocument->map();
-    if (!map)
+    if (!mMapDocument)
         return;
 
+    Map *map = mMapDocument->map();
     TilesetManager *tilesetManager = TilesetManager::instance();
     foreach (Tileset *tileset, map->tilesets())
         tilesetManager->forceTilesetReload(tileset);
