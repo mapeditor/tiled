@@ -44,7 +44,7 @@ QString writableImageFormatsFilter();
  * Looks up the icon with the specified \a name from the system theme and set
  * it on the instance \a t when found.
  *
- * This is a templated method which is used on instances of QAction, QMenu,
+ * This is a template method which is used on instances of QAction, QMenu,
  * QToolButton, etc.
  *
  * Does nothing when the platform is not Linux.

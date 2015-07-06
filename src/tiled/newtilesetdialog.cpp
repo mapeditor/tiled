@@ -22,16 +22,14 @@
 #include "ui_newtilesetdialog.h"
 
 #include "preferences.h"
-#include "tileset.h"
 #include "utils.h"
 
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QImage>
 #include <QMessageBox>
+#include <QScopedPointer>
 #include <QSettings>
-#include <QFileInfo>
-
-#include <memory>
 
 static const char * const TYPE_KEY = "Tileset/Type";
 static const char * const COLOR_ENABLED_KEY = "Tileset/UseTransparentColor";
@@ -62,8 +60,7 @@ NewTilesetDialog::NewTilesetDialog(const QString &path, QWidget *parent) :
     QDialog(parent),
     mPath(path),
     mUi(new Ui::NewTilesetDialog),
-    mNameWasEdited(false),
-    mNewTileset(0)
+    mNameWasEdited(false)
 {
     mUi->setupUi(this);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -116,10 +113,10 @@ void NewTilesetDialog::setTileHeight(int height)
     mUi->tileHeight->setValue(height);
 }
 
-Tileset *NewTilesetDialog::createTileset()
+SharedTileset NewTilesetDialog::createTileset()
 {
     if (exec() != QDialog::Accepted)
-        return 0;
+        return SharedTileset();
 
     return mNewTileset;
 }
@@ -131,7 +128,7 @@ void NewTilesetDialog::tryAccept()
 
     const QString name = mUi->name->text();
 
-    std::auto_ptr<Tileset> tileset;
+    SharedTileset tileset;
 
     if (tilesetType(mUi) == TilesetImage) {
         const QString image = mUi->image->text();
@@ -142,9 +139,9 @@ void NewTilesetDialog::tryAccept()
         const int spacing = mUi->spacing->value();
         const int margin = mUi->margin->value();
 
-        tileset.reset(new Tileset(name,
+        tileset = Tileset::create(name,
                                   tileWidth, tileHeight,
-                                  spacing, margin));
+                                  spacing, margin);
 
         if (useTransparentColor)
             tileset->setTransparentColor(transparentColor);
@@ -171,12 +168,12 @@ void NewTilesetDialog::tryAccept()
         s->setValue(QLatin1String(SPACING_KEY), spacing);
         s->setValue(QLatin1String(MARGIN_KEY), margin);
     } else {
-        tileset.reset(new Tileset(name, 1, 1));
+        tileset = Tileset::create(name, 1, 1);
     }
 
     s->setValue(QLatin1String(TYPE_KEY), mUi->tilesetType->currentIndex());
 
-    mNewTileset = tileset.release();
+    mNewTileset = tileset;
     accept();
 }
 

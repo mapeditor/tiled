@@ -35,7 +35,6 @@
 #include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
 #include "tilesetmanager.h"
 
 #include <QDebug>
@@ -404,17 +403,17 @@ bool AutoMapper::setupCorrectIndexes()
 // because here mAddedTileset is modified.
 bool AutoMapper::setupTilesets(Map *src, Map *dst)
 {
-    QList<Tileset*> existingTilesets = dst->tilesets();
+    const QVector<SharedTileset> &existingTilesets = dst->tilesets();
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of dst map
-    foreach (Tileset *tileset, src->tilesets()) {
+    foreach (const SharedTileset &tileset, src->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
         QUndoStack *undoStack = mMapDocument->undoStack();
 
-        Tileset *replacement = tileset->findSimilarTileset(existingTilesets);
+        SharedTileset replacement = tileset->findSimilarTileset(existingTilesets);
         if (!replacement) {
             mAddedTilesets.append(tileset);
             undoStack->push(new AddTileset(mMapDocument, tileset));
@@ -641,7 +640,7 @@ static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
  * automapping.
  * In this function a certain region (of the set layer) is compared to
  * several other layers (ruleSet and ruleNotSet).
- * This comparision will determine if a rule of automapping matches,
+ * This comparison will determine if a rule of automapping matches,
  * so if this rule is applied at this region given
  * by a QRegion and Offset given by a QPoint.
  *
@@ -691,7 +690,7 @@ static QVector<Cell> cellsInRegion(const QVector<TileLayer*> &list,
  *      This exception was added to have a better functionality
  *      (need of less layers.)
  *      It was not added to the case, when having only listNo layers to
- *      avoid total symmetrie between those lists.
+ *      avoid total symmetry between those lists.
  *
  * If all positions are considered good, return true.
  * return false otherwise.
@@ -872,16 +871,16 @@ void AutoMapper::cleanAll()
 
 void AutoMapper::cleanTilesets()
 {
-    foreach (Tileset *tileset, mAddedTilesets) {
-        if (mMapWork->isTilesetUsed(tileset))
+    foreach (const SharedTileset &tileset, mAddedTilesets) {
+        if (mMapWork->isTilesetUsed(tileset.data()))
             continue;
 
-        const int layerIndex = mMapWork->indexOfTileset(tileset);
-        if (layerIndex == -1)
+        const int index = mMapWork->indexOfTileset(tileset);
+        if (index == -1)
             continue;
 
         QUndoStack *undo = mMapDocument->undoStack();
-        undo->push(new RemoveTileset(mMapDocument, layerIndex, tileset));
+        undo->push(new RemoveTileset(mMapDocument, index));
     }
     mAddedTilesets.clear();
 }

@@ -25,8 +25,8 @@ TiledPlugin {
 
     Properties {
         condition: qbs.targetOS.contains("windows")
-        cpp.cxxFlags: "-IC:/Python27/include"
-        cpp.linkerFlags: "-LC:/Python27/libs"
+        cpp.includePaths: ["C:/Python27/include"]
+        cpp.libraryPaths: ["C:/Python27/libs"]
         cpp.dynamicLibraries: ["python27"]
     }
 

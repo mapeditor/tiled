@@ -50,7 +50,7 @@ public:
     /**
      * Constructor that initializes the gid mapper using the given \a tilesets.
      */
-    GidMapper(const QList<Tileset *> &tilesets);
+    GidMapper(const QVector<SharedTileset> &tilesets);
 
     /**
      * Insert the given \a tileset with \a firstGid as its first global ID.

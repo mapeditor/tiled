@@ -44,11 +44,6 @@ void MapLoader::setSource(const QUrl &source)
 
     m_source = source;
 
-    if (m_map) {
-        qDeleteAll(m_map->tilesets());
-        delete m_map;
-    }
-
     Tiled::MapReader mapReader;
 
     Tiled::Map *map = mapReader.readMap(source.toLocalFile());
@@ -58,6 +53,8 @@ void MapLoader::setSource(const QUrl &source)
     const bool mapDiff = m_map != map;
     const bool statusDiff = m_status != status;
     const bool errorDiff = m_error != error;
+
+    delete m_map;
 
     m_map = map;
     m_status = status;

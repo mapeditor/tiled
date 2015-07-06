@@ -100,6 +100,9 @@ public:
     bool isPatron() const;
     void setPatron(bool isPatron);
 
+    bool openLastFilesOnStartup() const;
+    void setOpenLastFilesOnStartup(bool load);
+
     /**
      * Provides access to the QSettings instance to allow storing/retrieving
      * arbitrary values. The naming style for groups and keys is CamelCase.
@@ -160,6 +163,7 @@ private:
     qreal mObjectLineWidth;
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
+    bool mOpenLastFilesOnStartup;
 
     Map::LayerDataFormat mLayerDataFormat;
     Map::RenderOrder mMapRenderOrder;
@@ -194,6 +198,11 @@ inline int Preferences::runCount() const
 inline bool Preferences::isPatron() const
 {
     return mIsPatron;
+}
+
+inline bool Preferences::openLastFilesOnStartup() const
+{
+    return mOpenLastFilesOnStartup;
 }
 
 } // namespace Internal

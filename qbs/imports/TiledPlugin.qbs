@@ -5,6 +5,8 @@ DynamicLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui" }
 
+    cpp.cxxLanguageVersion: "c++11"
+
     Group {
         qbs.install: true
         qbs.installDir: {

@@ -22,6 +22,7 @@
 #define TMXMAPREADER_H
 
 #include "mapreaderinterface.h"
+#include "tileset.h"
 
 #include <QCoreApplication>
 #include <QString>
@@ -50,7 +51,7 @@ public:
      */
     Map *fromByteArray(const QByteArray &data);
 
-    Tileset *readTileset(const QString &fileName);
+    SharedTileset readTileset(const QString &fileName);
 
     QString nameFilter() const { return tr("Tiled map files (*.tmx)"); }
 

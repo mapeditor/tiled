@@ -25,6 +25,7 @@
 
 #include "layer.h"
 #include "tiled.h"
+#include "tileset.h"
 #include "mapobject.h"
 
 #include <QDateTime>
@@ -47,7 +48,6 @@ class MapRenderer;
 class MapReaderInterface;
 class Terrain;
 class Tile;
-class Tileset;
 
 namespace Internal {
 
@@ -177,7 +177,7 @@ public:
     void removeLayer(int index);
     void toggleOtherLayers(int index);
 
-    void insertTileset(int index, Tileset *tileset);
+    void insertTileset(int index, const SharedTileset &tileset);
     void removeTilesetAt(int index);
     void moveTileset(int from, int to);
     void setTilesetFileName(Tileset *tileset, const QString &fileName);
@@ -255,18 +255,8 @@ public:
 
     QList<Object*> currentObjects() const;
 
-    /**
-     * Makes sure the all tilesets which are used at the given \a map will be
-     * present in the map document.
-     *
-     * To reach the aim, all similar tilesets will be replaced by the version
-     * in the current map document and all missing tilesets will be added to
-     * the current map document.
-     *
-     * \warning This method assumes that the tilesets in \a map are managed by
-     *          the TilesetManager!
-     */
     void unifyTilesets(Map *map);
+    void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
 
     void emitMapChanged();
 

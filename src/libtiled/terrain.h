@@ -32,14 +32,11 @@
 #include "object.h"
 #include "tileset.h"
 
-#include <QColor>
 #include <QMetaType>
 #include <QString>
 #include <QVector>
 
 namespace Tiled {
-
-class Tile;
 
 /**
  * Represents a terrain type.
@@ -49,7 +46,10 @@ class TILEDSHARED_EXPORT Terrain : public Object
     Q_OBJECT
 
 public:
-    Terrain(int id, Tileset *tileset, QString name, int imageTileId):
+    Terrain(int id,
+            Tileset *tileset,
+            QString name,
+            int imageTileId):
         Object(TerrainType),
         mId(id),
         mTileset(tileset),
@@ -58,61 +58,22 @@ public:
     {
     }
 
-    /**
-     * Returns ID of this terrain type.
-     */
-    int id() const { return mId; }
+    int id() const;
 
-    /**
-     * Sets the ID of this terrain type.
-     */
-    void setId(int id) { mId = id; }
+    Tileset *tileset() const;
+    QSharedPointer<Tileset> sharedTileset() const;
 
-    /**
-     * Returns the tileset this terrain type belongs to.
-     */
-    Tileset *tileset() const { return mTileset; }
+    QString name() const;
+    void setName(const QString &name);
 
-    /**
-     * Returns the name of this terrain type.
-     */
-    QString name() const { return mName; }
+    int imageTileId() const;
+    void setImageTileId(int imageTileId);
 
-    /**
-     * Sets the name of this terrain type.
-     */
-    void setName(const QString &name) { mName = name; }
+    Tile *imageTile() const;
 
-    /**
-     * Returns the index of the tile that visually represents this terrain type.
-     */
-    int imageTileId() const { return mImageTileId; }
-
-    /**
-     * Sets the index of the tile that visually represents this terrain type.
-     */
-    void setImageTileId(int imageTileId) { mImageTileId = imageTileId; }
-
-    /**
-     * Returns a Tile that represents this terrain type in the terrain palette.
-     */
-    Tile *imageTile() const
-    { return mImageTileId >= 0 ? mTileset->tileAt(mImageTileId) : 0; }
-
-    /**
-     * Returns the transition penalty(/distance) from this terrain type to another terrain type.
-     */
-    int transitionDistance(int targetTerrainType) const { return mTransitionDistance[targetTerrainType + 1]; }
-
-    /**
-     * Sets the transition penalty(/distance) from this terrain type to another terrain type.
-     */
-    void setTransitionDistance(int targetTerrainType, int distance) { mTransitionDistance[targetTerrainType + 1] = distance; }
-
-    /**
-     * Returns the array of terrain penalties(/distances).
-     */
-    void setTransitionDistances(const QVector<int> &transitionDistances) { mTransitionDistance = transitionDistances; }
+    int transitionDistance(int targetTerrainType) const;
+    void setTransitionDistance(int targetTerrainType, int distance);
+    void setTransitionDistances(const QVector<int> &transitionDistances);
 
 private:
     int mId;
@@ -120,7 +81,97 @@ private:
     QString mName;
     int mImageTileId;
     QVector<int> mTransitionDistance;
+
+    friend class Tileset; // To allow changing the terrain id
 };
+
+/**
+ * Returns ID of this terrain type.
+ */
+inline int Terrain::id() const
+{
+    return mId;
+}
+
+/**
+ * Returns the tileset this terrain type belongs to.
+ */
+inline Tileset *Terrain::tileset() const
+{
+    return mTileset;
+}
+
+/**
+ * Returns the tileset this terrain type belongs to as a shared pointer.
+ */
+inline QSharedPointer<Tileset> Terrain::sharedTileset() const
+{
+    return mTileset->sharedPointer();
+}
+
+/**
+ * Returns the name of this terrain type.
+ */
+inline QString Terrain::name() const
+{
+    return mName;
+}
+
+/**
+ * Sets the name of this terrain type.
+ */
+inline void Terrain::setName(const QString &name)
+{
+    mName = name;
+}
+
+/**
+ * Returns the index of the tile that visually represents this terrain type.
+ */
+inline int Terrain::imageTileId() const
+{
+    return mImageTileId;
+}
+
+/**
+ * Sets the index of the tile that visually represents this terrain type.
+ */
+inline void Terrain::setImageTileId(int imageTileId)
+{
+    mImageTileId = imageTileId;
+}
+
+/**
+ * Returns a Tile that represents this terrain type in the terrain palette.
+ */
+inline Tile *Terrain::imageTile() const
+{
+    return mImageTileId >= 0 ? mTileset->tileAt(mImageTileId) : 0;
+}
+
+/**
+ * Returns the transition penalty(/distance) from this terrain type to another terrain type.
+ */
+inline int Terrain::transitionDistance(int targetTerrainType) const
+{
+    return mTransitionDistance[targetTerrainType + 1];
+}
+
+/**
+ * Sets the transition penalty(/distance) from this terrain type to another terrain type.
+ */
+inline void Terrain::setTransitionDistance(int targetTerrainType, int distance)
+{
+    mTransitionDistance[targetTerrainType + 1] = distance;
+}
+
+/**
+ * Returns the array of terrain penalties(/distances).
+ */
+inline void Terrain::setTransitionDistances(const QVector<int> &transitionDistances)
+{
+    mTransitionDistance = transitionDistances;
+}
 
 } // namespace Tiled
 

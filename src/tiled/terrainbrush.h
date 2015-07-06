@@ -82,14 +82,6 @@ public:
         setTilePositionMethod(mode == PaintTile ? OnTiles : BetweenTiles);
     }
 
-signals:
-    /**
-     * Emitted when the currently selected tiles changed. The stamp brush emits
-     * this signal instead of setting its stamp directly so that the fill tool
-     * also gets the new stamp.
-     */
-    void currentTilesChanged(const TileLayer *tiles);
-
 protected:
     void tilePositionChanged(const QPoint &tilePos);
 

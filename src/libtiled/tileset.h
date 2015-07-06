@@ -36,6 +36,7 @@
 #include <QList>
 #include <QVector>
 #include <QPoint>
+#include <QSharedPointer>
 #include <QString>
 #include <QPixmap>
 
@@ -44,7 +45,10 @@ class QImage;
 namespace Tiled {
 
 class Tile;
+class Tileset;
 class Terrain;
+
+typedef QSharedPointer<Tileset> SharedTileset;
 
 /**
  * A tileset, representing a set of tiles.
@@ -60,13 +64,31 @@ class TILEDSHARED_EXPORT Tileset : public Object
 
 public:
     /**
-     * Constructor.
+     * Creates a new tileset with the given parameters. Using this function
+     * makes sure the internal weak pointer is initialized, which enables the
+     * sharedPointer() function.
      *
      * @param name        the name of the tileset
      * @param tileWidth   the width of the tiles in the tileset
      * @param tileHeight  the height of the tiles in the tileset
      * @param tileSpacing the spacing between the tiles in the tileset image
      * @param margin      the margin around the tiles in the tileset image
+     */
+    static SharedTileset create(const QString &name,
+                                int tileWidth,
+                                int tileHeight,
+                                int tileSpacing = 0,
+                                int margin = 0)
+    {
+        SharedTileset tileset(new Tileset(name, tileWidth, tileHeight,
+                                          tileSpacing, margin));
+        tileset->mWeakPointer = tileset;
+        return tileset;
+    }
+
+private:
+    /**
+     * Private constructor. Use create() instead.
      */
     Tileset(const QString &name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0):
@@ -85,6 +107,7 @@ public:
         Q_ASSERT(margin >= 0);
     }
 
+public:
     /**
      * Destructor.
      */
@@ -196,32 +219,14 @@ public:
      */
     void setTransparentColor(const QColor &c) { mTransparentColor = c; }
 
-    /**
-     * Load this tileset from the given tileset \a image. This will replace
-     * existing tile images in this tileset with new ones. If the new image
-     * contains more tiles than exist in the tileset new tiles will be
-     * appended, if there are fewer tiles the excess images will be blanked.
-     *
-     * The tile width and height of this tileset must be higher than 0.
-     *
-     * @param image    the image to load the tiles from
-     * @param fileName the file name of the image, which will be remembered
-     *                 as the image source of this tileset.
-     * @return <code>true</code> if loading was successful, otherwise
-     *         returns <code>false</code>
-     */
     bool loadFromImage(const QImage &image, const QString &fileName);
-
-    /**
-     * Convenience override that loads the image using the QImage constructor.
-     */
     bool loadFromImage(const QString &fileName);
 
     /**
      * This checks if there is a similar tileset in the given list.
      * It is needed for replacing this tileset by its similar copy.
      */
-    Tileset *findSimilarTileset(const QList<Tileset*> &tilesets) const;
+    SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 
     /**
      * Returns the file name of the external image that contains the tiles in
@@ -252,13 +257,6 @@ public:
      */
     Terrain *terrain(int index) const { return index >= 0 ? mTerrainTypes[index] : 0; }
 
-    /**
-     * Adds a new terrain type.
-     *
-     * @param name      the name of the terrain
-     * @param imageTile the id of the tile that represents the terrain visually
-     * @return the created Terrain instance
-     */
     Terrain *addTerrain(const QString &name, int imageTileId);
 
     /**
@@ -282,11 +280,8 @@ public:
      * Returns the transition penalty(/distance) between 2 terrains. -1 if no
      * transition is possible.
      */
-    int terrainTransitionPenalty(int terrainType0, int terrainType1);
+    int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
 
-    /**
-     * Adds a new tile to the end of the tileset.
-     */
     Tile *addTile(const QPixmap &image, const QString &source = QString());
 
     void insertTiles(int index, const QList<Tile*> &tiles);
@@ -302,6 +297,8 @@ public:
      * Used by the Tile class when its terrain information changes.
      */
     void markTerrainDistancesDirty() { mTerrainDistancesDirty = true; }
+
+    SharedTileset sharedPointer() const;
 
 private:
     /**
@@ -329,7 +326,23 @@ private:
     QList<Tile*> mTiles;
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
+
+    QWeakPointer<Tileset> mWeakPointer;
 };
+
+
+/**
+ * Convenience override that loads the image using the QImage constructor.
+ */
+inline bool Tileset::loadFromImage(const QString &fileName)
+{
+    return loadFromImage(QImage(fileName), fileName);
+}
+
+inline SharedTileset Tileset::sharedPointer() const
+{
+    return SharedTileset(mWeakPointer);
+}
 
 } // namespace Tiled
 

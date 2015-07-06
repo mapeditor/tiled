@@ -118,6 +118,11 @@ Preferences::Preferences()
     }
     mSettings->setValue(QLatin1String("RunCount"), mRunCount);
     mSettings->endGroup();
+
+    // Retrieve startup settings
+    mSettings->beginGroup(QLatin1String("Startup"));
+    mOpenLastFilesOnStartup = boolValue("OpenLastFiles", true);
+    mSettings->endGroup();
 }
 
 Preferences::~Preferences()
@@ -433,6 +438,15 @@ void Preferences::setPatron(bool isPatron)
     mSettings->setValue(QLatin1String("Install/IsPatron"), isPatron);
 
     emit isPatronChanged();
+}
+
+void Preferences::setOpenLastFilesOnStartup(bool open)
+{
+    if (mOpenLastFilesOnStartup == open)
+    	return;
+
+    mOpenLastFilesOnStartup = open;
+    mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);
 }
 
 bool Preferences::boolValue(const char *key, bool defaultValue) const

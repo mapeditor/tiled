@@ -40,6 +40,18 @@ ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands", "Resize Object"));
 }
 
+ResizeMapObject::ResizeMapObject(MapDocument *mapDocument,
+                                 MapObject *mapObject,
+                                 const QSizeF &newSize,
+                                 const QSizeF &oldSize)
+    : mMapDocument(mapDocument)
+    , mMapObject(mapObject)
+    , mOldSize(oldSize)
+    , mNewSize(newSize)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Resize Object"));
+}
+
 void ResizeMapObject::undo()
 {
     mMapDocument->mapObjectModel()->setObjectSize(mMapObject, mOldSize);

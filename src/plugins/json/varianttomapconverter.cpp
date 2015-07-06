@@ -71,12 +71,11 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
 
     const int nextObjectId = variantMap["nextobjectid"].toString().toInt();
 
-    typedef QScopedPointer<Map> MapPtr;
-    MapPtr map(new Map(orientation,
-                       variantMap["width"].toInt(),
-                       variantMap["height"].toInt(),
-                       variantMap["tilewidth"].toInt(),
-                       variantMap["tileheight"].toInt()));
+    QScopedPointer<Map> map(new Map(orientation,
+                            variantMap["width"].toInt(),
+                            variantMap["height"].toInt(),
+                            variantMap["tilewidth"].toInt(),
+                            variantMap["tileheight"].toInt()));
     map->setHexSideLength(variantMap["hexsidelength"].toInt());
     map->setStaggerAxis(staggerAxis);
     map->setStaggerIndex(staggerIndex);
@@ -92,21 +91,17 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         map->setBackgroundColor(QColor(bgColor));
 
     foreach (const QVariant &tilesetVariant, variantMap["tilesets"].toList()) {
-        Tileset *tileset = toTileset(tilesetVariant);
-        if (!tileset) {
-            qDeleteAll(map->tilesets()); // Delete tilesets loaded so far
+        SharedTileset tileset = toTileset(tilesetVariant);
+        if (!tileset)
             return 0;
-        }
 
         map->addTileset(tileset);
     }
 
     foreach (const QVariant &layerVariant, variantMap["layers"].toList()) {
         Layer *layer = toLayer(layerVariant);
-        if (!layer) {
-            qDeleteAll(map->tilesets()); // Delete tilesets
+        if (!layer)
             return 0;
-        }
 
         map->addLayer(layer);
     }
@@ -128,7 +123,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &variant)
     return properties;
 }
 
-Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
+SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 {
     const QVariantMap variantMap = variant.toMap();
 
@@ -144,13 +139,12 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
 
     if (tileWidth <= 0 || tileHeight <= 0 || firstGid == 0) {
         mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
-        return 0;
+        return SharedTileset();
     }
 
-    typedef QScopedPointer<Tileset> TilesetPtr;
-    TilesetPtr tileset(new Tileset(name,
-                                   tileWidth, tileHeight,
-                                   spacing, margin));
+    SharedTileset tileset(Tileset::create(name,
+                                          tileWidth, tileHeight,
+                                          spacing, margin));
 
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
 
@@ -164,7 +158,7 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
         QString imagePath = resolvePath(mMapDir, imageVariant);
         if (!tileset->loadFromImage(imagePath)) {
             mError = tr("Error loading tileset image:\n'%1'").arg(imagePath);
-            return 0;
+            return SharedTileset();
         }
     }
 
@@ -196,7 +190,7 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
                 // Limit the index to number of entries to prevent running out
                 // of memory on malicious input.
                 mError = tr("Tileset tile index too high:\n'%1'").arg(tileIndex);
-                return 0;
+                return SharedTileset();
             }
             for (int i = tileset->tileCount(); i <= tileIndex; i++)
                 tileset->addTile(QPixmap());
@@ -210,7 +204,7 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
                 for (int i = 0; i < 4; ++i) {
                     int terrainId = terrains.at(i).toInt(&ok);
                     if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
-                        tile->setCornerTerrain(i, terrainId);
+                        tile->setCornerTerrainId(i, terrainId);
                 }
             }
             float terrainProbability = tileVar["probability"].toFloat(&ok);
@@ -251,7 +245,7 @@ Tileset *VariantToMapConverter::toTileset(const QVariant &variant)
     }
 
     mGidMapper.insert(firstGid, tileset.data());
-    return tileset.take();
+    return tileset;
 }
 
 Layer *VariantToMapConverter::toLayer(const QVariant &variant)
@@ -371,6 +365,14 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         if (gid) {
             bool ok;
             object->setCell(mGidMapper.gidToCell(gid, ok));
+
+            if (!object->cell().isEmpty()) {
+                const QSizeF &tileSize = object->cell().tile->size();
+                if (width == 0)
+                    object->setWidth(tileSize.width());
+                if (height == 0)
+                    object->setHeight(tileSize.height());
+            }
         }
 
         if (objectVariantMap.contains("visible"))

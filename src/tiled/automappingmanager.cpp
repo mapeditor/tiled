@@ -85,10 +85,6 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         }
     }
 
-    // use a pointer to the region, so each automapper can manipulate it and the
-    // following automappers do see the impact
-    QRegion *passedRegion = new QRegion(where);
-
     QVector<AutoMapper*> passedAutoMappers;
     if (touchedLayer) {
         foreach (AutoMapper *a, mAutoMappers) {
@@ -99,19 +95,22 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         passedAutoMappers = mAutoMappers;
     }
     if (!passedAutoMappers.isEmpty()) {
+        // use a copy of the region, so each automapper can manipulate it and the
+        // following automappers do see the impact
+        QRegion region(where);
+
         QUndoStack *undoStack = mMapDocument->undoStack();
         undoStack->beginMacro(tr("Apply AutoMap rules"));
-        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, passedRegion);
+        AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
         undoStack->push(aw);
         undoStack->endMacro();
+
+        mMapDocument->emitRegionChanged(region);
     }
     foreach (AutoMapper *automapper, mAutoMappers) {
         mWarning += automapper->warningString();
         mError += automapper->errorString();
     }
-
-    mMapDocument->emitRegionChanged(*passedRegion);
-    delete passedRegion;
 
     if (!mWarning.isEmpty())
         emit warningsOccurred(automatic);

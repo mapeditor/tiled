@@ -9,6 +9,7 @@ QtGuiApplication {
 
     cpp.includePaths: ["."]
     cpp.rpaths: ["$ORIGIN/../lib"]
+    cpp.cxxLanguageVersion: "c++11"
 
     files: [
         "main.cpp",

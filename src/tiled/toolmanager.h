@@ -47,29 +47,12 @@ public:
     ToolManager(QObject *parent = 0);
     ~ToolManager();
 
-    /**
-     * Sets the MapDocument on which the registered tools will operate.
-     */
     void setMapDocument(MapDocument *mapDocument);
 
-    /**
-     * Registers a new tool. The tool manager does not take ownership over the
-     * tool.
-     *
-     * @return The action for activating the tool.
-     */
     QAction *registerTool(AbstractTool *tool);
 
-    /**
-     * Selects the given tool. It should be previously added using
-     * registerTool().
-     */
     void selectTool(AbstractTool *tool);
-
-    /**
-     * Returns the selected tool.
-     */
-    AbstractTool *selectedTool() const { return mSelectedTool; }
+    AbstractTool *selectedTool() const;
 
     void retranslateTools();
 
@@ -98,6 +81,15 @@ private:
     AbstractTool *mPreviouslyDisabledTool;
     MapDocument *mMapDocument;
 };
+
+
+/**
+ * Returns the selected tool.
+ */
+inline AbstractTool *ToolManager::selectedTool() const
+{
+    return mSelectedTool;
+}
 
 } // namespace Internal
 } // namespace Tiled

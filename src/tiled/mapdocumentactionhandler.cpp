@@ -175,6 +175,8 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
     updateActions();
 
     if (mMapDocument) {
+        connect(mapDocument, SIGNAL(layerRemoved(int)),
+                SLOT(updateActions()));
         connect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
                 SLOT(updateActions()));
         connect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),

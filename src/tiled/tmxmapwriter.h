@@ -42,7 +42,7 @@ class TmxMapWriter : public MapWriterInterface
 public:
     bool write(const Map *map, const QString &fileName);
 
-    bool writeTileset(const Tileset *tileset, const QString &fileName);
+    bool writeTileset(const Tileset &tileset, const QString &fileName);
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is

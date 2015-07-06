@@ -107,45 +107,10 @@ void PropertyBrowser::setObject(Object *object)
     if (mObject == object)
         return;
 
-    // Destroy all previous properties
-    mVariantManager->clear();
-    mGroupManager->clear();
-    mPropertyToId.clear();
-    mIdToProperty.clear();
-    mNameToProperty.clear();
-    mCustomPropertiesGroup = 0;
-
+    removeProperties();
     mObject = object;
 
-    if (!mObject)
-        return;
-
-    mUpdating = true;
-
-    // Add the built-in properties for each object type
-    switch (object->typeId()) {
-    case Object::MapType:               addMapProperties(); break;
-    case Object::MapObjectType:         addMapObjectProperties(); break;
-    case Object::LayerType:
-        switch (static_cast<Layer*>(object)->layerType()) {
-        case Layer::TileLayerType:      addTileLayerProperties();   break;
-        case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
-        case Layer::ImageLayerType:     addImageLayerProperties();  break;
-        }
-        break;
-    case Object::TilesetType:           addTilesetProperties(); break;
-    case Object::TileType:              addTileProperties(); break;
-    case Object::TerrainType:           addTerrainProperties(); break;
-    }
-
-    // Add a node for the custom properties
-    mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
-    addProperty(mCustomPropertiesGroup);
-
-    mUpdating = false;
-
-    updateProperties();
-    updateCustomProperties();
+    addProperties();
 }
 
 void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
@@ -214,6 +179,14 @@ void PropertyBrowser::editCustomProperty(const QString &name)
     const QList<QtBrowserItem*> propertyItems = items(property);
     if (!propertyItems.isEmpty())
         editItem(propertyItems.first());
+}
+
+bool PropertyBrowser::event(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+
+    return QtTreePropertyBrowser::event(event);
 }
 
 void PropertyBrowser::mapChanged()
@@ -521,6 +494,21 @@ void PropertyBrowser::addTilesetProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
+
+    // Next properties we should add only for non 'Collection of Images' tilesets
+    const Tileset *currentTileset = dynamic_cast<const Tileset*>(mObject);
+    if (!currentTileset->imageSource().isEmpty()) {
+        QtVariantProperty *srcImgProperty =
+                createProperty(SourceImageProperty, QVariant::String, tr("Source Image"), groupProperty);
+        QtVariantProperty *tileSizeProperty = createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
+        QtVariantProperty *marginProperty = createProperty(MarginProperty, QVariant::Int, tr("Margin"), groupProperty);
+        QtVariantProperty *spacingProperty = createProperty(SpacingProperty, QVariant::Int, tr("Spacing"), groupProperty);
+        // Make these properties read-only
+        srcImgProperty->setEnabled(false);
+        tileSizeProperty->setEnabled(false);
+        marginProperty->setEnabled(false);
+        spacingProperty->setEnabled(false);
+    }
     addProperty(groupProperty);
 }
 
@@ -529,11 +517,11 @@ void PropertyBrowser::addTileProperties()
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile"));
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
 
-    QtProperty *probabilityProperty = createProperty(TileProbabilityProperty,
-                                                     QVariant::Double,
-                                                     tr("Probability"),
-                                                     groupProperty);
-
+    QtVariantProperty *probabilityProperty = createProperty(TileProbabilityProperty,
+                                                            QVariant::Double,
+                                                            tr("Probability"),
+                                                            groupProperty);
+    probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be "
                                        "picked while painting terrain"));
 
@@ -622,21 +610,21 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
         command = new SetMapObjectVisible(mMapDocument, mapObject, val.toBool());
         break;
     case PositionProperty: {
+        const QPointF newPos = val.toPointF();
         const QPointF oldPos = mapObject->position();
-        mapObject->setPosition(val.toPointF());
-        command = new MoveMapObject(mMapDocument, mapObject, oldPos);
+        command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
         break;
     }
     case SizeProperty: {
+        const QSizeF newSize = val.toSizeF();
         const QSizeF oldSize = mapObject->size();
-        mapObject->setSize(val.toSizeF());
-        command = new ResizeMapObject(mMapDocument, mapObject, oldSize);
+        command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
         break;
     }
     case RotationProperty: {
+        const qreal newRotation = val.toDouble();
         const qreal oldRotation = mapObject->rotation();
-        mapObject->setRotation(val.toDouble());
-        command = new RotateMapObject(mMapDocument, mapObject, oldRotation);
+        command = new RotateMapObject(mMapDocument, mapObject, newRotation, oldRotation);
         break;
     }
     case FlippingProperty: {
@@ -676,7 +664,8 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
     if (selectedObjects.size() > 1) {
         foreach (MapObject *obj, selectedObjects) {
             if (obj != mapObject) {
-                mMapDocument->undoStack()->push(applyMapObjectValueTo(id, val, obj));
+                if (QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj))
+                    mMapDocument->undoStack()->push(cmd);
             }
         }
     }
@@ -856,6 +845,49 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
     return property;
 }
 
+void PropertyBrowser::addProperties()
+{
+    if (!mObject)
+        return;
+
+    mUpdating = true;
+
+    // Add the built-in properties for each object type
+    switch (mObject->typeId()) {
+    case Object::MapType:               addMapProperties(); break;
+    case Object::MapObjectType:         addMapObjectProperties(); break;
+    case Object::LayerType:
+        switch (static_cast<Layer*>(mObject)->layerType()) {
+        case Layer::TileLayerType:      addTileLayerProperties();   break;
+        case Layer::ObjectGroupType:    addObjectGroupProperties(); break;
+        case Layer::ImageLayerType:     addImageLayerProperties();  break;
+        }
+        break;
+    case Object::TilesetType:           addTilesetProperties(); break;
+    case Object::TileType:              addTileProperties(); break;
+    case Object::TerrainType:           addTerrainProperties(); break;
+    }
+
+    // Add a node for the custom properties
+    mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
+    addProperty(mCustomPropertiesGroup);
+
+    mUpdating = false;
+
+    updateProperties();
+    updateCustomProperties();
+}
+
+void PropertyBrowser::removeProperties()
+{
+    mVariantManager->clear();
+    mGroupManager->clear();
+    mPropertyToId.clear();
+    mIdToProperty.clear();
+    mNameToProperty.clear();
+    mCustomPropertiesGroup = 0;
+}
+
 void PropertyBrowser::updateProperties()
 {
     mUpdating = true;
@@ -929,6 +961,12 @@ void PropertyBrowser::updateProperties()
         const Tileset *tileset = static_cast<const Tileset*>(mObject);
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
+        if (!tileset->imageSource().isEmpty()) {
+            mIdToProperty[SourceImageProperty]->setValue(tileset->imageSource());
+            mIdToProperty[TileSizeProperty]->setValue(tileset->tileSize());
+            mIdToProperty[MarginProperty]->setValue(tileset->margin());
+            mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
+        }
         break;
     }
     case Object::TileType: {

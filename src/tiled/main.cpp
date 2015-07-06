@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
      * X11 native graphics system has performance problems with drawing the
      * tile grid.
      */
-#ifdef Q_WS_X11
+#if QT_VERSION < 0x050000 && defined(Q_WS_X11)
     QApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 #ifdef BUILD_INFO_VERSION
     a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
 #else
-    a.setApplicationVersion(QLatin1String("0.12.0"));
+    a.setApplicationVersion(QLatin1String("0.12.3"));
 #endif
 
 #ifdef Q_OS_MAC
@@ -266,7 +266,6 @@ int main(int argc, char *argv[])
         // Write out the file
         bool success = chosenWriter->write(map, targetFile);
 
-        qDeleteAll(map->tilesets());
         delete map;
 
         if (!success) {
@@ -286,7 +285,7 @@ int main(int argc, char *argv[])
     if (!commandLine.filesToOpen().isEmpty()) {
         foreach (const QString &fileName, commandLine.filesToOpen())
             w.openFile(fileName);
-    } else {
+    } else if (Preferences::instance()->openLastFilesOnStartup()) {
         w.openLastFiles();
     }
 

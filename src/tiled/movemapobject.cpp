@@ -40,6 +40,18 @@ MoveMapObject::MoveMapObject(MapDocument *mapDocument,
     setText(QCoreApplication::translate("Undo Commands", "Move Object"));
 }
 
+MoveMapObject::MoveMapObject(MapDocument *mapDocument,
+                             MapObject *mapObject,
+                             const QPointF &newPos,
+                             const QPointF &oldPos)
+    : mMapDocument(mapDocument)
+    , mMapObject(mapObject)
+    , mOldPos(oldPos)
+    , mNewPos(newPos)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Move Object"));
+}
+
 void MoveMapObject::undo()
 {
     mMapDocument->mapObjectModel()->setObjectPosition(mMapObject, mOldPos);

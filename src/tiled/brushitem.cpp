@@ -36,8 +36,7 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 BrushItem::BrushItem():
-    mMapDocument(0),
-    mTileLayer(0)
+    mMapDocument(0)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 }
@@ -50,21 +49,14 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     // The tiles in the stamp may no longer be valid
-    setTileLayer(0);
-    updateBoundingRect();
+    clear();
 }
 
-void BrushItem::setTileLayer(const TileLayer *tileLayer)
+void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
 {
-    delete mTileLayer;
+    mTileLayer = tileLayer;
+    mRegion = tileLayer ? tileLayer->region() : QRegion();
 
-    if (tileLayer) {
-        mTileLayer = static_cast<TileLayer*>(tileLayer->clone());
-        mRegion = mTileLayer->region();
-    } else {
-        mTileLayer = 0;
-        mRegion = QRegion();
-    }
     updateBoundingRect();
     update();
 }
@@ -116,7 +108,7 @@ void BrushItem::paint(QPainter *painter,
     if (mTileLayer) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.75);
-        renderer->drawTileLayer(painter, mTileLayer, option->exposedRect);
+        renderer->drawTileLayer(painter, mTileLayer.data(), option->exposedRect);
         painter->setOpacity(opacity);
     }
 

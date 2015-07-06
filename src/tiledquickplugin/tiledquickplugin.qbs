@@ -12,6 +12,8 @@ DynamicLibrary {
         name: "Qt"; submodules: ["qml", "quick"]
     }
 
+    cpp.cxxLanguageVersion: "c++11"
+
     files: [
         "mapitem.cpp",
         "mapitem.h",

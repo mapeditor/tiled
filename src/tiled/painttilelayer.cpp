@@ -59,10 +59,14 @@ void PaintTileLayer::undo()
 {
     TilePainter painter(mMapDocument, mTarget);
     painter.setCells(mX, mY, mErased, mPaintedRegion);
+
+    QUndoCommand::undo(); // undo child commands
 }
 
 void PaintTileLayer::redo()
 {
+    QUndoCommand::redo(); // redo child commands
+
     TilePainter painter(mMapDocument, mTarget);
     painter.drawCells(mX, mY, mSource);
 }

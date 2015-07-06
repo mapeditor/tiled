@@ -28,7 +28,7 @@ namespace Tiled {
  * (x1,y1) determines the radius.
  *
  * It is adapted from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
- * here is the orginal: http://homepage.smc.edu/kennedy_john/belipse.pdf
+ * here is the original: http://homepage.smc.edu/kennedy_john/belipse.pdf
  */
 QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 {
@@ -99,7 +99,7 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 /**
  * Returns the lists of points on a line from (x0,y0) to (x1,y1).
  *
- * This is an implementation of bresenhams line algorithm, initially copied
+ * This is an implementation of Bresenham's line algorithm, initially copied
  * from http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Optimization
  * changed to C++ syntax.
  */
@@ -107,15 +107,18 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
 {
     QVector<QPoint> ret;
 
-    bool steep = qAbs(y1 - y0) > qAbs(x1 - x0);
+    const bool steep = qAbs(y1 - y0) > qAbs(x1 - x0);
     if (steep) {
         qSwap(x0, y0);
         qSwap(x1, y1);
     }
-    if (x0 > x1) {
+
+    const bool reverse = x0 > x1;
+    if (reverse) {
         qSwap(x0, x1);
         qSwap(y0, y1);
     }
+
     const int deltax = x1 - x0;
     const int deltay = qAbs(y1 - y0);
     int error = deltax / 2;
@@ -138,6 +141,9 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
              error = error + deltax;
         }
     }
+
+    if (reverse)
+        std::reverse(ret.begin(), ret.end());
 
     return ret;
 }

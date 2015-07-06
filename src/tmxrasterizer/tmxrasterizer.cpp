@@ -122,7 +122,7 @@ int TmxRasterizer::render(const QString &mapFileName,
         }
         painter.setTransform(QTransform::fromScale(xScale, yScale));
     }
-    // Perform a similar rendering than found in saveasimagedialog.cpp
+    // Perform a similar rendering than found in exportasimagedialog.cpp
     foreach (Layer *layer, map->layers()) {
 
         if (!shouldDrawLayer(layer)) 
@@ -145,7 +145,6 @@ int TmxRasterizer::render(const QString &mapFileName,
     image.save(imageFileName);
 
     delete renderer;
-    qDeleteAll(map->tilesets());
     delete map;
 
     return 0;

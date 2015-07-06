@@ -68,7 +68,6 @@
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "propertiesdock.h"
-#include "quickstampmanager.h"
 #include "stampbrush.h"
 #include "terrainbrush.h"
 #include "tilelayer.h"
@@ -76,6 +75,8 @@
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetmanager.h"
+#include "tilestampmanager.h"
+#include "tilestampsdock.h"
 #include "terraindock.h"
 #include "toolmanager.h"
 #include "tmxmapreader.h"
@@ -91,6 +92,7 @@
 #include "tilecollisioneditor.h"
 #include "imagemovementtool.h"
 #include "magicwandtool.h"
+#include "selectsametiletool.h"
 
 #ifdef Q_OS_MAC
 #include "macsupport.h"
@@ -137,8 +139,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mStatusInfoLabel(new QLabel)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(DocumentManager::instance())
-    , mQuickStampManager(new QuickStampManager(this))
     , mToolManager(new ToolManager(this))
+    , mTileStampManager(new TileStampManager(*mToolManager, this))
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
@@ -185,6 +187,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     UndoDock *undoDock = new UndoDock(undoGroup, this);
     PropertiesDock *propertiesDock = new PropertiesDock(this);
+    TileStampsDock *tileStampsDock = new TileStampsDock(mTileStampManager, this);
 
     addDockWidget(Qt::RightDockWidgetArea, mLayerDock);
     addDockWidget(Qt::LeftDockWidgetArea, propertiesDock);
@@ -195,6 +198,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
+    addDockWidget(Qt::RightDockWidgetArea, tileStampsDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
@@ -206,6 +210,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     undoDock->setVisible(false);
     mMapsDock->setVisible(false);
     mConsoleDock->setVisible(false);
+    tileStampsDock->setVisible(false);
 
     statusBar()->addPermanentWidget(mZoomComboBox);
 
@@ -293,6 +298,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(clearRecentFiles()));
     connect(mUi->actionSave, SIGNAL(triggered()), SLOT(saveFile()));
     connect(mUi->actionSaveAs, SIGNAL(triggered()), SLOT(saveFileAs()));
+    connect(mUi->actionSaveAll, SIGNAL(triggered()), SLOT(saveAll()));
     connect(mUi->actionExportAsImage, SIGNAL(triggered()), SLOT(exportAsImage()));
     connect(mUi->actionExport, SIGNAL(triggered()), SLOT(export_()));
     connect(mUi->actionExportAs, SIGNAL(triggered()), SLOT(exportAs()));
@@ -383,10 +389,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *polylineObjectsTool = new CreatePolylineObjectTool(this);
 
-    connect(mTilesetDock, SIGNAL(currentTilesChanged(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
-    connect(mStampBrush, SIGNAL(currentTilesChanged(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
+    connect(mTilesetDock, SIGNAL(stampCaptured(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
+    connect(mStampBrush, SIGNAL(stampCaptured(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
 
     connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
             tileObjectsTool, SLOT(setTile(Tile*)));
@@ -400,6 +406,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mTerrainDock, SIGNAL(currentTerrainChanged(const Terrain*)),
             this, SLOT(setTerrainBrush(const Terrain*)));
 
+    connect(tileStampsDock, SIGNAL(setStamp(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
+
     connect(mRandomButton, SIGNAL(toggled(bool)),
             mStampBrush, SLOT(setRandom(bool)));
     connect(mRandomButton, SIGNAL(toggled(bool)),
@@ -412,6 +421,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(new Eraser(this)));
     toolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
+    toolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
@@ -439,6 +449,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
     mShowTileCollisionEditor->setCheckable(true);
+    mShowTileCollisionEditor->setShortcut(tr("Ctrl+Shift+O"));
+    mShowTileCollisionEditor->setShortcutContext(Qt::ApplicationShortcut);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
@@ -516,7 +528,7 @@ MainWindow::~MainWindow()
     mTileCollisionEditor->setTile(0);
     mTileCollisionEditor->writeSettings();
 
-    delete mQuickStampManager;
+    delete mTileStampManager;
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
@@ -816,6 +828,29 @@ bool MainWindow::saveFileAs()
     return saveFile(fileName);
 }
 
+void MainWindow::saveAll()
+{
+    foreach (MapDocument *mapDoc, mDocumentManager->documents()) {
+        if (!mapDoc->isModified())
+            continue;
+
+        QString fileName(mapDoc->fileName());
+        QString error;
+
+        if (fileName.isEmpty()) {
+            mDocumentManager->switchToDocument(mapDoc);
+            if (!saveFileAs())
+                return;
+        } else if (!mapDoc->save(fileName, &error)) {
+            mDocumentManager->switchToDocument(mapDoc);
+            QMessageBox::critical(this, tr("Error Saving Map"), error);
+            return;
+        }
+
+        setRecentFile(fileName);
+    }
+}
+
 bool MainWindow::confirmSave(MapDocument *mapDocument)
 {
     if (!mapDocument || !mapDocument->isModified())
@@ -879,7 +914,7 @@ void MainWindow::export_()
         }
     }
 
-    // fall back when no succesful export happened
+    // fall back when no successful export happened
     exportAs();
 }
 
@@ -921,13 +956,13 @@ void MainWindow::exportAs()
                 + QLatin1Char('.') + extension;
     }
 
+    // No need to confirm overwrite here since it'll be prompted below
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
                                                     suggestedFilename,
-                                                    filter, &selectedFilter);
+                                                    filter, &selectedFilter,
+                                                    QFileDialog::DontConfirmOverwrite);
     if (fileName.isEmpty())
         return;
-
-    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
 
     MapWriterInterface *chosenWriter = 0;
 
@@ -970,6 +1005,41 @@ void MainWindow::exportAs()
         return;
     }
 
+    // Check if writer will overwrite existing files here because some writers
+    // could save to multiple files at the same time. For example CSV saves
+    // each layer into a separate file.
+    QStringList outputFiles = chosenWriter->outputFiles(mMapDocument->map(),
+                                                        fileName);
+    if (outputFiles.size() > 0) {
+        // Check if any output file already exists
+        QString message =
+                tr("Some export files already exist:") + QLatin1String("\n\n");
+
+        bool overwriteHappens = false;
+
+        foreach (const QString &outputFile, outputFiles) {
+            if (QFile::exists(outputFile)) {
+                overwriteHappens = true;
+                message += outputFile + QLatin1Char('\n');
+            }
+        }
+        message += QLatin1Char('\n') + tr("Do you want to replace them?");
+
+        // If overwrite happens, warn the user and get confirmation before executing the writer
+        if (overwriteHappens) {
+            const QMessageBox::StandardButton reply = QMessageBox::warning(
+                this,
+                tr("Overwrite Files"),
+                message,
+                QMessageBox::Yes | QMessageBox::No,
+                QMessageBox::No);
+
+            if (reply != QMessageBox::Yes)
+                return;
+        }
+    }
+
+    pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
     if (!chosenWriter->write(mMapDocument->map(), fileName)) {
@@ -1069,11 +1139,8 @@ void MainWindow::paste()
         return;
 
     // We can currently only handle maps with a single layer
-    if (map->layerCount() != 1) {
-        // Need to clean up the tilesets since they didn't get an owner
-        qDeleteAll(map->tilesets());
+    if (map->layerCount() != 1)
         return;
-    }
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->addReferences(map->tilesets());
@@ -1081,17 +1148,20 @@ void MainWindow::paste()
     mMapDocument->unifyTilesets(map.data());
     Layer *layer = map->layerAt(0);
 
-    if (TileLayer *tileLayer = layer->asTileLayer()) {
+    if (layer->isTileLayer()) {
         // Reset selection and paste into the stamp brush
         mActionHandler->selectNone();
-        setStampBrush(tileLayer);
+        Map *stamp = map.take(); // TileStamp will take ownership
+        setStamp(TileStamp(stamp));
+        tilesetManager->removeReferences(stamp->tilesets());
         mToolManager->selectTool(mStampBrush);
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         const MapView *view = mDocumentManager->currentMapView();
         clipboardManager->pasteObjectGroup(objectGroup, mMapDocument, view);
     }
 
-    tilesetManager->removeReferences(map->tilesets());
+    if (map)
+        tilesetManager->removeReferences(map->tilesets());
 }
 
 void MainWindow::delete_()
@@ -1161,7 +1231,7 @@ bool MainWindow::newTileset(const QString &path)
     newTileset.setTileWidth(map->tileWidth());
     newTileset.setTileHeight(map->tileHeight());
 
-    if (Tileset *tileset = newTileset.createTileset()) {
+    if (SharedTileset tileset = newTileset.createTileset()) {
         mMapDocument->undoStack()->push(new AddTileset(mMapDocument, tileset));
         prefs->setLastPath(Preferences::ImageFile, tileset->imageSource());
         return true;
@@ -1183,7 +1253,8 @@ void MainWindow::reloadTilesets()
         return;
 
     TilesetManager *tilesetManager = TilesetManager::instance();
-    foreach (Tileset *tileset, map->tilesets())
+    QVector<SharedTileset> tilesets = map->tilesets();
+    for (SharedTileset &tileset : tilesets)
         tilesetManager->forceTilesetReload(tileset);
 }
 
@@ -1206,12 +1277,12 @@ void MainWindow::addExternalTileset()
     prefs->setLastPath(Preferences::ExternalTileset,
                        QFileInfo(fileNames.back()).path());
 
-    QList<Tileset *> tilesets;
+    QVector<SharedTileset> tilesets;
 
     foreach (QString fileName, fileNames) {
         TmxMapReader reader;
-        if (Tileset *tileset = reader.readTileset(fileName)) {
-            tilesets += tileset;
+        if (SharedTileset tileset = reader.readTileset(fileName)) {
+            tilesets.append(tileset);
         } else if (fileNames.size() == 1) {
             QMessageBox::critical(this, tr("Error Reading Tileset"),
                                   reader.errorString());
@@ -1224,17 +1295,14 @@ void MainWindow::addExternalTileset()
                                           QMessageBox::Abort | QMessageBox::Ignore,
                                           QMessageBox::Ignore);
 
-            if (result == QMessageBox::Abort) {
-                // On abort, clean out any already loaded tilesets.
-                qDeleteAll(tilesets);
+            if (result == QMessageBox::Abort)
                 return;
-            }
         }
     }
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
-    foreach (Tileset *tileset, tilesets)
+    foreach (const SharedTileset &tileset, tilesets)
         undoStack->push(new AddTileset(mMapDocument, tileset));
     undoStack->endMacro();
 }
@@ -1411,6 +1479,7 @@ void MainWindow::updateActions()
 
     mUi->actionSave->setEnabled(map);
     mUi->actionSaveAs->setEnabled(map);
+    mUi->actionSaveAll->setEnabled(map);
     mUi->actionExportAsImage->setEnabled(map);
     mUi->actionExport->setEnabled(map);
     mUi->actionExportAs->setEnabled(map);
@@ -1460,11 +1529,10 @@ void MainWindow::updateZoomLabel()
 void MainWindow::flip(FlipDirection direction)
 {
     if (mStampBrush->isEnabled()) {
-        if (TileLayer *stamp = mStampBrush->stamp()) {
-            stamp = static_cast<TileLayer*>(stamp->clone());
-            stamp->flip(direction);
-            setStampBrush(stamp);
-        }
+        const TileStamp &stamp = mStampBrush->stamp();
+        if (!stamp.isEmpty())
+            setStamp(stamp.flipped(direction));
+
     } else if (mMapDocument) {
         mMapDocument->flipSelectedObjects(direction);
     }
@@ -1473,27 +1541,26 @@ void MainWindow::flip(FlipDirection direction)
 void MainWindow::rotate(RotateDirection direction)
 {
     if (mStampBrush->isEnabled()) {
-        if (TileLayer *stamp = mStampBrush->stamp()) {
-            stamp = static_cast<TileLayer*>(stamp->clone());
-            stamp->rotate(direction);
-            setStampBrush(stamp);
-        }
+        const TileStamp &stamp = mStampBrush->stamp();
+        if (!stamp.isEmpty())
+            setStamp(stamp.rotated(direction));
+
     } else if (mMapDocument) {
         mMapDocument->rotateSelectedObjects(direction);
     }
 }
 
 /**
- * Sets the stamp brush, which is used by both the stamp brush and the bucket
+ * Sets the current stamp, which is used by both the stamp brush and the bucket
  * fill tool.
  */
-void MainWindow::setStampBrush(const TileLayer *tiles)
+void MainWindow::setStamp(const TileStamp &stamp)
 {
-    if (!tiles)
+    if (stamp.isEmpty())
         return;
 
-    mStampBrush->setStamp(static_cast<TileLayer*>(tiles->clone()));
-    mBucketFillTool->setStamp(static_cast<TileLayer*>(tiles->clone()));
+    mStampBrush->setStamp(stamp);
+    mBucketFillTool->setStamp(stamp);
 
     // When selecting a new stamp, it makes sense to switch to a stamp tool
     AbstractTool *selectedTool = mToolManager->selectedTool();
@@ -1512,11 +1579,6 @@ void MainWindow::setTerrainBrush(const Terrain *terrain)
     AbstractTool *selectedTool = mToolManager->selectedTool();
     if (selectedTool != mTerrainBrush)
         mToolManager->selectTool(mTerrainBrush);
-}
-
-void MainWindow::saveQuickStamp(int index)
-{
-    mQuickStampManager->saveQuickStamp(index, mToolManager->selectedTool());
 }
 
 void MainWindow::updateStatusInfoLabel(const QString &statusInfo)
@@ -1638,7 +1700,6 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
     mTileCollisionEditor->setMapDocument(mapDocument);
     mToolManager->setMapDocument(mapDocument);
     mAutomappingManager->setMapDocument(mapDocument);
-    mQuickStampManager->setMapDocument(mapDocument);
 
     if (mapDocument) {
         connect(mapDocument, SIGNAL(fileNameChanged(QString,QString)),
@@ -1665,32 +1726,40 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
 
 void MainWindow::setupQuickStamps()
 {
-    QList<int> keys = QuickStampManager::keys();
+    QList<Qt::Key> keys = TileStampManager::quickStampKeys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
     QSignalMapper *saveMapper = new QSignalMapper(this);
+    QSignalMapper *extendMapper = new QSignalMapper(this);
 
     for (int i = 0; i < keys.length(); i++) {
+        Qt::Key key = keys.at(i);
+
         // Set up shortcut for selecting this quick stamp
-        QShortcut *selectStamp = new QShortcut(this);
-        selectStamp->setKey(keys.value(i));
+        QShortcut *selectStamp = new QShortcut(key, this);
         connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
         selectMapper->setMapping(selectStamp, i);
 
         // Set up shortcut for saving this quick stamp
-        QShortcut *saveStamp = new QShortcut(this);
-        saveStamp->setKey(QKeySequence(Qt::CTRL + keys.value(i)));
+        QShortcut *saveStamp = new QShortcut(Qt::CTRL + key, this);
         connect(saveStamp, SIGNAL(activated()), saveMapper, SLOT(map()));
         saveMapper->setMapping(saveStamp, i);
+
+        // Set up shortcut for extending this quick stamp
+        QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, this);
+        connect(extendStamp, SIGNAL(activated()), extendMapper, SLOT(map()));
+        extendMapper->setMapping(extendStamp, i);
     }
 
     connect(selectMapper, SIGNAL(mapped(int)),
-            mQuickStampManager, SLOT(selectQuickStamp(int)));
+            mTileStampManager, SLOT(selectQuickStamp(int)));
     connect(saveMapper, SIGNAL(mapped(int)),
-            this, SLOT(saveQuickStamp(int)));
+            mTileStampManager, SLOT(saveQuickStamp(int)));
+    connect(extendMapper, SIGNAL(mapped(int)),
+            mTileStampManager, SLOT(extendQuickStamp(int)));
 
-    connect(mQuickStampManager, SIGNAL(setStampBrush(const TileLayer*)),
-            this, SLOT(setStampBrush(const TileLayer*)));
+    connect(mTileStampManager, SIGNAL(setStamp(TileStamp)),
+            this, SLOT(setStamp(TileStamp)));
 }
 
 void MainWindow::closeMapDocument(int index)

@@ -70,7 +70,7 @@ public:
     void writeMap(const Map *map, QIODevice *device,
                   const QString &path);
 
-    void writeTileset(const Tileset *tileset, QIODevice *device,
+    void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path);
 
     bool openFile(QIODevice *file);
@@ -146,7 +146,7 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
     delete writer;
 }
 
-void MapWriterPrivate::writeTileset(const Tileset *tileset, QIODevice *device,
+void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
                                     const QString &path)
 {
     mMapDir = QDir(path);
@@ -161,7 +161,7 @@ void MapWriterPrivate::writeTileset(const Tileset *tileset, QIODevice *device,
                                        "map.dtd\">"));
     }
 
-    writeTileset(*writer, tileset, 0);
+    writeTileset(*writer, &tileset, 0);
     writer->writeEndDocument();
     delete writer;
 }
@@ -207,9 +207,9 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
 
     mGidMapper.clear();
     unsigned firstGid = 1;
-    foreach (Tileset *tileset, map->tilesets()) {
-        writeTileset(w, tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset);
+    foreach (const SharedTileset &tileset, map->tilesets()) {
+        writeTileset(w, tileset.data(), firstGid);
+        mGidMapper.insert(firstGid, tileset.data());
         firstGid += tileset->tileCount();
     }
 
@@ -270,6 +270,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset *tileset,
                          QString::number(tileSpacing));
     if (margin != 0)
         w.writeAttribute(QLatin1String("margin"), QString::number(margin));
+
+    w.writeAttribute(QLatin1String("tilecount"),
+                     QString::number(tileset->tileCount()));
 
     const QPoint offset = tileset->tileOffset();
     if (!offset.isNull()) {
@@ -684,13 +687,13 @@ bool MapWriter::writeMap(const Map *map, const QString &fileName)
     return true;
 }
 
-void MapWriter::writeTileset(const Tileset *tileset, QIODevice *device,
+void MapWriter::writeTileset(const Tileset &tileset, QIODevice *device,
                              const QString &path)
 {
     d->writeTileset(tileset, device, path);
 }
 
-bool MapWriter::writeTileset(const Tileset *tileset, const QString &fileName)
+bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))

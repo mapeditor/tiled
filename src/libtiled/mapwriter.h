@@ -82,7 +82,7 @@ public:
      * Error checking will need to be done on the \a device after calling this
      * function.
      */
-    void writeTileset(const Tileset *tileset, QIODevice *device,
+    void writeTileset(const Tileset &tileset, QIODevice *device,
                       const QString &path = QString());
 
     /**
@@ -91,7 +91,7 @@ public:
      * Returns false and sets errorString() when reading failed.
      * \overload
      */
-    bool writeTileset(const Tileset *tileset, const QString &fileName);
+    bool writeTileset(const Tileset &tileset, const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.

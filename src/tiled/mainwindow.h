@@ -59,13 +59,14 @@ class MapView;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
-class QuickStampManager;
 class StampBrush;
 class TerrainBrush;
 class TerrainDock;
 class TileAnimationEditor;
 class TileCollisionEditor;
 class TilesetDock;
+class TileStamp;
+class TileStampManager;
 class ToolManager;
 class Zoomable;
 
@@ -86,19 +87,18 @@ public:
     void commitData(QSessionManager &manager);
 
     /**
-     * Opens the given file. When opened succesfully, the file is added to the
+     * Opens the given file. When opened successfully, the file is added to the
      * list of recent files.
      *
      * When a \a reader is given, it is used to open the file. Otherwise, a
      * reader is searched using MapReaderInterface::supportsFile.
      *
-     * @return whether the file was succesfully opened
+     * @return whether the file was successfully opened
      */
     bool openFile(const QString &fileName, MapReaderInterface *reader);
 
     /**
      * Attempt to open the previously opened file.
-     * TODO: Opening last file should be optional
      */
     void openLastFiles();
 
@@ -120,7 +120,8 @@ public slots:
     void openFile();
     bool saveFile();
     bool saveFileAs();
-    void export_();
+    void saveAll();
+    void export_(); // 'export' is a reserved word
     void exportAs();
     void exportAsImage();
     void reload();
@@ -130,7 +131,7 @@ public slots:
     void cut();
     void copy();
     void paste();
-    void delete_(); // delete is a reserved word
+    void delete_(); // 'delete' is a reserved word
     void openPreferences();
 
     void zoomIn();
@@ -161,9 +162,8 @@ public slots:
     void flip(FlipDirection direction);
     void rotate(RotateDirection direction);
 
-    void setStampBrush(const TileLayer *tiles);
+    void setStamp(const TileStamp &stamp);
     void setTerrainBrush(const Terrain *terrain);
-    void saveQuickStamp(int index);
     void updateStatusInfoLabel(const QString &statusInfo);
 
     void mapDocumentChanged(MapDocument *mapDocument);
@@ -198,7 +198,7 @@ private:
     bool confirmAllSave();
 
     /**
-     * Save the current map to the given file name. When saved succesfully, the
+     * Save the current map to the given file name. When saved successfully, the
      * file is added to the list of recent files.
      * @return <code>true</code> on success, <code>false</code> on failure
      */
@@ -251,8 +251,8 @@ private:
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
-    QuickStampManager *mQuickStampManager;
     ToolManager *mToolManager;
+    TileStampManager *mTileStampManager;
 };
 
 } // namespace Internal

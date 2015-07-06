@@ -34,7 +34,6 @@
 #include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
 #include "mapobject.h"
 
 using namespace Tiled;
@@ -193,38 +192,46 @@ Layer *Map::takeLayerAt(int index)
     return layer;
 }
 
-void Map::addTileset(Tileset *tileset)
+void Map::addTileset(const SharedTileset &tileset)
 {
     mTilesets.append(tileset);
 }
 
-void Map::insertTileset(int index, Tileset *tileset)
+void Map::addTilesets(const QSet<SharedTileset> &tilesets)
+{
+    for (const SharedTileset &tileset : tilesets)
+        addTileset(tileset);
+}
+
+void Map::insertTileset(int index, const SharedTileset &tileset)
 {
     mTilesets.insert(index, tileset);
 }
 
-int Map::indexOfTileset(Tileset *tileset) const
+int Map::indexOfTileset(const SharedTileset &tileset) const
 {
     return mTilesets.indexOf(tileset);
 }
 
 void Map::removeTilesetAt(int index)
 {
-    mTilesets.removeAt(index);
+    mTilesets.remove(index);
 }
 
-void Map::replaceTileset(Tileset *oldTileset, Tileset *newTileset)
+void Map::replaceTileset(const SharedTileset &oldTileset,
+                         const SharedTileset &newTileset)
 {
     const int index = mTilesets.indexOf(oldTileset);
     Q_ASSERT(index != -1);
 
     foreach (Layer *layer, mLayers)
-        layer->replaceReferencesToTileset(oldTileset, newTileset);
+        layer->replaceReferencesToTileset(oldTileset.data(),
+                                          newTileset.data());
 
     mTilesets.replace(index, newTileset);
 }
 
-bool Map::isTilesetUsed(Tileset *tileset) const
+bool Map::isTilesetUsed(const Tileset *tileset) const
 {
     foreach (const Layer *layer, mLayers)
         if (layer->referencesTileset(tileset))

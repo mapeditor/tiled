@@ -67,9 +67,9 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     QVariantList tilesetVariants;
 
     unsigned firstGid = 1;
-    foreach (Tileset *tileset, map->tilesets()) {
-        tilesetVariants << toVariant(tileset, firstGid);
-        mGidMapper.insert(firstGid, tileset);
+    foreach (const SharedTileset &tileset, map->tilesets()) {
+        tilesetVariants << toVariant(tileset.data(), firstGid);
+        mGidMapper.insert(firstGid, tileset.data());
         firstGid += tileset->tileCount();
     }
     mapVariant["tilesets"] = tilesetVariants;
@@ -104,6 +104,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
     tilesetVariant["tileheight"] = tileset->tileHeight();
     tilesetVariant["spacing"] = tileset->tileSpacing();
     tilesetVariant["margin"] = tileset->margin();
+    tilesetVariant["tilecount"] = tileset->tileCount();
     tilesetVariant["properties"] = toVariant(tileset->properties());
 
     const QPoint offset = tileset->tileOffset();

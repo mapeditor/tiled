@@ -88,11 +88,6 @@ public:
     void resizeObject(const QSizeF &size);
 
     /**
-     * Sets the rotation of the associated map object.
-     */
-    void setObjectRotation(qreal angle);
-
-    /**
      * Sets a new polygon on the associated object.
      */
     void setPolygon(const QPolygonF &polygon);

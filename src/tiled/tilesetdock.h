@@ -23,6 +23,8 @@
 #ifndef TILESETDOCK_H
 #define TILESETDOCK_H
 
+#include "tileset.h"
+
 #include <QDockWidget>
 #include <QList>
 #include <QMap>
@@ -49,6 +51,7 @@ namespace Internal {
 
 class MapDocument;
 class TilesetView;
+class TileStamp;
 class Zoomable;
 
 /**
@@ -86,7 +89,7 @@ signals:
     /**
      * Emitted when the currently selected tiles changed.
      */
-    void currentTilesChanged(const TileLayer *tiles);
+    void stampCaptured(const TileStamp &);
 
     /**
      * Emitted when files are dropped at the tileset dock.
@@ -141,7 +144,10 @@ private:
     TilesetView *tilesetViewAt(int index) const;
 
     MapDocument *mMapDocument;
-    QList<Tileset*> mTilesets;
+
+    // Shared tileset references because the dock wants to add new tiles
+    QVector<SharedTileset> mTilesets;
+
     QTabBar *mTabBar;
     QStackedWidget *mViewStack;
     QToolBar *mToolBar;

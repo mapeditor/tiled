@@ -39,6 +39,11 @@ public:
                   MapObject *mapObject,
                   const QPointF &oldPos);
 
+    MoveMapObject(MapDocument *mapDocument,
+                  MapObject *mapObject,
+                  const QPointF &newPos,
+                  const QPointF &oldPos);
+
     void undo();
     void redo();
 

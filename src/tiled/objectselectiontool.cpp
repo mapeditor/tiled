@@ -26,6 +26,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
+#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "movemapobject.h"
@@ -130,7 +131,6 @@ static QPainterPath createResizeArrow(bool straight)
 
     return path;
 }
-
 
 
 /**
@@ -311,6 +311,7 @@ void ResizeHandle::paint(QPainter *painter,
 } // namespace Internal
 } // namespace Tiled
 
+
 ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     : AbstractObjectTool(tr("Select Objects"),
           QIcon(QLatin1String(":images/22x22/tool-select-objects.png")),
@@ -429,8 +430,8 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     foreach (MapObjectItem *objectItem, items) {
         MapObject *object = objectItem->mapObject();
         const QPointF oldPos = object->position();
-        object->setPosition(oldPos + moveBy);
-        undoStack->push(new MoveMapObject(mapDocument(), object, oldPos));
+        const QPointF newPos = oldPos + moveBy;
+        undoStack->push(new MoveMapObject(mapDocument(), object, newPos, oldPos));
         ++i;
     }
     undoStack->endMacro();
@@ -829,22 +830,28 @@ void ObjectSelectionTool::updateHandleVisibility()
 
 void ObjectSelectionTool::objectsRemoved(const QList<MapObject *> &objects)
 {
-    if (mAction != Moving && mAction != Rotating)
+    if (mAction != Moving && mAction != Rotating && mAction != Resizing)
         return;
 
-    // Abort move/rotate to avoid crashing...
-    // TODO: This should really not be allowed to happen in the first place.
-    int i = 0;
-    foreach (const MovingObject &object, mMovingObjects) {
+    // Abort move/rotate/resize to avoid crashing...
+    // TODO: This should really not be allowed to happen in the first place
+    // since it breaks the undo history, for example.
+    for (int i = mMovingObjects.size() - 1; i >= 0; --i) {
+        const MovingObject &object = mMovingObjects.at(i);
         MapObject *mapObject = object.item->mapObject();
-        if (!objects.contains(mapObject)) {
+
+        if (objects.contains(mapObject)) {
+            // Avoid referencing the removed object
+            mMovingObjects.remove(i);
+        } else {
             mapObject->setPosition(object.oldPosition);
-            object.item->setPos(object.oldItemPosition);
-            if (mAction == Rotating)
-                object.item->setObjectRotation(object.oldRotation);
+            mapObject->setSize(object.oldSize);
+            mapObject->setPolygon(object.oldPolygon);
+            mapObject->setRotation(object.oldRotation);
         }
-        ++i;
     }
+
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
 
     mMovingObjects.clear();
 }
@@ -908,20 +915,17 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
                                             Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
-    QPointF diff = pos - mStart;
-
-    diff = snapToGrid(diff, modifiers);
+    QPointF diff = snapToGrid(pos - mStart, modifiers);
 
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF newPixelPos = object.oldItemPosition + diff;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
-        object.item->setPos(newPixelPos);
-        object.item->mapObject()->setPosition(newPos);
 
-        ObjectGroup *objectGroup = object.item->mapObject()->objectGroup();
-        if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
-            object.item->setZValue(newPixelPos.y());
+        MapObject *mapObject = object.item->mapObject();
+        mapObject->setPosition(newPos);
     }
+
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
 }
 
 void ObjectSelectionTool::finishMoving(const QPointF &pos)
@@ -981,10 +985,12 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
 
-        object.item->setPos(newPixelPos);
-        object.item->mapObject()->setPosition(newPos);
-        object.item->setObjectRotation(newRotation);
+        MapObject *mapObject = object.item->mapObject();
+        mapObject->setPosition(newPos);
+        mapObject->setRotation(newRotation);
     }
+
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
 }
 
 void ObjectSelectionTool::finishRotating(const QPointF &pos)
@@ -1080,7 +1086,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
         const QSizeF newSize(origSize.width() * scale,
                              origSize.height() * scale);
 
-        if (object.item->mapObject()->polygon().isEmpty() == false) {
+        MapObject *mapObject = object.item->mapObject();
+
+        if (mapObject->polygon().isEmpty() == false) {
             // For polygons, we have to scale in object space.
             qreal rotation = object.item->rotation() * M_PI / -180;
             const qreal sn = std::sin(rotation);
@@ -1097,13 +1105,14 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                                        scaledPoint.y() * cs + scaledPoint.x() * sn);
                 newPolygon[n] = newPoint;
             }
-            object.item->mapObject()->setPolygon(newPolygon);
+            mapObject->setPolygon(newPolygon);
         }
         
-        object.item->resizeObject(newSize);
-        object.item->setPos(newScreenPos);
-        object.item->mapObject()->setPosition(newPos);
+        mapObject->setSize(newSize);
+        mapObject->setPosition(newPos);
     }
+
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
@@ -1229,9 +1238,10 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
     newPos = renderer->screenToPixelCoords(newPos * rotate);
 
-    object.item->resizeObject(newSize);
-    object.item->setPos(renderer->pixelToScreenCoords(newPos));
+    mapObject->setSize(newSize);
     mapObject->setPosition(newPos);
+
+    mapDocument()->mapObjectModel()->emitObjectsChanged(changingObjects());
 }
 
 void ObjectSelectionTool::finishResizing(const QPointF &pos)
@@ -1302,4 +1312,15 @@ const QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
     }
 
     return diff;
+}
+
+QList<MapObject *> ObjectSelectionTool::changingObjects() const
+{
+    QList<MapObject*> changingObjects;
+    changingObjects.reserve(mMovingObjects.size());
+
+    foreach (const MovingObject &movingObject, mMovingObjects)
+        changingObjects.append(movingObject.item->mapObject());
+
+    return changingObjects;
 }

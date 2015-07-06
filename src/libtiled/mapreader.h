@@ -30,6 +30,7 @@
 #define MAPREADER_H
 
 #include "tiled_global.h"
+#include "tileset.h"
 
 #include <QImage>
 
@@ -38,7 +39,6 @@ class QFile;
 namespace Tiled {
 
 class Map;
-class Tileset;
 
 namespace Internal {
 class MapReaderPrivate;
@@ -54,7 +54,7 @@ class TILEDSHARED_EXPORT MapReader
 {
 public:
     MapReader();
-    ~MapReader();
+    virtual ~MapReader();
 
     /**
      * Reads a TMX map from the given \a device. Optionally a \a path can
@@ -82,13 +82,13 @@ public:
      *
      * The caller takes ownership over the newly created tileset.
      */
-    Tileset *readTileset(QIODevice *device, const QString &path = QString());
+    SharedTileset readTileset(QIODevice *device, const QString &path = QString());
 
     /**
      * Reads a TSX tileset from the given \a fileName.
      * \overload
      */
-    Tileset *readTileset(const QString &fileName);
+    SharedTileset readTileset(const QString &fileName);
 
     /**
      * Returns the error message for the last occurred error.
@@ -116,8 +116,8 @@ protected:
      * If an error occurred, the \a error parameter should be set to the error
      * message.
      */
-    virtual Tileset *readExternalTileset(const QString &source,
-                                         QString *error);
+    virtual SharedTileset readExternalTileset(const QString &source,
+                                              QString *error);
 
 private:
     friend class Internal::MapReaderPrivate;

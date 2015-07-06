@@ -293,10 +293,12 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
     QShortcut *deleteShortcut = new QShortcut(QKeySequence::Delete, this);
+    QShortcut *deleteShortcut2 = new QShortcut(QKeySequence(Qt::Key_Backspace), this);
 
     connect(undoShortcut, SIGNAL(activated()), SLOT(undo()));
     connect(redoShortcut, SIGNAL(activated()), SLOT(redo()));
     connect(deleteShortcut, SIGNAL(activated()), SLOT(delete_()));
+    connect(deleteShortcut2, SIGNAL(activated()), SLOT(delete_()));
 
     Utils::restoreGeometry(this);
 
@@ -336,7 +338,7 @@ void TileAnimationEditor::setTile(Tile *tile)
                                                       mUi->tilesetView);
         mUi->tilesetView->setModel(tilesetModel);
     } else {
-        mFrameListModel->setFrames(0, QVector<Frame>());
+        mFrameListModel->setFrames(nullptr, QVector<Frame>());
     }
 
     mUi->frameList->setEnabled(tile && !tile->tileset()->isExternal());

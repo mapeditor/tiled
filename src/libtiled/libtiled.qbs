@@ -11,6 +11,8 @@ DynamicLibrary {
         cpp.dynamicLibraries: base.concat(["z"])
     }
 
+    cpp.cxxLanguageVersion: "c++11"
+
     cpp.defines: [
         "TILED_LIBRARY",
         "QT_NO_CAST_FROM_ASCII",

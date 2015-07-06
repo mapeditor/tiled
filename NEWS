@@ -1,3 +1,19 @@
+0.12.3 (1 June 2015)
+* Fixed updating of map view when rotating objects with Z key
+* Fixed updating of map view when joining, splitting or deleting polygon nodes
+* Fixed a crash when reading an invalid TMX file
+* Fixed live automapping updates when moving the mouse fast
+* Made Backspace work for deleting collision objects and animation frames
+
+0.12.2 (22 May 2015)
+* Fixed updating of map view when moving objects with arrow keys
+* Fixed compatibility issue with tile objects affecting the JSON format
+
+0.12.1 (19 May 2015)
+* Fixed updating of map view when changing objects from properties view
+* Fixed updating of Properties view while objects are moved/resized
+* Fixed terrain information getting lost when reading JSON maps
+
 0.12.0 (14 May 2015)
 * Added support for resizing any object as well as multiselection (with mauve)
 * Added Control modifier for preserving aspect ratio while resizing

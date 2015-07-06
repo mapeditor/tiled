@@ -33,6 +33,7 @@
 
 #include "layer.h"
 #include "object.h"
+#include "tileset.h"
 
 #include <QColor>
 #include <QList>
@@ -42,7 +43,6 @@
 namespace Tiled {
 
 class Tile;
-class Tileset;
 class ObjectGroup;
 
 /**
@@ -298,18 +298,23 @@ public:
      *
      * @param tileset the tileset to add
      */
-    void addTileset(Tileset *tileset);
+    void addTileset(const SharedTileset &tileset);
+
+    /**
+     * Convenience function to be used together with Layer::usedTilesets()
+     */
+    void addTilesets(const QSet<SharedTileset> &tilesets);
 
     /**
      * Inserts \a tileset at \a index in the list of tilesets used by this map.
      */
-    void insertTileset(int index, Tileset *tileset);
+    void insertTileset(int index, const SharedTileset &tileset);
 
     /**
      * Returns the index of the given \a tileset, or -1 if it is not used in
      * this map.
      */
-    int indexOfTileset(Tileset *tileset) const;
+    int indexOfTileset(const SharedTileset &tileset) const;
 
     /**
      * Removes the tileset at \a index from this map.
@@ -326,7 +331,8 @@ public:
      * Also replaces the old tileset with the new tileset in the list of
      * tilesets.
      */
-    void replaceTileset(Tileset *oldTileset, Tileset *newTileset);
+    void replaceTileset(const SharedTileset &oldTileset,
+                        const SharedTileset &newTileset);
 
     /**
      * Returns the number of tilesets of this map.
@@ -336,12 +342,12 @@ public:
     /**
      * Returns the tileset at the given index.
      */
-    Tileset *tilesetAt(int index) const { return mTilesets.at(index); }
+    SharedTileset tilesetAt(int index) const { return mTilesets.at(index); }
 
     /**
      * Returns the tilesets that the tiles on this map are using.
      */
-    const QList<Tileset*> &tilesets() const { return mTilesets; }
+    const QVector<SharedTileset> &tilesets() const { return mTilesets; }
 
     /**
      * Returns the background color of this map.
@@ -357,7 +363,7 @@ public:
      * Returns whether the given \a tileset is used by any tile layer of this
      * map.
      */
-    bool isTilesetUsed(Tileset *tileset) const;
+    bool isTilesetUsed(const Tileset *tileset) const;
 
     Map *clone() const;
 
@@ -410,7 +416,7 @@ private:
     QColor mBackgroundColor;
     QMargins mDrawMargins;
     QList<Layer*> mLayers;
-    QList<Tileset*> mTilesets;
+    QVector<SharedTileset> mTilesets;
     LayerDataFormat mLayerDataFormat;
     int mNextObjectId;
 };

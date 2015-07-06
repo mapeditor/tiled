@@ -41,8 +41,11 @@ public:
 
     // MapWriterInterface
     bool write(const Tiled::Map *map, const QString &fileName);
-    QString nameFilter() const;
     QString errorString() const;
+    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const;
+
+protected:
+    QString nameFilter() const;
 
 private:
     QString mError;

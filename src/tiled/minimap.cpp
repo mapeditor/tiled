@@ -115,8 +115,7 @@ void MiniMap::paintEvent(QPaintEvent *pe)
         return;
 
     QPainter p(this);
-    p.setRenderHints(QPainter::SmoothPixmapTransform |
-                     QPainter::HighQualityAntialiasing);
+    p.setRenderHints(QPainter::SmoothPixmapTransform);
 
     QColor backgroundColor(Qt::darkGray);
     if (mMapDocument && mMapDocument->map()->backgroundColor().isValid())
@@ -211,8 +210,7 @@ void MiniMap::renderMapToImage()
 
     mMapImage.fill(Qt::transparent);
     QPainter painter(&mMapImage);
-    painter.setRenderHints(QPainter::SmoothPixmapTransform |
-                           QPainter::HighQualityAntialiasing);
+    painter.setRenderHints(QPainter::SmoothPixmapTransform);
     painter.setTransform(QTransform::fromScale(scale, scale));
     renderer->setPainterScale(scale);
 

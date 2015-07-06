@@ -49,9 +49,12 @@ cls_tile.add_method('width', 'int', [])
 cls_tile.add_method('height', 'int', [])
 #cls_tile.add_method('size', 'QSize', [])
 
+cls_sharedtileset = tiled.add_class('SharedTileset')
+
 cls_tileset = tiled.add_class('Tileset')
-cls_tileset.add_constructor([('QString','name'), ('int','tw'), ('int','th'),
-    ('int','ts'), ('int','margin')])
+cls_tileset.add_method('create', 'Tiled::SharedTileset',
+                       [('QString','name'), ('int','tileWidth'), ('int','tileHeight'), ('int','tileSpacing'), ('int','margin')],
+                       is_static=True)
 cls_tileset.add_method('name', 'QString', [])
 cls_tileset.add_method('setName', None, [('QString','name')])
 cls_tileset.add_method('fileName', 'QString', [])
@@ -74,7 +77,7 @@ cls_tileset.add_method('setTransparentColor', None, [('QColor','col')])
 cls_tileset.add_method('transparentColor', 'QColor', [])
 
 cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
-    param('Tileset*','ts',transfer_ownership=False)])
+    param('Tileset*','tileset',transfer_ownership=False)])
 cls_tile.add_method('tileset',
     retval('Tiled::Tileset*',reference_existing_object=True), [])
 
@@ -103,21 +106,21 @@ cls_map.add_method('layerCount', 'int', [])
 cls_map.add_method('tileLayerCount', 'int', [])
 cls_map.add_method('objectGroupCount', 'int', [])
 cls_map.add_method('addTileset', None,
-    [param('Tileset*','ts',transfer_ownership=True)])
+    [param('SharedTileset','tileset')])
 cls_map.add_method('insertTileset', None,
-    [('int','pos'),param('Tileset*','ts',transfer_ownership=True)])
+    [('int','pos'),param('SharedTileset','tileset')])
 cls_map.add_method('indexOfTileset', 'int',
-    [param('Tileset*','ts',transfer_ownership=True)])
+    [param('const SharedTileset &','tileset')])
 cls_map.add_method('removeTilesetAt', None, [('int','pos')])
 cls_map.add_method('replaceTileset', None,
-    [param('Tileset*','oldts',transfer_ownership=True),
-    param('Tileset*','newts',transfer_ownership=True)])
+    [param('SharedTileset','oldTileset'),
+     param('SharedTileset','newTileset')])
 cls_map.add_method('tilesetAt', 
-    retval('Tiled::Tileset*', reference_existing_object=True),
+    retval('Tiled::SharedTileset'),
     [('int','idx')])
 cls_map.add_method('tilesetCount', 'int', [])
 cls_map.add_method('isTilesetUsed', 'bool',
-    [param('Tileset*','ts',transfer_ownership=True)])
+    [param('const Tileset*','tileset')])
 cls_map.add_method('properties', retval('Tiled::Properties','p'), [])
 cls_map.add_method('property', 'QString', [('QString','name')])
 cls_map.add_method('setProperty', None, [('QString','name'),
@@ -191,11 +194,11 @@ cls_objectgroup = tiled.add_class('ObjectGroup', cls_layer)
 cls_objectgroup.add_constructor([('QString','name'),
     ('int','x'), ('int','y'), ('int','w'), ('int','h')])
 cls_objectgroup.add_method('addObject', None,
-    [param('MapObject*','mo',transfer_ownership=True)])
+    [param('MapObject*','object',transfer_ownership=True)])
 cls_objectgroup.add_method('insertObject', None,
-    [('int','idx'),param('MapObject*','mo',transfer_ownership=False)])
+    [('int','idx'),param('MapObject*','object',transfer_ownership=False)])
 cls_objectgroup.add_method('removeObject', 'int',
-    [param('MapObject*','mo',transfer_ownership=False)])
+    [param('MapObject*','object',transfer_ownership=False)])
 #cls_tilelayer.add_method('cellAt', retval('Tiled::Cell'),
 #    [('int','x'),('int','y')])
 cls_objectgroup.add_method('objectAt', retval('Tiled::MapObject*',reference_existing_object=True),[('int','index')])
@@ -305,6 +308,12 @@ cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg'
 with open('pythonbind.cpp','w') as fh:
     import pybindgen.typehandlers.codesink as cs
     sink = cs.MemoryCodeSink()
+
+    print >>fh, """
+#ifdef __MINGW32__
+#include <cmath> // included before Python.h to fix ::hypot not declared issue
+#endif
+"""
 
     mod.generate(fh)
 

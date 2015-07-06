@@ -33,6 +33,7 @@
 #include "object.h"
 
 #include <QPixmap>
+#include <QSharedPointer>
 
 namespace Tiled {
 
@@ -64,94 +65,46 @@ class TILEDSHARED_EXPORT Tile : public Object
     Q_OBJECT
 
 public:
-    Tile(const QPixmap &image, int id, Tileset *tileset);
-    Tile(const QPixmap &image, const QString &imageSource,
-         int id, Tileset *tileset);
+    Tile(const QPixmap &image,
+         int id,
+         Tileset *tileset);
+
+    Tile(const QPixmap &image,
+         const QString &imageSource,
+         int id,
+         Tileset *tileset);
 
     ~Tile();
 
-    /**
-     * Returns ID of this tile within its tileset.
-     */
-    int id() const { return mId; }
+    int id() const;
 
-    /**
-     * Returns the tileset that this tile is part of.
-     */
-    Tileset *tileset() const { return mTileset; }
+    Tileset *tileset() const;
+    QSharedPointer<Tileset> sharedTileset() const;
 
-    /**
-     * Returns the image of this tile.
-     */
-    const QPixmap &image() const { return mImage; }
+    const QPixmap &image() const;
+    void setImage(const QPixmap &image);
 
     const QPixmap &currentFrameImage() const;
 
-    /**
-     * Sets the image of this tile.
-     */
-    void setImage(const QPixmap &image) { mImage = image; }
+    const QString &imageSource() const;
+    void setImageSource(const QString &imageSource);
 
-    /**
-     * Returns the file name of the external image that represents this tile.
-     * When this tile doesn't refer to an external image, an empty string is
-     * returned.
-     */
-    const QString &imageSource() const { return mImageSource; }
+    int width() const;
+    int height() const;
+    QSize size() const;
 
-    void setImageSource(const QString &imageSource)
-    { mImageSource = imageSource; }
+    QPoint offset() const;
 
-    /**
-     * Returns the width of this tile.
-     */
-    int width() const { return mImage.width(); }
-
-    /**
-     * Returns the height of this tile.
-     */
-    int height() const { return mImage.height(); }
-
-    /**
-     * Returns the size of this tile.
-     */
-    QSize size() const { return mImage.size(); }
-
-    /**
-     * Returns the Terrain of a given corner.
-     */
     Terrain *terrainAtCorner(int corner) const;
 
-    /**
-     * Returns the terrain id at a given corner.
-     */
-    int cornerTerrainId(int corner) const { unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t; }
+    int cornerTerrainId(int corner) const;
+    void setCornerTerrainId(int corner, int terrainId);
 
-    /**
-     * Set the terrain type of a given corner.
-     */
-    void setCornerTerrain(int corner, int terrainId)
-    { setTerrain(setTerrainCorner(mTerrain, corner, terrainId)); }
-
-    /**
-     * Returns the terrain for each corner of this tile.
-     */
-    unsigned terrain() const { return mTerrain; }
-
-    /**
-     * Set the terrain for each corner of the tile.
-     */
+    inline unsigned terrain() const;
     void setTerrain(unsigned terrain);
 
-    /**
-     * Returns the probability of this terrain type appearing while painting (0-100%).
-     */
-    float terrainProbability() const { return mTerrainProbability; }
-
-    /**
-     * Set the probability of this terrain type appearing while painting (0-100%).
-     */
-    void setTerrainProbability(float probability) { mTerrainProbability = probability; }
+    float terrainProbability() const;
+    void setTerrainProbability(float probability);
 
     ObjectGroup *objectGroup() const;
     void setObjectGroup(ObjectGroup *objectGroup);
@@ -178,6 +131,117 @@ private:
 
     friend class Tileset; // To allow changing the tile id
 };
+
+/**
+ * Returns ID of this tile within its tileset.
+ */
+inline int Tile::id() const
+{
+    return mId;
+}
+
+/**
+ * Returns the tileset that this tile is part of.
+ */
+inline Tileset *Tile::tileset() const
+{
+    return mTileset;
+}
+
+/**
+ * Returns the image of this tile.
+ */
+inline const QPixmap &Tile::image() const
+{
+    return mImage;
+}
+
+/**
+ * Sets the image of this tile.
+ */
+inline void Tile::setImage(const QPixmap &image)
+{
+    mImage = image;
+}
+
+/**
+ * Returns the file name of the external image that represents this tile.
+ * When this tile doesn't refer to an external image, an empty string is
+ * returned.
+ */
+inline const QString &Tile::imageSource() const
+{
+    return mImageSource;
+}
+
+inline void Tile::setImageSource(const QString &imageSource)
+{
+    mImageSource = imageSource;
+}
+
+/**
+ * Returns the width of this tile.
+ */
+inline int Tile::width() const
+{
+    return mImage.width();
+}
+
+/**
+ * Returns the height of this tile.
+ */
+inline int Tile::height() const
+{
+    return mImage.height();
+}
+
+/**
+ * Returns the size of this tile.
+ */
+inline QSize Tile::size() const
+{
+    return mImage.size();
+}
+
+/**
+ * Returns the terrain id at a given corner.
+ */
+inline int Tile::cornerTerrainId(int corner) const
+{
+    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t;
+}
+
+/**
+ * Set the terrain type of a given corner.
+ */
+inline void Tile::setCornerTerrainId(int corner, int terrainId)
+{
+    setTerrain(setTerrainCorner(mTerrain, corner, terrainId));
+}
+
+/**
+ * Returns the terrain for each corner of this tile.
+ */
+inline unsigned Tile::terrain() const
+{
+    return mTerrain;
+}
+
+/**
+ * Returns the probability of this terrain type appearing while painting (0-100%).
+ */
+inline float Tile::terrainProbability() const
+{
+    return mTerrainProbability;
+}
+
+/**
+ * Set the probability of this terrain type appearing while painting (0-100%).
+ */
+inline void Tile::setTerrainProbability(float probability)
+{
+    mTerrainProbability = probability;
+}
 
 /**
  * @return The group of objects associated with this tile. This is generally

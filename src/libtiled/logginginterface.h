@@ -46,6 +46,8 @@ class LoggingInterface
       INFO, ERROR
     };
 
+    virtual ~LoggingInterface() {}
+
     virtual void log(OutputType type, const QString) = 0;
 };
 
