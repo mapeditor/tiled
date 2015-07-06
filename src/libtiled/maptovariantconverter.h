@@ -1,7 +1,7 @@
 /*
- * JSON Tiled Plugin
+ * maptovariantconverter.h
  * Copyright 2011, Porfírio José Pereira Ribeiro <porfirioribeiro@gmail.com>
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -27,7 +27,7 @@
 
 #include "gidmapper.h"
 
-namespace Json {
+namespace Tiled {
 
 /**
  * Converts Map instances to QVariant. Meant to be used together with
@@ -42,22 +42,22 @@ public:
      * Converts the given \s map to a QVariant. The \a mapDir is used to
      * construct relative paths to external resources.
      */
-    QVariant toVariant(const Tiled::Map *map, const QDir &mapDir);
+    QVariant toVariant(const Map *map, const QDir &mapDir);
 
 private:
-    QVariant toVariant(const Tiled::Tileset *tileset, int firstGid) const;
-    QVariant toVariant(const Tiled::Properties &properties) const;
-    QVariant toVariant(const Tiled::TileLayer *tileLayer) const;
-    QVariant toVariant(const Tiled::ObjectGroup *objectGroup) const;
-    QVariant toVariant(const Tiled::ImageLayer *imageLayer) const;
+    QVariant toVariant(const Tileset *tileset, int firstGid) const;
+    QVariant toVariant(const Properties &properties) const;
+    QVariant toVariant(const TileLayer *tileLayer) const;
+    QVariant toVariant(const ObjectGroup *objectGroup) const;
+    QVariant toVariant(const ImageLayer *imageLayer) const;
 
     void addLayerAttributes(QVariantMap &layerVariant,
-                            const Tiled::Layer *layer) const;
+                            const Layer *layer) const;
 
     QDir mMapDir;
-    Tiled::GidMapper mGidMapper;
+    GidMapper mGidMapper;
 };
 
-} // namespace Json
+} // namespace Tiled
 
 #endif // MAPTOVARIANTCONVERTER_H

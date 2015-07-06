@@ -1,7 +1,7 @@
 /*
- * JSON Tiled Plugin
+ * varianttomapconverter.h
  * Copyright 2011, Porfírio José Pereira Ribeiro <porfirioribeiro@gmail.com>
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -29,14 +29,12 @@
 #include <QVariant>
 
 namespace Tiled {
+
 class Layer;
 class Map;
 class ObjectGroup;
 class Properties;
 class Tileset;
-}
-
-namespace Json {
 
 /**
  * Converts a QVariant to a Map instance. Meant to be used together with
@@ -57,7 +55,7 @@ public:
      * Returns 0 in case of an error. The error can be obstained using
      * errorString().
      */
-    Tiled::Map *toMap(const QVariant &variant, const QDir &mapDir);
+    Map *toMap(const QVariant &variant, const QDir &mapDir);
 
     /**
      * Returns the last error, if any.
@@ -65,21 +63,21 @@ public:
     QString errorString() const { return mError; }
 
 private:
-    Tiled::Properties toProperties(const QVariant &variant);
-    Tiled::SharedTileset toTileset(const QVariant &variant);
-    Tiled::Layer *toLayer(const QVariant &variant);
-    Tiled::TileLayer *toTileLayer(const QVariantMap &variantMap);
-    Tiled::ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
-    Tiled::ImageLayer *toImageLayer(const QVariantMap &variantMap);
+    Properties toProperties(const QVariant &variant);
+    SharedTileset toTileset(const QVariant &variant);
+    Layer *toLayer(const QVariant &variant);
+    TileLayer *toTileLayer(const QVariantMap &variantMap);
+    ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
+    ImageLayer *toImageLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
 
-    Tiled::Map *mMap;
+    Map *mMap;
     QDir mMapDir;
-    Tiled::GidMapper mGidMapper;
+    GidMapper mGidMapper;
     QString mError;
 };
 
-} // namespace Json
+} // namespace Tiled
 
 #endif // VARIANTTOMAPCONVERTER_H

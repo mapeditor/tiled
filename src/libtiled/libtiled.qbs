@@ -41,6 +41,8 @@ DynamicLibrary {
         "mapreaderinterface.h",
         "maprenderer.cpp",
         "maprenderer.h",
+        "maptovariantconverter.cpp",
+        "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
         "mapwriterinterface.h",
@@ -61,6 +63,8 @@ DynamicLibrary {
         "tilelayer.h",
         "tileset.cpp",
         "tileset.h",
+        "varianttomapconverter.cpp",
+        "varianttomapconverter.h",
     ]
 
     Export {

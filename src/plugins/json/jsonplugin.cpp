@@ -66,7 +66,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
         return 0;
     }
 
-    VariantToMapConverter converter;
+    Tiled::VariantToMapConverter converter;
     Tiled::Map *map = converter.toMap(variant, QFileInfo(fileName).dir());
 
     if (!map)
@@ -84,7 +84,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
 
-    MapToVariantConverter converter;
+    Tiled::MapToVariantConverter converter;
     QVariant variant = converter.toVariant(map, QFileInfo(fileName).dir());
 
     JsonWriter writer;
