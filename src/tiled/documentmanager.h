@@ -28,6 +28,7 @@
 #include <QPointF>
 
 class QUndoGroup;
+class QGraphicsSceneMouseEvent;
 
 namespace Tiled {
 
@@ -176,6 +177,11 @@ signals:
      * Emitted when an error occurred while reloading the map.
      */
     void reloadError(const QString &error);
+
+    /**
+     * Emitted when polygon is double clicked.
+     */
+    void polygonDoubleClicked(QGraphicsSceneMouseEvent *event);
 
 public slots:
     void switchToLeftDocument();

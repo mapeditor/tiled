@@ -32,6 +32,7 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "objectselectiontool.h"
 #include "preferences.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -684,6 +685,35 @@ void MapScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mActiveTool) {
         mouseEvent->accept();
         mActiveTool->mouseReleased(mouseEvent);
+    }
+}
+
+void MapScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    if (!mActiveTool)
+        return;
+
+    /* Check if we are using object selection tool.
+     * We shouldn't prevent user from creating something with any other tools.
+     */
+    ObjectSelectionTool *tool = dynamic_cast<ObjectSelectionTool*>(mActiveTool);
+    if (!tool)
+        return;
+
+    MapObjectItem *clickedItem = 0;
+    const QList<QGraphicsItem *> itemsUnderMouse = items(mouseEvent->scenePos());
+    foreach (QGraphicsItem *i, itemsUnderMouse)
+        if (MapObjectItem *item = qgraphicsitem_cast<MapObjectItem*>(i)) {
+            clickedItem = item;
+            break;
+        }
+    if (!clickedItem) // We aren't clicking on any shape.
+        return;
+
+    MapObject *clickedMapObj = clickedItem->mapObject();
+    if (clickedMapObj->shape() == MapObject::Polygon || clickedMapObj->shape() == MapObject::Polyline) {
+        emit polygonDoubleClicked(mouseEvent);
+        mouseEvent->accept();
     }
 }
 

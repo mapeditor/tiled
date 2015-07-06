@@ -34,6 +34,7 @@
 class QComboBox;
 class QLabel;
 class QToolButton;
+class QGraphicsSceneMouseEvent;
 
 namespace Ui {
 class MainWindow;
@@ -51,6 +52,7 @@ class AutomappingManager;
 class BucketFillTool;
 class CommandButton;
 class DocumentManager;
+class EditPolygonTool;
 class LayerDock;
 class MapDocumentActionHandler;
 class MapScene;
@@ -176,6 +178,9 @@ public slots:
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
 
+private slots:
+    void onPolygonDoubleClicked(QGraphicsSceneMouseEvent *event);
+
 private:
     /**
       * Asks the user whether the given \a mapDocument should be saved, when
@@ -238,6 +243,7 @@ private:
     StampBrush *mStampBrush;
     BucketFillTool *mBucketFillTool;
     TerrainBrush *mTerrainBrush;
+    EditPolygonTool *mEditPolygonTool;
 
     enum { MaxRecentFiles = 8 };
     QAction *mRecentFiles[MaxRecentFiles];

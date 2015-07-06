@@ -386,6 +386,9 @@ void DocumentManager::currentIndexChanged()
         mapScene->setSelectedTool(mSelectedTool);
         mapScene->enableSelectedTool();
         mSceneWithTool = mapScene;
+        connect(mSceneWithTool, SIGNAL(polygonDoubleClicked(QGraphicsSceneMouseEvent*)),
+            this, SIGNAL(polygonDoubleClicked(QGraphicsSceneMouseEvent*)),
+            Qt::UniqueConnection);
     }
 }
 

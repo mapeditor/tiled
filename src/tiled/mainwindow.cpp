@@ -144,6 +144,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 {
     mUi->setupUi(this);
     setCentralWidget(mDocumentManager->widget());
+    connect (mDocumentManager, SIGNAL(polygonDoubleClicked(QGraphicsSceneMouseEvent*)),
+        this, SLOT(onPolygonDoubleClicked(QGraphicsSceneMouseEvent*)));
 
 #ifdef Q_OS_MAC
     MacSupport::addFullscreen(this);
@@ -383,6 +385,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mStampBrush = new StampBrush(this);
     mTerrainBrush = new TerrainBrush(this);
     mBucketFillTool = new BucketFillTool(this);
+    mEditPolygonTool = new EditPolygonTool(this);
     CreateObjectTool *tileObjectsTool = new CreateTileObjectTool(this);
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
@@ -424,7 +427,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     toolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
     toolBar->addSeparator();
     toolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
-    toolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
+    toolBar->addAction(mToolManager->registerTool(mEditPolygonTool));
     toolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     toolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
     toolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
@@ -1385,6 +1388,14 @@ void MainWindow::onAnimationEditorClosed()
 void MainWindow::onCollisionEditorClosed()
 {
     mShowTileCollisionEditor->setChecked(false);
+}
+
+void MainWindow::onPolygonDoubleClicked(QGraphicsSceneMouseEvent *event)
+{
+    if (mToolManager->selectedTool() != mEditPolygonTool)
+        mToolManager->selectTool(mEditPolygonTool);
+    // For more usability we select the shape when it was double clicked.
+    mEditPolygonTool->mousePressed(event);
 }
 
 void MainWindow::openRecentFile()
