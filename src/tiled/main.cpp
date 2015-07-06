@@ -119,7 +119,7 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning() << qPrintable(QApplication::applicationName())
+        qWarning() << qPrintable(QApplication::applicationDisplayName())
                    << qPrintable(QApplication::applicationVersion());
         quit = true;
     }
@@ -160,7 +160,13 @@ int main(int argc, char *argv[])
     TiledApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     a.setApplicationName(QLatin1String("Tiled"));
+#else
+    a.setApplicationName(QLatin1String("tiled"));
+#endif
+    a.setApplicationDisplayName(QLatin1String("Tiled"));
+
 #ifdef BUILD_INFO_VERSION
     a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
 #else

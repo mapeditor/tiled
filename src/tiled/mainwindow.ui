@@ -13,9 +13,6 @@
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
-  <property name="windowTitle">
-   <string>Tiled</string>
-  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
