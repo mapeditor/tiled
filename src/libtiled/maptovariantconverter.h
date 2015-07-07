@@ -33,7 +33,7 @@ namespace Tiled {
  * Converts Map instances to QVariant. Meant to be used together with
  * JsonWriter.
  */
-class MapToVariantConverter
+class TILEDSHARED_EXPORT MapToVariantConverter
 {
 public:
     MapToVariantConverter() {}

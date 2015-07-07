@@ -40,7 +40,7 @@ class Tileset;
  * Converts a QVariant to a Map instance. Meant to be used together with
  * JsonReader.
  */
-class VariantToMapConverter
+class TILEDSHARED_EXPORT VariantToMapConverter
 {
     // Using the MapReader context since the messages are the same
     Q_DECLARE_TR_FUNCTIONS(MapReader)
