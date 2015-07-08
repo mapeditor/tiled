@@ -12,7 +12,7 @@ DynamicLibrary {
     }
 
     cpp.cxxLanguageVersion: "c++11"
-
+    cpp.visibility: "minimal"
     cpp.defines: [
         "TILED_LIBRARY",
         "QT_NO_CAST_FROM_ASCII",
