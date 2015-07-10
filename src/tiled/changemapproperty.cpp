@@ -172,6 +172,12 @@ void ChangeMapProperty::swap()
         mRenderOrder = renderOrder;
         break;
     }
+    case SingleSheet: {
+        const bool singleSheet = map->singleSheet();
+        map->setSingleSheet(mSingleSheet);
+        mSingleSheet = singleSheet;
+        break;
+    }
     case BackgroundColor: {
         const QColor backgroundColor = map->backgroundColor();
         map->setBackgroundColor(mBackgroundColor);

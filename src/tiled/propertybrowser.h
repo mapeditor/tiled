@@ -128,7 +128,8 @@ private:
         SpacingProperty,
         TileProbabilityProperty,
         IdProperty,
-        CustomProperty
+        CustomProperty,
+        SingleSheetProperty
     };
 
     void addMapProperties();

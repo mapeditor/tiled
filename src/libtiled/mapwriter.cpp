@@ -87,6 +87,7 @@ private:
     QDir mMapDir;     // The directory in which the map is being saved
     GidMapper mGidMapper;
     bool mUseAbsolutePaths;
+    const Map *mMap;
 };
 
 } // namespace Internal
@@ -206,6 +207,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map *map)
         firstGid += tileset->tileCount();
     }
 
+    mMap = map;
     foreach (const Layer *layer, map->layers()) {
         const Layer::TypeFlag type = layer->layerType();
         if (type == Layer::TileLayerType)
@@ -419,11 +421,34 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (!compression.isEmpty())
         w.writeAttribute(QLatin1String("compression"), compression);
 
+    if (mMap->singleSheet())
+    {
+        bool tSetFound = false;
+        QString tname;
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            for (int x = 0; x < tileLayer->width(); ++x) {
+                const Cell c = tileLayer->cellAt(x, y);
+                if (!c.isEmpty()) {
+                    tname = c.tile->tileset()->name();
+                    tSetFound = true;
+                }
+            }
+        }
+        if (tSetFound)
+            w.writeAttribute(QLatin1String("tileset"), QLatin1String(tname.toLatin1()));
+    }
+
     if (mLayerDataFormat == Map::XML) {
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
-                const unsigned gid = mGidMapper.cellToGid(tileLayer->cellAt(x, y));
+                const Cell c = tileLayer->cellAt(x, y);
+                unsigned gid = mGidMapper.cellToGid(c);
                 w.writeStartElement(QLatin1String("tile"));
+                if (mMap->singleSheet())
+                    if (c.isEmpty())
+                        gid = 0;
+                    else
+                        gid = c.tile->id();
                 w.writeAttribute(QLatin1String("gid"), QString::number(gid));
                 w.writeEndElement();
             }
@@ -433,7 +458,13 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
 
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
-                const unsigned gid = mGidMapper.cellToGid(tileLayer->cellAt(x, y));
+                const Cell c = tileLayer->cellAt(x, y);
+                unsigned gid = mGidMapper.cellToGid(c);
+                if (mMap->singleSheet())
+                    if (c.isEmpty())
+                        gid = 0;
+                    else
+                        gid = c.tile->id();
                 tileData.append(QString::number(gid));
                 if (x != tileLayer->width() - 1
                     || y != tileLayer->height() - 1)
@@ -450,7 +481,13 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
 
         for (int y = 0; y < tileLayer->height(); ++y) {
             for (int x = 0; x < tileLayer->width(); ++x) {
-                const unsigned gid = mGidMapper.cellToGid(tileLayer->cellAt(x, y));
+                const Cell c = tileLayer->cellAt(x, y);
+                unsigned gid = mGidMapper.cellToGid(c);
+                if (mMap->singleSheet())
+                    if (c.isEmpty())
+                        gid = 0;
+                    else
+                        gid = c.tile->id();
                 tileData.append((char) (gid));
                 tileData.append((char) (gid >> 8));
                 tileData.append((char) (gid >> 16));

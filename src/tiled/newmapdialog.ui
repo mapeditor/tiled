@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>323</height>
+    <width>388</width>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -188,7 +188,7 @@
       <string>Map</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Orientation:</string>
@@ -198,7 +198,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="1" column="1">
        <widget class="QComboBox" name="orientation">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -208,7 +208,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="layerFormatLabel">
         <property name="text">
          <string>Tile layer format:</string>
@@ -218,10 +218,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QComboBox" name="layerFormat"/>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="renderOrderLabel">
         <property name="text">
          <string>Tile render order:</string>
@@ -231,8 +231,15 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QComboBox" name="renderOrder"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="singleSheet">
+        <property name="text">
+         <string>Single tilesheet per layer</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

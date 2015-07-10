@@ -194,6 +194,16 @@ public:
     void setTileHeight(int height) { mTileHeight = height; }
 
     /**
+     * Returns wether the single sheet option is activated or not
+     */
+    bool singleSheet() const { return mSingleSheet; }
+
+    /**
+     * Sets single sheet option
+     */
+    void setSingleSheet(int v) { mSingleSheet = v; }
+
+    /**
      * Returns the size of one tile. Provided for convenience.
      */
     QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
@@ -404,6 +414,7 @@ private:
     int mTileWidth;
     int mTileHeight;
     int mHexSideLength;
+    bool mSingleSheet;
     StaggerAxis mStaggerAxis;
     StaggerIndex mStaggerIndex;
     QColor mBackgroundColor;

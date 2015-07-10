@@ -43,7 +43,8 @@ public:
         Orientation,
         RenderOrder,
         BackgroundColor,
-        LayerDataFormat
+        LayerDataFormat,
+        SingleSheet
     };
 
     /**
@@ -113,6 +114,7 @@ private:
     MapDocument *mMapDocument;
     Property mProperty;
     QColor mBackgroundColor;
+    bool mSingleSheet;
     union {
         int mIntValue;
         Map::StaggerAxis mStaggerAxis;

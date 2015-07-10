@@ -38,6 +38,7 @@ static const char * const MAP_WIDTH_KEY = "Map/Width";
 static const char * const MAP_HEIGHT_KEY = "Map/Height";
 static const char * const TILE_WIDTH_KEY = "Map/TileWidth";
 static const char * const TILE_HEIGHT_KEY = "Map/TileHeight";
+static const char * const SINGLE_SHEET_KEY = "Map/SingleSheet";
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -58,6 +59,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     const int tileWidth = s->value(QLatin1String(TILE_WIDTH_KEY), 32).toInt();
     const int tileHeight = s->value(QLatin1String(TILE_HEIGHT_KEY),
                                     32).toInt();
+    const bool singleSheet = s->value(QLatin1String(SINGLE_SHEET_KEY), false).toBool();
 
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "XML"));
     mUi->layerFormat->addItem(QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"));
@@ -82,6 +84,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->mapHeight->setValue(mapHeight);
     mUi->tileWidth->setValue(tileWidth);
     mUi->tileHeight->setValue(tileHeight);
+    mUi->singleSheet->setChecked(singleSheet);
 
     // Make the font of the pixel size label smaller
     QFont font = mUi->pixelSizeLabel->font();
@@ -111,6 +114,7 @@ MapDocument *NewMapDialog::createMap()
     const int mapHeight = mUi->mapHeight->value();
     const int tileWidth = mUi->tileWidth->value();
     const int tileHeight = mUi->tileHeight->value();
+    const bool singleSheet = mUi->singleSheet->isChecked();
 
     const int orientationIndex = mUi->orientation->currentIndex();
     const QVariant orientationData = mUi->orientation->itemData(orientationIndex);
@@ -127,6 +131,7 @@ MapDocument *NewMapDialog::createMap()
 
     map->setLayerDataFormat(layerFormat);
     map->setRenderOrder(renderOrder);
+    map->setSingleSheet(singleSheet);
 
     const size_t gigabyte = 1073741824;
     const size_t memory = size_t(mapWidth) * size_t(mapHeight) * sizeof(Cell);
@@ -153,6 +158,7 @@ MapDocument *NewMapDialog::createMap()
     s->setValue(QLatin1String(MAP_HEIGHT_KEY), mapHeight);
     s->setValue(QLatin1String(TILE_WIDTH_KEY), tileWidth);
     s->setValue(QLatin1String(TILE_HEIGHT_KEY), tileHeight);
+    s->setValue(QLatin1String(SINGLE_SHEET_KEY), singleSheet);
 
     return new MapDocument(map);
 }

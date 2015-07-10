@@ -396,6 +396,11 @@ void PropertyBrowser::addMapProperties()
 
     renderOrderProperty->setAttribute(QLatin1String("enumNames"), mRenderOrderNames);
 
+    createProperty(SingleSheetProperty,
+                           QVariant::Bool,
+                           tr("Single tilesheet per layer"),
+                           groupProperty);
+
     createProperty(ColorProperty, QVariant::Color, tr("Background Color"), groupProperty);
     addProperty(groupProperty);
 }
@@ -583,6 +588,10 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         Map::RenderOrder renderOrder = static_cast<Map::RenderOrder>(val.toInt());
         command = new ChangeMapProperty(mMapDocument, renderOrder);
         break;
+    }
+    case SingleSheetProperty: {
+        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::SingleSheet,
+                                        val.toBool());
     }
     case ColorProperty:
         command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
@@ -903,6 +912,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[StaggerIndexProperty]->setValue(map->staggerIndex());
         mIdToProperty[LayerFormatProperty]->setValue(map->layerDataFormat());
         mIdToProperty[RenderOrderProperty]->setValue(map->renderOrder());
+        mIdToProperty[SingleSheetProperty]->setValue(map->singleSheet());
         QColor backgroundColor = map->backgroundColor();
         if (!backgroundColor.isValid())
             backgroundColor = Qt::darkGray;
