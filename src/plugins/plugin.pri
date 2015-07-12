@@ -28,7 +28,7 @@ macx {
 
 # Set rpath so that the plugin will resolve libtiled correctly
 !win32:!macx:contains(RPATH, yes) {
-    QMAKE_RPATHDIR += \$\$ORIGIN/../..
+    QMAKE_RPATHDIR += \$\$ORIGIN/..
 
     # It is not possible to use ORIGIN in QMAKE_RPATHDIR, so a bit manually
     QMAKE_LFLAGS += -Wl,-z,origin \'-Wl,-rpath,$$join(QMAKE_RPATHDIR, ":")\'
