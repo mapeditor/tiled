@@ -68,6 +68,7 @@ private:
     TileStampModel *mTileStampModel;
     QSortFilterProxyModel *mProxyModel;
     TileStampView *mTileStampView;
+    QLineEdit *mFilterEdit;
 
     QAction *mNewStamp;
     QAction *mAddVariation;

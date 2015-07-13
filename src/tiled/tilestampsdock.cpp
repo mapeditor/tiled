@@ -30,6 +30,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QLineEdit>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QSortFilterProxyModel>
@@ -44,6 +45,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     , mTileStampManager(stampManager)
     , mTileStampModel(stampManager->tileStampModel())
     , mProxyModel(new QSortFilterProxyModel(mTileStampModel))
+    , mFilterEdit(new QLineEdit(this))
     , mNewStamp(new QAction(this))
     , mAddVariation(new QAction(this))
     , mDuplicate(new QAction(this))
@@ -80,6 +82,13 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     Utils::setThemeIcon(mDelete, "edit-delete");
     Utils::setThemeIcon(mChooseFolder, "document-open");
 
+#if QT_VERSION >= 0x050200
+    mFilterEdit->setClearButtonEnabled(true);
+#endif
+
+    connect(mFilterEdit, &QLineEdit::textChanged,
+            mProxyModel, &QSortFilterProxyModel::setFilterFixedString);
+
     connect(mNewStamp, &QAction::triggered, this, &TileStampsDock::newStamp);
     connect(mAddVariation, &QAction::triggered, this, &TileStampsDock::addVariation);
     connect(mDuplicate, &QAction::triggered, this, &TileStampsDock::duplicate);
@@ -112,6 +121,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
 
     QVBoxLayout *listAndToolBar = new QVBoxLayout;
     listAndToolBar->setSpacing(0);
+    listAndToolBar->addWidget(mFilterEdit);
     listAndToolBar->addWidget(mTileStampView);
     listAndToolBar->addWidget(buttonContainer);
 
@@ -276,6 +286,8 @@ void TileStampsDock::retranslateUi()
     mDuplicate->setText(tr("Duplicate Stamp"));
     mDelete->setText(tr("Delete Selected"));
     mChooseFolder->setText(tr("Set Stamps Folder"));
+
+    mFilterEdit->setPlaceholderText(tr("Filter"));
 }
 
 
