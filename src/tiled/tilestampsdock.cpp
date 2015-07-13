@@ -32,6 +32,7 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QVBoxLayout>
 
@@ -42,6 +43,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     : QDockWidget(parent)
     , mTileStampManager(stampManager)
     , mTileStampModel(stampManager->tileStampModel())
+    , mProxyModel(new QSortFilterProxyModel(mTileStampModel))
     , mNewStamp(new QAction(this))
     , mAddVariation(new QAction(this))
     , mDuplicate(new QAction(this))
@@ -50,8 +52,14 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
 {
     setObjectName(QLatin1String("TileStampsDock"));
 
+    mProxyModel->setSortLocaleAware(true);
+    mProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+    mProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    mProxyModel->setSourceModel(mTileStampModel);
+    mProxyModel->sort(0);
+
     mTileStampView = new TileStampView(this);
-    mTileStampView->setModel(mTileStampModel);
+    mTileStampView->setModel(mProxyModel);
     mTileStampView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     mTileStampView->header()->setStretchLastSection(false);
     mTileStampView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -144,15 +152,16 @@ void TileStampsDock::keyPressEvent(QKeyEvent *event)
 
 void TileStampsDock::currentRowChanged(const QModelIndex &index)
 {
-    const bool isStamp = mTileStampModel->isStamp(index);
+    const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
+    const bool isStamp = mTileStampModel->isStamp(sourceIndex);
 
     mDuplicate->setEnabled(isStamp);
-    mDelete->setEnabled(index.isValid());
+    mDelete->setEnabled(sourceIndex.isValid());
     mAddVariation->setEnabled(isStamp);
 
     if (isStamp) {
-        emit setStamp(mTileStampModel->stampAt(index));
-    } else if (const TileStampVariation *variation = mTileStampModel->variationAt(index)) {
+        emit setStamp(mTileStampModel->stampAt(sourceIndex));
+    } else if (const TileStampVariation *variation = mTileStampModel->variationAt(sourceIndex)) {
         // single variation clicked, use it specifically
         emit setStamp(TileStamp(new Map(*variation->map)));
     }
@@ -166,7 +175,8 @@ void TileStampsDock::showContextMenu(QPoint pos)
 
     QMenu menu;
 
-    if (mTileStampModel->isStamp(index)) {
+    const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
+    if (mTileStampModel->isStamp(sourceIndex)) {
         QAction *addStampVariation = new QAction(mAddVariation->icon(),
                                                  mAddVariation->text(), &menu);
         QAction *deleteStamp = new QAction(mDelete->icon(),
@@ -199,7 +209,8 @@ void TileStampsDock::delete_()
     if (!index.isValid())
         return;
 
-    mTileStampModel->removeRow(index.row(), index.parent());
+    const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
+    mTileStampModel->removeRow(sourceIndex.row(), sourceIndex.parent());
 }
 
 void TileStampsDock::duplicate()
@@ -207,10 +218,12 @@ void TileStampsDock::duplicate()
     const QModelIndex index = mTileStampView->currentIndex();
     if (!index.isValid())
         return;
-    if (!mTileStampModel->isStamp(index))
+
+    const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
+    if (!mTileStampModel->isStamp(sourceIndex))
         return;
 
-    TileStamp stamp = mTileStampModel->stampAt(index);
+    TileStamp stamp = mTileStampModel->stampAt(sourceIndex);
     mTileStampModel->addStamp(stamp.clone());
 }
 
@@ -219,10 +232,12 @@ void TileStampsDock::addVariation()
     const QModelIndex index = mTileStampView->currentIndex();
     if (!index.isValid())
         return;
-    if (!mTileStampModel->isStamp(index))
+
+    const QModelIndex sourceIndex = mProxyModel->mapToSource(index);
+    if (!mTileStampModel->isStamp(sourceIndex))
         return;
 
-    const TileStamp &stamp = mTileStampModel->stampAt(index);
+    const TileStamp &stamp = mTileStampModel->stampAt(sourceIndex);
     mTileStampManager->addVariation(stamp);
 }
 

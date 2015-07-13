@@ -90,6 +90,7 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
             switch (role) {
             case Qt::EditRole:
                 stamp.setName(value.toString());
+                emit dataChanged(index, index);
                 emit stampChanged(stamp);
                 return true;
                 break;
@@ -102,6 +103,7 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
         if (isStamp(parent)) {
             TileStamp &stamp = mStamps[parent.row()];
             stamp.setProbability(index.row(), value.toReal());
+            emit dataChanged(index, index);
 
             QModelIndex probabilitySumIndex = TileStampModel::index(parent.row(), 1);
             emit dataChanged(probabilitySumIndex, probabilitySumIndex);

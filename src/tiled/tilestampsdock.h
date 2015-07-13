@@ -24,6 +24,8 @@
 #include <QDockWidget>
 #include <QTreeView>
 
+class QSortFilterProxyModel;
+
 namespace Tiled {
 
 class TileLayer;
@@ -63,6 +65,7 @@ private:
 
     TileStampManager *mTileStampManager;
     TileStampModel *mTileStampModel;
+    QSortFilterProxyModel *mProxyModel;
     TileStampView *mTileStampView;
 
     QAction *mNewStamp;
