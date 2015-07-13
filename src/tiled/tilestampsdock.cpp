@@ -213,7 +213,7 @@ void TileStampsDock::chooseFolder()
     Preferences *prefs = Preferences::instance();
 
     QString stampsDirectory = prefs->stampsDirectory();
-    stampsDirectory = QFileDialog::getExistingDirectory(this,
+    stampsDirectory = QFileDialog::getExistingDirectory(window(),
                                                         tr("Choose the Stamps Folder"),
                                                         stampsDirectory);
     if (!stampsDirectory.isEmpty())

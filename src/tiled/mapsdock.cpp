@@ -100,8 +100,9 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
 
 void MapsDock::browse()
 {
-    QString f = QFileDialog::getExistingDirectory(this, tr("Choose the Maps Folder"),
-        mDirectoryEdit->text());
+    QString f = QFileDialog::getExistingDirectory(window(),
+                                                  tr("Choose the Maps Folder"),
+                                                  mDirectoryEdit->text());
     if (!f.isEmpty()) {
         Preferences *prefs = Preferences::instance();
         prefs->setMapsDirectory(f);

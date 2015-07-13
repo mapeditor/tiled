@@ -33,7 +33,6 @@
 
 #include <QAbstractItemDelegate>
 #include <QCoreApplication>
-#include <QFileDialog>
 #include <QGesture>
 #include <QGestureEvent>
 #include <QHeaderView>

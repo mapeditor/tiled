@@ -838,7 +838,7 @@ void TilesetDock::addTiles()
     Preferences *prefs = Preferences::instance();
     const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
     const QString filter = Utils::readableImageFormatsFilter();
-    const QStringList files = QFileDialog::getOpenFileNames(this,
+    const QStringList files = QFileDialog::getOpenFileNames(window(),
                                                             tr("Add Tiles"),
                                                             startLocation,
                                                             filter);
