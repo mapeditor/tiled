@@ -428,6 +428,9 @@ void StampBrush::updatePreview()
 
 void StampBrush::updatePreview(QPoint tilePos)
 {
+    if (!mapDocument())
+        return;
+
     QRegion tileRegion;
 
     if (mBrushBehavior == Capture) {
