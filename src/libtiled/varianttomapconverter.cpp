@@ -270,12 +270,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     const QString name = variantMap[QLatin1String("name")].toString();
     const int width = variantMap[QLatin1String("width")].toInt();
     const int height = variantMap[QLatin1String("height")].toInt();
-    const QVariantList dataVariantList = variantMap[QLatin1String("data")].toList();
-
-    if (dataVariantList.size() != width * height) {
-        mError = tr("Corrupt layer data for layer '%1'").arg(name);
-        return 0;
-    }
+    const QVariant dataVariant = variantMap[QLatin1String("data")];
 
     typedef QScopedPointer<TileLayer> TileLayerPtr;
     TileLayerPtr tileLayer(new TileLayer(name,
@@ -289,27 +284,88 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
     tileLayer->setOpacity(opacity);
     tileLayer->setVisible(visible);
 
-    int x = 0;
-    int y = 0;
-    bool ok;
+    const QString encoding = variantMap[QLatin1String("encoding")].toString();
+    const QString compression = variantMap[QLatin1String("compression")].toString();
 
-    foreach (const QVariant &gidVariant, dataVariantList) {
-        const unsigned gid = gidVariant.toUInt(&ok);
-        if (!ok) {
-            mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
-                    .arg(x).arg(y).arg(tileLayer->name());
+    Map::LayerDataFormat layerDataFormat;
+    if (encoding.isEmpty() || encoding == QLatin1String("csv")) {
+        layerDataFormat = Map::CSV;
+    } else if (encoding == QLatin1String("base64")) {
+        if (compression.isEmpty()) {
+            layerDataFormat = Map::Base64;
+        } else if (compression == QLatin1String("gzip")) {
+            layerDataFormat = Map::Base64Gzip;
+        } else if (compression == QLatin1String("zlib")) {
+            layerDataFormat = Map::Base64Zlib;
+        } else {
+            mError = tr("Compression method '%1' not supported").arg(compression);
+            return 0;
+        }
+    } else {
+        mError = tr("Unknown encoding: %1").arg(encoding);
+        return 0;
+    }
+    mMap->setLayerDataFormat(layerDataFormat);
+
+    switch (layerDataFormat) {
+    case Map::XML:
+    case Map::CSV: {
+        const QVariantList dataVariantList = dataVariant.toList();
+
+        if (dataVariantList.size() != width * height) {
+            mError = tr("Corrupt layer data for layer '%1'").arg(name);
             return 0;
         }
 
-        const Cell cell = mGidMapper.gidToCell(gid, ok);
+        int x = 0;
+        int y = 0;
+        bool ok;
 
-        tileLayer->setCell(x, y, cell);
+        foreach (const QVariant &gidVariant, dataVariantList) {
+            const unsigned gid = gidVariant.toUInt(&ok);
+            if (!ok) {
+                mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
+                        .arg(x).arg(y).arg(tileLayer->name());
+                return 0;
+            }
 
-        x++;
-        if (x >= tileLayer->width()) {
-            x = 0;
-            y++;
+            const Cell cell = mGidMapper.gidToCell(gid, ok);
+
+            tileLayer->setCell(x, y, cell);
+
+            x++;
+            if (x >= tileLayer->width()) {
+                x = 0;
+                y++;
+            }
         }
+        break;
+    }
+
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        const QByteArray data = dataVariant.toByteArray();
+        GidMapper::DecodeError error = mGidMapper.decodeLayerData(*tileLayer,
+                                                                  data,
+                                                                  layerDataFormat);
+
+        switch (error) {
+        case GidMapper::CorruptLayerData:
+            mError = tr("Corrupt layer data for layer '%1'").arg(name);
+            return 0;
+        case GidMapper::TileButNoTilesets:
+            mError = tr("Tile used but no tilesets specified");
+            return 0;
+        case GidMapper::InvalidTile:
+            mError = tr("Invalid tile: %1").arg(mGidMapper.invalidTile());
+            return 0;
+        case GidMapper::NoError:
+            break;
+        }
+
+        break;
+    }
     }
 
     return tileLayer.take();

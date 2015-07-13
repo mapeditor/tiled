@@ -77,7 +77,8 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     foreach (const Layer *layer, map->layers()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            layerVariants << toVariant(static_cast<const TileLayer*>(layer));
+            layerVariants << toVariant(static_cast<const TileLayer*>(layer),
+                                       map->layerDataFormat());
             break;
         case Layer::ObjectGroupType:
             layerVariants << toVariant(static_cast<const ObjectGroup*>(layer));
@@ -203,19 +204,41 @@ QVariant MapToVariantConverter::toVariant(const Properties &properties) const
     return variantMap;
 }
 
-QVariant MapToVariantConverter::toVariant(const TileLayer *tileLayer) const
+QVariant MapToVariantConverter::toVariant(const TileLayer *tileLayer,
+                                          Map::LayerDataFormat format) const
 {
     QVariantMap tileLayerVariant;
     tileLayerVariant[QLatin1String("type")] = QLatin1String("tilelayer");
 
     addLayerAttributes(tileLayerVariant, tileLayer);
 
-    QVariantList tileVariants;
-    for (int y = 0; y < tileLayer->height(); ++y)
-        for (int x = 0; x < tileLayer->width(); ++x)
-            tileVariants << mGidMapper.cellToGid(tileLayer->cellAt(x, y));
+    switch (format) {
+    case Map::XML:
+    case Map::CSV: {
+        QVariantList tileVariants;
+        for (int y = 0; y < tileLayer->height(); ++y)
+            for (int x = 0; x < tileLayer->width(); ++x)
+                tileVariants << mGidMapper.cellToGid(tileLayer->cellAt(x, y));
 
-    tileLayerVariant[QLatin1String("data")] = tileVariants;
+        tileLayerVariant[QLatin1String("data")] = tileVariants;
+        break;
+    }
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        tileLayerVariant[QLatin1String("encoding")] = QLatin1String("base64");
+
+        if (format == Map::Base64Zlib)
+            tileLayerVariant[QLatin1String("compression")] = QLatin1String("zlib");
+        else if (format == Map::Base64Gzip)
+            tileLayerVariant[QLatin1String("compression")] = QLatin1String("gzip");
+
+        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format);
+        tileLayerVariant[QLatin1String("data")] = layerData;
+        break;
+    }
+    }
+
     return tileLayerVariant;
 }
 

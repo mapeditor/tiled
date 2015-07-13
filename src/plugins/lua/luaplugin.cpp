@@ -23,7 +23,6 @@
 #include "luatablewriter.h"
 
 #include "imagelayer.h"
-#include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
@@ -148,7 +147,9 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     foreach (const Layer *layer, map->layers()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            writeTileLayer(writer, static_cast<const TileLayer*>(layer));
+            writeTileLayer(writer,
+                           static_cast<const TileLayer*>(layer),
+                           map->layerDataFormat());
             break;
         case Layer::ObjectGroupType:
             writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
@@ -311,7 +312,8 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
 }
 
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
-                               const TileLayer *tileLayer)
+                               const TileLayer *tileLayer,
+                               Map::LayerDataFormat format)
 {
     writer.writeStartTable();
 
@@ -325,16 +327,36 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     writer.writeKeyAndValue("opacity", tileLayer->opacity());
     writeProperties(writer, tileLayer->properties());
 
-    writer.writeKeyAndValue("encoding", "lua");
-    writer.writeStartTable("data");
-    for (int y = 0; y < tileLayer->height(); ++y) {
-        if (y > 0)
-            writer.prepareNewLine();
+    switch (format) {
+    case Map::XML:
+    case Map::CSV:
+        writer.writeKeyAndValue("encoding", "lua");
+        writer.writeStartTable("data");
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            if (y > 0)
+                writer.prepareNewLine();
 
-        for (int x = 0; x < tileLayer->width(); ++x)
-            writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
+            for (int x = 0; x < tileLayer->width(); ++x)
+                writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
+        }
+        writer.writeEndTable();
+        break;
+
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        writer.writeKeyAndValue("encoding", "base64");
+
+        if (format == Map::Base64Zlib)
+            writer.writeKeyAndValue("compression", "zlib");
+        else if (format == Map::Base64Gzip)
+            writer.writeKeyAndValue("compression", "gzip");
+
+        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format);
+        writer.writeKeyAndValue("data", layerData);
+        break;
     }
-    writer.writeEndTable();
+    }
 
     writer.writeEndTable();
 }
