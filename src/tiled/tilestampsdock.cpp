@@ -44,6 +44,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     , mTileStampModel(stampManager->tileStampModel())
     , mNewStamp(new QAction(this))
     , mAddVariation(new QAction(this))
+    , mDuplicate(new QAction(this))
     , mDelete(new QAction(this))
     , mChooseFolder(new QAction(this))
 {
@@ -62,6 +63,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
 
     mNewStamp->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
     mAddVariation->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
+    mDuplicate->setIcon(QIcon(QLatin1String(":/images/16x16/stock-duplicate-16.png")));
     mDelete->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
     mChooseFolder->setIcon(QIcon(QLatin1String(":images/16x16/document-open.png")));
 
@@ -72,9 +74,11 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
 
     connect(mNewStamp, &QAction::triggered, stampManager, &TileStampManager::createStamp);
     connect(mAddVariation, &QAction::triggered, this, &TileStampsDock::addVariation);
+    connect(mDuplicate, &QAction::triggered, this, &TileStampsDock::duplicate);
     connect(mDelete, &QAction::triggered, this, &TileStampsDock::delete_);
     connect(mChooseFolder, &QAction::triggered, this, &TileStampsDock::chooseFolder);
 
+    mDuplicate->setEnabled(false);
     mDelete->setEnabled(false);
     mAddVariation->setEnabled(false);
 
@@ -89,6 +93,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
 
     buttonContainer->addAction(mNewStamp);
     buttonContainer->addAction(mAddVariation);
+    buttonContainer->addAction(mDuplicate);
     buttonContainer->addAction(mDelete);
 
     QWidget *stretch = new QWidget;
@@ -141,6 +146,7 @@ void TileStampsDock::currentRowChanged(const QModelIndex &index)
 {
     const bool isStamp = mTileStampModel->isStamp(index);
 
+    mDuplicate->setEnabled(isStamp);
     mDelete->setEnabled(index.isValid());
     mAddVariation->setEnabled(isStamp);
 
@@ -196,6 +202,18 @@ void TileStampsDock::delete_()
     mTileStampModel->removeRow(index.row(), index.parent());
 }
 
+void TileStampsDock::duplicate()
+{
+    const QModelIndex index = mTileStampView->currentIndex();
+    if (!index.isValid())
+        return;
+    if (!mTileStampModel->isStamp(index))
+        return;
+
+    TileStamp stamp = mTileStampModel->stampAt(index);
+    mTileStampModel->addStamp(stamp.clone());
+}
+
 void TileStampsDock::addVariation()
 {
     const QModelIndex index = mTileStampView->currentIndex();
@@ -226,6 +244,7 @@ void TileStampsDock::retranslateUi()
 
     mNewStamp->setText(tr("Add New Stamp"));
     mAddVariation->setText(tr("Add Variation"));
+    mDuplicate->setText(tr("Duplicate Stamp"));
     mDelete->setText(tr("Delete Selected"));
     mChooseFolder->setText(tr("Set Stamps Folder"));
 }

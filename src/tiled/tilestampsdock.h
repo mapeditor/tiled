@@ -54,6 +54,7 @@ private slots:
     void showContextMenu(QPoint pos);
 
     void delete_();
+    void duplicate();
     void addVariation();
     void chooseFolder();
 
@@ -66,6 +67,7 @@ private:
 
     QAction *mNewStamp;
     QAction *mAddVariation;
+    QAction *mDuplicate;
     QAction *mDelete;
     QAction *mChooseFolder;
 };

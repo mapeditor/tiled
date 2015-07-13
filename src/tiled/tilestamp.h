@@ -83,6 +83,8 @@ public:
     TileStamp flipped(FlipDirection direction) const;
     TileStamp rotated(RotateDirection direction) const;
 
+    TileStamp clone() const;
+
     QJsonObject toJson(const QDir &dir) const;
 
     static TileStamp fromJson(const QJsonObject &json,

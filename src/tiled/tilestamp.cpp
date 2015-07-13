@@ -259,6 +259,17 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     return rotated;
 }
 
+/**
+ * Clones the tile stamp. Changes made to the clone do not affect the original
+ * stamp.
+ */
+TileStamp TileStamp::clone() const
+{
+    TileStamp clone(*this);
+    clone.d.detach();
+    return clone;
+}
+
 QJsonObject TileStamp::toJson(const QDir &dir) const
 {
     QJsonObject json;
