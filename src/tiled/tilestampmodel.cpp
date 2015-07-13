@@ -215,10 +215,15 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
             emit stampRemoved(stamp);
             mStamps.removeAt(parent.row());
             endRemoveRows();
-        } else if (row == 0) {
-            // preview on stamp and probability sum need update
-            emit dataChanged(index(parent.row(), 0),
-                             index(parent.row(), 1));
+        } else {
+            if (row == 0) {
+                // preview on stamp and probability sum need update
+                // (while technically I think this is correct, it triggers a
+                // repainting issue in QTreeView)
+                //emit dataChanged(index(parent.row(), 0),
+                //                 index(parent.row(), 1));
+            }
+            emit stampChanged(stamp);
         }
     } else {
         // removing stamps
