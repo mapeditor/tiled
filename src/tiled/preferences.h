@@ -94,6 +94,9 @@ public:
     QString mapsDirectory() const;
     void setMapsDirectory(const QString &path);
 
+    QString stampsDirectory() const;
+    void setStampsDirectory(const QString &stampsDirectory);
+
     QDate firstRun() const;
     int runCount() const;
 
@@ -138,6 +141,7 @@ signals:
     void objectTypesChanged();
 
     void mapsDirectoryChanged();
+    void stampsDirectoryChanged(const QString &stampsDirectory);
 
     void isPatronChanged();
 
@@ -176,6 +180,7 @@ private:
     bool mAutoMapDrawing;
 
     QString mMapsDirectory;
+    QString mStampsDirectory;
 
     QDate mFirstRun;
     int mRunCount;

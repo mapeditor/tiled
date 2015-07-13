@@ -55,6 +55,7 @@ private slots:
 
     void delete_();
     void addVariation();
+    void chooseFolder();
 
 private:
     void retranslateUi();
@@ -66,6 +67,7 @@ private:
     QAction *mNewStamp;
     QAction *mAddVariation;
     QAction *mDelete;
+    QAction *mChooseFolder;
 };
 
 

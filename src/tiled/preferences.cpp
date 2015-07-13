@@ -61,6 +61,7 @@ Preferences::Preferences()
                              Map::RightDown).toInt();
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
+    mStampsDirectory = stringValue("StampsDirectory");
     mSettings->endGroup();
 
     // Retrieve interface settings
@@ -468,4 +469,24 @@ int Preferences::intValue(const char *key, int defaultValue) const
 qreal Preferences::realValue(const char *key, qreal defaultValue) const
 {
     return mSettings->value(QLatin1String(key), defaultValue).toReal();
+}
+
+QString Preferences::stampsDirectory() const
+{
+    if (mStampsDirectory.isEmpty()) {
+        QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        return appData + QLatin1String("/stamps");
+    }
+    return mStampsDirectory;
+}
+
+void Preferences::setStampsDirectory(const QString &stampsDirectory)
+{
+    if (mStampsDirectory == stampsDirectory)
+        return;
+
+    mStampsDirectory = stampsDirectory;
+    mSettings->setValue(QLatin1String("Storage/StampsDirectory"), stampsDirectory);
+
+    emit stampsDirectoryChanged(stampsDirectory);
 }

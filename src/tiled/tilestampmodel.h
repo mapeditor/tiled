@@ -21,6 +21,8 @@
 #ifndef TILED_INTERNAL_TILESTAMPMODEL_H
 #define TILED_INTERNAL_TILESTAMPMODEL_H
 
+#include "tilestamp.h"
+
 #include <QAbstractItemModel>
 
 namespace Tiled {
@@ -29,11 +31,12 @@ class Map;
 
 namespace Internal {
 
-class TileStamp;
 struct TileStampVariation;
 
 class TileStampModel : public QAbstractItemModel
 {
+    Q_OBJECT
+
 public:
     TileStampModel(QObject *parent = 0);
 
@@ -72,6 +75,13 @@ public:
 
     void addVariation(const TileStamp &stamp,
                       const TileStampVariation &variation);
+
+    void clear();
+
+signals:
+    void stampAdded(const TileStamp &stamp);
+    void stampChanged(const TileStamp &stamp);
+    void stampRemoved(const TileStamp &stamp);
 
 private:
     QList<TileStamp> mStamps;

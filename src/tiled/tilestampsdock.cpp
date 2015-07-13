@@ -21,15 +21,14 @@
 #include "tilestampsdock.h"
 
 #include "documentmanager.h"
+#include "preferences.h"
 #include "tilestamp.h"
 #include "tilestampmanager.h"
 #include "tilestampmodel.h"
 #include "utils.h"
 
-#include "stampbrush.h"
-#include "bucketfilltool.h"
-
 #include <QAction>
+#include <QFileDialog>
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
@@ -46,6 +45,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     , mNewStamp(new QAction(this))
     , mAddVariation(new QAction(this))
     , mDelete(new QAction(this))
+    , mChooseFolder(new QAction(this))
 {
     setObjectName(QLatin1String("TileStampsDock"));
 
@@ -63,14 +63,17 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     mNewStamp->setIcon(QIcon(QLatin1String(":images/16x16/document-new.png")));
     mAddVariation->setIcon(QIcon(QLatin1String(":/images/16x16/add.png")));
     mDelete->setIcon(QIcon(QLatin1String(":images/16x16/edit-delete.png")));
+    mChooseFolder->setIcon(QIcon(QLatin1String(":images/16x16/document-open.png")));
 
     Utils::setThemeIcon(mNewStamp, "document-new");
     Utils::setThemeIcon(mAddVariation, "add");
     Utils::setThemeIcon(mDelete, "edit-delete");
+    Utils::setThemeIcon(mChooseFolder, "document-open");
 
-    connect(mNewStamp, SIGNAL(triggered()), stampManager, SLOT(newStamp()));
-    connect(mAddVariation, SIGNAL(triggered()), SLOT(addVariation()));
-    connect(mDelete, SIGNAL(triggered()), SLOT(delete_()));
+    connect(mNewStamp, &QAction::triggered, stampManager, &TileStampManager::createStamp);
+    connect(mAddVariation, &QAction::triggered, this, &TileStampsDock::addVariation);
+    connect(mDelete, &QAction::triggered, this, &TileStampsDock::delete_);
+    connect(mChooseFolder, &QAction::triggered, this, &TileStampsDock::chooseFolder);
 
     mDelete->setEnabled(false);
     mAddVariation->setEnabled(false);
@@ -87,6 +90,12 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     buttonContainer->addAction(mNewStamp);
     buttonContainer->addAction(mAddVariation);
     buttonContainer->addAction(mDelete);
+
+    QWidget *stretch = new QWidget;
+    stretch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    buttonContainer->addWidget(stretch);
+
+    buttonContainer->addAction(mChooseFolder);
 
     QVBoxLayout *listAndToolBar = new QVBoxLayout;
     listAndToolBar->setSpacing(0);
@@ -199,6 +208,18 @@ void TileStampsDock::addVariation()
     mTileStampManager->addVariation(stamp);
 }
 
+void TileStampsDock::chooseFolder()
+{
+    Preferences *prefs = Preferences::instance();
+
+    QString stampsDirectory = prefs->stampsDirectory();
+    stampsDirectory = QFileDialog::getExistingDirectory(this,
+                                                        tr("Choose the Stamps Folder"),
+                                                        stampsDirectory);
+    if (!stampsDirectory.isEmpty())
+        prefs->setStampsDirectory(stampsDirectory);
+}
+
 void TileStampsDock::retranslateUi()
 {
     setWindowTitle(tr("Tile Stamps"));
@@ -206,6 +227,7 @@ void TileStampsDock::retranslateUi()
     mNewStamp->setText(tr("Add New Stamp"));
     mAddVariation->setText(tr("Add Variation"));
     mDelete->setText(tr("Delete Selected"));
+    mChooseFolder->setText(tr("Set Stamps Folder"));
 }
 
 

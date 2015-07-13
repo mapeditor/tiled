@@ -21,7 +21,6 @@
 #include "tilestampmodel.h"
 
 #include "thumbnailrenderer.h"
-#include "tilestamp.h"
 
 namespace Tiled {
 namespace Internal {
@@ -91,6 +90,7 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
             switch (role) {
             case Qt::EditRole:
                 stamp.setName(value.toString());
+                emit stampChanged(stamp);
                 return true;
                 break;
             default:
@@ -102,6 +102,7 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
         if (isStamp(parent)) {
             TileStamp &stamp = mStamps[parent.row()];
             stamp.setProbability(index.row(), value.toReal());
+            emit stampChanged(stamp);
             return true;
         }
     }
@@ -197,6 +198,7 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
         if (stamp.variations().isEmpty()) {
             // remove stamp since all its variations were removed
             beginRemoveRows(QModelIndex(), parent.row(), parent.row());
+            emit stampRemoved(stamp);
             mStamps.removeAt(parent.row());
             endRemoveRows();
         } else if (row == 0) {
@@ -210,6 +212,7 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
         for (; count > 0; --count) {
             for (const TileStampVariation &variation : mStamps.at(row).variations())
                 mThumbnailCache.remove(variation.map);
+            emit stampRemoved(mStamps.at(row));
             mStamps.removeAt(row);
         }
         endRemoveRows();
@@ -254,6 +257,7 @@ void TileStampModel::addStamp(const TileStamp &stamp)
 
     beginInsertRows(QModelIndex(), mStamps.size(), mStamps.size());
     mStamps.append(stamp);
+    emit stampAdded(stamp);
     endInsertRows();
 }
 
@@ -269,6 +273,8 @@ void TileStampModel::removeStamp(const TileStamp &stamp)
 
     for (const TileStampVariation &variation : stamp.variations())
         mThumbnailCache.remove(variation.map);
+
+    emit stampRemoved(stamp);
 }
 
 void TileStampModel::addVariation(const TileStamp &stamp,
@@ -288,6 +294,16 @@ void TileStampModel::addVariation(const TileStamp &stamp,
 
     mStamps[index].addVariation(variation);
     endInsertRows();
+
+    emit stampChanged(stamp);
+}
+
+void TileStampModel::clear()
+{
+    beginResetModel();
+    mStamps.clear();
+    mThumbnailCache.clear();
+    endResetModel();
 }
 
 } // namespace Internal

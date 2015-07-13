@@ -20,10 +20,13 @@
 
 #include "tilestamp.h"
 
+#include "maptovariantconverter.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
+#include "varianttomapconverter.h"
 
-#include <QMap>
+#include <QDebug>
+#include <QJsonArray>
 
 namespace Tiled {
 namespace Internal {
@@ -36,6 +39,7 @@ public:
     ~TileStampData();
 
     QString name;
+    QString fileName;
     QVector<TileStampVariation> variations;
     int quickStampIndex;
 };
@@ -47,14 +51,14 @@ TileStampData::TileStampData()
 TileStampData::TileStampData(const TileStampData &other)
     : QSharedData(other)
     , name(other.name)
+    , fileName()                        // not copied
     , variations(other.variations)
     , quickStampIndex(-1)
 {
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // deep-copy the map data
-    for (int i = 0; i < variations.size(); ++i) {
-        TileStampVariation &variation = variations[i];
+    for (TileStampVariation &variation : variations) {
         variation.map = new Map(*variation.map);
         tilesetManager->addReferences(variation.map->tilesets());
     }
@@ -65,7 +69,7 @@ TileStampData::~TileStampData()
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // decrease reference to tilesets and delete maps
-    foreach (const TileStampVariation &variation, variations) {
+    for (const TileStampVariation &variation : variations) {
         tilesetManager->removeReferences(variation.map->tilesets());
         delete variation.map;
     }
@@ -94,7 +98,7 @@ TileStamp TileStamp::operator=(const TileStamp &other)
     return *this;
 }
 
-bool TileStamp::operator==(const TileStamp &other)
+bool TileStamp::operator==(const TileStamp &other) const
 {
     return d == other.d;
 }
@@ -112,6 +116,16 @@ QString TileStamp::name() const
 void TileStamp::setName(const QString &name)
 {
     d->name = name;
+}
+
+QString TileStamp::fileName() const
+{
+    return d->fileName;
+}
+
+void TileStamp::setFileName(const QString &fileName)
+{
+    d->fileName = fileName;
 }
 
 qreal TileStamp::probability(int index) const
@@ -217,7 +231,7 @@ TileStamp TileStamp::flipped(FlipDirection direction) const
     TileStamp flipped(*this);
     flipped.d.detach();
 
-    foreach (const TileStampVariation &variation, flipped.variations()) {
+    for (const TileStampVariation &variation : flipped.variations()) {
         TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
         layer->flip(direction);
     }
@@ -234,7 +248,7 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     TileStamp rotated(*this);
     rotated.d.detach();
 
-    foreach (const TileStampVariation &variation, rotated.variations()) {
+    for (const TileStampVariation &variation : rotated.variations()) {
         TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
         layer->rotate(direction);
 
@@ -243,6 +257,57 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     }
 
     return rotated;
+}
+
+QJsonObject TileStamp::toJson(const QDir &dir) const
+{
+    QJsonObject json;
+    json.insert(QLatin1String("name"), d->name);
+
+    if (d->quickStampIndex != -1)
+        json.insert(QLatin1String("quickStampIndex"), d->quickStampIndex);
+
+    QJsonArray variations;
+    for (const TileStampVariation &variation : d->variations) {
+        MapToVariantConverter converter;
+        QVariant mapVariant = converter.toVariant(variation.map, dir);
+        QJsonValue mapJson = QJsonValue::fromVariant(mapVariant);
+
+        QJsonObject variationJson;
+        variationJson.insert(QLatin1String("probability"), variation.probability);
+        variationJson.insert(QLatin1String("map"), mapJson);
+        variations.append(variationJson);
+    }
+    json.insert(QLatin1String("variations"), variations);
+
+    return json;
+}
+
+TileStamp TileStamp::fromJson(const QJsonObject &json, const QDir &mapDir)
+{
+    TileStamp stamp;
+
+    stamp.setName(json.value(QLatin1String("name")).toString());
+    stamp.setQuickStampIndex(json.value(QLatin1String("quickStampIndex")).toInt(-1));
+
+    QJsonArray variations = json.value(QLatin1String("variations")).toArray();
+    for (const QJsonValue &value : variations) {
+        QJsonObject variationJson = value.toObject();
+
+        QVariant mapVariant = variationJson.value(QLatin1String("map")).toVariant();
+        VariantToMapConverter converter;
+        Map *map = converter.toMap(mapVariant, mapDir);
+        if (!map) {
+            qDebug() << "Failed to load map for stamp:" << converter.errorString();
+            continue;
+        }
+
+        qreal probability = variationJson.value(QLatin1String("probability")).toDouble(1);
+
+        stamp.addVariation(map, probability);
+    }
+
+    return stamp;
 }
 
 } // namespace Internal
