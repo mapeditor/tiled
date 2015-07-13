@@ -42,6 +42,8 @@ public:
 
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex index(const TileStamp &stamp) const;
+
     QModelIndex parent(const QModelIndex &index) const override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -89,6 +91,12 @@ private:
     mutable QHash<Map *, QPixmap> mThumbnailCache;
 };
 
+
+inline QModelIndex TileStampModel::index(const TileStamp &stamp) const
+{
+    const int i = mStamps.indexOf(stamp);
+    return i == -1 ? QModelIndex() : TileStampModel::index(i, 0);
+}
 
 inline const QList<TileStamp> &TileStampModel::stamps() const
 {

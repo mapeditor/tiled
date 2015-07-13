@@ -143,13 +143,14 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
     return stamp;
 }
 
-void TileStampManager::createStamp()
+TileStamp TileStampManager::createStamp()
 {
     TileStamp stamp = stampFromContext(mToolManager.selectedTool());
-    if (stamp.isEmpty())
-        return;
 
-    mTileStampModel->addStamp(stamp);
+    if (!stamp.isEmpty())
+        mTileStampModel->addStamp(stamp);
+
+    return stamp;
 }
 
 void TileStampManager::addVariation(const TileStamp &targetStamp)

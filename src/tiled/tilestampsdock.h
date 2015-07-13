@@ -55,6 +55,7 @@ private slots:
     void currentRowChanged(const QModelIndex &index);
     void showContextMenu(QPoint pos);
 
+    void newStamp();
     void delete_();
     void duplicate();
     void addVariation();

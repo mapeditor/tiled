@@ -58,7 +58,7 @@ public:
     TileStampModel *tileStampModel() const;
 
 public slots:
-    void createStamp();
+    TileStamp createStamp();
     void addVariation(const TileStamp &targetStamp);
 
     void selectQuickStamp(int index);

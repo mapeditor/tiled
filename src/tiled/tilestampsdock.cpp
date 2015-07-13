@@ -80,7 +80,7 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     Utils::setThemeIcon(mDelete, "edit-delete");
     Utils::setThemeIcon(mChooseFolder, "document-open");
 
-    connect(mNewStamp, &QAction::triggered, stampManager, &TileStampManager::createStamp);
+    connect(mNewStamp, &QAction::triggered, this, &TileStampsDock::newStamp);
     connect(mAddVariation, &QAction::triggered, this, &TileStampsDock::addVariation);
     connect(mDuplicate, &QAction::triggered, this, &TileStampsDock::duplicate);
     connect(mDelete, &QAction::triggered, this, &TileStampsDock::delete_);
@@ -201,6 +201,20 @@ void TileStampsDock::showContextMenu(QPoint pos)
     }
 
     menu.exec(mTileStampView->viewport()->mapToGlobal(pos));
+}
+
+void TileStampsDock::newStamp()
+{
+    TileStamp stamp = mTileStampManager->createStamp();
+
+    if (isVisible() && !stamp.isEmpty()) {
+        QModelIndex stampIndex = mTileStampModel->index(stamp);
+        if (stampIndex.isValid()) {
+            QModelIndex viewIndex = mProxyModel->mapFromSource(stampIndex);
+            mTileStampView->setCurrentIndex(viewIndex);
+            mTileStampView->edit(viewIndex);
+        }
+    }
 }
 
 void TileStampsDock::delete_()
