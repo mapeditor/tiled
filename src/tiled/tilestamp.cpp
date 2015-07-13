@@ -299,7 +299,7 @@ TileStamp TileStamp::fromJson(const QJsonObject &json, const QDir &mapDir)
     TileStamp stamp;
 
     stamp.setName(json.value(QLatin1String("name")).toString());
-    stamp.setQuickStampIndex(json.value(QLatin1String("quickStampIndex")).toInt(-1));
+    stamp.setQuickStampIndex(static_cast<int>(json.value(QLatin1String("quickStampIndex")).toDouble(-1)));
 
     QJsonArray variations = json.value(QLatin1String("variations")).toArray();
     for (const QJsonValue &value : variations) {

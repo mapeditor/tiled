@@ -474,7 +474,11 @@ qreal Preferences::realValue(const char *key, qreal defaultValue) const
 QString Preferences::stampsDirectory() const
 {
     if (mStampsDirectory.isEmpty()) {
+#if QT_VERSION >= 0x050400
         QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+#else
+        QString appData = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+#endif
         return appData + QLatin1String("/stamps");
     }
     return mStampsDirectory;
