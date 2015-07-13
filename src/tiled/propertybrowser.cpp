@@ -522,8 +522,7 @@ void PropertyBrowser::addTileProperties()
                                                             tr("Probability"),
                                                             groupProperty);
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
-    probabilityProperty->setToolTip(tr("Relative chance this tile will be "
-                                       "picked while painting terrain"));
+    probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
 
     addProperty(groupProperty);
 }
@@ -972,7 +971,7 @@ void PropertyBrowser::updateProperties()
     case Object::TileType: {
         const Tile *tile = static_cast<const Tile*>(mObject);
         mIdToProperty[IdProperty]->setValue(tile->id());
-        mIdToProperty[TileProbabilityProperty]->setValue(tile->terrainProbability());
+        mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
         break;
     }
     case Object::TerrainType: {

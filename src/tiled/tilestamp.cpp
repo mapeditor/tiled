@@ -21,6 +21,7 @@
 #include "tilestamp.h"
 
 #include "maptovariantconverter.h"
+#include "randompicker.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "varianttomapconverter.h"
@@ -203,23 +204,11 @@ Map *TileStamp::randomVariation() const
     if (d->variations.isEmpty())
         return 0;
 
-    QMap<qreal, const TileStampVariation *> probabilityThresholds;
-    qreal sum = 0.0;
-    for (const TileStampVariation &variation : d->variations) {
-        sum += variation.probability;
-        probabilityThresholds.insert(sum, &variation);
-    }
+    RandomPicker<const TileStampVariation *> randomPicker;
+    for (const TileStampVariation &variation : d->variations)
+        randomPicker.add(&variation, variation.probability);
 
-    qreal random = ((qreal)rand() / RAND_MAX) * sum;
-    auto it = probabilityThresholds.lowerBound(random);
-
-    const TileStampVariation *variation;
-    if (it != probabilityThresholds.end())
-        variation = it.value();
-    else
-        variation = &d->variations.last(); // floating point may have failed us
-
-    return variation->map;
+    return randomPicker.pick()->map;
 }
 
 /**

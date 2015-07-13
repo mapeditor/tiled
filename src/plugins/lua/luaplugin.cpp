@@ -188,7 +188,7 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->terrain() != 0xFFFFFFFF)
         return true;
-    if (tile->terrainProbability() != 1.f)
+    if (tile->probability() != 1.f)
         return true;
 
     return false;
@@ -284,8 +284,8 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             writer.setSuppressNewlines(false);
         }
 
-        if (tile->terrainProbability() != 1.f)
-            writer.writeKeyAndValue("probability", tile->terrainProbability());
+        if (tile->probability() != 1.f)
+            writer.writeKeyAndValue("probability", tile->probability());
 
         if (ObjectGroup *objectGroup = tile->objectGroup())
             writeObjectGroup(writer, objectGroup, "objectGroup");

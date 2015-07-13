@@ -397,7 +397,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
     // Read tile probability
     QStringRef probability = atts.value(QLatin1String("probability"));
     if (!probability.isEmpty())
-        tile->setTerrainProbability(probability.toString().toFloat());
+        tile->setProbability(probability.toString().toFloat());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {

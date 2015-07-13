@@ -299,7 +299,7 @@ void BucketFillTool::setRandom(bool value)
     if (mIsRandom)
         updateRandomList();
     else
-        mRandomList.clear();
+        mRandomCellPicker.clear();
 
     // Don't need to recalculate fill region if there was no fill region
     if (!mFillOverlay)
@@ -310,7 +310,7 @@ void BucketFillTool::setRandom(bool value)
 
 void BucketFillTool::randomFill(TileLayer *tileLayer, const QRegion &region) const
 {
-    if (region.isEmpty() || mRandomList.empty())
+    if (region.isEmpty() || mRandomCellPicker.isEmpty())
         return;
 
     foreach (const QRect &rect, region.rects()) {
@@ -320,7 +320,7 @@ void BucketFillTool::randomFill(TileLayer *tileLayer, const QRegion &region) con
                 // todo: take into account tile probability
                 tileLayer->setCell(_x - tileLayer->x(),
                                    _y - tileLayer->y(),
-                                   mRandomList.at(rand() % mRandomList.size()));
+                                   mRandomCellPicker.pick());
             }
         }
     }
@@ -328,15 +328,18 @@ void BucketFillTool::randomFill(TileLayer *tileLayer, const QRegion &region) con
 
 void BucketFillTool::updateRandomList()
 {
-    mRandomList.clear();
+    mRandomCellPicker.clear();
     mMissingTilesets.clear();
 
     foreach (const TileStampVariation &variation, mStamp.variations()) {
         TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
-        for (int x = 0; x < tileLayer->width(); x++)
-            for (int y = 0; y < tileLayer->height(); y++)
-                if (!tileLayer->cellAt(x, y).isEmpty())
-                    mRandomList.append(tileLayer->cellAt(x, y));
+        for (int x = 0; x < tileLayer->width(); x++) {
+            for (int y = 0; y < tileLayer->height(); y++) {
+                const Cell &cell = tileLayer->cellAt(x, y);
+                if (!cell.isEmpty())
+                    mRandomCellPicker.add(cell, cell.tile->probability());
+            }
+        }
     }
 }

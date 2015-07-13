@@ -228,6 +228,7 @@ QtGuiApplication {
         "propertybrowser.h",
         "raiselowerhelper.cpp",
         "raiselowerhelper.h",
+        "randompicker.h",
         "rangeset.h",
         "renamelayer.cpp",
         "renamelayer.h",

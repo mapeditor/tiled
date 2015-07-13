@@ -41,8 +41,8 @@ ChangeTileProbability::ChangeTileProbability(MapDocument *mapDocument,
 
 void ChangeTileProbability::swap()
 {
-    float probability = mTile->terrainProbability();
-    mTile->setTerrainProbability(mProbability);
+    float probability = mTile->probability();
+    mTile->setProbability(mProbability);
     mProbability = probability;
     mMapDocument->emitTileProbabilityChanged(mTile);
 }

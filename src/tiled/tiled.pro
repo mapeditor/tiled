@@ -273,6 +273,7 @@ HEADERS += aboutdialog.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
+    randompicker.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \

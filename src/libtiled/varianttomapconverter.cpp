@@ -206,9 +206,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                         tile->setCornerTerrainId(i, terrainId);
                 }
             }
-            float terrainProbability = tileVar[QLatin1String("probability")].toFloat(&ok);
+            float probability = tileVar[QLatin1String("probability")].toFloat(&ok);
             if (ok)
-                tile->setTerrainProbability(terrainProbability);
+                tile->setProbability(probability);
             imageVariant = tileVar[QLatin1String("image")];
             if (!imageVariant.isNull()) {
                 QString imagePath = resolvePath(mMapDir, imageVariant);
