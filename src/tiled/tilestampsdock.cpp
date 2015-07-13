@@ -89,6 +89,9 @@ TileStampsDock::TileStampsDock(TileStampManager *stampManager, QWidget *parent)
     connect(mFilterEdit, &QLineEdit::textChanged,
             mProxyModel, &QSortFilterProxyModel::setFilterFixedString);
 
+    connect(mTileStampModel, &TileStampModel::stampRenamed,
+            this, &TileStampsDock::ensureStampVisible);
+
     connect(mNewStamp, &QAction::triggered, this, &TileStampsDock::newStamp);
     connect(mAddVariation, &QAction::triggered, this, &TileStampsDock::addVariation);
     connect(mDuplicate, &QAction::triggered, this, &TileStampsDock::duplicate);
@@ -275,6 +278,13 @@ void TileStampsDock::chooseFolder()
                                                         stampsDirectory);
     if (!stampsDirectory.isEmpty())
         prefs->setStampsDirectory(stampsDirectory);
+}
+
+void TileStampsDock::ensureStampVisible(const TileStamp &stamp)
+{
+    QModelIndex stampIndex = mTileStampModel->index(stamp);
+    if (stampIndex.isValid())
+        mTileStampView->scrollTo(mProxyModel->mapFromSource(stampIndex));
 }
 
 void TileStampsDock::retranslateUi()

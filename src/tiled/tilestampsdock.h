@@ -61,6 +61,8 @@ private slots:
     void addVariation();
     void chooseFolder();
 
+    void ensureStampVisible(const TileStamp &stamp);
+
 private:
     void retranslateUi();
 

@@ -82,6 +82,7 @@ public:
 
 signals:
     void stampAdded(const TileStamp &stamp);
+    void stampRenamed(const TileStamp &stamp);
     void stampChanged(const TileStamp &stamp);
     void stampRemoved(const TileStamp &stamp);
 

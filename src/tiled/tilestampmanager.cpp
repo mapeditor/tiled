@@ -51,7 +51,8 @@ static QString stampFilePath(const QString &name)
     return stampsDir.filePath(name);
 }
 
-static QString findStampFileName(const QString &name)
+static QString findStampFileName(const QString &name,
+                                 const QString &currentFileName = QString())
 {
     const QRegularExpression invalidChars(QLatin1String("[^\\w -]+"));
     const Preferences *prefs = Preferences::instance();
@@ -59,14 +60,14 @@ static QString findStampFileName(const QString &name)
 
     QString suggestedFileName = name.toLower().remove(invalidChars);
     QString fileName = suggestedFileName + QLatin1String(".stamp");
-    if (!stampsDir.exists(fileName))
+    if (fileName == currentFileName || !stampsDir.exists(fileName))
         return fileName;
 
     int n = 2;
     do {
         fileName = suggestedFileName + QString::number(n) + QLatin1String(".stamp");
         ++n;
-    } while (stampsDir.exists(fileName));
+    } while (fileName != currentFileName && stampsDir.exists(fileName));
 
     return fileName;
 }
@@ -85,8 +86,10 @@ TileStampManager::TileStampManager(const ToolManager &toolManager,
 
     connect(mTileStampModel, &TileStampModel::stampAdded,
             this, &TileStampManager::stampAdded);
+    connect(mTileStampModel, &TileStampModel::stampRenamed,
+            this, &TileStampManager::stampRenamed);
     connect(mTileStampModel, &TileStampModel::stampChanged,
-            this, &TileStampManager::stampChanged);
+            this, &TileStampManager::saveStamp);
     connect(mTileStampModel, &TileStampModel::stampRemoved,
             this, &TileStampManager::deleteStamp);
 
@@ -290,26 +293,21 @@ void TileStampManager::stampAdded(TileStamp stamp)
     }
 }
 
-void TileStampManager::stampChanged(TileStamp stamp)
+void TileStampManager::stampRenamed(TileStamp stamp)
 {
-    // check for rename
     QString existingName = mStampsByName.key(stamp);
-    if (existingName != stamp.name()) {
-        mStampsByName.remove(existingName);
-        mStampsByName.insert(stamp.name(), stamp);
+    mStampsByName.remove(existingName);
+    mStampsByName.insert(stamp.name(), stamp);
 
-        if (existingName.compare(stamp.name(), Qt::CaseInsensitive) != 0) {
-            QString existingFileName = stamp.fileName();
-            QString newFileName = findStampFileName(stamp.name());
+    QString existingFileName = stamp.fileName();
+    QString newFileName = findStampFileName(stamp.name(), existingFileName);
 
-            if (QFile::rename(stampFilePath(existingFileName),
-                              stampFilePath(newFileName))) {
-                stamp.setFileName(newFileName);
-            }
+    if (existingFileName != newFileName) {
+        if (QFile::rename(stampFilePath(existingFileName),
+                          stampFilePath(newFileName))) {
+            stamp.setFileName(newFileName);
         }
     }
-
-    saveStamp(stamp);
 }
 
 void TileStampManager::saveStamp(const TileStamp &stamp)

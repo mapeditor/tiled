@@ -80,7 +80,7 @@ private:
 
 private slots:
     void stampAdded(TileStamp stamp);
-    void stampChanged(TileStamp stamp);
+    void stampRenamed(TileStamp stamp);
     void saveStamp(const TileStamp &stamp);
     void deleteStamp(const TileStamp &stamp);
 
