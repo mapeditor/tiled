@@ -86,7 +86,7 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
 {
     if (isStamp(index)) {
         TileStamp &stamp = mStamps[index.row()];
-        if (index.column() == 0) {
+        if (index.column() == 0) {      // stamp name
             switch (role) {
             case Qt::EditRole:
                 stamp.setName(value.toString());
@@ -97,11 +97,15 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
                 break;
             }
         }
-    } else {
+    } else if (index.column() == 1) {   // variation probability
         QModelIndex parent = index.parent();
         if (isStamp(parent)) {
             TileStamp &stamp = mStamps[parent.row()];
             stamp.setProbability(index.row(), value.toReal());
+
+            QModelIndex probabilitySumIndex = TileStampModel::index(parent.row(), 1);
+            emit dataChanged(probabilitySumIndex, probabilitySumIndex);
+
             emit stampChanged(stamp);
             return true;
         }
@@ -122,7 +126,7 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
 {
     if (isStamp(index)) {
         const TileStamp &stamp = mStamps.at(index.row());
-        if (index.column() == 0) {
+        if (index.column() == 0) {          // preview and name
             switch (role) {
             case Qt::DisplayRole:
             case Qt::EditRole:
@@ -138,6 +142,16 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                 return thumbnail;
                 break;
             }
+            }
+        } else if (index.column() == 1) {   // sum of probabilities
+            switch (role) {
+            case Qt::DisplayRole:
+                if (stamp.variations().size() > 1) {
+                    qreal sum = 0;
+                    for (const TileStampVariation &variation : stamp.variations())
+                        sum += variation.probability;
+                    return sum;
+                }
             }
         }
     } else if (const TileStampVariation *variation = variationAt(index)) {
@@ -183,7 +197,7 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
         // removing variations
         TileStamp &stamp = mStamps[parent.row()];
 
-        // if only one stamp is left, we make all variation rows disappear
+        // if only one variation is left, we make all variation rows disappear
         if (stamp.variations().size() - count == 1)
             beginRemoveRows(parent, 0, count);
         else
@@ -202,9 +216,9 @@ bool TileStampModel::removeRows(int row, int count, const QModelIndex &parent)
             mStamps.removeAt(parent.row());
             endRemoveRows();
         } else if (row == 0) {
-            // preview on stamp row needs update
-            const QModelIndex modelIndex = index(parent.row(), 0);
-            emit dataChanged(modelIndex, modelIndex);
+            // preview on stamp and probability sum need update
+            emit dataChanged(index(parent.row(), 0),
+                             index(parent.row(), 1));
         }
     } else {
         // removing stamps
@@ -294,6 +308,9 @@ void TileStampModel::addVariation(const TileStamp &stamp,
 
     mStamps[index].addVariation(variation);
     endInsertRows();
+
+    QModelIndex probabilitySumIndex = TileStampModel::index(index, 1);
+    emit dataChanged(probabilitySumIndex, probabilitySumIndex);
 
     emit stampChanged(stamp);
 }
