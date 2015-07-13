@@ -198,12 +198,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::RightDockWidgetArea, tileStampsDock);
+    addDockWidget(Qt::LeftDockWidgetArea, tileStampsDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
     tabifyDockWidget(undoDock, mMapsDock);
+    tabifyDockWidget(tileStampsDock, undoDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.

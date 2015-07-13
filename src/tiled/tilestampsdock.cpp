@@ -308,7 +308,7 @@ TileStampView::TileStampView(QWidget *parent)
 
 QSize TileStampView::sizeHint() const
 {
-    return QSize(130, 100);
+    return QSize(130, 200);
 }
 
 } // namespace Internal
