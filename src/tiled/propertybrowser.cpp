@@ -351,9 +351,6 @@ void PropertyBrowser::addMapProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Map"));
 
-    createProperty(SizeProperty, QVariant::Size, tr("Size"), groupProperty)->setEnabled(false);
-    createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
-
     QtVariantProperty *orientationProperty =
             createProperty(OrientationProperty,
                            QtVariantPropertyManager::enumTypeId(),
@@ -361,6 +358,11 @@ void PropertyBrowser::addMapProperties()
                            groupProperty);
 
     orientationProperty->setAttribute(QLatin1String("enumNames"), mOrientationNames);
+
+    createProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
+    createProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
+    createProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
+    createProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
 
     createProperty(HexSideLengthProperty, QVariant::Int, tr("Tile Side Length (Hex)"), groupProperty);
 
@@ -420,8 +422,10 @@ void PropertyBrowser::addMapObjectProperties()
     typeProperty->setAttribute(QLatin1String("suggestions"), objectTypeNames());
 
     createProperty(VisibleProperty, QVariant::Bool, tr("Visible"), groupProperty);
-    createProperty(PositionProperty, QVariant::PointF, tr("Position"), groupProperty);
-    createProperty(SizeProperty, QVariant::SizeF, tr("Size"), groupProperty);
+    createProperty(XProperty, QVariant::Double, tr("X"), groupProperty);
+    createProperty(YProperty, QVariant::Double, tr("Y"), groupProperty);
+    createProperty(WidthProperty, QVariant::Double, tr("Width"), groupProperty);
+    createProperty(HeightProperty, QVariant::Double, tr("Height"), groupProperty);
     createProperty(RotationProperty, QVariant::Double, tr("Rotation"), groupProperty);
 
     if (!static_cast<const MapObject*>(mObject)->cell().isEmpty()) {
@@ -485,7 +489,8 @@ void PropertyBrowser::addImageLayerProperties()
                                       Utils::readableImageFormatsFilter());
 
     createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), groupProperty);
-    createProperty(PositionProperty, QVariant::Point, tr("Position"), groupProperty);
+    createProperty(XProperty, QVariant::Int, tr("X"), groupProperty);
+    createProperty(YProperty, QVariant::Int, tr("Y"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -500,12 +505,14 @@ void PropertyBrowser::addTilesetProperties()
     if (!currentTileset->imageSource().isEmpty()) {
         QtVariantProperty *srcImgProperty =
                 createProperty(SourceImageProperty, QVariant::String, tr("Source Image"), groupProperty);
-        QtVariantProperty *tileSizeProperty = createProperty(TileSizeProperty, QVariant::Size, tr("Tile Size"), groupProperty);
+        QtVariantProperty *tileWidthProperty = createProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
+        QtVariantProperty *tileHeightProperty = createProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
         QtVariantProperty *marginProperty = createProperty(MarginProperty, QVariant::Int, tr("Margin"), groupProperty);
         QtVariantProperty *spacingProperty = createProperty(SpacingProperty, QVariant::Int, tr("Spacing"), groupProperty);
         // Make these properties read-only
         srcImgProperty->setEnabled(false);
-        tileSizeProperty->setEnabled(false);
+        tileWidthProperty->setEnabled(false);
+        tileHeightProperty->setEnabled(false);
         marginProperty->setEnabled(false);
         spacingProperty->setEnabled(false);
     }
@@ -539,20 +546,14 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     QUndoCommand *command = 0;
 
     switch (id) {
-    case TileSizeProperty: {
-        const Map *map = static_cast<Map*>(mObject);
-        const QSize tileSize = val.toSize();
-        if (tileSize.width() != map->tileWidth()) {
-            command = new ChangeMapProperty(mMapDocument,
-                                            ChangeMapProperty::TileWidth,
-                                            tileSize.width());
-        } else if (tileSize.height() != map->tileHeight()) {
-            command = new ChangeMapProperty(mMapDocument,
-                                            ChangeMapProperty::TileHeight,
-                                            tileSize.height());
-        }
+    case TileWidthProperty:
+        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::TileWidth,
+                                        val.toInt());
         break;
-    }
+    case TileHeightProperty:
+        command = new ChangeMapProperty(mMapDocument, ChangeMapProperty::TileHeight,
+                                        val.toInt());
+        break;
     case OrientationProperty: {
         Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
         command = new ChangeMapProperty(mMapDocument, orientation);
@@ -608,15 +609,27 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     case VisibleProperty:
         command = new SetMapObjectVisible(mMapDocument, mapObject, val.toBool());
         break;
-    case PositionProperty: {
-        const QPointF newPos = val.toPointF();
+    case XProperty: {
         const QPointF oldPos = mapObject->position();
+        const QPointF newPos(val.toReal(), oldPos.y());
         command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
         break;
     }
-    case SizeProperty: {
-        const QSizeF newSize = val.toSizeF();
+    case YProperty: {
+        const QPointF oldPos = mapObject->position();
+        const QPointF newPos(oldPos.x(), val.toReal());
+        command = new MoveMapObject(mMapDocument, mapObject, newPos, oldPos);
+        break;
+    }
+    case WidthProperty: {
         const QSizeF oldSize = mapObject->size();
+        const QSizeF newSize(val.toReal(), oldSize.height());
+        command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
+        break;
+    }
+    case HeightProperty: {
+        const QSizeF oldSize = mapObject->size();
+        const QSizeF newSize(oldSize.width(), val.toReal());
         command = new ResizeMapObject(mMapDocument, mapObject, newSize, oldSize);
         break;
     }
@@ -767,9 +780,15 @@ void PropertyBrowser::applyImageLayerValue(PropertyId id, const QVariant &val)
                                                        imageSource));
         break;
     }
-    case PositionProperty: {
-        QPoint pos = val.value<QPoint>();
-
+    case XProperty: {
+        QPoint pos(val.toReal(), imageLayer->y());
+        undoStack->push(new ChangeImageLayerPosition(mMapDocument,
+                                                     imageLayer,
+                                                     pos));
+        break;
+    }
+    case YProperty: {
+        QPoint pos(imageLayer->x(), val.toReal());
         undoStack->push(new ChangeImageLayerPosition(mMapDocument,
                                                      imageLayer,
                                                      pos));
@@ -836,10 +855,12 @@ QtVariantProperty *PropertyBrowser::createProperty(PropertyId id, int type,
     parent->addSubProperty(property);
     mPropertyToId.insert(property, id);
 
-    if (id != CustomProperty)
+    if (id != CustomProperty) {
+        Q_ASSERT(!mIdToProperty.contains(id));
         mIdToProperty.insert(id, property);
-    else
+    } else {
         mNameToProperty.insert(name, property);
+    }
 
     return property;
 }
@@ -866,6 +887,10 @@ void PropertyBrowser::addProperties()
     case Object::TileType:              addTileProperties(); break;
     case Object::TerrainType:           addTerrainProperties(); break;
     }
+
+    // Make sure the color property is collapsed, to save space
+    if (QtProperty *colorProperty = mIdToProperty.value(ColorProperty))
+        setExpanded(items(colorProperty).first(), false);
 
     // Add a node for the custom properties
     mCustomPropertiesGroup = mGroupManager->addProperty(tr("Custom Properties"));
@@ -894,8 +919,10 @@ void PropertyBrowser::updateProperties()
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
-        mIdToProperty[SizeProperty]->setValue(map->size());
-        mIdToProperty[TileSizeProperty]->setValue(map->tileSize());
+        mIdToProperty[WidthProperty]->setValue(map->size());
+        mIdToProperty[HeightProperty]->setValue(map->size());
+        mIdToProperty[TileWidthProperty]->setValue(map->tileWidth());
+        mIdToProperty[TileHeightProperty]->setValue(map->tileHeight());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());
@@ -914,8 +941,10 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(mapObject->name());
         mIdToProperty[TypeProperty]->setValue(mapObject->type());
         mIdToProperty[VisibleProperty]->setValue(mapObject->isVisible());
-        mIdToProperty[PositionProperty]->setValue(mapObject->position());
-        mIdToProperty[SizeProperty]->setValue(mapObject->size());
+        mIdToProperty[XProperty]->setValue(mapObject->x());
+        mIdToProperty[YProperty]->setValue(mapObject->y());
+        mIdToProperty[WidthProperty]->setValue(mapObject->width());
+        mIdToProperty[HeightProperty]->setValue(mapObject->height());
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
 
         if (QtVariantProperty *property = mIdToProperty[FlippingProperty]) {
@@ -951,7 +980,8 @@ void PropertyBrowser::updateProperties()
             const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
             mIdToProperty[ImageSourceProperty]->setValue(imageLayer->imageSource());
             mIdToProperty[ColorProperty]->setValue(imageLayer->transparentColor());
-            mIdToProperty[PositionProperty]->setValue(imageLayer->position());
+            mIdToProperty[XProperty]->setValue(imageLayer->x());
+            mIdToProperty[YProperty]->setValue(imageLayer->y());
             break;
         }
         break;
@@ -962,7 +992,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         if (!tileset->imageSource().isEmpty()) {
             mIdToProperty[SourceImageProperty]->setValue(tileset->imageSource());
-            mIdToProperty[TileSizeProperty]->setValue(tileset->tileSize());
+            mIdToProperty[TileWidthProperty]->setValue(tileset->tileWidth());
+            mIdToProperty[TileHeightProperty]->setValue(tileset->tileHeight());
             mIdToProperty[MarginProperty]->setValue(tileset->margin());
             mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
         }

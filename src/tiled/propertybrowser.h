@@ -106,13 +106,16 @@ private:
     enum PropertyId {
         NameProperty,
         TypeProperty,
-        PositionProperty,
-        SizeProperty,
+        XProperty,
+        YProperty,
+        WidthProperty,
+        HeightProperty,
         RotationProperty,
         VisibleProperty,
         OpacityProperty,
         ColorProperty,
-        TileSizeProperty,
+        TileWidthProperty,
+        TileHeightProperty,
         OrientationProperty,
         HexSideLengthProperty,
         StaggerAxisProperty,
@@ -177,12 +180,11 @@ private:
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
     QHash<QString, QtVariantProperty *> mNameToProperty;
 
+    Properties mCombinedProperties;
+
     QStringList mStaggerAxisNames;
     QStringList mStaggerIndexNames;
     QStringList mOrientationNames;
-
-    Properties mCombinedProperties;
-
     QStringList mLayerFormatNames;
     QStringList mRenderOrderNames;
     QStringList mFlippingFlagNames;
