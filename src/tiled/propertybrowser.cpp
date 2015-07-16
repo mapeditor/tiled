@@ -919,8 +919,8 @@ void PropertyBrowser::updateProperties()
     switch (mObject->typeId()) {
     case Object::MapType: {
         const Map *map = static_cast<const Map*>(mObject);
-        mIdToProperty[WidthProperty]->setValue(map->size());
-        mIdToProperty[HeightProperty]->setValue(map->size());
+        mIdToProperty[WidthProperty]->setValue(map->width());
+        mIdToProperty[HeightProperty]->setValue(map->height());
         mIdToProperty[TileWidthProperty]->setValue(map->tileWidth());
         mIdToProperty[TileHeightProperty]->setValue(map->tileHeight());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
