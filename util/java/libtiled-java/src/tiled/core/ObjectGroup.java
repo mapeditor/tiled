@@ -209,7 +209,7 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
         return objects.iterator();
     }
 
-    public MapObject getObjectAt(int x, int y) {
+    public MapObject getObjectAt(double x, double y) {
         for (MapObject obj : objects) {
             // Attempt to get an object bordering the point that has no width
             if (obj.getWidth() == 0 && obj.getX() + bounds.x == x) {
@@ -221,7 +221,7 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject>
                 return obj;
             }
 
-            Rectangle rect = new Rectangle(obj.getX() + bounds.x * myMap.getTileWidth(),
+            Rectangle2D.Double rect = new Rectangle2D.Double(obj.getX() + bounds.x * myMap.getTileWidth(),
                     obj.getY() + bounds.y * myMap.getTileHeight(),
                     obj.getWidth(), obj.getHeight());
             if (rect.contains(x, y)) {

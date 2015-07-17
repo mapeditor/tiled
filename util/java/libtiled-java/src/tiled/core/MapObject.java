@@ -29,6 +29,7 @@
 package tiled.core;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.Properties;
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class MapObject implements Cloneable
 {
     private Properties properties = new Properties();
     private ObjectGroup objectGroup;
-    private Rectangle bounds = new Rectangle();
+    private Rectangle2D.Double bounds = new Rectangle2D.Double();
     private Shape shape = new Rectangle();
     private String name = "Object";
     private String type = "";
@@ -50,14 +51,14 @@ public class MapObject implements Cloneable
     private Image scaledImage;
     private Tile tile;
 
-    public MapObject(int x, int y, int width, int height) {
-        bounds = new Rectangle(x, y, width, height);
+    public MapObject(double x, double y, double width, double height) {
+        bounds = new Rectangle2D.Double(x, y, width, height);
     }
 
     @Override
     public Object clone() throws CloneNotSupportedException {
         MapObject clone = (MapObject) super.clone();
-        clone.bounds = new Rectangle(bounds);
+        clone.bounds = (Rectangle2D.Double) bounds.clone();
         clone.properties = (Properties) properties.clone();
         return clone;
     }
@@ -79,11 +80,11 @@ public class MapObject implements Cloneable
         this.objectGroup = objectGroup;
     }
 
-    public Rectangle getBounds() {
+    public Rectangle2D.Double getBounds() {
         return bounds;
     }
 
-    public void setBounds(Rectangle bounds) {
+    public void setBounds(Rectangle2D.Double bounds) {
         this.bounds = bounds;
     }
 
@@ -151,24 +152,25 @@ public class MapObject implements Cloneable
         return scaledImage;
     }
 
-    public int getX() {
+    public double getX() {
         return bounds.x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         bounds.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return bounds.y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         bounds.y = y;
     }
 
-    public void translate(int dx, int dy) {
-        bounds.translate(dx, dy);
+    public void translate(double dx, double dy) {
+        bounds.x += dx;
+        bounds.y += dy;
     }
 
     public String getName() {
@@ -187,19 +189,19 @@ public class MapObject implements Cloneable
         this.type = type;
     }
 
-    public int getWidth() {
+    public double getWidth() {
         return bounds.width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         bounds.width = width;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         bounds.height = height;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return bounds.height;
     }
 
