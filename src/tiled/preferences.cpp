@@ -77,6 +77,7 @@ Preferences::Preferences()
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
+	mUseDarkTheme = boolValue("DarkTheme");
     mUseOpenGL = boolValue("OpenGL");
     mSettings->endGroup();
 
@@ -308,6 +309,17 @@ void Preferences::setReloadTilesetsOnChanged(bool value)
 
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
+}
+
+void Preferences::setUseDarkTheme(bool useDarkTheme)
+{
+	if (mUseDarkTheme == useDarkTheme)
+		return;
+
+	mUseDarkTheme = useDarkTheme;
+	mSettings->setValue(QLatin1String("Interface/DarkTheme"), mUseDarkTheme);
+
+	emit useDarkThemeChanged(mUseDarkTheme);
 }
 
 void Preferences::setUseOpenGL(bool useOpenGL)

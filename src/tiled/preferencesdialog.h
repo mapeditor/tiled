@@ -52,6 +52,7 @@ protected:
 private slots:
     void languageSelected(int index);
     void objectLineWidthChanged(double lineWidth);
+	void useDarkThemeToggled(bool useDarkTheme);
     void useOpenGLToggled(bool useOpenGL);
     void useAutomappingDrawingToggled(bool enabled);
     void openLastFilesToggled(bool enabled);

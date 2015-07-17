@@ -253,6 +253,8 @@ private:
     DocumentManager *mDocumentManager;
     ToolManager *mToolManager;
     TileStampManager *mTileStampManager;
+private slots:
+	void setUseDarkTheme(bool useDarkTheme);
 };
 
 } // namespace Internal
