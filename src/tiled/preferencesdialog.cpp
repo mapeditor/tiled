@@ -135,7 +135,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(mUi->languageCombo, SIGNAL(currentIndexChanged(int)),
             SLOT(languageSelected(int)));
     connect(mUi->openGL, SIGNAL(toggled(bool)), SLOT(useOpenGLToggled(bool)));
-	connect(mUi->darkTheme, SIGNAL(toggled(bool)), SLOT(useDarkThemeToggled(bool)));
+    connect(mUi->darkTheme, SIGNAL(toggled(bool)), SLOT(useDarkThemeToggled(bool)));
     connect(mUi->gridColor, SIGNAL(colorChanged(QColor)),
             Preferences::instance(), SLOT(setGridColor(QColor)));
     connect(mUi->gridFine, SIGNAL(valueChanged(int)),
@@ -201,7 +201,7 @@ void PreferencesDialog::objectLineWidthChanged(double lineWidth)
 
 void PreferencesDialog::useDarkThemeToggled(bool useDarkTheme)
 {
-	Preferences::instance()->setUseDarkTheme(useDarkTheme);
+    Preferences::instance()->setUseDarkTheme(useDarkTheme);
 }
 
 void PreferencesDialog::useOpenGLToggled(bool useOpenGL)
@@ -308,7 +308,7 @@ void PreferencesDialog::fromPreferences()
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
     mUi->enableDtd->setChecked(prefs->dtdEnabled());
     mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
-	mUi->darkTheme->setChecked(prefs->useDarkTheme());
+    mUi->darkTheme->setChecked(prefs->useDarkTheme());
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
 

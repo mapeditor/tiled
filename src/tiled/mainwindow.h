@@ -254,7 +254,7 @@ private:
     ToolManager *mToolManager;
     TileStampManager *mTileStampManager;
 private slots:
-	void setUseDarkTheme(bool useDarkTheme);
+    void setUseDarkTheme(bool useDarkTheme);
 };
 
 } // namespace Internal

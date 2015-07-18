@@ -508,9 +508,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         new QShortcut(key, this, SLOT(delete_()));
 #endif
 
-	Preferences *prefs = Preferences::instance();
-	setUseDarkTheme(prefs->useDarkTheme());
-	connect(prefs, SIGNAL(useDarkThemeChanged(bool)), SLOT(setUseDarkTheme(bool)));
+    Preferences *prefs = Preferences::instance();
+    setUseDarkTheme(prefs->useDarkTheme());
+    connect(prefs, SIGNAL(useDarkThemeChanged(bool)), SLOT(setUseDarkTheme(bool)));
 
     updateActions();
     readSettings();
@@ -1780,22 +1780,22 @@ void MainWindow::reloadError(const QString &error)
 
 void MainWindow::setUseDarkTheme(bool useDarkTheme)
 {
-	if (useDarkTheme)
-	{
-		QFile darkThemeFile(QLatin1String(":darkstyle/style.qss"));
-		if (darkThemeFile.exists())
-		{
-			darkThemeFile.open(QFile::ReadOnly | QFile::Text);
-			setStyleSheet(QTextStream(&darkThemeFile).readAll());
-		}
-		else
-		{
-			QMessageBox::critical(this, tr("Error Loading Theme"), QLatin1String("Could not load the dark theme for Tiled"));
-		}
-	}
-	else
-	{
-		// Clears the stylesheet. I wonder if this will create issues with the style code in main.ccp?
-		setStyleSheet(QLatin1String(""));
-	}
+    if (useDarkTheme)
+    {
+        QFile darkThemeFile(QLatin1String(":darkstyle/style.qss"));
+        if (darkThemeFile.exists())
+        {
+            darkThemeFile.open(QFile::ReadOnly | QFile::Text);
+            setStyleSheet(QTextStream(&darkThemeFile).readAll());
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("Error Loading Theme"), QLatin1String("Could not load the dark theme for Tiled"));
+        }
+    }
+    else
+    {
+        // Clears the stylesheet. I wonder if this will create issues with the style code in main.ccp?
+        setStyleSheet(QLatin1String(""));
+    }
 }
