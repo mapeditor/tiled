@@ -101,6 +101,7 @@
 #include <QMimeData>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -341,6 +342,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
 
+    connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
 
@@ -379,6 +381,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mStampBrush = new StampBrush(this);
@@ -1525,6 +1528,11 @@ void MainWindow::updateZoomLabel()
         mZoomComboBox->setCurrentIndex(index);
         mZoomComboBox->setEnabled(false);
     }
+}
+
+void MainWindow::openDocumentation()
+{
+    QDesktopServices::openUrl(QUrl(QLatin1String("http://doc.mapeditor.org")));
 }
 
 void MainWindow::flip(FlipDirection direction)
