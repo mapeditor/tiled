@@ -78,32 +78,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-172"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>Отобразить версию</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверять только валидность аргументов</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Выключить аппаратное ускорение отрисовки</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировать указанный tmx-файл</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Отобразить список поддерживаемых форматов экспорта</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Форматы экспорта:</translation>
     </message>
 </context>
 <context>
@@ -111,33 +111,34 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный аргумент %1: одиночный дефис</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный long аргумент %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный short аргумент %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>Использование:
+  %1 [параметры] [файлы...]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>Отобразить эту справку</translation>
     </message>
 </context>
 <context>
@@ -559,12 +560,12 @@
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить всё</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Документация</translation>
     </message>
     <message>
         <location line="-135"/>
@@ -1238,7 +1239,7 @@ Line %1, column %2</source>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Открывать последние файлы при старте</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -1791,7 +1792,7 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Не удается открыть файл для записи.</translation>
+        <translation>Не удается открыть файл для записи.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -2602,7 +2603,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-1223"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2723,17 +2724,17 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Some export files already exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоторые экпортируемые файлы уже существуют:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Do you want to replace them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Хотите заменить их?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Overwrite Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Переписать файлы</translation>
     </message>
     <message>
         <location line="+73"/>
@@ -2743,7 +2744,7 @@ Please select specific format.</source>
     <message>
         <location line="+543"/>
         <source>[*]%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+130"/>
@@ -3402,7 +3403,7 @@ Please select specific format.</source>
     <message>
         <location line="+433"/>
         <source>Relative chance this tile will be picked</source>
-        <translation type="unfinished"></translation>
+        <translation>Относительный шанс выбора этого тайла</translation>
     </message>
     <message>
         <location line="+364"/>
@@ -3486,25 +3487,25 @@ Please select specific format.</source>
         <location line="+5"/>
         <location line="+65"/>
         <source>Width</source>
-        <translation type="unfinished">Длина</translation>
+        <translation>Длина</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+65"/>
         <source>Height</source>
-        <translation type="unfinished">Высота</translation>
+        <translation>Высота</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+144"/>
         <source>Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина тайла</translation>
     </message>
     <message>
         <location line="-143"/>
         <location line="+144"/>
         <source>Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Высота тайла</translation>
     </message>
     <message>
         <location line="-142"/>
@@ -3584,17 +3585,17 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Source Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходное изображение</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Отступ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Промежуток</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3624,13 +3625,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+50"/>
         <location line="+57"/>
         <source>Select Same Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать одинаковые тайлы</translation>
     </message>
     <message>
         <location line="-54"/>
         <location line="+55"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
 </context>
 <context>
@@ -3730,12 +3731,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Штамп</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished">Вероятность</translation>
+        <translation>Вероятность</translation>
     </message>
 </context>
 <context>
@@ -3743,52 +3744,52 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить штамп</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить вариант</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать папку штампов</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation>Тайл-штампы</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новый штамп</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить вариант</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Дублировать штамп</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выделенные</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить папку штампов</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр</translation>
     </message>
 </context>
 <context>
