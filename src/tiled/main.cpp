@@ -46,6 +46,8 @@ namespace {
 
 class CommandLineHandler : public CommandLineParser
 {
+    Q_DECLARE_TR_FUNCTIONS(CommandLineHandler)
+
 public:
     CommandLineHandler();
 
