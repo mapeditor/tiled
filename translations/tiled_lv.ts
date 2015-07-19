@@ -31,7 +31,7 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+202"/>
+        <location filename="../src/tiled/main.cpp" line="+214"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -51,7 +51,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+11"/>
         <source>Failed to export map to target file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -66,6 +66,73 @@
     <message>
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CommandLineHandler</name>
+    <message>
+        <location filename="../src/tiled/main.cpp" line="-172"/>
+        <source>Display the version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Only check validity of arguments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Disable hardware accelerated rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Export the specified tmx file to target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Print a list of supported export formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <source>Export formats:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CommandLineParser</name>
+    <message>
+        <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
+        <source>Bad argument %1: lonely hyphen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Unknown long argument %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Unknown short argument %1.%2: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Usage:
+  %1 [options] [files...]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Display this help</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -98,7 +165,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+21"/>
         <source>All Files (*)</source>
         <translation type="unfinished">Visas datnes (*)</translation>
     </message>
@@ -116,17 +183,12 @@
 <context>
     <name>Csv::CsvPlugin</name>
     <message>
-        <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>No tile layer found.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="+75"/>
         <source>CSV files (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -134,7 +196,7 @@
 <context>
     <name>Droidcraft::DroidcraftPlugin</name>
     <message>
-        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
+        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+57"/>
         <source>This is not a valid Droidcraft map file!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -154,7 +216,7 @@
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+16"/>
         <source>Droidcraft map files (*.dat)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -255,7 +317,7 @@
 <context>
     <name>Flare::FlarePlugin</name>
     <message>
-        <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -265,27 +327,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+28"/>
         <source>Error mapping tile id %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+16"/>
         <source>Flare map files (*.txt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+13"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
@@ -293,7 +355,7 @@
 <context>
     <name>Json::JsonPlugin</name>
     <message>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="+51"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+44"/>
         <source>Could not open file for reading.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -303,7 +365,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+18"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
@@ -314,7 +376,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+15"/>
         <source>Json files (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -327,12 +389,12 @@
 <context>
     <name>Lua::LuaPlugin</name>
     <message>
-        <location filename="../src/plugins/lua/luaplugin.cpp" line="+69"/>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+58"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+26"/>
         <source>Lua files (*.lua)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -340,12 +402,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.ui" line="+17"/>
-        <source>Tiled</source>
-        <translation>Tiled</translation>
-    </message>
-    <message>
-        <location line="+32"/>
+        <location filename="../src/tiled/mainwindow.ui" line="+46"/>
         <source>&amp;File</source>
         <translation>&amp;Datne</translation>
     </message>
@@ -355,7 +412,7 @@
         <translation>&amp;Nesen izmantotās datnes</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+26"/>
         <source>&amp;Edit</source>
         <translation>&amp;Rediģēšana</translation>
     </message>
@@ -365,7 +422,7 @@
         <translation>&amp;Palīdzība</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>&amp;Map</source>
         <translation>&amp;Karte</translation>
     </message>
@@ -460,7 +517,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-225"/>
+        <location line="+5"/>
+        <source>Save All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-235"/>
         <source>AutoMap</source>
         <translation type="unfinished"></translation>
     </message>
@@ -623,7 +690,7 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+142"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+140"/>
         <source>Not a map file.</source>
         <translation type="unfinished">Datne nesatur informāciju par karti.</translation>
     </message>
@@ -653,19 +720,19 @@ Rinda %1, kolonna %2</translation>
     </message>
     <message>
         <location line="+37"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+58"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+57"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation type="unfinished">Kartes projekcija nav atbalstita: %1</translation>
     </message>
     <message>
-        <location line="+89"/>
-        <location line="+21"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+88"/>
+        <location line="+83"/>
+        <location line="+19"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+83"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation type="unfinished">Mozaīkelementu komplektam %1 ir iestatīti nederīgi parametri</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
         <translation type="unfinished">Kļuda mozaīkelementu komplekta %1 ielādes laikā: %2</translation>
     </message>
@@ -686,7 +753,7 @@ Rinda %1, kolonna %2</translation>
     </message>
     <message>
         <location line="+89"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+20"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+19"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
         <translation type="unfinished">Kļuda mozaīkelementu komplekta attela ielādes laika:
@@ -694,24 +761,26 @@ Rinda %1, kolonna %2</translation>
     </message>
     <message>
         <location line="+33"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+257"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+322"/>
         <source>Error loading image:
 &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+106"/>
+        <location line="+112"/>
         <source>Too many &lt;tile&gt; elements</source>
         <translation type="unfinished">Pārak liels elementu &lt;tile&gt; skaits</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+44"/>
+        <location line="+43"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-120"/>
         <source>Invalid tile: %1</source>
         <translation type="unfinished">Nederigs mozaīkelements: %1</translation>
     </message>
     <message>
         <location line="+29"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-78"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+34"/>
         <source>Invalid draw order: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -727,46 +796,51 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-282"/>
+        <location line="-290"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-90"/>
         <source>Unknown encoding: %1</source>
         <translation type="unfinished">Nezināms kodejums: %1</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="-5"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
         <source>Compression method &apos;%1&apos; not supported</source>
         <translation type="unfinished">Kompresijas metode %1 nav atbalstīta</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+32"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-63"/>
+        <location line="+57"/>
+        <location line="+19"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
+        <location line="+39"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
         <translation type="unfinished">Slāņa %1 dati ir bojāti</translation>
     </message>
     <message>
         <location line="+12"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+23"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
         <translation type="unfinished">Slāņa %3 mozaikelementu ar koordinātam (%1, %2) nav iespejams parsēt</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="-28"/>
+        <location line="+44"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+31"/>
         <source>Tile used but no tilesets specified</source>
         <translation type="unfinished">Izmantots mozaīkelements, bet nav norādīts mozaīkelementu komplekts</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+113"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+106"/>
         <source>Could not open file for writing.</source>
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-125"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-177"/>
         <source>Tileset tile index negative:
 &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+10"/>
         <source>Tileset tile index too high:
 &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
@@ -1114,12 +1188,12 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="+16"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="+6"/>
         <source>&amp;Reload tileset images when they change</source>
         <translation>&amp;Atsvaidzināt mozaīkelementu komplektu attēlus, ja ir veiktas izmaiņas to datnēs</translation>
     </message>
     <message>
-        <location line="-10"/>
+        <location line="+7"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
         <translation>Šī iespēja pēc noklusējuma ir atspējota, jo atsauce uz ārēju DTD var izraisīt problēmas dažos XML parsētājos.</translation>
     </message>
@@ -1129,7 +1203,7 @@ Rinda %1, kolonna %2</translation>
         <translation>Iekļaut &amp;DTD atsauci saglabātajās kartēs</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+20"/>
         <source>Interface</source>
         <translation>Saskarne</translation>
     </message>
@@ -1154,7 +1228,12 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="-19"/>
+        <source>Open last files on startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>Grid color:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1667,7 +1746,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>ReplicaIsland::ReplicaIslandPlugin</name>
     <message>
-        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+48"/>
+        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+59"/>
         <source>Cannot open Replica Island map file!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1697,14 +1776,14 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+64"/>
         <source>Replica Island map files (*.bin)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+32"/>
-        <source>Cannot open temporary file for writing!</source>
-        <translation type="unfinished"></translation>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1717,12 +1796,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+12"/>
-        <source>Couldn&apos;t overwrite old version; may be deleted!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+24"/>
         <source>You must define a type property on each layer!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1783,7 +1857,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished">Datni nevareja atvert rakstišanai.</translation>
     </message>
     <message>
-        <location line="+243"/>
+        <location line="+246"/>
         <source>T-Engine4 map files (*.lua)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1797,7 +1871,7 @@ Rinda %1, kolonna %2</translation>
     </message>
     <message>
         <location line="+99"/>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="+505"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="+507"/>
         <source>Preview</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1908,7 +1982,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
-        <location filename="../src/tiled/automapper.cpp" line="+116"/>
+        <location filename="../src/tiled/automapper.cpp" line="+115"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1972,7 +2046,7 @@ Rinda %1, kolonna %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+26"/>
         <source>No rules file found at:
 %1</source>
         <translation type="unfinished"></translation>
@@ -1999,14 +2073,14 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::BucketFillTool</name>
     <message>
-        <location filename="../src/tiled/bucketfilltool.cpp" line="+39"/>
-        <location line="+161"/>
+        <location filename="../src/tiled/bucketfilltool.cpp" line="+40"/>
+        <location line="+175"/>
         <source>Bucket Fill Tool</source>
         <translation>Aizpildīšanas rīks</translation>
     </message>
     <message>
-        <location line="-158"/>
-        <location line="+159"/>
+        <location line="-172"/>
+        <location line="+173"/>
         <source>F</source>
         <translation></translation>
     </message>
@@ -2147,7 +2221,7 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+123"/>
+        <location filename="../src/tiled/command.cpp" line="+130"/>
         <source>Unable to create/open %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2314,12 +2388,12 @@ Rinda %1, kolonna %2</translation>
 <context>
     <name>Tiled::Internal::EditTerrainDialog</name>
     <message>
-        <location filename="../src/tiled/editterraindialog.cpp" line="+153"/>
+        <location filename="../src/tiled/editterraindialog.cpp" line="+149"/>
         <source>E</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+36"/>
         <source>New Terrain</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2378,7 +2452,7 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+89"/>
+        <location line="+88"/>
         <source>Image</source>
         <translation type="unfinished">Attēls</translation>
     </message>
@@ -2394,7 +2468,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::FileEdit</name>
     <message>
-        <location filename="../src/tiled/fileedit.cpp" line="+112"/>
+        <location filename="../src/tiled/fileedit.cpp" line="+113"/>
         <source>Choose a File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2463,7 +2537,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+175"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+178"/>
         <location line="+8"/>
         <source>Undo</source>
         <translation>Atsaukt darbību</translation>
@@ -2475,7 +2549,7 @@ Do you want to replace it?</source>
         <translation>Atatsaukt darbību</translation>
     </message>
     <message>
-        <location line="+536"/>
+        <location line="+549"/>
         <source>Open Map</source>
         <translation>Atvērt karti</translation>
     </message>
@@ -2486,7 +2560,7 @@ Do you want to replace it?</source>
         <translation>Lietojumprogrammas Tiled karšu formāts (*.tmx)</translation>
     </message>
     <message>
-        <location line="-537"/>
+        <location line="-546"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2507,23 +2581,28 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1342"/>
+        <location line="+1406"/>
         <source>Random Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1339"/>
+        <location line="-1403"/>
         <source>D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+1337"/>
+        <location line="+1401"/>
         <source>&amp;Layer</source>
         <translation>S&amp;lānis</translation>
     </message>
     <message>
-        <location line="-1138"/>
+        <location line="-1223"/>
+        <source>Ctrl+Shift+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
         <source>Ctrl+Shift+Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2564,22 +2643,23 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+81"/>
-        <location line="+195"/>
+        <location line="+218"/>
         <source>All Files (*)</source>
         <translation>Visas datnes (*)</translation>
     </message>
     <message>
-        <location line="-147"/>
+        <location line="-170"/>
+        <location line="+88"/>
         <source>Error Saving Map</source>
         <translation>Kartes saglabāšanas laikā radās kļūda</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="-34"/>
         <source>untitled.tmx</source>
         <translation>nenosaukts.tmx</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+50"/>
         <source>Unsaved Changes</source>
         <translation>Nesaglabātās izmaiņas</translation>
     </message>
@@ -2595,17 +2675,17 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location line="+5"/>
-        <location line="+99"/>
+        <location line="+134"/>
         <source>Error Exporting Map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-86"/>
         <source>Export As...</source>
         <translation>Eksportēt kā...</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+23"/>
         <source>Non-unique file extension</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2626,22 +2706,42 @@ Please select specific format.</source>
         <translation>Dotās datnes paplašinājums nav zināms.</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+13"/>
+        <source>Some export files already exist:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Do you want to replace them?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Overwrite Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+73"/>
         <source>Cut</source>
         <translation>Izgriezt</translation>
     </message>
     <message>
-        <location line="+669"/>
+        <location line="+543"/>
+        <source>[*]%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+130"/>
         <source>Error Reloading Map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-593"/>
+        <location line="-597"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+189"/>
         <source>Automatic Mapping Warning</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2651,25 +2751,25 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-853"/>
-        <location line="+1172"/>
+        <location line="-911"/>
+        <location line="+1229"/>
         <source>Views and Toolbars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1171"/>
-        <location line="+1172"/>
+        <location line="-1228"/>
+        <location line="+1229"/>
         <source>Tile Animation Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1170"/>
-        <location line="+1171"/>
+        <location line="-1227"/>
+        <location line="+1228"/>
         <source>Tile Collision Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1144"/>
+        <location line="-1199"/>
         <source>Alt+Left</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2679,7 +2779,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+725"/>
+        <location line="+784"/>
         <source>Add External Tileset(s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2689,7 +2789,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location line="+13"/>
+        <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -2698,7 +2798,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="+200"/>
+        <location line="+201"/>
         <source>Current layer: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2708,12 +2808,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+144"/>
-        <source>[*]%1 - Tiled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-380"/>
+        <location line="-234"/>
         <source>Tiled tileset files (*.tsx)</source>
         <translation>Lietojumprogrammas Tiled mozaīkattēlu komplektu datnes (*.tsx)</translation>
     </message>
@@ -2781,7 +2876,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+200"/>
+        <location line="+203"/>
         <source>Tile</source>
         <translation type="unfinished">Mozaīkelements</translation>
     </message>
@@ -2791,7 +2886,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location line="+154"/>
+        <location line="+189"/>
         <source>Duplicate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -2931,7 +3026,7 @@ Please select specific format.</source>
         <translation>Slāņa &amp;rekvizīti...</translation>
     </message>
     <message numerus="yes">
-        <location line="+245"/>
+        <location line="+247"/>
         <source>Duplicate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -2985,12 +3080,12 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapsDock</name>
     <message>
-        <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
+        <location filename="../src/tiled/mapsdock.cpp" line="+83"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+21"/>
         <source>Choose the Maps Folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3058,7 +3153,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::NewTilesetDialog</name>
     <message>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+154"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+151"/>
         <location line="+7"/>
         <source>Error</source>
         <translation>Kļūda</translation>
@@ -3082,7 +3177,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+315"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+316"/>
         <location line="+273"/>
         <source>Select Objects</source>
         <translation type="unfinished"></translation>
@@ -3095,7 +3190,7 @@ Please select specific format.</source>
     </message>
     <message numerus="yes">
         <location line="-162"/>
-        <location line="+510"/>
+        <location line="+513"/>
         <source>Move %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -3104,7 +3199,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+63"/>
+        <location line="+65"/>
         <source>Rotate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -3113,7 +3208,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+247"/>
+        <location line="+251"/>
         <source>Resize %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -3197,7 +3292,7 @@ Please select specific format.</source>
     <name>Tiled::Internal::PreferencesDialog</name>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+121"/>
-        <location line="+63"/>
+        <location line="+60"/>
         <source>System default</source>
         <translation>Sistēmas valoda</translation>
     </message>
@@ -3232,19 +3327,19 @@ Please select specific format.</source>
     <name>Tiled::Internal::PropertiesDock</name>
     <message>
         <location filename="../src/tiled/propertiesdock.cpp" line="+196"/>
-        <location line="+45"/>
+        <location line="+52"/>
         <source>Name:</source>
         <translation type="unfinished">Nosaukums:</translation>
     </message>
     <message>
-        <location line="-44"/>
-        <location line="+95"/>
+        <location line="-51"/>
+        <location line="+103"/>
         <source>Add Property</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-49"/>
-        <location line="+51"/>
+        <location line="-50"/>
+        <location line="+52"/>
         <source>Rename Property</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3282,17 +3377,22 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+433"/>
+        <source>Relative chance this tile will be picked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+364"/>
         <source>Custom Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+237"/>
+        <location line="-544"/>
         <source>Map</source>
         <translation type="unfinished">Karte</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+36"/>
         <source>Tile Layer Format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3313,47 +3413,39 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+24"/>
-        <location line="+55"/>
-        <location line="+24"/>
+        <location line="+26"/>
+        <location line="+56"/>
+        <location line="+40"/>
         <source>Name</source>
         <translation type="unfinished">Nosaukums</translation>
     </message>
     <message>
-        <location line="-100"/>
+        <location line="-119"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+19"/>
+        <location line="+21"/>
         <source>Visible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-18"/>
-        <location line="+65"/>
-        <source>Position</source>
-        <translation type="unfinished">Novietojums</translation>
-    </message>
-    <message>
-        <location line="-134"/>
-        <location line="+70"/>
-        <source>Size</source>
-        <translation type="unfinished">Izmēŗs</translation>
-    </message>
-    <message>
-        <location line="-378"/>
+        <location line="-372"/>
+        <location line="+352"/>
+        <location line="+67"/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-418"/>
+        <location line="+352"/>
+        <location line="+67"/>
         <source>Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-417"/>
         <source>Odd</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3363,17 +3455,36 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+305"/>
-        <source>Tile Size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+280"/>
         <source>Orientation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
+        <location line="+65"/>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-64"/>
+        <location line="+65"/>
+        <source>Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-64"/>
+        <location line="+144"/>
+        <source>Tile Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-143"/>
+        <location line="+144"/>
+        <source>Tile Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-142"/>
         <source>Tile Side Length (Hex)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3388,7 +3499,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+49"/>
         <source>Rotation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3438,7 +3549,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+8"/>
         <source>Tileset</source>
         <translation type="unfinished">Mozaīkelement komplekts</translation>
     </message>
@@ -3449,12 +3560,27 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+6"/>
+        <source>Source Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Tile</source>
         <translation type="unfinished">Mozaīkelements</translation>
     </message>
     <message>
-        <location line="-87"/>
-        <location line="+88"/>
+        <location line="-107"/>
+        <location line="+108"/>
         <source>ID</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3464,27 +3590,37 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Relative chance this tile will be picked while painting terrain</source>
+        <location line="+10"/>
+        <source>Terrain</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::SelectSameTileTool</name>
+    <message>
+        <location filename="../src/tiled/selectsametiletool.cpp" line="+50"/>
+        <location line="+57"/>
+        <source>Select Same Tile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+8"/>
-        <source>Terrain</source>
+        <location line="-54"/>
+        <location line="+55"/>
+        <source>S</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
-        <location filename="../src/tiled/stampbrush.cpp" line="+39"/>
-        <location line="+182"/>
+        <location filename="../src/tiled/stampbrush.cpp" line="+41"/>
+        <location line="+128"/>
         <source>Stamp Brush</source>
         <translation>Spiedogs</translation>
     </message>
     <message>
-        <location line="-179"/>
-        <location line="+180"/>
+        <location line="-125"/>
+        <location line="+126"/>
         <source>B</source>
         <translation></translation>
     </message>
@@ -3492,14 +3628,14 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TerrainBrush</name>
     <message>
-        <location filename="../src/tiled/terrainbrush.cpp" line="+44"/>
-        <location line="+118"/>
+        <location filename="../src/tiled/terrainbrush.cpp" line="+45"/>
+        <location line="+115"/>
         <source>Terrain Brush</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-115"/>
-        <location line="+116"/>
+        <location line="-112"/>
+        <location line="+113"/>
         <source>T</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3507,7 +3643,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TerrainDock</name>
     <message>
-        <location filename="../src/tiled/terraindock.cpp" line="+175"/>
+        <location filename="../src/tiled/terraindock.cpp" line="+174"/>
         <source>Terrains</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3515,7 +3651,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TerrainView</name>
     <message>
-        <location filename="../src/tiled/terrainview.cpp" line="+98"/>
+        <location filename="../src/tiled/terrainview.cpp" line="+97"/>
         <source>Terrain &amp;Properties...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3531,7 +3667,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TileCollisionEditor</name>
     <message>
-        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+339"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+337"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3567,9 +3703,75 @@ Please select specific format.</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::TileStampModel</name>
+    <message>
+        <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
+        <source>Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Probability</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::TileStampsDock</name>
+    <message>
+        <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
+        <source>Delete Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Remove Variation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+71"/>
+        <source>Choose the Stamps Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tile Stamps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add New Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Add Variation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Duplicate Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Delete Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Set Stamps Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+645"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+652"/>
         <source>Remove Tileset</source>
         <translation>Dzēst mozaīkelementu komplektu</translation>
     </message>
@@ -3584,7 +3786,7 @@ Please select specific format.</source>
         <translation>Vai dzēst šo mozaīkelementu komplektu un visas atsauces uz to?</translation>
     </message>
     <message>
-        <location line="+64"/>
+        <location line="+74"/>
         <source>Tilesets</source>
         <translation>Mozaīkelementu komplekti</translation>
     </message>
@@ -3615,25 +3817,25 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+101"/>
+        <location line="+103"/>
         <location line="+13"/>
         <source>Add Tiles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-113"/>
-        <location line="+160"/>
+        <location line="-115"/>
+        <location line="+164"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-59"/>
+        <location line="-61"/>
         <source>Could not load &quot;%1&quot;!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+49"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3643,7 +3845,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-168"/>
+        <location line="-172"/>
         <source>Edit &amp;Terrain Information</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3661,7 +3863,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+580"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+574"/>
         <source>Tile &amp;Properties...</source>
         <translation>Mozaīkelementa &amp;rekvizīti ...</translation>
     </message>
@@ -3684,7 +3886,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::UndoDock</name>
     <message>
-        <location filename="../src/tiled/undodock.cpp" line="+65"/>
+        <location filename="../src/tiled/undodock.cpp" line="+64"/>
         <source>History</source>
         <translation>Vēsture</translation>
     </message>
@@ -3712,7 +3914,7 @@ Please select specific format.</source>
         <translation>Datni nevareja atvert rakstišanai.</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+30"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
         <translation>TMW-eAthena sadursmju datnes (*.wlk)</translation>
     </message>
@@ -3720,7 +3922,7 @@ Please select specific format.</source>
 <context>
     <name>TmxMapReader</name>
     <message>
-        <location filename="../src/tiled/tmxmapreader.h" line="+55"/>
+        <location filename="../src/tiled/tmxmapreader.h" line="+56"/>
         <location filename="../src/tiled/tmxmapwriter.h" line="+56"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Lietojumprogrammas Tiled karšu formāts (*.tmx)</translation>
@@ -3757,12 +3959,12 @@ Please select specific format.</source>
         <translation>Dzēst objektu</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
+        <location filename="../src/tiled/addremovetileset.cpp" line="+66"/>
         <source>Add Tileset</source>
         <translation>Pievienot mozaīkelementu komplektu</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetileset.h" line="+78"/>
+        <location line="+9"/>
         <source>Remove Tileset</source>
         <translation>Dzēst mozaīkelementu komplektu</translation>
     </message>
@@ -3812,12 +4014,13 @@ Please select specific format.</source>
         <translation>Dzest</translation>
     </message>
     <message>
-        <location filename="../src/tiled/filltiles.cpp" line="+36"/>
+        <location filename="../src/tiled/filltiles.cpp" line="+37"/>
         <source>Fill Area</source>
         <translation>Aizpildīt apgabalu</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobject.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Move Object</source>
         <translation>Pārvietot objektu</translation>
     </message>
@@ -3848,6 +4051,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/resizemapobject.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Resize Object</source>
         <translation>Mainīt objekta izmēru</translation>
     </message>
@@ -3857,7 +4061,7 @@ Please select specific format.</source>
         <translation>Pārvietot mozaīkelementu komplektu</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-688"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-704"/>
         <source>Import Tileset</source>
         <translation>Importēt mozaīkelementu komplektu</translation>
     </message>
@@ -3893,6 +4097,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/changepolygon.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Change Polygon</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3917,7 +4122,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/editterraindialog.cpp" line="-138"/>
+        <location filename="../src/tiled/editterraindialog.cpp" line="-136"/>
         <source>Change Terrain Image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3989,8 +4194,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
-        <location line="+4"/>
+        <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -4010,6 +4214,7 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Rotate Object</source>
         <translation type="unfinished"></translation>
     </message>
