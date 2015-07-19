@@ -175,6 +175,7 @@ public slots:
 
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
+    void setUseDarkTheme(bool useDarkTheme);
 
 private:
     /**
@@ -253,8 +254,6 @@ private:
     DocumentManager *mDocumentManager;
     ToolManager *mToolManager;
     TileStampManager *mTileStampManager;
-private slots:
-    void setUseDarkTheme(bool useDarkTheme);
 };
 
 } // namespace Internal
