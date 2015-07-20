@@ -74,7 +74,7 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
                               objectSize.width(),
                               objectSize.height()).adjusted(-1, -1, 1, 1);
     } else {
-        const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
+        qreal extraSpace = qMax(objectLineWidth(), qreal(1));
 
         switch (object->shape()) {
         case MapObject::Ellipse:
@@ -94,6 +94,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
         case MapObject::Polygon:
         case MapObject::Polyline: {
+            // Make some more room for the starting dot
+            if (object->shape() == MapObject::Polyline)
+                extraSpace += objectLineWidth() * 4;
+
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
@@ -374,12 +378,21 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         case MapObject::Polyline: {
             QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
 
+            QPen thickShadowPen(shadowPen);
+            QPen thickLinePen(linePen);
+            thickShadowPen.setWidthF(thickShadowPen.widthF() * 4);
+            thickLinePen.setWidthF(thickLinePen.widthF() * 4);
+
             painter->setPen(shadowPen);
             painter->drawPolyline(screenPolygon.translated(shadowOffset));
+            painter->setPen(thickShadowPen);
+            painter->drawPoint(screenPolygon.first() + shadowOffset);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawPolyline(screenPolygon);
+            painter->setPen(thickLinePen);
+            painter->drawPoint(screenPolygon.first());
             break;
         }
 
