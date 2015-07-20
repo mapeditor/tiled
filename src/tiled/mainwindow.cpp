@@ -179,6 +179,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
     mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     mUi->actionNew->setPriority(QAction::LowPriority);
+#if QT_VERSION >= 0x050500
+    undoAction->setPriority(QAction::LowPriority);
+#endif
     redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
