@@ -27,6 +27,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
+#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "rangeset.h"
@@ -533,12 +534,22 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     int i = 0;
     foreach (PointHandle *handle, mSelectedHandles) {
+        // update handle position
+        const QPointF newScreenPos = mOldHandlePositions.at(i) + diff;
+        handle->setPos(newScreenPos);
+
+        // calculate new pixel position of polygon node
         const MapObjectItem *item = handle->mapObjectItem();
-        const QPointF newPixelPos = mOldHandlePositions.at(i) + diff;
-        const QPointF newInternalPos = item->mapFromScene(newPixelPos);
+        const QPointF newInternalPos = item->mapFromScene(newScreenPos);
         const QPointF newScenePos = item->pos() + newInternalPos;
-        handle->setPos(newPixelPos);
-        handle->setPointPosition(renderer->screenToPixelCoords(newScenePos));
+        const QPointF newPixelPos = renderer->screenToPixelCoords(newScenePos);
+
+        // update the polygon
+        MapObject *mapObject = item->mapObject();
+        QPolygonF polygon = mapObject->polygon();
+        polygon[handle->pointIndex()] = newPixelPos - mapObject->position();
+        mapDocument()->mapObjectModel()->setObjectPolygon(mapObject, polygon);
+
         ++i;
     }
 }

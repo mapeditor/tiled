@@ -120,6 +120,7 @@ SOURCES += aboutdialog.cpp \
     newtilesetdialog.cpp \
     objectgroupitem.cpp \
     objectsdock.cpp \
+    objectselectionitem.cpp \
     objectselectiontool.cpp \
     objecttypes.cpp \
     objecttypesmodel.cpp \
@@ -260,6 +261,7 @@ HEADERS += aboutdialog.h \
     newtilesetdialog.h \
     objectgroupitem.h \
     objectsdock.h \
+    objectselectionitem.h \
     objectselectiontool.h \
     objecttypes.h \
     objecttypesmodel.h \

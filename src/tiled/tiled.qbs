@@ -198,6 +198,8 @@ QtGuiApplication {
         "objectgroupitem.h",
         "objectsdock.cpp",
         "objectsdock.h",
+        "objectselectionitem.cpp",
+        "objectselectionitem.h",
         "objectselectiontool.cpp",
         "objectselectiontool.h",
         "objecttypes.cpp",

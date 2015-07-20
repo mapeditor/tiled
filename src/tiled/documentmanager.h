@@ -195,6 +195,8 @@ private slots:
 
     void reloadRequested();
 
+    void cursorChanged(const QCursor &cursor);
+
 private:
     DocumentManager(QObject *parent = 0);
     ~DocumentManager();
@@ -204,7 +206,7 @@ private:
     MovableTabWidget *mTabWidget;
     QUndoGroup *mUndoGroup;
     AbstractTool *mSelectedTool;
-    MapScene *mSceneWithTool;
+    MapView *mViewWithTool;
     FileSystemWatcher *mFileSystemWatcher;
 
     static DocumentManager *mInstance;
