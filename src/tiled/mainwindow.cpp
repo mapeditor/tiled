@@ -228,7 +228,15 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
-    mUi->actionDelete->setShortcuts(QKeySequence::Delete);
+    QList<QKeySequence> deleteKeys = QKeySequence::keyBindings(QKeySequence::Delete);
+#ifdef Q_OS_OSX
+    // Add the deletion key as primary shortcut, which seems to be the expected
+    // one for OS X.
+    if (!deleteKeys.contains(QKeySequence(Qt::Key_Backspace)))
+        deleteKeys.prepend(QKeySequence(Qt::Key_Backspace));
+#endif
+    mUi->actionDelete->setShortcuts(deleteKeys);
+
     undoAction->setShortcuts(QKeySequence::Undo);
     redoAction->setShortcuts(QKeySequence::Redo);
 
@@ -506,13 +514,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
-
-#if defined(Q_OS_OSX)
-    // This works around the problem that the shortcut for the Delete menu action
-    // is not working on OS X for whatever reason.
-    foreach (QKeySequence key, QKeySequence::keyBindings(QKeySequence::Delete))
-        new QShortcut(key, this, SLOT(delete_()));
-#endif
 
     updateActions();
     readSettings();
