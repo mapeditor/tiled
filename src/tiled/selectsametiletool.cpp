@@ -49,7 +49,7 @@ private:
 SelectSameTileTool::SelectSameTileTool(QObject *parent)
     : AbstractTileTool(tr("Select Same Tile"),
                        QIcon(QLatin1String(
-                               ":images/22x22/stock-tool-select-same-tiles.png")),
+                               ":images/22x22/stock-tool-by-color-select.png")),
                        QKeySequence(tr("S")),
                        parent)
 {

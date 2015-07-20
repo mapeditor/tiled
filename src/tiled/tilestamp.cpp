@@ -153,7 +153,7 @@ void TileStamp::addVariation(Map *map, qreal probability)
 {
     Q_ASSERT(map);
 
-    // increase tileset reference counts to keep them alive
+    // increase tileset reference counts to keep watching them
     TilesetManager::instance()->addReferences(map->tilesets());
 
     d->variations.append(TileStampVariation(map, probability));
