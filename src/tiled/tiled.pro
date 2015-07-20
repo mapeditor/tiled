@@ -373,7 +373,9 @@ manpage.path = $${PREFIX}/share/man/man1/
 manpage.files += ../../man/tiled.1
 INSTALLS += manpage
 
-RESOURCES += tiled.qrc
+RESOURCES += tiled.qrc \
+	darkstyle/style.qrc
+
 macx {
     TARGET = Tiled
     QMAKE_INFO_PLIST = Info.plist

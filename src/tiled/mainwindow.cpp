@@ -514,6 +514,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         new QShortcut(key, this, SLOT(delete_()));
 #endif
 
+	setUseDarkTheme(preferences->useDarkTheme());
+	connect(preferences, SIGNAL(useDarkThemeChanged(bool)), SLOT(setUseDarkTheme(bool)));
+
     updateActions();
     readSettings();
     setupQuickStamps();
@@ -1783,4 +1786,18 @@ void MainWindow::closeMapDocument(int index)
 void MainWindow::reloadError(const QString &error)
 {
     QMessageBox::critical(this, tr("Error Reloading Map"), error);
+}
+
+void MainWindow::setUseDarkTheme(bool useDarkTheme)
+{
+    if (useDarkTheme) {
+        QFile darkThemeFile(QLatin1String(":darkstyle/style.qss"));
+        if (darkThemeFile.open(QFile::ReadOnly | QFile::Text)) {
+            setStyleSheet(QTextStream(&darkThemeFile).readAll());
+        } else {
+            QMessageBox::warning(this, tr("Error Loading Theme"), QLatin1String("Could not load the dark theme for Tiled"));
+        }
+    } else {
+        setStyleSheet(QString());
+    }
 }

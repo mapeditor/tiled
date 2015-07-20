@@ -77,6 +77,7 @@ Preferences::Preferences()
     mHighlightCurrentLayer = boolValue("HighlightCurrentLayer");
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
+    mUseDarkTheme = boolValue("DarkTheme");
     mUseOpenGL = boolValue("OpenGL");
     mSettings->endGroup();
 
@@ -310,6 +311,17 @@ void Preferences::setReloadTilesetsOnChanged(bool value)
     tilesetManager->setReloadTilesetsOnChange(mReloadTilesetsOnChange);
 }
 
+void Preferences::setUseDarkTheme(bool useDarkTheme)
+{
+    if (mUseDarkTheme == useDarkTheme)
+        return;
+
+    mUseDarkTheme = useDarkTheme;
+    mSettings->setValue(QLatin1String("Interface/DarkTheme"), mUseDarkTheme);
+
+    emit useDarkThemeChanged(mUseDarkTheme);
+}
+
 void Preferences::setUseOpenGL(bool useOpenGL)
 {
     if (mUseOpenGL == useOpenGL)
@@ -435,7 +447,7 @@ void Preferences::setPatron(bool isPatron)
 void Preferences::setOpenLastFilesOnStartup(bool open)
 {
     if (mOpenLastFilesOnStartup == open)
-    	return;
+        return;
 
     mOpenLastFilesOnStartup = open;
     mSettings->setValue(QLatin1String("Startup/OpenLastFiles"), open);

@@ -120,6 +120,7 @@ QtGuiApplication {
         "createscalableobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
+        "darkstyle/style.qrc",
         "documentmanager.cpp",
         "documentmanager.h",
         "editpolygontool.cpp",

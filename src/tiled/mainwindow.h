@@ -176,6 +176,7 @@ public slots:
 
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
+    void setUseDarkTheme(bool useDarkTheme);
 
 private:
     /**

@@ -72,6 +72,9 @@ public:
     bool reloadTilesetsOnChange() const;
     void setReloadTilesetsOnChanged(bool value);
 
+    bool useDarkTheme() const { return mUseDarkTheme; }
+    void setUseDarkTheme(bool useDarkTheme);
+
     bool useOpenGL() const { return mUseOpenGL; }
     void setUseOpenGL(bool useOpenGL);
 
@@ -136,6 +139,7 @@ signals:
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
 
+    void useDarkThemeChanged(bool useDarkTheme);
     void useOpenGLChanged(bool useOpenGL);
 
     void objectTypesChanged();
@@ -174,6 +178,7 @@ private:
     bool mDtdEnabled;
     QString mLanguage;
     bool mReloadTilesetsOnChange;
+    bool mUseDarkTheme;
     bool mUseOpenGL;
     ObjectTypes mObjectTypes;
 
