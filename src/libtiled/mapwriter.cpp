@@ -523,16 +523,16 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("gid"), QString::number(gid));
     }
 
-    QPointF pos = QPointF(mapObject.x(), mapObject.y());
-    QPointF size = QPointF(mapObject.width(), mapObject.height());
+    const QPointF pos = mapObject.position();
+    const QSizeF size = mapObject.size();
 
     w.writeAttribute(QLatin1String("x"), QString::number(pos.x()));
     w.writeAttribute(QLatin1String("y"), QString::number(pos.y()));
 
-    if (size.x() != 0)
-        w.writeAttribute(QLatin1String("width"), QString::number(size.x()));
-    if (size.y() != 0)
-        w.writeAttribute(QLatin1String("height"), QString::number(size.y()));
+    if (size.width() != 0)
+        w.writeAttribute(QLatin1String("width"), QString::number(size.width()));
+    if (size.height() != 0)
+        w.writeAttribute(QLatin1String("height"), QString::number(size.height()));
 
     const qreal rotation = mapObject.rotation();
     if (rotation != 0.0)

@@ -81,8 +81,7 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
         qreal extraSpace = qMax(objectLineWidth(), qreal(1));
 
         // Make some more room for the starting dot
-        if (object->shape() == MapObject::Polyline)
-            extraSpace += objectLineWidth() * 4;
+        extraSpace += objectLineWidth() * 4;
 
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
@@ -395,13 +394,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
+            QPen thickPen(pen);
+            QPen thickColorPen(colorPen);
+            thickPen.setWidthF(thickPen.widthF() * 4);
+            thickColorPen.setWidthF(thickColorPen.widthF() * 4);
+
             painter->drawPolygon(screenPolygon);
+            painter->setPen(thickPen);
+            painter->drawPoint(screenPolygon.first());
 
             painter->setPen(colorPen);
             painter->setBrush(brush);
             screenPolygon.translate(0, -shadowOffset);
 
             painter->drawPolygon(screenPolygon);
+            painter->setPen(thickColorPen);
+            painter->drawPoint(screenPolygon.first());
 
             break;
         }

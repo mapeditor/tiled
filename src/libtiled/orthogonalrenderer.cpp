@@ -95,8 +95,7 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
         case MapObject::Polygon:
         case MapObject::Polyline: {
             // Make some more room for the starting dot
-            if (object->shape() == MapObject::Polyline)
-                extraSpace += objectLineWidth() * 4;
+            extraSpace += objectLineWidth() * 4;
 
             const QPointF &pos = object->position();
             const QPolygonF polygon = object->polygon().translated(pos);
@@ -399,12 +398,21 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         case MapObject::Polygon: {
             QPolygonF screenPolygon = pixelToScreenCoords(object->polygon());
 
+            QPen thickShadowPen(shadowPen);
+            QPen thickLinePen(linePen);
+            thickShadowPen.setWidthF(thickShadowPen.widthF() * 4);
+            thickLinePen.setWidthF(thickLinePen.widthF() * 4);
+
             painter->setPen(shadowPen);
             painter->drawPolygon(screenPolygon.translated(shadowOffset));
+            painter->setPen(thickShadowPen);
+            painter->drawPoint(screenPolygon.first() + shadowOffset);
 
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawPolygon(screenPolygon);
+            painter->setPen(thickLinePen);
+            painter->drawPoint(screenPolygon.first());
             break;
         }
 
