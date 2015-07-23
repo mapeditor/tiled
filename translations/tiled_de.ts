@@ -74,32 +74,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-172"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>Version anzeigen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur auf Korrektheit der Parameter prüfen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Hardwarebeschleunigung deaktivieren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>TMX-Datei in Ziel exportieren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste der unterstützten Exportformate ausgeben</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportformate:</translation>
     </message>
 </context>
 <context>
@@ -107,33 +107,34 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation>Falscher Parameter %1: einzelner Bindestrich</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannter langer Parameter %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannter kurzer Parameter %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>Aufruf:
+  %1 [Optionen] [Dateien..]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Optionen:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Hilfe anzeigen</translation>
     </message>
 </context>
 <context>
@@ -550,12 +551,12 @@
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles Speichern</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation</translation>
     </message>
     <message>
         <location line="-105"/>
@@ -1235,7 +1236,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt benutzte Dateien beim Start öffnen</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -1788,7 +1789,7 @@ Zeile %1, Spalte %2</translation>
     <message>
         <location line="+32"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Konnte Datei nicht zum Schreiben öffnen.</translation>
+        <translation>Konnte Datei nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -2595,7 +2596,7 @@ Soll sie ersetzt werden?</translation>
     <message>
         <location line="-1223"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2716,17 +2717,17 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+13"/>
         <source>Some export files already exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Einige Exportdateien existieren bereits:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Do you want to replace them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sollen sie ersetzt werden?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Overwrite Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateien überschreiben</translation>
     </message>
     <message>
         <location line="+73"/>
@@ -2736,7 +2737,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+543"/>
         <source>[*]%1</source>
-        <translation type="unfinished"></translation>
+        <translation>[*]%1</translation>
     </message>
     <message>
         <location line="+130"/>
@@ -3384,7 +3385,7 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+433"/>
         <source>Relative chance this tile will be picked</source>
-        <translation type="unfinished"></translation>
+        <translation>Relative Wahrscheinlichkeit, dass diese Kachel gewählt wird</translation>
     </message>
     <message>
         <location line="+364"/>
@@ -3468,25 +3469,25 @@ Bitte Format angeben.</translation>
         <location line="+5"/>
         <location line="+65"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+65"/>
         <source>Height</source>
-        <translation type="unfinished">Höhe</translation>
+        <translation>Höhe</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+144"/>
         <source>Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelbreite</translation>
     </message>
     <message>
         <location line="-143"/>
         <location line="+144"/>
         <source>Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Kachelhöhe</translation>
     </message>
     <message>
         <location line="-142"/>
@@ -3566,17 +3567,17 @@ Bitte Format angeben.</translation>
     <message>
         <location line="+6"/>
         <source>Source Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Quellbild</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Seitenrand</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3606,13 +3607,13 @@ Bitte Format angeben.</translation>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+50"/>
         <location line="+57"/>
         <source>Select Same Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Gleiche Kacheln auswählen</translation>
     </message>
     <message>
         <location line="-54"/>
         <location line="+55"/>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
 </context>
 <context>
@@ -3712,12 +3713,12 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished">Wahrscheinlichkeit</translation>
+        <translation>Wahrscheinlichkeit</translation>
     </message>
 </context>
 <context>
@@ -3725,52 +3726,52 @@ Bitte Format angeben.</translation>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel löschen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Variation entfernen</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel-Ordner auswählen</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuen Stempel hinzufügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Variation hinzufügen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel duplizieren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählten Stempel löschen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel-Ordner setzen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter</translation>
     </message>
 </context>
 <context>
