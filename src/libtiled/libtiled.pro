@@ -13,9 +13,6 @@ macx {
 DLLDESTDIR = ../..
 
 win32 {
-    lessThan(QT_MAJOR_VERSION, 5) {
-        INCLUDEPATH += ../zlib
-    }
     QMAKE_PROJECT_NAME = libtiled
 } else {
     # On other platforms it is necessary to link to zlib explicitly
@@ -29,6 +26,7 @@ contains(QT_CONFIG, reduce_exports): CONFIG += hide_symbols
 
 SOURCES += compression.cpp \
     gidmapper.cpp \
+    hexagonalrenderer.cpp \
     imagelayer.cpp \
     isometricrenderer.cpp \
     layer.cpp \
@@ -36,6 +34,7 @@ SOURCES += compression.cpp \
     mapobject.cpp \
     mapreader.cpp \
     maprenderer.cpp \
+    maptovariantconverter.cpp \
     mapwriter.cpp \
     objectgroup.cpp \
     orthogonalrenderer.cpp \
@@ -44,17 +43,20 @@ SOURCES += compression.cpp \
     tile.cpp \
     tilelayer.cpp \
     tileset.cpp \
-    hexagonalrenderer.cpp
+    varianttomapconverter.cpp
 HEADERS += compression.h \
     gidmapper.h \
+    hexagonalrenderer.h \
     imagelayer.h \
     isometricrenderer.h \
     layer.h \
+    logginginterface.h \
     map.h \
     mapobject.h \
     mapreader.h \
     mapreaderinterface.h \
     maprenderer.h \
+    maptovariantconverter.h \
     mapwriter.h \
     mapwriterinterface.h \
     object.h \
@@ -68,8 +70,7 @@ HEADERS += compression.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
-    logginginterface.h \
-    hexagonalrenderer.h
+    varianttomapconverter.h
 
 contains(INSTALL_HEADERS, yes) {
     headers.files = $${HEADERS}

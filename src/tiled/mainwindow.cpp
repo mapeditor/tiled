@@ -101,6 +101,7 @@
 #include <QMimeData>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -178,6 +179,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
     mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     mUi->actionNew->setPriority(QAction::LowPriority);
+#if QT_VERSION >= 0x050500
+    undoAction->setPriority(QAction::LowPriority);
+#endif
     redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
@@ -198,12 +202,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::RightDockWidgetArea, tileStampsDock);
+    addDockWidget(Qt::LeftDockWidgetArea, tileStampsDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
     tabifyDockWidget(undoDock, mMapsDock);
+    tabifyDockWidget(tileStampsDock, undoDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.
@@ -223,7 +228,15 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
-    mUi->actionDelete->setShortcuts(QKeySequence::Delete);
+    QList<QKeySequence> deleteKeys = QKeySequence::keyBindings(QKeySequence::Delete);
+#ifdef Q_OS_OSX
+    // Add the Backspace key as primary shortcut for Delete, which seems to be
+    // the expected one for OS X.
+    if (!deleteKeys.contains(QKeySequence(Qt::Key_Backspace)))
+        deleteKeys.prepend(QKeySequence(Qt::Key_Backspace));
+#endif
+    mUi->actionDelete->setShortcuts(deleteKeys);
+
     undoAction->setShortcuts(QKeySequence::Undo);
     redoAction->setShortcuts(QKeySequence::Redo);
 
@@ -340,6 +353,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
 
+    connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
 
@@ -378,6 +392,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mStampBrush = new StampBrush(this);
@@ -499,13 +514,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
-
-#if defined(Q_OS_OSX) && QT_VERSION >= 0x050000
-    // This works around the problem that the shortcut for the Delete menu action
-    // is not working on OS X for whatever reason.
-    foreach (QKeySequence key, QKeySequence::keyBindings(QKeySequence::Delete))
-        new QShortcut(key, this, SLOT(delete_()));
-#endif
 
     updateActions();
     readSettings();
@@ -1248,10 +1256,10 @@ void MainWindow::newTilesets(const QStringList &paths)
 
 void MainWindow::reloadTilesets()
 {
-    Map *map = mMapDocument->map();
-    if (!map)
+    if (!mMapDocument)
         return;
 
+    Map *map = mMapDocument->map();
     TilesetManager *tilesetManager = TilesetManager::instance();
     QVector<SharedTileset> tilesets = map->tilesets();
     for (SharedTileset &tileset : tilesets)
@@ -1526,6 +1534,11 @@ void MainWindow::updateZoomLabel()
     }
 }
 
+void MainWindow::openDocumentation()
+{
+    QDesktopServices::openUrl(QUrl(QLatin1String("http://doc.mapeditor.org")));
+}
+
 void MainWindow::flip(FlipDirection direction)
 {
     if (mStampBrush->isEnabled()) {
@@ -1640,11 +1653,11 @@ void MainWindow::readSettings()
 void MainWindow::updateWindowTitle()
 {
     if (mMapDocument) {
-        setWindowTitle(tr("[*]%1 - Tiled").arg(mMapDocument->displayName()));
+        setWindowTitle(tr("[*]%1").arg(mMapDocument->displayName()));
         setWindowFilePath(mMapDocument->fileName());
         setWindowModified(mMapDocument->isModified());
     } else {
-        setWindowTitle(QApplication::applicationName());
+        setWindowTitle(QString());
         setWindowFilePath(QString());
         setWindowModified(false);
     }
@@ -1729,7 +1742,7 @@ void MainWindow::setupQuickStamps()
     QList<Qt::Key> keys = TileStampManager::quickStampKeys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
-    QSignalMapper *saveMapper = new QSignalMapper(this);
+    QSignalMapper *createMapper = new QSignalMapper(this);
     QSignalMapper *extendMapper = new QSignalMapper(this);
 
     for (int i = 0; i < keys.length(); i++) {
@@ -1740,10 +1753,10 @@ void MainWindow::setupQuickStamps()
         connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
         selectMapper->setMapping(selectStamp, i);
 
-        // Set up shortcut for saving this quick stamp
-        QShortcut *saveStamp = new QShortcut(Qt::CTRL + key, this);
-        connect(saveStamp, SIGNAL(activated()), saveMapper, SLOT(map()));
-        saveMapper->setMapping(saveStamp, i);
+        // Set up shortcut for creating this quick stamp
+        QShortcut *createStamp = new QShortcut(Qt::CTRL + key, this);
+        connect(createStamp, SIGNAL(activated()), createMapper, SLOT(map()));
+        createMapper->setMapping(createStamp, i);
 
         // Set up shortcut for extending this quick stamp
         QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, this);
@@ -1753,8 +1766,8 @@ void MainWindow::setupQuickStamps()
 
     connect(selectMapper, SIGNAL(mapped(int)),
             mTileStampManager, SLOT(selectQuickStamp(int)));
-    connect(saveMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(saveQuickStamp(int)));
+    connect(createMapper, SIGNAL(mapped(int)),
+            mTileStampManager, SLOT(createQuickStamp(int)));
     connect(extendMapper, SIGNAL(mapped(int)),
             mTileStampManager, SLOT(extendQuickStamp(int)));
 

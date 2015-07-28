@@ -50,13 +50,23 @@ void AbstractTool::setStatusInfo(const QString &statusInfo)
     }
 }
 
+/**
+ * Sets the cursor used by this tool. This will be the cursor set on the
+ * viewport of the MapView while the tool is active.
+ */
+void AbstractTool::setCursor(const QCursor &cursor)
+{
+    mCursor = cursor;
+    emit cursorChanged(cursor);
+}
+
 void AbstractTool::setEnabled(bool enabled)
 {
     if (mEnabled == enabled)
         return;
 
     mEnabled = enabled;
-    emit enabledChanged(mEnabled);
+    emit enabledChanged(enabled);
 }
 
 void AbstractTool::keyPressed(QKeyEvent *event)

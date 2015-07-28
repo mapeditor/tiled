@@ -24,6 +24,7 @@
 #include "lua_global.h"
 
 #include "gidmapper.h"
+#include "map.h"
 #include "mapwriterinterface.h"
 
 #include <QDir>
@@ -49,9 +50,7 @@ class LUASHARED_EXPORT LuaPlugin : public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapWriterInterface)
-#if QT_VERSION >= 0x050000
     Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
-#endif
 
 public:
     LuaPlugin();
@@ -65,7 +64,8 @@ private:
     void writeMap(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
     void writeTileset(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid);
-    void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *);
+    void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
+                        Tiled::Map::LayerDataFormat);
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *,
                           const QByteArray &key = QByteArray());
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);

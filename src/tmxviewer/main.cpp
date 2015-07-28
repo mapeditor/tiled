@@ -84,11 +84,6 @@ static void parseCommandLineArguments(CommandLineOptions &options)
 
 int main(int argc, char *argv[])
 {
-    // Avoid performance issues with X11 engine when rendering objects
-#if QT_VERSION < 0x050000 && defined(Q_WS_X11)
-    QApplication::setGraphicsSystem(QLatin1String("raster"));
-#endif
-
     QApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));

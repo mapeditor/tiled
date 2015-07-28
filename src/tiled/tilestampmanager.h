@@ -22,6 +22,9 @@
 #ifndef TILESTAMPMANAGER_H
 #define TILESTAMPMANAGER_H
 
+#include "tilestamp.h"
+
+#include <QMap>
 #include <QObject>
 #include <QVector>
 
@@ -55,12 +58,14 @@ public:
     TileStampModel *tileStampModel() const;
 
 public slots:
-    void newStamp();
+    TileStamp createStamp();
     void addVariation(const TileStamp &targetStamp);
 
     void selectQuickStamp(int index);
-    void saveQuickStamp(int index);
+    void createQuickStamp(int index);
     void extendQuickStamp(int index);
+
+    void stampsDirectoryChanged();
 
 signals:
     void setStamp(const TileStamp &stamp);
@@ -69,9 +74,19 @@ private:
     Q_DISABLE_COPY(TileStampManager)
 
     void eraseQuickStamp(int index);
-    void saveQuickStamp(int index, TileStamp stamp);
+    void setQuickStamp(int index, TileStamp stamp);
 
+    void loadStamps();
+
+private slots:
+    void stampAdded(TileStamp stamp);
+    void stampRenamed(TileStamp stamp);
+    void saveStamp(const TileStamp &stamp);
+    void deleteStamp(const TileStamp &stamp);
+
+private:
     QVector<TileStamp> mQuickStamps;
+    QMap<QString, TileStamp> mStampsByName;
     TileStampModel *mTileStampModel;
 
     const ToolManager &mToolManager;

@@ -37,12 +37,6 @@
 #include <QStyle>
 #include <QStyleFactory>
 
-#ifdef STATIC_BUILD
-Q_IMPORT_PLUGIN(qgif)
-Q_IMPORT_PLUGIN(qjpeg)
-Q_IMPORT_PLUGIN(qtiff)
-#endif
-
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
 
@@ -52,6 +46,8 @@ namespace {
 
 class CommandLineHandler : public CommandLineParser
 {
+    Q_DECLARE_TR_FUNCTIONS(CommandLineHandler)
+
 public:
     CommandLineHandler();
 
@@ -119,7 +115,7 @@ void CommandLineHandler::showVersion()
 {
     if (!showedVersion) {
         showedVersion = true;
-        qWarning() << qPrintable(QApplication::applicationName())
+        qWarning() << qPrintable(QApplication::applicationDisplayName())
                    << qPrintable(QApplication::applicationVersion());
         quit = true;
     }
@@ -157,33 +153,28 @@ void CommandLineHandler::showExportFormats()
 
 int main(int argc, char *argv[])
 {
-    /*
-     * On X11, Tiled uses the 'raster' graphics system by default, because the
-     * X11 native graphics system has performance problems with drawing the
-     * tile grid.
-     */
-#if QT_VERSION < 0x050000 && defined(Q_WS_X11)
-    QApplication::setGraphicsSystem(QLatin1String("raster"));
-#endif
-
     TiledApplication a(argc, argv);
 
     a.setOrganizationDomain(QLatin1String("mapeditor.org"));
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     a.setApplicationName(QLatin1String("Tiled"));
+#else
+    a.setApplicationName(QLatin1String("tiled"));
+#endif
+    a.setApplicationDisplayName(QLatin1String("Tiled"));
+
 #ifdef BUILD_INFO_VERSION
     a.setApplicationVersion(QLatin1String(AS_STRING(BUILD_INFO_VERSION)));
 #else
-    a.setApplicationVersion(QLatin1String("0.12.3"));
+    a.setApplicationVersion(QLatin1String("0.13.0"));
 #endif
 
 #ifdef Q_OS_MAC
     a.setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
-#if QT_VERSION >= 0x050100
     // Enable support for highres images (added in Qt 5.1, but off by default)
     a.setAttribute(Qt::AA_UseHighDpiPixmaps);
-#endif
 
 #ifndef Q_OS_WIN
     QString baseName = QApplication::style()->objectName();

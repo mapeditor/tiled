@@ -28,6 +28,7 @@
 
 #include "gidmapper.h"
 
+#include "compression.h"
 #include "tile.h"
 #include "tileset.h"
 
@@ -38,11 +39,20 @@ const int FlippedHorizontallyFlag   = 0x80000000;
 const int FlippedVerticallyFlag     = 0x40000000;
 const int FlippedAntiDiagonallyFlag = 0x20000000;
 
+/**
+ * Default constructor. Use \l insert to initialize the gid mapper
+ * incrementally.
+ */
 GidMapper::GidMapper()
+    : mInvalidTile(0)
 {
 }
 
+/**
+ * Constructor that initializes the gid mapper using the given \a tilesets.
+ */
 GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
+    : mInvalidTile(0)
 {
     unsigned firstGid = 1;
     foreach (const SharedTileset &tileset, tilesets) {
@@ -51,6 +61,10 @@ GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
     }
 }
 
+/**
+ * Returns the cell data matched by the given \a gid. The \a ok parameter
+ * indicates whether an error occurred.
+ */
 Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
 {
     Cell result;
@@ -97,6 +111,10 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
     return result;
 }
 
+/**
+ * Returns the global tile ID for the given \a cell. Returns 0 when the cell is
+ * empty or when its tileset isn't known.
+ */
 unsigned GidMapper::cellToGid(const Cell &cell) const
 {
     if (cell.isEmpty())
@@ -124,10 +142,91 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
     return gid;
 }
 
+/**
+ * This sets the original tileset width. In case the image size has changed,
+ * the tile indexes will be adjusted automatically when using gidToCell().
+ */
 void GidMapper::setTilesetWidth(const Tileset *tileset, int width)
 {
     if (tileset->tileWidth() == 0)
         return;
 
     mTilesetColumnCounts.insert(tileset, tileset->columnCountForWidth(width));
+}
+
+/**
+ * Encodes the tile layer data of the given \a tileLayer in the given
+ * \a format. This function should only be used for base64 encoding, with or
+ * without compression.
+ */
+QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
+                                      Map::LayerDataFormat format) const
+{
+    Q_ASSERT(format != Map::XML);
+    Q_ASSERT(format != Map::CSV);
+
+    QByteArray tileData;
+    tileData.reserve(tileLayer.height() * tileLayer.width() * 4);
+
+    for (int y = 0; y < tileLayer.height(); ++y) {
+        for (int x = 0; x < tileLayer.width(); ++x) {
+            const unsigned gid = cellToGid(tileLayer.cellAt(x, y));
+            tileData.append((char) (gid));
+            tileData.append((char) (gid >> 8));
+            tileData.append((char) (gid >> 16));
+            tileData.append((char) (gid >> 24));
+        }
+    }
+
+    if (format == Map::Base64Gzip)
+        tileData = compress(tileData, Gzip);
+    else if (format == Map::Base64Zlib)
+        tileData = compress(tileData, Zlib);
+
+    return tileData.toBase64();
+}
+
+GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
+                                                  const QByteArray &layerData,
+                                                  Map::LayerDataFormat format) const
+{
+    Q_ASSERT(format != Map::XML);
+    Q_ASSERT(format != Map::CSV);
+
+    QByteArray decodedData = QByteArray::fromBase64(layerData);
+    const int size = (tileLayer.width() * tileLayer.height()) * 4;
+
+    if (format == Map::Base64Gzip || format == Map::Base64Zlib)
+        decodedData = decompress(decodedData, size);
+
+    if (size != decodedData.length())
+        return CorruptLayerData;
+
+    const unsigned char *data = reinterpret_cast<const unsigned char*>(decodedData.constData());
+    int x = 0;
+    int y = 0;
+    bool ok;
+
+    for (int i = 0; i < size - 3; i += 4) {
+        const unsigned gid = data[i] |
+                             data[i + 1] << 8 |
+                             data[i + 2] << 16 |
+                             data[i + 3] << 24;
+
+        const Cell result = gidToCell(gid, ok);
+        if (!ok) {
+            mInvalidTile = gid;
+            return isEmpty() ? TileButNoTilesets : InvalidTile;
+        }
+
+        tileLayer.setCell(x, y, result);
+
+        x++;
+        if (x == tileLayer.width()) {
+            x = 0;
+            y++;
+        }
+    }
+
+    return NoError;
 }

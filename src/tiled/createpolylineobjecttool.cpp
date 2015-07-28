@@ -47,7 +47,8 @@ MapObject *CreatePolylineObjectTool::createNewMapObject()
     return newMapObject;
 }
 
-void CreatePolylineObjectTool::finishNewMapObject(){
+void CreatePolylineObjectTool::finishNewMapObject()
+{
     if (mNewMapObjectItem->mapObject()->polygon().size() >= 2)
         CreateObjectTool::finishNewMapObject();
     else

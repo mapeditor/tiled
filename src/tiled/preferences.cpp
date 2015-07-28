@@ -25,11 +25,7 @@
 #include "mapdocument.h"
 #include "tilesetmanager.h"
 
-#if QT_VERSION >= 0x050000
 #include <QStandardPaths>
-#else
-#include <QDesktopServices>
-#endif
 
 #include <QFileInfo>
 #include <QSettings>
@@ -65,6 +61,7 @@ Preferences::Preferences()
                              Map::RightDown).toInt();
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
+    mStampsDirectory = stringValue("StampsDirectory");
     mSettings->endGroup();
 
     // Retrieve interface settings
@@ -388,13 +385,8 @@ QString Preferences::lastPath(FileType fileType) const
     }
 
     if (path.isEmpty()) {
-#if QT_VERSION >= 0x050000
         path = QStandardPaths::writableLocation(
                     QStandardPaths::DocumentsLocation);
-#else
-        path = QDesktopServices::storageLocation(
-                    QDesktopServices::DocumentsLocation);
-#endif
     }
 
     return path;
@@ -477,4 +469,28 @@ int Preferences::intValue(const char *key, int defaultValue) const
 qreal Preferences::realValue(const char *key, qreal defaultValue) const
 {
     return mSettings->value(QLatin1String(key), defaultValue).toReal();
+}
+
+QString Preferences::stampsDirectory() const
+{
+    if (mStampsDirectory.isEmpty()) {
+#if QT_VERSION >= 0x050400
+        QString appData = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+#else
+        QString appData = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+#endif
+        return appData + QLatin1String("/stamps");
+    }
+    return mStampsDirectory;
+}
+
+void Preferences::setStampsDirectory(const QString &stampsDirectory)
+{
+    if (mStampsDirectory == stampsDirectory)
+        return;
+
+    mStampsDirectory = stampsDirectory;
+    mSettings->setValue(QLatin1String("Storage/StampsDirectory"), stampsDirectory);
+
+    emit stampsDirectoryChanged(stampsDirectory);
 }

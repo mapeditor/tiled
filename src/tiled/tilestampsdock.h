@@ -24,6 +24,8 @@
 #include <QDockWidget>
 #include <QTreeView>
 
+class QSortFilterProxyModel;
+
 namespace Tiled {
 
 class TileLayer;
@@ -53,19 +55,28 @@ private slots:
     void currentRowChanged(const QModelIndex &index);
     void showContextMenu(QPoint pos);
 
+    void newStamp();
     void delete_();
+    void duplicate();
     void addVariation();
+    void chooseFolder();
+
+    void ensureStampVisible(const TileStamp &stamp);
 
 private:
     void retranslateUi();
 
     TileStampManager *mTileStampManager;
     TileStampModel *mTileStampModel;
+    QSortFilterProxyModel *mProxyModel;
     TileStampView *mTileStampView;
+    QLineEdit *mFilterEdit;
 
     QAction *mNewStamp;
     QAction *mAddVariation;
+    QAction *mDuplicate;
     QAction *mDelete;
+    QAction *mChooseFolder;
 };
 
 

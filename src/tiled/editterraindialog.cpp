@@ -107,11 +107,7 @@ EditTerrainDialog::EditTerrainDialog(MapDocument *mapDocument,
     mUi->terrainList->setRootIndex(rootIndex);
 
     QHeaderView *terrainListHeader = mUi->terrainList->header();
-#if QT_VERSION >= 0x050000
     terrainListHeader->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-#else
-    terrainListHeader->setResizeMode(0, QHeaderView::ResizeToContents);
-#endif
 
     QItemSelectionModel *selectionModel = mUi->terrainList->selectionModel();
     connect(selectionModel, SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
@@ -182,9 +178,8 @@ void EditTerrainDialog::eraseTerrainToggled(bool checked)
 
 void EditTerrainDialog::addTerrainType(Tile *tile)
 {
-    Tileset *tileset = tile->tileset();
-    Terrain *terrain = new Terrain(tileset->terrainCount(),
-                                   tileset,
+    Terrain *terrain = new Terrain(mTileset->terrainCount(),
+                                   mTileset,
                                    QString(), tile ? tile->id() : -1);
     terrain->setName(tr("New Terrain"));
 

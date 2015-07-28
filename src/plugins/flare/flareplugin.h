@@ -41,9 +41,7 @@ class FLARESHARED_EXPORT FlarePlugin
     Q_INTERFACES(Tiled::MapWriterInterface)
     Q_INTERFACES(Tiled::MapReaderInterface)
 
-#if QT_VERSION >= 0x050000
     Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
-#endif
 
 public:
     FlarePlugin();

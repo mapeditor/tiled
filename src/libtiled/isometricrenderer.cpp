@@ -78,7 +78,11 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                       objectSize.width(),
                       objectSize.height()).adjusted(-1, -1, 1, 1);
     } else if (!object->polygon().isEmpty()) {
-        const qreal extraSpace = qMax(objectLineWidth() / 2, qreal(1));
+        qreal extraSpace = qMax(objectLineWidth(), qreal(1));
+
+        // Make some more room for the starting dot
+        extraSpace += objectLineWidth() * 4;
+
         const QPointF &pos = object->position();
         const QPolygonF polygon = object->polygon().translated(pos);
         const QPolygonF screenPolygon = pixelToScreenCoords(polygon);
@@ -316,6 +320,9 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         pen.setCapStyle(Qt::RoundCap);
         pen.setWidth(lineWidth);
 
+        QPen colorPen(pen);
+        colorPen.setColor(color);
+
         painter->setPen(pen);
         painter->setRenderHint(QPainter::Antialiasing);
 
@@ -356,8 +363,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             painter->setBrush(Qt::NoBrush);
             painter->drawPolygon(polygon);
 
-            pen.setColor(color);
-            painter->setPen(pen);
+            painter->setPen(colorPen);
             painter->setBrush(Qt::NoBrush);
             painter->translate(QPointF(0, -shadowOffset));
             painter->drawPolygon(polygon);
@@ -377,8 +383,7 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             QPolygonF polygon = pixelRectToScreenPolygon(object->bounds());
             painter->drawPolygon(polygon);
 
-            pen.setColor(color);
-            painter->setPen(pen);
+            painter->setPen(colorPen);
             painter->setBrush(brush);
             polygon.translate(0, -shadowOffset);
             painter->drawPolygon(polygon);
@@ -389,14 +394,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
-            painter->drawPolygon(screenPolygon);
+            QPen thickPen(pen);
+            QPen thickColorPen(colorPen);
+            thickPen.setWidthF(thickPen.widthF() * 4);
+            thickColorPen.setWidthF(thickColorPen.widthF() * 4);
 
-            pen.setColor(color);
-            painter->setPen(pen);
+            painter->drawPolygon(screenPolygon);
+            painter->setPen(thickPen);
+            painter->drawPoint(screenPolygon.first());
+
+            painter->setPen(colorPen);
             painter->setBrush(brush);
             screenPolygon.translate(0, -shadowOffset);
 
             painter->drawPolygon(screenPolygon);
+            painter->setPen(thickColorPen);
+            painter->drawPoint(screenPolygon.first());
 
             break;
         }
@@ -405,13 +418,22 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
             const QPolygonF polygon = object->polygon().translated(pos);
             QPolygonF screenPolygon = pixelToScreenCoords(polygon);
 
+            QPen thickPen(pen);
+            QPen thickColorPen(colorPen);
+            thickPen.setWidthF(thickPen.widthF() * 4);
+            thickColorPen.setWidthF(thickColorPen.widthF() * 4);
+
             painter->drawPolyline(screenPolygon);
+            painter->setPen(thickPen);
+            painter->drawPoint(screenPolygon.first());
 
             pen.setColor(color);
             painter->setPen(pen);
             screenPolygon.translate(0, -shadowOffset);
 
             painter->drawPolyline(screenPolygon);
+            painter->setPen(thickColorPen);
+            painter->drawPoint(screenPolygon.first());
             break;
         }
         }

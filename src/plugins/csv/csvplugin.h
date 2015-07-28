@@ -32,20 +32,18 @@ class CSVSHARED_EXPORT CsvPlugin : public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapWriterInterface)
-#if QT_VERSION >= 0x050000
     Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
-#endif
 
 public:
     CsvPlugin();
 
     // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString errorString() const;
-    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+    QString errorString() const override;
+    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
 
 protected:
-    QString nameFilter() const;
+    QString nameFilter() const override;
 
 private:
     QString mError;

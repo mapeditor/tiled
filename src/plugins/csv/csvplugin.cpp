@@ -27,14 +27,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-
-#if QT_VERSION >= 0x050100
-#define HAS_QSAVEFILE_SUPPORT
-#endif
-
-#ifdef HAS_QSAVEFILE_SUPPORT
 #include <QSaveFile>
-#endif
 
 using namespace Tiled;
 using namespace Csv;
@@ -56,11 +49,8 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
             
         const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
 
-#ifdef HAS_QSAVEFILE_SUPPORT
         QSaveFile file(layerPaths.at(currentLayer));
-#else
-        QFile file(layerPaths.at(currentLayer));
-#endif
+
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             mError = tr("Could not open file for writing.");
             return false;
@@ -90,12 +80,10 @@ bool CsvPlugin::write(const Map *map, const QString &fileName)
             return false;
         }
 
-#ifdef HAS_QSAVEFILE_SUPPORT
         if (!file.commit()) {
             mError = file.errorString();
             return false;
         }
-#endif
 
         ++currentLayer;
     }
@@ -141,7 +129,3 @@ QString CsvPlugin::nameFilter() const
 {
     return tr("CSV files (*.csv)");
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Csv, CsvPlugin)
-#endif

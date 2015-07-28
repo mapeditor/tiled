@@ -42,13 +42,8 @@ ConverterWindow::ConverterWindow(QWidget *parent) :
     ui->treeView->setModel(mDataModel);
 
     QHeaderView *header = ui->treeView->header();
-#if QT_VERSION >= 0x050000
     header->setSectionResizeMode(0, QHeaderView::Stretch);
     header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-#else
-    header->setResizeMode(0, QHeaderView::Stretch);
-    header->setResizeMode(1, QHeaderView::ResizeToContents);
-#endif
 }
 
 ConverterWindow::~ConverterWindow()

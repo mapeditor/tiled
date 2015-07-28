@@ -31,7 +31,7 @@
 #include "tileset.h"
 #include "objectgroup.h"
 
-#include <QFile>
+#include <QSaveFile>
 #include <QFileInfo>
 #include <QDir>
 #include <QSettings>
@@ -48,6 +48,7 @@ FlarePlugin::FlarePlugin()
 Tiled::Map *FlarePlugin::read(const QString &fileName)
 {
     QFile file(fileName);
+
     if (!file.open (QIODevice::ReadOnly)) {
         mError = tr("Could not open file for reading.");
         return 0;
@@ -270,7 +271,8 @@ QString FlarePlugin::errorString() const
 
 bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
-    QFile file(fileName);
+    QSaveFile file(fileName);
+
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -373,10 +375,11 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
             }
         }
     }
-    file.close();
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
     return true;
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Flare, FlarePlugin)
-#endif

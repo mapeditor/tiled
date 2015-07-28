@@ -195,6 +195,8 @@ void CreateObjectTool::finishNewMapObject()
     mapDocument()->undoStack()->push(new AddMapObject(mapDocument(),
                                                       objectGroup,
                                                       newMapObject));
+
+    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject);
 }
 
 void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &, Qt::KeyboardModifiers)

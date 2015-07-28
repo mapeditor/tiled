@@ -55,7 +55,7 @@ public:
                   ObjectGroupItem *parent = 0);
 
     enum { Type = UserType + 1 };
-    int type() const { return Type; }
+    int type() const override { return Type; }
 
     MapObject *mapObject() const
     { return mObject; }
@@ -65,22 +65,13 @@ public:
      */
     void syncWithMapObject();
 
-    /**
-     * Sets whether this map object is editable. Editable map objects can be
-     * resized and get a move cursor.
-     */
-    void setEditable(bool editable);
-
-    bool isEditable() const
-    { return mIsEditable; }
-
     // QGraphicsItem
-    QRectF boundingRect() const;
-    QPainterPath shape() const;
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
 
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = 0) override;
 
     /**
      * Resizes the associated map object. The \a size is given in tiles.
@@ -112,8 +103,6 @@ private:
     QString mName;      // Copy of the name, so we know when it changes
     QPolygonF mPolygon; // Copy of the polygon, for the same reason
     QColor mColor;      // Cached color of the object
-    bool mIsEditable;
-    bool mSyncing;
 };
 
 } // namespace Internal

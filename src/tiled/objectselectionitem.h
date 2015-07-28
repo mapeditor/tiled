@@ -1,6 +1,6 @@
 /*
- * tileselectionitem.h
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ *
+ * Copyright 2015, Your Name <your.name@domain>
  *
  * This file is part of Tiled.
  *
@@ -18,45 +18,44 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESELECTIONITEM_H
-#define TILESELECTIONITEM_H
+#ifndef TILED_INTERNAL_OBJECTSELECTIONITEM_H
+#define TILED_INTERNAL_OBJECTSELECTIONITEM_H
 
 #include <QGraphicsObject>
+#include <QMap>
 
 namespace Tiled {
+
+class MapObject;
+
 namespace Internal {
 
 class MapDocument;
+class MapObjectOutline;
 
-/**
- * A graphics item displaying a tile selection.
- */
-class TileSelectionItem : public QGraphicsObject
+class ObjectSelectionItem : public QGraphicsObject
 {
     Q_OBJECT
 
 public:
-    TileSelectionItem(MapDocument *mapDocument);
+    ObjectSelectionItem(MapDocument *mapDocument);
 
-    // QGraphicsItem
-    QRectF boundingRect() const;
+    // QGraphicsItem interface
+    QRectF boundingRect() const override { return QRectF(); }
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
 
 private slots:
-    void selectionChanged(const QRegion &newSelection,
-                          const QRegion &oldSelection);
+    void selectedObjectsChanged();
+    void mapChanged();
+    void syncObjectOutlines(const QList<MapObject *> &objects);
 
 private:
-    void updateBoundingRect();
-
     MapDocument *mMapDocument;
-    QRectF mBoundingRect;
+    QMap<MapObject*, MapObjectOutline*> mObjectOutlines;
 };
 
 } // namespace Internal
 } // namespace Tiled
 
-#endif // TILESELECTIONITEM_H
+#endif // TILED_INTERNAL_OBJECTSELECTIONITEM_H

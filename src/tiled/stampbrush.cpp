@@ -28,6 +28,7 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "painttilelayer.h"
+#include "tile.h"
 #include "tilestamp.h"
 
 #include <math.h>
@@ -185,7 +186,7 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
  */
 void StampBrush::updateRandomList()
 {
-    mRandomList.clear();
+    mRandomCellPicker.clear();
     mMissingTilesets.clear();
 
     if (mStamp.isEmpty())
@@ -194,10 +195,13 @@ void StampBrush::updateRandomList()
     foreach (const TileStampVariation &variation, mStamp.variations()) {
         TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
-        for (int x = 0; x < tileLayer->width(); x++)
-            for (int y = 0; y < tileLayer->height(); y++)
-                if (!tileLayer->cellAt(x, y).isEmpty())
-                    mRandomList.append(tileLayer->cellAt(x, y));
+        for (int x = 0; x < tileLayer->width(); x++) {
+            for (int y = 0; y < tileLayer->height(); y++) {
+                const Cell &cell = tileLayer->cellAt(x, y);
+                if (!cell.isEmpty())
+                    mRandomCellPicker.add(cell, cell.tile->probability());
+            }
+        }
     }
 }
 
@@ -351,7 +355,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         return;
 
     if (mIsRandom) {
-        if (mRandomList.empty())
+        if (mRandomCellPicker.isEmpty())
             return;
 
         QRegion paintedRegion;
@@ -364,8 +368,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.width(), bounds.height()));
 
         foreach (const QPoint p, list) {
-            // todo: take into account tile probability
-            const Cell &cell = mRandomList.at(rand() % mRandomList.size());
+            const Cell &cell = mRandomCellPicker.pick();
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),
                              cell);
@@ -428,6 +431,9 @@ void StampBrush::updatePreview()
 
 void StampBrush::updatePreview(QPoint tilePos)
 {
+    if (!mapDocument())
+        return;
+
     QRegion tileRegion;
 
     if (mBrushBehavior == Capture) {

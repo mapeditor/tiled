@@ -12,9 +12,8 @@ win32 {
     DESTDIR = ../../bin
 }
 
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
+QT += widgets
+
 contains(QT_CONFIG, opengl):!macx: QT += opengl
 
 DEFINES += QT_NO_CAST_FROM_ASCII \
@@ -121,6 +120,7 @@ SOURCES += aboutdialog.cpp \
     newtilesetdialog.cpp \
     objectgroupitem.cpp \
     objectsdock.cpp \
+    objectselectionitem.cpp \
     objectselectiontool.cpp \
     objecttypes.cpp \
     objecttypesmodel.cpp \
@@ -261,6 +261,7 @@ HEADERS += aboutdialog.h \
     newtilesetdialog.h \
     objectgroupitem.h \
     objectsdock.h \
+    objectselectionitem.h \
     objectselectiontool.h \
     objecttypes.h \
     objecttypesmodel.h \
@@ -274,6 +275,7 @@ HEADERS += aboutdialog.h \
     propertiesdock.h \
     propertybrowser.h \
     raiselowerhelper.h \
+    randompicker.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \

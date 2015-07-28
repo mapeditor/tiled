@@ -22,12 +22,13 @@
 #ifndef ABSTRACTTOOL_H
 #define ABSTRACTTOOL_H
 
-#include <QObject>
+#include <QCursor>
+#include <QGraphicsSceneMouseEvent>
 #include <QIcon>
 #include <QKeySequence>
 #include <QMetaType>
+#include <QObject>
 #include <QString>
-#include <QGraphicsSceneMouseEvent>
 
 class QEvent;
 class QKeyEvent;
@@ -51,6 +52,13 @@ class AbstractTool : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
+    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
+    Q_PROPERTY(QString statusInfo READ statusInfo WRITE setStatusInfo NOTIFY statusInfoChanged)
+    Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+
 public:
     /**
      * Constructs an abstract tool with the given \a name and \a icon.
@@ -62,19 +70,22 @@ public:
 
     virtual ~AbstractTool() {}
 
-    QString name() const { return mName; }
-    void setName(const QString &name) { mName = name; }
+    QString name() const;
+    void setName(const QString &name);
 
-    QIcon icon() const { return mIcon; }
-    void setIcon(const QIcon &icon) { mIcon = icon; }
+    QIcon icon() const;
+    void setIcon(const QIcon &icon);
 
-    QKeySequence shortcut() const { return mShortcut; }
-    void setShortcut(const QKeySequence &shortcut) { mShortcut = shortcut; }
+    QKeySequence shortcut() const;
+    void setShortcut(const QKeySequence &shortcut);
 
-    QString statusInfo() const { return mStatusInfo; }
+    QString statusInfo() const;
     void setStatusInfo(const QString &statusInfo);
 
-    bool isEnabled() const { return mEnabled; }
+    QCursor cursor() const;
+    void setCursor(const QCursor &cursor);
+
+    bool isEnabled() const;
     void setEnabled(bool enabled);
 
     /**
@@ -158,6 +169,7 @@ protected slots:
 
 signals:
     void statusInfoChanged(const QString &statusInfo);
+    void cursorChanged(const QCursor &cursor);
     void enabledChanged(bool enabled);
 
 private:
@@ -165,10 +177,57 @@ private:
     QIcon mIcon;
     QKeySequence mShortcut;
     QString mStatusInfo;
+    QCursor mCursor;
     bool mEnabled;
 
     MapDocument *mMapDocument;
 };
+
+
+inline QString AbstractTool::name() const
+{
+    return mName;
+}
+
+inline void AbstractTool::setName(const QString &name)
+{
+    mName = name;
+}
+
+inline QIcon AbstractTool::icon() const
+{
+    return mIcon;
+}
+
+inline void AbstractTool::setIcon(const QIcon &icon)
+{
+    mIcon = icon;
+}
+
+inline QKeySequence AbstractTool::shortcut() const
+{
+    return mShortcut;
+}
+
+inline void AbstractTool::setShortcut(const QKeySequence &shortcut)
+{
+    mShortcut = shortcut;
+}
+
+inline QString AbstractTool::statusInfo() const
+{
+    return mStatusInfo;
+}
+
+inline QCursor AbstractTool::cursor() const
+{
+    return mCursor;
+}
+
+inline bool AbstractTool::isEnabled() const
+{
+    return mEnabled;
+}
 
 } // namespace Internal
 } // namespace Tiled

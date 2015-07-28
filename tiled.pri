@@ -17,13 +17,7 @@ win32-g++* {
     QMAKE_LFLAGS += /LARGEADDRESSAWARE
 }
 
-CONFIG += depend_includepath
-
-equals(QT_MAJOR_VERSION, 4) {
-    QMAKE_CXXFLAGS += -std=c++0x
-} else {
-    CONFIG += c++11
-}
+CONFIG += depend_includepath c++11
 
 !isEmpty(USE_FHS_PLUGIN_PATH) {
     DEFINES += TILED_PLUGIN_DIR=\\\"$${LIBDIR}/tiled/plugins/\\\"
