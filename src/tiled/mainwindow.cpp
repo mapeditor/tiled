@@ -805,8 +805,15 @@ bool MainWindow::saveFileAs()
     }
 
     QString selectedFilter;
-    if (mMapDocument)
-        selectedFilter = mMapDocument->writerPluginFileName();
+    if (mMapDocument && !mMapDocument->writerPluginFileName().isEmpty()) {
+        if (const Plugin *plugin = pm->pluginByFileName(mMapDocument->writerPluginFileName())) {
+            if (MapWriterInterface *writer = qobject_cast<MapWriterInterface*>(plugin->instance)) {
+                QStringList nameFilters = writer->nameFilters();
+                if (!nameFilters.isEmpty())
+                    selectedFilter = nameFilters.first();
+            }
+        }
+    }
 
     if (selectedFilter.isEmpty())
         selectedFilter = tmxfilter;
