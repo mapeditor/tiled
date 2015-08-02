@@ -23,7 +23,7 @@
 
 #include "changeselectedarea.h"
 #include "documentmanager.h"
-#include "layer.h"
+#include "tilelayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"

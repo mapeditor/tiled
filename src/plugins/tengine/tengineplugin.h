@@ -23,7 +23,7 @@
 
 #include "tengine_global.h"
 
-#include "mapwriterinterface.h"
+#include "mapformat.h"
 #include "properties.h"
 
 #include <QObject>
@@ -33,20 +33,17 @@ namespace Tengine {
 const int ASCII_MIN = 32;
 const int ASCII_MAX = 126;
 
-class TENGINESHARED_EXPORT TenginePlugin : public QObject,
-                                   public Tiled::MapWriterInterface
+class TENGINESHARED_EXPORT TenginePlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapWriterInterface)
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     TenginePlugin();
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString nameFilter() const;
-    QString errorString() const;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+    QString nameFilter() const override;
+    QString errorString() const override;
 
 private:
     QString mError;

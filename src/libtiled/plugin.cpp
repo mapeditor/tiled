@@ -1,6 +1,5 @@
 /*
- * logginginterface.h
- * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
+ * plugin.cpp
  * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
@@ -27,42 +26,26 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef LOGGINGINTERFACE_H
-#define LOGGINGINTERFACE_H
+#include "plugin.h"
 
-#include "tiled_global.h"
-
-#include <QObject>
-
-class QString;
+#include "pluginmanager.h"
 
 namespace Tiled {
 
 /**
- * An object to be added by classes that want to signal the debug console.
+ * Convenience function that calls PluginManager::addObject.
  */
-class TILEDSHARED_EXPORT LoggingInterface : public QObject
+void Plugin::addObject(QObject *object)
 {
-    Q_OBJECT
+    PluginManager::addObject(object);
+}
 
-public:
-    enum OutputType {
-        INFO, ERROR
-    };
-
-    void log(OutputType type, const QString &message)
-    {
-        if (type == INFO)
-            emit info(message);
-        else if (type == ERROR)
-            emit error(message);
-    }
-
-signals:
-    void info(const QString &message);
-    void error(const QString &message);
-};
+/**
+ * Convenience function that calls PluginManager::removeObject.
+ */
+void Plugin::removeObject(QObject *object)
+{
+    PluginManager::removeObject(object);
+}
 
 } // namespace Tiled
-
-#endif // LOGGINGINTERFACE_H

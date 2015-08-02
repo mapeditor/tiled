@@ -100,10 +100,6 @@ class ZST(Plugin):
       m.addLayer(la)
     return m
 
-  @classmethod
-  def write(cls, m, fn):
-    return False
-
 def readTileset(dat, img, tvert=32, thoriz=32):
   tw, th = 8, 8
   # iterate tiles

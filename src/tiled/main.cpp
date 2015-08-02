@@ -26,7 +26,7 @@
 #include "pluginmanager.h"
 #include "mapdocument.h"
 #include "mapreader.h"
-#include "mapwriterinterface.h"
+#include "mapformat.h"
 #include "preferences.h"
 #include "tiledapplication.h"
 #include "tileset.h"
@@ -40,6 +40,7 @@
 #define STRINGIFY(x) #x
 #define AS_STRING(x) STRINGIFY(x)
 
+using namespace Tiled;
 using namespace Tiled::Internal;
 
 namespace {
@@ -138,14 +139,14 @@ void CommandLineHandler::setExportMap()
 
 void CommandLineHandler::showExportFormats()
 {
-    PluginManager *pluginManager = PluginManager::instance();
-    pluginManager->loadPlugins();
+    PluginManager::instance()->loadPlugins();
 
     qWarning() << qPrintable(tr("Export formats:"));
-    QList<Tiled::MapWriterInterface*> writers = pluginManager->interfaces<Tiled::MapWriterInterface>();
-    foreach (Tiled::MapWriterInterface *writer, writers) {
-        foreach (const QString &filter, writer->nameFilters())
-            qWarning() << " " << filter;
+    auto formats = PluginManager::objects<MapFormat>();
+    for (MapFormat *format : formats) {
+        if (format->hasCapabilities(MapFormat::Write))
+            for (const QString &filter : format->nameFilters())
+                qWarning() << " " << filter;
     }
 
     quit = true;
@@ -220,34 +221,49 @@ int main(int argc, char *argv[])
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 
-        // Find the map writer interface for the target file
-        Tiled::MapWriterInterface *chosenWriter = 0;
-        QString suffix = QFileInfo(targetFile).completeSuffix();
-        QList<Tiled::MapWriterInterface*> writers = PluginManager::instance()->interfaces<Tiled::MapWriterInterface>();
-        foreach (Tiled::MapWriterInterface *writer, writers) {
-            if (filter) {
-                if (writer->nameFilters().contains(*filter, Qt::CaseInsensitive)) {
-                    chosenWriter = writer;
+        MapFormat *chosenFormat = nullptr;
+        auto formats = PluginManager::objects<MapFormat>();
+
+        if (filter) {
+            // Find the map format supporting the given filter
+            for (MapFormat *format : formats) {
+                if (!format->hasCapabilities(MapFormat::Write))
+                    continue;
+                if (format->nameFilters().contains(*filter, Qt::CaseInsensitive)) {
+                    chosenFormat = format;
+                    break;
                 }
             }
-            else if (!writer->nameFilters().filter(suffix, Qt::CaseInsensitive).isEmpty()) {
-                if (chosenWriter) {
-                    qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                         "Non-unique file extension. Can't determine correct export format."));
-                    return 1;
-                }
-                chosenWriter = writer;
+            if (!chosenFormat) {
+                qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                     "Format not recognized (see --export-formats)"));
+                return 1;
             }
-        }
-        if (!chosenWriter) {
-            qWarning() << qPrintable(QCoreApplication::translate("Command line",
-                                                                 "No exporter found for target file."));
-            return 1;
+        } else {
+            // Find the map format based on target file extension
+            QString suffix = QFileInfo(targetFile).completeSuffix();
+            for (MapFormat *format : formats) {
+                if (!format->hasCapabilities(MapFormat::Write))
+                    continue;
+                if (!format->nameFilters().filter(suffix, Qt::CaseInsensitive).isEmpty()) {
+                    if (chosenFormat) {
+                        qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                             "Non-unique file extension. Can't determine correct export format."));
+                        return 1;
+                    }
+                    chosenFormat = format;
+                }
+            }
+            if (!chosenFormat) {
+                qWarning() << qPrintable(QCoreApplication::translate("Command line",
+                                                                     "No exporter found for target file."));
+                return 1;
+            }
         }
 
         // Load the source file
-        Tiled::MapReader reader;
-        Tiled::Map *map = reader.readMap(sourceFile);
+        MapReader reader;
+        QScopedPointer<Map> map(reader.readMap(sourceFile));
         if (!map) {
             qWarning() << qPrintable(QCoreApplication::translate("Command line",
                                                                  "Failed to load source map."));
@@ -255,9 +271,7 @@ int main(int argc, char *argv[])
         }
 
         // Write out the file
-        bool success = chosenWriter->write(map, targetFile);
-
-        delete map;
+        bool success = chosenFormat->write(map.data(), targetFile);
 
         if (!success) {
             qWarning() << qPrintable(QCoreApplication::translate("Command line",

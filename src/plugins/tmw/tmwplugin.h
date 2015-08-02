@@ -23,26 +23,23 @@
 
 #include "tmw_global.h"
 
-#include "mapwriterinterface.h"
+#include "mapformat.h"
 
 #include <QObject>
 
 namespace Tmw {
 
-class TMWSHARED_EXPORT TmwPlugin : public QObject,
-                                   public Tiled::MapWriterInterface
+class TMWSHARED_EXPORT TmwPlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapWriterInterface)
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     TmwPlugin();
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString nameFilter() const;
-    QString errorString() const;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+    QString nameFilter() const override;
+    QString errorString() const override;
 
 private:
     QString mError;

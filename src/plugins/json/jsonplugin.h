@@ -24,8 +24,7 @@
 
 #include "json_global.h"
 
-#include "mapwriterinterface.h"
-#include "mapreaderinterface.h"
+#include "mapformat.h"
 
 #include <QObject>
 
@@ -35,30 +34,22 @@ class Map;
 
 namespace Json {
 
-class JSONSHARED_EXPORT JsonPlugin
-        : public QObject
-        , public Tiled::MapReaderInterface
-        , public Tiled::MapWriterInterface
+class JSONSHARED_EXPORT JsonPlugin : public Tiled::MapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapReaderInterface)
-    Q_INTERFACES(Tiled::MapWriterInterface)
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
+    Q_INTERFACES(Tiled::MapFormat)
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     JsonPlugin();
 
-    // MapReaderInterface
-    Tiled::Map *read(const QString &fileName);
-    bool supportsFile(const QString &fileName) const;
+    Tiled::Map *read(const QString &fileName) override;
+    bool supportsFile(const QString &fileName) const override;
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
+    bool write(const Tiled::Map *map, const QString &fileName) override;
 
-    // Both interfaces
-    QStringList nameFilters() const;
-    QString errorString() const;
+    QStringList nameFilters() const override;
+    QString errorString() const override;
 
 private:
     QString mError;

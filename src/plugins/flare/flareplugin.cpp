@@ -25,7 +25,6 @@
 #include "gidmapper.h"
 #include "map.h"
 #include "mapobject.h"
-#include "mapreader.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"

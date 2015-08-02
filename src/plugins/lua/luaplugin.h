@@ -25,7 +25,7 @@
 
 #include "gidmapper.h"
 #include "map.h"
-#include "mapwriterinterface.h"
+#include "mapformat.h"
 
 #include <QDir>
 #include <QObject>
@@ -45,20 +45,17 @@ class LuaTableWriter;
 /**
  * This plugin allows exporting maps as Lua files.
  */
-class LUASHARED_EXPORT LuaPlugin : public QObject,
-                                   public Tiled::MapWriterInterface
+class LUASHARED_EXPORT LuaPlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapWriterInterface)
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     LuaPlugin();
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString nameFilter() const;
-    QString errorString() const;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+    QString nameFilter() const override;
+    QString errorString() const override;
 
 private:
     void writeMap(LuaTableWriter &, const Tiled::Map *);

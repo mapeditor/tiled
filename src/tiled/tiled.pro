@@ -128,7 +128,6 @@ SOURCES += aboutdialog.cpp \
     offsetmapdialog.cpp \
     painttilelayer.cpp \
     patreondialog.cpp \
-    pluginmanager.cpp \
     preferences.cpp \
     preferencesdialog.cpp \
     propertiesdock.cpp \
@@ -168,8 +167,7 @@ SOURCES += aboutdialog.cpp \
     tilestampmanager.cpp \
     tilestampmodel.cpp \
     tilestampsdock.cpp \
-    tmxmapreader.cpp \
-    tmxmapwriter.cpp \
+    tmxmapformat.cpp \
     toolmanager.cpp \
     undodock.cpp \
     utils.cpp \
@@ -269,7 +267,6 @@ HEADERS += aboutdialog.h \
     offsetmapdialog.h \
     painttilelayer.h \
     patreondialog.h \
-    pluginmanager.h \
     preferencesdialog.h \
     preferences.h \
     propertiesdock.h \
@@ -311,8 +308,7 @@ HEADERS += aboutdialog.h \
     tilestampmanager.h \
     tilestampmodel.h \
     tilestampsdock.h \
-    tmxmapreader.h \
-    tmxmapwriter.h \
+    tmxmapformat.h \
     toolmanager.h \
     undocommands.h \
     undodock.h \

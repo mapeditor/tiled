@@ -1,6 +1,6 @@
 /*
- * tmxmapwriter.h
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * tmxmapformat.h
+ * Copyright 2008-2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,13 +18,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TMXMAPWRITER_H
-#define TMXMAPWRITER_H
+#ifndef TMXMAPFORMAT_H
+#define TMXMAPFORMAT_H
 
-#include "mapwriterinterface.h"
-
-#include <QCoreApplication>
-#include <QString>
+#include "mapformat.h"
+#include "tileset.h"
 
 namespace Tiled {
 
@@ -33,14 +31,18 @@ class Tileset;
 namespace Internal {
 
 /**
- * A writer for Tiled's .tmx map format.
+ * A reader and writer for Tiled's .tmx map format.
  */
-class TmxMapWriter : public MapWriterInterface
+class TmxMapFormat : public MapFormat
 {
-    Q_DECLARE_TR_FUNCTIONS(TmxMapReader)
+    Q_OBJECT
 
 public:
-    bool write(const Map *map, const QString &fileName);
+    Map *read(const QString &fileName) override;
+
+    SharedTileset readTileset(const QString &fileName);
+
+    bool write(const Map *map, const QString &fileName) override;
 
     bool writeTileset(const Tileset &tileset, const QString &fileName);
 
@@ -49,13 +51,24 @@ public:
      * for storing a map in the clipboard. References to other files (like
      * tileset images) will be saved as absolute paths.
      *
-     * @see TmxMapReader::fromByteArray
+     * @see fromByteArray
      */
     QByteArray toByteArray(const Map *map);
 
-    QString nameFilter() const { return tr("Tiled map files (*.tmx)"); }
+    /**
+     * Reads the map given from \a data. This is for retrieving a map from the
+     * clipboard. Returns null on failure.
+     *
+     * @see toByteArray
+     */
+    Map *fromByteArray(const QByteArray &data);
 
-    QString errorString() const { return mError; }
+    QString nameFilter() const override { return tr("Tiled map files (*.tmx)"); }
+
+    bool supportsFile(const QString &fileName) const override
+    { return fileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive); }
+
+    QString errorString() const override { return mError; }
 
 private:
     QString mError;
@@ -64,4 +77,4 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-#endif // TMXMAPWRITER_H
+#endif // TMXMAPFORMAT_H

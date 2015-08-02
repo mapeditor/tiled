@@ -21,19 +21,17 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 
+#include "tiled_global.h"
+
 #include <QList>
 #include <QObject>
 #include <QString>
 
 namespace Tiled {
-namespace Internal {
 
-/**
- * A loaded plugin.
- */
-struct Plugin
+struct LoadedPlugin
 {
-    Plugin(const QString &fileName, QObject *instance)
+    LoadedPlugin(const QString &fileName, QObject *instance)
         : fileName(fileName)
         , instance(instance)
     {}
@@ -45,8 +43,10 @@ struct Plugin
 /**
  * The plugin manager loads the plugins and provides ways to access them.
  */
-class PluginManager
+class TILEDSHARED_EXPORT PluginManager : public QObject
 {
+    Q_OBJECT
+
 public:
     /**
      * Returns the plugin manager instance.
@@ -63,37 +63,37 @@ public:
     /**
      * Returns the list of plugins found by the plugin manager.
      */
-    const QList<Plugin> &plugins() const { return mPlugins; }
+    const QList<LoadedPlugin> &plugins() const { return mPlugins; }
 
     /**
-     * Returns the list of plugins that implement a given interface.
+     * Adds the given \a object. This allows the object to be found later based
+     * on the interfaces it implements.
      */
-    template<typename T> QList<T*> interfaces() const
+    static void addObject(QObject *object);
+
+    /**
+     * Removes the given \a object.
+     */
+    static void removeObject(QObject *object);
+
+    /**
+     * Returns the list of objects that implement a given interface.
+     */
+    template<typename T>
+    static QList<T*> objects()
     {
         QList<T*> results;
-        foreach (const Plugin &plugin, mPlugins)
-            if (T *result = qobject_cast<T*>(plugin.instance))
+        for (QObject *object : mInstance->mObjects)
+            if (T *result = qobject_cast<T*>(object))
                 results.append(result);
         return results;
     }
 
-    const Plugin *pluginByFileName(const QString &pluginFileName) const;
+    const LoadedPlugin *pluginByFileName(const QString &pluginFileName) const;
 
-    const Plugin *pluginByNameFilter(const QString &pluginFilter) const;
-
-    /**
-     * Returns the plugin, which implements the given interface.
-     * This must be done via searching the plugins for the right plugins,
-     * since casting doesn't work, an interface is not a plugin.
-     */
-    template<typename T> const Plugin *plugin(T *interface) const
-    {
-        foreach (const Plugin &plugin, mPlugins)
-            if (T *result = qobject_cast<T*>(plugin.instance))
-                if (result == interface)
-                    return &plugin;
-        return 0;
-    }
+signals:
+    void objectAdded(QObject *object);
+    void objectAboutToBeRemoved(QObject *object);
 
 private:
     Q_DISABLE_COPY(PluginManager)
@@ -103,10 +103,10 @@ private:
 
     static PluginManager *mInstance;
 
-    QList<Plugin> mPlugins;
+    QList<LoadedPlugin> mPlugins;
+    QObjectList mObjects;
 };
 
-} // namespace Internal
 } // namespace Tiled
 
 #endif // PLUGINMANAGER_H
