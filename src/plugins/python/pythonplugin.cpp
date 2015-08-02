@@ -42,8 +42,12 @@ static void handleError()
 PythonPlugin::PythonPlugin()
     : mScriptDir(QDir::homePath() + "/.tiled")
     , mPluginClass(nullptr)
-    , mLastReload(0)
 {
+    mReloadTimer.setSingleShot(true);
+    mReloadTimer.setInterval(1000);
+
+    connect(&mReloadTimer, &QTimer::timeout,
+            this, &PythonPlugin::reloadModules);
 }
 
 PythonPlugin::~PythonPlugin()
@@ -117,6 +121,10 @@ void PythonPlugin::initialize()
     }
 
     reloadModules();
+
+    mFileSystemWatcher.addPath(mScriptDir);
+    connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
+            &mReloadTimer, SLOT(start()));
 }
 
 void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
@@ -128,6 +136,47 @@ void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
 void PythonPlugin::log(const QString &msg)
 {
     log(Tiled::LoggingInterface::INFO, msg);
+}
+
+/**
+ * (Re)load modules in the script directory
+ */
+void PythonPlugin::reloadModules()
+{
+    log(tr("Reloading Python scripts"));
+
+    const QStringList pyfilter("*.py");
+    QDirIterator iter(mScriptDir, pyfilter, QDir::Files | QDir::Readable);
+
+    while (iter.hasNext()) {
+        iter.next();
+
+        QString name = iter.fileInfo().baseName();
+
+        ScriptEntry script = mScripts.take(name);
+        script.name = name;
+
+        // Throw away any existing class reference
+        if (script.mapFormat) {
+            PyObject *pluginClass = script.mapFormat->pythonClass();
+            Py_DECREF(pluginClass);
+        }
+
+        if (loadOrReloadModule(script)) {
+            mScripts.insert(name, script);
+        } else {
+            if (!script.module) {
+                PySys_WriteStderr("** Parse exception **\n");
+                PyErr_Print();
+                PyErr_Clear();
+            }
+
+            if (script.mapFormat) {
+                removeObject(script.mapFormat);
+                delete script.mapFormat;
+            }
+        }
+    }
 }
 
 /**
@@ -147,8 +196,8 @@ PyObject *PythonPlugin::findPluginSubclass(PyObject *module)
         }
 
         if (value != mPluginClass &&
-                PyObject_IsSubclass(value, mPluginClass) == 1 &&
-                PyCallable_Check(value)) {
+                PyCallable_Check(value) &&
+                PyObject_IsSubclass(value, mPluginClass) == 1) {
             result = value;
             handleError();
             break;
@@ -195,51 +244,6 @@ bool PythonPlugin::loadOrReloadModule(ScriptEntry &script)
     }
 
     return true;
-}
-
-/**
- * (Re)load modules in the script directory
- */
-void PythonPlugin::reloadModules()
-{
-    // try to avoid unnecessary reloading
-    if (QDateTime::currentDateTime().toTime_t() - mLastReload < 10)
-        return;
-
-    mLastReload = QDateTime::currentDateTime().toTime_t();
-
-    const QStringList pyfilter("*.py");
-    QDirIterator iter(mScriptDir, pyfilter, QDir::Files | QDir::Readable);
-
-    while (iter.hasNext()) {
-        iter.next();
-
-        QString name = iter.fileInfo().baseName();
-
-        ScriptEntry script = mScripts.take(name);
-        script.name = name;
-
-        // Throw away any existing class reference
-        if (script.mapFormat) {
-            PyObject *pluginClass = script.mapFormat->pythonClass();
-            Py_DECREF(pluginClass);
-        }
-
-        if (loadOrReloadModule(script)) {
-            mScripts.insert(name, script);
-        } else {
-            if (!script.module) {
-                PySys_WriteStderr("** Parse exception **\n");
-                PyErr_Print();
-                PyErr_Clear();
-            }
-
-            if (script.mapFormat) {
-                removeObject(script.mapFormat);
-                delete script.mapFormat;
-            }
-        }
-    }
 }
 
 

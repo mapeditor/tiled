@@ -31,8 +31,10 @@
 #include "mapformat.h"
 #include "plugin.h"
 
+#include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+#include <QTimer>
 
 namespace Tiled {
 class Map;
@@ -69,16 +71,19 @@ public:
     void log(Tiled::LoggingInterface::OutputType type, const QString &msg);
     void log(const QString &msg);
 
+private slots:
+    void reloadModules();
+
 private:
     bool loadOrReloadModule(ScriptEntry &script);
     PyObject *findPluginSubclass(PyObject *module);
-    void reloadModules();
 
     QString mScriptDir;
     QMap<QString,ScriptEntry> mScripts;
     PyObject *mPluginClass;
 
-    uint mLastReload;
+    QFileSystemWatcher mFileSystemWatcher;
+    QTimer mReloadTimer;
 
     Tiled::LoggingInterface mLogger;
 };
