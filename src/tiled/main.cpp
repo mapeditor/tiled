@@ -145,8 +145,7 @@ void CommandLineHandler::showExportFormats()
     auto formats = PluginManager::objects<MapFormat>();
     for (MapFormat *format : formats) {
         if (format->hasCapabilities(MapFormat::Write))
-            for (const QString &filter : format->nameFilters())
-                qWarning() << " " << filter;
+            qWarning() << " " << format->nameFilter();
     }
 
     quit = true;
@@ -229,7 +228,7 @@ int main(int argc, char *argv[])
             for (MapFormat *format : formats) {
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
-                if (format->nameFilters().contains(*filter, Qt::CaseInsensitive)) {
+                if (format->nameFilter().compare(*filter, Qt::CaseInsensitive) == 0) {
                     chosenFormat = format;
                     break;
                 }
@@ -245,7 +244,7 @@ int main(int argc, char *argv[])
             for (MapFormat *format : formats) {
                 if (!format->hasCapabilities(MapFormat::Write))
                     continue;
-                if (!format->nameFilters().filter(suffix, Qt::CaseInsensitive).isEmpty()) {
+                if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                     if (chosenFormat) {
                         qWarning() << qPrintable(QCoreApplication::translate("Command line",
                                                                              "Non-unique file extension. Can't determine correct export format."));

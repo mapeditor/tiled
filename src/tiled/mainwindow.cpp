@@ -730,14 +730,12 @@ void MainWindow::openFile()
         if (!(format->hasCapabilities(MapFormat::Read)))
             continue;
 
-        for (const QString &str : format->nameFilters()) {
-            if (!str.isEmpty()) {
-                filter += QLatin1String(";;");
-                filter += str;
+        const QString nameFilter = format->nameFilter();
 
-                formatByNameFilter.insert(str, format);
-            }
-        }
+        filter += QLatin1String(";;");
+        filter += nameFilter;
+
+        formatByNameFilter.insert(nameFilter, format);
     }
 
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
@@ -794,24 +792,19 @@ bool MainWindow::saveFileAs()
 
     for (MapFormat *format : PluginManager::objects<MapFormat>()) {
         if (format->hasCapabilities(MapFormat::ReadWrite)) {
-            for (const QString &str : format->nameFilters()) {
-                if (!str.isEmpty()) {
-                    filter += QLatin1String(";;");
-                    filter += str;
+            const QString nameFilter = format->nameFilter();
 
-                    formatByNameFilter.insert(str, format);
-                }
-            }
+            filter += QLatin1String(";;");
+            filter += nameFilter;
+
+            formatByNameFilter.insert(nameFilter, format);
         }
     }
 
     QString selectedFilter;
     if (mMapDocument) {
-        if (MapFormat *format = mMapDocument->writerFormat()) {
-            const QStringList nameFilters = format->nameFilters();
-            if (!nameFilters.isEmpty())
-                selectedFilter = nameFilters.first();
-        }
+        if (MapFormat *format = mMapDocument->writerFormat())
+            selectedFilter = format->nameFilter();
     }
 
     if (selectedFilter.isEmpty())
@@ -932,14 +925,12 @@ void MainWindow::exportAs()
 
     for (MapFormat *format : formats) {
         if (format->hasCapabilities(MapFormat::Write)) {
-            for (const QString &str : format->nameFilters()) {
-                if (!str.isEmpty()) {
-                    filter += QLatin1String(";;");
-                    filter += str;
+            const QString nameFilter = format->nameFilter();
 
-                    formatByNameFilter.insert(str, format);
-                }
-            }
+            filter += QLatin1String(";;");
+            filter += nameFilter;
+
+            formatByNameFilter.insert(nameFilter, format);
         }
     }
 
@@ -983,8 +974,7 @@ void MainWindow::exportAs()
         for (MapFormat *format : formats) {
             if (!format->hasCapabilities(MapFormat::Write))
                 continue;
-            if (!format->nameFilters().filter(suffix,
-                                              Qt::CaseInsensitive).isEmpty()) {
+            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                 if (chosenFormat) {
                     QMessageBox::warning(this, tr("Non-unique file extension"),
                                          tr("Non-unique file extension.\n"

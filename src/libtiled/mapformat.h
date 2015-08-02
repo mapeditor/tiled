@@ -98,9 +98,9 @@ public:
     { return QStringList(fileName); }
 
     /**
-     * Returns name filters for files in this map format.
+     * Returns name filter for files in this map format.
      */
-    virtual QStringList nameFilters() const { return QStringList(nameFilter()); }
+    virtual QString nameFilter() const = 0;
 
     /**
      * Returns whether this map format supports reading the given file.
@@ -114,17 +114,6 @@ public:
      * trying to read a map.
      */
     virtual QString errorString() const = 0;
-
-protected:
-    /**
-     * Returns the name filter of this map format.
-     *
-     * Protected because it should not be used outside the plugin since
-     * plugins may expose multiple name filters. This thing exists only for
-     * convenience for plugin writers since most plugins will have only one
-     * name filter.
-     */
-    virtual QString nameFilter() const { return QString(); }
 };
 
 } // namespace Tiled

@@ -31,13 +31,21 @@
 #include <QSaveFile>
 #include <QTextStream>
 
-using namespace Json;
+namespace Json {
 
-JsonPlugin::JsonPlugin()
+void JsonPlugin::initialize()
 {
+    addObject(new JsonMapFormat(JsonMapFormat::Json, this));
+    addObject(new JsonMapFormat(JsonMapFormat::JavaScript, this));
 }
 
-Tiled::Map *JsonPlugin::read(const QString &fileName)
+
+JsonMapFormat::JsonMapFormat(SubFormat subFormat, QObject *parent)
+    : Tiled::MapFormat(parent)
+    , mSubFormat(subFormat)
+{}
+
+Tiled::Map *JsonMapFormat::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -47,7 +55,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
 
     JsonReader reader;
     QByteArray contents = file.readAll();
-    if (fileName.endsWith(".js") && contents.size() > 0 && contents[0] != '{') {
+    if (mSubFormat == JavaScript && contents.size() > 0 && contents[0] != '{') {
         // Scan past JSONP prefix; look for an open curly at the start of the line
         int i = contents.indexOf(QLatin1String("\n{"));
         if (i > 0) {
@@ -75,7 +83,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
     return map;
 }
 
-bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 {
     QSaveFile file(fileName);
 
@@ -97,8 +105,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(&file);
-    bool isJsFile = fileName.endsWith(".js");
-    if (isJsFile) {
+    if (mSubFormat == JavaScript) {
         // Trim and escape name
         JsonWriter nameWriter;
         QString baseName = QFileInfo(fileName).baseName();
@@ -111,7 +118,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         out << " }})(" << nameWriter.result() << ",\n";
     }
     out << writer.result();
-    if (isJsFile) {
+    if (mSubFormat == JavaScript) {
         out << ");";
     }
     out.flush();
@@ -129,21 +136,25 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     return true;
 }
 
-QStringList JsonPlugin::nameFilters() const
+QString JsonMapFormat::nameFilter() const
 {
-    QStringList filters;
-    filters.append(tr("Json files (*.json)"));
-    filters.append(tr("JavaScript files (*.js)"));
-    return filters;
+    if (mSubFormat == Json)
+        return tr("Json files (*.json)");
+    else
+        return tr("JavaScript files (*.js)");
 }
 
-bool JsonPlugin::supportsFile(const QString &fileName) const
+bool JsonMapFormat::supportsFile(const QString &fileName) const
 {
-    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) ||
-           fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
+    if (mSubFormat == Json)
+        return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
+    else
+        return fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
 }
 
-QString JsonPlugin::errorString() const
+QString JsonMapFormat::errorString() const
 {
     return mError;
 }
+
+} // namespace Json

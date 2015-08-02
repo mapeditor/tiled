@@ -172,10 +172,9 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
         if (!(format->capabilities() & MapFormat::Read))
             continue;
 
-        for (const QString &filter : format->nameFilters()) {
-            if (filterFinder.indexIn(filter) != -1)
-                nameFilters.append(filterFinder.cap(1));
-        }
+        const QString filter = format->nameFilter();
+        if (filterFinder.indexIn(filter) != -1)
+            nameFilters.append(filterFinder.cap(1));
     }
 
     mFSModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);

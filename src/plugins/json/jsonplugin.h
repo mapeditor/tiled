@@ -25,6 +25,7 @@
 #include "json_global.h"
 
 #include "mapformat.h"
+#include "plugin.h"
 
 #include <QObject>
 
@@ -34,25 +35,41 @@ class Map;
 
 namespace Json {
 
-class JSONSHARED_EXPORT JsonPlugin : public Tiled::MapFormat
+class JSONSHARED_EXPORT JsonPlugin : public Tiled::Plugin
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::Plugin)
+    Q_PLUGIN_METADATA(IID "org.mapeditor.Plugin" FILE "plugin.json")
+
+public:
+    void initialize() override;
+};
+
+
+class JSONSHARED_EXPORT JsonMapFormat : public Tiled::MapFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapFormat)
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
-    JsonPlugin();
+    enum SubFormat {
+        Json,
+        JavaScript,
+    };
+
+    JsonMapFormat(SubFormat subFormat, QObject *parent = nullptr);
 
     Tiled::Map *read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
     bool write(const Tiled::Map *map, const QString &fileName) override;
 
-    QStringList nameFilters() const override;
+    QString nameFilter() const override;
     QString errorString() const override;
 
-private:
+protected:
     QString mError;
+    SubFormat mSubFormat;
 };
 
 } // namespace Json
