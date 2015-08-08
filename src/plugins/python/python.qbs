@@ -1,12 +1,30 @@
 import qbs 1.0
 import qbs.Probes as Probes
+import qbs.File
 
 TiledPlugin {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
-    // Not sure how to properly support Python on Mac OS X yet
-    // (possibly requires using python-config)
-    condition: qbs.targetOS.contains("linux") || qbs.targetOS.contains("windows")
+    condition: {
+        if (qbs.targetOS.contains("linux")) {
+            return true;
+        } else if (qbs.targetOS.contains("windows")) {
+            // On Windows, currently only the default install location of
+            // Python 2.7 is supported, and only when compiling with MinGW in
+            // release mode. Also, it needs to be Python 2.7.9, since 2.7.10
+            // results in a linker error.
+            //
+            // https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi
+            //
+            return File.exists("C:/Python27") &&
+                    qbs.toolchain.contains("mingw") &&
+                    !qbs.debugInformation;
+        }
+
+        // Not sure how to properly support Python on Mac OS X yet
+        // (possibly requires using python-config)
+        return false;
+    }
 
     Probes.PkgConfigProbe {
         id: pkgConfig
