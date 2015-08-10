@@ -1105,6 +1105,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                      qMax((qreal)0.01, diff.y() / startDiff.y()));
     }
 
+    if (!std::isfinite(scale))
+        scale = 1;
+
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF oldRelPos = object.oldItemPosition - resizingOrigin;
         const QPointF scaledRelPos(oldRelPos.x() * scale,
@@ -1231,12 +1234,13 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
         const QPointF relPos = pos - origin;
         const QPointF startDiff = start - origin;
 
-        QSizeF scalingFactor(qMax((qreal)0.01,
-				  qAbs(startDiff.x()) < (qreal)0.01?
-				  (qreal)1.0 : relPos.x() / startDiff.x()),
-                             qMax((qreal)0.01,
-				  qAbs(startDiff.y()) < (qreal)0.01?
-				  (qreal)1.0 : relPos.y() / startDiff.y()));
+        QSizeF scalingFactor(qMax((qreal)0.01, relPos.x() / startDiff.x()),
+                             qMax((qreal)0.01, relPos.y() / startDiff.y()));
+
+        if (!std::isfinite(scalingFactor.width()))
+            scalingFactor.setWidth(1);
+        if (!std::isfinite(scalingFactor.height()))
+            scalingFactor.setHeight(1);
 
         if (mResizingLimitHorizontal) {
             scalingFactor.setWidth(preserveAspect ? scalingFactor.height() : 1);
