@@ -114,7 +114,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 
-public slots:
+private slots:
     void newMap();
     void openFile();
     bool saveFile();
