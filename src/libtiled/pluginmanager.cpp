@@ -20,18 +20,18 @@
 
 #include "pluginmanager.h"
 
-#include "mapwriterinterface.h"
+#include "mapformat.h"
+#include "plugin.h"
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QDirIterator>
 #include <QPluginLoader>
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+namespace Tiled {
 
-PluginManager *PluginManager::mInstance = 0;
+PluginManager *PluginManager::mInstance;
 
 PluginManager::PluginManager()
 {
@@ -55,11 +55,37 @@ void PluginManager::deleteInstance()
     mInstance = 0;
 }
 
+void PluginManager::addObject(QObject *object)
+{
+    Q_ASSERT(object);
+    Q_ASSERT(mInstance);
+    Q_ASSERT(!mInstance->mObjects.contains(object));
+
+    mInstance->mObjects.append(object);
+    emit mInstance->objectAdded(object);
+}
+
+void PluginManager::removeObject(QObject *object)
+{
+    Q_ASSERT(object);
+    Q_ASSERT(mInstance);
+    Q_ASSERT(mInstance->mObjects.contains(object));
+
+    emit mInstance->objectAboutToBeRemoved(object);
+    mInstance->mObjects.removeOne(object);
+}
+
 void PluginManager::loadPlugins()
 {
     // Load static plugins
-    foreach (QObject *instance, QPluginLoader::staticInstances())
-        mPlugins.append(Plugin(QLatin1String("<static>"), instance));
+    foreach (QObject *instance, QPluginLoader::staticInstances()) {
+        mPlugins.append(LoadedPlugin(QLatin1String("<static>"), instance));
+
+        if (Plugin *plugin = qobject_cast<Plugin*>(instance))
+            plugin->initialize();
+        else
+            addObject(instance);
+    }
 
     // Determine the plugin path based on the application location
 #ifndef TILED_PLUGIN_DIR
@@ -91,28 +117,22 @@ void PluginManager::loadPlugins()
             continue;
         }
 
-        mPlugins.append(Plugin(pluginFile, instance));
+        mPlugins.append(LoadedPlugin(pluginFile, instance));
+
+        if (Plugin *plugin = qobject_cast<Plugin*>(instance))
+            plugin->initialize();
+        else
+            addObject(instance);
     }
 }
 
-const Plugin *PluginManager::pluginByFileName(const QString &pluginFileName) const
+const LoadedPlugin *PluginManager::pluginByFileName(const QString &pluginFileName) const
 {
-    foreach (const Plugin &plugin, mPlugins)
+    foreach (const LoadedPlugin &plugin, mPlugins)
         if (pluginFileName == plugin.fileName)
             return &plugin;
 
     return 0;
 }
 
-const Plugin *PluginManager::pluginByNameFilter(const QString &pluginFilter) const
-{
-    foreach (const Plugin &plugin, mPlugins) {
-        MapWriterInterface *writer =
-                qobject_cast<MapWriterInterface*>(plugin.instance);
-
-        if (writer && writer->nameFilters().contains(pluginFilter))
-            return &plugin;
-    }
-
-    return 0;
-}
+} // namespace Tiled

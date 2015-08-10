@@ -33,7 +33,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-Preferences *Preferences::mInstance = 0;
+Preferences *Preferences::mInstance;
 
 Preferences *Preferences::instance()
 {

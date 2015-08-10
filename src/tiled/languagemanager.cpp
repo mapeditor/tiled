@@ -31,7 +31,7 @@
 
 using namespace Tiled::Internal;
 
-LanguageManager *LanguageManager::mInstance = 0;
+LanguageManager *LanguageManager::mInstance;
 
 LanguageManager *LanguageManager::instance()
 {

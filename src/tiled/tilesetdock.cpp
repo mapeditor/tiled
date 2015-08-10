@@ -43,7 +43,7 @@
 #include "tilesetview.h"
 #include "tilesetmanager.h"
 #include "tilestamp.h"
-#include "tmxmapwriter.h"
+#include "tmxmapformat.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -797,13 +797,18 @@ void TilesetDock::exportTileset()
     prefs->setLastPath(Preferences::ExternalTileset,
                        QFileInfo(fileName).path());
 
-    TmxMapWriter writer;
+    TmxMapFormat tmxFormat;
 
-    if (writer.writeTileset(*tileset, fileName)) {
+    if (tmxFormat.writeTileset(*tileset, fileName)) {
         QUndoCommand *command = new SetTilesetFileName(mMapDocument,
                                                        tileset,
                                                        fileName);
         mMapDocument->undoStack()->push(command);
+    } else {
+        QString error = tmxFormat.errorString();
+        QMessageBox::critical(window(),
+                              tr("Export Tileset"),
+                              tr("Error saving tileset: %1").arg(error));
     }
 }
 
@@ -855,7 +860,7 @@ void TilesetDock::addTiles()
                                 tr("Add Tiles"),
                                 tr("Could not load \"%1\"!").arg(file),
                                 QMessageBox::Ignore | QMessageBox::Cancel,
-                                this);
+                                window());
             warning.setDefaultButton(QMessageBox::Ignore);
 
             if (warning.exec() != QMessageBox::Ignore) {

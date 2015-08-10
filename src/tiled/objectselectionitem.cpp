@@ -21,6 +21,7 @@
 #include "objectselectionitem.h"
 
 #include "mapdocument.h"
+#include "mapobject.h"
 #include "maprenderer.h"
 #include "tile.h"
 

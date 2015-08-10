@@ -19,8 +19,10 @@
  */
 
 #include "command.h"
+
 #include "documentmanager.h"
 #include "mapdocument.h"
+#include "mapobject.h"
 
 #include <QMessageBox>
 #include <QSettings>

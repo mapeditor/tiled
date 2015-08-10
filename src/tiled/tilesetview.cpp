@@ -24,7 +24,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
-#include "tmxmapwriter.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilesetmodel.h"

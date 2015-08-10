@@ -28,8 +28,7 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "snaphelper.h"
-#include "tmxmapreader.h"
-#include "tmxmapwriter.h"
+#include "tmxmapformat.h"
 #include "tile.h"
 #include "tilelayer.h"
 
@@ -44,7 +43,7 @@ static const char * const TMX_MIMETYPE = "text/tmx";
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-ClipboardManager *ClipboardManager::mInstance = 0;
+ClipboardManager *ClipboardManager::mInstance;
 
 ClipboardManager::ClipboardManager() :
     mHasMap(false)
@@ -75,16 +74,16 @@ Map *ClipboardManager::map() const
     if (data.isEmpty())
         return 0;
 
-    TmxMapReader reader;
-    return reader.fromByteArray(data);
+    TmxMapFormat format;
+    return format.fromByteArray(data);
 }
 
 void ClipboardManager::setMap(const Map *map)
 {
-    TmxMapWriter mapWriter;
+    TmxMapFormat format;
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData(QLatin1String(TMX_MIMETYPE), mapWriter.toByteArray(map));
+    mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(map));
 
     mClipboard->setMimeData(mimeData);
 }
