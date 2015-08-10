@@ -1,8 +1,8 @@
 clone_depth: 200
 
 environment:
-  QTDIR: C:\Qt\5.4\mingw491_32
-  MINGW: C:\Qt\Tools\mingw491_32
+  QTDIR: C:\Qt\5.5\mingw492_32
+  MINGW: C:\Qt\Tools\mingw492_32
 
 configuration: Release
 
