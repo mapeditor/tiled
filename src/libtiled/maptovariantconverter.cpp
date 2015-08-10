@@ -93,12 +93,30 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
     return mapVariant;
 }
 
+QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
+                                          const QDir &directory)
+{
+    mMapDir = directory;
+    return toVariant(&tileset, 0);
+}
+
 QVariant MapToVariantConverter::toVariant(const Tileset *tileset,
                                           int firstGid) const
 {
     QVariantMap tilesetVariant;
 
-    tilesetVariant[QLatin1String("firstgid")] = firstGid;
+    if (firstGid > 0)
+        tilesetVariant[QLatin1String("firstgid")] = firstGid;
+
+    const QString &fileName = tileset->fileName();
+    if (!fileName.isEmpty()) {
+        QString source = mMapDir.relativeFilePath(fileName);
+        tilesetVariant[QLatin1String("source")] = source;
+
+        // Tileset is external, so no need to write any of the stuff below
+        return tilesetVariant;
+    }
+
     tilesetVariant[QLatin1String("name")] = tileset->name();
     tilesetVariant[QLatin1String("tilewidth")] = tileset->tileWidth();
     tilesetVariant[QLatin1String("tileheight")] = tileset->tileHeight();

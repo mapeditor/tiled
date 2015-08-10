@@ -43,7 +43,7 @@ Tileset::~Tileset()
 
 Tile *Tileset::tileAt(int id) const
 {
-    return (id < mTiles.size()) ? mTiles.at(id) : 0;
+    return (id < mTiles.size()) ? mTiles.at(id) : nullptr;
 }
 
 /**

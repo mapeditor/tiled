@@ -67,6 +67,8 @@ DynamicLibrary {
         "tilelayer.h",
         "tileset.cpp",
         "tileset.h",
+        "tilesetformat.cpp",
+        "tilesetformat.h",
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
     ]

@@ -80,7 +80,6 @@
 #include "tilestampsdock.h"
 #include "terraindock.h"
 #include "toolmanager.h"
-#include "tmxmapformat.h"
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -1236,18 +1235,18 @@ void MainWindow::addExternalTileset()
     QVector<SharedTileset> tilesets;
 
     for (const QString &fileName : fileNames) {
-        TmxMapFormat format;
-        if (SharedTileset tileset = format.readTileset(fileName)) {
+        QString error;
+        SharedTileset tileset = Tiled::readTileset(fileName, &error);
+        if (tileset) {
             tilesets.append(tileset);
         } else if (fileNames.size() == 1) {
-            QMessageBox::critical(this, tr("Error Reading Tileset"),
-                                  format.errorString());
+            QMessageBox::critical(this, tr("Error Reading Tileset"), error);
             return;
         } else {
             int result;
 
             result = QMessageBox::warning(this, tr("Error Reading Tileset"),
-                                          tr("%1: %2").arg(fileName, format.errorString()),
+                                          tr("%1: %2").arg(fileName, error),
                                           QMessageBox::Abort | QMessageBox::Ignore,
                                           QMessageBox::Ignore);
 

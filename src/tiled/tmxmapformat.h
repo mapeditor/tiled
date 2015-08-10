@@ -22,7 +22,7 @@
 #define TMXMAPFORMAT_H
 
 #include "mapformat.h"
-#include "tileset.h"
+#include "tilesetformat.h"
 
 namespace Tiled {
 
@@ -40,11 +40,7 @@ class TmxMapFormat : public MapFormat
 public:
     Map *read(const QString &fileName) override;
 
-    SharedTileset readTileset(const QString &fileName);
-
     bool write(const Map *map, const QString &fileName) override;
-
-    bool writeTileset(const Tileset &tileset, const QString &fileName);
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is
@@ -67,6 +63,30 @@ public:
 
     bool supportsFile(const QString &fileName) const override
     { return fileName.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive); }
+
+    QString errorString() const override { return mError; }
+
+private:
+    QString mError;
+};
+
+
+/**
+ * A reader and writer for Tiled's .tsx tileset format.
+ */
+class TsxTilesetFormat : public TilesetFormat
+{
+    Q_OBJECT
+
+public:
+    SharedTileset read(const QString &fileName) override;
+
+    bool write(const Tileset &tileset, const QString &fileName) override;
+
+    QString nameFilter() const override { return tr("Tiled tileset files (*.tsx)"); }
+
+    bool supportsFile(const QString &fileName) const override
+    { return fileName.endsWith(QLatin1String(".tsx"), Qt::CaseInsensitive); }
 
     QString errorString() const override { return mError; }
 

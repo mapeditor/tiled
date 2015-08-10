@@ -66,6 +66,7 @@ protected:
 
 } // anonymous namespace
 
+
 Map *TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
@@ -78,18 +79,6 @@ Map *TmxMapFormat::read(const QString &fileName)
     return map;
 }
 
-SharedTileset TmxMapFormat::readTileset(const QString &fileName)
-{
-    mError.clear();
-
-    EditorMapReader reader;
-    SharedTileset tileset = reader.readTileset(fileName);
-    if (!tileset)
-        mError = reader.errorString();
-
-    return tileset;
-}
-
 bool TmxMapFormat::write(const Map *map, const QString &fileName)
 {
     Preferences *prefs = Preferences::instance();
@@ -98,23 +87,6 @@ bool TmxMapFormat::write(const Map *map, const QString &fileName)
     writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeMap(map, fileName);
-    if (!result)
-        mError = writer.errorString();
-    else
-        mError.clear();
-
-    return result;
-}
-
-bool TmxMapFormat::writeTileset(const Tileset &tileset,
-                                const QString &fileName)
-{
-    Preferences *prefs = Preferences::instance();
-
-    MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
-
-    bool result = writer.writeTileset(tileset, fileName);
     if (!result)
         mError = writer.errorString();
     else
@@ -148,4 +120,33 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
         mError = reader.errorString();
 
     return map;
+}
+
+
+SharedTileset TsxTilesetFormat::read(const QString &fileName)
+{
+    mError.clear();
+
+    EditorMapReader reader;
+    SharedTileset tileset = reader.readTileset(fileName);
+    if (!tileset)
+        mError = reader.errorString();
+
+    return tileset;
+}
+
+bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
+{
+    Preferences *prefs = Preferences::instance();
+
+    MapWriter writer;
+    writer.setDtdEnabled(prefs->dtdEnabled());
+
+    bool result = writer.writeTileset(tileset, fileName);
+    if (!result)
+        mError = writer.errorString();
+    else
+        mError.clear();
+
+    return result;
 }

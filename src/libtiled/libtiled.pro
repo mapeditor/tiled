@@ -45,6 +45,7 @@ SOURCES += compression.cpp \
     tile.cpp \
     tilelayer.cpp \
     tileset.cpp \
+    tilesetformat.cpp \
     varianttomapconverter.cpp
 HEADERS += compression.h \
     gidmapper.h \
@@ -73,6 +74,7 @@ HEADERS += compression.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
+    tilesetformat.h \
     varianttomapconverter.h
 
 contains(INSTALL_HEADERS, yes) {

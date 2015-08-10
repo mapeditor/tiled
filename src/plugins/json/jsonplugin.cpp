@@ -37,6 +37,7 @@ void JsonPlugin::initialize()
 {
     addObject(new JsonMapFormat(JsonMapFormat::Json, this));
     addObject(new JsonMapFormat(JsonMapFormat::JavaScript, this));
+    addObject(new JsonTilesetFormat(this));
 }
 
 
@@ -139,9 +140,9 @@ bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 QString JsonMapFormat::nameFilter() const
 {
     if (mSubFormat == Json)
-        return tr("Json files (*.json)");
+        return tr("Json map files (*.json)");
     else
-        return tr("JavaScript files (*.js)");
+        return tr("JavaScript map files (*.js)");
 }
 
 bool JsonMapFormat::supportsFile(const QString &fileName) const
@@ -153,6 +154,99 @@ bool JsonMapFormat::supportsFile(const QString &fileName) const
 }
 
 QString JsonMapFormat::errorString() const
+{
+    return mError;
+}
+
+
+JsonTilesetFormat::JsonTilesetFormat(QObject *parent)
+    : Tiled::TilesetFormat(parent)
+{
+}
+
+Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for reading.");
+        return Tiled::SharedTileset();
+    }
+
+    JsonReader reader;
+    QByteArray contents = file.readAll();
+
+    reader.parse(contents);
+
+    const QVariant variant = reader.result();
+
+    if (!variant.isValid()) {
+        mError = tr("Error parsing file.");
+        return Tiled::SharedTileset();
+    }
+
+    Tiled::VariantToMapConverter converter;
+    Tiled::SharedTileset tileset = converter.toTileset(variant,
+                                                       QFileInfo(fileName).dir());
+
+    if (!tileset)
+        mError = converter.errorString();
+    else
+        tileset->setFileName(fileName);
+
+    return tileset;
+}
+
+bool JsonTilesetFormat::supportsFile(const QString &fileName) const
+{
+    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
+}
+
+bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
+                              const QString &fileName)
+{
+    QSaveFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for writing.");
+        return false;
+    }
+
+    Tiled::MapToVariantConverter converter;
+    QVariant variant = converter.toVariant(tileset, QFileInfo(fileName).dir());
+
+    JsonWriter writer;
+    writer.setAutoFormatting(true);
+
+    if (!writer.stringify(variant)) {
+        // This can only happen due to coding error
+        mError = writer.errorString();
+        return false;
+    }
+
+    QTextStream out(&file);
+    out << writer.result();
+    out.flush();
+
+    if (file.error() != QFile::NoError) {
+        mError = tr("Error while writing file:\n%1").arg(file.errorString());
+        return false;
+    }
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+QString JsonTilesetFormat::nameFilter() const
+{
+    return tr("Json tileset files (*.json)");
+}
+
+QString JsonTilesetFormat::errorString() const
 {
     return mError;
 }

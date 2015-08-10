@@ -44,6 +44,12 @@ public:
      */
     QVariant toVariant(const Map *map, const QDir &mapDir);
 
+    /**
+     * Converts the given \s tileset to a QVariant. The \a directory is used to
+     * construct relative paths to external resources.
+     */
+    QVariant toVariant(const Tileset &tileset, const QDir &directory);
+
 private:
     QVariant toVariant(const Tileset *tileset, int firstGid) const;
     QVariant toVariant(const Properties &properties) const;

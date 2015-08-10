@@ -38,6 +38,7 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetformat.h"
 #include "terrain.h"
 
 #include <QCoreApplication>
@@ -1014,11 +1015,5 @@ QImage MapReader::readExternalImage(const QString &source)
 SharedTileset MapReader::readExternalTileset(const QString &source,
                                              QString *error)
 {
-    MapReader reader;
-
-    SharedTileset tileset = reader.readTileset(source);
-    if (!tileset)
-        *error = reader.errorString();
-
-    return tileset;
+    return Tiled::readTileset(source, error);
 }

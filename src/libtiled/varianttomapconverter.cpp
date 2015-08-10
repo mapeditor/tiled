@@ -29,6 +29,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "tilesetformat.h"
 
 #include <QScopedPointer>
 
@@ -108,6 +109,16 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     return map.take();
 }
 
+SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,
+                                               const QDir &directory)
+{
+    mMapDir = directory;
+    mReadingExternalTileset = true;
+    SharedTileset tileset = toTileset(variant);
+    mReadingExternalTileset = false;
+    return tileset;
+}
+
 Properties VariantToMapConverter::toProperties(const QVariant &variant)
 {
     const QVariantMap variantMap = variant.toMap();
@@ -127,6 +138,22 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const QVariantMap variantMap = variant.toMap();
 
     const int firstGid = variantMap[QLatin1String("firstgid")].toInt();
+
+    // Handle external tilesets
+    const QVariant sourceVariant = variantMap[QLatin1String("source")];
+    if (!sourceVariant.isNull()) {
+        QString source = resolvePath(mMapDir, sourceVariant);
+        QString error;
+        SharedTileset tileset = Tiled::readTileset(source, &error);
+        if (!tileset) {
+            mError = tr("Error while loading tileset '%1': %2")
+                    .arg(source, error);
+        } else {
+            mGidMapper.insert(firstGid, tileset.data());
+        }
+        return tileset;
+    }
+
     const QString name = variantMap[QLatin1String("name")].toString();
     const int tileWidth = variantMap[QLatin1String("tilewidth")].toInt();
     const int tileHeight = variantMap[QLatin1String("tileheight")].toInt();
@@ -136,7 +163,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int tileOffsetX = tileOffset[QLatin1String("x")].toInt();
     const int tileOffsetY = tileOffset[QLatin1String("y")].toInt();
 
-    if (tileWidth <= 0 || tileHeight <= 0 || firstGid == 0) {
+    if (tileWidth <= 0 || tileHeight <= 0 ||
+            (firstGid == 0 && !mReadingExternalTileset)) {
         mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
         return SharedTileset();
     }
@@ -243,7 +271,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         }
     }
 
-    mGidMapper.insert(firstGid, tileset.data());
+    if (!mReadingExternalTileset)
+        mGidMapper.insert(firstGid, tileset.data());
+
     return tileset;
 }
 
