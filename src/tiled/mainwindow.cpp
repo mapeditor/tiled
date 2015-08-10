@@ -800,6 +800,9 @@ bool MainWindow::saveFileAs()
             formatByNameFilter.insert(nameFilter, format);
         }
     }
+    //This will allow user to save the file without an extension OR with any extension.
+    filter += QLatin1String(";;");
+    filter += tr("Any files (*)");
 
     QString selectedFilter;
     if (mMapDocument) {
