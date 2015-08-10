@@ -78,32 +78,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-172"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra la versione</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlla solo la validità degli argomenti</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Disattiva l&apos;accelerazione hardware per il rendering</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Esporta il file .tmx specificato come...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Stampa una lista di formati di esportazione supportati</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formati di esportazione:</translation>
     </message>
 </context>
 <context>
@@ -132,7 +132,7 @@
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni:</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -280,7 +280,7 @@
     <message>
         <location line="+6"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Posizione</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -559,12 +559,12 @@
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva tutto</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentazione</translation>
     </message>
     <message>
         <location line="-135"/>
@@ -669,7 +669,7 @@
     <message>
         <location line="+8"/>
         <source>Snap to &amp;Fine Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggancia a griglia &amp;fine</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1237,7 +1237,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri ultimi file all&apos;avvio</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -1247,7 +1247,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+29"/>
         <source>Fine grid divisions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Divisioni griglia fine:</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -1541,7 +1541,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location filename="../src/qtpropertybrowser/src/qtpropertybrowserutils.cpp" line="+234"/>
         <source>Clear Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancella scorciatoia</translation>
     </message>
 </context>
 <context>
@@ -1790,7 +1790,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+32"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire il file per la scrittura.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1800,7 +1800,7 @@ Linea %1, colonna %2</translation>
     <message>
         <location line="+8"/>
         <source>Can&apos;t save non-tile layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile salvare un livello non-tile!</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2722,12 +2722,12 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+10"/>
         <source>Do you want to replace them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuoi sostituirli?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Overwrite Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Sovrascrivi file</translation>
     </message>
     <message>
         <location line="+73"/>
@@ -3385,7 +3385,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+433"/>
         <source>Relative chance this tile will be picked</source>
-        <translation type="unfinished"></translation>
+        <translation>Probabilità relativa che questo tile venga scelto</translation>
     </message>
     <message>
         <location line="+364"/>
@@ -3469,25 +3469,25 @@ Seleziona un formato specifico.</translation>
         <location line="+5"/>
         <location line="+65"/>
         <source>Width</source>
-        <translation type="unfinished">Larghezza</translation>
+        <translation>Larghezza</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+65"/>
         <source>Height</source>
-        <translation type="unfinished">Altezza</translation>
+        <translation>Altezza</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+144"/>
         <source>Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza tile</translation>
     </message>
     <message>
         <location line="-143"/>
         <location line="+144"/>
         <source>Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Altezza tile</translation>
     </message>
     <message>
         <location line="-142"/>
@@ -3512,7 +3512,7 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation type="unfinished"></translation>
+        <translation>Capovolgimento</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -3567,17 +3567,17 @@ Seleziona un formato specifico.</translation>
     <message>
         <location line="+6"/>
         <source>Source Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Immagine sorgente</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Margine</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Spaziatura</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3613,7 +3613,7 @@ Seleziona un formato specifico.</translation>
         <location line="-54"/>
         <location line="+55"/>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
 </context>
 <context>
@@ -3713,12 +3713,12 @@ Seleziona un formato specifico.</translation>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Timbro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished">Probabilità</translation>
+        <translation>Probabilità</translation>
     </message>
 </context>
 <context>
@@ -3726,52 +3726,52 @@ Seleziona un formato specifico.</translation>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina timbro</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi variante</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli la cartella dei timbri</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation>Timbro tile</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi nuovo timbro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi variante</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplica timbro</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina selezionati</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposta cartella timbri</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro</translation>
     </message>
 </context>
 <context>
