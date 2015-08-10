@@ -29,21 +29,17 @@
 #ifndef MAPFORMAT_H
 #define MAPFORMAT_H
 
-#include "tiled_global.h"
+#include "pluginmanager.h"
 
 #include <QObject>
 #include <QStringList>
+#include <QMap>
 
 namespace Tiled {
 
 class Map;
 
-/**
- * An interface to be implemented for adding support for a map format to Tiled.
- * It can implement support for either loading or saving to a certain map
- * format, or both.
- */
-class TILEDSHARED_EXPORT MapFormat : public QObject
+class TILEDSHARED_EXPORT FileFormat : public QObject
 {
     Q_OBJECT
 
@@ -56,39 +52,20 @@ public:
     };
     Q_DECLARE_FLAGS(Capabilities, Capability)
 
-    explicit MapFormat(QObject *parent = nullptr)
+    explicit FileFormat(QObject *parent = nullptr)
         : QObject(parent)
     {}
 
-    virtual ~MapFormat() {}
-
     /**
-     * Returns whether this map format has Read and/or Write capabilities.
+     * Returns whether this format has Read and/or Write capabilities.
      */
     virtual Capabilities capabilities() const { return ReadWrite; }
 
     /**
-     * Returns whether this map format has all given capabilities.
+     * Returns whether this format has all given capabilities.
      */
     bool hasCapabilities(Capabilities caps) const
     { return (capabilities() & caps) == caps; }
-
-    /**
-     * Reads the map and returns a new Map instance, or 0 if reading failed.
-     */
-    virtual Map *read(const QString &fileName) = 0;
-
-    /**
-     * Writes the given \a map based on the suggested \a fileName.
-     *
-     * This function may write to a different file name or may even write to
-     * multiple files. The actual files that will be written to can be
-     * determined by calling outputFiles().
-     *
-     * @return <code>true</code> on success, <code>false</code> when an error
-     *         occurred. The error can be retrieved by errorString().
-     */
-    virtual bool write(const Map *map, const QString &fileName) = 0;
 
     /**
      * Returns the absolute paths for the files that will be written by
@@ -116,9 +93,41 @@ public:
     virtual QString errorString() const = 0;
 };
 
+
+/**
+ * An interface to be implemented for adding support for a map format to Tiled.
+ * It can implement support for either loading or saving to a certain map
+ * format, or both.
+ */
+class TILEDSHARED_EXPORT MapFormat : public FileFormat
+{
+public:
+    explicit MapFormat(QObject *parent = nullptr)
+        : FileFormat(parent)
+    {}
+
+    /**
+     * Reads the map and returns a new Map instance, or 0 if reading failed.
+     */
+    virtual Map *read(const QString &fileName) = 0;
+
+    /**
+     * Writes the given \a map based on the suggested \a fileName.
+     *
+     * This function may write to a different file name or may even write to
+     * multiple files. The actual files that will be written to can be
+     * determined by calling outputFiles().
+     *
+     * @return <code>true</code> on success, <code>false</code> when an error
+     *         occurred. The error can be retrieved by errorString().
+     */
+    virtual bool write(const Map *map, const QString &fileName) = 0;
+};
+
 } // namespace Tiled
 
 Q_DECLARE_INTERFACE(Tiled::MapFormat, "org.mapeditor.MapFormat")
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::FileFormat::Capabilities)
 
 namespace Tiled {
 
@@ -150,8 +159,46 @@ public:
     bool supportsFile(const QString &) const override { return false; }
 };
 
-} // namespace Tiled
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::MapFormat::Capabilities)
+/**
+ * Convenience class that can be used when implementing file dialogs.
+ */
+template<typename Format>
+class TILEDSHARED_EXPORT FormatHelper
+{
+public:
+    FormatHelper(FileFormat::Capabilities capabilities,
+                 const QString &initialFilter)
+        : mFilter(initialFilter)
+    {
+        for (Format *format : PluginManager::objects<Format>()) {
+            if (format->hasCapabilities(capabilities)) {
+                const QString nameFilter = format->nameFilter();
+
+                mFilter += QLatin1String(";;");
+                mFilter += nameFilter;
+
+                mFormats.append(format);
+                mFormatByNameFilter.insert(nameFilter, format);
+            }
+        }
+    }
+
+    const QString &filter() const
+    { return mFilter; }
+
+    const QList<Format*> &formats() const
+    { return mFormats; }
+
+    Format *formatByNameFilter(const QString &nameFilter) const
+    { return mFormatByNameFilter.value(nameFilter); }
+
+private:
+    QString mFilter;
+    QList<Format*> mFormats;
+    QMap<QString, Format*> mFormatByNameFilter;
+};
+
+} // namespace Tiled
 
 #endif // MAPFORMAT_H

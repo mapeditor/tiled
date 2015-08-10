@@ -52,6 +52,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+#include "mapformat.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapsdock.h"
@@ -89,6 +90,7 @@
 #include "consoledock.h"
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
+#include "tmxmapformat.h"
 #include "imagemovementtool.h"
 #include "magicwandtool.h"
 #include "selectsametiletool.h"
@@ -720,32 +722,20 @@ void MainWindow::openFile()
     QString selectedFilter = tr("Tiled map files (*.tmx)");
     filter += selectedFilter;
 
+    FormatHelper<MapFormat> helper(MapFormat::Read, filter);
+
     selectedFilter = mSettings.value(QLatin1String("lastUsedOpenFilter"),
                                      selectedFilter).toString();
 
-    QMap<QString, MapFormat*> formatByNameFilter;
-
-    auto formats = PluginManager::objects<MapFormat>();
-    for (MapFormat *format : formats) {
-        if (!(format->hasCapabilities(MapFormat::Read)))
-            continue;
-
-        const QString nameFilter = format->nameFilter();
-
-        filter += QLatin1String(";;");
-        filter += nameFilter;
-
-        formatByNameFilter.insert(nameFilter, format);
-    }
-
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
-                                                    fileDialogStartLocation(),
-                                                    filter, &selectedFilter);
+                                                          fileDialogStartLocation(),
+                                                          helper.filter(),
+                                                          &selectedFilter);
     if (fileNames.isEmpty())
         return;
 
     // When a particular filter was selected, use the associated format
-    MapFormat *mapFormat = formatByNameFilter.value(selectedFilter);
+    MapFormat *mapFormat = helper.formatByNameFilter(selectedFilter);
 
     mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
     foreach (const QString &fileName, fileNames)
@@ -787,19 +777,7 @@ bool MainWindow::saveFileAs()
 {
     const QString tmxFilter = tr("Tiled map files (*.tmx)");
 
-    QString filter = tmxFilter;
-    QMap<QString, MapFormat*> formatByNameFilter;
-
-    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
-        if (format->hasCapabilities(MapFormat::ReadWrite)) {
-            const QString nameFilter = format->nameFilter();
-
-            filter += QLatin1String(";;");
-            filter += nameFilter;
-
-            formatByNameFilter.insert(nameFilter, format);
-        }
-    }
+    FormatHelper<MapFormat> helper(MapFormat::ReadWrite, tmxFilter);
 
     QString selectedFilter;
     if (mMapDocument) {
@@ -821,12 +799,12 @@ bool MainWindow::saveFileAs()
 
     const QString fileName =
             QFileDialog::getSaveFileName(this, QString(), suggestedFileName,
-                                         filter, &selectedFilter);
+                                         helper.filter(), &selectedFilter);
 
     if (fileName.isEmpty())
         return false;
 
-    MapFormat *format = formatByNameFilter.value(selectedFilter);
+    MapFormat *format = helper.formatByNameFilter(selectedFilter);
     mMapDocument->setWriterFormat(format);
 
     return saveFile(fileName);
@@ -919,20 +897,7 @@ void MainWindow::exportAs()
     if (!mMapDocument)
         return;
 
-    auto formats = PluginManager::objects<MapFormat>();
-    QString filter = tr("All Files (*)");
-    QMap<QString, MapFormat*> formatByNameFilter;
-
-    for (MapFormat *format : formats) {
-        if (format->hasCapabilities(MapFormat::Write)) {
-            const QString nameFilter = format->nameFilter();
-
-            filter += QLatin1String(";;");
-            filter += nameFilter;
-
-            formatByNameFilter.insert(nameFilter, format);
-        }
-    }
+    FormatHelper<MapFormat> helper(FileFormat::Write, tr("All Files (*)"));
 
     Preferences *pref = Preferences::instance();
 
@@ -958,22 +923,21 @@ void MainWindow::exportAs()
     // No need to confirm overwrite here since it'll be prompted below
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
                                                     suggestedFilename,
-                                                    filter, &selectedFilter,
+                                                    helper.filter(),
+                                                    &selectedFilter,
                                                     QFileDialog::DontConfirmOverwrite);
     if (fileName.isEmpty())
         return;
 
     // If a specific filter was selected, use that format
-    MapFormat *chosenFormat = formatByNameFilter.value(selectedFilter);
+    MapFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
 
     // If not, try to find the file extension among the name filters
     QString suffix = QFileInfo(fileName).completeSuffix();
     if (!chosenFormat && !suffix.isEmpty()) {
         suffix.prepend(QLatin1String("*."));
 
-        for (MapFormat *format : formats) {
-            if (!format->hasCapabilities(MapFormat::Write))
-                continue;
+        for (MapFormat *format : helper.formats()) {
             if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
                 if (chosenFormat) {
                     QMessageBox::warning(this, tr("Non-unique file extension"),
