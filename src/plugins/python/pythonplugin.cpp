@@ -122,9 +122,12 @@ void PythonPlugin::initialize()
 
     reloadModules();
 
-    mFileSystemWatcher.addPath(mScriptDir);
-    connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
-            &mReloadTimer, SLOT(start()));
+    if (QFile::exists(mScriptDir)) {
+        mFileSystemWatcher.addPath(mScriptDir);
+
+        connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
+                &mReloadTimer, SLOT(start()));
+    }
 }
 
 void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
