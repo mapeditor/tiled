@@ -1,3 +1,6 @@
+0.13.1 (...)
+* Added Bulgarian translation (by Lyubomir Vasilev)
+
 0.13.0 (10 August 2015)
 * Added persistent Tile Stamps with support for variations (#969)
 * Added Select Same Tile tool (by Mamed Ibrahimov)
