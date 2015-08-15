@@ -53,11 +53,9 @@ This element is used to specify an offset in pixels, to be applied when drawing 
 * <b>format:</b> Used for embedded images, in combination with a `data` child element. Valid values are file extensions like `png`, `gif`, `jpg`, `bmp`, etc. (since 0.9)
 * <i>id:</i> Used by some versions of Tiled Java. Deprecated and unsupported by Tiled Qt.
 * <b>source:</b> The reference to the tileset image file (Tiled supports most common image formats).
-* <b>trans:</b> Defines a specific color that is treated as transparent (example value: "#FF00FF" for magenta). Up until Tiled 0.10, this value is written out without a `#` but this is planned to change.
+* <b>trans:</b> Defines a specific color that is treated as transparent (example value: "#FF00FF" for magenta). Up until Tiled 0.12, this value is written out without a `#` but this is planned to change.
 * <b>width:</b> The image width in pixels (optional, used for tile index correction when the image changes)
 * <b>height:</b> The image height in pixels (optional)
-
-As of the current version of Tiled Qt, each tileset has a single image associated with it, which is cut into smaller tiles based on the attributes defined on the tileset element. Later versions may add support for adding multiple images to a single tileset, as is possible in Tiled Java.
 
 Can contain: [data](#data) (since 0.9)
 
@@ -80,7 +78,20 @@ Can contain: [properties](#properties)
 * <b>terrain:</b> Defines the terrain type of each corner of the tile, given as comma-separated indexes in the terrain types array in the order top-left, top-right, bottom-left, bottom-right. Leaving out a value means that corner has no terrain. (optional) (since 0.9)
 * <b>probability:</b> A percentage indicating the probability that this tile is chosen when it competes with others while editing with the terrain tool. (optional) (since 0.9)
 
-Can contain: [properties](#properties), [image](#image) (since 0.9), [objectgroup](#objectgroup) (since 0.10)
+Can contain: [properties](#properties), [image](#image) (since 0.9), [objectgroup](#objectgroup) (since 0.10), [animation](#animation) (since 0.10)
+
+#### &lt;animation> ####
+
+Contains a list of animation frames.
+
+As of Tiled 0.10, each tile can have exactly one animation associated with it. In the future, there could be support for multiple named animations on a tile.
+
+Can contain: [frame](#frame)
+
+##### &lt;frame> #####
+
+* <b>tileid</b>: The local ID of a tile within the parent [tileset](#tileset).
+* <b>duration</b>: How long (in milliseconds) this frame should be displayed before advancing to the next frame.
 
 ## &lt;layer> ##
 
@@ -107,7 +118,7 @@ The base64-encoded and optionally compressed layer data is somewhat more complic
 
 Whatever format you choose for your layer data, you will always end up with so called "global tile IDs" (gids). They are global, since they may refer to a tile from any of the tilesets used by the map. In order to find out from which tileset the tile is you need to find the tileset with the highest `firstgid` that is still lower or equal than the gid. The tilesets are always stored with increasing `firstgid`s.
 
-Can contain: [tile](#tile)
+Can contain: [tile](#tile_1)
 
 #### Tile flipping ####
 
@@ -181,6 +192,7 @@ Not to be confused with the `tile` element inside a `tileset`, this element defi
 * <i>height:</i> The height of the object group in tiles. Meaningless.
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
 * <b>visible:</b> Whether the layer is shown (1) or hidden (0). Defaults to 1.
+* <b>draworder:</b> Whether the objects are drawn according to the order of appearance ("index") or sorted by their y-coordinate ("top-down"). Defaults to "top-down".
 
 The object group is in fact a map layer, and is hence called "object layer" in Tiled Qt.
 

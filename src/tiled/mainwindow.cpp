@@ -52,6 +52,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+#include "mapformat.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "mapsdock.h"
@@ -79,8 +80,6 @@
 #include "tilestampsdock.h"
 #include "terraindock.h"
 #include "toolmanager.h"
-#include "tmxmapreader.h"
-#include "tmxmapwriter.h"
 #include "undodock.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -90,6 +89,7 @@
 #include "consoledock.h"
 #include "tileanimationeditor.h"
 #include "tilecollisioneditor.h"
+#include "tmxmapformat.h"
 #include "imagemovementtool.h"
 #include "magicwandtool.h"
 #include "selectsametiletool.h"
@@ -101,6 +101,7 @@
 #include <QMimeData>
 #include <QCloseEvent>
 #include <QComboBox>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -178,6 +179,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QAction *redoAction = undoGroup->createRedoAction(this, tr("Redo"));
     mUi->mainToolBar->setToolButtonStyle(Qt::ToolButtonFollowStyle);
     mUi->actionNew->setPriority(QAction::LowPriority);
+#if QT_VERSION >= 0x050500
+    undoAction->setPriority(QAction::LowPriority);
+#endif
     redoAction->setPriority(QAction::LowPriority);
     redoAction->setIcon(redoIcon);
     undoAction->setIcon(undoIcon);
@@ -198,12 +202,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::RightDockWidgetArea, mTerrainDock);
     addDockWidget(Qt::RightDockWidgetArea, mTilesetDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
-    addDockWidget(Qt::RightDockWidgetArea, tileStampsDock);
+    addDockWidget(Qt::LeftDockWidgetArea, tileStampsDock);
 
     tabifyDockWidget(mMiniMapDock, mObjectsDock);
     tabifyDockWidget(mObjectsDock, mLayerDock);
     tabifyDockWidget(mTerrainDock, mTilesetDock);
     tabifyDockWidget(undoDock, mMapsDock);
+    tabifyDockWidget(tileStampsDock, undoDock);
 
     // These dock widgets may not be immediately useful to many people, so
     // they are hidden by default.
@@ -223,7 +228,15 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
-    mUi->actionDelete->setShortcuts(QKeySequence::Delete);
+    QList<QKeySequence> deleteKeys = QKeySequence::keyBindings(QKeySequence::Delete);
+#ifdef Q_OS_OSX
+    // Add the Backspace key as primary shortcut for Delete, which seems to be
+    // the expected one for OS X.
+    if (!deleteKeys.contains(QKeySequence(Qt::Key_Backspace)))
+        deleteKeys.prepend(QKeySequence(Qt::Key_Backspace));
+#endif
+    mUi->actionDelete->setShortcuts(deleteKeys);
+
     undoAction->setShortcuts(QKeySequence::Undo);
     redoAction->setShortcuts(QKeySequence::Redo);
 
@@ -340,6 +353,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionAutoMap, SIGNAL(triggered()),
             mAutomappingManager, SLOT(autoMap()));
 
+    connect(mUi->actionDocumentation, SIGNAL(triggered()), SLOT(openDocumentation()));
     connect(mUi->actionBecomePatron, SIGNAL(triggered()), SLOT(becomePatron()));
     connect(mUi->actionAbout, SIGNAL(triggered()), SLOT(aboutTiled()));
 
@@ -378,6 +392,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionNewTileset, "document-new");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
+    setThemeIcon(mUi->actionDocumentation, "help-contents");
     setThemeIcon(mUi->actionAbout, "help-about");
 
     mStampBrush = new StampBrush(this);
@@ -449,6 +464,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mShowTileAnimationEditor->setCheckable(true);
     mShowTileCollisionEditor = new QAction(tr("Tile Collision Editor"), this);
     mShowTileCollisionEditor->setCheckable(true);
+    mShowTileCollisionEditor->setShortcut(tr("Ctrl+Shift+O"));
+    mShowTileCollisionEditor->setShortcutContext(Qt::ApplicationShortcut);
     QMenu *popupMenu = createPopupMenu();
     popupMenu->setParent(this);
     mViewsAndToolbarsMenu->setMenu(popupMenu);
@@ -497,13 +514,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *copyPositionShortcut = new QShortcut(tr("Alt+C"), this);
     connect(copyPositionShortcut, SIGNAL(activated()),
             mActionHandler, SLOT(copyPosition()));
-
-#if defined(Q_OS_OSX) && QT_VERSION >= 0x050000
-    // This works around the problem that the shortcut for the Delete menu action
-    // is not working on OS X for whatever reason.
-    foreach (QKeySequence key, QKeySequence::keyBindings(QKeySequence::Delete))
-        new QShortcut(key, this, SLOT(delete_()));
-#endif
 
     updateActions();
     readSettings();
@@ -609,7 +619,7 @@ void MainWindow::newMap()
 }
 
 bool MainWindow::openFile(const QString &fileName,
-                          MapReaderInterface *mapReader)
+                          MapFormat *format)
 {
     if (fileName.isEmpty())
         return false;
@@ -622,7 +632,7 @@ bool MainWindow::openFile(const QString &fileName,
     }
 
     QString error;
-    MapDocument *mapDocument = MapDocument::load(fileName, mapReader, &error);
+    MapDocument *mapDocument = MapDocument::load(fileName, format, &error);
     if (!mapDocument) {
         QMessageBox::critical(this, tr("Error Opening Map"), error);
         return false;
@@ -711,36 +721,24 @@ void MainWindow::openFile()
     QString selectedFilter = tr("Tiled map files (*.tmx)");
     filter += selectedFilter;
 
+    FormatHelper<MapFormat> helper(MapFormat::Read, filter);
+
     selectedFilter = mSettings.value(QLatin1String("lastUsedOpenFilter"),
                                      selectedFilter).toString();
 
-    const PluginManager *pm = PluginManager::instance();
-    QList<MapReaderInterface*> readers = pm->interfaces<MapReaderInterface>();
-    foreach (const MapReaderInterface *reader, readers) {
-        foreach (const QString &str, reader->nameFilters()) {
-            if (!str.isEmpty()) {
-                filter += QLatin1String(";;");
-                filter += str;
-            }
-        }
-    }
-
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Map"),
-                                                    fileDialogStartLocation(),
-                                                    filter, &selectedFilter);
+                                                          fileDialogStartLocation(),
+                                                          helper.filter(),
+                                                          &selectedFilter);
     if (fileNames.isEmpty())
         return;
 
-    // When a particular filter was selected, use the associated reader
-    MapReaderInterface *mapReader = 0;
-    foreach (MapReaderInterface *reader, readers) {
-        if (reader->nameFilters().contains(selectedFilter))
-            mapReader = reader;
-    }
+    // When a particular filter was selected, use the associated format
+    MapFormat *mapFormat = helper.formatByNameFilter(selectedFilter);
 
     mSettings.setValue(QLatin1String("lastUsedOpenFilter"), selectedFilter);
     foreach (const QString &fileName, fileNames)
-        openFile(fileName, mapReader);
+        openFile(fileName, mapFormat);
 }
 
 bool MainWindow::saveFile(const QString &fileName)
@@ -776,30 +774,18 @@ bool MainWindow::saveFile()
 
 bool MainWindow::saveFileAs()
 {
-    const QString tmxfilter = tr("Tiled map files (*.tmx)");
-    QString filter = QString(tmxfilter);
-    PluginManager *pm = PluginManager::instance();
-    foreach (const Plugin &plugin, pm->plugins()) {
-        const MapWriterInterface *writer = qobject_cast<MapWriterInterface*>
-                (plugin.instance);
-        const MapReaderInterface *reader = qobject_cast<MapReaderInterface*>
-                (plugin.instance);
-        if (writer && reader) {
-            foreach (const QString &str, writer->nameFilters()) {
-                if (!str.isEmpty()) {
-                    filter += QLatin1String(";;");
-                    filter += str;
-                }
-            }
-        }
-    }
+    const QString tmxFilter = tr("Tiled map files (*.tmx)");
+
+    FormatHelper<MapFormat> helper(MapFormat::ReadWrite, tmxFilter);
 
     QString selectedFilter;
-    if (mMapDocument)
-        selectedFilter = mMapDocument->writerPluginFileName();
+    if (mMapDocument) {
+        if (MapFormat *format = mMapDocument->writerFormat())
+            selectedFilter = format->nameFilter();
+    }
 
     if (selectedFilter.isEmpty())
-        selectedFilter = tmxfilter;
+        selectedFilter = tmxFilter;
 
     QString suggestedFileName;
     if (mMapDocument && !mMapDocument->fileName().isEmpty()) {
@@ -812,16 +798,13 @@ bool MainWindow::saveFileAs()
 
     const QString fileName =
             QFileDialog::getSaveFileName(this, QString(), suggestedFileName,
-                                         filter, &selectedFilter);
+                                         helper.filter(), &selectedFilter);
 
     if (fileName.isEmpty())
         return false;
 
-    QString writerPluginFilename;
-    if (const Plugin *p = pm->pluginByNameFilter(selectedFilter))
-        writerPluginFilename = p->fileName;
-
-    mMapDocument->setWriterPluginFileName(writerPluginFilename);
+    MapFormat *format = helper.formatByNameFilter(selectedFilter);
+    mMapDocument->setWriterFormat(format);
 
     return saveFile(fileName);
 }
@@ -886,30 +869,22 @@ void MainWindow::export_()
         return;
 
     QString exportFileName = mMapDocument->lastExportFileName();
-    QString exportPluginFileName = mMapDocument->exportPluginFileName();
-    TmxMapWriter mapWriter;
 
     if (!exportFileName.isEmpty()) {
-        MapWriterInterface *writer = 0;
+        MapFormat *exportFormat = mMapDocument->exportFormat();
+        TmxMapFormat tmxFormat;
 
-        if (exportPluginFileName.isEmpty()) {
-            writer = &mapWriter;
-        } else {
-            PluginManager *pm = PluginManager::instance();
-            if (const Plugin *plugin = pm->pluginByFileName(exportPluginFileName))
-                writer = qobject_cast<MapWriterInterface*>(plugin->instance);
+        if (!exportFormat)
+            exportFormat = &tmxFormat;
+
+        if (exportFormat->write(mMapDocument->map(), exportFileName)) {
+            statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
+                                     3000);
+            return;
         }
 
-        if (writer) {
-            if (writer->write(mMapDocument->map(), exportFileName)) {
-                statusBar()->showMessage(tr("Exported to %1").arg(exportFileName),
-                                         3000);
-                return;
-            }
-
-            QMessageBox::critical(this, tr("Error Exporting Map"),
-                                  writer->errorString());
-        }
+        QMessageBox::critical(this, tr("Error Exporting Map"),
+                              exportFormat->errorString());
     }
 
     // fall back when no successful export happened
@@ -921,17 +896,7 @@ void MainWindow::exportAs()
     if (!mMapDocument)
         return;
 
-    PluginManager *pm = PluginManager::instance();
-    QList<MapWriterInterface*> writers = pm->interfaces<MapWriterInterface>();
-    QString filter = tr("All Files (*)");
-    foreach (const MapWriterInterface *writer, writers) {
-        foreach (const QString &str, writer->nameFilters()) {
-            if (!str.isEmpty()) {
-                filter += QLatin1String(";;");
-                filter += str;
-            }
-        }
-    }
+    FormatHelper<MapFormat> helper(FileFormat::Write, tr("All Files (*)"));
 
     Preferences *pref = Preferences::instance();
 
@@ -957,46 +922,40 @@ void MainWindow::exportAs()
     // No need to confirm overwrite here since it'll be prompted below
     QString fileName = QFileDialog::getSaveFileName(this, tr("Export As..."),
                                                     suggestedFilename,
-                                                    filter, &selectedFilter,
+                                                    helper.filter(),
+                                                    &selectedFilter,
                                                     QFileDialog::DontConfirmOverwrite);
     if (fileName.isEmpty())
         return;
 
-    MapWriterInterface *chosenWriter = 0;
-
-    // If a specific filter was selected, use that writer
-    foreach (MapWriterInterface *writer, writers)
-        if (writer->nameFilters().contains(selectedFilter))
-            chosenWriter = writer;
+    // If a specific filter was selected, use that format
+    MapFormat *chosenFormat = helper.formatByNameFilter(selectedFilter);
 
     // If not, try to find the file extension among the name filters
     QString suffix = QFileInfo(fileName).completeSuffix();
-    if (!chosenWriter && !suffix.isEmpty()) {
+    if (!chosenFormat && !suffix.isEmpty()) {
         suffix.prepend(QLatin1String("*."));
 
-        foreach (MapWriterInterface *writer, writers) {
-            if (!writer->nameFilters().filter(suffix,
-                                              Qt::CaseInsensitive).isEmpty()) {
-                if (chosenWriter) {
+        for (MapFormat *format : helper.formats()) {
+            if (format->nameFilter().contains(suffix, Qt::CaseInsensitive)) {
+                if (chosenFormat) {
                     QMessageBox::warning(this, tr("Non-unique file extension"),
                                          tr("Non-unique file extension.\n"
                                             "Please select specific format."));
-                    exportAs();
-                    return;
+                    return exportAs();
                 } else {
-                    chosenWriter = writer;
+                    chosenFormat = format;
                 }
             }
         }
     }
 
     // Also support exporting to the TMX map format when requested
-    TmxMapWriter tmxMapWriter;
-    if (!chosenWriter && fileName.endsWith(QLatin1String(".tmx"),
-                                           Qt::CaseInsensitive))
-        chosenWriter = &tmxMapWriter;
+    TmxMapFormat tmxMapFormat;
+    if (!chosenFormat && tmxMapFormat.supportsFile(fileName))
+        chosenFormat = &tmxMapFormat;
 
-    if (!chosenWriter) {
+    if (!chosenFormat) {
         QMessageBox::critical(this, tr("Unknown File Format"),
                               tr("The given filename does not have any known "
                                  "file extension."));
@@ -1006,7 +965,7 @@ void MainWindow::exportAs()
     // Check if writer will overwrite existing files here because some writers
     // could save to multiple files at the same time. For example CSV saves
     // each layer into a separate file.
-    QStringList outputFiles = chosenWriter->outputFiles(mMapDocument->map(),
+    QStringList outputFiles = chosenFormat->outputFiles(mMapDocument->map(),
                                                         fileName);
     if (outputFiles.size() > 0) {
         // Check if any output file already exists
@@ -1015,7 +974,7 @@ void MainWindow::exportAs()
 
         bool overwriteHappens = false;
 
-        foreach (const QString &outputFile, outputFiles) {
+        for (const QString &outputFile : outputFiles) {
             if (QFile::exists(outputFile)) {
                 overwriteHappens = true;
                 message += outputFile + QLatin1Char('\n');
@@ -1023,7 +982,7 @@ void MainWindow::exportAs()
         }
         message += QLatin1Char('\n') + tr("Do you want to replace them?");
 
-        // If overwrite happens, warn the user and get confirmation before executing the writer
+        // If overwrite happens, warn the user and get confirmation before exporting
         if (overwriteHappens) {
             const QMessageBox::StandardButton reply = QMessageBox::warning(
                 this,
@@ -1040,16 +999,14 @@ void MainWindow::exportAs()
     pref->setLastPath(Preferences::ExportedFile, QFileInfo(fileName).path());
     mSettings.setValue(QLatin1String("lastUsedExportFilter"), selectedFilter);
 
-    if (!chosenWriter->write(mMapDocument->map(), fileName)) {
+    if (!chosenFormat->write(mMapDocument->map(), fileName)) {
         QMessageBox::critical(this, tr("Error Exporting Map"),
-                              chosenWriter->errorString());
+                              chosenFormat->errorString());
     } else {
         // Remember export parameters, so subsequent exports can be done faster
         mMapDocument->setLastExportFileName(fileName);
-        QString exportPluginFileName;
-        if (const Plugin *plugin = pm->plugin(chosenWriter))
-            exportPluginFileName = plugin->fileName;
-        mMapDocument->setExportPluginFileName(exportPluginFileName);
+        if (chosenFormat != &tmxMapFormat)
+            mMapDocument->setExportFormat(chosenFormat);
     }
 }
 
@@ -1246,10 +1203,10 @@ void MainWindow::newTilesets(const QStringList &paths)
 
 void MainWindow::reloadTilesets()
 {
-    Map *map = mMapDocument->map();
-    if (!map)
+    if (!mMapDocument)
         return;
 
+    Map *map = mMapDocument->map();
     TilesetManager *tilesetManager = TilesetManager::instance();
     QVector<SharedTileset> tilesets = map->tilesets();
     for (SharedTileset &tileset : tilesets)
@@ -1277,19 +1234,19 @@ void MainWindow::addExternalTileset()
 
     QVector<SharedTileset> tilesets;
 
-    foreach (QString fileName, fileNames) {
-        TmxMapReader reader;
-        if (SharedTileset tileset = reader.readTileset(fileName)) {
+    for (const QString &fileName : fileNames) {
+        QString error;
+        SharedTileset tileset = Tiled::readTileset(fileName, &error);
+        if (tileset) {
             tilesets.append(tileset);
         } else if (fileNames.size() == 1) {
-            QMessageBox::critical(this, tr("Error Reading Tileset"),
-                                  reader.errorString());
+            QMessageBox::critical(this, tr("Error Reading Tileset"), error);
             return;
         } else {
             int result;
 
             result = QMessageBox::warning(this, tr("Error Reading Tileset"),
-                                          tr("%1: %2").arg(fileName, reader.errorString()),
+                                          tr("%1: %2").arg(fileName, error),
                                           QMessageBox::Abort | QMessageBox::Ignore,
                                           QMessageBox::Ignore);
 
@@ -1524,6 +1481,11 @@ void MainWindow::updateZoomLabel()
     }
 }
 
+void MainWindow::openDocumentation()
+{
+    QDesktopServices::openUrl(QUrl(QLatin1String("http://doc.mapeditor.org")));
+}
+
 void MainWindow::flip(FlipDirection direction)
 {
     if (mStampBrush->isEnabled()) {
@@ -1638,11 +1600,11 @@ void MainWindow::readSettings()
 void MainWindow::updateWindowTitle()
 {
     if (mMapDocument) {
-        setWindowTitle(tr("[*]%1 - Tiled").arg(mMapDocument->displayName()));
+        setWindowTitle(tr("[*]%1").arg(mMapDocument->displayName()));
         setWindowFilePath(mMapDocument->fileName());
         setWindowModified(mMapDocument->isModified());
     } else {
-        setWindowTitle(QApplication::applicationName());
+        setWindowTitle(QString());
         setWindowFilePath(QString());
         setWindowModified(false);
     }
@@ -1727,7 +1689,7 @@ void MainWindow::setupQuickStamps()
     QList<Qt::Key> keys = TileStampManager::quickStampKeys();
 
     QSignalMapper *selectMapper = new QSignalMapper(this);
-    QSignalMapper *saveMapper = new QSignalMapper(this);
+    QSignalMapper *createMapper = new QSignalMapper(this);
     QSignalMapper *extendMapper = new QSignalMapper(this);
 
     for (int i = 0; i < keys.length(); i++) {
@@ -1738,10 +1700,10 @@ void MainWindow::setupQuickStamps()
         connect(selectStamp, SIGNAL(activated()), selectMapper, SLOT(map()));
         selectMapper->setMapping(selectStamp, i);
 
-        // Set up shortcut for saving this quick stamp
-        QShortcut *saveStamp = new QShortcut(Qt::CTRL + key, this);
-        connect(saveStamp, SIGNAL(activated()), saveMapper, SLOT(map()));
-        saveMapper->setMapping(saveStamp, i);
+        // Set up shortcut for creating this quick stamp
+        QShortcut *createStamp = new QShortcut(Qt::CTRL + key, this);
+        connect(createStamp, SIGNAL(activated()), createMapper, SLOT(map()));
+        createMapper->setMapping(createStamp, i);
 
         // Set up shortcut for extending this quick stamp
         QShortcut *extendStamp = new QShortcut(Qt::CTRL + Qt::SHIFT + key, this);
@@ -1751,8 +1713,8 @@ void MainWindow::setupQuickStamps()
 
     connect(selectMapper, SIGNAL(mapped(int)),
             mTileStampManager, SLOT(selectQuickStamp(int)));
-    connect(saveMapper, SIGNAL(mapped(int)),
-            mTileStampManager, SLOT(saveQuickStamp(int)));
+    connect(createMapper, SIGNAL(mapped(int)),
+            mTileStampManager, SLOT(createQuickStamp(int)));
     connect(extendMapper, SIGNAL(mapped(int)),
             mTileStampManager, SLOT(extendQuickStamp(int)));
 

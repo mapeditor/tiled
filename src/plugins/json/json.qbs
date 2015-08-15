@@ -7,10 +7,6 @@ TiledPlugin {
         "json_global.h",
         "jsonplugin.cpp",
         "jsonplugin.h",
-        "maptovariantconverter.cpp",
-        "maptovariantconverter.h",
-        "varianttomapconverter.cpp",
-        "varianttomapconverter.h",
         "qjsonparser/json.cpp",
         "qjsonparser/json.h",
     ]

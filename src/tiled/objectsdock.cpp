@@ -33,7 +33,6 @@
 #include <QApplication>
 #include <QBoxLayout>
 #include <QContextMenuEvent>
-#include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>

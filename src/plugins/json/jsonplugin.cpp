@@ -28,23 +28,25 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QSaveFile>
 #include <QTextStream>
 
-#if QT_VERSION >= 0x050100
-#define HAS_QSAVEFILE_SUPPORT
-#endif
+namespace Json {
 
-#ifdef HAS_QSAVEFILE_SUPPORT
-#include <QSaveFile>
-#endif
-
-using namespace Json;
-
-JsonPlugin::JsonPlugin()
+void JsonPlugin::initialize()
 {
+    addObject(new JsonMapFormat(JsonMapFormat::Json, this));
+    addObject(new JsonMapFormat(JsonMapFormat::JavaScript, this));
+    addObject(new JsonTilesetFormat(this));
 }
 
-Tiled::Map *JsonPlugin::read(const QString &fileName)
+
+JsonMapFormat::JsonMapFormat(SubFormat subFormat, QObject *parent)
+    : Tiled::MapFormat(parent)
+    , mSubFormat(subFormat)
+{}
+
+Tiled::Map *JsonMapFormat::read(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -54,7 +56,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
 
     JsonReader reader;
     QByteArray contents = file.readAll();
-    if (fileName.endsWith(".js") && contents.size() > 0 && contents[0] != '{') {
+    if (mSubFormat == JavaScript && contents.size() > 0 && contents[0] != '{') {
         // Scan past JSONP prefix; look for an open curly at the start of the line
         int i = contents.indexOf(QLatin1String("\n{"));
         if (i > 0) {
@@ -73,7 +75,7 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
         return 0;
     }
 
-    VariantToMapConverter converter;
+    Tiled::VariantToMapConverter converter;
     Tiled::Map *map = converter.toMap(variant, QFileInfo(fileName).dir());
 
     if (!map)
@@ -82,19 +84,16 @@ Tiled::Map *JsonPlugin::read(const QString &fileName)
     return map;
 }
 
-bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool JsonMapFormat::write(const Tiled::Map *map, const QString &fileName)
 {
-#ifdef HAS_QSAVEFILE_SUPPORT
     QSaveFile file(fileName);
-#else
-    QFile file(fileName);
-#endif
+
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
     }
 
-    MapToVariantConverter converter;
+    Tiled::MapToVariantConverter converter;
     QVariant variant = converter.toVariant(map, QFileInfo(fileName).dir());
 
     JsonWriter writer;
@@ -107,8 +106,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     QTextStream out(&file);
-    bool isJsFile = fileName.endsWith(".js");
-    if (isJsFile) {
+    if (mSubFormat == JavaScript) {
         // Trim and escape name
         JsonWriter nameWriter;
         QString baseName = QFileInfo(fileName).baseName();
@@ -121,7 +119,7 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         out << " }})(" << nameWriter.result() << ",\n";
     }
     out << writer.result();
-    if (isJsFile) {
+    if (mSubFormat == JavaScript) {
         out << ");";
     }
     out.flush();
@@ -131,35 +129,126 @@ bool JsonPlugin::write(const Tiled::Map *map, const QString &fileName)
         return false;
     }
 
-#ifdef HAS_QSAVEFILE_SUPPORT
     if (!file.commit()) {
         mError = file.errorString();
         return false;
     }
-#endif
 
     return true;
 }
 
-QStringList JsonPlugin::nameFilters() const
+QString JsonMapFormat::nameFilter() const
 {
-    QStringList filters;
-    filters.append(tr("Json files (*.json)"));
-    filters.append(tr("JavaScript files (*.js)"));
-    return filters;
+    if (mSubFormat == Json)
+        return tr("Json map files (*.json)");
+    else
+        return tr("JavaScript map files (*.js)");
 }
 
-bool JsonPlugin::supportsFile(const QString &fileName) const
+bool JsonMapFormat::supportsFile(const QString &fileName) const
 {
-    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive) ||
-           fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
+    if (mSubFormat == Json)
+        return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
+    else
+        return fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive);
 }
 
-QString JsonPlugin::errorString() const
+QString JsonMapFormat::errorString() const
 {
     return mError;
 }
 
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Json, JsonPlugin)
-#endif
+
+JsonTilesetFormat::JsonTilesetFormat(QObject *parent)
+    : Tiled::TilesetFormat(parent)
+{
+}
+
+Tiled::SharedTileset JsonTilesetFormat::read(const QString &fileName)
+{
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for reading.");
+        return Tiled::SharedTileset();
+    }
+
+    JsonReader reader;
+    QByteArray contents = file.readAll();
+
+    reader.parse(contents);
+
+    const QVariant variant = reader.result();
+
+    if (!variant.isValid()) {
+        mError = tr("Error parsing file.");
+        return Tiled::SharedTileset();
+    }
+
+    Tiled::VariantToMapConverter converter;
+    Tiled::SharedTileset tileset = converter.toTileset(variant,
+                                                       QFileInfo(fileName).dir());
+
+    if (!tileset)
+        mError = converter.errorString();
+    else
+        tileset->setFileName(fileName);
+
+    return tileset;
+}
+
+bool JsonTilesetFormat::supportsFile(const QString &fileName) const
+{
+    return fileName.endsWith(QLatin1String(".json"), Qt::CaseInsensitive);
+}
+
+bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
+                              const QString &fileName)
+{
+    QSaveFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        mError = tr("Could not open file for writing.");
+        return false;
+    }
+
+    Tiled::MapToVariantConverter converter;
+    QVariant variant = converter.toVariant(tileset, QFileInfo(fileName).dir());
+
+    JsonWriter writer;
+    writer.setAutoFormatting(true);
+
+    if (!writer.stringify(variant)) {
+        // This can only happen due to coding error
+        mError = writer.errorString();
+        return false;
+    }
+
+    QTextStream out(&file);
+    out << writer.result();
+    out.flush();
+
+    if (file.error() != QFile::NoError) {
+        mError = tr("Error while writing file:\n%1").arg(file.errorString());
+        return false;
+    }
+
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
+    return true;
+}
+
+QString JsonTilesetFormat::nameFilter() const
+{
+    return tr("Json tileset files (*.json)");
+}
+
+QString JsonTilesetFormat::errorString() const
+{
+    return mError;
+}
+
+} // namespace Json

@@ -24,7 +24,7 @@
 #define BUCKETFILLTOOL_H
 
 #include "abstracttiletool.h"
-
+#include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
 
@@ -102,12 +102,7 @@ private:
      */
     bool mLastRandomStatus;
 
-    /**
-     * Contains all used random cells to use in random mode.
-     * The same cell can be in the list multiple times to make different
-     * random weights possible.
-     */
-    QList<Cell> mRandomList;
+    RandomPicker<Cell> mRandomCellPicker;
 
     /**
      * Updates the list of random cells.

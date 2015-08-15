@@ -280,7 +280,7 @@ QVariant CommandDataModel::headerData(int section, Qt::Orientation orientation,
 
 QMenu *CommandDataModel::contextMenu(QWidget *parent, const QModelIndex &index)
 {
-    QMenu *menu = NULL;
+    QMenu *menu = nullptr;
     const int row = index.row();
 
     if (row >= 0 && row < mCommands.size()) {

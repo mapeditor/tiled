@@ -21,7 +21,7 @@
 #include "mapsdock.h"
 
 #include "mainwindow.h"
-#include "mapreaderinterface.h"
+#include "mapformat.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "utils.h"
@@ -100,8 +100,9 @@ MapsDock::MapsDock(MainWindow *mainWindow, QWidget *parent)
 
 void MapsDock::browse()
 {
-    QString f = QFileDialog::getExistingDirectory(this, tr("Choose the Maps Folder"),
-        mDirectoryEdit->text());
+    QString f = QFileDialog::getExistingDirectory(window(),
+                                                  tr("Choose the Maps Folder"),
+                                                  mDirectoryEdit->text());
     if (!f.isEmpty()) {
         Preferences *prefs = Preferences::instance();
         prefs->setMapsDirectory(f);
@@ -161,18 +162,19 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     mFSModel = new FileSystemModel(this);
     mFSModel->setRootPath(mapsDir.absolutePath());
 
-    PluginManager *pm = PluginManager::instance();
     QStringList nameFilters(QLatin1String("*.tmx"));
 
     // The file system model name filters are plain, whereas the plugins expose
     // a filter as part of the file description
     QRegExp filterFinder(QLatin1String("\\((\\*\\.[^\\)\\s]*)"));
 
-    foreach (MapReaderInterface *reader, pm->interfaces<MapReaderInterface>()) {
-        foreach (const QString &filter, reader->nameFilters()) {
-            if (filterFinder.indexIn(filter) != -1)
-                nameFilters.append(filterFinder.cap(1));
-        }
+    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
+        if (!(format->capabilities() & MapFormat::Read))
+            continue;
+
+        const QString filter = format->nameFilter();
+        if (filterFinder.indexIn(filter) != -1)
+            nameFilters.append(filterFinder.cap(1));
     }
 
     mFSModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);
@@ -189,11 +191,7 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     setRootIndex(mFSModel->index(mapsDir.absolutePath()));
     
     header()->setStretchLastSection(false);
-#if QT_VERSION >= 0x050000
     header()->setSectionResizeMode(0, QHeaderView::Stretch);
-#else
-    header()->setResizeMode(0, QHeaderView::Stretch);
-#endif
 
     connect(this, SIGNAL(activated(QModelIndex)),
             SLOT(onActivated(QModelIndex)));

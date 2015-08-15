@@ -21,6 +21,8 @@
 #ifndef TILED_INTERNAL_TILESTAMPMODEL_H
 #define TILED_INTERNAL_TILESTAMPMODEL_H
 
+#include "tilestamp.h"
+
 #include <QAbstractItemModel>
 
 namespace Tiled {
@@ -29,16 +31,19 @@ class Map;
 
 namespace Internal {
 
-class TileStamp;
 struct TileStampVariation;
 
 class TileStampModel : public QAbstractItemModel
 {
+    Q_OBJECT
+
 public:
     TileStampModel(QObject *parent = 0);
 
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex index(const TileStamp &stamp) const;
+
     QModelIndex parent(const QModelIndex &index) const override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -73,12 +78,26 @@ public:
     void addVariation(const TileStamp &stamp,
                       const TileStampVariation &variation);
 
+    void clear();
+
+signals:
+    void stampAdded(const TileStamp &stamp);
+    void stampRenamed(const TileStamp &stamp);
+    void stampChanged(const TileStamp &stamp);
+    void stampRemoved(const TileStamp &stamp);
+
 private:
     QList<TileStamp> mStamps;
 
     mutable QHash<Map *, QPixmap> mThumbnailCache;
 };
 
+
+inline QModelIndex TileStampModel::index(const TileStamp &stamp) const
+{
+    const int i = mStamps.indexOf(stamp);
+    return i == -1 ? QModelIndex() : TileStampModel::index(i, 0);
+}
 
 inline const QList<TileStamp> &TileStampModel::stamps() const
 {

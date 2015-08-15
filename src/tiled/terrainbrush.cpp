@@ -28,6 +28,7 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "painttilelayer.h"
+#include "randompicker.h"
 #include "tilelayer.h"
 #include "tileset.h"
 #include "tile.h"
@@ -260,9 +261,9 @@ static Tile *findBestTile(const Tileset &tileset, unsigned terrain, unsigned con
 
     // if all quadrants are set to 'no terrain', then the 'empty' tile is the only choice we can deduce
     if (terrain == 0xFFFFFFFF)
-        return NULL;
+        return nullptr;
 
-    QList<Tile*> matches;
+    RandomPicker<Tile*> matches;
     int penalty = INT_MAX;
 
     // TODO: this is a slow linear search, perhaps we could use a better find algorithm...
@@ -287,36 +288,16 @@ static Tile *findBestTile(const Tileset &tileset, unsigned terrain, unsigned con
                 matches.clear();
             penalty = transitionPenalty;
 
-            matches.push_back(t);
+            matches.add(t, t->probability());
         }
     }
 
-    // choose a candidate at random, with consideration for terrain probability
-    if (!matches.isEmpty()) {
-        // determine the range of probability
-        float sum = 0.f;
-        for (int i = 0; i < matches.size(); ++i) {
-            float probability = matches.at(i)->terrainProbability();
-            if (probability > 0.f)
-                sum += probability;
-        }
+    // choose a candidate at random, with consideration for probability
+    if (!matches.isEmpty())
+        return matches.pick();
 
-        float random = ((float)rand() / RAND_MAX) * sum;
-
-        // determine which match was hit
-        sum = 0.f;
-        for (int i = 0; i < matches.size(); ++i) {
-            float probability = matches.at(i)->terrainProbability();
-            if (probability > 0.f) {
-                sum += probability;
-                if (random <= sum)
-                    return matches[i];
-            }
-        }
-    }
-
-    // TODO: conveniently, the NULL tile doesn't currently work, but when it does, we need to signal a failure to find any matches some other way
-    return NULL;
+    // TODO: conveniently, the null tile doesn't currently work, but when it does, we need to signal a failure to find any matches some other way
+    return nullptr;
 }
 
 static unsigned terrain(const Tile *tile)
@@ -544,7 +525,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
                                y - brushRect.top(),
                                Cell(tile));
             } else {
-                // TODO: we need to do something to erase tiles where checked[i] is true, and newTerrain[i] is NULL
+                // TODO: we need to do something to erase tiles where checked[i] is true, and newTerrain[i] is null
                 // is there an eraser stamp? investigate how the eraser works...
             }
         }

@@ -30,7 +30,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-TilesetManager *TilesetManager::mInstance = 0;
+TilesetManager *TilesetManager::mInstance;
 
 TilesetManager::TilesetManager():
     mWatcher(new FileSystemWatcher(this)),

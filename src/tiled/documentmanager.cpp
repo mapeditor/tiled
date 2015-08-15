@@ -29,8 +29,6 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "movabletabwidget.h"
-#include "pluginmanager.h"
-#include "tmxmapreader.h"
 #include "zoomable.h"
 
 #include <QUndoGroup>
@@ -121,7 +119,7 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-DocumentManager *DocumentManager::mInstance = 0;
+DocumentManager *DocumentManager::mInstance;
 
 DocumentManager *DocumentManager::instance()
 {
@@ -140,8 +138,8 @@ DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
     , mTabWidget(new MovableTabWidget)
     , mUndoGroup(new QUndoGroup(this))
-    , mSelectedTool(0)
-    , mSceneWithTool(0)
+    , mSelectedTool(nullptr)
+    , mViewWithTool(nullptr)
     , mFileSystemWatcher(new FileSystemWatcher(this))
 {
     mTabWidget->setDocumentMode(true);
@@ -322,18 +320,10 @@ bool DocumentManager::reloadDocumentAt(int index)
 {
     MapDocument *oldDocument = mDocuments.at(index);
 
-    // Try to find the interface that was used for reading this map
-    QString readerPluginName = oldDocument->readerPluginFileName();
-    MapReaderInterface *reader = 0;
-    if (!readerPluginName.isEmpty()) {
-        PluginManager *pm = PluginManager::instance();
-        if (const Plugin *plugin = pm->pluginByFileName(readerPluginName))
-            reader = qobject_cast<MapReaderInterface*>(plugin->instance);
-    }
-
     QString error;
     MapDocument *newDocument = MapDocument::load(oldDocument->fileName(),
-                                                 reader, &error);
+                                                 oldDocument->readerFormat(),
+                                                 &error);
     if (!newDocument) {
         emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
         return false;
@@ -370,9 +360,10 @@ void DocumentManager::closeAllDocuments()
 
 void DocumentManager::currentIndexChanged()
 {
-    if (mSceneWithTool) {
-        mSceneWithTool->disableSelectedTool();
-        mSceneWithTool = 0;
+    if (mViewWithTool) {
+        MapScene *mapScene = mViewWithTool->mapScene();
+        mapScene->disableSelectedTool();
+        mViewWithTool = nullptr;
     }
 
     MapDocument *mapDocument = currentDocument();
@@ -382,10 +373,15 @@ void DocumentManager::currentIndexChanged()
 
     emit currentDocumentChanged(mapDocument);
 
-    if (MapScene *mapScene = currentMapScene()) {
+    if (MapView *mapView = currentMapView()) {
+        MapScene *mapScene = mapView->mapScene();
         mapScene->setSelectedTool(mSelectedTool);
         mapScene->enableSelectedTool();
-        mSceneWithTool = mapScene;
+        if (mSelectedTool)
+            mapView->viewport()->setCursor(mSelectedTool->cursor());
+        else
+            mapView->viewport()->unsetCursor();
+        mViewWithTool = mapView;
     }
 }
 
@@ -394,15 +390,31 @@ void DocumentManager::setSelectedTool(AbstractTool *tool)
     if (mSelectedTool == tool)
         return;
 
+    if (mSelectedTool) {
+        disconnect(mSelectedTool, &AbstractTool::cursorChanged,
+                   this, &DocumentManager::cursorChanged);
+    }
+
     mSelectedTool = tool;
 
-    if (mSceneWithTool) {
-        mSceneWithTool->disableSelectedTool();
+    if (mViewWithTool) {
+        MapScene *mapScene = mViewWithTool->mapScene();
+        mapScene->disableSelectedTool();
 
         if (tool) {
-            mSceneWithTool->setSelectedTool(tool);
-            mSceneWithTool->enableSelectedTool();
+            mapScene->setSelectedTool(tool);
+            mapScene->enableSelectedTool();
         }
+
+        if (tool)
+            mViewWithTool->viewport()->setCursor(tool->cursor());
+        else
+            mViewWithTool->viewport()->unsetCursor();
+    }
+
+    if (tool) {
+        connect(tool, &AbstractTool::cursorChanged,
+                this, &DocumentManager::cursorChanged);
     }
 }
 
@@ -476,6 +488,12 @@ void DocumentManager::reloadRequested()
     int index = mTabWidget->indexOf(static_cast<MapViewContainer*>(sender()));
     Q_ASSERT(index != -1);
     reloadDocumentAt(index);
+}
+
+void DocumentManager::cursorChanged(const QCursor &cursor)
+{
+    if (mViewWithTool)
+        mViewWithTool->viewport()->setCursor(cursor);
 }
 
 void DocumentManager::centerViewOn(qreal x, qreal y)

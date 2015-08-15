@@ -1,3 +1,29 @@
+0.13.0 (10 August 2015)
+* Added persistent Tile Stamps with support for variations (#969)
+* Added Select Same Tile tool (by Mamed Ibrahimov)
+* Added option to disable opening of last files on startup (by Mamed Ibrahimov)
+* Added tilecount property to TMX, JSON and Lua map formats (#806)
+* Added tileset properties to Properties view, as read-only (by Mamed Ibrahimov)
+* Added Save All action (by Mamed Ibrahimov)
+* Added translation of command line messages (by Mamed Ibrahimov)
+* Added menu item linking to online documentation
+* Object selection outlines are now drawn on top of everything
+* Select new objects after they have been created
+* Made the starting point for polylines and polygons visible
+* Use the tile probability property also in random mode
+* Ungrouped position and size properties (#892)
+* CSV plugin: Extended to export all tile layers (by Alejandro Cámara)
+* Lua and JSON plugins: Added support for layer data compression
+* Fixed crash when changing flipping flag for multiple objects (by Mamed Ibrahimov)
+* Fixed Ctrl+T causing a crash when no maps are open
+* Fixed availability of 'Execute in Terminal' command on Linux with Qt 5
+* Fixed drag object mouse cursor to appear only when it should
+* Fixed selected file format when doing Save As with a non-TMX map
+* Fixed problems with infinate scaling factors when resizing objects
+* Require at least Qt 5.1.0
+* Require compiler support for C++11
+* Updated Russian, German, Czech and Italian translations
+
 0.12.3 (1 June 2015)
 * Fixed updating of map view when rotating objects with Z key
 * Fixed updating of map view when joining, splitting or deleting polygon nodes

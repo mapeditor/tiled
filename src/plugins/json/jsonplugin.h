@@ -24,8 +24,9 @@
 
 #include "json_global.h"
 
-#include "mapwriterinterface.h"
-#include "mapreaderinterface.h"
+#include "mapformat.h"
+#include "plugin.h"
+#include "tilesetformat.h"
 
 #include <QObject>
 
@@ -35,34 +36,61 @@ class Map;
 
 namespace Json {
 
-class JSONSHARED_EXPORT JsonPlugin
-        : public QObject
-        , public Tiled::MapReaderInterface
-        , public Tiled::MapWriterInterface
+class JSONSHARED_EXPORT JsonPlugin : public Tiled::Plugin
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapReaderInterface)
-    Q_INTERFACES(Tiled::MapWriterInterface)
-#if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
-#endif
+    Q_INTERFACES(Tiled::Plugin)
+    Q_PLUGIN_METADATA(IID "org.mapeditor.Plugin" FILE "plugin.json")
 
 public:
-    JsonPlugin();
+    void initialize() override;
+};
 
-    // MapReaderInterface
-    Tiled::Map *read(const QString &fileName);
-    bool supportsFile(const QString &fileName) const;
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
+class JSONSHARED_EXPORT JsonMapFormat : public Tiled::MapFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::MapFormat)
 
-    // Both interfaces
-    QStringList nameFilters() const;
-    QString errorString() const;
+public:
+    enum SubFormat {
+        Json,
+        JavaScript,
+    };
 
-private:
+    JsonMapFormat(SubFormat subFormat, QObject *parent = nullptr);
+
+    Tiled::Map *read(const QString &fileName) override;
+    bool supportsFile(const QString &fileName) const override;
+
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+
+    QString nameFilter() const override;
+    QString errorString() const override;
+
+protected:
+    QString mError;
+    SubFormat mSubFormat;
+};
+
+
+class JSONSHARED_EXPORT JsonTilesetFormat : public Tiled::TilesetFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::TilesetFormat)
+
+public:
+    JsonTilesetFormat(QObject *parent = nullptr);
+
+    Tiled::SharedTileset read(const QString &fileName) override;
+    bool supportsFile(const QString &fileName) const override;
+
+    bool write(const Tiled::Tileset &tileset, const QString &fileName) override;
+
+    QString nameFilter() const override;
+    QString errorString() const override;
+
+protected:
     QString mError;
 };
 

@@ -1,7 +1,7 @@
 /*
- * JSON Tiled Plugin
+ * varianttomapconverter.h
  * Copyright 2011, Porfírio José Pereira Ribeiro <porfirioribeiro@gmail.com>
- * Copyright 2011, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2011-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -29,26 +29,27 @@
 #include <QVariant>
 
 namespace Tiled {
+
 class Layer;
 class Map;
 class ObjectGroup;
 class Properties;
 class Tileset;
-}
-
-namespace Json {
 
 /**
  * Converts a QVariant to a Map instance. Meant to be used together with
  * JsonReader.
  */
-class VariantToMapConverter
+class TILEDSHARED_EXPORT VariantToMapConverter
 {
     // Using the MapReader context since the messages are the same
     Q_DECLARE_TR_FUNCTIONS(MapReader)
 
 public:
-    VariantToMapConverter() : mMap(0) {}
+    VariantToMapConverter()
+        : mMap(0)
+        , mReadingExternalTileset(false)
+    {}
 
     /**
      * Tries to convert the given \a variant to a Map instance. The \a mapDir
@@ -57,7 +58,17 @@ public:
      * Returns 0 in case of an error. The error can be obstained using
      * errorString().
      */
-    Tiled::Map *toMap(const QVariant &variant, const QDir &mapDir);
+    Map *toMap(const QVariant &variant, const QDir &mapDir);
+
+    /**
+     * Tries to convert the given \a variant to a Tileset instance. The
+     * \a directory is necessary to resolve any relative references to external
+     * images.
+     *
+     * Returns 0 in case of an error. The error can be obstained using
+     * errorString().
+     */
+    SharedTileset toTileset(const QVariant &variant, const QDir &directory);
 
     /**
      * Returns the last error, if any.
@@ -65,21 +76,22 @@ public:
     QString errorString() const { return mError; }
 
 private:
-    Tiled::Properties toProperties(const QVariant &variant);
-    Tiled::SharedTileset toTileset(const QVariant &variant);
-    Tiled::Layer *toLayer(const QVariant &variant);
-    Tiled::TileLayer *toTileLayer(const QVariantMap &variantMap);
-    Tiled::ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
-    Tiled::ImageLayer *toImageLayer(const QVariantMap &variantMap);
+    Properties toProperties(const QVariant &variant);
+    SharedTileset toTileset(const QVariant &variant);
+    Layer *toLayer(const QVariant &variant);
+    TileLayer *toTileLayer(const QVariantMap &variantMap);
+    ObjectGroup *toObjectGroup(const QVariantMap &variantMap);
+    ImageLayer *toImageLayer(const QVariantMap &variantMap);
 
     QPolygonF toPolygon(const QVariant &variant) const;
 
-    Tiled::Map *mMap;
+    Map *mMap;
     QDir mMapDir;
-    Tiled::GidMapper mGidMapper;
+    bool mReadingExternalTileset;
+    GidMapper mGidMapper;
     QString mError;
 };
 
-} // namespace Json
+} // namespace Tiled
 
 #endif // VARIANTTOMAPCONVERTER_H

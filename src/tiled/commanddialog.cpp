@@ -70,17 +70,10 @@ CommandTreeView::CommandTreeView(QWidget *parent)
     setColumnWidth(0, 200);
     QHeaderView *h = header();
     h->setStretchLastSection(false);
-#if QT_VERSION >= 0x050000
     h->setSectionResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
     h->setSectionResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn,
                             QHeaderView::ResizeToContents);
-#else
-    h->setResizeMode(CommandDataModel::NameColumn, QHeaderView::Interactive);
-    h->setResizeMode(CommandDataModel::CommandColumn, QHeaderView::Stretch);
-    h->setResizeMode(CommandDataModel::EnabledColumn,
-                     QHeaderView::ResizeToContents);
-#endif
 
     // Allow deletion via keyboard
     QShortcut *d = new QShortcut(QKeySequence::Delete, this);

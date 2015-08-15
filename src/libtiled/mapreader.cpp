@@ -38,6 +38,7 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetformat.h"
 #include "terrain.h"
 
 #include <QCoreApplication>
@@ -90,8 +91,8 @@ private:
     TileLayer *readLayer();
     void readLayerData(TileLayer *tileLayer);
     void decodeBinaryLayerData(TileLayer *tileLayer,
-                               const QStringRef &text,
-                               const QStringRef &compression);
+                               const QByteArray &data,
+                               Map::LayerDataFormat format);
     void decodeCSVLayerData(TileLayer *tileLayer, const QString &text);
 
     /**
@@ -402,7 +403,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
     // Read tile probability
     QStringRef probability = atts.value(QLatin1String("probability"));
     if (!probability.isEmpty())
-        tile->setTerrainProbability(probability.toString().toFloat());
+        tile->setProbability(probability.toString().toFloat());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
@@ -580,27 +581,36 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
     QStringRef encoding = atts.value(QLatin1String("encoding"));
     QStringRef compression = atts.value(QLatin1String("compression"));
 
+    Map::LayerDataFormat layerDataFormat;
     if (encoding.isEmpty()) {
-        mMap->setLayerDataFormat(Map::XML);
+        layerDataFormat = Map::XML;
     } else if (encoding == QLatin1String("csv")) {
-        mMap->setLayerDataFormat(Map::CSV);
+        layerDataFormat = Map::CSV;
     } else if (encoding == QLatin1String("base64")) {
-        if (compression.isEmpty())
-            mMap->setLayerDataFormat(Map::Base64);
-        else if (compression == QLatin1String("gzip"))
-            mMap->setLayerDataFormat(Map::Base64Gzip);
-        else if (compression == QLatin1String("zlib"))
-            mMap->setLayerDataFormat(Map::Base64Zlib);
+        if (compression.isEmpty()) {
+            layerDataFormat = Map::Base64;
+        } else if (compression == QLatin1String("gzip")) {
+            layerDataFormat = Map::Base64Gzip;
+        } else if (compression == QLatin1String("zlib")) {
+            layerDataFormat = Map::Base64Zlib;
+        } else {
+            xml.raiseError(tr("Compression method '%1' not supported")
+                           .arg(compression.toString()));
+            return;
+        }
+    } else {
+        xml.raiseError(tr("Unknown encoding: %1").arg(encoding.toString()));
+        return;
     }
-    // else, error handled below
+    mMap->setLayerDataFormat(layerDataFormat);
 
     int x = 0;
     int y = 0;
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
-        if (xml.isEndElement())
+        if (xml.isEndElement()) {
             break;
-        else if (xml.isStartElement()) {
+        } else if (xml.isStartElement()) {
             if (xml.name() == QLatin1String("tile")) {
                 if (y >= tileLayer->height()) {
                     xml.raiseError(tr("Too many <tile> elements"));
@@ -624,59 +634,33 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
         } else if (xml.isCharacters() && !xml.isWhitespace()) {
             if (encoding == QLatin1String("base64")) {
                 decodeBinaryLayerData(tileLayer,
-                                      xml.text(),
-                                      compression);
+                                      xml.text().toLatin1(),
+                                      layerDataFormat);
             } else if (encoding == QLatin1String("csv")) {
                 decodeCSVLayerData(tileLayer, xml.text().toString());
-            } else {
-                xml.raiseError(tr("Unknown encoding: %1")
-                               .arg(encoding.toString()));
-                continue;
             }
         }
     }
 }
 
 void MapReaderPrivate::decodeBinaryLayerData(TileLayer *tileLayer,
-                                             const QStringRef &text,
-                                             const QStringRef &compression)
+                                             const QByteArray &data,
+                                             Map::LayerDataFormat format)
 {
-    QByteArray tileData = QByteArray::fromBase64(text.toLatin1());
-    const int size = (tileLayer->width() * tileLayer->height()) * 4;
+    GidMapper::DecodeError error = mGidMapper.decodeLayerData(*tileLayer, data, format);
 
-    if (compression == QLatin1String("zlib")
-        || compression == QLatin1String("gzip")) {
-        tileData = decompress(tileData, size);
-    } else if (!compression.isEmpty()) {
-        xml.raiseError(tr("Compression method '%1' not supported")
-                       .arg(compression.toString()));
+    switch (error) {
+    case GidMapper::CorruptLayerData:
+        xml.raiseError(tr("Corrupt layer data for layer '%1'").arg(tileLayer->name()));
         return;
-    }
-
-    if (size != tileData.length()) {
-        xml.raiseError(tr("Corrupt layer data for layer '%1'")
-                       .arg(tileLayer->name()));
+    case GidMapper::TileButNoTilesets:
+        xml.raiseError(tr("Tile used but no tilesets specified"));
         return;
-    }
-
-    const unsigned char *data =
-            reinterpret_cast<const unsigned char*>(tileData.constData());
-    int x = 0;
-    int y = 0;
-
-    for (int i = 0; i < size - 3; i += 4) {
-        const unsigned gid = data[i] |
-                             data[i + 1] << 8 |
-                             data[i + 2] << 16 |
-                             data[i + 3] << 24;
-
-        tileLayer->setCell(x, y, cellForGid(gid));
-
-        x++;
-        if (x == tileLayer->width()) {
-            x = 0;
-            y++;
-        }
+    case GidMapper::InvalidTile:
+        xml.raiseError(tr("Invalid tile: %1").arg(mGidMapper.invalidTile()));
+        return;
+    case GidMapper::NoError:
+        break;
     }
 }
 
@@ -1040,13 +1024,7 @@ QImage MapReader::readExternalImage(const QString &source)
 SharedTileset MapReader::readExternalTileset(const QString &source,
                                              QString *error)
 {
-    MapReader reader;
-
-    SharedTileset tileset = reader.readTileset(source);
-    if (!tileset)
-        *error = reader.errorString();
-
-    return tileset;
+    return Tiled::readTileset(source, error);
 }
 
 int MapReader::GetNumTilesetSourceFiles()

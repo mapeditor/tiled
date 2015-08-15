@@ -21,8 +21,7 @@
 #ifndef TILESELECTIONITEM_H
 #define TILESELECTIONITEM_H
 
-#include <QObject>
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 
 namespace Tiled {
 namespace Internal {
@@ -32,16 +31,11 @@ class MapDocument;
 /**
  * A graphics item displaying a tile selection.
  */
-class TileSelectionItem : public QObject,
-                          public QGraphicsItem
+class TileSelectionItem : public QGraphicsObject
 {
     Q_OBJECT
-    Q_INTERFACES(QGraphicsItem)
 
 public:
-    /**
-     * Constructs an item around the given selection model.
-     */
     TileSelectionItem(MapDocument *mapDocument);
 
     // QGraphicsItem

@@ -21,31 +21,26 @@
 #ifndef CSVPLUGIN_H
 #define CSVPLUGIN_H
 
-#include "mapwriterinterface.h"
+#include "mapformat.h"
 
 #include "csv_global.h"
 
 namespace Csv {
 
-class CSVSHARED_EXPORT CsvPlugin : public QObject,
-                                   public Tiled::MapWriterInterface
+class CSVSHARED_EXPORT CsvPlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapWriterInterface)
-#if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapWriterInterface" FILE "plugin.json")
-#endif
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     CsvPlugin();
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString errorString() const;
-    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+    QString errorString() const override;
+    QStringList outputFiles(const Tiled::Map *map, const QString &fileName) const override;
 
 protected:
-    QString nameFilter() const;
+    QString nameFilter() const override;
 
 private:
     QString mError;

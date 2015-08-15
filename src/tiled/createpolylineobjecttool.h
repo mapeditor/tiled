@@ -24,7 +24,6 @@
 #include "createmultipointobjecttool.h"
 
 namespace Tiled {
-
 namespace Internal {
 
 class CreatePolylineObjectTool: public CreateMultipointObjectTool
@@ -38,7 +37,7 @@ protected:
     void finishNewMapObject();
 };
 
-}
-}
+} // namespace Internal
+} // namespace Tiled
 
 #endif // CREATEPOLYLINEOBJECTTOOL_H

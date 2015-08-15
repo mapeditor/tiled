@@ -24,7 +24,8 @@
 #include "lua_global.h"
 
 #include "gidmapper.h"
-#include "mapwriterinterface.h"
+#include "map.h"
+#include "mapformat.h"
 
 #include <QDir>
 #include <QObject>
@@ -44,28 +45,24 @@ class LuaTableWriter;
 /**
  * This plugin allows exporting maps as Lua files.
  */
-class LUASHARED_EXPORT LuaPlugin : public QObject,
-                                   public Tiled::MapWriterInterface
+class LUASHARED_EXPORT LuaPlugin : public Tiled::WritableMapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapWriterInterface)
-#if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "org.mapeditor.MapReaderInterface" FILE "plugin.json")
-#endif
+    Q_PLUGIN_METADATA(IID "org.mapeditor.MapFormat" FILE "plugin.json")
 
 public:
     LuaPlugin();
 
-    // MapWriterInterface
-    bool write(const Tiled::Map *map, const QString &fileName);
-    QString nameFilter() const;
-    QString errorString() const;
+    bool write(const Tiled::Map *map, const QString &fileName) override;
+    QString nameFilter() const override;
+    QString errorString() const override;
 
 private:
     void writeMap(LuaTableWriter &, const Tiled::Map *);
     void writeProperties(LuaTableWriter &, const Tiled::Properties &);
     void writeTileset(LuaTableWriter &, const Tiled::Tileset *, unsigned firstGid);
-    void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *);
+    void writeTileLayer(LuaTableWriter &, const Tiled::TileLayer *,
+                        Tiled::Map::LayerDataFormat);
     void writeObjectGroup(LuaTableWriter &, const Tiled::ObjectGroup *,
                           const QByteArray &key = QByteArray());
     void writeImageLayer(LuaTableWriter &, const Tiled::ImageLayer *);

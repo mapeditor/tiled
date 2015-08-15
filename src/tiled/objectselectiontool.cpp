@@ -320,9 +320,10 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mOriginIndicator(new OriginIndicator)
     , mMousePressed(false)
-    , mClickedObjectItem(0)
-    , mClickedRotateHandle(0)
-    , mClickedResizeHandle(0)
+    , mHoveredObjectItem(nullptr)
+    , mClickedObjectItem(nullptr)
+    , mClickedRotateHandle(nullptr)
+    , mClickedResizeHandle(nullptr)
     , mResizingLimitHorizontal(false)
     , mResizingLimitVertical(false)
     , mMode(Resize)
@@ -446,12 +447,35 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
+    // Update the hovered item (for mouse cursor)
+    {
+        RotateHandle *hoveredRotateHandle = nullptr;
+        ResizeHandle *hoveredResizeHandle = nullptr;
+        MapObjectItem *hoveredObjectItem = nullptr;
+
+        if (QGraphicsView *view = mapScene()->views().first()) {
+            QGraphicsItem *hoveredItem = mapScene()->itemAt(pos,
+                                                            view->transform());
+
+            hoveredRotateHandle = dynamic_cast<RotateHandle*>(hoveredItem);
+            hoveredResizeHandle = dynamic_cast<ResizeHandle*>(hoveredItem);
+        }
+
+        if (!hoveredRotateHandle && !hoveredResizeHandle)
+            hoveredObjectItem = topMostObjectItemAt(pos);
+
+        mHoveredObjectItem = hoveredObjectItem;
+    }
+
     if (mAction == NoAction && mMousePressed) {
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mScreenStart - screenPos).manhattanLength();
         if (dragDistance >= QApplication::startDragDistance()) {
-            // Holding shift makes sure we'll start a selection operation
-            if ((mClickedObjectItem || modifiers & Qt::AltModifier) &&
+            const bool hasSelection = !mapScene()->selectedObjectItems().isEmpty();
+
+            // Holding Alt forces moving current selection
+            // Holding Shift forces selection rectangle
+            if ((mClickedObjectItem || ((modifiers & Qt::AltModifier) && hasSelection)) &&
                     !(modifiers & Qt::ShiftModifier)) {
                 startMoving(modifiers);
             } else if (mClickedRotateHandle) {
@@ -480,6 +504,8 @@ void ObjectSelectionTool::mouseMoved(const QPointF &pos,
     case NoAction:
         break;
     }
+
+    refreshCursor();
 }
 
 static QGraphicsView *findView(QGraphicsSceneEvent *event)
@@ -500,8 +526,8 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mStart = event->scenePos();
         mScreenStart = event->screenPos();
 
-        RotateHandle *clickedRotateHandle = 0;
-        ResizeHandle *clickedResizeHandle = 0;
+        RotateHandle *clickedRotateHandle = nullptr;
+        ResizeHandle *clickedResizeHandle = nullptr;
 
         if (QGraphicsView *view = findView(event)) {
             QGraphicsItem *clickedItem = mapScene()->itemAt(event->scenePos(),
@@ -574,14 +600,17 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     }
 
     mMousePressed = false;
-    mClickedObjectItem = 0;
-    mClickedRotateHandle = 0;
-    mClickedResizeHandle = 0;
+    mClickedObjectItem = nullptr;
+    mClickedRotateHandle = nullptr;
+    mClickedResizeHandle = nullptr;
+
+    refreshCursor();
 }
 
 void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     mModifiers = modifiers;
+    refreshCursor();
 }
 
 void ObjectSelectionTool::languageChanged()
@@ -914,8 +943,8 @@ void ObjectSelectionTool::startMoving(Qt::KeyboardModifiers modifiers)
 void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
                                             Qt::KeyboardModifiers modifiers)
 {
-    MapRenderer *renderer = mapDocument()->renderer();
-    QPointF diff = snapToGrid(pos - mStart, modifiers);
+    const MapRenderer *renderer = mapDocument()->renderer();
+    const QPointF diff = snapToGrid(pos - mStart, modifiers);
 
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF newPixelPos = object.oldItemPosition + diff;
@@ -1076,6 +1105,9 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                      qMax((qreal)0.01, diff.y() / startDiff.y()));
     }
 
+    if (!std::isfinite(scale))
+        scale = 1;
+
     foreach (const MovingObject &object, mMovingObjects) {
         const QPointF oldRelPos = object.oldItemPosition - resizingOrigin;
         const QPointF scaledRelPos(oldRelPos.x() * scale,
@@ -1205,6 +1237,11 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
         QSizeF scalingFactor(qMax((qreal)0.01, relPos.x() / startDiff.x()),
                              qMax((qreal)0.01, relPos.y() / startDiff.y()));
 
+        if (!std::isfinite(scalingFactor.width()))
+            scalingFactor.setWidth(1);
+        if (!std::isfinite(scalingFactor.height()))
+            scalingFactor.setHeight(1);
+
         if (mResizingLimitHorizontal) {
             scalingFactor.setWidth(preserveAspect ? scalingFactor.height() : 1);
         } else if (mResizingLimitVertical) {
@@ -1295,8 +1332,34 @@ void ObjectSelectionTool::saveSelectionState()
     }
 }
 
-const QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
-                                              Qt::KeyboardModifiers modifiers)
+void ObjectSelectionTool::refreshCursor()
+{
+    Qt::CursorShape cursorShape = Qt::ArrowCursor;
+
+    switch (mAction) {
+    case NoAction: {
+        const bool hasSelection = !mapScene()->selectedObjectItems().isEmpty();
+
+        if ((mHoveredObjectItem || ((mModifiers & Qt::AltModifier) && hasSelection)) &&
+                !(mModifiers & Qt::ShiftModifier)) {
+            cursorShape = Qt::SizeAllCursor;
+        }
+
+        break;
+    }
+    case Moving:
+        cursorShape = Qt::SizeAllCursor;
+        break;
+    default:
+        break;
+    }
+
+    if (cursor().shape() != cursorShape)
+        setCursor(cursorShape);
+}
+
+QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
+                                        Qt::KeyboardModifiers modifiers)
 {
     MapRenderer *renderer = mapDocument()->renderer();
     SnapHelper snapHelper(renderer, modifiers);

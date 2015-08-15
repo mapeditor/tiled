@@ -51,24 +51,19 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
                              ObjectGroupItem *parent):
     QGraphicsItem(parent),
     mObject(object),
-    mMapDocument(mapDocument),
-    mIsEditable(false),
-    mSyncing(false)
+    mMapDocument(mapDocument)
 {
     syncWithMapObject();
 }
 
 void MapObjectItem::syncWithMapObject()
 {
-    // Update the whole object when the name or polygon has changed
-    if (mObject->name() != mName || mObject->polygon() != mPolygon) {
+    const QColor color = objectColor(mObject);
+
+    // Update the whole object when the name, polygon or color has changed
+    if (mName != mObject->name() || mPolygon != mObject->polygon() || mColor != color) {
         mName = mObject->name();
         mPolygon = mObject->polygon();
-        update();
-    }
-
-    const QColor color = objectColor(mObject);
-    if (mColor != color) {
         mColor = color;
         update();
     }
@@ -92,32 +87,13 @@ void MapObjectItem::syncWithMapObject()
         if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
             setZValue(pixelPos.y());
 
-    mSyncing = true;
-
     if (mBoundingRect != bounds) {
         // Notify the graphics scene about the geometry change in advance
         prepareGeometryChange();
         mBoundingRect = bounds;
     }
 
-    mSyncing = false;
-
     setVisible(mObject->isVisible());
-}
-
-void MapObjectItem::setEditable(bool editable)
-{
-    if (editable == mIsEditable)
-        return;
-
-    mIsEditable = editable;
-
-    if (mIsEditable)
-        setCursor(Qt::SizeAllCursor);
-    else
-        unsetCursor();
-
-    update();
 }
 
 QRectF MapObjectItem::boundingRect() const
@@ -140,25 +116,6 @@ void MapObjectItem::paint(QPainter *painter,
     painter->translate(-pos());
     mMapDocument->renderer()->setPainterScale(scale);
     mMapDocument->renderer()->drawMapObject(painter, mObject, mColor);
-
-    if (mIsEditable) {
-        painter->translate(pos());
-
-        QLineF top(mBoundingRect.topLeft(), mBoundingRect.topRight());
-        QLineF left(mBoundingRect.topLeft(), mBoundingRect.bottomLeft());
-        QLineF right(mBoundingRect.topRight(), mBoundingRect.bottomRight());
-        QLineF bottom(mBoundingRect.bottomLeft(), mBoundingRect.bottomRight());
-
-        QPen dashPen(Qt::DashLine);
-        dashPen.setCosmetic(true);
-        dashPen.setDashOffset(qMax(qreal(0), x()));
-        painter->setPen(dashPen);
-        painter->drawLines(QVector<QLineF>() << top << bottom);
-
-        dashPen.setDashOffset(qMax(qreal(0), y()));
-        painter->setPen(dashPen);
-        painter->drawLines(QVector<QLineF>() << left << right);
-    }
 }
 
 void MapObjectItem::resizeObject(const QSizeF &size)
@@ -171,6 +128,8 @@ void MapObjectItem::resizeObject(const QSizeF &size)
 
 void MapObjectItem::setPolygon(const QPolygonF &polygon)
 {
+    // Not using the MapObjectModel because it is used during object creation,
+    // when the object is not actually part of the map yet.
     mObject->setPolygon(polygon);
     syncWithMapObject();
 }

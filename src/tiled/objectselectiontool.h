@@ -104,8 +104,10 @@ private:
     void setMode(Mode mode);
     void saveSelectionState();
 
-    const QPointF snapToGrid(const QPointF &pos,
-                             Qt::KeyboardModifiers modifiers);
+    void refreshCursor();
+
+    QPointF snapToGrid(const QPointF &pos,
+                       Qt::KeyboardModifiers modifiers);
 
     QList<MapObject*> changingObjects() const;
 
@@ -125,6 +127,7 @@ private:
     RotateHandle *mRotateHandles[4];
     ResizeHandle *mResizeHandles[8];
     bool mMousePressed;
+    MapObjectItem *mHoveredObjectItem;
     MapObjectItem *mClickedObjectItem;
     RotateHandle *mClickedRotateHandle;
     ResizeHandle *mClickedResizeHandle;

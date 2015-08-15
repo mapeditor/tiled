@@ -50,7 +50,6 @@ public:
     TerrainFilterModel(QObject *parent = 0)
         : QSortFilterProxyModel(parent)
     {
-        setDynamicSortFilter(true);
     }
 
 protected:

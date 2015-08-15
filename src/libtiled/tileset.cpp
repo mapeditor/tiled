@@ -1,6 +1,6 @@
 /*
  * tileset.cpp
- * Copyright 2008-2009, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2008-2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2009, Edward Hutchins <eah1@yahoo.com>
  *
  * This file is part of libtiled.
@@ -43,7 +43,7 @@ Tileset::~Tileset()
 
 Tile *Tileset::tileAt(int id) const
 {
-    return (id < mTiles.size()) ? mTiles.at(id) : 0;
+    return (id < mTiles.size()) ? mTiles.at(id) : nullptr;
 }
 
 /**

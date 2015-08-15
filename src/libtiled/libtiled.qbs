@@ -12,7 +12,7 @@ DynamicLibrary {
     }
 
     cpp.cxxLanguageVersion: "c++11"
-
+    cpp.visibility: "minimal"
     cpp.defines: [
         "TILED_LIBRARY",
         "QT_NO_CAST_FROM_ASCII",
@@ -32,23 +32,29 @@ DynamicLibrary {
         "isometricrenderer.h",
         "layer.cpp",
         "layer.h",
+        "logginginterface.h",
         "map.cpp",
         "map.h",
+        "mapformat.h",
         "mapobject.cpp",
         "mapobject.h",
         "mapreader.cpp",
         "mapreader.h",
-        "mapreaderinterface.h",
         "maprenderer.cpp",
         "maprenderer.h",
+        "maptovariantconverter.cpp",
+        "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
-        "mapwriterinterface.h",
         "objectgroup.cpp",
         "objectgroup.h",
         "object.h",
         "orthogonalrenderer.cpp",
         "orthogonalrenderer.h",
+        "plugin.cpp",
+        "plugin.h",
+        "pluginmanager.cpp",
+        "pluginmanager.h",
         "properties.cpp",
         "properties.h",
         "staggeredrenderer.cpp",
@@ -61,6 +67,10 @@ DynamicLibrary {
         "tilelayer.h",
         "tileset.cpp",
         "tileset.h",
+        "tilesetformat.cpp",
+        "tilesetformat.h",
+        "varianttomapconverter.cpp",
+        "varianttomapconverter.h",
     ]
 
     Export {

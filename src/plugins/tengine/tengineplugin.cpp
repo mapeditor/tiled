@@ -27,7 +27,7 @@
 #include "mapobject.h"
 #include "properties.h"
 
-#include <QFile>
+#include <QSaveFile>
 #include <QTextStream>
 #include <QHash>
 #include <QList>
@@ -44,7 +44,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
 {
     using namespace Tiled;
 
-    QFile file(fileName);
+    QSaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -282,8 +282,11 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
     }
 
-    // And close the file
-    file.close();
+    if (!file.commit()) {
+        mError = file.errorString();
+        return false;
+    }
+
     return true;
 }
 
@@ -340,7 +343,3 @@ QString TenginePlugin::constructAdditionalTable(Tiled::Properties props, QList<Q
     }
     return tableString;
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Tengine, TenginePlugin)
-#endif

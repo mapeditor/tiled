@@ -30,7 +30,6 @@
 
 #include <QAbstractItemDelegate>
 #include <QCoreApplication>
-#include <QFileDialog>
 #include <QHeaderView>
 #include <QMenu>
 #include <QPainter>

@@ -45,6 +45,7 @@ class MapDocument;
 class MapObjectItem;
 class MapScene;
 class ObjectGroupItem;
+class ObjectSelectionItem;
 
 /**
  * A graphics scene that represents the contents of a map.
@@ -193,6 +194,7 @@ private:
     QVector<QGraphicsItem*> mLayerItems;
     QGraphicsRectItem *mDarkRectangle;
     QColor mDefaultBackgroundColor;
+    ObjectSelectionItem *mObjectSelectionItem;
 
     typedef QMap<MapObject*, MapObjectItem*> ObjectItems;
     ObjectItems mObjectItems;

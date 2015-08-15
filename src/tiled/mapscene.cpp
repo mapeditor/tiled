@@ -32,6 +32,7 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objectgroupitem.h"
+#include "objectselectionitem.h"
 #include "preferences.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -57,13 +58,14 @@ static const qreal opacityFactor = 0.4;
 
 MapScene::MapScene(QObject *parent):
     QGraphicsScene(parent),
-    mMapDocument(0),
-    mSelectedTool(0),
-    mActiveTool(0),
+    mMapDocument(nullptr),
+    mSelectedTool(nullptr),
+    mActiveTool(nullptr),
     mUnderMouse(false),
     mCurrentModifiers(Qt::NoModifier),
     mDarkRectangle(new QGraphicsRectItem),
-    mDefaultBackgroundColor(Qt::darkGray)
+    mDefaultBackgroundColor(Qt::darkGray),
+    mObjectSelectionItem(nullptr)
 {
     setBackgroundBrush(mDefaultBackgroundColor);
 
@@ -209,9 +211,13 @@ void MapScene::refreshScene()
         ++layerIndex;
     }
 
-    TileSelectionItem *selectionItem = new TileSelectionItem(mMapDocument);
-    selectionItem->setZValue(10000 - 1);
-    addItem(selectionItem);
+    TileSelectionItem *tileSelectionItem = new TileSelectionItem(mMapDocument);
+    tileSelectionItem->setZValue(10000 - 2);
+    addItem(tileSelectionItem);
+
+    mObjectSelectionItem = new ObjectSelectionItem(mMapDocument);
+    mObjectSelectionItem->setZValue(10000 - 1);
+    addItem(mObjectSelectionItem);
 
     updateCurrentLayerHighlight();
 }
@@ -529,18 +535,12 @@ void MapScene::updateSelectedObjectItems()
     const QList<MapObject *> &objects = mMapDocument->selectedObjects();
 
     QSet<MapObjectItem*> items;
-    foreach (MapObject *object, objects) {
+    for (MapObject *object : objects) {
         MapObjectItem *item = itemForObject(object);
         Q_ASSERT(item);
 
         items.insert(item);
     }
-
-    // Update the editable state of the items
-    foreach (MapObjectItem *item, mSelectedObjectItems - items)
-        item->setEditable(false);
-    foreach (MapObjectItem *item, items - mSelectedObjectItems)
-        item->setEditable(true);
 
     mSelectedObjectItems = items;
     emit selectedObjectItemsChanged();

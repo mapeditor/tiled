@@ -152,8 +152,8 @@ void TileLayer::merge(const QPoint &pos, const TileLayer *layer)
 
     for (int y = area.top(); y <= area.bottom(); ++y) {
         for (int x = area.left(); x <= area.right(); ++x) {
-            const Cell &cell = layer->cellAt(x - area.left(),
-                                             y - area.top());
+            const Cell &cell = layer->cellAt(x - pos.x(),
+                                             y - pos.y());
             if (!cell.isEmpty())
                 setCell(x, y, cell);
         }

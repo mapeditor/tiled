@@ -23,7 +23,6 @@
 #include "luatablewriter.h"
 
 #include "imagelayer.h"
-#include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
@@ -34,14 +33,7 @@
 
 #include <QFile>
 #include <QCoreApplication>
-
-#if QT_VERSION >= 0x050100
-#define HAS_QSAVEFILE_SUPPORT
-#endif
-
-#ifdef HAS_QSAVEFILE_SUPPORT
 #include <QSaveFile>
-#endif
 
 /**
  * See below for an explanation of the different formats. One of these needs
@@ -60,11 +52,8 @@ LuaPlugin::LuaPlugin()
 
 bool LuaPlugin::write(const Map *map, const QString &fileName)
 {
-#ifdef HAS_QSAVEFILE_SUPPORT
     QSaveFile file(fileName);
-#else
-    QFile file(fileName);
-#endif
+
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = tr("Could not open file for writing.");
         return false;
@@ -82,12 +71,10 @@ bool LuaPlugin::write(const Map *map, const QString &fileName)
         return false;
     }
 
-#ifdef HAS_QSAVEFILE_SUPPORT
     if (!file.commit()) {
         mError = file.errorString();
         return false;
     }
-#endif
 
     return true;
 }
@@ -160,7 +147,9 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     foreach (const Layer *layer, map->layers()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
-            writeTileLayer(writer, static_cast<const TileLayer*>(layer));
+            writeTileLayer(writer,
+                           static_cast<const TileLayer*>(layer),
+                           map->layerDataFormat());
             break;
         case Layer::ObjectGroupType:
             writeObjectGroup(writer, static_cast<const ObjectGroup*>(layer));
@@ -200,7 +189,7 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->terrain() != 0xFFFFFFFF)
         return true;
-    if (tile->terrainProbability() != 1.f)
+    if (tile->probability() != 1.f)
         return true;
 
     return false;
@@ -296,8 +285,8 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             writer.setSuppressNewlines(false);
         }
 
-        if (tile->terrainProbability() != 1.f)
-            writer.writeKeyAndValue("probability", tile->terrainProbability());
+        if (tile->probability() != 1.f)
+            writer.writeKeyAndValue("probability", tile->probability());
 
         if (ObjectGroup *objectGroup = tile->objectGroup())
             writeObjectGroup(writer, objectGroup, "objectGroup");
@@ -323,7 +312,8 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
 }
 
 void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
-                               const TileLayer *tileLayer)
+                               const TileLayer *tileLayer,
+                               Map::LayerDataFormat format)
 {
     writer.writeStartTable();
 
@@ -337,16 +327,36 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     writer.writeKeyAndValue("opacity", tileLayer->opacity());
     writeProperties(writer, tileLayer->properties());
 
-    writer.writeKeyAndValue("encoding", "lua");
-    writer.writeStartTable("data");
-    for (int y = 0; y < tileLayer->height(); ++y) {
-        if (y > 0)
-            writer.prepareNewLine();
+    switch (format) {
+    case Map::XML:
+    case Map::CSV:
+        writer.writeKeyAndValue("encoding", "lua");
+        writer.writeStartTable("data");
+        for (int y = 0; y < tileLayer->height(); ++y) {
+            if (y > 0)
+                writer.prepareNewLine();
 
-        for (int x = 0; x < tileLayer->width(); ++x)
-            writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
+            for (int x = 0; x < tileLayer->width(); ++x)
+                writer.writeValue(mGidMapper.cellToGid(tileLayer->cellAt(x, y)));
+        }
+        writer.writeEndTable();
+        break;
+
+    case Map::Base64:
+    case Map::Base64Zlib:
+    case Map::Base64Gzip: {
+        writer.writeKeyAndValue("encoding", "base64");
+
+        if (format == Map::Base64Zlib)
+            writer.writeKeyAndValue("compression", "zlib");
+        else if (format == Map::Base64Gzip)
+            writer.writeKeyAndValue("compression", "gzip");
+
+        QByteArray layerData = mGidMapper.encodeLayerData(*tileLayer, format);
+        writer.writeKeyAndValue("data", layerData);
+        break;
     }
-    writer.writeEndTable();
+    }
 
     writer.writeEndTable();
 }
@@ -513,7 +523,3 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
 
     writer.writeEndTable();
 }
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(Lua, LuaPlugin)
-#endif

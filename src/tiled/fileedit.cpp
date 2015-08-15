@@ -109,7 +109,10 @@ void FileEdit::validate(const QString &text)
 
 void FileEdit::buttonClicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Choose a File"), mLineEdit->text(), mFilter);
+    QString filePath = QFileDialog::getOpenFileName(window(),
+                                                    tr("Choose a File"),
+                                                    mLineEdit->text(),
+                                                    mFilter);
     if (filePath.isNull())
         return;
     mLineEdit->setText(filePath);

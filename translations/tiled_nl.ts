@@ -35,7 +35,7 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+202"/>
+        <location filename="../src/tiled/main.cpp" line="+214"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
         <translation>Export syntax is --export-map [formaat] &lt;tmx bestand&gt; &lt;doelbestand&gt;</translation>
     </message>
@@ -55,7 +55,7 @@
         <translation>Fout bij het laden van de map.</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+11"/>
         <source>Failed to export map to target file.</source>
         <translation>Fout tijdens het exporteren naar het doelbestand.</translation>
     </message>
@@ -71,6 +71,73 @@
         <location line="+24"/>
         <source>&amp;Save map before executing</source>
         <translation>Voor het uitvoeren map op&amp;slaan</translation>
+    </message>
+</context>
+<context>
+    <name>CommandLineHandler</name>
+    <message>
+        <location filename="../src/tiled/main.cpp" line="-172"/>
+        <source>Display the version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Only check validity of arguments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Disable hardware accelerated rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Export the specified tmx file to target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Print a list of supported export formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <source>Export formats:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CommandLineParser</name>
+    <message>
+        <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
+        <source>Bad argument %1: lonely hyphen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Unknown long argument %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Unknown short argument %1.%2: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Usage:
+  %1 [options] [files...]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Display this help</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -102,7 +169,7 @@
         <translation>Alle Opslaan Als %1</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+21"/>
         <source>All Files (*)</source>
         <translation>Alle Bestanden (*)</translation>
     </message>
@@ -120,17 +187,12 @@
 <context>
     <name>Csv::CsvPlugin</name>
     <message>
-        <location filename="../src/plugins/csv/csvplugin.cpp" line="+52"/>
+        <location filename="../src/plugins/csv/csvplugin.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <source>No tile layer found.</source>
-        <translation>Kon geen tilelaag vinden.</translation>
-    </message>
-    <message>
-        <location line="+40"/>
+        <location line="+75"/>
         <source>CSV files (*.csv)</source>
         <translation>CSV bestanden (*.csv)</translation>
     </message>
@@ -138,7 +200,7 @@
 <context>
     <name>Droidcraft::DroidcraftPlugin</name>
     <message>
-        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+56"/>
+        <location filename="../src/plugins/droidcraft/droidcraftplugin.cpp" line="+57"/>
         <source>This is not a valid Droidcraft map file!</source>
         <translation>Dit is geen geldig Droidcraft map bestand!</translation>
     </message>
@@ -158,7 +220,7 @@
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+16"/>
         <source>Droidcraft map files (*.dat)</source>
         <translation>Droidcraft map bestanden (*.dat)</translation>
     </message>
@@ -259,7 +321,7 @@
 <context>
     <name>Flare::FlarePlugin</name>
     <message>
-        <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
@@ -269,27 +331,27 @@
         <translation>Fout tijdens het laden van tileset &apos;%1&apos;, volledige pad &apos;%2&apos;. Bestand niet gevonden!</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
         <translation>Geen tilesets gevonden voor &quot;layer&quot; segment.</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+28"/>
         <source>Error mapping tile id %1.</source>
         <translation>Ongeldige tile id %1.</translation>
     </message>
     <message>
-        <location line="+71"/>
+        <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
         <translation>Dit is geen geldige Flare map. Er moet tenminste een &quot;header&quot; segment, een &quot;tileset&quot; segment en een tilelaag aanwezig zijn.</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+16"/>
         <source>Flare map files (*.txt)</source>
         <translation>Flare map bestanden (*.txt)</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+13"/>
         <source>Could not open file for writing.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
@@ -297,7 +359,7 @@
 <context>
     <name>Json::JsonPlugin</name>
     <message>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="+51"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+44"/>
         <source>Could not open file for reading.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
@@ -307,7 +369,7 @@
         <translation>Fout tijdens het parsen van het bestand.</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+18"/>
         <source>Could not open file for writing.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
@@ -319,7 +381,7 @@
 %1</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+15"/>
         <source>Json files (*.json)</source>
         <translation>Json bestanden (*.json)</translation>
     </message>
@@ -332,12 +394,12 @@
 <context>
     <name>Lua::LuaPlugin</name>
     <message>
-        <location filename="../src/plugins/lua/luaplugin.cpp" line="+69"/>
+        <location filename="../src/plugins/lua/luaplugin.cpp" line="+58"/>
         <source>Could not open file for writing.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+26"/>
         <source>Lua files (*.lua)</source>
         <translation>Lua bestanden (*.lua)</translation>
     </message>
@@ -345,17 +407,12 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.ui" line="+17"/>
-        <source>Tiled</source>
-        <translation>Tiled</translation>
-    </message>
-    <message>
-        <location line="+32"/>
+        <location filename="../src/tiled/mainwindow.ui" line="+46"/>
         <source>&amp;File</source>
         <translation>&amp;Bestand</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+30"/>
         <source>&amp;Edit</source>
         <translation>Be&amp;werken</translation>
     </message>
@@ -365,7 +422,7 @@
         <translation>&amp;Help</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+9"/>
         <source>&amp;Map</source>
         <translation>&amp;Map</translation>
     </message>
@@ -470,7 +527,17 @@
         <translation>Tiled Steunen</translation>
     </message>
     <message>
-        <location line="-225"/>
+        <location line="+5"/>
+        <source>Save All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Documentation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-235"/>
         <source>AutoMap</source>
         <translation>AutoMap</translation>
     </message>
@@ -535,12 +602,12 @@
         <translation>Tile &amp;Object Randen Weergeven</translation>
     </message>
     <message>
-        <location line="-385"/>
+        <location line="-388"/>
         <source>&amp;Recent Files</source>
         <translation>&amp;Recente Bestanden</translation>
     </message>
     <message>
-        <location line="+192"/>
+        <location line="+195"/>
         <source>Map &amp;Properties</source>
         <translation>Map &amp;Eigenschappen</translation>
     </message>
@@ -628,7 +695,7 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+142"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+140"/>
         <source>Not a map file.</source>
         <translation>Geen map bestand.</translation>
     </message>
@@ -658,19 +725,19 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+37"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+58"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+57"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>Niet ondersteunde map orientatie: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="+89"/>
-        <location line="+21"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+88"/>
+        <location line="+83"/>
+        <location line="+19"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+83"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>Ongeldige tileset parameters voor tileset: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+20"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
         <translation>Fout tijdens het laden van tileset &apos;%1&apos;: %2</translation>
     </message>
@@ -691,7 +758,7 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+89"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+20"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+19"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
         <translation>Fout tijdens het laden van tileset afbeelding:
@@ -699,25 +766,27 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+33"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+257"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+322"/>
         <source>Error loading image:
 &apos;%1&apos;</source>
         <translation>Fout tijdens het laden van afbeelding:
 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+106"/>
+        <location line="+112"/>
         <source>Too many &lt;tile&gt; elements</source>
         <translation>Teveel &lt;tile&gt; elementen</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+44"/>
+        <location line="+43"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-120"/>
         <source>Invalid tile: %1</source>
         <translation>Ongeldige tile: %1</translation>
     </message>
     <message>
         <location line="+29"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-78"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+34"/>
         <source>Invalid draw order: %1</source>
         <translation>Ongeldige tekenvolgorde: %1</translation>
     </message>
@@ -734,46 +803,51 @@ Regel %1, colom %2</translation>
         <translation>Ongeldig formaat voor polygon node</translation>
     </message>
     <message>
-        <location line="-282"/>
+        <location line="-290"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-90"/>
         <source>Unknown encoding: %1</source>
         <translation>Onbekende codering: %1</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="-5"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-4"/>
         <source>Compression method &apos;%1&apos; not supported</source>
         <translation>Compressie methode &apos;%1&apos; wordt niet ondersteund</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+32"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-63"/>
+        <location line="+57"/>
+        <location line="+19"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+15"/>
+        <location line="+39"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
         <translation>Corrupte tile data voor laag &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+12"/>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="+23"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-28"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;</source>
         <translation>Kon de tile bij (%1,%2) op laag &apos;%3&apos; niet lezen</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="-28"/>
+        <location line="+44"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+31"/>
         <source>Tile used but no tilesets specified</source>
         <translation>Tile gebruikt maar geen tilesets gespecificeerd</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+113"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+106"/>
         <source>Could not open file for writing.</source>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/json/varianttomapconverter.cpp" line="-125"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-177"/>
         <source>Tileset tile index negative:
 &apos;%1&apos;</source>
         <translation>Negatieve tile index: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+10"/>
         <source>Tileset tile index too high:
 &apos;%1&apos;</source>
         <translation>Tile index te hoog: &apos;%1&apos;</translation>
@@ -1121,12 +1195,12 @@ Regel %1, colom %2</translation>
         <translation>Links Omhoog</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="+16"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="+6"/>
         <source>&amp;Reload tileset images when they change</source>
         <translation>Tileset &amp;afbeeldingen herladen als ze veranderen</translation>
     </message>
     <message>
-        <location line="-10"/>
+        <location line="+7"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
         <translation>Wordt standaard weggelaten omdat een externe DTD problemen veroorzaakt met sommige XML parsers.</translation>
     </message>
@@ -1136,7 +1210,7 @@ Regel %1, colom %2</translation>
         <translation>Gebruik een &amp;DTD referentie bij het opslaan</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+20"/>
         <source>Interface</source>
         <translation>Interface</translation>
     </message>
@@ -1161,7 +1235,12 @@ Regel %1, colom %2</translation>
         <translation>Hardware &amp;acceleratie gebruiken (OpenGL)</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="-19"/>
+        <source>Open last files on startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>Grid color:</source>
         <translation>Raster kleur:</translation>
     </message>
@@ -1674,7 +1753,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>ReplicaIsland::ReplicaIslandPlugin</name>
     <message>
-        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+48"/>
+        <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+59"/>
         <source>Cannot open Replica Island map file!</source>
         <translation>Kon Replica Island map niet openen!</translation>
     </message>
@@ -1704,14 +1783,14 @@ Regel %1, colom %2</translation>
         <translation>Onverwachte gegevens aan het einde van het bestand!</translation>
     </message>
     <message>
-        <location line="+75"/>
+        <location line="+64"/>
         <source>Replica Island map files (*.bin)</source>
         <translation>Replica Island map bestanden (*.bin)</translation>
     </message>
     <message>
         <location line="+32"/>
-        <source>Cannot open temporary file for writing!</source>
-        <translation>Kon niet schrijven naar tijdelijk bestand!</translation>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -1724,12 +1803,7 @@ Regel %1, colom %2</translation>
         <translation>Kan alleen tilelagen opslaan!</translation>
     </message>
     <message>
-        <location line="+12"/>
-        <source>Couldn&apos;t overwrite old version; may be deleted!</source>
-        <translation>Kon oude versie niet overschrijven; zou verwijderd kunnen zijn!</translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+24"/>
         <source>You must define a type property on each layer!</source>
         <translation>Iedere laag moet een &quot;type&quot; eigenschap hebben!</translation>
     </message>
@@ -1790,7 +1864,7 @@ Regel %1, colom %2</translation>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location line="+243"/>
+        <location line="+246"/>
         <source>T-Engine4 map files (*.lua)</source>
         <translation>T-Engine4 map bestanden (*.lua)</translation>
     </message>
@@ -1804,7 +1878,7 @@ Regel %1, colom %2</translation>
     </message>
     <message>
         <location line="+99"/>
-        <location filename="../src/tiled/tileanimationeditor.cpp" line="+505"/>
+        <location filename="../src/tiled/tileanimationeditor.cpp" line="+507"/>
         <source>Preview</source>
         <translation>Voorbeeld</translation>
     </message>
@@ -1912,7 +1986,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>Tiled::Internal::AutoMapper</name>
     <message>
-        <location filename="../src/tiled/automapper.cpp" line="+116"/>
+        <location filename="../src/tiled/automapper.cpp" line="+115"/>
         <source>&apos;%1&apos;: Property &apos;%2&apos; = &apos;%3&apos; does not make sense. Ignoring this property.</source>
         <translation>&apos;%1&apos;: Eigenschap &apos;%2&apos; = &apos;%3&apos; betekent niks. Deze eigenschap wordt genegeerd.</translation>
     </message>
@@ -1976,7 +2050,7 @@ Regel %1, colom %2</translation>
         <translation>AutoMap regels toepassen</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+26"/>
         <source>No rules file found at:
 %1</source>
         <translation>Hier geen regels bestand gevonden:
@@ -2007,14 +2081,14 @@ Regel %1, colom %2</translation>
 <context>
     <name>Tiled::Internal::BucketFillTool</name>
     <message>
-        <location filename="../src/tiled/bucketfilltool.cpp" line="+39"/>
-        <location line="+161"/>
+        <location filename="../src/tiled/bucketfilltool.cpp" line="+40"/>
+        <location line="+175"/>
         <source>Bucket Fill Tool</source>
         <translation>Vullen</translation>
     </message>
     <message>
-        <location line="-158"/>
-        <location line="+159"/>
+        <location line="-172"/>
+        <location line="+173"/>
         <source>F</source>
         <translation>V</translation>
     </message>
@@ -2155,7 +2229,7 @@ Regel %1, colom %2</translation>
 <context>
     <name>Tiled::Internal::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+123"/>
+        <location filename="../src/tiled/command.cpp" line="+130"/>
         <source>Unable to create/open %1</source>
         <translation>Kon tijdelijk bestand %1 niet aanmaken</translation>
     </message>
@@ -2322,12 +2396,12 @@ Regel %1, colom %2</translation>
 <context>
     <name>Tiled::Internal::EditTerrainDialog</name>
     <message>
-        <location filename="../src/tiled/editterraindialog.cpp" line="+153"/>
+        <location filename="../src/tiled/editterraindialog.cpp" line="+149"/>
         <source>E</source>
         <translation>W</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+36"/>
         <source>New Terrain</source>
         <translation>Nieuw Terrein</translation>
     </message>
@@ -2387,7 +2461,7 @@ Moet het bestand vervangen worden?</translation>
         <translation>De afbeelding zou %1 x %2 pixels groot zijn en %3 GB geheugen in beslag nemen. Tiled kan deze afbeelding niet produceren. Probeer uit te zoomen.</translation>
     </message>
     <message>
-        <location line="+89"/>
+        <location line="+88"/>
         <source>Image</source>
         <translation>Afbeelding</translation>
     </message>
@@ -2403,7 +2477,7 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::FileEdit</name>
     <message>
-        <location filename="../src/tiled/fileedit.cpp" line="+112"/>
+        <location filename="../src/tiled/fileedit.cpp" line="+113"/>
         <source>Choose a File</source>
         <translation>Bestand Kiezen</translation>
     </message>
@@ -2472,7 +2546,7 @@ Moet het bestand vervangen worden?</translation>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+175"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+178"/>
         <location line="+8"/>
         <source>Undo</source>
         <translation>Ongedaan Maken</translation>
@@ -2484,7 +2558,7 @@ Moet het bestand vervangen worden?</translation>
         <translation>Opnieuw</translation>
     </message>
     <message>
-        <location line="+536"/>
+        <location line="+549"/>
         <source>Open Map</source>
         <translation>Map Openen</translation>
     </message>
@@ -2495,7 +2569,7 @@ Moet het bestand vervangen worden?</translation>
         <translation>Tiled map bestanden (*.tmx)</translation>
     </message>
     <message>
-        <location line="-537"/>
+        <location line="-546"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -2516,23 +2590,28 @@ Moet het bestand vervangen worden?</translation>
     </message>
     <message>
         <location line="+23"/>
-        <location line="+1342"/>
+        <location line="+1406"/>
         <source>Random Mode</source>
         <translation>Willekeurige Modus</translation>
     </message>
     <message>
-        <location line="-1339"/>
+        <location line="-1403"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+1337"/>
+        <location line="+1401"/>
         <source>&amp;Layer</source>
         <translation>&amp;Laag</translation>
     </message>
     <message>
-        <location line="-1138"/>
+        <location line="-1223"/>
+        <source>Ctrl+Shift+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
         <source>Ctrl+Shift+Tab</source>
         <translation>Ctrl+Shift+Tab</translation>
     </message>
@@ -2573,22 +2652,23 @@ Moet het bestand vervangen worden?</translation>
     </message>
     <message>
         <location line="+81"/>
-        <location line="+195"/>
+        <location line="+218"/>
         <source>All Files (*)</source>
         <translation>Alle Bestanden (*)</translation>
     </message>
     <message>
-        <location line="-147"/>
+        <location line="-170"/>
+        <location line="+88"/>
         <source>Error Saving Map</source>
         <translation>Fout Bij Map Opslaan</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="-34"/>
         <source>untitled.tmx</source>
         <translation>naamloos.tmx</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+50"/>
         <source>Unsaved Changes</source>
         <translation>Wijzigingen Opslaan</translation>
     </message>
@@ -2604,17 +2684,17 @@ Moet het bestand vervangen worden?</translation>
     </message>
     <message>
         <location line="+5"/>
-        <location line="+99"/>
+        <location line="+134"/>
         <source>Error Exporting Map</source>
         <translation>Fout Bij Map Exporteren</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="-86"/>
         <source>Export As...</source>
         <translation>Exporteren Als...</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+23"/>
         <source>Non-unique file extension</source>
         <translation>Geen Unieke Extensie</translation>
     </message>
@@ -2636,22 +2716,42 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>De gegeven bestandsnaam heeft geen bekende extensie.</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+13"/>
+        <source>Some export files already exist:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Do you want to replace them?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Overwrite Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+73"/>
         <source>Cut</source>
         <translation>Knippen</translation>
     </message>
     <message>
-        <location line="+669"/>
+        <location line="+543"/>
+        <source>[*]%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+130"/>
         <source>Error Reloading Map</source>
         <translation>Fout Bij Map Herladen</translation>
     </message>
     <message>
-        <location line="-593"/>
+        <location line="-597"/>
         <source>Delete</source>
         <translation>Verwijderen</translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+189"/>
         <source>Automatic Mapping Warning</source>
         <translation>Automatisch Mappen Waarschuwing</translation>
     </message>
@@ -2661,25 +2761,25 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Automatisch Mappen Fout</translation>
     </message>
     <message>
-        <location line="-853"/>
-        <location line="+1172"/>
+        <location line="-911"/>
+        <location line="+1229"/>
         <source>Views and Toolbars</source>
         <translation>Vensters en Toolbalken</translation>
     </message>
     <message>
-        <location line="-1171"/>
-        <location line="+1172"/>
+        <location line="-1228"/>
+        <location line="+1229"/>
         <source>Tile Animation Editor</source>
         <translation>Tile Animatie Editor</translation>
     </message>
     <message>
-        <location line="-1170"/>
-        <location line="+1171"/>
+        <location line="-1227"/>
+        <location line="+1228"/>
         <source>Tile Collision Editor</source>
         <translation>Tile Bots-vorm Editor</translation>
     </message>
     <message>
-        <location line="-1144"/>
+        <location line="-1199"/>
         <source>Alt+Left</source>
         <translation>Alt+Left</translation>
     </message>
@@ -2689,7 +2789,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Alt+Right</translation>
     </message>
     <message>
-        <location line="+725"/>
+        <location line="+784"/>
         <source>Add External Tileset(s)</source>
         <translation>Externe Tileset(s) Toevoegen</translation>
     </message>
@@ -2699,7 +2799,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>%1: %2</translation>
     </message>
     <message numerus="yes">
-        <location line="+13"/>
+        <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>Tileset Toevoegen</numerusform>
@@ -2707,7 +2807,7 @@ Kies een specifiek bestandsformaat.</translation>
         </translation>
     </message>
     <message>
-        <location line="+200"/>
+        <location line="+201"/>
         <source>Current layer: %1</source>
         <translation>Huidige laag: %1</translation>
     </message>
@@ -2717,12 +2817,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>&lt;geen&gt;</translation>
     </message>
     <message>
-        <location line="+144"/>
-        <source>[*]%1 - Tiled</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="-380"/>
+        <location line="-234"/>
         <source>Tiled tileset files (*.tsx)</source>
         <translation>Tiled tileset bestanden (*.tsx)</translation>
     </message>
@@ -2789,7 +2884,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Neerwaarts Samenvoegen</translation>
     </message>
     <message>
-        <location line="+200"/>
+        <location line="+203"/>
         <source>Tile</source>
         <translation>Tile</translation>
     </message>
@@ -2799,7 +2894,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Tileset Veranderingen</translation>
     </message>
     <message numerus="yes">
-        <location line="+154"/>
+        <location line="+189"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Object Verdubbelen</numerusform>
@@ -2936,7 +3031,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Laag &amp;Eigenschappen...</translation>
     </message>
     <message numerus="yes">
-        <location line="+245"/>
+        <location line="+247"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Object Verdubbelen</numerusform>
@@ -2988,12 +3083,12 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::MapsDock</name>
     <message>
-        <location filename="../src/tiled/mapsdock.cpp" line="+63"/>
+        <location filename="../src/tiled/mapsdock.cpp" line="+83"/>
         <source>Browse...</source>
         <translation>Bladeren...</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+21"/>
         <source>Choose the Maps Folder</source>
         <translation>Kies de Maps Folder</translation>
     </message>
@@ -3061,7 +3156,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::NewTilesetDialog</name>
     <message>
-        <location filename="../src/tiled/newtilesetdialog.cpp" line="+154"/>
+        <location filename="../src/tiled/newtilesetdialog.cpp" line="+151"/>
         <location line="+7"/>
         <source>Error</source>
         <translation>Fout</translation>
@@ -3086,7 +3181,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
-        <location filename="../src/tiled/objectselectiontool.cpp" line="+315"/>
+        <location filename="../src/tiled/objectselectiontool.cpp" line="+316"/>
         <location line="+273"/>
         <source>Select Objects</source>
         <translation>Objects Selecteren</translation>
@@ -3099,7 +3194,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message numerus="yes">
         <location line="-162"/>
-        <location line="+510"/>
+        <location line="+513"/>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>Object Verplaatsen</numerusform>
@@ -3107,7 +3202,7 @@ Kies een specifiek bestandsformaat.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+63"/>
+        <location line="+65"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>Object Draaien</numerusform>
@@ -3115,7 +3210,7 @@ Kies een specifiek bestandsformaat.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+247"/>
+        <location line="+251"/>
         <source>Resize %n Object(s)</source>
         <translation>
             <numerusform>Formaat van Object Wijzigen</numerusform>
@@ -3205,7 +3300,7 @@ Kies een specifiek bestandsformaat.</translation>
     <name>Tiled::Internal::PreferencesDialog</name>
     <message>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+121"/>
-        <location line="+63"/>
+        <location line="+60"/>
         <source>System default</source>
         <translation>Standaard</translation>
     </message>
@@ -3240,19 +3335,19 @@ Kies een specifiek bestandsformaat.</translation>
     <name>Tiled::Internal::PropertiesDock</name>
     <message>
         <location filename="../src/tiled/propertiesdock.cpp" line="+196"/>
-        <location line="+45"/>
+        <location line="+52"/>
         <source>Name:</source>
         <translation>Naam:</translation>
     </message>
     <message>
-        <location line="-44"/>
-        <location line="+95"/>
+        <location line="-51"/>
+        <location line="+103"/>
         <source>Add Property</source>
         <translation>Eigenschap Toevoegen</translation>
     </message>
     <message>
-        <location line="-49"/>
-        <location line="+51"/>
+        <location line="-50"/>
+        <location line="+52"/>
         <source>Rename Property</source>
         <translation>Eigenschap Hernoemen</translation>
     </message>
@@ -3290,17 +3385,22 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Handmatig</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+433"/>
+        <source>Relative chance this tile will be picked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+364"/>
         <source>Custom Properties</source>
         <translation>Gebruikers-Eigenschappen</translation>
     </message>
     <message>
-        <location line="+237"/>
+        <location line="-544"/>
         <source>Map</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+36"/>
         <source>Tile Layer Format</source>
         <translation>Tilelagen Opslaan Als</translation>
     </message>
@@ -3321,47 +3421,39 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+24"/>
-        <location line="+55"/>
-        <location line="+24"/>
+        <location line="+26"/>
+        <location line="+56"/>
+        <location line="+40"/>
         <source>Name</source>
         <translation>Naam</translation>
     </message>
     <message>
-        <location line="-100"/>
+        <location line="-119"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
         <location line="+3"/>
-        <location line="+19"/>
+        <location line="+21"/>
         <source>Visible</source>
         <translation>Zichtbaar</translation>
     </message>
     <message>
-        <location line="-18"/>
-        <location line="+65"/>
-        <source>Position</source>
-        <translation>Plaats</translation>
-    </message>
-    <message>
-        <location line="-134"/>
-        <location line="+70"/>
-        <source>Size</source>
-        <translation>Formaat</translation>
-    </message>
-    <message>
-        <location line="-378"/>
+        <location line="-372"/>
+        <location line="+352"/>
+        <location line="+67"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-418"/>
+        <location line="+352"/>
+        <location line="+67"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-417"/>
         <source>Odd</source>
         <translation>Oneven</translation>
     </message>
@@ -3371,17 +3463,36 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Even</translation>
     </message>
     <message>
-        <location line="+305"/>
-        <source>Tile Size</source>
-        <translation>Tile Formaat</translation>
-    </message>
-    <message>
-        <location line="+5"/>
+        <location line="+280"/>
         <source>Orientation</source>
         <translation>Orientatie</translation>
     </message>
     <message>
         <location line="+5"/>
+        <location line="+65"/>
+        <source>Width</source>
+        <translation type="unfinished">Breedte</translation>
+    </message>
+    <message>
+        <location line="-64"/>
+        <location line="+65"/>
+        <source>Height</source>
+        <translation type="unfinished">Hoogte</translation>
+    </message>
+    <message>
+        <location line="-64"/>
+        <location line="+144"/>
+        <source>Tile Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-143"/>
+        <location line="+144"/>
+        <source>Tile Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-142"/>
         <source>Tile Side Length (Hex)</source>
         <translation>Lengte Zijkant van de Tile (Hex)</translation>
     </message>
@@ -3396,7 +3507,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Zigzag Index</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+49"/>
         <source>Rotation</source>
         <translation>Rotatie</translation>
     </message>
@@ -3446,7 +3557,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Transparante Kleur</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+8"/>
         <source>Tileset</source>
         <translation>Tileset</translation>
     </message>
@@ -3457,12 +3568,27 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+6"/>
+        <source>Source Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>Tile</source>
         <translation>Tile</translation>
     </message>
     <message>
-        <location line="-87"/>
-        <location line="+88"/>
+        <location line="-107"/>
+        <location line="+108"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -3472,27 +3598,37 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Waarschijnlijkheid</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Relative chance this tile will be picked while painting terrain</source>
-        <translation>Relatieve kans dat deze tile gekozen wordt bij het tekenen van terrein</translation>
-    </message>
-    <message>
-        <location line="+8"/>
+        <location line="+10"/>
         <source>Terrain</source>
         <translation>Terrein</translation>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::SelectSameTileTool</name>
+    <message>
+        <location filename="../src/tiled/selectsametiletool.cpp" line="+50"/>
+        <location line="+57"/>
+        <source>Select Same Tile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-54"/>
+        <location line="+55"/>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::StampBrush</name>
     <message>
-        <location filename="../src/tiled/stampbrush.cpp" line="+39"/>
-        <location line="+182"/>
+        <location filename="../src/tiled/stampbrush.cpp" line="+41"/>
+        <location line="+128"/>
         <source>Stamp Brush</source>
         <translation>Stempel</translation>
     </message>
     <message>
-        <location line="-179"/>
-        <location line="+180"/>
+        <location line="-125"/>
+        <location line="+126"/>
         <source>B</source>
         <translation>S</translation>
     </message>
@@ -3500,14 +3636,14 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::TerrainBrush</name>
     <message>
-        <location filename="../src/tiled/terrainbrush.cpp" line="+44"/>
-        <location line="+118"/>
+        <location filename="../src/tiled/terrainbrush.cpp" line="+45"/>
+        <location line="+115"/>
         <source>Terrain Brush</source>
         <translation>Terrein Kwast</translation>
     </message>
     <message>
-        <location line="-115"/>
-        <location line="+116"/>
+        <location line="-112"/>
+        <location line="+113"/>
         <source>T</source>
         <translation>T</translation>
     </message>
@@ -3515,7 +3651,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::TerrainDock</name>
     <message>
-        <location filename="../src/tiled/terraindock.cpp" line="+175"/>
+        <location filename="../src/tiled/terraindock.cpp" line="+174"/>
         <source>Terrains</source>
         <translation>Terreinen</translation>
     </message>
@@ -3523,7 +3659,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::TerrainView</name>
     <message>
-        <location filename="../src/tiled/terrainview.cpp" line="+98"/>
+        <location filename="../src/tiled/terrainview.cpp" line="+97"/>
         <source>Terrain &amp;Properties...</source>
         <translation>Terrein &amp;Eigenschappen...</translation>
     </message>
@@ -3539,7 +3675,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::TileCollisionEditor</name>
     <message>
-        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+339"/>
+        <location filename="../src/tiled/tilecollisioneditor.cpp" line="+337"/>
         <source>Delete</source>
         <translation>Verwijderen</translation>
     </message>
@@ -3575,9 +3711,75 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
 </context>
 <context>
+    <name>Tiled::Internal::TileStampModel</name>
+    <message>
+        <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
+        <source>Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Probability</source>
+        <translation type="unfinished">Waarschijnlijkheid</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::TileStampsDock</name>
+    <message>
+        <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
+        <source>Delete Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Remove Variation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+71"/>
+        <source>Choose the Stamps Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tile Stamps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add New Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Add Variation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Duplicate Stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Delete Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Set Stamps Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+645"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+652"/>
         <source>Remove Tileset</source>
         <translation>Tileset Verwijderen</translation>
     </message>
@@ -3592,7 +3794,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>De tileset verwijderen, inclusief alle refenties naar tiles in deze tileset?</translation>
     </message>
     <message>
-        <location line="+64"/>
+        <location line="+74"/>
         <source>Tilesets</source>
         <translation>Tilesets</translation>
     </message>
@@ -3623,25 +3825,25 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+101"/>
+        <location line="+103"/>
         <location line="+13"/>
         <source>Add Tiles</source>
         <translation>Tiles Toevoegen</translation>
     </message>
     <message>
-        <location line="-113"/>
-        <location line="+160"/>
+        <location line="-115"/>
+        <location line="+164"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
         <translation>Tiles Verwijderen</translation>
     </message>
     <message>
-        <location line="-59"/>
+        <location line="-61"/>
         <source>Could not load &quot;%1&quot;!</source>
         <translation>Fout bij het openen van &quot;%1&quot;!</translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+49"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
         <translation>Een of meer van de tiles die verwijderd worden zijn nog in gebruik!</translation>
     </message>
@@ -3651,7 +3853,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Alle referenties naar deze tiles verwijderen?</translation>
     </message>
     <message>
-        <location line="-168"/>
+        <location line="-172"/>
         <source>Edit &amp;Terrain Information</source>
         <translation>&amp;Terrein Informatie Bewerken</translation>
     </message>
@@ -3669,7 +3871,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+580"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+574"/>
         <source>Tile &amp;Properties...</source>
         <translation>Tile &amp;Eigenschappen...</translation>
     </message>
@@ -3692,7 +3894,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>Tiled::Internal::UndoDock</name>
     <message>
-        <location filename="../src/tiled/undodock.cpp" line="+65"/>
+        <location filename="../src/tiled/undodock.cpp" line="+64"/>
         <source>History</source>
         <translation>Geschiedenis</translation>
     </message>
@@ -3720,7 +3922,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+30"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
         <translation>TMW-eAthena collision bestanden (*.wlk)</translation>
     </message>
@@ -3728,7 +3930,7 @@ Kies een specifiek bestandsformaat.</translation>
 <context>
     <name>TmxMapReader</name>
     <message>
-        <location filename="../src/tiled/tmxmapreader.h" line="+55"/>
+        <location filename="../src/tiled/tmxmapreader.h" line="+56"/>
         <location filename="../src/tiled/tmxmapwriter.h" line="+56"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>Tiled map bestanden (*.tmx)</translation>
@@ -3806,6 +4008,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobject.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Move Object</source>
         <translation>Object Verplaatsen</translation>
     </message>
@@ -3836,6 +4039,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location filename="../src/tiled/resizemapobject.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Resize Object</source>
         <translation>Object Formaat Veranderen</translation>
     </message>
@@ -3845,17 +4049,17 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Eigenschappen Van Objectlaag Veranderen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/filltiles.cpp" line="+36"/>
+        <location filename="../src/tiled/filltiles.cpp" line="+37"/>
         <source>Fill Area</source>
         <translation>Vullen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetileset.cpp" line="+62"/>
+        <location filename="../src/tiled/addremovetileset.cpp" line="+66"/>
         <source>Add Tileset</source>
         <translation>Tileset Toevoegen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovetileset.h" line="+78"/>
+        <location line="+9"/>
         <source>Remove Tileset</source>
         <translation>Tileset Verwijderen</translation>
     </message>
@@ -3865,7 +4069,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Tileset Verplaatsen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-688"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-704"/>
         <source>Import Tileset</source>
         <translation>Tileset Importeren</translation>
     </message>
@@ -3906,6 +4110,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location filename="../src/tiled/changepolygon.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Change Polygon</source>
         <translation>Polygon Veranderen</translation>
     </message>
@@ -3925,7 +4130,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Terrein Veranderen</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editterraindialog.cpp" line="-138"/>
+        <location filename="../src/tiled/editterraindialog.cpp" line="-136"/>
         <source>Change Terrain Image</source>
         <translation>Terrein Afbeelding Veranderen</translation>
     </message>
@@ -3997,8 +4202,7 @@ Kies een specifiek bestandsformaat.</translation>
         <translation>Tile Bots-vorm Veranderen</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tiled/flipmapobjects.cpp" line="+40"/>
-        <location line="+4"/>
+        <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation>
             <numerusform>Object Omdraaien</numerusform>
@@ -4017,6 +4221,7 @@ Kies een specifiek bestandsformaat.</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
+        <location line="+12"/>
         <source>Rotate Object</source>
         <translation>Object Draaien</translation>
     </message>

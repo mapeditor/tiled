@@ -1,6 +1,7 @@
 /*
  * logginginterface.h
  * Copyright 2013, Samuli Tuomola <samuli.tuomola@gmail.com>
+ * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -29,31 +30,39 @@
 #ifndef LOGGINGINTERFACE_H
 #define LOGGINGINTERFACE_H
 
-#include <QtPlugin>
+#include "tiled_global.h"
+
+#include <QObject>
 
 class QString;
 
 namespace Tiled {
 
 /**
- * An interface to be implemented by classes that want to signal
- * the message console.
+ * An object to be added by classes that want to signal the debug console.
  */
-class LoggingInterface
+class TILEDSHARED_EXPORT LoggingInterface : public QObject
 {
-  public:
+    Q_OBJECT
+
+public:
     enum OutputType {
-      INFO, ERROR
+        INFO, ERROR
     };
 
-    virtual ~LoggingInterface() {}
+    void log(OutputType type, const QString &message)
+    {
+        if (type == INFO)
+            emit info(message);
+        else if (type == ERROR)
+            emit error(message);
+    }
 
-    virtual void log(OutputType type, const QString) = 0;
+signals:
+    void info(const QString &message);
+    void error(const QString &message);
 };
 
 } // namespace Tiled
-
-Q_DECLARE_INTERFACE(Tiled::LoggingInterface,
-                    "org.mapeditor.LoggingInterface")
 
 #endif // LOGGINGINTERFACE_H

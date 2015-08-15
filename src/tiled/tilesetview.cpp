@@ -24,7 +24,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "preferences.h"
-#include "tmxmapwriter.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilesetmodel.h"
@@ -33,7 +32,6 @@
 
 #include <QAbstractItemDelegate>
 #include <QCoreApplication>
-#include <QFileDialog>
 #include <QGesture>
 #include <QGestureEvent>
 #include <QHeaderView>
@@ -337,13 +335,8 @@ TilesetView::TilesetView(QWidget *parent)
     QHeaderView *vHeader = verticalHeader();
     hHeader->hide();
     vHeader->hide();
-#if QT_VERSION >= 0x050000
     hHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
     vHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
-#else
-    hHeader->setResizeMode(QHeaderView::ResizeToContents);
-    vHeader->setResizeMode(QHeaderView::ResizeToContents);
-#endif
     hHeader->setMinimumSectionSize(1);
     vHeader->setMinimumSectionSize(1);
 

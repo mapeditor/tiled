@@ -23,6 +23,7 @@
 #define STAMPBRUSH_H
 
 #include "abstracttiletool.h"
+#include "randompicker.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
 
@@ -135,7 +136,7 @@ private:
     QPoint mStampReference;
 
     bool mIsRandom;
-    QList<Cell> mRandomList;
+    RandomPicker<Cell> mRandomCellPicker;
 
     void updateRandomList();
 };

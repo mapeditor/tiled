@@ -39,11 +39,12 @@
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
+#include "tilesetformat.h"
 #include "tilesetmodel.h"
 #include "tilesetview.h"
 #include "tilesetmanager.h"
 #include "tilestamp.h"
-#include "tmxmapwriter.h"
+#include "tmxmapformat.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -775,21 +776,25 @@ void TilesetDock::exportTileset()
     if (!tileset)
         return;
 
-    Preferences *prefs = Preferences::instance();
+    const QString tsxFilter = tr("Tiled tileset files (*.tsx)");
 
-    const QLatin1String extension(".tsx");
+    FormatHelper<TilesetFormat> helper(FileFormat::ReadWrite, tsxFilter);
+
+    Preferences *prefs = Preferences::instance();
 
     QString suggestedFileName = prefs->lastPath(Preferences::ExternalTileset);
     suggestedFileName += QLatin1Char('/');
     suggestedFileName += tileset->name();
 
+    const QLatin1String extension(".tsx");
     if (!suggestedFileName.endsWith(extension))
         suggestedFileName.append(extension);
 
+    QString selectedFilter = tsxFilter;
     const QString fileName =
             QFileDialog::getSaveFileName(this, tr("Export Tileset"),
                                          suggestedFileName,
-                                         tr("Tiled tileset files (*.tsx)"));
+                                         helper.filter(), &selectedFilter);
 
     if (fileName.isEmpty())
         return;
@@ -797,13 +802,21 @@ void TilesetDock::exportTileset()
     prefs->setLastPath(Preferences::ExternalTileset,
                        QFileInfo(fileName).path());
 
-    TmxMapWriter writer;
+    TsxTilesetFormat tsxFormat;
+    TilesetFormat *format = helper.formatByNameFilter(selectedFilter);
+    if (!format)
+        format = &tsxFormat;
 
-    if (writer.writeTileset(*tileset, fileName)) {
+    if (format->write(*tileset, fileName)) {
         QUndoCommand *command = new SetTilesetFileName(mMapDocument,
                                                        tileset,
                                                        fileName);
         mMapDocument->undoStack()->push(command);
+    } else {
+        QString error = format->errorString();
+        QMessageBox::critical(window(),
+                              tr("Export Tileset"),
+                              tr("Error saving tileset: %1").arg(error));
     }
 }
 
@@ -838,7 +851,7 @@ void TilesetDock::addTiles()
     Preferences *prefs = Preferences::instance();
     const QString startLocation = QFileInfo(prefs->lastPath(Preferences::ImageFile)).absolutePath();
     const QString filter = Utils::readableImageFormatsFilter();
-    const QStringList files = QFileDialog::getOpenFileNames(this,
+    const QStringList files = QFileDialog::getOpenFileNames(window(),
                                                             tr("Add Tiles"),
                                                             startLocation,
                                                             filter);
@@ -855,7 +868,7 @@ void TilesetDock::addTiles()
                                 tr("Add Tiles"),
                                 tr("Could not load \"%1\"!").arg(file),
                                 QMessageBox::Ignore | QMessageBox::Cancel,
-                                this);
+                                window());
             warning.setDefaultButton(QMessageBox::Ignore);
 
             if (warning.exec() != QMessageBox::Ignore) {

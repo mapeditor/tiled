@@ -1,8 +1,6 @@
 /*
- * tmxmapreader.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
- * Copyright 2010, Dennis Honeyman <arcticuno@gmail.com>
+ * tmxmapformat.cpp
+ * Copyright 2008-2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,12 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tmxmapreader.h"
+#include "tmxmapformat.h"
 
 #include "map.h"
-#include "tilesetmanager.h"
 #include "mapreader.h"
 #include "filesystemwatcher.h"
+#include "mapwriter.h"
+#include "preferences.h"
+#include "tilesetmanager.h"
 
 #include <QBuffer>
 #include <QDir>
@@ -67,7 +67,8 @@ protected:
 
 } // anonymous namespace
 
-Map *TmxMapReader::read(const QString &fileName)
+
+Map *TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
@@ -84,12 +85,39 @@ Map *TmxMapReader::read(const QString &fileName)
     return map;
 }
 
-Map *TmxMapReader::fromByteArray(const QByteArray &data)
+bool TmxMapFormat::write(const Map *map, const QString &fileName)
+{
+    Preferences *prefs = Preferences::instance();
+
+    MapWriter writer;
+    writer.setDtdEnabled(prefs->dtdEnabled());
+
+    bool result = writer.writeMap(map, fileName);
+    if (!result)
+        mError = writer.errorString();
+    else
+        mError.clear();
+
+    return result;
+}
+
+QByteArray TmxMapFormat::toByteArray(const Map *map)
+{
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+
+    MapWriter writer;
+    writer.writeMap(map, &buffer);
+
+    return buffer.data();
+}
+
+Map *TmxMapFormat::fromByteArray(const QByteArray &data)
 {
     mError.clear();
 
-    QByteArray dataCopy = data;
-    QBuffer buffer(&dataCopy);
+    QBuffer buffer;
+    buffer.setData(data);
     buffer.open(QBuffer::ReadOnly);
 
     EditorMapReader reader;
@@ -105,7 +133,8 @@ Map *TmxMapReader::fromByteArray(const QByteArray &data)
     return map;
 }
 
-SharedTileset TmxMapReader::readTileset(const QString &fileName)
+
+SharedTileset TsxTilesetFormat::read(const QString &fileName)
 {
     mError.clear();
 
@@ -115,4 +144,20 @@ SharedTileset TmxMapReader::readTileset(const QString &fileName)
         mError = reader.errorString();
 
     return tileset;
+}
+
+bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
+{
+    Preferences *prefs = Preferences::instance();
+
+    MapWriter writer;
+    writer.setDtdEnabled(prefs->dtdEnabled());
+
+    bool result = writer.writeTileset(tileset, fileName);
+    if (!result)
+        mError = writer.errorString();
+    else
+        mError.clear();
+
+    return result;
 }
