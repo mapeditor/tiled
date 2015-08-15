@@ -21,16 +21,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
    </layout>
@@ -41,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -64,6 +55,7 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
+    <addaction name="actionSaveAll"/>
     <addaction name="actionExport"/>
     <addaction name="actionExportAs"/>
     <addaction name="actionExportAsImage"/>
@@ -473,6 +465,11 @@
   <action name="actionBecomePatron">
    <property name="text">
     <string>Become a Patron</string>
+   </property>
+  </action>
+  <action name="actionSaveAll">
+   <property name="text">
+    <string>Save All</string>
    </property>
   </action>
  </widget>

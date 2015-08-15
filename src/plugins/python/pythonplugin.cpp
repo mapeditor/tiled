@@ -19,10 +19,10 @@
  */
 
 #include "pythonplugin.h"
+
 #include "map.h"
 
 #include <stdlib.h>
-#include <Python.h>
 #include <list>
 #include <string>
 #include <iostream>

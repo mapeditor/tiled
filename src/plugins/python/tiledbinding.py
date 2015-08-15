@@ -310,6 +310,12 @@ with open('pythonbind.cpp','w') as fh:
     import pybindgen.typehandlers.codesink as cs
     sink = cs.MemoryCodeSink()
 
+    print >>fh, """
+#ifdef __MINGW32__
+#include <cmath> // included before Python.h to fix ::hypot not declared issue
+#endif
+"""
+
     mod.generate(fh)
 
     print >>fh, """
@@ -324,7 +330,7 @@ PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *c
         py_retval = Py_BuildValue((char *) "N", py_LoggingInterface);
         return py_retval;
 }
-        """
+"""
     #mod.generate_c_to_python_type_converter(
     #  utils.eval_retval(retval("Tiled::LoggingInterface")),
     #  sink)

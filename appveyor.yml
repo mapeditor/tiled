@@ -48,7 +48,7 @@ deploy:
     host: files.mapeditor.org
     username: bjorn
     password:
-      secure: t5CS+3ObwLWvrtHC9FLUbFNrn08TRS4y/2abIFJfpe4=
+      secure: Hx5YfCOtpeBbftD4qnVCRLUGmMU9nogJTlSxq0xNbJQ=
     folder: public_html/files.mapeditor.org/public/daily
     on:
         branch: master
