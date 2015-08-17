@@ -538,6 +538,11 @@ static void readLayerAttributes(Layer *layer,
     const int visible = visibleRef.toString().toInt(&ok);
     if (ok)
         layer->setVisible(visible);
+
+    const QPointF offset(atts.value(QLatin1String("offsetx")).toDouble(),
+                         atts.value(QLatin1String("offsety")).toDouble());
+
+    layer->setOffset(offset);
 }
 
 TileLayer *MapReaderPrivate::readLayer()

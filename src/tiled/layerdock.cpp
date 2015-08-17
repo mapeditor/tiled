@@ -119,12 +119,12 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
-        connect(mMapDocument, SIGNAL(currentLayerIndexChanged(int)),
-                this, SLOT(updateOpacitySlider()));
-        connect(mMapDocument, SIGNAL(layerChanged(int)),
-                this, SLOT(layerChanged(int)));
-        connect(mMapDocument, SIGNAL(editLayerNameRequested()),
-                this, SLOT(editLayerName()));
+        connect(mMapDocument, &MapDocument::currentLayerIndexChanged,
+                this, &LayerDock::updateOpacitySlider);
+        connect(mMapDocument, &MapDocument::layerChanged,
+                this, &LayerDock::layerChanged);
+        connect(mMapDocument, &MapDocument::editLayerNameRequested,
+                this, &LayerDock::editLayerName);
     }
 
     mLayerView->setMapDocument(mapDocument);

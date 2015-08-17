@@ -317,9 +317,9 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     setSize(size);
 }
 
-void TileLayer::offset(const QPoint &offset,
-                       const QRect &bounds,
-                       bool wrapX, bool wrapY)
+void TileLayer::offsetTiles(const QPoint &offset,
+                            const QRect &bounds,
+                            bool wrapX, bool wrapY)
 {
     QVector<Cell> newGrid(mWidth * mHeight);
 

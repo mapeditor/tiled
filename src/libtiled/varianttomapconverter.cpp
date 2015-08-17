@@ -289,8 +289,13 @@ Layer *VariantToMapConverter::toLayer(const QVariant &variant)
     else if (variantMap[QLatin1String("type")] == QLatin1String("imagelayer"))
         layer = toImageLayer(variantMap);
 
-    if (layer)
+    if (layer) {
         layer->setProperties(toProperties(variantMap[QLatin1String("properties")]));
+
+        const QPointF offset(variantMap[QLatin1String("offsetx")].toDouble(),
+                             variantMap[QLatin1String("offsety")].toDouble());
+        layer->setOffset(offset);
+    }
 
     return layer;
 }

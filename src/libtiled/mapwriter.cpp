@@ -463,13 +463,6 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
     if (!layer.name().isEmpty())
         w.writeAttribute(QLatin1String("name"), layer.name());
 
-    if (layer.layerType() == Layer::TileLayerType) {
-        w.writeAttribute(QLatin1String("width"),
-                         QString::number(layer.width()));
-        w.writeAttribute(QLatin1String("height"),
-                         QString::number(layer.height()));
-    }
-
     const int x = layer.x();
     const int y = layer.y();
     const qreal opacity = layer.opacity();
@@ -477,10 +470,24 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("x"), QString::number(x));
     if (y != 0)
         w.writeAttribute(QLatin1String("y"), QString::number(y));
+
+    if (layer.layerType() == Layer::TileLayerType) {
+        w.writeAttribute(QLatin1String("width"),
+                         QString::number(layer.width()));
+        w.writeAttribute(QLatin1String("height"),
+                         QString::number(layer.height()));
+    }
+
     if (!layer.isVisible())
         w.writeAttribute(QLatin1String("visible"), QLatin1String("0"));
     if (opacity != qreal(1))
         w.writeAttribute(QLatin1String("opacity"), QString::number(opacity));
+
+    const QPointF offset = layer.offset();
+    if (!offset.isNull()) {
+        w.writeAttribute(QLatin1String("offsetx"), QString::number(offset.x()));
+        w.writeAttribute(QLatin1String("offsety"), QString::number(offset.y()));
+    }
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,

@@ -77,11 +77,14 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
-    connect(mLayerModel, SIGNAL(layerAdded(int)), SLOT(onLayerAdded(int)));
-    connect(mLayerModel, SIGNAL(layerAboutToBeRemoved(int)),
-            SLOT(onLayerAboutToBeRemoved(int)));
-    connect(mLayerModel, SIGNAL(layerRemoved(int)), SLOT(onLayerRemoved(int)));
-    connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
+    connect(mLayerModel, &LayerModel::layerAdded,
+            this, &MapDocument::onLayerAdded);
+    connect(mLayerModel, &LayerModel::layerAboutToBeRemoved,
+            this, &MapDocument::onLayerAboutToBeRemoved);
+    connect(mLayerModel, &LayerModel::layerRemoved,
+            this, &MapDocument::onLayerRemoved);
+    connect(mLayerModel, &LayerModel::layerChanged,
+            this, &MapDocument::layerChanged);
 
     // Forward signals emitted from the map object model
     mMapObjectModel->setMapDocument(this);
@@ -650,11 +653,11 @@ QList<Object*> MapDocument::currentObjects() const
     QList<Object*> objects;
     if (mCurrentObject) {
         if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
-            foreach (MapObject *mapObj, mSelectedObjects) {
+            for (MapObject *mapObj : mSelectedObjects) {
                 objects.append(mapObj);
             }
         } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-            foreach (Tile *tile, mSelectedTiles) {
+            for (Tile *tile : mSelectedTiles) {
                 objects.append(tile);
             }
         } else {

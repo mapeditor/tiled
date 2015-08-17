@@ -162,10 +162,10 @@ public:
      * within \a bounds, and wrapping occurs if the displaced center is out of
      * the bounds.
      *
-     * \sa TileLayer::offset()
+     * \sa TileLayer::offsetTiles()
      */
-    void offset(const QPointF &offset, const QRectF &bounds,
-                bool wrapX, bool wrapY);
+    void offsetObjects(const QPointF &offset, const QRectF &bounds,
+                       bool wrapX, bool wrapY);
 
     bool canMergeWith(Layer *other) const;
     Layer *mergedWith(Layer *other) const;
