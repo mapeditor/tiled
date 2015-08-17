@@ -69,7 +69,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     const QString renderOrderString = variantMap[QLatin1String("renderorder")].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
 
-    const int nextObjectId = variantMap[QLatin1String("nextobjectid")].toString().toInt();
+    const int nextObjectId = variantMap[QLatin1String("nextobjectid")].toInt();
 
     QScopedPointer<Map> map(new Map(orientation,
                             variantMap[QLatin1String("width")].toInt(),
@@ -432,7 +432,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QString name = objectVariantMap[QLatin1String("name")].toString();
         const QString type = objectVariantMap[QLatin1String("type")].toString();
-        const int id = objectVariantMap[QLatin1String("id")].toString().toInt();
+        const int id = objectVariantMap[QLatin1String("id")].toInt();
         const int gid = objectVariantMap[QLatin1String("gid")].toInt();
         const qreal x = objectVariantMap[QLatin1String("x")].toReal();
         const qreal y = objectVariantMap[QLatin1String("y")].toReal();

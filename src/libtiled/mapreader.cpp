@@ -202,15 +202,15 @@ Map *MapReaderPrivate::readMap()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const int mapWidth =
-            atts.value(QLatin1String("width")).toString().toInt();
+            atts.value(QLatin1String("width")).toInt();
     const int mapHeight =
-            atts.value(QLatin1String("height")).toString().toInt();
+            atts.value(QLatin1String("height")).toInt();
     const int tileWidth =
-            atts.value(QLatin1String("tilewidth")).toString().toInt();
+            atts.value(QLatin1String("tilewidth")).toInt();
     const int tileHeight =
-            atts.value(QLatin1String("tileheight")).toString().toInt();
+            atts.value(QLatin1String("tileheight")).toInt();
     const int hexSideLength =
-            atts.value(QLatin1String("hexsidelength")).toString().toInt();
+            atts.value(QLatin1String("hexsidelength")).toInt();
 
     const QString orientationString =
             atts.value(QLatin1String("orientation")).toString();
@@ -238,7 +238,7 @@ Map *MapReaderPrivate::readMap()
             renderOrderFromString(renderOrderString);
 
     const int nextObjectId =
-            atts.value(QLatin1String("nextobjectid")).toString().toInt();
+            atts.value(QLatin1String("nextobjectid")).toInt();
 
     mMap = new Map(orientation, mapWidth, mapHeight, tileWidth, tileHeight);
     mMap->setHexSideLength(hexSideLength);
@@ -283,7 +283,7 @@ SharedTileset MapReaderPrivate::readTileset()
     const QXmlStreamAttributes atts = xml.attributes();
     const QString source = atts.value(QLatin1String("source")).toString();
     const unsigned firstGid =
-            atts.value(QLatin1String("firstgid")).toString().toUInt();
+            atts.value(QLatin1String("firstgid")).toUInt();
 
     SharedTileset tileset;
 
@@ -291,13 +291,13 @@ SharedTileset MapReaderPrivate::readTileset()
         const QString name =
                 atts.value(QLatin1String("name")).toString();
         const int tileWidth =
-                atts.value(QLatin1String("tilewidth")).toString().toInt();
+                atts.value(QLatin1String("tilewidth")).toInt();
         const int tileHeight =
-                atts.value(QLatin1String("tileheight")).toString().toInt();
+                atts.value(QLatin1String("tileheight")).toInt();
         const int tileSpacing =
-                atts.value(QLatin1String("spacing")).toString().toInt();
+                atts.value(QLatin1String("spacing")).toInt();
         const int margin =
-                atts.value(QLatin1String("margin")).toString().toInt();
+                atts.value(QLatin1String("margin")).toInt();
 
         if (tileWidth < 0 || tileHeight < 0
             || (firstGid == 0 && !mReadingExternalTileset)) {
@@ -312,8 +312,8 @@ SharedTileset MapReaderPrivate::readTileset()
                     readTilesetTile(tileset);
                 } else if (xml.name() == QLatin1String("tileoffset")) {
                     const QXmlStreamAttributes oa = xml.attributes();
-                    int x = oa.value(QLatin1String("x")).toString().toInt();
-                    int y = oa.value(QLatin1String("y")).toString().toInt();
+                    int x = oa.value(QLatin1String("x")).toInt();
+                    int y = oa.value(QLatin1String("y")).toInt();
                     tileset->setTileOffset(QPoint(x, y));
                     xml.skipCurrentElement();
                 } else if (xml.name() == QLatin1String("properties")) {
@@ -358,7 +358,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tile"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    const int id = atts.value(QLatin1String("id")).toString().toInt();
+    const int id = atts.value(QLatin1String("id")).toInt();
 
     if (id < 0) {
         xml.raiseError(tr("Invalid tile ID: %1").arg(id));
@@ -398,7 +398,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
     // Read tile probability
     QStringRef probability = atts.value(QLatin1String("probability"));
     if (!probability.isEmpty())
-        tile->setProbability(probability.toString().toFloat());
+        tile->setProbability(probability.toFloat());
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
@@ -457,7 +457,7 @@ void MapReaderPrivate::readTilesetImage(SharedTileset &tileset)
         source = p->resolveReference(source, mPath);
 
     // Set the width that the tileset had when the map was saved
-    const int width = atts.value(QLatin1String("width")).toString().toInt();
+    const int width = atts.value(QLatin1String("width")).toInt();
     mGidMapper.setTilesetWidth(tileset.data(), width);
 
     if (!tileset->loadFromImage(readImage(), source))
@@ -508,7 +508,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(SharedTileset &tileset)
         if (xml.name() == QLatin1String("terrain")) {
             const QXmlStreamAttributes atts = xml.attributes();
             QString name = atts.value(QLatin1String("name")).toString();
-            int tile = atts.value(QLatin1String("tile")).toString().toInt();
+            int tile = atts.value(QLatin1String("tile")).toInt();
 
             Terrain *terrain = tileset->addTerrain(name, tile);
 
@@ -531,11 +531,11 @@ static void readLayerAttributes(Layer *layer,
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
     bool ok;
-    const float opacity = opacityRef.toString().toFloat(&ok);
+    const float opacity = opacityRef.toFloat(&ok);
     if (ok)
         layer->setOpacity(opacity);
 
-    const int visible = visibleRef.toString().toInt(&ok);
+    const int visible = visibleRef.toInt(&ok);
     if (ok)
         layer->setVisible(visible);
 }
@@ -546,10 +546,10 @@ TileLayer *MapReaderPrivate::readLayer()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const int x = atts.value(QLatin1String("x")).toString().toInt();
-    const int y = atts.value(QLatin1String("y")).toString().toInt();
-    const int width = atts.value(QLatin1String("width")).toString().toInt();
-    const int height = atts.value(QLatin1String("height")).toString().toInt();
+    const int x = atts.value(QLatin1String("x")).toInt();
+    const int y = atts.value(QLatin1String("y")).toInt();
+    const int width = atts.value(QLatin1String("width")).toInt();
+    const int height = atts.value(QLatin1String("height")).toInt();
 
     TileLayer *tileLayer = new TileLayer(name, x, y, width, height);
     readLayerAttributes(tileLayer, atts);
@@ -611,7 +611,7 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
                 }
 
                 const QXmlStreamAttributes atts = xml.attributes();
-                unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
+                unsigned gid = atts.value(QLatin1String("gid")).toUInt();
                 tileLayer->setCell(x, y, cellForGid(gid));
 
                 x++;
@@ -705,10 +705,10 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const int x = atts.value(QLatin1String("x")).toString().toInt();
-    const int y = atts.value(QLatin1String("y")).toString().toInt();
-    const int width = atts.value(QLatin1String("width")).toString().toInt();
-    const int height = atts.value(QLatin1String("height")).toString().toInt();
+    const int x = atts.value(QLatin1String("x")).toInt();
+    const int y = atts.value(QLatin1String("y")).toInt();
+    const int width = atts.value(QLatin1String("width")).toInt();
+    const int height = atts.value(QLatin1String("height")).toInt();
 
     ObjectGroup *objectGroup = new ObjectGroup(name, x, y, width, height);
     readLayerAttributes(objectGroup, atts);
@@ -746,10 +746,10 @@ ImageLayer *MapReaderPrivate::readImageLayer()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const int x = atts.value(QLatin1String("x")).toString().toInt();
-    const int y = atts.value(QLatin1String("y")).toString().toInt();
-    const int width = atts.value(QLatin1String("width")).toString().toInt();
-    const int height = atts.value(QLatin1String("height")).toString().toInt();
+    const int x = atts.value(QLatin1String("x")).toInt();
+    const int y = atts.value(QLatin1String("y")).toInt();
+    const int width = atts.value(QLatin1String("width")).toInt();
+    const int height = atts.value(QLatin1String("height")).toInt();
 
     ImageLayer *imageLayer = new ImageLayer(name, x, y, width, height);
     readLayerAttributes(imageLayer, atts);
@@ -794,13 +794,13 @@ MapObject *MapReaderPrivate::readObject()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("object"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    const int id = atts.value(QLatin1String("id")).toString().toInt();
+    const int id = atts.value(QLatin1String("id")).toInt();
     const QString name = atts.value(QLatin1String("name")).toString();
-    const unsigned gid = atts.value(QLatin1String("gid")).toString().toUInt();
-    const qreal x = atts.value(QLatin1String("x")).toString().toDouble();
-    const qreal y = atts.value(QLatin1String("y")).toString().toDouble();
-    const qreal width = atts.value(QLatin1String("width")).toString().toDouble();
-    const qreal height = atts.value(QLatin1String("height")).toString().toDouble();
+    const unsigned gid = atts.value(QLatin1String("gid")).toUInt();
+    const qreal x = atts.value(QLatin1String("x")).toDouble();
+    const qreal y = atts.value(QLatin1String("y")).toDouble();
+    const qreal width = atts.value(QLatin1String("width")).toDouble();
+    const qreal height = atts.value(QLatin1String("height")).toDouble();
     const QString type = atts.value(QLatin1String("type")).toString();
     const QStringRef visibleRef = atts.value(QLatin1String("visible"));
 
@@ -811,7 +811,7 @@ MapObject *MapReaderPrivate::readObject()
     object->setId(id);
 
     bool ok;
-    const qreal rotation = atts.value(QLatin1String("rotation")).toString().toDouble(&ok);
+    const qreal rotation = atts.value(QLatin1String("rotation")).toDouble(&ok);
     if (ok)
         object->setRotation(rotation);
 
@@ -827,7 +827,7 @@ MapObject *MapReaderPrivate::readObject()
         }
     }
 
-    const int visible = visibleRef.toString().toInt(&ok);
+    const int visible = visibleRef.toInt(&ok);
     if (ok)
         object->setVisible(visible);
 
@@ -899,8 +899,8 @@ QVector<Frame> MapReaderPrivate::readAnimationFrames()
             const QXmlStreamAttributes atts = xml.attributes();
 
             Frame frame;
-            frame.tileId = atts.value(QLatin1String("tileid")).toString().toInt();
-            frame.duration = atts.value(QLatin1String("duration")).toString().toInt();
+            frame.tileId = atts.value(QLatin1String("tileid")).toInt();
+            frame.duration = atts.value(QLatin1String("duration")).toInt();
             frames.append(frame);
 
             xml.skipCurrentElement();
