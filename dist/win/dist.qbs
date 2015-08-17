@@ -24,7 +24,7 @@ NSISSetup {
         "QT_DIR=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
         "MINGW_DIR=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."),
         "V=" + project.version,
-        "ARCH=" + qbs.architecture,
+        "ARCH=" + bits,
         "ROOT_DIR=" + project.sourceDirectory,
         "BUILD_DIR=" + qbs.installRoot
     ]

@@ -35,7 +35,6 @@ SetCompressor /FINAL /SOLID lzma
 !define BUILD_DIR $%TILED_BUILD_DIR%          ; Build dir
 !endif
 
-!define SYSTEM_DIR "C:\windows\system32"
 !define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tiled"
 !define PRODUCT_REG_KEY "Tiled Map Editor"
 
