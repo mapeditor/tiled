@@ -223,10 +223,8 @@ void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
 
     clearConnections(oldDocument);
 
-    if (newDocument) {
-        if (mIsRandom)
-            updateRandomList();
-    }
+    if (newDocument)
+        updateRandomList();
 
     clearOverlay();
 }
@@ -238,8 +236,7 @@ void BucketFillTool::setStamp(const TileStamp &stamp)
 
     mStamp = stamp;
 
-    if (mIsRandom)
-        updateRandomList();
+    updateRandomList();
 
     if (mIsActive && brushItem()->isVisible())
         tilePositionChanged(tilePosition());
@@ -298,11 +295,7 @@ void BucketFillTool::setRandom(bool value)
         return;
 
     mIsRandom = value;
-
-    if (mIsRandom)
-        updateRandomList();
-    else
-        mRandomCellPicker.clear();
+    updateRandomList();
 
     // Don't need to recalculate fill region if there was no fill region
     if (!mFillOverlay)
@@ -332,9 +325,13 @@ void BucketFillTool::randomFill(TileLayer *tileLayer, const QRegion &region) con
 void BucketFillTool::updateRandomList()
 {
     mRandomCellPicker.clear();
+
+    if (!mIsRandom)
+        return;
+
     mMissingTilesets.clear();
 
-    foreach (const TileStampVariation &variation, mStamp.variations()) {
+    for (const TileStampVariation &variation : mStamp.variations()) {
         TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
         for (int x = 0; x < tileLayer->width(); x++) {

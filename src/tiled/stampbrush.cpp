@@ -176,8 +176,7 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
     if (newDocument) {
-        if (mIsRandom)
-            updateRandomList();
+        updateRandomList();
         updatePreview();
     }
 }
@@ -189,12 +188,13 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
 void StampBrush::updateRandomList()
 {
     mRandomCellPicker.clear();
-    mMissingTilesets.clear();
 
-    if (mStamp.isEmpty())
+    if (!mIsRandom)
         return;
 
-    foreach (const TileStampVariation &variation, mStamp.variations()) {
+    mMissingTilesets.clear();
+
+    for (const TileStampVariation &variation : mStamp.variations()) {
         TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
         for (int x = 0; x < tileLayer->width(); x++) {
@@ -214,9 +214,7 @@ void StampBrush::setStamp(const TileStamp &stamp)
 
     mStamp = stamp;
 
-    if (mIsRandom)
-        updateRandomList();
-
+    updateRandomList();
     updatePreview();
 }
 
@@ -481,8 +479,6 @@ void StampBrush::setRandom(bool value)
 
     mIsRandom = value;
 
-    if (mIsRandom)
-        updateRandomList();
-
+    updateRandomList();
     updatePreview();
 }
