@@ -223,8 +223,11 @@ void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
 
     clearConnections(oldDocument);
 
-    // Reset things that are probably invalid now
-    setStamp(TileStamp());
+    if (newDocument) {
+        if (mIsRandom)
+            updateRandomList();
+    }
+
     clearOverlay();
 }
 

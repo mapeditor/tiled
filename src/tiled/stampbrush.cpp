@@ -175,9 +175,11 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
 {
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
-    // Reset the brush, since it probably became invalid
-    brushItem()->setTileRegion(QRegion());
-    setStamp(TileStamp());
+    if (newDocument) {
+        if (mIsRandom)
+            updateRandomList();
+        updatePreview();
+    }
 }
 
 /**

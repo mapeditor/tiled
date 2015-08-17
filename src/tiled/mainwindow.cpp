@@ -537,6 +537,13 @@ MainWindow::~MainWindow()
     mTileCollisionEditor->writeSettings();
 
     delete mTileStampManager;
+    mTileStampManager = nullptr;
+
+    delete mStampBrush;
+    mStampBrush = nullptr;
+
+    delete mBucketFillTool;
+    mBucketFillTool = nullptr;
 
     TilesetManager::deleteInstance();
     DocumentManager::deleteInstance();
