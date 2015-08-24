@@ -23,6 +23,7 @@
 
 #include "undocommands.h"
 
+#include <QPointF>
 #include <QUndoCommand>
 
 namespace Tiled {
