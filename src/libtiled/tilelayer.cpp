@@ -82,9 +82,9 @@ void TileLayer::recomputeDrawMargins()
 
             maxTileSize = maxSize(size, maxTileSize);
             offsetMargins = maxMargins(QMargins(-offset.x(),
-                                                 -offset.y(),
-                                                 offset.x(),
-                                                 offset.y()),
+                                                -offset.y(),
+                                                offset.x(),
+                                                offset.y()),
                                         offsetMargins);
         }
     }
@@ -317,9 +317,9 @@ void TileLayer::resize(const QSize &size, const QPoint &offset)
     setSize(size);
 }
 
-void TileLayer::offset(const QPoint &offset,
-                       const QRect &bounds,
-                       bool wrapX, bool wrapY)
+void TileLayer::offsetTiles(const QPoint &offset,
+                            const QRect &bounds,
+                            bool wrapX, bool wrapY)
 {
     QVector<Cell> newGrid(mWidth * mHeight);
 

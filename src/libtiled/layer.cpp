@@ -64,6 +64,7 @@ Layer::Layer(TypeFlag type, const QString &name, int x, int y,
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
+    clone->mOffset = mOffset;
     clone->mOpacity = mOpacity;
     clone->mVisible = mVisible;
     clone->setProperties(properties());

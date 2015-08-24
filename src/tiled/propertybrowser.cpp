@@ -271,7 +271,7 @@ void PropertyBrowser::propertyRemoved(Object *object, const QString &name)
         return;
     if (mObject == object) {
         bool deleteProperty = true;
-        foreach (Object *obj, mMapDocument->currentObjects()) {
+        for (Object *obj : mMapDocument->currentObjects()) {
             if (mObject == obj)
                 continue;
             if (obj->properties().contains(name)) {
@@ -405,7 +405,7 @@ void PropertyBrowser::addMapProperties()
 static QStringList objectTypeNames()
 {
     QStringList names;
-    foreach (const ObjectType &type, Preferences::instance()->objectTypes())
+    for (const ObjectType &type : Preferences::instance()->objectTypes())
         names.append(type.name);
     return names;
 }
@@ -449,6 +449,9 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+
+    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
+    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
@@ -543,7 +546,7 @@ void PropertyBrowser::addTerrainProperties()
 
 void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
 {
-    QUndoCommand *command = 0;
+    QUndoCommand *command = nullptr;
 
     switch (id) {
     case TileWidthProperty:
@@ -597,7 +600,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
 
 QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject)
 {
-    QUndoCommand *command = 0;
+    QUndoCommand *command = nullptr;
 
     switch (id) {
     case NameProperty:
@@ -674,7 +677,7 @@ void PropertyBrowser::applyMapObjectValue(PropertyId id, const QVariant &val)
     //Used to share non-custom properties.
     QList<MapObject*> selectedObjects = mMapDocument->selectedObjects();
     if (selectedObjects.size() > 1) {
-        foreach (MapObject *obj, selectedObjects) {
+        for (MapObject *obj : selectedObjects) {
             if (obj != mapObject) {
                 if (QUndoCommand *cmd = applyMapObjectValueTo(id, val, obj))
                     mMapDocument->undoStack()->push(cmd);
@@ -689,7 +692,7 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
 {
     Layer *layer = static_cast<Layer*>(mObject);
     const int layerIndex = mMapDocument->map()->layers().indexOf(layer);
-    QUndoCommand *command = 0;
+    QUndoCommand *command = nullptr;
 
     switch (id) {
     case NameProperty:
@@ -701,6 +704,17 @@ void PropertyBrowser::applyLayerValue(PropertyId id, const QVariant &val)
     case OpacityProperty:
         command = new SetLayerOpacity(mMapDocument, layerIndex, val.toDouble());
         break;
+    case OffsetXProperty:
+    case OffsetYProperty: {
+        QPointF offset = layer->offset();
+
+        if (id == OffsetXProperty)
+            offset.setX(val.toDouble());
+        else
+            offset.setY(val.toDouble());
+
+        command = new SetLayerOffset(mMapDocument, layerIndex, offset);
+    }
     default:
         switch (layer->layerType()) {
         case Layer::TileLayerType:   applyTileLayerValue(id, val);   break;
@@ -723,7 +737,7 @@ void PropertyBrowser::applyTileLayerValue(PropertyId id, const QVariant &val)
 void PropertyBrowser::applyObjectGroupValue(PropertyId id, const QVariant &val)
 {
     ObjectGroup *objectGroup = static_cast<ObjectGroup*>(mObject);
-    QUndoCommand *command = 0;
+    QUndoCommand *command = nullptr;
 
     switch (id) {
     case ColorProperty: {
@@ -909,7 +923,7 @@ void PropertyBrowser::removeProperties()
     mPropertyToId.clear();
     mIdToProperty.clear();
     mNameToProperty.clear();
-    mCustomPropertiesGroup = 0;
+    mCustomPropertiesGroup = nullptr;
 }
 
 void PropertyBrowser::updateProperties()
@@ -963,6 +977,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
+        mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
+        mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:
@@ -1027,7 +1043,7 @@ void PropertyBrowser::updateCustomProperties()
 
     mCombinedProperties = mObject->properties();
     // Add properties from selected objects which mObject does not contain to mCombinedProperties.
-    foreach (Object *obj, mMapDocument->currentObjects()) {
+    for (Object *obj : mMapDocument->currentObjects()) {
         if (obj == mObject)
             continue;
 
@@ -1067,7 +1083,7 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
     QString propertyValue = property->valueText();
 
     // If one of the objects doesn't have this property then gray out the name and value.
-    foreach (Object *obj, mMapDocument->currentObjects()) {
+    for (Object *obj : mMapDocument->currentObjects()) {
         if (!obj->hasProperty(propertyName)) {
             property->setNameColor(Qt::gray);
             property->setValueColor(Qt::gray);
@@ -1076,7 +1092,7 @@ void PropertyBrowser::updatePropertyColor(const QString &name)
     }
 
     // If one of the objects doesn't have the same property value then gray out the value.
-    foreach (Object *obj, mMapDocument->currentObjects()) {
+    for (Object *obj : mMapDocument->currentObjects()) {
         if (obj == mObject)
             continue;
         if (obj->property(propertyName) != propertyValue) {

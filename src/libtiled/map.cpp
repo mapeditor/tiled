@@ -93,6 +93,15 @@ static QMargins maxMargins(const QMargins &a,
                     qMax(a.bottom(), b.bottom()));
 }
 
+static QMarginsF maxMargins(const QMarginsF &a,
+                            const QMarginsF &b)
+{
+    return QMarginsF(qMax(a.left(), b.left()),
+                     qMax(a.top(), b.top()),
+                     qMax(a.right(), b.right()),
+                     qMax(a.bottom(), b.bottom()));
+}
+
 void Map::adjustDrawMargins(const QMargins &margins)
 {
     // The TileLayer includes the maximum tile size in its draw margins. So
@@ -103,6 +112,26 @@ void Map::adjustDrawMargins(const QMargins &margins)
                                        margins.right() - mTileWidth,
                                        margins.bottom()),
                               mDrawMargins);
+}
+
+/**
+ * Computes the extra margins due to layer offsets. These need to be taken into
+ * account when determining the bounding rect of the map for example.
+ */
+QMarginsF Map::computeLayerOffsetMargins() const
+{
+    QMarginsF offsetMargins;
+
+    for (const Layer *layer : mLayers) {
+        const QPointF offset = layer->offset();
+        offsetMargins = maxMargins(QMargins(-offset.x(),
+                                            -offset.y(),
+                                            offset.x(),
+                                            offset.y()),
+                                   offsetMargins);
+    }
+
+    return offsetMargins;
 }
 
 /**

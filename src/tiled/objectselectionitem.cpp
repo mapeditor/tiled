@@ -20,6 +20,8 @@
 
 #include "objectselectionitem.h"
 
+#include "objectgroup.h"
+#include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
@@ -138,7 +140,7 @@ void MapObjectOutline::syncWithMapObject()
 
     bounds.translate(-pixelPos);
 
-    setPos(pixelPos);
+    setPos(pixelPos + mObject->objectGroup()->offset());
     setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
@@ -184,6 +186,9 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument)
     connect(mapDocument, &MapDocument::mapChanged,
             this, &ObjectSelectionItem::mapChanged);
 
+    connect(mapDocument, &MapDocument::layerChanged,
+            this, &ObjectSelectionItem::layerChanged);
+
     connect(mapDocument, &MapDocument::objectsChanged,
             this, &ObjectSelectionItem::syncObjectOutlines);
 }
@@ -206,6 +211,14 @@ void ObjectSelectionItem::selectedObjectsChanged()
 void ObjectSelectionItem::mapChanged()
 {
     syncObjectOutlines(mMapDocument->selectedObjects());
+}
+
+void ObjectSelectionItem::layerChanged(int index)
+{
+    // If an object layer changed, that means its offset may have changed,
+    // which affects the outlines of selected objects on that layer.
+    if (index != -1 && mMapDocument->map()->layerAt(index)->isObjectGroup())
+        syncObjectOutlines(mMapDocument->selectedObjects());
 }
 
 void ObjectSelectionItem::syncObjectOutlines(const QList<MapObject*> &objects)

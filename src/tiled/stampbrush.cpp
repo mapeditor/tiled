@@ -470,6 +470,8 @@ void StampBrush::updatePreview(QPoint tilePos)
     brushItem()->setTileLayer(mPreviewLayer);
     if (!tileRegion.isEmpty())
         brushItem()->setTileRegion(tileRegion);
+    if (Layer *layer = currentTileLayer())
+        brushItem()->setLayerOffset(layer->offset());
 }
 
 void StampBrush::setRandom(bool value)

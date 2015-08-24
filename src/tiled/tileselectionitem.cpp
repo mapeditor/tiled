@@ -37,8 +37,10 @@ TileSelectionItem::TileSelectionItem(MapDocument *mapDocument)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 
-    connect(mMapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-            this, SLOT(selectionChanged(QRegion,QRegion)));
+    connect(mMapDocument, &MapDocument::selectedAreaChanged,
+            this, &TileSelectionItem::selectionChanged);
+    connect(mMapDocument, &MapDocument::currentLayerIndexChanged,
+            this, &TileSelectionItem::currentLayerIndexChanged);
 
     updateBoundingRect();
 }
@@ -70,6 +72,12 @@ void TileSelectionItem::selectionChanged(const QRegion &newSelection,
     // Make sure changes within the bounding rect are updated
     const QRect changedArea = newSelection.xored(oldSelection).boundingRect();
     update(mMapDocument->renderer()->boundingRect(changedArea));
+}
+
+void TileSelectionItem::currentLayerIndexChanged()
+{
+    if (Layer *layer = mMapDocument->currentLayer())
+        setPos(layer->offset());
 }
 
 void TileSelectionItem::updateBoundingRect()

@@ -40,6 +40,7 @@ TileLayerItem::TileLayerItem(TileLayer *layer, MapDocument *mapDocument)
 
     syncWithTileLayer();
     setOpacity(mLayer->opacity());
+    setPos(mLayer->offset());
 }
 
 void TileLayerItem::syncWithTileLayer()

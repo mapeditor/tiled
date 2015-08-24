@@ -159,9 +159,9 @@ void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
     }
 }
 
-void ObjectGroup::offset(const QPointF &offset,
-                         const QRectF &bounds,
-                         bool wrapX, bool wrapY)
+void ObjectGroup::offsetObjects(const QPointF &offset,
+                                const QRectF &bounds,
+                                bool wrapX, bool wrapY)
 {
     foreach (MapObject *object, mObjects) {
         const QPointF objectCenter = object->bounds().center();

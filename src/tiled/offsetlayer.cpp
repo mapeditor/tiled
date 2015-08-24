@@ -51,7 +51,7 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
 
     switch (mOffsetLayer->layerType()) {
     case Layer::TileLayerType:
-        static_cast<TileLayer*>(mOffsetLayer)->offset(offset, bounds, wrapX, wrapY);
+        static_cast<TileLayer*>(mOffsetLayer)->offsetTiles(offset, bounds, wrapX, wrapY);
         break;
     case Layer::ObjectGroupType: {
         // Object groups need offset and bounds converted to pixel units
@@ -59,7 +59,7 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
         const QPointF origin = renderer->tileToPixelCoords(QPointF());
         const QPointF pixelOffset = renderer->tileToPixelCoords(offset) - origin;
         const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
-        static_cast<ObjectGroup*>(mOffsetLayer)->offset(pixelOffset, pixelBounds, wrapX, wrapY);
+        static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
         break;
     }
     case Layer::ImageLayerType:

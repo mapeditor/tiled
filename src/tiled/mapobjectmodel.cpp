@@ -275,14 +275,14 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         mMap = mMapDocument->map();
 
-        connect(mMapDocument, SIGNAL(layerAdded(int)),
-                this, SLOT(layerAdded(int)));
-        connect(mMapDocument, SIGNAL(layerChanged(int)),
-                this, SLOT(layerChanged(int)));
-        connect(mMapDocument, SIGNAL(layerAboutToBeRemoved(int)),
-                this, SLOT(layerAboutToBeRemoved(int)));
+        connect(mMapDocument, &MapDocument::layerAdded,
+                this, &MapObjectModel::layerAdded);
+        connect(mMapDocument, &MapDocument::layerChanged,
+                this, &MapObjectModel::layerChanged);
+        connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
+                this, &MapObjectModel::layerAboutToBeRemoved);
 
-        foreach (ObjectGroup *og, mMap->objectGroups()) {
+        for (ObjectGroup *og : mMap->objectGroups()) {
 #if GROUPS_IN_DISPLAY_ORDER
             mObjectGroups.prepend(og);
 #else

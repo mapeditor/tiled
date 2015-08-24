@@ -82,5 +82,24 @@ void SetLayerOpacity::setOpacity(float opacity)
     mMapDocument->layerModel()->setLayerOpacity(mLayerIndex, opacity);
 }
 
+
+SetLayerOffset::SetLayerOffset(MapDocument *mapDocument,
+                               int layerIndex,
+                               const QPointF &offset)
+    : mMapDocument(mapDocument)
+    , mLayerIndex(layerIndex)
+    , mOldOffset(mMapDocument->map()->layerAt(layerIndex)->offset())
+    , mNewOffset(offset)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Offset"));
+}
+
+void SetLayerOffset::setOffset(const QPointF &offset)
+{
+    mMapDocument->layerModel()->setLayerOffset(mLayerIndex, offset);
+}
+
+
 } // namespace Internal
 } // namespace Tiled

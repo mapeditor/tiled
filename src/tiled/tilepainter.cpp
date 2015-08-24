@@ -87,7 +87,7 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
 
     DrawMarginsWatcher watcher(mMapDocument, mTileLayer);
     mTileLayer->setCell(layerX, layerY, cell);
-    mMapDocument->emitRegionChanged(QRegion(x, y, 1, 1));
+    mMapDocument->emitRegionChanged(QRegion(x, y, 1, 1), mTileLayer);
 }
 
 void TilePainter::setCells(int x, int y,
@@ -108,7 +108,7 @@ void TilePainter::setCells(int x, int y,
                          tileLayer,
                          region.translated(-mTileLayer->position()));
 
-    mMapDocument->emitRegionChanged(region);
+    mMapDocument->emitRegionChanged(region, mTileLayer);
 }
 
 void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
@@ -135,7 +135,7 @@ void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
         }
     }
 
-    mMapDocument->emitRegionChanged(region);
+    mMapDocument->emitRegionChanged(region, mTileLayer);
 }
 
 void TilePainter::drawStamp(const TileLayer *stamp,
@@ -171,7 +171,7 @@ void TilePainter::drawStamp(const TileLayer *stamp,
         }
     }
 
-    mMapDocument->emitRegionChanged(region);
+    mMapDocument->emitRegionChanged(region, mTileLayer);
 }
 
 void TilePainter::erase(const QRegion &region)
@@ -181,7 +181,7 @@ void TilePainter::erase(const QRegion &region)
         return;
 
     mTileLayer->erase(paintable.translated(-mTileLayer->position()));
-    mMapDocument->emitRegionChanged(paintable);
+    mMapDocument->emitRegionChanged(paintable, mTileLayer);
 }
 
 static QRegion fillRegion(const TileLayer *layer, QPoint fillOrigin)

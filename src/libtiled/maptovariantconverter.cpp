@@ -354,6 +354,12 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
     layerVariant[QLatin1String("visible")] = layer->isVisible();
     layerVariant[QLatin1String("opacity")] = layer->opacity();
 
+    const QPointF offset = layer->offset();
+    if (!offset.isNull()) {
+        layerVariant[QLatin1String("offsetx")] = offset.x();
+        layerVariant[QLatin1String("offsety")] = offset.y();
+    }
+
     const Properties &properties = layer->properties();
     if (!properties.isEmpty())
         layerVariant[QLatin1String("properties")] = toVariant(properties);
