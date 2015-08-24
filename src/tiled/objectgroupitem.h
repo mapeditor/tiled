@@ -40,18 +40,23 @@ class ObjectGroupItem : public QGraphicsItem
 public:
     ObjectGroupItem(ObjectGroup *objectGroup);
 
-    ObjectGroup *objectGroup() const
-    { return mObjectGroup; }
+    void setObjectGroup(ObjectGroup *objectGroup);
+    ObjectGroup *objectGroup() const;
 
     // QGraphicsItem
     QRectF boundingRect() const;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = nullptr);
 
 private:
     ObjectGroup *mObjectGroup;
 };
+
+inline ObjectGroup *ObjectGroupItem::objectGroup() const
+{
+    return mObjectGroup;
+}
 
 } // namespace Internal
 } // namespace Tiled

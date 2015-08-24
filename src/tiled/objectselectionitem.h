@@ -48,6 +48,7 @@ public:
 private slots:
     void selectedObjectsChanged();
     void mapChanged();
+    void layerChanged(int index);
     void syncObjectOutlines(const QList<MapObject *> &objects);
 
 private:

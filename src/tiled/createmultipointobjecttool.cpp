@@ -37,14 +37,18 @@ using namespace Tiled::Internal;
 
 CreateMultipointObjectTool::CreateMultipointObjectTool(QObject *parent)
     : CreateObjectTool(CreateObjectTool::CreateGeometry, parent)
+    , mOverlayPolygonObject(new MapObject)
+    , mOverlayObjectGroup(new ObjectGroup)
 {
-    mOverlayPolygonObject = new MapObject;
-
-    mOverlayObjectGroup = new ObjectGroup;
     mOverlayObjectGroup->addObject(mOverlayPolygonObject);
 
     QColor highlight = QApplication::palette().highlight().color();
     mOverlayObjectGroup->setColor(highlight);
+}
+
+CreateMultipointObjectTool::~CreateMultipointObjectTool()
+{
+    delete mOverlayObjectGroup;
 }
 
 void CreateMultipointObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
@@ -97,6 +101,6 @@ void CreateMultipointObjectTool::startNewMapObject(const QPointF &pos, ObjectGro
     mOverlayPolygonObject->setPosition(pos);
 
     mOverlayPolygonItem = new MapObjectItem(mOverlayPolygonObject,
-                                            mapDocument());
-    mapScene()->addItem(mOverlayPolygonItem);
+                                            mapDocument(),
+                                            mObjectGroupItem);
 }

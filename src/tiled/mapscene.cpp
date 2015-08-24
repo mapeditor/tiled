@@ -430,8 +430,10 @@ void MapScene::layerChanged(int index)
     layerItem->setOpacity(layer->opacity() * multiplier);
     layerItem->setPos(layer->offset());
 
-    // Layer offset may have changed, affecting the scene rect
+    // Layer offset may have changed, affecting the scene rect and grid
     updateSceneRect();
+    if (mGridVisible)
+        update();
 }
 
 /**

@@ -33,11 +33,22 @@ ObjectGroupItem::ObjectGroupItem(ObjectGroup *objectGroup):
     // Since we don't do any painting, we can spare us the call to paint()
     setFlag(QGraphicsItem::ItemHasNoContents);
 
-    const Map *map = objectGroup->map();
-    setPos(objectGroup->x() * map->tileWidth(),
-           objectGroup->y() * map->tileHeight());
-
     setOpacity(objectGroup->opacity());
+    setPos(objectGroup->offset());
+}
+
+/*
+ * Changes the object group represented by this item. Currently only expected
+ * to be used by the CreateObjectTool.
+ */
+void ObjectGroupItem::setObjectGroup(ObjectGroup *objectGroup)
+{
+    if (mObjectGroup == objectGroup)
+        return;
+
+    mObjectGroup = objectGroup;
+    setOpacity(mObjectGroup->opacity());
+    setPos(mObjectGroup->offset());
 }
 
 QRectF ObjectGroupItem::boundingRect() const
