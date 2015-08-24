@@ -108,6 +108,11 @@ int TmxRasterizer::render(const QString &mapFileName,
     }
 
     QSize mapSize = renderer->mapSize();
+
+    QMarginsF margins = map->computeLayerOffsetMargins();
+    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
+    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
+
     mapSize.rwidth() *= xScale;
     mapSize.rheight() *= yScale;
 
@@ -122,14 +127,17 @@ int TmxRasterizer::render(const QString &mapFileName,
         }
         painter.setTransform(QTransform::fromScale(xScale, yScale));
     }
+
+    painter.translate(margins.left(), margins.top());
+
     // Perform a similar rendering than found in exportasimagedialog.cpp
     foreach (Layer *layer, map->layers()) {
 
         if (!shouldDrawLayer(layer)) 
             continue;
 
-
         painter.setOpacity(layer->opacity());
+        painter.translate(layer->offset());
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
@@ -139,6 +147,8 @@ int TmxRasterizer::render(const QString &mapFileName,
         } else if (imageLayer) {
             renderer->drawImageLayer(&painter, imageLayer);
         }
+
+        painter.translate(-layer->offset());
     }
 
     // Save image

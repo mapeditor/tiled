@@ -82,9 +82,9 @@ void TileLayer::recomputeDrawMargins()
 
             maxTileSize = maxSize(size, maxTileSize);
             offsetMargins = maxMargins(QMargins(-offset.x(),
-                                                 -offset.y(),
-                                                 offset.x(),
-                                                 offset.y()),
+                                                -offset.y(),
+                                                offset.x(),
+                                                offset.y()),
                                         offsetMargins);
         }
     }

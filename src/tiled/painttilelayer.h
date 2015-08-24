@@ -59,8 +59,7 @@ public:
     /**
      * Sets whether this undo command can be merged with an existing command.
      */
-    void setMergeable(bool mergeable)
-    { mMergeable = mergeable; }
+    void setMergeable(bool mergeable);
 
     void undo();
     void redo();
@@ -77,6 +76,11 @@ private:
     QRegion mPaintedRegion;
     bool mMergeable;
 };
+
+inline void PaintTileLayer::setMergeable(bool mergeable)
+{
+    mMergeable = mergeable;
+}
 
 } // namespace Internal
 } // namespace Tiled

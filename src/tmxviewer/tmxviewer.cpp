@@ -102,6 +102,7 @@ public:
         , mRenderer(renderer)
     {
         setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
+        setPos(mTileLayer->offset());
     }
 
     QRectF boundingRect() const
@@ -130,6 +131,7 @@ public:
         : QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
+        setPos(objectGroup->offset());
 
         const ObjectGroup::DrawOrder drawOrder = objectGroup->drawOrder();
 

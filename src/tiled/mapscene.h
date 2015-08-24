@@ -149,7 +149,7 @@ private slots:
     /**
      * Repaints the specified region. The region is in tile coordinates.
      */
-    void repaintRegion(const QRegion &region);
+    void repaintRegion(const QRegion &region, Layer *layer);
 
     void currentLayerIndexChanged();
 
@@ -177,6 +177,7 @@ private slots:
 private:
     QGraphicsItem *createLayerItem(Layer *layer);
 
+    void updateSceneRect();
     void updateCurrentLayerHighlight();
 
     bool eventFilter(QObject *object, QEvent *event);

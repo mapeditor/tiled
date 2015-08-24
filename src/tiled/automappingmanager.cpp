@@ -104,8 +104,6 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
         undoStack->push(aw);
         undoStack->endMacro();
-
-        mMapDocument->emitRegionChanged(region);
     }
     foreach (AutoMapper *automapper, mAutoMappers) {
         mWarning += automapper->warningString();

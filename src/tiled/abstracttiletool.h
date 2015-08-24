@@ -99,7 +99,7 @@ protected:
     /**
      * Returns the last recorded tile position of the mouse.
      */
-    QPoint tilePosition() const { return QPoint(mTileX, mTileY); }
+    QPoint tilePosition() const { return mTilePosition; }
 
     /**
      * Returns the brush item. The brush item is used to give an indication of
@@ -110,7 +110,7 @@ protected:
     BrushItem *brushItem() const { return mBrushItem; }
 
     /**
-     * Returns the current tile layer, or 0 if no tile layer is currently
+     * Returns the current tile layer, or null if no tile layer is currently
      * selected.
      */
     TileLayer *currentTileLayer() const;
@@ -121,7 +121,7 @@ private:
 
     TilePositionMethod mTilePositionMethod;
     BrushItem *mBrushItem;
-    int mTileX, mTileY;
+    QPoint mTilePosition;
     bool mBrushVisible;
 };
 

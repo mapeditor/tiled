@@ -260,7 +260,7 @@ public:
 
     void emitMapChanged();
 
-    void emitRegionChanged(const QRegion &region);
+    void emitRegionChanged(const QRegion &region, Layer *layer);
     void emitRegionEdited(const QRegion &region, Layer *layer);
 
     void emitTileLayerDrawMarginsChanged(TileLayer *layer);
@@ -331,7 +331,7 @@ signals:
      * Emitted when a certain region of the map changes. The region is given in
      * tile coordinates.
      */
-    void regionChanged(const QRegion &region);
+    void regionChanged(const QRegion &region, Layer *layer);
 
     /**
      * Emitted when a certain region of the map was edited by user input.
@@ -437,9 +437,9 @@ inline void MapDocument::emitMapChanged()
  * Emits the region changed signal for the specified region. The region
  * should be in tile coordinates. This method is used by the TilePainter.
  */
-inline void MapDocument::emitRegionChanged(const QRegion &region)
+inline void MapDocument::emitRegionChanged(const QRegion &region, Layer *layer)
 {
-    emit regionChanged(region);
+    emit regionChanged(region, layer);
 }
 
 /**

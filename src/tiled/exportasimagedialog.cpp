@@ -157,6 +157,11 @@ void ExportAsImageDialog::accept()
     renderer->setFlag(ShowTileObjectOutlines, false);
 
     QSize mapSize = renderer->mapSize();
+
+    QMarginsF margins = mMapDocument->map()->computeLayerOffsetMargins();
+    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
+    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
+
     if (useCurrentScale)
         mapSize *= mCurrentScale;
 
@@ -209,11 +214,14 @@ void ExportAsImageDialog::accept()
         renderer->setPainterScale(1);
     }
 
+    painter.translate(margins.left(), margins.top());
+
     foreach (const Layer *layer, mMapDocument->map()->layers()) {
         if (visibleLayersOnly && !layer->isVisible())
             continue;
 
         painter.setOpacity(layer->opacity());
+        painter.translate(layer->offset());
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
@@ -247,6 +255,8 @@ void ExportAsImageDialog::accept()
         } else if (imageLayer) {
             renderer->drawImageLayer(&painter, imageLayer);
         }
+
+        painter.translate(-layer->offset());
     }
 
     if (drawTileGrid) {
