@@ -75,8 +75,10 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
-    if (Layer *layer = currentTileLayer())
+    if (Layer *layer = currentTileLayer()) {
         offsetPos -= layer->offset();
+        mBrushItem->setLayerOffset(layer->offset());
+    }
 
     const MapRenderer *renderer = mapDocument()->renderer();
     const QPointF tilePosF = renderer->screenToTileCoords(offsetPos);
