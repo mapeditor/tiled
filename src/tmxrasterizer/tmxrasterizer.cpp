@@ -109,7 +109,7 @@ int TmxRasterizer::render(const QString &mapFileName,
 
     QSize mapSize = renderer->mapSize();
 
-    QMarginsF margins = map->computeLayerOffsetMargins();
+    QMargins margins = map->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 

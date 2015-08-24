@@ -184,7 +184,7 @@ void MiniMap::renderMapToImage()
         return;
     }
 
-    QMarginsF margins = mMapDocument->map()->computeLayerOffsetMargins();
+    QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
     mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 

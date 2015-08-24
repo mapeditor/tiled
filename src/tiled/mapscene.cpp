@@ -257,7 +257,7 @@ void MapScene::updateSceneRect()
     const QSize mapSize = mMapDocument->renderer()->mapSize();
     QRectF sceneRect(0, 0, mapSize.width(), mapSize.height());
 
-    QMarginsF margins = mMapDocument->map()->computeLayerOffsetMargins();
+    QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
     sceneRect.adjust(-margins.left(),
                      -margins.top(),
                      margins.right(),
