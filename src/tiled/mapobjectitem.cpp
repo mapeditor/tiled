@@ -137,7 +137,7 @@ void MapObjectItem::setPolygon(const QPolygonF &polygon)
 QColor MapObjectItem::objectColor(const MapObject *object)
 {
     // See if this object type has a color associated with it
-    foreach (const ObjectType &type, Preferences::instance()->objectTypes()) {
+    for (const ObjectType &type : Preferences::instance()->objectTypes()) {
         if (type.name.compare(object->type(), Qt::CaseInsensitive) == 0)
             return type.color;
     }
