@@ -57,6 +57,15 @@ public:
     bool highlightCurrentLayer() const { return mHighlightCurrentLayer; }
     bool showTilesetGrid() const { return mShowTilesetGrid; }
 
+    enum ObjectLabelVisiblity {
+        NoObjectLabels,
+        SelectedObjectLabels,
+        AllObjectLabels
+    };
+
+    ObjectLabelVisiblity objectLabelVisibility() const;
+    void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
+
     Map::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
 
@@ -135,6 +144,7 @@ signals:
     void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
+    void objectLabelVisibilityChanged(ObjectLabelVisiblity);
 
     void useOpenGLChanged(bool useOpenGL);
 
@@ -168,6 +178,7 @@ private:
     bool mHighlightCurrentLayer;
     bool mShowTilesetGrid;
     bool mOpenLastFilesOnStartup;
+    ObjectLabelVisiblity mObjectLabelVisibility;
 
     Map::LayerDataFormat mLayerDataFormat;
     Map::RenderOrder mMapRenderOrder;
@@ -189,6 +200,11 @@ private:
     static Preferences *mInstance;
 };
 
+
+inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
+{
+    return mObjectLabelVisibility;
+}
 
 inline QDate Preferences::firstRun() const
 {

@@ -133,6 +133,7 @@ private slots:
     void delete_(); // 'delete' is a reserved word
     void openPreferences();
 
+    void labelVisibilityActionTriggered(QAction *action);
     void zoomIn();
     void zoomOut();
     void zoomNormal();

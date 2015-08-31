@@ -247,6 +247,26 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
 
+    QActionGroup *objectLabelVisibilityGroup = new QActionGroup(this);
+    mUi->actionNoLabels->setActionGroup(objectLabelVisibilityGroup);
+    mUi->actionLabelsForSelectedObjects->setActionGroup(objectLabelVisibilityGroup);
+    mUi->actionLabelsForAllObjects->setActionGroup(objectLabelVisibilityGroup);
+
+    switch (preferences->objectLabelVisibility()) {
+    case Preferences::NoObjectLabels:
+        mUi->actionNoLabels->setChecked(true);
+        break;
+    case Preferences::SelectedObjectLabels:
+        mUi->actionLabelsForSelectedObjects->setChecked(true);
+        break;
+    case Preferences::AllObjectLabels:
+        mUi->actionLabelsForAllObjects->setChecked(true);
+        break;
+    }
+
+    connect(objectLabelVisibilityGroup, &QActionGroup::triggered,
+            this, &MainWindow::labelVisibilityActionTriggered);
+
     QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
     connect(reloadTilesetsShortcut, SIGNAL(activated()),
             this, SLOT(reloadTilesets()));
@@ -1157,6 +1177,18 @@ void MainWindow::openPreferences()
 {
     PreferencesDialog preferencesDialog(this);
     preferencesDialog.exec();
+}
+
+void MainWindow::labelVisibilityActionTriggered(QAction *action)
+{
+    Preferences::ObjectLabelVisiblity visibility = Preferences::NoObjectLabels;
+
+    if (action == mUi->actionLabelsForSelectedObjects)
+        visibility = Preferences::SelectedObjectLabels;
+    else if (action == mUi->actionLabelsForAllObjects)
+        visibility = Preferences::AllObjectLabels;
+
+    Preferences::instance()->setObjectLabelVisibility(visibility);
 }
 
 void MainWindow::zoomIn()

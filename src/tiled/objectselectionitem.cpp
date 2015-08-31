@@ -26,6 +26,7 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "preferences.h"
 #include "tile.h"
 
 #include <QGuiApplication>
@@ -205,10 +206,10 @@ private:
 
 void MapObjectLabel::syncWithMapObject(MapRenderer *renderer)
 {
-    const bool hasName = !mObject->name().isEmpty();
-    setVisible(hasName);
+    const bool nameVisible = mObject->isVisible() && !mObject->name().isEmpty();
+    setVisible(nameVisible);
 
-    if (!hasName)
+    if (!nameVisible)
         return;
 
     const QFontMetricsF metrics(QGuiApplication::font());
@@ -281,6 +282,12 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument)
 
     connect(mapDocument, &MapDocument::objectsChanged,
             this, &ObjectSelectionItem::syncOverlayItems);
+
+    connect(Preferences::instance(), &Preferences::objectLabelVisibilityChanged,
+            this, &ObjectSelectionItem::objectLabelVisibilityChanged);
+
+    if (Preferences::instance()->objectLabelVisibility() == Preferences::AllObjectLabels)
+        addRemoveObjectLabels();
 }
 
 void ObjectSelectionItem::selectedObjectsChanged()
@@ -296,11 +303,19 @@ void ObjectSelectionItem::mapChanged()
 
 void ObjectSelectionItem::layerChanged(int index)
 {
+    ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup();
+    if (!objectGroup)
+        return;
+
+    // If labels for all objects are visible, some labels may need to be added
+    // removed based on layer visibility.
+    if (Preferences::instance()->objectLabelVisibility() == Preferences::AllObjectLabels)
+        addRemoveObjectLabels();
+
     // If an object layer changed, that means its offset may have changed,
     // which affects the outlines of selected objects on that layer and the
     // positions of any name labels that are shown.
-    if (ObjectGroup *objectGroup = mMapDocument->map()->layerAt(index)->asObjectGroup())
-        syncOverlayItems(objectGroup->objects());
+    syncOverlayItems(objectGroup->objects());
 }
 
 void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
@@ -315,18 +330,46 @@ void ObjectSelectionItem::syncOverlayItems(const QList<MapObject*> &objects)
     }
 }
 
+void ObjectSelectionItem::objectLabelVisibilityChanged()
+{
+    addRemoveObjectLabels();
+}
+
 void ObjectSelectionItem::addRemoveObjectLabels()
 {
     QHash<MapObject*, MapObjectLabel*> labelItems;
     MapRenderer *renderer = mMapDocument->renderer();
 
-    for (MapObject *mapObject : mMapDocument->selectedObjects()) {
-        MapObjectLabel *labelItem = mObjectLabels.take(mapObject);
+    auto ensureLabel = [this,&labelItems,renderer] (MapObject *object) {
+        if (labelItems.contains(object))
+            return;
+
+        MapObjectLabel *labelItem = mObjectLabels.take(object);
         if (!labelItem) {
-            labelItem = new MapObjectLabel(mapObject, this);
+            labelItem = new MapObjectLabel(object, this);
             labelItem->syncWithMapObject(renderer);
         }
-        labelItems.insert(mapObject, labelItem);
+
+        labelItems.insert(object, labelItem);
+    };
+
+    switch (Preferences::instance()->objectLabelVisibility()) {
+    case Preferences::AllObjectLabels:
+        for (Layer *layer : mMapDocument->map()->layers()) {
+            if (!layer->isVisible())
+                continue;
+
+            if (ObjectGroup *objectGroup = layer->asObjectGroup())
+                for (MapObject *object : objectGroup->objects())
+                    ensureLabel(object);
+    }
+
+    case Preferences::SelectedObjectLabels:
+        for (MapObject *object : mMapDocument->selectedObjects())
+            ensureLabel(object);
+
+    case Preferences::NoObjectLabels:
+        break;
     }
 
     qDeleteAll(mObjectLabels); // delete remaining items
