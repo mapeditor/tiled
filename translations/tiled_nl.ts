@@ -78,32 +78,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-172"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versie weergeven</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen de argumenten valideren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Hardware acceleratie uitzetten</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Het gegeven tmx bestand exporteren naar het doelbestand</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>De lijst met ondersteunde export formaten weergeven</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ondersteunde export formaten:</translation>
     </message>
 </context>
 <context>
@@ -111,33 +111,34 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig argument %1: eenzaam koppelteken</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekend lang argument %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekend kort argument %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik:
+  %1 [opties] [bestanden...]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opties:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze hulp weergeven</translation>
     </message>
 </context>
 <context>
@@ -529,12 +530,12 @@
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles Opslaan</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentatie</translation>
     </message>
     <message>
         <location line="-235"/>
@@ -1237,7 +1238,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorige bestanden openen bij het opstarten</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -1462,7 +1463,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+2"/>
         <source>Forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Verboden</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1790,7 +1791,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="+32"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -2608,7 +2609,7 @@ Moet het bestand vervangen worden?</translation>
     <message>
         <location line="-1223"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2718,17 +2719,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+13"/>
         <source>Some export files already exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>De volgende export bestanden bestaan al:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Do you want to replace them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze bestanden vervangen?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Overwrite Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestanden Overschrijven</translation>
     </message>
     <message>
         <location line="+73"/>
@@ -2738,7 +2739,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+543"/>
         <source>[*]%1</source>
-        <translation type="unfinished"></translation>
+        <translation>[*]%1</translation>
     </message>
     <message>
         <location line="+130"/>
@@ -3387,7 +3388,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+433"/>
         <source>Relative chance this tile will be picked</source>
-        <translation type="unfinished"></translation>
+        <translation>Relatieve kans dat deze tile gekozen wordt</translation>
     </message>
     <message>
         <location line="+364"/>
@@ -3471,25 +3472,25 @@ Kies een specifiek bestandsformaat.</translation>
         <location line="+5"/>
         <location line="+65"/>
         <source>Width</source>
-        <translation type="unfinished">Breedte</translation>
+        <translation>Breedte</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+65"/>
         <source>Height</source>
-        <translation type="unfinished">Hoogte</translation>
+        <translation>Hoogte</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+144"/>
         <source>Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Breedte</translation>
     </message>
     <message>
         <location line="-143"/>
         <location line="+144"/>
         <source>Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile Hoogte</translation>
     </message>
     <message>
         <location line="-142"/>
@@ -3569,17 +3570,17 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+6"/>
         <source>Source Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bron</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Marge</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tussenruimte</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3595,7 +3596,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+4"/>
         <source>Probability</source>
-        <translation>Waarschijnlijkheid</translation>
+        <translation>Kans</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3609,13 +3610,13 @@ Kies een specifiek bestandsformaat.</translation>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+50"/>
         <location line="+57"/>
         <source>Select Same Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer Dezelfde Tiles</translation>
     </message>
     <message>
         <location line="-54"/>
         <location line="+55"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
 </context>
 <context>
@@ -3715,12 +3716,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished">Waarschijnlijkheid</translation>
+        <translation>Kans</translation>
     </message>
 </context>
 <context>
@@ -3728,52 +3729,52 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel Verwijderen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Variatie Verwijderen</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies de Stempels Folder</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempels</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>Variatie Toevoegen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Stempel Verdubbelen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectie Verwijderen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies de Stempels Folder</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filteren</translation>
     </message>
 </context>
 <context>
