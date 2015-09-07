@@ -302,7 +302,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
     QDir mapDir = QFileInfo(fileName).absoluteDir();
 
     out << "[tilesets]\n";
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         const QString &imageSource = tileset->imageSource();
         QString source = mapDir.relativeFilePath(imageSource);
         out << "tileset=" << source
@@ -316,7 +316,7 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
 
     GidMapper gidMapper(map->tilesets());
     // write layers
-    foreach (Layer *layer, map->layers()) {
+    for (Layer *layer : map->layers()) {
         if (TileLayer *tileLayer = layer->asTileLayer()) {
             out << "[layer]\n";
             out << "type=" << layer->name() << "\n";
@@ -338,14 +338,13 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName)
             out << "\n";
         }
         if (ObjectGroup *group = layer->asObjectGroup()) {
-            foreach (const MapObject *o, group->objects()) {
-                if ((!o->type().isEmpty())) {
+            for (const MapObject *o : group->objects()) {
+                if (!o->type().isEmpty()) {
                     out << "[" << group->name() << "]\n";
 
                     // display object name as comment
-                    if (!(o->name().isEmpty())) {
+                    if (!o->name().isEmpty())
                         out << "# " << o->name() << "\n";
-                    }
 
                     out << "type=" << o->type() << "\n";
                     int x,y,w,h;
