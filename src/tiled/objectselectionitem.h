@@ -57,6 +57,7 @@ public:
 
 private slots:
     void selectedObjectsChanged();
+    void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
     void mapChanged();
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);

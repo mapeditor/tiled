@@ -208,6 +208,9 @@ public:
 
     QList<Object*> currentObjects() const override;
 
+    MapObject *hoveredMapObject() const { return mHoveredMapObject; }
+    void setHoveredMapObject(MapObject *object);
+
     void unifyTilesets(Map *map);
     void unifyTilesets(Map *map, QVector<SharedTileset> &missingTilesets);
 
@@ -225,6 +228,8 @@ signals:
      * Emitted when the list of selected objects changes.
      */
     void selectedObjectsChanged();
+
+    void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
 
     /**
      * Emitted when the map size or its tile size changes.
@@ -327,6 +332,7 @@ private:
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
     QList<MapObject*> mSelectedObjects;
+    MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
     MapRenderer *mRenderer;
     Layer* mCurrentLayer;
     MapObjectModel *mMapObjectModel;

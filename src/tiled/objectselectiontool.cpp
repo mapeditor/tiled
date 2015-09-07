@@ -384,6 +384,8 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::objectsRemoved,
                this, &ObjectSelectionTool::objectsRemoved);
 
+    mapDocument()->setHoveredMapObject(nullptr);
+
     AbstractObjectTool::deactivate(scene);
 }
 
@@ -439,6 +441,11 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
 
 void ObjectSelectionTool::mouseEntered()
 {
+}
+
+void ObjectSelectionTool::mouseLeft()
+{
+    mapDocument()->setHoveredMapObject(nullptr);
 }
 
 void ObjectSelectionTool::mouseMoved(const QPointF &pos,
@@ -1030,6 +1037,12 @@ void ObjectSelectionTool::updateHover(const QPointF &pos)
     if (!hoveredHandle)
         hoveredObjectItem = topMostObjectItemAt(pos);
     mHoveredObjectItem = hoveredObjectItem;
+
+    MapObject *hoveredObject = nullptr;
+    if (mHoveredObjectItem && mAction == NoAction)
+        hoveredObject = mHoveredObjectItem->mapObject();
+
+    mapDocument()->setHoveredMapObject(hoveredObject);
 }
 
 void ObjectSelectionTool::updateSelection(const QPointF &pos,

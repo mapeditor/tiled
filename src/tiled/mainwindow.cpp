@@ -308,6 +308,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(objectLabelVisibilityGroup, &QActionGroup::triggered,
             this, &MainWindow::labelVisibilityActionTriggered);
 
+    mUi->actionLabelForHoveredObject->setChecked(preferences->labelForHoveredObject());
+    connect(mUi->actionLabelForHoveredObject, &QAction::triggered,
+            preferences, &Preferences::setLabelForHoveredObject);
+
     QShortcut *reloadTilesetsShortcut = new QShortcut(QKeySequence(tr("Ctrl+T")), this);
     connect(reloadTilesetsShortcut, SIGNAL(activated()),
             this, SLOT(reloadTilesetImages()));

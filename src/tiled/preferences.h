@@ -67,6 +67,9 @@ public:
     ObjectLabelVisiblity objectLabelVisibility() const;
     void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
 
+    bool labelForHoveredObject() const;
+    void setLabelForHoveredObject(bool enabled);
+
     enum ApplicationStyle {
         SystemDefaultStyle,
         FusionStyle,
@@ -189,6 +192,7 @@ signals:
     void highlightCurrentLayerChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
+    void labelForHoveredObjectChanged(bool enabled);
 
     void applicationStyleChanged(ApplicationStyle);
     void baseColorChanged(const QColor &baseColor);
@@ -235,6 +239,7 @@ private:
     bool mShowTilesetGrid;
     bool mOpenLastFilesOnStartup;
     ObjectLabelVisiblity mObjectLabelVisibility;
+    bool mLabelForHoveredObject;
     ApplicationStyle mApplicationStyle;
     QColor mBaseColor;
     QColor mSelectionColor;
@@ -288,6 +293,11 @@ inline bool Preferences::safeSavingEnabled() const
 inline Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
 {
     return mObjectLabelVisibility;
+}
+
+inline bool Preferences::labelForHoveredObject() const
+{
+    return mLabelForHoveredObject;
 }
 
 inline QDate Preferences::firstRun() const

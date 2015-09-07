@@ -51,6 +51,7 @@ public:
 
     void keyPressed(QKeyEvent *) override;
     void mouseEntered() override;
+    void mouseLeft() override;
     void mouseMoved(const QPointF &pos,
                     Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
@@ -111,6 +112,7 @@ private:
     void setMode(Mode mode);
     void saveSelectionState();
 
+    void updateHoveredItem(const QPointF &pos);
     void refreshCursor();
 
     QPointF snapToGrid(const QPointF &pos,
