@@ -56,6 +56,11 @@ ThumbnailRenderer::ThumbnailRenderer(Map *map)
     }
 }
 
+ThumbnailRenderer::~ThumbnailRenderer()
+{
+    delete mRenderer;
+}
+
 static bool objectLessThan(const MapObject *a, const MapObject *b)
 {
     return a->y() < b->y();
