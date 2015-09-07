@@ -349,7 +349,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     // Hide while we update the tab bar, to avoid repeated layouting
     widget()->hide();
 
-    setCurrentTiles(0);
+    setCurrentTiles(nullptr);
+    setCurrentTile(nullptr);
 
     if (mMapDocument) {
         // Remember the last visible tileset for this map
@@ -405,6 +406,10 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 break;
             }
         }
+
+        if (Object *object = mMapDocument->currentObject())
+            if (object->typeId() == Object::TileType)
+                setCurrentTile(static_cast<Tile*>(object));
     }
 
     updateActions();
@@ -597,7 +602,7 @@ void TilesetDock::tilesetRemoved(Tileset *tileset)
         setCurrentTiles(cleaned);
     }
     if (mCurrentTile && mCurrentTile->tileset() == tileset)
-        setCurrentTile(0);
+        setCurrentTile(nullptr);
 
     updateActions();
 }
@@ -947,8 +952,8 @@ void TilesetDock::removeTiles()
     undoStack->endMacro();
 
     // Clear the current tiles, will be referencing the removed tiles
-    setCurrentTiles(0);
-    setCurrentTile(0);
+    setCurrentTiles(nullptr);
+    setCurrentTile(nullptr);
 }
 
 void TilesetDock::tilesetNameChanged(Tileset *tileset)

@@ -4,6 +4,7 @@
 * Added back object name labels in a much improved form
 * Keep the active brush when switching maps
 * Python plugins can now add export-only map formats
+* Fixed updating of current tile when changing map
 
 0.13.1 (6 September 2015)
 * Added Bulgarian translation (by Lyubomir Vasilev)

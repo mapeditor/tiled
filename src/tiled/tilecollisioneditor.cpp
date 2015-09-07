@@ -131,7 +131,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
 
 TileCollisionEditor::~TileCollisionEditor()
 {
-    setTile(0);
+    setTile(nullptr);
 }
 
 void TileCollisionEditor::setMapDocument(MapDocument *mapDocument)

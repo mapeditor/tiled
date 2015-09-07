@@ -71,6 +71,7 @@
 #include "propertiesdock.h"
 #include "stampbrush.h"
 #include "terrainbrush.h"
+#include "tile.h"
 #include "tilelayer.h"
 #include "tileselectiontool.h"
 #include "tileset.h"
@@ -429,12 +430,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mStampBrush, SIGNAL(stampCaptured(TileStamp)),
             this, SLOT(setStamp(TileStamp)));
 
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            tileObjectsTool, SLOT(setTile(Tile*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            mTileAnimationEditor, SLOT(setTile(Tile*)));
-    connect(mTilesetDock, SIGNAL(currentTileChanged(Tile*)),
-            mTileCollisionEditor, SLOT(setTile(Tile*)));
+    connect(mTilesetDock, &TilesetDock::currentTileChanged,
+            tileObjectsTool, &CreateObjectTool::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged,
+            mTileAnimationEditor, &TileAnimationEditor::setTile);
+    connect(mTilesetDock, &TilesetDock::currentTileChanged,
+            mTileCollisionEditor, &TileCollisionEditor::setTile);
     connect(mTilesetDock, SIGNAL(newTileset()),
             this, SLOT(newTileset()));
 
@@ -551,9 +552,9 @@ MainWindow::~MainWindow()
 
     // This needs to happen before deleting the TilesetManager otherwise it may
     // hold references to tilesets.
-    mTileAnimationEditor->setTile(0);
+    mTileAnimationEditor->setTile(nullptr);
     mTileAnimationEditor->writeSettings();
-    mTileCollisionEditor->setTile(0);
+    mTileCollisionEditor->setTile(nullptr);
     mTileCollisionEditor->writeSettings();
 
     delete mTileStampManager;
