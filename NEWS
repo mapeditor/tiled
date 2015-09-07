@@ -1,3 +1,10 @@
+0.14.0 (...)
+* Added support for custom external tileset formats (JSON format added)
+* Added support for shifting layers by some distance in pixels
+* Added back object name labels in a much improved form
+* Keep the active brush when switching maps
+* Python plugins can now add export-only map formats
+
 0.13.1 (6 September 2015)
 * Added Bulgarian translation (by Lyubomir Vasilev)
 * Updated Spanish, French and Dutch translations
