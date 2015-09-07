@@ -168,6 +168,11 @@ public class XMLWriter
         writeAttribute(name, String.valueOf(content));
     }
 
+    public void writeAttribute(String name, double content)
+            throws IOException, XMLWriterException {
+        writeAttribute(name, String.valueOf(content));
+    }
+
     public void writeCDATA(String content) throws IOException {
         if (bStartTagOpen) {
             w.write(">" + newLine);
