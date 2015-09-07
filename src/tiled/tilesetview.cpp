@@ -233,29 +233,36 @@ void TileDelegate::paint(QPainter *painter,
 
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated()) {
-        QRectF strip(targetRect);
-        strip.setHeight(targetRect.height() / 5);
-        painter->fillRect(strip, Qt::black);
-        strip.moveBottom(targetRect.bottom() + 1);
+        painter->save();
+
+        qreal scale = qMin(tileImage.width() / 32.0,
+                           tileImage.height() / 32.0);
+
+        painter->setClipRect(targetRect);
+        painter->translate(targetRect.right(),
+                           targetRect.bottom());
+        painter->scale(scale * zoom, scale * zoom);
+        painter->translate(-18, 3);
+        painter->rotate(-45);
+        painter->setOpacity(0.8);
+
+        QRectF strip(0, 0, 32, 6);
         painter->fillRect(strip, Qt::black);
 
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setBrush(Qt::white);
         painter->setPen(Qt::NoPen);
 
-        qreal step = qMax(strip.height(), qreal(3));
-        step = qMax(strip.width() / qFloor(strip.width() / step), qreal(3));
         QRectF hole(0, 0, strip.height() * 0.6, strip.height() * 0.6);
+        qreal step = (strip.height() - hole.height()) + hole.width();
         qreal margin = (strip.height() - hole.height()) / 2;
 
-        for (qreal x = strip.x() + (step - hole.width()) / 2;
-             x < strip.right();
-             x += step) {
-            hole.moveTo(x, targetRect.top() + margin);
-            painter->drawRoundedRect(hole, 25, 25, Qt::RelativeSize);
-            hole.moveTo(x, strip.top() + margin);
+        for (qreal x = (step - hole.width()) / 2; x < strip.right(); x += step) {
+            hole.moveTo(x, margin);
             painter->drawRoundedRect(hole, 25, 25, Qt::RelativeSize);
         }
+
+        painter->restore();
     }
 
     // Overlay with highlight color when selected
