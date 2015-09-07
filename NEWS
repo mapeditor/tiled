@@ -1,6 +1,6 @@
-0.13.1 (...)
+0.13.1 (6 September 2015)
 * Added Bulgarian translation (by Lyubomir Vasilev)
-* Updated Spanish translation
+* Updated Spanish, French and Dutch translations
 
 0.13.0 (10 August 2015)
 * Added persistent Tile Stamps with support for variations (#969)
