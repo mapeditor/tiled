@@ -1,4 +1,7 @@
 language: cpp
+sudo: required
+services:
+  - docker
 
 env:
   global:
@@ -23,12 +26,8 @@ matrix:
           env: QMAKESPEC=unsupported/linux-clang
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
-  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-  - sudo apt-get install -qq libqt4-dev libqt4-opengl-dev zlib1g-dev cppcheck
+  - sudo apt-get install -qq qt5-default qttools5-dev-tools zlib1g-dev cppcheck
   - qmake -version
   - Xvfb :1 &
   - xv -display :1 &
