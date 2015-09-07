@@ -794,10 +794,10 @@ bool MainWindow::saveFile()
 
     const QString currentFileName = mMapDocument->fileName();
 
-    if (!saveFile(currentFileName))
+    if (currentFileName.isEmpty())
         return saveFileAs();
-
-    return true;
+    else
+        return saveFile(currentFileName);
 }
 
 bool MainWindow::saveFileAs()
