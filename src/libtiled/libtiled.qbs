@@ -19,6 +19,7 @@ DynamicLibrary {
         "QT_NO_CAST_TO_ASCII"
     ]
 
+    bundle.isBundle: false
     cpp.installNamePrefix: "@rpath"
 
     files: [
