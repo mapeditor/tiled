@@ -20,8 +20,10 @@ QtGuiApplication {
     Group {
         qbs.install: true
         qbs.installDir: {
-            if (qbs.targetOS.contains("windows") || qbs.targetOS.contains("osx"))
+            if (qbs.targetOS.contains("windows"))
                 return ""
+            else if (qbs.targetOS.contains("darwin"))
+                return "Tiled.app/Contents/MacOS"
             else
                 return "bin"
         }

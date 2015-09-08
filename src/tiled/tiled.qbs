@@ -342,6 +342,14 @@ QtGuiApplication {
             else
                 return "bin"
         }
-        fileTagsFilter: product.type
+        qbs.installSourceBase: product.buildDirectory
+        fileTagsFilter: product.type.concat(["infoplist", "pkginfo"])
+    }
+
+    Group {
+        condition: qbs.targetOS.contains("osx")
+        qbs.install: true
+        qbs.installDir: "Tiled.app/Contents/Resources"
+        files: ["images/*.icns"]
     }
 }
