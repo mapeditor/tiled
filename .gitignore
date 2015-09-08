@@ -9,6 +9,7 @@ Makefile*
 moc_*.cpp
 ui_*.h
 *.pro.user*
+*.qbs.user*
 qrc_*
 html
 
