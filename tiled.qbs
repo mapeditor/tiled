@@ -2,6 +2,7 @@ import qbs 1.0
 
 Project {
     qbsSearchPaths: "qbs"
+    minimumQbsVersion: "1.4.2"
 
     property string version: qbs.getEnv("VERSION")
 
