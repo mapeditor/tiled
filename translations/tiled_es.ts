@@ -42,7 +42,7 @@
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato no reconocido (ver --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -359,34 +359,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para lectura.</translation>
+        <translation>No se pudo abrir el archivo para lectura.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Error interpretando el archivo.</translation>
+        <translation>Error interpretando el archivo.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para escritura.</translation>
+        <translation>No se pudo abrir el archivo para escritura.</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Error mientras se escribía el archivo:
+        <translation>Error mientras se escribía el archivo:
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de mapa Json (*json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de mapa JavaScript (*.js)</translation>
     </message>
 </context>
 <context>
@@ -394,29 +394,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para lectura.</translation>
+        <translation>No se pudo abrir el archivo para lectura.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Error interpretando el archivo.</translation>
+        <translation>Error interpretando el archivo.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">No se pudo abrir el archivo para escritura.</translation>
+        <translation>No se pudo abrir el archivo para escritura.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Error mientras se escribía el archivo:
+        <translation>Error mientras se escribía el archivo:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de conjuto de patrones Json (*.json)</translation>
     </message>
 </context>
 <context>
@@ -467,7 +467,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar &amp;Nombres del Objeto</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -567,17 +567,17 @@
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nunca</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Para Objetos &amp;Seleccionados</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Para &amp;Todos los Objetos</translation>
     </message>
     <message>
         <location line="-50"/>
@@ -1352,22 +1352,22 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Usando script %1 para leer %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Usando script %1 para escribir %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Excepción no atrapada por el script. Por favor compruebe la consola.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Script devolvió falso. Por favor compruebe la consola.</translation>
     </message>
 </context>
 <context>
@@ -1375,7 +1375,7 @@ Línea %1, columna %2</translation>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Recargando scripts en Python</translation>
     </message>
 </context>
 <context>
@@ -2351,7 +2351,7 @@ Línea %1, columna %2</translation>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished">Consola de Depuración</translation>
+        <translation>Consola de Depuración</translation>
     </message>
 </context>
 <context>
@@ -3613,12 +3613,12 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazamiento Horizontal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Desplazamiento Vertical</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3939,7 +3939,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="-111"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error guardando el conjunto de patrones: %1</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -4001,7 +4001,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Archivos de mapas de Tiled (*.tmx)</translation>
+        <translation>Archivos de mapas de Tiled (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -4009,7 +4009,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de conjunto de patrones de Tiled (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4264,7 +4264,7 @@ Por favor seleccione un formato específico.</translation>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar Desplazamiento de la Capa</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
