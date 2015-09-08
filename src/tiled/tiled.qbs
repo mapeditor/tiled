@@ -10,7 +10,7 @@ QtGuiApplication {
     Depends { name: "Qt"; submodules: ["widgets", "opengl"] }
 
     cpp.includePaths: ["."]
-    cpp.rpaths: ["$ORIGIN/../lib"]
+    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
     cpp.cxxLanguageVersion: "c++11"
 

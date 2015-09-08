@@ -19,6 +19,8 @@ DynamicLibrary {
         "QT_NO_CAST_TO_ASCII"
     ]
 
+    cpp.installNamePrefix: "@rpath"
+
     files: [
         "compression.cpp",
         "compression.h",

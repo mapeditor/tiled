@@ -8,7 +8,7 @@ QtGuiApplication {
     Depends { name: "libtiled" }
 
     cpp.includePaths: ["."]
-    cpp.rpaths: ["$ORIGIN/../lib"]
+    cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
     cpp.cxxLanguageVersion: "c++11"
 
     files: [
