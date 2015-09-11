@@ -223,8 +223,9 @@ void BucketFillTool::mapDocumentChanged(MapDocument *oldDocument,
 
     clearConnections(oldDocument);
 
-    // Reset things that are probably invalid now
-    setStamp(TileStamp());
+    if (newDocument)
+        updateRandomList();
+
     clearOverlay();
 }
 
@@ -235,8 +236,7 @@ void BucketFillTool::setStamp(const TileStamp &stamp)
 
     mStamp = stamp;
 
-    if (mIsRandom)
-        updateRandomList();
+    updateRandomList();
 
     if (mIsActive && brushItem()->isVisible())
         tilePositionChanged(tilePosition());
@@ -261,17 +261,17 @@ void BucketFillTool::makeConnections()
         return;
 
     // Overlay may need to be cleared if a region changed
-    connect(mapDocument(), SIGNAL(regionChanged(QRegion)),
-            this, SLOT(clearOverlay()));
+    connect(mapDocument(), &MapDocument::regionChanged,
+            this, &BucketFillTool::clearOverlay);
 
     // Overlay needs to be cleared if we switch to another layer
-    connect(mapDocument(), SIGNAL(currentLayerIndexChanged(int)),
-            this, SLOT(clearOverlay()));
+    connect(mapDocument(), &MapDocument::currentLayerIndexChanged,
+            this, &BucketFillTool::clearOverlay);
 
     // Overlay needs be cleared if the selection changes, since
     // the overlay may be bound or may need to be bound to the selection
-    connect(mapDocument(), SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-            this, SLOT(clearOverlay()));
+    connect(mapDocument(), &MapDocument::selectedAreaChanged,
+            this, &BucketFillTool::clearOverlay);
 }
 
 void BucketFillTool::clearConnections(MapDocument *mapDocument)
@@ -279,14 +279,14 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     if (!mapDocument)
         return;
 
-    disconnect(mapDocument, SIGNAL(regionChanged(QRegion)),
-               this, SLOT(clearOverlay()));
+    disconnect(mapDocument, &MapDocument::regionChanged,
+               this, &BucketFillTool::clearOverlay);
 
-    disconnect(mapDocument, SIGNAL(currentLayerIndexChanged(int)),
-               this, SLOT(clearOverlay()));
+    disconnect(mapDocument, &MapDocument::currentLayerIndexChanged,
+               this, &BucketFillTool::clearOverlay);
 
-    disconnect(mapDocument, SIGNAL(selectedAreaChanged(QRegion,QRegion)),
-               this, SLOT(clearOverlay()));
+    disconnect(mapDocument, &MapDocument::selectedAreaChanged,
+               this, &BucketFillTool::clearOverlay);
 }
 
 void BucketFillTool::setRandom(bool value)
@@ -295,11 +295,7 @@ void BucketFillTool::setRandom(bool value)
         return;
 
     mIsRandom = value;
-
-    if (mIsRandom)
-        updateRandomList();
-    else
-        mRandomCellPicker.clear();
+    updateRandomList();
 
     // Don't need to recalculate fill region if there was no fill region
     if (!mFillOverlay)
@@ -329,9 +325,13 @@ void BucketFillTool::randomFill(TileLayer *tileLayer, const QRegion &region) con
 void BucketFillTool::updateRandomList()
 {
     mRandomCellPicker.clear();
+
+    if (!mIsRandom)
+        return;
+
     mMissingTilesets.clear();
 
-    foreach (const TileStampVariation &variation, mStamp.variations()) {
+    for (const TileStampVariation &variation : mStamp.variations()) {
         TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
         for (int x = 0; x < tileLayer->width(); x++) {

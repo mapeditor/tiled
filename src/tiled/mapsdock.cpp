@@ -21,7 +21,7 @@
 #include "mapsdock.h"
 
 #include "mainwindow.h"
-#include "mapreaderinterface.h"
+#include "mapformat.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "utils.h"
@@ -162,18 +162,19 @@ MapsView::MapsView(MainWindow *mainWindow, QWidget *parent)
     mFSModel = new FileSystemModel(this);
     mFSModel->setRootPath(mapsDir.absolutePath());
 
-    PluginManager *pm = PluginManager::instance();
     QStringList nameFilters(QLatin1String("*.tmx"));
 
     // The file system model name filters are plain, whereas the plugins expose
     // a filter as part of the file description
     QRegExp filterFinder(QLatin1String("\\((\\*\\.[^\\)\\s]*)"));
 
-    foreach (MapReaderInterface *reader, pm->interfaces<MapReaderInterface>()) {
-        foreach (const QString &filter, reader->nameFilters()) {
-            if (filterFinder.indexIn(filter) != -1)
-                nameFilters.append(filterFinder.cap(1));
-        }
+    for (MapFormat *format : PluginManager::objects<MapFormat>()) {
+        if (!(format->capabilities() & MapFormat::Read))
+            continue;
+
+        const QString filter = format->nameFilter();
+        if (filterFinder.indexIn(filter) != -1)
+            nameFilters.append(filterFinder.cap(1));
     }
 
     mFSModel->setFilter(QDir::AllDirs | QDir::Files | QDir::NoDot);

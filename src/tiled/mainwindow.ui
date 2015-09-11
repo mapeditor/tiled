@@ -108,8 +108,17 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <widget class="QMenu" name="menuShowObjectNames">
+     <property name="title">
+      <string>Show Object &amp;Names</string>
+     </property>
+     <addaction name="actionNoLabels"/>
+     <addaction name="actionLabelsForSelectedObjects"/>
+     <addaction name="actionLabelsForAllObjects"/>
+    </widget>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
+    <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="separator"/>
@@ -483,6 +492,33 @@
   <action name="actionDocumentation">
    <property name="text">
     <string>Documentation</string>
+   </property>
+  </action>
+  <action name="actionNoLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Never</string>
+   </property>
+  </action>
+  <action name="actionLabelsForSelectedObjects">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>For &amp;Selected Objects</string>
+   </property>
+  </action>
+  <action name="actionLabelsForAllObjects">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>For &amp;All Objects</string>
    </property>
   </action>
  </widget>

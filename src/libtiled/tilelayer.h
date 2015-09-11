@@ -243,11 +243,11 @@ public:
      * Offsets the tiles in this layer within \a bounds by \a offset,
      * and optionally wraps them.
      *
-     * \sa ObjectGroup::offset()
+     * \sa ObjectGroup::offsetObjects()
      */
-    void offset(const QPoint &offset,
-                const QRect &bounds,
-                bool wrapX, bool wrapY);
+    void offsetTiles(const QPoint &offset,
+                     const QRect &bounds,
+                     bool wrapX, bool wrapY);
 
     bool canMergeWith(Layer *other) const;
     Layer *mergedWith(Layer *other) const;

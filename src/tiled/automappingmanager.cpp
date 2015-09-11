@@ -25,7 +25,7 @@
 #include "mapdocument.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
-#include "tmxmapreader.h"
+#include "tmxmapformat.h"
 #include "preferences.h"
 
 #include <QFileInfo>
@@ -104,8 +104,6 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
         AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, passedAutoMappers, &region);
         undoStack->push(aw);
         undoStack->endMacro();
-
-        mMapDocument->emitRegionChanged(region);
     }
     foreach (AutoMapper *automapper, mAutoMappers) {
         mWarning += automapper->warningString();
@@ -155,13 +153,13 @@ bool AutomappingManager::loadFile(const QString &filePath)
             continue;
         }
         if (rulePath.endsWith(QLatin1String(".tmx"), Qt::CaseInsensitive)) {
-            TmxMapReader mapReader;
+            TmxMapFormat tmxFormat;
 
-            Map *rules = mapReader.read(rulePath);
+            Map *rules = tmxFormat.read(rulePath);
 
             if (!rules) {
                 mError += tr("Opening rules map failed:\n%1").arg(
-                        mapReader.errorString()) + QLatin1Char('\n');
+                        tmxFormat.errorString()) + QLatin1Char('\n');
                 ret = false;
                 continue;
             }

@@ -113,6 +113,8 @@ private:
         RotationProperty,
         VisibleProperty,
         OpacityProperty,
+        OffsetXProperty,
+        OffsetYProperty,
         ColorProperty,
         TileWidthProperty,
         TileHeightProperty,

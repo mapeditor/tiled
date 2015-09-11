@@ -36,6 +36,8 @@
 #include "tilelayer.h"
 #include "mapobject.h"
 
+#include <cmath>
+
 using namespace Tiled;
 
 Map::Map():
@@ -95,6 +97,26 @@ void Map::adjustDrawMargins(const QMargins &margins)
                                        margins.right() - mTileWidth,
                                        margins.bottom()),
                               mDrawMargins);
+}
+
+/**
+ * Computes the extra margins due to layer offsets. These need to be taken into
+ * account when determining the bounding rect of the map for example.
+ */
+QMargins Map::computeLayerOffsetMargins() const
+{
+    QMargins offsetMargins;
+
+    for (const Layer *layer : mLayers) {
+        const QPointF offset = layer->offset();
+        offsetMargins = maxMargins(QMargins(std::ceil(-offset.x()),
+                                            std::ceil(-offset.y()),
+                                            std::ceil(offset.x()),
+                                            std::ceil(offset.y())),
+                                   offsetMargins);
+    }
+
+    return offsetMargins;
 }
 
 /**

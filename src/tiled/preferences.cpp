@@ -33,7 +33,7 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
-Preferences *Preferences::mInstance = 0;
+Preferences *Preferences::mInstance;
 
 Preferences *Preferences::instance()
 {
@@ -53,12 +53,10 @@ Preferences::Preferences()
 {
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
-    mLayerDataFormat = (Map::LayerDataFormat)
-            mSettings->value(QLatin1String("LayerDataFormat"),
-                             Map::Base64Zlib).toInt();
-    mMapRenderOrder = (Map::RenderOrder)
-            mSettings->value(QLatin1String("MapRenderOrder"),
-                             Map::RightDown).toInt();
+    mLayerDataFormat = static_cast<Map::LayerDataFormat>
+            (intValue("LayerDataFormat", Map::Base64Zlib));
+    mMapRenderOrder = static_cast<Map::RenderOrder>
+            (intValue("MapRenderOrder", Map::RightDown));
     mDtdEnabled = boolValue("DtdEnabled");
     mReloadTilesetsOnChange = boolValue("ReloadTilesets", true);
     mStampsDirectory = stringValue("StampsDirectory");
@@ -78,6 +76,8 @@ Preferences::Preferences()
     mShowTilesetGrid = boolValue("ShowTilesetGrid", true);
     mLanguage = stringValue("Language");
     mUseOpenGL = boolValue("OpenGL");
+    mObjectLabelVisibility = static_cast<ObjectLabelVisiblity>
+            (intValue("ObjectLabelVisibility", AllObjectLabels));
     mSettings->endGroup();
 
     // Retrieve defined object types
@@ -124,6 +124,16 @@ Preferences::Preferences()
 
 Preferences::~Preferences()
 {
+}
+
+void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
+{
+    if (mObjectLabelVisibility == visibility)
+        return;
+
+    mObjectLabelVisibility = visibility;
+    mSettings->setValue(QLatin1String("Interface/ObjectLabelVisibility"), visibility);
+    emit objectLabelVisibilityChanged(visibility);
 }
 
 void Preferences::setShowGrid(bool showGrid)

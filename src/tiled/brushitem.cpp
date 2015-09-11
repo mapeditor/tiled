@@ -36,11 +36,14 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 
 BrushItem::BrushItem():
-    mMapDocument(0)
+    mMapDocument(nullptr)
 {
     setFlag(QGraphicsItem::ItemUsesExtendedStyleOption);
 }
 
+/**
+ * Sets the map document this brush is operating on.
+ */
 void BrushItem::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
@@ -52,6 +55,10 @@ void BrushItem::setMapDocument(MapDocument *mapDocument)
     clear();
 }
 
+/**
+ * Sets a tile layer representing this brush. When no tile layer is set,
+ * the brush only draws the selection color.
+ */
 void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
 {
     mTileLayer = tileLayer;
@@ -61,6 +68,9 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
     update();
 }
 
+/**
+ * Changes the position of the tile layer, if one is set.
+ */
 void BrushItem::setTileLayerPosition(const QPoint &pos)
 {
     if (!mTileLayer)
@@ -76,6 +86,9 @@ void BrushItem::setTileLayerPosition(const QPoint &pos)
     updateBoundingRect();
 }
 
+/**
+ * Sets the region of tiles that this brush item occupies.
+ */
 void BrushItem::setTileRegion(const QRegion &region)
 {
     if (mRegion == region)
@@ -83,6 +96,14 @@ void BrushItem::setTileRegion(const QRegion &region)
 
     mRegion = region;
     updateBoundingRect();
+}
+
+/**
+ * Sets the layer offset used by the currently active layer.
+ */
+void BrushItem::setLayerOffset(const QPointF &offset)
+{
+    setPos(offset);
 }
 
 QRectF BrushItem::boundingRect() const

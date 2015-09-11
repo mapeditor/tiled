@@ -7,17 +7,18 @@ Other contributors:
 
 Stefan Beller
 Samuli Tuomola
-Jeff Bland
 Erik Schilling
+Jeff Bland
 Petr Viktorin
+mauve
+Mamed Ibrahimov
 Martin Ziel
 Mauricio Muñoz Lucero
 Parker Miller
 seeseekey
-Roderic Morris
 Yohann Ferreira
-mauve
 Alex Vega (semtiko)
+Roderic Morris
 Hiroki Utsunomiya
 Porfírio Ribeiro
 Sean Humeniuk
@@ -26,11 +27,14 @@ Jonatas de Moraes Junior
 Manu Evans
 Mikolai Fajer
 zhaosting
+Alejandro Cámara
 Oskar Wiksten
 Tamir Atias (KonoM)
 Tim Baker
 Hendrik Brummermann
+Jake Petroules
 Mohammad Mehdi Salem Naraghi
+Omnomnobot
 Andrew G. Crowell
 Clint Bellanger
 Dennis Honeyman
@@ -49,8 +53,8 @@ Janis Kirsteins
 Kenney Phillis
 Maus
 Nathan Tolbert
-Omnomnobot
 Pierre-David Bélanger
+Porfirio
 Wodann
 juniperbrew
 tolbert
@@ -86,25 +90,29 @@ Justin Jacobs
 Kody Kurtz
 Kyle Delaney
 Lennert Raesch
+Ludolph Neethling
 MHendricks
 Mark van Rij
 Mattia Basaglia
 Michael Aquilina
 Michael Williams
-Porfirio
+Oliver Zell
 Postremus
 Przemysław Grzywacz
 Roberto Raggi
+Seanba
 Sébastien BURILLARD
 Todd Carnes
 Vincent Petithory
 Vsevolod Klementjev
 Wade Brainerd
 Xenodora
+Ying-Chun Liu (PaulLiu)
 arntro-4
 devnewton
 leeonix
 mhussa
+mogemimi
 
 
 Translators:
@@ -118,6 +126,7 @@ Hiroki Utsunomiya        (Japanese)
 Jonatas de Moraes Junior (Portuguese, Brazil)
 jurkan                   (German)
 Jānis Kiršteins          (Latvian)
+Lyubomir Vasilev         (Bulgarian)
 Mauricio Muñoz Lucero    (Spanish)
 Petr Viktorin            (Czech)
 Porfírio Ribeiro         (Portuguese)
@@ -153,4 +162,3 @@ tmw_desert_spacing.png - (C) The Mana World Development Team, GPL
 sewer_tileset.png - (C) Blues Brothers RPG developers, GPL
 Replica Island - (C) Chris Pruett and Genki Mine, Apache (except hotspots.png)
 hexmini.png - Public Domain, http://opengameart.org/content/pixel-hex-tilesets-enhanced
-

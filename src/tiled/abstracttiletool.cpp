@@ -40,7 +40,6 @@ AbstractTileTool::AbstractTileTool(const QString &name,
     : AbstractTool(name, icon, shortcut, parent)
     , mTilePositionMethod(OnTiles)
     , mBrushItem(new BrushItem)
-    , mTileX(0), mTileY(0)
     , mBrushVisible(false)
 {
     mBrushItem->setVisible(false);
@@ -74,8 +73,15 @@ void AbstractTileTool::mouseLeft()
 
 void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
 {
+    // Take into account the offset of the current layer
+    QPointF offsetPos = pos;
+    if (Layer *layer = currentTileLayer()) {
+        offsetPos -= layer->offset();
+        mBrushItem->setLayerOffset(layer->offset());
+    }
+
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF tilePosF = renderer->screenToTileCoords(pos);
+    const QPointF tilePosF = renderer->screenToTileCoords(offsetPos);
     QPoint tilePos;
 
     if (mTilePositionMethod == BetweenTiles)
@@ -84,9 +90,8 @@ void AbstractTileTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers)
         tilePos = QPoint((int) std::floor(tilePosF.x()),
                          (int) std::floor(tilePosF.y()));
 
-    if (mTileX != tilePos.x() || mTileY != tilePos.y()) {
-        mTileX = tilePos.x();
-        mTileY = tilePos.y();
+    if (mTilePosition != tilePos) {
+        mTilePosition = tilePos;
 
         tilePositionChanged(tilePos);
         updateStatusInfo();
@@ -102,7 +107,7 @@ void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
 
 void AbstractTileTool::updateEnabledState()
 {
-    setEnabled(currentTileLayer() != 0);
+    setEnabled(currentTileLayer() != nullptr);
 }
 
 void AbstractTileTool::updateStatusInfo()
@@ -118,7 +123,9 @@ void AbstractTileTool::updateStatusInfo()
 
         QString tileIdString = tile ? QString::number(tile->id()) : tr("empty");
         setStatusInfo(QString(QLatin1String("%1, %2 [%3]"))
-                      .arg(mTileX).arg(mTileY).arg(tileIdString));
+                      .arg(mTilePosition.x())
+                      .arg(mTilePosition.y())
+                      .arg(tileIdString));
     } else {
         setStatusInfo(QString());
     }
@@ -150,7 +157,7 @@ void AbstractTileTool::updateBrushVisibility()
 TileLayer *AbstractTileTool::currentTileLayer() const
 {
     if (!mapDocument())
-        return 0;
+        return nullptr;
 
     return dynamic_cast<TileLayer*>(mapDocument()->currentLayer());
 }

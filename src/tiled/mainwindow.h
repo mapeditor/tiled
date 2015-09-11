@@ -43,7 +43,6 @@ namespace Tiled {
 
 class TileLayer;
 class Terrain;
-class MapReaderInterface;
 
 namespace Internal {
 
@@ -90,12 +89,12 @@ public:
      * Opens the given file. When opened successfully, the file is added to the
      * list of recent files.
      *
-     * When a \a reader is given, it is used to open the file. Otherwise, a
-     * reader is searched using MapReaderInterface::supportsFile.
+     * When a \a format is given, it is used to open the file. Otherwise, a
+     * format is searched using MapFormat::supportsFile.
      *
      * @return whether the file was successfully opened
      */
-    bool openFile(const QString &fileName, MapReaderInterface *reader);
+    bool openFile(const QString &fileName, MapFormat *format);
 
     /**
      * Attempt to open the previously opened file.
@@ -115,7 +114,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *);
     void dropEvent(QDropEvent *);
 
-public slots:
+private slots:
     void newMap();
     void openFile();
     bool saveFile();
@@ -134,6 +133,7 @@ public slots:
     void delete_(); // 'delete' is a reserved word
     void openPreferences();
 
+    void labelVisibilityActionTriggered(QAction *action);
     void zoomIn();
     void zoomOut();
     void zoomNormal();

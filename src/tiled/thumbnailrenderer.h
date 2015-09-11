@@ -36,6 +36,7 @@ class ThumbnailRenderer
 {
 public:
     ThumbnailRenderer(Map *map);
+    ~ThumbnailRenderer();
 
     QImage render(const QSize &size) const;
 
@@ -46,6 +47,8 @@ public:
     void setIncludeBackgroundColor(bool includeBackgroundColor);
 
 private:
+    Q_DISABLE_COPY(ThumbnailRenderer)
+
     Map *mMap;
     MapRenderer *mRenderer;
     bool mVisibleLayersOnly;

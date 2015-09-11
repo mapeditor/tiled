@@ -40,11 +40,18 @@ LayerModel::LayerModel(QObject *parent):
 {
 }
 
+/**
+ * Returns the number of rows.
+ */
 int LayerModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : (mMap ? mMap->layerCount() : 0);
 }
 
+/**
+ * Returns the data stored under the given <i>role</i> for the item
+ * referred to by the <i>index</i>.
+ */
 QVariant LayerModel::data(const QModelIndex &index, int role) const
 {
     const int layerIndex = toLayerIndex(index);
@@ -75,6 +82,9 @@ QVariant LayerModel::data(const QModelIndex &index, int role) const
     }
 }
 
+/**
+ * Allows for changing the name, visibility and opacity of a layer.
+ */
 bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
                          int role)
 {
@@ -119,6 +129,9 @@ bool LayerModel::setData(const QModelIndex &index, const QVariant &value,
     return false;
 }
 
+/**
+ * Makes sure the items are checkable and names editable.
+ */
 Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags rc = QAbstractListModel::flags(index);
@@ -127,6 +140,9 @@ Qt::ItemFlags LayerModel::flags(const QModelIndex &index) const
     return rc;
 }
 
+/**
+ * Returns the headers for the table.
+ */
 QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
                                 int role) const
 {
@@ -138,6 +154,10 @@ QVariant LayerModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
+/**
+ * Returns the layer index associated with a given model index.
+ * \sa layerIndexToRow
+ */
 int LayerModel::toLayerIndex(const QModelIndex &index) const
 {
     if (index.isValid()) {
@@ -147,11 +167,18 @@ int LayerModel::toLayerIndex(const QModelIndex &index) const
     }
 }
 
+/**
+ * Returns the row associated with the given layer index.
+ * \sa toLayerIndex
+ */
 int LayerModel::layerIndexToRow(int layerIndex) const
 {
     return mMap->layerCount() - layerIndex - 1;
 }
 
+/**
+ * Sets the map document associated with this model.
+ */
 void LayerModel::setMapDocument(MapDocument *mapDocument)
 {
     if (mMapDocument == mapDocument)
@@ -163,6 +190,9 @@ void LayerModel::setMapDocument(MapDocument *mapDocument)
     endResetModel();
 }
 
+/**
+ * Adds a layer to this model's map, inserting it at the given index.
+ */
 void LayerModel::insertLayer(int index, Layer *layer)
 {
     const int row = layerIndexToRow(index) + 1;
@@ -172,6 +202,11 @@ void LayerModel::insertLayer(int index, Layer *layer)
     emit layerAdded(index);
 }
 
+/**
+ * Removes the layer at the given index from this model's map and
+ * returns it. The caller becomes responsible for the lifetime of this
+ * layer.
+ */
 Layer *LayerModel::takeLayerAt(int index)
 {
     emit layerAboutToBeRemoved(index);
@@ -183,33 +218,69 @@ Layer *LayerModel::takeLayerAt(int index)
     return layer;
 }
 
+/**
+ * Sets whether the layer at the given index is visible.
+ */
 void LayerModel::setLayerVisible(int layerIndex, bool visible)
 {
     const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
     Layer *layer = mMap->layerAt(layerIndex);
+    if (layer->isVisible() == visible)
+        return;
+
     layer->setVisible(visible);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layerIndex);
 }
 
+/**
+ * Sets the opacity of the layer at the given index.
+ */
 void LayerModel::setLayerOpacity(int layerIndex, float opacity)
 {
     Layer *layer = mMap->layerAt(layerIndex);
+    if (layer->opacity() == opacity)
+        return;
+
     layer->setOpacity(opacity);
     emit layerChanged(layerIndex);
 }
 
+/**
+ * Sets the offset of the layer at the given index.
+ */
+void LayerModel::setLayerOffset(int layerIndex, const QPointF &offset)
+{
+    Layer *layer = mMap->layerAt(layerIndex);
+    if (layer->offset() == offset)
+        return;
+
+    layer->setOffset(offset);
+    emit layerChanged(layerIndex);
+}
+
+/**
+ * Renames the layer at the given index.
+ */
 void LayerModel::renameLayer(int layerIndex, const QString &name)
 {
-    emit layerAboutToBeRenamed(layerIndex);
     const QModelIndex modelIndex = index(layerIndexToRow(layerIndex), 0);
     Layer *layer = mMap->layerAt(layerIndex);
+    if (layer->name() == name)
+        return;
+
+    emit layerAboutToBeRenamed(layerIndex);
     layer->setName(name);
     emit layerRenamed(layerIndex);
     emit dataChanged(modelIndex, modelIndex);
     emit layerChanged(layerIndex);
 }
 
+/**
+  * Show or hide all other layers except the layer at the given index.
+  * If any other layer is visible then all layers will be hidden, otherwise
+  * the layers will be shown.
+  */
 void LayerModel::toggleOtherLayers(int layerIndex)
 {
     if (mMap->layerCount() <= 1) // No other layers

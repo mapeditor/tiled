@@ -38,11 +38,14 @@ SOURCES += compression.cpp \
     mapwriter.cpp \
     objectgroup.cpp \
     orthogonalrenderer.cpp \
+    plugin.cpp \
+    pluginmanager.cpp \
     properties.cpp \
     staggeredrenderer.cpp \
     tile.cpp \
     tilelayer.cpp \
     tileset.cpp \
+    tilesetformat.cpp \
     varianttomapconverter.cpp
 HEADERS += compression.h \
     gidmapper.h \
@@ -52,16 +55,17 @@ HEADERS += compression.h \
     layer.h \
     logginginterface.h \
     map.h \
+    mapformat.h \
     mapobject.h \
     mapreader.h \
-    mapreaderinterface.h \
     maprenderer.h \
     maptovariantconverter.h \
     mapwriter.h \
-    mapwriterinterface.h \
     object.h \
     objectgroup.h \
     orthogonalrenderer.h \
+    plugin.h \
+    pluginmanager.h \
     properties.h \
     staggeredrenderer.h \
     terrain.h \
@@ -70,6 +74,7 @@ HEADERS += compression.h \
     tiled_global.h \
     tilelayer.h \
     tileset.h \
+    tilesetformat.h \
     varianttomapconverter.h
 
 contains(INSTALL_HEADERS, yes) {

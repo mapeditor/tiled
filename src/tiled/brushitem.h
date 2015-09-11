@@ -38,47 +38,21 @@ class MapDocument;
 class BrushItem : public QGraphicsItem
 {
 public:
-    /**
-     * Constructor.
-     */
     BrushItem();
 
-    /**
-     * Sets the map document this brush is operating on.
-     */
     void setMapDocument(MapDocument *mapDocument);
 
-    /**
-     * Clears the tile layer and region set on this item.
-     */
     void clear();
 
-    /**
-     * Sets a tile layer representing this brush. When no tile layer is set,
-     * the brush only draws the selection color.
-     */
     void setTileLayer(const SharedTileLayer &tileLayer);
+    const SharedTileLayer &tileLayer() const;
 
-    /**
-     * Returns the current tile layer.
-     */
-    const SharedTileLayer &tileLayer() const { return mTileLayer; }
-
-    /**
-     * Changes the position of the tile layer, if one is set.
-     */
     void setTileLayerPosition(const QPoint &pos);
 
-    /**
-     * Sets the region of tiles that this brush item occupies.
-     */
     void setTileRegion(const QRegion &region);
+    QRegion tileRegion() const;
 
-    /**
-     * Returns the region of the current tile layer or the region that was set
-     * using setTileRegion.
-     */
-    QRegion tileRegion() const { return mRegion; }
+    void setLayerOffset(const QPointF &offset);
 
     // QGraphicsItem
     QRectF boundingRect() const;
@@ -95,9 +69,29 @@ private:
     QRectF mBoundingRect;
 };
 
+/**
+ * Clears the tile layer and region set on this item.
+ */
 inline void BrushItem::clear()
 {
     setTileLayer(SharedTileLayer());
+}
+
+/**
+ * Returns the current tile layer.
+ */
+inline const SharedTileLayer &BrushItem::tileLayer() const
+{
+    return mTileLayer;
+}
+
+/**
+ * Returns the region of the current tile layer or the region that was set
+ * using setTileRegion.
+ */
+inline QRegion BrushItem::tileRegion() const
+{
+    return mRegion;
 }
 
 } // namespace Internal

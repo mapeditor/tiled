@@ -26,16 +26,16 @@ feature set than the standard Java libraries.
 Compiling
 -------------------------------------------------------------------------------
 
-Make sure the Qt (>= 4.7) development libraries are installed:
+Make sure the Qt (>= 5.1) development libraries are installed:
 
-* In Ubuntu/Debian: `sudo apt-get install libqt4-dev libqt4-opengl-dev zlib1g-dev`
+* In Ubuntu/Debian: `apt-get install qt5-default qttools5-dev-tools zlib1g-dev`
 * In Fedora:        `yum install qt-devel`
 * In Arch Linux:    `pacman -S qt`
 * In Mac OS X with [Homebrew](http://brew.sh/): `brew install qt`
 
 Now you can compile by running:
 
-    $ qmake (or qmake-qt4 on some systems, like Fedora)
+    $ qmake (or qmake-qt5 on some systems)
     $ make
 
 To do a shadow build, you can run qmake from a different directory and refer

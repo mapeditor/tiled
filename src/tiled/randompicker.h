@@ -51,14 +51,14 @@ public:
 
     const T &pick() const
     {
-        Q_ASSERT(!mThresholds.isEmpty());
+        Q_ASSERT(!isEmpty());
 
         const qreal random = ((qreal)rand() / RAND_MAX) * mSum;
         const auto it = mThresholds.lowerBound(random);
         if (it != mThresholds.end())
             return it.value();
         else
-            return (mThresholds.constEnd() - 1).value();
+            return (mThresholds.end() - 1).value();
     }
 
     void clear()

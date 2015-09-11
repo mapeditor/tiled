@@ -143,7 +143,6 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;
-                break;
             }
             }
         } else if (index.column() == 1) {   // sum of probabilities
@@ -169,7 +168,6 @@ QVariant TileStampModel::data(const QModelIndex &index, int role) const
                     mThumbnailCache.insert(map, thumbnail);
                 }
                 return thumbnail;
-                break;
             }
             }
         } else if (index.column() == 1) {

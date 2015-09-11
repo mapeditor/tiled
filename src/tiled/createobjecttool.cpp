@@ -45,18 +45,25 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
                          QIcon(QLatin1String(":images/24x24/insert-rectangle.png")),
                          QKeySequence(tr("O")),
                          parent)
-    , mNewMapObjectItem(0)
-    , mOverlayObjectGroup(0)
-    , mOverlayPolygonObject(0)
-    , mOverlayPolygonItem(0)
-    , mTile(0)
+    , mNewMapObjectGroup(new ObjectGroup)
+    , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup))
+    , mNewMapObjectItem(nullptr)
+    , mOverlayPolygonItem(nullptr)
+    , mTile(nullptr)
     , mMode(mode)
 {
+    mObjectGroupItem->setZValue(10000); // same as the BrushItem
 }
 
 CreateObjectTool::~CreateObjectTool()
 {
-    delete mOverlayObjectGroup;
+    delete mObjectGroupItem;
+}
+
+void CreateObjectTool::activate(MapScene *scene)
+{
+    AbstractObjectTool::activate(scene);
+    scene->addItem(mObjectGroupItem);
 }
 
 void CreateObjectTool::deactivate(MapScene *scene)
@@ -64,6 +71,7 @@ void CreateObjectTool::deactivate(MapScene *scene)
     if (mNewMapObjectItem)
         cancelNewMapObject();
 
+    scene->removeItem(mObjectGroupItem);
     AbstractObjectTool::deactivate(scene);
 }
 
@@ -97,8 +105,10 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 {
     AbstractObjectTool::mouseMoved(pos, modifiers);
 
-    if (mNewMapObjectItem)
-        mouseMovedWhileCreatingObject(pos, modifiers);
+    if (mNewMapObjectItem) {
+        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->offset();
+        mouseMovedWhileCreatingObject(pos - offset, modifiers);
+    }
 }
 
 void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
@@ -118,19 +128,20 @@ void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     const MapRenderer *renderer = mapDocument()->renderer();
+    const QPointF offsetPos = event->scenePos() - objectGroup->offset();
     QPointF pixelCoords;
 
-    /*TODO: calculate the tile offset with a polymorphic behaviour object
+    /* TODO: calculate the tile offset with a polymorphic behaviour object
      * that is instantiated by the corresponded ObjectTool
-    */
+     */
     if (mMode == CreateTile) {
         if (!mTile)
             return;
 
         const QPointF diff(-mTile->width() / 2, mTile->height() / 2);
-        pixelCoords = renderer->screenToPixelCoords(event->scenePos() + diff);
+        pixelCoords = renderer->screenToPixelCoords(offsetPos + diff);
     } else {
-        pixelCoords = renderer->screenToPixelCoords(event->scenePos());
+        pixelCoords = renderer->screenToPixelCoords(offsetPos);
     }
 
     SnapHelper(renderer, event->modifiers()).snap(pixelCoords);
@@ -150,15 +161,14 @@ void CreateObjectTool::startNewMapObject(const QPointF &pos,
     Q_ASSERT(!mNewMapObjectItem);
 
     MapObject *newMapObject = createNewMapObject();
-    if (newMapObject == 0)
+    if (!newMapObject)
         return;
     newMapObject->setPosition(pos);
 
     objectGroup->addObject(newMapObject);
+    mObjectGroupItem->setObjectGroup(objectGroup);
 
-    mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument());
-    mNewMapObjectItem->setZValue(10000); // same as the BrushItem
-    mapScene()->addItem(mNewMapObjectItem);
+    mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem);
 }
 
 MapObject *CreateObjectTool::clearNewMapObjectItem()
@@ -171,10 +181,10 @@ MapObject *CreateObjectTool::clearNewMapObjectItem()
     objectGroup->removeObject(newMapObject);
 
     delete mNewMapObjectItem;
-    mNewMapObjectItem = 0;
+    mNewMapObjectItem = nullptr;
 
     delete mOverlayPolygonItem;
-    mOverlayPolygonItem = 0;
+    mOverlayPolygonItem = nullptr;
 
     return newMapObject;
 }

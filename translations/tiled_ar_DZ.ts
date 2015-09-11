@@ -35,27 +35,32 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="+243"/>
+        <location filename="../src/tiled/main.cpp" line="+257"/>
         <source>No exporter found for target file.</source>
         <translation>لا يوجد مستخرج للملف المعني.</translation>
     </message>
     <message>
-        <location line="-29"/>
+        <location line="-43"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
         <translation>بنية جملة الإستخراج هي --export-map [التنسيق] &lt;tmx ملف&gt; &lt;الملف المعني&gt;</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+23"/>
+        <source>Format not recognized (see --export-formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
         <source>Failed to load source map.</source>
         <translation>لا يمكن تحميل خريطة المصدر.</translation>
     </message>
     <message>
-        <location line="-17"/>
+        <location line="-18"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
         <translation>إمتداد الملف غير فريد. لا يمكن تحديد تنسيق الإستخراج الصحيح.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="+27"/>
         <source>Failed to export map to target file.</source>
         <translation>لا يمكن تصدير الخريطة للملف المعني.</translation>
     </message>
@@ -76,7 +81,7 @@
 <context>
     <name>CommandLineHandler</name>
     <message>
-        <location filename="../src/tiled/main.cpp" line="-172"/>
+        <location filename="../src/tiled/main.cpp" line="-184"/>
         <source>Display the version</source>
         <translation type="unfinished"></translation>
     </message>
@@ -101,7 +106,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+32"/>
         <source>Export formats:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -138,14 +143,6 @@
         <location line="+2"/>
         <source>Display this help</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ConsoleDock</name>
-    <message>
-        <location filename="../src/tiled/consoledock.cpp" line="+34"/>
-        <source>Debug Console</source>
-        <translation>وحدة تحكم التصحيح</translation>
     </message>
 </context>
 <context>
@@ -321,7 +318,7 @@
 <context>
     <name>Flare::FlarePlugin</name>
     <message>
-        <location filename="../src/plugins/flare/flareplugin.cpp" line="+178"/>
+        <location filename="../src/plugins/flare/flareplugin.cpp" line="+177"/>
         <source>Error mapping tile id %1.</source>
         <translation>خطأ أثناء رسم البلاطة المعرفة ب %1.</translation>
     </message>
@@ -357,38 +354,68 @@
     </message>
 </context>
 <context>
-    <name>Json::JsonPlugin</name>
+    <name>Json::JsonMapFormat</name>
     <message>
-        <location filename="../src/plugins/json/jsonplugin.cpp" line="+120"/>
+        <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
+        <source>Could not open file for reading.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Error parsing file.</source>
+        <translation type="unfinished">خطأ أثناء معالجة الملف.</translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Could not open file for writing.</source>
+        <translation type="unfinished">لا يمكن فتح الملف للكتابة.</translation>
+    </message>
+    <message>
+        <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation>خطأ أثناء حفظ الملف:
+        <translation type="unfinished">خطأ أثناء حفظ الملف:
 %1</translation>
     </message>
     <message>
-        <location line="-55"/>
-        <source>Error parsing file.</source>
-        <translation>خطأ أثناء معالجة الملف.</translation>
+        <location line="+15"/>
+        <source>Json map files (*.json)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+70"/>
-        <source>Json files (*.json)</source>
-        <translation>ملفات Json (*.json)</translation>
+        <location line="+2"/>
+        <source>JavaScript map files (*.js)</source>
+        <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>Json::JsonTilesetFormat</name>
     <message>
-        <location line="-91"/>
+        <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation>لا يمكن فتح الملف للكتابة.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+92"/>
-        <source>JavaScript files (*.js)</source>
-        <translation>ملفات JavaScript (*.js)</translation>
+        <location line="+12"/>
+        <source>Error parsing file.</source>
+        <translation type="unfinished">خطأ أثناء معالجة الملف.</translation>
     </message>
     <message>
-        <location line="-53"/>
+        <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation>لا يمكن فتح الملف للكتابة.</translation>
+        <translation type="unfinished">لا يمكن فتح الملف للكتابة.</translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <source>Error while writing file:
+%1</source>
+        <translation type="unfinished">خطأ أثناء حفظ الملف:
+%1</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>Json tileset files (*.json)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -407,7 +434,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.ui" line="+253"/>
+        <location filename="../src/tiled/mainwindow.ui" line="+262"/>
         <source>A</source>
         <translation>A</translation>
     </message>
@@ -417,12 +444,12 @@
         <translation>H</translation>
     </message>
     <message>
-        <location line="-334"/>
+        <location line="-343"/>
         <source>&amp;Map</source>
         <translation>&amp;الخريطة</translation>
     </message>
     <message>
-        <location line="+254"/>
+        <location line="+263"/>
         <source>Cu&amp;t</source>
         <translation>&amp;قص</translation>
     </message>
@@ -432,7 +459,7 @@
         <translation>&amp;نسخ</translation>
     </message>
     <message>
-        <location line="-119"/>
+        <location line="-128"/>
         <source>&amp;Edit</source>
         <translation>&amp;تحرير</translation>
     </message>
@@ -447,7 +474,7 @@
         <translation>&amp;مساعدة</translation>
     </message>
     <message>
-        <location line="+93"/>
+        <location line="+102"/>
         <source>&amp;Quit</source>
         <translation>&amp;خروج</translation>
     </message>
@@ -457,12 +484,12 @@
         <translation>&amp;حفظ</translation>
     </message>
     <message>
-        <location line="-62"/>
+        <location line="-71"/>
         <source>&amp;View</source>
         <translation>&amp;عرض</translation>
     </message>
     <message>
-        <location line="+38"/>
+        <location line="+47"/>
         <source>Tools</source>
         <translation>أدوات</translation>
     </message>
@@ -497,7 +524,12 @@
         <translation>لص&amp;ق</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="-103"/>
+        <source>Show Object &amp;Names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+169"/>
         <source>Save &amp;As...</source>
         <translation>حف&amp;ظ ك ...</translation>
     </message>
@@ -532,12 +564,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+8"/>
+        <source>&amp;Never</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>For &amp;Selected Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>For &amp;All Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+39"/>
         <source>Add new Automapping rules</source>
         <translation>إضافة مقاييس جديدة للتبليط التلقائي</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.ui" line="-152"/>
+        <location filename="../src/tiled/mainwindow.ui" line="-179"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
@@ -677,12 +724,12 @@
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location line="-354"/>
+        <location line="-363"/>
         <source>&amp;Recent Files</source>
         <translation>&amp;الملفات الأخيرة</translation>
     </message>
     <message>
-        <location line="+186"/>
+        <location line="+195"/>
         <source>&amp;Resize Map...</source>
         <translation>&amp;تغيير حجم الخريطة...</translation>
     </message>
@@ -695,7 +742,7 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+140"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+141"/>
         <source>Not a map file.</source>
         <translation>ليس ملف خريطة.</translation>
     </message>
@@ -711,18 +758,19 @@ Line %1, column %2</source>
     <message>
         <location line="+133"/>
         <location line="+19"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+140"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+168"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>مدخلات البلاط غير صحيحة لبلاط &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="-102"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-83"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-110"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>توجيه الخريطة غير مدعم: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+122"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+91"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
         <translation>خطأ أثناء تحميل البلاط &apos;ّ%1&apos;: %2</translation>
     </message>
@@ -732,9 +780,9 @@ Line %1, column %2</source>
         <translation>لا يمكن قراءة الملف : %1</translation>
     </message>
     <message>
-        <location line="+469"/>
+        <location line="+474"/>
         <location line="+43"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+304"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+247"/>
         <source>Invalid tile: %1</source>
         <translation>بلاطة غير صالحة: %1</translation>
     </message>
@@ -744,39 +792,39 @@ Line %1, column %2</source>
         <translation>نقاط غير صالحة للمضلع</translation>
     </message>
     <message>
-        <location line="-725"/>
+        <location line="-730"/>
         <source>Not a tileset file.</source>
         <translation>الملف المعني ليس ملف خريطة.</translation>
     </message>
     <message>
-        <location line="+565"/>
+        <location line="+570"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+34"/>
         <source>Invalid draw order: %1</source>
         <translation>ترتيب العرض غير صالح: %1</translation>
     </message>
     <message>
-        <location line="-350"/>
+        <location line="-355"/>
         <source>Invalid (nonconsecutive) tile ID: %1</source>
         <translation>معرف البلاطة غير صالح(غير متتابع): %1</translation>
     </message>
     <message>
         <location line="+89"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-236"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-243"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
         <translation>تعذر تحميل صورة البلاط:
 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+183"/>
+        <location line="+188"/>
         <location line="+19"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+157"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+164"/>
         <location line="+39"/>
         <source>Corrupt layer data for layer &apos;%1&apos;</source>
         <translation>بيانات الطبقة تالفة لطبقة &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="-485"/>
+        <location line="-490"/>
         <source>File not found: %1</source>
         <translation>الملف غير موجود: %1</translation>
     </message>
@@ -786,7 +834,7 @@ Line %1, column %2</source>
         <translation>معرف البلاطة غير موجود في صورة البلاط: %1</translation>
     </message>
     <message>
-        <location line="+417"/>
+        <location line="+422"/>
         <source>Error loading image layer image:
 &apos;%1&apos;</source>
         <translation>خطأ أثناء تحميل صورة صورة-الطبقة:
@@ -799,7 +847,7 @@ Line %1, column %2</source>
         <translation>ترميز غير معروف: %1</translation>
     </message>
     <message>
-        <location line="-231"/>
+        <location line="-236"/>
         <source>Invalid tile ID: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -812,7 +860,7 @@ Line %1, column %2</source>
 &apos;%1&apos;</translation>
     </message>
     <message>
-        <location line="+93"/>
+        <location line="+98"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-180"/>
         <source>Compression method &apos;%1&apos; not supported</source>
         <translation type="unfinished"></translation>
@@ -841,7 +889,7 @@ Line %1, column %2</source>
         <translation>عدد عناصر &lt;tile&gt; كثير جدا</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-177"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-184"/>
         <source>Tileset tile index negative:
 &apos;%1&apos;</source>
         <translation>فهرس بلاطة البلاط سلبي:
@@ -1295,6 +1343,37 @@ Line %1, column %2</source>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
         <translation>من اليمين إلى الأعلى</translation>
+    </message>
+</context>
+<context>
+    <name>Python::PythonMapFormat</name>
+    <message>
+        <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
+        <source>-- Using script %1 to read %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>-- Using script %1 to write %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Uncaught exception in script. Please check console.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Script returned false. Please check console.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Python::PythonPlugin</name>
+    <message>
+        <location line="-164"/>
+        <source>Reloading Python scripts</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1887,7 +1966,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AbstractObjectTool</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="+186"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+191"/>
         <source>X</source>
         <translation>X</translation>
     </message>
@@ -1991,7 +2070,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::AbstractTileTool</name>
     <message>
-        <location filename="../src/tiled/abstracttiletool.cpp" line="+119"/>
+        <location filename="../src/tiled/abstracttiletool.cpp" line="+124"/>
         <source>empty</source>
         <translation>فارغ</translation>
     </message>
@@ -2063,7 +2142,7 @@ Line %1, column %2</source>
         <translation>تطبيق مقاييس التبليط التلقائي</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+24"/>
         <source>No rules file found at:
 %1</source>
         <translation>لم يتم العثور على ملف مقاييس عند:
@@ -2109,7 +2188,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::ClipboardManager</name>
     <message>
-        <location filename="../src/tiled/clipboardmanager.cpp" line="+167"/>
+        <location filename="../src/tiled/clipboardmanager.cpp" line="+166"/>
         <source>Paste Objects</source>
         <translation>لصق الكائنات</translation>
     </message>
@@ -2242,7 +2321,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+140"/>
+        <location filename="../src/tiled/command.cpp" line="+142"/>
         <source>Unable to add executable permissions to %1</source>
         <translation>لا يمكن إضافة رخص التطبيق ل %1</translation>
     </message>
@@ -2275,6 +2354,14 @@ Line %1, column %2</source>
         <location line="-53"/>
         <source>Unable to create/open %1</source>
         <translation>لا يمكن إنشاء/فتح %1</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::ConsoleDock</name>
+    <message>
+        <location filename="../src/tiled/consoledock.cpp" line="+36"/>
+        <source>Debug Console</source>
+        <translation type="unfinished">وحدة تحكم التصحيح</translation>
     </message>
 </context>
 <context>
@@ -2340,7 +2427,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::CreateTileObjectTool</name>
     <message>
-        <location filename="../src/tiled/createtileobjecttool.cpp" line="+79"/>
+        <location filename="../src/tiled/createtileobjecttool.cpp" line="+80"/>
         <source>T</source>
         <translation>T</translation>
     </message>
@@ -2353,7 +2440,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+338"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+328"/>
         <source>%1:
 
 %2</source>
@@ -2365,13 +2452,13 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Internal::EditPolygonTool</name>
     <message>
-        <location filename="../src/tiled/editpolygontool.cpp" line="+130"/>
+        <location filename="../src/tiled/editpolygontool.cpp" line="+131"/>
         <location line="+208"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location line="+248"/>
+        <location line="+258"/>
         <location line="+215"/>
         <source>Join Nodes</source>
         <translation>تجميع العقدا</translation>
@@ -2408,7 +2495,7 @@ Line %1, column %2</source>
         </translation>
     </message>
     <message>
-        <location line="-498"/>
+        <location line="-508"/>
         <location line="+209"/>
         <source>Edit Polygons</source>
         <translation>تعديل المضلع</translation>
@@ -2422,7 +2509,7 @@ Line %1, column %2</source>
         <translation>E</translation>
     </message>
     <message>
-        <location line="+36"/>
+        <location line="+35"/>
         <source>New Terrain</source>
         <translation>أرضية جديدة</translation>
     </message>
@@ -2462,7 +2549,7 @@ Do you want to replace it?</source>
 هل تريد إستبداله؟</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+46"/>
         <source>Out of Memory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2482,7 +2569,7 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+88"/>
+        <location line="+93"/>
         <source>Image</source>
         <translation>الصورة</translation>
     </message>
@@ -2490,7 +2577,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::FileChangedWarning</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="-274"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-266"/>
         <source>File change detected. Discard changes and reload the map?</source>
         <translation>تم إكتشاف تعديلات على الملف. هل تريد تجاهلها و إعادة تحميل الخريطة؟</translation>
     </message>
@@ -2534,12 +2621,12 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::LayerModel</name>
     <message>
-        <location filename="../src/tiled/layermodel.cpp" line="+135"/>
+        <location filename="../src/tiled/layermodel.cpp" line="+151"/>
         <source>Layer</source>
         <translation>الطبقات</translation>
     </message>
     <message>
-        <location line="+99"/>
+        <location line="+154"/>
         <source>Hide Other Layers</source>
         <translation>إخفاء الطبقات الأخرى</translation>
     </message>
@@ -2567,7 +2654,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::Internal::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+246"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+278"/>
         <source>+</source>
         <translation>+</translation>
     </message>
@@ -2602,7 +2689,7 @@ Do you want to replace it?</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location line="+520"/>
+        <location line="+469"/>
         <source>Some export files already exist:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2617,53 +2704,53 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+71"/>
         <source>Cut</source>
         <translation>قص</translation>
     </message>
     <message>
-        <location line="-930"/>
-        <location line="+6"/>
+        <location line="-908"/>
+        <location line="+9"/>
         <source>Redo</source>
         <translation>إستعادة</translation>
     </message>
     <message>
-        <location line="-7"/>
-        <location line="+8"/>
+        <location line="-10"/>
+        <location line="+11"/>
         <source>Undo</source>
         <translation>تراجع</translation>
     </message>
     <message>
-        <location line="+531"/>
-        <location line="+68"/>
+        <location line="+559"/>
+        <location line="+56"/>
         <source>Tiled map files (*.tmx)</source>
         <translation>ملفات خرائط Tiled(*.tmx)</translation>
     </message>
     <message>
-        <location line="+203"/>
+        <location line="+166"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
         <translation>إمتداد الملف غير فريد
 إختر إمتداد معين من فضلك.</translation>
     </message>
     <message>
-        <location line="-72"/>
-        <location line="+134"/>
+        <location line="-57"/>
+        <location line="+117"/>
         <source>Error Exporting Map</source>
         <translation>خطأ أثناء تصدير الخريطة</translation>
     </message>
     <message>
-        <location line="-547"/>
+        <location line="-496"/>
         <source>Alt+C</source>
         <translation>Alt+C</translation>
     </message>
     <message>
-        <location line="+363"/>
+        <location line="+336"/>
         <source>Unsaved Changes</source>
         <translation>تعديلات غير محفوظة</translation>
     </message>
     <message numerus="yes">
-        <location line="+442"/>
+        <location line="+428"/>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>إضافة %n (بلاط(ات</numerusform>
@@ -2675,33 +2762,33 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="-321"/>
+        <location line="-329"/>
         <source>Non-unique file extension</source>
         <translation>إمتداد الملف غير فريد</translation>
     </message>
     <message>
-        <location line="+311"/>
+        <location line="+319"/>
         <source>%1: %2</source>
         <translation>%1 : %2</translation>
     </message>
     <message>
-        <location line="-334"/>
+        <location line="-338"/>
         <source>Export As...</source>
         <translation>تصدير ك...</translation>
     </message>
     <message>
-        <location line="-686"/>
-        <location line="+1401"/>
+        <location line="-641"/>
+        <location line="+1360"/>
         <source>&amp;Layer</source>
         <translation>&amp;الطبقات</translation>
     </message>
     <message>
-        <location line="-1196"/>
+        <location line="-1155"/>
         <source>Alt+Left</source>
         <translation>Alt+Left</translation>
     </message>
     <message>
-        <location line="+1026"/>
+        <location line="+985"/>
         <source>Current layer: %1</source>
         <translation>الطبقة الحالية: %1</translation>
     </message>
@@ -2711,13 +2798,13 @@ Please select specific format.</source>
         <translation>&lt;لاشيء&gt;</translation>
     </message>
     <message>
-        <location line="-219"/>
-        <location line="+6"/>
+        <location line="-218"/>
+        <location line="+5"/>
         <source>Error Reading Tileset</source>
         <translation>خطأ أثناء قراءة البلاط</translation>
     </message>
     <message>
-        <location line="-811"/>
+        <location line="-770"/>
         <source>Ctrl+Shift+Tab</source>
         <translation>Ctrl+Shift+Tab</translation>
     </message>
@@ -2732,30 +2819,30 @@ Please select specific format.</source>
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <location line="+946"/>
+        <location line="+893"/>
         <source>Delete</source>
         <translation>حذف</translation>
     </message>
     <message>
-        <location line="-733"/>
-        <location line="+1229"/>
+        <location line="-680"/>
+        <location line="+1188"/>
         <source>Tile Animation Editor</source>
         <translation>محرر البلاط المتحرك</translation>
     </message>
     <message>
-        <location line="-865"/>
+        <location line="-848"/>
         <source>untitled.tmx</source>
         <translation>بلا عنوان.tmx</translation>
     </message>
     <message>
-        <location line="-544"/>
-        <location line="+1406"/>
+        <location line="-520"/>
+        <location line="+1365"/>
         <source>Random Mode</source>
         <translation>النمط العشوائي</translation>
     </message>
     <message>
-        <location line="-1224"/>
-        <location line="+1228"/>
+        <location line="-1183"/>
+        <location line="+1187"/>
         <source>Tile Collision Editor</source>
         <translation>محرر تصادم البلاط</translation>
     </message>
@@ -2765,18 +2852,18 @@ Please select specific format.</source>
         <translation>Tiled - الأبلطة الخارجية (*.tsx)</translation>
     </message>
     <message>
-        <location line="-542"/>
+        <location line="-510"/>
         <source>Open Map</source>
         <translation>فتح خريطة</translation>
     </message>
     <message>
-        <location line="-244"/>
+        <location line="-235"/>
         <source>Alt+Right</source>
         <translation>Alt+Right</translation>
     </message>
     <message>
         <location line="-39"/>
-        <location line="+1229"/>
+        <location line="+1188"/>
         <source>Views and Toolbars</source>
         <translation>المعاينات و شريط الأدوات</translation>
     </message>
@@ -2791,49 +2878,49 @@ Please select specific format.</source>
         <translation>تحذير التبليط االتلقائي</translation>
     </message>
     <message>
-        <location line="-368"/>
+        <location line="-378"/>
         <source>Unknown File Format</source>
         <translation>نوع الملف غير معروف</translation>
     </message>
     <message>
-        <location line="+356"/>
+        <location line="+366"/>
         <source>Automatic Mapping Error</source>
         <translation>خطأ في التبليط التلقائي</translation>
     </message>
     <message>
-        <location line="-451"/>
+        <location line="-444"/>
         <source>Exported to %1</source>
         <translation>تصدير ل %1</translation>
     </message>
     <message>
-        <location line="-44"/>
+        <location line="-37"/>
         <source>There are unsaved changes. Do you want to save now?</source>
         <translation>هل تريد حفظ التغييرات التي تم إجراؤها؟</translation>
     </message>
     <message>
-        <location line="-366"/>
+        <location line="-339"/>
         <source>Shift+Z</source>
         <translation>Shift+Z</translation>
     </message>
     <message>
-        <location line="+261"/>
-        <location line="+88"/>
+        <location line="+249"/>
+        <location line="+73"/>
         <source>Error Saving Map</source>
         <translation>خطأ أثناء حفظ الخريطة</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+133"/>
         <source>The given filename does not have any known file extension.</source>
         <translation>هذا الإسم لا يحتوي على أي تنسيق معروف.</translation>
     </message>
     <message>
-        <location line="-293"/>
-        <location line="+218"/>
+        <location line="-242"/>
+        <location line="+181"/>
         <source>All Files (*)</source>
         <translation>كل الملفات (*)</translation>
     </message>
     <message>
-        <location line="-439"/>
+        <location line="-402"/>
         <source>Ctrl+Tab</source>
         <translation>Ctrl+Tab</translation>
     </message>
@@ -2843,7 +2930,7 @@ Please select specific format.</source>
         <translation>خطأ أثناء فتح الخريطة</translation>
     </message>
     <message>
-        <location line="+1019"/>
+        <location line="+978"/>
         <source>[*]%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2856,7 +2943,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+682"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+706"/>
         <source>Tile</source>
         <translation>بلاطة</translation>
     </message>
@@ -3230,13 +3317,13 @@ Please select specific format.</source>
     <name>Tiled::Internal::ObjectSelectionTool</name>
     <message>
         <location filename="../src/tiled/objectselectiontool.cpp" line="+318"/>
-        <location line="+272"/>
+        <location line="+301"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message numerus="yes">
-        <location line="-162"/>
-        <location line="+513"/>
+        <location line="-190"/>
+        <location line="+548"/>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>تحريك %n (كائن(ات</numerusform>
@@ -3248,7 +3335,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+316"/>
+        <location line="+333"/>
         <source>Resize %n Object(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -3260,13 +3347,13 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="-941"/>
-        <location line="+273"/>
+        <location line="-994"/>
+        <location line="+302"/>
         <source>Select Objects</source>
         <translation>تحديدالكائنات</translation>
     </message>
     <message numerus="yes">
-        <location line="+417"/>
+        <location line="+426"/>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>تدوير الكائن</numerusform>
@@ -3423,25 +3510,25 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="-6"/>
         <location line="+352"/>
-        <location line="+67"/>
+        <location line="+70"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="-418"/>
+        <location line="-421"/>
         <location line="+352"/>
-        <location line="+67"/>
+        <location line="+70"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location line="-76"/>
-        <location line="+108"/>
+        <location line="-79"/>
+        <location line="+111"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location line="-173"/>
+        <location line="-176"/>
         <source>Map</source>
         <translation>الخريطة</translation>
     </message>
@@ -3469,36 +3556,46 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-64"/>
-        <location line="+144"/>
+        <location line="+147"/>
         <source>Tile Width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-143"/>
-        <location line="+144"/>
+        <location line="-146"/>
+        <location line="+147"/>
         <source>Tile Height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-91"/>
+        <location line="-94"/>
         <location line="+26"/>
-        <location line="+56"/>
+        <location line="+59"/>
         <location line="+40"/>
         <source>Name</source>
         <translation>الإسم</translation>
     </message>
     <message>
-        <location line="-16"/>
+        <location line="-90"/>
+        <source>Horizontal Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Vertical Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+73"/>
         <source>Tile</source>
         <translation>البلاط</translation>
     </message>
     <message>
-        <location line="-103"/>
+        <location line="-106"/>
         <source>Type</source>
         <translation>النوع</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+48"/>
         <source>Color</source>
         <translation>اللون</translation>
     </message>
@@ -3508,7 +3605,7 @@ Please select specific format.</source>
         <translation>الصورة</translation>
     </message>
     <message>
-        <location line="-391"/>
+        <location line="-394"/>
         <source>Horizontal</source>
         <translation>أفقي</translation>
     </message>
@@ -3523,17 +3620,17 @@ Please select specific format.</source>
         <translation>تنسيق طبقة البلاط</translation>
     </message>
     <message>
-        <location line="+83"/>
+        <location line="+86"/>
         <source>Drawing Order</source>
         <translation>ترتيب الرسم</translation>
     </message>
     <message>
-        <location line="-37"/>
+        <location line="-40"/>
         <source>Flipping</source>
         <translation>إنعكاس</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+32"/>
         <source>Object Layer</source>
         <translation>طبقة الكائن</translation>
     </message>
@@ -3558,12 +3655,12 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+364"/>
+        <location line="+375"/>
         <source>Custom Properties</source>
         <translation>تخصيص الخصائص</translation>
     </message>
     <message>
-        <location line="-797"/>
+        <location line="-811"/>
         <source>Manual</source>
         <translation>يدوي</translation>
     </message>
@@ -3593,7 +3690,7 @@ Please select specific format.</source>
         <translation>الدوران</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+55"/>
         <source>Image Layer</source>
         <translation>طبقة الصورة</translation>
     </message>
@@ -3603,7 +3700,7 @@ Please select specific format.</source>
         <translation>طبقة البلاط</translation>
     </message>
     <message>
-        <location line="-55"/>
+        <location line="-58"/>
         <source>Background Color</source>
         <translation>لون الخلفية</translation>
     </message>
@@ -3613,7 +3710,7 @@ Please select specific format.</source>
         <translation>محور الإرتجاف</translation>
     </message>
     <message>
-        <location line="+157"/>
+        <location line="+160"/>
         <source>Probability</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3633,7 +3730,7 @@ Please select specific format.</source>
         <translation>لون شفاف</translation>
     </message>
     <message>
-        <location line="-395"/>
+        <location line="-398"/>
         <source>Vertical</source>
         <translation>عمودي</translation>
     </message>
@@ -3644,12 +3741,12 @@ Please select specific format.</source>
         <translation>مرئي</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+59"/>
         <source>Drawing Offset</source>
         <translation>ترتيب العرض</translation>
     </message>
     <message>
-        <location line="-134"/>
+        <location line="-137"/>
         <source>Tile Side Length (Hex)</source>
         <translation>طول جانب البلاط (hex)</translation>
     </message>
@@ -3835,17 +3932,17 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+732"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+738"/>
         <source>Tilesets</source>
         <translation>بلاط</translation>
     </message>
     <message>
-        <location line="+173"/>
+        <location line="+185"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
         <translation>هناك بلاطات قيد الإستخدام في الخريطة!</translation>
     </message>
     <message>
-        <location line="-247"/>
+        <location line="-259"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
         <translation>هل تريد حذف هذا البلاط مع جميع مشتقاته؟</translation>
     </message>
@@ -3861,40 +3958,46 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+87"/>
-        <location line="+164"/>
+        <location line="+176"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
         <translation>حذف البلاطات</translation>
     </message>
     <message>
-        <location line="-182"/>
+        <location line="-194"/>
         <source>&amp;Export Tileset As...</source>
         <translation>&amp;تصدير البلاط ك...</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+59"/>
+        <location line="+23"/>
         <source>Export Tileset</source>
         <translation>تصدير البلاط</translation>
     </message>
     <message>
-        <location line="-51"/>
-        <location line="+103"/>
+        <location line="-78"/>
+        <location line="+115"/>
         <location line="+13"/>
         <source>Add Tiles</source>
         <translation>إضافة بلاطات</translation>
     </message>
     <message>
-        <location line="-63"/>
+        <location line="-89"/>
         <source>Tiled tileset files (*.tsx)</source>
         <translation>ملفات بلاط Tiled (*.tsx)</translation>
     </message>
     <message>
-        <location line="+64"/>
+        <location line="+40"/>
+        <source>Error saving tileset: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+50"/>
         <source>Could not load &quot;%1&quot;!</source>
         <translation>لا يمكن تحميل &quot;%1&quot;!</translation>
     </message>
     <message>
-        <location line="-204"/>
+        <location line="-216"/>
         <source>Remove Tileset</source>
         <translation>حذف البلاط</translation>
     </message>
@@ -3914,12 +4017,12 @@ Please select specific format.</source>
         <translation>بلاط جديد</translation>
     </message>
     <message>
-        <location line="+177"/>
+        <location line="+189"/>
         <source>Remove all references to these tiles?</source>
         <translation>حذف كل مشتقات هذا البلاط؟</translation>
     </message>
     <message>
-        <location line="-176"/>
+        <location line="-188"/>
         <source>&amp;Import Tileset</source>
         <translation>إ&amp;ستيراد البلاط</translation>
     </message>
@@ -3927,7 +4030,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::Internal::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+574"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+580"/>
         <source>Tile &amp;Properties...</source>
         <translation>خصائص ال&amp;بلاط...</translation>
     </message>
@@ -3945,6 +4048,22 @@ Please select specific format.</source>
         <location line="-5"/>
         <source>Add Terrain Type</source>
         <translation>إضافة نوع أرضية</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::TmxMapFormat</name>
+    <message>
+        <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
+        <source>Tiled map files (*.tmx)</source>
+        <translation type="unfinished">ملفات خرائط Tiled(*.tmx)</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::Internal::TsxTilesetFormat</name>
+    <message>
+        <location line="+24"/>
+        <source>Tiled tileset files (*.tsx)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3984,18 +4103,9 @@ Please select specific format.</source>
     </message>
 </context>
 <context>
-    <name>TmxMapReader</name>
-    <message>
-        <location filename="../src/tiled/tmxmapreader.h" line="+56"/>
-        <location filename="../src/tiled/tmxmapwriter.h" line="+56"/>
-        <source>Tiled map files (*.tmx)</source>
-        <translation>ملفات خرائط Tiled(*.tmx)</translation>
-    </message>
-</context>
-<context>
     <name>TmxViewer</name>
     <message>
-        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+180"/>
+        <location filename="../src/tmxviewer/tmxviewer.cpp" line="+182"/>
         <source>TMX Viewer</source>
         <translation>عارض ملفات TMX</translation>
     </message>
@@ -4107,7 +4217,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/tiled/editterraindialog.cpp" line="-136"/>
+        <location filename="../src/tiled/editterraindialog.cpp" line="-135"/>
         <source>Change Terrain Image</source>
         <translation>تغيير صورة الأرضية</translation>
     </message>
@@ -4148,7 +4258,7 @@ Please select specific format.</source>
         <translation>تغيير موقع طبقة الصورة</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-643"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-648"/>
         <source>Export Tileset</source>
         <translation>تصدير البلاط</translation>
     </message>
@@ -4213,6 +4323,11 @@ Please select specific format.</source>
         <translation>إخفاء الطبقة</translation>
     </message>
     <message>
+        <location line="+50"/>
+        <source>Change Layer Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+54"/>
         <source>Change Render Order</source>
         <translation>تغيير ترتيب الطبقات</translation>
@@ -4228,7 +4343,7 @@ Please select specific format.</source>
         <translation>رفع الكائن للأعلى</translation>
     </message>
     <message>
-        <location filename="../src/tiled/changelayer.cpp" line="-3"/>
+        <location filename="../src/tiled/changelayer.cpp" line="-53"/>
         <source>Show Layer</source>
         <translation>إظهار الطبقة</translation>
     </message>

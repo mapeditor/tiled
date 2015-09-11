@@ -175,9 +175,10 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
 {
     AbstractTileTool::mapDocumentChanged(oldDocument, newDocument);
 
-    // Reset the brush, since it probably became invalid
-    brushItem()->setTileRegion(QRegion());
-    setStamp(TileStamp());
+    if (newDocument) {
+        updateRandomList();
+        updatePreview();
+    }
 }
 
 /**
@@ -187,12 +188,13 @@ void StampBrush::mapDocumentChanged(MapDocument *oldDocument,
 void StampBrush::updateRandomList()
 {
     mRandomCellPicker.clear();
-    mMissingTilesets.clear();
 
-    if (mStamp.isEmpty())
+    if (!mIsRandom)
         return;
 
-    foreach (const TileStampVariation &variation, mStamp.variations()) {
+    mMissingTilesets.clear();
+
+    for (const TileStampVariation &variation : mStamp.variations()) {
         TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
         for (int x = 0; x < tileLayer->width(); x++) {
@@ -212,9 +214,7 @@ void StampBrush::setStamp(const TileStamp &stamp)
 
     mStamp = stamp;
 
-    if (mIsRandom)
-        updateRandomList();
-
+    updateRandomList();
     updatePreview();
 }
 
@@ -367,7 +367,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        foreach (const QPoint p, list) {
+        for (const QPoint &p : list) {
             const Cell &cell = mRandomCellPicker.pick();
             preview->setCell(p.x() - bounds.left(),
                              p.y() - bounds.top(),
@@ -382,7 +382,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
         QVector<PaintOperation> operations;
         QHash<TileLayer *, QRegion> regionCache;
 
-        foreach (const QPoint p, list) {
+        for (const QPoint &p : list) {
             Map *variation = mStamp.randomVariation();
             mapDocument()->unifyTilesets(variation, mMissingTilesets);
 
@@ -414,7 +414,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &list)
                                               bounds.x(), bounds.y(),
                                               bounds.width(), bounds.height()));
 
-        foreach (const PaintOperation &op, operations)
+        for (const PaintOperation &op : operations)
             preview->merge(op.pos - bounds.topLeft(), op.stamp);
 
         mPreviewLayer = preview;
@@ -479,8 +479,6 @@ void StampBrush::setRandom(bool value)
 
     mIsRandom = value;
 
-    if (mIsRandom)
-        updateRandomList();
-
+    updateRandomList();
     updatePreview();
 }

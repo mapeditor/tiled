@@ -22,7 +22,7 @@
 #define TILED_INTERNAL_OBJECTSELECTIONITEM_H
 
 #include <QGraphicsObject>
-#include <QMap>
+#include <QHash>
 
 namespace Tiled {
 
@@ -31,6 +31,7 @@ class MapObject;
 namespace Internal {
 
 class MapDocument;
+class MapObjectLabel;
 class MapObjectOutline;
 
 class ObjectSelectionItem : public QGraphicsObject
@@ -48,11 +49,18 @@ public:
 private slots:
     void selectedObjectsChanged();
     void mapChanged();
-    void syncObjectOutlines(const QList<MapObject *> &objects);
+    void layerChanged(int index);
+    void syncOverlayItems(const QList<MapObject *> &objects);
+
+    void objectLabelVisibilityChanged();
 
 private:
+    void addRemoveObjectLabels();
+    void addRemoveObjectOutlines();
+
     MapDocument *mMapDocument;
-    QMap<MapObject*, MapObjectOutline*> mObjectOutlines;
+    QHash<MapObject*, MapObjectLabel*> mObjectLabels;
+    QHash<MapObject*, MapObjectOutline*> mObjectOutlines;
 };
 
 } // namespace Internal

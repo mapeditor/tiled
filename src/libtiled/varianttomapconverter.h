@@ -46,7 +46,10 @@ class TILEDSHARED_EXPORT VariantToMapConverter
     Q_DECLARE_TR_FUNCTIONS(MapReader)
 
 public:
-    VariantToMapConverter() : mMap(0) {}
+    VariantToMapConverter()
+        : mMap(0)
+        , mReadingExternalTileset(false)
+    {}
 
     /**
      * Tries to convert the given \a variant to a Map instance. The \a mapDir
@@ -56,6 +59,16 @@ public:
      * errorString().
      */
     Map *toMap(const QVariant &variant, const QDir &mapDir);
+
+    /**
+     * Tries to convert the given \a variant to a Tileset instance. The
+     * \a directory is necessary to resolve any relative references to external
+     * images.
+     *
+     * Returns 0 in case of an error. The error can be obstained using
+     * errorString().
+     */
+    SharedTileset toTileset(const QVariant &variant, const QDir &directory);
 
     /**
      * Returns the last error, if any.
@@ -74,6 +87,7 @@ private:
 
     Map *mMap;
     QDir mMapDir;
+    bool mReadingExternalTileset;
     GidMapper mGidMapper;
     QString mError;
 };

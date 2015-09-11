@@ -93,7 +93,7 @@ TileStamp::TileStamp(const TileStamp &other)
 {
 }
 
-TileStamp TileStamp::operator=(const TileStamp &other)
+TileStamp &TileStamp::operator=(const TileStamp &other)
 {
     d = other.d;
     return *this;

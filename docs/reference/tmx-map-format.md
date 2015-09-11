@@ -192,7 +192,7 @@ Not to be confused with the `tile` element inside a `tileset`, this element defi
 * <i>height:</i> The height of the object group in tiles. Meaningless.
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
 * <b>visible:</b> Whether the layer is shown (1) or hidden (0). Defaults to 1.
-* <b>draworder:</b> Whether the objects are drawn according to the order of appearance ("index") or sorted by their y-coordinate ("top-down"). Defaults to "top-down".
+* <b>draworder:</b> Whether the objects are drawn according to the order of appearance ("index") or sorted by their y-coordinate ("topdown"). Defaults to "topdown".
 
 The object group is in fact a map layer, and is hence called "object layer" in Tiled Qt.
 

@@ -58,4 +58,4 @@
 #include "documentmanager.h"
 #include "mapscene.h"
 #include "tilesetmanager.h"
-#include "tmxmapwriter.h"
+#include "tmxmapformat.h"

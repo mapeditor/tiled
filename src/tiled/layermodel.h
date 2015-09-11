@@ -50,93 +50,37 @@ public:
         OpacityRole = Qt::UserRole
     };
 
-    /**
-     * Constructor.
-     */
     LayerModel(QObject *parent = 0);
 
-    /**
-     * Returns the number of rows.
-     */
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-    /**
-     * Returns the data stored under the given <i>role</i> for the item
-     * referred to by the <i>index</i>.
-     */
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const;
 
-    /**
-     * Allows for changing the name, visibility and opacity of a layer.
-     */
     bool setData(const QModelIndex &index, const QVariant &value, int role);
 
-    /**
-     * Makes sure the items are checkable and names editable.
-     */
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    /**
-     * Returns the headers for the table.
-     */
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
 
-    /**
-     * Returns the layer index associated with a given model index.
-     * \sa layerIndexToRow
-     */
     int toLayerIndex(const QModelIndex &index) const;
 
-    /**
-     * Returns the row associated with the given layer index.
-     * \sa toLayerIndex
-     */
     int layerIndexToRow(int layerIndex) const;
 
-    /**
-     * Returns the map document associated with this model.
-     */
-    MapDocument *mapDocument() const { return mMapDocument; }
-
-    /**
-     * Sets the map document associated with this model.
-     */
+    MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *mapDocument);
 
-    /**
-     * Adds a layer to this model's map, inserting it at the given index.
-     */
     void insertLayer(int index, Layer *layer);
 
-    /**
-     * Removes the layer at the given index from this model's map and
-     * returns it. The caller becomes responsible for the lifetime of this
-     * layer.
-     */
     Layer *takeLayerAt(int index);
 
-    /**
-     * Sets whether the layer at the given index is visible.
-     */
     void setLayerVisible(int layerIndex, bool visible);
-
-    /**
-     * Sets the opacity of the layer at the given index.
-     */
     void setLayerOpacity(int layerIndex, float opacity);
+    void setLayerOffset(int layerIndex, const QPointF &offset);
 
-    /**
-     * Renames the layer at the given index.
-     */
     void renameLayer(int index, const QString &name);
 
-    /**
-      * Show or hide all other layers except the layer at the given index.
-      * If any other layer is visible then all layers will be hidden, otherwise
-      * the layers will be shown.
-      */
     void toggleOtherLayers(int layerIndex);
 
 signals:
@@ -155,6 +99,14 @@ private:
     QIcon mObjectGroupIcon;
     QIcon mImageLayerIcon;
 };
+
+/**
+ * Returns the map document associated with this model.
+ */
+inline MapDocument *LayerModel::mapDocument() const
+{
+    return mMapDocument;
+}
 
 } // namespace Internal
 } // namespace Tiled

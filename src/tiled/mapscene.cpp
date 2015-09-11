@@ -126,8 +126,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 
         connect(mMapDocument, SIGNAL(mapChanged()),
                 this, SLOT(mapChanged()));
-        connect(mMapDocument, SIGNAL(regionChanged(QRegion)),
-                this, SLOT(repaintRegion(QRegion)));
+        connect(mMapDocument, &MapDocument::regionChanged,
+                this, &MapScene::repaintRegion);
         connect(mMapDocument, SIGNAL(tileLayerDrawMarginsChanged(TileLayer*)),
                 this, SLOT(tileLayerDrawMarginsChanged(TileLayer*)));
         connect(mMapDocument, SIGNAL(layerAdded(int)),
@@ -165,7 +165,7 @@ void MapScene::setSelectedObjectItems(const QSet<MapObjectItem *> &items)
     QList<MapObject*> selectedObjects;
     selectedObjects.reserve(items.size());
 
-    foreach (const MapObjectItem *item, items)
+    for (const MapObjectItem *item : items)
         selectedObjects.append(item->mapObject());
 
     mMapDocument->setSelectedObjects(selectedObjects);
@@ -190,9 +190,7 @@ void MapScene::refreshScene()
         return;
     }
 
-    const QSize mapSize = mMapDocument->renderer()->mapSize();
-    setSceneRect(0, 0, mapSize.width(), mapSize.height());
-    mDarkRectangle->setRect(0, 0, mapSize.width(), mapSize.height());
+    updateSceneRect();
 
     const Map *map = mMapDocument->map();
     mLayerItems.resize(map->layerCount());
@@ -203,7 +201,7 @@ void MapScene::refreshScene()
         setBackgroundBrush(mDefaultBackgroundColor);
 
     int layerIndex = 0;
-    foreach (Layer *layer, map->layers()) {
+    for (Layer *layer : map->layers()) {
         QGraphicsItem *layerItem = createLayerItem(layer);
         layerItem->setZValue(layerIndex);
         addItem(layerItem);
@@ -232,7 +230,7 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
         const ObjectGroup::DrawOrder drawOrder = og->drawOrder();
         ObjectGroupItem *ogItem = new ObjectGroupItem(og);
         int objectIndex = 0;
-        foreach (MapObject *object, og->objects()) {
+        for (MapObject *object : og->objects()) {
             MapObjectItem *item = new MapObjectItem(object, mMapDocument,
                                                     ogItem);
             if (drawOrder == ObjectGroup::TopDownOrder)
@@ -252,6 +250,21 @@ QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 
     layerItem->setVisible(layer->isVisible());
     return layerItem;
+}
+
+void MapScene::updateSceneRect()
+{
+    const QSize mapSize = mMapDocument->renderer()->mapSize();
+    QRectF sceneRect(0, 0, mapSize.width(), mapSize.height());
+
+    QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
+    sceneRect.adjust(-margins.left(),
+                     -margins.top(),
+                     margins.right(),
+                     margins.bottom());
+
+    setSceneRect(sceneRect);
+    mDarkRectangle->setRect(sceneRect);
 }
 
 void MapScene::updateCurrentLayerHighlight()
@@ -285,16 +298,22 @@ void MapScene::updateCurrentLayerHighlight()
     }
 }
 
-void MapScene::repaintRegion(const QRegion &region)
+void MapScene::repaintRegion(const QRegion &region, Layer *layer)
 {
     const MapRenderer *renderer = mMapDocument->renderer();
     const QMargins margins = mMapDocument->map()->drawMargins();
 
-    foreach (const QRect &r, region.rects()) {
-        update(renderer->boundingRect(r).adjusted(-margins.left(),
-                                                  -margins.top(),
-                                                  margins.right(),
-                                                  margins.bottom()));
+    for (const QRect &r : region.rects()) {
+        QRectF boundingRect = renderer->boundingRect(r);
+
+        boundingRect.adjust(-margins.left(),
+                            -margins.top(),
+                            margins.right(),
+                            margins.bottom());
+
+        boundingRect.translate(layer->offset());
+
+        update(boundingRect);
     }
 }
 
@@ -330,6 +349,10 @@ void MapScene::disableSelectedTool()
 void MapScene::currentLayerIndexChanged()
 {
     updateCurrentLayerHighlight();
+
+    // New layer may have a different offset, affecting the grid
+    if (mGridVisible)
+        update();
 }
 
 /**
@@ -338,16 +361,14 @@ void MapScene::currentLayerIndexChanged()
  */
 void MapScene::mapChanged()
 {
-    const QSize mapSize = mMapDocument->renderer()->mapSize();
-    setSceneRect(0, 0, mapSize.width(), mapSize.height());
-    mDarkRectangle->setRect(0, 0, mapSize.width(), mapSize.height());
+    updateSceneRect();
 
-    foreach (QGraphicsItem *item, mLayerItems) {
+    for (QGraphicsItem *item : mLayerItems) {
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
     }
 
-    foreach (MapObjectItem *item, mObjectItems)
+    for (MapObjectItem *item : mObjectItems)
         item->syncWithMapObject();
 
     const Map *map = mMapDocument->map();
@@ -381,7 +402,7 @@ void MapScene::layerAdded(int index)
     mLayerItems.insert(index, layerItem);
 
     int z = 0;
-    foreach (QGraphicsItem *item, mLayerItems)
+    for (QGraphicsItem *item : mLayerItems)
         item->setZValue(z++);
 }
 
@@ -392,8 +413,8 @@ void MapScene::layerRemoved(int index)
 }
 
 /**
- * A layer has changed. This can mean that the layer visibility or opacity has
- * changed.
+ * A layer has changed. This can mean that the layer visibility, opacity or
+ * offset changed.
  */
 void MapScene::layerChanged(int index)
 {
@@ -407,6 +428,12 @@ void MapScene::layerChanged(int index)
         multiplier = opacityFactor;
 
     layerItem->setOpacity(layer->opacity() * multiplier);
+    layerItem->setPos(layer->offset());
+
+    // Layer offset may have changed, affecting the scene rect and grid
+    updateSceneRect();
+    if (mGridVisible)
+        update();
 }
 
 /**
@@ -440,11 +467,11 @@ void MapScene::tilesetTileOffsetChanged(Tileset *tileset)
 {
     update();
 
-    foreach (QGraphicsItem *item, mLayerItems)
+    for (QGraphicsItem *item : mLayerItems)
         if (TileLayerItem *tli = dynamic_cast<TileLayerItem*>(item))
             tli->syncWithTileLayer();
 
-    foreach (MapObjectItem *item, mObjectItems) {
+    for (MapObjectItem *item : mObjectItems) {
         const Cell &cell = item->mapObject()->cell();
         if (!cell.isEmpty() && cell.tile->tileset() == tileset)
             item->syncWithMapObject();
@@ -459,7 +486,7 @@ void MapScene::objectsInserted(ObjectGroup *objectGroup, int first, int last)
     ObjectGroupItem *ogItem = 0;
 
     // Find the object group item for the object group
-    foreach (QGraphicsItem *item, mLayerItems) {
+    for (QGraphicsItem *item : mLayerItems) {
         if (ObjectGroupItem *ogi = dynamic_cast<ObjectGroupItem*>(item)) {
             if (ogi->objectGroup() == objectGroup) {
                 ogItem = ogi;
@@ -490,7 +517,7 @@ void MapScene::objectsInserted(ObjectGroup *objectGroup, int first, int last)
  */
 void MapScene::objectsRemoved(const QList<MapObject*> &objects)
 {
-    foreach (MapObject *o, objects) {
+    for (MapObject *o : objects) {
         ObjectItems::iterator i = mObjectItems.find(o);
         Q_ASSERT(i != mObjectItems.end());
 
@@ -505,7 +532,7 @@ void MapScene::objectsRemoved(const QList<MapObject*> &objects)
  */
 void MapScene::objectsChanged(const QList<MapObject*> &objects)
 {
-    foreach (MapObject *object, objects) {
+    for (MapObject *object : objects) {
         MapObjectItem *item = itemForObject(object);
         Q_ASSERT(item);
 
@@ -548,7 +575,7 @@ void MapScene::updateSelectedObjectItems()
 
 void MapScene::syncAllObjectItems()
 {
-    foreach (MapObjectItem *item, mObjectItems)
+    for (MapObjectItem *item : mObjectItems)
         item->syncWithMapObject();
 }
 
@@ -576,7 +603,7 @@ void MapScene::setObjectLineWidth(qreal lineWidth)
 
         // Changing the line width can change the size of the object items
         if (!mObjectItems.isEmpty()) {
-            foreach (MapObjectItem *item, mObjectItems)
+            for (MapObjectItem *item : mObjectItems)
                 item->syncWithMapObject();
 
             update();
@@ -612,8 +639,18 @@ void MapScene::drawForeground(QPainter *painter, const QRectF &rect)
     if (!mMapDocument || !mGridVisible)
         return;
 
+    QPointF offset;
+
+    // Take into account the offset of the current layer
+    if (Layer *layer = mMapDocument->currentLayer()) {
+        offset = layer->offset();
+        painter->translate(offset);
+    }
+
     Preferences *prefs = Preferences::instance();
-    mMapDocument->renderer()->drawGrid(painter, rect, prefs->gridColor());
+    mMapDocument->renderer()->drawGrid(painter,
+                                       rect.translated(-offset),
+                                       prefs->gridColor());
 }
 
 bool MapScene::event(QEvent *event)

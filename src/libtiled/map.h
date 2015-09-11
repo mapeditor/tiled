@@ -226,6 +226,8 @@ public:
      */
     QMargins drawMargins() const { return mDrawMargins; }
 
+    QMargins computeLayerOffsetMargins() const;
+
     void recomputeDrawMargins();
 
     /**

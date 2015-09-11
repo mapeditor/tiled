@@ -53,7 +53,7 @@ public:
     explicit TileStamp(Map *map);
 
     TileStamp(const TileStamp &other);
-    TileStamp operator=(const TileStamp &other);
+    TileStamp &operator=(const TileStamp &other);
 
     bool operator==(const TileStamp &other) const;
 

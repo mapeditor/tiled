@@ -181,6 +181,9 @@ Following entries are integrated solutions for specific game engines. They are t
 ### Unreal Engine 4
 * [Paper2D](https://forums.unrealengine.com/showthread.php?3539-Project-Paper2D) provides built-in support for tile maps and tile sets, importing JSON exported from Tiled.
 
+### Urho3D
+* [Urho3D](http://urho3d.github.io/) natively supports loading Tiled maps as part of the [Urho2D](http://urho3d.github.io/documentation/1.4/_urho2_d.html) sublibrary ([Documentation](http://urho3d.github.io/documentation/1.4/class_urho3_d_1_1_tile_map2_d.html), [HTML5 example](http://urho3d.github.io/samples/36_Urho2DTileMap.html)).
+
 ### XNA
 * [FlatRedBall Engine TMXGlue tool](http://www.flatredball.com/frb/docs/index.php?title=Kain%27s_Tavern#Tiled_Map_Editor.2C_TMX.2C_Glue_and_you.) by Domenic Datti loads TMX maps into the FlatRedBall engine, complete with node networks, pathfinding, and shapecollection support via object layers.
 * [TiledMax](http://tiledmax.xpod.be/) by Aimee Bailey, a .NET library for parsing TMX maps without dependencies on Windows or XNA

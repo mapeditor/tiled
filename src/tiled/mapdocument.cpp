@@ -52,8 +52,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
-#include "tmxmapreader.h"
-#include "tmxmapwriter.h"
+#include "tmxmapformat.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -78,11 +77,14 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mLayerModel->setMapDocument(this);
 
     // Forward signals emitted from the layer model
-    connect(mLayerModel, SIGNAL(layerAdded(int)), SLOT(onLayerAdded(int)));
-    connect(mLayerModel, SIGNAL(layerAboutToBeRemoved(int)),
-            SLOT(onLayerAboutToBeRemoved(int)));
-    connect(mLayerModel, SIGNAL(layerRemoved(int)), SLOT(onLayerRemoved(int)));
-    connect(mLayerModel, SIGNAL(layerChanged(int)), SIGNAL(layerChanged(int)));
+    connect(mLayerModel, &LayerModel::layerAdded,
+            this, &MapDocument::onLayerAdded);
+    connect(mLayerModel, &LayerModel::layerAboutToBeRemoved,
+            this, &MapDocument::onLayerAboutToBeRemoved);
+    connect(mLayerModel, &LayerModel::layerRemoved,
+            this, &MapDocument::onLayerRemoved);
+    connect(mLayerModel, &LayerModel::layerChanged,
+            this, &MapDocument::layerChanged);
 
     // Forward signals emitted from the map object model
     mMapObjectModel->setMapDocument(this);
@@ -127,19 +129,15 @@ bool MapDocument::save(QString *error)
 
 bool MapDocument::save(const QString &fileName, QString *error)
 {
-    PluginManager *pm = PluginManager::instance();
+    MapFormat *mapFormat = mWriterFormat;
 
-    MapWriterInterface *chosenWriter = 0;
-    if (const Plugin *plugin = pm->pluginByFileName(mWriterPluginFileName))
-        chosenWriter = qobject_cast<MapWriterInterface*>(plugin->instance);
+    TmxMapFormat tmxMapFormat;
+    if (!mapFormat)
+        mapFormat = &tmxMapFormat;
 
-    TmxMapWriter mapWriter;
-    if (!chosenWriter)
-        chosenWriter = &mapWriter;
-
-    if (!chosenWriter->write(map(), fileName)) {
+    if (!mapFormat->write(map(), fileName)) {
         if (error)
-            *error = chosenWriter->errorString();
+            *error = mapFormat->errorString();
         return false;
     }
 
@@ -152,48 +150,44 @@ bool MapDocument::save(const QString &fileName, QString *error)
 }
 
 MapDocument *MapDocument::load(const QString &fileName,
-                               MapReaderInterface *mapReader,
+                               MapFormat *mapFormat,
                                QString *error)
 {
-    TmxMapReader tmxMapReader;
+    TmxMapFormat tmxMapFormat;
 
-    const PluginManager *pm = PluginManager::instance();
-    if (!mapReader && !tmxMapReader.supportsFile(fileName)) {
+    if (!mapFormat && !tmxMapFormat.supportsFile(fileName)) {
         // Try to find a plugin that implements support for this format
-        QList<MapReaderInterface*> readers =
-                pm->interfaces<MapReaderInterface>();
-
-        foreach (MapReaderInterface *reader, readers) {
-            if (reader->supportsFile(fileName)) {
-                mapReader = reader;
+        auto formats = PluginManager::objects<MapFormat>();
+        for (MapFormat *format : formats) {
+            if (format->supportsFile(fileName)) {
+                mapFormat = format;
                 break;
             }
         }
     }
 
-    // check if we can save in that format as well
-    QString readerPluginFileName;
-    QString writerPluginFileName;
-    if (mapReader) {
-        if (const Plugin *plugin = pm->plugin(mapReader)) {
-            readerPluginFileName = plugin->fileName;
-            if (qobject_cast<MapWriterInterface*>(plugin->instance))
-                writerPluginFileName = plugin->fileName;
-        }
+    Map *map = nullptr;
+    QString errorString;
+    if (mapFormat) {
+        map = mapFormat->read(fileName);
+        errorString = mapFormat->errorString();
     } else {
-        mapReader = &tmxMapReader;
+        map = tmxMapFormat.read(fileName);
+        errorString = tmxMapFormat.errorString();
     }
 
-    Map *map = mapReader->read(fileName);
     if (!map) {
         if (error)
-            *error = mapReader->errorString();
-        return 0;
+            *error = errorString;
+        return nullptr;
     }
 
     MapDocument *mapDocument = new MapDocument(map, fileName);
-    mapDocument->setReaderPluginFileName(readerPluginFileName);
-    mapDocument->setWriterPluginFileName(writerPluginFileName);
+    if (mapFormat) {
+        mapDocument->setReaderFormat(mapFormat);
+        if (mapFormat->hasCapabilities(MapFormat::Write))
+            mapDocument->setWriterFormat(mapFormat);
+    }
     return mapDocument;
 }
 
@@ -205,6 +199,36 @@ void MapDocument::setFileName(const QString &fileName)
     QString oldFileName = mFileName;
     mFileName = fileName;
     emit fileNameChanged(fileName, oldFileName);
+}
+
+MapFormat *MapDocument::readerFormat() const
+{
+    return mReaderFormat;
+}
+
+void MapDocument::setReaderFormat(MapFormat *format)
+{
+    mReaderFormat = format;
+}
+
+MapFormat *MapDocument::writerFormat() const
+{
+    return mWriterFormat;
+}
+
+void MapDocument::setWriterFormat(MapFormat *format)
+{
+    mWriterFormat = format;
+}
+
+MapFormat *MapDocument::exportFormat() const
+{
+    return mExportFormat;
+}
+
+void MapDocument::setExportFormat(MapFormat *format)
+{
+    mExportFormat = format;
 }
 
 /**
@@ -629,11 +653,11 @@ QList<Object*> MapDocument::currentObjects() const
     QList<Object*> objects;
     if (mCurrentObject) {
         if (mCurrentObject->typeId() == Object::MapObjectType && !mSelectedObjects.isEmpty()) {
-            foreach (MapObject *mapObj, mSelectedObjects) {
+            for (MapObject *mapObj : mSelectedObjects) {
                 objects.append(mapObj);
             }
         } else if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-            foreach (Tile *tile, mSelectedTiles) {
+            for (Tile *tile : mSelectedTiles) {
                 objects.append(tile);
             }
         } else {

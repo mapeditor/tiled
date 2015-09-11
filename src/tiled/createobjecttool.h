@@ -30,6 +30,7 @@ class Tile;
 namespace Internal {
 
 class MapObjectItem;
+class ObjectGroupItem;
 
 class CreateObjectTool : public AbstractObjectTool
 {
@@ -44,6 +45,7 @@ public:
     CreateObjectTool(CreationMode mode, QObject *parent = 0);
     ~CreateObjectTool();
 
+    void activate(MapScene *scene);
     void deactivate(MapScene *scene);
 
     void keyPressed(QKeyEvent *event);
@@ -73,9 +75,9 @@ protected:
     virtual void finishNewMapObject();
 
     MapObject *clearNewMapObjectItem();
+    ObjectGroup *mNewMapObjectGroup;
+    ObjectGroupItem *mObjectGroupItem;
     MapObjectItem *mNewMapObjectItem;
-    ObjectGroup *mOverlayObjectGroup;
-    MapObject *mOverlayPolygonObject;
     MapObjectItem *mOverlayPolygonItem;
     Tile *mTile;
     CreationMode mMode;

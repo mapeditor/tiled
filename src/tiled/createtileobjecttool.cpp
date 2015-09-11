@@ -21,6 +21,7 @@
 #include "createtileobjecttool.h"
 
 #include "mapdocument.h"
+#include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
 #include "snaphelper.h"

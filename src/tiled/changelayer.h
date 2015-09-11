@@ -23,6 +23,7 @@
 
 #include "undocommands.h"
 
+#include <QPointF>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -75,6 +76,30 @@ private:
     int mLayerIndex;
     float mOldOpacity;
     float mNewOpacity;
+};
+
+/**
+ * Used for changing the layer offset.
+ */
+class SetLayerOffset : public QUndoCommand
+{
+public:
+    SetLayerOffset(MapDocument *mapDocument,
+                   int layerIndex,
+                   const QPointF &offset);
+
+    void undo() { setOffset(mOldOffset); }
+    void redo() { setOffset(mNewOffset); }
+
+    int id() const { return Cmd_ChangeLayerOffset; }
+
+private:
+    void setOffset(const QPointF &offset);
+
+    MapDocument *mMapDocument;
+    int mLayerIndex;
+    QPointF mOldOffset;
+    QPointF mNewOffset;
 };
 
 } // namespace Internal

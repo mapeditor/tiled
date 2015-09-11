@@ -14,8 +14,6 @@ from os.path import dirname
 from struct import pack,unpack,Struct
 from collections import namedtuple
 
-maps = []
-
 class ZST(Plugin):
   @classmethod
   def nameFilter(cls):
@@ -28,7 +26,6 @@ class ZST(Plugin):
   @classmethod
   def read(cls, f):
     m = Tiled.Map(Tiled.Map.Orthogonal, 64,32, 8,8)
-    maps.append(m)
 
     # bg1-4 layer bpp counts
     bgmodes = ( (2, 4, 4, 8, 8, 4, 4, 0),
@@ -99,10 +96,6 @@ class ZST(Plugin):
         m.addTileset(tsets[pal])
       m.addLayer(la)
     return m
-
-  @classmethod
-  def write(cls, m, fn):
-    return False
 
 def readTileset(dat, img, tvert=32, thoriz=32):
   tw, th = 8, 8

@@ -23,7 +23,12 @@
 
 #include <QDockWidget>
 #include <QPlainTextEdit>
-#include "logginginterface.h"
+
+namespace Tiled {
+
+class LoggingInterface;
+
+namespace Internal {
 
 class ConsoleDock : public QDockWidget
 {
@@ -33,12 +38,19 @@ public:
     explicit ConsoleDock(QWidget *parent = 0);
     ~ConsoleDock();
 
-protected slots:
-    void appendInfo(QString str);
-    void appendError(QString str);
+private slots:
+    void appendInfo(const QString &str);
+    void appendError(const QString &str);
+
+    void onObjectAdded(QObject *object);
 
 private:
+    void registerOutput(LoggingInterface *output);
+
     QPlainTextEdit *plainTextEdit;
 };
+
+} // namespace Internal
+} // namespace Tiled
 
 #endif // CONSOLEDOCK_H

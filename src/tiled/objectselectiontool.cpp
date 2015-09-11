@@ -619,7 +619,7 @@ void ObjectSelectionTool::languageChanged()
     setShortcut(QKeySequence(tr("S")));
 }
 
-static QPointF alignmentOffset(QRectF &r, Alignment alignment)
+static QPointF alignmentOffset(const QRectF &r, Alignment alignment)
 {
     switch (alignment) {
     case TopLeft:       break;
@@ -738,11 +738,18 @@ static QTransform rotateAt(const QPointF &position, qreal rotation)
 
 static QTransform objectTransform(MapObject *object, MapRenderer *renderer)
 {
+    QTransform transform;
+
     if (object->rotation() != 0) {
         const QPointF pos = renderer->pixelToScreenCoords(object->position());
-        return rotateAt(pos, object->rotation());
+        transform = rotateAt(pos, object->rotation());
     }
-    return QTransform();
+
+    QPointF offset = object->objectGroup()->offset();
+    if (!offset.isNull())
+        transform *= QTransform::fromTranslate(offset.x(), offset.y());
+
+    return transform;
 }
 
 void ObjectSelectionTool::updateHandles()
@@ -756,7 +763,7 @@ void ObjectSelectionTool::updateHandles()
     if (showHandles) {
         MapRenderer *renderer = mapDocument()->renderer();
         QRectF boundingRect = objectBounds(objects.first(), renderer,
-                                            objectTransform(objects.first(), renderer));
+                                           objectTransform(objects.first(), renderer));
 
         for (int i = 1; i < objects.size(); ++i) {
             MapObject *object = objects.at(i);
@@ -1004,17 +1011,19 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
         angleDiff = std::floor((angleDiff + snap / 2) / snap) * snap;
 
     foreach (const MovingObject &object, mMovingObjects) {
-        const QPointF oldRelPos = object.oldItemPosition - mOrigin;
+        MapObject *mapObject = object.item->mapObject();
+        const QPointF offset = mapObject->objectGroup()->offset();
+
+        const QPointF oldRelPos = object.oldItemPosition + offset - mOrigin;
         const qreal sn = std::sin(angleDiff);
         const qreal cs = std::cos(angleDiff);
         const QPointF newRelPos(oldRelPos.x() * cs - oldRelPos.y() * sn,
                                 oldRelPos.x() * sn + oldRelPos.y() * cs);
-        const QPointF newPixelPos = mOrigin + newRelPos;
+        const QPointF newPixelPos = mOrigin + newRelPos - offset;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
         const qreal newRotation = object.oldRotation + angleDiff * 180 / M_PI;
 
-        MapObject *mapObject = object.item->mapObject();
         mapObject->setPosition(newPos);
         mapObject->setRotation(newRotation);
     }
@@ -1105,17 +1114,21 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
                      qMax((qreal)0.01, diff.y() / startDiff.y()));
     }
 
+    if (!std::isfinite(scale))
+        scale = 1;
+
     foreach (const MovingObject &object, mMovingObjects) {
-        const QPointF oldRelPos = object.oldItemPosition - resizingOrigin;
+        MapObject *mapObject = object.item->mapObject();
+        const QPointF offset = mapObject->objectGroup()->offset();
+
+        const QPointF oldRelPos = object.oldItemPosition + offset - resizingOrigin;
         const QPointF scaledRelPos(oldRelPos.x() * scale,
                                    oldRelPos.y() * scale);
-        const QPointF newScreenPos = resizingOrigin + scaledRelPos;
+        const QPointF newScreenPos = resizingOrigin + scaledRelPos - offset;
         const QPointF newPos = renderer->screenToPixelCoords(newScreenPos);
         const QSizeF origSize = object.oldSize;
         const QSizeF newSize(origSize.width() * scale,
                              origSize.height() * scale);
-
-        MapObject *mapObject = object.item->mapObject();
 
         if (mapObject->polygon().isEmpty() == false) {
             // For polygons, we have to scale in object space.
@@ -1152,15 +1165,21 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
     const MovingObject &object = mMovingObjects.first();
     MapObject *mapObject = object.item->mapObject();
 
+    /* The resizingOrigin, screenPos and mStart are affected by the ObjectGroup
+     * offset. We will un-apply it to these variables since the resize for
+     * single items happens in local coordinate space.
+     */
+    QPointF offset = mapObject->objectGroup()->offset();
+
     /* These transformations undo and redo the object rotation, which is always
      * applied in screen space.
      */
     QTransform unrotate = rotateAt(object.oldItemPosition, -object.oldRotation);
     QTransform rotate = rotateAt(object.oldItemPosition, object.oldRotation);
 
-    QPointF origin = resizingOrigin * unrotate;
-    QPointF pos = screenPos * unrotate;
-    QPointF start = mStart * unrotate;
+    QPointF origin = (resizingOrigin - offset) * unrotate;
+    QPointF pos = (screenPos - offset) * unrotate;
+    QPointF start = (mStart - offset) * unrotate;
     QPointF oldPos = object.oldItemPosition;
 
     /* In order for the resizing to work somewhat sanely in isometric mode,
@@ -1233,6 +1252,11 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
         QSizeF scalingFactor(qMax((qreal)0.01, relPos.x() / startDiff.x()),
                              qMax((qreal)0.01, relPos.y() / startDiff.y()));
+
+        if (!std::isfinite(scalingFactor.width()))
+            scalingFactor.setWidth(1);
+        if (!std::isfinite(scalingFactor.height()))
+            scalingFactor.setHeight(1);
 
         if (mResizingLimitHorizontal) {
             scalingFactor.setWidth(preserveAspect ? scalingFactor.height() : 1);

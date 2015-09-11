@@ -177,12 +177,16 @@ void MiniMap::renderMapToImage()
 
     MapRenderer *renderer = mMapDocument->renderer();
     const QRect r = contentsRect();
-    const QSize mapSize = renderer->mapSize();
+    QSize mapSize = renderer->mapSize();
 
     if (mapSize.isEmpty()) {
         mMapImage = QImage();
         return;
     }
+
+    QMargins margins = mMapDocument->map()->computeLayerOffsetMargins();
+    mapSize.setWidth(mapSize.width() + margins.left() + margins.right());
+    mapSize.setHeight(mapSize.height() + margins.top() + margins.bottom());
 
     // Determine the largest possible scale
     qreal scale = qMin((qreal) r.width() / mapSize.width(),
@@ -212,6 +216,7 @@ void MiniMap::renderMapToImage()
     QPainter painter(&mMapImage);
     painter.setRenderHints(QPainter::SmoothPixmapTransform);
     painter.setTransform(QTransform::fromScale(scale, scale));
+    painter.translate(margins.left(), margins.top());
     renderer->setPainterScale(scale);
 
     foreach (const Layer *layer, mMapDocument->map()->layers()) {
@@ -219,6 +224,7 @@ void MiniMap::renderMapToImage()
             continue;
 
         painter.setOpacity(layer->opacity());
+        painter.translate(layer->offset());
 
         const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
         const ObjectGroup *objGroup = dynamic_cast<const ObjectGroup*>(layer);
@@ -252,6 +258,8 @@ void MiniMap::renderMapToImage()
         } else if (imageLayer && drawImages) {
             renderer->drawImageLayer(&painter, imageLayer);
         }
+
+        painter.translate(-layer->offset());
     }
 
     if (drawTileGrid) {
@@ -364,8 +372,8 @@ QRect MiniMap::viewportRect() const
 
     const QRectF sceneRect = mapView->sceneRect();
     const QRectF viewRect = mapView->mapToScene(mapView->viewport()->geometry()).boundingRect();
-    return QRect(viewRect.x() / sceneRect.width() * mImageRect.width() + mImageRect.x(),
-                 viewRect.y() / sceneRect.height() * mImageRect.height() + mImageRect.y(),
+    return QRect((viewRect.x() - sceneRect.x()) / sceneRect.width() * mImageRect.width() + mImageRect.x(),
+                 (viewRect.y() - sceneRect.y()) / sceneRect.height() * mImageRect.height() + mImageRect.y(),
                  viewRect.width() / sceneRect.width() * mImageRect.width(),
                  viewRect.height() / sceneRect.height() * mImageRect.height());
 }
@@ -381,6 +389,6 @@ QPointF MiniMap::mapToScene(QPoint p) const
 
     const QRectF sceneRect = mapView->sceneRect();
     p -= mImageRect.topLeft();
-    return QPointF(p.x() * (sceneRect.width() / mImageRect.width()),
-                   p.y() * (sceneRect.height() / mImageRect.height()));
+    return QPointF(p.x() * (sceneRect.width() / mImageRect.width()) + sceneRect.x(),
+                   p.y() * (sceneRect.height() / mImageRect.height()) + sceneRect.y());
 }

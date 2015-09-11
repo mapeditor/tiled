@@ -1,4 +1,7 @@
 language: cpp
+sudo: required
+services:
+  - docker
 
 env:
   global:
@@ -20,25 +23,18 @@ matrix:
     include:
         - compiler: gcc
         - compiler: clang
-          env: QMAKESPEC=unsupported/linux-clang
+          env: QMAKESPEC=linux-clang
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -qq
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
-  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-  - sudo apt-get install -qq libqt4-dev libqt4-opengl-dev zlib1g-dev cppcheck
+  - sudo apt-get install -qq qt5-default qttools5-dev-tools zlib1g-dev cppcheck xvfb
   - qmake -version
-  - Xvfb :1 &
-  - xv -display :1 &
 script:
-  - export DISPLAY=:1
   - qmake
   - make
   - pushd tests/
   - qmake
   - make
-  - for test in `find -executable -type f`; do pushd `dirname $test`; ./`basename $test`||exit 1; popd; done
+  - for test in `find -executable -type f`; do pushd `dirname $test`; xvfb-run -a ./`basename $test`||exit 1; popd; done
   - popd
 after_script: cppcheck --enable=all -q -Isrc/libtiled `git ls-files src/\*.cpp`

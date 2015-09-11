@@ -33,13 +33,18 @@ class CreateMultipointObjectTool : public CreateObjectTool
 
 public:
     CreateMultipointObjectTool(QObject *parent);
+    ~CreateMultipointObjectTool();
+
     void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    void languageChanged() = 0;
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
                                        Qt::KeyboardModifiers modifiers);
     void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+
+private:
+    MapObject *mOverlayPolygonObject;
+    ObjectGroup *mOverlayObjectGroup;
 };
 
 } // namespace Internal

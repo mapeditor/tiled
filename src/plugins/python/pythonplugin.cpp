@@ -26,24 +26,46 @@
 #include <QDir>
 #include <QDirIterator>
 
-using namespace Python;
+namespace Python {
 
-PythonPlugin::~PythonPlugin()
+/**
+ * Call whenever there might be an error (if error state is not cleared it
+ * leaks to next PyErr_Occurred check and reports error in wrong place causing
+ * confusion)
+ */
+static void handleError()
 {
-    foreach (PyObject *pythonClass, mKnownExtClasses)
-        Py_DECREF(pythonClass);
-    foreach (PyObject *pythonModule, mKnownExtModules)
-        Py_DECREF(pythonModule);
-
-    Py_XDECREF(pTiledCls);
-
-    Py_Finalize();
+    if (PyErr_Occurred() != nullptr)
+        PyErr_Print();
 }
 
 PythonPlugin::PythonPlugin()
     : mScriptDir(QDir::homePath() + "/.tiled")
-    , pTiledCls(0)
+    , mPluginClass(nullptr)
 {
+    mReloadTimer.setSingleShot(true);
+    mReloadTimer.setInterval(1000);
+
+    connect(&mReloadTimer, &QTimer::timeout,
+            this, &PythonPlugin::reloadModules);
+}
+
+PythonPlugin::~PythonPlugin()
+{
+    for (const ScriptEntry &script : mScripts) {
+        Py_DECREF(script.module);
+        Py_DECREF(script.mapFormat->pythonClass());
+    }
+
+    Py_XDECREF(mPluginClass);
+
+    Py_Finalize();
+}
+
+void PythonPlugin::initialize()
+{
+    addObject(&mLogger);
+
     if (!Py_IsInitialized()) {
         // PEP370
         Py_NoSiteFlag = 1;
@@ -60,15 +82,15 @@ PythonPlugin::PythonPlugin()
 
             if (tiledPlugin) {
                 if (PyCallable_Check(tiledPlugin)) {
-                    pTiledCls = tiledPlugin;
+                    mPluginClass = tiledPlugin;
                 } else {
                     Py_DECREF(tiledPlugin);
                 }
             }
         }
 
-        if (!pTiledCls) {
-            log(ERROR, "Can't find tiled.Plugin baseclass\n");
+        if (!mPluginClass) {
+            log(Tiled::LoggingInterface::ERROR, "Can't find tiled.Plugin baseclass\n");
             handleError();
             return;
         }
@@ -76,7 +98,7 @@ PythonPlugin::PythonPlugin()
         // w/o differentiating error messages could just rename "log"
         // to "write" in the binding and assign plugin directly to stdout/stderr
         PySys_SetObject((char *)"_tiledplugin",
-                        _wrap_convert_c2py__Tiled__LoggingInterface(this));
+                        _wrap_convert_c2py__Tiled__LoggingInterface(&mLogger));
 
         PyRun_SimpleString("import sys\n"
                            "#from tiled.Tiled.LoggingInterface import INFO,ERROR\n"
@@ -93,97 +115,218 @@ PythonPlugin::PythonPlugin()
                            "sys.stderr = _Catcher(1)\n");
 
         PyRun_SimpleString(QString("import sys; sys.path.insert(0, \"%1\")")
-                           .arg(mScriptDir).toUtf8().data());
+                           .arg(mScriptDir).toUtf8().constData());
 
         log(QString("-- Added %1 to path\n").arg(mScriptDir));
     }
 
     reloadModules();
+
+    if (QFile::exists(mScriptDir)) {
+        mFileSystemWatcher.addPath(mScriptDir);
+
+        connect(&mFileSystemWatcher, SIGNAL(directoryChanged(QString)),
+                &mReloadTimer, SLOT(start()));
+    }
 }
 
-void PythonPlugin::log(OutputType type, const QString msg)
+void PythonPlugin::log(Tiled::LoggingInterface::OutputType type,
+                       const QString &msg)
 {
-    if (type == INFO)
-        emit info(msg);
-    else if (type == ERROR)
-        emit error(msg);
+    mLogger.log(type, msg);
 }
 
-void PythonPlugin::log(const QString msg)
+void PythonPlugin::log(const QString &msg)
 {
-    log(INFO, msg);
+    log(Tiled::LoggingInterface::INFO, msg);
 }
 
 /**
- * Call whenever there might be an error (if error state is not cleared it
- * leaks to next PyErr_Occurred check and reports error in wrong place causing
- * confusion)
+ * (Re)load modules in the script directory
  */
-void PythonPlugin::handleError() const
+void PythonPlugin::reloadModules()
 {
-    if (PyErr_Occurred() != NULL)
-        PyErr_Print();
+    log(tr("Reloading Python scripts"));
+
+    const QStringList pyfilter("*.py");
+    QDirIterator iter(mScriptDir, pyfilter, QDir::Files | QDir::Readable);
+
+    while (iter.hasNext()) {
+        iter.next();
+
+        QString name = iter.fileInfo().baseName();
+
+        ScriptEntry script = mScripts.take(name);
+        script.name = name;
+
+        // Throw away any existing class reference
+        if (script.mapFormat) {
+            PyObject *pluginClass = script.mapFormat->pythonClass();
+            Py_DECREF(pluginClass);
+        }
+
+        if (loadOrReloadModule(script)) {
+            mScripts.insert(name, script);
+        } else {
+            if (!script.module) {
+                PySys_WriteStderr("** Parse exception **\n");
+                PyErr_Print();
+                PyErr_Clear();
+            }
+
+            if (script.mapFormat) {
+                removeObject(script.mapFormat);
+                delete script.mapFormat;
+            }
+        }
+    }
 }
 
 /**
  * Finds the first python class that extends tiled.Plugin
  */
-PyObject *PythonPlugin::findPluginSubclass(PyObject *pmod)
+PyObject *PythonPlugin::findPluginSubclass(PyObject *module)
 {
-    PyObject *pdir = PyObject_Dir(pmod);
+    PyObject *dir = PyObject_Dir(module);
+    PyObject *result = nullptr;
 
-    for (int i = 0; i < PyList_Size(pdir); i++) {
-        PyObject *pit = PyObject_GetAttr(pmod, PyList_GetItem(pdir, i));
-        if (!pit) {
-            Py_DECREF(pdir);
+    for (int i = 0; i < PyList_Size(dir); i++) {
+        PyObject *value = PyObject_GetAttr(module, PyList_GetItem(dir, i));
+
+        if (!value) {
             handleError();
-            return NULL;
+            break;
         }
 
-        if (pit != pTiledCls && PyObject_IsSubclass(pit, pTiledCls) == 1) {
-            PyObject *ret = PyObject_GetAttr(pmod, PyList_GetItem(pdir, i));
-            Py_DECREF(pit);
-            Py_DECREF(pdir);
+        if (value != mPluginClass &&
+                PyCallable_Check(value) &&
+                PyObject_IsSubclass(value, mPluginClass) == 1) {
+            result = value;
             handleError();
-            return ret;
+            break;
         }
-        Py_DECREF(pit);
+
+        Py_DECREF(value);
     }
 
-    Py_DECREF(pdir);
-    return NULL;
+    Py_DECREF(dir);
+    return result;
 }
 
-/**
- * Gets a function from python class and does some validation
- */
-PyObject *PythonPlugin::checkFunction(PyObject *pcls, const char *fun) const
+bool PythonPlugin::loadOrReloadModule(ScriptEntry &script)
 {
-    PyObject *pfun = PyObject_GetAttrString(pcls, fun);
+    const QByteArray name = script.name.toUtf8();
 
-    if (!pfun || !PyCallable_Check(pfun)) {
-        PySys_WriteStderr("No such function defined: %s\n", fun);
-        Py_XDECREF(pfun);
-        return NULL;
+    if (script.module) {
+        PySys_WriteStdout("-- Reloading %s\n", name.constData());
+
+        PyObject *module = PyImport_ReloadModule(script.module);
+        Py_DECREF(script.module);
+        script.module = module;
+    } else {
+        PySys_WriteStdout("-- Loading %s\n", name.constData());
+        script.module = PyImport_ImportModule(name.constData());
     }
 
-    return pfun;
-}
+    if (!script.module)
+        return false;
 
-/**
- * Calls supportsFile python function in the given class with a filename to see
- * if the class is willing to handle it
- */
-bool PythonPlugin::checkFileSupport(PyObject *cls, char *file) const
-{
-    if (!PyObject_HasAttrString(cls, "supportsFile")) {
-        PySys_WriteStderr("Please define class that extends tiled.Plugin "
-                          "and has @classmethod supportsFile(cls, filename)\n");
+    PyObject *pluginClass = findPluginSubclass(script.module);
+
+    if (!pluginClass) {
+        PySys_WriteStderr("Extension of tiled.Plugin not defined in "
+                          "script: %s\n", name.constData());
         return false;
     }
 
-    PyObject *pinst = PyObject_CallMethod(cls, (char *)"supportsFile",
-                                          (char *)"(s)", file);
+    if (script.mapFormat) {
+        script.mapFormat->setPythonClass(pluginClass);
+    } else {
+        script.mapFormat = new PythonMapFormat(name, pluginClass, *this);
+        addObject(script.mapFormat);
+    }
+
+    return true;
+}
+
+
+PythonMapFormat::PythonMapFormat(const QString &scriptFile,
+                                 PyObject *class_,
+                                 PythonPlugin &plugin)
+    : MapFormat(&plugin)
+    , mClass(nullptr)
+    , mPlugin(plugin)
+    , mScriptFile(scriptFile)
+{
+    setPythonClass(class_);
+}
+
+Tiled::Map *PythonMapFormat::read(const QString &fileName)
+{
+    mError = QString();
+
+    mPlugin.log(tr("-- Using script %1 to read %2").arg(mScriptFile, fileName));
+
+    if (!PyObject_HasAttrString(mClass, "read")) {
+        mError = "Please define class that extends tiled.Plugin and "
+                "has @classmethod read(cls, filename)";
+        return nullptr;
+    }
+    PyObject *pinst = PyObject_CallMethod(mClass, (char *)"read",
+                                          (char *)"(s)", fileName.toUtf8().constData());
+
+    Tiled::Map *ret = nullptr;
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+    } else {
+        _wrap_convert_py2c__Tiled__Map___star__(pinst, &ret);
+        Py_DECREF(pinst);
+    }
+    handleError();
+
+    if (ret)
+        ret->setProperty("__script__", mScriptFile);
+    return ret;
+}
+
+bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName)
+{
+    mError = QString();
+
+    mPlugin.log(tr("-- Using script %1 to write %2").arg(mScriptFile, fileName));
+
+    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const___star__(&map);
+    if (!pmap)
+        return false;
+    PyObject *pinst = PyObject_CallMethod(mClass,
+                                          (char *)"write", (char *)"(Ns)",
+                                          pmap,
+                                          fileName.toUtf8().constData());
+
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+        mError = tr("Uncaught exception in script. Please check console.");
+    } else {
+        bool ret = PyObject_IsTrue(pinst);
+        Py_DECREF(pinst);
+        if (!ret)
+            mError = tr("Script returned false. Please check console.");
+        return ret;
+    }
+
+    handleError();
+    return false;
+}
+
+bool PythonMapFormat::supportsFile(const QString &fileName) const
+{
+    if (!PyObject_HasAttrString(mClass, "supportsFile"))
+        return false;
+
+    PyObject *pinst = PyObject_CallMethod(mClass,
+                                          (char *)"supportsFile",
+                                          (char *)"(s)",
+                                          fileName.toUtf8().constData());
     if (!pinst) {
         handleError();
         return false;
@@ -194,194 +337,56 @@ bool PythonPlugin::checkFileSupport(PyObject *cls, char *file) const
     return ret;
 }
 
-/**
- * (Re)load modules in the script directory
- */
-void PythonPlugin::reloadModules()
+QString PythonMapFormat::nameFilter() const
 {
-    // try to avoid unnecessary reloading
-    // TODO: mLastReload not initialized
-    if (QDateTime::currentDateTime().toTime_t() - mLastReload < 10)
-        return;
+    QString ret;
 
-    mLastReload = QDateTime::currentDateTime().toTime_t();
-
-    QStringList pyfilter("*.py");
-    QDirIterator iter(mScriptDir, pyfilter, QDir::Files | QDir::Readable);
-
-    while (iter.hasNext()) {
-        iter.next();
-        QString name = iter.fileInfo().baseName();
-        PyObject *pmod;
-        PyObject *knownModule = mKnownExtModules.take(name);
-
-        if (knownModule) {
-            PySys_WriteStdout("-- Reloading %s\n", name.toUtf8().data());
-            PyObject *moduleClass = mKnownExtClasses.take(name);
-            Py_XDECREF(moduleClass);
-
-            pmod = PyImport_ReloadModule(knownModule);
-            Py_DECREF(knownModule);
-        } else {
-            PySys_WriteStdout("-- Loading %s\n", name.toUtf8().data());
-            pmod = PyImport_ImportModule(name.toUtf8().data());
-        }
-
-        if (!pmod) {
-            PySys_WriteStderr("** Parse exception **\n");
-            PyErr_Print();
-            PyErr_Clear();
-            continue;
-        }
-
-        mKnownExtModules[name] = pmod;
-
-        PyObject *pcls = findPluginSubclass(pmod);
-
-        if (!pcls || !PyCallable_Check(pcls)) {
-            PySys_WriteStderr("Extension of tiled.Plugin not defined in "
-                              "script: %s\n", name.toUtf8().data());
-            Py_XDECREF(pcls);
-            continue;
-        }
-
-        mKnownExtClasses.insert(name, pcls);
-    }
-}
-
-/**
- * Implements Tiled::MapReaderInterface
- */
-Tiled::Map *PythonPlugin::read(const QString &fileName)
-{
-    reloadModules();
-
-    QMapIterator<QString, PyObject*> it(mKnownExtClasses);
-    while (it.hasNext()) {
-        it.next();
-        if (!checkFileSupport(it.value(), fileName.toUtf8().data()))
-            continue;
-        log(QString("-- %1 supports %2\n").arg(it.key()).arg(fileName));
-
-        if (!PyObject_HasAttrString(it.value(), "read")) {
-            mError = "Please define class that extends tiled.Plugin and "
-                    "has @classmethod read(cls, filename)";
-            return NULL;
-        }
-        PyObject *pinst = PyObject_CallMethod(it.value(), (char *)"read",
-                                              (char *)"(s)", fileName.toUtf8().data());
-
-        Tiled::Map *ret = 0;
-        if (!pinst) {
-            PySys_WriteStderr("** Uncaught exception in script **\n");
-        } else {
-            _wrap_convert_py2c__Tiled__Map___star__(pinst, &ret);
-            Py_DECREF(pinst);
-        }
-        handleError();
-
-        if (ret)
-            ret->setProperty("__script__", it.key());
+    // find fun
+    PyObject *pfun = PyObject_GetAttrString(mClass, "nameFilter");
+    if (!pfun || !PyCallable_Check(pfun)) {
+        PySys_WriteStderr("Plugin extension doesn't define \"nameFilter\"\n");
         return ret;
     }
-    return NULL;
-}
 
-/**
- * Implements Tiled::MapWriterInterface
- */
-bool PythonPlugin::write(const Tiled::Map *map, const QString &fileName)
-{
-    reloadModules();
-    mError = "";
-
-    QMapIterator<QString, PyObject*> it(mKnownExtClasses);
-    while (it.hasNext()) {
-        it.next();
-        if (map->property("__script__") != it.key()) continue;
-        log(QString("-- Script used for exporting: %1\n").arg(it.key()));
-
-        PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const___star__(&map);
-        if (!pmap)
-            return false;
-        if (!PyObject_HasAttrString(it.value(), "write")) {
-            mError = "Please define class that extends tiled.Plugin and has "
-                    "@classmethod write(cls, map, filename)";
-            return false;
-        }
-        PyObject *pinst = PyObject_CallMethod(it.value(), (char *)"write",
-                                              (char *)"(Ns)", pmap, fileName.toUtf8().data());
-
-        if (!pinst) {
-            PySys_WriteStderr("** Uncaught exception in script **\n");
-            mError = "Uncaught exception in script. Please check console.";
-        } else {
-            bool ret = PyObject_IsTrue(pinst);
-            Py_DECREF(pinst);
-            if (!ret) mError = "Script returned false. Please check console.";
-            return ret;
-        }
-        handleError();
-        return false;
+    // have fun
+    PyObject *pinst = PyEval_CallFunction(pfun, "()");
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+    } else {
+        ret = PyString_AsString(pinst);
+        Py_DECREF(pinst);
     }
-    mError = "Export aborted. Map property \"__script__\" undefined or script missing";
-    PySys_WriteStderr("%s.1000s", mError.append('\n').toUtf8().data());
-    return false;
-}
+    handleError();
 
-/**
- * Implements Tiled::MapReaderInterface and Tiled::MapWriterInterface
- */
-QStringList PythonPlugin::nameFilters() const
-{
-    QStringList ret;
-
-    QMapIterator<QString, PyObject*> it(mKnownExtClasses);
-    while (it.hasNext()) {
-        it.next();
-
-        // find fun
-        PyObject *pfun = PyObject_GetAttrString(it.value(), "nameFilter");
-        if (!pfun || !PyCallable_Check(pfun)) {
-            PySys_WriteStderr("Plugin extension doesn't define \"nameFilter\"\n");
-            continue;
-        }
-
-        // have fun
-        PyObject *pinst = PyEval_CallFunction(pfun, "()");
-        if (!pinst) {
-            PySys_WriteStderr("** Uncaught exception in script **\n");
-        } else {
-            ret += PyString_AsString(pinst);
-            Py_DECREF(pinst);
-        }
-        handleError();
-
-        Py_DECREF(pfun);
-    }
+    Py_DECREF(pfun);
 
     return ret;
 }
 
-/**
- * Implements Tiled::MapReaderInterface
- */
-bool PythonPlugin::supportsFile(const QString &fileName) const
-{
-    QMapIterator<QString, PyObject*> it(mKnownExtClasses);
-    while (it.hasNext()) {
-        it.next();
-        if (checkFileSupport(it.value(), fileName.toUtf8().data())) {
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
- * Implements Tiled::MapReaderInterface and Tiled::MapWriterInterface
- */
-QString PythonPlugin::errorString() const
+QString PythonMapFormat::errorString() const
 {
     return mError;
 }
+
+void PythonMapFormat::setPythonClass(PyObject *class_)
+{
+    mClass = class_;
+    mCapabilities = NoCapability;
+
+    // @classmethod nameFilter(cls)
+    if (PyObject_HasAttrString(mClass, "nameFilter")) {
+        // @classmethod write(cls, map, filename)
+        if (PyObject_HasAttrString(mClass, "write")) {
+            mCapabilities |= Tiled::MapFormat::Write;
+        }
+
+        // @classmethod read(cls, filename)
+        // @classmethod supportsFile(cls, filename)
+        if (PyObject_HasAttrString(mClass, "read") &&
+                PyObject_HasAttrString(mClass, "supportsFile")) {
+            mCapabilities |= Tiled::MapFormat::Read;
+        }
+    }
+}
+
+} // namespace Python

@@ -29,8 +29,6 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "movabletabwidget.h"
-#include "pluginmanager.h"
-#include "tmxmapreader.h"
 #include "zoomable.h"
 
 #include <QUndoGroup>
@@ -121,7 +119,7 @@ private:
 } // namespace Internal
 } // namespace Tiled
 
-DocumentManager *DocumentManager::mInstance = 0;
+DocumentManager *DocumentManager::mInstance;
 
 DocumentManager *DocumentManager::instance()
 {
@@ -322,18 +320,10 @@ bool DocumentManager::reloadDocumentAt(int index)
 {
     MapDocument *oldDocument = mDocuments.at(index);
 
-    // Try to find the interface that was used for reading this map
-    QString readerPluginName = oldDocument->readerPluginFileName();
-    MapReaderInterface *reader = 0;
-    if (!readerPluginName.isEmpty()) {
-        PluginManager *pm = PluginManager::instance();
-        if (const Plugin *plugin = pm->pluginByFileName(readerPluginName))
-            reader = qobject_cast<MapReaderInterface*>(plugin->instance);
-    }
-
     QString error;
     MapDocument *newDocument = MapDocument::load(oldDocument->fileName(),
-                                                 reader, &error);
+                                                 oldDocument->readerFormat(),
+                                                 &error);
     if (!newDocument) {
         emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
         return false;

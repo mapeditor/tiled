@@ -167,6 +167,9 @@ public:
      */
     QRect bounds() const { return QRect(mX, mY, mWidth, mHeight); }
 
+    void setOffset(const QPointF &offset);
+    QPointF offset() const;
+
     virtual bool isEmpty() const = 0;
 
     /**
@@ -226,6 +229,7 @@ protected:
     int mY;
     int mWidth;
     int mHeight;
+    QPointF mOffset;
     float mOpacity;
     bool mVisible;
     Map *mMap;
@@ -239,6 +243,22 @@ inline void Layer::setSize(const QSize &size)
 {
     mWidth = size.width();
     mHeight = size.height();
+}
+
+/**
+ * Sets the drawing offset in pixels of this layer.
+ */
+inline void Layer::setOffset(const QPointF &offset)
+{
+    mOffset = offset;
+}
+
+/**
+ * Returns the drawing offset in pixels of this layer.
+ */
+inline QPointF Layer::offset() const
+{
+    return mOffset;
 }
 
 } // namespace Tiled

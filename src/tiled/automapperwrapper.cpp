@@ -52,7 +52,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         mLayersBefore << static_cast<TileLayer*>(map->layerAt(layerindex)->clone());
     }
 
-    foreach (AutoMapper *a, autoMapper)
+    for (AutoMapper *a : autoMapper)
         a->autoMap(where);
 
     foreach (const QString &layerName, touchedLayers) {
@@ -82,9 +82,8 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         delete after;
     }
 
-    foreach (AutoMapper *a, autoMapper) {
+    for (AutoMapper *a : autoMapper)
         a->cleanAll();
-    }
 }
 
 AutoMapperWrapper::~AutoMapperWrapper()
@@ -99,22 +98,20 @@ AutoMapperWrapper::~AutoMapperWrapper()
 void AutoMapperWrapper::undo()
 {
     Map *map = mMapDocument->map();
-    QVector<TileLayer*>::iterator i;
-    for (i = mLayersBefore.begin(); i != mLayersBefore.end(); ++i) {
-        const int layerindex = map->indexOfLayer((*i)->name());
+    for (TileLayer *layer : mLayersBefore) {
+        const int layerindex = map->indexOfLayer(layer->name());
         if (layerindex != -1)
-            patchLayer(layerindex, *i);
+            patchLayer(layerindex, layer);
     }
 }
 
 void AutoMapperWrapper::redo()
 {
     Map *map = mMapDocument->map();
-    QVector<TileLayer*>::iterator i;
-    for (i = mLayersAfter.begin(); i != mLayersAfter.end(); ++i) {
-        const int layerindex = (map->indexOfLayer((*i)->name()));
+    for (TileLayer *layer : mLayersAfter) {
+        const int layerindex = map->indexOfLayer(layer->name());
         if (layerindex != -1)
-            patchLayer(layerindex, *i);
+            patchLayer(layerindex, layer);
     }
 
 }
@@ -129,5 +126,5 @@ void AutoMapperWrapper::patchLayer(int layerIndex, TileLayer *layer)
 
     t->setCells(b.left() - t->x(), b.top() - t->y(), layer,
                 b.translated(-t->position()));
-    mMapDocument->emitRegionChanged(b);
+    mMapDocument->emitRegionChanged(b, t);
 }

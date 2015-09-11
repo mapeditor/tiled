@@ -29,6 +29,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
+#include "tilesetformat.h"
 
 #include <QScopedPointer>
 
@@ -68,7 +69,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     const QString renderOrderString = variantMap[QLatin1String("renderorder")].toString();
     Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
 
-    const int nextObjectId = variantMap[QLatin1String("nextobjectid")].toString().toInt();
+    const int nextObjectId = variantMap[QLatin1String("nextobjectid")].toInt();
 
     QScopedPointer<Map> map(new Map(orientation,
                             variantMap[QLatin1String("width")].toInt(),
@@ -108,6 +109,16 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     return map.take();
 }
 
+SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,
+                                               const QDir &directory)
+{
+    mMapDir = directory;
+    mReadingExternalTileset = true;
+    SharedTileset tileset = toTileset(variant);
+    mReadingExternalTileset = false;
+    return tileset;
+}
+
 Properties VariantToMapConverter::toProperties(const QVariant &variant)
 {
     const QVariantMap variantMap = variant.toMap();
@@ -127,6 +138,22 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const QVariantMap variantMap = variant.toMap();
 
     const int firstGid = variantMap[QLatin1String("firstgid")].toInt();
+
+    // Handle external tilesets
+    const QVariant sourceVariant = variantMap[QLatin1String("source")];
+    if (!sourceVariant.isNull()) {
+        QString source = resolvePath(mMapDir, sourceVariant);
+        QString error;
+        SharedTileset tileset = Tiled::readTileset(source, &error);
+        if (!tileset) {
+            mError = tr("Error while loading tileset '%1': %2")
+                    .arg(source, error);
+        } else {
+            mGidMapper.insert(firstGid, tileset.data());
+        }
+        return tileset;
+    }
+
     const QString name = variantMap[QLatin1String("name")].toString();
     const int tileWidth = variantMap[QLatin1String("tilewidth")].toInt();
     const int tileHeight = variantMap[QLatin1String("tileheight")].toInt();
@@ -136,7 +163,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const int tileOffsetX = tileOffset[QLatin1String("x")].toInt();
     const int tileOffsetY = tileOffset[QLatin1String("y")].toInt();
 
-    if (tileWidth <= 0 || tileHeight <= 0 || firstGid == 0) {
+    if (tileWidth <= 0 || tileHeight <= 0 ||
+            (firstGid == 0 && !mReadingExternalTileset)) {
         mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
         return SharedTileset();
     }
@@ -243,7 +271,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         }
     }
 
-    mGidMapper.insert(firstGid, tileset.data());
+    if (!mReadingExternalTileset)
+        mGidMapper.insert(firstGid, tileset.data());
+
     return tileset;
 }
 
@@ -259,8 +289,13 @@ Layer *VariantToMapConverter::toLayer(const QVariant &variant)
     else if (variantMap[QLatin1String("type")] == QLatin1String("imagelayer"))
         layer = toImageLayer(variantMap);
 
-    if (layer)
+    if (layer) {
         layer->setProperties(toProperties(variantMap[QLatin1String("properties")]));
+
+        const QPointF offset(variantMap[QLatin1String("offsetx")].toDouble(),
+                             variantMap[QLatin1String("offsety")].toDouble());
+        layer->setOffset(offset);
+    }
 
     return layer;
 }
@@ -402,7 +437,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 
         const QString name = objectVariantMap[QLatin1String("name")].toString();
         const QString type = objectVariantMap[QLatin1String("type")].toString();
-        const int id = objectVariantMap[QLatin1String("id")].toString().toInt();
+        const int id = objectVariantMap[QLatin1String("id")].toInt();
         const int gid = objectVariantMap[QLatin1String("gid")].toInt();
         const qreal x = objectVariantMap[QLatin1String("x")].toReal();
         const qreal y = objectVariantMap[QLatin1String("y")].toReal();

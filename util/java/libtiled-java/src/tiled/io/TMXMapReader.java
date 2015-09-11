@@ -32,6 +32,8 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -175,6 +177,15 @@ public class TMXMapReader
         final String attr = getAttributeValue(node, attribname);
         if (attr != null) {
             return Integer.parseInt(attr);
+        } else {
+            return def;
+        }
+    }
+
+    private static double getDoubleAttribute(Node node, String attribname, double def) {
+        final String attr = getAttributeValue(node, attribname);
+        if(attr != null) {
+            return Double.parseDouble(attr);
         } else {
             return def;
         }
@@ -421,10 +432,10 @@ public class TMXMapReader
         final String name = getAttributeValue(t, "name");
         final String type = getAttributeValue(t, "type");
         final String gid = getAttributeValue(t, "gid");
-        final int x = getAttribute(t, "x", 0);
-        final int y = getAttribute(t, "y", 0);
-        final int width = getAttribute(t, "width", 0);
-        final int height = getAttribute(t, "height", 0);
+        final double x = getDoubleAttribute(t, "x", 0);
+        final double y = getDoubleAttribute(t, "y", 0);
+        final double width = getDoubleAttribute(t, "width", 0);
+        final double height = getDoubleAttribute(t, "height", 0);
 
         MapObject obj = new MapObject(x, y, width, height);
         obj.setShape(obj.getBounds());
@@ -452,14 +463,23 @@ public class TMXMapReader
             } else if ("ellipse".equalsIgnoreCase(child.getNodeName())) {
                 obj.setShape(new Ellipse2D.Double(x, y, width, height));
             } else if ("polygon".equalsIgnoreCase(child.getNodeName()) || "polyline".equalsIgnoreCase(child.getNodeName())) {
-                Polygon shape = new Polygon();
+                Path2D.Double shape = new Path2D.Double();
                 final String pointsAttribute = getAttributeValue(child, "points");
                 StringTokenizer st = new StringTokenizer(pointsAttribute, ", ");
+                boolean firstPoint = true;
                 while (st.hasMoreElements()) {
-                    shape.addPoint(x + Integer.parseInt(st.nextToken()), y + Integer.parseInt(st.nextToken()));
+                    double pointX = Double.parseDouble(st.nextToken());
+                    double pointY = Double.parseDouble(st.nextToken());
+                    if(firstPoint) {
+                        shape.moveTo(x + pointX, y + pointY);
+                        firstPoint = false;
+                    } else {
+                        shape.lineTo(x + pointX, y + pointY);
+                    }
                 }
+                shape.closePath();
                 obj.setShape(shape);
-                obj.setBounds(shape.getBounds());
+                obj.setBounds((Rectangle2D.Double) shape.getBounds2D());
             }
         }
 

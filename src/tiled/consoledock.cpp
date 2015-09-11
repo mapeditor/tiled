@@ -19,12 +19,14 @@
  */
 
 #include "consoledock.h"
+
+#include "logginginterface.h"
 #include "pluginmanager.h"
 
 #include <QVBoxLayout>
 
-using namespace Tiled;
-using namespace Tiled::Internal;
+namespace Tiled {
+namespace Internal {
 
 ConsoleDock::ConsoleDock(QWidget *parent)
     : QDockWidget(parent)
@@ -49,35 +51,44 @@ ConsoleDock::ConsoleDock(QWidget *parent)
 
     layout->addWidget(plainTextEdit);
 
-    PluginManager *pm = PluginManager::instance();
+    for (LoggingInterface *output : PluginManager::objects<LoggingInterface>())
+        registerOutput(output);
 
-    foreach (LoggingInterface *plg, pm->interfaces<LoggingInterface>()) {
-
-        connect(pm->plugin(plg)->instance, SIGNAL(info(QString)),
-                this, SLOT(appendInfo(QString)));
-
-        connect(pm->plugin(plg)->instance, SIGNAL(error(QString)),
-                this, SLOT(appendError(QString)));
-
-    }
+    connect(PluginManager::instance(), &PluginManager::objectAdded,
+            this, &ConsoleDock::onObjectAdded);
 
     setWidget(widget);
-}
-
-void ConsoleDock::appendInfo(QString str)
-{
-    plainTextEdit->appendHtml(str
-                    .prepend(QString::fromUtf8("<pre>"))
-                    .append(QString::fromUtf8("</pre>")));
-}
-
-void ConsoleDock::appendError(QString str)
-{
-    plainTextEdit->appendHtml(str
-                    .prepend(QString::fromUtf8("<pre style='color:red'>"))
-                    .append(QString::fromUtf8("</pre>")));
 }
 
 ConsoleDock::~ConsoleDock()
 {
 }
+
+void ConsoleDock::appendInfo(const QString &str)
+{
+    plainTextEdit->appendHtml(QLatin1String("<pre>") + str +
+                              QLatin1String("</pre>"));
+}
+
+void ConsoleDock::appendError(const QString &str)
+{
+    plainTextEdit->appendHtml(QLatin1String("<pre style='color:red'>") + str +
+                              QLatin1String("</pre>"));
+}
+
+void ConsoleDock::onObjectAdded(QObject *object)
+{
+    if (LoggingInterface *output = qobject_cast<LoggingInterface*>(object))
+        registerOutput(output);
+}
+
+void ConsoleDock::registerOutput(LoggingInterface *output)
+{
+    connect(output, &LoggingInterface::info,
+            this, &ConsoleDock::appendInfo);
+    connect(output, &LoggingInterface::error,
+            this, &ConsoleDock::appendError);
+}
+
+} // namespace Internal
+} // namespace Tiled

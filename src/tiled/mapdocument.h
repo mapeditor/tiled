@@ -26,11 +26,11 @@
 #include "layer.h"
 #include "tiled.h"
 #include "tileset.h"
-#include "mapobject.h"
 
 #include <QDateTime>
 #include <QList>
 #include <QObject>
+#include <QPointer>
 #include <QRegion>
 #include <QString>
 
@@ -45,7 +45,7 @@ namespace Tiled {
 class Map;
 class MapObject;
 class MapRenderer;
-class MapReaderInterface;
+class MapFormat;
 class Terrain;
 class Tile;
 
@@ -86,7 +86,7 @@ public:
      * was saved successfully. If not, <i>error</i> will be set to the error
      * message if it is not 0.
      */
-    bool save(QString *error = 0);
+    bool save(QString *error = nullptr);
 
     /**
      * Saves the map to the file at \a fileName. Returns whether or not the
@@ -98,29 +98,29 @@ public:
      *
      * The map format will be the same as this map was opened with.
      */
-    bool save(const QString &fileName, QString *error = 0);
+    bool save(const QString &fileName, QString *error = nullptr);
 
     /**
-     * Loads a map and returns a MapDocument instance on success. Returns 0
+     * Loads a map and returns a MapDocument instance on success. Returns null
      * on error and sets the \a error message.
      */
     static MapDocument *load(const QString &fileName,
-                             MapReaderInterface *mapReader = 0,
-                             QString *error = 0);
+                             MapFormat *mapFormat = nullptr,
+                             QString *error = nullptr);
 
     QString fileName() const { return mFileName; }
 
     QString lastExportFileName() const;
     void setLastExportFileName(const QString &fileName);
 
-    QString readerPluginFileName() const;
-    void setReaderPluginFileName(const QString &fileName);
+    MapFormat *readerFormat() const;
+    void setReaderFormat(MapFormat *format);
 
-    QString writerPluginFileName() const;
-    void setWriterPluginFileName(const QString &fileName);
+    MapFormat *writerFormat() const;
+    void setWriterFormat(MapFormat *format);
 
-    QString exportPluginFileName() const;
-    void setExportPluginFileName(const QString &fileName);
+    MapFormat *exportFormat() const;
+    void setExportFormat(MapFormat *format);
 
     QString displayName() const;
 
@@ -260,7 +260,7 @@ public:
 
     void emitMapChanged();
 
-    void emitRegionChanged(const QRegion &region);
+    void emitRegionChanged(const QRegion &region, Layer *layer);
     void emitRegionEdited(const QRegion &region, Layer *layer);
 
     void emitTileLayerDrawMarginsChanged(TileLayer *layer);
@@ -331,7 +331,7 @@ signals:
      * Emitted when a certain region of the map changes. The region is given in
      * tile coordinates.
      */
-    void regionChanged(const QRegion &region);
+    void regionChanged(const QRegion &region, Layer *layer);
 
     /**
      * Emitted when a certain region of the map was edited by user input.
@@ -394,15 +394,12 @@ private:
     QString mLastExportFileName;
 
     /*
-     * The filename of a plugin is unique. So it can be used to determine
-     * the right plugin to be used for saving or reloading the map.
-     * The nameFilter of a plugin can not be used, since it's translatable.
-     * The filename of a plugin must not change while maps are open using this
-     * plugin.
+     * QPointer is used since the formats referenced here may be dynamically
+     * added by a plugin, and can also be removed again.
      */
-    QString mReaderPluginFileName;
-    QString mWriterPluginFileName;
-    QString mExportPluginFileName;
+    QPointer<MapFormat> mReaderFormat;
+    QPointer<MapFormat> mWriterFormat;
+    QPointer<MapFormat> mExportFormat;
     Map *mMap;
     LayerModel *mLayerModel;
     QRegion mSelectedArea;
@@ -427,36 +424,6 @@ inline void MapDocument::setLastExportFileName(const QString &fileName)
     mLastExportFileName = fileName;
 }
 
-inline QString MapDocument::readerPluginFileName() const
-{
-    return mReaderPluginFileName;
-}
-
-inline void MapDocument::setReaderPluginFileName(const QString &fileName)
-{
-    mReaderPluginFileName = fileName;
-}
-
-inline QString MapDocument::writerPluginFileName() const
-{
-    return mWriterPluginFileName;
-}
-
-inline void MapDocument::setWriterPluginFileName(const QString &fileName)
-{
-    mWriterPluginFileName = fileName;
-}
-
-inline QString MapDocument::exportPluginFileName() const
-{
-    return mExportPluginFileName;
-}
-
-inline void MapDocument::setExportPluginFileName(const QString &fileName)
-{
-    mExportPluginFileName = fileName;
-}
-
 /**
  * Emits the map changed signal. This signal should be emitted after changing
  * the map size or its tile size.
@@ -470,9 +437,9 @@ inline void MapDocument::emitMapChanged()
  * Emits the region changed signal for the specified region. The region
  * should be in tile coordinates. This method is used by the TilePainter.
  */
-inline void MapDocument::emitRegionChanged(const QRegion &region)
+inline void MapDocument::emitRegionChanged(const QRegion &region, Layer *layer)
 {
-    emit regionChanged(region);
+    emit regionChanged(region, layer);
 }
 
 /**

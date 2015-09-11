@@ -35,7 +35,6 @@ SetCompressor /FINAL /SOLID lzma
 !define BUILD_DIR $%TILED_BUILD_DIR%          ; Build dir
 !endif
 
-!define SYSTEM_DIR "C:\windows\system32"
 !define ADD_REMOVE "Software\Microsoft\Windows\CurrentVersion\Uninstall\Tiled"
 !define PRODUCT_REG_KEY "Tiled Map Editor"
 
@@ -201,9 +200,9 @@ File ${QT_DIR}\bin\Qt5Core.dll
 File ${QT_DIR}\bin\Qt5Gui.dll
 File ${QT_DIR}\bin\Qt5Widgets.dll
 File ${QT_DIR}\bin\Qt5OpenGL.dll
-File ${QT_DIR}\bin\icuin53.dll
-File ${QT_DIR}\bin\icuuc53.dll
-File ${QT_DIR}\bin\icudt53.dll
+File ${QT_DIR}\bin\icuin54.dll
+File ${QT_DIR}\bin\icuuc54.dll
+File ${QT_DIR}\bin\icudt54.dll
 File ${MINGW_DIR}\bin\libgcc_s_dw2-1.dll
 File ${MINGW_DIR}\bin\libstdc++-6.dll
 File ${MINGW_DIR}\bin\libwinpthread-1.dll
@@ -281,9 +280,9 @@ Delete $INSTDIR\Qt5Widgets.dll
 Delete $INSTDIR\Qt5OpenGL.dll
 Delete $INSTDIR\libEGL.dll
 Delete $INSTDIR\libGLESv2.dll
-Delete $INSTDIR\icuin53.dll
-Delete $INSTDIR\icuuc53.dll
-Delete $INSTDIR\icudt53.dll
+Delete $INSTDIR\icuin54.dll
+Delete $INSTDIR\icuuc54.dll
+Delete $INSTDIR\icudt54.dll
 Delete $INSTDIR\libgcc_s_dw2-1.dll
 Delete $INSTDIR\libstdc++-6.dll
 Delete $INSTDIR\libwinpthread-1.dll
