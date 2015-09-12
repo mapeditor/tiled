@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="cs_CZ">
+<TS version="2.0" language="cs_CZ">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -41,7 +41,7 @@
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Neznámý formát (viz --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -358,34 +358,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Nepodařilo se otevřít soubor pro čtení.</translation>
+        <translation>Nepodařilo se otevřít soubor pro čtení.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Chyba při čtení souboru.</translation>
+        <translation>Chyba při čtení souboru.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Nepodařilo se otevřít soubor pro zápis.</translation>
+        <translation>Nepodařilo se otevřít soubor pro zápis.</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Chyba při zápisu souboru:
+        <translation>Chyba při zápisu souboru:
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapové soubory JSON (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapové soubory Javascript (*.js)</translation>
     </message>
 </context>
 <context>
@@ -393,29 +393,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Nepodařilo se otevřít soubor pro čtení.</translation>
+        <translation>Nepodařilo se otevřít soubor pro čtení.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Chyba při čtení souboru.</translation>
+        <translation>Chyba při čtení souboru.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Nepodařilo se otevřít soubor pro zápis.</translation>
+        <translation>Nepodařilo se otevřít soubor pro zápis.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Chyba při zápisu souboru:
+        <translation>Chyba při zápisu souboru:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sady dlaždic JSON (*.json)</translation>
     </message>
 </context>
 <context>
@@ -466,7 +466,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zobrazovat &amp;jména objektů</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -566,17 +566,17 @@
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nikdy</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vybrané objekty</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Všechny &amp;objekty</translation>
     </message>
     <message>
         <location line="-50"/>
@@ -1350,22 +1350,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Čtení %2 skriptem %1</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Zápis %2 skriptem %1</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nezachycená výjimka ve skriptu. Zkontrolujte prosím konzoli.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript vrátil nepravdivou hodnotu. Zkontrolujte prosím konzoli.</translation>
     </message>
 </context>
 <context>
@@ -1373,7 +1373,7 @@ Line %1, column %2</source>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Znovunačtení Pythoních skriptů</translation>
     </message>
 </context>
 <context>
@@ -2352,7 +2352,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished">Ladící konzole</translation>
+        <translation>Ladicí konzole</translation>
     </message>
 </context>
 <context>
@@ -3626,12 +3626,12 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontální posun</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikální posun</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3952,7 +3952,7 @@ Please select specific format.</source>
     <message>
         <location line="-111"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při ukládání sady dlaždic: %1</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -4014,7 +4014,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Dlaždicové mapy (*.tmx)</translation>
+        <translation>Dlaždicové mapy (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -4022,7 +4022,7 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished">Sady dlaždic (*.tsx)</translation>
+        <translation>Sady dlaždic (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4277,7 +4277,7 @@ Please select specific format.</source>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Změna posunutí vrstvy</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
