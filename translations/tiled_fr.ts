@@ -41,7 +41,7 @@
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Format non reconnu (voir --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -358,34 +358,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">La tentative de lecture du fichier a échoué.</translation>
+        <translation>La tentative de lecture du fichier a échoué.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Erreur lors du traitement du fichier.</translation>
+        <translation>Erreur lors du traitement du fichier.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>La tentative d&apos;ouverture du fichier en écriture a échoué.</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Erreur lors de l&apos;écriture du fichier:
+        <translation>Erreur lors de l&apos;écriture du fichier:
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de cartes Json (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de cartes JavaScript (*.js)</translation>
     </message>
 </context>
 <context>
@@ -393,29 +393,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">La tentative de lecture du fichier a échoué.</translation>
+        <translation>La tentative d&apos;ouverture du fichier en lecture a échoué.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Erreur lors du traitement du fichier.</translation>
+        <translation>Erreur lors du traitement du fichier.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>La tentative d&apos;ouverture du fichier en écriture a échoué.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Erreur lors de l&apos;écriture du fichier:
+        <translation>Erreur lors de l&apos;écriture du fichier:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de tileset Json (*.json)</translation>
     </message>
 </context>
 <context>
@@ -466,7 +466,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les &amp;Noms d&apos;objet</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -541,7 +541,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+G</source>
-        <translation>Ctrl+G</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+9"/>
@@ -581,7 +581,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+0</source>
-        <translation>Ctrl+0</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+142"/>
@@ -601,17 +601,17 @@
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Jamais</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour les objets &amp;Sélectionnés</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour &amp;Tous les objets</translation>
     </message>
     <message>
         <location line="-162"/>
@@ -651,7 +651,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+E</source>
-        <translation>Ctrl+E</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="-82"/>
@@ -686,7 +686,7 @@
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+W</source>
-        <translation>Ctrl+Shift+W</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+12"/>
@@ -1349,22 +1349,22 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Utilisation du script %1 afin de lire %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Utilisation du script %1 afin d&apos;écrire %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exception non gérée dans le script. Veuillez vérifier sur la console.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le script a retourné une valeur négative. Veuillez vérifier sur la console.</translation>
     </message>
 </context>
 <context>
@@ -1372,7 +1372,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechargement des scripts Python</translation>
     </message>
 </context>
 <context>
@@ -2347,7 +2347,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished">Console de déboggage</translation>
+        <translation>Console de déboggage</translation>
     </message>
 </context>
 <context>
@@ -2646,12 +2646,12 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="+82"/>
         <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Ctrl+=</source>
-        <translation>Ctrl+=</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2683,17 +2683,17 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="-1182"/>
         <source>Ctrl+Shift+O</source>
-        <translation>Ctrl+Shift+O</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Ctrl+Shift+Tab</source>
-        <translation>Ctrl+Shift+Tab</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Ctrl+Tab</source>
-        <translation>Ctrl+Tab</translation>
+        <translation></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2713,7 +2713,7 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location line="+1"/>
         <source>Shift+Z</source>
-        <translation>Shift+Z</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3009,27 +3009,27 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+55"/>
         <source>Ctrl+Shift+A</source>
-        <translation>Ctrl+Shift+A</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Ctrl+Shift+D</source>
-        <translation>Ctrl+Shift+D</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Ctrl+Shift+Up</source>
-        <translation>Ctrl+Shift+Up</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+Down</source>
-        <translation>Ctrl+Shift+Down</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Ctrl+Shift+H</source>
-        <translation>Ctrl+Shift+H</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+58"/>
@@ -3115,12 +3115,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-80"/>
         <source>Ctrl+PgUp</source>
-        <translation>Ctrl+PgUp</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+PgDown</source>
-        <translation>Ctrl+PgDown</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+76"/>
@@ -3609,12 +3609,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+5"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage horizontal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Décalage vertical</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3935,7 +3935,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-111"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de la sauvegarde du tileset : %1</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3997,7 +3997,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Fichiers de cartes au format Tiled (*.tmx)</translation>
+        <translation>Fichiers de cartes au format Tiled (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -4005,7 +4005,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers de Tileset au format Tiled (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4260,7 +4260,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier le décalage de calque</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
