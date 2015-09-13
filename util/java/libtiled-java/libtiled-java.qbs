@@ -1,13 +1,8 @@
 import qbs
 
 JavaJarFile {
-    files: ["src/**/*.java"]
 
-    Group {
-        fileTagsFilter: ["java.jar"]
-        qbs.install: true
-        qbs.installDir: "jar"
-    }
+    files: ["src/**/*.java"]
 
     Export {
         Depends { name: "java" }
