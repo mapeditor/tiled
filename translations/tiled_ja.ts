@@ -42,7 +42,7 @@
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>認識できないフォーマットです (--export-formatsを確認してください)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -83,32 +83,32 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="-184"/>
         <source>Display the version</source>
-        <translation type="unfinished"></translation>
+        <translation>バージョンを表示</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only check validity of arguments</source>
-        <translation type="unfinished"></translation>
+        <translation>正しい引数かチェックだけします</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>レンダリングにハードウェア支援を使用しない</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>指定したtmxファイルへエクスポート</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Print a list of supported export formats</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポート可能なフォーマットを表示</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Export formats:</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポート可能なフォーマット:</translation>
     </message>
 </context>
 <context>
@@ -116,33 +116,34 @@
     <message>
         <location filename="../src/tiled/commandlineparser.cpp" line="+75"/>
         <source>Bad argument %1: lonely hyphen</source>
-        <translation type="unfinished"></translation>
+        <translation>引数エラー %1: ハイフンしかありません</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Unknown long argument %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>不明な引数 %1: %2</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Unknown short argument %1.%2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>不明な引数 %1.%2: %3</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Usage:
   %1 [options] [files...]</source>
-        <translation type="unfinished"></translation>
+        <translation>使い方:
+  %1 [オプション] [ファイルパス...]</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>オプション:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Display this help</source>
-        <translation type="unfinished"></translation>
+        <translation>このヘルプを表示</translation>
     </message>
 </context>
 <context>
@@ -358,34 +359,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">読み込み用ファイルを開けませんでした.</translation>
+        <translation>読み込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">ファイルをパース中にエラーが発生.</translation>
+        <translation>ファイルをパース中にエラーが発生.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+        <translation>書き込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">ファイルへ書き込み中にエラー:
+        <translation>ファイルへ書き込み中にエラー:
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json マップファイル (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaScript マップファイル (*.js)</translation>
     </message>
 </context>
 <context>
@@ -393,29 +394,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">読み込み用ファイルを開けませんでした.</translation>
+        <translation>読み込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">ファイルをパース中にエラーが発生.</translation>
+        <translation>ファイルをパース中にエラーが発生.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+        <translation>書き込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">ファイルへ書き込み中にエラー:
+        <translation>ファイルへ書き込み中にエラー:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json タイルセットファイル (*.json)</translation>
     </message>
 </context>
 <context>
@@ -466,7 +467,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクト名を表示 (&amp;N)</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -556,27 +557,27 @@
     <message>
         <location line="+5"/>
         <source>Save All</source>
-        <translation type="unfinished"></translation>
+        <translation>すべて保存</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>ドキュメント</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>表示しない (&amp;N)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>選択されたオブジェクトのみ (&amp;S)</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>すべて (&amp;A)</translation>
     </message>
     <message>
         <location line="-50"/>
@@ -1284,7 +1285,7 @@ Line %1, column %2</source>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>最後に使ったファイルを起動時に開く</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -1349,22 +1350,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- スクリプト %1 で %2 を読み込み</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- スクリプト %1 で %2 を書き込み</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>不明な例外がスクリプトで発生しました。コンソールをチェックしてください.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>スクリプトがfalseを返しました。コンソールをチェックしてください.</translation>
     </message>
 </context>
 <context>
@@ -1372,7 +1373,7 @@ Line %1, column %2</source>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Pythonスクリプトを再読込中</translation>
     </message>
 </context>
 <context>
@@ -1869,7 +1870,7 @@ Line %1, column %2</source>
     <message>
         <location line="+32"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">書き込み用ファイルを開けませんでした.</translation>
+        <translation>書き込み用ファイルを開けませんでした.</translation>
     </message>
     <message>
         <location line="+15"/>
@@ -2345,7 +2346,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished">デバッグコンソール</translation>
+        <translation>デバッグコンソール</translation>
     </message>
 </context>
 <context>
@@ -2690,7 +2691,7 @@ Do you want to replace it?</source>
     <message>
         <location line="-1182"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2800,17 +2801,17 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Some export files already exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>エクスポート先ファイルが既に存在しています:</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Do you want to replace them?</source>
-        <translation type="unfinished"></translation>
+        <translation>上書きしてもよろしいですか?</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Overwrite Files</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルの上書き</translation>
     </message>
     <message>
         <location line="+71"/>
@@ -2820,7 +2821,7 @@ Please select specific format.</source>
     <message>
         <location line="+555"/>
         <source>[*]%1</source>
-        <translation type="unfinished"></translation>
+        <translation>[*]%1</translation>
     </message>
     <message>
         <location line="+130"/>
@@ -3457,7 +3458,7 @@ Please select specific format.</source>
     <message>
         <location line="+436"/>
         <source>Relative chance this tile will be picked</source>
-        <translation type="unfinished"></translation>
+        <translation>このタイルが選ばれる確率</translation>
     </message>
     <message>
         <location line="+375"/>
@@ -3541,25 +3542,25 @@ Please select specific format.</source>
         <location line="+5"/>
         <location line="+65"/>
         <source>Width</source>
-        <translation type="unfinished">幅</translation>
+        <translation>幅</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+65"/>
         <source>Height</source>
-        <translation type="unfinished">高さ</translation>
+        <translation>高さ</translation>
     </message>
     <message>
         <location line="-64"/>
         <location line="+147"/>
         <source>Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルの幅</translation>
     </message>
     <message>
         <location line="-146"/>
         <location line="+147"/>
         <source>Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルの高さ</translation>
     </message>
     <message>
         <location line="-145"/>
@@ -3594,12 +3595,12 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>横方向のオフセット</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>縦方向のオフセット</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3649,17 +3650,17 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Source Image</source>
-        <translation type="unfinished"></translation>
+        <translation>ソース画像</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>上左の余白</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>タイル間の余白</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3689,13 +3690,13 @@ Please select specific format.</source>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+50"/>
         <location line="+57"/>
         <source>Select Same Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>同じタイルを選択</translation>
     </message>
     <message>
         <location line="-54"/>
         <location line="+55"/>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
 </context>
 <context>
@@ -3795,12 +3796,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>スタンプ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished">確率</translation>
+        <translation>確率</translation>
     </message>
 </context>
 <context>
@@ -3808,52 +3809,52 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>スタンプを削除</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>バリエーションを削除</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>スタンプフォルダを選択</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation>タイル・スタンプ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいスタンプを追加</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Variation</source>
-        <translation type="unfinished"></translation>
+        <translation>バリエーションを追加</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>スタンプを複製</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>選択したものを削除</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>スタンプフォルダを設定</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルタ</translation>
     </message>
 </context>
 <context>
@@ -3920,7 +3921,7 @@ Please select specific format.</source>
     <message>
         <location line="-111"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセットを保存中にエラー: %1</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3982,7 +3983,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Tiledマップファイル (*.tmx)</translation>
+        <translation>Tiledマップファイル (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -3990,7 +3991,7 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished">Tiledタイルセットファイル (*.tsx)</translation>
+        <translation>Tiledタイルセットファイル (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4245,7 +4246,7 @@ Please select specific format.</source>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤーのオフセットを変更</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
