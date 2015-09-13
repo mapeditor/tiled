@@ -1,9 +1,13 @@
 import qbs
 
-JavaJarFile {
+Product {
+    Depends { name: "java"; required: false }
     Depends { name: "libtiled-java" }
 
-    entryPoint: "TMXViewer"
+    type: ["java.jar"]
+    condition: java.present
+
+    property string entryPoint: "TMXViewer"
 
     files: ["src/**/*.java"]
 }
