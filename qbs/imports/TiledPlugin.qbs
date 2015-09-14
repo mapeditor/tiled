@@ -7,6 +7,7 @@ DynamicLibrary {
 
     cpp.cxxLanguageVersion: "c++11"
     cpp.visibility: "minimal"
+    bundle.isBundle: false
 
     Group {
         qbs.install: true

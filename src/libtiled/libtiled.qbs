@@ -19,6 +19,9 @@ DynamicLibrary {
         "QT_NO_CAST_TO_ASCII"
     ]
 
+    bundle.isBundle: false
+    cpp.installNamePrefix: "@rpath"
+
     files: [
         "compression.cpp",
         "compression.h",
@@ -88,6 +91,8 @@ DynamicLibrary {
         qbs.installDir: {
             if (qbs.targetOS.contains("windows"))
                 return ""
+            else if (qbs.targetOS.contains("darwin"))
+                return "Tiled.app/Contents/Frameworks"
             else
                 return "lib"
         }
