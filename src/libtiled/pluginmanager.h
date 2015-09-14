@@ -91,7 +91,7 @@ public:
     static QList<T*> objects()
     {
         QList<T*> results;
-        for (QObject *object : mInstance->mObjects)
+        for (QObject *object : instance()->mObjects)
             if (T *result = qobject_cast<T*>(object))
                 results.append(result);
         return results;
