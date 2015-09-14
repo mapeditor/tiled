@@ -308,12 +308,9 @@ bool TileLayer::hasCell(Condition condition) const
     return false;
 }
 
-
-static inline bool cellInUse(const Cell &cell) { return !cell.isEmpty(); }
-
 inline QRegion TileLayer::region() const
 {
-    return region(cellInUse);
+    return region([] (const Cell &cell) { return !cell.isEmpty(); });
 }
 
 inline const Cell &TileLayer::cellAt(int x, int y) const

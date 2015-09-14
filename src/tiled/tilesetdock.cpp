@@ -139,43 +139,6 @@ protected:
     }
 };
 
-/**
- * Determines whether a cell references a certain tileset.
- */
-class ReferencesTileset
-{
-public:
-    explicit ReferencesTileset(Tileset *tileset) : mTileset(tileset) {}
-
-    bool operator() (const Cell &cell) const
-    {
-        if (const Tile *tile = cell.tile)
-            return tile->tileset() == mTileset;
-        return false;
-    }
-
-private:
-    Tileset *mTileset;
-};
-
-/**
- * Determines whether a cell matches certain tiles.
- */
-class MatchesAnyTile
-{
-public:
-    MatchesAnyTile(const QList<Tile*> &tiles) : mTiles(tiles) {}
-
-    bool operator() (const Cell &cell) const
-    {
-        if (Tile *tile = cell.tile)
-            return mTiles.contains(tile);
-        return false;
-    }
-
-private:
-    QList<Tile*> mTiles;
-};
 
 template<typename Condition>
 static bool hasTileReferences(MapDocument *mapDocument, Condition condition)
@@ -673,8 +636,13 @@ void TilesetDock::removeTileset(int index)
 
     if (inUse) {
         // Remove references to tiles in this tileset from the current map
+        auto referencesTileset = [tileset] (const Cell &cell) {
+            if (const Tile *tile = cell.tile)
+                return tile->tileset() == tileset;
+            return false;
+        };
         undoStack->beginMacro(remove->text());
-        removeTileReferences(mMapDocument, ReferencesTileset(tileset));
+        removeTileReferences(mMapDocument, referencesTileset);
     }
     undoStack->push(remove);
     if (inUse)
@@ -913,7 +881,11 @@ void TilesetDock::removeTiles()
         }
     }
 
-    const MatchesAnyTile matchesAnyTile(tiles);
+    auto matchesAnyTile = [&tiles] (const Cell &cell) {
+        if (Tile *tile = cell.tile)
+            return tiles.contains(tile);
+        return false;
+    };
     const bool inUse = hasTileReferences(mMapDocument, matchesAnyTile);
 
     // If the tileset is in use, warn the user and confirm removal
