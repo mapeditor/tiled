@@ -35,9 +35,23 @@ namespace Internal {
 
 struct TileStampVariation
 {
-    TileStampVariation(Map *map = 0, qreal probability = 1.0)
+    TileStampVariation()
+        : map(nullptr), probability(1.0)
+    {
+    }
+
+    TileStampVariation(Map *map, qreal probability = 1.0)
         : map(map), probability(probability)
-    {}
+    {
+        Q_ASSERT(map->layerCount() == 1);
+        Q_ASSERT(map->layerAt(0)->isTileLayer());
+    }
+
+    TileLayer *tileLayer() const
+    {
+        Q_ASSERT(map);
+        return static_cast<TileLayer*>(map->layerAt(0));
+    }
 
     Map *map;
     qreal probability;

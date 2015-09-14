@@ -1566,6 +1566,8 @@ void MainWindow::setStamp(const TileStamp &stamp)
     AbstractTool *selectedTool = mToolManager->selectedTool();
     if (selectedTool != mStampBrush && selectedTool != mBucketFillTool)
         mToolManager->selectTool(mStampBrush);
+
+    mTilesetDock->selectTilesInStamp(stamp);
 }
 
 /**

@@ -332,8 +332,8 @@ void BucketFillTool::updateRandomList()
     mMissingTilesets.clear();
 
     for (const TileStampVariation &variation : mStamp.variations()) {
-        TileLayer *tileLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
         mapDocument()->unifyTilesets(variation.map, mMissingTilesets);
+        TileLayer *tileLayer = variation.tileLayer();
         for (int x = 0; x < tileLayer->width(); x++) {
             for (int y = 0; y < tileLayer->height(); y++) {
                 const Cell &cell = tileLayer->cellAt(x, y);

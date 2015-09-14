@@ -80,6 +80,8 @@ public:
      */
     Tile *currentTile() const { return mCurrentTile; }
 
+    void selectTilesInStamp(const TileStamp &);
+
 signals:
     /**
      * Emitted when the current tile changed.
@@ -105,10 +107,12 @@ protected:
     void dropEvent(QDropEvent *);
 
 private slots:
+    void currentTilesetChanged();
     void selectionChanged();
+    void currentChanged(const QModelIndex &index);
+
     void updateActions();
     void updateCurrentTiles();
-    void updateCurrentTile();
     void indexPressed(const QModelIndex &index);
 
     void tilesetAdded(int index, Tileset *tileset);
@@ -143,6 +147,8 @@ private:
     TilesetView *currentTilesetView() const;
     TilesetView *tilesetViewAt(int index) const;
 
+    void setupTilesetModel(TilesetView *view, Tileset *tileset);
+
     MapDocument *mMapDocument;
 
     // Shared tileset references because the dock wants to add new tiles
@@ -173,6 +179,9 @@ private:
 
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
+
+    bool mEmittingStampCaptured;
+    bool mSynchronizingSelection;
 };
 
 } // namespace Internal

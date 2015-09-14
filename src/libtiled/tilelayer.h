@@ -264,6 +264,12 @@ public:
 
     virtual Layer *clone() const;
 
+    // Enable easy iteration over cells with range-based for
+    QVector<Cell>::iterator begin() { return mGrid.begin(); }
+    QVector<Cell>::iterator end() { return mGrid.end(); }
+    QVector<Cell>::const_iterator begin() const { return mGrid.begin(); }
+    QVector<Cell>::const_iterator end() const { return mGrid.end(); }
+
 protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
@@ -301,8 +307,8 @@ QRegion TileLayer::region(Condition condition) const
 template<typename Condition>
 bool TileLayer::hasCell(Condition condition) const
 {
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
-        if (condition(mGrid.at(i)))
+    for (const Cell &cell : mGrid)
+        if (condition(cell))
             return true;
 
     return false;

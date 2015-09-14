@@ -532,10 +532,9 @@ QRect AutoMapper::applyRule(const int ruleIndex, const QRect &where)
     // been altered by exactly this rule. We store all the altered parts to
     // make sure there are no overlaps of the same rule applied to
     // (neighbouring) places
-    QList<QRegion> appliedRegions;
+    QVector<QRegion> appliedRegions;
     if (mNoOverlappingRules)
-        for (int i = 0; i < mMapWork->layerCount(); i++)
-            appliedRegions.append(QRegion());
+        appliedRegions.resize(mMapWork->layerCount());
 
     for (int y = minY; y <= maxY; ++y)
     for (int x = minX; x <= maxX; ++x) {

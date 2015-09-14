@@ -221,7 +221,7 @@ TileStamp TileStamp::flipped(FlipDirection direction) const
     flipped.d.detach();
 
     for (const TileStampVariation &variation : flipped.variations()) {
-        TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        TileLayer *layer = variation.tileLayer();
         layer->flip(direction);
     }
 
@@ -238,7 +238,7 @@ TileStamp TileStamp::rotated(RotateDirection direction) const
     rotated.d.detach();
 
     for (const TileStampVariation &variation : rotated.variations()) {
-        TileLayer *layer = static_cast<TileLayer*>(variation.map->layerAt(0));
+        TileLayer *layer = variation.tileLayer();
         layer->rotate(direction);
 
         variation.map->setWidth(layer->width());

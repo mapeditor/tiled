@@ -200,7 +200,9 @@ TilesetDock::TilesetDock(QWidget *parent):
     mTilesetMenuButton(new TilesetMenuButton(this)),
     mTilesetMenu(new QMenu(this)),
     mTilesetActionGroup(new QActionGroup(this)),
-    mTilesetMenuMapper(0)
+    mTilesetMenuMapper(0),
+    mEmittingStampCaptured(false),
+    mSynchronizingSelection(false)
 {
     setObjectName(QLatin1String("TilesetDock"));
 
@@ -279,10 +281,10 @@ TilesetDock::TilesetDock(QWidget *parent):
     mZoomable->connectToComboBox(mZoomComboBox);
     horizontal->addWidget(mZoomComboBox);
 
-    connect(mViewStack, SIGNAL(currentChanged(int)),
-            this, SLOT(updateCurrentTiles()));
-    connect(mViewStack, SIGNAL(currentChanged(int)),
-            this, SLOT(updateCurrentTile()));
+    connect(mViewStack, &QStackedWidget::currentChanged,
+            this, &TilesetDock::updateCurrentTiles);
+    connect(mViewStack, &QStackedWidget::currentChanged,
+            this, &TilesetDock::currentTilesetChanged);
 
     connect(TilesetManager::instance(), SIGNAL(tilesetChanged(Tileset*)),
             this, SLOT(tilesetChanged(Tileset*)));
@@ -380,6 +382,67 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     widget()->show();
 }
 
+/**
+ * Synchronizes the selection with the given stamp. Ignored when the stamp is
+ * changing because of a selection change in the TilesetDock.
+ */
+void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
+{
+    if (mEmittingStampCaptured)
+        return;
+
+    QSet<const Tile*> processed;
+    QMap<QItemSelectionModel*, QItemSelection> selections;
+
+    for (const TileStampVariation &variation : stamp.variations()) {
+        const TileLayer &tileLayer = *variation.tileLayer();
+        for (const Cell &cell : tileLayer) {
+            if (const Tile *tile = cell.tile) {
+                if (processed.contains(tile))
+                    continue;
+
+                processed.insert(tile); // avoid spending time on duplicates
+
+                Tileset *tileset = tile->tileset();
+                int tilesetIndex = mTilesets.indexOf(tileset->sharedPointer());
+                if (tilesetIndex != -1) {
+                    TilesetView *view = tilesetViewAt(tilesetIndex);
+                    if (!view->model()) // Lazily set up the model
+                        setupTilesetModel(view, tileset);
+
+                    const TilesetModel *model = view->tilesetModel();
+                    const QModelIndex modelIndex = model->tileIndex(tile);
+                    QItemSelectionModel *selectionModel = view->selectionModel();
+                    selections[selectionModel].select(modelIndex, modelIndex);
+                }
+            }
+        }
+    }
+
+    if (!selections.isEmpty()) {
+        mSynchronizingSelection = true;
+
+        // Mark captured tiles as selected
+        for (auto i = selections.constBegin(); i != selections.constEnd(); ++i) {
+            QItemSelectionModel *selectionModel = i.key();
+            const QItemSelection &selection = i.value();
+            selectionModel->select(selection, QItemSelectionModel::SelectCurrent);
+        }
+
+        // Update the current tile (useful for animation and collision editors)
+        auto first = selections.begin();
+        QItemSelectionModel *selectionModel = first.key();
+        const QItemSelection &selection = first.value();
+        const QModelIndex currentIndex = selection.first().topLeft();
+        if (selectionModel->currentIndex() != currentIndex)
+            selectionModel->setCurrentIndex(currentIndex, QItemSelectionModel::NoUpdate);
+        else
+            currentChanged(currentIndex);
+
+        mSynchronizingSelection = false;
+    }
+}
+
 void TilesetDock::changeEvent(QEvent *e)
 {
     QDockWidget::changeEvent(e);
@@ -413,10 +476,28 @@ void TilesetDock::dropEvent(QDropEvent *e)
     }
 }
 
+void TilesetDock::currentTilesetChanged()
+{
+    if (const TilesetView *view = currentTilesetView())
+        if (const QItemSelectionModel *s = view->selectionModel())
+            setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+}
+
 void TilesetDock::selectionChanged()
 {
     updateActions();
-    updateCurrentTiles();
+
+    if (!mSynchronizingSelection)
+        updateCurrentTiles();
+}
+
+void TilesetDock::currentChanged(const QModelIndex &index)
+{
+    if (!index.isValid())
+        return;
+
+    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
+    setCurrentTile(model->tileAt(index));
 }
 
 void TilesetDock::updateActions()
@@ -432,18 +513,8 @@ void TilesetDock::updateActions()
         if (view) {
             Tileset *tileset = mTilesets.at(index).data();
 
-            if (!view->model()) {
-                // Lazily set up the model
-                view->setModel(new TilesetModel(tileset, view));
-
-                QItemSelectionModel *s = view->selectionModel();
-                connect(s, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-                        SLOT(selectionChanged()));
-                connect(s, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                        SLOT(updateCurrentTile()));
-                connect(view, SIGNAL(pressed(QModelIndex)),
-                        SLOT(indexPressed(QModelIndex)));
-            }
+            if (!view->model()) // Lazily set up the model
+                setupTilesetModel(view, tileset);
 
             mViewStack->setCurrentIndex(index);
             external = tileset->isExternal();
@@ -506,13 +577,6 @@ void TilesetDock::updateCurrentTiles()
     }
 
     setCurrentTiles(tileLayer);
-}
-
-void TilesetDock::updateCurrentTile()
-{
-    if (const TilesetView *view = currentTilesetView())
-        if (const QItemSelectionModel *s = view->selectionModel())
-            setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
 }
 
 void TilesetDock::indexPressed(const QModelIndex &index)
@@ -685,7 +749,9 @@ void TilesetDock::setCurrentTiles(TileLayer *tiles)
         stamp->addLayer(tiles->clone());
         stamp->addTilesets(tiles->usedTilesets());
 
+        mEmittingStampCaptured = true;
         emit stampCaptured(TileStamp(stamp));
+        mEmittingStampCaptured = false;
     }
 }
 
@@ -731,6 +797,19 @@ TilesetView *TilesetDock::currentTilesetView() const
 TilesetView *TilesetDock::tilesetViewAt(int index) const
 {
     return static_cast<TilesetView *>(mViewStack->widget(index));
+}
+
+void TilesetDock::setupTilesetModel(TilesetView *view, Tileset *tileset)
+{
+    view->setModel(new TilesetModel(tileset, view));
+
+    QItemSelectionModel *s = view->selectionModel();
+    connect(s, &QItemSelectionModel::selectionChanged,
+            this, &TilesetDock::selectionChanged);
+    connect(s, &QItemSelectionModel::currentChanged,
+            this, &TilesetDock::currentChanged);
+    connect(view, &TilesetView::pressed,
+            this, &TilesetDock::indexPressed);
 }
 
 void TilesetDock::editTilesetProperties()
