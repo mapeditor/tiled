@@ -6,6 +6,7 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: "gui" }
 
     cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     cpp.visibility: "minimal"
     bundle.isBundle: false
 

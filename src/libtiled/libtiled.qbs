@@ -18,6 +18,7 @@ DynamicLibrary {
         "QT_NO_CAST_FROM_ASCII",
         "QT_NO_CAST_TO_ASCII"
     ]
+    cpp.cxxFlags: ["-Wno-unknown-pragmas"]
 
     bundle.isBundle: false
     cpp.installNamePrefix: "@rpath"

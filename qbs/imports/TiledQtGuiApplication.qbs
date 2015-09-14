@@ -3,6 +3,7 @@ import qbs
 QtGuiApplication {
     cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
     cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxFlags: ["-Wno-unknown-pragmas"]
 
     Group {
         qbs.install: true
