@@ -32,6 +32,13 @@
 namespace Tiled {
 namespace Internal {
 
+TileLayer *TileStampVariation::tileLayer() const
+{
+    Q_ASSERT(map);
+    return static_cast<TileLayer*>(map->layerAt(0));
+}
+
+
 class TileStampData : public QSharedData
 {
 public:

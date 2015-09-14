@@ -47,11 +47,7 @@ struct TileStampVariation
         Q_ASSERT(map->layerAt(0)->isTileLayer());
     }
 
-    TileLayer *tileLayer() const
-    {
-        Q_ASSERT(map);
-        return static_cast<TileLayer*>(map->layerAt(0));
-    }
+    TileLayer *tileLayer() const;
 
     Map *map;
     qreal probability;
