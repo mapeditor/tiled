@@ -1,6 +1,6 @@
 /*
- *
- * Copyright 2015, Your Name <your.name@domain>
+ * objectselectionitem.cpp
+ * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
