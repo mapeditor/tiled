@@ -58,6 +58,7 @@ CreateObjectTool::CreateObjectTool(CreationMode mode, QObject *parent)
 CreateObjectTool::~CreateObjectTool()
 {
     delete mObjectGroupItem;
+    delete mNewMapObjectGroup;
 }
 
 void CreateObjectTool::activate(MapScene *scene)
