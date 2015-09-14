@@ -25,6 +25,7 @@
 
 namespace Tiled {
 
+class Object;
 class Tile;
 class Tileset;
 
@@ -68,6 +69,7 @@ private slots:
     void applyChanges();
     void tileObjectGroupChanged(Tile*);
     void tilesetFileNameChanged(Tileset *);
+    void currentObjectChanged(Object *object);
 
     void undo();
     void redo();

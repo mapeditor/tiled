@@ -30,6 +30,7 @@ class TileAnimationEditor;
 
 namespace Tiled {
 
+class Object;
 class Tile;
 class Tileset;
 
@@ -68,6 +69,7 @@ private slots:
     void framesEdited();
     void tileAnimationChanged(Tile *tile);
     void tilesetFileNameChanged(Tileset *);
+    void currentObjectChanged(Object *object);
 
     void addFrameForTileAt(const QModelIndex &index);
 

@@ -33,6 +33,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
+#include "mapobject.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
@@ -146,6 +147,9 @@ void TileCollisionEditor::setMapDocument(MapDocument *mapDocument)
                 SLOT(tileObjectGroupChanged(Tile*)));
         connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
                 SLOT(tilesetFileNameChanged(Tileset*)));
+
+        connect(mMapDocument, &MapDocument::currentObjectChanged,
+                this, &TileCollisionEditor::currentObjectChanged);
     }
 }
 
@@ -267,6 +271,16 @@ void TileCollisionEditor::tilesetFileNameChanged(Tileset *tileset)
 {
     if (mTile && mTile->tileset() == tileset)
         mMapView->setEnabled(!tileset->isExternal());
+}
+
+void TileCollisionEditor::currentObjectChanged(Object *object)
+{
+    // If a tile object is selected, edit the collision shapes for that tile
+    if (object && object->typeId() == Object::MapObjectType) {
+        const Cell &cell = static_cast<MapObject*>(object)->cell();
+        if (cell.tile)
+            setTile(cell.tile);
+    }
 }
 
 void TileCollisionEditor::undo()

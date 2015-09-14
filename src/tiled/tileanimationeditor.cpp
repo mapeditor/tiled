@@ -23,6 +23,7 @@
 
 #include "changetileanimation.h"
 #include "mapdocument.h"
+#include "mapobject.h"
 #include "rangeset.h"
 #include "tile.h"
 #include "tileanimationdriver.h"
@@ -323,6 +324,9 @@ void TileAnimationEditor::setMapDocument(MapDocument *mapDocument)
                 SLOT(tileAnimationChanged(Tile*)));
         connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
                 SLOT(tilesetFileNameChanged(Tileset*)));
+
+        connect(mMapDocument, &MapDocument::currentObjectChanged,
+                this, &TileAnimationEditor::currentObjectChanged);
     }
 }
 
@@ -408,6 +412,16 @@ void TileAnimationEditor::tilesetFileNameChanged(Tileset *tileset)
 {
     if (mTile && mTile->tileset() == tileset)
         mUi->frameList->setEnabled(!tileset->isExternal());
+}
+
+void TileAnimationEditor::currentObjectChanged(Object *object)
+{
+    // If a tile object is selected, edit the animation frames for that tile
+    if (object && object->typeId() == Object::MapObjectType) {
+        const Cell &cell = static_cast<MapObject*>(object)->cell();
+        if (cell.tile)
+            setTile(cell.tile);
+    }
 }
 
 void TileAnimationEditor::addFrameForTileAt(const QModelIndex &index)
