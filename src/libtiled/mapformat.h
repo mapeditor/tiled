@@ -164,7 +164,7 @@ public:
  * Convenience class that can be used when implementing file dialogs.
  */
 template<typename Format>
-class TILEDSHARED_EXPORT FormatHelper
+class FormatHelper
 {
 public:
     FormatHelper(FileFormat::Capabilities capabilities,

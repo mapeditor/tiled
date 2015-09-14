@@ -34,6 +34,9 @@
 namespace Tiled {
 namespace Internal {
 
+static const qreal labelMargin = 3;
+static const qreal labelDistance = 12;
+
 // TODO: Unduplicate the following helper functions between this and
 // ObjectSelectionTool
 
@@ -199,9 +202,6 @@ public:
 private:
     QRectF mBoundingRect;
     MapObject *mObject;
-
-    static constexpr qreal margin = 3;
-    static constexpr qreal distance = 12;
 };
 
 void MapObjectLabel::syncWithMapObject(MapRenderer *renderer)
@@ -214,8 +214,8 @@ void MapObjectLabel::syncWithMapObject(MapRenderer *renderer)
 
     const QFontMetricsF metrics(QGuiApplication::font());
     QRectF boundingRect = metrics.boundingRect(mObject->name());
-    boundingRect.translate(-boundingRect.width() / 2, -distance);
-    boundingRect.adjust(-margin*2, -margin, margin*2, margin);
+    boundingRect.translate(-boundingRect.width() / 2, -labelDistance);
+    boundingRect.adjust(-labelMargin*2, -labelMargin, labelMargin*2, labelMargin);
 
     QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
     QRectF bounds = objectBounds(mObject, renderer);
@@ -256,7 +256,7 @@ void MapObjectLabel::paint(QPainter *painter,
     painter->setBrush(color);
     painter->drawRoundedRect(mBoundingRect, 4, 4);
 
-    QPointF textPos(-(mBoundingRect.width() - margin*4) / 2, -distance);
+    QPointF textPos(-(mBoundingRect.width() - labelMargin*4) / 2, -labelDistance);
 
     painter->drawRoundedRect(mBoundingRect, 4, 4);
     painter->setPen(Qt::black);

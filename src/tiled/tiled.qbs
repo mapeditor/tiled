@@ -13,7 +13,6 @@ QtGuiApplication {
     cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../lib"]
     cpp.cxxPrecompiledHeader: "pch.h"
     cpp.cxxLanguageVersion: "c++11"
-    cpp.cxxFlags: ["-Wno-unknown-pragmas"]
 
     cpp.defines: {
         var version = qbs.getEnv("BUILD_INFO_VERSION");
@@ -323,6 +322,7 @@ QtGuiApplication {
     Properties {
         condition: qbs.targetOS.contains("osx")
         cpp.frameworks: "Foundation"
+        cpp.cxxFlags: ["-Wno-unknown-pragmas"]
         bundle.infoPlistFile: "Info.plist"
         targetName: "Tiled"
     }

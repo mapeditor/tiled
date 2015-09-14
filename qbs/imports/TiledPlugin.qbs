@@ -6,9 +6,13 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: "gui" }
 
     cpp.cxxLanguageVersion: "c++11"
-    cpp.cxxFlags: ["-Wno-unknown-pragmas"]
     cpp.visibility: "minimal"
     bundle.isBundle: false
+
+    Properties {
+        condition: qbs.targetOS.contains("osx")
+        cpp.cxxFlags: ["-Wno-unknown-pragmas"]
+    }
 
     Group {
         qbs.install: true
