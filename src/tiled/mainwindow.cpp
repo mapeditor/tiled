@@ -746,7 +746,7 @@ void MainWindow::openFile()
     QString filter = tr("All Files (*)");
     filter += QLatin1String(";;");
 
-    QString selectedFilter = tr("Tiled map files (*.tmx)");
+    QString selectedFilter = TmxMapFormat().nameFilter();
     filter += selectedFilter;
 
     FormatHelper<MapFormat> helper(MapFormat::Read, filter);
@@ -802,7 +802,7 @@ bool MainWindow::saveFile()
 
 bool MainWindow::saveFileAs()
 {
-    const QString tmxFilter = tr("Tiled map files (*.tmx)");
+    const QString tmxFilter = TmxMapFormat().nameFilter();
 
     FormatHelper<MapFormat> helper(MapFormat::ReadWrite, tmxFilter);
 
