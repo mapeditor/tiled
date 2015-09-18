@@ -19,6 +19,10 @@ build_script:
   - if not defined APPVEYOR_REPO_TAG_NAME set BUILD_INFO_VERSION=%COMMITNOW%
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
   - qbs setup-toolchains --type mingw %MINGW%\bin\g++.exe mingw
+  - qbs config profiles.mingw.cpp.archiverPath ar.exe
+  - qbs config profiles.mingw.cpp.nmPath nm.exe
+  - qbs config profiles.mingw.cpp.objcopyPath objcopy.exe
+  - qbs config profiles.mingw.cpp.stripPath strip.exe
   - qbs setup-qt %QTDIR%\bin\qmake.exe qt
   - qbs config defaultProfile qt
   - qbs install --all-products --install-root install-root release
