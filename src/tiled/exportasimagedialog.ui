@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>337</width>
-    <height>231</height>
+    <height>374</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -82,6 +82,92 @@
          <string>&amp;Include background color</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="splitIntoTiles">
+        <property name="toolTip">
+         <string>Splits the image into tiles which are saved as individual files using a zero-based numerical suffix</string>
+        </property>
+        <property name="text">
+         <string>&amp;Split into tiles (overwrites existing files)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="bottomMargin">
+         <number>6</number>
+        </property>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Maximum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="tileSizeLayout">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="tileWidthLabel">
+            <property name="text">
+             <string>Tile width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="tileWidthSpinBox">
+            <property name="toolTip">
+             <string>The width of each tile</string>
+            </property>
+            <property name="minimum">
+             <number>8</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+            <property name="value">
+             <number>512</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="tileHeightLabel">
+            <property name="text">
+             <string>Tile height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="tileHeightSpinBox">
+            <property name="toolTip">
+             <string>The height of each tile</string>
+            </property>
+            <property name="minimum">
+             <number>8</number>
+            </property>
+            <property name="maximum">
+             <number>10000</number>
+            </property>
+            <property name="value">
+             <number>512</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
