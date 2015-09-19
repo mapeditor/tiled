@@ -2404,7 +2404,7 @@ Linia %1, kolumna %2</translation>
     <message>
         <location line="+1"/>
         <source>L</source>
-        <translation>:</translation>
+        <translation>L</translation>
     </message>
 </context>
 <context>
