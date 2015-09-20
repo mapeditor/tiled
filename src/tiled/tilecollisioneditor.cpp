@@ -38,6 +38,7 @@
 #include "mapview.h"
 #include "objectgroup.h"
 #include "objectselectiontool.h"
+#include "propertiesdock.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -63,6 +64,7 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mToolManager(new ToolManager(this))
+    , mPropertiesDock(new PropertiesDock(this))
     , mApplyingChanges(false)
     , mSynchronizing(false)
 {
@@ -72,6 +74,13 @@ TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setSpacing(0);
     layout->setMargin(5);
+
+    // We want to re-use the PropertiesDock class in order to manipulate properties on collision objects.
+    // This instance of the PropertiesDock is best left with the docking features disabled though as it only belongs to the collision editor.
+    QDockWidget::DockWidgetFeatures features = QDockWidget::NoDockWidgetFeatures;
+    mPropertiesDock->setFeatures(features);
+    mPropertiesDock->setMapDocument(0);
+    addDockWidget(Qt::LeftDockWidgetArea, mPropertiesDock);
 
     mMapView->setScene(mMapScene);
 
@@ -170,6 +179,7 @@ void TileCollisionEditor::setTile(Tile *tile)
 
     if (tile) {
         mMapView->setEnabled(!mTile->tileset()->isExternal());
+        mPropertiesDock->setEnabled(!mTile->tileset()->isExternal());
 
         Map *map = new Map(Map::Orthogonal, 1, 1, tile->width(), tile->height());
         map->addTileset(tile->sharedTileset());
@@ -191,20 +201,26 @@ void TileCollisionEditor::setTile(Tile *tile)
         mMapScene->setMapDocument(mapDocument);
 
         mToolManager->setMapDocument(mapDocument);
+        mPropertiesDock->setMapDocument(mapDocument);
+
         mapDocument->setCurrentLayerIndex(1);
 
         mMapScene->enableSelectedTool();
 
         connect(mapDocument->undoStack(), SIGNAL(indexChanged(int)),
                 SLOT(applyChanges()));
+
     } else {
         mMapView->setEnabled(false);
+        mPropertiesDock->setEnabled(false);
         mMapScene->setMapDocument(0);
         mToolManager->setMapDocument(0);
+        mPropertiesDock->setMapDocument(0);
     }
 
     if (previousDocument) {
         previousDocument->undoStack()->disconnect(this);
+
         delete previousDocument;
     }
 }
@@ -269,8 +285,10 @@ void TileCollisionEditor::tileObjectGroupChanged(Tile *tile)
 
 void TileCollisionEditor::tilesetFileNameChanged(Tileset *tileset)
 {
-    if (mTile && mTile->tileset() == tileset)
+    if (mTile && mTile->tileset() == tileset) {
         mMapView->setEnabled(!tileset->isExternal());
+        mPropertiesDock->setEnabled(!tileset->isExternal());
+    }
 }
 
 void TileCollisionEditor::currentObjectChanged(Object *object)

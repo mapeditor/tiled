@@ -98,6 +98,18 @@ PropertiesDock::PropertiesDock(QWidget *parent)
     retranslateUi();
 }
 
+void PropertiesDock::setMapDocument(MapDocument *mapDocument)
+{
+    // Stop connecting to the DocumentManager singleton instance.
+    DocumentManager *manager = DocumentManager::instance();
+    disconnect(manager, SIGNAL(currentDocumentChanged(MapDocument*)), this,
+            SLOT(mapDocumentChanged(MapDocument*)));
+
+    // Connect to the document passed in.
+    // Note: Since we are disconnected from the document manager now we are responsible for setting the map document from now on.
+    mapDocumentChanged(mapDocument);
+}
+
 void PropertiesDock::bringToFront()
 {
     show();

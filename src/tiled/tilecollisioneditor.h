@@ -35,6 +35,7 @@ class AbstractTool;
 class MapDocument;
 class MapScene;
 class MapView;
+class PropertiesDock;
 class ToolManager;
 
 class TileCollisionEditor : public QMainWindow
@@ -86,6 +87,7 @@ private:
     MapScene *mMapScene;
     MapView *mMapView;
     ToolManager *mToolManager;
+    PropertiesDock *mPropertiesDock;
     bool mApplyingChanges;
     bool mSynchronizing;
 };

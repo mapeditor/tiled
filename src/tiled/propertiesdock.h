@@ -42,6 +42,12 @@ class PropertiesDock : public QDockWidget
 public:
     explicit PropertiesDock(QWidget *parent = 0);
 
+    /**
+     * Sets the MapDocument on which the properties browser will act on.
+     * This allows us to have multiple PropertiesDock instances that are registered with custom MapDocuments.
+     */
+    void setMapDocument(MapDocument *mapDocument);
+
 public slots:
     void bringToFront();
 
