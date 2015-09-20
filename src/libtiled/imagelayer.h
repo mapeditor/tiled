@@ -117,7 +117,7 @@ public:
     /**
      * Returns true if no image source has been set.
      */
-    bool isEmpty() const;
+    bool isEmpty() const override;
 
     Layer *clone() const override;
 

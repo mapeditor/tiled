@@ -218,7 +218,7 @@ public:
     /**
      * Returns whether this tile layer is referencing the given tileset.
      */
-    bool referencesTileset(const Tileset *tileset) const;
+    bool referencesTileset(const Tileset *tileset) const override;
 
     /**
      * Removes all references to the given tileset. This sets all tiles on this
@@ -229,7 +229,8 @@ public:
     /**
      * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
      */
-    void replaceReferencesToTileset(Tileset *oldTileset, Tileset *newTileset);
+    void replaceReferencesToTileset(Tileset *oldTileset,
+                                    Tileset *newTileset) override;
 
     /**
      * Resizes this tile layer to \a size, while shifting all tiles by
@@ -247,8 +248,8 @@ public:
                      const QRect &bounds,
                      bool wrapX, bool wrapY);
 
-    bool canMergeWith(Layer *other) const;
-    Layer *mergedWith(Layer *other) const;
+    bool canMergeWith(Layer *other) const override;
+    Layer *mergedWith(Layer *other) const override;
 
     /**
      * Returns the region where this tile layer and the given tile layer
@@ -260,9 +261,9 @@ public:
     /**
      * Returns true if all tiles in the layer are empty.
      */
-    bool isEmpty() const;
+    bool isEmpty() const override;
 
-    virtual Layer *clone() const;
+    virtual Layer *clone() const override;
 
     // Enable easy iteration over cells with range-based for
     QVector<Cell>::iterator begin() { return mGrid.begin(); }
