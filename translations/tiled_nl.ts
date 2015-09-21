@@ -42,7 +42,7 @@
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Formaat niet herkend (zie --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -321,7 +321,7 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+52"/>
         <source>Could not open file for reading.</source>
-        <translation>Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon het bestand niet lezen.</translation>
     </message>
     <message>
         <location line="+79"/>
@@ -359,34 +359,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon het bestand niet lezen.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Fout tijdens het parsen van het bestand.</translation>
+        <translation>Fout tijdens het parsen van het bestand.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Fout tijdens het schrijven van het bestand:
+        <translation>Fout tijdens het schrijven van het bestand:
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json map bestanden (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaScript map bestanden (*.js)</translation>
     </message>
 </context>
 <context>
@@ -394,29 +394,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon het bestand niet lezen.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Fout tijdens het parsen van het bestand.</translation>
+        <translation>Fout tijdens het parsen van het bestand.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Kon niet schrijven naar het bestand.</translation>
+        <translation>Kon niet schrijven naar het bestand.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Fout tijdens het schrijven van het bestand:
+        <translation>Fout tijdens het schrijven van het bestand:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Json tileset bestanden (*.json)</translation>
     </message>
 </context>
 <context>
@@ -462,7 +462,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Object &amp;Namen Weergeven</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -572,17 +572,17 @@
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nooit</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Voor Ge&amp;selecteerde Objecten</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Voor &amp;Alle Objecten</translation>
     </message>
     <message>
         <location line="-262"/>
@@ -1350,22 +1350,22 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Script %1 gebruiken om %2 te lezen</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Script %1 gebruiken om %2 te schrijven</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onafgehandelde fout in het script. Controleer de console.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Script gaf &quot;false&quot; terug. Controleer de console.</translation>
     </message>
 </context>
 <context>
@@ -1373,7 +1373,7 @@ Regel %1, colom %2</translation>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Python scripts worden opnieuw geladen</translation>
     </message>
 </context>
 <context>
@@ -2349,7 +2349,7 @@ Regel %1, colom %2</translation>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished">Debug-Console</translation>
+        <translation>Debug-Console</translation>
     </message>
 </context>
 <context>
@@ -3612,12 +3612,12 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+5"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale Vershuiving</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Verticale Vershuiving</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3938,7 +3938,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="-111"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens het opslaan van tileset: %1</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -4000,7 +4000,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Tiled map bestanden (*.tmx)</translation>
+        <translation>Tiled map bestanden (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -4008,7 +4008,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished">Tiled tileset bestanden (*.tsx)</translation>
+        <translation>Tiled tileset bestanden (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4263,7 +4263,7 @@ Kies een specifiek bestandsformaat.</translation>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschuiving Veranderen</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
