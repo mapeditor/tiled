@@ -78,6 +78,8 @@ public:
     qreal probability(int index) const;
     void setProbability(int index, qreal probability);
 
+    QSize maxSize() const;
+
     const QVector<TileStampVariation> &variations() const;
     void addVariation(Map *map, qreal probability = 1.0);
     void addVariation(const TileStampVariation &variation);
@@ -88,7 +90,7 @@ public:
     int quickStampIndex() const;
     void setQuickStampIndex(int quickStampIndex);
 
-    Map *randomVariation() const;
+    TileStampVariation randomVariation() const;
 
     TileStamp flipped(FlipDirection direction) const;
     TileStamp rotated(RotateDirection direction) const;

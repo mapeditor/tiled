@@ -138,8 +138,6 @@ QtGuiApplication {
         "fileedit.h",
         "filesystemwatcher.cpp",
         "filesystemwatcher.h",
-        "filltiles.cpp",
-        "filltiles.h",
         "flipmapobjects.cpp",
         "flipmapobjects.h",
         "geometry.cpp",

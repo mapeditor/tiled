@@ -22,13 +22,11 @@
 #ifndef TILEPAINTER_H
 #define TILEPAINTER_H
 
+#include "tilelayer.h"
+
 #include <QRegion>
 
 namespace Tiled {
-
-class Cell;
-class TileLayer;
-
 namespace Internal {
 
 class MapDocument;
@@ -58,6 +56,7 @@ public:
      * of the layer.
      */
     Cell cellAt(int x, int y) const;
+    Cell cellAt(QPoint pos) const;
 
     /**
      * Sets the cell at the given coordinates. The coordinates are relative to
@@ -120,6 +119,11 @@ private:
     MapDocument *mMapDocument;
     TileLayer *mTileLayer;
 };
+
+inline Cell TilePainter::cellAt(QPoint pos) const
+{
+    return cellAt(pos.x(), pos.y());
+}
 
 } // namespace Tiled
 } // namespace Internal

@@ -44,7 +44,6 @@
 #include "erasetiles.h"
 #include "exportasimagedialog.h"
 #include "bucketfilltool.h"
-#include "filltiles.h"
 #include "languagemanager.h"
 #include "layer.h"
 #include "layerdock.h"

@@ -92,7 +92,6 @@ SOURCES += aboutdialog.cpp \
     exportasimagedialog.cpp \
     fileedit.cpp \
     filesystemwatcher.cpp \
-    filltiles.cpp \
     flipmapobjects.cpp \
     geometry.cpp \
     imagelayeritem.cpp \
@@ -231,7 +230,6 @@ HEADERS += aboutdialog.h \
     exportasimagedialog.h \
     fileedit.h \
     filesystemwatcher.h \
-    filltiles.h \
     flipmapobjects.h \
     geometry.h \
     imagelayeritem.h \

@@ -108,12 +108,12 @@ private:
      * Updates the list of random cells.
      * This is done by taking all non-null tiles from the original stamp mStamp.
      */
-    void updateRandomList();
+    void updateRandomListAndMissingTilesets();
 
     /**
      * Fills the given \a region in the given \a tileLayer with random tiles.
      */
-    void randomFill(TileLayer *tileLayer, const QRegion &region) const;
+    void randomFill(TileLayer &tileLayer, const QRegion &region) const;
 };
 
 } // namespace Internal

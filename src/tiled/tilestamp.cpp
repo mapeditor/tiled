@@ -146,6 +146,16 @@ void TileStamp::setProbability(int index, qreal probability)
     d->variations[index].probability = probability;
 }
 
+QSize TileStamp::maxSize() const
+{
+    QSize size;
+    for (const TileStampVariation &variation : d->variations) {
+        size.setWidth(qMax(size.width(), variation.map->width()));
+        size.setHeight(qMax(size.height(), variation.map->height()));
+    }
+    return size;
+}
+
 const QVector<TileStampVariation> &TileStamp::variations() const
 {
     return d->variations;
@@ -206,10 +216,9 @@ void TileStamp::setQuickStampIndex(int quickStampIndex)
     d->quickStampIndex = quickStampIndex;
 }
 
-Map *TileStamp::randomVariation() const
+TileStampVariation TileStamp::randomVariation() const
 {
-    if (d->variations.isEmpty())
-        return nullptr;
+    Q_ASSERT(!d->variations.isEmpty());
 
     RandomPicker<const TileStampVariation *> randomPicker;
     for (const TileStampVariation &variation : d->variations)
