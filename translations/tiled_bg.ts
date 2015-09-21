@@ -42,7 +42,7 @@
     <message>
         <location line="+23"/>
         <source>Format not recognized (see --export-formats)</source>
-        <translation type="unfinished"></translation>
+        <translation>Форматът не беше разпознат (вижте --export-formats)</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -359,34 +359,34 @@
     <message>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+53"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Неуспешно отваряне на файла за четене.</translation>
+        <translation>Неуспешно отваряне на файла за четене.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Грешка при разбора на файла.</translation>
+        <translation>Грешка при разбора на файла.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Неуспешно отваряне на файла за запис.</translation>
+        <translation>Неуспешно отваряне на файла за запис.</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Грешка при записа на файла:
+        <translation>Грешка при записа на файла:
 %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Json map files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с карти във формата json (*.json)</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>JavaScript map files (*.js)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с карти на езика JavaScript (*.js)</translation>
     </message>
 </context>
 <context>
@@ -394,29 +394,29 @@
     <message>
         <location line="+27"/>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished">Неуспешно отваряне на файла за четене.</translation>
+        <translation>Неуспешно отваряне на файла за четене.</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Error parsing file.</source>
-        <translation type="unfinished">Грешка при разбора на файла.</translation>
+        <translation>Грешка при разбора на файла.</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Could not open file for writing.</source>
-        <translation type="unfinished">Неуспешно отваряне на файла за запис.</translation>
+        <translation>Неуспешно отваряне на файла за запис.</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Error while writing file:
 %1</source>
-        <translation type="unfinished">Грешка при записа на файла:
+        <translation>Грешка при записа на файла:
 %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Json tileset files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с плочни набори във формата json (*.json)</translation>
     </message>
 </context>
 <context>
@@ -467,7 +467,7 @@
     <message>
         <location line="+4"/>
         <source>Show Object &amp;Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Показване на &amp;имената на обектите</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -602,17 +602,17 @@
     <message>
         <location line="+8"/>
         <source>&amp;Never</source>
-        <translation type="unfinished"></translation>
+        <translation>На &amp;никои</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>For &amp;Selected Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>На &amp;избраните обекти</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>For &amp;All Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>На &amp;всички обекти</translation>
     </message>
     <message>
         <location line="-162"/>
@@ -1352,22 +1352,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/python/pythonplugin.cpp" line="+268"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Използване на скрипта %1 за прочит на %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Използване на скрипта %1 за запис на %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>В скрипта беше хвърлено неприхванато изключение. Моля, проверете конзолата.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Скриптът върна като резултат „невярно“. Моля, проверете конзолата.</translation>
     </message>
 </context>
 <context>
@@ -1375,7 +1375,7 @@ Line %1, column %2</source>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Презареждането на скриптовете на Python</translation>
     </message>
 </context>
 <context>
@@ -2351,7 +2351,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/consoledock.cpp" line="+36"/>
         <source>Debug Console</source>
-        <translation type="unfinished">Конзола за отстраняване на грешки</translation>
+        <translation>Конзола за отстраняване на грешки</translation>
     </message>
 </context>
 <context>
@@ -3613,12 +3613,12 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Хоризонтално отместване</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертикално отместване</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -3939,7 +3939,7 @@ Please select specific format.</source>
     <message>
         <location line="-111"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при запазването на плочния набор: %1</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -4001,7 +4001,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tmxmapformat.h" line="+62"/>
         <source>Tiled map files (*.tmx)</source>
-        <translation type="unfinished">Файлове с карти на Tiled (*.tmx)</translation>
+        <translation>Файлове с карти на Tiled (*.tmx)</translation>
     </message>
 </context>
 <context>
@@ -4009,7 +4009,7 @@ Please select specific format.</source>
     <message>
         <location line="+24"/>
         <source>Tiled tileset files (*.tsx)</source>
-        <translation type="unfinished">Файлове с плочни набори на Tiled (*.tsx)</translation>
+        <translation>Файлове с плочни набори на Tiled (*.tsx)</translation>
     </message>
 </context>
 <context>
@@ -4264,7 +4264,7 @@ Please select specific format.</source>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на отместването на слой</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
