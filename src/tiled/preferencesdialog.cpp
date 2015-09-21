@@ -50,10 +50,10 @@ public:
     { }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+               const QModelIndex &index) const override;
 
     QSize sizeHint(const QStyleOptionViewItem &,
-                   const QModelIndex &) const;
+                   const QModelIndex &) const override;
 };
 
 } // namespace Internal

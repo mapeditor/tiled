@@ -47,11 +47,11 @@ public:
     ~VariantEditorFactory();
 
 protected:
-    void connectPropertyManager(QtVariantPropertyManager *manager);
+    void connectPropertyManager(QtVariantPropertyManager *manager) override;
     QWidget *createEditor(QtVariantPropertyManager *manager,
                           QtProperty *property,
-                          QWidget *parent);
-    void disconnectPropertyManager(QtVariantPropertyManager *manager);
+                          QWidget *parent) override;
+    void disconnectPropertyManager(QtVariantPropertyManager *manager) override;
 
 private slots:
     void slotPropertyChanged(QtProperty *property, const QVariant &value);

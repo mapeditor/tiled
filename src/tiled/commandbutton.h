@@ -39,7 +39,7 @@ public:
     CommandButton(QWidget *parent);
 
 protected:
-    void changeEvent(QEvent *event);
+    void changeEvent(QEvent *event) override;
 
 private slots:
     void runCommand();

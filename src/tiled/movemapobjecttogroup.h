@@ -39,8 +39,8 @@ public:
                          MapObject *mapObject,
                          ObjectGroup *objectGroup);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;

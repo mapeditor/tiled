@@ -61,11 +61,11 @@ public:
      */
     void setMergeable(bool mergeable);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
-    int id() const { return Cmd_PaintTileLayer; }
-    bool mergeWith(const QUndoCommand *other);
+    int id() const override { return Cmd_PaintTileLayer; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     MapDocument *mMapDocument;

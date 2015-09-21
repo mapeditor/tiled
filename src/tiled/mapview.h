@@ -66,15 +66,15 @@ public:
     void setHandScrolling(bool handScrolling);
 
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
-    void hideEvent(QHideEvent *);
+    void hideEvent(QHideEvent *) override;
 
-    void wheelEvent(QWheelEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
     void handlePinchGesture(QPinchGesture *pinch);
 

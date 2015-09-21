@@ -33,15 +33,15 @@ class TileSelectionTool : public AbstractTileTool
 public:
     TileSelectionTool(QObject *parent = nullptr);
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
+    void tilePositionChanged(const QPoint &tilePos) override;
 
-    void updateStatusInfo();
+    void updateStatusInfo() override;
 
 private:
     enum SelectionMode {

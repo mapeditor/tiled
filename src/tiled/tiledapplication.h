@@ -38,7 +38,7 @@ public:
     TiledApplication(int &argc, char **argv);
 
 protected:
-    bool event(QEvent *);
+    bool event(QEvent *) override;
 
 signals:
     void fileOpenRequest(const QString &file);

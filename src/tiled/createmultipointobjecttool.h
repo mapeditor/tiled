@@ -35,12 +35,12 @@ public:
     CreateMultipointObjectTool(QObject *parent);
     ~CreateMultipointObjectTool();
 
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
+    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+                                       Qt::KeyboardModifiers modifiers) override;
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
 private:
     MapObject *mOverlayPolygonObject;

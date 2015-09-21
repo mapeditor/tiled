@@ -47,7 +47,7 @@ public:
     ~PreferencesDialog();
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void languageSelected(int index);

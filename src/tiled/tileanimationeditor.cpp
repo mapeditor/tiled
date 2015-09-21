@@ -51,19 +51,19 @@ public:
         , mTileset(nullptr)
     {}
 
-    int rowCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    bool removeRows(int row, int count, const QModelIndex &parent);
+    bool removeRows(int row, int count, const QModelIndex &parent) override;
 
-    QStringList mimeTypes() const;
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action,
                       int row, int column,
-                      const QModelIndex &parent);
-    Qt::DropActions supportedDropActions() const;
+                      const QModelIndex &parent) override;
+    Qt::DropActions supportedDropActions() const override;
 
     void setFrames(const Tileset *tileset, const QVector<Frame> &frames);
     void addTileIdAsFrame(int id);

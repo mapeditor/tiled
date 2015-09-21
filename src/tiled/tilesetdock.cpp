@@ -93,8 +93,8 @@ public:
                                                 "Export Tileset"));
     }
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap()
@@ -126,7 +126,7 @@ public:
     }
 
 protected:
-    void paintEvent(QPaintEvent *)
+    void paintEvent(QPaintEvent *) override
     {
         QStylePainter p(this);
         QStyleOptionToolButton opt;

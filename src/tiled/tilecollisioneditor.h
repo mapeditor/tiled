@@ -61,8 +61,8 @@ public slots:
     void setTile(Tile *tile);
 
 protected:
-    void closeEvent(QCloseEvent *);
-    void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent *) override;
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void setSelectedTool(AbstractTool*);

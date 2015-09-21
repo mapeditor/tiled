@@ -53,8 +53,8 @@ public:
 
     ~OffsetLayer();
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     Layer *swapLayer(Layer *layer);

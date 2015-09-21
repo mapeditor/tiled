@@ -64,8 +64,8 @@ class AddTerrain : public AddRemoveTerrain
 public:
     AddTerrain(MapDocument *mapDocument, Terrain *terrain);
 
-    void undo() { removeTerrain(); }
-    void redo() { addTerrain(); }
+    void undo() override { removeTerrain(); }
+    void redo() override { addTerrain(); }
 };
 
 /**
@@ -76,8 +76,8 @@ class RemoveTerrain : public AddRemoveTerrain
 public:
     RemoveTerrain(MapDocument *mapDocument, Terrain *terrain);
 
-    void undo() { addTerrain(); }
-    void redo() { removeTerrain(); }
+    void undo() override { addTerrain(); }
+    void redo() override { removeTerrain(); }
 };
 
 } // namespace Internal

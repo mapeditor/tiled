@@ -70,32 +70,32 @@ protected:
 public:
     HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
 
-    QSize mapSize() const;
+    QSize mapSize() const override;
 
-    QRect boundingRect(const QRect &rect) const;
+    QRect boundingRect(const QRect &rect) const override;
 
     void drawGrid(QPainter *painter, const QRectF &exposed,
-                  QColor gridColor) const;
+                  QColor gridColor) const override;
 
     void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF()) const;
+                       const QRectF &exposed = QRectF()) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
                            const QColor &color,
-                           const QRectF &exposed) const;
+                           const QRectF &exposed) const override;
 
     using OrthogonalRenderer::pixelToTileCoords;
-    QPointF pixelToTileCoords(qreal x, qreal y) const;
+    QPointF pixelToTileCoords(qreal x, qreal y) const override;
 
     using OrthogonalRenderer::tileToPixelCoords;
-    QPointF tileToPixelCoords(qreal x, qreal y) const;
+    QPointF tileToPixelCoords(qreal x, qreal y) const override;
 
     using OrthogonalRenderer::screenToTileCoords;
-    QPointF screenToTileCoords(qreal x, qreal y) const;
+    QPointF screenToTileCoords(qreal x, qreal y) const override;
 
     using OrthogonalRenderer::tileToScreenCoords;
-    QPointF tileToScreenCoords(qreal x, qreal y) const;
+    QPointF tileToScreenCoords(qreal x, qreal y) const override;
 
     // Functions specific to this type of renderer
     QPoint topLeft(int x, int y) const;

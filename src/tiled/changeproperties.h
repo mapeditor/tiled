@@ -47,8 +47,8 @@ public:
                      const QString &kind,
                      Object *object,
                      const Properties &newProperties);
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     void swapProperties();
@@ -75,8 +75,8 @@ public:
                 const QString &value,
                 QUndoCommand *parent = nullptr);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     struct ObjectProperty {
@@ -105,8 +105,8 @@ public:
                    const QString &name,
                    QUndoCommand *parent = nullptr);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;

@@ -44,8 +44,8 @@ public:
                     const QString &name,
                     const QString &type);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap();
@@ -66,8 +66,8 @@ public:
                         MapObject *mapObject,
                         bool visible);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapObjectModel *mMapObjectModel;

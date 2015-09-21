@@ -35,8 +35,8 @@ public:
                 int layerIndex,
                 const QString &name);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     void swapName();

@@ -46,7 +46,7 @@ public slots:
     void bringToFront();
 
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
 private slots:
     void mapDocumentChanged(MapDocument *mapDocument);

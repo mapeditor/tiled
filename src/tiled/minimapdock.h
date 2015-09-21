@@ -42,7 +42,7 @@ public:
     void setMapDocument(MapDocument *);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private:
     void retranslateUi();    

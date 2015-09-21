@@ -44,10 +44,10 @@ public:
     ObjectGroup *objectGroup() const;
 
     // QGraphicsItem
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = nullptr);
+               QWidget *widget = nullptr) override;
 
 private:
     ObjectGroup *mObjectGroup;

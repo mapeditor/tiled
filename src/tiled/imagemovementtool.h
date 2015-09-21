@@ -33,15 +33,15 @@ class ImageMovementTool : public AbstractImageTool
 public:
     explicit ImageMovementTool(QObject *parent = nullptr);
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
-    void mouseEntered();
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+    void mouseEntered() override;
     void mouseMoved(const QPointF &pos,
-                    Qt::KeyboardModifiers modifiers);
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+                    Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
 private:
     bool mMousePressed;

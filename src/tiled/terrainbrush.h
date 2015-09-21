@@ -51,15 +51,15 @@ public:
     TerrainBrush(QObject *parent = nullptr);
     ~TerrainBrush();
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
-    void modifiersChanged(Qt::KeyboardModifiers modifiers);
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
     /**
      * Sets the stamp that is drawn when painting. The stamp brush takes
@@ -83,10 +83,10 @@ public:
     }
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos);
+    void tilePositionChanged(const QPoint &tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument);
+                            MapDocument *newDocument) override;
 
 private:
     void beginPaint();

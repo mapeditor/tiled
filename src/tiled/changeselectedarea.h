@@ -39,8 +39,8 @@ public:
     ChangeSelectedArea(MapDocument *mapDocument,
                         const QRegion &selection);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     void swapSelection();

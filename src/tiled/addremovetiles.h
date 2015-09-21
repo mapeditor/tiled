@@ -68,10 +68,10 @@ public:
              Tileset *tileset,
              const QList<Tile*> &tiles);
 
-    void undo()
+    void undo() override
     { removeTiles(); }
 
-    void redo()
+    void redo() override
     { addTiles(); }
 };
 
@@ -86,10 +86,10 @@ public:
                 int index,
                 int count);
 
-    void undo()
+    void undo() override
     { addTiles(); }
 
-    void redo()
+    void redo() override
     { removeTiles(); }
 };
 

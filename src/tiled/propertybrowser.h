@@ -81,7 +81,7 @@ public:
     void editCustomProperty(const QString &name);
 
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
 private slots:
     void mapChanged();

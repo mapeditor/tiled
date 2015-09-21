@@ -55,10 +55,10 @@ public:
         , mNewImageTileId(tileId)
     {}
 
-    void undo()
+    void undo() override
     { mTerrainModel->setTerrainImage(mTileset, mTerrainId, mOldImageTileId); }
 
-    void redo()
+    void redo() override
     { mTerrainModel->setTerrainImage(mTileset, mTerrainId, mNewImageTileId); }
 
 private:

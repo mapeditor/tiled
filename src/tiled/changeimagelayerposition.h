@@ -46,8 +46,8 @@ public:
                              ImageLayer *imageLayer,
                              const QPoint &newPos);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;

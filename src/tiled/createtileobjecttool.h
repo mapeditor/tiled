@@ -34,16 +34,16 @@ class CreateTileObjectTool : public CreateObjectTool
 public:
     CreateTileObjectTool(QObject *parent);
 
-    void languageChanged();
+    void languageChanged() override;
 
 protected:
     void mouseMovedWhileCreatingObject(const QPointF &pos,
-                                       Qt::KeyboardModifiers modifiers);
-    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
-    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event);
+                                       Qt::KeyboardModifiers modifiers) override;
+    void mousePressedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleasedWhileCreatingObject(QGraphicsSceneMouseEvent *event) override;
 
-    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup);
-    MapObject *createNewMapObject();
+    void startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;
+    MapObject *createNewMapObject() override;
 };
 
 } // namespace Internal

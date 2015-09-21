@@ -48,8 +48,8 @@ signals:
     void setStamp(const TileStamp &);
 
 protected:
-    void changeEvent(QEvent *e);
-    void keyPressEvent(QKeyEvent *);
+    void changeEvent(QEvent *e) override;
+    void keyPressEvent(QKeyEvent *) override;
 
 private slots:
     void currentRowChanged(const QModelIndex &index);
@@ -91,7 +91,7 @@ class TileStampView : public QTreeView
 public:
     explicit TileStampView(QWidget *parent = nullptr);
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 };
 
 } // namespace Internal

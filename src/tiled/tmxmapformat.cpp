@@ -40,7 +40,7 @@ protected:
     /**
      * Overridden to make sure the resolved reference is a clean path.
      */
-    QString resolveReference(const QString &reference, const QString &mapPath)
+    QString resolveReference(const QString &reference, const QString &mapPath) override
     {
         QString resolved = MapReader::resolveReference(reference, mapPath);
         return QDir::cleanPath(resolved);

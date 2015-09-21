@@ -42,8 +42,8 @@ public:
                   Tileset *tileset,
                   const QString &newName);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     MapDocument *mMapDocument;
@@ -59,11 +59,11 @@ public:
                             Tileset *tileset,
                             QPoint tileOffset);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
-    int id() const { return Cmd_ChangeTilesetTileOffset; }
-    bool mergeWith(const QUndoCommand *other);
+    int id() const override { return Cmd_ChangeTilesetTileOffset; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     MapDocument *mMapDocument;

@@ -42,7 +42,7 @@ public:
     UndoDock(QUndoGroup *undoGroup, QWidget *parent = nullptr);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private:
     void retranslateUi();

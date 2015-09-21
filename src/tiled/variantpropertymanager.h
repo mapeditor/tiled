@@ -41,27 +41,27 @@ public:
         , mSuggestionsAttribute(QLatin1String("suggestions"))
     {}
 
-    QVariant value(const QtProperty *property) const;
-    int valueType(int propertyType) const;
-    bool isPropertyTypeSupported(int propertyType) const;
+    QVariant value(const QtProperty *property) const override;
+    int valueType(int propertyType) const override;
+    bool isPropertyTypeSupported(int propertyType) const override;
 
-    QStringList attributes(int propertyType) const;
-    int attributeType(int propertyType, const QString &attribute) const;
+    QStringList attributes(int propertyType) const override;
+    int attributeType(int propertyType, const QString &attribute) const override;
     QVariant attributeValue(const QtProperty *property,
-                            const QString &attribute) const;
+                            const QString &attribute) const override;
 
     static int filePathTypeId();
 
 public slots:
-    void setValue(QtProperty *property, const QVariant &val);
+    void setValue(QtProperty *property, const QVariant &val) override;
     void setAttribute(QtProperty *property,
                       const QString &attribute,
-                      const QVariant &value);
+                      const QVariant &value) override;
 
 protected:
-    QString valueText(const QtProperty *property) const;
-    void initializeProperty(QtProperty *property);
-    void uninitializeProperty(QtProperty *property);
+    QString valueText(const QtProperty *property) const override;
+    void initializeProperty(QtProperty *property) override;
+    void uninitializeProperty(QtProperty *property) override;
 
 private:
     struct Data {

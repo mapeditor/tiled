@@ -70,12 +70,12 @@ public:
         setRotation(mapObject->rotation());
     }
 
-    QRectF boundingRect() const
+    QRectF boundingRect() const override
     {
         return mBoundingRect;
     }
 
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *)
+    void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *) override
     {
         const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
@@ -105,12 +105,12 @@ public:
         setPos(mTileLayer->offset());
     }
 
-    QRectF boundingRect() const
+    QRectF boundingRect() const override
     {
         return mRenderer->boundingRect(mTileLayer->bounds());
     }
 
-    void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *)
+    void paint(QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *) override
     {
         mRenderer->drawTileLayer(p, mTileLayer, option->rect);
     }
@@ -143,8 +143,8 @@ public:
         }
     }
 
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
+    QRectF boundingRect() const override { return QRectF(); }
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 };
 
 /**
@@ -168,8 +168,8 @@ public:
         }
     }
 
-    QRectF boundingRect() const { return QRectF(); }
-    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) {}
+    QRectF boundingRect() const override { return QRectF(); }
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 };
 
 

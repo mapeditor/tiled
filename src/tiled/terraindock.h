@@ -72,7 +72,7 @@ signals:
     void currentTerrainChanged(const Terrain *terrain);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void currentRowChanged(const QModelIndex &index);

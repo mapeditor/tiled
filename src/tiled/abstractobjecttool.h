@@ -49,20 +49,20 @@ public:
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void keyPressed(QKeyEvent *event);
-    void mouseLeft();
-    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
-    void mousePressed(QGraphicsSceneMouseEvent *event);
+    void keyPressed(QKeyEvent *event) override;
+    void mouseLeft() override;
+    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
 protected:
     /**
      * Overridden to only enable this tool when the currently selected layer is
      * an object group.
      */
-    void updateEnabledState();
+    void updateEnabledState() override;
 
     MapScene *mapScene() const { return mMapScene; }
     ObjectGroup *currentObjectGroup() const;

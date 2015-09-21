@@ -46,7 +46,7 @@ public:
     void setMapDocument(MapDocument *mapDoc);
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private slots:
     void updateActions();
@@ -78,7 +78,7 @@ class ObjectsView : public QTreeView
 public:
     ObjectsView(QWidget *parent = nullptr);
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     void setMapDocument(MapDocument *mapDoc);
 
@@ -86,7 +86,7 @@ public:
 
 protected:
     void selectionChanged(const QItemSelection &selected,
-                          const QItemSelection &deselected);
+                          const QItemSelection &deselected) override;
 
 private slots:
     void onPressed(const QModelIndex &index);

@@ -36,7 +36,7 @@ class TileAnimationDriver : public QAbstractAnimation
 public:
     explicit TileAnimationDriver(QObject *parent = nullptr);
 
-    int duration() const;
+    int duration() const override;
 
 signals:
     /**
@@ -46,8 +46,8 @@ signals:
     void update(int deltaTime);
 
 protected:
-    void updateCurrentTime(int currentTime);
-    void updateState(State newState, State oldState);
+    void updateCurrentTime(int currentTime) override;
+    void updateState(State newState, State oldState) override;
 
 private:
     int mLastTime;

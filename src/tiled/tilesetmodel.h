@@ -56,19 +56,19 @@ public:
     /**
      * Returns the number of rows.
      */
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the number of columns.
      */
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     /**
      * Returns the data stored under the given <i>role</i> for the item
      * referred to by the <i>index</i>.
      */
     QVariant data(const QModelIndex &index,
-                  int role = Qt::DisplayRole) const;
+                  int role = Qt::DisplayRole) const override;
 
 
 
@@ -77,12 +77,12 @@ public:
      * minimum width and height of the sections.
      */
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
+                        int role = Qt::DisplayRole) const override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    QStringList mimeTypes() const;
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
     /**
      * Returns the tile at the given index.

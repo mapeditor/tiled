@@ -105,14 +105,14 @@ public slots:
     bool openFile(const QString &fileName);
 
 protected:
-    void closeEvent(QCloseEvent *event);
-    void changeEvent(QEvent *event);
+    void closeEvent(QCloseEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *);
-    void keyReleaseEvent(QKeyEvent *);
+    void keyPressEvent(QKeyEvent *) override;
+    void keyReleaseEvent(QKeyEvent *) override;
 
-    void dragEnterEvent(QDragEnterEvent *);
-    void dropEvent(QDropEvent *);
+    void dragEnterEvent(QDragEnterEvent *) override;
+    void dropEvent(QDropEvent *) override;
 
 private slots:
     void newMap();

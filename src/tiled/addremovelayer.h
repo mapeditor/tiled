@@ -67,10 +67,10 @@ public:
         setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
     }
 
-    void undo()
+    void undo() override
     { removeLayer(); }
 
-    void redo()
+    void redo() override
     { addLayer(); }
 };
 
@@ -89,10 +89,10 @@ public:
         setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
     }
 
-    void undo()
+    void undo() override
     { addLayer(); }
 
-    void redo()
+    void redo() override
     { removeLayer(); }
 };
 

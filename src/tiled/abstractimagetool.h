@@ -46,15 +46,15 @@ public:
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void keyPressed(QKeyEvent *event);
-    void mouseLeft();
-    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void keyPressed(QKeyEvent *event) override;
+    void mouseLeft() override;
+    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
 
 protected:
-    void updateEnabledState();
+    void updateEnabledState() override;
 
     MapScene *mapScene() const { return mMapScene; }
     ImageLayer *currentImageLayer() const;

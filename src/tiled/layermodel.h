@@ -52,17 +52,17 @@ public:
 
     LayerModel(QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index,
-                  int role = Qt::DisplayRole) const;
+                  int role = Qt::DisplayRole) const override;
 
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
+                        int role = Qt::DisplayRole) const override;
 
     int toLayerIndex(const QModelIndex &index) const;
 

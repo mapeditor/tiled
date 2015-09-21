@@ -68,7 +68,7 @@ public:
     }
 
     enum { Type = UserType + 2 };
-    int type() const { return Type; }
+    int type() const override { return Type; }
 
     MapObjectItem *mapObjectItem() const { return mMapObjectItem; }
     MapObject *mapObject() const { return mMapObjectItem->mapObject(); }
@@ -81,10 +81,10 @@ public:
     void setSelected(bool selected) { mSelected = selected; update(); }
     bool isSelected() const { return mSelected; }
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = nullptr);
+               QWidget *widget = nullptr) override;
 
 private:
     MapObjectItem *mMapObjectItem;

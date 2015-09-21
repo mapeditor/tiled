@@ -59,11 +59,11 @@ public slots:
     void setTile(Tile *tile);
 
 protected:
-    void closeEvent(QCloseEvent *);
-    void changeEvent(QEvent *e);
+    void closeEvent(QCloseEvent *) override;
+    void changeEvent(QEvent *e) override;
 
-    void showEvent(QShowEvent *);
-    void hideEvent(QHideEvent *);
+    void showEvent(QShowEvent *) override;
+    void hideEvent(QHideEvent *) override;
 
 private slots:
     void framesEdited();

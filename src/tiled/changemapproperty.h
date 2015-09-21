@@ -104,8 +104,8 @@ public:
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::LayerDataFormat layerDataFormat);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
 private:
     void swap();

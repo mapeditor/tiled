@@ -66,11 +66,11 @@ public:
      */
     ChangeTileTerrain(MapDocument *mapDocument, const Changes &changes);
 
-    void undo();
-    void redo();
+    void undo() override;
+    void redo() override;
 
-    int id() const { return Cmd_ChangeTileTerrain; }
-    bool mergeWith(const QUndoCommand *other);
+    int id() const override { return Cmd_ChangeTileTerrain; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     void initText();

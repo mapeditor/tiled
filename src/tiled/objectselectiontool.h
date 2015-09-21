@@ -45,18 +45,18 @@ public:
     explicit ObjectSelectionTool(QObject *parent = nullptr);
     ~ObjectSelectionTool();
 
-    void activate(MapScene *scene);
-    void deactivate(MapScene *scene);
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
 
-    void keyPressed(QKeyEvent *);
-    void mouseEntered();
+    void keyPressed(QKeyEvent *) override;
+    void mouseEntered() override;
     void mouseMoved(const QPointF &pos,
-                    Qt::KeyboardModifiers modifiers);
-    void mousePressed(QGraphicsSceneMouseEvent *event);
-    void mouseReleased(QGraphicsSceneMouseEvent *event);
-    void modifiersChanged(Qt::KeyboardModifiers modifiers);
+                    Qt::KeyboardModifiers modifiers) override;
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
-    void languageChanged();
+    void languageChanged() override;
 
 private slots:
     void updateHandles();

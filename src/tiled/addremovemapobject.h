@@ -66,10 +66,10 @@ public:
     AddMapObject(MapDocument *mapDocument, ObjectGroup *objectGroup,
                  MapObject *mapObject, QUndoCommand *parent = nullptr);
 
-    void undo()
+    void undo() override
     { removeObject(); }
 
-    void redo()
+    void redo() override
     { addObject(); }
 };
 
@@ -82,10 +82,10 @@ public:
     RemoveMapObject(MapDocument *mapDocument, MapObject *mapObject,
                     QUndoCommand *parent = nullptr);
 
-    void undo()
+    void undo() override
     { addObject(); }
 
-    void redo()
+    void redo() override
     { removeObject(); }
 };
 

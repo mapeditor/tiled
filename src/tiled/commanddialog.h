@@ -45,7 +45,7 @@ public:
       * Saves the changes to the users preferences.
       * Automatically called when the dialog is accepted.
       */
-    void accept();
+    void accept() override;
 
 private:
     Ui::CommandDialog *mUi;
@@ -68,7 +68,7 @@ private slots:
     /**
       * Displays a context menu for the item at <i>event</i>'s position.
       */
-    void contextMenuEvent(QContextMenuEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
     /**
       * Fixes the selection after rows have been removed.

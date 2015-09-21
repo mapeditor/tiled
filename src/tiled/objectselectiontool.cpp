@@ -150,9 +150,9 @@ public:
     }
 
 protected:
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *) { mUnderMouse = true; update(); }
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) { mUnderMouse = false; update(); }
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *) override { mUnderMouse = true; update(); }
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override { mUnderMouse = false; update(); }
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     bool mUnderMouse;
 };
@@ -179,8 +179,8 @@ public:
         setZValue(10000 + 1);
     }
 
-    QRectF boundingRect() const { return QRectF(-9, -9, 18, 18); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QRectF boundingRect() const override { return QRectF(-9, -9, 18, 18); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 };
 
 void OriginIndicator::paint(QPainter *painter,
@@ -223,8 +223,8 @@ public:
         mArrow = transform.map(mArrow);
     }
 
-    QRectF boundingRect() const { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QRectF boundingRect() const override { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
     QPainterPath mArrow;
@@ -284,8 +284,8 @@ public:
     bool resizingLimitHorizontal() const { return mResizingLimitHorizontal; }
     bool resizingLimitVertical() const { return mResizingLimitVertical; }
     
-    QRectF boundingRect() const { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+    QRectF boundingRect() const override { return mArrow.boundingRect().adjusted(-1, -1, 1, 1); }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
 private:
     AnchorPosition mAnchorPosition;

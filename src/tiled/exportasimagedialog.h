@@ -52,7 +52,7 @@ public:
     ~ExportAsImageDialog();
 
 public:
-    void accept();
+    void accept() override;
 
 private slots:
     void browse();
