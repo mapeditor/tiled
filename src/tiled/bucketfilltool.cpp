@@ -99,9 +99,6 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
                                                               tilePos.y()))
         return;
 
-    // This clears the connections so we don't get callbacks
-    clearConnections(mapDocument());
-
     // Optimization: we don't need to recalculate the fill area
     // if the new mouse position is still over the filled region
     // and the shift modifier hasn't changed.
@@ -157,6 +154,9 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
             mMissingTilesets.clear();
             mapDocument()->unifyTilesets(variation, mMissingTilesets);
 
+            // Suppress emission of regionChanged signal
+            const QSignalBlocker blocker(mapDocument());
+
             TilePainter tilePainter(mapDocument(), mFillOverlay.data());
             tilePainter.drawStamp(stampLayer, mFillRegion);
         }
@@ -169,8 +169,6 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
         // Update the brush item to draw the overlay
         brushItem()->setTileLayer(mFillOverlay);
     }
-    // Create connections to know when the overlay should be cleared
-    makeConnections();
 }
 
 void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
