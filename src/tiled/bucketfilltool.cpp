@@ -32,6 +32,7 @@
 #include "mapdocument.h"
 
 #include <QApplication>
+#include <QSignalBlocker>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
