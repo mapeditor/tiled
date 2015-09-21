@@ -195,7 +195,7 @@ void MapView::wheelEvent(QWheelEvent *event)
  */
 void MapView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton) {
+    if (event->button() == Qt::MidButton && isActiveWindow()) {
         setHandScrolling(true);
         return;
     }
