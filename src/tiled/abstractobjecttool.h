@@ -47,7 +47,7 @@ public:
     AbstractObjectTool(const QString &name,
                        const QIcon &icon,
                        const QKeySequence &shortcut,
-                       QObject *parent = 0);
+                       QObject *parent = nullptr);
 
     void activate(MapScene *scene);
     void deactivate(MapScene *scene);

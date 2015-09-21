@@ -116,8 +116,8 @@ private:
     struct Option
     {
         Option()
-            : callback(0)
-            , data(0)
+            : callback(nullptr)
+            , data(nullptr)
         {}
 
         Option(Callback callback,

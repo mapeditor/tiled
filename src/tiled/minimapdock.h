@@ -37,7 +37,7 @@ class MiniMapDock : public QDockWidget
     Q_OBJECT
 
 public:
-    MiniMapDock(QWidget *parent = 0);
+    MiniMapDock(QWidget *parent = nullptr);
 
     void setMapDocument(MapDocument *);
 

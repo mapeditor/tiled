@@ -45,7 +45,7 @@ public:
      *
      * @param path the path to start in by default, or an image file
      */
-    NewTilesetDialog(const QString &path, QWidget *parent = 0);
+    NewTilesetDialog(const QString &path, QWidget *parent = nullptr);
     ~NewTilesetDialog();
 
     void setTileWidth(int width);

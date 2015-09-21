@@ -198,7 +198,7 @@ private slots:
     void cursorChanged(const QCursor &cursor);
 
 private:
-    DocumentManager(QObject *parent = 0);
+    DocumentManager(QObject *parent = nullptr);
     ~DocumentManager();
 
     QList<MapDocument*> mDocuments;

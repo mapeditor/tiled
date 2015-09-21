@@ -34,7 +34,7 @@ AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
     , mIcon(icon)
     , mShortcut(shortcut)
     , mEnabled(false)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
 {
 }
 
@@ -101,5 +101,5 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
 
 void AbstractTool::updateEnabledState()
 {
-    setEnabled(mMapDocument != 0);
+    setEnabled(mMapDocument != nullptr);
 }

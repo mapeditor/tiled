@@ -218,7 +218,7 @@ void Map::adoptLayer(Layer *layer)
 Layer *Map::takeLayerAt(int index)
 {
     Layer *layer = mLayers.takeAt(index);
-    layer->setMap(0);
+    layer->setMap(nullptr);
     return layer;
 }
 

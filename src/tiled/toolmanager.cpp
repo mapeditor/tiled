@@ -31,9 +31,9 @@ using namespace Tiled::Internal;
 ToolManager::ToolManager(QObject *parent)
     : QObject(parent)
     , mActionGroup(new QActionGroup(this))
-    , mSelectedTool(0)
-    , mPreviouslyDisabledTool(0)
-    , mMapDocument(0)
+    , mSelectedTool(nullptr)
+    , mPreviouslyDisabledTool(nullptr)
+    , mMapDocument(nullptr)
 {
     mActionGroup->setExclusive(true);
     connect(mActionGroup, SIGNAL(triggered(QAction*)),
@@ -110,7 +110,7 @@ void ToolManager::selectTool(AbstractTool *tool)
     // The given tool was not found. Don't select any tool.
     foreach (QAction *action, mActionGroup->actions())
         action->setChecked(false);
-    setSelectedTool(0);
+    setSelectedTool(nullptr);
 }
 
 void ToolManager::actionTriggered(QAction *action)
@@ -177,7 +177,7 @@ AbstractTool *ToolManager::firstEnabledTool() const
             if (tool->isEnabled())
                 return tool;
 
-    return 0;
+    return nullptr;
 }
 
 void ToolManager::setSelectedTool(AbstractTool *tool)

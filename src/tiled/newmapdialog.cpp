@@ -105,7 +105,7 @@ NewMapDialog::~NewMapDialog()
 MapDocument *NewMapDialog::createMap()
 {
     if (exec() != QDialog::Accepted)
-        return 0;
+        return nullptr;
 
     const int mapWidth = mUi->mapWidth->value();
     const int mapHeight = mUi->mapHeight->value();

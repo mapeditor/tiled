@@ -44,7 +44,7 @@ AbstractObjectTool::AbstractObjectTool(const QString &name,
                                        const QKeySequence &shortcut,
                                        QObject *parent)
     : AbstractTool(name, icon, shortcut, parent)
-    , mMapScene(0)
+    , mMapScene(nullptr)
 {
 }
 
@@ -55,7 +55,7 @@ void AbstractObjectTool::activate(MapScene *scene)
 
 void AbstractObjectTool::deactivate(MapScene *)
 {
-    mMapScene = 0;
+    mMapScene = nullptr;
 }
 
 void AbstractObjectTool::keyPressed(QKeyEvent *event)
@@ -99,13 +99,13 @@ void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
 void AbstractObjectTool::updateEnabledState()
 {
-    setEnabled(currentObjectGroup() != 0);
+    setEnabled(currentObjectGroup() != nullptr);
 }
 
 ObjectGroup *AbstractObjectTool::currentObjectGroup() const
 {
     if (!mapDocument())
-        return 0;
+        return nullptr;
 
     return dynamic_cast<ObjectGroup*>(mapDocument()->currentLayer());
 }
@@ -116,7 +116,7 @@ MapObjectItem *AbstractObjectTool::topMostObjectItemAt(QPointF pos) const
         if (MapObjectItem *objectItem = qgraphicsitem_cast<MapObjectItem*>(item))
             return objectItem;
     }
-    return 0;
+    return nullptr;
 }
 
 void AbstractObjectTool::duplicateObjects()

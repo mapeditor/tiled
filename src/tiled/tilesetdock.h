@@ -66,7 +66,7 @@ public:
     /**
      * Constructor.
      */
-    TilesetDock(QWidget *parent = 0);
+    TilesetDock(QWidget *parent = nullptr);
 
     ~TilesetDock();
 

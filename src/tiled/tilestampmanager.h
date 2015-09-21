@@ -50,7 +50,7 @@ class TileStampManager : public QObject
     Q_OBJECT
 
 public:
-    TileStampManager(const ToolManager &toolManager, QObject *parent = 0);
+    TileStampManager(const ToolManager &toolManager, QObject *parent = nullptr);
     ~TileStampManager();
 
     static QList<Qt::Key> quickStampKeys();

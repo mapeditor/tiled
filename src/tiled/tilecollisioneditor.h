@@ -47,7 +47,7 @@ class TileCollisionEditor : public QMainWindow
     };
 
 public:
-    explicit TileCollisionEditor(QWidget *parent = 0);
+    explicit TileCollisionEditor(QWidget *parent = nullptr);
     ~TileCollisionEditor();
 
     void setMapDocument(MapDocument *mapDocument);

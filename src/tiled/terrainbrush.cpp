@@ -47,7 +47,7 @@ TerrainBrush::TerrainBrush(QObject *parent)
                                ":images/24x24/terrain-edit.png")),
                        QKeySequence(tr("T")),
                        parent)
-    , mTerrain(0)
+    , mTerrain(nullptr)
     , mPaintX(0), mPaintY(0)
     , mOffsetX(0), mOffsetY(0)
     , mIsActive(false)
@@ -164,13 +164,13 @@ void TerrainBrush::languageChanged()
 static Terrain *firstTerrain(MapDocument *mapDocument)
 {
     if (!mapDocument)
-        return 0;
+        return nullptr;
 
     foreach (const SharedTileset &tileset, mapDocument->map()->tilesets())
         if (tileset->terrainCount() > 0)
             return tileset->terrain(0);
 
-    return 0;
+    return nullptr;
 }
 
 void TerrainBrush::mapDocumentChanged(MapDocument *oldDocument,
@@ -354,7 +354,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
     if (!currentLayer->bounds().contains(cursorPos))
         return;
 
-    Tileset *terrainTileset = 0;
+    Tileset *terrainTileset = nullptr;
     int terrainId = -1;
     if (mTerrain) {
         terrainTileset = mTerrain->tileset();
@@ -401,7 +401,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         const unsigned currentTerrain = ::terrain(tile);
 
         // get the tileset for this tile
-        Tileset *tileset = 0;
+        Tileset *tileset = nullptr;
         if (terrainTileset) {
             // if we are painting a terrain, then we'll use the terrains tileset
             tileset = terrainTileset;
@@ -469,7 +469,7 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
         }
 
         // find the most appropriate tile in the tileset
-        Tile *paste = 0;
+        Tile *paste = nullptr;
         if (preferredTerrain != 0xFFFFFFFF) {
             paste = findBestTile(*tileset, preferredTerrain, mask);
             if (!paste)

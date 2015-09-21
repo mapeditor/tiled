@@ -66,7 +66,7 @@ MapDocument::MapDocument(Map *map, const QString &fileName):
     mMap(map),
     mLayerModel(new LayerModel(this)),
     mCurrentObject(map),
-    mRenderer(0),
+    mRenderer(nullptr),
     mMapObjectModel(new MapObjectModel(this)),
     mTerrainModel(new TerrainModel(this, this)),
     mUndoStack(new QUndoStack(this))
@@ -278,7 +278,7 @@ void MapDocument::setCurrentLayerIndex(int index)
 Layer *MapDocument::currentLayer() const
 {
     if (mCurrentLayerIndex == -1)
-        return 0;
+        return nullptr;
 
     return mMap->layerAt(mCurrentLayerIndex);
 }
@@ -437,7 +437,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
  */
 void MapDocument::addLayer(Layer::TypeFlag layerType)
 {
-    Layer *layer = 0;
+    Layer *layer = nullptr;
     QString name;
 
     switch (layerType) {
@@ -595,7 +595,7 @@ void MapDocument::removeTilesetAt(int index)
     SharedTileset tileset = mMap->tilesets().at(index);
 
     if (tileset.data() == mCurrentObject || isFromTileset(mCurrentObject, tileset.data()))
-        setCurrentObject(0);
+        setCurrentObject(nullptr);
 
     mMap->removeTilesetAt(index);
     emit tilesetRemoved(tileset.data());
@@ -832,7 +832,7 @@ void MapDocument::onLayerAboutToBeRemoved(int index)
 {
     Layer *layer = mMap->layerAt(index);
     if (layer == mCurrentObject)
-        setCurrentObject(0);
+        setCurrentObject(nullptr);
 
     // Deselect any objects on this layer when necessary
     if (ObjectGroup *og = dynamic_cast<ObjectGroup*>(layer))
@@ -858,7 +858,7 @@ void MapDocument::onLayerRemoved(int index)
 void MapDocument::onTerrainRemoved(Terrain *terrain)
 {
     if (terrain == mCurrentObject)
-        setCurrentObject(0);
+        setCurrentObject(nullptr);
 }
 
 void MapDocument::deselectObjects(const QList<MapObject *> &objects)
@@ -866,7 +866,7 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
     // Unset the current object when it was part of this list of objects
     if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType)
         if (objects.contains(static_cast<MapObject*>(mCurrentObject)))
-            setCurrentObject(0);
+            setCurrentObject(nullptr);
 
     int removedCount = 0;
     foreach (MapObject *object, objects)

@@ -42,7 +42,7 @@ public:
         CreateGeometry
     };
 
-    CreateObjectTool(CreationMode mode, QObject *parent = 0);
+    CreateObjectTool(CreationMode mode, QObject *parent = nullptr);
     ~CreateObjectTool();
 
     void activate(MapScene *scene);

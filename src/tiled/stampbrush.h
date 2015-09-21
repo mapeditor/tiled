@@ -45,7 +45,7 @@ class StampBrush : public AbstractTileTool
     Q_OBJECT
 
 public:
-    StampBrush(QObject *parent = 0);
+    StampBrush(QObject *parent = nullptr);
     ~StampBrush();
 
     void mousePressed(QGraphicsSceneMouseEvent *event);

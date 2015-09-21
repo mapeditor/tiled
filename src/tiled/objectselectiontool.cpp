@@ -139,7 +139,7 @@ static QPainterPath createResizeArrow(bool straight)
 class Handle : public QGraphicsItem
 {
 public:
-    Handle(QGraphicsItem *parent = 0)
+    Handle(QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mUnderMouse(false)
     {
@@ -172,7 +172,7 @@ QVariant Handle::itemChange(GraphicsItemChange change, const QVariant &value)
 class OriginIndicator : public Handle
 {
 public:
-    OriginIndicator(QGraphicsItem *parent = 0)
+    OriginIndicator(QGraphicsItem *parent = nullptr)
         : Handle(parent)
     {
         setFlag(QGraphicsItem::ItemIsMovable);
@@ -205,7 +205,7 @@ void OriginIndicator::paint(QPainter *painter,
 class RotateHandle : public Handle
 {
 public:
-    RotateHandle(AnchorPosition corner, QGraphicsItem *parent = 0)
+    RotateHandle(AnchorPosition corner, QGraphicsItem *parent = nullptr)
         : Handle(parent)
         , mArrow(createRotateArrow())
     {
@@ -249,7 +249,7 @@ void RotateHandle::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 class ResizeHandle : public Handle
 {
 public:
-    ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = 0)
+    ResizeHandle(AnchorPosition anchorPosition, QGraphicsItem *parent = nullptr)
         : Handle(parent)
         , mAnchorPosition(anchorPosition)
         , mResizingLimitHorizontal(false)
@@ -512,7 +512,7 @@ static QGraphicsView *findView(QGraphicsSceneEvent *event)
 {
     if (QWidget *viewport = event->widget())
         return qobject_cast<QGraphicsView*>(viewport->parent());
-    return 0;
+    return nullptr;
 }
 
 void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)

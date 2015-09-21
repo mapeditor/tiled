@@ -51,7 +51,7 @@ class PropertyBrowser : public QtTreePropertyBrowser
     Q_OBJECT
 
 public:
-    explicit PropertyBrowser(QWidget *parent = 0);
+    explicit PropertyBrowser(QWidget *parent = nullptr);
 
     /**
      * Sets the \a object for which to display the properties.

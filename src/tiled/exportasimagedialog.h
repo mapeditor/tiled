@@ -48,7 +48,7 @@ public:
     ExportAsImageDialog(MapDocument *mapDocument,
                         const QString &fileName,
                         qreal currentScale,
-                        QWidget *parent = 0);
+                        QWidget *parent = nullptr);
     ~ExportAsImageDialog();
 
 public:

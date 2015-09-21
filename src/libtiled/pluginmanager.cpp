@@ -60,7 +60,7 @@ PluginManager *PluginManager::instance()
 void PluginManager::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 void PluginManager::addObject(QObject *object)
@@ -140,7 +140,7 @@ const LoadedPlugin *PluginManager::pluginByFileName(const QString &pluginFileNam
         if (pluginFileName == plugin.fileName)
             return &plugin;
 
-    return 0;
+    return nullptr;
 }
 
 } // namespace Tiled

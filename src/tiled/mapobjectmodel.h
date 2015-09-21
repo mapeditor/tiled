@@ -52,11 +52,11 @@ public:
     {
         ObjectOrGroup(ObjectGroup *g)
             : mGroup(g)
-            , mObject(0)
+            , mObject(nullptr)
         {
         }
         ObjectOrGroup(MapObject *o)
-            : mGroup(0)
+            : mGroup(nullptr)
             , mObject(o)
         {
         }
@@ -64,7 +64,7 @@ public:
         MapObject *mObject;
     };
 
-    MapObjectModel(QObject *parent = 0);
+    MapObjectModel(QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &index) const;

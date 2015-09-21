@@ -49,7 +49,7 @@ public:
     /**
      * Constructor.
      */
-    explicit LayerDock(QWidget *parent = 0);
+    explicit LayerDock(QWidget *parent = nullptr);
 
     /**
      * Sets the map for which the layers should be displayed.
@@ -85,7 +85,7 @@ class LayerView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit LayerView(QWidget *parent = 0);
+    explicit LayerView(QWidget *parent = nullptr);
 
     QSize sizeHint() const;
     void setMapDocument(MapDocument *mapDocument);

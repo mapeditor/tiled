@@ -73,7 +73,7 @@ public:
                 const QList<Object*> &objects,
                 const QString &name,
                 const QString &value,
-                QUndoCommand *parent = 0);
+                QUndoCommand *parent = nullptr);
 
     void undo();
     void redo();
@@ -103,7 +103,7 @@ public:
     RemoveProperty(MapDocument *mapDocument,
                    const QList<Object*> &objects,
                    const QString &name,
-                   QUndoCommand *parent = 0);
+                   QUndoCommand *parent = nullptr);
 
     void undo();
     void redo();

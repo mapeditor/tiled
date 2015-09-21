@@ -45,7 +45,7 @@ Preferences *Preferences::instance()
 void Preferences::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 Preferences::Preferences()

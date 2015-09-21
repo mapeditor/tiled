@@ -41,7 +41,7 @@ class FileSystemWatcher : public QObject
     Q_OBJECT
 
 public:
-    explicit FileSystemWatcher(QObject *parent = 0);
+    explicit FileSystemWatcher(QObject *parent = nullptr);
 
     void addPath(const QString &path);
     void removePath(const QString &path);

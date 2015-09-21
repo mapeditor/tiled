@@ -43,7 +43,7 @@ class EditPolygonTool : public AbstractObjectTool
     Q_OBJECT
 
 public:
-    explicit EditPolygonTool(QObject *parent = 0);
+    explicit EditPolygonTool(QObject *parent = nullptr);
     ~EditPolygonTool();
 
     void activate(MapScene *scene);

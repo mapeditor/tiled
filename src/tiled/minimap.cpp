@@ -45,7 +45,7 @@ using namespace Tiled::Internal;
 
 MiniMap::MiniMap(QWidget *parent)
     : QFrame(parent)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
     , mDragging(false)
     , mMouseMoveCursorState(false)
     , mRedrawMapImage(false)

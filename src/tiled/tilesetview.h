@@ -39,7 +39,7 @@ class TilesetView : public QTableView
     Q_OBJECT
 
 public:
-    TilesetView(QWidget *parent = 0);
+    TilesetView(QWidget *parent = nullptr);
 
     /**
      * Sets the map document associated with the tileset to be displayed, which

@@ -209,7 +209,7 @@ void TileStamp::setQuickStampIndex(int quickStampIndex)
 Map *TileStamp::randomVariation() const
 {
     if (d->variations.isEmpty())
-        return 0;
+        return nullptr;
 
     RandomPicker<const TileStampVariation *> randomPicker;
     for (const TileStampVariation &variation : d->variations)

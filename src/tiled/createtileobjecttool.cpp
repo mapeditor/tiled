@@ -83,7 +83,7 @@ void CreateTileObjectTool::languageChanged()
 MapObject *CreateTileObjectTool::createNewMapObject()
 {
     if (!mTile)
-        return 0;
+        return nullptr;
 
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);

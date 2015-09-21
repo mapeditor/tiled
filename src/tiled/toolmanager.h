@@ -44,7 +44,7 @@ class ToolManager : public QObject
     Q_OBJECT
 
 public:
-    ToolManager(QObject *parent = 0);
+    ToolManager(QObject *parent = nullptr);
     ~ToolManager();
 
     void setMapDocument(MapDocument *mapDocument);

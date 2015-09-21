@@ -35,7 +35,7 @@ class ConsoleDock : public QDockWidget
     Q_OBJECT
     
 public:
-    explicit ConsoleDock(QWidget *parent = 0);
+    explicit ConsoleDock(QWidget *parent = nullptr);
     ~ConsoleDock();
 
 private slots:

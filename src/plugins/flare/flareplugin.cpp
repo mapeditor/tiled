@@ -50,7 +50,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
 
     if (!file.open (QIODevice::ReadOnly)) {
         mError = tr("Could not open file for reading.");
-        return 0;
+        return nullptr;
     }
 
     // default to values of the original flare alpha game.
@@ -64,9 +64,9 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
     int base = 10;
     GidMapper gidMapper;
     int gid = 1;
-    TileLayer *tilelayer = 0;
-    ObjectGroup *objectgroup = 0;
-    MapObject *mapobject = 0;
+    TileLayer *tilelayer = nullptr;
+    ObjectGroup *objectgroup = nullptr;
+    MapObject *mapobject = nullptr;
     bool tilesetsSectionFound = false;
     bool headerSectionFound = false;
     bool tilelayerSectionFound = false; // tile layer or objects
@@ -130,7 +130,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                 if (!ok) {
                     mError = tr("Error loading tileset %1, which expands to %2. Path not found!")
                             .arg(list[0], absoluteSource);
-                    return 0;
+                    return nullptr;
                 } else {
                     if (list.size() > 4)
                         tileset->setTileOffset(QPoint(list[3].toInt(),list[4].toInt()));
@@ -147,7 +147,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         } else if (sectionName == QLatin1String("layer")) {
             if (!tilesetsSectionFound) {
                 mError = tr("No tilesets section found before layer section.");
-                return 0;
+                return nullptr;
             }
             tilelayerSectionFound = true;
             int epos = line.indexOf(QChar('='));
@@ -171,11 +171,11 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
                         QStringList l = line.split(QChar(','));
                         for (int x=0; x < qMin(map->width(), l.size()); x++) {
                             bool ok;
-                            int tileid = l[x].toInt(0, base);
+                            int tileid = l[x].toInt(nullptr, base);
                             Cell c = gidMapper.gidToCell(tileid, ok);
                             if (!ok) {
                                 mError += tr("Error mapping tile id %1.").arg(tileid);
-                                return 0;
+                                return nullptr;
                             }
                             tilelayer->setCell(x, y, c);
                         }
@@ -247,7 +247,7 @@ Tiled::Map *FlarePlugin::read(const QString &fileName)
         mError = tr("This seems to be no valid flare map. "
                     "A Flare map consists of at least a header "
                     "section, a tileset section and one tile layer.");
-        return 0;
+        return nullptr;
     }
 
     return map.take();

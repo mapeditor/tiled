@@ -222,7 +222,7 @@ void MapScene::refreshScene()
 
 QGraphicsItem *MapScene::createLayerItem(Layer *layer)
 {
-    QGraphicsItem *layerItem = 0;
+    QGraphicsItem *layerItem = nullptr;
 
     if (TileLayer *tl = layer->asTileLayer()) {
         layerItem = new TileLayerItem(tl, mMapDocument);
@@ -343,7 +343,7 @@ void MapScene::disableSelectedTool()
     if (mUnderMouse)
         mActiveTool->mouseLeft();
     mActiveTool->deactivate(this);
-    mActiveTool = 0;
+    mActiveTool = nullptr;
 }
 
 void MapScene::currentLayerIndexChanged()
@@ -483,7 +483,7 @@ void MapScene::tilesetTileOffsetChanged(Tileset *tileset)
  */
 void MapScene::objectsInserted(ObjectGroup *objectGroup, int first, int last)
 {
-    ObjectGroupItem *ogItem = 0;
+    ObjectGroupItem *ogItem = nullptr;
 
     // Find the object group item for the object group
     for (QGraphicsItem *item : mLayerItems) {

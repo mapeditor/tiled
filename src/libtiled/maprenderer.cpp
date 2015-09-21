@@ -93,7 +93,7 @@ static bool hasOpenGLEngine(const QPainter *painter)
 
 CellRenderer::CellRenderer(QPainter *painter)
     : mPainter(painter)
-    , mTile(0)
+    , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
 {
 }
@@ -191,6 +191,6 @@ void CellRenderer::flush()
                                   mFragments.size(),
                                   mTile->currentFrameImage());
 
-    mTile = 0;
+    mTile = nullptr;
     mFragments.resize(0);
 }

@@ -52,7 +52,7 @@ public:
      * @param parent the item of the object group this object belongs to
      */
     MapObjectItem(MapObject *object, MapDocument *mapDocument,
-                  ObjectGroupItem *parent = 0);
+                  ObjectGroupItem *parent = nullptr);
 
     enum { Type = UserType + 1 };
     int type() const override { return Type; }
@@ -71,7 +71,7 @@ public:
 
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0) override;
+               QWidget *widget = nullptr) override;
 
     /**
      * Resizes the associated map object. The \a size is given in tiles.

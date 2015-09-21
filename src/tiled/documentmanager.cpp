@@ -51,7 +51,7 @@ class FileChangedWarning : public QWidget
     Q_OBJECT
 
 public:
-    FileChangedWarning(QWidget *parent = 0)
+    FileChangedWarning(QWidget *parent = nullptr)
         : QWidget(parent)
         , mLabel(new QLabel(this))
         , mButtons(new QDialogButtonBox(QDialogButtonBox::Yes |
@@ -85,7 +85,7 @@ class MapViewContainer : public QWidget
     Q_OBJECT
 
 public:
-    MapViewContainer(MapView *mapView, QWidget *parent = 0)
+    MapViewContainer(MapView *mapView, QWidget *parent = nullptr)
         : QWidget(parent)
         , mMapView(mapView)
         , mWarning(new FileChangedWarning)
@@ -131,7 +131,7 @@ DocumentManager *DocumentManager::instance()
 void DocumentManager::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 DocumentManager::DocumentManager(QObject *parent)
@@ -172,7 +172,7 @@ MapDocument *DocumentManager::currentDocument() const
 {
     const int index = mTabWidget->currentIndex();
     if (index == -1)
-        return 0;
+        return nullptr;
 
     return mDocuments.at(index);
 }
@@ -182,7 +182,7 @@ MapView *DocumentManager::currentMapView() const
     if (QWidget *widget = mTabWidget->currentWidget())
         return static_cast<MapViewContainer*>(widget)->mapView();
 
-    return 0;
+    return nullptr;
 }
 
 MapScene *DocumentManager::currentMapScene() const
@@ -190,14 +190,14 @@ MapScene *DocumentManager::currentMapScene() const
     if (MapView *mapView = currentMapView())
         return mapView->mapScene();
 
-    return 0;
+    return nullptr;
 }
 
 MapView *DocumentManager::viewForDocument(MapDocument *mapDocument) const
 {
     const int index = mDocuments.indexOf(mapDocument);
     if (index == -1)
-        return 0;
+        return nullptr;
 
     return static_cast<MapViewContainer*>(mTabWidget->widget(index))->mapView();
 }

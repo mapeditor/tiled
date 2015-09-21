@@ -84,7 +84,7 @@ public:
      * Creates an undo command that removes the layer at \a index.
      */
     RemoveLayer(MapDocument *mapDocument, int index)
-        : AddRemoveLayer(mapDocument, index, 0)
+        : AddRemoveLayer(mapDocument, index, nullptr)
     {
         setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
     }

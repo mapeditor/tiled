@@ -42,7 +42,7 @@ class ObjectSelectionTool : public AbstractObjectTool
     Q_OBJECT
 
 public:
-    explicit ObjectSelectionTool(QObject *parent = 0);
+    explicit ObjectSelectionTool(QObject *parent = nullptr);
     ~ObjectSelectionTool();
 
     void activate(MapScene *scene);

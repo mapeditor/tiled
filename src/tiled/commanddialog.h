@@ -38,7 +38,7 @@ class CommandDialog : public QDialog
     Q_OBJECT
 
 public:
-    CommandDialog(QWidget *parent = 0);
+    CommandDialog(QWidget *parent = nullptr);
     ~CommandDialog();
 
     /**

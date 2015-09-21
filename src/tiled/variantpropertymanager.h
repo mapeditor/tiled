@@ -36,7 +36,7 @@ class VariantPropertyManager : public QtVariantPropertyManager
     Q_OBJECT
 
 public:
-    explicit VariantPropertyManager(QObject *parent = 0)
+    explicit VariantPropertyManager(QObject *parent = nullptr)
         : QtVariantPropertyManager(parent)
         , mSuggestionsAttribute(QLatin1String("suggestions"))
     {}

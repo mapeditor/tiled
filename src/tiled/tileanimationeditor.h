@@ -45,7 +45,7 @@ class TileAnimationEditor : public QWidget
     Q_OBJECT
 
 public:
-    explicit TileAnimationEditor(QWidget *parent = 0);
+    explicit TileAnimationEditor(QWidget *parent = nullptr);
     ~TileAnimationEditor();
 
     void setMapDocument(MapDocument *mapDocument);

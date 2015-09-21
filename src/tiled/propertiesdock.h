@@ -40,7 +40,7 @@ class PropertiesDock : public QDockWidget
     Q_OBJECT
 
 public:
-    explicit PropertiesDock(QWidget *parent = 0);
+    explicit PropertiesDock(QWidget *parent = nullptr);
 
 public slots:
     void bringToFront();

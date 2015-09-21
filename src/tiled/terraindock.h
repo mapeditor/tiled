@@ -51,7 +51,7 @@ public:
     /**
      * Constructor.
      */
-    TerrainDock(QWidget *parent = 0);
+    TerrainDock(QWidget *parent = nullptr);
 
     ~TerrainDock();
 

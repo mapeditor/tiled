@@ -144,7 +144,7 @@ inline void Terrain::setImageTileId(int imageTileId)
  */
 inline Tile *Terrain::imageTile() const
 {
-    return mImageTileId >= 0 ? mTileset->tileAt(mImageTileId) : 0;
+    return mImageTileId >= 0 ? mTileset->tileAt(mImageTileId) : nullptr;
 }
 
 /**

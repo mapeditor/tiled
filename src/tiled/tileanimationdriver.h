@@ -34,7 +34,7 @@ class TileAnimationDriver : public QAbstractAnimation
     Q_OBJECT
 
 public:
-    explicit TileAnimationDriver(QObject *parent = 0);
+    explicit TileAnimationDriver(QObject *parent = nullptr);
 
     int duration() const;
 

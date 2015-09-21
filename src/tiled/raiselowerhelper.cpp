@@ -179,14 +179,14 @@ void RaiseLowerHelper::lowerToBottom()
 ObjectGroup *RaiseLowerHelper::sameObjectGroup(const QSet<MapObjectItem *> &items)
 {
     if (items.isEmpty())
-        return 0;
+        return nullptr;
 
     // All selected objects need to be in the same group
     ObjectGroup *group = (*items.begin())->mapObject()->objectGroup();
 
     foreach (const MapObjectItem *item, items)
         if (item->mapObject()->objectGroup() != group)
-            return 0;
+            return nullptr;
 
     return group;
 }
@@ -200,7 +200,7 @@ ObjectGroup *RaiseLowerHelper::sameObjectGroup(const QSet<MapObjectItem *> &item
  */
 bool RaiseLowerHelper::initContext()
 {
-    mObjectGroup = 0;
+    mObjectGroup = nullptr;
     mRelatedObjects.clear();
     mSelectionRanges.clear();
 

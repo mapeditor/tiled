@@ -59,11 +59,11 @@ namespace Internal {
 PropertyBrowser::PropertyBrowser(QWidget *parent)
     : QtTreePropertyBrowser(parent)
     , mUpdating(false)
-    , mObject(0)
-    , mMapDocument(0)
+    , mObject(nullptr)
+    , mMapDocument(nullptr)
     , mVariantManager(new VariantPropertyManager(this))
     , mGroupManager(new QtGroupPropertyManager(this))
-    , mCustomPropertiesGroup(0)
+    , mCustomPropertiesGroup(nullptr)
 {
     setFactoryForManager(mVariantManager, new VariantEditorFactory(this));
     setResizeMode(ResizeToContents);
@@ -252,7 +252,7 @@ void PropertyBrowser::propertyAdded(Object *object, const QString &name)
         // Determine the property preceding the new property, if any
         const int index = mObject->properties().keys().indexOf(name);
         const QList<QtProperty *> properties = mCustomPropertiesGroup->subProperties();
-        QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : 0;
+        QtProperty *precedingProperty = (index > 0) ? properties.at(index - 1) : nullptr;
 
         mUpdating = true;
         QtVariantProperty *property = mVariantManager->addProperty(QVariant::String, name);

@@ -34,7 +34,7 @@ class Eraser : public AbstractTileTool
     Q_OBJECT
 
 public:
-    Eraser(QObject *parent = 0);
+    Eraser(QObject *parent = nullptr);
 
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);

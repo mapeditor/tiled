@@ -253,7 +253,7 @@ public:
     /**
      * Returns the terrain type at the given \a index.
      */
-    Terrain *terrain(int index) const { return index >= 0 ? mTerrainTypes[index] : 0; }
+    Terrain *terrain(int index) const { return index >= 0 ? mTerrainTypes[index] : nullptr; }
 
     Terrain *addTerrain(const QString &name, int imageTileId);
 

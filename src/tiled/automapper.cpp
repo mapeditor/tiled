@@ -53,10 +53,10 @@ using namespace Tiled::Internal;
 AutoMapper::AutoMapper(MapDocument *workingDocument, Map *rules,
                        const QString &rulePath)
     : mMapDocument(workingDocument)
-    , mMapWork(workingDocument ? workingDocument->map() : 0)
+    , mMapWork(workingDocument ? workingDocument->map() : nullptr)
     , mMapRules(rules)
-    , mLayerInputRegions(0)
-    , mLayerOutputRegions(0)
+    , mLayerInputRegions(nullptr)
+    , mLayerOutputRegions(nullptr)
     , mRulePath(rulePath)
     , mDeleteTiles(false)
     , mAutoMappingRadius(0)
@@ -914,7 +914,7 @@ void AutoMapper::cleanUpRulesMap()
     tilesetManager->removeReferences(mMapRules->tilesets());
 
     delete mMapRules;
-    mMapRules = 0;
+    mMapRules = nullptr;
 
     cleanUpRuleMapLayers();
     mRulesInput.clear();
@@ -931,7 +931,7 @@ void AutoMapper::cleanUpRuleMapLayers()
 
     mLayerList.clear();
     // do not delete mLayerRuleRegions, it is owned by the rulesmap
-    mLayerInputRegions = 0;
-    mLayerOutputRegions = 0;
+    mLayerInputRegions = nullptr;
+    mLayerOutputRegions = nullptr;
     mInputRules.clear();
 }

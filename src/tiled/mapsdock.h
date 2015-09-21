@@ -41,7 +41,7 @@ class MapsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    MapsDock(MainWindow *mainWindow, QWidget *parent = 0);
+    MapsDock(MainWindow *mainWindow, QWidget *parent = nullptr);
 
 private slots:
     void browse();
@@ -66,7 +66,7 @@ class MapsView : public QTreeView
     Q_OBJECT
 
 public:
-    MapsView(MainWindow *mainWindow, QWidget *parent = 0);
+    MapsView(MainWindow *mainWindow, QWidget *parent = nullptr);
 
     /**
      * Returns a sensible size hint.

@@ -62,7 +62,7 @@ public:
     void replaceReferencesToTileset(Tileset *, Tileset *) override {}
 
     bool canMergeWith(Layer *) const override { return false; }
-    Layer *mergedWith(Layer *) const override { return 0; }
+    Layer *mergedWith(Layer *) const override { return nullptr; }
 
     /**
      * Returns the transparent color, or an invalid color if no transparent

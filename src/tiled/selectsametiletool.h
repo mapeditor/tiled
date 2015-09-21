@@ -40,7 +40,7 @@ class SelectSameTileTool : public AbstractTileTool
     Q_OBJECT
 
 public:
-    SelectSameTileTool(QObject *parent = 0);
+    SelectSameTileTool(QObject *parent = nullptr);
 
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);

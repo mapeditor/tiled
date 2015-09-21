@@ -259,7 +259,7 @@ bool TileStampModel::isStamp(const QModelIndex &index) const
 const TileStampVariation *TileStampModel::variationAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return nullptr;
 
     QModelIndex parent = index.parent();
     if (isStamp(parent)) {
@@ -267,7 +267,7 @@ const TileStampVariation *TileStampModel::variationAt(const QModelIndex &index) 
         return &stamp.variations().at(index.row());
     }
 
-    return 0;
+    return nullptr;
 }
 
 void TileStampModel::addStamp(const TileStamp &stamp)

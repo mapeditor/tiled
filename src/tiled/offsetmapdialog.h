@@ -38,7 +38,7 @@ class OffsetMapDialog : public QDialog
     Q_OBJECT
 
 public:
-    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = 0);
+    OffsetMapDialog(MapDocument *mapDocument, QWidget *parent = nullptr);
 
     ~OffsetMapDialog();
 

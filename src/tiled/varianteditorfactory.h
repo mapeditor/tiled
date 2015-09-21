@@ -40,7 +40,7 @@ class VariantEditorFactory : public QtVariantEditorFactory
     Q_OBJECT
 
 public:
-    explicit VariantEditorFactory(QObject *parent = 0)
+    explicit VariantEditorFactory(QObject *parent = nullptr)
         : QtVariantEditorFactory(parent)
     {}
 

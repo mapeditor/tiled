@@ -55,7 +55,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
     // Check the data
     if (uncompressed.count() != 48 * 48) {
         mError = tr("This is not a valid Droidcraft map file!");
-        return 0;
+        return nullptr;
     }
 
     // Build 48 x 48 map

@@ -124,7 +124,7 @@ using namespace Tiled::Utils;
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
     , mUi(new Ui::MainWindow)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
     , mActionHandler(new MapDocumentActionHandler(this))
     , mLayerDock(new LayerDock(this))
     , mMapsDock(new MapsDock(this))
@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mTileAnimationEditor(new TileAnimationEditor(this))
     , mTileCollisionEditor(new TileCollisionEditor(this))
     , mCurrentLayerLabel(new QLabel)
-    , mZoomable(0)
+    , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
     , mAutomappingManager(new AutomappingManager(this))
@@ -673,7 +673,7 @@ bool MainWindow::openFile(const QString &fileName,
 
 bool MainWindow::openFile(const QString &fileName)
 {
-    return openFile(fileName, 0);
+    return openFile(fileName, nullptr);
 }
 
 void MainWindow::openLastFiles()
@@ -1455,7 +1455,7 @@ void MainWindow::updateRecentFiles()
 
 void MainWindow::updateActions()
 {
-    Map *map = 0;
+    Map *map = nullptr;
     bool tileLayerSelected = false;
     bool objectsSelected = false;
     QRegion selection;
@@ -1464,7 +1464,7 @@ void MainWindow::updateActions()
         Layer *currentLayer = mMapDocument->currentLayer();
 
         map = mMapDocument->map();
-        tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != 0;
+        tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != nullptr;
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
         selection = mMapDocument->selectedArea();
     }
@@ -1496,7 +1496,7 @@ void MainWindow::updateActions()
 
     updateZoomLabel(); // for the zoom actions
 
-    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : 0;
+    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : nullptr;
     mCurrentLayerLabel->setText(tr("Current layer: %1").arg(
                                     layer ? layer->name() : tr("<none>")));
 }
@@ -1505,7 +1505,7 @@ void MainWindow::updateZoomLabel()
 {
     MapView *mapView = mDocumentManager->currentMapView();
 
-    Zoomable *zoomable = mapView ? mapView->zoomable() : 0;
+    Zoomable *zoomable = mapView ? mapView->zoomable() : nullptr;
     const qreal scale = zoomable ? zoomable->scale() : 1;
 
     mUi->actionZoomIn->setEnabled(zoomable && zoomable->canZoomIn());
@@ -1683,12 +1683,12 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
         mMapDocument->disconnect(this);
 
     if (mZoomable) {
-        mZoomable->connectToComboBox(0);
+        mZoomable->connectToComboBox(nullptr);
 
         disconnect(mZoomable, SIGNAL(scaleChanged(qreal)),
                    this, SLOT(updateZoomLabel()));
     }
-    mZoomable = 0;
+    mZoomable = nullptr;
 
     mMapDocument = mapDocument;
 

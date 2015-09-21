@@ -69,9 +69,9 @@ Zoomable::Zoomable(QObject *parent)
     : QObject(parent)
     , mScale(1)
     , mGestureStartScale(0)
-    , mComboBox(0)
+    , mComboBox(nullptr)
     , mComboRegExp(QLatin1String("^\\s*(\\d+)\\s*%?\\s*$"))
-    , mComboValidator(0)
+    , mComboValidator(nullptr)
 {
     for (int i = 0; i < zoomFactorCount; i++)
         mZoomFactors << zoomFactors[i];
@@ -182,7 +182,7 @@ void Zoomable::connectToComboBox(QComboBox *comboBox)
         mComboBox->disconnect(this);
         if (mComboBox->lineEdit())
             mComboBox->lineEdit()->disconnect(this);
-        mComboBox->setValidator(0);
+        mComboBox->setValidator(nullptr);
     }
 
     mComboBox = comboBox;

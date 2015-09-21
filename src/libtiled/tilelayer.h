@@ -51,7 +51,7 @@ class Cell
 {
 public:
     Cell() :
-        tile(0),
+        tile(nullptr),
         flippedHorizontally(false),
         flippedVertically(false),
         flippedAntiDiagonally(false)
@@ -64,7 +64,7 @@ public:
         flippedAntiDiagonally(false)
     {}
 
-    bool isEmpty() const { return tile == 0; }
+    bool isEmpty() const { return tile == nullptr; }
 
     bool operator == (const Cell &other) const
     {

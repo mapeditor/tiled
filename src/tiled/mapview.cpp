@@ -106,7 +106,7 @@ void MapView::setUseOpenGL(bool useOpenGL)
         }
     } else {
         if (qobject_cast<QGLWidget*>(viewport()))
-            setViewport(0);
+            setViewport(nullptr);
     }
 
     QWidget *v = viewport();

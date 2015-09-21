@@ -79,14 +79,14 @@ int ObjectGroup::removeObject(MapObject *object)
     Q_ASSERT(index != -1);
 
     mObjects.removeAt(index);
-    object->setObjectGroup(0);
+    object->setObjectGroup(nullptr);
     return index;
 }
 
 void ObjectGroup::removeObjectAt(int index)
 {
     MapObject *object = mObjects.takeAt(index);
-    object->setObjectGroup(0);
+    object->setObjectGroup(nullptr);
 }
 
 void ObjectGroup::moveObjects(int from, int to, int count)

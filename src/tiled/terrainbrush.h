@@ -48,7 +48,7 @@ public:
         PaintVertex          // paint terrain to map vertices
     };
 
-    TerrainBrush(QObject *parent = 0);
+    TerrainBrush(QObject *parent = nullptr);
     ~TerrainBrush();
 
     void activate(MapScene *scene);

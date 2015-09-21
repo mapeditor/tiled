@@ -45,7 +45,7 @@ namespace Internal {
 class ColorDelegate : public QStyledItemDelegate
 {
 public:
-    ColorDelegate(QObject *parent = 0)
+    ColorDelegate(QObject *parent = nullptr)
         : QStyledItemDelegate(parent)
     { }
 

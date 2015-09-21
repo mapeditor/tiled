@@ -35,7 +35,7 @@ AbstractImageTool::AbstractImageTool(const QString &name,
                                      const QKeySequence &shortcut,
                                      QObject *parent)
     : AbstractTool(name, icon, shortcut, parent),
-      mMapScene(0)
+      mMapScene(nullptr)
 {
 }
 
@@ -46,7 +46,7 @@ void AbstractImageTool::activate(MapScene *scene)
 
 void AbstractImageTool::deactivate(MapScene *)
 {
-    mMapScene = 0;
+    mMapScene = nullptr;
 }
 
 void AbstractImageTool::keyPressed(QKeyEvent *event)
@@ -74,6 +74,6 @@ void AbstractImageTool::updateEnabledState()
 ImageLayer *AbstractImageTool::currentImageLayer() const
 {
     if (!mapDocument())
-        return 0;
+        return nullptr;
     return dynamic_cast<ImageLayer*>(mapDocument()->currentLayer());
 }

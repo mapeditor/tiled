@@ -35,7 +35,7 @@ class ObjectTypesModel : public QAbstractTableModel
 public:
     enum { ColorRole = Qt::UserRole };
 
-    ObjectTypesModel(QObject *parent = 0)
+    ObjectTypesModel(QObject *parent = nullptr)
         : QAbstractTableModel(parent)
     {}
 

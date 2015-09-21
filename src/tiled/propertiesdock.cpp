@@ -43,7 +43,7 @@ namespace Internal {
 
 PropertiesDock::PropertiesDock(QWidget *parent)
     : QDockWidget(parent)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
     , mPropertyBrowser(new PropertyBrowser)
 {
     setObjectName(QLatin1String("propertiesDock"));
@@ -123,7 +123,7 @@ void PropertiesDock::mapDocumentChanged(MapDocument *mapDocument)
 
         currentObjectChanged(mapDocument->currentObject());
     } else {
-        currentObjectChanged(0);
+        currentObjectChanged(nullptr);
     }
 }
 
@@ -148,7 +148,7 @@ void PropertiesDock::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->setObject(object);
 
-    const bool enabled = object != 0 && !isExternal(object);
+    const bool enabled = object != nullptr && !isExternal(object);
     mPropertyBrowser->setEnabled(enabled);
     mActionAddProperty->setEnabled(enabled);
 }

@@ -46,9 +46,9 @@ class FrameListModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit FrameListModel(QObject *parent = 0)
+    explicit FrameListModel(QObject *parent = nullptr)
         : QAbstractListModel(parent)
-        , mTileset(0)
+        , mTileset(nullptr)
     {}
 
     int rowCount(const QModelIndex &parent) const;
@@ -259,8 +259,8 @@ const QVector<Frame> &FrameListModel::frames() const
 TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     : QWidget(parent, Qt::Window)
     , mUi(new Ui::TileAnimationEditor)
-    , mMapDocument(0)
-    , mTile(0)
+    , mMapDocument(nullptr)
+    , mTile(nullptr)
     , mFrameListModel(new FrameListModel(this))
     , mApplyingChanges(false)
     , mPreviewAnimationDriver(new TileAnimationDriver(this))

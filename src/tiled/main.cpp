@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
             return 1;
         }
         int index = 0;
-        const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : 0;
+        const QString *filter = commandLine.filesToOpen().length() > 2 ? &commandLine.filesToOpen().at(index++) : nullptr;
         const QString &sourceFile = commandLine.filesToOpen().at(index++);
         const QString &targetFile = commandLine.filesToOpen().at(index++);
 

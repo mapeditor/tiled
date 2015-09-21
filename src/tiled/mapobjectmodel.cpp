@@ -37,8 +37,8 @@ using namespace Tiled::Internal;
 
 MapObjectModel::MapObjectModel(QObject *parent):
     QAbstractItemModel(parent),
-    mMapDocument(0),
-    mMap(0),
+    mMapDocument(nullptr),
+    mMap(nullptr),
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
 {
 }
@@ -230,7 +230,7 @@ QModelIndex MapObjectModel::index(MapObject *o, int column) const
 ObjectGroup *MapObjectModel::toObjectGroup(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return nullptr;
 
     ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
     return oog->mGroup;
@@ -239,7 +239,7 @@ ObjectGroup *MapObjectModel::toObjectGroup(const QModelIndex &index) const
 MapObject *MapObjectModel::toMapObject(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return nullptr;
 
     ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
     return oog->mObject;
@@ -248,7 +248,7 @@ MapObject *MapObjectModel::toMapObject(const QModelIndex &index) const
 ObjectGroup *MapObjectModel::toLayer(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return nullptr;
 
     ObjectOrGroup *oog = static_cast<ObjectOrGroup*>(index.internalPointer());
     return oog->mGroup ? oog->mGroup : oog->mObject->objectGroup();
@@ -264,7 +264,7 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 
     beginResetModel();
     mMapDocument = mapDocument;
-    mMap = 0;
+    mMap = nullptr;
 
     mObjectGroups.clear();
     qDeleteAll(mGroups);
@@ -302,7 +302,7 @@ void MapObjectModel::layerAdded(int index)
     Layer *layer = mMap->layerAt(index);
     if (ObjectGroup *og = layer->asObjectGroup()) {
         if (!mGroups.contains(og)) {
-            ObjectGroup *prev = 0;
+            ObjectGroup *prev = nullptr;
             for (index = index - 1; index >= 0; --index)
                 if ((prev = mMap->layerAt(index)->asObjectGroup()))
                     break;

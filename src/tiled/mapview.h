@@ -55,7 +55,7 @@ public:
         NoStaticContents,
     };
 
-    MapView(QWidget *parent = 0, Mode mode = StaticContents);
+    MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
     ~MapView();
 
     MapScene *mapScene() const;

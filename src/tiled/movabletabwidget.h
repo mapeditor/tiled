@@ -39,7 +39,7 @@ public:
     /**
      * Constructor
      */
-    explicit MovableTabWidget(QWidget *parent = 0);
+    explicit MovableTabWidget(QWidget *parent = nullptr);
 
     void moveTab(int from, int to);
 

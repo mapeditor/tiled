@@ -50,7 +50,7 @@ public:
         OpacityRole = Qt::UserRole
     };
 
-    LayerModel(QObject *parent = 0);
+    LayerModel(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 

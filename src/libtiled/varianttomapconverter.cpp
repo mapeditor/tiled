@@ -57,7 +57,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     if (orientation == Map::Unknown) {
         mError = tr("Unsupported map orientation: \"%1\"")
                 .arg(orientationString);
-        return 0;
+        return nullptr;
     }
 
     const QString staggerAxisString = variantMap[QLatin1String("staggeraxis")].toString();
@@ -93,7 +93,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     foreach (const QVariant &tilesetVariant, variantMap[QLatin1String("tilesets")].toList()) {
         SharedTileset tileset = toTileset(tilesetVariant);
         if (!tileset)
-            return 0;
+            return nullptr;
 
         map->addTileset(tileset);
     }
@@ -101,7 +101,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
     foreach (const QVariant &layerVariant, variantMap[QLatin1String("layers")].toList()) {
         Layer *layer = toLayer(layerVariant);
         if (!layer)
-            return 0;
+            return nullptr;
 
         map->addLayer(layer);
     }
@@ -280,7 +280,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 Layer *VariantToMapConverter::toLayer(const QVariant &variant)
 {
     const QVariantMap variantMap = variant.toMap();
-    Layer *layer = 0;
+    Layer *layer = nullptr;
 
     if (variantMap[QLatin1String("type")] == QLatin1String("tilelayer"))
         layer = toTileLayer(variantMap);
@@ -334,11 +334,11 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
             layerDataFormat = Map::Base64Zlib;
         } else {
             mError = tr("Compression method '%1' not supported").arg(compression);
-            return 0;
+            return nullptr;
         }
     } else {
         mError = tr("Unknown encoding: %1").arg(encoding);
-        return 0;
+        return nullptr;
     }
     mMap->setLayerDataFormat(layerDataFormat);
 
@@ -349,7 +349,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
 
         if (dataVariantList.size() != width * height) {
             mError = tr("Corrupt layer data for layer '%1'").arg(name);
-            return 0;
+            return nullptr;
         }
 
         int x = 0;
@@ -361,7 +361,7 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
             if (!ok) {
                 mError = tr("Unable to parse tile at (%1,%2) on layer '%3'")
                         .arg(x).arg(y).arg(tileLayer->name());
-                return 0;
+                return nullptr;
             }
 
             const Cell cell = mGidMapper.gidToCell(gid, ok);
@@ -388,13 +388,13 @@ TileLayer *VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
         switch (error) {
         case GidMapper::CorruptLayerData:
             mError = tr("Corrupt layer data for layer '%1'").arg(name);
-            return 0;
+            return nullptr;
         case GidMapper::TileButNoTilesets:
             mError = tr("Tile used but no tilesets specified");
-            return 0;
+            return nullptr;
         case GidMapper::InvalidTile:
             mError = tr("Invalid tile: %1").arg(mGidMapper.invalidTile());
-            return 0;
+            return nullptr;
         case GidMapper::NoError:
             break;
         }
@@ -428,7 +428,7 @@ ObjectGroup *VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
         objectGroup->setDrawOrder(drawOrderFromString(drawOrderString));
         if (objectGroup->drawOrder() == ObjectGroup::UnknownOrder) {
             mError = tr("Invalid draw order: %1").arg(drawOrderString);
-            return 0;
+            return nullptr;
         }
     }
 
@@ -514,7 +514,7 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
         QString imagePath = resolvePath(mMapDir, imageVariant);
         if (!imageLayer->loadFromImage(QImage(imagePath), imagePath)) {
             mError = tr("Error loading image:\n'%1'").arg(imagePath);
-            return 0;
+            return nullptr;
         }
     }
 

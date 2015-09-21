@@ -41,7 +41,7 @@ class TerrainView : public QTreeView
     Q_OBJECT
 
 public:
-    TerrainView(QWidget *parent = 0);
+    TerrainView(QWidget *parent = nullptr);
 
     void setMapDocument(MapDocument *mapDocument);
 

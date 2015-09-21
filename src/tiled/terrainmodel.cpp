@@ -175,11 +175,11 @@ Qt::ItemFlags TerrainModel::flags(const QModelIndex &index) const
 Tileset *TerrainModel::tilesetAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return nullptr;
     if (index.parent().isValid()) // tilesets don't have parents
-        return 0;
+        return nullptr;
     if (index.row() >= mMapDocument->map()->tilesetCount())
-        return 0;
+        return nullptr;
 
     return mMapDocument->map()->tilesetAt(index.row()).data();
 }
@@ -187,12 +187,12 @@ Tileset *TerrainModel::tilesetAt(const QModelIndex &index) const
 Terrain *TerrainModel::terrainAt(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return nullptr;
 
     if (Tileset *tileset = static_cast<Tileset*>(index.internalPointer()))
         return tileset->terrain(index.row());
 
-    return 0;
+    return nullptr;
 }
 
 /**

@@ -54,7 +54,7 @@ class MapObjectItem : public QGraphicsItem
 {
 public:
     MapObjectItem(MapObject *mapObject, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
+                  QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mMapObject(mapObject)
         , mRenderer(renderer)
@@ -96,7 +96,7 @@ class TileLayerItem : public QGraphicsItem
 {
 public:
     TileLayerItem(TileLayer *tileLayer, MapRenderer *renderer,
-                  QGraphicsItem *parent = 0)
+                  QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
         , mTileLayer(tileLayer)
         , mRenderer(renderer)
@@ -127,7 +127,7 @@ class ObjectGroupItem : public QGraphicsItem
 {
 public:
     ObjectGroupItem(ObjectGroup *objectGroup, MapRenderer *renderer,
-                    QGraphicsItem *parent = 0)
+                    QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
@@ -153,7 +153,7 @@ public:
 class MapItem : public QGraphicsItem
 {
 public:
-    MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = 0)
+    MapItem(Map *map, MapRenderer *renderer, QGraphicsItem *parent = nullptr)
         : QGraphicsItem(parent)
     {
         setFlag(QGraphicsItem::ItemHasNoContents);
@@ -176,8 +176,8 @@ public:
 TmxViewer::TmxViewer(QWidget *parent) :
     QGraphicsView(parent),
     mScene(new QGraphicsScene(this)),
-    mMap(0),
-    mRenderer(0)
+    mMap(nullptr),
+    mRenderer(nullptr)
 {
     setWindowTitle(tr("TMX Viewer"));
 
@@ -201,7 +201,7 @@ TmxViewer::~TmxViewer()
 bool TmxViewer::viewMap(const QString &fileName)
 {
     delete mRenderer;
-    mRenderer = 0;
+    mRenderer = nullptr;
 
     mScene->clear();
     centerOn(0, 0);

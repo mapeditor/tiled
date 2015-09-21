@@ -47,7 +47,7 @@ class TILEDSHARED_EXPORT VariantToMapConverter
 
 public:
     VariantToMapConverter()
-        : mMap(0)
+        : mMap(nullptr)
         , mReadingExternalTileset(false)
     {}
 

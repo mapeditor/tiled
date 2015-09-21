@@ -42,7 +42,7 @@ class MagicWandTool : public AbstractTileTool
     Q_OBJECT
 
 public:
-    MagicWandTool(QObject *parent = 0);
+    MagicWandTool(QObject *parent = nullptr);
 
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);

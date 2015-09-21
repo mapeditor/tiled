@@ -84,7 +84,7 @@ public:
     QRectF boundingRect() const;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+               QWidget *widget = nullptr);
 
 private:
     MapObjectItem *mMapObjectItem;
@@ -132,8 +132,8 @@ EditPolygonTool::EditPolygonTool(QObject *parent)
           parent)
     , mSelectionRectangle(new SelectionRectangle)
     , mMousePressed(false)
-    , mClickedHandle(0)
-    , mClickedObjectItem(0)
+    , mClickedHandle(nullptr)
+    , mClickedObjectItem(nullptr)
     , mMode(NoMode)
 {
 }
@@ -175,7 +175,7 @@ void EditPolygonTool::deactivate(MapScene *scene)
 
     mHandles.clear();
     mSelectedHandles.clear();
-    mClickedHandle = 0;
+    mClickedHandle = nullptr;
 
     AbstractObjectTool::deactivate(scene);
 }
@@ -219,7 +219,7 @@ static T *first(const QList<QGraphicsItem *> &items)
         if (T *t = qgraphicsitem_cast<T*>(item))
             return t;
     }
-    return 0;
+    return nullptr;
 }
 
 static QTransform viewTransform(QGraphicsSceneMouseEvent *event)
@@ -325,7 +325,7 @@ void EditPolygonTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     }
 
     mMousePressed = false;
-    mClickedHandle = 0;
+    mClickedHandle = nullptr;
 }
 
 void EditPolygonTool::modifiersChanged(Qt::KeyboardModifiers modifiers)

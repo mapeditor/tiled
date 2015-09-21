@@ -43,7 +43,7 @@ class PreferencesDialog : public QDialog
     Q_OBJECT
 
 public:
-    PreferencesDialog(QWidget *parent = 0);
+    PreferencesDialog(QWidget *parent = nullptr);
     ~PreferencesDialog();
 
 protected:

@@ -42,7 +42,7 @@ class BucketFillTool : public AbstractTileTool
     Q_OBJECT
 
 public:
-    BucketFillTool(QObject *parent = 0);
+    BucketFillTool(QObject *parent = nullptr);
     ~BucketFillTool();
 
     void activate(MapScene *scene);

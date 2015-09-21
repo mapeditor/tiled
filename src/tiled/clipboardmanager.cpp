@@ -64,7 +64,7 @@ ClipboardManager *ClipboardManager::instance()
 void ClipboardManager::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 Map *ClipboardManager::map() const
@@ -72,7 +72,7 @@ Map *ClipboardManager::map() const
     const QMimeData *mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
     if (data.isEmpty())
-        return 0;
+        return nullptr;
 
     TmxMapFormat format;
     return format.fromByteArray(data);
@@ -98,7 +98,7 @@ void ClipboardManager::copySelection(const MapDocument *mapDocument)
     const QRegion &selectedArea = mapDocument->selectedArea();
     const QList<MapObject*> &selectedObjects = mapDocument->selectedObjects();
     const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(currentLayer);
-    Layer *copyLayer = 0;
+    Layer *copyLayer = nullptr;
 
     if (!selectedArea.isEmpty() && tileLayer) {
         // Copy the selected part of the layer

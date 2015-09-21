@@ -39,7 +39,7 @@ class UndoDock : public QDockWidget
     Q_OBJECT
 
 public:
-    UndoDock(QUndoGroup *undoGroup, QWidget *parent = 0);
+    UndoDock(QUndoGroup *undoGroup, QWidget *parent = nullptr);
 
 protected:
     void changeEvent(QEvent *e);

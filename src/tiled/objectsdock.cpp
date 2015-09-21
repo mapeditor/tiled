@@ -49,7 +49,7 @@ using namespace Tiled::Internal;
 ObjectsDock::ObjectsDock(QWidget *parent)
     : QDockWidget(parent)
     , mObjectsView(new ObjectsView)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
 {
     setObjectName(QLatin1String("ObjectsDock"));
 
@@ -218,7 +218,7 @@ void ObjectsDock::documentAboutToClose(MapDocument *mapDocument)
 
 ObjectsView::ObjectsView(QWidget *parent)
     : QTreeView(parent)
-    , mMapDocument(0)
+    , mMapDocument(nullptr)
     , mSynching(false)
 {
     setUniformRowHeights(true);
@@ -259,7 +259,7 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
         connect(mMapDocument, SIGNAL(selectedObjectsChanged()),
                 this, SLOT(selectedObjectsChanged()));
     } else {
-        setModel(0);
+        setModel(nullptr);
     }
 }
 

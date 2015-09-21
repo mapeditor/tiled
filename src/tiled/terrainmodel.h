@@ -53,7 +53,7 @@ public:
      * @param mapDocument the map to manage terrains for
      */
     TerrainModel(MapDocument *mapDocument,
-                 QObject *parent = 0);
+                 QObject *parent = nullptr);
 
     ~TerrainModel();
 

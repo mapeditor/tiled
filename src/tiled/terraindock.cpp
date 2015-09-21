@@ -47,7 +47,7 @@ namespace Internal {
 class TerrainFilterModel : public QSortFilterProxyModel
 {
 public:
-    TerrainFilterModel(QObject *parent = 0)
+    TerrainFilterModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
     }
@@ -69,9 +69,9 @@ protected:
 
 TerrainDock::TerrainDock(QWidget *parent):
     QDockWidget(parent),
-    mMapDocument(0),
+    mMapDocument(nullptr),
     mTerrainView(new TerrainView),
-    mCurrentTerrain(0),
+    mCurrentTerrain(nullptr),
     mProxyModel(new TerrainFilterModel(this))
 {
     setObjectName(QLatin1String("TerrainDock"));
@@ -117,7 +117,7 @@ void TerrainDock::setMapDocument(MapDocument *mapDocument)
         mProxyModel->setSourceModel(mMapDocument->terrainModel());
         mTerrainView->expandAll();
     } else {
-        mProxyModel->setSourceModel(0);
+        mProxyModel->setSourceModel(nullptr);
     }
 }
 

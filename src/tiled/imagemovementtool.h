@@ -31,7 +31,7 @@ class ImageMovementTool : public AbstractImageTool
     Q_OBJECT
 
 public:
-    explicit ImageMovementTool(QObject *parent = 0);
+    explicit ImageMovementTool(QObject *parent = nullptr);
 
     void activate(MapScene *scene);
     void deactivate(MapScene *scene);

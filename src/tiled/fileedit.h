@@ -38,7 +38,7 @@ class FileEdit : public QWidget
     Q_OBJECT
 
 public:
-    explicit FileEdit(QWidget *parent = 0);
+    explicit FileEdit(QWidget *parent = nullptr);
 
     void setFilePath(const QString &filePath);
     QString filePath() const;

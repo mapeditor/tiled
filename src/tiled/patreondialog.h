@@ -35,7 +35,7 @@ class PatreonDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PatreonDialog(QWidget *parent = 0);
+    explicit PatreonDialog(QWidget *parent = nullptr);
     ~PatreonDialog();
 
 private slots:

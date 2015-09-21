@@ -33,7 +33,7 @@ class AboutDialog : public QDialog, private Ui::AboutDialog
     Q_OBJECT
 
 public:
-    AboutDialog(QWidget *parent = 0);
+    AboutDialog(QWidget *parent = nullptr);
 
 private slots:
     void donate();

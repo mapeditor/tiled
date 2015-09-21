@@ -288,7 +288,7 @@ void ExportAsImageDialog::browse()
     const QString filter = Utils::writableImageFormatsFilter();
     QString f = QFileDialog::getSaveFileName(this, tr("Image"),
                                              mUi->fileNameEdit->text(),
-                                             filter, 0,
+                                             filter, nullptr,
                                              QFileDialog::DontConfirmOverwrite);
     if (!f.isEmpty()) {
         mUi->fileNameEdit->setText(f);

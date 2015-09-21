@@ -53,7 +53,7 @@ namespace {
 class TileDelegate : public QAbstractItemDelegate
 {
 public:
-    TileDelegate(TilesetView *tilesetView, QObject *parent = 0)
+    TileDelegate(TilesetView *tilesetView, QObject *parent = nullptr)
         : QAbstractItemDelegate(parent)
         , mTilesetView(tilesetView)
     { }
@@ -324,8 +324,8 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
-    , mZoomable(0)
-    , mMapDocument(0)
+    , mZoomable(nullptr)
+    , mMapDocument(nullptr)
     , mMarkAnimatedTiles(true)
     , mEditTerrain(false)
     , mEraseTerrain(false)
@@ -667,5 +667,5 @@ void TilesetView::finishTerrainChange()
 Tile *TilesetView::currentTile() const
 {
     const TilesetModel *model = tilesetModel();
-    return model ? model->tileAt(currentIndex()) : 0;
+    return model ? model->tileAt(currentIndex()) : nullptr;
 }

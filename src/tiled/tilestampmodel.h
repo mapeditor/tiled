@@ -38,7 +38,7 @@ class TileStampModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    TileStampModel(QObject *parent = 0);
+    TileStampModel(QObject *parent = nullptr);
 
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;

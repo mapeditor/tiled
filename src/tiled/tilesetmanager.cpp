@@ -68,7 +68,7 @@ TilesetManager *TilesetManager::instance()
 void TilesetManager::deleteInstance()
 {
     delete mInstance;
-    mInstance = 0;
+    mInstance = nullptr;
 }
 
 SharedTileset TilesetManager::findTileset(const QString &fileName) const

@@ -113,7 +113,7 @@ private:
 class TilesetMenuButton : public QToolButton
 {
 public:
-    TilesetMenuButton(QWidget *parent = 0)
+    TilesetMenuButton(QWidget *parent = nullptr)
         : QToolButton(parent)
     {
         setArrowType(Qt::DownArrow);
@@ -183,12 +183,12 @@ static void removeTileReferences(MapDocument *mapDocument, Condition condition)
 
 TilesetDock::TilesetDock(QWidget *parent):
     QDockWidget(parent),
-    mMapDocument(0),
+    mMapDocument(nullptr),
     mTabBar(new QTabBar),
     mViewStack(new QStackedWidget),
     mToolBar(new QToolBar),
-    mCurrentTile(0),
-    mCurrentTiles(0),
+    mCurrentTile(nullptr),
+    mCurrentTiles(nullptr),
     mNewTileset(new QAction(this)),
     mImportTileset(new QAction(this)),
     mExportTileset(new QAction(this)),
@@ -200,7 +200,7 @@ TilesetDock::TilesetDock(QWidget *parent):
     mTilesetMenuButton(new TilesetMenuButton(this)),
     mTilesetMenu(new QMenu(this)),
     mTilesetActionGroup(new QActionGroup(this)),
-    mTilesetMenuMapper(0),
+    mTilesetMenuMapper(nullptr),
     mEmittingStampCaptured(false),
     mSynchronizingSelection(false)
 {
@@ -510,7 +510,7 @@ void TilesetDock::updateActions()
     bool external = false;
     bool hasImageSource = false;
     bool hasSelection = false;
-    TilesetView *view = 0;
+    TilesetView *view = nullptr;
     const int index = mTabBar->currentIndex();
 
     if (index > -1) {
@@ -528,8 +528,8 @@ void TilesetDock::updateActions()
         }
     }
 
-    const bool tilesetIsDisplayed = view != 0;
-    const bool mapIsDisplayed = mMapDocument != 0;
+    const bool tilesetIsDisplayed = view != nullptr;
+    const bool mapIsDisplayed = mMapDocument != nullptr;
 
     mNewTileset->setEnabled(mapIsDisplayed);
     mImportTileset->setEnabled(tilesetIsDisplayed && external);

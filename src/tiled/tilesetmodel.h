@@ -51,7 +51,7 @@ public:
      *
      * @param tileset the initial tileset to display
      */
-    TilesetModel(Tileset *tileset, QObject *parent = 0);
+    TilesetModel(Tileset *tileset, QObject *parent = nullptr);
 
     /**
      * Returns the number of rows.

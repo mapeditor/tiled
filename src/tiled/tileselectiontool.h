@@ -31,7 +31,7 @@ class TileSelectionTool : public AbstractTileTool
     Q_OBJECT
 
 public:
-    TileSelectionTool(QObject *parent = 0);
+    TileSelectionTool(QObject *parent = nullptr);
 
     void mousePressed(QGraphicsSceneMouseEvent *event);
     void mouseReleased(QGraphicsSceneMouseEvent *event);

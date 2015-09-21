@@ -58,8 +58,8 @@ using namespace Tiled::Internal;
 
 TileCollisionEditor::TileCollisionEditor(QWidget *parent)
     : QMainWindow(parent)
-    , mTile(0)
-    , mMapDocument(0)
+    , mTile(nullptr)
+    , mMapDocument(nullptr)
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this, MapView::NoStaticContents))
     , mToolManager(new ToolManager(this))
@@ -199,8 +199,8 @@ void TileCollisionEditor::setTile(Tile *tile)
                 SLOT(applyChanges()));
     } else {
         mMapView->setEnabled(false);
-        mMapScene->setMapDocument(0);
-        mToolManager->setMapDocument(0);
+        mMapScene->setMapDocument(nullptr);
+        mToolManager->setMapDocument(nullptr);
     }
 
     if (previousDocument) {

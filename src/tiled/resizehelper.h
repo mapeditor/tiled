@@ -40,7 +40,7 @@ class ResizeHelper : public QWidget
     Q_OBJECT
 
 public:
-    ResizeHelper(QWidget *parent = 0);
+    ResizeHelper(QWidget *parent = nullptr);
 
     const QSize &oldSize() const
     { return mOldSize; }

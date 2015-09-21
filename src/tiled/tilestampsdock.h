@@ -42,7 +42,7 @@ class TileStampsDock : public QDockWidget
     Q_OBJECT
 
 public:
-    TileStampsDock(TileStampManager *stampManager, QWidget *parent = 0);
+    TileStampsDock(TileStampManager *stampManager, QWidget *parent = nullptr);
 
 signals:
     void setStamp(const TileStamp &);
@@ -89,7 +89,7 @@ class TileStampView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit TileStampView(QWidget *parent = 0);
+    explicit TileStampView(QWidget *parent = nullptr);
 
     QSize sizeHint() const;
 };

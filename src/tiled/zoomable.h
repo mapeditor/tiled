@@ -44,7 +44,7 @@ class Zoomable : public QObject
     Q_OBJECT
 
 public:
-    Zoomable(QObject *parent = 0);
+    Zoomable(QObject *parent = nullptr);
 
     void setScale(qreal scale);
     qreal scale() const { return mScale; }

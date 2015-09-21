@@ -32,8 +32,8 @@ using namespace Tiled::Internal;
 
 LayerModel::LayerModel(QObject *parent):
     QAbstractListModel(parent),
-    mMapDocument(0),
-    mMap(0),
+    mMapDocument(nullptr),
+    mMap(nullptr),
     mTileLayerIcon(QLatin1String(":/images/16x16/layer-tile.png")),
     mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png")),
     mImageLayerIcon(QLatin1String(":/images/16x16/layer-image.png"))

@@ -63,7 +63,7 @@ class MapReaderPrivate
 public:
     MapReaderPrivate(MapReader *mapReader):
         p(mapReader),
-        mMap(0),
+        mMap(nullptr),
         mReadingExternalTileset(false)
     {}
 
@@ -131,7 +131,7 @@ Map *MapReaderPrivate::readMap(QIODevice *device, const QString &path)
 {
     mError.clear();
     mPath = path;
-    Map *map = 0;
+    Map *map = nullptr;
 
     xml.setDevice(device);
 
@@ -270,7 +270,7 @@ Map *MapReaderPrivate::readMap()
     // Clean up in case of error
     if (xml.hasError()) {
         delete mMap;
-        mMap = 0;
+        mMap = nullptr;
     }
 
     return mMap;
@@ -728,7 +728,7 @@ ObjectGroup *MapReaderPrivate::readObjectGroup()
         if (drawOrder == ObjectGroup::UnknownOrder) {
             delete objectGroup;
             xml.raiseError(tr("Invalid draw order: %1").arg(value));
-            return 0;
+            return nullptr;
         }
         objectGroup->setDrawOrder(drawOrder);
     }
@@ -975,7 +975,7 @@ Map *MapReader::readMap(const QString &fileName)
 {
     QFile file(fileName);
     if (!d->openFile(&file))
-        return 0;
+        return nullptr;
 
     return readMap(&file, QFileInfo(fileName).absolutePath());
 }
