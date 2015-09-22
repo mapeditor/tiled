@@ -36,6 +36,7 @@ Can contain: [properties](#properties), [tileset](#tileset), [layer](#layer), [o
 * <b>tileheight:</b> The (maximum) height of the tiles in this tileset.
 * <b>spacing:</b> The spacing in pixels between the tiles in this tileset (applies to the tileset image).
 * <b>margin:</b> The margin around the tiles in this tileset (applies to the tileset image).
+* <b>tilecount:</b> The number of tiles in this tileset (since 0.13)
 
 If there are multiple `<tileset>` elements, they are in ascending order of their `firstgid` attribute. The first tileset always has a `firstgid` value of 1 and it can be assumed that there are no gaps in the valid range of global tile IDs.
 
@@ -104,6 +105,8 @@ All `<tileset>` tags shall occur before the first `<layer>` tag so that parsers 
 * <i>height:</i> The height of the layer in tiles. Traditionally required, but as of Tiled Qt always the same as the map height.
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
 * <b>visible:</b> Whether the layer is shown (1) or hidden (0). Defaults to 1.
+* <b>offsetx:</b> Rendering offset for this layer in pixels. Defaults to 0. (since 0.14)
+* <b>offsety:</b> Rendering offset for this layer in pixels. Defaults to 0. (since 0.14)
 
 Can contain: [properties](#properties), [data](#data)
 
@@ -192,6 +195,8 @@ Not to be confused with the `tile` element inside a `tileset`, this element defi
 * <i>height:</i> The height of the object group in tiles. Meaningless.
 * <b>opacity:</b> The opacity of the layer as a value from 0 to 1. Defaults to 1.
 * <b>visible:</b> Whether the layer is shown (1) or hidden (0). Defaults to 1.
+* <b>offsetx:</b> Rendering offset for this object group in pixels. Defaults to 0. (since 0.14)
+* <b>offsety:</b> Rendering offset for this object group in pixels. Defaults to 0. (since 0.14)
 * <b>draworder:</b> Whether the objects are drawn according to the order of appearance ("index") or sorted by their y-coordinate ("topdown"). Defaults to "topdown".
 
 The object group is in fact a map layer, and is hence called "object layer" in Tiled Qt.

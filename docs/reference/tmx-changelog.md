@@ -3,6 +3,14 @@
 
 Below are described the changes/additions that were made to the [TMX format](tmx-map-format.md) for recent versions of Tiled.
 
+## Tiled 0.14 ##
+
+* Added optional `offsetx` and `offsety` attributes to the `layer` and `objectgroup` elements. These specify an offset in pixels that is to be applied when rendering the layer. The default values are 0.
+
+## Tiled 0.13 ##
+
+* Added an optional `tilecount` attribute to the `tileset` element, which is written by Tiled to help parsers determine the amount of memory to allocate for tile data.
+
 ## Tiled 0.12 ##
 
 * Previously tile objects never had `width` and `height` properties, though the format technically allowed this. Now these properties are used to store the size the image should be rendered at. The default values for these attributes are the dimensions of the tile image.
@@ -75,7 +83,7 @@ Below are described the changes/additions that were made to the [TMX format](tmx
 
 * Added map property for specifying the background color:
 ```xml
-<map ... backgroundcolor="#XXXXXX">
+<map ... backgroundcolor="#RRGGBB">
 ```
 
 * Added initial (non-GUI) support for individual and/or embedded tile images (since there is no way to set this up in Tiled Qt but only in Tiled Java or with [pytmxlib](https://github.com/encukou/pytmxlib), this is not very important to support at the moment):
