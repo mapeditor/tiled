@@ -449,15 +449,14 @@ void PropertyBrowser::addLayerProperties(QtProperty *parent)
     opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
     opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
     opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
-
-    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), parent);
-    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), parent);
 }
 
 void PropertyBrowser::addTileLayerProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile Layer"));
     addLayerProperties(groupProperty);
+    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
+    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
     addProperty(groupProperty);
 }
 
@@ -465,6 +464,8 @@ void PropertyBrowser::addObjectGroupProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Object Layer"));
     addLayerProperties(groupProperty);
+    createProperty(OffsetXProperty, QVariant::Double, tr("Horizontal Offset"), groupProperty);
+    createProperty(OffsetYProperty, QVariant::Double, tr("Vertical Offset"), groupProperty);
 
     createProperty(ColorProperty, QVariant::Color, tr("Color"), groupProperty);
 
@@ -977,13 +978,15 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[NameProperty]->setValue(layer->name());
         mIdToProperty[VisibleProperty]->setValue(layer->isVisible());
         mIdToProperty[OpacityProperty]->setValue(layer->opacity());
-        mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
-        mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
 
         switch (layer->layerType()) {
         case Layer::TileLayerType:
+            mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
+            mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
             break;
         case Layer::ObjectGroupType: {
+            mIdToProperty[OffsetXProperty]->setValue(layer->offset().x());
+            mIdToProperty[OffsetYProperty]->setValue(layer->offset().y());
             const ObjectGroup *objectGroup = static_cast<const ObjectGroup*>(layer);
             QColor color = objectGroup->color();
             if (!color.isValid())
