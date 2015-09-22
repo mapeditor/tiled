@@ -47,7 +47,7 @@ popd
 
 echo Building Installer...
 pushd %TILED_SOURCE_DIR%\dist\win
-makensis.exe tiled.nsi
+makensis.exe tiled-vs2013.nsi
 
 echo Uploading installer...
 %SCP% -B tiled-%VERSION%-win32-setup.exe %DESTINATION%

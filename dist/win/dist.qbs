@@ -3,7 +3,7 @@ import qbs.FileInfo
 
 NSISSetup {
     builtByDefault: false
-    condition: qbs.toolchain.contains("mingw")
+    condition: qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc")
 
     Depends { productTypes: ["application", "dynamiclibrary"] }
     type: base.concat(["installable"])
@@ -29,7 +29,10 @@ NSISSetup {
         "BUILD_DIR=" + qbs.installRoot
     ]
 
-    files: [
-        "*"
-    ]
+    files: {
+        if (qbs.toolchain.contains("mingw"))
+            return ["tiled-mingw.nsi"]
+        else
+            return ["tiled-vs2013.nsi"]
+    }
 }

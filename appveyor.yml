@@ -1,8 +1,11 @@
 clone_depth: 200
 
 environment:
-  QTDIR: C:\Qt\5.5\mingw492_32
-  MINGW: C:\Qt\Tools\mingw492_32
+  global:
+    MINGW: C:\Qt\Tools\mingw492_32
+  matrix:
+    - QTDIR: C:\Qt\5.5\mingw492_32
+    - QTDIR: C:\Qt\5.5\msvc2013_64
 
 configuration: Release
 
@@ -18,11 +21,11 @@ build_script:
   - if not defined APPVEYOR_REPO_TAG_NAME set VERSION=%DATE:~10,4%-%DATE:~4,2%-%DATE:~7,2%
   - if not defined APPVEYOR_REPO_TAG_NAME set BUILD_INFO_VERSION=%COMMITNOW%
   - if not defined APPVEYOR_REPO_TAG_NAME echo Building Tiled daily %VERSION%... (from %COMMITNOW%)
-  - qbs setup-toolchains --type mingw %MINGW%\bin\g++.exe mingw
-  - qbs config profiles.mingw.cpp.archiverPath ar.exe
-  - qbs config profiles.mingw.cpp.nmPath nm.exe
-  - qbs config profiles.mingw.cpp.objcopyPath objcopy.exe
-  - qbs config profiles.mingw.cpp.stripPath strip.exe
+  - qbs setup-toolchains --detect
+  - qbs config profiles.i686-w64-mingw32.cpp.archiverPath ar.exe
+  - qbs config profiles.i686-w64-mingw32.cpp.nmPath nm.exe
+  - qbs config profiles.i686-w64-mingw32.cpp.objcopyPath objcopy.exe
+  - qbs config profiles.i686-w64-mingw32.cpp.stripPath strip.exe
   - qbs setup-qt %QTDIR%\bin\qmake.exe qt
   - qbs config defaultProfile qt
   - qbs install --all-products --install-root install-root release
