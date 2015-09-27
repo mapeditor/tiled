@@ -22,6 +22,7 @@
 
 #include "map.h"
 #include "mapreader.h"
+#include "filesystemwatcher.h"
 #include "mapwriter.h"
 #include "preferences.h"
 #include "tilesetmanager.h"
@@ -76,6 +77,11 @@ Map *TmxMapFormat::read(const QString &fileName)
     if (!map)
         mError = reader.errorString();
 
+	for(int i=0; i<reader.GetNumTilesetSourceFiles(); ++i)
+	{
+		TilesetManager::instance()->watcher()->addPath(reader.GetTilesetSourceFiles()[i]);
+	}
+
     return map;
 }
 
@@ -117,7 +123,12 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     EditorMapReader reader;
     Map *map = reader.readMap(&buffer);
     if (!map)
-        mError = reader.errorString();
+		mError = reader.errorString();
+
+	for(int i=0; i<reader.GetNumTilesetSourceFiles(); ++i)
+	{
+		TilesetManager::instance()->watcher()->addPath(reader.GetTilesetSourceFiles()[i]);
+	}
 
     return map;
 }

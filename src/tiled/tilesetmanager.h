@@ -130,6 +130,8 @@ public:
     void setAnimateTiles(bool enabled);
     bool animateTiles() const;
 
+	FileSystemWatcher* watcher(){ return mWatcher; }
+
 signals:
     /**
      * Emitted when a tileset's images have changed and views need updating.

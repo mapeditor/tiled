@@ -185,8 +185,29 @@ void TilesetManager::fileChangedTimeout()
     for (SharedTileset &tileset : tilesets()) {
         QString fileName = tileset->imageSource();
         if (mChangedFiles.contains(fileName))
+		{
             if (tileset->loadFromImage(fileName))
+			{
                 emit tilesetChanged(tileset.data());
+			}
+		}
+		else
+		{
+			bool bChange = false;
+			foreach (Tile* tile, tileset->tiles())
+			{
+				if(mChangedFiles.contains(tile->imageSource()))
+				{
+					tile->setImage(QPixmap::fromImage(QImage(tile->imageSource())));
+					bChange = true;
+				}
+			}
+
+			if(bChange)
+			{
+				 emit tilesetChanged(tileset.data());
+			}
+		}
     }
 
     mChangedFiles.clear();
