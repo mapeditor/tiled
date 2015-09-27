@@ -396,13 +396,13 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
     if (mEmittingStampCaptured)
         return;
 
-    QSet<const Tile*> processed;
+    QSet<Tile*> processed;
     QMap<QItemSelectionModel*, QItemSelection> selections;
 
     for (const TileStampVariation &variation : stamp.variations()) {
         const TileLayer &tileLayer = *variation.tileLayer();
         for (const Cell &cell : tileLayer) {
-            if (const Tile *tile = cell.tile) {
+            if (Tile *tile = cell.tile) {
                 if (processed.contains(tile))
                     continue;
 
@@ -433,6 +433,9 @@ void TilesetDock::selectTilesInStamp(const TileStamp &stamp)
             const QItemSelection &selection = i.value();
             selectionModel->select(selection, QItemSelectionModel::SelectCurrent);
         }
+
+        // Show/edit properties of all captured tiles
+        mMapDocument->setSelectedTiles(processed.toList());
 
         // Update the current tile (useful for animation and collision editors)
         auto first = selections.begin();

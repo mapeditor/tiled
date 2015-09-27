@@ -1054,9 +1054,8 @@ void PropertyBrowser::updateCustomProperties()
 
         while (it.hasNext()) {
             it.next();
-            if (!mCombinedProperties.contains(it.key())) {
+            if (!mCombinedProperties.contains(it.key()))
                 mCombinedProperties.insert(it.key(), tr(""));
-            }
         }
     }
 
