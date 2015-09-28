@@ -98,8 +98,10 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
     writer.writeKeyAndValue("tiledversion", QCoreApplication::applicationVersion());
 
     const QString orientation = orientationToString(map->orientation());
+    const QString renderOrder = renderOrderToString(map->renderOrder());
 
     writer.writeKeyAndValue("orientation", orientation);
+    writer.writeKeyAndValue("renderorder", renderOrder);
     writer.writeKeyAndValue("width", map->width());
     writer.writeKeyAndValue("height", map->height());
     writer.writeKeyAndValue("tilewidth", map->tileWidth());
