@@ -155,9 +155,7 @@ QString LuaTableWriter::quote(const QString &str)
 {
     QString quoted("\"");
 
-    for (int i = 0; i < str.length(); ++i) {
-        const QChar c = str.at(i);
-
+    for (const QChar c : str) {
         switch (c.unicode()) {
         case '\\':  quoted.append(QLatin1String("\\\\"));  break;
         case '"':   quoted.append(QLatin1String("\\\""));  break;

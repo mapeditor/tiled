@@ -381,13 +381,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             SLOT(newTilesets(QStringList)));
 
     // Add recent file actions to the recent files menu
-    for (int i = 0; i < MaxRecentFiles; ++i)
-    {
-         mRecentFiles[i] = new QAction(this);
+    for (auto &action : mRecentFiles) {
+         action = new QAction(this);
          mUi->menuRecentFiles->insertAction(mUi->actionClearRecentFiles,
-                                            mRecentFiles[i]);
-         mRecentFiles[i]->setVisible(false);
-         connect(mRecentFiles[i], SIGNAL(triggered()),
+                                            action);
+         action->setVisible(false);
+         connect(action, SIGNAL(triggered()),
                  this, SLOT(openRecentFile()));
     }
     mUi->menuRecentFiles->insertSeparator(mUi->actionClearRecentFiles);

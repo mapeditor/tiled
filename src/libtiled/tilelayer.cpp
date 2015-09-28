@@ -70,8 +70,7 @@ void TileLayer::recomputeDrawMargins()
     QSize maxTileSize(0, 0);
     QMargins offsetMargins;
 
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        const Cell &cell = mGrid.at(i);
+    for (Cell &cell : mGrid) {
         if (const Tile *tile = cell.tile) {
             QSize size = tile->size();
 
@@ -257,8 +256,8 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
 {
     QSet<SharedTileset> tilesets;
 
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
-        if (const Tile *tile = mGrid.at(i).tile)
+    for (const Cell &cell : mGrid)
+        if (const Tile *tile = cell.tile)
             tilesets.insert(tile->sharedTileset());
 
     return tilesets;
@@ -266,8 +265,8 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
 
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        const Tile *tile = mGrid.at(i).tile;
+    for (const Cell &cell : mGrid) {
+        const Tile *tile = cell.tile;
         if (tile && tile->tileset() == tileset)
             return true;
     }
@@ -286,10 +285,10 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i) {
-        const Tile *tile = mGrid.at(i).tile;
+    for (Cell &cell : mGrid) {
+        const Tile *tile = cell.tile;
         if (tile && tile->tileset() == oldTileset)
-            mGrid[i].tile = newTileset->tileAt(tile->id());
+            cell.tile = newTileset->tileAt(tile->id());
     }
 }
 
@@ -409,8 +408,8 @@ QRegion TileLayer::computeDiffRegion(const TileLayer *other) const
 
 bool TileLayer::isEmpty() const
 {
-    for (int i = 0, i_end = mGrid.size(); i < i_end; ++i)
-        if (!mGrid.at(i).isEmpty())
+    for (const Cell &cell : mGrid)
+        if (!cell.isEmpty())
             return false;
 
     return true;
