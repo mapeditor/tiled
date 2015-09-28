@@ -54,6 +54,20 @@ using namespace Tiled::Internal;
 namespace Tiled {
 namespace Internal {
 
+struct TmxImage {
+    QString source;
+    QColor transparentColor;
+    QByteArray format;
+    QByteArray data;
+
+    QImage create() const {
+        if (source.isEmpty())
+            return QImage::fromData(data, format);
+        else
+            return QImage(source);
+    }
+};
+
 class MapReaderPrivate
 {
     Q_DECLARE_TR_FUNCTIONS(MapReader)
@@ -83,7 +97,7 @@ private:
     void readTilesetTile(SharedTileset &tileset);
     void readTilesetImage(SharedTileset &tileset);
     void readTilesetTerrainTypes(SharedTileset &tileset);
-    QImage readImage();
+    TmxImage readImage();
 
     TileLayer *readLayer();
     void readLayerData(TileLayer *tileLayer);
@@ -404,10 +418,12 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());
         } else if (xml.name() == QLatin1String("image")) {
-            QString source = xml.attributes().value(QLatin1String("source")).toString();
-            if (!source.isEmpty())
-                source = p->resolveReference(source, mPath);
-            tileset->setTileImage(id, QPixmap::fromImage(readImage()), source);
+            TmxImage tmxImage = readImage();
+            QImage image = tmxImage.create();
+            if (image.isNull())
+                xml.raiseError(tr("Error loading image:\n'%1'").arg(tmxImage.source));
+            tileset->setTileImage(id, QPixmap::fromImage(image),
+                                  tmxImage.source);
         } else if (xml.name() == QLatin1String("objectgroup")) {
             tile->setObjectGroup(readObjectGroup());
         } else if (xml.name() == QLatin1String("animation")) {
@@ -444,60 +460,56 @@ void MapReaderPrivate::readTilesetImage(SharedTileset &tileset)
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    QString source = atts.value(QLatin1String("source")).toString();
-    QString trans = atts.value(QLatin1String("trans")).toString();
-
-    if (!trans.isEmpty()) {
-        if (!trans.startsWith(QLatin1Char('#')))
-            trans.prepend(QLatin1Char('#'));
-        tileset->setTransparentColor(QColor(trans));
-    }
-
-    if (!source.isEmpty())
-        source = p->resolveReference(source, mPath);
 
     // Set the width that the tileset had when the map was saved
     const int width = atts.value(QLatin1String("width")).toInt();
     mGidMapper.setTilesetWidth(tileset.data(), width);
 
-    if (!tileset->loadFromImage(readImage(), source))
-        xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(source));
+    TmxImage image = readImage();
+    tileset->setTransparentColor(image.transparentColor);
+
+    if (!tileset->loadFromImage(image.create(), image.source))
+        xml.raiseError(tr("Error loading tileset image:\n'%1'").arg(image.source));
 }
 
-QImage MapReaderPrivate::readImage()
+TmxImage MapReaderPrivate::readImage()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    QString source = atts.value(QLatin1String("source")).toString();
-    QString format = atts.value(QLatin1String("format")).toString();
 
-    if (source.isEmpty()) {
+    TmxImage image;
+    image.source = atts.value(QLatin1String("source")).toString();
+    image.format = atts.value(QLatin1String("format")).toLatin1();
+
+    QString trans = atts.value(QLatin1String("trans")).toString();
+    if (!trans.isEmpty()) {
+        if (!trans.startsWith(QLatin1Char('#')))
+            trans.prepend(QLatin1Char('#'));
+        if (QColor::isValidColor(trans))
+            image.transparentColor = QColor(trans);
+    }
+
+    if (image.source.isEmpty()) {
         while (xml.readNextStartElement()) {
             if (xml.name() == QLatin1String("data")) {
                 const QXmlStreamAttributes atts = xml.attributes();
-                QString encoding = atts.value(QLatin1String("encoding"))
-                    .toString();
-                QByteArray data = xml.readElementText().toLatin1();
-                if (encoding == QLatin1String("base64")) {
-                    data = QByteArray::fromBase64(data);
-                }
+                QStringRef encoding = atts.value(QLatin1String("encoding"));
+                image.data = xml.readElementText().toLatin1();
+                if (encoding == QLatin1String("base64"))
+                    image.data = QByteArray::fromBase64(image.data);
+
                 xml.skipCurrentElement();
-                return QImage::fromData(data, format.toLatin1());
             } else {
                 readUnknownElement();
             }
         }
     } else {
+        image.source = p->resolveReference(image.source, mPath);
         xml.skipCurrentElement();
-
-        source = p->resolveReference(source, mPath);
-        QImage image = p->readExternalImage(source);
-        if (image.isNull())
-            xml.raiseError(tr("Error loading image:\n'%1'").arg(source));
-        return image;
     }
-    return QImage();
+
+    return image;
 }
 
 void MapReaderPrivate::readTilesetTerrainTypes(SharedTileset &tileset)
@@ -787,7 +799,7 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer *imageLayer)
 
     source = p->resolveReference(source, mPath);
 
-    const QImage imageLayerImage = p->readExternalImage(source);
+    const QImage imageLayerImage(source);
     if (!imageLayer->loadFromImage(imageLayerImage, source))
         xml.raiseError(tr("Error loading image layer image:\n'%1'").arg(source));
 
@@ -1007,14 +1019,9 @@ QString MapReader::resolveReference(const QString &reference,
                                     const QString &mapPath)
 {
     if (QDir::isRelativePath(reference))
-        return mapPath + QLatin1Char('/') + reference;
+        return QDir::cleanPath(mapPath + QLatin1Char('/') + reference);
     else
-        return reference;
-}
-
-QImage MapReader::readExternalImage(const QString &source)
-{
-    return QImage(source);
+        return QDir::cleanPath(reference);
 }
 
 SharedTileset MapReader::readExternalTileset(const QString &source,
