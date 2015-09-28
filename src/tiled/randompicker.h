@@ -40,8 +40,10 @@ public:
 
     void add(const T &value, qreal probability = 1.0)
     {
-        mSum += probability;
-        mThresholds.insert(mSum, value);
+        if (probability > 0) {
+            mSum += probability;
+            mThresholds.insert(mSum, value);
+        }
     }
 
     bool isEmpty() const
