@@ -88,10 +88,10 @@ private:
     /**
      * Private constructor. Use create() instead.
      */
-    Tileset(const QString &name, int tileWidth, int tileHeight,
+    Tileset(QString name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0):
         Object(TilesetType),
-        mName(name),
+        mName(std::move(name)),
         mTileWidth(tileWidth),
         mTileHeight(tileHeight),
         mTileSpacing(tileSpacing),

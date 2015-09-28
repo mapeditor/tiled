@@ -39,8 +39,8 @@ namespace Tiled {
 
 struct LoadedPlugin
 {
-    LoadedPlugin(const QString &fileName, QObject *instance)
-        : fileName(fileName)
+    LoadedPlugin(QString fileName, QObject *instance)
+        : fileName(std::move(fileName))
         , instance(instance)
     {}
 

@@ -123,13 +123,13 @@ private:
         Option(Callback callback,
                void *data,
                QChar shortName,
-               const QString &longName,
-               const QString &help)
+               QString longName,
+               QString help)
             : callback(callback)
             , data(data)
             , shortName(shortName)
-            , longName(longName)
-            , help(help)
+            , longName(std::move(longName))
+            , help(std::move(help))
         {}
 
         Callback callback;

@@ -51,7 +51,7 @@ public:
         Object(TerrainType),
         mId(id),
         mTileset(tileset),
-        mName(name),
+        mName(std::move(name)),
         mImageTileId(imageTileId)
     {
     }

@@ -168,8 +168,8 @@ class FormatHelper
 {
 public:
     FormatHelper(FileFormat::Capabilities capabilities,
-                 const QString &initialFilter)
-        : mFilter(initialFilter)
+                 QString initialFilter)
+        : mFilter(std::move(initialFilter))
     {
         for (Format *format : PluginManager::objects<Format>()) {
             if (format->hasCapabilities(capabilities)) {
