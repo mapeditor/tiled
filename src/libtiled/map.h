@@ -476,4 +476,8 @@ TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::Map::Orientation)
+Q_DECLARE_METATYPE(Tiled::Map::LayerDataFormat)
+Q_DECLARE_METATYPE(Tiled::Map::RenderOrder)
+
 #endif // MAP_H

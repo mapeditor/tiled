@@ -54,7 +54,7 @@ Preferences::Preferences()
     // Retrieve storage settings
     mSettings->beginGroup(QLatin1String("Storage"));
     mLayerDataFormat = static_cast<Map::LayerDataFormat>
-            (intValue("LayerDataFormat", Map::Base64Zlib));
+            (intValue("LayerDataFormat", Map::CSV));
     mMapRenderOrder = static_cast<Map::RenderOrder>
             (intValue("MapRenderOrder", Map::RightDown));
     mDtdEnabled = boolValue("DtdEnabled");
