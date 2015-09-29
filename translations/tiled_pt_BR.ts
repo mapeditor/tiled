@@ -1770,7 +1770,7 @@ Linha %1, coluna %2</translation>
         <location line="+1704"/>
         <location line="+1"/>
         <source>&lt;Invalid&gt;</source>
-        <translation type="unfinished">&lt;Inválido&gt</translation>
+        <translation type="unfinished">&lt;Inválido&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
