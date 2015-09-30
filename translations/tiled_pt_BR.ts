@@ -710,7 +710,7 @@
     <message>
         <location line="+5"/>
         <source>&amp;Offset Map...</source>
-        <translation>&amp;Deslocamento do mapa...</translation>
+        <translation>&amp;Deslocamento do Mapa...</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -981,7 +981,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+13"/>
         <source>Based on Tileset Image</source>
-        <translation type="unfinished">Baseado numa imagem Tiliset</translation>
+        <translation type="unfinished">Baseado numa imagem Tileset</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1286,7 +1286,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-19"/>
         <source>Open last files on startup</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Abrir últimos arquivos na inicialização</translation>
     </message>
     <message>
         <location line="+36"/>
