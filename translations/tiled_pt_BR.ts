@@ -52,7 +52,7 @@
     <message>
         <location line="+8"/>
         <source>No exporter found for target file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nenhum exportador encontrado para arquivo de destino.</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -308,7 +308,7 @@
     <message>
         <location line="+10"/>
         <source>&amp;Draw tile grid</source>
-        <translation type="unfinished">&amp;Mostrar quadriculado</translation>
+        <translation type="unfinished">&amp;Mostrar grade de tiles</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -610,7 +610,7 @@
     <message>
         <location line="+8"/>
         <source>&amp;Snap to Grid</source>
-        <translation>&amp;Alinhar à Grade</translation>
+        <translation>&amp;Alinhar a Grade</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -891,7 +891,8 @@ Linha %1, coluna %2</translation>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-184"/>
         <source>Tileset tile index negative:
 &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Índice do tileset para o tile negativo:
+&apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1316,7 +1317,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+30"/>
         <source>Add Object Type</source>
-        <translation>Adicionar tipo de objeto</translation>
+        <translation>Adicionar Tipo de Objeto</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1326,7 +1327,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+17"/>
         <source>Remove Selected Object Types</source>
-        <translation>Remover os tipos de objeto selecionados</translation>
+        <translation>Remover os Tipos de Objeto Selecionados</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1506,17 +1507,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+2"/>
         <source>Size Backslash</source>
-        <translation type="unfinished">Tamanho Backslash</translation>
+        <translation type="unfinished">Tamanho da Barra Invertida</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tamanho da Barra</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Size All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tamanho de Todos</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1556,7 +1557,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+2"/>
         <source>What&apos;s This</source>
-        <translation type="unfinished">O que é isso</translation>
+        <translation type="unfinished">O Que é Isso</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1780,12 +1781,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+45"/>
         <source>Horizontal Policy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Politica Horizontal</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Vertical Policy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Politica Vertical</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1945,7 +1946,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+246"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation>Arquivos do tipo T-Engine4 (*.lua)</translation>
+        <translation>Arquivos de mapa T-Engine4 (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -1968,16 +1969,16 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+182"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Duplicar %n Objeto</numerusform>
             <numerusform>Duplicar %n Objeto(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Remover %n Objeto</numerusform>
             <numerusform>Remover %n Objeto(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -2044,8 +2045,8 @@ Linha %1, coluna %2</translation>
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Mover %n Objeto para Camada</numerusform>
             <numerusform>Mover %n Objeto(s) para Camada</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -2452,8 +2453,8 @@ Linha %1, coluna %2</translation>
         <location line="+227"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Mover %n Ponto</numerusform>
             <numerusform>Mover %n Ponto(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2461,8 +2462,8 @@ Linha %1, coluna %2</translation>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>Deletar %n Nó</numerusform>
             <numerusform>Deletar %n Nó(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -3103,7 +3104,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layer</source>
-        <translation>&amp;Abaixar Camada</translation>
+        <translation>&amp;Descer Camada</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3230,7 +3231,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Tile layers for this map will consume %L1 GB of memory each. Not creating one by default.</source>
-        <translation type="unfinished">As camadas de tiles para este mapa irão consumir %L1 GB de memória cada. Não será criação uma por padrão.</translation>
+        <translation type="unfinished">As camadas de tiles para este mapa irão consumir %L1 GB de memória cada. Não será criada uma por padrão.</translation>
     </message>
     <message>
         <location line="+49"/>
@@ -3369,7 +3370,7 @@ Por favor selecione o formato específico.</translation>
 &lt;p&gt;Every little bit helps. Tiled has a lot of users and if each would contribute a small donation each month I will have time to make sure Tiled keeps getting better.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;
-&lt;h3&gt;Com a sua ajuda que eu posso continuar a melhorar o Tiled!&lt;/h3&gt;
+&lt;h3&gt;Com a sua ajuda eu posso continuar a melhorar o Tiled!&lt;/h3&gt;
 &lt;p&gt;Por favor, considere me apoiar como patrono. Seu apoio seria uma grande diferença para mim, o principal desenvolvedor e mantenedor do Tiled. Eu poderia gastar menos tempo de trabalho para arrumar dinheiro em outro lugar e passar mais tempo trabalhando no Tiled.&lt;/p&gt;
 &lt;p&gt;Cada pequena ajuda vale muito. Tiled tem um monte de usuários e se cada um contribuir com uma pequena doação cada mês eu vou ter tempo para me certificar de que o Tiled ficará cada vez melhor.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -3443,7 +3444,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+3"/>
         <source>Remove Property</source>
-        <translation type="unfinished">Remover Pripriedade</translation>
+        <translation type="unfinished">Remover Propriedade</translation>
     </message>
 </context>
 <context>
@@ -3461,7 +3462,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>Top Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cima para Baixo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3583,42 +3584,42 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eixo de Escalonamento</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Índice de Escalonamento</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rotação</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Inversão</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transparência</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Horizontal Offset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deslocamento Horizontal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Vertical Offset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deslocamento Vertical</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Camada de Tile</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3633,7 +3634,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Drawing Order</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ordem de Desenho</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3648,7 +3649,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cor Transparente</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -3658,12 +3659,12 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>Drawing Offset</source>
-        <translation type="unfinished">Espaçamento</translation>
+        <translation type="unfinished">Deslocamento de Desenho</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Source Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fonte da Imagem</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3673,7 +3674,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Margem</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3689,7 +3690,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+4"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Probabilidade</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3703,7 +3704,7 @@ Por favor selecione o formato específico.</translation>
         <location filename="../src/tiled/selectsametiletool.cpp" line="+50"/>
         <location line="+57"/>
         <source>Select Same Tile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Selecionar Mesmo Tile</translation>
     </message>
     <message>
         <location line="-54"/>
@@ -3718,7 +3719,7 @@ Por favor selecione o formato específico.</translation>
         <location filename="../src/tiled/stampbrush.cpp" line="+41"/>
         <location line="+128"/>
         <source>Stamp Brush</source>
-        <translation>Carimbo</translation>
+        <translation>Pincel de Carimbo</translation>
     </message>
     <message>
         <location line="-125"/>
@@ -3763,7 +3764,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="-56"/>
         <source>Delete Frames</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deletar Quadros</translation>
     </message>
 </context>
 <context>
@@ -3771,7 +3772,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilecollisioneditor.cpp" line="+337"/>
         <source>Delete</source>
-        <translation type="unfinished">Apagar</translation>
+        <translation type="unfinished">Deletar</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -3781,7 +3782,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+22"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Editor de Colisão de Tile</translation>
     </message>
 </context>
 <context>
@@ -3809,12 +3810,12 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carimbo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Probability</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Probabilidade</translation>
     </message>
 </context>
 <context>
@@ -3822,52 +3823,52 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
         <source>Delete Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deletar Carimbo</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Variation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Remover Variação</translation>
     </message>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Escolher Pasta de Carimbos</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carimbos de Tile</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adicionar Novo Carimbo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Variation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adicionar Variação</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Duplicar Carimbo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deletar Selecionado</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Setar Pasta de Carimbos</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Filtro</translation>
     </message>
 </context>
 <context>
@@ -3922,34 +3923,34 @@ Por favor selecione o formato específico.</translation>
         <location line="+115"/>
         <location line="+13"/>
         <source>Add Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adicionar Tiles</translation>
     </message>
     <message>
         <location line="-127"/>
         <location line="+176"/>
         <location line="+13"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Remover Tiles</translation>
     </message>
     <message>
         <location line="-111"/>
         <source>Error saving tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erro ao salvar tileset: %1</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>Could not load &quot;%1&quot;!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Não foi possível carregar &quot;%1&quot;!</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>One or more of the tiles to be removed are still in use by the map!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Um ou mais tiles à serem removidos ainda estão em uso pelo mapa!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove all references to these tiles?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Remover todas as referências a estes tiles?</translation>
     </message>
     <message>
         <location line="-184"/>
@@ -4040,7 +4041,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+30"/>
         <source>TMW-eAthena collision files (*.wlk)</source>
-        <translation></translation>
+        <translation>Arquivos de colisão TMW-eAthena (*.wlk)</translation>
     </message>
 </context>
 <context>
@@ -4081,27 +4082,27 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+38"/>
         <source>Change %1 Properties</source>
-        <translation>Alterar %1 Propriedade(s)</translation>
+        <translation>Alterar Propriedade(s) de %1</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Set Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ajustar Propriedade</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adicionar Propriedade</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Remove Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Remover Propriedade</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Rename Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Renomear Propriedade</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeselectedarea.cpp" line="+31"/>
@@ -4193,7 +4194,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+22"/>
         <source>Change Drawing Offset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Deslocamento de Desenho</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+41"/>
@@ -4208,7 +4209,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/movelayer.cpp" line="+37"/>
         <source>Lower Layer</source>
-        <translation>Abaixar Camada</translation>
+        <translation>Descer Camada</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4259,7 +4260,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Deslocamento de Camada</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
@@ -4279,78 +4280,78 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/addremovetiles.cpp" line="+74"/>
         <source>Add Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adicionar Tiles</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Remover Tiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerposition.cpp" line="+36"/>
         <source>Change Image Layer Position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Posição da Camada de Imagem</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobjectsorder.cpp" line="+44"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+67"/>
         <source>Raise Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Subir Objeto</translation>
     </message>
     <message>
         <location line="+2"/>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+29"/>
         <source>Lower Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Descer Objeto</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+33"/>
         <source>Change Tile Animation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Animação de Tile</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+15"/>
         <source>Change Tile Collision</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Colisão de Tile</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
+            <numerusform>Inverter %n Objeto(s)</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/tiled/raiselowerhelper.cpp" line="+43"/>
         <source>Raise Object To Top</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Subir Objeto para o Topo</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Lower Object To Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Descer Objeto para a Base</translation>
     </message>
     <message>
         <location filename="../src/tiled/rotatemapobject.cpp" line="+40"/>
         <location line="+12"/>
         <source>Rotate Object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rotacionar Objeto</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapproperty.cpp" line="+41"/>
         <source>Change Tile Width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Largura de Tile</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Tile Height</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Altura de Tile</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Comprimento do Lado Hex</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -4360,12 +4361,12 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+10"/>
         <source>Change Stagger Axis</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Eixo de Escalonamento</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Change Stagger Index</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alterar Índice de Escalonamento</translation>
     </message>
     <message>
         <location line="+10"/>
