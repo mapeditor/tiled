@@ -37,7 +37,7 @@
     <message>
         <location filename="../src/tiled/main.cpp" line="+214"/>
         <source>Export syntax is --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</source>
-        <translation type="unfinished">Sintaxe de Exportação: --export-map [format] &lt;tmx file&gt; &lt;target file&gt;</translation>
+        <translation type="unfinished">Sintaxe de Exportação: --export-map [formato] &lt;arquivo tmx&gt; &lt;arquivo alvo&gt;</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -341,7 +341,7 @@
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation>Este não parece ser um mapa de Flare válido. Um mapa de Flare consiste de pelo menos uma seçao de cabeçalho, uma seçao de tileset e uma camada.</translation>
+        <translation>Este não parece ser um mapa de Flare válido. Um mapa de Flare consiste de pelo menos uma seção de cabeçalho, uma seção de tileset e uma camada.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -555,7 +555,7 @@
     <message>
         <location line="+8"/>
         <source>Become a Patron</source>
-        <translation type="unfinished">Torne-se um Patron</translation>
+        <translation type="unfinished">Torne-se um Patrono</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -645,7 +645,7 @@
     <message>
         <location line="+8"/>
         <source>Show Tile Object &amp;Outlines</source>
-        <translation>Mostrar B&amp;ordas de Objeto</translation>
+        <translation>Mostrar B&amp;ordas do Objeto</translation>
     </message>
     <message>
         <location line="-397"/>
@@ -786,7 +786,7 @@ Linha %1, coluna %2</translation>
         <location line="+20"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-19"/>
         <source>Error while loading tileset &apos;%1&apos;: %2</source>
-        <translation>Erro ao carregar o tileset &apos;%1&apos;: %2</translation>
+        <translation>Erro ao carregar tileset &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -808,7 +808,7 @@ Linha %1, coluna %2</translation>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+38"/>
         <source>Error loading tileset image:
 &apos;%1&apos;</source>
-        <translation>Erro ao carregar a imagem do tileset:
+        <translation>Erro ao carregar imagem do tileset:
 &apos;%1&apos;</translation>
     </message>
     <message>
@@ -1095,7 +1095,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+12"/>
         <source>Offset Contents of Map</source>
-        <translation>Deslocamento do conteúdo do Mapa</translation>
+        <translation>Deslocamento do Conteúdo do Mapa</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1154,7 +1154,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/patreondialog.ui" line="+14"/>
         <source>Become a Patron</source>
-        <translation type="unfinished">Torne-se um Patron</translation>
+        <translation type="unfinished">Torne-se um Patrono</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -1164,7 +1164,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+7"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished">Eu já sou um patron!</translation>
+        <translation type="unfinished">Eu já sou um Patrono!</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1251,7 +1251,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+7"/>
         <source>Not enabled by default since a reference to an external DTD is known to cause problems with some XML parsers.</source>
-        <translation>Desabilitado por padrão pois a referencia para um DTD externo pode gerar problemas em alguns parsers de XML.</translation>
+        <translation>Desabilitado por padrão pois a referencia para um DTD externo pode gerar problemas em alguns analisadores de XML.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1327,7 +1327,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+17"/>
         <source>Remove Selected Object Types</source>
-        <translation>Remover os Tipos de Objeto Selecionados</translation>
+        <translation>Remover o(s) Tipo(s) de Objeto(s) Selecionado(s)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1970,7 +1970,7 @@ Linha %1, coluna %2</translation>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>Duplicar %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Duplicar %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1978,7 +1978,7 @@ Linha %1, coluna %2</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>Remover %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Remover %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message>
@@ -2046,7 +2046,7 @@ Linha %1, coluna %2</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Mover %n Objeto(s) para Camada</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
         </translation>
     </message>
     <message>
@@ -2454,7 +2454,7 @@ Linha %1, coluna %2</translation>
         <source>Move %n Point(s)</source>
         <translation>
             <numerusform>Mover %n Ponto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Mover %n Ponto(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2463,7 +2463,7 @@ Linha %1, coluna %2</translation>
         <source>Delete %n Node(s)</source>
         <translation>
             <numerusform>Deletar %n Nó(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Deletar %n Nó(s)</numerusform>
         </translation>
     </message>
     <message>
@@ -2824,7 +2824,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+555"/>
         <source>[*]%1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">[*]%1</translation>
     </message>
     <message>
         <location line="+130"/>
@@ -2862,7 +2862,7 @@ Por favor selecione o formato específico.</translation>
         <location line="-1186"/>
         <location line="+1187"/>
         <source>Tile Collision Editor</source>
-        <translation type="unfinished">Editor de Colisão de tiles</translation>
+        <translation type="unfinished">Editor de Colisão de Tiles</translation>
     </message>
     <message>
         <location line="-1158"/>
@@ -2882,14 +2882,14 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+24"/>
         <source>%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1: %2</translation>
     </message>
     <message numerus="yes">
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation type="unfinished">
             <numerusform>Adicionar %n Tileset(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Adicionar %n Tileset(s)</numerusform>
         </translation>
     </message>
     <message>
@@ -2936,7 +2936,7 @@ Por favor selecione o formato específico.</translation>
         <source>Rotate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Rotacionar %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Rotacionar %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message>
@@ -2967,7 +2967,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+24"/>
         <source>Merge Layer Down</source>
-        <translation>Mesclar Camada Para Baixo</translation>
+        <translation>Mesclar Camada</translation>
     </message>
     <message>
         <location line="+203"/>
@@ -2984,7 +2984,7 @@ Por favor selecione o formato específico.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Duplicar %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Duplicar %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2992,7 +2992,7 @@ Por favor selecione o formato específico.</translation>
         <source>Remove %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Remover %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Remover %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3000,7 +3000,7 @@ Por favor selecione o formato específico.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation type="unfinished">
             <numerusform>Mover %n Objeto(s) para Camada</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
         </translation>
     </message>
 </context>
@@ -3059,7 +3059,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+2"/>
         <source>&amp;Merge Layer Down</source>
-        <translation>&amp;Mesclar Camada para Baixo</translation>
+        <translation>&amp;Mesclar Camada</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3121,7 +3121,7 @@ Por favor selecione o formato específico.</translation>
         <source>Duplicate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Duplicar %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Duplicar %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3129,7 +3129,7 @@ Por favor selecione o formato específico.</translation>
         <source>Remove %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Remover %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Remover %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message>
@@ -3283,7 +3283,7 @@ Por favor selecione o formato específico.</translation>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>Mover %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Mover %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3291,7 +3291,7 @@ Por favor selecione o formato específico.</translation>
         <source>Rotate %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Rotacionar %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Rotacionar %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3299,7 +3299,7 @@ Por favor selecione o formato específico.</translation>
         <source>Resize %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Redimensionar %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Redimensionar %n Objeto(s)</numerusform>
         </translation>
     </message>
 </context>
@@ -3338,7 +3338,7 @@ Por favor selecione o formato específico.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>Mover %n Objeto(s) para Camada</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
         </translation>
     </message>
 </context>
@@ -3360,7 +3360,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+12"/>
         <source>I&apos;m no longer a patron</source>
-        <translation type="unfinished">Eu não sou mais um patron</translation>
+        <translation type="unfinished">Eu não sou mais um Patrono</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3371,14 +3371,14 @@ Por favor selecione o formato específico.</translation>
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Com a sua ajuda eu posso continuar a melhorar o Tiled!&lt;/h3&gt;
-&lt;p&gt;Por favor, considere me apoiar como patrono. Seu apoio seria uma grande diferença para mim, o principal desenvolvedor e mantenedor do Tiled. Eu poderia gastar menos tempo de trabalho para arrumar dinheiro em outro lugar e passar mais tempo trabalhando no Tiled.&lt;/p&gt;
+&lt;p&gt;Por favor, considere me apoiar como Patrono. Seu apoio seria uma grande diferença para mim, o principal desenvolvedor e mantenedor do Tiled. Eu poderia gastar menos tempo de trabalho para arrumar dinheiro em outro lugar e passar mais tempo trabalhando no Tiled.&lt;/p&gt;
 &lt;p&gt;Cada pequena ajuda vale muito. Tiled tem um monte de usuários e se cada um contribuir com uma pequena doação cada mês eu vou ter tempo para me certificar de que o Tiled ficará cada vez melhor.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>I&apos;m already a patron!</source>
-        <translation type="unfinished">Eu já sou um patron!</translation>
+        <translation type="unfinished">Eu já sou um Patrono!</translation>
     </message>
 </context>
 <context>
@@ -3599,7 +3599,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Flipping</source>
-        <translation type="unfinished">Inversão</translation>
+        <translation type="unfinished">Inverter</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -3619,7 +3619,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Tile Layer</source>
-        <translation type="unfinished">Camada de Tile</translation>
+        <translation type="unfinished">Camada de Tiles</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3669,12 +3669,12 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+3"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Margem</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Spacing</source>
-        <translation type="unfinished">Margem</translation>
+        <translation type="unfinished">Espaçamento</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -3685,7 +3685,7 @@ Por favor selecione o formato específico.</translation>
         <location line="-110"/>
         <location line="+111"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ID</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4260,7 +4260,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+29"/>
         <source>Change Layer Offset</source>
-        <translation type="unfinished">Alterar Deslocamento de Camada</translation>
+        <translation type="unfinished">Alterar Deslocamento da Camada</translation>
     </message>
     <message>
         <location filename="../src/tiled/changemapobject.cpp" line="+31"/>
@@ -4307,19 +4307,19 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/changetileanimation.cpp" line="+33"/>
         <source>Change Tile Animation</source>
-        <translation type="unfinished">Alterar Animação de Tile</translation>
+        <translation type="unfinished">Alterar Animação do Tile</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileobjectgroup.cpp" line="+15"/>
         <source>Change Tile Collision</source>
-        <translation type="unfinished">Alterar Colisão de Tile</translation>
+        <translation type="unfinished">Alterar Colisão do Tile</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation type="unfinished">
             <numerusform>Inverter %n Objeto(s)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Inverter %n Objeto(s)</numerusform>
         </translation>
     </message>
     <message>
@@ -4381,7 +4381,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+10"/>
         <source>Change Layer Data Format</source>
-        <translation type="unfinished">Alterar Formato da Camada de Dados</translation>
+        <translation type="unfinished">Alterar Formato de Dados da Camada</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetileprobability.cpp" line="+38"/>
