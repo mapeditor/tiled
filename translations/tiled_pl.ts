@@ -98,7 +98,7 @@
     <message>
         <location line="+5"/>
         <source>Export the specified tmx file to target</source>
-        <translation>Eksportuj określony plik tmx do celu</translation>
+        <translation>Eksportuj wskazany plik tmx do celu</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1388,7 +1388,7 @@ Linia %1, kolumna %2</translation>
     <message>
         <location line="+1"/>
         <source>v0.9 and later</source>
-        <translation>v0.8 i późniejsze</translation>
+        <translation>v0.9 i późniejsze</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2161,7 +2161,7 @@ Linia %1, kolumna %2</translation>
         <location line="+10"/>
         <source>Opening rules map failed:
 %1</source>
-        <translation>Nie powiodło się otwarcie mapy regół:
+        <translation>Nie powiodło się otwarcie mapy reguł:
 %1</translation>
     </message>
 </context>
@@ -2333,7 +2333,7 @@ Linia %1, kolumna %2</translation>
     <message>
         <location line="+3"/>
         <source>The command crashed.</source>
-        <translation>Polecenie wywaliło się.</translation>
+        <translation>Polecenie nie zadziałało.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2545,7 +2545,7 @@ Czy chcesz to zamienić?</translation>
     <message>
         <location line="+1"/>
         <source>Could not allocate sufficient memory for the image. Try reducing the zoom level or using a 64-bit version of Tiled.</source>
-        <translation>Nie można przydzielić wystarczającą ilość pamięci dla obrazka. Spróbuj zmniejszyć poziom powiększenia lub korzystaj z wersji 64-bitowej Tiled.</translation>
+        <translation>Nie można przydzielić wystarczającej ilość pamięci dla obrazka. Spróbuj zmniejszyć poziom powiększenia lub korzystaj z wersji 64-bitowej Tiled.</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -2555,7 +2555,7 @@ Czy chcesz to zamienić?</translation>
     <message>
         <location line="+1"/>
         <source>The resulting image would be %1 x %2 pixels and take %3 GB of memory. Tiled is unable to create such an image. Try reducing the zoom level.</source>
-        <translation>Uzyskany obrazek byłby%1 x%2 pikseli i bierze%3 GB pamięci. Tiled nie jest w stanie stworzyć takiego obrazka. Spróbuj zmniejszyć poziom powiększenia.</translation>
+        <translation>Uzyskany obrazek byłby%1 x%2 pikseli i zajmowałby%3 GB pamięci. Tiled nie jest w stanie stworzyć takiego obrazka. Spróbuj zmniejszyć poziom powiększenia.</translation>
     </message>
     <message>
         <location line="+93"/>
@@ -2777,7 +2777,7 @@ Czy chcesz to zamienić?</translation>
     <message>
         <location line="+37"/>
         <source>Exported to %1</source>
-        <translation>Eksportuj do %1</translation>
+        <translation>Wyeksportowano do %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2815,7 +2815,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location line="+13"/>
         <source>Some export files already exist:</source>
-        <translation>Niektóre pliki eksportu istnieje:</translation>
+        <translation>Niektóre pliki eksportu istnieją:</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3171,7 +3171,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location line="+7"/>
         <source>Change Object Type</source>
-        <translation>Zmień Nazwę Typu</translation>
+        <translation>Zmień Typ Obiektu</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3741,7 +3741,7 @@ Proszę wybrać konkretny format.</translation>
         <location filename="../src/tiled/stampbrush.cpp" line="+41"/>
         <location line="+128"/>
         <source>Stamp Brush</source>
-        <translation>Pędzel Znaczka</translation>
+        <translation>Pędzel Stempla</translation>
     </message>
     <message>
         <location line="-125"/>
@@ -3832,7 +3832,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location filename="../src/tiled/tilestampmodel.cpp" line="+78"/>
         <source>Stamp</source>
-        <translation>Znaczek</translation>
+        <translation>Stempel</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3845,7 +3845,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location filename="../src/tiled/tilestampsdock.cpp" line="+196"/>
         <source>Delete Stamp</source>
-        <translation>Usuń Znaczek</translation>
+        <translation>Usuń Stempel</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -3855,17 +3855,17 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location line="+71"/>
         <source>Choose the Stamps Folder</source>
-        <translation>Wybierz Katalog Znaczków</translation>
+        <translation>Wybierz Katalog Stempli</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tile Stamps</source>
-        <translation type="unfinished"></translation>
+        <translation>Stemple Kafelka</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add New Stamp</source>
-        <translation>Dodaj Nowy Znaczek</translation>
+        <translation>Dodaj Nowy Stempel</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3875,7 +3875,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location line="+1"/>
         <source>Duplicate Stamp</source>
-        <translation>Duplikuj Znaczek</translation>
+        <translation>Duplikuj Stempel</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3885,7 +3885,7 @@ Proszę wybrać konkretny format.</translation>
     <message>
         <location line="+1"/>
         <source>Set Stamps Folder</source>
-        <translation>Ustaw Katalog Znaczków</translation>
+        <translation>Ustaw Katalog Stempli</translation>
     </message>
     <message>
         <location line="+2"/>
