@@ -1,3 +1,5 @@
+* Added Polish translation
+
 0.14.1 (28 September 2015)
 * Added missing 'renderorder' property to the Lua export
 * Fixed editing of properties of tiles captured from the map
