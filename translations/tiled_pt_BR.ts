@@ -1836,7 +1836,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+59"/>
         <source>Cannot open Replica Island map file!</source>
-        <translation>Não foi possivel abrir o arquivo de mapa de Replica Island!</translation>
+        <translation>Não foi possivel abrir o arquivo de mapa do Replica Island!</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1970,7 +1970,7 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+182"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Duplicar %n Objeto</numerusform>
+            <numerusform>Duplicar Objeto</numerusform>
             <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
@@ -1978,7 +1978,7 @@ Linha %1, coluna %2</translation>
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover Objeto</numerusform>
             <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
@@ -2046,7 +2046,7 @@ Linha %1, coluna %2</translation>
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover Objeto para Camada</numerusform>
             <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
@@ -2454,7 +2454,7 @@ Linha %1, coluna %2</translation>
         <location line="+227"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Mover %n Ponto</numerusform>
+            <numerusform>Mover Ponto</numerusform>
             <numerusform>Mover %n Pontos</numerusform>
         </translation>
     </message>
@@ -2463,7 +2463,7 @@ Linha %1, coluna %2</translation>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>Deletar %n Nó</numerusform>
+            <numerusform>Deletar Nó</numerusform>
             <numerusform>Deletar %n Nós</numerusform>
         </translation>
     </message>
@@ -2889,7 +2889,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>Adicionar %n Tileset</numerusform>
+            <numerusform>Adicionar Tileset</numerusform>
             <numerusform>Adicionar %n Tilesets</numerusform>
         </translation>
     </message>
@@ -2936,7 +2936,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Rotacionar %n Objeto</numerusform>
+            <numerusform>Rotacionar Objeto</numerusform>
             <numerusform>Rotacionar %n Objetos</numerusform>
         </translation>
     </message>
@@ -2984,7 +2984,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+189"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Duplicar %n Objeto</numerusform>
+            <numerusform>Duplicar Objeto</numerusform>
             <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
@@ -2992,7 +2992,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+20"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover Objeto</numerusform>
             <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
@@ -3000,7 +3000,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover Objeto para Camada</numerusform>
             <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
@@ -3121,7 +3121,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+247"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Duplicar %n Objeto</numerusform>
+            <numerusform>Duplicar Objeto</numerusform>
             <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
@@ -3129,7 +3129,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover Objeto</numerusform>
             <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
@@ -3283,7 +3283,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+548"/>
         <source>Move %n Object(s)</source>
         <translation type="unfinished">
-            <numerusform>Mover %n Objeto</numerusform>
+            <numerusform>Mover Objeto</numerusform>
             <numerusform>Mover %n Objetos</numerusform>
         </translation>
     </message>
@@ -3291,7 +3291,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+67"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Rotacionar %n Objeto</numerusform>
+            <numerusform>Rotacionar Objeto</numerusform>
             <numerusform>Rotacionar %n Objetos</numerusform>
         </translation>
     </message>
@@ -3299,7 +3299,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+266"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform>Redimensionar %n Objeto</numerusform>
+            <numerusform>Redimensionar Objeto</numerusform>
             <numerusform>Redimensionar %n Objetos</numerusform>
         </translation>
     </message>
@@ -3338,7 +3338,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover Objeto para Camada</numerusform>
             <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
@@ -4319,7 +4319,7 @@ Por favor selecione o formato específico.</translation>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Inverter %n Objeto</numerusform>
+            <numerusform>Inverter Objeto</numerusform>
             <numerusform>Inverter %n Objetos</numerusform>
         </translation>
     </message>
