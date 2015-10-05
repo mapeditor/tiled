@@ -1970,16 +1970,16 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="+182"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>Duplicar %n Objeto(s)</numerusform>
-            <numerusform>Duplicar %n Objeto(s)</numerusform>
+            <numerusform>Duplicar %n Objeto</numerusform>
+            <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Remover %n Objeto(s)</numerusform>
-            <numerusform>Remover %n Objeto(s)</numerusform>
+            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
     <message>
@@ -2046,8 +2046,8 @@ Linha %1, coluna %2</translation>
         <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
-            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
+            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
     <message>
@@ -2454,8 +2454,8 @@ Linha %1, coluna %2</translation>
         <location line="+227"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Mover %n Ponto(s)</numerusform>
-            <numerusform>Mover %n Ponto(s)</numerusform>
+            <numerusform>Mover %n Ponto</numerusform>
+            <numerusform>Mover %n Pontos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -2463,8 +2463,8 @@ Linha %1, coluna %2</translation>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>Deletar %n Nó(s)</numerusform>
-            <numerusform>Deletar %n Nó(s)</numerusform>
+            <numerusform>Deletar %n Nó</numerusform>
+            <numerusform>Deletar %n Nós</numerusform>
         </translation>
     </message>
     <message>
@@ -2889,8 +2889,8 @@ Por favor selecione o formato específico.</translation>
         <location line="+10"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Adicionar %n Tileset(s)</numerusform>
+            <numerusform>Adicionar %n Tileset</numerusform>
+            <numerusform>Adicionar %n Tilesets</numerusform>
         </translation>
     </message>
     <message>
@@ -2936,8 +2936,8 @@ Por favor selecione o formato específico.</translation>
         <location line="+28"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform>Rotacionar %n Objeto(s)</numerusform>
-            <numerusform>Rotacionar %n Objeto(s)</numerusform>
+            <numerusform>Rotacionar %n Objeto</numerusform>
+            <numerusform>Rotacionar %n Objetos</numerusform>
         </translation>
     </message>
     <message>
@@ -2984,24 +2984,24 @@ Por favor selecione o formato específico.</translation>
         <location line="+189"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Duplicar %n Objeto(s)</numerusform>
+            <numerusform>Duplicar %n Objeto</numerusform>
+            <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+20"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Remover %n Objeto(s)</numerusform>
+            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+12"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
+            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
 </context>
@@ -3121,16 +3121,16 @@ Por favor selecione o formato específico.</translation>
         <location line="+247"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Duplicar %n Objeto(s)</numerusform>
+            <numerusform>Duplicar %n Objeto</numerusform>
+            <numerusform>Duplicar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Remover %n Objeto(s)</numerusform>
+            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
     <message>
@@ -3283,24 +3283,24 @@ Por favor selecione o formato específico.</translation>
         <location line="+548"/>
         <source>Move %n Object(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform>Mover %n Objeto(s)</numerusform>
+            <numerusform>Mover %n Objeto</numerusform>
+            <numerusform>Mover %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+67"/>
         <source>Rotate %n Object(s)</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Rotacionar %n Objeto(s)</numerusform>
+            <numerusform>Rotacionar %n Objeto</numerusform>
+            <numerusform>Rotacionar %n Objetos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+266"/>
         <source>Resize %n Object(s)</source>
         <translation>
-            <numerusform></numerusform>
-            <numerusform>Redimensionar %n Objeto(s)</numerusform>
+            <numerusform>Redimensionar %n Objeto</numerusform>
+            <numerusform>Redimensionar %n Objetos</numerusform>
         </translation>
     </message>
 </context>
@@ -3338,8 +3338,8 @@ Por favor selecione o formato específico.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
-            <numerusform>Mover %n Objeto(s) para Camada</numerusform>
+            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
 </context>
@@ -4083,7 +4083,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+38"/>
         <source>Change %1 Properties</source>
-        <translation>Alterar Propriedade(s) de %1</translation>
+        <translation>Alterar Propriedades de %1</translation>
     </message>
     <message>
         <location line="+41"/>
@@ -4319,8 +4319,8 @@ Por favor selecione o formato específico.</translation>
         <location filename="../src/tiled/flipmapobjects.cpp" line="+39"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>Inverter %n Objeto(s)</numerusform>
-            <numerusform>Inverter %n Objeto(s)</numerusform>
+            <numerusform>Inverter %n Objeto</numerusform>
+            <numerusform>Inverter %n Objetos</numerusform>
         </translation>
     </message>
     <message>
