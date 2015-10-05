@@ -21,6 +21,7 @@ LANGUAGES = \
     ja \
     lv \
     nl \
+    pl \
     pt \
     pt_BR \
     ru \
