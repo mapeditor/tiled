@@ -127,7 +127,7 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
         return nullptr;
 
     const int i = index.column() + index.row() * columnCount();
-    return mTileset->tileAt(i);
+    return i < mTileset->tileCount() ? mTileset->tileAt(i) : nullptr;
 }
 
 int TilesetModel::tileIndexAt(const QModelIndex &index) const

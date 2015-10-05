@@ -207,6 +207,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         const int tileIndex = it.key().toInt();
         if (tileIndex < 0) {
             mError = tr("Tileset tile index negative:\n'%1'").arg(tileIndex);
+            return SharedTileset();
         }
 
         if (tileIndex >= tileset->tileCount()) {
@@ -219,44 +220,42 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                 mError = tr("Tileset tile index too high:\n'%1'").arg(tileIndex);
                 return SharedTileset();
             }
-            for (int i = tileset->tileCount(); i <= tileIndex; i++)
-                tileset->addTile(QPixmap());
+            tileset->expandTiles(tileIndex + 1);
         }
 
         Tile *tile = tileset->tileAt(tileIndex);
-        if (tile) {
-            const QVariantMap tileVar = it.value().toMap();
-            QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
-            if (terrains.count() == 4) {
-                for (int i = 0; i < 4; ++i) {
-                    int terrainId = terrains.at(i).toInt(&ok);
-                    if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
-                        tile->setCornerTerrainId(i, terrainId);
-                }
-            }
-            float probability = tileVar[QLatin1String("probability")].toFloat(&ok);
-            if (ok)
-                tile->setProbability(probability);
-            imageVariant = tileVar[QLatin1String("image")];
-            if (!imageVariant.isNull()) {
-                QString imagePath = resolvePath(mMapDir, imageVariant);
-                tileset->setTileImage(tileIndex, QPixmap(imagePath), imagePath);
-            }
-            QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
-            if (!objectGroupVariant.isEmpty())
-                tile->setObjectGroup(toObjectGroup(objectGroupVariant));
 
-            QVariantList frameList = tileVar[QLatin1String("animation")].toList();
-            if (!frameList.isEmpty()) {
-                QVector<Frame> frames(frameList.size());
-                for (int i = frameList.size() - 1; i >= 0; --i) {
-                    const QVariantMap frameVariantMap = frameList[i].toMap();
-                    Frame &frame = frames[i];
-                    frame.tileId = frameVariantMap[QLatin1String("tileid")].toInt();
-                    frame.duration = frameVariantMap[QLatin1String("duration")].toInt();
-                }
-                tile->setFrames(frames);
+        const QVariantMap tileVar = it.value().toMap();
+        QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
+        if (terrains.count() == 4) {
+            for (int i = 0; i < 4; ++i) {
+                int terrainId = terrains.at(i).toInt(&ok);
+                if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
+                    tile->setCornerTerrainId(i, terrainId);
             }
+        }
+        float probability = tileVar[QLatin1String("probability")].toFloat(&ok);
+        if (ok)
+            tile->setProbability(probability);
+        imageVariant = tileVar[QLatin1String("image")];
+        if (!imageVariant.isNull()) {
+            QString imagePath = resolvePath(mMapDir, imageVariant);
+            tileset->setTileImage(tileIndex, QPixmap(imagePath), imagePath);
+        }
+        QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
+        if (!objectGroupVariant.isEmpty())
+            tile->setObjectGroup(toObjectGroup(objectGroupVariant));
+
+        QVariantList frameList = tileVar[QLatin1String("animation")].toList();
+        if (!frameList.isEmpty()) {
+            QVector<Frame> frames(frameList.size());
+            for (int i = frameList.size() - 1; i >= 0; --i) {
+                const QVariantMap frameVariantMap = frameList[i].toMap();
+                Frame &frame = frames[i];
+                frame.tileId = frameVariantMap[QLatin1String("tileid")].toInt();
+                frame.duration = frameVariantMap[QLatin1String("duration")].toInt();
+            }
+            tile->setFrames(frames);
         }
     }
 
@@ -265,7 +264,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
         const int tileIndex = it.key().toInt();
         const QVariant propertiesVar = it.value();
-        if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
+        if (tileset->hasTile(tileIndex)) {
             const Properties properties = toProperties(propertiesVar);
             tileset->tileAt(tileIndex)->setProperties(properties);
         }

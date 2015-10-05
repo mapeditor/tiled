@@ -74,7 +74,7 @@ Map::Map(const Map &map):
     mLayerDataFormat(map.mLayerDataFormat),
     mNextObjectId(1)
 {
-    foreach (const Layer *layer, map.mLayers) {
+    for (const Layer *layer : map.mLayers) {
         Layer *clone = layer->clone();
         clone->setMap(this);
         mLayers.append(clone);
@@ -137,7 +137,7 @@ void Map::recomputeDrawMargins()
 {
     mDrawMargins = QMargins();
 
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         if (TileLayer *tileLayer = layer->asTileLayer())
             tileLayer->recomputeDrawMargins();
 }
@@ -145,7 +145,7 @@ void Map::recomputeDrawMargins()
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
        if (layer->layerType() == type)
            count++;
     return count;
@@ -154,7 +154,7 @@ int Map::layerCount(Layer::TypeFlag type) const
 QList<Layer*> Map::layers(Layer::TypeFlag type) const
 {
     QList<Layer*> layers;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         if (layer->layerType() == type)
             layers.append(layer);
     return layers;
@@ -163,7 +163,7 @@ QList<Layer*> Map::layers(Layer::TypeFlag type) const
 QList<ObjectGroup*> Map::objectGroups() const
 {
     QList<ObjectGroup*> layers;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         if (ObjectGroup *og = layer->asObjectGroup())
             layers.append(og);
     return layers;
@@ -172,7 +172,7 @@ QList<ObjectGroup*> Map::objectGroups() const
 QList<TileLayer*> Map::tileLayers() const
 {
     QList<TileLayer*> layers;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         if (TileLayer *tl = layer->asTileLayer())
             layers.append(tl);
     return layers;
@@ -208,7 +208,7 @@ void Map::adoptLayer(Layer *layer)
         adjustDrawMargins(tileLayer->drawMargins());
 
     if (ObjectGroup *group = layer->asObjectGroup()) {
-        foreach (MapObject *o, group->objects()) {
+        for (MapObject *o : group->objects()) {
             if (o->id() == 0)
                 o->setId(takeNextObjectId());
         }
@@ -254,7 +254,7 @@ void Map::replaceTileset(const SharedTileset &oldTileset,
     const int index = mTilesets.indexOf(oldTileset);
     Q_ASSERT(index != -1);
 
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         layer->replaceReferencesToTileset(oldTileset.data(),
                                           newTileset.data());
 
@@ -263,7 +263,7 @@ void Map::replaceTileset(const SharedTileset &oldTileset,
 
 bool Map::isTilesetUsed(const Tileset *tileset) const
 {
-    foreach (const Layer *layer, mLayers)
+    for (const Layer *layer : mLayers)
         if (layer->referencesTileset(tileset))
             return true;
 

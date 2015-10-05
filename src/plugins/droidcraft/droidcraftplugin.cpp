@@ -72,12 +72,12 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
 
     // Load
     for (int i = 0; i < 48 * 48; i++) {
-        unsigned char tileFile = uncompressed.at(i);
+        unsigned char tileId = uncompressed.at(i);
 
         int y = i / 48;
         int x = i - (48 * y);
 
-        Tile *tile = mapTileset->tileAt(tileFile);
+        Tile *tile = mapTileset->tileAt(tileId);
         mapLayer->setCell(x, y, Cell(tile));
     }
 

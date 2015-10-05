@@ -254,15 +254,13 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
 
     writer.writeKeyAndValue("tilecount", tileset->tileCount());
     writer.writeStartTable("tiles");
-    for (int i = 0; i < tileset->tileCount(); ++i) {
-        const Tile *tile = tileset->tileAt(i);
-
+    for (const Tile *tile : tileset->tiles()) {
         // For brevity only write tiles with interesting properties
         if (!includeTile(tile))
             continue;
 
         writer.writeStartTable();
-        writer.writeKeyAndValue("id", i);
+        writer.writeKeyAndValue("id", tile->id());
 
         if (!tile->properties().isEmpty())
             writeProperties(writer, tile->properties());

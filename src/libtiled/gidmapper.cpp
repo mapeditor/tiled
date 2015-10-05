@@ -92,15 +92,19 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
         } else {
             --i; // Navigate one tileset back since upper bound finds the next
             int tileId = gid - i.key();
-            const Tileset *tileset = i.value();
+            Tileset *tileset = i.value();
 
-            const int columnCount = mTilesetColumnCounts.value(tileset);
-            if (columnCount > 0 && columnCount != tileset->columnCount()) {
-                // Correct tile index for changes in image width
-                const int row = tileId / columnCount;
-                const int column = tileId % columnCount;
-                tileId = row * tileset->columnCount() + column;
-            }
+            // todo: re-enable the tile index adjustment somewhere else
+//            const int columnCount = mTilesetColumnCounts.value(tileset);
+//            if (columnCount > 0 && columnCount != tileset->columnCount()) {
+//                // Correct tile index for changes in image width
+//                const int row = tileIndex / columnCount;
+//                const int column = tileIndex % columnCount;
+//                tileIndex = row * tileset->columnCount() + column;
+//            }
+
+            if (tileId >= tileset->tileCount())
+                tileset->expandTiles(tileId + 1);
 
             result.tile = tileset->tileAt(tileId);
 

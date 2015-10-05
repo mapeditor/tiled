@@ -921,7 +921,10 @@ void TilesetDock::addTiles()
     foreach (const QString &file, files) {
         const QPixmap image(file);
         if (!image.isNull()) {
-            tiles.append(new Tile(image, file, id, tileset));
+            Tile *newTile = new Tile(id, tileset);
+            newTile->setImage(image);
+            newTile->setImageSource(file);
+            tiles.append(newTile);
             ++id;
         } else {
             QMessageBox warning(QMessageBox::Warning,

@@ -36,6 +36,8 @@ DynamicLibrary {
         "hexagonalrenderer.h",
         "imagelayer.cpp",
         "imagelayer.h",
+        "imagereference.cpp",
+        "imagereference.h",
         "isometricrenderer.cpp",
         "isometricrenderer.h",
         "layer.cpp",
