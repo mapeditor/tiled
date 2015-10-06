@@ -1,4 +1,5 @@
 * Added Polish translation
+* Updated Brazilian Portuguese translation
 
 0.14.1 (28 September 2015)
 * Added missing 'renderorder' property to the Lua export
