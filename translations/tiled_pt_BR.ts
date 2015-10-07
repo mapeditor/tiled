@@ -93,7 +93,7 @@
     <message>
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
-        <translation>Desativar hardware de renderização acelerada</translation>
+        <translation>Desativar renderização acelerada por hardware</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -293,12 +293,12 @@
     <message>
         <location line="+10"/>
         <source>Settings</source>
-        <translation>Preferências</translation>
+        <translation>Configurações</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Only include &amp;visible layers</source>
-        <translation>Incluir somente &amp;camadas visíveis</translation>
+        <translation>Incluir somente camadas &amp;visíveis</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -341,7 +341,7 @@
     <message>
         <location line="+70"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation>Este não parece ser um mapa do Flare válido. Um mapa do Flare consiste de pelo menos uma seçao de cabeçalho, uma seçao de tileset e uma camada.</translation>
+        <translation>Este não parece ser um mapa do Flare válido. Um mapa do Flare consiste de pelo menos uma seção de cabeçalho, uma seção de tileset e uma camada.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -732,7 +732,7 @@
     <message>
         <location filename="../src/automappingconverter/converterwindow.ui" line="+14"/>
         <source>Tiled Automapping Rule Files Converter</source>
-        <translation>Converter Arquivos de Regras de Automapeamento de Tiles</translation>
+        <translation>Conversor de Arquivos de Regras de Automapeamento de Tiles</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -893,7 +893,7 @@ Linha %1, coluna %2</translation>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-184"/>
         <source>Tileset tile index negative:
 &apos;%1&apos;</source>
-        <translation>Índice do tiliset para o tile negativo:
+        <translation>Índice do tileset para o tile negativo:
 %1</translation>
     </message>
     <message>
@@ -1225,25 +1225,25 @@ Linha %1, coluna %2</translation>
         <location line="+2"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+2"/>
         <source>Right Down</source>
-        <translation>Inferior Direito</translation>
+        <translation>Direita Inferior</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
-        <translation>Superior Direito</translation>
+        <translation>Direita Superior</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Down</source>
-        <translation>Infeior Esquerdo</translation>
+        <translation>Esquerda Infeior</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Left Up</source>
-        <translation>Superior Esquerdo</translation>
+        <translation>Esquerda Superior</translation>
     </message>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+6"/>
@@ -1308,7 +1308,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+16"/>
         <source>Object line width:</source>
-        <translation>Largura da linah do objeto:</translation>
+        <translation>Largura da linha do objeto:</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -1329,7 +1329,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+17"/>
         <source>Remove Selected Object Types</source>
-        <translation>Remover o(s) tipo(s) de objet(o) selecionado(s)</translation>
+        <translation>Remover o(s) Tipo(s) de Objeto(s) Selecionado(s)</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1375,7 +1375,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-164"/>
         <source>Reloading Python scripts</source>
-        <translation>Recarregando  scripts Python</translation>
+        <translation>Recarregando scripts Python</translation>
     </message>
 </context>
 <context>
@@ -1514,7 +1514,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+2"/>
         <source>Size Slash</source>
-        <translation></translation>
+        <translation>Tamanho da Barra</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1948,7 +1948,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+246"/>
         <source>T-Engine4 map files (*.lua)</source>
-        <translation>Arquivos dde mapa do T-Engine4 (*.lua)</translation>
+        <translation>Arquivos de mapa do T-Engine4 (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -1962,7 +1962,7 @@ Linha %1, coluna %2</translation>
         <location line="+99"/>
         <location filename="../src/tiled/tileanimationeditor.cpp" line="+507"/>
         <source>Preview</source>
-        <translation></translation>
+        <translation>Pré-visualizar</translation>
     </message>
 </context>
 <context>
@@ -2533,7 +2533,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+46"/>
         <source>Out of Memory</source>
-        <translation>Fora da Memória</translation>
+        <translation>Memória Insuficiente</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2770,7 +2770,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location line="+37"/>
         <source>Exported to %1</source>
-        <translation>Exportar para %1</translation>
+        <translation>Exportado para %1</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2981,7 +2981,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+10"/>
         <source>Tileset Changes</source>
-        <translation>Alterar Tileset</translation>
+        <translation>Mudanças no Tileset</translation>
     </message>
     <message numerus="yes">
         <location line="+189"/>
@@ -3358,7 +3358,7 @@ Por favor selecione o formato específico.</translation>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Obrigado pela ajuda!&lt;/h3&gt;
 &lt;p&gt;Seu apoio como patrono faz uma grande diferença para mim como o principal desenvolvedor e mantenedor do Tiled. Ele me permite gastar menos tempo de trabalho para arrumar dinheiro em outro lugar e passar mais tempo trabalhando no Tiled.&lt;/p&gt;
-&lt;p&gt;Mantenha-se informado sobre as atualizações exclusivas no feed de Atividade na minha página Patreon para descobrir o que eu estive fazendo até mesmo no tempo que eu poderia gastar em agradecimentos por seu apoio ao Tiled!&lt;/p&gt;
+&lt;p&gt;Mantenha-se informado sobre as atualizações exclusivas no feed de Atividade na minha página Patreon para descobrir o que eu estive fazendo até mesmo no tempo que eu poderia gastar em agradecimentos por seu suporte ao Tiled!&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3376,7 +3376,7 @@ Por favor selecione o formato específico.</translation>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;
 &lt;h3&gt;Com a sua ajuda eu posso continuar a melhorar o Tiled!&lt;/h3&gt;
 &lt;p&gt;Por favor, considere me apoiar como patrono. Seu apoio seria uma grande diferença para mim, o principal desenvolvedor e mantenedor do Tiled. Eu poderia gastar menos tempo de trabalho para arrumar dinheiro em outro lugar e passar mais tempo trabalhando no Tiled.&lt;/p&gt;
-&lt;p&gt;Cada pequena ajuda. Tiled possui um monte de usuários e se cada um contribuir com uma pequena doação cada mês eu vou ter tempo para me certificar de que o Tiled será cada vez melhor.&lt;/p&gt;
+&lt;p&gt;Toda ajuda é bem-vinda. Tiled possui um monte de usuários e se cada um contribuir com uma pequena doação cada mês eu vou ter tempo para me certificar de que o Tiled será cada vez melhor.&lt;/p&gt;
 &lt;p&gt;&lt;i&gt;Thorbj&amp;oslash;rn Lindeijer&lt;/i&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3549,7 +3549,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Even</source>
-        <translation>Até</translation>
+        <translation>Par</translation>
     </message>
     <message>
         <location line="+280"/>
