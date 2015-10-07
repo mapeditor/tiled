@@ -2457,7 +2457,7 @@ Linha %1, coluna %2</translation>
         <location line="+227"/>
         <source>Move %n Point(s)</source>
         <translation>
-            <numerusform>Mover %n Ponto</numerusform>
+            <numerusform>Mover Ponto</numerusform>
             <numerusform>Mover %n Pontos</numerusform>
         </translation>
     </message>
@@ -2466,7 +2466,7 @@ Linha %1, coluna %2</translation>
         <location line="+45"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>Deletar %n Nó</numerusform>
+            <numerusform>Deletar Nó</numerusform>
             <numerusform>Deletar %n Nós</numerusform>
         </translation>
     </message>
@@ -2995,7 +2995,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+20"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>Remover %n Objeto</numerusform>
+            <numerusform>Remover Objeto</numerusform>
             <numerusform>Remover %n Objetos</numerusform>
         </translation>
     </message>
@@ -3330,7 +3330,7 @@ Por favor selecione o formato específico.</translation>
     <message>
         <location line="-1"/>
         <source>Add Object Layer</source>
-        <translation>Adicionar Camade de Objetos</translation>
+        <translation>Adicionar Camada de Objetos</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -3341,7 +3341,7 @@ Por favor selecione o formato específico.</translation>
         <location line="+17"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>Mover %n Objeto para Camada</numerusform>
+            <numerusform>Mover Objeto para Camada</numerusform>
             <numerusform>Mover %n Objetos para Camada</numerusform>
         </translation>
     </message>
