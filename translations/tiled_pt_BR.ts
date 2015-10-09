@@ -697,7 +697,7 @@
     <message>
         <location line="+12"/>
         <source>Normal Size</source>
-        <translation>Tamanho Normal</translation>
+        <translation>Tamanho Real</translation>
     </message>
     <message>
         <location line="+3"/>
