@@ -327,6 +327,11 @@ void LuaPlugin::writeTileLayer(LuaTableWriter &writer,
     writer.writeKeyAndValue("height", tileLayer->height());
     writer.writeKeyAndValue("visible", tileLayer->isVisible());
     writer.writeKeyAndValue("opacity", tileLayer->opacity());
+
+    const QPointF offset = tileLayer->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
+
     writeProperties(writer, tileLayer->properties());
 
     switch (format) {
@@ -376,6 +381,11 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writer.writeKeyAndValue("name", objectGroup->name());
     writer.writeKeyAndValue("visible", objectGroup->isVisible());
     writer.writeKeyAndValue("opacity", objectGroup->opacity());
+
+    const QPointF offset = objectGroup->offset();
+    writer.writeKeyAndValue("offsetx", offset.x());
+    writer.writeKeyAndValue("offsety", offset.y());
+
     writeProperties(writer, objectGroup->properties());
 
     writer.writeStartTable("objects");

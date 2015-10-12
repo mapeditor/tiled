@@ -1,4 +1,9 @@
+0.14.2 (12 October 2015)
 * Added Polish translation
+* Fixed layer offsets missing in the Lua export
+* Fixed JSON tileset format missing in 'Add External Tileset' action
+* Fixed language selection entries for Portuguese
+* Updated Brazilian Portuguese translation
 
 0.14.1 (28 September 2015)
 * Added missing 'renderorder' property to the Lua export
