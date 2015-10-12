@@ -95,6 +95,29 @@ void TileLayer::recomputeDrawMargins()
         mMap->adjustDrawMargins(drawMargins());
 }
 
+QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
+{
+    QRegion region;
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            if (condition(cellAt(x, y))) {
+                const int rangeStart = x;
+                for (++x; x <= mWidth; ++x) {
+                    if (x == mWidth || !condition(cellAt(x, y))) {
+                        const int rangeEnd = x;
+                        region += QRect(rangeStart + mX, y + mY,
+                                        rangeEnd - rangeStart, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return region;
+}
+
 void TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
@@ -263,6 +286,15 @@ QSet<SharedTileset> TileLayer::usedTilesets() const
     return tilesets;
 }
 
+bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
+{
+    for (const Cell &cell : mGrid)
+        if (condition(cell))
+            return true;
+
+    return false;
+}
+
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
     for (const Cell &cell : mGrid) {
@@ -288,7 +320,7 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
     for (Cell &cell : mGrid) {
         const Tile *tile = cell.tile;
         if (tile && tile->tileset() == oldTileset)
-            cell.tile = newTileset->tileAt(tile->id());
+            cell.tile = newTileset->findTile(tile->id());
     }
 }
 

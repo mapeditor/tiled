@@ -41,15 +41,16 @@ Tileset::~Tileset()
     qDeleteAll(mTerrainTypes);
 }
 
-
-
 /**
- * Adds dummy tiles until the given size is reached.
+ * Returns the tile with the given ID, creating it when it does not exist yet.
  */
-void Tileset::expandTiles(int size)
+Tile *Tileset::findOrCreateTile(int id)
 {
-    while (mTiles.size() < size)
-        mTiles.append(new Tile(mTiles.size(), this));
+    if (Tile *tile = mTiles.value(id))
+        return tile;
+
+    mNextTileId = std::max(mNextTileId, id + 1);
+    return mTiles[id] = new Tile(id, this);
 }
 
 /**
@@ -95,7 +96,6 @@ bool Tileset::loadFromImage(const QImage &image,
     const int stopWidth = image.width() - tileSize.width();
     const int stopHeight = image.height() - tileSize.height();
 
-    int oldTilesetSize = tileCount();
     int tileNum = 0;
 
     for (int y = margin; y <= stopHeight; y += tileSize.height() + spacing) {
@@ -109,24 +109,26 @@ bool Tileset::loadFromImage(const QImage &image,
                 tilePixmap.setMask(QBitmap::fromImage(mask));
             }
 
-            if (tileNum < oldTilesetSize) {
-                mTiles.at(tileNum)->setImage(tilePixmap);
-            } else {
-                Tile *newTile = new Tile(tileNum, this);
-                newTile->setImage(tilePixmap);
-                mTiles.append(newTile);
-            }
+            auto it = mTiles.find(tileNum);
+            if (it != mTiles.end())
+                it.value()->setImage(tilePixmap);
+            else
+                mTiles.insert(tileNum, new Tile(tilePixmap, tileNum, this));
+
             ++tileNum;
         }
     }
 
-    // Blank out any remaining tiles to avoid confusion
-    while (tileNum < oldTilesetSize) {
-        QPixmap tilePixmap = QPixmap(tileSize);
-        tilePixmap.fill();
-        mTiles.at(tileNum)->setImage(tilePixmap);
-        ++tileNum;
+    // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
+    for (Tile *tile : mTiles) {
+        if (tile->id() >= tileNum) {
+            QPixmap tilePixmap = QPixmap(tileSize);
+            tilePixmap.fill();
+            tile->setImage(tilePixmap);
+        }
     }
+
+    mNextTileId = std::max(mNextTileId, tileNum);
 
     mImageReference.width = image.width();
     mImageReference.height = image.height();
@@ -363,11 +365,11 @@ void Tileset::recalculateTerrainDistances()
  */
 Tile *Tileset::addTile(const QPixmap &image, const QString &source)
 {
-    Tile *newTile = new Tile(tileCount(), this);
+    Tile *newTile = new Tile(takeNextTileId(), this);
     newTile->setImage(image);
     newTile->setImageSource(source);
 
-    mTiles.append(newTile);
+    mTiles.insert(newTile->id(), newTile);
     if (mTileHeight < image.height())
         mTileHeight = image.height();
     if (mTileWidth < image.width())
@@ -375,29 +377,32 @@ Tile *Tileset::addTile(const QPixmap &image, const QString &source)
     return newTile;
 }
 
-void Tileset::insertTiles(int index, const QList<Tile *> &tiles)
+/**
+ * Adds the given list of tiles to this tileset.
+ *
+ * The tiles should already have unique tile IDs associated with them!
+ */
+void Tileset::addTiles(const QList<Tile *> &tiles)
 {
-    const int count = tiles.count();
-    for (int i = 0; i < count; ++i)
-        mTiles.insert(index + i, tiles.at(i));
-
-    // Adjust the tile IDs of the remaining tiles
-    for (int i = index + count; i < mTiles.size(); ++i)
-        mTiles.at(i)->mId += count;
+    for (Tile *tile : tiles) {
+        Q_ASSERT(!mTiles.contains(tile->id()));
+        mTiles.insert(tile->id(), tile);
+    }
 
     updateTileSize();
 }
 
-void Tileset::removeTiles(int index, int count)
+/**
+ * Removes the given list of tiles from this tileset.
+ *
+ * @warning The tiles are not deleted!
+ */
+void Tileset::removeTiles(const QList<Tile *> &tiles)
 {
-    const QList<Tile*>::iterator first = mTiles.begin() + index;
-
-    QList<Tile*>::iterator last = first + count;
-    last = mTiles.erase(first, last);
-
-    // Adjust the tile IDs of the remaining tiles
-    for (; last != mTiles.end(); ++last)
-        (*last)->mId -= count;
+    for (Tile *tile : tiles) {
+        Q_ASSERT(mTiles.contains(tile->id()));
+        mTiles.remove(tile->id());
+    }
 
     updateTileSize();
 }
@@ -413,7 +418,7 @@ void Tileset::setTileImage(int id,
     // on a single image
     Q_ASSERT(mImageReference.source.isEmpty());
 
-    Tile *tile = tileAt(id);
+    Tile *tile = findTile(id);
 
     const QSize previousImageSize = tile->image().size();
     const QSize newImageSize = image.size();

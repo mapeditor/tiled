@@ -203,7 +203,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     for (const SharedTileset &tileset : map.tilesets()) {
         writeTileset(w, *tileset, firstGid);
         mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
 
     for (const Layer *layer : map.layers()) {

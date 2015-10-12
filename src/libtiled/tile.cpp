@@ -77,7 +77,7 @@ const QPixmap &Tile::currentFrameImage() const
 {
     if (isAnimated()) {
         const Frame &frame = mFrames.at(mCurrentFrameIndex);
-        return mTileset->tileAt(frame.tileId)->image();
+        return mTileset->findTile(frame.tileId)->image();
     } else {
         return mImage;
     }

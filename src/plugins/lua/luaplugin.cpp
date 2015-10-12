@@ -138,15 +138,15 @@ void LuaPlugin::writeMap(LuaTableWriter &writer, const Map *map)
 
     mGidMapper.clear();
     unsigned firstGid = 1;
-    foreach (const SharedTileset &tileset, map->tilesets()) {
+    for (const SharedTileset &tileset : map->tilesets()) {
         writeTileset(writer, tileset.data(), firstGid);
         mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
     writer.writeEndTable();
 
     writer.writeStartTable("layers");
-    foreach (const Layer *layer, map->layers()) {
+    for (const Layer *layer : map->layers()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType:
             writeTileLayer(writer,
@@ -295,7 +295,7 @@ void LuaPlugin::writeTileset(LuaTableWriter &writer, const Tileset *tileset,
             const QVector<Frame> &frames = tile->frames();
 
             writer.writeStartTable("animation");
-            foreach (const Frame &frame, frames) {
+            for (const Frame &frame : frames) {
                 writer.writeStartTable();
                 writer.writeKeyAndValue("tileid", QString::number(frame.tileId));
                 writer.writeKeyAndValue("duration", QString::number(frame.duration));
@@ -377,7 +377,7 @@ void LuaPlugin::writeObjectGroup(LuaTableWriter &writer,
     writeProperties(writer, objectGroup->properties());
 
     writer.writeStartTable("objects");
-    foreach (MapObject *mapObject, objectGroup->objects())
+    for (MapObject *mapObject : objectGroup->objects())
         writeMapObject(writer, mapObject);
     writer.writeEndTable();
 
@@ -461,7 +461,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
          *    ...
          *  }
          */
-        foreach (const QPointF &point, polygon) {
+        for (const QPointF &point : polygon) {
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
@@ -481,7 +481,7 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
          *    ...
          *  }
          */
-        foreach (const QPointF &point, polygon) {
+        for (const QPointF &point : polygon) {
             writer.writeStartTable();
             writer.setSuppressNewlines(true);
 
@@ -503,14 +503,14 @@ void LuaPlugin::writeMapObject(LuaTableWriter &writer,
 
         writer.writeStartTable("x");
         writer.setSuppressNewlines(true);
-        foreach (const QPointF &point, polygon)
+        for (const QPointF &point : polygon)
             writer.writeValue(point.x());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);
 
         writer.writeStartTable("y");
         writer.setSuppressNewlines(true);
-        foreach (const QPointF &point, polygon)
+        for (const QPointF &point : polygon)
             writer.writeValue(point.y());
         writer.writeEndTable();
         writer.setSuppressNewlines(false);

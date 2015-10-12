@@ -22,12 +22,19 @@
 
 namespace Tiled {
 
+bool ImageReference::hasImage() const
+{
+    return !source.isEmpty() || !data.isEmpty();
+}
+
 QImage Tiled::ImageReference::create() const
 {
-    if (source.isEmpty())
-        return QImage::fromData(data, format);
-    else
+    if (!source.isEmpty())
         return QImage(source);
+    else if (!data.isEmpty())
+        return QImage::fromData(data, format);
+
+    return QImage();
 }
 
 } // namespace Tiled

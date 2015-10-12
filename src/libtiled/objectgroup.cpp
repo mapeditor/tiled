@@ -114,7 +114,7 @@ void ObjectGroup::moveObjects(int from, int to, int count)
 QRectF ObjectGroup::objectsBoundingRect() const
 {
     QRectF boundingRect;
-    foreach (const MapObject *object, mObjects)
+    for (const MapObject *object : mObjects)
         boundingRect = boundingRect.united(object->bounds());
     return boundingRect;
 }
@@ -128,7 +128,7 @@ QSet<SharedTileset> ObjectGroup::usedTilesets() const
 {
     QSet<SharedTileset> tilesets;
 
-    foreach (const MapObject *object, mObjects)
+    for (const MapObject *object : mObjects)
         if (const Tile *tile = object->cell().tile)
             tilesets.insert(tile->sharedTileset());
 
@@ -137,7 +137,7 @@ QSet<SharedTileset> ObjectGroup::usedTilesets() const
 
 bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 {
-    foreach (const MapObject *object, mObjects) {
+    for (const MapObject *object : mObjects) {
         const Tile *tile = object->cell().tile;
         if (tile && tile->tileset() == tileset)
             return true;
@@ -149,11 +149,11 @@ bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
-    foreach (MapObject *object, mObjects) {
+    for (MapObject *object : mObjects) {
         const Tile *tile = object->cell().tile;
         if (tile && tile->tileset() == oldTileset) {
             Cell cell = object->cell();
-            cell.tile = newTileset->tileAt(tile->id());
+            cell.tile = newTileset->findTile(tile->id());
             object->setCell(cell);
         }
     }
@@ -163,7 +163,7 @@ void ObjectGroup::offsetObjects(const QPointF &offset,
                                 const QRectF &bounds,
                                 bool wrapX, bool wrapY)
 {
-    foreach (MapObject *object, mObjects) {
+    for (MapObject *object : mObjects) {
         const QPointF objectCenter = object->bounds().center();
         if (!bounds.contains(objectCenter))
             continue;
@@ -214,7 +214,7 @@ Layer *ObjectGroup::clone() const
 ObjectGroup *ObjectGroup::initializeClone(ObjectGroup *clone) const
 {
     Layer::initializeClone(clone);
-    foreach (const MapObject *object, mObjects)
+    for (const MapObject *object : mObjects)
         clone->addObject(object->clone());
     clone->setColor(mColor);
     clone->setDrawOrder(mDrawOrder);

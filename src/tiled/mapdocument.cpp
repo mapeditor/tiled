@@ -696,16 +696,15 @@ void MapDocument::unifyTilesets(Map *map)
         }
 
         // Merge the tile properties
-        const int sharedTileCount = qMin(tileset->tileCount(),
-                                         replacement->tileCount());
-        for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
-            undoCommands.append(new ChangeProperties(this,
-                                                     tr("Tile"),
-                                                     replacementTile,
-                                                     properties));
+        for (Tile *replacementTile : replacement->tiles()) {
+            if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
+                Properties properties = replacementTile->properties();
+                properties.merge(originalTile->properties());
+                undoCommands.append(new ChangeProperties(this,
+                                                         tr("Tile"),
+                                                         replacementTile,
+                                                         properties));
+            }
         }
         map->replaceTileset(tileset, replacement);
 

@@ -131,7 +131,7 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
             for (int x = 0; x < width; x++) {
                 quint8 tile_id = *tp++;
                 if (tile_id != 255) {
-                    Tile *tile = tileset->tileAt(tile_id);
+                    Tile *tile = tileset->findTile(tile_id);
                     layer->setCell(x, y, Cell(tile));
                 }
             }

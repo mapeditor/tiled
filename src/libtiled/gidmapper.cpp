@@ -55,9 +55,9 @@ GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
     : mInvalidTile(0)
 {
     unsigned firstGid = 1;
-    foreach (const SharedTileset &tileset, tilesets) {
+    for (const SharedTileset &tileset : tilesets) {
         insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
 }
 
@@ -103,10 +103,7 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
 //                tileIndex = row * tileset->columnCount() + column;
 //            }
 
-            if (tileId >= tileset->tileCount())
-                tileset->expandTiles(tileId + 1);
-
-            result.tile = tileset->tileAt(tileId);
+            result.tile = tileset->findOrCreateTile(tileId);
 
             ok = true;
         }

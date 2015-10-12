@@ -77,7 +77,7 @@ Tiled::Map *DroidcraftPlugin::read(const QString &fileName)
         int y = i / 48;
         int x = i - (48 * y);
 
-        Tile *tile = mapTileset->tileAt(tileId);
+        Tile *tile = mapTileset->findTile(tileId);
         mapLayer->setCell(x, y, Cell(tile));
     }
 

@@ -204,26 +204,13 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariantMap::const_iterator it = tilesVariantMap.constBegin();
     for (; it != tilesVariantMap.end(); ++it) {
         bool ok;
-        const int tileIndex = it.key().toInt();
-        if (tileIndex < 0) {
-            mError = tr("Tileset tile index negative:\n'%1'").arg(tileIndex);
+        const int tileId = it.key().toInt();
+        if (tileId < 0) {
+            mError = tr("Invalid (negative) tile id: %1").arg(tileId);
             return SharedTileset();
         }
 
-        if (tileIndex >= tileset->tileCount()) {
-            // Extend the tileset to fit the tile
-            if (tileIndex >= tilesVariantMap.count()) {
-                // If tiles are  defined this way, there should be an entry
-                // for each tile.
-                // Limit the index to number of entries to prevent running out
-                // of memory on malicious input.
-                mError = tr("Tileset tile index too high:\n'%1'").arg(tileIndex);
-                return SharedTileset();
-            }
-            tileset->expandTiles(tileIndex + 1);
-        }
-
-        Tile *tile = tileset->tileAt(tileIndex);
+        Tile *tile = tileset->findOrCreateTile(tileId);
 
         const QVariantMap tileVar = it.value().toMap();
         QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
@@ -240,7 +227,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         imageVariant = tileVar[QLatin1String("image")];
         if (!imageVariant.isNull()) {
             QString imagePath = resolvePath(mMapDir, imageVariant);
-            tileset->setTileImage(tileIndex, QPixmap(imagePath), imagePath);
+            tileset->setTileImage(tileId, QPixmap(imagePath), imagePath);
         }
         QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
         if (!objectGroupVariant.isEmpty())
@@ -262,12 +249,10 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     // Read tile properties
     QVariantMap propertiesVariantMap = variantMap[QLatin1String("tileproperties")].toMap();
     for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
-        const int tileIndex = it.key().toInt();
+        const int tileId = it.key().toInt();
         const QVariant propertiesVar = it.value();
-        if (tileset->hasTile(tileIndex)) {
-            const Properties properties = toProperties(propertiesVar);
-            tileset->tileAt(tileIndex)->setProperties(properties);
-        }
+        const Properties properties = toProperties(propertiesVar);
+        tileset->findOrCreateTile(tileId)->setProperties(properties);
     }
 
     if (!mReadingExternalTileset)

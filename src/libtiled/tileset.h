@@ -98,6 +98,7 @@ private:
         mTileSpacing(tileSpacing),
         mMargin(margin),
         mColumnCount(0),
+        mNextTileId(0),
         mTerrainDistancesDirty(false)
     {
         Q_ASSERT(tileSpacing >= 0);
@@ -124,11 +125,11 @@ public:
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
 
-    const QList<Tile*> &tiles() const;
-    bool hasTile(int id) const;
-    Tile *tileAt(int id) const;
+    const QMap<int, Tile*> &tiles() const;
+    Tile *findTile(int id) const;
+    Tile *tileAt(int id) const { return findTile(id); } // provided for Python
+    Tile *findOrCreateTile(int id);
     int tileCount() const;
-    void expandTiles(int size);
 
     int columnCount() const;
 
@@ -161,8 +162,12 @@ public:
     int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
 
     Tile *addTile(const QPixmap &image, const QString &source = QString());
-    void insertTiles(int index, const QList<Tile*> &tiles);
-    void removeTiles(int index, int count);
+    void addTiles(const QList<Tile*> &tiles);
+    void removeTiles(const QList<Tile *> &tiles);
+
+    void setNextTileId(int nextId);
+    int nextTileId() const;
+    int takeNextTileId();
 
     void setTileImage(int id,
                       const QPixmap &image,
@@ -185,7 +190,8 @@ private:
     int mMargin;
     QPoint mTileOffset;
     int mColumnCount;
-    QList<Tile*> mTiles;
+    QMap<int, Tile*> mTiles;
+    int mNextTileId;
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
 
@@ -294,28 +300,24 @@ inline void Tileset::setTileOffset(QPoint offset)
 /**
  * Returns a const reference to the list of tiles in this tileset.
  */
-inline const QList<Tile *> &Tileset::tiles() const
+inline const QMap<int, Tile *> &Tileset::tiles() const
 {
     return mTiles;
 }
 
-inline bool Tileset::hasTile(int id) const
-{
-    return id >= 0 && id < mTiles.size();
-}
-
 /**
- * Returns the tile at the given tile ID.
- * The tile ID is local to this tileset, which means the IDs are in range
- * [0, tileCount() - 1].
+ * Returns the tile with the given tile ID. The tile IDs are local to this
+ * tileset.
  */
-inline Tile *Tileset::tileAt(int id) const
+inline Tile *Tileset::findTile(int id) const
 {
-    return mTiles.at(id);
+    return mTiles.value(id);
 }
 
 /**
  * Returns the number of tiles in this tileset.
+ *
+ * Note that the tiles are not necessarily consecutive.
  */
 inline int Tileset::tileCount() const
 {
@@ -395,6 +397,31 @@ inline int Tileset::terrainCount() const
 inline Terrain *Tileset::terrain(int index) const
 {
     return index >= 0 ? mTerrainTypes[index] : nullptr;
+}
+
+/**
+ * Sets the next id to be used for tiles in this tileset.
+ */
+inline void Tileset::setNextTileId(int nextId)
+{
+    Q_ASSERT(nextId > 0);
+    mNextTileId = nextId;
+}
+
+/**
+ * Returns the next tile id for this tileset.
+ */
+inline int Tileset::nextTileId() const
+{
+    return mNextTileId;
+}
+
+/**
+ * Returns the next tile id for this tileset and allocates a new one.
+ */
+inline int Tileset::takeNextTileId()
+{
+    return mNextTileId++;
 }
 
 /**

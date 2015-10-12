@@ -42,7 +42,7 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    const int tiles = mTileset->tileCount();
+    const int tiles = mTileset->nextTileId();
     const int columns = columnCount();
 
     int rows = 1;
@@ -126,8 +126,8 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return nullptr;
 
-    const int i = index.column() + index.row() * columnCount();
-    return i < mTileset->tileCount() ? mTileset->tileAt(i) : nullptr;
+    const int id = index.column() + index.row() * columnCount();
+    return mTileset->findTile(id);
 }
 
 int TilesetModel::tileIndexAt(const QModelIndex &index) const

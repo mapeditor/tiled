@@ -40,6 +40,8 @@
 #include <QVector>
 #include <QSharedPointer>
 
+#include <functional>
+
 namespace Tiled {
 
 class Tile;
@@ -136,8 +138,7 @@ public:
      * Calculates the region of cells in this tile layer for which the given
      * \a condition returns true.
      */
-    template<typename Condition>
-    QRegion region(Condition condition) const;
+    QRegion region(std::function<bool (const Cell &)> condition) const;
 
     /**
      * Calculates the region occupied by the tiles of this layer. Similar to
@@ -212,8 +213,7 @@ public:
      * Returns whether this tile layer has any cell for which the given
      * \a condition returns true.
      */
-    template<typename Condition>
-    bool hasCell(Condition condition) const;
+    bool hasCell(std::function<bool (const Cell &)> condition) const;
 
     /**
      * Returns whether this tile layer is referencing the given tileset.
@@ -280,40 +280,6 @@ private:
     QVector<Cell> mGrid;
 };
 
-
-template<typename Condition>
-QRegion TileLayer::region(Condition condition) const
-{
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            if (condition(cellAt(x, y))) {
-                const int rangeStart = x;
-                for (++x; x <= mWidth; ++x) {
-                    if (x == mWidth || !condition(cellAt(x, y))) {
-                        const int rangeEnd = x;
-                        region += QRect(rangeStart + mX, y + mY,
-                                        rangeEnd - rangeStart, 1);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return region;
-}
-
-template<typename Condition>
-bool TileLayer::hasCell(Condition condition) const
-{
-    for (const Cell &cell : mGrid)
-        if (condition(cell))
-            return true;
-
-    return false;
-}
 
 inline QRegion TileLayer::region() const
 {

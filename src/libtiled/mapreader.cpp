@@ -387,10 +387,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
         return;
     }
 
-    if (id >= tileset->tileCount())
-        tileset->expandTiles(id + 1);
-
-    Tile *tile = tileset->tileAt(id);
+    Tile *tile = tileset->findOrCreateTile(id);
 
     // Read tile quadrant terrain ids
     QString terrain = atts.value(QLatin1String("terrain")).toString();
@@ -414,11 +411,17 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
             tile->mergeProperties(readProperties());
         } else if (xml.name() == QLatin1String("image")) {
             ImageReference imageReference = readImage();
-            QImage image = imageReference.create();
-            if (image.isNull())
-                xml.raiseError(tr("Error loading image:\n'%1'").arg(imageReference.source));
-            tileset->setTileImage(id, QPixmap::fromImage(image),
-                                  imageReference.source);
+            if (imageReference.hasImage()) {
+                QImage image = imageReference.create();
+                if (image.isNull()) {
+                    if (imageReference.source.isEmpty())
+                        xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
+                    else
+                        xml.raiseError(tr("Error loading image:\n'%1'").arg(imageReference.source));
+                }
+                tileset->setTileImage(id, QPixmap::fromImage(image),
+                                      imageReference.source);
+            }
         } else if (xml.name() == QLatin1String("objectgroup")) {
             tile->setObjectGroup(readObjectGroup());
         } else if (xml.name() == QLatin1String("animation")) {
@@ -487,11 +490,10 @@ ImageReference MapReaderPrivate::readImage()
             if (xml.name() == QLatin1String("data")) {
                 const QXmlStreamAttributes atts = xml.attributes();
                 QStringRef encoding = atts.value(QLatin1String("encoding"));
+
                 image.data = xml.readElementText().toLatin1();
                 if (encoding == QLatin1String("base64"))
                     image.data = QByteArray::fromBase64(image.data);
-
-                xml.skipCurrentElement();
             } else {
                 readUnknownElement();
             }

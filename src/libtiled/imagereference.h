@@ -42,6 +42,7 @@ public:
     QByteArray format;
     QByteArray data;
 
+    bool hasImage() const;
     QImage create() const;
 };
 
