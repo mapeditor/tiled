@@ -278,6 +278,21 @@ Map *MapReaderPrivate::readMap()
         }
 
         mMap->recomputeDrawMargins();
+
+        // Fix up sizes of tile objects
+        for (Layer *layer : mMap->layers()) {
+            if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+                for (MapObject *object : *objectGroup) {
+                    if (!object->cell().isEmpty()) {
+                        const QSizeF &tileSize = object->cell().tile->size();
+                        if (object->width() == 0)
+                            object->setWidth(tileSize.width());
+                        if (object->height() == 0)
+                            object->setHeight(tileSize.height());
+                    }
+                }
+            }
+        }
     }
 
     return mMap.take();
@@ -810,17 +825,8 @@ MapObject *MapReaderPrivate::readObject()
     if (ok)
         object->setRotation(rotation);
 
-    if (gid) {
+    if (gid)
         object->setCell(cellForGid(gid));
-
-        if (!object->cell().isEmpty()) {
-            const QSizeF &tileSize = object->cell().tile->size();
-            if (width == 0)
-                object->setWidth(tileSize.width());
-            if (height == 0)
-                object->setHeight(tileSize.height());
-        }
-    }
 
     const int visible = visibleRef.toInt(&ok);
     if (ok)
