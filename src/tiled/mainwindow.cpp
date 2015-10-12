@@ -743,9 +743,9 @@ void MainWindow::openLastFiles()
 void MainWindow::openFile()
 {
     QString filter = tr("All Files (*)");
-    filter += QLatin1String(";;");
 
     QString selectedFilter = TmxMapFormat().nameFilter();
+    filter += QLatin1String(";;");
     filter += selectedFilter;
 
     FormatHelper<MapFormat> helper(MapFormat::Read, filter);
@@ -1257,19 +1257,33 @@ void MainWindow::addExternalTileset()
     if (!mMapDocument)
         return;
 
+    QString filter = tr("All Files (*)");
+
+    QString selectedFilter = TsxTilesetFormat().nameFilter();
+    filter += QLatin1String(";;");
+    filter += selectedFilter;
+
+    FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
+
+    selectedFilter = mSettings.value(QLatin1String("lastUsedTilesetFilter"),
+                                     selectedFilter).toString();
+
     Preferences *prefs = Preferences::instance();
     QString start = prefs->lastPath(Preferences::ExternalTileset);
 
     const QStringList fileNames =
             QFileDialog::getOpenFileNames(this, tr("Add External Tileset(s)"),
                                           start,
-                                          tr("Tiled tileset files (*.tsx)"));
+                                          helper.filter(),
+                                          &selectedFilter);
 
     if (fileNames.isEmpty())
         return;
 
     prefs->setLastPath(Preferences::ExternalTileset,
                        QFileInfo(fileNames.back()).path());
+
+    mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
 
     QVector<SharedTileset> tilesets;
 
@@ -1296,7 +1310,7 @@ void MainWindow::addExternalTileset()
 
     QUndoStack *undoStack = mMapDocument->undoStack();
     undoStack->beginMacro(tr("Add %n Tileset(s)", "", tilesets.size()));
-    foreach (const SharedTileset &tileset, tilesets)
+    for (const SharedTileset &tileset : tilesets)
         undoStack->push(new AddTileset(mMapDocument, tileset));
     undoStack->endMacro();
 }

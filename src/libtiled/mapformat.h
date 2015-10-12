@@ -171,7 +171,7 @@ public:
                  const QString &initialFilter)
         : mFilter(initialFilter)
     {
-        for (Format *format : PluginManager::objects<Format>()) {
+        PluginManager::each<Format>([this,capabilities](Format *format) {
             if (format->hasCapabilities(capabilities)) {
                 const QString nameFilter = format->nameFilter();
 
@@ -181,7 +181,7 @@ public:
                 mFormats.append(format);
                 mFormatByNameFilter.insert(nameFilter, format);
             }
-        }
+        });
     }
 
     const QString &filter() const
