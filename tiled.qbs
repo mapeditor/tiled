@@ -12,6 +12,7 @@ Project {
         "src/libtiled",
         "src/plugins",
         "src/qtpropertybrowser",
+        "src/terraingenerator",
         "src/tiled",
         "src/tmxrasterizer",
         "src/tmxviewer",

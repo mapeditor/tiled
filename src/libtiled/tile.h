@@ -42,6 +42,29 @@ class Terrain;
 class Tileset;
 
 /**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int id)
+{
+    id &= 0xFF;
+    return id << 24 | id << 16 | id << 8 | id;
+}
+
+/**
+ * Convenience function for creating tile terrain information.
+ */
+inline unsigned makeTerrain(int topLeft,
+                            int topRight,
+                            int bottomLeft,
+                            int bottomRight)
+{
+    return (topLeft & 0xFF) << 24 |
+           (topRight & 0xFF) << 16 |
+           (bottomLeft & 0xFF) << 8 |
+           (bottomRight & 0xFF);
+}
+
+/**
  * Returns the given \a terrain with the \a corner modified to \a terrainId.
  */
 inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)

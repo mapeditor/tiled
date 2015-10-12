@@ -46,6 +46,11 @@ Tile *Tileset::tileAt(int id) const
     return (id < mTiles.size()) ? mTiles.at(id) : nullptr;
 }
 
+void Tileset::removeLastTile()
+{
+    delete mTiles.takeLast();
+}
+
 /**
  * Load this tileset from the given tileset \a image. This will replace
  * existing tile images in this tileset with new ones. If the new image
@@ -154,6 +159,11 @@ SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets
     }
 
     return SharedTileset();
+}
+
+void Tileset::setImageSource(const QString &imageSource)
+{
+    mImageSource = imageSource;
 }
 
 int Tileset::columnCountForWidth(int width) const
