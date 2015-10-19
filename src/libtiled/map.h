@@ -208,16 +208,8 @@ public:
     void setStaggerIndex(StaggerIndex staggerIndex);
 
     /**
-     * Adjusts the draw margins to be at least as big as the given margins.
-     * Called from tile layers when their tiles change.
-     */
-    void adjustDrawMargins(const QMargins &margins);
-
-    /**
      * Returns the margins that have to be taken into account when figuring
      * out which part of the map to repaint after changing some tiles.
-     *
-     * @see TileLayer::drawMargins
      */
     QMargins drawMargins() const { return mDrawMargins; }
 
