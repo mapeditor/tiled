@@ -117,10 +117,15 @@ public:
 
     int tileWidth() const;
     int tileHeight() const;
+
     QSize tileSize() const;
+    void setTileSize(QSize tileSize);
 
     int tileSpacing() const;
+    void setTileSpacing(int tileSpacing);
+
     int margin() const;
+    void setMargin(int margin);
 
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
@@ -148,6 +153,7 @@ public:
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 
     const QString &imageSource() const;
+    void setImageSource(const QString &imageSource);
 
     int columnCountForWidth(int width) const;
 
@@ -337,7 +343,7 @@ inline int Tileset::columnCount() const
  */
 inline int Tileset::imageWidth() const
 {
-    return mImageReference.width;
+    return mImageReference.size.width();
 }
 
 /**
@@ -345,7 +351,7 @@ inline int Tileset::imageWidth() const
  */
 inline int Tileset::imageHeight() const
 {
-    return mImageReference.height;
+    return mImageReference.size.height();
 }
 
 /**

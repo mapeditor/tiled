@@ -290,6 +290,8 @@ QtGuiApplication {
         "tilesetmanager.h",
         "tilesetmodel.cpp",
         "tilesetmodel.h",
+        "tilesetparametersedit.cpp",
+        "tilesetparametersedit.h",
         "tilesetview.cpp",
         "tilesetview.h",
         "tilestamp.cpp",

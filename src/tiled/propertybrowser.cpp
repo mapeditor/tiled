@@ -137,10 +137,12 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
                 SLOT(imageLayerChanged(ImageLayer*)));
 
-        connect(mapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
-                SLOT(tilesetChanged(Tileset*)));
-        connect(mapDocument, SIGNAL(tilesetTileOffsetChanged(Tileset*)),
-                SLOT(tilesetChanged(Tileset*)));
+        connect(mapDocument, &MapDocument::tilesetNameChanged,
+                this, &PropertyBrowser::tilesetChanged);
+        connect(mapDocument, &MapDocument::tilesetTileOffsetChanged,
+                this, &PropertyBrowser::tilesetChanged);
+        connect(mapDocument, &MapDocument::tilesetChanged,
+                this, &PropertyBrowser::tilesetChanged);
 
         connect(mapDocument, SIGNAL(tileProbabilityChanged(Tile*)),
                 SLOT(tileChanged(Tile*)));
@@ -507,18 +509,24 @@ void PropertyBrowser::addTilesetProperties()
     // Next properties we should add only for non 'Collection of Images' tilesets
     const Tileset *currentTileset = dynamic_cast<const Tileset*>(mObject);
     if (!currentTileset->imageSource().isEmpty()) {
-        QtVariantProperty *srcImgProperty =
-                createProperty(SourceImageProperty, QVariant::String, tr("Source Image"), groupProperty);
-        QtVariantProperty *tileWidthProperty = createProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), groupProperty);
-        QtVariantProperty *tileHeightProperty = createProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), groupProperty);
-        QtVariantProperty *marginProperty = createProperty(MarginProperty, QVariant::Int, tr("Margin"), groupProperty);
-        QtVariantProperty *spacingProperty = createProperty(SpacingProperty, QVariant::Int, tr("Spacing"), groupProperty);
-        // Make these properties read-only
-        srcImgProperty->setEnabled(false);
+        QtVariantProperty *parametersProperty =
+                createProperty(TilesetImageParametersProperty, VariantPropertyManager::tilesetParametersTypeId(), tr("Image"), groupProperty);
+
+        QtVariantProperty *imageSourceProperty = createProperty(ImageSourceProperty, QVariant::String, tr("Source"), parametersProperty);
+        QtVariantProperty *tileWidthProperty = createProperty(TileWidthProperty, QVariant::Int, tr("Tile Width"), parametersProperty);
+        QtVariantProperty *tileHeightProperty = createProperty(TileHeightProperty, QVariant::Int, tr("Tile Height"), parametersProperty);
+        QtVariantProperty *marginProperty = createProperty(MarginProperty, QVariant::Int, tr("Margin"), parametersProperty);
+        QtVariantProperty *spacingProperty = createProperty(SpacingProperty, QVariant::Int, tr("Spacing"), parametersProperty);
+        QtVariantProperty *colorProperty = createProperty(ColorProperty, QVariant::Color, tr("Transparent Color"), parametersProperty);
+
+        // These properties can't be directly edited. To change the parameters,
+        // the TilesetParametersEdit is used.
+        imageSourceProperty->setEnabled(false);
         tileWidthProperty->setEnabled(false);
         tileHeightProperty->setEnabled(false);
         marginProperty->setEnabled(false);
         spacingProperty->setEnabled(false);
+        colorProperty->setEnabled(false);
     }
     addProperty(groupProperty);
 }
@@ -1006,15 +1014,19 @@ void PropertyBrowser::updateProperties()
         break;
     }
     case Object::TilesetType: {
-        const Tileset *tileset = static_cast<const Tileset*>(mObject);
+        Tileset *tileset = static_cast<Tileset*>(mObject);
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
         if (!tileset->imageSource().isEmpty()) {
-            mIdToProperty[SourceImageProperty]->setValue(tileset->imageSource());
+            EmbeddedTileset embeddedTileset(mMapDocument, tileset);
+
+            mIdToProperty[TilesetImageParametersProperty]->setValue(QVariant::fromValue(embeddedTileset));
+            mIdToProperty[ImageSourceProperty]->setValue(tileset->imageSource());
             mIdToProperty[TileWidthProperty]->setValue(tileset->tileWidth());
             mIdToProperty[TileHeightProperty]->setValue(tileset->tileHeight());
             mIdToProperty[MarginProperty]->setValue(tileset->margin());
             mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
+            mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
         }
         break;
     }

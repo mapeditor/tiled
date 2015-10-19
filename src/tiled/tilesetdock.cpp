@@ -35,7 +35,6 @@
 #include "movetileset.h"
 #include "objectgroup.h"
 #include "preferences.h"
-#include "rangeset.h"
 #include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"

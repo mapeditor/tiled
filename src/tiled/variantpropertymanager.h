@@ -51,6 +51,7 @@ public:
                             const QString &attribute) const override;
 
     static int filePathTypeId();
+    static int tilesetParametersTypeId();
 
 public slots:
     void setValue(QtProperty *property, const QVariant &val) override;
@@ -65,7 +66,7 @@ protected:
 
 private:
     struct Data {
-        QString value;
+        QVariant value;
         QString filter;
     };
     QMap<const QtProperty *, Data> mValues;

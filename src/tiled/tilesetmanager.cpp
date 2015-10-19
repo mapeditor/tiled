@@ -166,6 +166,17 @@ bool TilesetManager::animateTiles() const
     return mAnimationDriver->state() == QAbstractAnimation::Running;
 }
 
+void TilesetManager::tilesetImageSourceChanged(const Tileset &tileset,
+                                               const QString &oldImageSource)
+{
+    Q_ASSERT(mTilesets.contains(tileset.sharedPointer()));
+    Q_ASSERT(!oldImageSource.isEmpty());
+    Q_ASSERT(!tileset.imageSource().isEmpty());
+
+    mWatcher->removePath(oldImageSource);
+    mWatcher->addPath(tileset.imageSource());
+}
+
 void TilesetManager::fileChanged(const QString &path)
 {
     if (!mReloadTilesetsOnChange)

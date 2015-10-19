@@ -460,7 +460,7 @@ void MapReaderPrivate::readTilesetImage(SharedTileset &tileset)
     ImageReference imageReference = readImage();
 
     // Set the width that the tileset had when the map was saved
-    mGidMapper.setTilesetWidth(tileset.data(), imageReference.width);
+    mGidMapper.setTilesetWidth(tileset.data(), imageReference.size.width());
 
     tileset->setImageReference(imageReference);
 }
@@ -474,8 +474,8 @@ ImageReference MapReaderPrivate::readImage()
     ImageReference image;
     image.source = atts.value(QLatin1String("source")).toString();
     image.format = atts.value(QLatin1String("format")).toLatin1();
-    image.width = atts.value(QLatin1String("width")).toInt();
-    image.height = atts.value(QLatin1String("width")).toInt();
+    image.size = QSize(atts.value(QLatin1String("width")).toInt(),
+                       atts.value(QLatin1String("height")).toInt());
 
     QString trans = atts.value(QLatin1String("trans")).toString();
     if (!trans.isEmpty()) {

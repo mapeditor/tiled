@@ -21,10 +21,15 @@
 
 #include "variantpropertymanager.h"
 
+#include "mapdocument.h"
+
+#include <QFileInfo>
+
 namespace Tiled {
 namespace Internal {
 
 class FilePathPropertyType {};
+class TilesetParametersPropertyType {};
 
 } // namespace Tiled
 } // namespace Internal
@@ -32,6 +37,7 @@ class FilePathPropertyType {};
 // Needs to be up here rather than at the bottom of the file to make a
 // static_assert in qMetaTypeId work (as of C++11)
 Q_DECLARE_METATYPE(Tiled::Internal::FilePathPropertyType)
+Q_DECLARE_METATYPE(Tiled::Internal::TilesetParametersPropertyType)
 
 
 namespace Tiled {
@@ -42,9 +48,16 @@ int VariantPropertyManager::filePathTypeId()
     return qMetaTypeId<FilePathPropertyType>();
 }
 
+int VariantPropertyManager::tilesetParametersTypeId()
+{
+    return qMetaTypeId<TilesetParametersPropertyType>();
+}
+
 bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
 {
     if (propertyType == filePathTypeId())
+        return true;
+    if (propertyType == tilesetParametersTypeId())
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -53,6 +66,8 @@ int VariantPropertyManager::valueType(int propertyType) const
 {
     if (propertyType == filePathTypeId())
         return QVariant::String;
+    if (propertyType == tilesetParametersTypeId())
+        return qMetaTypeId<EmbeddedTileset>();
     return QtVariantPropertyManager::valueType(propertyType);
 }
 
@@ -66,9 +81,9 @@ QVariant VariantPropertyManager::value(const QtProperty *property) const
 QStringList VariantPropertyManager::attributes(int propertyType) const
 {
     if (propertyType == filePathTypeId()) {
-        QStringList attr;
-        attr << QLatin1String("filter");
-        return attr;
+        return QStringList {
+            QStringLiteral("filter")
+        };
     }
     return QtVariantPropertyManager::attributes(propertyType);
 }
@@ -100,24 +115,28 @@ QVariant VariantPropertyManager::attributeValue(const QtProperty *property,
 
 QString VariantPropertyManager::valueText(const QtProperty *property) const
 {
-    if (mValues.contains(property))
-        return mValues[property].value;
+    if (mValues.contains(property)) {
+        QVariant value = mValues[property].value;
+        if (propertyType(property) == tilesetParametersTypeId()) {
+            EmbeddedTileset embeddedTileset = value.value<EmbeddedTileset>();
+            if (embeddedTileset.tileset())
+                return QFileInfo(embeddedTileset.tileset()->imageSource()).fileName();
+        }
+        return value.toString();
+    }
     return QtVariantPropertyManager::valueText(property);
 }
 
 void VariantPropertyManager::setValue(QtProperty *property, const QVariant &val)
 {
     if (mValues.contains(property)) {
-        if (val.type() != QVariant::String && !val.canConvert(QVariant::String))
-            return;
-        QString str = val.toString();
         Data d = mValues[property];
-        if (d.value == str)
+        if (d.value == val)
             return;
-        d.value = str;
+        d.value = val;
         mValues[property] = d;
         emit propertyChanged(property);
-        emit valueChanged(property, str);
+        emit valueChanged(property, val);
         return;
     }
     QtVariantPropertyManager::setValue(property, val);
@@ -153,6 +172,8 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     const int type = propertyType(property);
     if (type == filePathTypeId())
         mValues[property] = Data();
+    else if (type == tilesetParametersTypeId())
+        mValues[property] = Data();
     else if (type == QVariant::String)
         mSuggestions[property] = QStringList();
 
@@ -168,4 +189,3 @@ void VariantPropertyManager::uninitializeProperty(QtProperty *property)
 
 } // namespace Internal
 } // namespace Tiled
-

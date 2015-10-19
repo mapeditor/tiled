@@ -30,15 +30,9 @@ namespace Tiled {
 class ImageReference
 {
 public:
-    ImageReference()
-        : width(0)
-        , height(0)
-    {}
-
     QString source;
     QColor transparentColor;
-    int width;
-    int height;
+    QSize size;
     QByteArray format;
     QByteArray data;
 

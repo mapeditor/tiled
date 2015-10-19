@@ -42,6 +42,39 @@ Tileset::~Tileset()
 }
 
 /**
+ * Sets the tile size of this tileset. Affects how image is cut in loadImage.
+ *
+ * @warning Invalid for image collection tilesets!
+ */
+void Tileset::setTileSize(QSize tileSize)
+{
+    Q_ASSERT(!tileSize.isEmpty());
+    mTileWidth = tileSize.width();
+    mTileHeight = tileSize.height();
+}
+
+/**
+ * Sets the space in pixels between tiles in the tileset. Affects how image is
+ * cut in loadImage.
+ */
+void Tileset::setTileSpacing(int tileSpacing)
+{
+    Q_ASSERT(tileSpacing >= 0);
+    mTileSpacing = tileSpacing;
+}
+
+/**
+ * Sets the margin used by the tileset image. This is the number of pixels
+ * at the top-left border of the image that is skipped when cutting out tiles.
+ * Affects how image is cut in loadImage.
+ */
+void Tileset::setMargin(int margin)
+{
+    Q_ASSERT(margin >= 0);
+    mMargin = margin;
+}
+
+/**
  * Returns the tile with the given ID, creating it when it does not exist yet.
  */
 Tile *Tileset::findOrCreateTile(int id)
@@ -84,14 +117,14 @@ void Tileset::setImageReference(const ImageReference &reference)
 bool Tileset::loadFromImage(const QImage &image,
                             const QString &fileName)
 {
+    if (image.isNull())
+        return false;
+
     const QSize tileSize = this->tileSize();
     const int margin = this->margin();
     const int spacing = this->tileSpacing();
 
     Q_ASSERT(tileSize.width() > 0 && tileSize.height() > 0);
-
-    if (image.isNull())
-        return false;
 
     const int stopWidth = image.width() - tileSize.width();
     const int stopHeight = image.height() - tileSize.height();
@@ -130,9 +163,8 @@ bool Tileset::loadFromImage(const QImage &image,
 
     mNextTileId = std::max(mNextTileId, tileNum);
 
-    mImageReference.width = image.width();
-    mImageReference.height = image.height();
-    mColumnCount = columnCountForWidth(mImageReference.width);
+    mImageReference.size = image.size();
+    mColumnCount = columnCountForWidth(mImageReference.size.width());
     mImageReference.source = fileName;
     return true;
 }
@@ -165,6 +197,16 @@ SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets
         }
     }
     return SharedTileset();
+}
+
+/**
+ * Changes the source of the tileset image.
+ *
+ * Only takes affect when loadImage is called.
+ */
+void Tileset::setImageSource(const QString &imageSource)
+{
+    mImageReference.source = imageSource;
 }
 
 /**
