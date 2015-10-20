@@ -170,6 +170,7 @@ public:
     Tile *addTile(const QPixmap &image, const QString &source = QString());
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
+    void deleteTile(int id);
 
     void setNextTileId(int nextId);
     int nextTileId() const;

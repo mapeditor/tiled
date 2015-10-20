@@ -181,21 +181,53 @@ bool Tileset::loadImage()
 }
 
 /**
+ * Returns whether the tiles in \a candidate use the same images as the ones
+ * in \a subject. Note that \a candidate is allowed to have additional tiles
+ * as well.
+ */
+static bool sameTileImages(const Tileset &subject, const Tileset &candidate)
+{
+    for (const Tile *subjectTile : subject.tiles()) {
+        const Tile *replacementTile = candidate.findTile(subjectTile->id());
+        if (!replacementTile)
+            return false;
+        if (subjectTile->imageSource() != replacementTile->imageSource())
+            return false;
+    }
+
+    return true;
+}
+
+/**
  * This checks if there is a similar tileset in the given list.
  * It is needed for replacing this tileset by its similar copy.
  */
 SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets) const
 {
     for (const SharedTileset &candidate : tilesets) {
-        if (candidate != this
-            && candidate->imageSource() == imageSource()
-            && candidate->tileWidth() == tileWidth()
-            && candidate->tileHeight() == tileHeight()
-            && candidate->tileSpacing() == tileSpacing()
-            && candidate->margin() == margin()) {
-                return candidate;
-        }
+        Q_ASSERT(candidate != this);
+
+        if (candidate->tileCount() != tileCount())
+            continue;
+        if (candidate->imageSource() != imageSource())
+            continue;
+        if (candidate->tileSize() != tileSize())
+            continue;
+        if (candidate->tileSpacing() != tileSpacing())
+            continue;
+        if (candidate->margin() != margin())
+            continue;
+        if (candidate->tileOffset() != tileOffset())
+            continue;
+
+        // For an image collection tileset, check the image sources
+        if (imageSource().isEmpty())
+            if (!sameTileImages(*this, *candidate))
+                continue;
+
+        return candidate;
     }
+
     return SharedTileset();
 }
 
@@ -447,6 +479,14 @@ void Tileset::removeTiles(const QList<Tile *> &tiles)
     }
 
     updateTileSize();
+}
+
+/**
+ * Removes the given tile from this set and deletes it.
+ */
+void Tileset::deleteTile(int id)
+{
+    delete mTiles.take(id);
 }
 
 /**
