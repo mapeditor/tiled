@@ -35,6 +35,8 @@
 #include <QObject>
 #include <QString>
 
+#include <functional>
+
 namespace Tiled {
 
 struct LoadedPlugin
@@ -95,6 +97,17 @@ public:
             if (T *result = qobject_cast<T*>(object))
                 results.append(result);
         return results;
+    }
+
+    /**
+     * Calls the given function for each object implementing a given interface.
+     */
+    template<typename T>
+    static void each(std::function<void(T*)> function)
+    {
+        for (QObject *object : mInstance->mObjects)
+            if (T *result = qobject_cast<T*>(object))
+                function(result);
     }
 
     const LoadedPlugin *pluginByFileName(const QString &pluginFileName) const;

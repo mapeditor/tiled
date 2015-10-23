@@ -41,6 +41,7 @@
 #include <QPixmap>
 
 class QImage;
+class QPixmap;
 
 namespace Tiled {
 
@@ -191,6 +192,11 @@ public:
     int tileCount() const { return mTiles.size(); }
 
     /**
+     * Removes (and deletes) the last tile from this set.
+     */
+    void removeLastTile();
+
+    /**
      * Returns the number of tile columns in the tileset image.
      */
     int columnCount() const { return mColumnCount; }
@@ -232,6 +238,11 @@ public:
      * tileset image.
      */
     const QString &imageSource() const { return mImageSource; }
+
+    /**
+     * Sets the image source of this tileset. Does not reload any tiles!
+     */
+    void setImageSource(const QString &imageSource);
 
     /**
      * Returns the column count that this tileset would have if the tileset

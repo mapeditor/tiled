@@ -46,6 +46,11 @@ Tile *Tileset::tileAt(int id) const
     return (id < mTiles.size()) ? mTiles.at(id) : nullptr;
 }
 
+void Tileset::removeLastTile()
+{
+    delete mTiles.takeLast();
+}
+
 /**
  * Load this tileset from the given tileset \a image. This will replace
  * existing tile images in this tileset with new ones. If the new image
@@ -113,19 +118,52 @@ bool Tileset::loadFromImage(const QImage &image,
     return true;
 }
 
+static bool sameTileImages(const Tileset &a, const Tileset &b)
+{
+    Q_ASSERT(a.tileCount() == b.tileCount());
+
+    for (int i = 0; i < a.tileCount(); ++i) {
+        const Tile *tileA = a.tileAt(i);
+        const Tile *tileB = b.tileAt(i);
+        if (tileA->imageSource() != tileB->imageSource())
+            return false;
+    }
+
+    return true;
+}
+
 SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets) const
 {
     foreach (const SharedTileset &candidate, tilesets) {
-        if (candidate != this
-            && candidate->imageSource() == imageSource()
-            && candidate->tileWidth() == tileWidth()
-            && candidate->tileHeight() == tileHeight()
-            && candidate->tileSpacing() == tileSpacing()
-            && candidate->margin() == margin()) {
-                return candidate;
-        }
+        Q_ASSERT(candidate != this);
+
+        if (candidate->tileCount() != tileCount())
+            continue;
+        if (candidate->imageSource() != imageSource())
+            continue;
+        if (candidate->tileSize() != tileSize())
+            continue;
+        if (candidate->tileSpacing() != tileSpacing())
+            continue;
+        if (candidate->margin() != margin())
+            continue;
+        if (candidate->tileOffset() != tileOffset())
+            continue;
+
+        // For an image collection tileset, check the image sources
+        if (imageSource().isEmpty())
+            if (!sameTileImages(*this, *candidate))
+                continue;
+
+        return candidate;
     }
+
     return SharedTileset();
+}
+
+void Tileset::setImageSource(const QString &imageSource)
+{
+    mImageSource = imageSource;
 }
 
 int Tileset::columnCountForWidth(int width) const
