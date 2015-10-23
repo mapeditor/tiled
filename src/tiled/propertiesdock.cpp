@@ -20,6 +20,7 @@
 
 #include "propertiesdock.h"
 
+#include "addpropertydialog.h"
 #include "changeproperties.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
@@ -191,15 +192,17 @@ void PropertiesDock::tilesetFileNameChanged(Tileset *tileset)
 
 void PropertiesDock::addProperty()
 {
-    QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
-    dialog->setInputMode(QInputDialog::TextInput);
-    dialog->setLabelText(tr("Name:"));
-    dialog->setWindowTitle(tr("Add Property"));
-    dialog->open(this, SLOT(addProperty(QString)));
+    AddPropertyDialog *dialog = new AddPropertyDialog(mPropertyBrowser);
+    int result = dialog->exec();
+    if(result == AddPropertyDialog::Accepted){
+        addProperty(dialog->getPropertyName(),dialog->getPropertyType());
+    }
+    delete dialog;
 }
 
-void PropertiesDock::addProperty(const QString &name)
+void PropertiesDock::addProperty(const QString &name, QVariant::Type type)
 {
+
     if (name.isEmpty())
         return;
     Object *object = mMapDocument->currentObject();
@@ -208,7 +211,7 @@ void PropertiesDock::addProperty(const QString &name)
 
     if (!object->hasProperty(name)) {
         QUndoStack *undoStack = mMapDocument->undoStack();
-        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, QString()));
+        undoStack->push(new SetProperty(mMapDocument, mMapDocument->currentObjects(), name, QString(), type));
     }
 
     mPropertyBrowser->editCustomProperty(name);

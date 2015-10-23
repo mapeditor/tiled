@@ -173,7 +173,8 @@ SOURCES += aboutdialog.cpp \
     varianteditorfactory.cpp \
     variantpropertymanager.cpp \
     zoomable.cpp \
-    magicwandtool.cpp
+    magicwandtool.cpp \
+    addpropertydialog.cpp
 
 HEADERS += aboutdialog.h \
     abstractimagetool.h \
@@ -314,7 +315,8 @@ HEADERS += aboutdialog.h \
     varianteditorfactory.h \
     variantpropertymanager.h \
     zoomable.h \
-    magicwandtool.h
+    magicwandtool.h \
+    addpropertydialog.h
 
 macx {
     OBJECTIVE_SOURCES += macsupport.mm
@@ -331,7 +333,8 @@ FORMS += aboutdialog.ui \
     patreondialog.ui \
     preferencesdialog.ui \
     resizedialog.ui \
-    tileanimationeditor.ui
+    tileanimationeditor.ui \
+    addpropertydialog.ui
 
 icon32.path = $${PREFIX}/share/icons/hicolor/32x32/apps/
 icon32.files += images/32x32/tiled.png

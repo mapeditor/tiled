@@ -61,12 +61,14 @@ SetProperty::SetProperty(MapDocument *mapDocument,
                          const QList<Object*> &objects,
                          const QString &name,
                          const QString &value,
+                         const QVariant::Type type,
                          QUndoCommand *parent)
     : QUndoCommand(parent)
     , mMapDocument(mapDocument)
     , mObjects(objects)
     , mName(name)
     , mValue(value)
+    , mType(type)
 {
     foreach (Object *obj, mObjects) {
         ObjectProperty prop;
@@ -94,7 +96,7 @@ void SetProperty::undo()
 void SetProperty::redo()
 {
     foreach (Object *obj, mObjects)
-        mMapDocument->setProperty(obj, mName, mValue);
+        mMapDocument->setProperty(obj, mName, mValue, mType);
 }
 
 
@@ -146,6 +148,7 @@ RenameProperty::RenameProperty(MapDocument *mapDocument,
         objects.append(object);
 
         const QString value = object->property(oldName);
-        new SetProperty(mapDocument, objects, newName, value, this);
+        QVariant::Type type = object->propertyType(oldName);
+        new SetProperty(mapDocument, objects, newName, value, type, this);
     }
 }

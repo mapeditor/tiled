@@ -950,10 +950,12 @@ void MapDocument::moveObjectsToGroup(const QList<MapObject *> &objects,
 
 void MapDocument::setProperty(Object *object,
                               const QString &name,
-                              const QString &value)
+                              const QString &value,
+                              QVariant::Type type)
 {
     const bool hadProperty = object->hasProperty(name);
-    object->setProperty(name, value);
+
+    object->setProperty(name, value, type);
 
     if (hadProperty)
         emit propertyChanged(object, name);

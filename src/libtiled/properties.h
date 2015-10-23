@@ -33,10 +33,11 @@
 
 #include <QMap>
 #include <QString>
+#include <QVariant>
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT Properties : public QMap<QString,QString>
+class TILEDSHARED_EXPORT Properties : public QMap<QString,QVariant>
 {
 public:
     void merge(const Properties &other);
