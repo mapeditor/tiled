@@ -268,13 +268,8 @@ Map *MapReaderPrivate::readMap()
         // Try to load the tileset images
         auto tilesets = mMap->tilesets();
         for (SharedTileset &tileset : tilesets) {
-            if (!tileset->imageSource().isEmpty()) {
-                if (!tileset->loadImage()) {
-                    mError = tr("Error loading tileset image:\n'%1'").arg(tileset->imageSource());
-                    mMap.reset();
-                    return nullptr;
-                }
-            }
+            if (!tileset->imageSource().isEmpty())
+                tileset->loadImage();
         }
 
         mMap->recomputeDrawMargins();

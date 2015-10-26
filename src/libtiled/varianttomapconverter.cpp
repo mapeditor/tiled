@@ -106,6 +106,13 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         map->addLayer(layer);
     }
 
+    // Try to load the tileset images
+    auto tilesets = map->tilesets();
+    for (SharedTileset &tileset : tilesets) {
+        if (!tileset->imageSource().isEmpty())
+            tileset->loadImage();
+    }
+
     return map.take();
 }
 
@@ -175,19 +182,22 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
 
-    const QString trans = variantMap[QLatin1String("transparentcolor")].toString();
-    if (!trans.isEmpty() && QColor::isValidColor(trans))
-        tileset->setTransparentColor(QColor(trans));
-
     QVariant imageVariant = variantMap[QLatin1String("image")];
 
     if (!imageVariant.isNull()) {
-        QString imagePath = resolvePath(mMapDir, imageVariant);
-        if (!tileset->loadFromImage(imagePath)) {
-            mError = tr("Error loading tileset image:\n'%1'").arg(imagePath);
-            return SharedTileset();
-        }
+        const int imageWidth = variantMap[QLatin1String("imagewidth")].toInt();
+        const int imageHeight = variantMap[QLatin1String("imageheight")].toInt();
+
+        ImageReference imageRef;
+        imageRef.source = resolvePath(mMapDir, imageVariant);
+        imageRef.size = QSize(imageWidth, imageHeight);
+
+        tileset->setImageReference(imageRef);
     }
+
+    const QString trans = variantMap[QLatin1String("transparentcolor")].toString();
+    if (!trans.isEmpty() && QColor::isValidColor(trans))
+        tileset->setTransparentColor(QColor(trans));
 
     tileset->setProperties(toProperties(variantMap[QLatin1String("properties")]));
 

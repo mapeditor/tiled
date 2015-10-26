@@ -217,7 +217,19 @@ void TileDelegate::paint(QPainter *painter,
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal zoom = mTilesetView->scale();
-    const QSize tileSize = (tileImage.isNull() ? QSize(32, 32) : tileImage.size()) * zoom;
+
+    QSize tileSize = tileImage.size();
+    if (tileImage.isNull()) {
+        Tileset *tileset = model->tileset();
+        if (tileset->imageSource().isEmpty()) {
+            tileSize = QSize(32, 32);
+        } else {
+            int max = std::max(tileset->tileWidth(), tileset->tileWidth());
+            int min = std::min(max, 32);
+            tileSize = QSize(min, min);
+        }
+    }
+    tileSize *= zoom;
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
