@@ -135,6 +135,7 @@ SOURCES += aboutdialog.cpp \
     raiselowerhelper.cpp \
     renamelayer.cpp \
     renameterrain.cpp \
+    replacetileset.cpp \
     resizedialog.cpp \
     resizehelper.cpp \
     resizemap.cpp \
@@ -277,6 +278,7 @@ HEADERS += aboutdialog.h \
     rangeset.h \
     renamelayer.h \
     renameterrain.h \
+    replacetileset.h \
     resizedialog.h \
     resizehelper.h \
     resizemap.h \

@@ -359,6 +359,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
                 this, &TilesetDock::tilesetRemoved);
         connect(mMapDocument, &MapDocument::tilesetMoved,
                 this, &TilesetDock::tilesetMoved);
+        connect(mMapDocument, &MapDocument::tilesetReplaced,
+                this, &TilesetDock::tilesetReplaced);
         connect(mMapDocument, &MapDocument::tilesetNameChanged,
                 this, &TilesetDock::tilesetNameChanged);
         connect(mMapDocument, &MapDocument::tilesetFileNameChanged,
@@ -540,7 +542,7 @@ void TilesetDock::updateActions()
     mNewTileset->setEnabled(mapIsDisplayed);
     mImportTileset->setEnabled(tilesetIsDisplayed && external);
     mExportTileset->setEnabled(tilesetIsDisplayed && !external);
-    mPropertiesTileset->setEnabled(tilesetIsDisplayed && !external);
+    mPropertiesTileset->setEnabled(tilesetIsDisplayed);
     mDeleteTileset->setEnabled(tilesetIsDisplayed);
     mEditTerrain->setEnabled(tilesetIsDisplayed && !external);
     mAddTiles->setEnabled(tilesetIsDisplayed && !hasImageSource && !external);
@@ -669,6 +671,17 @@ void TilesetDock::tilesetMoved(int from, int to)
         if (mTabBar->tabText(i) != tileset->name())
             mTabBar->setTabText(i, tileset->name());
     }
+}
+
+void TilesetDock::tilesetReplaced(int index, Tileset *tileset)
+{
+    mTilesets.replace(index, tileset->sharedPointer());
+
+    if (TilesetModel *model = tilesetViewAt(index)->tilesetModel())
+        model->setTileset(tileset);
+
+    if (mTabBar->tabText(index) != tileset->name())
+        mTabBar->setTabText(index, tileset->name());
 }
 
 /**

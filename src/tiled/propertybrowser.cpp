@@ -37,6 +37,7 @@
 #include "movemapobject.h"
 #include "objectgroup.h"
 #include "preferences.h"
+#include "replacetileset.h"
 #include "resizemapobject.h"
 #include "renamelayer.h"
 #include "renameterrain.h"
@@ -46,6 +47,8 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetchanges.h"
+#include "tilesetformat.h"
+#include "tmxmapformat.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
@@ -53,6 +56,7 @@
 #include <QtGroupPropertyManager>
 
 #include <QCoreApplication>
+#include <QMessageBox>
 
 namespace Tiled {
 namespace Internal {
@@ -138,6 +142,8 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, SIGNAL(imageLayerChanged(ImageLayer*)),
                 SLOT(imageLayerChanged(ImageLayer*)));
 
+        connect(mapDocument, &MapDocument::tilesetFileNameChanged,
+                this, &PropertyBrowser::tilesetChanged);
         connect(mapDocument, &MapDocument::tilesetNameChanged,
                 this, &PropertyBrowser::tilesetChanged);
         connect(mapDocument, &MapDocument::tilesetTileOffsetChanged,
@@ -227,8 +233,18 @@ void PropertyBrowser::imageLayerChanged(ImageLayer *imageLayer)
 
 void PropertyBrowser::tilesetChanged(Tileset *tileset)
 {
-    if (mObject == tileset)
+    if (mObject != tileset)
+        return;
+
+    bool isExternal = tileset->isExternal();
+    bool wasExternal = mIdToProperty.contains(FileNameProperty);
+
+    if (isExternal == wasExternal) {
         updateProperties();
+    } else {
+        removeProperties();
+        addProperties();
+    }
 }
 
 void PropertyBrowser::tileChanged(Tile *tile)
@@ -505,13 +521,26 @@ void PropertyBrowser::addImageLayerProperties()
 
 void PropertyBrowser::addTilesetProperties()
 {
+    const Tileset *tileset = static_cast<const Tileset*>(mObject);
+
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tileset"));
+
+    if (tileset->isExternal()) {
+        auto property = createProperty(FileNameProperty, VariantPropertyManager::filePathTypeId(), tr("Filename"), groupProperty);
+
+        QString filter = QCoreApplication::translate("MainWindow", "All Files (*)");
+        filter += QLatin1String(";;");
+        filter += TsxTilesetFormat().nameFilter();
+        FormatHelper<TilesetFormat> helper(FileFormat::Read, filter);
+
+        property->setAttribute(QStringLiteral("filter"), helper.filter());
+    }
+
     createProperty(NameProperty, QVariant::String, tr("Name"), groupProperty);
     createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
 
     // Next properties we should add only for non 'Collection of Images' tilesets
-    const Tileset *currentTileset = static_cast<const Tileset*>(mObject);
-    if (!currentTileset->imageSource().isEmpty()) {
+    if (!tileset->imageSource().isEmpty()) {
         QtVariantProperty *parametersProperty =
                 createProperty(TilesetImageParametersProperty, VariantPropertyManager::tilesetParametersTypeId(), tr("Image"), groupProperty);
 
@@ -843,6 +872,21 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
     QUndoStack *undoStack = mMapDocument->undoStack();
 
     switch (id) {
+    case FileNameProperty: {
+        QString fileName = val.toString();
+        QString error;
+        SharedTileset newTileset = Tiled::readTileset(fileName, &error);
+        if (!newTileset) {
+            QMessageBox::critical(window(), tr("Error Reading Tileset"), error);
+            return;
+        }
+
+        int index = mMapDocument->map()->tilesets().indexOf(tileset->sharedPointer());
+        if (index != -1)
+            undoStack->push(new ReplaceTileset(mMapDocument, index, newTileset));
+
+        break;
+    }
     case NameProperty:
         undoStack->push(new RenameTileset(mMapDocument,
                                           tileset,
@@ -1038,8 +1082,17 @@ void PropertyBrowser::updateProperties()
     }
     case Object::TilesetType: {
         Tileset *tileset = static_cast<Tileset*>(mObject);
+        const bool external = tileset->isExternal();
+
+        if (QtVariantProperty *fileNameProperty = mIdToProperty.value(FileNameProperty))
+            fileNameProperty->setValue(tileset->fileName());
+
         mIdToProperty[NameProperty]->setValue(tileset->name());
         mIdToProperty[TileOffsetProperty]->setValue(tileset->tileOffset());
+
+        mIdToProperty[NameProperty]->setEnabled(!external);
+        mIdToProperty[TileOffsetProperty]->setEnabled(!external);
+
         if (!tileset->imageSource().isEmpty()) {
             EmbeddedTileset embeddedTileset(mMapDocument, tileset);
 
@@ -1050,6 +1103,8 @@ void PropertyBrowser::updateProperties()
             mIdToProperty[MarginProperty]->setValue(tileset->margin());
             mIdToProperty[SpacingProperty]->setValue(tileset->tileSpacing());
             mIdToProperty[ColorProperty]->setValue(tileset->transparentColor());
+
+            mIdToProperty[TilesetImageParametersProperty]->setEnabled(!external);
         }
         break;
     }

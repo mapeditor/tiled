@@ -268,7 +268,7 @@ Map *MapReaderPrivate::readMap()
         // Try to load the tileset images
         auto tilesets = mMap->tilesets();
         for (SharedTileset &tileset : tilesets) {
-            if (!tileset->imageSource().isEmpty())
+            if (!tileset->imageSource().isEmpty() && tileset->fileName().isEmpty())
                 tileset->loadImage();
         }
 
@@ -971,7 +971,11 @@ Map *MapReader::readMap(const QString &fileName)
 
 SharedTileset MapReader::readTileset(QIODevice *device, const QString &path)
 {
-    return d->readTileset(device, path);
+    SharedTileset tileset = d->readTileset(device, path);
+    if (tileset && !tileset->imageSource().isEmpty())
+        tileset->loadImage();
+
+    return tileset;
 }
 
 SharedTileset MapReader::readTileset(const QString &fileName)

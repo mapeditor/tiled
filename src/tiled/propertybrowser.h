@@ -128,6 +128,7 @@ private:
         TilesetImageParametersProperty,
         FlippingProperty,
         DrawOrderProperty,
+        FileNameProperty,
         TileOffsetProperty,
         MarginProperty,
         SpacingProperty,

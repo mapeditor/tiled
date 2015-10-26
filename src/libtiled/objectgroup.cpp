@@ -153,7 +153,7 @@ void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
         const Tile *tile = object->cell().tile;
         if (tile && tile->tileset() == oldTileset) {
             Cell cell = object->cell();
-            cell.tile = newTileset->findTile(tile->id());
+            cell.tile = newTileset->findOrCreateTile(tile->id());
             object->setCell(cell);
         }
     }

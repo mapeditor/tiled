@@ -298,6 +298,8 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
         if (tile && tile->tileset() == tileset)
             mGrid.replace(i, Cell());
     }
+
+    mUsedTilesets.remove(tileset->sharedPointer());
 }
 
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
@@ -306,8 +308,11 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
     for (Cell &cell : mGrid) {
         const Tile *tile = cell.tile;
         if (tile && tile->tileset() == oldTileset)
-            cell.tile = newTileset->findTile(tile->id());
+            cell.tile = newTileset->findOrCreateTile(tile->id());
     }
+
+    if (mUsedTilesets.remove(oldTileset->sharedPointer()))
+        mUsedTilesets.insert(newTileset->sharedPointer());
 }
 
 void TileLayer::resize(const QSize &size, const QPoint &offset)

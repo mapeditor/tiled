@@ -165,8 +165,10 @@ private slots:
     void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
 
-    void tilesetTileOffsetChanged(Tileset *tileset);
-    void tileImageSourceChanged(Tile *tile);
+    void adaptToTilesetTileSizeChanges(Tileset *tileset);
+    void adaptToTileSizeChanges(Tile *tile);
+
+    void tilesetReplaced(int index, Tileset *tileset);
 
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
     void objectsRemoved(const QList<MapObject*> &objects);
