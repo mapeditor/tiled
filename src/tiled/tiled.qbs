@@ -80,6 +80,8 @@ QtGuiApplication {
         "changeselectedarea.h",
         "changetileanimation.cpp",
         "changetileanimation.h",
+        "changetileimagesource.cpp",
+        "changetileimagesource.h",
         "changetileobjectgroup.cpp",
         "changetileobjectgroup.h",
         "changetileprobability.cpp",

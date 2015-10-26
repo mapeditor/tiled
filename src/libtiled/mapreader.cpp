@@ -416,8 +416,6 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
                 if (image.isNull()) {
                     if (imageReference.source.isEmpty())
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
-                    else
-                        xml.raiseError(tr("Error loading image:\n'%1'").arg(imageReference.source));
                 }
                 tileset->setTileImage(id, QPixmap::fromImage(image),
                                       imageReference.source);

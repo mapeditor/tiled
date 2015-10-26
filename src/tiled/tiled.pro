@@ -64,6 +64,7 @@ SOURCES += aboutdialog.cpp \
     changepolygon.cpp \
     changeproperties.cpp \
     changetileanimation.cpp \
+    changetileimagesource.cpp \
     changetileobjectgroup.cpp \
     changetileprobability.cpp \
     changeselectedarea.cpp \
@@ -202,6 +203,7 @@ HEADERS += aboutdialog.h \
     changepolygon.h \
     changeproperties.h \
     changetileanimation.h \
+    changetileimagesource.h \
     changetileobjectgroup.h \
     changetileprobability.h \
     changeselectedarea.h \

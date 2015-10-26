@@ -353,20 +353,22 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
             mViewStack->addWidget(view);
         }
 
-        connect(mMapDocument, SIGNAL(tilesetAdded(int,Tileset*)),
-                SLOT(tilesetAdded(int,Tileset*)));
-        connect(mMapDocument, SIGNAL(tilesetRemoved(Tileset*)),
-                SLOT(tilesetRemoved(Tileset*)));
-        connect(mMapDocument, SIGNAL(tilesetMoved(int,int)),
-                SLOT(tilesetMoved(int,int)));
-        connect(mMapDocument, SIGNAL(tilesetNameChanged(Tileset*)),
-                SLOT(tilesetNameChanged(Tileset*)));
-        connect(mMapDocument, SIGNAL(tilesetFileNameChanged(Tileset*)),
-                SLOT(updateActions()));
-        connect(mMapDocument, SIGNAL(tilesetChanged(Tileset*)),
-                SLOT(tilesetChanged(Tileset*)));
-        connect(mMapDocument, SIGNAL(tileAnimationChanged(Tile*)),
-                SLOT(tileAnimationChanged(Tile*)));
+        connect(mMapDocument, &MapDocument::tilesetAdded,
+                this, &TilesetDock::tilesetAdded);
+        connect(mMapDocument, &MapDocument::tilesetRemoved,
+                this, &TilesetDock::tilesetRemoved);
+        connect(mMapDocument, &MapDocument::tilesetMoved,
+                this, &TilesetDock::tilesetMoved);
+        connect(mMapDocument, &MapDocument::tilesetNameChanged,
+                this, &TilesetDock::tilesetNameChanged);
+        connect(mMapDocument, &MapDocument::tilesetFileNameChanged,
+                this, &TilesetDock::updateActions);
+        connect(mMapDocument, &MapDocument::tilesetChanged,
+                this, &TilesetDock::tilesetChanged);
+        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+                this, &TilesetDock::tileImageSourceChanged);
+        connect(mMapDocument, &MapDocument::tileAnimationChanged,
+                this, &TilesetDock::tileAnimationChanged);
 
         QString cacheName = mCurrentTilesets.take(mMapDocument);
         for (int i = 0; i < mTabBar->count(); ++i) {
@@ -1019,6 +1021,16 @@ void TilesetDock::tilesetNameChanged(Tileset *tileset)
     Q_ASSERT(index != -1);
 
     mTabBar->setTabText(index, tileset->name());
+}
+
+void TilesetDock::tileImageSourceChanged(Tile *tile)
+{
+    int tilesetIndex = mTilesets.indexOf(tile->tileset()->sharedPointer());
+    if (tilesetIndex != -1) {
+        TilesetView *view = tilesetViewAt(tilesetIndex);
+        if (TilesetModel *model = view->tilesetModel())
+            model->tileChanged(tile);
+    }
 }
 
 void TilesetDock::tileAnimationChanged(Tile *tile)

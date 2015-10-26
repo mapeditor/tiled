@@ -112,7 +112,7 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
 
-    foreach (const QModelIndex &index, indexes) {
+    for (const QModelIndex &index : indexes) {
         if (index.isValid())
             stream << tileIndexAt(index);
     }
@@ -172,7 +172,7 @@ void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
     QModelIndex topLeft;
     QModelIndex bottomRight;
 
-    foreach (const Tile *tile, tiles) {
+    for (const Tile *tile : tiles) {
         const QModelIndex i = tileIndex(tile);
 
         if (!topLeft.isValid()) {

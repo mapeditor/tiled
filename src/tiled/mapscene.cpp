@@ -144,6 +144,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, SLOT(currentLayerIndexChanged()));
         connect(mMapDocument, SIGNAL(tilesetTileOffsetChanged(Tileset*)),
                 this, SLOT(tilesetTileOffsetChanged(Tileset*)));
+        connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+                this, &MapScene::tileImageSourceChanged);
         connect(mMapDocument, SIGNAL(objectsInserted(ObjectGroup*,int,int)),
                 this, SLOT(objectsInserted(ObjectGroup*,int,int)));
         connect(mMapDocument, SIGNAL(objectsRemoved(QList<MapObject*>)),
@@ -474,6 +476,17 @@ void MapScene::tilesetTileOffsetChanged(Tileset *tileset)
     for (MapObjectItem *item : mObjectItems) {
         const Cell &cell = item->mapObject()->cell();
         if (!cell.isEmpty() && cell.tile->tileset() == tileset)
+            item->syncWithMapObject();
+    }
+}
+
+void MapScene::tileImageSourceChanged(Tile *tile)
+{
+    update();
+
+    for (MapObjectItem *item : mObjectItems) {
+        const Cell &cell = item->mapObject()->cell();
+        if (cell.tile == tile)
             item->syncWithMapObject();
     }
 }

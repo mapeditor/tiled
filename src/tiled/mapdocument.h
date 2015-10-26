@@ -342,6 +342,7 @@ signals:
 
     void tileLayerDrawMarginsChanged(TileLayer *layer);
 
+    void tileImageSourceChanged(Tile *tile);
     void tileTerrainChanged(const QList<Tile*> &tiles);
     void tileProbabilityChanged(Tile *tile);
     void tileObjectGroupChanged(Tile *tile);

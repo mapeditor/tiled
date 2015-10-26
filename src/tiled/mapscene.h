@@ -35,6 +35,7 @@ class ImageLayer;
 class Layer;
 class MapObject;
 class ObjectGroup;
+class Tile;
 class TileLayer;
 class Tileset;
 
@@ -165,6 +166,7 @@ private slots:
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void tilesetTileOffsetChanged(Tileset *tileset);
+    void tileImageSourceChanged(Tile *tile);
 
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
     void objectsRemoved(const QList<MapObject*> &objects);

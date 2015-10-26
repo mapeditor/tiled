@@ -217,7 +217,7 @@ void TileDelegate::paint(QPainter *painter,
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal zoom = mTilesetView->scale();
-    const QSize tileSize = tileImage.size() * zoom;
+    const QSize tileSize = (tileImage.isNull() ? QSize(32, 32) : tileImage.size()) * zoom;
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
@@ -229,7 +229,11 @@ void TileDelegate::paint(QPainter *painter,
         if (zoomable->smoothTransform())
             painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-    painter->drawPixmap(targetRect, tileImage);
+    if (!tileImage.isNull())
+        painter->drawPixmap(targetRect, tileImage);
+    else
+        mTilesetView->imageMissingIcon().paint(painter, targetRect, Qt::AlignBottom | Qt::AlignLeft);
+
 
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated()) {
@@ -311,9 +315,14 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
 
     if (const Tile *tile = m->tileAt(index)) {
-        const QSize tileSize = tile->size() * mTilesetView->scale();
-        return QSize(tileSize.width() + extra,
-                     tileSize.height() + extra);
+        const QPixmap &image = tile->image();
+        QSize tileSize = image.size();
+
+        if (image.isNull() && !tile->imageSource().isEmpty())
+            tileSize = QSize(32, 32);
+
+        return QSize(tileSize.width() * mTilesetView->scale() + extra,
+                     tileSize.height() * mTilesetView->scale() + extra);
     }
 
     return QSize(extra, extra);
@@ -332,6 +341,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mTerrainId(-1)
     , mHoveredCorner(0)
     , mTerrainChanged(false)
+    , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -455,6 +465,11 @@ void TilesetView::setTerrainId(int terrainId)
     mTerrainId = terrainId;
     if (mEditTerrain)
         viewport()->update();
+}
+
+QIcon TilesetView::imageMissingIcon() const
+{
+    return QIcon::fromTheme(QLatin1String("image-missing"), mImageMissingIcon);
 }
 
 void TilesetView::mousePressEvent(QMouseEvent *event)

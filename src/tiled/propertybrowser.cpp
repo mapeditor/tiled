@@ -27,6 +27,7 @@
 #include "changemapproperty.h"
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
+#include "changetileimagesource.h"
 #include "changetileprobability.h"
 #include "flipmapobjects.h"
 #include "imagelayer.h"
@@ -144,8 +145,10 @@ void PropertyBrowser::setMapDocument(MapDocument *mapDocument)
         connect(mapDocument, &MapDocument::tilesetChanged,
                 this, &PropertyBrowser::tilesetChanged);
 
-        connect(mapDocument, SIGNAL(tileProbabilityChanged(Tile*)),
-                SLOT(tileChanged(Tile*)));
+        connect(mapDocument, &MapDocument::tileProbabilityChanged,
+                this, &PropertyBrowser::tileChanged);
+        connect(mapDocument, &MapDocument::tileImageSourceChanged,
+                this, &PropertyBrowser::tileChanged);
 
         TerrainModel *terrainModel = mapDocument->terrainModel();
         connect(terrainModel, SIGNAL(terrainChanged(Tileset*,int)),
@@ -507,7 +510,7 @@ void PropertyBrowser::addTilesetProperties()
     createProperty(TileOffsetProperty, QVariant::Point, tr("Drawing Offset"), groupProperty);
 
     // Next properties we should add only for non 'Collection of Images' tilesets
-    const Tileset *currentTileset = dynamic_cast<const Tileset*>(mObject);
+    const Tileset *currentTileset = static_cast<const Tileset*>(mObject);
     if (!currentTileset->imageSource().isEmpty()) {
         QtVariantProperty *parametersProperty =
                 createProperty(TilesetImageParametersProperty, VariantPropertyManager::tilesetParametersTypeId(), tr("Image"), groupProperty);
@@ -535,6 +538,8 @@ void PropertyBrowser::addTileProperties()
 {
     QtProperty *groupProperty = mGroupManager->addProperty(tr("Tile"));
     createProperty(IdProperty, QVariant::Int, tr("ID"), groupProperty)->setEnabled(false);
+    createProperty(WidthProperty, QVariant::Int, tr("Width"), groupProperty)->setEnabled(false);
+    createProperty(HeightProperty, QVariant::Int, tr("Height"), groupProperty)->setEnabled(false);
 
     QtVariantProperty *probabilityProperty = createProperty(TileProbabilityProperty,
                                                             QVariant::Double,
@@ -542,6 +547,16 @@ void PropertyBrowser::addTileProperties()
                                                             groupProperty);
     probabilityProperty->setAttribute(QLatin1String("decimals"), 3);
     probabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
+
+    const Tile *tile = static_cast<const Tile*>(mObject);
+    if (!tile->imageSource().isEmpty()) {
+        QtVariantProperty *imageSourceProperty = createProperty(ImageSourceProperty,
+                                                                VariantPropertyManager::filePathTypeId(),
+                                                                tr("Image"), groupProperty);
+
+        imageSourceProperty->setAttribute(QLatin1String("filter"),
+                                          Utils::readableImageFormatsFilter());
+    }
 
     addProperty(groupProperty);
 }
@@ -846,11 +861,19 @@ void PropertyBrowser::applyTilesetValue(PropertyBrowser::PropertyId id, const QV
 void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
 {
     Tile *tile = static_cast<Tile*>(mObject);
+    QUndoStack *undoStack = mMapDocument->undoStack();
 
-    if (id == TileProbabilityProperty) {
-        QUndoStack *undoStack = mMapDocument->undoStack();
+    switch (id) {
+    case TileProbabilityProperty:
         undoStack->push(new ChangeTileProbability(mMapDocument,
                                                   tile, val.toFloat()));
+        break;
+    case ImageSourceProperty:
+        undoStack->push(new ChangeTileImageSource(mMapDocument,
+                                                  tile, val.toString()));
+        break;
+    default:
+        break;
     }
 }
 
@@ -1032,8 +1055,13 @@ void PropertyBrowser::updateProperties()
     }
     case Object::TileType: {
         const Tile *tile = static_cast<const Tile*>(mObject);
+        const QSize tileSize = tile->size();
         mIdToProperty[IdProperty]->setValue(tile->id());
+        mIdToProperty[WidthProperty]->setValue(tileSize.width());
+        mIdToProperty[HeightProperty]->setValue(tileSize.height());
         mIdToProperty[TileProbabilityProperty]->setValue(tile->probability());
+        if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
+            imageSourceProperty->setValue(tile->imageSource());
         break;
     }
     case Object::TerrainType: {

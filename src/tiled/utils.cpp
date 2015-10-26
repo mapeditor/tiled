@@ -34,7 +34,7 @@ static QString toImageFileFilter(const QList<QByteArray> &formats)
     QString filter(QCoreApplication::translate("Utils", "Image files"));
     filter += QLatin1String(" (");
     bool first = true;
-    foreach (const QByteArray &format, formats) {
+    for (const QByteArray &format : formats) {
         if (!first)
             filter += QLatin1Char(' ');
         first = false;
