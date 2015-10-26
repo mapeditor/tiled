@@ -38,8 +38,8 @@ using namespace Tiled;
 static QString resolvePath(const QDir &dir, const QVariant &variant)
 {
     QString fileName = variant.toString();
-    if (QDir::isRelativePath(fileName))
-        fileName = QDir::cleanPath(dir.absoluteFilePath(fileName));
+    if (!fileName.isEmpty() && QDir::isRelativePath(fileName))
+        return QDir::cleanPath(dir.absoluteFilePath(fileName));
     return fileName;
 }
 
@@ -496,10 +496,7 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 
     if (!imageVariant.isNull()) {
         QString imagePath = resolvePath(mMapDir, imageVariant);
-        if (!imageLayer->loadFromImage(QImage(imagePath), imagePath)) {
-            mError = tr("Error loading image:\n'%1'").arg(imagePath);
-            return nullptr;
-        }
+        imageLayer->loadFromImage(imagePath);
     }
 
     return imageLayer.take();

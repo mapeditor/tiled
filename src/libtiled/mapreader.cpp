@@ -792,9 +792,7 @@ void MapReaderPrivate::readImageLayerImage(ImageLayer &imageLayer)
 
     source = p->resolveReference(source, mPath);
 
-    const QImage imageLayerImage(source);
-    if (!imageLayer.loadFromImage(imageLayerImage, source))
-        xml.raiseError(tr("Error loading image layer image:\n'%1'").arg(source));
+    imageLayer.loadFromImage(source);
 
     xml.skipCurrentElement();
 }
@@ -1002,10 +1000,9 @@ QString MapReader::errorString() const
 QString MapReader::resolveReference(const QString &reference,
                                     const QString &mapPath)
 {
-    if (QDir::isRelativePath(reference))
+    if (!reference.isEmpty() && QDir::isRelativePath(reference))
         return QDir::cleanPath(mapPath + QLatin1Char('/') + reference);
-    else
-        return QDir::cleanPath(reference);
+    return reference;
 }
 
 SharedTileset MapReader::readExternalTileset(const QString &source,
