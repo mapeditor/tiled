@@ -28,6 +28,7 @@ These libraries typically include only a TMX parser, but no rendering support. T
 * [C++11/TinyXml2 libtmx](https://github.com/jube/libtmx) by jube, for reading only (ISC licence). See [documentation](http://jube.github.io/libtmx/index.html).
 * [TMXParser](https://github.com/solar-storm-studios/TMXParser) General *.tmx tileset data loader. Intended to be used with TSXParser for external tileset loading. (No internal tileset support)
 * [TSXParser](https://github.com/solar-storm-studios/TSXParser) General *.tsx tileset data loader. Intended to be used with TMXParser.
+* [TMXLoader](https://bitbucket.org/martingrant/tmxloader) based on [RapidXml](http://rapidxml.sourceforge.net/). Limited functionality (check the [website](http://www.midnightpacific.com/portfolio/tmxloader-for-tiled-map-editor/) for details).
 
 ### C#/.NET ###
 * [XNA map loader](https://github.com/zachmu/tiled-xna) by Kevin Gadd, extended by Stephen Belanger and Zach Musgrave (has dependency on XNA but supposedly can be turned into a standalone parser easily)
