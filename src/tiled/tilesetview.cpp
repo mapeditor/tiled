@@ -330,8 +330,16 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
         const QPixmap &image = tile->image();
         QSize tileSize = image.size();
 
-        if (image.isNull() && !tile->imageSource().isEmpty())
-            tileSize = QSize(32, 32);
+        if (image.isNull()) {
+            Tileset *tileset = m->tileset();
+            if (tileset->imageSource().isEmpty()) {
+                tileSize = QSize(32, 32);
+            } else {
+                int max = std::max(tileset->tileWidth(), tileset->tileWidth());
+                int min = std::min(max, 32);
+                tileSize = QSize(min, min);
+            }
+        }
 
         return QSize(tileSize.width() * mTilesetView->scale() + extra,
                      tileSize.height() * mTilesetView->scale() + extra);

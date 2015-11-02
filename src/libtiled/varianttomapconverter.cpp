@@ -157,8 +157,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         QString error;
         SharedTileset tileset = Tiled::readTileset(source, &error);
         if (!tileset) {
-            mError = tr("Error while loading tileset '%1': %2")
-                    .arg(source, error);
+            // Insert a placeholder to allow the map to load
+            tileset = Tileset::create(QFileInfo(source).completeBaseName(), 32, 32);
+            tileset->setFileName(source);
         } else {
             mGidMapper.insert(firstGid, tileset.data());
         }

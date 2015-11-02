@@ -357,8 +357,9 @@ SharedTileset MapReaderPrivate::readTileset()
         tileset = p->readExternalTileset(absoluteSource, &error);
 
         if (!tileset) {
-            xml.raiseError(tr("Error while loading tileset '%1': %2")
-                           .arg(absoluteSource, error));
+            // Insert a placeholder to allow the map to load
+            tileset = Tileset::create(QFileInfo(absoluteSource).completeBaseName(), 32, 32);
+            tileset->setFileName(absoluteSource);
         }
 
         xml.skipCurrentElement();
