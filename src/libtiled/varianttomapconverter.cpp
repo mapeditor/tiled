@@ -160,6 +160,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
             // Insert a placeholder to allow the map to load
             tileset = Tileset::create(QFileInfo(source).completeBaseName(), 32, 32);
             tileset->setFileName(source);
+            tileset->setLoaded(false);
         } else {
             mGidMapper.insert(firstGid, tileset.data());
         }

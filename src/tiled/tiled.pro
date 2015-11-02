@@ -52,6 +52,7 @@ SOURCES += aboutdialog.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
     automappingutils.cpp  \
+    brokenlinks.cpp \
     brushitem.cpp \
     bucketfilltool.cpp \
     changeimagelayerposition.cpp \
@@ -192,6 +193,7 @@ HEADERS += aboutdialog.h \
     automapperwrapper.h \
     automappingmanager.h \
     automappingutils.h \
+    brokenlinks.h \
     brushitem.h \
     bucketfilltool.h \
     changeimagelayerposition.h \

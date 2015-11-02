@@ -131,6 +131,8 @@ public:
     int currentFrameIndex() const;
     bool advanceAnimation(int ms);
 
+    bool imageLoaded() const;
+
 private:
     int mId;
     Tileset *mTileset;
@@ -280,6 +282,14 @@ inline bool Tile::isAnimated() const
 inline int Tile::currentFrameIndex() const
 {
     return mCurrentFrameIndex;
+}
+
+/**
+ * Returns whether the image referenced by this tile was loaded.
+ */
+inline bool Tile::imageLoaded() const
+{
+    return !mImage.isNull();
 }
 
 } // namespace Tiled

@@ -30,11 +30,14 @@ namespace Tiled {
 class ImageReference
 {
 public:
+    ImageReference() : loaded(false) {}
+
     QString source;
     QColor transparentColor;
     QSize size;
     QByteArray format;
     QByteArray data;
+    bool loaded;
 
     bool hasImage() const;
     QImage create() const;

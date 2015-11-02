@@ -117,8 +117,12 @@ void Tileset::setImageReference(const ImageReference &reference)
 bool Tileset::loadFromImage(const QImage &image,
                             const QString &fileName)
 {
-    if (image.isNull())
+    mImageReference.source = fileName;
+
+    if (image.isNull()) {
+        mImageReference.loaded = false;
         return false;
+    }
 
     const QSize tileSize = this->tileSize();
     const int margin = this->margin();
@@ -165,7 +169,8 @@ bool Tileset::loadFromImage(const QImage &image,
 
     mImageReference.size = image.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());
-    mImageReference.source = fileName;
+    mImageReference.loaded = true;
+
     return true;
 }
 

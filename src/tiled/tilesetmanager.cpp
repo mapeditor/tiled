@@ -141,8 +141,7 @@ void TilesetManager::forceTilesetReload(SharedTileset &tileset)
     if (!mTilesets.contains(tileset))
         return;
 
-    QString fileName = tileset->imageSource();
-    if (tileset->loadFromImage(fileName))
+    if (tileset->loadImage())
         emit tilesetChanged(tileset.data());
 }
 

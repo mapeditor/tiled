@@ -22,6 +22,7 @@
 #include "documentmanager.h"
 
 #include "abstracttool.h"
+#include "brokenlinks.h"
 #include "filesystemwatcher.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -39,6 +40,7 @@
 #include <QLabel>
 #include <QDialogButtonBox>
 #include <QScrollBar>
+#include <QStackedLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -85,22 +87,39 @@ class MapViewContainer : public QWidget
     Q_OBJECT
 
 public:
-    MapViewContainer(MapView *mapView, QWidget *parent = nullptr)
+    MapViewContainer(MapView *mapView,
+                     MapDocument *mapDocument,
+                     QWidget *parent = nullptr)
         : QWidget(parent)
         , mMapView(mapView)
         , mWarning(new FileChangedWarning)
+        , mBrokenLinksModel(new BrokenLinksModel(mapDocument, this))
+        , mBrokenLinksWidget(nullptr)
     {
         mWarning->setVisible(false);
 
-        QVBoxLayout *layout = new QVBoxLayout;
+        QVBoxLayout *layout = new QVBoxLayout(this);
         layout->setMargin(0);
         layout->setSpacing(0);
-        layout->addWidget(mapView);
-        layout->addWidget(mWarning);
-        setLayout(layout);
 
-        connect(mWarning, SIGNAL(reload()), SIGNAL(reload()));
-        connect(mWarning, SIGNAL(ignore()), mWarning, SLOT(hide()));
+        QStackedLayout *stack = new QStackedLayout(layout);
+        stack->addWidget(mapView);
+
+        if (mBrokenLinksModel->hasBrokenLinks()) {
+            mBrokenLinksWidget = new BrokenLinksWidget(mBrokenLinksModel, this);
+            stack->setCurrentIndex(stack->addWidget(mBrokenLinksWidget));
+
+            connect(mBrokenLinksWidget, &BrokenLinksWidget::ignore,
+                    this, &MapViewContainer::deleteBrokenLinksWidget);
+        }
+
+        connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
+                this, &MapViewContainer::hasBrokenLinksChanged);
+
+        layout->addWidget(mWarning);
+
+        connect(mWarning, &FileChangedWarning::reload, this, &MapViewContainer::reload);
+        connect(mWarning, &FileChangedWarning::ignore, mWarning, &FileChangedWarning::hide);
     }
 
     MapView *mapView() const { return mMapView; }
@@ -111,9 +130,27 @@ public:
 signals:
     void reload();
 
+private slots:
+    void hasBrokenLinksChanged(bool hasBrokenLinks)
+    {
+        if (!hasBrokenLinks)
+            deleteBrokenLinksWidget();
+    }
+
+    void deleteBrokenLinksWidget()
+    {
+        if (mBrokenLinksWidget) {
+            mBrokenLinksWidget->deleteLater();
+            mBrokenLinksWidget = nullptr;
+        }
+    }
+
 private:
     MapView *mMapView;
+
     FileChangedWarning *mWarning;
+    BrokenLinksModel *mBrokenLinksModel;
+    BrokenLinksWidget *mBrokenLinksWidget;
 };
 
 } // namespace Internal
@@ -262,7 +299,7 @@ void DocumentManager::addDocument(MapDocument *mapDocument)
 
     MapView *view = new MapView;
     MapScene *scene = new MapScene(view); // scene is owned by the view
-    MapViewContainer *container = new MapViewContainer(view, mTabWidget);
+    MapViewContainer *container = new MapViewContainer(view, mapDocument, mTabWidget);
 
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
@@ -498,11 +535,14 @@ void DocumentManager::cursorChanged(const QCursor &cursor)
 
 void DocumentManager::centerViewOn(qreal x, qreal y)
 {
-    MapView *view = currentMapView();
-    if (!view)
+    const int index = mTabWidget->currentIndex();
+    if (index == -1)
         return;
 
-    view->centerOn(currentDocument()->renderer()->pixelToScreenCoords(x, y));
+    MapView *view = currentMapView();
+    MapDocument *document = mDocuments.at(index);
+
+    view->centerOn(document->renderer()->pixelToScreenCoords(x, y));
 }
 
 #include "documentmanager.moc"

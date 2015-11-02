@@ -96,8 +96,8 @@ class ChangeTilesetParameters : public QUndoCommand
 {
 public:
     ChangeTilesetParameters(MapDocument *mapDocument,
-                             Tileset &tileset,
-                             const TilesetParameters &parameters);
+                            Tileset &tileset,
+                            const TilesetParameters &parameters);
 
     void undo() override;
     void redo() override;

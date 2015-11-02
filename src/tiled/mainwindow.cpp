@@ -1280,7 +1280,7 @@ void MainWindow::addExternalTileset()
         return;
 
     prefs->setLastPath(Preferences::ExternalTileset,
-                       QFileInfo(fileNames.back()).path());
+                       QFileInfo(fileNames.last()).path());
 
     mSettings.setValue(QLatin1String("lastUsedTilesetFilter"), selectedFilter);
 

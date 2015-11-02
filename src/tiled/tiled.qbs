@@ -54,6 +54,8 @@ QtGuiApplication {
         "automappingmanager.h",
         "automappingutils.cpp",
         "automappingutils.h",
+        "brokenlinks.cpp",
+        "brokenlinks.h",
         "brushitem.cpp",
         "brushitem.h",
         "bucketfilltool.cpp",

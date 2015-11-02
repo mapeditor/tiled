@@ -99,7 +99,8 @@ private:
         mMargin(margin),
         mColumnCount(0),
         mNextTileId(0),
-        mTerrainDistancesDirty(false)
+        mTerrainDistancesDirty(false),
+        mLoaded(true)
     {
         Q_ASSERT(tileSpacing >= 0);
         Q_ASSERT(margin >= 0);
@@ -184,6 +185,10 @@ public:
 
     SharedTileset sharedPointer() const;
 
+    void setLoaded(bool loaded);
+    bool loaded() const;
+    bool imageLoaded() const;
+
 private:
     void updateTileSize();
     void recalculateTerrainDistances();
@@ -201,6 +206,7 @@ private:
     int mNextTileId;
     QList<Terrain*> mTerrainTypes;
     bool mTerrainDistancesDirty;
+    bool mLoaded;
 
     QWeakPointer<Tileset> mWeakPointer;
 };
@@ -442,6 +448,34 @@ inline void Tileset::markTerrainDistancesDirty()
 inline SharedTileset Tileset::sharedPointer() const
 {
     return SharedTileset(mWeakPointer);
+}
+
+/**
+ * Sets whether this tileset was loaded successfully. This variable is true by
+ * default, but it can be set to false to indicate a failed attempt at loading
+ * an external tileset.
+ */
+inline void Tileset::setLoaded(bool loaded)
+{
+    mLoaded = loaded;
+}
+
+/**
+ * Returns whether this tileset was loaded succesfully. Only valid for
+ * external tilesets (fileName() != empty).
+ */
+inline bool Tileset::loaded() const
+{
+    return mLoaded;
+}
+
+/**
+ * Returns whether the image used by this tileset was loaded succesfully. Only
+ * valid for tilesets based on a single image (imageSource() != empty).
+ */
+inline bool Tileset::imageLoaded() const
+{
+    return mImageReference.loaded;
 }
 
 } // namespace Tiled
