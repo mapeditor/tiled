@@ -40,7 +40,6 @@
 #include <QLabel>
 #include <QDialogButtonBox>
 #include <QScrollBar>
-#include <QStackedLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -102,12 +101,9 @@ public:
         layout->setMargin(0);
         layout->setSpacing(0);
 
-        QStackedLayout *stack = new QStackedLayout(layout);
-        stack->addWidget(mapView);
-
         if (mBrokenLinksModel->hasBrokenLinks()) {
             mBrokenLinksWidget = new BrokenLinksWidget(mBrokenLinksModel, this);
-            stack->setCurrentIndex(stack->addWidget(mBrokenLinksWidget));
+            layout->addWidget(mBrokenLinksWidget);
 
             connect(mBrokenLinksWidget, &BrokenLinksWidget::ignore,
                     this, &MapViewContainer::deleteBrokenLinksWidget);
@@ -116,6 +112,7 @@ public:
         connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
                 this, &MapViewContainer::hasBrokenLinksChanged);
 
+        layout->addWidget(mapView);
         layout->addWidget(mWarning);
 
         connect(mWarning, &FileChangedWarning::reload, this, &MapViewContainer::reload);
