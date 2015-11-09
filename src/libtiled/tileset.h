@@ -90,21 +90,7 @@ private:
      * Private constructor. Use create() instead.
      */
     Tileset(QString name, int tileWidth, int tileHeight,
-            int tileSpacing = 0, int margin = 0):
-        Object(TilesetType),
-        mName(std::move(name)),
-        mTileWidth(tileWidth),
-        mTileHeight(tileHeight),
-        mTileSpacing(tileSpacing),
-        mMargin(margin),
-        mColumnCount(0),
-        mNextTileId(0),
-        mTerrainDistancesDirty(false),
-        mLoaded(true)
-    {
-        Q_ASSERT(tileSpacing >= 0);
-        Q_ASSERT(margin >= 0);
-    }
+            int tileSpacing = 0, int margin = 0);
 
 public:
     ~Tileset();
@@ -138,6 +124,7 @@ public:
     int tileCount() const;
 
     int columnCount() const;
+    int expectedColumnCount() const;
 
     int imageWidth() const;
     int imageHeight() const;
@@ -202,6 +189,7 @@ private:
     int mMargin;
     QPoint mTileOffset;
     int mColumnCount;
+    int mExpectedColumnCount;
     QMap<int, Tile*> mTiles;
     int mNextTileId;
     QList<Terrain*> mTerrainTypes;
@@ -343,6 +331,16 @@ inline int Tileset::tileCount() const
 inline int Tileset::columnCount() const
 {
     return mColumnCount;
+}
+
+/**
+ * Returns the number of tile columns expected to be in the tileset image. This
+ * may differ from the actual amount of columns encountered when loading the
+ * image, and can be used for automatically adjusting tile indexes.
+ */
+inline int Tileset::expectedColumnCount() const
+{
+    return mExpectedColumnCount;
 }
 
 /**

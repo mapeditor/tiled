@@ -290,7 +290,7 @@ signals:
      * selected region and the previously selected region.
      */
     void selectedAreaChanged(const QRegion &newSelection,
-                              const QRegion &oldSelection);
+                             const QRegion &oldSelection);
 
     /**
      * Emitted when the list of selected objects changes.

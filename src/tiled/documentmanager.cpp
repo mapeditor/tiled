@@ -22,6 +22,7 @@
 #include "documentmanager.h"
 
 #include "abstracttool.h"
+#include "adjusttileindexes.h"
 #include "brokenlinks.h"
 #include "filesystemwatcher.h"
 #include "map.h"
@@ -32,14 +33,16 @@
 #include "movabletabwidget.h"
 #include "zoomable.h"
 
-#include <QUndoGroup>
 #include <QFileInfo>
+#include <QUndoGroup>
 
-#include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QDialogButtonBox>
+#include <QMessageBox>
 #include <QScrollBar>
+#include <QUndoStack>
+#include <QVBoxLayout>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -383,6 +386,8 @@ bool DocumentManager::reloadDocumentAt(int index)
     if (layerIndex > 0 && layerIndex < newDocument->map()->layerCount())
         newDocument->setCurrentLayerIndex(layerIndex);
 
+    checkTilesetColumns(newDocument);
+
     return true;
 }
 
@@ -540,6 +545,40 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
     MapDocument *document = mDocuments.at(index);
 
     view->centerOn(document->renderer()->pixelToScreenCoords(x, y));
+}
+
+/**
+ * Checks whether the number of columns in tileset image based tilesets matches
+ * with the expected amount. Offers to adjust tile indexes if not.
+ */
+void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
+{
+    for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
+        if (tileset->imageSource().isEmpty())
+            continue;
+        if (!tileset->imageLoaded())
+            continue;
+        if (tileset->columnCount() == tileset->expectedColumnCount())
+            continue;
+        if (tileset->columnCount() == 0 || tileset->expectedColumnCount() == 0)
+            continue;
+
+        // Change in column count detected
+        int r = QMessageBox::question(mTabWidget->window(),
+                                      tr("Tileset Columns Changed"),
+                                      tr("The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. "
+                                         "Do you want to adjust tile references?")
+                                      .arg(tileset->name())
+                                      .arg(tileset->expectedColumnCount())
+                                      .arg(tileset->columnCount()),
+                                      QMessageBox::Yes | QMessageBox::No,
+                                      QMessageBox::Yes);
+
+        if (r == QMessageBox::Yes) {
+            auto command = new AdjustTileIndexes(mapDocument, tileset.data());
+            mapDocument->undoStack()->push(command);
+        }
+    }
 }
 
 #include "documentmanager.moc"

@@ -48,6 +48,7 @@ SOURCES += aboutdialog.cpp \
     addremoveterrain.cpp \
     addremovetiles.cpp \
     addremovetileset.cpp \
+    adjusttileindexes.cpp \
     automapper.cpp \
     automapperwrapper.cpp \
     automappingmanager.cpp \
@@ -189,6 +190,7 @@ HEADERS += aboutdialog.h \
     addremoveterrain.h \
     addremovetiles.h \
     addremovetileset.h \
+    adjusttileindexes.h \
     automapper.h \
     automapperwrapper.h \
     automappingmanager.h \

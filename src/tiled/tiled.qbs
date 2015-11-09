@@ -46,6 +46,8 @@ QtGuiApplication {
         "addremovetileset.cpp",
         "addremovetileset.h",
         "addremovetiles.h",
+        "adjusttileindexes.cpp",
+        "adjusttileindexes.h",
         "automapper.cpp",
         "automapper.h",
         "automapperwrapper.cpp",

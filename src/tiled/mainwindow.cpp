@@ -665,6 +665,8 @@ bool MainWindow::openFile(const QString &fileName,
     }
 
     mDocumentManager->addDocument(mapDocument);
+    mDocumentManager->checkTilesetColumns(mapDocument);
+
     setRecentFile(fileName);
     return true;
 }

@@ -79,9 +79,9 @@ private:
     Map *readMap();
 
     SharedTileset readTileset();
-    void readTilesetTile(SharedTileset &tileset);
-    void readTilesetImage(SharedTileset &tileset);
-    void readTilesetTerrainTypes(SharedTileset &tileset);
+    void readTilesetTile(Tileset &tileset);
+    void readTilesetImage(Tileset &tileset);
+    void readTilesetTerrainTypes(Tileset &tileset);
     ImageReference readImage();
 
     TileLayer *readLayer();
@@ -326,7 +326,7 @@ SharedTileset MapReaderPrivate::readTileset()
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("tile")) {
-                    readTilesetTile(tileset);
+                    readTilesetTile(*tileset);
                 } else if (xml.name() == QLatin1String("tileoffset")) {
                     const QXmlStreamAttributes oa = xml.attributes();
                     int x = oa.value(QLatin1String("x")).toInt();
@@ -342,10 +342,10 @@ SharedTileset MapReaderPrivate::readTileset()
                         tileset.clear();
                         break;
                     } else {
-                        readTilesetImage(tileset);
+                        readTilesetImage(*tileset);
                     }
                 } else if (xml.name() == QLatin1String("terraintypes")) {
-                    readTilesetTerrainTypes(tileset);
+                    readTilesetTerrainTypes(*tileset);
                 } else {
                     readUnknownElement();
                 }
@@ -372,7 +372,7 @@ SharedTileset MapReaderPrivate::readTileset()
     return tileset;
 }
 
-void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
+void MapReaderPrivate::readTilesetTile(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("tile"));
 
@@ -384,7 +384,7 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
         return;
     }
 
-    Tile *tile = tileset->findOrCreateTile(id);
+    Tile *tile = tileset.findOrCreateTile(id);
 
     // Read tile quadrant terrain ids
     QString terrain = atts.value(QLatin1String("terrain")).toString();
@@ -414,8 +414,8 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
                     if (imageReference.source.isEmpty())
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
                 }
-                tileset->setTileImage(id, QPixmap::fromImage(image),
-                                      imageReference.source);
+                tileset.setTileImage(id, QPixmap::fromImage(image),
+                                     imageReference.source);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
             tile->setObjectGroup(readObjectGroup());
@@ -448,16 +448,11 @@ void MapReaderPrivate::readTilesetTile(SharedTileset &tileset)
     }
 }
 
-void MapReaderPrivate::readTilesetImage(SharedTileset &tileset)
+void MapReaderPrivate::readTilesetImage(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("image"));
 
-    ImageReference imageReference = readImage();
-
-    // Set the width that the tileset had when the map was saved
-    mGidMapper.setTilesetWidth(tileset.data(), imageReference.size.width());
-
-    tileset->setImageReference(imageReference);
+    tileset.setImageReference(readImage());
 }
 
 ImageReference MapReaderPrivate::readImage()
@@ -501,7 +496,7 @@ ImageReference MapReaderPrivate::readImage()
     return image;
 }
 
-void MapReaderPrivate::readTilesetTerrainTypes(SharedTileset &tileset)
+void MapReaderPrivate::readTilesetTerrainTypes(Tileset &tileset)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("terraintypes"));
 
@@ -511,7 +506,7 @@ void MapReaderPrivate::readTilesetTerrainTypes(SharedTileset &tileset)
             QString name = atts.value(QLatin1String("name")).toString();
             int tile = atts.value(QLatin1String("tile")).toInt();
 
-            Terrain *terrain = tileset->addTerrain(name, tile);
+            Terrain *terrain = tileset.addTerrain(name, tile);
 
             while (xml.readNextStartElement()) {
                 if (xml.name() == QLatin1String("properties"))

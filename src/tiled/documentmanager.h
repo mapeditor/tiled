@@ -144,6 +144,8 @@ public:
      */
     void closeAllDocuments();
 
+    void checkTilesetColumns(MapDocument *mapDocument);
+
     /**
      * Returns all open map documents.
      */

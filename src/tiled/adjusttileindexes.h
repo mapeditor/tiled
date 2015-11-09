@@ -1,0 +1,47 @@
+/*
+ * adjusttileindexes.h
+ * Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef TILED_INTERNAL_ADJUSTTILEINDEXES_H
+#define TILED_INTERNAL_ADJUSTTILEINDEXES_H
+
+#include <QUndoCommand>
+
+namespace Tiled {
+
+class Tileset;
+
+namespace Internal {
+
+class MapDocument;
+
+/**
+ * Adjusts tile indexes based on a change in the number of columns in a tileset
+ * image.
+ */
+class AdjustTileIndexes : public QUndoCommand
+{
+public:
+    AdjustTileIndexes(MapDocument *mapDocument, Tileset *tileset);
+};
+
+} // namespace Internal
+} // namespace Tiled
+
+#endif // TILED_INTERNAL_ADJUSTTILEINDEXES_H

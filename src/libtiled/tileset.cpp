@@ -35,6 +35,24 @@
 
 using namespace Tiled;
 
+Tileset::Tileset(QString name, int tileWidth, int tileHeight,
+                 int tileSpacing, int margin):
+    Object(TilesetType),
+    mName(std::move(name)),
+    mTileWidth(tileWidth),
+    mTileHeight(tileHeight),
+    mTileSpacing(tileSpacing),
+    mMargin(margin),
+    mColumnCount(0),
+    mExpectedColumnCount(0),
+    mNextTileId(0),
+    mTerrainDistancesDirty(false),
+    mLoaded(true)
+{
+    Q_ASSERT(tileSpacing >= 0);
+    Q_ASSERT(margin >= 0);
+}
+
 Tileset::~Tileset()
 {
     qDeleteAll(mTiles);
@@ -95,9 +113,17 @@ void Tileset::setTransparentColor(const QColor &c)
     mImageReference.transparentColor = c;
 }
 
+/**
+ * Sets the image reference data for tileset image based tilesets.
+ *
+ * This function also sets the expected column count, which can be used later
+ * for automatic adjustment of tile indexes in case the tileset image width has
+ * changed.
+ */
 void Tileset::setImageReference(const ImageReference &reference)
 {
     mImageReference = reference;
+    mExpectedColumnCount = columnCountForWidth(mImageReference.size.width());
 }
 
 /**
@@ -253,7 +279,8 @@ void Tileset::setImageSource(const QString &imageSource)
  */
 int Tileset::columnCountForWidth(int width) const
 {
-    Q_ASSERT(mTileWidth > 0);
+    if (mTileWidth <= 0)
+        return 0;
     return (width - mMargin + mTileSpacing) / (mTileWidth + mTileSpacing);
 }
 

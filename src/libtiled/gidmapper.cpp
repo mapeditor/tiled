@@ -94,15 +94,6 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
             int tileId = gid - i.key();
             Tileset *tileset = i.value();
 
-            // todo: re-enable the tile index adjustment somewhere else
-//            const int columnCount = mTilesetColumnCounts.value(tileset);
-//            if (columnCount > 0 && columnCount != tileset->columnCount()) {
-//                // Correct tile index for changes in image width
-//                const int row = tileIndex / columnCount;
-//                const int column = tileIndex % columnCount;
-//                tileIndex = row * tileset->columnCount() + column;
-//            }
-
             result.tile = tileset->findOrCreateTile(tileId);
 
             ok = true;
@@ -141,18 +132,6 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
         gid |= FlippedAntiDiagonallyFlag;
 
     return gid;
-}
-
-/**
- * This sets the original tileset width. In case the image size has changed,
- * the tile indexes will be adjusted automatically when using gidToCell().
- */
-void GidMapper::setTilesetWidth(const Tileset *tileset, int width)
-{
-    if (tileset->tileWidth() == 0)
-        return;
-
-    mTilesetColumnCounts.insert(tileset, tileset->columnCountForWidth(width));
 }
 
 /**
