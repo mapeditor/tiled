@@ -43,6 +43,8 @@
 #include <QStackedLayout>
 #include <QTreeView>
 
+#include <algorithm>
+
 namespace Tiled {
 namespace Internal {
 
@@ -66,6 +68,13 @@ BrokenLinksModel::BrokenLinksModel(MapDocument *mapDocument, QObject *parent)
     , mMapDocument(mapDocument)
 {
     refresh();
+
+    connect(mMapDocument, &MapDocument::tileImageSourceChanged,
+            this, &BrokenLinksModel::tileImageSourceChanged);
+    connect(mMapDocument, &MapDocument::tilesetChanged,
+            this, &BrokenLinksModel::tilesetChanged);
+    connect(mMapDocument, &MapDocument::tilesetReplaced,
+            this, &BrokenLinksModel::tilesetReplaced);
 }
 
 void BrokenLinksModel::refresh()
@@ -163,6 +172,65 @@ QVariant BrokenLinksModel::headerData(int section, Qt::Orientation orientation, 
         }
     }
     return QVariant();
+}
+
+void BrokenLinksModel::tileImageSourceChanged(Tile *tile)
+{
+    auto matchesTile = [tile](const BrokenLink &link) {
+        return link.type == TileImageSource && link.tile == tile;
+    };
+
+    QVector<BrokenLink>::iterator it = std::find_if(mBrokenLinks.begin(),
+                                                    mBrokenLinks.end(),
+                                                    matchesTile);
+
+    if (!tile->imageSource().isEmpty() && !tile->imageLoaded()) {
+        if (it != mBrokenLinks.end()) {
+            int linkIndex = it - mBrokenLinks.begin();
+            emit dataChanged(index(linkIndex, 0), index(linkIndex, 1));
+        } else {
+            refresh(); // lazy way of adding an entry for this tile
+        }
+    } else if (it != mBrokenLinks.end()) {
+        removeLink(it - mBrokenLinks.begin());
+    }
+}
+
+void BrokenLinksModel::tilesetChanged(Tileset *tileset)
+{
+    auto matchesTileset = [tileset](const BrokenLink &link) {
+        return link.type == TilesetImageSource && link.tileset == tileset;
+    };
+
+    QVector<BrokenLink>::iterator it = std::find_if(mBrokenLinks.begin(),
+                                                    mBrokenLinks.end(),
+                                                    matchesTileset);
+
+    if (!tileset->imageSource().isEmpty() && !tileset->imageLoaded()) {
+        if (it != mBrokenLinks.end()) {
+            int linkIndex = it - mBrokenLinks.begin();
+            emit dataChanged(index(linkIndex, 0), index(linkIndex, 1));
+        } else {
+            refresh(); // lazy way of adding an entry for this tileset
+        }
+    } else if (it != mBrokenLinks.end()) {
+        removeLink(it - mBrokenLinks.begin());
+    }
+}
+
+void BrokenLinksModel::tilesetReplaced(int index, Tileset *tileset)
+{
+    Q_UNUSED(index)
+    Q_UNUSED(tileset)
+
+    refresh();
+}
+
+void BrokenLinksModel::removeLink(int index)
+{
+    beginRemoveRows(QModelIndex(), index, index);
+    mBrokenLinks.remove(index);
+    endRemoveRows();
 }
 
 
@@ -285,7 +353,6 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
                                                        parameters);
 
             mapDocument->undoStack()->push(command);
-
         } else {
             auto command = new ChangeTileImageSource(mapDocument,
                                                      link.tile,
@@ -332,8 +399,6 @@ void BrokenLinksWidget::tryFixLink(const BrokenLink &link)
         prefs->setLastPath(Preferences::ExternalTileset,
                            QFileInfo(fileName).path());
     }
-
-    mBrokenLinksModel->refresh();
 }
 
 } // namespace Internal

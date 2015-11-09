@@ -81,7 +81,14 @@ public:
 signals:
     void hasBrokenLinksChanged(bool hasBrokenLinks);
 
+private slots:
+    void tileImageSourceChanged(Tile *tile);
+    void tilesetChanged(Tileset *tileset);
+    void tilesetReplaced(int index, Tileset *tileset);
+
 private:
+    void removeLink(int index);
+
     MapDocument *mMapDocument;
     QVector<BrokenLink> mBrokenLinks;
 };
