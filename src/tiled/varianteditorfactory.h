@@ -28,6 +28,7 @@ namespace Tiled {
 namespace Internal {
 
 class FileEdit;
+class TilesetParametersEdit;
 
 /**
  * Extension of the QtVariantEditorFactory that adds support for a FileEdit,
@@ -58,12 +59,15 @@ private slots:
     void slotPropertyAttributeChanged(QtProperty *property,
                                       const QString &attribute,
                                       const QVariant &value);
-    void slotSetValue(const QString &value);
+    void fileEditFilePathChanged(const QString &value);
     void slotEditorDestroyed(QObject *object);
 
 private:
-    QMap<QtProperty *, QList<FileEdit *> > mCreatedEditors;
-    QMap<FileEdit *, QtProperty *> mEditorToProperty;
+    QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;
+    QMap<FileEdit *, QtProperty *> mFileEditToProperty;
+
+    QMap<QtProperty *, QList<TilesetParametersEdit *> > mCreatedTilesetEdits;
+    QMap<TilesetParametersEdit *, QtProperty *> mTilesetEditToProperty;
 };
 
 } // namespace Internal

@@ -86,14 +86,8 @@ struct Frame
 class TILEDSHARED_EXPORT Tile : public Object
 {
 public:
-    Tile(const QPixmap &image,
-         int id,
-         Tileset *tileset);
-
-    Tile(const QPixmap &image,
-         const QString &imageSource,
-         int id,
-         Tileset *tileset);
+    Tile(int id, Tileset *tileset);
+    Tile(const QPixmap &image, int id, Tileset *tileset);
 
     ~Tile();
 
@@ -136,6 +130,8 @@ public:
     bool isAnimated() const;
     int currentFrameIndex() const;
     bool advanceAnimation(int ms);
+
+    bool imageLoaded() const;
 
 private:
     int mId;
@@ -286,6 +282,14 @@ inline bool Tile::isAnimated() const
 inline int Tile::currentFrameIndex() const
 {
     return mCurrentFrameIndex;
+}
+
+/**
+ * Returns whether the image referenced by this tile was loaded.
+ */
+inline bool Tile::imageLoaded() const
+{
+    return !mImage.isNull();
 }
 
 } // namespace Tiled

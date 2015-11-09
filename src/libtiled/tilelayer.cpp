@@ -34,20 +34,13 @@
 
 using namespace Tiled;
 
-TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
-    Layer(TileLayerType, name, x, y, width, height),
-    mMaxTileSize(0, 0),
-    mGrid(width * height)
+TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
+    : Layer(TileLayerType, name, x, y, width, height)
+    , mGrid(width * height)
+    , mUsedTilesetsDirty(false)
 {
     Q_ASSERT(width >= 0);
     Q_ASSERT(height >= 0);
-}
-
-static QSize maxSize(const QSize &a,
-                     const QSize &b)
-{
-    return QSize(qMax(a.width(), b.width()),
-                 qMax(a.height(), b.height()));
 }
 
 static QMargins maxMargins(const QMargins &a,
@@ -59,66 +52,80 @@ static QMargins maxMargins(const QMargins &a,
                     qMax(a.bottom(), b.bottom()));
 }
 
-/**
- * Recomputes the draw margins. Needed after the tile offset of a tileset
- * has changed for example.
- *
- * Generally you want to call Map::recomputeDrawMargins instead.
- */
-void TileLayer::recomputeDrawMargins()
+static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
 {
-    QSize maxTileSize(0, 0);
+    int maxTileSize = 0;
     QMargins offsetMargins;
 
-    for (Cell &cell : mGrid) {
-        if (const Tile *tile = cell.tile) {
-            QSize size = tile->size();
+    for (const SharedTileset &tileset : tilesets) {
+        const QPoint offset = tileset->tileOffset();
+        const QSize tileSize = tileset->tileSize();
 
-            if (cell.flippedAntiDiagonally)
-                size.transpose();
+        maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
+                                                     tileSize.height()));
 
-            const QPoint offset = tile->offset();
+        offsetMargins = maxMargins(QMargins(-offset.x(),
+                                            -offset.y(),
+                                            offset.x(),
+                                            offset.y()),
+                                   offsetMargins);
+    }
 
-            maxTileSize = maxSize(size, maxTileSize);
-            offsetMargins = maxMargins(QMargins(-offset.x(),
-                                                -offset.y(),
-                                                offset.x(),
-                                                offset.y()),
-                                        offsetMargins);
+    return QMargins(offsetMargins.left(),
+                    offsetMargins.top() + maxTileSize,
+                    offsetMargins.right() + maxTileSize,
+                    offsetMargins.bottom());
+}
+
+QMargins TileLayer::drawMargins() const
+{
+    return computeDrawMargins(usedTilesets());
+}
+
+QRegion TileLayer::region(std::function<bool (const Cell &)> condition) const
+{
+    QRegion region;
+
+    for (int y = 0; y < mHeight; ++y) {
+        for (int x = 0; x < mWidth; ++x) {
+            if (condition(cellAt(x, y))) {
+                const int rangeStart = x;
+                for (++x; x <= mWidth; ++x) {
+                    if (x == mWidth || !condition(cellAt(x, y))) {
+                        const int rangeEnd = x;
+                        region += QRect(rangeStart + mX, y + mY,
+                                        rangeEnd - rangeStart, 1);
+                        break;
+                    }
+                }
+            }
         }
     }
 
-    mMaxTileSize = maxTileSize;
-    mOffsetMargins = offsetMargins;
-
-    if (mMap)
-        mMap->adjustDrawMargins(drawMargins());
+    return region;
 }
 
-void TileLayer::setCell(int x, int y, const Cell &cell)
+/**
+ * Sets the cell at the given coordinates.
+ */
+void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 {
     Q_ASSERT(contains(x, y));
 
-    if (cell.tile) {
-        QSize size = cell.tile->size();
+    Cell &existingCell = mGrid[x + y * mWidth];
 
-        if (cell.flippedAntiDiagonally)
-            size.transpose();
-
-        const QPoint offset = cell.tile->offset();
-
-        mMaxTileSize = maxSize(size, mMaxTileSize);
-        mOffsetMargins = maxMargins(QMargins(-offset.x(),
-                                             -offset.y(),
-                                             offset.x(),
-                                             offset.y()),
-                                    mOffsetMargins);
-
-        if (mMap)
-            mMap->adjustDrawMargins(drawMargins());
+    if (!mUsedTilesetsDirty) {
+        Tileset *oldTileset = existingCell.isEmpty() ? nullptr : existingCell.tile->tileset();
+        Tileset *newTileset = cell.isEmpty() ? nullptr : cell.tile->tileset();
+        if (oldTileset != newTileset) {
+            if (oldTileset)
+                mUsedTilesetsDirty = true;
+            else if (newTileset)
+                mUsedTilesets.insert(newTileset->sharedPointer());
+        }
     }
 
-    mGrid[x + y * mWidth] = cell;
+    existingCell = cell;
 }
 
 TileLayer *TileLayer::copy(const QRegion &region) const
@@ -243,9 +250,6 @@ void TileLayer::rotate(RotateDirection direction)
         }
     }
 
-    std::swap(mMaxTileSize.rwidth(),
-              mMaxTileSize.rheight());
-
     mWidth = newWidth;
     mHeight = newHeight;
     mGrid = newGrid;
@@ -254,13 +258,27 @@ void TileLayer::rotate(RotateDirection direction)
 
 QSet<SharedTileset> TileLayer::usedTilesets() const
 {
-    QSet<SharedTileset> tilesets;
+    if (mUsedTilesetsDirty) {
+        QSet<SharedTileset> tilesets;
 
+        for (const Cell &cell : mGrid)
+            if (const Tile *tile = cell.tile)
+                tilesets.insert(tile->sharedTileset());
+
+        mUsedTilesets.swap(tilesets);
+        mUsedTilesetsDirty = false;
+    }
+
+    return mUsedTilesets;
+}
+
+bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
+{
     for (const Cell &cell : mGrid)
-        if (const Tile *tile = cell.tile)
-            tilesets.insert(tile->sharedTileset());
+        if (condition(cell))
+            return true;
 
-    return tilesets;
+    return false;
 }
 
 bool TileLayer::referencesTileset(const Tileset *tileset) const
@@ -280,6 +298,8 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
         if (tile && tile->tileset() == tileset)
             mGrid.replace(i, Cell());
     }
+
+    mUsedTilesets.remove(tileset->sharedPointer());
 }
 
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
@@ -288,8 +308,11 @@ void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
     for (Cell &cell : mGrid) {
         const Tile *tile = cell.tile;
         if (tile && tile->tileset() == oldTileset)
-            cell.tile = newTileset->tileAt(tile->id());
+            cell.tile = newTileset->findOrCreateTile(tile->id());
     }
+
+    if (mUsedTilesets.remove(oldTileset->sharedPointer()))
+        mUsedTilesets.insert(newTileset->sharedPointer());
 }
 
 void TileLayer::resize(const QSize &size, const QPoint &offset)
@@ -429,7 +452,7 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
 {
     Layer::initializeClone(clone);
     clone->mGrid = mGrid;
-    clone->mMaxTileSize = mMaxTileSize;
-    clone->mOffsetMargins = mOffsetMargins;
+    clone->mUsedTilesets = mUsedTilesets;
+    clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;
 }

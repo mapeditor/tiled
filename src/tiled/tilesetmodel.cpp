@@ -42,7 +42,7 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    const int tiles = mTileset->tileCount();
+    const int tiles = mTileset->nextTileId();
     const int columns = columnCount();
 
     int rows = 1;
@@ -112,7 +112,7 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
 
-    foreach (const QModelIndex &index, indexes) {
+    for (const QModelIndex &index : indexes) {
         if (index.isValid())
             stream << tileIndexAt(index);
     }
@@ -126,8 +126,8 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return nullptr;
 
-    const int i = index.column() + index.row() * columnCount();
-    return mTileset->tileAt(i);
+    const int id = index.column() + index.row() * columnCount();
+    return mTileset->findTile(id);
 }
 
 int TilesetModel::tileIndexAt(const QModelIndex &index) const
@@ -172,7 +172,7 @@ void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
     QModelIndex topLeft;
     QModelIndex bottomRight;
 
-    foreach (const Tile *tile, tiles) {
+    for (const Tile *tile : tiles) {
         const QModelIndex i = tileIndex(tile);
 
         if (!topLeft.isValid()) {

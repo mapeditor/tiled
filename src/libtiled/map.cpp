@@ -74,7 +74,7 @@ Map::Map(const Map &map):
     mLayerDataFormat(map.mLayerDataFormat),
     mNextObjectId(1)
 {
-    foreach (const Layer *layer, map.mLayers) {
+    for (const Layer *layer : map.mLayers) {
         Layer *clone = layer->clone();
         clone->setMap(this);
         mLayers.append(clone);
@@ -93,18 +93,6 @@ static QMargins maxMargins(const QMargins &a,
                     qMax(a.top(), b.top()),
                     qMax(a.right(), b.right()),
                     qMax(a.bottom(), b.bottom()));
-}
-
-void Map::adjustDrawMargins(const QMargins &margins)
-{
-    // The TileLayer includes the maximum tile size in its draw margins. So
-    // we need to subtract the tile size of the map, since that part does not
-    // contribute to additional margin.
-    mDrawMargins = maxMargins(QMargins(margins.left(),
-                                       margins.top() - mTileHeight,
-                                       margins.right() - mTileWidth,
-                                       margins.bottom()),
-                              mDrawMargins);
 }
 
 /**
@@ -128,24 +116,40 @@ QMargins Map::computeLayerOffsetMargins() const
 }
 
 /**
- * Recomputes the draw margins for this map and each of its tile layers. Needed
+ * Recomputes the draw margins for this map and each of its tilesets. Needed
  * after the tile offset of a tileset has changed for example.
- *
- * \sa TileLayer::recomputeDrawMargins
  */
 void Map::recomputeDrawMargins()
 {
-    mDrawMargins = QMargins();
+    int maxTileSize = 0;
+    QMargins offsetMargins;
 
-    foreach (Layer *layer, mLayers)
-        if (TileLayer *tileLayer = layer->asTileLayer())
-            tileLayer->recomputeDrawMargins();
+    for (const SharedTileset &tileset : mTilesets) {
+        const QPoint offset = tileset->tileOffset();
+        const QSize tileSize = tileset->tileSize();
+
+        maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
+                                                     tileSize.height()));
+
+        offsetMargins = maxMargins(QMargins(-offset.x(),
+                                            -offset.y(),
+                                            offset.x(),
+                                            offset.y()),
+                                   offsetMargins);
+    }
+
+    // We subtract the tile size of the map, since that part does not
+    // contribute to additional margin.
+    mDrawMargins = QMargins(offsetMargins.left(),
+                            offsetMargins.top() + maxTileSize - mTileHeight,
+                            offsetMargins.right() + maxTileSize - mTileWidth,
+                            offsetMargins.bottom());
 }
 
 int Map::layerCount(Layer::TypeFlag type) const
 {
     int count = 0;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
        if (layer->layerType() == type)
            count++;
     return count;
@@ -154,7 +158,7 @@ int Map::layerCount(Layer::TypeFlag type) const
 QList<Layer*> Map::layers(Layer::TypeFlag type) const
 {
     QList<Layer*> layers;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         if (layer->layerType() == type)
             layers.append(layer);
     return layers;
@@ -163,7 +167,7 @@ QList<Layer*> Map::layers(Layer::TypeFlag type) const
 QList<ObjectGroup*> Map::objectGroups() const
 {
     QList<ObjectGroup*> layers;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         if (ObjectGroup *og = layer->asObjectGroup())
             layers.append(og);
     return layers;
@@ -172,7 +176,7 @@ QList<ObjectGroup*> Map::objectGroups() const
 QList<TileLayer*> Map::tileLayers() const
 {
     QList<TileLayer*> layers;
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         if (TileLayer *tl = layer->asTileLayer())
             layers.append(tl);
     return layers;
@@ -204,11 +208,8 @@ void Map::adoptLayer(Layer *layer)
 {
     layer->setMap(this);
 
-    if (TileLayer *tileLayer = layer->asTileLayer())
-        adjustDrawMargins(tileLayer->drawMargins());
-
     if (ObjectGroup *group = layer->asObjectGroup()) {
-        foreach (MapObject *o, group->objects()) {
+        for (MapObject *o : group->objects()) {
             if (o->id() == 0)
                 o->setId(takeNextObjectId());
         }
@@ -254,7 +255,7 @@ void Map::replaceTileset(const SharedTileset &oldTileset,
     const int index = mTilesets.indexOf(oldTileset);
     Q_ASSERT(index != -1);
 
-    foreach (Layer *layer, mLayers)
+    for (Layer *layer : mLayers)
         layer->replaceReferencesToTileset(oldTileset.data(),
                                           newTileset.data());
 
@@ -263,7 +264,7 @@ void Map::replaceTileset(const SharedTileset &oldTileset,
 
 bool Map::isTilesetUsed(const Tileset *tileset) const
 {
-    foreach (const Layer *layer, mLayers)
+    for (const Layer *layer : mLayers)
         if (layer->referencesTileset(tileset))
             return true;
 

@@ -386,13 +386,19 @@ int main(int argc, char *argv[])
         }
 
         // Remove empty tiles from the end of the tileset
-        for (int i = targetTileset->tileCount() - 1; i >= 0; --i) {
-            Tile *tile = targetTileset->tileAt(i);
-            if (!isEmpty(tile->image().toImage()))
-                break;
+        int nextTileId = targetTileset->nextTileId();
+        for (int id = nextTileId - 1; id >= 0; --id) {
+            if (Tile *tile = targetTileset->findTile(id)) {
+                if (isEmpty(tile->image().toImage())) {
+                    targetTileset->deleteTile(id);
+                    nextTileId = id;
+                    continue;
+                }
+            }
 
-            targetTileset->removeLastTile();
+            break;
         }
+        targetTileset->setNextTileId(nextTileId);
 
         // If the target tileset already exists, it is also a source tileset
         sources.append(targetTileset);

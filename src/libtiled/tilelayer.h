@@ -40,6 +40,8 @@
 #include <QVector>
 #include <QSharedPointer>
 
+#include <functional>
+
 namespace Tiled {
 
 class Tile;
@@ -103,41 +105,16 @@ public:
      */
     TileLayer(const QString &name, int x, int y, int width, int height);
 
-    /**
-     * Returns the maximum tile size of this layer.
-     */
-    QSize maxTileSize() const { return mMaxTileSize; }
+    QMargins drawMargins() const;
 
-    /**
-     * Returns the margins that have to be taken into account while drawing
-     * this tile layer. The margins depend on the maximum tile size and the
-     * offset applied to the tiles.
-     */
-    QMargins drawMargins() const
-    {
-        return QMargins(mOffsetMargins.left(),
-                        mOffsetMargins.top() + mMaxTileSize.height(),
-                        mOffsetMargins.right() + mMaxTileSize.width(),
-                        mOffsetMargins.bottom());
-    }
-
-    void recomputeDrawMargins();
-
-    /**
-     * Returns whether (x, y) is inside this map layer.
-     */
-    bool contains(int x, int y) const
-    { return x >= 0 && y >= 0 && x < mWidth && y < mHeight; }
-
-    bool contains(const QPoint &point) const
-    { return contains(point.x(), point.y()); }
+    bool contains(int x, int y) const;
+    bool contains(const QPoint &point) const;
 
     /**
      * Calculates the region of cells in this tile layer for which the given
      * \a condition returns true.
      */
-    template<typename Condition>
-    QRegion region(Condition condition) const;
+    QRegion region(std::function<bool (const Cell &)> condition) const;
 
     /**
      * Calculates the region occupied by the tiles of this layer. Similar to
@@ -145,17 +122,9 @@ public:
      */
     QRegion region() const;
 
-    /**
-     * Returns a read-only reference to the cell at the given coordinates. The
-     * coordinates have to be within this layer.
-     */
     const Cell &cellAt(int x, int y) const;
-
     const Cell &cellAt(const QPoint &point) const;
 
-    /**
-     * Sets the cell at the given coordinates.
-     */
     void setCell(int x, int y, const Cell &cell);
 
     /**
@@ -212,8 +181,7 @@ public:
      * Returns whether this tile layer has any cell for which the given
      * \a condition returns true.
      */
-    template<typename Condition>
-    bool hasCell(Condition condition) const;
+    bool hasCell(std::function<bool (const Cell &)> condition) const;
 
     /**
      * Returns whether this tile layer is referencing the given tileset.
@@ -275,44 +243,23 @@ protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
-    QSize mMaxTileSize;
-    QMargins mOffsetMargins;
     QVector<Cell> mGrid;
+    mutable QSet<SharedTileset> mUsedTilesets;
+    mutable bool mUsedTilesetsDirty;
 };
 
 
-template<typename Condition>
-QRegion TileLayer::region(Condition condition) const
+/**
+ * Returns whether (x, y) is inside this map layer.
+ */
+inline bool TileLayer::contains(int x, int y) const
 {
-    QRegion region;
-
-    for (int y = 0; y < mHeight; ++y) {
-        for (int x = 0; x < mWidth; ++x) {
-            if (condition(cellAt(x, y))) {
-                const int rangeStart = x;
-                for (++x; x <= mWidth; ++x) {
-                    if (x == mWidth || !condition(cellAt(x, y))) {
-                        const int rangeEnd = x;
-                        region += QRect(rangeStart + mX, y + mY,
-                                        rangeEnd - rangeStart, 1);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return region;
+    return x >= 0 && y >= 0 && x < mWidth && y < mHeight;
 }
 
-template<typename Condition>
-bool TileLayer::hasCell(Condition condition) const
+inline bool TileLayer::contains(const QPoint &point) const
 {
-    for (const Cell &cell : mGrid)
-        if (condition(cell))
-            return true;
-
-    return false;
+    return contains(point.x(), point.y());
 }
 
 inline QRegion TileLayer::region() const
@@ -320,6 +267,10 @@ inline QRegion TileLayer::region() const
     return region([] (const Cell &cell) { return !cell.isEmpty(); });
 }
 
+/**
+ * Returns a read-only reference to the cell at the given coordinates. The
+ * coordinates have to be within this layer.
+ */
 inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     Q_ASSERT(contains(x, y));

@@ -38,8 +38,8 @@ using namespace Tiled;
 static QString resolvePath(const QDir &dir, const QVariant &variant)
 {
     QString fileName = variant.toString();
-    if (QDir::isRelativePath(fileName))
-        fileName = QDir::cleanPath(dir.absoluteFilePath(fileName));
+    if (!fileName.isEmpty() && QDir::isRelativePath(fileName))
+        return QDir::cleanPath(dir.absoluteFilePath(fileName));
     return fileName;
 }
 
@@ -106,6 +106,13 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         map->addLayer(layer);
     }
 
+    // Try to load the tileset images
+    auto tilesets = map->tilesets();
+    for (SharedTileset &tileset : tilesets) {
+        if (!tileset->imageSource().isEmpty() && tileset->fileName().isEmpty())
+            tileset->loadImage();
+    }
+
     return map.take();
 }
 
@@ -114,7 +121,11 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,
 {
     mMapDir = directory;
     mReadingExternalTileset = true;
+
     SharedTileset tileset = toTileset(variant);
+    if (tileset && !tileset->imageSource().isEmpty())
+        tileset->loadImage();
+
     mReadingExternalTileset = false;
     return tileset;
 }
@@ -146,8 +157,10 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         QString error;
         SharedTileset tileset = Tiled::readTileset(source, &error);
         if (!tileset) {
-            mError = tr("Error while loading tileset '%1': %2")
-                    .arg(source, error);
+            // Insert a placeholder to allow the map to load
+            tileset = Tileset::create(QFileInfo(source).completeBaseName(), 32, 32);
+            tileset->setFileName(source);
+            tileset->setLoaded(false);
         } else {
             mGidMapper.insert(firstGid, tileset.data());
         }
@@ -175,19 +188,22 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
 
-    const QString trans = variantMap[QLatin1String("transparentcolor")].toString();
-    if (!trans.isEmpty() && QColor::isValidColor(trans))
-        tileset->setTransparentColor(QColor(trans));
-
     QVariant imageVariant = variantMap[QLatin1String("image")];
 
     if (!imageVariant.isNull()) {
-        QString imagePath = resolvePath(mMapDir, imageVariant);
-        if (!tileset->loadFromImage(imagePath)) {
-            mError = tr("Error loading tileset image:\n'%1'").arg(imagePath);
-            return SharedTileset();
-        }
+        const int imageWidth = variantMap[QLatin1String("imagewidth")].toInt();
+        const int imageHeight = variantMap[QLatin1String("imageheight")].toInt();
+
+        ImageReference imageRef;
+        imageRef.source = resolvePath(mMapDir, imageVariant);
+        imageRef.size = QSize(imageWidth, imageHeight);
+
+        tileset->setImageReference(imageRef);
     }
+
+    const QString trans = variantMap[QLatin1String("transparentcolor")].toString();
+    if (!trans.isEmpty() && QColor::isValidColor(trans))
+        tileset->setTransparentColor(QColor(trans));
 
     tileset->setProperties(toProperties(variantMap[QLatin1String("properties")]));
 
@@ -204,71 +220,55 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariantMap::const_iterator it = tilesVariantMap.constBegin();
     for (; it != tilesVariantMap.end(); ++it) {
         bool ok;
-        const int tileIndex = it.key().toInt();
-        if (tileIndex < 0) {
-            mError = tr("Tileset tile index negative:\n'%1'").arg(tileIndex);
+        const int tileId = it.key().toInt();
+        if (tileId < 0) {
+            mError = tr("Invalid (negative) tile id: %1").arg(tileId);
+            return SharedTileset();
         }
 
-        if (tileIndex >= tileset->tileCount()) {
-            // Extend the tileset to fit the tile
-            if (tileIndex >= tilesVariantMap.count()) {
-                // If tiles are  defined this way, there should be an entry
-                // for each tile.
-                // Limit the index to number of entries to prevent running out
-                // of memory on malicious input.
-                mError = tr("Tileset tile index too high:\n'%1'").arg(tileIndex);
-                return SharedTileset();
+        Tile *tile = tileset->findOrCreateTile(tileId);
+
+        const QVariantMap tileVar = it.value().toMap();
+        QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
+        if (terrains.count() == 4) {
+            for (int i = 0; i < 4; ++i) {
+                int terrainId = terrains.at(i).toInt(&ok);
+                if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
+                    tile->setCornerTerrainId(i, terrainId);
             }
-            for (int i = tileset->tileCount(); i <= tileIndex; i++)
-                tileset->addTile(QPixmap());
         }
+        float probability = tileVar[QLatin1String("probability")].toFloat(&ok);
+        if (ok)
+            tile->setProbability(probability);
+        imageVariant = tileVar[QLatin1String("image")];
+        if (!imageVariant.isNull()) {
+            QString imagePath = resolvePath(mMapDir, imageVariant);
+            tileset->setTileImage(tileId, QPixmap(imagePath), imagePath);
+        }
+        QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
+        if (!objectGroupVariant.isEmpty())
+            tile->setObjectGroup(toObjectGroup(objectGroupVariant));
 
-        Tile *tile = tileset->tileAt(tileIndex);
-        if (tile) {
-            const QVariantMap tileVar = it.value().toMap();
-            QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
-            if (terrains.count() == 4) {
-                for (int i = 0; i < 4; ++i) {
-                    int terrainId = terrains.at(i).toInt(&ok);
-                    if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
-                        tile->setCornerTerrainId(i, terrainId);
-                }
+        QVariantList frameList = tileVar[QLatin1String("animation")].toList();
+        if (!frameList.isEmpty()) {
+            QVector<Frame> frames(frameList.size());
+            for (int i = frameList.size() - 1; i >= 0; --i) {
+                const QVariantMap frameVariantMap = frameList[i].toMap();
+                Frame &frame = frames[i];
+                frame.tileId = frameVariantMap[QLatin1String("tileid")].toInt();
+                frame.duration = frameVariantMap[QLatin1String("duration")].toInt();
             }
-            float probability = tileVar[QLatin1String("probability")].toFloat(&ok);
-            if (ok)
-                tile->setProbability(probability);
-            imageVariant = tileVar[QLatin1String("image")];
-            if (!imageVariant.isNull()) {
-                QString imagePath = resolvePath(mMapDir, imageVariant);
-                tileset->setTileImage(tileIndex, QPixmap(imagePath), imagePath);
-            }
-            QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
-            if (!objectGroupVariant.isEmpty())
-                tile->setObjectGroup(toObjectGroup(objectGroupVariant));
-
-            QVariantList frameList = tileVar[QLatin1String("animation")].toList();
-            if (!frameList.isEmpty()) {
-                QVector<Frame> frames(frameList.size());
-                for (int i = frameList.size() - 1; i >= 0; --i) {
-                    const QVariantMap frameVariantMap = frameList[i].toMap();
-                    Frame &frame = frames[i];
-                    frame.tileId = frameVariantMap[QLatin1String("tileid")].toInt();
-                    frame.duration = frameVariantMap[QLatin1String("duration")].toInt();
-                }
-                tile->setFrames(frames);
-            }
+            tile->setFrames(frames);
         }
     }
 
     // Read tile properties
     QVariantMap propertiesVariantMap = variantMap[QLatin1String("tileproperties")].toMap();
     for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
-        const int tileIndex = it.key().toInt();
+        const int tileId = it.key().toInt();
         const QVariant propertiesVar = it.value();
-        if (tileIndex >= 0 && tileIndex < tileset->tileCount()) {
-            const Properties properties = toProperties(propertiesVar);
-            tileset->tileAt(tileIndex)->setProperties(properties);
-        }
+        const Properties properties = toProperties(propertiesVar);
+        tileset->findOrCreateTile(tileId)->setProperties(properties);
     }
 
     if (!mReadingExternalTileset)
@@ -512,10 +512,7 @@ ImageLayer *VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 
     if (!imageVariant.isNull()) {
         QString imagePath = resolvePath(mMapDir, imageVariant);
-        if (!imageLayer->loadFromImage(QImage(imagePath), imagePath)) {
-            mError = tr("Error loading image:\n'%1'").arg(imagePath);
-            return nullptr;
-        }
+        imageLayer->loadFromImage(imagePath);
     }
 
     return imageLayer.take();

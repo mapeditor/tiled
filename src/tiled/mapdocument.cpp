@@ -615,6 +615,43 @@ void MapDocument::moveTileset(int from, int to)
     emit tilesetMoved(from, to);
 }
 
+/**
+ * Replaces the tileset at the given \a index with the new \a tileset. Replaces
+ * all tiles from the replaced tileset with tiles from the new tileset.
+ *
+ * @return The replaced tileset.
+ */
+SharedTileset MapDocument::replaceTileset(int index, const SharedTileset &tileset)
+{
+    SharedTileset oldTileset = mMap->tilesetAt(index);
+
+    mMap->replaceTileset(oldTileset, tileset);
+
+    // Try to keep the current object valid
+    if (mCurrentObject == oldTileset.data()) {
+        setCurrentObject(tileset.data());
+
+    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TileType) {
+        Tile *tile = static_cast<Tile*>(mCurrentObject);
+        if (tile->tileset() == oldTileset.data())
+            setCurrentObject(tileset->findTile(tile->id()));
+
+    } else if (mCurrentObject && mCurrentObject->typeId() == Object::TerrainType) {
+        Terrain *terrain = static_cast<Terrain*>(mCurrentObject);
+        if (terrain->tileset() == oldTileset.data())
+            setCurrentObject(tileset->terrain(terrain->id()));
+    }
+
+
+    TilesetManager *tilesetManager = TilesetManager::instance();
+    tilesetManager->addReference(tileset);
+    tilesetManager->removeReference(oldTileset);
+
+    emit tilesetReplaced(index, tileset.data());
+
+    return oldTileset;
+}
+
 void MapDocument::setSelectedArea(const QRegion &selection)
 {
     if (mSelectedArea != selection) {
@@ -696,16 +733,15 @@ void MapDocument::unifyTilesets(Map *map)
         }
 
         // Merge the tile properties
-        const int sharedTileCount = qMin(tileset->tileCount(),
-                                         replacement->tileCount());
-        for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
-            undoCommands.append(new ChangeProperties(this,
-                                                     tr("Tile"),
-                                                     replacementTile,
-                                                     properties));
+        for (Tile *replacementTile : replacement->tiles()) {
+            if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
+                Properties properties = replacementTile->properties();
+                properties.merge(originalTile->properties());
+                undoCommands.append(new ChangeProperties(this,
+                                                         tr("Tile"),
+                                                         replacementTile,
+                                                         properties));
+            }
         }
         map->replaceTileset(tileset, replacement);
 

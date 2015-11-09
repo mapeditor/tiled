@@ -28,6 +28,7 @@ SOURCES += compression.cpp \
     gidmapper.cpp \
     hexagonalrenderer.cpp \
     imagelayer.cpp \
+    imagereference.cpp \
     isometricrenderer.cpp \
     layer.cpp \
     map.cpp \
@@ -51,6 +52,7 @@ HEADERS += compression.h \
     gidmapper.h \
     hexagonalrenderer.h \
     imagelayer.h \
+    imagereference.h \
     isometricrenderer.h \
     layer.h \
     logginginterface.h \

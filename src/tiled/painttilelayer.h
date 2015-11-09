@@ -52,7 +52,8 @@ public:
     PaintTileLayer(MapDocument *mapDocument,
                    TileLayer *target,
                    int x, int y,
-                   const TileLayer *source);
+                   const TileLayer *source,
+                   QUndoCommand *parent = nullptr);
 
     ~PaintTileLayer();
 

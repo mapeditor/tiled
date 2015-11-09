@@ -54,7 +54,7 @@ void ChangeImageLayerProperties::redo()
     if (mRedoPath.isEmpty())
         mImageLayer->resetImage();
     else
-        mImageLayer->loadFromImage(QImage(mRedoPath), mRedoPath);
+        mImageLayer->loadFromImage(mRedoPath);
 
     mMapDocument->emitImageLayerChanged(mImageLayer);
 }
@@ -66,7 +66,7 @@ void ChangeImageLayerProperties::undo()
     if (mUndoPath.isEmpty())
         mImageLayer->resetImage();
     else
-        mImageLayer->loadFromImage(QImage(mUndoPath), mUndoPath);
+        mImageLayer->loadFromImage(mUndoPath);
 
     mMapDocument->emitImageLayerChanged(mImageLayer);
 }

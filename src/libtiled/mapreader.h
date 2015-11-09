@@ -106,7 +106,7 @@ protected:
 
     /**
      * Called when an external tileset is encountered while a map is loaded.
-     * The default implementation just calls readTileset() on a new MapReader.
+     * The default implementation just calls Tiled::readTileset().
      *
      * If an error occurred, the \a error parameter should be set to the error
      * message.

@@ -130,6 +130,9 @@ public:
     void setAnimateTiles(bool enabled);
     bool animateTiles() const;
 
+    void tilesetImageSourceChanged(const Tileset &tileset,
+                                   const QString &oldImageSource);
+
 signals:
     /**
      * Emitted when a tileset's images have changed and views need updating.

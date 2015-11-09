@@ -203,7 +203,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     for (const SharedTileset &tileset : map.tilesets()) {
         writeTileset(w, *tileset, firstGid);
         mGidMapper.insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
 
     for (const Layer *layer : map.layers()) {
@@ -319,8 +319,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     }
 
     // Write the properties for those tiles that have them
-    for (int i = 0; i < tileset.tileCount(); ++i) {
-        const Tile *tile = tileset.tileAt(i);
+    for (const Tile *tile : tileset.tiles()) {
         const Properties properties = tile->properties();
         unsigned terrain = tile->terrain();
         float probability = tile->probability();
@@ -328,7 +327,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
 
         if (!properties.isEmpty() || terrain != 0xFFFFFFFF || probability != 1.f || imageSource.isEmpty() || objectGroup || tile->isAnimated()) {
             w.writeStartElement(QLatin1String("tile"));
-            w.writeAttribute(QLatin1String("id"), QString::number(i));
+            w.writeAttribute(QLatin1String("id"), QString::number(tile->id()));
             if (terrain != 0xFFFFFFFF)
                 w.writeAttribute(QLatin1String("terrain"), makeTerrainAttribute(tile));
             if (probability != 1.f)

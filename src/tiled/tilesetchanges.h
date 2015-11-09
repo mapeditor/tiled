@@ -24,7 +24,9 @@
 
 #include "undocommands.h"
 
+#include <QColor>
 #include <QPoint>
+#include <QSize>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -70,6 +72,43 @@ private:
     Tileset *mTileset;
     QPoint mOldTileOffset;
     QPoint mNewTileOffset;
+};
+
+struct TilesetParameters
+{
+    TilesetParameters()
+        : tileSpacing(0)
+        , margin(0)
+    {}
+
+    explicit TilesetParameters(const Tileset &tileset);
+
+    bool operator != (const TilesetParameters &other) const;
+
+    QString imageSource;
+    QColor transparentColor;
+    QSize tileSize;
+    int tileSpacing;
+    int margin;
+};
+
+class ChangeTilesetParameters : public QUndoCommand
+{
+public:
+    ChangeTilesetParameters(MapDocument *mapDocument,
+                            Tileset &tileset,
+                            const TilesetParameters &parameters);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    void apply(const TilesetParameters &parameters);
+
+    MapDocument *mMapDocument;
+    Tileset &mTileset;
+    TilesetParameters mOldParameters;
+    TilesetParameters mNewParameters;
 };
 
 } // namespace Internal

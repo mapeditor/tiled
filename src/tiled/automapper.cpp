@@ -402,7 +402,7 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
     TilesetManager *tilesetManager = TilesetManager::instance();
 
     // Add tilesets that are not yet part of dst map
-    foreach (const SharedTileset &tileset, src->tilesets()) {
+    for (const SharedTileset &tileset : src->tilesets()) {
         if (existingTilesets.contains(tileset))
             continue;
 
@@ -416,17 +416,15 @@ bool AutoMapper::setupTilesets(Map *src, Map *dst)
         }
 
         // Merge the tile properties
-        const int sharedTileCount = qMin(tileset->tileCount(),
-                                         replacement->tileCount());
-        for (int i = 0; i < sharedTileCount; ++i) {
-            Tile *replacementTile = replacement->tileAt(i);
-            Properties properties = replacementTile->properties();
-            properties.merge(tileset->tileAt(i)->properties());
-
-            undoStack->push(new ChangeProperties(mMapDocument,
-                                                 tr("Tile"),
-                                                 replacementTile,
-                                                 properties));
+        for (Tile *replacementTile : replacement->tiles()) {
+            if (Tile *originalTile = tileset->findTile(replacementTile->id())) {
+                Properties properties = replacementTile->properties();
+                properties.merge(originalTile->properties());
+                undoStack->push(new ChangeProperties(mMapDocument,
+                                                     tr("Tile"),
+                                                     replacementTile,
+                                                     properties));
+            }
         }
         src->replaceTileset(tileset, replacement);
 
@@ -442,7 +440,7 @@ void AutoMapper::autoMap(QRegion *where)
     // first resize the active area
     if (mAutoMappingRadius) {
         QRegion region;
-        foreach (const QRect &r, where->rects()) {
+        for (const QRect &r : where->rects()) {
             region += r.adjusted(- mAutoMappingRadius,
                                  - mAutoMappingRadius,
                                  + mAutoMappingRadius,

@@ -22,6 +22,7 @@
 #define NEWTILESETDIALOG_H
 
 #include "tileset.h"
+#include "tilesetchanges.h"
 
 #include <QDialog>
 
@@ -33,29 +34,28 @@ namespace Tiled {
 namespace Internal {
 
 /**
- * A dialog for the creation of a new tileset.
+ * A dialog for the creation of a new tileset, or for editing the parameters
+ * of an existing one.
  */
 class NewTilesetDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    /**
-     * Constructs a new tileset dialog
-     *
-     * @param path the path to start in by default, or an image file
-     */
-    NewTilesetDialog(const QString &path, QWidget *parent = nullptr);
+    enum Mode {
+        CreateTileset,
+        EditTilesetParameters,
+    };
+
+    NewTilesetDialog(QWidget *parent = nullptr);
     ~NewTilesetDialog();
 
-    void setTileWidth(int width);
-    void setTileHeight(int height);
+    void setImagePath(const QString &path);
+    void setTileSize(QSize size);
 
-    /**
-     * Shows the dialog and returns the created tileset. Returns 0 if the
-     * dialog was cancelled.
-     */
     SharedTileset createTileset();
+
+    bool editTilesetParameters(TilesetParameters &parameters);
 
 private slots:
     void browse();
@@ -65,6 +65,9 @@ private slots:
     void tryAccept();
 
 private:
+    void setMode(Mode mode);
+
+    Mode mMode;
     QString mPath;
     Ui::NewTilesetDialog *mUi;
     bool mNameWasEdited;

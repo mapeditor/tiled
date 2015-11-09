@@ -208,16 +208,8 @@ public:
     void setStaggerIndex(StaggerIndex staggerIndex);
 
     /**
-     * Adjusts the draw margins to be at least as big as the given margins.
-     * Called from tile layers when their tiles change.
-     */
-    void adjustDrawMargins(const QMargins &margins);
-
-    /**
      * Returns the margins that have to be taken into account when figuring
      * out which part of the map to repaint after changing some tiles.
-     *
-     * @see TileLayer::drawMargins
      */
     QMargins drawMargins() const { return mDrawMargins; }
 
@@ -377,24 +369,9 @@ public:
     void setLayerDataFormat(LayerDataFormat format)
     { mLayerDataFormat = format; }
 
-    /**
-     * Sets the next id to be used for objects on this map.
-     */
-    void setNextObjectId(int nextId)
-    {
-        Q_ASSERT(nextId > 0);
-        mNextObjectId = nextId;
-    }
-
-    /**
-     * Returns the next object id for this map.
-     */
-    int nextObjectId() const { return mNextObjectId; }
-
-    /**
-     * Returns the next object id for this map and allocates a new one.
-     */
-    int takeNextObjectId() { return mNextObjectId++; }
+    void setNextObjectId(int nextId);
+    int nextObjectId() const;
+    int takeNextObjectId();
 
 private:
     void adoptLayer(Layer *layer);
@@ -445,6 +422,31 @@ inline Map::StaggerIndex Map::staggerIndex() const
 inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 {
     mStaggerIndex = staggerIndex;
+}
+
+/**
+ * Sets the next id to be used for objects on this map.
+ */
+inline void Map::setNextObjectId(int nextId)
+{
+    Q_ASSERT(nextId > 0);
+    mNextObjectId = nextId;
+}
+
+/**
+ * Returns the next object id for this map.
+ */
+inline int Map::nextObjectId() const
+{
+    return mNextObjectId;
+}
+
+/**
+ * Returns the next object id for this map and allocates a new one.
+ */
+inline int Map::takeNextObjectId()
+{
+    return mNextObjectId++;
 }
 
 

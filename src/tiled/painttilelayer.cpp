@@ -34,14 +34,16 @@ PaintTileLayer::PaintTileLayer(MapDocument *mapDocument,
                                TileLayer *target,
                                int x,
                                int y,
-                               const TileLayer *source):
-    mMapDocument(mapDocument),
-    mTarget(target),
-    mSource(static_cast<TileLayer*>(source->clone())),
-    mX(x),
-    mY(y),
-    mPaintedRegion(x, y, source->width(), source->height()),
-    mMergeable(false)
+                               const TileLayer *source,
+                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mTarget(target)
+    , mSource(static_cast<TileLayer*>(source->clone()))
+    , mX(x)
+    , mY(y)
+    , mPaintedRegion(x, y, source->width(), source->height())
+    , mMergeable(false)
 {
     mErased = mTarget->copy(mX - mTarget->x(),
                             mY - mTarget->y(),

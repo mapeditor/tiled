@@ -55,9 +55,9 @@ GidMapper::GidMapper(const QVector<SharedTileset> &tilesets)
     : mInvalidTile(0)
 {
     unsigned firstGid = 1;
-    foreach (const SharedTileset &tileset, tilesets) {
+    for (const SharedTileset &tileset : tilesets) {
         insert(firstGid, tileset.data());
-        firstGid += tileset->tileCount();
+        firstGid += tileset->nextTileId();
     }
 }
 
@@ -92,17 +92,9 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
         } else {
             --i; // Navigate one tileset back since upper bound finds the next
             int tileId = gid - i.key();
-            const Tileset *tileset = i.value();
+            Tileset *tileset = i.value();
 
-            const int columnCount = mTilesetColumnCounts.value(tileset);
-            if (columnCount > 0 && columnCount != tileset->columnCount()) {
-                // Correct tile index for changes in image width
-                const int row = tileId / columnCount;
-                const int column = tileId % columnCount;
-                tileId = row * tileset->columnCount() + column;
-            }
-
-            result.tile = tileset->tileAt(tileId);
+            result.tile = tileset->findOrCreateTile(tileId);
 
             ok = true;
         }
@@ -140,18 +132,6 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
         gid |= FlippedAntiDiagonallyFlag;
 
     return gid;
-}
-
-/**
- * This sets the original tileset width. In case the image size has changed,
- * the tile indexes will be adjusted automatically when using gidToCell().
- */
-void GidMapper::setTilesetWidth(const Tileset *tileset, int width)
-{
-    if (tileset->tileWidth() == 0)
-        return;
-
-    mTilesetColumnCounts.insert(tileset, tileset->columnCountForWidth(width));
 }
 
 /**
