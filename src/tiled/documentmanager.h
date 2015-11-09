@@ -199,9 +199,13 @@ private slots:
 
     void cursorChanged(const QCursor &cursor);
 
+    void tilesetChanged(Tileset *tileset);
+
 private:
     DocumentManager(QObject *parent = nullptr);
     ~DocumentManager();
+
+    bool askForAdjustment(const Tileset &tileset);
 
     QList<MapDocument*> mDocuments;
 

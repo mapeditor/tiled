@@ -125,6 +125,7 @@ public:
 
     int columnCount() const;
     int expectedColumnCount() const;
+    void syncExpectedColumnCount();
 
     int imageWidth() const;
     int imageHeight() const;
@@ -341,6 +342,16 @@ inline int Tileset::columnCount() const
 inline int Tileset::expectedColumnCount() const
 {
     return mExpectedColumnCount;
+}
+
+/**
+ * Sets the expected column count to the actual column count. Usually called
+ * after checking with the user whether he wants the map to be adjusted to a
+ * change to the tileset image width.
+ */
+inline void Tileset::syncExpectedColumnCount()
+{
+    mExpectedColumnCount = mColumnCount;
 }
 
 /**

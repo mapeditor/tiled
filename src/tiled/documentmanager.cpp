@@ -31,6 +31,7 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "movabletabwidget.h"
+#include "tilesetmanager.h"
 #include "zoomable.h"
 
 #include <QFileInfo>
@@ -191,6 +192,9 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(mFileSystemWatcher, SIGNAL(fileChanged(QString)),
             SLOT(fileChanged(QString)));
+
+    connect(TilesetManager::instance(), &TilesetManager::tilesetChanged,
+            this, &DocumentManager::tilesetChanged);
 }
 
 DocumentManager::~DocumentManager()
@@ -547,6 +551,49 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
     view->centerOn(document->renderer()->pixelToScreenCoords(x, y));
 }
 
+static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
+{
+    if (tileset.imageSource().isEmpty())
+        return false;
+    if (!tileset.imageLoaded())
+        return false;
+    if (tileset.columnCount() == tileset.expectedColumnCount())
+        return false;
+    if (tileset.columnCount() == 0 || tileset.expectedColumnCount() == 0)
+        return false;
+
+    return true;
+}
+
+void DocumentManager::tilesetChanged(Tileset *tileset)
+{
+    if (!mayNeedColumnCountAdjustment(*tileset))
+        return;
+
+    SharedTileset sharedTileset = tileset->sharedPointer();
+
+    bool anyRelevantMap = false;
+    for (MapDocument *document : mDocuments) {
+        if (document->map()->tilesets().contains(sharedTileset)) {
+            anyRelevantMap = true;
+            break;
+        }
+    }
+
+    if (anyRelevantMap && askForAdjustment(*tileset)) {
+        for (MapDocument *mapDocument : mDocuments) {
+            Map *map = mapDocument->map();
+
+            if (map->tilesets().contains(sharedTileset)) {
+                auto command = new AdjustTileIndexes(mapDocument, tileset);
+                mapDocument->undoStack()->push(command);
+            }
+        }
+    }
+
+    tileset->syncExpectedColumnCount();
+}
+
 /**
  * Checks whether the number of columns in tileset image based tilesets matches
  * with the expected amount. Offers to adjust tile indexes if not.
@@ -554,31 +601,31 @@ void DocumentManager::centerViewOn(qreal x, qreal y)
 void DocumentManager::checkTilesetColumns(MapDocument *mapDocument)
 {
     for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
-        if (tileset->imageSource().isEmpty())
-            continue;
-        if (!tileset->imageLoaded())
-            continue;
-        if (tileset->columnCount() == tileset->expectedColumnCount())
-            continue;
-        if (tileset->columnCount() == 0 || tileset->expectedColumnCount() == 0)
+        if (!mayNeedColumnCountAdjustment(*tileset))
             continue;
 
-        // Change in column count detected
-        int r = QMessageBox::question(mTabWidget->window(),
-                                      tr("Tileset Columns Changed"),
-                                      tr("The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. "
-                                         "Do you want to adjust tile references?")
-                                      .arg(tileset->name())
-                                      .arg(tileset->expectedColumnCount())
-                                      .arg(tileset->columnCount()),
-                                      QMessageBox::Yes | QMessageBox::No,
-                                      QMessageBox::Yes);
-
-        if (r == QMessageBox::Yes) {
+        if (askForAdjustment(*tileset)) {
             auto command = new AdjustTileIndexes(mapDocument, tileset.data());
             mapDocument->undoStack()->push(command);
         }
+
+        tileset.data()->syncExpectedColumnCount();
     }
+}
+
+bool DocumentManager::askForAdjustment(const Tileset &tileset)
+{
+    int r = QMessageBox::question(mTabWidget->window(),
+                                  tr("Tileset Columns Changed"),
+                                  tr("The number of tile columns in the tileset '%1' appears to have changed from %2 to %3. "
+                                     "Do you want to adjust tile references?")
+                                  .arg(tileset.name())
+                                  .arg(tileset.expectedColumnCount())
+                                  .arg(tileset.columnCount()),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  QMessageBox::Yes);
+
+    return r == QMessageBox::Yes;
 }
 
 #include "documentmanager.moc"
