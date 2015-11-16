@@ -50,6 +50,15 @@
 using namespace Tiled;
 using namespace Tiled::Internal;
 
+static QString colorToString(const QColor &color)
+{
+#if QT_VERSION >= 0x050200
+    if (color.alpha() != 255)
+        return color.name(QColor::HexArgb);
+#endif
+    return color.name();
+}
+
 namespace Tiled {
 namespace Internal {
 
@@ -190,7 +199,7 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
 
     if (map.backgroundColor().isValid()) {
         w.writeAttribute(QLatin1String("backgroundcolor"),
-                         map.backgroundColor().name());
+                         colorToString(map.backgroundColor()));
     }
 
     w.writeAttribute(QLatin1String("nextobjectid"),

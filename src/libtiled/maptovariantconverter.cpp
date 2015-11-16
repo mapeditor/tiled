@@ -33,6 +33,15 @@
 
 using namespace Tiled;
 
+static QString colorToString(const QColor &color)
+{
+#if QT_VERSION >= 0x050200
+    if (color.alpha() != 255)
+        return color.name(QColor::HexArgb);
+#endif
+    return color.name();
+}
+
 QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 {
     mMapDir = mapDir;
@@ -61,7 +70,7 @@ QVariant MapToVariantConverter::toVariant(const Map *map, const QDir &mapDir)
 
     const QColor bgColor = map->backgroundColor();
     if (bgColor.isValid())
-        mapVariant[QLatin1String("backgroundcolor")] = bgColor.name();
+        mapVariant[QLatin1String("backgroundcolor")] = colorToString(bgColor);
 
     QVariantList tilesetVariants;
 
