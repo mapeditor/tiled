@@ -118,7 +118,7 @@ public:
     void setTileOffset(QPoint offset);
 
     const QMap<int, Tile*> &tiles() const;
-    Tile *findTile(int id) const;
+    inline Tile *findTile(int id) const;
     Tile *tileAt(int id) const { return findTile(id); } // provided for Python
     Tile *findOrCreateTile(int id);
     int tileCount() const;
