@@ -103,6 +103,7 @@
 #include <QComboBox>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QLabel>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSessionManager>
@@ -120,6 +121,27 @@ using namespace Tiled;
 using namespace Tiled::Internal;
 using namespace Tiled::Utils;
 
+namespace {
+
+class EmptyModel : public QAbstractListModel
+{
+public:
+    EmptyModel(QObject *parent = nullptr)
+        : QAbstractListModel(parent)
+    {}
+
+    int rowCount(const QModelIndex &) const override
+    { return 0; }
+
+    QVariant data(const QModelIndex &, int) const override
+    { return QVariant(); }
+};
+
+static EmptyModel emptyModel;
+
+} // anonymous namespace
+
+
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
     , mUi(new Ui::MainWindow)
@@ -134,7 +156,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mConsoleDock(new ConsoleDock(this))
     , mTileAnimationEditor(new TileAnimationEditor(this))
     , mTileCollisionEditor(new TileCollisionEditor(this))
-    , mCurrentLayerLabel(new QLabel)
+    , mLayerComboBox(new QComboBox)
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
@@ -217,6 +239,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mConsoleDock->setVisible(false);
     tileStampsDock->setVisible(false);
 
+    mLayerComboBox->setMinimumContentsLength(10);
+    mLayerComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    connect(mLayerComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(layerComboIndexChanged(int)));
+
+    statusBar()->addPermanentWidget(mLayerComboBox);
     statusBar()->addPermanentWidget(mZoomComboBox);
 
     mUi->actionNew->setShortcuts(QKeySequence::New);
@@ -474,7 +502,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     statusBar()->addWidget(mStatusInfoLabel);
     connect(mToolManager, SIGNAL(statusInfoChanged(QString)),
             this, SLOT(updateStatusInfoLabel(QString)));
-    statusBar()->addWidget(mCurrentLayerLabel);
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -1396,6 +1423,19 @@ void MainWindow::onCollisionEditorClosed()
     mShowTileCollisionEditor->setChecked(false);
 }
 
+void MainWindow::layerComboIndexChanged(int index)
+{
+    if (index == -1)
+        return;
+    if (!mMapDocument)
+        return;
+
+    int layerIndex = mMapDocument->layerModel()->toLayerIndex(index);
+
+    if (layerIndex != mMapDocument->currentLayerIndex())
+        mMapDocument->setCurrentLayerIndex(layerIndex);
+}
+
 void MainWindow::openRecentFile()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -1473,6 +1513,7 @@ void MainWindow::updateActions()
     bool tileLayerSelected = false;
     bool objectsSelected = false;
     QRegion selection;
+    int layerComboIndex = -1;
 
     if (mMapDocument) {
         Layer *currentLayer = mMapDocument->currentLayer();
@@ -1481,6 +1522,10 @@ void MainWindow::updateActions()
         tileLayerSelected = dynamic_cast<TileLayer*>(currentLayer) != nullptr;
         objectsSelected = !mMapDocument->selectedObjects().isEmpty();
         selection = mMapDocument->selectedArea();
+
+        int layerIndex = mMapDocument->currentLayerIndex();
+        if (layerIndex != -1)
+            layerComboIndex = mMapDocument->layerModel()->layerIndexToRow(layerIndex);
     }
 
     const bool canCopy = (tileLayerSelected && !selection.isEmpty())
@@ -1510,9 +1555,7 @@ void MainWindow::updateActions()
 
     updateZoomLabel(); // for the zoom actions
 
-    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : nullptr;
-    mCurrentLayerLabel->setText(tr("Current layer: %1").arg(
-                                    layer ? layer->name() : tr("<none>")));
+    mLayerComboBox->setCurrentIndex(layerComboIndex);
 }
 
 void MainWindow::updateZoomLabel()
@@ -1734,7 +1777,13 @@ void MainWindow::mapDocumentChanged(MapDocument *mapDocument)
             connect(mZoomable, SIGNAL(scaleChanged(qreal)),
                     this, SLOT(updateZoomLabel()));
         }
+
+        mLayerComboBox->setModel(mapDocument->layerModel());
+    } else {
+        mLayerComboBox->setModel(&emptyModel);
     }
+
+    mLayerComboBox->setEnabled(mapDocument);
 
     updateWindowTitle();
     updateActions();

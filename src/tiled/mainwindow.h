@@ -177,6 +177,8 @@ private slots:
     void onAnimationEditorClosed();
     void onCollisionEditorClosed();
 
+    void layerComboIndexChanged(int index);
+
 private:
     /**
       * Asks the user whether the given \a mapDocument should be saved, when
@@ -228,7 +230,7 @@ private:
     ConsoleDock *mConsoleDock;
     TileAnimationEditor *mTileAnimationEditor;
     TileCollisionEditor *mTileCollisionEditor;
-    QLabel *mCurrentLayerLabel;
+    QComboBox *mLayerComboBox;
     Zoomable *mZoomable;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;

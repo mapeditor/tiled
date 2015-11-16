@@ -65,6 +65,7 @@ public:
                         int role = Qt::DisplayRole) const override;
 
     int toLayerIndex(const QModelIndex &index) const;
+    int toLayerIndex(int index) const;
 
     int layerIndexToRow(int layerIndex) const;
 
